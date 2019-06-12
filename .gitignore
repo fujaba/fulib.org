@@ -1,0 +1,17 @@
+/.idea/
+/.gradle/
+
+/build/
+/out/
+/temp/
+/data/
+
+hs_err_pid*
+
+*.iml
+src/test/scenarios/**/*.png
+src/test/scenarios/**/*.svg
+src/test/scenarios/**/*.yaml
+webapp/examples/**/*.png
+webapp/examples/**/*.svg
+webapp/examples/**/*.yaml
