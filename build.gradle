@@ -1,0 +1,39 @@
+plugins {
+	id 'java'
+	id 'com.github.johnrengelman.shadow' version '4.0.4'
+}
+
+group 'org.fulib'
+version '0.1.0'
+
+sourceCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+	jcenter()
+}
+
+dependencies {
+	// --------------- Fulib Libraries ---------------
+
+	compile group: 'org.fulib', name: 'fulibScenarios', version: '0.3.2'
+
+	// --------------- Other Libraries ---------------
+
+	compile 'org.slf4j:slf4j-nop:1.7.25'
+
+	compile "com.sparkjava:spark-core:2.8.0"
+
+	compile group: 'org.json', name: 'json', version: '20090211'
+
+	// compile instead of testCompile because the web service uses it
+	compile group: 'junit', name: 'junit', version: '4.12'
+}
+
+// --------------- Jars ---------------
+
+tasks.withType(Jar) {
+	manifest {
+		attributes 'Main-Class': 'org.fulib.scenarios.WebService'
+	}
+}

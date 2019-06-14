@@ -1,0 +1,29 @@
+.split {
+	position: fixed;
+	padding:  1em;
+}
+
+.left {
+	left:  0;
+	width: 50%;
+}
+
+.right {
+	right: 0;
+	width: 50%;
+}
+
+.top {
+	top:    0;
+	height: 50%;
+}
+
+.bottom {
+	bottom: 0;
+	height: 50%;
+}
+
+.CodeMirror {
+	border:        1px solid gray;
+	border-radius: 1em;
+}
