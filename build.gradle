@@ -1,10 +1,40 @@
 plugins {
 	id 'java'
+	id 'maven-publish'
+	id 'com.jfrog.bintray' version '1.8.4'
+	id 'de.clashsoft.simple-publish' version '0.3.0'
 	id 'com.github.johnrengelman.shadow' version '4.0.4'
 }
 
-group 'org.fulib'
-version '0.1.0'
+group = 'org.fulib'
+version = '0.1.0'
+description = 'The fulib.org website and Fulib Scenarios Web App'
+
+publishInfo {
+	websiteUrl = 'https://www.fulib.org/'
+	issueTrackerUrl = 'https://github.com/fujaba/fulib.org/issues'
+	vcsUrl = 'https://github.com/fujaba/fulib.org'
+	githubRepo = 'fujaba/fulib.org'
+	labels = [ 'fulib', 'scenarios', 'webapp', 'website' ]
+
+	license {
+		shortName = 'BSD 3-Clause'
+		longName = 'BSD 3-Clause "New" or "Revised" License'
+		url = 'https://opensource.org/licenses/BSD-3-Clause'
+	}
+
+	developer {
+		id = 'clashsoft'
+		name = 'Adrian Kunz'
+		email = 'clashsoft@hotmail.com'
+	}
+
+	developer {
+		id = 'azuendorf'
+		name = 'Albert Zündorf'
+		email = 'zuendorf@uni-kassel.de'
+	}
+}
 
 sourceCompatibility = 1.8
 
