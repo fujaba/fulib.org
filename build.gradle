@@ -10,7 +10,7 @@ plugins {
 mainClassName = 'org.fulib.scenarios.WebService'
 
 group = 'org.fulib'
-version = '0.2.1'
+version = '0.2.2'
 description = 'The fulib.org website and Fulib Scenarios Web App'
 
 publishInfo {
@@ -61,12 +61,4 @@ dependencies {
 
 	// compile instead of testCompile because the web service uses it
 	compile group: 'junit', name: 'junit', version: '4.12'
-}
-
-// --------------- Jars ---------------
-
-tasks.withType(Jar) {
-	manifest {
-		attributes 'Main-Class': 'org.fulib.scenarios.WebService'
-	}
 }

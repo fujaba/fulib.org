@@ -11,3 +11,7 @@
 # fulib.org v0.2.1
 
 * Exceptions are now properly logged.
+
+# fulib.org v0.2.1
+
+* Fixed incorrect static files location.
