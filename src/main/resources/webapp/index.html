@@ -23,13 +23,17 @@
 		<p>
 			Load Example: <select id="exampleSelect" onchange="selectExample(this.value)">
 			<option value="">-</option>
-		</select>
+		</select> &mdash;
+			<button onclick="downloadProjectZip()">Download Gradle Project</button>
 		</p>
 		<p>
 			<textarea class="form-control" id="scenarioInput"></textarea>
 		</p>
 		<p>
-			<a href="#" onclick="submit()">Press <kbd>Ctrl-Enter</kbd> to compile and run</a>. </p>
+			Press <kbd>Ctrl-Enter</kbd> to
+			<button onclick="submit()">compile and run</button>
+			.
+		</p>
 	</div>
 
 	<div class="col-md-12 col-lg-6">

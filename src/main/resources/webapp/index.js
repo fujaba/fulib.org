@@ -233,6 +233,31 @@ function selectExample(value) {
 	request.send();
 }
 
+function downloadProjectZip() {
+	const text = scenarioInputCodeMirror.getValue();
+	const body = JSON.stringify({
+		scenarioText: text,
+	});
+	const request = new XMLHttpRequest();
+
+	request.open('POST', apiUrl + '/projectzip', true);
+	request.setRequestHeader('Content-Type', 'application/json');
+	request.responseType = 'blob';
+	request.addEventListener('load', function() {
+		if (request.status === 200) {
+			const blob = request.response;
+			const link = document.createElement('a');
+
+			link.href = window.URL.createObjectURL(blob);
+			link.download = 'project.zip';
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+		}
+	});
+	request.send(body);
+}
+
 // --------------- Helpers ---------------
 
 function api(method, url, body, handler) {
