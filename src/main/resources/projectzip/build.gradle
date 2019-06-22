@@ -1,0 +1,25 @@
+plugins {
+	id 'java'
+	id 'org.fulib.fulibGradle' version '0.1.0'
+}
+
+group 'webapp'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+	jcenter()
+
+	maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
+}
+
+dependencies {
+	fulibScenarios group: 'org.fulib', name: 'fulibScenarios', version: '0.3.2'
+
+	compile group: 'org.fulib', name: 'fulib', version: '1.0.+'
+
+	// https://mvnrepository.com/artifact/junit/junit
+	testCompile group: 'junit', name: 'junit', version: '4.12'
+}
