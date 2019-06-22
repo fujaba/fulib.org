@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
+import spark.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -16,8 +17,6 @@ import java.util.Base64;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static spark.Spark.*;
-
 public class WebService
 {
 	private static final String TEMP_DIR_PREFIX    = "fulibScenarios";
@@ -26,15 +25,17 @@ public class WebService
 
 	public static void main(String[] args)
 	{
-		port(4567);
-		staticFiles.location("webapp");
+		final Service service = Service.ignite();
 
-		get("/github", (req, res) -> {
+		service.port(4567);
+		service.staticFiles.location("webapp");
+
+		service.get("/github", (req, res) -> {
 			res.redirect("https://github.com/fujaba/fulib");
 			return res;
 		});
 
-		post("/runcodegen", WebService::runCodeGen);
+		service.post("/runcodegen", WebService::runCodeGen);
 
 		Logger.getGlobal().info("scenario server started ... ");
 
