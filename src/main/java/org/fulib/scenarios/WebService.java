@@ -29,7 +29,7 @@ public class WebService
 
 		service.port(4567);
 
-		service.staticFiles.location("webapp");
+		service.staticFiles.location("/webapp");
 		service.redirect.get("/github", "https://github.com/fujaba/fulib.org");
 
 		service.post("/runcodegen", WebService::runCodeGen);
