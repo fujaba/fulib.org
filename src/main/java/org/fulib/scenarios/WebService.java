@@ -27,7 +27,7 @@ public class WebService
 	public static void main(String[] args)
 	{
 		port(4567);
-		staticFiles.externalLocation("webapp");
+		staticFiles.location("webapp");
 
 		get("/github", (req, res) -> {
 			res.redirect("https://github.com/fujaba/fulib");
