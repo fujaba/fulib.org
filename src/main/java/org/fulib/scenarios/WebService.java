@@ -68,7 +68,7 @@ public class WebService
 
 			// invoke scenario compiler
 			final int exitCode = Tools.genCompileRun(out, out, srcDir, modelSrcDir, testSrcDir, modelClassesDir,
-																  testClassesDir, "--class-diagram-svg", "--object-diagram-svg");
+			                                         testClassesDir, "--class-diagram-svg", "--object-diagram-svg");
 
 			final JSONObject result = new JSONObject();
 
@@ -125,7 +125,8 @@ public class WebService
 
 		Files.walk(srcPackage).filter(file -> {
 			final String fileName = file.toString();
-			return fileName.endsWith(".svg") || fileName.endsWith(".yaml") || fileName.endsWith(".png");
+			return fileName.endsWith(".svg") || fileName.endsWith(".png") //
+			       || fileName.endsWith(".yaml") || fileName.endsWith(".html");
 		}).sorted(Comparator.comparingInt(path -> {
 			final Integer cached = diagramOccurrenceMap.get(path);
 			if (cached != null)
@@ -179,6 +180,7 @@ public class WebService
 			break;
 		case ".yaml":
 		case ".svg":
+		case ".html":
 			object.put("content", new String(content, StandardCharsets.UTF_8));
 			break;
 		}
