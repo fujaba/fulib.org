@@ -14,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class WebService
@@ -33,9 +34,11 @@ public class WebService
 
 		service.post("/runcodegen", WebService::runCodeGen);
 
-		Logger.getGlobal().info("scenario server started ... ");
+		service.exception(Exception.class, (exception, request, response) -> {
+			Logger.getGlobal().log(Level.SEVERE, "unhandled exception processing request", exception);
+		});
 
-		// http://localhost:4567
+		Logger.getGlobal().info("scenario server started on http://localhost:4567");
 	}
 
 	private static String runCodeGen(Request req, Response res) throws Exception
