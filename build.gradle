@@ -1,10 +1,13 @@
 plugins {
 	id 'java'
+	id 'application'
 	id 'maven-publish'
 	id 'com.jfrog.bintray' version '1.8.4'
 	id 'de.clashsoft.simple-publish' version '0.3.0'
 	id 'com.github.johnrengelman.shadow' version '4.0.4'
 }
+
+mainClassName = 'org.fulib.scenarios.WebService'
 
 group = 'org.fulib'
 version = '0.2.1'
