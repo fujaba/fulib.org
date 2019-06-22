@@ -28,12 +28,9 @@ public class WebService
 		final Service service = Service.ignite();
 
 		service.port(4567);
-		service.staticFiles.location("webapp");
 
-		service.get("/github", (req, res) -> {
-			res.redirect("https://github.com/fujaba/fulib");
-			return res;
-		});
+		service.staticFiles.location("webapp");
+		service.redirect.get("/github", "https://github.com/fujaba/fulib.org");
 
 		service.post("/runcodegen", WebService::runCodeGen);
 
