@@ -1,5 +1,6 @@
 package org.fulib.scenarios;
 
+import org.fulib.scenarios.tool.ProjectZip;
 import org.fulib.scenarios.tool.RunCodeGen;
 import spark.Service;
 
@@ -18,6 +19,7 @@ public class WebService
 		service.redirect.get("/github", "https://github.com/fujaba/fulib.org");
 
 		service.post("/runcodegen", RunCodeGen::handle);
+		service.post("/projectzip", ProjectZip::handle);
 
 		service.exception(Exception.class, (exception, request, response) -> {
 			Logger.getGlobal().log(Level.SEVERE, "unhandled exception processing request", exception);
