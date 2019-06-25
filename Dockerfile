@@ -8,7 +8,5 @@ FROM openjdk
 RUN mkdir /scenarios
 WORKDIR /scenarios
 COPY --from=builder /scenarios/build/libs .
-RUN mkdir webapp
-COPY webapp webapp
 EXPOSE 4567
-CMD ["java", "-jar", "fulib.org-0.1.0.jar"]
+CMD ["java", "-jar", "fulibDotOrg-0.2.2.jar"]
