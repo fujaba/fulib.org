@@ -9,9 +9,7 @@
 hs_err_pid*
 
 *.iml
-src/test/scenarios/**/*.png
-src/test/scenarios/**/*.svg
-src/test/scenarios/**/*.yaml
-webapp/examples/**/*.png
-webapp/examples/**/*.svg
-webapp/examples/**/*.yaml
+src/main/resources/webapp/examples/**/*.png
+src/main/resources/webapp/examples/**/*.svg
+src/main/resources/webapp/examples/**/*.yaml
+src/main/resources/webapp/examples/**/*.html

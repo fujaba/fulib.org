@@ -124,6 +124,11 @@ function displayObjectDiagram(objectDiagram) {
 		const pre = document.createElement('pre');
 		pre.innerText = content;
 		objectDiagrams.appendChild(pre);
+	} else if (name.endsWith('.html')) {
+		const iframe = document.createElement('iframe');
+		iframe.src = 'data:text/html,<strong>Your browser cannot display this mockup!</strong>';
+		iframe.srcdoc = content;
+		objectDiagrams.appendChild(iframe);
 	}
 }
 
