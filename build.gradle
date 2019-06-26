@@ -16,11 +16,11 @@ repositories {
 dependencies {
 	// --------------- Fulib Libraries ---------------
 
-	compile group: 'org.fulib', name: 'fulibScenarios', version: '0.3.2'
+	// compile group: 'org.fulib', name: 'fulibScenarios', version: '0.3.2'
+	compile files('libs/fulibScenarios-0.4.0.jar')
 
 	// --------------- Other Libraries ---------------
-
-	compile 'org.slf4j:slf4j-nop:1.7.25'
+	compile 'org.slf4j:slf4j-nop:1.7.25' 
 
 	compile "com.sparkjava:spark-core:2.8.0"
 
