@@ -70,3 +70,5 @@ wrapper.doLast {
 		into 'src/main/resources/projectzip'
 	}
 }
+
+shadowJar.archiveClassifier = 'all'

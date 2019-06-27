@@ -7,6 +7,6 @@ RUN gradle shadowJar
 FROM openjdk
 RUN mkdir /scenarios
 WORKDIR /scenarios
-COPY --from=builder /scenarios/build/libs .
+COPY --from=builder /scenarios/build/libs/fulibDotOrg-*-all.jar fulibDotOrg-latest-all.jar
 EXPOSE 4567
-CMD ["java", "-jar", "fulibDotOrg-0.2.2.jar"]
+CMD ["java", "-jar", "fulibDotOrg-latest-all.jar"]
