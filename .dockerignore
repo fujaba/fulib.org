@@ -1,0 +1,15 @@
+/.idea/
+/.gradle/
+
+/build/
+/out/
+/temp/
+/data/
+
+hs_err_pid*
+
+*.iml
+src/main/resources/webapp/examples/**/*.png
+src/main/resources/webapp/examples/**/*.svg
+src/main/resources/webapp/examples/**/*.yaml
+src/main/resources/webapp/examples/**/*.html
