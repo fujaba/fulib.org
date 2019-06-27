@@ -39,9 +39,10 @@ public class TestCodeGenService
 		String scenarioText = "" +
 				"# Scenario simple. \n" +
 				"\n" +
-				"There is a Party.\n" +
+				"There is a Party with description \"Big Party\".\n" +
 				"\n" +
-				"![Party](party.yaml)\n" +
+				"![Party](party.svg)\n" +
+				"![Party](party.html)\n" +
 				"";
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("scenarioText", scenarioText);

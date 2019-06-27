@@ -29,6 +29,7 @@ const scenarioInputCodeMirror = CodeMirror.fromTextArea(scenarioInput, {
 	extraKeys: {
 		'Ctrl-Enter': submit,
 		'Cmd-Enter': submit,
+		'Ctrl-S': submit,
 	},
 });
 
@@ -126,6 +127,8 @@ function displayObjectDiagram(objectDiagram) {
 		objectDiagrams.appendChild(pre);
 	} else if (name.endsWith('.html')) {
 		const iframe = document.createElement('iframe');
+		iframe.width = '100%'
+		iframe.height = '500px'
 		iframe.src = 'data:text/html,<strong>Your browser cannot display this mockup!</strong>';
 		iframe.srcdoc = content;
 		objectDiagrams.appendChild(iframe);
