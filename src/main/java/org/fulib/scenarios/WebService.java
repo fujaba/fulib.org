@@ -172,7 +172,7 @@ public class WebService
 		final JSONObject object = new JSONObject();
 		object.put("name", fileName);
 
-		switch (fileName.substring(fileName.indexOf('.')))
+		switch (fileName.substring(fileName.lastIndexOf('.')))
 		{
 		case ".png":
 			final String base64Content = Base64.getEncoder().encodeToString(content);
