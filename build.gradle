@@ -10,7 +10,7 @@ plugins {
 mainClassName = 'org.fulib.scenarios.WebService'
 
 group = 'org.fulib'
-version = '0.2.2'
+version = "git describe --tags".execute().text.find(~/\d\.\d\.\d-\d/)
 description = 'The fulib.org website and Fulib Scenarios Web App'
 
 publishInfo {
