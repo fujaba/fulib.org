@@ -35,17 +35,20 @@ public class ProjectZip
 		{
 			final byte[] buffer = new byte[8192];
 
+			zip.putNextEntry(new ZipEntry("src/main/scenarios/webapp/scenario.md"));
+			zip.write(bodyText.getBytes(StandardCharsets.UTF_8));
+
 			for (final String file : staticFiles)
 			{
 				zip.putNextEntry(new ZipEntry(file));
-				try (InputStream fileInput = ProjectZip.class.getResourceAsStream("/projectzip/" + file))
+				final String resourceName = file.endsWith(".jar") ?
+					                            "/projectzip/" + file + ".zip" :
+					                            "/projectzip/" + file;
+				try (InputStream fileInput = ProjectZip.class.getResourceAsStream(resourceName))
 				{
 					copy(buffer, fileInput, zip);
 				}
 			}
-
-			zip.putNextEntry(new ZipEntry("src/main/scenarios/webapp/scenario.md"));
-			zip.write(bodyText.getBytes(StandardCharsets.UTF_8));
 		}
 
 		return response.raw();
