@@ -39,6 +39,8 @@ publishInfo {
 	}
 }
 
+def fulibScenariosVersion = '0.3.2'
+
 sourceCompatibility = 1.8
 
 repositories {
@@ -49,7 +51,7 @@ repositories {
 dependencies {
 	// --------------- Fulib Libraries ---------------
 
-	compile group: 'org.fulib', name: 'fulibScenarios', version: '0.3.2'
+	compile group: 'org.fulib', name: 'fulibScenarios', version: fulibScenariosVersion
 
 	// --------------- Other Libraries ---------------
 
@@ -72,3 +74,13 @@ wrapper.doLast {
 }
 
 shadowJar.archiveClassifier = 'all'
+
+processResources {
+	filesMatching('**/index.html') {
+		filter {
+			it = it.replace('$$version$$', project.version.toString())
+			it = it.replace('$$fulibScenariosVersion$$', fulibScenariosVersion)
+			it
+		}
+	}
+}
