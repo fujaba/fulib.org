@@ -1,7 +1,11 @@
 # --------------- General Settings ---------------
 
 language: java
-jdk: oraclejdk8
+jdk:
+  - openjdk8
+  - oraclejdk8
+  - openjdk11
+  - oraclejdk11
 services:
   - docker
 
@@ -16,6 +20,7 @@ deploy:
   script: bash travis-deploy.sh
   on:
     branch: master
+    jdk: openjdk8
 
 # --------------- Gradle Cache ---------------
 
