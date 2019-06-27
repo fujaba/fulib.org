@@ -39,11 +39,10 @@ publishInfo {
 	}
 }
 
-def fulibScenariosVersion = '0.3.2'
-
 sourceCompatibility = 1.8
 
 repositories {
+	mavenLocal()
 	mavenCentral()
 	jcenter()
 }
@@ -51,8 +50,7 @@ repositories {
 dependencies {
 	// --------------- Fulib Libraries ---------------
 
-	// compile group: 'org.fulib', name: 'fulibScenarios', version: '0.3.2'
-	compile files('libs/fulibScenarios-0.4.0.jar')
+	compile group: 'org.fulib', name: 'fulibScenarios', version: '+'
 
 	// --------------- Other Libraries ---------------
 	compile 'org.slf4j:slf4j-nop:1.7.25' 
@@ -83,4 +81,10 @@ processResources {
 			it
 		}
 	}
+}
+
+String getFulibScenariosVersion() {
+	configurations.compile.resolvedConfiguration.firstLevelModuleDependencies.findAll {
+		it.moduleName == 'fulibScenarios'
+	}[0].moduleVersion
 }
