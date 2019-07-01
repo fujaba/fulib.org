@@ -103,36 +103,41 @@ function setFailure(number) {
 }
 
 function displayObjectDiagram(objectDiagram) {
-	const name = objectDiagram.name;
-	const content = objectDiagram.content;
-
 	objectDiagrams.appendChild(document.createElement('hr'));
 
 	const headline = document.createElement('h4');
-	headline.innerText = name;
+	headline.innerText = objectDiagram.name;
 	objectDiagrams.appendChild(headline);
+
+	objectDiagrams.appendChild(renderObjectDiagram(objectDiagram))
+}
+
+function renderObjectDiagram(objectDiagram) {
+	const name = objectDiagram.name;
+	const content = objectDiagram.content;
 
 	if (name.endsWith('.png')) {
 		const image = document.createElement('img');
 		image.src = 'data:image/png;base64,' + content;
 		image.alt = name;
-		objectDiagrams.appendChild(image);
+		return image;
 	} else if (name.endsWith('.svg')) {
 		const div = document.createElement('div');
 		div.innerHTML = content;
-		objectDiagrams.appendChild(div);
+		return div;
 	} else if (name.endsWith('.yaml')) {
 		const pre = document.createElement('pre');
 		pre.innerText = content;
-		objectDiagrams.appendChild(pre);
+		return pre;
 	} else if (name.endsWith('.html')) {
 		const iframe = document.createElement('iframe');
-		iframe.width = '100%'
-		iframe.height = '500px'
+		iframe.width = '100%';
+		iframe.height = '500px';
 		iframe.src = 'data:text/html,<strong>Your browser cannot display this mockup!</strong>';
 		iframe.srcdoc = content;
-		objectDiagrams.appendChild(iframe);
+		return iframe;
 	}
+	throw "unknown object diagram type " + name
 }
 
 function displayObjectDiagrams(response) {
