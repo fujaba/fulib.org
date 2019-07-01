@@ -48,6 +48,8 @@ const testRunProgress = document.getElementById('testRunProgress');
 const progressElements = [scenarioCompileProgress, testCompileProgress, modelCompileProgress, testRunProgress];
 
 const objectDiagrams = document.getElementById('objectDiagrams');
+const objectDiagramTab = document.getElementById('objectDiagramTab');
+const objectDiagramTabContent = document.getElementById('objectDiagramTabContent');
 const classDiagram = document.getElementById('classDiagram');
 
 // =============== Variables ===============
@@ -103,13 +105,41 @@ function setFailure(number) {
 }
 
 function displayObjectDiagram(objectDiagram) {
-	objectDiagrams.appendChild(document.createElement('hr'));
+	const name = objectDiagram.name;
+	const id = name.replace(/\W/g, '-');
 
-	const headline = document.createElement('h4');
-	headline.innerText = objectDiagram.name;
-	objectDiagrams.appendChild(headline);
+	// https://getbootstrap.com/docs/4.0/components/navs/#javascript-behavior
 
-	objectDiagrams.appendChild(renderObjectDiagram(objectDiagram))
+	// tab header
+
+	const li = document.createElement('li');
+	li.className = 'nav-item';
+
+	const a = document.createElement('a');
+	a.className = 'nav-link';
+	a.id = 'od-tab-' + id;
+	a.href = '#od-content-' + id;
+	a.innerText = name;
+	a.setAttribute('role', 'tab');
+	a.setAttribute('data-toggle', 'tab');
+	a.setAttribute('aria-controls', 'od-content-' + id);
+	a.setAttribute('aria-selected', 'false');
+
+	li.appendChild(a);
+
+	objectDiagramTab.appendChild(li);
+
+	// tab content
+
+	const div = document.createElement('div');
+	div.classList.add('tab-pane', 'fade');
+	div.id = 'od-content-' + id;
+	div.setAttribute('role', 'tabpanel');
+	div.setAttribute('aria-labelledby', 'od-tab-' + id);
+
+	div.appendChild(renderObjectDiagram(objectDiagram));
+
+	objectDiagramTabContent.appendChild(div);
 }
 
 function renderObjectDiagram(objectDiagram) {
@@ -150,6 +180,12 @@ function displayObjectDiagrams(response) {
 	for (let objectDiagram of response.objectDiagrams) {
 		displayObjectDiagram(objectDiagram);
 	}
+
+	// show the first object diagram
+	// TODO remember the last active tab (name)
+	objectDiagramTab.firstChild.firstChild.classList.add('active');
+	objectDiagramTab.firstChild.firstChild.setAttribute('aria-selected', 'true');
+	objectDiagramTabContent.firstChild.classList.add('show', 'active');
 }
 
 function handleResponse(response) {
@@ -190,6 +226,8 @@ function submit() {
 	}
 
 	removeChildren(objectDiagrams);
+	removeChildren(objectDiagramTab);
+	removeChildren(objectDiagramTabContent);
 	removeChildren(classDiagram);
 
 	javaTestOutputCodeMirror.setValue('// loading...');
