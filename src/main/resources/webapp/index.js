@@ -2,6 +2,13 @@
 
 const apiUrl = '';
 
+const storedScenarioKey = 'fulibScenario';
+
+const defaultScenarioText = ''
+	+ '// start typing your scenario or select an example using the dropdown above.\n\n'
+	+ '# Scenario My First. \n\n'
+	+ 'There is a Car with name Herbie. \n';
+
 const examples = [
 	'Definitions', [
 		'Simple Definitions',
@@ -86,7 +93,60 @@ function init() {
 
 // =============== Functions ===============
 
-// --------------- Event Handlers ---------------
+// --------------- Submit ---------------
+
+function submit() {
+	const text = scenarioInputCodeMirror.getValue();
+
+	if (!selectedExample) {
+		localStorage.setItem(storedScenarioKey, text);
+	}
+
+	removeChildren(objectDiagrams);
+	removeChildren(objectDiagramTab);
+	removeChildren(objectDiagramTabContent);
+	removeChildren(classDiagram);
+
+	javaTestOutputCodeMirror.setValue('// loading...');
+	objectDiagrams.innerText = 'loading...';
+	classDiagram.innerText = 'loading...';
+
+	const requestBody = {
+		scenarioText: text,
+	};
+
+	api('POST', apiUrl + '/runcodegen', requestBody, handleResponse);
+}
+
+function handleResponse(response) {
+	console.log(response.output);
+	console.log('exit code: ' + response.exitCode);
+
+	let javaCode = '';
+	if (response.exitCode !== 0) {
+		javaCode += response.output.split('\n').map(function(line) {
+			return '// ' + line;
+		}).join('\n') + '\n';
+		setFailure(response.exitCode & 3);
+	} else {
+		setFailure(progressElements.length);
+	}
+
+	if (response.testMethods) {
+		for (testMethod of response.testMethods) {
+			javaCode += '// ' + testMethod.name + '\n';
+			javaCode += testMethod.body;
+		}
+	}
+	javaTestOutputCodeMirror.setValue(javaCode);
+
+	removeChildren(classDiagram);
+	classDiagram.innerHTML = response.classDiagram;
+
+	displayObjectDiagrams(response);
+
+	// TODO display errors
+}
 
 function setFailure(number) {
 	// number indicates the component that failed
@@ -102,6 +162,24 @@ function setFailure(number) {
 		progressElements[i].classList.remove('bg-success');
 		progressElements[i].classList.add('bg-danger');
 	}
+}
+
+function displayObjectDiagrams(response) {
+	removeChildren(objectDiagrams);
+
+	if (!response.objectDiagrams) {
+		return;
+	}
+
+	for (let objectDiagram of response.objectDiagrams) {
+		displayObjectDiagram(objectDiagram);
+	}
+
+	// show the first object diagram
+	// TODO remember the last active tab (name)
+	objectDiagramTab.firstChild.firstChild.classList.add('active');
+	objectDiagramTab.firstChild.firstChild.setAttribute('aria-selected', 'true');
+	objectDiagramTabContent.firstChild.classList.add('show', 'active');
 }
 
 function displayObjectDiagram(objectDiagram) {
@@ -167,95 +245,18 @@ function renderObjectDiagram(objectDiagram) {
 		iframe.srcdoc = content;
 		return iframe;
 	}
-	throw "unknown object diagram type " + name
+	throw 'unknown object diagram type ' + name;
 }
 
-function displayObjectDiagrams(response) {
-	removeChildren(objectDiagrams);
-
-	if (!response.objectDiagrams) {
-		return;
-	}
-
-	for (let objectDiagram of response.objectDiagrams) {
-		displayObjectDiagram(objectDiagram);
-	}
-
-	// show the first object diagram
-	// TODO remember the last active tab (name)
-	objectDiagramTab.firstChild.firstChild.classList.add('active');
-	objectDiagramTab.firstChild.firstChild.setAttribute('aria-selected', 'true');
-	objectDiagramTabContent.firstChild.classList.add('show', 'active');
-}
-
-function handleResponse(response) {
-	console.log(response.output);
-	console.log('exit code: ' + response.exitCode);
-
-	let javaCode = '';
-	if (response.exitCode !== 0) {
-		javaCode += response.output.split('\n').map(function(line) {
-			return '// ' + line;
-		}).join('\n') + '\n';
-		setFailure(response.exitCode & 3);
-	} else {
-		setFailure(progressElements.length);
-	}
-
-	if (response.testMethods) {
-		for (testMethod of response.testMethods) {
-			javaCode += '// ' + testMethod.name + '\n';
-			javaCode += testMethod.body;
-		}
-	}
-	javaTestOutputCodeMirror.setValue(javaCode);
-
-	removeChildren(classDiagram);
-	classDiagram.innerHTML = response.classDiagram;
-
-	displayObjectDiagrams(response);
-
-	// TODO display errors
-}
-
-function submit() {
-	const text = scenarioInputCodeMirror.getValue();
-
-	if (!selectedExample) {
-		localStorage.setItem('fulibScenario', text);
-	}
-
-	removeChildren(objectDiagrams);
-	removeChildren(objectDiagramTab);
-	removeChildren(objectDiagramTabContent);
-	removeChildren(classDiagram);
-
-	javaTestOutputCodeMirror.setValue('// loading...');
-	objectDiagrams.innerText = 'loading...';
-	classDiagram.innerText = 'loading...';
-
-	const requestBody = {
-		scenarioText: text,
-	};
-
-	api('POST', apiUrl + '/runcodegen', requestBody, handleResponse);
-}
+// --------------- Examples ---------------
 
 function selectExample(value) {
 	selectedExample = value;
 
 	if (!value) {
-		const oldValue = localStorage.getItem('fulibScenario');
-
-		if (oldValue) {
-			scenarioInputCodeMirror.setValue(oldValue);
-			submit();
-		} else {
-			scenarioInputCodeMirror.setValue(''
-				+ '// start typing your scenario or select an example using the dropdown above.\n\n'
-				+ '# Scenario My First. \n\n'
-				+ 'There is a Car with name Herbie. \n');
-		}
+		const storedScenarioText = localStorage.getItem(storedScenarioKey) || defaultScenarioText;
+		scenarioInputCodeMirror.setValue(storedScenarioText);
+		submit();
 		return;
 	}
 
@@ -278,6 +279,8 @@ function selectExample(value) {
 	request.open('GET', url, true);
 	request.send();
 }
+
+// --------------- Download Zip ---------------
 
 function downloadProjectZip() {
 	const text = scenarioInputCodeMirror.getValue();
