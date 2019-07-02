@@ -3,6 +3,7 @@
 const apiUrl = '';
 
 const storedScenarioKey = 'fulibScenario';
+const selectedExampleKey = 'selectedExample';
 
 const defaultScenarioText = ''
 	+ '// start typing your scenario or select an example using the dropdown above.\n\n'
@@ -59,10 +60,6 @@ const objectDiagramTab = document.getElementById('objectDiagramTab');
 const objectDiagramTabContent = document.getElementById('objectDiagramTabContent');
 const classDiagram = document.getElementById('classDiagram');
 
-// =============== Variables ===============
-
-let selectedExample = '';
-
 // =============== Initialization ===============
 
 init();
@@ -88,7 +85,7 @@ function init() {
 		exampleSelect.appendChild(optgroup);
 	}
 
-	selectExample('');
+	loadStoredExample();
 }
 
 // =============== Functions ===============
@@ -98,7 +95,7 @@ function init() {
 function submit() {
 	const text = scenarioInputCodeMirror.getValue();
 
-	if (!selectedExample) {
+	if (!localStorage.getItem(selectedExampleKey)) {
 		localStorage.setItem(storedScenarioKey, text);
 	}
 
@@ -250,9 +247,18 @@ function renderObjectDiagram(objectDiagram) {
 
 // --------------- Examples ---------------
 
-function selectExample(value) {
-	selectedExample = value;
+function loadStoredExample() {
+	const selectedExample = localStorage.getItem(selectedExampleKey);
+	exampleSelect.value = selectedExample;
+	displayExample(selectedExample);
+}
 
+function selectExample(value) {
+	localStorage.setItem(selectedExampleKey, value);
+	displayExample(value);
+}
+
+function displayExample(value) {
 	if (!value) {
 		const storedScenarioText = localStorage.getItem(storedScenarioKey) || defaultScenarioText;
 		scenarioInputCodeMirror.setValue(storedScenarioText);
