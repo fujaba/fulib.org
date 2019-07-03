@@ -32,4 +32,8 @@
 
 # fulib.org v0.3.1
 
-* Downloaded project zip archives now use Fulib Scenarios v0.5.0.
+* Downloaded projects now use Fulib Scenarios v0.5.0.
+
+# fulib.org v0.3.2
+
+* Downloaded projects now use the maven local repository.
