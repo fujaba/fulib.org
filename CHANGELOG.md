@@ -15,3 +15,17 @@
 # fulib.org v0.2.1
 
 * Fixed incorrect static files location.
+
+# fulib.org v0.3.0
+
+### Frontend
+
++ Added the `Download Gradle Project` button. #19
++ Added Web App and Fulib Scenarios version info and GitHub links. #20
+* Object Diagrams are now shown as tabs instead of a long list. #23
+* The selected example is now persisted across sessions. #24
+
+### Backend
+
++ Added the `/projectzip` API route. #19
+* Updated to Fulib Scenarios v0.5.0.
