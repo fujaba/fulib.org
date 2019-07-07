@@ -45,12 +45,15 @@ repositories {
 	mavenLocal()
 	mavenCentral()
 	jcenter()
+	maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
 }
 
 dependencies {
 	// --------------- Fulib Libraries ---------------
 
 	compile group: 'org.fulib', name: 'fulibScenarios', version: '[0.5.0,)'
+
+	compile group: 'org.fulib', name: 'fulibMockups', version: '[0.1.0,)'
 
 	// --------------- Other Libraries ---------------
 	compile 'org.slf4j:slf4j-nop:1.7.25'
@@ -82,14 +85,17 @@ processResources {
 	filesMatching([ 'webapp/index.html', 'projectzip/build.gradle' ]) {
 		filter {
 			it = it.replace('$$version$$', project.version.toString())
-			it = it.replace('$$fulibScenariosVersion$$', fulibScenariosVersion)
+			it = it.replace('$$fulibScenariosVersion$$', getDependencyVersion(configurations.compile, 'org.fulib',
+					'fulibScenarios'))
+			it = it.replace('$$fulibMockupsVersion$$', getDependencyVersion(configurations.compile, 'org.fulib',
+					'fulibMockups'))
 			it
 		}
 	}
 }
 
-String getFulibScenariosVersion() {
-	configurations.compile.resolvedConfiguration.firstLevelModuleDependencies.findAll {
-		it.moduleName == 'fulibScenarios'
+String getDependencyVersion(Configuration config, String group, String name) {
+	config.resolvedConfiguration.firstLevelModuleDependencies.findAll {
+		it.moduleName == name && it.moduleGroup == group
 	}[0].moduleVersion
 }
