@@ -37,3 +37,9 @@
 # fulib.org v0.3.2
 
 * Downloaded projects now use the maven local repository.
+
+# fulib.org v0.3.3
+
+* Downloaded projects now use Fulib Mockups v0.1.0.
+* Downloaded projects now use Fulib Gradle v0.1.1.
+* Downloaded projects now use Gradle v5.5.1.
