@@ -108,7 +108,8 @@ public class RunCodeGen
 		Files.walk(srcPackage).filter(file -> {
 			final String fileName = file.toString();
 			return fileName.endsWith(".svg") || fileName.endsWith(".png") //
-			       || fileName.endsWith(".yaml") || fileName.endsWith(".html");
+			       || fileName.endsWith(".yaml") || fileName.endsWith(".html")
+					 || fileName.endsWith(".txt");
 		}).sorted(Comparator.comparingInt(path -> {
 			final Integer cached = diagramOccurrenceMap.get(path);
 			if (cached != null)
@@ -163,6 +164,7 @@ public class RunCodeGen
 		case ".yaml":
 		case ".svg":
 		case ".html":
+		case ".txt":
 			object.put("content", new String(content, StandardCharsets.UTF_8));
 			break;
 		}
