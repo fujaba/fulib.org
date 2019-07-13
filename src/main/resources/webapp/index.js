@@ -230,7 +230,7 @@ function renderObjectDiagram(objectDiagram) {
 		const div = document.createElement('div');
 		div.innerHTML = content;
 		return div;
-	} else if (name.endsWith('.yaml')) {
+	} else if (name.endsWith('.yaml') || name.endsWith('.txt')) {
 		const pre = document.createElement('pre');
 		pre.innerText = content;
 		return pre;
