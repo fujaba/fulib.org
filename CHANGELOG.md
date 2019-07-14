@@ -43,3 +43,10 @@
 * Downloaded projects now use Fulib Mockups v0.1.0.
 * Downloaded projects now use Fulib Gradle v0.1.1.
 * Downloaded projects now use Gradle v5.5.1.
+
+# fulib.org v0.4.0
+
++ The Java Code now also shows model methods. #26
+* Updated to Fulib Scenarios v0.6.0.
++ Added support for `.txt` diagarm format.
+* Internal stack trace lines in console output are now folded.
