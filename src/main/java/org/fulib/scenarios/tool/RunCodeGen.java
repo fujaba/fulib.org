@@ -1,5 +1,6 @@
 package org.fulib.scenarios.tool;
 
+import org.fulib.StrUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -213,5 +214,34 @@ public class RunCodeGen
 				methodBody.append(line, 6, line.length()).append("\n");
 			}
 		}
+	}
+
+	static final Set<String> DEFAULT_METHODS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
+		"firePropertyChange", "addPropertyChangeListener", "removePropertyChangeListener", "removeYou", "toString")));
+
+	// must be sorted by longest first
+	static final String[] DEFAULT_PROPERTY_METHODS = { "without", "with", "get", "set" };
+
+	static boolean shouldSkip(String decl, Set<String> properties)
+	{
+		final int end = decl.indexOf('(');
+		final int start = decl.lastIndexOf(' ', end) + 1;
+		final String methodName = decl.substring(start, end);
+
+		if (DEFAULT_METHODS.contains(methodName))
+		{
+			return true;
+		}
+
+		for (final String propertyMethod : DEFAULT_PROPERTY_METHODS)
+		{
+			if (methodName.startsWith(propertyMethod))
+			{
+				final String propertyName = StrUtil.downFirstChar(methodName.substring(propertyMethod.length()));
+				return properties.contains(propertyName);
+			}
+		}
+
+		return false;
 	}
 }
