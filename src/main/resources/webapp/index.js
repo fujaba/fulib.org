@@ -187,7 +187,10 @@ function displayObjectDiagrams(response) {
 	}
 
 	for (let objectDiagram of response.objectDiagrams) {
-		displayObjectDiagram(objectDiagram);
+		const name = objectDiagram.name;
+		const id = 'od-' + name.replace(/\W/g, '-');
+
+		addTab(objectDiagramTab, objectDiagramTabContent, id, name, renderObjectDiagram(objectDiagram));
 	}
 
 	// show the first object diagram
@@ -195,44 +198,6 @@ function displayObjectDiagrams(response) {
 	objectDiagramTab.firstChild.firstChild.classList.add('active');
 	objectDiagramTab.firstChild.firstChild.setAttribute('aria-selected', 'true');
 	objectDiagramTabContent.firstChild.classList.add('show', 'active');
-}
-
-function displayObjectDiagram(objectDiagram) {
-	const name = objectDiagram.name;
-	const id = name.replace(/\W/g, '-');
-
-	// https://getbootstrap.com/docs/4.0/components/navs/#javascript-behavior
-
-	// tab header
-
-	const li = document.createElement('li');
-	li.className = 'nav-item';
-
-	const a = document.createElement('a');
-	a.className = 'nav-link';
-	a.id = 'od-tab-' + id;
-	a.href = '#od-content-' + id;
-	a.innerText = name;
-	a.setAttribute('role', 'tab');
-	a.setAttribute('data-toggle', 'tab');
-	a.setAttribute('aria-controls', 'od-content-' + id);
-	a.setAttribute('aria-selected', 'false');
-
-	li.appendChild(a);
-
-	objectDiagramTab.appendChild(li);
-
-	// tab content
-
-	const div = document.createElement('div');
-	div.classList.add('tab-pane', 'fade');
-	div.id = 'od-content-' + id;
-	div.setAttribute('role', 'tabpanel');
-	div.setAttribute('aria-labelledby', 'od-tab-' + id);
-
-	div.appendChild(renderObjectDiagram(objectDiagram));
-
-	objectDiagramTabContent.appendChild(div);
 }
 
 function renderObjectDiagram(objectDiagram) {
@@ -350,4 +315,39 @@ function removeChildren(element) {
 	while (element.firstChild) {
 		element.firstChild.remove();
 	}
+}
+
+function addTab(tabHolder, contentHolder, id, header, content) {
+	// https://getbootstrap.com/docs/4.0/components/navs/#javascript-behavior
+
+	// tab header
+
+	const li = document.createElement('li');
+	li.className = 'nav-item';
+
+	const a = document.createElement('a');
+	a.className = 'nav-link';
+	a.id = 'tab-' + id;
+	a.href = '#content-' + id;
+	a.innerText = header;
+	a.setAttribute('role', 'tab');
+	a.setAttribute('data-toggle', 'tab');
+	a.setAttribute('aria-controls', 'content-' + id);
+	a.setAttribute('aria-selected', 'false');
+
+	li.appendChild(a);
+
+	tabHolder.appendChild(li);
+
+	// tab content
+
+	const div = document.createElement('div');
+	div.classList.add('tab-pane', 'fade');
+	div.id = 'content-' + id;
+	div.setAttribute('role', 'tabpanel');
+	div.setAttribute('aria-labelledby', 'tab-' + id);
+
+	div.appendChild(content);
+
+	contentHolder.appendChild(div);
 }
