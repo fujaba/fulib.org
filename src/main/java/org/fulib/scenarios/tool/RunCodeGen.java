@@ -70,7 +70,10 @@ public class RunCodeGen
 				// collect test methods
 				final JSONArray methodArray = new JSONArray();
 
-				Files.walk(testSrcDir).filter(Tools::isJava).forEach(file -> readTestMethod(methodArray, file));
+				Files.walk(testSrcDir).filter(Tools::isJava).forEach(file -> readTestMethods(methodArray, file));
+
+				Files.walk(modelSrcDir).filter(Tools::isJava).sorted()
+				     .forEach(file -> readModelMethods(methodArray, file));
 
 				result.put("testMethods", methodArray);
 
@@ -109,8 +112,7 @@ public class RunCodeGen
 		Files.walk(srcPackage).filter(file -> {
 			final String fileName = file.toString();
 			return fileName.endsWith(".svg") || fileName.endsWith(".png") //
-			       || fileName.endsWith(".yaml") || fileName.endsWith(".html")
-					 || fileName.endsWith(".txt");
+			       || fileName.endsWith(".yaml") || fileName.endsWith(".html") || fileName.endsWith(".txt");
 		}).sorted(Comparator.comparingInt(path -> {
 			final Integer cached = diagramOccurrenceMap.get(path);
 			if (cached != null)
@@ -173,11 +175,11 @@ public class RunCodeGen
 		objectDiagrams.put(object);
 	}
 
-	private static void readTestMethod(JSONArray methodArray, Path file)
+	private static void readTestMethods(JSONArray methodArray, Path file)
 	{
 		try
 		{
-			tryReadTestMethod(methodArray, file);
+			tryReadTestMethods(methodArray, file);
 		}
 		catch (Exception e)
 		{
@@ -185,19 +187,52 @@ public class RunCodeGen
 		}
 	}
 
-	private static void tryReadTestMethod(JSONArray methodArray, Path file) throws IOException, JSONException
+	private static void tryReadTestMethods(JSONArray methodArray, Path file) throws IOException, JSONException
 	{
+		tryReadMethods(methodArray, file, false);
+	}
+
+	private static void readModelMethods(JSONArray methodArray, Path file)
+	{
+		try
+		{
+			tryReadModelMethod(methodArray, file);
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
+	private static void tryReadModelMethod(JSONArray methodArray, Path file) throws IOException, JSONException
+	{
+		tryReadMethods(methodArray, file, true);
+	}
+
+	private static void tryReadMethods(JSONArray methodArray, Path file, boolean modelFilter)
+		throws IOException, JSONException
+	{
+		final Set<String> properties = modelFilter ? new HashSet<>() : null;
 		final List<String> lines = Files.readAllLines(file);
 		String methodName = null;
 		StringBuilder methodBody = null;
 
 		for (String line : lines)
 		{
-			final int end;
-			if (line.startsWith("   public ") && (end = line.indexOf(')')) >= 0)
+			int end;
+			if (modelFilter && line.startsWith("   public static final String PROPERTY_")
+			    && (end = line.lastIndexOf(" = ")) >= 0)
 			{
-				methodName = line.substring("   public ".length(), end + 1);
-				methodBody = new StringBuilder();
+				properties.add(line.substring("   public static final String PROPERTY_".length(), end));
+			}
+			if (line.startsWith("   public ") && (end = line.lastIndexOf(')')) >= 0 && line.lastIndexOf('=') <= 0)
+			{
+				final String decl = line.substring("   public ".length(), end + 1);
+				if (!modelFilter || !shouldSkip(decl, properties))
+				{
+					methodName = decl;
+					methodBody = new StringBuilder();
+				}
 			}
 			else if (methodName != null && "   }".equals(line))
 			{
