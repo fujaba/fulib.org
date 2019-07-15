@@ -169,6 +169,8 @@
 		v$$fulibMockupsVersion$$
 	</p>
 	<p>
+		<a href="#" data-toggle="modal" data-target="#feedbackModal">Leave Feedback</a>
+		&mdash;
 		<a href="http://www.uni-kassel.de/uni/impressum.html">Imprint</a>
 		&mdash;
 		<a href="https://www.uni-kassel.de/uni/footer-2/datenschutz/">Privacy Policy</a>
@@ -178,6 +180,65 @@
 </div>
 
 </footer>
+
+<div class="modal fade"
+     id="feedbackModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="feedbackModalLabel"
+     aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="feedbackModalLabel">Leave Feedback</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p>
+					Please select the relevant option below.
+					You will be redirected to a page with further instructions.
+				</p>
+				<p>
+					I want to leave feedback regarding...
+				</p>
+				<p>
+					<a role="button" class="btn btn-outline-secondary btn-block"
+					   href="https://github.com/fujaba/fulibScenarios/issues/new/choose">
+						The scenario or Java code (Fulib Scenarios)
+					</a>
+					<a role="button" class="btn btn-outline-secondary btn-block"
+					   href="https://github.com/fujaba/fulibMockups/issues/new/choose">
+						The HTML mockups (Fulib Mockups)
+					</a>
+					<a role="button" class="btn btn-outline-secondary btn-block"
+					   href="https://github.com/fujaba/fulibTools/issues/new/choose">
+						The object and class diagrams (Fulib Tools)
+					</a>
+					<a role="button" class="btn btn-outline-secondary btn-block"
+					   href="https://github.com/fujaba/fulib/issues/new/choose">
+						The generated model classes (Fulib)
+					</a>
+					<a role="button" class="btn btn-outline-secondary btn-block"
+					   href="https://github.com/fujaba/fulibGradle/issues/new/choose">
+						The Gradle plugin (Fulib Gradle)
+					</a>
+					<a role="button" class="btn btn-outline-secondary btn-block"
+					   href="https://github.com/fujaba/fulib.org/issues/new/choose">
+						This Website itself (fulib.org)
+					</a>
+				</p>
+				<div class="text-center">
+					<script>
+						const s = '<a href="mailto:spam@fbi.gov">I am not sure / I want to send an E-Mail instead</a>';
+						document.write(s.replace('spam', 'contact').replace('fbi.gov', 'fulib.org'));
+					</script>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 
 <!-- Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
