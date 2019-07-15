@@ -32,6 +32,50 @@
 	</div>
 </noscript>
 
+<div id="privacy-banner" class="alert alert-info alert-dismissible collapse" role="alert">
+	<h4 class="alert-heading">We value your privacy!</h4>
+
+	<p>
+		This website uses cookies and other data storage technology locally to make your experience more pleasant.
+		Remote data is stored anonymously and used only for scientific and analytic purposes.
+	</p>
+
+	<p>
+		Please select your preferred privacy option below:
+	</p>
+
+	<p>
+		<label>
+			<input id="privacy-all" type="radio" name="privacy" value="all" onclick="setPrivacy(this.value)">
+			I agree to the use of local and remote data storage.
+		</label>
+		<br>
+		<label>
+			<input id="privacy-local" type="radio" name="privacy" value="local" onclick="setPrivacy(this.value)">
+			I agree to the use of local data storage, but not remote.
+		</label>
+		<br>
+		<label>
+			<input id="privacy-nobanner" type="radio" name="privacy" value="nobanner" onclick="setPrivacy(this.value)">
+			I do not agree to the use of local or remote data storage, except to hide this banner in the future.
+		</label>
+		<br>
+		<label>
+			<input id="privacy-none" type="radio" name="privacy" checked onclick="setPrivacy(undefined)">
+			I do not agree to the use of local or remote data storage.
+		</label>
+	</p>
+
+	<p>
+		You can show this banner again and edit your preferences at any time by clicking
+		<b>Edit Privacy Preferences</b> at the bottom of the page.
+	</p>
+
+	<button type="button" class="close" aria-label="Close" onclick="$('#privacy-banner').hide()">
+		<span aria-hidden="true">&times;</span>
+	</button>
+</div>
+
 <div class="row" style="margin: 1rem">
 	<div class="col-md-12 col-lg-6">
 		<h2>Scenario</h2>
@@ -99,18 +143,21 @@
 <hr>
 <div class="row" style="margin: 1rem">
 	<div class="col">
-	<a href="https://github.com/fujaba/fulib.org" title="Web App on GitHub">Web App</a> v$$version$$ &mdash; <a
+		<a href="https://github.com/fujaba/fulib.org" title="Web App on GitHub">Web App</a> v$$version$$ &mdash; <a
 		href="https://github.com/fujaba/fulibScenarios"
 		title="Fulib Scenarios on GitHub">Fulib Scenarios</a> v$$fulibScenariosVersion$$ &mdash;
-	<a href="https://github.com/fujaba/fulibMockups" title="Fulib Mockups on GitHub">Fulib Mockups</a>
-	v$$fulibMockupsVersion$$
+		<a href="https://github.com/fujaba/fulibMockups" title="Fulib Mockups on GitHub">Fulib Mockups</a>
+		                                                                                    v$$fulibMockupsVersion$$
 	</div>
 </div>
 
 <div class="row" style="margin: 1rem">
 	<div class="col">
-		<a href="http://www.uni-kassel.de/uni/impressum.html">impressum</a>  &mdash;
-		<a href="https://www.uni-kassel.de/uni/footer-2/datenschutz/">Datenschutzerklärung</a>
+		<a href="http://www.uni-kassel.de/uni/impressum.html">Imprint</a>
+		&mdash;
+		<a href="https://www.uni-kassel.de/uni/footer-2/datenschutz/">Privacy Policy</a>
+		&mdash;
+		<a href="#" onclick="$('#privacy-banner').show()">Edit Privacy Preferences</a>
 	</div>
 </div>
 

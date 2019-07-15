@@ -2,6 +2,7 @@
 
 const apiUrl = '';
 
+const privacyKey = 'privacy';
 const storedScenarioKey = 'fulibScenario';
 const selectedExampleKey = 'selectedExample';
 
@@ -85,10 +86,44 @@ function init() {
 		exampleSelect.appendChild(optgroup);
 	}
 
+	loadPrivacy();
 	loadStoredExample();
 }
 
 // =============== Functions ===============
+
+// --------------- Privacy ---------------
+
+function loadPrivacy() {
+	let privacy = localStorage.getItem(privacyKey);
+
+	if (!privacy) {
+		privacy = 'none';
+		$('#privacy-banner').show();
+	}
+
+	document.getElementById('privacy-' + privacy).checked = true;
+}
+
+function setPrivacy(value) {
+	if (value) {
+		if (value === 'nobanner') {
+			localStorage.clear();
+		}
+		localStorage.setItem(privacyKey, value);
+	}
+	else {
+		localStorage.removeItem(privacyKey);
+		localStorage.clear();
+	}
+}
+
+function trySetStorage(key, value) {
+	let privacy = localStorage.getItem(privacyKey);
+	if (privacy === 'all' || privacy === 'local') {
+		localStorage.setItem(key, value);
+	}
+}
 
 // --------------- Submit ---------------
 
@@ -96,7 +131,7 @@ function submit() {
 	const text = scenarioInputCodeMirror.getValue();
 
 	if (!localStorage.getItem(selectedExampleKey)) {
-		localStorage.setItem(storedScenarioKey, text);
+		trySetStorage(storedScenarioKey, text);
 	}
 
 	removeChildren(objectDiagrams);
@@ -237,7 +272,7 @@ function loadStoredExample() {
 }
 
 function selectExample(value) {
-	localStorage.setItem(selectedExampleKey, value);
+	trySetStorage(selectedExampleKey, value);
 	displayExample(value);
 }
 
