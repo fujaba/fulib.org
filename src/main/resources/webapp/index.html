@@ -16,7 +16,8 @@
 	<!-- Custom -->
 	<link rel="stylesheet" href="style.css">
 </head>
-<body>
+
+<header>
 
 <noscript>
 	<div class="alert alert-warning" role="alert">
@@ -56,7 +57,11 @@
 		</label>
 		<br>
 		<label>
-			<input id="privacy-nobanner" type="radio" name="privacy" value="nobanner" onclick="setPrivacy(this.value)">
+			<input id="privacy-nobanner"
+			       type="radio"
+			       name="privacy"
+			       value="nobanner"
+			       onclick="setPrivacy(this.value)">
 			I do not agree to the use of local or remote data storage, except to hide this banner in the future.
 		</label>
 		<br>
@@ -75,6 +80,10 @@
 		<span aria-hidden="true">&times;</span>
 	</button>
 </div>
+
+</header>
+
+<body>
 
 <div class="row" style="margin: 1rem">
 	<div class="col-md-12 col-lg-6">
@@ -139,28 +148,31 @@
 	</div>
 </div>
 
+</body>
 
-<hr>
-<div class="row" style="margin: 1rem">
-	<div class="col">
-		<a href="https://github.com/fujaba/fulib.org" title="Web App on GitHub">Web App</a> v$$version$$ &mdash; <a
-		href="https://github.com/fujaba/fulibScenarios"
-		title="Fulib Scenarios on GitHub">Fulib Scenarios</a> v$$fulibScenariosVersion$$ &mdash;
+<footer class="page-footer font-small green">
+
+<div class="navbar fixed-bottom bg-light">
+	<p>
+		<a href="https://github.com/fujaba/fulib.org" title="Web App on GitHub">Web App</a>
+		v$$version$$
+		&mdash;
+		<a href="https://github.com/fujaba/fulibScenarios" title="Fulib Scenarios on GitHub">Fulib Scenarios</a>
+		v$$fulibScenariosVersion$$
+		&mdash;
 		<a href="https://github.com/fujaba/fulibMockups" title="Fulib Mockups on GitHub">Fulib Mockups</a>
-		                                                                                    v$$fulibMockupsVersion$$
-	</div>
-</div>
-
-<div class="row" style="margin: 1rem">
-	<div class="col">
+		v$$fulibMockupsVersion$$
+	</p>
+	<p>
 		<a href="http://www.uni-kassel.de/uni/impressum.html">Imprint</a>
 		&mdash;
 		<a href="https://www.uni-kassel.de/uni/footer-2/datenschutz/">Privacy Policy</a>
 		&mdash;
 		<a href="#" onclick="$('#privacy-banner').show()">Edit Privacy Preferences</a>
-	</div>
+	</p>
 </div>
 
+</footer>
 
 <!-- Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -185,5 +197,4 @@
 <!-- Custom JS -->
 <script type="text/javascript" src="index.js"></script>
 
-</body>
 </html>
