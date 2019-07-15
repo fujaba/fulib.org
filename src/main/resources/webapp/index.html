@@ -89,17 +89,23 @@
 	<div class="col-md-12 col-lg-6">
 		<h2>Scenario</h2>
 		<p>
-			Load Example: <select id="exampleSelect" onchange="selectExample(this.value)">
-			<option value="">-</option>
-		</select> &mdash;
-			<button onclick="downloadProjectZip()">Download Gradle Project</button>
+			Load Example:
+			<select id="exampleSelect" onchange="selectExample(this.value)">
+				<option value="">-</option>
+			</select> &mdash;
+
+			<button type="button" class="btn btn-outline-secondary btn-sm" onclick="downloadProjectZip()">
+				Download Gradle Project
+			</button>
 		</p>
 		<p>
 			<textarea class="form-control" id="scenarioInput"></textarea>
 		</p>
 		<p>
 			Press <kbd>Ctrl-Enter</kbd> or <kbd>Ctrl-S</kbd> to
-			<button onclick="submit()">compile and run</button>
+			<button type="button" class="btn btn-outline-primary btn-sm" onclick="submit()">
+				compile and run
+			</button>
 			.
 		</p>
 	</div>
