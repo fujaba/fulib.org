@@ -39,6 +39,7 @@ const scenarioInputCodeMirror = CodeMirror.fromTextArea(scenarioInput, {
 		'Ctrl-Enter': submit,
 		'Cmd-Enter': submit,
 		'Ctrl-S': submit,
+		'Cmd-S': submit,
 	},
 });
 
@@ -88,6 +89,11 @@ function init() {
 
 	loadPrivacy();
 	loadStoredExample();
+
+	// enable tooltips
+	$(function() {
+		$('[data-toggle="tooltip"]').tooltip()
+	})
 }
 
 // =============== Functions ===============
