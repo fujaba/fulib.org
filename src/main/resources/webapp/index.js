@@ -112,16 +112,19 @@ function loadPrivacy() {
 	document.getElementById('privacy-' + privacy).checked = true;
 }
 
-function setPrivacy(value) {
-	if (value) {
-		if (value === 'nobanner') {
-			localStorage.clear();
-		}
+function savePrivacy() {
+	let value = $('input[name=privacy]:checked').val();
+
+	console.log('setting privacy: ' + value);
+	if (value === 'none') {
+		localStorage.clear();
+	}
+	else if (value === 'nobanner') {
+		localStorage.clear();
 		localStorage.setItem(privacyKey, value);
 	}
 	else {
-		localStorage.removeItem(privacyKey);
-		localStorage.clear();
+		localStorage.setItem(privacyKey, value);
 	}
 }
 

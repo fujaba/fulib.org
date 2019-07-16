@@ -60,30 +60,27 @@
 
 				<div class="form-check">
 					<label class="form-check-label">
-						<input id="privacy-all" class="form-check-input" type="radio" name="privacy" value="all"
-						       onclick="setPrivacy(this.value)">
+						<input id="privacy-all" class="form-check-input" type="radio" name="privacy" value="all">
 						I agree to the use of local and remote data storage.
 					</label>
 				</div>
 				<div class="form-check">
 					<label class="form-check-label">
-						<input id="privacy-local" class="form-check-input" type="radio" name="privacy" value="local"
-						       onclick="setPrivacy(this.value)">
+						<input id="privacy-local" class="form-check-input" type="radio" name="privacy" value="local">
 						I agree to the use of local data storage, but not remote.
 					</label>
 				</div>
 				<div class="form-check">
 					<label class="form-check-label">
 						<input id="privacy-nobanner" class="form-check-input" type="radio" name="privacy"
-						       value="nobanner" onclick="setPrivacy(this.value)">
+						       value="nobanner">
 						I do not agree to the use of local or remote data storage, except to hide this popup in the
 						future.
 					</label>
 				</div>
 				<div class="form-check">
 					<label class="form-check-label">
-						<input id="privacy-none" class="form-check-input" type="radio" name="privacy" checked
-						       onclick="setPrivacy(undefined)">
+						<input id="privacy-none" class="form-check-input" type="radio" name="privacy" value="none">
 						I do not agree to the use of local or remote data storage.
 					</label>
 				</div>
@@ -94,6 +91,11 @@
 					You can show this popup again and edit your preferences at any time by clicking
 					<b>Edit Privacy Preferences</b> at the bottom of the page.
 				</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="savePrivacy()">
+					Save & Close
+				</button>
 			</div>
 		</div>
 	</div>
