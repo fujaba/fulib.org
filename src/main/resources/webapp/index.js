@@ -105,9 +105,10 @@ function loadPrivacy() {
 
 	if (!privacy) {
 		privacy = 'none';
-		$('#privacyModal').show();
+		$('#privacyModal').modal('show');
 	}
 
+	console.log('loaded privacy: ' + privacy);
 	document.getElementById('privacy-' + privacy).checked = true;
 }
 
