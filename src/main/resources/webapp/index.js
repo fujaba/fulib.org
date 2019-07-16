@@ -128,6 +128,10 @@ function savePrivacy() {
 	}
 }
 
+function getPrivacy() {
+	return localStorage.getItem(privacyKey) || 'none';
+}
+
 function trySetStorage(key, value) {
 	let privacy = localStorage.getItem(privacyKey);
 	if (privacy === 'all' || privacy === 'local') {
@@ -154,6 +158,7 @@ function submit() {
 	classDiagram.innerText = 'loading...';
 
 	const requestBody = {
+		privacy: getPrivacy(),
 		scenarioText: text,
 	};
 
@@ -319,6 +324,7 @@ function displayExample(value) {
 function downloadProjectZip() {
 	const text = scenarioInputCodeMirror.getValue();
 	const body = JSON.stringify({
+		privacy: getPrivacy(),
 		scenarioText: text,
 	});
 	const request = new XMLHttpRequest();
