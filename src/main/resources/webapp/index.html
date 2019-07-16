@@ -58,40 +58,37 @@
 					Please select your preferred privacy option below:
 				</p>
 
-				<p>
-					<label>
-						<input id="privacy-all"
-						       type="radio"
-						       name="privacy"
-						       value="all"
+				<div class="form-check">
+					<label class="form-check-label">
+						<input id="privacy-all" class="form-check-input" type="radio" name="privacy" value="all"
 						       onclick="setPrivacy(this.value)">
 						I agree to the use of local and remote data storage.
 					</label>
-					<br>
-					<label>
-						<input id="privacy-local"
-						       type="radio"
-						       name="privacy"
-						       value="local"
+				</div>
+				<div class="form-check">
+					<label class="form-check-label">
+						<input id="privacy-local" class="form-check-input" type="radio" name="privacy" value="local"
 						       onclick="setPrivacy(this.value)">
 						I agree to the use of local data storage, but not remote.
 					</label>
-					<br>
-					<label>
-						<input id="privacy-nobanner"
-						       type="radio"
-						       name="privacy"
-						       value="nobanner"
-						       onclick="setPrivacy(this.value)">
+				</div>
+				<div class="form-check">
+					<label class="form-check-label">
+						<input id="privacy-nobanner" class="form-check-input" type="radio" name="privacy"
+						       value="nobanner" onclick="setPrivacy(this.value)">
 						I do not agree to the use of local or remote data storage, except to hide this popup in the
 						future.
 					</label>
-					<br>
-					<label>
-						<input id="privacy-none" type="radio" name="privacy" checked onclick="setPrivacy(undefined)">
+				</div>
+				<div class="form-check">
+					<label class="form-check-label">
+						<input id="privacy-none" class="form-check-input" type="radio" name="privacy" checked
+						       onclick="setPrivacy(undefined)">
 						I do not agree to the use of local or remote data storage.
 					</label>
-				</p>
+				</div>
+
+				<p></p>
 
 				<p>
 					You can show this popup again and edit your preferences at any time by clicking
