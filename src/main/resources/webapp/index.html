@@ -33,52 +33,73 @@
 	</div>
 </noscript>
 
-<div id="privacy-banner" class="alert alert-info alert-dismissible collapse" role="alert">
-	<h4 class="alert-heading">We value your privacy!</h4>
+<div class="modal fade"
+     id="privacyModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="privacyModalLabel"
+     aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="privacyModalLabel">We value your privacy!</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p>
+					This website uses cookies and other data storage technology locally to make your experience more
+					pleasant.
+					Remote data is stored anonymously and used only for scientific and analytic purposes.
+				</p>
 
-	<p>
-		This website uses cookies and other data storage technology locally to make your experience more pleasant.
-		Remote data is stored anonymously and used only for scientific and analytic purposes.
-	</p>
+				<p>
+					Please select your preferred privacy option below:
+				</p>
 
-	<p>
-		Please select your preferred privacy option below:
-	</p>
+				<p>
+					<label>
+						<input id="privacy-all"
+						       type="radio"
+						       name="privacy"
+						       value="all"
+						       onclick="setPrivacy(this.value)">
+						I agree to the use of local and remote data storage.
+					</label>
+					<br>
+					<label>
+						<input id="privacy-local"
+						       type="radio"
+						       name="privacy"
+						       value="local"
+						       onclick="setPrivacy(this.value)">
+						I agree to the use of local data storage, but not remote.
+					</label>
+					<br>
+					<label>
+						<input id="privacy-nobanner"
+						       type="radio"
+						       name="privacy"
+						       value="nobanner"
+						       onclick="setPrivacy(this.value)">
+						I do not agree to the use of local or remote data storage, except to hide this popup in the
+						future.
+					</label>
+					<br>
+					<label>
+						<input id="privacy-none" type="radio" name="privacy" checked onclick="setPrivacy(undefined)">
+						I do not agree to the use of local or remote data storage.
+					</label>
+				</p>
 
-	<p>
-		<label>
-			<input id="privacy-all" type="radio" name="privacy" value="all" onclick="setPrivacy(this.value)">
-			I agree to the use of local and remote data storage.
-		</label>
-		<br>
-		<label>
-			<input id="privacy-local" type="radio" name="privacy" value="local" onclick="setPrivacy(this.value)">
-			I agree to the use of local data storage, but not remote.
-		</label>
-		<br>
-		<label>
-			<input id="privacy-nobanner"
-			       type="radio"
-			       name="privacy"
-			       value="nobanner"
-			       onclick="setPrivacy(this.value)">
-			I do not agree to the use of local or remote data storage, except to hide this banner in the future.
-		</label>
-		<br>
-		<label>
-			<input id="privacy-none" type="radio" name="privacy" checked onclick="setPrivacy(undefined)">
-			I do not agree to the use of local or remote data storage.
-		</label>
-	</p>
-
-	<p>
-		You can show this banner again and edit your preferences at any time by clicking
-		<b>Edit Privacy Preferences</b> at the bottom of the page.
-	</p>
-
-	<button type="button" class="close" aria-label="Close" onclick="$('#privacy-banner').hide()">
-		<span aria-hidden="true">&times;</span>
-	</button>
+				<p>
+					You can show this popup again and edit your preferences at any time by clicking
+					<b>Edit Privacy Preferences</b> at the bottom of the page.
+				</p>
+			</div>
+		</div>
+	</div>
 </div>
 
 </header>
@@ -175,7 +196,7 @@
 		&mdash;
 		<a href="https://www.uni-kassel.de/uni/footer-2/datenschutz/">Privacy Policy</a>
 		&mdash;
-		<a href="#" onclick="$('#privacy-banner').show()">Edit Privacy Preferences</a>
+		<a href="#" data-toggle="modal" data-target="#privacyModal">Edit Privacy Preferences</a>
 	</p>
 </div>
 
