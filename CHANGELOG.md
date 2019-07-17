@@ -50,3 +50,9 @@
 * Updated to Fulib Scenarios v0.6.0.
 + Added support for `.txt` diagarm format.
 * Internal stack trace lines in console output are now folded.
+
+# fulib.org v0.5.0
+
++ Added a warning banner if JavaScript is disabled. #27
++ Added a privacy preferences popup. #28
++ Added a leave feedback popup. #29
