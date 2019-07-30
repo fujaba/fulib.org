@@ -56,13 +56,18 @@ dependencies {
 	compile group: 'org.fulib', name: 'fulibMockups', version: '[0.1.0,)'
 
 	// --------------- Other Libraries ---------------
-	compile 'org.slf4j:slf4j-nop:1.7.25'
 
-	compile "com.sparkjava:spark-core:2.8.0"
+	// https://mvnrepository.com/artifact/org.slf4j/slf4j-nop
+	compile group: 'org.slf4j', name: 'slf4j-nop', version: '1.7.26'
 
-	compile group: 'org.json', name: 'json', version: '20090211'
+	// https://mvnrepository.com/artifact/com.sparkjava/spark-core
+	compile group: 'com.sparkjava', name: 'spark-core', version: '2.9.1'
+
+	// https://mvnrepository.com/artifact/org.json/json
+	compile group: 'org.json', name: 'json', version: '20180813'
 
 	// compile instead of testCompile because the web service uses it
+	// https://mvnrepository.com/artifact/junit/junit
 	compile group: 'junit', name: 'junit', version: '4.12'
 }
 
