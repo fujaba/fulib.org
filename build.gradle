@@ -86,6 +86,8 @@ wrapper.doLast {
 
 shadowJar.archiveClassifier = 'all'
 
+def fulibGradleVersion = '0.2.0'
+
 processResources {
 	filesMatching([ 'webapp/index.html', 'projectzip/build.gradle' ]) {
 		filter {
@@ -94,6 +96,7 @@ processResources {
 					'fulibScenarios'))
 			it = it.replace('$$fulibMockupsVersion$$', getDependencyVersion(configurations.compile, 'org.fulib',
 					'fulibMockups'))
+			it = it.replace('$$fulibGradleVersion$$', fulibGradleVersion)
 			it
 		}
 	}
