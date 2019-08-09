@@ -47,8 +47,8 @@
 # fulib.org v0.4.0
 
 + The Java Code now also shows model methods. #26
++ Added support for the `.txt` diagram format.
 * Updated to Fulib Scenarios v0.6.0.
-+ Added support for `.txt` diagarm format.
 * Internal stack trace lines in console output are now folded.
 
 # fulib.org v0.5.0
@@ -56,3 +56,12 @@
 + Added a warning banner if JavaScript is disabled. #27
 + Added a privacy preferences popup. #28
 + Added a leave feedback popup. #29
+
+# fulib.org v0.6.0
+
++ Added the `Basics` example scenario. #36
++ Added the `Associations` and `Special Associations` example scenarios. #35
+* Example scenarios in the dropdown are now numbered. #34
+* Updated all existing example scenarios. #33
+* Updated to Fulib Scenarios v0.7.0.
+* Fixed small UI on mobile. #31
