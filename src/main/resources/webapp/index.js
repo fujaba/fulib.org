@@ -70,27 +70,8 @@ const classDiagram = document.getElementById('classDiagram');
 init();
 
 function init() {
-	for (let i = 0; i < examples.length; i += 2) {
-		const groupName = examples[i];
-		const groupItems = examples[i + 1];
-
-		const optgroup = document.createElement('optgroup');
-		optgroup.label = groupName;
-
-		for (let groupItem of groupItems) {
-			const option = document.createElement('option');
-
-			option.value = groupName.toLowerCase() + '/' + groupItem.replace(' ', '');
-			option.label = groupItem;
-			option.innerText = groupItem;
-
-			optgroup.appendChild(option);
-		}
-
-		exampleSelect.appendChild(optgroup);
-	}
-
 	loadPrivacy();
+	loadExamples();
 	loadStoredExample();
 
 	// enable tooltips
@@ -282,6 +263,28 @@ function renderObjectDiagram(objectDiagram) {
 }
 
 // --------------- Examples ---------------
+
+function loadExamples() {
+	for (let i = 0; i < examples.length; i += 2) {
+		const groupName = examples[i];
+		const groupItems = examples[i + 1];
+
+		const optgroup = document.createElement('optgroup');
+		optgroup.label = (i / 2 + 1) + '. ' + groupName;
+
+		for (let j = 0; j < groupItems.length; j++) {
+			const groupItem = groupItems[j];
+			const option = document.createElement('option');
+
+			option.value = groupName.toLowerCase() + '/' + groupItem.replace(' ', '');
+			option.label = option.innerText = (i / 2 + 1) + '.' + (j + 1) + '. ' + groupItem;
+
+			optgroup.appendChild(option);
+		}
+
+		exampleSelect.appendChild(optgroup);
+	}
+}
 
 function loadStoredExample() {
 	const selectedExample = localStorage.getItem(selectedExampleKey);
