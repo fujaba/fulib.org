@@ -15,6 +15,8 @@ const examples = [
 	'Definitions', [
 		'Simple Definitions',
 		'Complex Definitions',
+		'Associations',
+		'Special Associations',
 	],
 	'Testing', [
 		'Expectations',
