@@ -13,6 +13,7 @@ const defaultScenarioText = ''
 
 const examples = [
 	'Definitions', [
+		'Basics',
 		'Simple Definitions',
 		'Complex Definitions',
 		'Associations',
