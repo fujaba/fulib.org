@@ -1,3 +1,5 @@
+// --------------- Plugins ---------------
+
 plugins {
 	id 'java'
 	id 'application'
@@ -7,7 +9,7 @@ plugins {
 	id 'com.github.johnrengelman.shadow' version '4.0.4'
 }
 
-mainClassName = 'org.fulib.scenarios.WebService'
+// --------------- Publication Info ---------------
 
 group = 'org.fulib'
 version = "git describe --tags".execute().text[1..-2] // strip v and \n
@@ -39,7 +41,15 @@ publishInfo {
 	}
 }
 
+// --------------- General Settings ---------------
+
+mainClassName = 'org.fulib.scenarios.WebService'
+
 sourceCompatibility = 1.8
+
+shadowJar.archiveClassifier = 'all'
+
+// --------------- Dependencies ---------------
 
 repositories {
 	mavenLocal()
@@ -71,20 +81,7 @@ dependencies {
 	compile group: 'junit', name: 'junit', version: '4.12'
 }
 
-wrapper.doLast {
-	copy {
-		from '.'
-		include 'gradle/wrapper/**', 'gradlew', 'gradlew.bat'
-		into 'src/main/resources/projectzip'
-
-		// we have to save the wrapper jar as a zip, see
-		// https://imperceptiblethoughts.com/shadow/configuration/dependencies/
-		// "Embedding Jar Files Inside Your Shadow Jar"
-		rename 'gradle-wrapper.jar', 'gradle-wrapper.jar.zip'
-	}
-}
-
-shadowJar.archiveClassifier = 'all'
+// --------------- Version Injection ---------------
 
 def fulibGradleVersion = '0.2.0'
 
@@ -106,4 +103,19 @@ String getDependencyVersion(Configuration config, String group, String name) {
 	config.resolvedConfiguration.firstLevelModuleDependencies.findAll {
 		it.moduleName == name && it.moduleGroup == group
 	}[0].moduleVersion
+}
+
+// --------------- Project Zip Wrapper ---------------
+
+wrapper.doLast {
+	copy {
+		from '.'
+		include 'gradle/wrapper/**', 'gradlew', 'gradlew.bat'
+		into 'src/main/resources/projectzip'
+
+		// we have to save the wrapper jar as a zip, see
+		// https://imperceptiblethoughts.com/shadow/configuration/dependencies/
+		// "Embedding Jar Files Inside Your Shadow Jar"
+		rename 'gradle-wrapper.jar', 'gradle-wrapper.jar.zip'
+	}
 }
