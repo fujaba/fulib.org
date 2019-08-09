@@ -1,4 +1,4 @@
-# Scenario Calling.
+# Calling Methods
 
 // You can call methods using the 'call' keyword.
 We call init.

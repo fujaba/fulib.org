@@ -1,4 +1,4 @@
-# Scenario Complex Definitions
+# Complex Definitions
 
 // Instead of 'is', you can also define your objects with 'There'.
 There is a University.

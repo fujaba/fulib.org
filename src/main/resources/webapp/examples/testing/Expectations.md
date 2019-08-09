@@ -1,4 +1,4 @@
-# Scenario Expectations.
+# Expectations
 
 There is a Country with name Germany and with 80000000 inhabitants.
 

@@ -1,4 +1,4 @@
-# Scenario Passing Arguments.
+# Passing Arguments
 
 // When calling methods, you can pass parameters using the 'with' keyword
 We call init with value 3.

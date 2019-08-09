@@ -1,4 +1,4 @@
-# Scenario Relational Operators.
+# Relational Operators
 
 // There are many relational operators in the scenario language.
 // They are shown in the examples below.

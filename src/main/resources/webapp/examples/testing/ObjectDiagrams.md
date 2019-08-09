@@ -1,7 +1,7 @@
-# Scenario Diagrams.
+# Object Diagrams
 
-There is a Product with name Sneakers, with id beef-0246-9999-face, with price 90, and with color red.
-There is a Product with name Pumps, with id cafe-1234-babe-5678, with price 104.5, and with color black.
+There is a Product with name Sneakers, with id beef-0246-9999-face, with price 99.99, and with color red.
+There is a Product with name Pumps, with id cafe-1234-babe-5678, with price 104.49, and with color black.
 
 There is a Store with name Amazon.
 Amazon has products Sneakers and Pumps.

@@ -22,10 +22,10 @@ const examples = [
 	'Testing', [
 		'Expectations',
 		'Relational Operators',
-		'Diagrams',
+		'Object Diagrams',
 	],
 	'Methods', [
-		'Calling',
+		'Calling Methods',
 		'Passing Arguments',
 	],
 ];

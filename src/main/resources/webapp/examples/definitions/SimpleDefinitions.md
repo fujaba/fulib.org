@@ -1,4 +1,4 @@
-# Scenario Simple Definitions
+# Simple Definitions
 
 // You can create objects using the keyword 'is'.
 Kassel is a City.
