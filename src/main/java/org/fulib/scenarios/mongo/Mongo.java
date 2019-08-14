@@ -7,7 +7,6 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import org.json.JSONObject;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -65,7 +64,7 @@ public class Mongo
 
 	// =============== Methods ===============
 
-	public void log(JSONObject body, JSONObject result)
+	public void log(String request, String response)
 	{
 		if (this.coll == null)
 		{
@@ -76,8 +75,7 @@ public class Mongo
 		LocalDateTime now = LocalDateTime.now();
 		String key = now.format(formatter);
 
-		Document document = new Document("name", key).append("body", body.toString(3))
-		                                             .append("result", result.toString(3));
+		Document document = new Document("timestamp", key).append("request", request).append("response", response);
 
 		this.coll.insertOne(document);
 	}

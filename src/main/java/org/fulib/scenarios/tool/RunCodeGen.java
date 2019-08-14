@@ -93,9 +93,10 @@ public class RunCodeGen
 
 			res.type("application/json");
 
-			Mongo.get().log(jsonObject, result);
+			final String resultBody = result.toString(3);
 
-			return result.toString(3);
+			Mongo.get().log(body, resultBody);
+			return resultBody;
 		}
 		finally
 		{
