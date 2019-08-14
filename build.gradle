@@ -76,8 +76,8 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.json/json
 	compile group: 'org.json', name: 'json', version: '20180813'
 
-	compile 'org.mongodb:mongodb-driver-sync:3.11.0'
-
+	// https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync
+	compile group: 'org.mongodb', name: 'mongodb-driver-sync', version: '3.11.0'
 
 	// compile instead of testCompile because the web service uses it
 	// https://mvnrepository.com/artifact/junit/junit
