@@ -95,7 +95,10 @@ public class RunCodeGen
 
 			final String resultBody = result.toString(3);
 
-			Mongo.get().log(body, resultBody);
+			if (jsonObject.has("privacy") && "all".equals(jsonObject.get("privacy")))
+			{
+				Mongo.get().log(body, resultBody);
+			}
 			return resultBody;
 		}
 		finally
