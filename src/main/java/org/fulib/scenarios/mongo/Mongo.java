@@ -8,8 +8,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 public class Mongo
 {
@@ -19,8 +18,8 @@ public class Mongo
 	public static final String SERVER           = "avocado.uniks.de";
 	public static final String PORT             = "38128";
 	public static final String USER             = "seadmin";
-	public static final String DATABASE_NAME    = "test";
-	public static final String COLLECTION_NAME  = "fulib-org-log";
+	public static final String DATABASE_NAME    = "fulib-org";
+	public static final String COLLECTION_NAME  = "request-log";
 
 	// =============== Static Fields ===============
 
@@ -71,11 +70,10 @@ public class Mongo
 			return;
 		}
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
-		LocalDateTime now = LocalDateTime.now();
-		String key = now.format(formatter);
-
-		Document document = new Document("timestamp", key).append("request", request).append("response", response);
+		final Document document = new Document();
+		document.put("timestamp", new Date());
+		document.put("request", Document.parse(request));
+		document.put("response", Document.parse(response));
 
 		this.coll.insertOne(document);
 	}
