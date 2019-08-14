@@ -1,6 +1,7 @@
 package org.fulib.scenarios.tool;
 
 import org.fulib.StrUtil;
+import org.fulib.scenarios.mongo.Mongo;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -91,6 +92,9 @@ public class RunCodeGen
 			}
 
 			res.type("application/json");
+
+			Mongo.get().log(jsonObject, result);
+
 			return result.toString(3);
 		}
 		finally
