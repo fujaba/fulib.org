@@ -7,62 +7,74 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import org.json.JSONObject;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Map;
+import java.util.Date;
 
 public class Mongo
 {
-   private static Mongo theMongo = null;
-   private MongoClient mongoClient = null;
-   private MongoDatabase database = null;
-   private MongoCollection<Document> coll = null;
+	// =============== Constants ===============
 
-   public static Mongo get()
-   {
-      if (theMongo == null) {
-         theMongo = new Mongo();
-      }
+	public static final String PASSWORD_ENV_KEY = "fulib_org_mongo";
+	public static final String SERVER           = "avocado.uniks.de";
+	public static final String PORT             = "38128";
+	public static final String USER             = "seadmin";
+	public static final String DATABASE_NAME    = "fulib-org";
+	public static final String COLLECTION_NAME  = "request-log";
 
-      return theMongo;
-   }
+	// =============== Static Fields ===============
 
-   public Mongo() {
-      Map<String, String> env = System.getenv();
-      String password = env.get("fulib_org_mongo");
+	private static Mongo theMongo = null;
 
-      if (password != null)
-      {
-         ConnectionString connString = new ConnectionString(
-               "mongodb://seadmin:" + password + "@avocado.uniks.de:38128"
-         );
-         MongoClientSettings settings = MongoClientSettings.builder()
-               .applyConnectionString(connString)
-               .retryWrites(true)
-               .build();
-         mongoClient = MongoClients.create(settings);
-         database = mongoClient.getDatabase("test");
+	// =============== Fields ===============
 
-         coll = database.getCollection("fulib-org-log");
-      }
-   }
+	private MongoClient               mongoClient = null;
+	private MongoDatabase             database    = null;
+	private MongoCollection<Document> coll        = null;
 
-   public void log(JSONObject body, JSONObject result)
-   {
-      if (coll == null) {
-         return;
-      }
+	// =============== Static Methods ===============
 
-      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
-      LocalDateTime now = LocalDateTime.now();
-      String key = now.format(formatter);
+	public static Mongo get()
+	{
+		if (theMongo == null)
+		{
+			theMongo = new Mongo();
+		}
 
-      Document document = new Document("name", key)
-            .append("body", body.toString(3))
-            .append("result", result.toString(3));
+		return theMongo;
+	}
 
-      coll.insertOne(document);
-   }
+	// =============== Constructors ===============
+
+	public Mongo()
+	{
+		final String password = System.getenv(PASSWORD_ENV_KEY);
+
+		if (password != null)
+		{
+			ConnectionString connString = new ConnectionString(
+				"mongodb://" + USER + ":" + password + "@" + SERVER + ":" + PORT);
+			MongoClientSettings settings = MongoClientSettings.builder().applyConnectionString(connString)
+			                                                  .retryWrites(true).build();
+			this.mongoClient = MongoClients.create(settings);
+			this.database = this.mongoClient.getDatabase(DATABASE_NAME);
+			this.coll = this.database.getCollection(COLLECTION_NAME);
+		}
+	}
+
+	// =============== Methods ===============
+
+	public void log(String request, String response)
+	{
+		if (this.coll == null)
+		{
+			return;
+		}
+
+		final Document document = new Document();
+		document.put("timestamp", new Date());
+		document.put("request", Document.parse(request));
+		document.put("response", Document.parse(response));
+
+		this.coll.insertOne(document);
+	}
 }

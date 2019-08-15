@@ -65,3 +65,8 @@
 * Updated all existing example scenarios. #33
 * Updated to Fulib Scenarios v0.7.0.
 * Fixed small UI on mobile. #31
+
+# fulib.org v0.7.0
+
++ Added analytic request logging. #37
+* Updated to Fulib Scenarios v0.8.0.
