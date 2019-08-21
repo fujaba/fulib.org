@@ -70,3 +70,7 @@
 
 + Added analytic request logging. #37
 * Updated to Fulib Scenarios v0.8.0.
+
+# fulib.org v0.7.1
+
+* Improved the page layout.
