@@ -27,3 +27,21 @@
 	border:        1px solid gray;
 	border-radius: 1em;
 }
+
+.site {
+	padding-bottom: 4vh; /* Höhe des Footers */
+	height: auto;
+	width: auto;
+	min-height: 100%;
+}
+
+html, body {
+	height: 100%;
+}
+
+
+
+.footer {
+	height: 4vh;
+	margin-top: -4vh; /* Höhe des Footers */
+}
