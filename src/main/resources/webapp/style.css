@@ -29,6 +29,8 @@
 }
 
 .site {
+	margin-top: -2vh;
+	padding-top: 2vh;
 	padding-bottom: 4vh; /* Höhe des Footers */
 	height: auto;
 	width: auto;
@@ -43,5 +45,5 @@ html, body {
 
 .footer {
 	height: 4vh;
-	margin-top: -4vh; /* Höhe des Footers */
+	margin-top: -2vh; /* Höhe des Footers */
 }
