@@ -89,7 +89,7 @@ dependencies {
 def fulibGradleVersion = '0.2.0'
 
 processResources {
-	filesMatching([ 'webapp/index.html', 'projectzip/build.gradle' ]) {
+	filesMatching([ 'webapp/index.html', 'projectzip/build.gradle', 'org/fulib/webapp/version.properties' ]) {
 		filter {
 			it = it.replace('$$version$$', project.version.toString())
 			it = it.replace('$$fulibScenariosVersion$$', getDependencyVersion(configurations.compile, 'org.fulib',

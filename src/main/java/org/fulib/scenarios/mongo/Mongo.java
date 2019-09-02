@@ -7,6 +7,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
+import org.fulib.scenarios.WebService;
 
 import java.util.Date;
 
@@ -74,6 +75,16 @@ public class Mongo
 		document.put("timestamp", new Date());
 		document.put("ip", ip);
 		document.put("userAgent", userAgent);
+
+		if (WebService.VERSION != null)
+		{
+			final Document versions = new Document();
+			versions.put("webapp", WebService.VERSION);
+			versions.put("fulibScenarios", WebService.FULIB_SCENARIOS_VERSION);
+			versions.put("fulibMockups", WebService.FULIB_MOCKUPS_VERSION);
+			document.put("versions", versions);
+		}
+
 		document.put("request", Document.parse(request));
 		document.put("response", Document.parse(response));
 
