@@ -297,6 +297,7 @@ function selectExample(value) {
 	displayExample(value);
 }
 
+
 function displayExample(value) {
 	if (!value) {
 		const storedScenarioText = localStorage.getItem(storedScenarioKey) || defaultScenarioText;

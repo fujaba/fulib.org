@@ -21,6 +21,7 @@ We expect that Foosoft has name "Foosoft".
 
 // You can also call a method on an object.
 We call generateRevenue on Foosoft.
+GenerateRevenue writes 9000 into revenue of Foosoft. 
 
 // If you use a sentence that does not match the subject of the call, you will end up back in the test method scope.
-We expect that Foosoft has revenue 0.
+We expect that Foosoft has revenue 9000.
