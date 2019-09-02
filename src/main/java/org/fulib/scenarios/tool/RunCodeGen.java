@@ -97,7 +97,7 @@ public class RunCodeGen
 
 			if (jsonObject.has("privacy") && "all".equals(jsonObject.get("privacy")))
 			{
-				Mongo.get().log(body, resultBody);
+				Mongo.get().log(req.ip(), req.userAgent(), body, resultBody);
 			}
 			return resultBody;
 		}

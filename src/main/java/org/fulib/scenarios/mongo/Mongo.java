@@ -63,7 +63,7 @@ public class Mongo
 
 	// =============== Methods ===============
 
-	public void log(String request, String response)
+	public void log(String ip, String userAgent, String request, String response)
 	{
 		if (this.coll == null)
 		{
@@ -72,6 +72,8 @@ public class Mongo
 
 		final Document document = new Document();
 		document.put("timestamp", new Date());
+		document.put("ip", ip);
+		document.put("userAgent", userAgent);
 		document.put("request", Document.parse(request));
 		document.put("response", Document.parse(response));
 
