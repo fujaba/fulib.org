@@ -42,80 +42,78 @@
 
 </header>
 
-<div class="site">
-	<main role="main" class="wrap pb-5 m-4">
-		<div class="row">
-			<div class="col-md-12 col-lg-6">
-				<h2>Scenario</h2>
-				<p>
-					Load Example:
-					<select id="exampleSelect" onchange="selectExample(this.value)">
-						<option value="">-</option>
-					</select>
-				</p>
-				<p>
-					<textarea class="form-control" id="scenarioInput"></textarea>
-				</p>
-				<p>
-					<button type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip"
-					        title="Shortcuts: Ctrl-&#9166; / &#8984;&#9166;, Ctrl-S / &#8984;S" onclick="submit()">
-						Compile and Run
-					</button>
-					&mdash;
-					<button type="button" class="btn btn-outline-secondary btn-sm" onclick="downloadProjectZip()">
-						Download as Gradle Project
-					</button>
-				</p>
-			</div>
+<main role="main" class="wrap pb-5 m-4">
+	<div class="row">
+		<div class="col-md-12 col-lg-6">
+			<h2>Scenario</h2>
+			<p>
+				Load Example:
+				<select id="exampleSelect" onchange="selectExample(this.value)">
+					<option value="">-</option>
+				</select>
+			</p>
+			<p>
+				<textarea class="form-control" id="scenarioInput"></textarea>
+			</p>
+			<p>
+				<button type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip"
+				        title="Shortcuts: Ctrl-&#9166; / &#8984;&#9166;, Ctrl-S / &#8984;S" onclick="submit()">
+					Compile and Run
+				</button>
+				&mdash;
+				<button type="button" class="btn btn-outline-secondary btn-sm" onclick="downloadProjectZip()">
+					Download as Gradle Project
+				</button>
+			</p>
+		</div>
 
-			<div class="col-md-12 col-lg-6">
-				<h2>Java Test Code</h2>
-				<p></p>
-				<div class="progress">
-					<div id="scenarioCompileProgress" class="progress-bar bg-success" role="progressbar"
-					     style="width: 24.25%">
-						Scenario Compiler
-					</div>
-					<div class="progress-bar bg-transparent" role="progressbar" style="width: 1%"></div>
-					<div id="modelCompileProgress" class="progress-bar bg-success" role="progressbar"
-					     style="width: 24.25%">
-						Java Model Compiler
-					</div>
-					<div class="progress-bar bg-transparent" role="progressbar" style="width: 1%"></div>
-					<div id="testCompileProgress" class="progress-bar bg-success" role="progressbar"
-					     style="width: 24.25%">
-						Java Test Compiler
-					</div>
-					<div class="progress-bar bg-transparent" role="progressbar" style="width: 1%"></div>
-					<div id="testRunProgress" class="progress-bar bg-success" role="progressbar" style="width: 24.25%">
-						Test Run
-					</div>
+		<div class="col-md-12 col-lg-6">
+			<h2>Java Test Code</h2>
+			<p></p>
+			<div class="progress">
+				<div id="scenarioCompileProgress" class="progress-bar bg-success" role="progressbar"
+				     style="width: 24.25%">
+					Scenario Compiler
 				</div>
-				<p></p>
-				<p>
+				<div class="progress-bar bg-transparent" role="progressbar" style="width: 1%"></div>
+				<div id="modelCompileProgress" class="progress-bar bg-success" role="progressbar"
+				     style="width: 24.25%">
+					Java Model Compiler
+				</div>
+				<div class="progress-bar bg-transparent" role="progressbar" style="width: 1%"></div>
+				<div id="testCompileProgress" class="progress-bar bg-success" role="progressbar"
+				     style="width: 24.25%">
+					Java Test Compiler
+				</div>
+				<div class="progress-bar bg-transparent" role="progressbar" style="width: 1%"></div>
+				<div id="testRunProgress" class="progress-bar bg-success" role="progressbar" style="width: 24.25%">
+					Test Run
+				</div>
+			</div>
+			<p></p>
+			<p>
         <textarea class="form-control" id="javaTestOutput">
 // press Ctrl-Enter within the scenario editor to generate Java.
 </textarea>
-				</p>
+			</p>
 
-			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12 col-lg-6">
+			<h2>Class Diagram</h2>
+			<div class="svg" id="classDiagram"></div>
 		</div>
 
-		<div class="row">
-			<div class="col-md-12 col-lg-6">
-				<h2>Class Diagram</h2>
-				<div class="svg" id="classDiagram"></div>
-			</div>
-
-			<div class="col-md-12 col-lg-6">
-				<h2>Object Diagrams</h2>
-				<div class="svg" id="objectDiagrams"></div>
-				<ul class="nav nav-tabs" id="objectDiagramTab" role="tablist"></ul>
-				<div class="tab-content" id="objectDiagramTabContent"></div>
-			</div>
+		<div class="col-md-12 col-lg-6">
+			<h2>Object Diagrams</h2>
+			<div class="svg" id="objectDiagrams"></div>
+			<ul class="nav nav-tabs" id="objectDiagramTab" role="tablist"></ul>
+			<div class="tab-content" id="objectDiagramTabContent"></div>
 		</div>
-	</main>
-</div>
+	</div>
+</main>
 
 <footer class="page-footer font-small">
 
