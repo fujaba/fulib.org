@@ -28,6 +28,11 @@ const examples = [
 		'Calling Methods',
 		'Passing Arguments',
 	],
+	'Transformation', [
+		'Modifying Data',
+		'Conditionals',
+		'Loops',
+	]
 ];
 
 const exampleSelect = document.getElementById('exampleSelect');
