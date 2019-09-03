@@ -18,4 +18,6 @@ Karli has student-id m4242.
 There is a Student with name Alice and with 20 credits.
 
 // There Sentence can define multiple objects at once.
-There are Students with name Bob, Carlo, and Tim and with credits 15, 30, 35.
+There are the Students Bob, Carli, and Dora. 
+
+There are Students with name Eyshe, Felice, and Gloria, and with credits 15, 30, 35.
