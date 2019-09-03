@@ -43,7 +43,7 @@ publishInfo {
 
 // --------------- General Settings ---------------
 
-mainClassName = 'org.fulib.scenarios.WebService'
+mainClassName = 'org.fulib.webapp.WebService'
 
 sourceCompatibility = 1.8
 

@@ -1,4 +1,4 @@
-package org.fulib.scenarios.tool;
+package org.fulib.webapp.tool;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,8 +42,8 @@ public class ProjectZip
 			{
 				zip.putNextEntry(new ZipEntry(file));
 				final String resourceName = file.endsWith(".jar") ?
-					                            "/projectzip/" + file + ".zip" :
-					                            "/projectzip/" + file;
+					                            "/org/fulib/webapp/projectzip/" + file + ".zip" :
+					                            "/org/fulib/webapp/projectzip/" + file;
 				try (InputStream fileInput = ProjectZip.class.getResourceAsStream(resourceName))
 				{
 					copy(buffer, fileInput, zip);

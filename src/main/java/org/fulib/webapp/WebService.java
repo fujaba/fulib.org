@@ -1,10 +1,9 @@
-package org.fulib.scenarios;
+package org.fulib.webapp;
 
-import org.fulib.scenarios.tool.ProjectZip;
-import org.fulib.scenarios.tool.RunCodeGen;
+import org.fulib.webapp.tool.ProjectZip;
+import org.fulib.webapp.tool.RunCodeGen;
 import spark.Service;
 
-import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,9 +19,9 @@ public class WebService
 		final Properties props = new Properties();
 		try
 		{
-			props.load(WebService.class.getResourceAsStream("/org/fulib/webapp/version.properties"));
+			props.load(WebService.class.getResourceAsStream("version.properties"));
 		}
-		catch (IOException e)
+		catch (Exception e)
 		{
 			Logger.getGlobal().throwing("WebService", "static init", e);
 		}
@@ -38,7 +37,7 @@ public class WebService
 
 		service.port(4567);
 
-		service.staticFiles.location("/webapp");
+		service.staticFiles.location("/org/fulib/webapp/static");
 		service.redirect.get("/github", "https://github.com/fujaba/fulib.org");
 
 		service.post("/runcodegen", RunCodeGen::handle);

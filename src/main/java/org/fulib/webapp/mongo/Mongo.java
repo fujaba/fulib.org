@@ -1,4 +1,4 @@
-package org.fulib.scenarios.mongo;
+package org.fulib.webapp.mongo;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
@@ -7,7 +7,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import org.fulib.scenarios.WebService;
+import org.fulib.webapp.WebService;
 
 import java.util.Date;
 

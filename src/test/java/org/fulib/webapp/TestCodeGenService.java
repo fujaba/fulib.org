@@ -1,5 +1,6 @@
-package org.fulib.scenarios;
+package org.fulib.webapp;
 
+import org.fulib.webapp.WebService;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -13,7 +14,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 

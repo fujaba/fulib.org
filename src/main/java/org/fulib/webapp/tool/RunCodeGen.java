@@ -1,7 +1,7 @@
-package org.fulib.scenarios.tool;
+package org.fulib.webapp.tool;
 
 import org.fulib.StrUtil;
-import org.fulib.scenarios.mongo.Mongo;
+import org.fulib.webapp.mongo.Mongo;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

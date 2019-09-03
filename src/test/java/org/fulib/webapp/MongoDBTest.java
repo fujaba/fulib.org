@@ -1,4 +1,4 @@
-package org.fulib.scenarios;
+package org.fulib.webapp;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.CreateCollectionOptions;

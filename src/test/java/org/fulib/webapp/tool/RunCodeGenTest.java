@@ -1,4 +1,4 @@
-package org.fulib.scenarios.tool;
+package org.fulib.webapp.tool;
 
 import org.fulib.StrUtil;
 import org.junit.Test;

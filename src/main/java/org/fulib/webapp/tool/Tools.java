@@ -1,5 +1,6 @@
-package org.fulib.scenarios.tool;
+package org.fulib.webapp.tool;
 
+import org.fulib.scenarios.tool.ScenarioCompiler;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
