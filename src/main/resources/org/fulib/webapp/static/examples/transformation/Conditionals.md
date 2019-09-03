@@ -8,6 +8,10 @@
 
 As 10 is less than 20, we write 10 into min.
 
+There are Students Alice and Bob with age 18 and 24. 
+As age of Alice is less than 21, we write "no alcohol" into state of Alice.  
+As age of Bob is greater equal 21, we write "old enough" into state of Bob. 
+
 // You can have multiple statements in the resulting if body by separating sentences with ',' or 'and'.
 
 As 2 is not 3, we write 1 into x, we write 2 into y, and we write 3 into sum.
