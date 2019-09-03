@@ -1,212 +1,213 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Scenario</title>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet"
-          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-          crossorigin="anonymous">
-    <!-- CodeMirror -->
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.47.0/codemirror.min.css"
-          integrity="sha256-I8NyGs4wjbMuBSUE40o55W6k6P7tu/7G28/JGUUYCIs="
-          crossorigin="anonymous"/>
-    <!-- Custom -->
-    <link rel="stylesheet" href="style.css">
+	<title>Scenario</title>
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet"
+	      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+	      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+	      crossorigin="anonymous">
+	<!-- CodeMirror -->
+	<link rel="stylesheet"
+	      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.47.0/codemirror.min.css"
+	      integrity="sha256-I8NyGs4wjbMuBSUE40o55W6k6P7tu/7G28/JGUUYCIs="
+	      crossorigin="anonymous"/>
+	<!-- Custom -->
+	<link rel="stylesheet" href="style.css">
 </head>
 
 <header>
 
-    <noscript>
-        <div class="alert alert-warning" role="alert">
-            <h4 class="alert-heading">JavaScript is disabled!</h4>
-            <p>
-                This website requires JavaScript to work correctly. Please
-                <a target="_blank" rel="noopener noreferrer"
-                   href="https://www.whatismybrowser.com/guides/how-to-enable-javascript/auto">
-                    enable JavaScript
-                </a>
-                to use the Fulib Web App.
-            </p>
-        </div>
-    </noscript>
+<noscript>
+	<div class="alert alert-warning" role="alert">
+		<h4 class="alert-heading">JavaScript is disabled!</h4>
+		<p>
+			This website requires JavaScript to work correctly. Please
+			<a target="_blank" rel="noopener noreferrer"
+			   href="https://www.whatismybrowser.com/guides/how-to-enable-javascript/auto">
+				enable JavaScript
+			</a>
+			to use the Fulib Web App.
+		</p>
+	</div>
+</noscript>
 
-    <div class="modal fade"
-         id="privacyModal"
-         tabindex="-1"
-         role="dialog"
-         aria-labelledby="privacyModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="privacyModalLabel">We value your privacy!</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>
-                        This website uses cookies and other local data storage technology to make your experience more
-                        pleasant.
-                        Remote data is stored anonymously and used only for scientific and analytic purposes.
-                    </p>
+<div class="modal fade"
+     id="privacyModal"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="privacyModalLabel"
+     aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="privacyModalLabel">We value your privacy!</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p>
+					This website uses cookies and other local data storage technology to make your experience more
+					pleasant.
+					Remote data is stored anonymously and used only for scientific and analytic purposes.
+				</p>
 
-                    <p>
-                        Please select your preferred privacy option below:
-                    </p>
+				<p>
+					Please select your preferred privacy option below:
+				</p>
 
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input id="privacy-all" class="form-check-input" type="radio" name="privacy" value="all">
-                            I agree to the use of local and remote data storage.
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input id="privacy-local" class="form-check-input" type="radio" name="privacy" value="local">
-                            I agree to the use of local data storage, but not remote.
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input id="privacy-none" class="form-check-input" type="radio" name="privacy" value="none">
-                            I do not agree to the use of local or remote data storage.
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input id="privacy-nobanner" class="form-check-input" type="radio" name="privacy"
-                                   value="nobanner">
-                            I do not agree to the use of local or remote data storage,
-                            except for the use of local storage to hide this popup in the future.
-                        </label>
-                    </div>
+				<div class="form-check">
+					<label class="form-check-label">
+						<input id="privacy-all" class="form-check-input" type="radio" name="privacy" value="all">
+						I agree to the use of local and remote data storage.
+					</label>
+				</div>
+				<div class="form-check">
+					<label class="form-check-label">
+						<input id="privacy-local" class="form-check-input" type="radio" name="privacy" value="local">
+						I agree to the use of local data storage, but not remote.
+					</label>
+				</div>
+				<div class="form-check">
+					<label class="form-check-label">
+						<input id="privacy-none" class="form-check-input" type="radio" name="privacy" value="none">
+						I do not agree to the use of local or remote data storage.
+					</label>
+				</div>
+				<div class="form-check">
+					<label class="form-check-label">
+						<input id="privacy-nobanner" class="form-check-input" type="radio" name="privacy"
+						       value="nobanner">
+						I do not agree to the use of local or remote data storage,
+						except for the use of local storage to hide this popup in the future.
+					</label>
+				</div>
 
-                    <p></p>
+				<p></p>
 
-                    <p>
-                        You can show this popup again and edit your preferences at any time by clicking
-                        <b>Edit Privacy Preferences</b> at the bottom of the page.
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="savePrivacy()">
-                        Save & Close
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+				<p>
+					You can show this popup again and edit your preferences at any time by clicking
+					<b>Edit Privacy Preferences</b> at the bottom of the page.
+				</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="savePrivacy()">
+					Save & Close
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
 
 </header>
-
 
 
 <body>
 
 <div class="site">
-    <main role="main" class="wrap pb-5 m-4">
-        <div class="row">
-            <div class="col-md-12 col-lg-6">
-                <h2>Scenario</h2>
-                <p>
-                    Load Example:
-                    <select id="exampleSelect" onchange="selectExample(this.value)">
-                        <option value="">-</option>
-                    </select>
-                </p>
-                <p>
-                    <textarea class="form-control" id="scenarioInput"></textarea>
-                </p>
-                <p>
-                    <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip"
-                            title="Shortcuts: Ctrl-&#9166; / &#8984;&#9166;, Ctrl-S / &#8984;S" onclick="submit()">
-                        Compile and Run
-                    </button>
-                    &mdash;
-                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="downloadProjectZip()">
-                        Download as Gradle Project
-                    </button>
-                </p>
-            </div>
+	<main role="main" class="wrap pb-5 m-4">
+		<div class="row">
+			<div class="col-md-12 col-lg-6">
+				<h2>Scenario</h2>
+				<p>
+					Load Example:
+					<select id="exampleSelect" onchange="selectExample(this.value)">
+						<option value="">-</option>
+					</select>
+				</p>
+				<p>
+					<textarea class="form-control" id="scenarioInput"></textarea>
+				</p>
+				<p>
+					<button type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip"
+					        title="Shortcuts: Ctrl-&#9166; / &#8984;&#9166;, Ctrl-S / &#8984;S" onclick="submit()">
+						Compile and Run
+					</button>
+					&mdash;
+					<button type="button" class="btn btn-outline-secondary btn-sm" onclick="downloadProjectZip()">
+						Download as Gradle Project
+					</button>
+				</p>
+			</div>
 
-            <div class="col-md-12 col-lg-6">
-                <h2>Java Test Code</h2>
-                <p></p>
-                <div class="progress">
-                    <div id="scenarioCompileProgress" class="progress-bar bg-success" role="progressbar"
-                         style="width: 24.25%">
-                        Scenario Compiler
-                    </div>
-                    <div class="progress-bar bg-transparent" role="progressbar" style="width: 1%"></div>
-                    <div id="modelCompileProgress" class="progress-bar bg-success" role="progressbar" style="width: 24.25%">
-                        Java Model Compiler
-                    </div>
-                    <div class="progress-bar bg-transparent" role="progressbar" style="width: 1%"></div>
-                    <div id="testCompileProgress" class="progress-bar bg-success" role="progressbar" style="width: 24.25%">
-                        Java Test Compiler
-                    </div>
-                    <div class="progress-bar bg-transparent" role="progressbar" style="width: 1%"></div>
-                    <div id="testRunProgress" class="progress-bar bg-success" role="progressbar" style="width: 24.25%">
-                        Test Run
-                    </div>
-                </div>
-                <p></p>
-                <p>
+			<div class="col-md-12 col-lg-6">
+				<h2>Java Test Code</h2>
+				<p></p>
+				<div class="progress">
+					<div id="scenarioCompileProgress" class="progress-bar bg-success" role="progressbar"
+					     style="width: 24.25%">
+						Scenario Compiler
+					</div>
+					<div class="progress-bar bg-transparent" role="progressbar" style="width: 1%"></div>
+					<div id="modelCompileProgress" class="progress-bar bg-success" role="progressbar"
+					     style="width: 24.25%">
+						Java Model Compiler
+					</div>
+					<div class="progress-bar bg-transparent" role="progressbar" style="width: 1%"></div>
+					<div id="testCompileProgress" class="progress-bar bg-success" role="progressbar"
+					     style="width: 24.25%">
+						Java Test Compiler
+					</div>
+					<div class="progress-bar bg-transparent" role="progressbar" style="width: 1%"></div>
+					<div id="testRunProgress" class="progress-bar bg-success" role="progressbar" style="width: 24.25%">
+						Test Run
+					</div>
+				</div>
+				<p></p>
+				<p>
         <textarea class="form-control" id="javaTestOutput">
 // press Ctrl-Enter within the scenario editor to generate Java.
 </textarea>
-                </p>
+				</p>
 
-            </div>
-        </div>
+			</div>
+		</div>
 
-        <div class="row">
-            <div class="col-md-12 col-lg-6">
-                <h2>Class Diagram</h2>
-                <div class="svg" id="classDiagram"></div>
-            </div>
+		<div class="row">
+			<div class="col-md-12 col-lg-6">
+				<h2>Class Diagram</h2>
+				<div class="svg" id="classDiagram"></div>
+			</div>
 
-            <div class="col-md-12 col-lg-6">
-                <h2>Object Diagrams</h2>
-                <div class="svg" id="objectDiagrams"></div>
-                <ul class="nav nav-tabs" id="objectDiagramTab" role="tablist"></ul>
-                <div class="tab-content" id="objectDiagramTabContent"></div>
-            </div>
-        </div>
-    </main>
+			<div class="col-md-12 col-lg-6">
+				<h2>Object Diagrams</h2>
+				<div class="svg" id="objectDiagrams"></div>
+				<ul class="nav nav-tabs" id="objectDiagramTab" role="tablist"></ul>
+				<div class="tab-content" id="objectDiagramTabContent"></div>
+			</div>
+		</div>
+	</main>
 </div>
 
 </body>
 
 <footer class="page-footer font-small">
 
-    <div class="navbar footer bottom bg-light">
-        <p>
-            <a href="https://github.com/fujaba/fulib.org" title="Web App on GitHub">Web App</a>
-            v$$version$$
-            &mdash;
-            <a href="https://github.com/fujaba/fulibScenarios" title="Fulib Scenarios on GitHub">Fulib Scenarios</a>
-            v$$fulibScenariosVersion$$
-            &mdash;
-            <a href="https://github.com/fujaba/fulibMockups" title="Fulib Mockups on GitHub">Fulib Mockups</a>
-            v$$fulibMockupsVersion$$
-        </p>
-        <p>
-            <a href="#" data-toggle="modal" data-target="#feedbackModal">Leave Feedback</a>
-            &mdash;
-            <a href="http://www.uni-kassel.de/uni/impressum.html">Imprint</a>
-            &mdash;
-            <a href="https://www.uni-kassel.de/uni/footer-2/datenschutz/">Privacy Policy</a>
-            &mdash;
-            <a href="#" data-toggle="modal" data-target="#privacyModal">Edit Privacy Preferences</a>
-        </p>
-    </div>
+<div class="navbar footer bottom bg-light">
+	<p>
+		<a href="https://github.com/fujaba/fulib.org" title="Web App on GitHub">Web App</a>
+		v$$version$$
+		&mdash;
+		<a href="https://github.com/fujaba/fulibScenarios" title="Fulib Scenarios on GitHub">Fulib Scenarios</a>
+		v$$fulibScenariosVersion$$
+		&mdash;
+		<a href="https://github.com/fujaba/fulibMockups" title="Fulib Mockups on GitHub">Fulib Mockups</a>
+		v$$fulibMockupsVersion$$
+	</p>
+	<p>
+		<a href="#" data-toggle="modal" data-target="#feedbackModal">Leave Feedback</a>
+		&mdash;
+		<a href="http://www.uni-kassel.de/uni/impressum.html">Imprint</a>
+		&mdash;
+		<a href="https://www.uni-kassel.de/uni/footer-2/datenschutz/">Privacy Policy</a>
+		&mdash;
+		<a href="#" data-toggle="modal" data-target="#privacyModal">Edit Privacy Preferences</a>
+	</p>
+</div>
 
 </footer>
 
@@ -216,57 +217,57 @@
      role="dialog"
      aria-labelledby="feedbackModalLabel"
      aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="feedbackModalLabel">Leave Feedback</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>
-                    Please select the relevant option below.
-                    You will be redirected to a page with further instructions.
-                </p>
-                <p>
-                    I want to leave feedback regarding...
-                </p>
-                <p>
-                    <a role="button" class="btn btn-outline-secondary btn-block"
-                       href="https://github.com/fujaba/fulibScenarios/issues/new/choose">
-                        The scenario or Java code (Fulib Scenarios)
-                    </a>
-                    <a role="button" class="btn btn-outline-secondary btn-block"
-                       href="https://github.com/fujaba/fulibMockups/issues/new/choose">
-                        The HTML mockups (Fulib Mockups)
-                    </a>
-                    <a role="button" class="btn btn-outline-secondary btn-block"
-                       href="https://github.com/fujaba/fulibTools/issues/new/choose">
-                        The object and class diagrams (Fulib Tools)
-                    </a>
-                    <a role="button" class="btn btn-outline-secondary btn-block"
-                       href="https://github.com/fujaba/fulib/issues/new/choose">
-                        The generated model classes (Fulib)
-                    </a>
-                    <a role="button" class="btn btn-outline-secondary btn-block"
-                       href="https://github.com/fujaba/fulibGradle/issues/new/choose">
-                        The Gradle plugin (Fulib Gradle)
-                    </a>
-                    <a role="button" class="btn btn-outline-secondary btn-block"
-                       href="https://github.com/fujaba/fulib.org/issues/new/choose">
-                        This Website itself (fulib.org)
-                    </a>
-                </p>
-                <div class="text-center">
-                    <script>
-                        const s = '<a href="mailto:spam@fbi.gov">I am not sure / I want to send an E-Mail instead</a>';
-                        document.write(s.replace('spam', 'contact').replace('fbi.gov', 'fulib.org'));
-                    </script>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="feedbackModalLabel">Leave Feedback</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p>
+					Please select the relevant option below.
+					You will be redirected to a page with further instructions.
+				</p>
+				<p>
+					I want to leave feedback regarding...
+				</p>
+				<p>
+					<a role="button" class="btn btn-outline-secondary btn-block"
+					   href="https://github.com/fujaba/fulibScenarios/issues/new/choose">
+						The scenario or Java code (Fulib Scenarios)
+					</a>
+					<a role="button" class="btn btn-outline-secondary btn-block"
+					   href="https://github.com/fujaba/fulibMockups/issues/new/choose">
+						The HTML mockups (Fulib Mockups)
+					</a>
+					<a role="button" class="btn btn-outline-secondary btn-block"
+					   href="https://github.com/fujaba/fulibTools/issues/new/choose">
+						The object and class diagrams (Fulib Tools)
+					</a>
+					<a role="button" class="btn btn-outline-secondary btn-block"
+					   href="https://github.com/fujaba/fulib/issues/new/choose">
+						The generated model classes (Fulib)
+					</a>
+					<a role="button" class="btn btn-outline-secondary btn-block"
+					   href="https://github.com/fujaba/fulibGradle/issues/new/choose">
+						The Gradle plugin (Fulib Gradle)
+					</a>
+					<a role="button" class="btn btn-outline-secondary btn-block"
+					   href="https://github.com/fujaba/fulib.org/issues/new/choose">
+						This Website itself (fulib.org)
+					</a>
+				</p>
+				<div class="text-center">
+					<script>
+						const s = '<a href="mailto:spam@fbi.gov">I am not sure / I want to send an E-Mail instead</a>';
+						document.write(s.replace('spam', 'contact').replace('fbi.gov', 'fulib.org'));
+					</script>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 <!-- Bootstrap JS -->
