@@ -74,3 +74,12 @@
 # fulib.org v0.7.1
 
 * Improved the page layout.
+
+# fulib.org v0.8.0
+
++ Added Go To Line to the editor. #40
++ Added Search and Replace to the editor. #39
++ Added the `Transformations` example category and three examples.
+* Improved the page layout.
+* Updated FulibScenarios to v0.8.1 and FulibMockups to v0.2.0.
+* Updated CodeMirror to v5.48.4.
