@@ -86,16 +86,18 @@ dependencies {
 
 // --------------- Version Injection ---------------
 
-def fulibGradleVersion = '0.2.0'
 
 processResources {
-	filesMatching([ 'webapp/index.html', 'projectzip/build.gradle', 'org/fulib/webapp/version.properties' ]) {
+	def version = project.version.toString()
+	def fulibScenariosVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulibScenarios')
+	def fulibGradleVersion = '0.2.0'
+	def fulibMockupsVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulibMockups')
+
+	filesMatching([ 'org/fulib/webapp/static/index.html', 'org/fulib/webapp/projectzip/build.gradle', 'org/fulib/webapp/version.properties' ]) {
 		filter {
-			it = it.replace('$$version$$', project.version.toString())
-			it = it.replace('$$fulibScenariosVersion$$', getDependencyVersion(configurations.compile, 'org.fulib',
-					'fulibScenarios'))
-			it = it.replace('$$fulibMockupsVersion$$', getDependencyVersion(configurations.compile, 'org.fulib',
-					'fulibMockups'))
+			it = it.replace('$$version$$', version)
+			it = it.replace('$$fulibScenariosVersion$$', fulibScenariosVersion)
+			it = it.replace('$$fulibMockupsVersion$$', fulibMockupsVersion)
 			it = it.replace('$$fulibGradleVersion$$', fulibGradleVersion)
 			it
 		}
