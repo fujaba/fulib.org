@@ -55,6 +55,6 @@ We add 3,2 to grades of Bob.
 // ... and associations.
 We add Charlie to friends of Bob.
 ![Alice](step5.svg)
+
 We remove Bob and Charlie from friends of Alice.
 ![Alice, Bob](step6.svg)
-

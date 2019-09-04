@@ -22,7 +22,3 @@ Amazon has products Sneakers and Pumps.
 The Pumps has price 42.42.
 
 ![Sneakers, Pumps](images/products_later.svg)
-
-
-
-

@@ -11,8 +11,8 @@ Charlie has best-friend and is best-friend of Dude.
 // This also works with to-many associations.
 Bob has friends and is one of the friends of Alice and Charlie.
 
-// some times you need so-called self associations: 
-Dude has partners Charlie and Dude. 
+// some times you need so-called self associations:
+Dude has partners Charlie and Dude.
 
 # Invalid Associations
 
