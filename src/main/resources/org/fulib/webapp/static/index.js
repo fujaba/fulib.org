@@ -70,6 +70,10 @@ const objectDiagramTab = document.getElementById('objectDiagramTab');
 const objectDiagramTabContent = document.getElementById('objectDiagramTabContent');
 const classDiagram = document.getElementById('classDiagram');
 
+// =============== Variables ===============
+
+let selectedExample;
+
 // =============== Initialization ===============
 
 init();
@@ -133,7 +137,7 @@ function trySetStorage(key, value) {
 function submit() {
 	const text = scenarioInputCodeMirror.getValue();
 
-	if (!localStorage.getItem(selectedExampleKey)) {
+	if (!selectedExample) {
 		trySetStorage(storedScenarioKey, text);
 	}
 
@@ -149,6 +153,7 @@ function submit() {
 	const requestBody = {
 		privacy: getPrivacy(),
 		scenarioText: text,
+		selectedExample: selectedExample,
 	};
 
 	api('POST', apiUrl + '/runcodegen', requestBody, handleResponse);
@@ -292,16 +297,16 @@ function loadExamples() {
 }
 
 function loadStoredExample() {
-	const selectedExample = localStorage.getItem(selectedExampleKey);
+	selectedExample = localStorage.getItem(selectedExampleKey) || '';
 	exampleSelect.value = selectedExample;
 	displayExample(selectedExample);
 }
 
 function selectExample(value) {
+	selectedExample = value;
 	trySetStorage(selectedExampleKey, value);
 	displayExample(value);
 }
-
 
 function displayExample(value) {
 	if (!value) {
