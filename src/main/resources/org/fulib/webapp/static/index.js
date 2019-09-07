@@ -195,7 +195,7 @@ function handleResponse(response) {
 	javaTestOutputCodeMirror.setValue(javaCode);
 
 	removeChildren(classDiagram);
-	classDiagram.innerHTML = response.classDiagram;
+	classDiagram.innerHTML = response.classDiagram || 'No model classes to display.';
 
 	displayObjectDiagrams(response);
 
