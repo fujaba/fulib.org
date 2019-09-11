@@ -4,7 +4,7 @@
 There is a University.
 
 // Note that since the university was not given a name, you refer to it as 'the university'.
-The university has 25000 students.
+The university has 16 departments.
 
 // You may provide a name:
 There is a University Uni Kassel.
