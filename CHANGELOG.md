@@ -83,3 +83,10 @@
 * Improved the page layout.
 * Updated FulibScenarios to v0.8.1 and FulibMockups to v0.2.0.
 * Updated CodeMirror to v5.48.4.
+
+# fulib.org v0.8.1
+
+* Updated FulibScenarios to v0.8.2.
+* Replaced version placeholders.
+* Fixed `undefined` class diagram and replaced it with an info text.
+* The selected example is now included in the request.

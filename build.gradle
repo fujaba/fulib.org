@@ -3,6 +3,7 @@
 plugins {
 	id 'java'
 	id 'application'
+	id 'org.fulib.fulibGradle' version '0.2.0'
 	id 'maven-publish'
 	id 'com.jfrog.bintray' version '1.8.4'
 	id 'de.clashsoft.simple-publish' version '0.3.0'
@@ -59,9 +60,11 @@ repositories {
 }
 
 dependencies {
+	fulibScenarios group: 'org.fulib', name: 'fulibScenarios', version: '[0.8.2,)'
+
 	// --------------- Fulib Libraries ---------------
 
-	compile group: 'org.fulib', name: 'fulibScenarios', version: '[0.8.1,)'
+	compile group: 'org.fulib', name: 'fulibScenarios', version: '[0.8.2,)'
 
 	compile group: 'org.fulib', name: 'fulibMockups', version: '[0.2.0,)'
 
@@ -86,14 +89,15 @@ dependencies {
 
 // --------------- Version Injection ---------------
 
-
 processResources {
 	def version = project.version.toString()
 	def fulibScenariosVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulibScenarios')
-	def fulibGradleVersion = '0.2.0'
+	def fulibGradleVersion = getDependencyVersion(buildscript.configurations.classpath, 'org.fulib.fulibGradle',
+			'org.fulib.fulibGradle.gradle.plugin')
 	def fulibMockupsVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulibMockups')
 
-	filesMatching([ 'org/fulib/webapp/static/index.html', 'org/fulib/webapp/projectzip/build.gradle', 'org/fulib/webapp/version.properties' ]) {
+	filesMatching([ 'org/fulib/webapp/static/index.html', 'org/fulib/webapp/projectzip/build.gradle',
+	                'org/fulib/webapp/version.properties' ]) {
 		filter {
 			it = it.replace('$$version$$', version)
 			it = it.replace('$$fulibScenariosVersion$$', fulibScenariosVersion)
@@ -123,4 +127,18 @@ wrapper.doLast {
 		// "Embedding Jar Files Inside Your Shadow Jar"
 		rename 'gradle-wrapper.jar', 'gradle-wrapper.jar.zip'
 	}
+}
+
+// --------------- Test Scenarios ---------------
+
+def testScenariosDir = file 'src/main/resources/org/fulib/webapp/static/examples'
+def testOutputDir = file "$buildDir/generated/sources/scenarios/java/test"
+
+sourceSets.test.scenarios.srcDir testScenariosDir
+sourceSets.test.java.srcDir testOutputDir
+
+tasks.named("generateTestScenarioSource") {
+	inputDirectory = testScenariosDir
+	modelDirectory = testOutputDir
+	testDirectory = testOutputDir
 }
