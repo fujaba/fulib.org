@@ -50,7 +50,7 @@ public class Mongo
 	{
 		final String password = System.getenv(PASSWORD_ENV_KEY);
 
-		if (password != null)
+		if (password != null && !password.isEmpty())
 		{
 			ConnectionString connString = new ConnectionString(
 				"mongodb://" + USER + ":" + password + "@" + SERVER + ":" + PORT);
