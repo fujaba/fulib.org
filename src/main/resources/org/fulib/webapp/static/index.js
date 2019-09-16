@@ -11,6 +11,11 @@ const defaultScenarioText = ''
 	+ '# Scenario My First. \n\n'
 	+ 'There is a Car with name Herbie. \n';
 
+const packageNameKey = 'packageName';
+const scenarioFileNameKey = 'scenarioFileName';
+const defaultPackageName = 'org.example';
+const defaultScenarioFileName = 'Scenario.md';
+
 const examples = [
 	'Definitions', [
 		'Basics',
@@ -70,6 +75,9 @@ const objectDiagramTab = document.getElementById('objectDiagramTab');
 const objectDiagramTabContent = document.getElementById('objectDiagramTabContent');
 const classDiagram = document.getElementById('classDiagram');
 
+const packageNameField = document.getElementById('packageNameField');
+const scenarioFileNameField = document.getElementById('scenarioFileNameField');
+
 // =============== Variables ===============
 
 let selectedExample;
@@ -82,6 +90,9 @@ function init() {
 	loadPrivacy();
 	loadExamples();
 	loadStoredExample();
+
+	packageNameField.value = localStorage.getItem(packageNameKey) || defaultPackageName;
+	scenarioFileNameField.value = localStorage.getItem(scenarioFileNameKey) || defaultScenarioFileName;
 
 	// enable tooltips
 	$(function() {
@@ -339,9 +350,16 @@ function displayExample(value) {
 // --------------- Download Zip ---------------
 
 function downloadProjectZip() {
+	const packageName = packageNameField.value || defaultPackageName;
+	trySetStorage(packageNameKey, packageName);
+	const scenarioFileName = scenarioFileNameField.value || defaultScenarioFileName;
+	trySetStorage(scenarioFileNameKey, scenarioFileName);
+
 	const text = scenarioInputCodeMirror.getValue();
 	const body = JSON.stringify({
 		privacy: getPrivacy(),
+		packageName: packageName,
+		scenarioFileName: scenarioFileName,
 		scenarioText: text,
 	});
 	const request = new XMLHttpRequest();

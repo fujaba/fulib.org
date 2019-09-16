@@ -28,6 +28,8 @@ public class ProjectZip
 	{
 		final String body = request.body();
 		final JSONObject jsonObject = new JSONObject(body);
+		final String packageName = jsonObject.getString("packageName");
+		final String fileName = jsonObject.getString("scenarioFileName");
 		final String bodyText = jsonObject.getString("scenarioText");
 
 		response.type("application/zip");
@@ -35,7 +37,7 @@ public class ProjectZip
 		{
 			final byte[] buffer = new byte[8192];
 
-			zip.putNextEntry(new ZipEntry("src/main/scenarios/webapp/scenario.md"));
+			zip.putNextEntry(new ZipEntry("src/main/scenarios/" + packageName.replace('.', '/') + "/" + fileName));
 			zip.write(bodyText.getBytes(StandardCharsets.UTF_8));
 
 			for (final String file : staticFiles)
