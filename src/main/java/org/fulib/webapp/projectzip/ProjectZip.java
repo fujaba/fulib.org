@@ -1,4 +1,4 @@
-package org.fulib.webapp.tool;
+package org.fulib.webapp.projectzip;
 
 import org.fulib.webapp.mongo.Mongo;
 import org.json.JSONException;
@@ -34,7 +34,7 @@ public class ProjectZip
 		final String bodyText = jsonObject.getString("scenarioText");
 
 		response.type("application/zip");
-		try (ZipOutputStream zip = new ZipOutputStream(response.raw().getOutputStream()))
+		try (final ZipOutputStream zip = new ZipOutputStream(response.raw().getOutputStream()))
 		{
 			final byte[] buffer = new byte[8192];
 
@@ -44,10 +44,8 @@ public class ProjectZip
 			for (final String file : staticFiles)
 			{
 				zip.putNextEntry(new ZipEntry(file));
-				final String resourceName = file.endsWith(".jar") ?
-					                            "/org/fulib/webapp/projectzip/" + file + ".zip" :
-					                            "/org/fulib/webapp/projectzip/" + file;
-				try (InputStream fileInput = ProjectZip.class.getResourceAsStream(resourceName))
+				final String resourceName = file.endsWith(".jar") ? file + ".zip" : file;
+				try (final InputStream fileInput = ProjectZip.class.getResourceAsStream(resourceName))
 				{
 					copy(buffer, fileInput, zip);
 				}
