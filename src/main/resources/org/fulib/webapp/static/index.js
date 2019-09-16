@@ -2,19 +2,24 @@
 
 const apiUrl = '';
 
-const privacyKey = 'privacy';
-const storedScenarioKey = 'fulibScenario';
-const selectedExampleKey = 'selectedExample';
+const persistenceKeys = {
+	privacy: 'privacy',
+	storedScenario: 'storedScenario',
+	selectedExample: 'selectedExample',
+	packageName: 'packageName',
+	scenarioFileName: 'scenarioFileName',
+};
 
-const defaultScenarioText = ''
-	+ '// start typing your scenario or select an example using the dropdown above.\n\n'
-	+ '# Scenario My First. \n\n'
-	+ 'There is a Car with name Herbie. \n';
+const defaults = {
+	scenarioText: `// start typing your scenario or select an example using the dropdown above.
 
-const packageNameKey = 'packageName';
-const scenarioFileNameKey = 'scenarioFileName';
-const defaultPackageName = 'org.example';
-const defaultScenarioFileName = 'Scenario.md';
+# Scenario My First. 
+
+There is a Car with name Herbie. 
+`,
+	packageName: 'org.example',
+	scenarioFileName: 'Scenario.md',
+};
 
 const examples = [
 	'Definitions', [
@@ -37,7 +42,7 @@ const examples = [
 		'Modifying Data',
 		'Conditionals',
 		'Loops',
-	]
+	],
 ];
 
 const exampleSelect = document.getElementById('exampleSelect');
@@ -91,13 +96,13 @@ function init() {
 	loadExamples();
 	loadStoredExample();
 
-	packageNameField.value = localStorage.getItem(packageNameKey) || defaultPackageName;
-	scenarioFileNameField.value = localStorage.getItem(scenarioFileNameKey) || defaultScenarioFileName;
+	packageNameField.value = localStorage.getItem(persistenceKeys.packageName) || defaults.packageName;
+	scenarioFileNameField.value = localStorage.getItem(persistenceKeys.scenarioFileName) || defaults.scenarioFileName;
 
 	// enable tooltips
 	$(function() {
-		$('[data-toggle="tooltip"]').tooltip()
-	})
+		$('[data-toggle="tooltip"]').tooltip();
+	});
 }
 
 // =============== Functions ===============
@@ -105,7 +110,7 @@ function init() {
 // --------------- Privacy ---------------
 
 function loadPrivacy() {
-	let privacy = localStorage.getItem(privacyKey);
+	let privacy = localStorage.getItem(persistenceKeys.privacy);
 
 	if (!privacy) {
 		privacy = 'none';
@@ -122,22 +127,20 @@ function savePrivacy() {
 	console.log('setting privacy: ' + value);
 	if (value === 'none') {
 		localStorage.clear();
-	}
-	else if (value === 'nobanner') {
+	} else if (value === 'nobanner') {
 		localStorage.clear();
-		localStorage.setItem(privacyKey, value);
-	}
-	else {
-		localStorage.setItem(privacyKey, value);
+		localStorage.setItem(persistenceKeys.privacy, value);
+	} else {
+		localStorage.setItem(persistenceKeys.privacy, value);
 	}
 }
 
 function getPrivacy() {
-	return localStorage.getItem(privacyKey) || 'none';
+	return localStorage.getItem(persistenceKeys.privacy) || 'none';
 }
 
 function trySetStorage(key, value) {
-	let privacy = localStorage.getItem(privacyKey);
+	let privacy = localStorage.getItem(persistenceKeys.privacy);
 	if (privacy === 'all' || privacy === 'local') {
 		localStorage.setItem(key, value);
 	}
@@ -149,7 +152,7 @@ function submit() {
 	const text = scenarioInputCodeMirror.getValue();
 
 	if (!selectedExample) {
-		trySetStorage(storedScenarioKey, text);
+		trySetStorage(persistenceKeys.storedScenario, text);
 	}
 
 	removeChildren(objectDiagrams);
@@ -308,20 +311,20 @@ function loadExamples() {
 }
 
 function loadStoredExample() {
-	selectedExample = localStorage.getItem(selectedExampleKey) || '';
+	selectedExample = localStorage.getItem(persistenceKeys.selectedExample) || '';
 	exampleSelect.value = selectedExample;
 	displayExample(selectedExample);
 }
 
 function selectExample(value) {
 	selectedExample = value;
-	trySetStorage(selectedExampleKey, value);
+	trySetStorage(persistenceKeys.selectedExample, value);
 	displayExample(value);
 }
 
 function displayExample(value) {
 	if (!value) {
-		const storedScenarioText = localStorage.getItem(storedScenarioKey) || defaultScenarioText;
+		const storedScenarioText = localStorage.getItem(persistenceKeys.storedScenario) || defaults.scenarioText;
 		scenarioInputCodeMirror.setValue(storedScenarioText);
 		submit();
 		return;
@@ -350,10 +353,10 @@ function displayExample(value) {
 // --------------- Download Zip ---------------
 
 function downloadProjectZip() {
-	const packageName = packageNameField.value || defaultPackageName;
-	trySetStorage(packageNameKey, packageName);
-	const scenarioFileName = scenarioFileNameField.value || defaultScenarioFileName;
-	trySetStorage(scenarioFileNameKey, scenarioFileName);
+	const packageName = packageNameField.value || defaults.packageName;
+	trySetStorage(persistenceKeys.packageName, packageName);
+	const scenarioFileName = scenarioFileNameField.value || defaults.scenarioFileName;
+	trySetStorage(persistenceKeys.scenarioFileName, scenarioFileName);
 
 	const text = scenarioInputCodeMirror.getValue();
 	const body = JSON.stringify({
