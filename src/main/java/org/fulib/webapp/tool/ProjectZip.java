@@ -1,5 +1,6 @@
 package org.fulib.webapp.tool;
 
+import org.fulib.webapp.mongo.Mongo;
 import org.json.JSONException;
 import org.json.JSONObject;
 import spark.Request;
@@ -51,6 +52,11 @@ public class ProjectZip
 					copy(buffer, fileInput, zip);
 				}
 			}
+		}
+
+		if (jsonObject.has("privacy") && "all".equals(jsonObject.get("privacy")))
+		{
+			Mongo.get().log(request.ip(), request.userAgent(), body, "{}");
 		}
 
 		return response.raw();
