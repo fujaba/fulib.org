@@ -46,6 +46,7 @@ const examples = [
 ];
 
 const exampleSelect = document.getElementById('exampleSelect');
+const exampleWarning = document.getElementById('exampleWarning');
 
 const scenarioInput = document.getElementById('scenarioInput');
 const scenarioInputCodeMirror = CodeMirror.fromTextArea(scenarioInput, {
@@ -333,6 +334,8 @@ function loadStoredExample() {
 }
 
 function selectExample(value) {
+	exampleWarning.hidden = !value;
+
 	selectedExample = value;
 	trySetStorage(persistenceKeys.selectedExample, value);
 	displayExample(value);
