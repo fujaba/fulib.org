@@ -189,11 +189,13 @@ function submit() {
 
 function handleResponse(response) {
 	function foldInternalCalls(outputLines) {
+		const packageNamePrefix = `\tat ${(packageNameField.value || defaults.packageName).replace('/', '.')}.`;
 		const result = [];
 		let counter = 0;
 		for (let line of outputLines) {
 			if (line.startsWith('\tat org.fulib.scenarios.tool.') ||
-				line.startsWith('\tat ') && !line.startsWith('\tat org.fulib.')) {
+				line.startsWith('\tat ') && !line.startsWith('\tat org.fulib.') &&
+				!line.startsWith(packageNamePrefix)) {
 				counter++;
 			} else {
 				if (counter > 0) {
