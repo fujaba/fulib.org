@@ -13,11 +13,11 @@ const persistenceKeys = {
 };
 
 const defaults = {
-	scenarioText: `// start typing your scenario or select an example using the dropdown above.
+	scenarioText: `# My First Scenario
 
-# Scenario My First. 
+// start typing your scenario or select an example using the dropdown above.
 
-There is a Car with name Herbie. 
+There is a Car with name Herbie.
 `,
 	packageName: 'org.example',
 	scenarioFileName: 'Scenario.md',
