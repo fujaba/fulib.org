@@ -93,9 +93,9 @@ init();
 
 function init() {
 	loadPrivacy();
+	loadConfig();
 	loadExamples();
 	loadStoredExample();
-	loadConfig();
 
 	// enable tooltips
 	$(function() {
@@ -178,6 +178,8 @@ function submit() {
 
 	const requestBody = {
 		privacy: getPrivacy(),
+		packageName: packageNameField.value || defaults.packageName,
+		scenarioFileName: scenarioFileNameField.value || defaults.scenarioFileName,
 		scenarioText: text,
 		selectedExample: selectedExample,
 	};

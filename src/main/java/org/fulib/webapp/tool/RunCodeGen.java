@@ -19,17 +19,13 @@ import java.util.logging.Logger;
 public class RunCodeGen
 {
 	private static final String TEMP_DIR_PREFIX    = "fulibScenarios";
-	private static final String PACKAGE_NAME       = "webapp";
-	private static final String SCENARIO_FILE_NAME = "scenario.md";
 
 	public static String handle(Request req, Response res) throws Exception
 	{
 		final Path codegendir = Files.createTempDirectory(TEMP_DIR_PREFIX);
 		final Path srcDir = codegendir.resolve("src");
-		final Path mainPackageDir = srcDir.resolve(PACKAGE_NAME);
 		final Path modelSrcDir = codegendir.resolve("model_src");
 		final Path testSrcDir = codegendir.resolve("test_src");
-		final Path scenarioFile = mainPackageDir.resolve(SCENARIO_FILE_NAME);
 		final Path modelClassesDir = codegendir.resolve("model_classes");
 		final Path testClassesDir = codegendir.resolve("test_classes");
 
@@ -38,11 +34,14 @@ public class RunCodeGen
 			final String body = req.body();
 			final JSONObject jsonObject = new JSONObject(body);
 			final String bodyText = jsonObject.getString("scenarioText");
+			final String packageName = jsonObject.getString("packageName");
+			final String packageDir = packageName.replace('.', '/');
+			final String scenarioFileName = jsonObject.getString("scenarioFileName");
+			final Path packagePath = srcDir.resolve(packageDir);
 
 			// create source directory and write source scenario file
-			Files.createDirectories(srcDir);
-			Files.createDirectories(mainPackageDir);
-			Files.write(scenarioFile, bodyText.getBytes(StandardCharsets.UTF_8));
+			Files.createDirectories(packagePath);
+			Files.write(packagePath.resolve(scenarioFileName), bodyText.getBytes(StandardCharsets.UTF_8));
 
 			// create output directories
 			Files.createDirectories(modelSrcDir);
@@ -79,7 +78,7 @@ public class RunCodeGen
 				result.put("testMethods", methodArray);
 
 				// read class diagram
-				final Path classDiagramFile = modelSrcDir.resolve(PACKAGE_NAME).resolve("classDiagram.svg");
+				final Path classDiagramFile = modelSrcDir.resolve(packageDir).resolve("classDiagram.svg");
 				if (Files.exists(classDiagramFile))
 				{
 					final byte[] bytes = Files.readAllBytes(classDiagramFile);
@@ -87,7 +86,7 @@ public class RunCodeGen
 					result.put("classDiagram", svgText);
 				}
 
-				final JSONArray objectDiagrams = collectObjectDiagrams(bodyText, srcDir);
+				final JSONArray objectDiagrams = collectObjectDiagrams(bodyText, packagePath);
 				result.put("objectDiagrams", objectDiagrams);
 			}
 
@@ -107,17 +106,16 @@ public class RunCodeGen
 		}
 	}
 
-	private static JSONArray collectObjectDiagrams(String scenarioText, Path srcDir) throws IOException
+	private static JSONArray collectObjectDiagrams(String scenarioText, Path packagePath) throws IOException
 	{
 		final JSONArray objectDiagrams = new JSONArray();
-		final Path srcPackage = srcDir.resolve(PACKAGE_NAME);
 
 		// sorting is O(n log n) with n = number of object diagrams,
 		// while a comparison takes O(m) steps to search for the occurrence in the text of length m.
 		// thus, we use a cache for the index of occurrence to avoid excessive searching during sort.
 		final Map<Path, Integer> diagramOccurrenceMap = new HashMap<>();
 
-		Files.walk(srcPackage).filter(file -> {
+		Files.walk(packagePath).filter(file -> {
 			final String fileName = file.toString();
 			return fileName.endsWith(".svg") || fileName.endsWith(".png") //
 			       || fileName.endsWith(".yaml") || fileName.endsWith(".html") || fileName.endsWith(".txt");
@@ -128,7 +126,7 @@ public class RunCodeGen
 				return cached;
 			}
 
-			final String fileName = srcPackage.relativize(path).toString();
+			final String fileName = packagePath.relativize(path).toString();
 			int index = scenarioText.indexOf(fileName);
 			if (index < 0)
 			{
@@ -140,7 +138,7 @@ public class RunCodeGen
 			diagramOccurrenceMap.put(path, index);
 			return index;
 		})).forEach(file -> {
-			final String relativeName = srcPackage.relativize(file).toString();
+			final String relativeName = packagePath.relativize(file).toString();
 			addObjectDiagram(objectDiagrams, file, relativeName);
 		});
 		return objectDiagrams;
