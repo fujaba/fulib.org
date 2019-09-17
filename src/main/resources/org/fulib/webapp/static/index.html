@@ -62,8 +62,8 @@
 				</button>
 				&mdash;
 				<button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal"
-				        data-target="#gradleModal">
-					Download as Gradle Project
+				        data-target="#configModal">
+					Configure Project
 				</button>
 			</p>
 		</div>
@@ -211,12 +211,12 @@
 	</div>
 </div>
 
-<div class="modal fade" id="gradleModal" tabindex="-1" role="dialog" aria-labelledby="gradleModalLabel"
+<div class="modal fade" id="configModal" tabindex="-1" role="dialog" aria-labelledby="configModalLabel"
      aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="gradleModalLabel">Configure Gradle Project</h5>
+				<h5 class="modal-title" id="configModalLabel">Configure Project</h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
@@ -231,6 +231,24 @@
 						<label for="scenarioFileNameField">Scenario File Name</label>
 						<input type="text" class="form-control" id="scenarioFileNameField" placeholder="Scenario.md">
 					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" onclick="saveConfig()" data-dismiss="modal">
+					Save & Close
+				</button>
+			</div>
+			<div class="modal-header">
+				<h5 class="modal-title">Download as Gradle Project</h5>
+			</div>
+			<div class="modal-body">
+				<p>
+					You can download your scenario prepared as a Gradle project.
+					Just extract the downloaded Zip file to a folder and open it with your favorite IDE.
+					Make sure to run the <code>check</code> task afterwards to generate Java classes and execute the
+					tests.
+				</p>
+				<form>
 					<!--
 					<div class="form-check">
 						<input type="checkbox" class="form-check-input" id="includeJavaFXCheckBox">
@@ -240,10 +258,7 @@
 				</form>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">
-					Close
-				</button>
-				<button type="button" class="btn btn-primary" onclick="downloadProjectZip()">
+				<button type="button" class="btn btn-success" onclick="downloadProjectZip()">
 					Download
 				</button>
 			</div>

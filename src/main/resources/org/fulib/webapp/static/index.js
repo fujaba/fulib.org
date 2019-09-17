@@ -95,9 +95,7 @@ function init() {
 	loadPrivacy();
 	loadExamples();
 	loadStoredExample();
-
-	packageNameField.value = localStorage.getItem(persistenceKeys.packageName) || defaults.packageName;
-	scenarioFileNameField.value = localStorage.getItem(persistenceKeys.scenarioFileName) || defaults.scenarioFileName;
+	loadConfig();
 
 	// enable tooltips
 	$(function() {
@@ -144,6 +142,20 @@ function trySetStorage(key, value) {
 	if (privacy === 'all' || privacy === 'local') {
 		localStorage.setItem(key, value);
 	}
+}
+
+// --------------- Config ---------------
+
+function loadConfig() {
+	packageNameField.value = localStorage.getItem(persistenceKeys.packageName) || defaults.packageName;
+	scenarioFileNameField.value = localStorage.getItem(persistenceKeys.scenarioFileName) || defaults.scenarioFileName;
+}
+
+function saveConfig() {
+	const packageName = packageNameField.value || defaults.packageName;
+	const scenarioFileName = scenarioFileNameField.value || defaults.scenarioFileName;
+	trySetStorage(persistenceKeys.packageName, packageName);
+	trySetStorage(persistenceKeys.scenarioFileName, scenarioFileName);
 }
 
 // --------------- Submit ---------------
@@ -353,17 +365,13 @@ function displayExample(value) {
 // --------------- Download Zip ---------------
 
 function downloadProjectZip() {
-	const packageName = packageNameField.value || defaults.packageName;
-	trySetStorage(persistenceKeys.packageName, packageName);
-	const scenarioFileName = scenarioFileNameField.value || defaults.scenarioFileName;
-	trySetStorage(persistenceKeys.scenarioFileName, scenarioFileName);
+	saveConfig();
 
-	const text = scenarioInputCodeMirror.getValue();
 	const body = JSON.stringify({
 		privacy: getPrivacy(),
-		packageName: packageName,
-		scenarioFileName: scenarioFileName,
-		scenarioText: text,
+		packageName: packageNameField.value || defaults.packageName,
+		scenarioFileName: scenarioFileNameField.value || defaults.scenarioFileName,
+		scenarioText: scenarioInputCodeMirror.getValue(),
 	});
 	const request = new XMLHttpRequest();
 
