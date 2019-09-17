@@ -51,20 +51,19 @@
 				<select id="exampleSelect" onchange="selectExample(this.value)">
 					<option value="">-</option>
 				</select>
+				<span class="float-right">
+					<button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal"
+					        data-target="#configModal">
+						Configure Project
+					</button>
+					<button type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip"
+					        title="Shortcuts: Ctrl-&#9166; / &#8984;&#9166;, Ctrl-S / &#8984;S" onclick="submit()">
+						Compile and Run
+					</button>
+				</span>
 			</p>
 			<p>
 				<textarea class="form-control" id="scenarioInput"></textarea>
-			</p>
-			<p>
-				<button type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip"
-				        title="Shortcuts: Ctrl-&#9166; / &#8984;&#9166;, Ctrl-S / &#8984;S" onclick="submit()">
-					Compile and Run
-				</button>
-				&mdash;
-				<button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal"
-				        data-target="#configModal">
-					Configure Project
-				</button>
 			</p>
 		</div>
 
