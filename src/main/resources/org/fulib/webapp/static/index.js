@@ -8,6 +8,8 @@ const persistenceKeys = {
 	selectedExample: 'selectedExample',
 	packageName: 'packageName',
 	scenarioFileName: 'scenarioFileName',
+	projectName: 'projectName',
+	projectVersion: 'projectVersion',
 };
 
 const defaults = {
@@ -19,6 +21,8 @@ There is a Car with name Herbie.
 `,
 	packageName: 'org.example',
 	scenarioFileName: 'Scenario.md',
+	projectName: 'scenario',
+	projectVersion: '0.1.0',
 };
 
 const examples = [
@@ -83,6 +87,8 @@ const classDiagram = document.getElementById('classDiagram');
 
 const packageNameField = document.getElementById('packageNameField');
 const scenarioFileNameField = document.getElementById('scenarioFileNameField');
+const projectNameField = document.getElementById('projectNameField');
+const projectVersionField = document.getElementById('projectVersionField');
 
 // =============== Variables ===============
 
@@ -150,13 +156,15 @@ function trySetStorage(key, value) {
 function loadConfig() {
 	packageNameField.value = localStorage.getItem(persistenceKeys.packageName) || defaults.packageName;
 	scenarioFileNameField.value = localStorage.getItem(persistenceKeys.scenarioFileName) || defaults.scenarioFileName;
+	projectNameField.value = localStorage.getItem(persistenceKeys.projectName) || defaults.projectName;
+	projectVersionField.value = localStorage.getItem(persistenceKeys.projectVersion) || defaults.projectVersion;
 }
 
 function saveConfig() {
-	const packageName = packageNameField.value || defaults.packageName;
-	const scenarioFileName = scenarioFileNameField.value || defaults.scenarioFileName;
-	trySetStorage(persistenceKeys.packageName, packageName);
-	trySetStorage(persistenceKeys.scenarioFileName, scenarioFileName);
+	trySetStorage(persistenceKeys.packageName, packageNameField.value || defaults.packageName);
+	trySetStorage(persistenceKeys.scenarioFileName, scenarioFileNameField.value || defaults.scenarioFileName);
+	trySetStorage(persistenceKeys.projectName, projectNameField.value || defaults.projectName);
+	trySetStorage(persistenceKeys.projectVersion, projectVersionField.value || defaults.projectVersion);
 }
 
 // --------------- Submit ---------------
@@ -378,6 +386,8 @@ function downloadProjectZip() {
 		privacy: getPrivacy(),
 		packageName: packageNameField.value || defaults.packageName,
 		scenarioFileName: scenarioFileNameField.value || defaults.scenarioFileName,
+		projectName: projectNameField.value || defaults.projectName,
+		projectVersion: projectVersionField.value || defaults.projectVersion,
 		scenarioText: scenarioInputCodeMirror.getValue(),
 	});
 	const request = new XMLHttpRequest();

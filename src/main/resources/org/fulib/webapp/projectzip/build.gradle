@@ -3,8 +3,8 @@ plugins {
 	id 'org.fulib.fulibGradle' version '$$fulibGradleVersion$$'
 }
 
-group 'webapp'
-version '1.0-SNAPSHOT'
+group = '$$packageName$$'
+version = '$$projectVersion$$'
 
 sourceCompatibility = 1.8
 

@@ -1,5 +1,6 @@
 package org.fulib.webapp.projectzip;
 
+import org.apache.commons.io.IOUtils;
 import org.fulib.webapp.mongo.Mongo;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -8,7 +9,6 @@ import spark.Response;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -16,8 +16,6 @@ import java.util.zip.ZipOutputStream;
 public class ProjectZip
 {
 	private static String[] staticFiles = {
-		// config
-		"build.gradle", "settings.gradle",
 		// scripts
 		"gradlew", "gradlew.bat",
 		// wrapper
@@ -31,6 +29,8 @@ public class ProjectZip
 		final JSONObject jsonObject = new JSONObject(body);
 		final String packageName = jsonObject.getString("packageName");
 		final String fileName = jsonObject.getString("scenarioFileName");
+		final String projectName = jsonObject.getString("projectName");
+		final String projectVersion = jsonObject.getString("projectVersion");
 		final String bodyText = jsonObject.getString("scenarioText");
 
 		response.type("application/zip");
@@ -47,8 +47,25 @@ public class ProjectZip
 				final String resourceName = file.endsWith(".jar") ? file + ".zip" : file;
 				try (final InputStream fileInput = ProjectZip.class.getResourceAsStream(resourceName))
 				{
-					copy(buffer, fileInput, zip);
+					IOUtils.copyLarge(fileInput, zip, buffer);
 				}
+			}
+
+			zip.putNextEntry(new ZipEntry("settings.gradle"));
+			try (final InputStream input = ProjectZip.class.getResourceAsStream("settings.gradle"))
+			{
+				final String content = IOUtils.toString(input, StandardCharsets.UTF_8);
+				final String result = content.replace("$$projectName$$", projectName);
+				IOUtils.write(result, zip, StandardCharsets.UTF_8);
+			}
+
+			zip.putNextEntry(new ZipEntry("build.gradle"));
+			try (final InputStream input = ProjectZip.class.getResourceAsStream("build.gradle"))
+			{
+				final String content = IOUtils.toString(input, StandardCharsets.UTF_8);
+				final String result = content.replace("$$packageName$$", packageName)
+				                             .replace("$$projectVersion$$", projectVersion);
+				IOUtils.write(result, zip, StandardCharsets.UTF_8);
 			}
 		}
 
@@ -58,14 +75,5 @@ public class ProjectZip
 		}
 
 		return response.raw();
-	}
-
-	private static void copy(byte[] buffer, InputStream from, OutputStream to) throws IOException
-	{
-		int read;
-		while ((read = from.read(buffer)) > 0)
-		{
-			to.write(buffer, 0, read);
-		}
 	}
 }
