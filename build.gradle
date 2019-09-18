@@ -60,7 +60,7 @@ repositories {
 }
 
 dependencies {
-	fulibScenarios group: 'org.fulib', name: 'fulibScenarios', version: '[0.8.2,)'
+	fulibScenarios group: 'org.fulib', name: 'fulibScenarios', version: '[0.9.0,)'
 
 	// --------------- Fulib Libraries ---------------
 
