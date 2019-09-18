@@ -46,22 +46,26 @@
 	<div class="row pb-4">
 		<div class="col-md-12 col-lg-6">
 			<h2>Scenario</h2>
-			<div style="min-height: 2.5rem">
-				<label for="exampleSelect">Load Example:</label>
-				<select id="exampleSelect" onchange="selectExample(this.value)">
-					<option value="">-</option>
-				</select>
-				<span id="exampleWarning" class="text-danger" hidden>Changes to the example will not be saved!</span>
-				<span class="float-right">
+			<div class="d-flex flex-wrap align-items-baseline" style="min-height: 2.5rem; margin-left: -.25rem; /* = ml-1 ">
+				<div class="mr-auto pl-1">
+					<label for="exampleSelect">Load Example:</label>
+					<select id="exampleSelect" onchange="selectExample(this.value)">
+						<option value="">-</option>
+					</select>
+					<span id="exampleWarning" class="text-danger" hidden>Changes to the example will not be saved!</span>
+				</div>
+				<div class="pl-1">
 					<button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal"
 					        data-target="#configModal">
 						Configure Project
 					</button>
+				</div>
+				<div class="pl-1">
 					<button type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip"
 					        title="Shortcuts: Ctrl-&#9166; / &#8984;&#9166;, Ctrl-S / &#8984;S" onclick="submit()">
 						Compile and Run
 					</button>
-				</span>
+				</div>
 			</div>
 			<textarea class="form-control" id="scenarioInput"></textarea>
 		</div>
