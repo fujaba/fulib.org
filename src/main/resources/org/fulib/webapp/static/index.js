@@ -54,6 +54,7 @@ const exampleWarning = document.getElementById('exampleWarning');
 
 const scenarioInput = document.getElementById('scenarioInput');
 const scenarioInputCodeMirror = CodeMirror.fromTextArea(scenarioInput, {
+	theme: 'idea',
 	mode: 'markdown',
 	lineNumbers: true,
 	lineWrapping: true,
@@ -68,6 +69,7 @@ const scenarioInputCodeMirror = CodeMirror.fromTextArea(scenarioInput, {
 
 const javaTestOutput = document.getElementById('javaTestOutput');
 const javaTestOutputCodeMirror = CodeMirror.fromTextArea(javaTestOutput, {
+	theme: 'idea',
 	lineNumbers: true,
 	matchBrackets: true,
 	readOnly: true,
@@ -420,21 +422,32 @@ function downloadProjectZip() {
 function loadTheme() {
 	const darkThemeSelected = localStorage.getItem('darkSwitch') === 'dark';
 	darkSwitch.checked = darkThemeSelected;
-	if (darkThemeSelected) {
-		document.body.setAttribute('data-theme', 'dark');
-	} else {
-		document.body.removeAttribute('data-theme');
-	}
+	displayDarkMode(darkThemeSelected);
 }
 
 function updateTheme() {
+	displayDarkMode(darkSwitch.checked);
+
+	// save
 	if (darkSwitch.checked) {
-		document.body.setAttribute('data-theme', 'dark');
 		trySetStorage('darkSwitch', 'dark');
 	} else {
-		document.body.removeAttribute('data-theme');
 		localStorage.removeItem('darkSwitch');
 	}
+}
+
+function displayDarkMode(enabled) {
+	let editorTheme;
+	if (enabled) {
+		document.body.setAttribute('data-theme', 'dark');
+		editorTheme = 'darcula';
+	} else {
+		document.body.removeAttribute('data-theme');
+		editorTheme = 'idea';
+	}
+
+	scenarioInputCodeMirror.setOption('theme', editorTheme);
+	javaTestOutputCodeMirror.setOption('theme', editorTheme);
 }
 
 // --------------- Helpers ---------------
