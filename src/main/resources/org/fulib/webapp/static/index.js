@@ -90,6 +90,8 @@ const scenarioFileNameField = document.getElementById('scenarioFileNameField');
 const projectNameField = document.getElementById('projectNameField');
 const projectVersionField = document.getElementById('projectVersionField');
 
+const darkSwitch = document.getElementById('darkSwitch');
+
 // =============== Variables ===============
 
 let selectedExample;
@@ -103,6 +105,7 @@ function init() {
 	loadConfig();
 	loadExamples();
 	loadStoredExample();
+	loadTheme();
 
 	// enable tooltips
 	$(function() {
@@ -408,6 +411,30 @@ function downloadProjectZip() {
 		}
 	});
 	request.send(body);
+}
+
+// --------------- Dark Mode ---------------
+
+// adapted from https://github.com/coliff/dark-mode-switch
+
+function loadTheme() {
+	const darkThemeSelected = localStorage.getItem('darkSwitch') === 'dark';
+	darkSwitch.checked = darkThemeSelected;
+	if (darkThemeSelected) {
+		document.body.setAttribute('data-theme', 'dark');
+	} else {
+		document.body.removeAttribute('data-theme');
+	}
+}
+
+function updateTheme() {
+	if (darkSwitch.checked) {
+		document.body.setAttribute('data-theme', 'dark');
+		trySetStorage('darkSwitch', 'dark');
+	} else {
+		document.body.removeAttribute('data-theme');
+		localStorage.removeItem('darkSwitch');
+	}
 }
 
 // --------------- Helpers ---------------

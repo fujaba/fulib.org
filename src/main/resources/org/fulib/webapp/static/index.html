@@ -10,6 +10,8 @@
 	      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
 	      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 	      crossorigin="anonymous">
+	<!-- Dark mode CSS from dark-mode-switch -->
+	<link rel="stylesheet" href="https://coliff.github.io/dark-mode-switch/dark-mode.css"/>
 	<!-- CodeMirror -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.min.css"
 	      integrity="sha256-vZ3SaLOjnKO/gGvcUWegySoDU6ff33CS5i9ot8J9Czk=" crossorigin="anonymous"/>
@@ -78,17 +80,17 @@
 					     style="width: 24.25%">
 						Scenario Compiler
 					</div>
-					<div class="progress-bar bg-transparent" role="progressbar" style="width: 1%"></div>
+					<div class="progress-bar bg-light" role="progressbar" style="width: 1%"></div>
 					<div id="modelCompileProgress" class="progress-bar bg-success" role="progressbar"
 					     style="width: 24.25%">
 						Java Model Compiler
 					</div>
-					<div class="progress-bar bg-transparent" role="progressbar" style="width: 1%"></div>
+					<div class="progress-bar bg-light" role="progressbar" style="width: 1%"></div>
 					<div id="testCompileProgress" class="progress-bar bg-success" role="progressbar"
 					     style="width: 24.25%">
 						Java Test Compiler
 					</div>
-					<div class="progress-bar bg-transparent" role="progressbar" style="width: 1%"></div>
+					<div class="progress-bar bg-light" role="progressbar" style="width: 1%"></div>
 					<div id="testRunProgress" class="progress-bar bg-success" role="progressbar" style="width: 24.25%">
 						Test Run
 					</div>
@@ -127,6 +129,10 @@
 		<a href="https://github.com/fujaba/fulibMockups" title="Fulib Mockups on GitHub">Fulib Mockups</a>
 		v$$fulibMockupsVersion$$
 	</p>
+	<div class="custom-control custom-switch">
+		<input type="checkbox" class="custom-control-input" id="darkSwitch" onchange="updateTheme()">
+		<label class="custom-control-label" for="darkSwitch">Dark Mode</label>
+	</div>
 	<p>
 		<a href="#" data-toggle="modal" data-target="#feedbackModal">Leave Feedback</a>
 		&mdash;
@@ -147,7 +153,7 @@
      aria-labelledby="privacyModalLabel"
      aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered" role="document">
-		<div class="modal-content">
+		<div class="bg-light modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="privacyModalLabel">We value your privacy!</h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -211,7 +217,7 @@
 <div class="modal fade" id="configModal" tabindex="-1" role="dialog" aria-labelledby="configModalLabel"
      aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered" role="document">
-		<div class="modal-content">
+		<div class="bg-light modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="configModalLabel">Configure Project</h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -278,7 +284,7 @@
      aria-labelledby="feedbackModalLabel"
      aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered" role="document">
-		<div class="modal-content">
+		<div class="bg-light modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="feedbackModalLabel">Leave Feedback</h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
