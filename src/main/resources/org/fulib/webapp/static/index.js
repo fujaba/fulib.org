@@ -347,14 +347,14 @@ function loadStoredExample() {
 }
 
 function selectExample(value) {
-	exampleWarning.hidden = !value;
-
 	selectedExample = value;
 	trySetStorage(persistenceKeys.selectedExample, value);
 	displayExample(value);
 }
 
 function displayExample(value) {
+	exampleWarning.hidden = !value;
+
 	if (!value) {
 		const storedScenarioText = localStorage.getItem(persistenceKeys.storedScenario) || defaults.scenarioText;
 		scenarioInputCodeMirror.setValue(storedScenarioText);
