@@ -23,3 +23,25 @@ body {
 	/* Set the fixed height of the footer here */
 	height:   60px;
 }
+
+/* --------------- Dark Mode --------------- */
+
+[data-theme="dark"] img,
+[data-theme="dark"] svg {
+	filter: invert(100%);
+}
+
+[data-theme="dark"] .nav-link.active,
+[data-theme="dark"] .form-control {
+	color:            #fff;
+	background-color: #222;
+}
+
+[data-theme="dark"] pre {
+	color: #eee;
+}
+
+[data-theme="dark"] .close {
+	color:   #eee;
+	opacity: 1;
+}
