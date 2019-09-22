@@ -22,3 +22,9 @@ Amazon has products Sneakers and Pumps.
 The Pumps has price 42.42.
 
 ![Sneakers, Pumps](images/products_later.svg)
+
+// Objects can be shown in text format using the .txt extension:
+![Sneakers, Pumps](images/products.txt)
+
+// The .tables.html format shows nicely formatted tables:
+![Amazon](images/products.tables.html)
