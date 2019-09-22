@@ -1,6 +1,5 @@
 package org.fulib.webapp;
 
-import org.fulib.webapp.WebService;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -46,6 +45,8 @@ public class TestCodeGenService
 				"";
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("scenarioText", scenarioText);
+		jsonObject.put("scenarioFileName", "Test.md");
+		jsonObject.put("packageName", "org.example");
 
 		String jsonText = jsonObject.toString(3);
 		byte[] out = jsonText.getBytes(StandardCharsets.UTF_8);
