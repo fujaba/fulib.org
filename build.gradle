@@ -60,7 +60,7 @@ repositories {
 }
 
 dependencies {
-	fulibScenarios group: 'org.fulib', name: 'fulibScenarios', version: '[0.9.0,)'
+	fulibScenarios group: 'org.fulib', name: 'fulibScenarios', version: '[0.9.1,)'
 
 	// --------------- Fulib Libraries ---------------
 
@@ -120,7 +120,7 @@ wrapper.doLast {
 	copy {
 		from '.'
 		include 'gradle/wrapper/**', 'gradlew', 'gradlew.bat'
-		into 'src/main/resources/projectzip'
+		into 'src/main/resources/org/fulib/webapp/projectzip'
 
 		// we have to save the wrapper jar as a zip, see
 		// https://imperceptiblethoughts.com/shadow/configuration/dependencies/

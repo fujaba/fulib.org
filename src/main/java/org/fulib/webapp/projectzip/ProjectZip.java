@@ -15,14 +15,6 @@ import java.util.zip.ZipOutputStream;
 
 public class ProjectZip
 {
-	private static String[] staticFiles = {
-		// scripts
-		"gradlew", "gradlew.bat",
-		// wrapper
-		"gradle/wrapper/gradle-wrapper.jar", "gradle/wrapper/gradle-wrapper.properties",
-		//
-	};
-
 	public static Object handle(Request request, Response response) throws IOException, JSONException
 	{
 		final String body = request.body();
@@ -41,15 +33,11 @@ public class ProjectZip
 			zip.putNextEntry(new ZipEntry("src/main/scenarios/" + packageName.replace('.', '/') + "/" + fileName));
 			zip.write(bodyText.getBytes(StandardCharsets.UTF_8));
 
-			for (final String file : staticFiles)
-			{
-				zip.putNextEntry(new ZipEntry(file));
-				final String resourceName = file.endsWith(".jar") ? file + ".zip" : file;
-				try (final InputStream fileInput = ProjectZip.class.getResourceAsStream(resourceName))
-				{
-					IOUtils.copyLarge(fileInput, zip, buffer);
-				}
-			}
+			copy("default.gitignore", ".gitignore", zip, buffer);
+			copy("gradlew", "gradlew", zip, buffer);
+			copy("gradlew.bat", "gradlew.bat", zip, buffer);
+			copy("gradle/wrapper/gradle-wrapper.jar.zip", "gradle/wrapper/gradle-wrapper.jar", zip, buffer);
+			copy("gradle/wrapper/gradle-wrapper.properties", "gradle/wrapper/gradle-wrapper.properties", zip, buffer);
 
 			zip.putNextEntry(new ZipEntry("settings.gradle"));
 			try (final InputStream input = ProjectZip.class.getResourceAsStream("settings.gradle"))
@@ -75,5 +63,14 @@ public class ProjectZip
 		}
 
 		return response.raw();
+	}
+
+	private static void copy(String resourceName, String file, ZipOutputStream zip, byte[] buffer) throws IOException
+	{
+		zip.putNextEntry(new ZipEntry(file));
+		try (final InputStream fileInput = ProjectZip.class.getResourceAsStream(resourceName))
+		{
+			IOUtils.copyLarge(fileInput, zip, buffer);
+		}
 	}
 }

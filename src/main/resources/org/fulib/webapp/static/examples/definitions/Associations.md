@@ -1,6 +1,6 @@
 # Unidirectional Associations
 
-There is a University Uni Kassel.
+There is the University Uni Kassel.
 There is a Person with name Peter.
 There are Persons with name Alice and Bob.
 
@@ -12,14 +12,14 @@ The Uni Kassel has employees Alice and Bob.
 
 # Bidirectional Associations
 
-There is a University Uni Kassel.
+There is the University Uni Kassel.
 There are Students with name Alice, Bob, Charlie, Dude.
 
 // A bidirectional association requires you to specify the name of the reverse role.
 // You can do that by adding 'and is <name> of'.
 Uni Kassel has students and is uni of Alice, Bob, Charlie, Dude.
 
-// The above sentence can be written in reverse like so:
+// You can also define the association between Uni Kassel and Alice like this:
 Alice has uni and is one of the students of the Uni Kassel.
 
 // Note that "one of" indicates that the reverse association is to-many.

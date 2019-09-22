@@ -27,7 +27,6 @@ We write 1,2,3 into numbers.
 // ... or into multiple variables.
 We write 1,2,3 into x,y,z.
 
-
 # Adding and Removing
 
 ## with Lists
@@ -58,3 +57,18 @@ We add Charlie to friends of Bob.
 
 We remove Bob and Charlie from friends of Alice.
 ![Alice, Bob](step6.svg)
+
+## with Numbers
+
+Alice has 0 dollars and Bob has 10 dollars.
+We write 10 into shared-account.
+
+// With Add Sentences, you can add numbers as well:
+We add 3 to dollars of Alice.
+
+// Remove Sentences can be used to subtract.
+We remove 5 from dollars of Bob.
+
+// Of course, this also works with variables.
+We add 5 to shared-account.
+We remove 3 from shared-account.

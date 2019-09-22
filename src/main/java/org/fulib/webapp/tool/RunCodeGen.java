@@ -9,6 +9,7 @@ import spark.Request;
 import spark.Response;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -218,6 +219,10 @@ public class RunCodeGen
 	private static void tryReadMethods(JSONArray methodArray, Path file, boolean modelFilter)
 		throws IOException, JSONException
 	{
+		final String filePath = file.toString();
+		final String className = filePath
+			                         .substring(filePath.lastIndexOf(File.separator) + 1, filePath.lastIndexOf('.'));
+
 		final Set<String> properties = modelFilter ? new HashSet<>() : null;
 		final List<String> lines = Files.readAllLines(file);
 		String methodName = null;
@@ -243,6 +248,7 @@ public class RunCodeGen
 			else if (methodName != null && "   }".equals(line))
 			{
 				final JSONObject method = new JSONObject();
+				method.put("className", className);
 				method.put("name", methodName);
 				method.put("body", methodBody.toString());
 				methodArray.put(method);

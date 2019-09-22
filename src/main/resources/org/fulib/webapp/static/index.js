@@ -38,14 +38,16 @@ const examples = [
 		'Relational Operators',
 		'Object Diagrams',
 	],
-	'Methods', [
-		'Calling Methods',
-		'Passing Arguments',
-	],
 	'Transformation', [
+		'Lists',
 		'Modifying Data',
 		'Conditionals',
 		'Loops',
+	],
+	'Methods', [
+		'Calling Methods',
+		'Passing Arguments',
+		'Piecewise Definition',
 	],
 	'Prototyping', [
 		'Data Model',
@@ -242,8 +244,9 @@ function handleResponse(response) {
 
 	if (response.testMethods) {
 		for (testMethod of response.testMethods) {
-			javaCode += '// ' + testMethod.name + '\n';
+			javaCode += `// --------------- ${testMethod.name} in class ${testMethod.className} ---------------\n\n`;
 			javaCode += testMethod.body;
+			javaCode += '\n';
 		}
 	}
 	javaTestOutputCodeMirror.setValue(javaCode);

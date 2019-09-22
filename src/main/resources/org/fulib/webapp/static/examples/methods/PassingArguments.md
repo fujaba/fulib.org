@@ -1,12 +1,14 @@
 # Passing Arguments
 
 // When calling methods, you can pass parameters using the 'with' keyword
-We call init with value 3.
+We call adder with first 24 and with second 18.
 
-// Inside the method body, you can refer to the parameter by name.
-Init answers with value.
+// Inside the method body, you can refer to the parameters by name.
+Adder writes first into sum.
+Adder adds second to sum.
+Adder answers with sum.
 
-// You can also pass multiple arguments.
-We call getSecond with first 1 and with second 'a'.
+We expect that the sum is 42.
 
-getSecond answers with second.
+// If the name of the result variable is not clear, you can simply refer to it using the keyword 'answer'.
+We expect that the answer is 42.

@@ -7,7 +7,9 @@ loadTheme();
 // adapted from https://github.com/coliff/dark-mode-switch
 
 function loadTheme() {
-	const darkThemeSelected = localStorage.getItem('darkSwitch') === 'dark';
+	const dataTheme = localStorage.getItem('theme');
+	const darkThemeSelected = dataTheme ? dataTheme === 'dark' : window.matchMedia(
+		'(prefers-color-scheme: dark)').matches;
 	darkSwitch.checked = darkThemeSelected;
 	displayDarkMode(darkThemeSelected);
 }
@@ -17,9 +19,9 @@ function updateTheme() {
 
 	// save
 	if (darkSwitch.checked) {
-		trySetStorage('darkSwitch', 'dark');
+		trySetStorage('theme', 'dark');
 	} else {
-		localStorage.removeItem('darkSwitch');
+		trySetStorage('theme', 'light');
 	}
 }
 
