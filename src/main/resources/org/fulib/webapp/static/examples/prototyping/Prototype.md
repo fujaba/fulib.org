@@ -52,14 +52,6 @@ We write secret into value of pass-in.
 
 ![stock-man](stock03.html)
 
-We call login on Store24 with name value of name-in and with passwd value of pass-in. 
-Login creates a user and
-Login writes name into name of user and 
-Login writes passwd into passwd of user and 
-Login writes user into user of Store24. 
-
-![Store24](user.svg)
-
 We write "Albert Stock Manager" into description of stock-man.
 There is a Page with id scan-page 
 and with description "button Login | Scan | button Log".
