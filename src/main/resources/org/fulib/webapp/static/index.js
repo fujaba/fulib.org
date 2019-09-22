@@ -41,6 +41,7 @@ const examples = [
 	'Methods', [
 		'Calling Methods',
 		'Passing Arguments',
+		'Piecewise Definition',
 	],
 	'Transformation', [
 		'Lists',
