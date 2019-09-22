@@ -90,3 +90,28 @@
 * Replaced version placeholders.
 * Fixed `undefined` class diagram and replaced it with an info text.
 * The selected example is now included in the request.
+
+# fulib.org v0.9.0
+
+### Scenarios
+
+* Updated to Fulib Scenarios v0.9.1.
++ Added new examples for numeric Add and Remove, List Operations, .txt and .tables.html Object Diagrams, 'the answer', and piecewise method definitions. #45
+* Swapped the Transformation and Methods example chapters.
+* Improved existing examples. #38
+
+### Interface
+
++ Added a Project Configuration dialog with settings for project name, package name, version, and scenario file name. #43
++ Added a warning label that changes to examples will not be saved.
++ Added a Dark Mode. #44
+* The default editor theme in light mode is now `idea`.
+* The default editor theme in dark mode is now `darcula`.
+* Improved the way multiple methods are shown in the Java code view.
+* Stack Trace Lines from the configured package are no longer filtered from the output.
+
+### Download as Gradle Project
+
+* Downloaded Gradle Projects now generate Class Diagram SVGs by default.
+* Downloaded Gradle Projects now use Gradle v5.6.2.
+* Downloaded Gradle Projects now includes a default .gitignore file.
