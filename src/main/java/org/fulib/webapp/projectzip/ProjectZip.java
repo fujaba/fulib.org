@@ -33,6 +33,7 @@ public class ProjectZip
 			zip.putNextEntry(new ZipEntry("src/main/scenarios/" + packageName.replace('.', '/') + "/" + fileName));
 			zip.write(bodyText.getBytes(StandardCharsets.UTF_8));
 
+			copy("default.gitignore", ".gitignore", zip, buffer);
 			copy("gradlew", "gradlew", zip, buffer);
 			copy("gradlew.bat", "gradlew.bat", zip, buffer);
 			copy("gradle/wrapper/gradle-wrapper.jar.zip", "gradle/wrapper/gradle-wrapper.jar", zip, buffer);
