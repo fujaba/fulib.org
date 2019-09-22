@@ -8,7 +8,7 @@
 
 As 10 is less than 20, we write 10 into min.
 
-There are Students Alice and Bob with age 18 and 24.
+There are the Students Alice and Bob with age 18 and 24.
 As age of Alice is less than 21, we write "no alcohol" into state of Alice.
 As age of Bob is greater equal 21, we write "old enough" into state of Bob.
 

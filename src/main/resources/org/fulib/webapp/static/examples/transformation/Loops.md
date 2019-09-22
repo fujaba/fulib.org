@@ -15,7 +15,7 @@ We take a prime like 1 from primes and we call someMethod with parameter prime.
 
 We take an i from 1,2,3 and we call someMethod with parameter i and we call someMethod with parameter 0.
 
-// you mal also do it with objects:
+// You may also do it with objects:
 There are Students with name Alice, Bob, Carli, and Dude.
 There is a University with name Study-Right.
 Study-Right has students Alice, Bob, Carli, and Dude.

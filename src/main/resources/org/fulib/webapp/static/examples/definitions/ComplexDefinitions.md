@@ -7,7 +7,7 @@ There is a University.
 The university has 16 departments.
 
 // You may provide a name:
-There is a University Uni Kassel.
+There is the University Uni Kassel.
 Uni Kassel has 400 lecturers.
 
 // Using the keyword 'with', you define attributes. The first attribute will serve as object name.

@@ -1,19 +1,19 @@
 # Calling Methods
 
 // You can call methods using the 'call' keyword.
-We call init.
+We call make-company.
 
-// From here, we no longer describe the test method, but the init method.
-// To specify this fact, we use sentences with the subject "init".
+// From here, we no longer describe the test method, but the make-company method.
+// To specify this, we use sentences with the subject "make-company".
 // 'Creates' provides an alternative to 'there' that allows defining a subject.
-Init creates a Company with name Foosoft and with revenue 0.
-Init creates Employees with name John, Jack, Jill, and Jenna.
+Make-company creates a Company with name Foosoft and with revenue 0.
+Make-company creates Employees with name John, Jack, Jill, and Jenna.
 
 // You can still use 'has' inside method bodies.
 Foosoft has employees John, Jack, Jill and Jenna.
 
 // Return an object from a method using the 'answers' keyword.
-Init answers with Foosoft.
+Make-company answers with Foosoft.
 
 // Now we are back in the scope of the test method.
 // The result of the call is now available as a variable.
