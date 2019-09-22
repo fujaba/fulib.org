@@ -47,6 +47,11 @@ const examples = [
 		'Conditionals',
 		'Loops',
 	],
+	'Prototyping', [
+		'Data Model',
+		'Web Gui',
+		'Prototype',
+	],
 ];
 
 const exampleSelect = document.getElementById('exampleSelect');
