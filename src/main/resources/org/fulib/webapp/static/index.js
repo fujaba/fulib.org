@@ -43,6 +43,7 @@ const examples = [
 		'Passing Arguments',
 	],
 	'Transformation', [
+		'Lists',
 		'Modifying Data',
 		'Conditionals',
 		'Loops',
