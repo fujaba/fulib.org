@@ -38,16 +38,16 @@ const examples = [
 		'Relational Operators',
 		'Object Diagrams',
 	],
-	'Methods', [
-		'Calling Methods',
-		'Passing Arguments',
-		'Piecewise Definition',
-	],
 	'Transformation', [
 		'Lists',
 		'Modifying Data',
 		'Conditionals',
 		'Loops',
+	],
+	'Methods', [
+		'Calling Methods',
+		'Passing Arguments',
+		'Piecewise Definition',
 	],
 ];
 
