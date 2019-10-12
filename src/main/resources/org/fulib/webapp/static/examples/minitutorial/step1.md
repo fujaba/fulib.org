@@ -34,10 +34,16 @@ The shoping-card has items meat, bread, and coal.
 
 // Now lets call the method under test: 
 We call compute-sum with item-list shoping-card.
-(In this situation,)
-compute-sum writes 42.00 into total of shoping-card.
+
+// Usually, we implement the method under test manually. 
+// However, we may want to outline some simple cases:
+Compute-sum writes 0.00 into total of shoping-card. 
+Compute-sum takes an item like meat from items of shoping-card
+and compute-sum adds 22.00 from price of meat to total of shoping-card. 
+(Compute-sum does the same with all other items.)
 
 We expect that total of shoping-card is 42.00.
-// The line above generates the assertEquals test in line 40 of our Java test code. 
+// An "expect" sentence is used to validate the effects of the method under test. 
+// The line above generates the assertEquals test in line 41 of our Java test code. 
 
 // Continue with step 2 of our tutorial for scenario driven method implementation.

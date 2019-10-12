@@ -15,9 +15,9 @@
 There is a shoping-list with budget 30.00.
 There are shopping-Items with name meat, bread, and coal
 and with price 22.00, 10.00, and 10.00. 
+Shoping-list has items meat and bread. 
 
-We call add-item with list shoping-list and with item meat. 
-As price of meat is less than budget of shoping list,
-add-item adds meat to items of list
-and add-item removes price of meat from budget of list
-and add-item answers with OK. 
+We call add-item with list shoping-list and with item coal. 
+As price of coal is less than budget of shoping-list,
+add-item adds coal to items of list
+and add-item removes price of coal from budget of list. 
