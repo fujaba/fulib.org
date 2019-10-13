@@ -79,7 +79,7 @@ Find-board takes a board from boards of storage of stock-man
 and as id of board is board-id, find-board answers with board.
 (Otherwise,) Find-board creates the Board new-board. 
 Find-board writes board-id into id of new-board. 
-Find-board writes new-board into boards of storage of stock-man.
+Find-board adds new-board to boards of storage of stock-man. 
 Find-board answers with new-board. 
 
 We call find-product on stock-man with product-name "SDM book". 
@@ -90,7 +90,7 @@ We call find-product on stock-man with product-name "DB book".
 (As find-product cannot find DB book)
 find-product creates the product new-product.   
 Find-product writes product-name into name of new-product.
-Find-product writes new-product into products of storage of stock-man.
+Find-product adds new-product to products of storage of stock-man.
 Find-product answers with new-product. 
 
 ![Store24](find-product.svg)
@@ -103,7 +103,7 @@ and with description "Login | button Scan | button Log".
 Login writes login-screen into content of stock-man.
 Login creates content with id login-in, password-in, login-button-in
 and with description "input user?", "input password?", "button login".
-Login writes login-in, password-in, login-button-in into content of login-screen. 
+Login adds login-in, password-in, login-button-in to content of login-screen. 
 Login writes "runLogin login-in password-in scan" into action of login-button-in.
 
 We call run-login on stock-man with login-name "Albert" and with password "secret". 
@@ -139,17 +139,17 @@ and with description "button Login | button Scan | Log".
 Log takes a product from products of storage of stock-man
 and log creates the content new-content 
 and log writes name of product into id of new-content
-and log writes new-content into content of log-screen
+and log adds new-content to content of log-screen
 and log creates the Element name-elem 
 and log writes name of product into text of name-elem
-and log writes name-elem into elements of new-content
+and log adds name-elem to elements of new-content
 and log creates the Element items-elem 
 and log writes items of product into text of items-elem
-and log writes items-elem into elements of new-content
+and log adds items-elem to elements of new-content
 and as board of product is not empty,
 log creates the Element board-elem 
 and log writes id of board of product into text of board-elem
-and log writes board-elem into elements of new-content.  
+and log adds board-elem to elements of new-content.  
 Log writes log-screen into content of stock-man. 
 
 
