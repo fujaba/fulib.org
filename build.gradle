@@ -56,19 +56,21 @@ repositories {
 	mavenLocal()
 	mavenCentral()
 	jcenter()
-	maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
 }
 
 dependencies {
-	fulibScenarios group: 'org.fulib', name: 'fulibScenarios', version: '[0.9.1,)'
+	fulibScenarios group: 'org.fulib', name: 'fulibScenarios', version: '1.0.0'
 
 	// --------------- Fulib Libraries ---------------
 
-	compile group: 'org.fulib', name: 'fulibScenarios', version: '[0.8.2,)'
+	compile group: 'org.fulib', name: 'fulibScenarios', version: '1.0.0'
 
-	compile group: 'org.fulib', name: 'fulibMockups', version: '[0.2.0,)'
+	compile group: 'org.fulib', name: 'fulibMockups', version: '0.2.0'
 
 	// --------------- Other Libraries ---------------
+
+	// https://mvnrepository.com/artifact/commons-io/commons-io
+	compile group: 'commons-io', name: 'commons-io', version: '2.4'
 
 	// https://mvnrepository.com/artifact/org.slf4j/slf4j-nop
 	compile group: 'org.slf4j', name: 'slf4j-nop', version: '1.7.26'
