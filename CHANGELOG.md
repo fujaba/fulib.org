@@ -115,3 +115,8 @@
 * Downloaded Gradle Projects now generate Class Diagram SVGs by default.
 * Downloaded Gradle Projects now use Gradle v5.6.2.
 * Downloaded Gradle Projects now includes a default .gitignore file.
+
+# fulib.org v1.0.0
+
++ Added examples for GUI prototyping using FulibMockups.
+* Updated to FulibScenarios v1.0.0.
