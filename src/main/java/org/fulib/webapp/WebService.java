@@ -27,8 +27,8 @@ public class WebService
 		}
 
 		VERSION = props.getProperty("webapp.version");
-		FULIB_SCENARIOS_VERSION = props.getProperty("fulib-scenarios.version");
-		FULIB_MOCKUPS_VERSION = props.getProperty("fulib-mockups.version");
+		FULIB_SCENARIOS_VERSION = props.getProperty("fulibScenarios.version");
+		FULIB_MOCKUPS_VERSION = props.getProperty("fulibMockups.version");
 	}
 
 	public static void main(String[] args)

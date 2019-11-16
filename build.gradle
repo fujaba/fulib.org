@@ -93,15 +93,16 @@ dependencies {
 
 processResources {
 	def version = project.version.toString()
+	def fulibToolsVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulibTools')
 	def fulibScenariosVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulibScenarios')
-	def fulibGradleVersion = getDependencyVersion(buildscript.configurations.classpath, 'org.fulib.fulibGradle',
-			'org.fulib.fulibGradle.gradle.plugin')
+	def fulibGradleVersion = getDependencyVersion(buildscript.configurations.classpath, 'org.fulib', 'fulibGradle')
 	def fulibMockupsVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulibMockups')
 
 	filesMatching([ 'org/fulib/webapp/static/index.html', 'org/fulib/webapp/projectzip/build.gradle',
 	                'org/fulib/webapp/version.properties' ]) {
 		filter {
 			it = it.replace('$$version$$', version)
+			it = it.replace('$$fulibToolsVersion$$', fulibToolsVersion)
 			it = it.replace('$$fulibScenariosVersion$$', fulibScenariosVersion)
 			it = it.replace('$$fulibMockupsVersion$$', fulibMockupsVersion)
 			it = it.replace('$$fulibGradleVersion$$', fulibGradleVersion)
@@ -111,9 +112,10 @@ processResources {
 }
 
 String getDependencyVersion(Configuration config, String group, String name) {
-	config.resolvedConfiguration.firstLevelModuleDependencies.findAll {
-		it.moduleName == name && it.moduleGroup == group
-	}[0].moduleVersion
+	config.resolvedConfiguration.resolvedArtifacts.findResult {
+		def id = it.moduleVersion.id
+		id.group == group && id.name == name ? id.version : null
+	}
 }
 
 // --------------- Project Zip Wrapper ---------------
