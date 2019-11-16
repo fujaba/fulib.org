@@ -10,8 +10,8 @@
 	      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
 	      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 	      crossorigin="anonymous">
-	<!-- Dark mode CSS from dark-mode-switch -->
-	<link rel="stylesheet" href="https://coliff.github.io/dark-mode-switch/dark-mode.css"/>
+	<!-- Dark mode CSS -->
+	<link rel="stylesheet" href="https://app.clashsoft.de/darkmode/darktheme.css"/>
 	<!-- CodeMirror -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.min.css"
 	      integrity="sha256-vZ3SaLOjnKO/gGvcUWegySoDU6ff33CS5i9ot8J9Czk=" crossorigin="anonymous"/>
@@ -29,7 +29,7 @@
 </head>
 <body>
 
-<script src="darkmode.js"></script>
+<script src="https://app.clashsoft.de/darkmode/theme.js"></script>
 
 <header>
 
@@ -139,10 +139,7 @@
 		<a href="https://github.com/fujaba/fulibMockups" title="Fulib Mockups on GitHub">Fulib Mockups</a>
 		v$$fulibMockupsVersion$$
 	</p>
-	<div class="custom-control custom-switch">
-		<input type="checkbox" class="custom-control-input" id="darkSwitch" onchange="updateTheme()">
-		<label class="custom-control-label" for="darkSwitch">Dark Mode</label>
-	</div>
+	<script src="https://app.clashsoft.de/darkmode/darkswitch.js"></script>
 	<p>
 		<a href="#" data-toggle="modal" data-target="#feedbackModal">Leave Feedback</a>
 		&mdash;
@@ -227,7 +224,7 @@
 <div class="modal fade" id="configModal" tabindex="-1" role="dialog" aria-labelledby="configModalLabel"
      aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered" role="document">
-		<div class="bg-light modal-content">
+		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="configModalLabel">Configure Project</h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -294,7 +291,7 @@
      aria-labelledby="feedbackModalLabel"
      aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered" role="document">
-		<div class="bg-light modal-content">
+		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="feedbackModalLabel">Leave Feedback</h5>
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">

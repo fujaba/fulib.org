@@ -99,8 +99,6 @@ const scenarioFileNameField = document.getElementById('scenarioFileNameField');
 const projectNameField = document.getElementById('projectNameField');
 const projectVersionField = document.getElementById('projectVersionField');
 
-const darkSwitch = document.getElementById('darkSwitch');
-
 // =============== Variables ===============
 
 let selectedExample;
@@ -110,11 +108,14 @@ let selectedExample;
 init();
 
 function init() {
+	saveTheme = theme => trySetStorage('theme', theme);
+	updateEditorTheme();
+	themeChangeHandlers.push(updateEditorTheme);
+
 	loadPrivacy();
 	loadConfig();
 	loadExamples();
 	loadStoredExample();
-	loadTheme();
 
 	// enable tooltips
 	$(function() {
@@ -123,6 +124,12 @@ function init() {
 }
 
 // =============== Functions ===============
+
+function updateEditorTheme(theme = getTheme()) {
+	let editorTheme = theme === 'dark' ? 'darcula' : 'idea';
+	scenarioInputCodeMirror.setOption('theme', editorTheme);
+	javaTestOutputCodeMirror.setOption('theme', editorTheme);
+}
 
 // --------------- Privacy ---------------
 
