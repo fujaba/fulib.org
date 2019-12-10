@@ -235,19 +235,24 @@
 				<form>
 					<div class="form-group">
 						<label for="packageNameField">Package/Group Name</label>
-						<input type="text" class="form-control" id="packageNameField" placeholder="org.example">
+						<input type="text" class="form-control" id="packageNameField" placeholder="org.example"
+						       pattern="^\w+(\.\w+)*$">
 					</div>
 					<div class="form-group">
 						<label for="projectNameField">Project Name</label>
-						<input type="text" class="form-control" id="projectNameField" placeholder="scenario">
+						<input type="text" class="form-control" id="projectNameField" placeholder="scenario"
+						       pattern="^[\w._\-]*$">
 					</div>
 					<div class="form-group">
 						<label for="projectVersionField">Version</label>
-						<input type="text" class="form-control" id="projectVersionField" placeholder="0.1.0">
+						<!-- pattern from https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string -->
+						<input type="text" class="form-control" id="projectVersionField" placeholder="0.1.0"
+						       pattern="^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$">
 					</div>
 					<div class="form-group">
 						<label for="scenarioFileNameField">Scenario File Name</label>
-						<input type="text" class="form-control" id="scenarioFileNameField" placeholder="Scenario.md">
+						<input type="text" class="form-control" id="scenarioFileNameField" placeholder="Scenario.md"
+						       pattern="^[\w._\-]+\.md$">
 					</div>
 				</form>
 			</div>
