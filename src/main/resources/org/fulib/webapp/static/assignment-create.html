@@ -72,22 +72,43 @@ laborum.
 				<input type="text" class="form-control" id="emailInput" placeholder="jdoe@example.com">
 			</div>
 		</div>
-		<div class="form-group row">
-			<label for="assignmentID" class="col-sm-2 col-form-label">Assignment ID</label>
-			<div class="col-sm-10 input-group">
-				<div class="input-group-prepend">
-					<span class="input-group-text text-monospace">https://fulib.org/assignment/</span>
-				</div>
-				<input type="text" readonly class="form-control text-monospace" id="assignmentID"
-				       value="eaa72192-ab05-44ba-8316-110dfe166613">
-				<div class="input-group-append">
-					<button type="button" class="btn btn-secondary">Copy Link</button>
-				</div>
-			</div>
-		</div>
 	</form>
 
-	<button type="button" class="btn btn-primary">Submit</button>
+	<!-- Button trigger modal -->
+	<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#successModal">
+		Submit
+	</button>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="successModalLabel">Assignment Created</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p>
+					Congratulations! Your assignment titled <b id="title">Assignment 1</b> has been created!
+				</p>
+				<p>
+					You can now give your students the following link:
+				</p>
+				<p>
+					<a class="text-monospace" href="https://fulib.org/assignment/eaa72192-ab05-44ba-8316-110dfe166613" id="link">
+						https://fulib.org/assignment/eaa72192-ab05-44ba-8316-110dfe166613
+					</a>
+					<button type="button" class="btn btn-sm btn-outline-primary">Copy</button>
+				</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <!-- Optional JavaScript -->
