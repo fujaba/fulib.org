@@ -193,6 +193,15 @@ laborum.
 		lineWrapping: true,
 		styleActiveLine: true,
 	});
+
+	updateEditorTheme();
+	themeChangeHandlers.push(updateEditorTheme);
+
+	function updateEditorTheme(theme = getTheme()) {
+		let editorTheme = theme === 'dark' ? 'darcula' : 'idea';
+		solutionInputCM.setOption('theme', editorTheme);
+		verificationInputCM.setOption('theme', editorTheme);
+	}
 </script>
 
 </body>
