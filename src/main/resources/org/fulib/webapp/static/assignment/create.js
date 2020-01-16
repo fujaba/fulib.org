@@ -28,6 +28,22 @@ const verificationInputCM = CodeMirror.fromTextArea(verificationInput, {
 updateEditorTheme();
 themeChangeHandlers.push(updateEditorTheme);
 
+for (const element of [
+	titleInput,
+	authorInput,
+	emailInput,
+	deadlineDateInput,
+	deadlineTimeInput,
+	descriptionInput,
+]) {
+	const key = 'assignment/create/' + element.id;
+	const stored = localStorage.getItem(key);
+	if (stored) {
+		element.value = stored;
+	}
+	element.onchange = () => localStorage.setItem(key, element.value);
+}
+
 function updateEditorTheme(theme = getTheme()) {
 	let editorTheme = theme === 'dark' ? 'darcula' : 'idea';
 	solutionInputCM.setOption('theme', editorTheme);
