@@ -4,6 +4,7 @@ import org.fulib.webapp.projectzip.ProjectZip;
 import org.fulib.webapp.tool.RunCodeGen;
 import spark.Service;
 
+import java.io.File;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,7 +38,17 @@ public class WebService
 
 		service.port(4567);
 
-		service.staticFiles.location("/org/fulib/webapp/static");
+		final String staticFolder = "/org/fulib/webapp/static";
+		final String resourceFolder = "src/main/resources" + staticFolder;
+		if (new File(resourceFolder).exists())
+		{
+			service.staticFiles.externalLocation(resourceFolder);
+		}
+		else
+		{
+			service.staticFiles.location(staticFolder);
+		}
+
 		service.redirect.get("/github", "https://github.com/fujaba/fulib.org");
 
 		service.post("/runcodegen", RunCodeGen::handle);
