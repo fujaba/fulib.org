@@ -26,6 +26,18 @@ function copyToClipboard(text) {
 	document.body.removeChild(textArea);
 }
 
+function autoSave(prefix, ...elements) {
+	for (const element of elements) {
+		const key = prefix + element.id;
+		const stored = localStorage.getItem(key);
+		if (stored) {
+			element.value = stored;
+		}
+		element.onchange = () => localStorage.setItem(key, element.value);
+	}
+
+}
+
 function addTab(tabHolder, contentHolder, id, header, content) {
 	// https://getbootstrap.com/docs/4.0/components/navs/#javascript-behavior
 
