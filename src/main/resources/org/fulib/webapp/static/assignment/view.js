@@ -15,6 +15,8 @@ const solutionInputCM = CodeMirror.fromTextArea(solutionInput, {
 	styleActiveLine: true,
 });
 
+const taskList = document.getElementById('taskList');
+
 const nameInput = document.getElementById('nameInput');
 const studentIDInput = document.getElementById('studentIDInput');
 const emailInput = document.getElementById('emailInput');
@@ -58,5 +60,12 @@ function loadAssignment() {
 		emailLabel.href = `mailto:${result.email}`;
 		deadlineLabel.innerText = new Date(result.deadline).toLocaleString();
 		descriptionLabel.innerText = result.description;
+
+		removeChildren(taskList);
+		for (let task of result.tasks) {
+			const li = document.createElement('li');
+			li.innerText = task.description;
+			taskList.appendChild(li);
+		}
 	});
 }
