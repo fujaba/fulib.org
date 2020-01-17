@@ -7,6 +7,8 @@ const deadlineDateInput = document.getElementById('deadlineDateInput');
 const deadlineTimeInput = document.getElementById('deadlineTimeInput');
 const descriptionInput = document.getElementById('descriptionInput');
 
+const taskList = document.getElementById('taskList');
+
 const titleLabel = document.getElementById('titleLabel');
 const assignmentLink = document.getElementById('link');
 const copyLinkButton = document.getElementById('copyLinkButton');
@@ -132,10 +134,17 @@ function addTask() {
 				</div>
 			</div>
 		</form>
+		<button type="button" class="btn btn-danger" onclick="removeTask(${index})">Remove Task</button>
 	</li>
 	`;
-	document.getElementById('taskList').insertAdjacentHTML('beforeend', html);
+
+	taskList.insertAdjacentHTML('beforeend', html);
 
 	const verificationInput = document.getElementById('taskVerificationInput' + index);
 	verificationInput.codeMirror = CodeMirror.fromTextArea(verificationInput, verificationConfig);
+}
+
+function removeTask(index) {
+	const taskItem = document.getElementById('taskItem' + index);
+	taskList.removeChild(taskItem);
 }
