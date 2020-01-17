@@ -34,8 +34,11 @@ const verificationInputCM = CodeMirror.fromTextArea(verificationInput, {
 init();
 
 function init() {
-	updateEditorTheme();
-	themeChangeHandlers.push(updateEditorTheme);
+	try {
+		// may fail if darktheme/network is unavailable
+		updateEditorTheme();
+		themeChangeHandlers.push(updateEditorTheme);
+	} catch {}
 
 	autoSave('assignment/create/',
 		titleInput,

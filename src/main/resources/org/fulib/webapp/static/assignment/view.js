@@ -26,8 +26,11 @@ init();
 function init() {
 	loadAssignment();
 
-	updateEditorTheme();
-	themeChangeHandlers.push(updateEditorTheme);
+	try {
+		// may fail if darktheme/network is unavailable
+		updateEditorTheme();
+		themeChangeHandlers.push(updateEditorTheme);
+	} catch {}
 
 	autoSave('assignment/view/',
 		nameInput,
