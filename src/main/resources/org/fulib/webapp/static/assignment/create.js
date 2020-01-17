@@ -7,6 +7,8 @@ const descriptionInput = document.getElementById('descriptionInput');
 
 const assignmentLink = document.getElementById('link');
 
+const copyLinkButton = document.getElementById('copyLinkButton');
+
 const solutionInput = document.getElementById('solutionInput');
 const solutionInputCM = CodeMirror.fromTextArea(solutionInput, {
 	theme: 'idea',
@@ -74,4 +76,12 @@ function submit() {
 		assignmentLink.innerText = link;
 		$('#successModal').modal('show');
 	});
+}
+
+function onCopyLink() {
+	copyToClipboard(assignmentLink.innerText);
+	copyLinkButton.innerText = 'Copied!';
+	setTimeout(() => {
+		copyLinkButton.innerText = 'Copy';
+	}, 5000);
 }

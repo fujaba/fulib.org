@@ -17,6 +17,15 @@ function removeChildren(element) {
 	}
 }
 
+function copyToClipboard(text) {
+	const textArea = document.createElement('textarea');
+	textArea.value = text;
+	document.body.appendChild(textArea);
+	textArea.select();
+	document.execCommand('copy');
+	document.body.removeChild(textArea);
+}
+
 function addTab(tabHolder, contentHolder, id, header, content) {
 	// https://getbootstrap.com/docs/4.0/components/navs/#javascript-behavior
 
