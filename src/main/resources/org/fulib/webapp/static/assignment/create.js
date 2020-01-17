@@ -68,8 +68,8 @@ function submit() {
 	};
 
 	api('POST', '/assignment', data, result => {
-		const id = result.id;
-		const link = `https://www.fulib.org/assignment/${id}`;
+		const url = new URL(window.location);
+		const link = `${url.protocol}//${url.host}/assignment/${result.id}`;
 		assignmentLink.href = link;
 		assignmentLink.innerText = link;
 		$('#successModal').modal('show');
