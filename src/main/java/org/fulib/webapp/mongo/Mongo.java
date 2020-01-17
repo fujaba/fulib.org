@@ -6,11 +6,17 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.ReplaceOptions;
 import org.bson.Document;
 import org.fulib.webapp.WebService;
 import org.fulib.webapp.assignment.model.Assignment;
+import org.fulib.webapp.assignment.model.Task;
 
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Mongo
 {
@@ -22,7 +28,8 @@ public class Mongo
 	public static final String USER             = "seadmin";
 	public static final String DATABASE_NAME    = "fulib-org";
 
-	public static final String LOG_COLLECTION_NAME = "request-log";
+	public static final String LOG_COLLECTION_NAME        = "request-log";
+	public static final String ASSIGNMENT_COLLECTION_NAME = "assignments";
 
 	// =============== Static Fields ===============
 
@@ -34,6 +41,7 @@ public class Mongo
 	private MongoDatabase database;
 
 	private MongoCollection<Document> requestLog;
+	private MongoCollection<Document> assignments;
 
 	// =============== Static Methods ===============
 
@@ -62,6 +70,7 @@ public class Mongo
 			this.mongoClient = MongoClients.create(settings);
 			this.database = this.mongoClient.getDatabase(DATABASE_NAME);
 			this.requestLog = this.database.getCollection(LOG_COLLECTION_NAME);
+			this.assignments = this.database.getCollection(ASSIGNMENT_COLLECTION_NAME);
 		}
 	}
 
@@ -96,10 +105,66 @@ public class Mongo
 
 	public Assignment getAssignment(String id)
 	{
-		return null;
+		final Document doc = this.assignments.find(Filters.eq(Assignment.PROPERTY_id, id)).first();
+		if (doc == null)
+		{
+			return null;
+		}
+
+		return doc2Assignment(id, doc);
+	}
+
+	private static Assignment doc2Assignment(String id, Document doc)
+	{
+		final Assignment assignment = new Assignment(id);
+		assignment.setTitle(doc.getString(Assignment.PROPERTY_title));
+		assignment.setDescription(doc.getString(Assignment.PROPERTY_description));
+		assignment.setAuthor(doc.getString(Assignment.PROPERTY_author));
+		assignment.setEmail(doc.getString(Assignment.PROPERTY_email));
+		assignment.setDeadline(ZonedDateTime.parse(doc.getString(Assignment.PROPERTY_deadline)));
+		assignment.setSolution(doc.getString(Assignment.PROPERTY_solution));
+
+		for (final Document taskDoc : doc.getList(Assignment.PROPERTY_tasks, Document.class))
+		{
+			final Task task = new Task();
+			task.setDescription(taskDoc.getString(Task.PROPERTY_description));
+			task.setPoints(taskDoc.getInteger(Task.PROPERTY_points));
+			task.setVerification(taskDoc.getString(Task.PROPERTY_verification));
+			assignment.getTasks().add(task);
+		}
+
+		return assignment;
 	}
 
 	public void saveAssignment(Assignment assignment)
 	{
+		final Document doc = assignment2Doc(assignment);
+		this.assignments
+			.replaceOne(Filters.eq(Assignment.PROPERTY_id, assignment.getID()), doc, new ReplaceOptions().upsert(true));
+	}
+
+	private static Document assignment2Doc(Assignment assignment)
+	{
+		final Document doc = new Document();
+
+		doc.put(Assignment.PROPERTY_title, assignment.getTitle());
+		doc.put(Assignment.PROPERTY_description, assignment.getDescription());
+		doc.put(Assignment.PROPERTY_author, assignment.getAuthor());
+		doc.put(Assignment.PROPERTY_email, assignment.getEmail());
+		doc.put(Assignment.PROPERTY_deadline, assignment.getDeadline().toString());
+		doc.put(Assignment.PROPERTY_solution, assignment.getSolution());
+
+		final List<Document> tasks = new ArrayList<>();
+		for (final Task task : assignment.getTasks())
+		{
+			final Document taskDoc = new Document();
+			taskDoc.put(Task.PROPERTY_description, task.getDescription());
+			taskDoc.put(Task.PROPERTY_points, task.getPoints());
+			taskDoc.put(Task.PROPERTY_verification, task.getVerification());
+			tasks.add(taskDoc);
+		}
+		doc.put(Assignment.PROPERTY_tasks, tasks);
+
+		return doc;
 	}
 }
