@@ -20,14 +20,17 @@ const solutionInputCM = CodeMirror.fromTextArea(solutionInput, {
 	styleActiveLine: true,
 });
 
-const verificationInput = document.getElementById('verificationInput');
-const verificationInputCM = CodeMirror.fromTextArea(verificationInput, {
+const verificationConfig = {
 	theme: 'idea',
 	mode: 'markdown',
 	lineNumbers: true,
 	lineWrapping: true,
 	styleActiveLine: true,
-});
+};
+
+// =============== Variables ===============
+
+let nextTaskIndex = 0;
 
 // =============== Initialization ===============
 
@@ -66,14 +69,26 @@ function submit() {
 		deadline: new Date(deadlineDateInput.value + ' ' + deadlineTimeInput.value).toISOString(),
 		description: descriptionInput.value,
 		solution: solutionInputCM.getValue(),
-		tasks: [
-			{
-				description: '', // TODO input field
-				points: 100, // TODO input field
-				verification: verificationInputCM.getValue(),
-			},
-		],
+		tasks: [],
 	};
+
+	for (let i = 0; i < nextTaskIndex; i++) {
+		const listItem = document.getElementById('taskItem' + i);
+		if (!listItem) {
+			continue;
+		}
+
+		const descriptionInput = document.getElementById('taskDescriptionInput' + i);
+		const pointsInput = document.getElementById('taskPointsInput' + i);
+		const verificationInput = document.getElementById('taskVerificationInput' + i);
+		const verificationInputCM = verificationInput.codeMirror;
+
+		data.tasks.push({
+			description: descriptionInput.value,
+			points: Number.parseInt(pointsInput.value),
+			verification: verificationInputCM.getValue(),
+		});
+	}
 
 	api('POST', '/assignment', data, result => {
 		const url = new URL(window.location);
@@ -91,4 +106,36 @@ function onCopyLink() {
 	setTimeout(() => {
 		copyLinkButton.innerText = 'Copy';
 	}, 5000);
+}
+
+function addTask() {
+	const index = nextTaskIndex++;
+	const html = `
+	<li id="taskItem${index}">
+		<form>
+			<div class="form-group row">
+				<label for="taskDescriptionInput${index}" class="col-sm-2 col-form-label">Description</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" id="taskDescriptionInput${index}">
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="taskPointsInput${index}" class="col-sm-2 col-form-label">Points</label>
+				<div class="col-sm-10">
+					<input type="number" class="form-control" id="taskPointsInput${index}" min="0">
+				</div>
+			</div>
+			<div class="form-group row">
+				<label for="taskVerificationInput${index}" class="col-sm-2 col-form-label">Verification</label>
+				<div class="col-sm-10">
+					<textarea id="taskVerificationInput${index}"></textarea>
+				</div>
+			</div>
+		</form>
+	</li>
+	`;
+	document.getElementById('taskList').insertAdjacentHTML('beforeend', html);
+
+	const verificationInput = document.getElementById('taskVerificationInput' + index);
+	verificationInput.codeMirror = CodeMirror.fromTextArea(verificationInput, verificationConfig);
 }
