@@ -147,6 +147,7 @@ public class Mongo
 	{
 		final Document doc = new Document();
 
+		doc.put(Assignment.PROPERTY_id, assignment.getID());
 		doc.put(Assignment.PROPERTY_title, assignment.getTitle());
 		doc.put(Assignment.PROPERTY_description, assignment.getDescription());
 		doc.put(Assignment.PROPERTY_author, assignment.getAuthor());
