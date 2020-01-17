@@ -21,7 +21,8 @@ public class Mongo
 	public static final String PORT             = "38128";
 	public static final String USER             = "seadmin";
 	public static final String DATABASE_NAME    = "fulib-org";
-	public static final String COLLECTION_NAME  = "request-log";
+
+	public static final String LOG_COLLECTION_NAME = "request-log";
 
 	// =============== Static Fields ===============
 
@@ -29,9 +30,10 @@ public class Mongo
 
 	// =============== Fields ===============
 
-	private MongoClient               mongoClient = null;
-	private MongoDatabase             database    = null;
-	private MongoCollection<Document> coll        = null;
+	private MongoClient   mongoClient;
+	private MongoDatabase database;
+
+	private MongoCollection<Document> requestLog;
 
 	// =============== Static Methods ===============
 
@@ -59,7 +61,7 @@ public class Mongo
 			                                                  .retryWrites(true).build();
 			this.mongoClient = MongoClients.create(settings);
 			this.database = this.mongoClient.getDatabase(DATABASE_NAME);
-			this.coll = this.database.getCollection(COLLECTION_NAME);
+			this.requestLog = this.database.getCollection(LOG_COLLECTION_NAME);
 		}
 	}
 
@@ -67,7 +69,7 @@ public class Mongo
 
 	public void log(String ip, String userAgent, String request, String response)
 	{
-		if (this.coll == null)
+		if (this.requestLog == null)
 		{
 			return;
 		}
@@ -89,7 +91,7 @@ public class Mongo
 		document.put("request", Document.parse(request));
 		document.put("response", Document.parse(response));
 
-		this.coll.insertOne(document);
+		this.requestLog.insertOne(document);
 	}
 
 	public Assignment getAssignment(String id)
