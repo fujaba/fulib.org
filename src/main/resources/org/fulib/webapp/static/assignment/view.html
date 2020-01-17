@@ -125,24 +125,7 @@
         integrity="sha256-F4dwoyLuBaA5Ltkam/kdTUGxBpZuk7uulSRQHablI3Q=" crossorigin="anonymous"></script>
 
 <!-- Custom JS -->
-<script>
-	const solutionInput = document.getElementById('solutionInput');
-	const solutionInputCM = CodeMirror.fromTextArea(solutionInput, {
-		theme: 'idea',
-		mode: 'markdown',
-		lineNumbers: true,
-		lineWrapping: true,
-		styleActiveLine: true,
-	});
-
-	updateEditorTheme();
-	themeChangeHandlers.push(updateEditorTheme);
-
-	function updateEditorTheme(theme = getTheme()) {
-		let editorTheme = theme === 'dark' ? 'darcula' : 'idea';
-		solutionInputCM.setOption('theme', editorTheme);
-	}
-</script>
+<script type="text/javascript" src="view.js"></script>
 
 </body>
 </html>
