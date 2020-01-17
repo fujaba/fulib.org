@@ -13,10 +13,20 @@ const solutionInputCM = CodeMirror.fromTextArea(solutionInput, {
 	styleActiveLine: true,
 });
 
+const nameInput = document.getElementById('nameInput');
+const studentIDInput = document.getElementById('studentIDInput');
+const emailInput = document.getElementById('emailInput');
+
 loadAssignment();
 
 updateEditorTheme();
 themeChangeHandlers.push(updateEditorTheme);
+
+autoSave('assignment/view/',
+	nameInput,
+	studentIDInput,
+	emailInput,
+);
 
 function updateEditorTheme(theme = getTheme()) {
 	let editorTheme = theme === 'dark' ? 'darcula' : 'idea';
