@@ -8,6 +8,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.fulib.webapp.WebService;
+import org.fulib.webapp.assignment.model.Assignment;
 
 import java.util.Date;
 
@@ -89,5 +90,14 @@ public class Mongo
 		document.put("response", Document.parse(response));
 
 		this.coll.insertOne(document);
+	}
+
+	public Assignment getAssignment(String id)
+	{
+		return null;
+	}
+
+	public void saveAssignment(Assignment assignment)
+	{
 	}
 }
