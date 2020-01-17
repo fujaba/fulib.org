@@ -32,17 +32,16 @@
 <script src="https://app.clashsoft.de/darkmode/theme.js"></script>
 
 <div class="container">
-	<h1>{title} Assignment 1</h1>
+	<h1 id="titleLabel">Assignment Title</h1>
 	<p class="text-muted">
-		by {author}
+		by <span id="authorLabel">Author</span>
 		&mdash;
-		<a href="mailto:{authorEmail}">{authorEmail}</a>
+		<a id="emailLabel" href="mailto:{authorEmail}">Author Email</a>
 		&mdash;
-		Deadline is <script>document.write(new Date().toLocaleString())</script>
+		Deadline is <span id="deadlineLabel">Deadline</span>
 	</p>
 
-	<p>
-		{body}
+	<p id="descriptionLabel">
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
 		magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
 		consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
