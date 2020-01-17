@@ -6,7 +6,7 @@ function api(method, url, body, handler) {
 	request.addEventListener('load', function() {
 		handler(JSON.parse(this.responseText));
 	});
-	request.open('POST', url, true);
+	request.open(method, url, true);
 	request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
 	request.send(requestBody);
 }
