@@ -5,8 +5,8 @@ const deadlineDateInput = document.getElementById('deadlineDateInput');
 const deadlineTimeInput = document.getElementById('deadlineTimeInput');
 const descriptionInput = document.getElementById('descriptionInput');
 
+const titleLabel = document.getElementById('titleLabel');
 const assignmentLink = document.getElementById('link');
-
 const copyLinkButton = document.getElementById('copyLinkButton');
 
 const solutionInput = document.getElementById('solutionInput');
@@ -72,6 +72,7 @@ function submit() {
 	api('POST', '/assignment', data, result => {
 		const url = new URL(window.location);
 		const link = `${url.protocol}//${url.host}/assignment/${result.id}`;
+		titleLabel.innerText = titleInput.value;
 		assignmentLink.href = link;
 		assignmentLink.innerText = link;
 		$('#successModal').modal('show');
