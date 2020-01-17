@@ -28,6 +28,7 @@ function loadAssignment() {
 	const id = url.searchParams.get('id');
 
 	api('GET', `/assignment/${id}`, null, result => {
+		document.title = result.title;
 		titleLabel.innerText = result.title;
 		authorLabel.innerText = result.author;
 		emailLabel.innerText = result.email;
