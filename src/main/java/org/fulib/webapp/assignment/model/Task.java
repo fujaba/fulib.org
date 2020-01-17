@@ -2,10 +2,16 @@ package org.fulib.webapp.assignment.model;
 
 public class Task
 {
+	// =============== Constants ===============
+
+	public static final String PROPERTY_description  = "description";
+	public static final String PROPERTY_points       = "points";
+	public static final String PROPERTY_verification = "verification";
+
 	// =============== Fields ===============
 
 	private String description;
-	private int points;
+	private int    points;
 	private String verification;
 
 	// =============== Properties ===============
