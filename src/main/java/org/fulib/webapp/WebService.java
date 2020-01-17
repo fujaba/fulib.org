@@ -55,6 +55,7 @@ public class WebService
 		service.post("/runcodegen", RunCodeGen::handle);
 		service.post("/projectzip", ProjectZip::handle);
 		service.post("/assignment", Assignments::create);
+		service.get("/assignment/:id", Assignments::get);
 
 		service.exception(Exception.class, (exception, request, response) -> {
 			Logger.getGlobal().log(Level.SEVERE, "unhandled exception processing request", exception);

@@ -16,4 +16,21 @@ public class Assignments
 
 		return responseJson.toString(2);
 	}
+
+	public static Object get(Request request, Response response)
+	{
+		final String id = request.params("id");
+
+		if (request.contentType() != null && request.contentType().startsWith("application/json"))
+		{
+			// language=JSON
+			return "{\n" + "  \"title\": \"it works\",\n" + "  \"description\": \"foo bar baz\",\n"
+			       + "  \"author\": \"me\",\n" + "  \"email\": \"me@example.com\"\n" + "}";
+		}
+		else
+		{
+			response.redirect("/assignment/view.html?id=" + id);
+			return "";
+		}
+	}
 }
