@@ -85,9 +85,11 @@ laborum.
 	</p>
 
 	<h2>Tasks</h2>
-	<button type="button" class="btn btn-success" onclick="addTask()">Add</button>
 	<ol id="taskList">
 	</ol>
+	<p>
+		<button type="button" class="btn btn-success" onclick="addTask()">Add Task</button>
+	</p>
 
 	<!-- Button trigger modal -->
 	<button type="button" class="btn btn-primary" onclick="submit()">
@@ -100,7 +102,8 @@ laborum.
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
+     aria-hidden="true">
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -117,10 +120,13 @@ laborum.
 					You can now give your students the following link:
 				</p>
 				<p>
-					<a class="text-monospace" href="https://fulib.org/assignment/eaa72192-ab05-44ba-8316-110dfe166613" id="link">
+					<a class="text-monospace" href="https://fulib.org/assignment/eaa72192-ab05-44ba-8316-110dfe166613"
+					   id="link">
 						https://fulib.org/assignment/eaa72192-ab05-44ba-8316-110dfe166613
 					</a>
-					<button id="copyLinkButton" type="button" class="btn btn-sm btn-outline-primary" onclick="onCopyLink()">Copy</button>
+					<button id="copyLinkButton" type="button" class="btn btn-sm btn-outline-primary"
+					        onclick="onCopyLink()">Copy
+					</button>
 				</p>
 				<p>
 					Note that this assignment can no longer be edited.
