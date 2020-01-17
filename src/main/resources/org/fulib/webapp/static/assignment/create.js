@@ -1,3 +1,5 @@
+// =============== Elements ===============
+
 const titleInput = document.getElementById('titleInput');
 const authorInput = document.getElementById('authorInput');
 const emailInput = document.getElementById('emailInput');
@@ -27,17 +29,25 @@ const verificationInputCM = CodeMirror.fromTextArea(verificationInput, {
 	styleActiveLine: true,
 });
 
-updateEditorTheme();
-themeChangeHandlers.push(updateEditorTheme);
+// =============== Initialization ===============
 
-autoSave('assignment/create/',
-	titleInput,
-	authorInput,
-	emailInput,
-	deadlineDateInput,
-	deadlineTimeInput,
-	descriptionInput,
-);
+init();
+
+function init() {
+	updateEditorTheme();
+	themeChangeHandlers.push(updateEditorTheme);
+
+	autoSave('assignment/create/',
+		titleInput,
+		authorInput,
+		emailInput,
+		deadlineDateInput,
+		deadlineTimeInput,
+		descriptionInput,
+	);
+}
+
+// =============== Functions ===============
 
 function updateEditorTheme(theme = getTheme()) {
 	let editorTheme = theme === 'dark' ? 'darcula' : 'idea';

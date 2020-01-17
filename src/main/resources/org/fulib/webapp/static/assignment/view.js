@@ -1,3 +1,5 @@
+// =============== Elements ===============
+
 const titleLabel = document.getElementById('titleLabel');
 const authorLabel = document.getElementById('authorLabel');
 const emailLabel = document.getElementById('emailLabel');
@@ -17,16 +19,24 @@ const nameInput = document.getElementById('nameInput');
 const studentIDInput = document.getElementById('studentIDInput');
 const emailInput = document.getElementById('emailInput');
 
-loadAssignment();
+// =============== Initialization ===============
 
-updateEditorTheme();
-themeChangeHandlers.push(updateEditorTheme);
+init();
 
-autoSave('assignment/view/',
-	nameInput,
-	studentIDInput,
-	emailInput,
-);
+function init() {
+	loadAssignment();
+
+	updateEditorTheme();
+	themeChangeHandlers.push(updateEditorTheme);
+
+	autoSave('assignment/view/',
+		nameInput,
+		studentIDInput,
+		emailInput,
+	);
+}
+
+// =============== Functions ===============
 
 function updateEditorTheme(theme = getTheme()) {
 	let editorTheme = theme === 'dark' ? 'darcula' : 'idea';
