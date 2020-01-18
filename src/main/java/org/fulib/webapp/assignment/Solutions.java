@@ -3,11 +3,13 @@ package org.fulib.webapp.assignment;
 import org.fulib.webapp.assignment.model.Assignment;
 import org.fulib.webapp.assignment.model.Solution;
 import org.fulib.webapp.mongo.Mongo;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 public class Solutions
@@ -88,5 +90,33 @@ public class Solutions
 		obj.put(Solution.PROPERTY_timeStamp, solution.getTimeStamp());
 
 		return obj;
+	}
+
+	public static Object getAll(Request request, Response response)
+	{
+		final String assignmentID = request.params("assignmentID");
+
+		if (request.contentType() == null || !request.contentType().startsWith("application/json"))
+		{
+			response.redirect("/assignment/solutions.html?id=" + assignmentID);
+			return "";
+		}
+
+		final List<Solution> solutions = Mongo.get().getSolutions(assignmentID);
+
+		final JSONObject result = new JSONObject();
+
+		result.put("count", solutions.size());
+
+		final JSONArray array = new JSONArray();
+
+		for (final Solution solution : solutions)
+		{
+			array.put(toJson(solution));
+		}
+
+		result.put("solutions", array);
+
+		return result.toString(2);
 	}
 }

@@ -60,6 +60,7 @@ public class WebService
 
 		service.post("/assignment/:assignmentID/solution", Solutions::create);
 		service.get("/assignment/:assignmentID/solution/:solutionID", Solutions::get);
+		service.get("/assignment/:assignmentID/solutions", Solutions::getAll);
 
 		service.exception(Exception.class, (exception, request, response) -> {
 			Logger.getGlobal().log(Level.SEVERE, "unhandled exception processing request", exception);
