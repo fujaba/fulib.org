@@ -21,6 +21,10 @@ const nameInput = document.getElementById('nameInput');
 const studentIDInput = document.getElementById('studentIDInput');
 const emailInput = document.getElementById('emailInput');
 
+// =============== Variables ===============
+
+const assignmentID = new URL(window.location).searchParams.get('id');
+
 // =============== Initialization ===============
 
 init();
@@ -49,10 +53,7 @@ function updateEditorTheme(theme = getTheme()) {
 }
 
 function loadAssignment() {
-	const url = new URL(window.location);
-	const id = url.searchParams.get('id');
-
-	api('GET', `/assignment/${id}`, null, result => {
+	api('GET', `/assignment/${assignmentID}`, null, result => {
 		document.title = result.title;
 		titleLabel.innerText = result.title;
 		authorLabel.innerText = result.author;
@@ -67,5 +68,19 @@ function loadAssignment() {
 			li.innerText = task.description;
 			taskList.appendChild(li);
 		}
+	});
+}
+
+function submit() {
+	const data = {
+		assignmentID: assignmentID,
+		name: nameInput.value,
+		studentID: studentIDInput.value,
+		email: emailInput.value,
+		solution: solutionInputCM.getValue(),
+	};
+
+	api('POST', `/assignment/${assignmentID}/solution`, data, result => {
+		$('#successModal').modal('show');
 	});
 }
