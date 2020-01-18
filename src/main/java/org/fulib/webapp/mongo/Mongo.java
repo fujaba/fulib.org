@@ -7,6 +7,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.ReplaceOptions;
 import com.mongodb.client.model.Sorts;
 import org.bson.Document;
@@ -74,8 +75,14 @@ public class Mongo
 		this.mongoClient = MongoClients.create(settings);
 		this.database = this.mongoClient.getDatabase(DATABASE_NAME);
 		this.requestLog = this.database.getCollection(LOG_COLLECTION_NAME);
+
 		this.assignments = this.database.getCollection(ASSIGNMENT_COLLECTION_NAME);
+		this.assignments.createIndex(Indexes.ascending(Assignment.PROPERTY_id));
+
 		this.solutions = this.database.getCollection(SOLUTION_COLLECTION_NAME);
+		this.solutions.createIndex(Indexes.ascending(Solution.PROPERTY_id));
+		this.solutions.createIndex(Indexes.ascending(Solution.PROPERTY_assignment));
+		this.solutions.createIndex(Indexes.ascending(Solution.PROPERTY_timeStamp));
 	}
 
 	private static String getURL()
