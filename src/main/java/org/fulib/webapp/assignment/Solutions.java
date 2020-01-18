@@ -1,5 +1,7 @@
-package org.fulib.webapp.assignment.model;
+package org.fulib.webapp.assignment;
 
+import org.fulib.webapp.assignment.model.Assignment;
+import org.fulib.webapp.assignment.model.Solution;
 import org.fulib.webapp.mongo.Mongo;
 import org.json.JSONObject;
 import spark.Request;

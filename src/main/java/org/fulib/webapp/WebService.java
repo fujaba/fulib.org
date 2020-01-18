@@ -1,7 +1,7 @@
 package org.fulib.webapp;
 
 import org.fulib.webapp.assignment.Assignments;
-import org.fulib.webapp.assignment.model.Solutions;
+import org.fulib.webapp.assignment.Solutions;
 import org.fulib.webapp.projectzip.ProjectZip;
 import org.fulib.webapp.tool.RunCodeGen;
 import spark.Service;
