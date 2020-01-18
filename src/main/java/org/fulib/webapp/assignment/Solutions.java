@@ -50,4 +50,43 @@ public class Solutions
 		solution.setSolution(obj.getString(Solution.PROPERTY_solution));
 		return solution;
 	}
+
+	public static Object get(Request request, Response response)
+	{
+		final String assignmentID = request.params("assignmentID");
+		final String solutionID = request.params("solutionID");
+
+		if (request.contentType() == null || !request.contentType().startsWith("application/json"))
+		{
+			response.redirect("/assignment/view.html?id=" + assignmentID + "&solution=" + solutionID);
+			return "";
+		}
+
+		final Solution solution = Mongo.get().getSolution(solutionID);
+		if (solution == null)
+		{
+			response.status(404);
+			return "{}";
+		}
+
+		// TODO check auth header
+
+		final JSONObject obj = toJson(solution);
+		return obj.toString(2);
+	}
+
+	private static JSONObject toJson(Solution solution)
+	{
+		final JSONObject obj = new JSONObject();
+
+		obj.put(Solution.PROPERTY_id, solution.getID());
+		obj.put(Solution.PROPERTY_assignment, solution.getAssignment().getID());
+		obj.put(Solution.PROPERTY_name, solution.getName());
+		obj.put(Solution.PROPERTY_studentID, solution.getStudentID());
+		obj.put(Solution.PROPERTY_email, solution.getEmail());
+		obj.put(Solution.PROPERTY_solution, solution.getSolution());
+		obj.put(Solution.PROPERTY_timeStamp, solution.getTimeStamp());
+
+		return obj;
+	}
 }
