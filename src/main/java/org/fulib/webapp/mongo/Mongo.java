@@ -214,4 +214,32 @@ public class Mongo
 		doc.put(Solution.PROPERTY_timeStamp, solution.getTimeStamp());
 		return doc;
 	}
+
+	public Solution getSolution(String id)
+	{
+		final Document doc = this.assignments.find(Filters.eq(Solution.PROPERTY_id, id)).first();
+		if (doc == null)
+		{
+			return null;
+		}
+
+		return this.doc2Solution(id, doc);
+	}
+
+	private Solution doc2Solution(String id, Document doc)
+	{
+		final Solution solution = new Solution(id);
+
+		final String assignmentID = doc.getString(Solution.PROPERTY_assignment);
+		final Assignment assignment = this.getAssignment(assignmentID);
+		solution.setAssignment(assignment);
+
+		solution.setName(doc.getString(Solution.PROPERTY_name));
+		solution.setStudentID(doc.getString(Solution.PROPERTY_studentID));
+		solution.setEmail(doc.getString(Solution.PROPERTY_email));
+		solution.setSolution(doc.getString(Solution.PROPERTY_solution));
+		solution.setTimeStamp(doc.getDate(Solution.PROPERTY_timeStamp).toInstant());
+
+		return solution;
+	}
 }
