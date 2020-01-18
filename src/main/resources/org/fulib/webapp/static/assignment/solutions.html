@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+	      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<!-- Darkmode CSS -->
+	<link rel="stylesheet" href="https://app.clashsoft.de/darkmode/darktheme.css"/>
+
+	<!-- Custom CSS -->
+	<link rel="stylesheet" href="../style.css">
+
+	<title>Loading...</title>
+</head>
+<body>
+<script src="https://app.clashsoft.de/darkmode/theme.js"></script>
+
+<div class="container">
+	<h1 id="titleLabel">Loading...</h1>
+	<p class="text-muted">
+		by <span id="authorLabel">Loading...</span>
+		&mdash;
+		<a id="emailLabel">Loading...</a>
+		&mdash;
+		Deadline is <span id="deadlineLabel">Loading...</span>
+	</p>
+
+	<p id="descriptionLabel">
+		Loading Description...
+	</p>
+
+	<h2>Tasks</h2>
+	<ol id="taskList">
+		<li>Loading...</li>
+	</ol>
+
+	<h2>Students</h2>
+	<div class="list-group">
+		<a id="student${index}Link" class="list-group-item list-group-item-action">
+			<h5 id="student${index}NameLabel">Loading...</h5>
+			<span class="badge badge-primary badge-pill" id="student${index}PointsLabel">.../...</span>
+			<p class="mb-1">
+				<span id="student${index}IDLabel">Loading...</span>
+				&mdash;
+				<span id="student${index}EmailLabel">Loading...</span>
+			</p>
+			<small id="solution${index}TimeStampLabel">Loading...</small>
+		</a>
+	</div>
+
+	<div class="text-center">
+		<script src="https://app.clashsoft.de/darkmode/darkswitch.js"></script>
+	</div>
+</div>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+<!-- Custom JS -->
+<script type="text/javascript" src="../utils.js"></script>
+<script type="text/javascript" src="solutions.js"></script>
+
+</body>
+</html>
