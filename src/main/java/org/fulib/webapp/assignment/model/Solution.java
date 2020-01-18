@@ -1,5 +1,7 @@
 package org.fulib.webapp.assignment.model;
 
+import java.time.Instant;
+
 public class Solution
 {
 	// =============== Constants ===============
@@ -10,6 +12,7 @@ public class Solution
 	public static final String PROPERTY_studentID  = "studentID";
 	public static final String PROPERTY_email      = "email";
 	public static final String PROPERTY_solution   = "solution";
+	public static final String PROPERTY_timeStamp  = "timeStamp";
 
 	// =============== Fields ===============
 
@@ -17,10 +20,11 @@ public class Solution
 
 	private Assignment assignment;
 
-	private String name;
-	private String studentID;
-	private String email;
-	private String solution;
+	private String  name;
+	private String  studentID;
+	private String  email;
+	private String  solution;
+	private Instant timeStamp;
 
 	// =============== Constructors ===============
 
@@ -84,5 +88,15 @@ public class Solution
 	public void setSolution(String solution)
 	{
 		this.solution = solution;
+	}
+
+	public Instant getTimeStamp()
+	{
+		return this.timeStamp;
+	}
+
+	public void setTimeStamp(Instant timeStamp)
+	{
+		this.timeStamp = timeStamp;
 	}
 }

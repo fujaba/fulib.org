@@ -14,7 +14,6 @@ import org.fulib.webapp.assignment.model.Assignment;
 import org.fulib.webapp.assignment.model.Solution;
 import org.fulib.webapp.assignment.model.Task;
 
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -212,6 +211,7 @@ public class Mongo
 		doc.put(Solution.PROPERTY_studentID, solution.getStudentID());
 		doc.put(Solution.PROPERTY_email, solution.getEmail());
 		doc.put(Solution.PROPERTY_solution, solution.getSolution());
+		doc.put(Solution.PROPERTY_timeStamp, solution.getTimeStamp());
 		return doc;
 	}
 }

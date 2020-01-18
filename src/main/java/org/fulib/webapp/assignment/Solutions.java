@@ -7,12 +7,15 @@ import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
 
+import java.time.Instant;
 import java.util.UUID;
 
 public class Solutions
 {
 	public static Object create(Request request, Response response)
 	{
+		final Instant timeStamp = Instant.now();
+
 		final String assignmentID = request.params("assignmentID");
 		final Assignment assignment = Mongo.get().getAssignment(assignmentID);
 
@@ -27,11 +30,13 @@ public class Solutions
 
 		final String solutionID = UUID.randomUUID().toString();
 		final Solution solution = fromJson(solutionID, assignment, new JSONObject(request.body()));
+		solution.setTimeStamp(timeStamp);
 
 		Mongo.get().saveSolution(solution);
 
 		final JSONObject result = new JSONObject();
 		result.put("solutionID", solutionID);
+		result.put("timeStamp", timeStamp.toString());
 		return result.toString(2);
 	}
 
