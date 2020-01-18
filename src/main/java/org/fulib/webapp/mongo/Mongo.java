@@ -31,6 +31,7 @@ public class Mongo
 
 	public static final String LOG_COLLECTION_NAME        = "request-log";
 	public static final String ASSIGNMENT_COLLECTION_NAME = "assignments";
+	public static final String SOLUTION_COLLECTION_NAME   = "solutions";
 
 	// =============== Static Fields ===============
 
@@ -43,6 +44,7 @@ public class Mongo
 
 	private MongoCollection<Document> requestLog;
 	private MongoCollection<Document> assignments;
+	private MongoCollection<Document> solutions;
 
 	// =============== Static Methods ===============
 
@@ -73,6 +75,7 @@ public class Mongo
 		this.database = this.mongoClient.getDatabase(DATABASE_NAME);
 		this.requestLog = this.database.getCollection(LOG_COLLECTION_NAME);
 		this.assignments = this.database.getCollection(ASSIGNMENT_COLLECTION_NAME);
+		this.solutions = this.database.getCollection(SOLUTION_COLLECTION_NAME);
 	}
 
 	private static String getURL()
@@ -195,6 +198,20 @@ public class Mongo
 
 	public void saveSolution(Solution solution)
 	{
-		// TODO
+		final Document doc = solution2Doc(solution);
+		this.solutions
+			.replaceOne(Filters.eq(Solution.PROPERTY_id, solution.getID()), doc, new ReplaceOptions().upsert(true));
+	}
+
+	private static Document solution2Doc(Solution solution)
+	{
+		final Document doc = new Document();
+		doc.put(Solution.PROPERTY_id, solution.getID());
+		doc.put(Solution.PROPERTY_assignment, solution.getAssignment().getID());
+		doc.put(Solution.PROPERTY_name, solution.getName());
+		doc.put(Solution.PROPERTY_studentID, solution.getStudentID());
+		doc.put(Solution.PROPERTY_email, solution.getEmail());
+		doc.put(Solution.PROPERTY_solution, solution.getSolution());
+		return doc;
 	}
 }
