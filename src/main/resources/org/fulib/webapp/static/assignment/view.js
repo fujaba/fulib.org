@@ -21,6 +21,8 @@ const nameInput = document.getElementById('nameInput');
 const studentIDInput = document.getElementById('studentIDInput');
 const emailInput = document.getElementById('emailInput');
 
+const submissionTimeLabel = document.getElementById('submissionTimeLabel');
+
 // =============== Variables ===============
 
 const assignmentID = new URL(window.location).searchParams.get('id');
@@ -81,6 +83,8 @@ function submit() {
 	};
 
 	api('POST', `/assignment/${assignmentID}/solution`, data, result => {
+		const timeStamp = new Date(result.timeStamp);
+		submissionTimeLabel.innerText = timeStamp.toLocaleString();
 		$('#successModal').modal('show');
 	});
 }
