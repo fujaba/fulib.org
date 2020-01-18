@@ -1,6 +1,7 @@
 package org.fulib.webapp;
 
 import org.fulib.webapp.assignment.Assignments;
+import org.fulib.webapp.assignment.model.Solutions;
 import org.fulib.webapp.projectzip.ProjectZip;
 import org.fulib.webapp.tool.RunCodeGen;
 import spark.Service;
@@ -56,6 +57,8 @@ public class WebService
 		service.post("/projectzip", ProjectZip::handle);
 		service.post("/assignment", Assignments::create);
 		service.get("/assignment/:id", Assignments::get);
+
+		service.post("/assignment/:assignmentID/solution", Solutions::create);
 
 		service.exception(Exception.class, (exception, request, response) -> {
 			Logger.getGlobal().log(Level.SEVERE, "unhandled exception processing request", exception);

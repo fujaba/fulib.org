@@ -11,6 +11,7 @@ import com.mongodb.client.model.ReplaceOptions;
 import org.bson.Document;
 import org.fulib.webapp.WebService;
 import org.fulib.webapp.assignment.model.Assignment;
+import org.fulib.webapp.assignment.model.Solution;
 import org.fulib.webapp.assignment.model.Task;
 
 import java.time.ZonedDateTime;
@@ -190,5 +191,10 @@ public class Mongo
 		doc.put(Assignment.PROPERTY_tasks, tasks);
 
 		return doc;
+	}
+
+	public void saveSolution(Solution solution)
+	{
+		// TODO
 	}
 }
