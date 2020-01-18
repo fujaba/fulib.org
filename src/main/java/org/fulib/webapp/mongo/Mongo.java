@@ -8,6 +8,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.ReplaceOptions;
+import com.mongodb.client.model.Sorts;
 import org.bson.Document;
 import org.fulib.webapp.WebService;
 import org.fulib.webapp.assignment.model.Assignment;
@@ -223,11 +224,12 @@ public class Mongo
 			return null;
 		}
 
-		return this.doc2Solution(id, doc);
+		return this.doc2Solution(doc);
 	}
 
-	private Solution doc2Solution(String id, Document doc)
+	private Solution doc2Solution(Document doc)
 	{
+		final String id = doc.getString(Solution.PROPERTY_id);
 		final Solution solution = new Solution(id);
 
 		final String assignmentID = doc.getString(Solution.PROPERTY_assignment);
@@ -241,5 +243,12 @@ public class Mongo
 		solution.setTimeStamp(doc.getDate(Solution.PROPERTY_timeStamp).toInstant());
 
 		return solution;
+	}
+
+	public List<Solution> getSolutions(String assignmentID)
+	{
+		return this.solutions.find(Filters.eq(Solution.PROPERTY_assignment, assignmentID))
+		                     .sort(Sorts.ascending(Solution.PROPERTY_timeStamp)).map(this::doc2Solution)
+		                     .into(new ArrayList<>());
 	}
 }
