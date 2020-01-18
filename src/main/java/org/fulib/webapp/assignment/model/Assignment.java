@@ -1,6 +1,6 @@
 package org.fulib.webapp.assignment.model;
 
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,11 +21,11 @@ public class Assignment
 
 	private final String id;
 
-	private String        title;
-	private String        description;
-	private String        author;
-	private String        email;
-	private ZonedDateTime deadline;
+	private String  title;
+	private String  description;
+	private String  author;
+	private String  email;
+	private Instant deadline;
 
 	private List<Task> tasks = new ArrayList<>();
 	private String     solution;
@@ -84,12 +84,12 @@ public class Assignment
 		this.email = email;
 	}
 
-	public ZonedDateTime getDeadline()
+	public Instant getDeadline()
 	{
 		return this.deadline;
 	}
 
-	public void setDeadline(ZonedDateTime deadline)
+	public void setDeadline(Instant deadline)
 	{
 		this.deadline = deadline;
 	}

@@ -148,7 +148,7 @@ public class Mongo
 		assignment.setDescription(doc.getString(Assignment.PROPERTY_description));
 		assignment.setAuthor(doc.getString(Assignment.PROPERTY_author));
 		assignment.setEmail(doc.getString(Assignment.PROPERTY_email));
-		assignment.setDeadline(ZonedDateTime.parse(doc.getString(Assignment.PROPERTY_deadline)));
+		assignment.setDeadline(doc.getDate(Assignment.PROPERTY_deadline).toInstant());
 		assignment.setSolution(doc.getString(Assignment.PROPERTY_solution));
 
 		for (final Document taskDoc : doc.getList(Assignment.PROPERTY_tasks, Document.class))
@@ -179,7 +179,7 @@ public class Mongo
 		doc.put(Assignment.PROPERTY_description, assignment.getDescription());
 		doc.put(Assignment.PROPERTY_author, assignment.getAuthor());
 		doc.put(Assignment.PROPERTY_email, assignment.getEmail());
-		doc.put(Assignment.PROPERTY_deadline, assignment.getDeadline().toString());
+		doc.put(Assignment.PROPERTY_deadline, assignment.getDeadline());
 		doc.put(Assignment.PROPERTY_solution, assignment.getSolution());
 
 		final List<Document> tasks = new ArrayList<>();

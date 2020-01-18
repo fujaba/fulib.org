@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
 
+import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
@@ -35,7 +36,7 @@ public class Assignments
 		assignment.setDescription(obj.getString(Assignment.PROPERTY_description));
 		assignment.setAuthor(obj.getString(Assignment.PROPERTY_author));
 		assignment.setEmail(obj.getString(Assignment.PROPERTY_email));
-		assignment.setDeadline(ZonedDateTime.parse(obj.getString(Assignment.PROPERTY_deadline)));
+		assignment.setDeadline(Instant.parse(obj.getString(Assignment.PROPERTY_deadline)));
 		assignment.setSolution(obj.getString(Assignment.PROPERTY_solution));
 
 		for (final Object taskItem : obj.getJSONArray(Assignment.PROPERTY_tasks))
