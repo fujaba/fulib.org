@@ -4,7 +4,7 @@ const tokenInput = document.getElementById('tokenInput');
 
 const searchInput = document.getElementById('searchInput');
 
-const studentList = document.getElementById('solutionList');
+const solutionList = document.getElementById('solutionList');
 
 // =============== Initialization ===============
 
@@ -39,7 +39,7 @@ function loadSolutions() {
 
 		const solutions = result.solutions;
 
-		removeChildren(studentList);
+		removeChildren(solutionList);
 		for (let index = 0; index < solutions.length; index++) {
 			const solution = solutions[index];
 			const html = `
@@ -54,7 +54,7 @@ function loadSolutions() {
 				<small id="solution${index}TimeStampLabel">Loading...</small>
 			</div>
 			`;
-			studentList.insertAdjacentHTML('beforeend', html);
+			solutionList.insertAdjacentHTML('beforeend', html);
 
 			const solutionLink = document.getElementById(`solution${index}Link`);
 			const solutionNameLabel = document.getElementById(`solution${index}NameLabel`);
@@ -78,7 +78,7 @@ function updateSearch() {
 	const searchText = searchInput.value;
 	const searchWords = searchText.split(/\s+/);
 
-	const solutionCount = studentList.children.length;
+	const solutionCount = solutionList.children.length;
 	for (let index = 0; index < solutionCount; index++) {
 		const link = document.getElementById(`solution${index}Link`);
 
