@@ -151,6 +151,7 @@ public class Mongo
 	private static Assignment doc2Assignment(String id, Document doc)
 	{
 		final Assignment assignment = new Assignment(id);
+		assignment.setToken(doc.getString(Assignment.PROPERTY_token));
 		assignment.setTitle(doc.getString(Assignment.PROPERTY_title));
 		assignment.setDescription(doc.getString(Assignment.PROPERTY_description));
 		assignment.setAuthor(doc.getString(Assignment.PROPERTY_author));
@@ -182,6 +183,7 @@ public class Mongo
 		final Document doc = new Document();
 
 		doc.put(Assignment.PROPERTY_id, assignment.getID());
+		doc.put(Assignment.PROPERTY_token, assignment.getToken());
 		doc.put(Assignment.PROPERTY_title, assignment.getTitle());
 		doc.put(Assignment.PROPERTY_description, assignment.getDescription());
 		doc.put(Assignment.PROPERTY_author, assignment.getAuthor());
