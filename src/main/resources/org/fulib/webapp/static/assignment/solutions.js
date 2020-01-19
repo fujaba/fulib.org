@@ -2,6 +2,8 @@
 
 const tokenInput = document.getElementById('tokenInput');
 
+const searchInput = document.getElementById('searchInput');
+
 const studentList = document.getElementById('solutionList');
 
 // =============== Initialization ===============
@@ -70,4 +72,35 @@ function loadSolutions() {
 			solutionTimeStampLabel.innerText = new Date(solution.timeStamp).toLocaleString();
 		}
 	});
+}
+
+function updateSearch() {
+	const searchText = searchInput.value;
+	const searchWords = searchText.split(/\s+/);
+
+	const solutionCount = studentList.children.length;
+	for (let index = 0; index < solutionCount; index++) {
+		const link = document.getElementById(`solution${index}Link`);
+
+		const nameLabel = document.getElementById(`solution${index}NameLabel`);
+		const studentIDLabel = document.getElementById(`solution${index}StudentIDLabel`);
+		const emailLink = document.getElementById(`solution${index}EmailLink`);
+
+		const solution = {
+			name: nameLabel.innerText,
+			studentID: studentIDLabel.innerText,
+			email: emailLink.innerText,
+		};
+
+		link.hidden = !includeInSearch(solution, searchWords);
+	}
+}
+
+function includeInSearch({name, studentID, email}, searchWords) {
+	for (const searchWord of searchWords) {
+		if (name.indexOf(searchWord) >= 0 || studentID.indexOf(searchWord) >= 0 || email.indexOf(searchWord) >= 0) {
+			return true;
+		}
+	}
+	return false;
 }
