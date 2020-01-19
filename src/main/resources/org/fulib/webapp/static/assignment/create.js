@@ -12,6 +12,7 @@ const taskList = document.getElementById('taskList');
 const titleLabel = document.getElementById('titleLabel');
 const assignmentLink = document.getElementById('link');
 const copyLinkButton = document.getElementById('copyLinkButton');
+const tokenLabel = document.getElementById('tokenLabel');
 
 const solutionInput = document.getElementById('solutionInput');
 const solutionInputCM = CodeMirror.fromTextArea(solutionInput, {
@@ -98,6 +99,7 @@ function submit() {
 		titleLabel.innerText = titleInput.value;
 		assignmentLink.href = link;
 		assignmentLink.innerText = link;
+		tokenLabel.innerText = result.token;
 		$('#successModal').modal('show');
 	});
 }
