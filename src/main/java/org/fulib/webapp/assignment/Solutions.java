@@ -71,7 +71,18 @@ public class Solutions
 			return "{}";
 		}
 
-		// TODO check auth header
+		// NB: we use the assignment resolved via the solution, NOT the one we'd get from assignmentID!
+		// Otherwise, someone could create their own assignment, forge the request with that assignment ID
+		// and a solutionID belonging to a different assignment, and gain access to the solution without having
+		// the token of the assignment it actually belongs to.
+
+		final String token = request.headers("Assignment-Token");
+		if (!token.equals(solution.getAssignment().getToken()))
+		{
+			response.status(401);
+			// language=JSON
+			return "{\n" + "  \"error\": \"invalid token\"\n" + "}\n";
+		}
 
 		final JSONObject obj = toJson(solution);
 		return obj.toString(2);
@@ -100,6 +111,16 @@ public class Solutions
 		{
 			response.redirect("/assignment/solutions.html?id=" + assignmentID);
 			return "";
+		}
+
+		final Assignment assignment = Mongo.get().getAssignment(assignmentID);
+		final String token = request.headers("Assignment-Token");
+
+		if (!token.equals(assignment.getToken()))
+		{
+			response.status(401);
+			// language=JSON
+			return "{\n" + "  \"error\": \"invalid token\"\n" + "}\n";
 		}
 
 		final List<Solution> solutions = Mongo.get().getSolutions(assignmentID);
