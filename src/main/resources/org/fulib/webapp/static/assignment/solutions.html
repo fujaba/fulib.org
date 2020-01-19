@@ -47,6 +47,37 @@
 	</div>
 </div>
 
+<div class="modal fade" id="tokenModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
+     aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="successModalLabel">Authorization Required</h5>
+			</div>
+			<div class="modal-body">
+				<p>
+					<!-- TODO assignment title instead of "this assignment" -->
+					Please enter the token for this assignment to view the solutions:
+				</p>
+				<form>
+					<div class="form-group">
+						<label class="sr-only" for="tokenInput">Token</label>
+						<input type="text" class="form-control text-monospace" id="tokenInput"
+						       placeholder="XXXX-XXXX-XXXX-XXXX">
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="submitToken()">
+					Submit
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
