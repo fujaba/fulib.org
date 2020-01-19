@@ -101,6 +101,7 @@ function submit() {
 		assignmentLink.href = link;
 		assignmentLink.innerText = link;
 		tokenLabel.innerText = result.token;
+		localStorage.setItem(`assignment/${result.id}/token`, result.token);
 		$('#successModal').modal('show');
 	});
 }
