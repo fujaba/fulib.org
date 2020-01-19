@@ -8,8 +8,8 @@ import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
 
+import java.security.SecureRandom;
 import java.time.Instant;
-import java.time.ZonedDateTime;
 import java.util.UUID;
 
 public class Assignments
@@ -17,15 +17,26 @@ public class Assignments
 	public static Object create(Request request, Response response)
 	{
 		final String id = UUID.randomUUID().toString();
+		final String token = generateToken();
 		final Assignment assignment = fromJson(id, new JSONObject(request.body()));
+		assignment.setToken(token);
 
 		Mongo.get().saveAssignment(assignment);
 
 		JSONObject responseJson = new JSONObject();
 
 		responseJson.put(Assignment.PROPERTY_id, id);
+		responseJson.put(Assignment.PROPERTY_token, token);
 
 		return responseJson.toString(2);
+	}
+
+	private static String generateToken()
+	{
+		final SecureRandom random = new SecureRandom();
+		final long value = random.nextLong();
+		final String base16 = String.format("%016x", value);
+		return base16.replaceAll("(.{4})(.{4})(.{4})(.{4})", "$1-$2-$3-$4");
 	}
 
 	private static Assignment fromJson(String id, JSONObject obj)
@@ -82,7 +93,7 @@ public class Assignments
 		obj.put(Assignment.PROPERTY_author, assignment.getAuthor());
 		obj.put(Assignment.PROPERTY_email, assignment.getEmail());
 		obj.put(Assignment.PROPERTY_deadline, assignment.getDeadline().toString());
-		// do NOT include solution!
+		// do NOT include solution or token!
 
 		final JSONArray tasks = new JSONArray();
 		for (final Task task : assignment.getTasks())
