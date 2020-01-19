@@ -28,8 +28,6 @@ public class Solutions
 			return "{\n" + "  \"error\": \"assignment with id '" + assignmentID + "'' not found\"\n" + "}";
 		}
 
-		// TODO check deadline
-
 		final String solutionID = UUID.randomUUID().toString();
 		final Solution solution = fromJson(solutionID, assignment, new JSONObject(request.body()));
 		solution.setTimeStamp(timeStamp);
