@@ -48,14 +48,20 @@ function loadSolutions() {
 			const solution = solutions[index];
 			const html = `
 			<div id="solution${index}Link" class="list-group-item list-group-item-action">
-				<h5 id="solution${index}NameLabel">Loading...</h5>
-				<span class="badge badge-primary badge-pill" id="solution${index}PointsLabel">.../...</span>
-				<p class="mb-1">
-					<span id="solution${index}StudentIDLabel">Loading...</span>
-					&mdash;
-					<a id="solution${index}EmailLink">Loading...</a>
-				</p>
-				<small id="solution${index}TimeStampLabel">Loading...</small>
+				<div>
+					<span class="h5" id="solution${index}NameLabel">Loading...</span>
+				</div>
+				<div>
+					<small>
+						<span id="solution${index}StudentIDLabel">Loading...</span>
+						&mdash;
+						<a id="solution${index}EmailLink">Loading...</a>
+					</small>
+				</div>
+				<div>
+					<span id="solution${index}TimeStampLabel">Loading...</span>
+					<span class="badge badge-primary badge-pill" id="solution${index}PointsLabel">.../...</span>
+				</div>
 			</div>
 			`;
 			solutionList.insertAdjacentHTML('beforeend', html);
