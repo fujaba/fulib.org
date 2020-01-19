@@ -6,6 +6,10 @@ const searchInput = document.getElementById('searchInput');
 
 const solutionList = document.getElementById('solutionList');
 
+// =============== Variables ===============
+
+let solutions;
+
 // =============== Initialization ===============
 
 (() => {
@@ -37,7 +41,7 @@ function loadSolutions() {
 			return;
 		}
 
-		const solutions = result.solutions;
+		solutions = result.solutions;
 
 		removeChildren(solutionList);
 		for (let index = 0; index < solutions.length; index++) {
@@ -81,16 +85,7 @@ function updateSearch() {
 	const solutionCount = solutionList.children.length;
 	for (let index = 0; index < solutionCount; index++) {
 		const link = document.getElementById(`solution${index}Link`);
-
-		const nameLabel = document.getElementById(`solution${index}NameLabel`);
-		const studentIDLabel = document.getElementById(`solution${index}StudentIDLabel`);
-		const emailLink = document.getElementById(`solution${index}EmailLink`);
-
-		const solution = {
-			name: nameLabel.innerText,
-			studentID: studentIDLabel.innerText,
-			email: emailLink.innerText,
-		};
+		const solution = solutions[index];
 
 		link.hidden = !includeInSearch(solution, searchWords);
 	}
