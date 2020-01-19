@@ -13,6 +13,7 @@ const titleLabel = document.getElementById('titleLabel');
 const assignmentLink = document.getElementById('link');
 const copyLinkButton = document.getElementById('copyLinkButton');
 const tokenLabel = document.getElementById('tokenLabel');
+const copyTokenButton = document.getElementById('copyTokenButton');
 
 const solutionInput = document.getElementById('solutionInput');
 const solutionInputCM = CodeMirror.fromTextArea(solutionInput, {
@@ -104,12 +105,19 @@ function submit() {
 	});
 }
 
+function animateCopyButton(button) {
+	button.innerText = 'Copied!';
+	setTimeout(() => button.innerText = 'Copy', 5000);
+}
+
 function onCopyLink() {
 	copyToClipboard(assignmentLink.innerText);
-	copyLinkButton.innerText = 'Copied!';
-	setTimeout(() => {
-		copyLinkButton.innerText = 'Copy';
-	}, 5000);
+	animateCopyButton(copyLinkButton);
+}
+
+function onCopyToken() {
+	copyToClipboard(tokenLabel.innerText);
+	animateCopyButton(copyTokenButton);
 }
 
 function addTask() {
