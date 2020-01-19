@@ -9,6 +9,7 @@ public class Assignment
 	// =============== Constants ===============
 
 	public static final String PROPERTY_id          = "id";
+	public static final String PROPERTY_token       = "token";
 	public static final String PROPERTY_title       = "title";
 	public static final String PROPERTY_description = "description";
 	public static final String PROPERTY_author      = "author";
@@ -20,6 +21,7 @@ public class Assignment
 	// =============== Fields ===============
 
 	private final String id;
+	private       String token;
 
 	private String  title;
 	private String  description;
@@ -42,6 +44,16 @@ public class Assignment
 	public String getID()
 	{
 		return this.id;
+	}
+
+	public String getToken()
+	{
+		return this.token;
+	}
+
+	public void setToken(String token)
+	{
+		this.token = token;
 	}
 
 	public String getTitle()
