@@ -1,4 +1,8 @@
 function api(method, url, body, handler) {
+	apih(method, url, null, body, handler);
+}
+
+function apih(method, url, headers, body, handler) {
 	const requestBody = JSON.stringify(body);
 	const request = new XMLHttpRequest();
 
@@ -8,6 +12,11 @@ function api(method, url, body, handler) {
 	});
 	request.open(method, url, true);
 	request.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+	if (headers) {
+		for (const headerName of Object.keys(headers)) {
+			request.setRequestHeader(headerName, headers[headerName]);
+		}
+	}
 	request.send(requestBody);
 }
 
