@@ -14,11 +14,9 @@ const assignmentID = new URL(window.location).searchParams.get('id');
 
 // =============== Initialization ===============
 
-init();
-
-function init() {
+(() => {
 	loadAssignment();
-}
+})();
 
 // =============== Functions ===============
 

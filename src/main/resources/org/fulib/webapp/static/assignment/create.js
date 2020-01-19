@@ -38,9 +38,7 @@ let nextTaskIndex = 0;
 
 // =============== Initialization ===============
 
-init();
-
-function init() {
+(() => {
 	try {
 		// may fail if darktheme/network is unavailable
 		updateEditorTheme();
@@ -55,7 +53,7 @@ function init() {
 		deadlineTimeInput,
 		descriptionInput,
 	);
-}
+})();
 
 // =============== Functions ===============
 

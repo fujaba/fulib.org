@@ -17,9 +17,7 @@ const submissionTimeLabel = document.getElementById('submissionTimeLabel');
 
 // =============== Initialization ===============
 
-init();
-
-function init() {
+(() => {
 	try {
 		// may fail if darktheme/network is unavailable
 		updateEditorTheme();
@@ -31,7 +29,7 @@ function init() {
 		studentIDInput,
 		emailInput,
 	);
-}
+})();
 
 // =============== Functions ===============
 
