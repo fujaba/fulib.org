@@ -227,7 +227,7 @@ public class Mongo
 
 	public Solution getSolution(String id)
 	{
-		final Document doc = this.assignments.find(Filters.eq(Solution.PROPERTY_id, id)).first();
+		final Document doc = this.solutions.find(Filters.eq(Solution.PROPERTY_id, id)).first();
 		if (doc == null)
 		{
 			return null;
