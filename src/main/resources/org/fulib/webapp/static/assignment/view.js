@@ -8,14 +8,18 @@ const descriptionLabel = document.getElementById('descriptionLabel');
 
 const taskList = document.getElementById('taskList');
 
+const submitDiv = document.getElementById('submitDiv');
+
 // =============== Variables ===============
 
 const assignmentID = new URL(window.location).searchParams.get('id');
+const solutionID = new URL(window.location).searchParams.get('solution');
 
 // =============== Initialization ===============
 
 (() => {
 	loadAssignment();
+	loadSolution();
 })();
 
 // =============== Functions ===============
@@ -37,4 +41,31 @@ function loadAssignment() {
 			taskList.appendChild(li);
 		}
 	});
+}
+
+function loadSolution() {
+	if (!solutionID) {
+		return;
+	}
+
+	const headers = {
+		'Assignment-Token': localStorage.getItem(`assignment/${assignmentID}/token`),
+	};
+	apih('GET', `/assignment/${assignmentID}/solution/${solutionID}`, headers, null, result => {
+		if (result.error) {
+			return;
+		}
+
+		solutionInputCM.setValue(result.solution);
+		nameInput.value = result.name;
+		emailInput.value = result.email;
+		studentIDInput.value = result.studentID;
+
+		solutionInputCM.options.readOnly = true;
+		nameInput.readOnly = true;
+		emailInput.readOnly = true;
+		studentIDInput.readOnly = true;
+
+		submitDiv.hidden = true;
+	})
 }
