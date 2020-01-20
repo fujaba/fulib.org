@@ -28,7 +28,7 @@ public class Solutions
 			return "{\n" + "  \"error\": \"assignment with id '" + assignmentID + "'' not found\"\n" + "}";
 		}
 
-		final String solutionID = UUID.randomUUID().toString();
+		final String solutionID = IDGenerator.generateID();
 		final Solution solution = fromJson(solutionID, assignment, new JSONObject(request.body()));
 		solution.setTimeStamp(timeStamp);
 
