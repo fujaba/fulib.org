@@ -12,6 +12,8 @@ const taskList = document.getElementById('taskList');
 const titleLabel = document.getElementById('titleLabel');
 const assignmentLink = document.getElementById('assignmentLink');
 const copyAssignmentLinkButton = document.getElementById('copyAssignmentLinkButton');
+const solutionsLink = document.getElementById('solutionsLink');
+const copySolutionsLinkButton = document.getElementById('solutionsLink');
 const tokenLabel = document.getElementById('tokenLabel');
 const copyTokenButton = document.getElementById('copyTokenButton');
 
@@ -95,9 +97,12 @@ function submit() {
 	api('POST', '/assignment', data, result => {
 		const url = new URL(window.location);
 		const link = `${url.protocol}//${url.host}/assignment/${result.id}`;
+		const solutionsLinkRef = link + '/solutions';
 		titleLabel.innerText = titleInput.value;
 		assignmentLink.href = link;
 		assignmentLink.innerText = link;
+		solutionsLink.href = solutionsLinkRef;
+		solutionsLink.innerText = solutionsLinkRef;
 		tokenLabel.innerText = result.token;
 		localStorage.setItem(`assignment/${result.id}/token`, result.token);
 		$('#successModal').modal('show');
@@ -112,6 +117,11 @@ function animateCopyButton(button) {
 function onCopyAssignmentLink() {
 	copyToClipboard(assignmentLink.innerText);
 	animateCopyButton(copyAssignmentLinkButton);
+}
+
+function onCopySolutionsLink() {
+	copyToClipboard(solutionsLink.innerText);
+	animateCopyButton(copySolutionsLinkButton);
 }
 
 function onCopyToken() {
