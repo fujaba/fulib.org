@@ -8,6 +8,9 @@ const descriptionLabel = document.getElementById('descriptionLabel');
 
 const taskList = document.getElementById('taskList');
 
+const submitTimeStampDiv = document.getElementById('submitTimeStampDiv');
+const submitTimeStampLabel = document.getElementById('submitTimeStampLabel');
+
 const submitDiv = document.getElementById('submitDiv');
 
 // =============== Variables ===============
@@ -67,5 +70,7 @@ function loadSolution() {
 		studentIDInput.readOnly = true;
 
 		submitDiv.hidden = true;
+		submitTimeStampDiv.hidden = false;
+		submitTimeStampLabel.innerText = new Date(result.timeStamp).toLocaleString();
 	})
 }
