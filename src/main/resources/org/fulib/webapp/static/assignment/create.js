@@ -10,8 +10,8 @@ const descriptionInput = document.getElementById('descriptionInput');
 const taskList = document.getElementById('taskList');
 
 const titleLabel = document.getElementById('titleLabel');
-const assignmentLink = document.getElementById('link');
-const copyLinkButton = document.getElementById('copyLinkButton');
+const assignmentLink = document.getElementById('assignmentLink');
+const copyAssignmentLinkButton = document.getElementById('copyAssignmentLinkButton');
 const tokenLabel = document.getElementById('tokenLabel');
 const copyTokenButton = document.getElementById('copyTokenButton');
 
@@ -109,9 +109,9 @@ function animateCopyButton(button) {
 	setTimeout(() => button.innerText = 'Copy', 5000);
 }
 
-function onCopyLink() {
+function onCopyAssignmentLink() {
 	copyToClipboard(assignmentLink.innerText);
-	animateCopyButton(copyLinkButton);
+	animateCopyButton(copyAssignmentLinkButton);
 }
 
 function onCopyToken() {
