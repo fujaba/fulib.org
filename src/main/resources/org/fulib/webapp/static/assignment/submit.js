@@ -15,6 +15,7 @@ const solutionInputCM = CodeMirror.fromTextArea(solutionInput, {
 
 const submissionTimeLabel = document.getElementById('submissionTimeLabel');
 const solutionLink = document.getElementById('solutionLink');
+const tokenLabel = document.getElementById('tokenLabel');
 
 // =============== Initialization ===============
 
@@ -55,6 +56,9 @@ function submit() {
 		const link = absoluteLink(`/assignment/${assignmentID}/solution/${(result.id)}`);
 		solutionLink.innerText = link;
 		solutionLink.href = link;
+
+		tokenLabel.innerText = result.token;
+		localStorage.setItem(`assignment/${assignmentID}/solution/${result.id}/token`, result.token);
 
 		$('#successModal').modal('show');
 	});
