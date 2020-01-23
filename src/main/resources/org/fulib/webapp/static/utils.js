@@ -20,6 +20,18 @@ function apih(method, url, headers, body, handler) {
 	request.send(requestBody);
 }
 
+function ensureListChildren(elementList, count, render) {
+	// remove extra child elements
+	while (elementList.children.length > count) {
+		elementList.removeChild(elementList.lastChild);
+	}
+
+	// add missing elements
+	for (let index = elementList.children.length; index < count; index++) {
+		elementList.insertAdjacentHTML('beforeend', render(index));
+	}
+}
+
 function removeChildren(element) {
 	while (element.firstChild) {
 		element.firstChild.remove();

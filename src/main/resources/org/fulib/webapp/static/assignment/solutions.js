@@ -40,28 +40,28 @@ function loadSolutions() {
 }
 
 function renderSolutions(elementList, solutions) {
-	removeChildren(elementList);
+	ensureListChildren(elementList, solutions.length, index => `
+		<div id="solution${index}Item" class="list-group-item list-group-item-action">
+			<div>
+				<span class="h5" id="solution${index}NameLabel">Loading...</span>
+			</div>
+			<div>
+				<small>
+					<span id="solution${index}StudentIDLabel">Loading...</span>
+					&mdash;
+					<a id="solution${index}EmailLink">Loading...</a>
+				</small>
+			</div>
+			<a id="solution${index}Link">
+				<span id="solution${index}TimeStampLabel">Loading...</span>
+				<span class="badge badge-primary badge-pill" id="solution${index}PointsLabel">.../...</span>
+			</a>
+		</div>
+		`
+	);
+
 	for (let index = 0; index < solutions.length; index++) {
 		const solution = solutions[index];
-		const html = `
-			<div id="solution${index}Item" class="list-group-item list-group-item-action">
-				<div>
-					<span class="h5" id="solution${index}NameLabel">Loading...</span>
-				</div>
-				<div>
-					<small>
-						<span id="solution${index}StudentIDLabel">Loading...</span>
-						&mdash;
-						<a id="solution${index}EmailLink">Loading...</a>
-					</small>
-				</div>
-				<a id="solution${index}Link">
-					<span id="solution${index}TimeStampLabel">Loading...</span>
-					<span class="badge badge-primary badge-pill" id="solution${index}PointsLabel">.../...</span>
-				</a>
-			</div>
-			`;
-		elementList.insertAdjacentHTML('beforeend', html);
 
 		const solutionNameLabel = document.getElementById(`solution${index}NameLabel`);
 		const solutionPointsLabel = document.getElementById(`solution${index}PointsLabel`);
