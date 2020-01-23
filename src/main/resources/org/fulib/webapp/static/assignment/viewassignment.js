@@ -20,6 +20,14 @@ const assignmentID = new URL(window.location).searchParams.get('id');
 
 // =============== Functions ===============
 
+function getAssignmentToken(assignmentID) {
+	return localStorage.getItem(`assignment/${assignmentID}/token`);
+}
+
+function setAssignmentToken(assignmentID, token) {
+	localStorage.setItem(`assignment/${assignmentID}/token`, token);
+}
+
 function loadAssignment() {
 	api('GET', `/assignment/${assignmentID}`, null, result => {
 		document.title = result.title;

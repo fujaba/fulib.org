@@ -18,22 +18,14 @@ let solutions;
 
 // =============== Functions ===============
 
-function getToken() {
-	return localStorage.getItem(`assignment/${assignmentID}/token`);
-}
-
-function setToken(token) {
-	localStorage.setItem(`assignment/${assignmentID}/token`, token);
-}
-
 function submitToken() {
-	setToken(tokenInput.value);
+	setAssignmentToken(assignmentID, tokenInput.value);
 	loadSolutions();
 }
 
 function loadSolutions() {
 	const headers = {
-		'Assignment-Token': getToken(),
+		'Assignment-Token': getAssignmentToken(assignmentID),
 	};
 	apih('GET', `/assignment/${assignmentID}/solutions`, headers, null, result => {
 		if (result.error === 'invalid token') {
