@@ -136,6 +136,48 @@
 	</div>
 </div>
 
+<div class="modal fade" id="tokenModal" tabindex="-1" role="dialog" aria-labelledby="tokenModalLabel"
+     aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="tokenModalLabel">Authorization Required</h5>
+			</div>
+			<div class="modal-body">
+				<p>
+					Please enter the token for this solution to view it:
+				</p>
+				<form>
+					<div class="form-group">
+						<label class="sr-only" for="solutionTokenInput">Solution Token</label>
+						<input type="text" class="form-control text-monospace" id="solutionTokenInput"
+						       placeholder="XXXX-XXXX-XXXX-XXXX">
+					</div>
+				</form>
+				<p>
+					If you are the assignment administrator or tutor, enter the assignment token here:
+				</p>
+				<form>
+					<div class="form-group">
+						<label class="sr-only" for="assignmentTokenInput">Assignment Token</label>
+						<input type="text" class="form-control text-monospace" id="assignmentTokenInput"
+						       placeholder="XXXX-XXXX-XXXX-XXXX">
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">
+					Cancel
+				</button>
+				<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="submitToken()">
+					Submit
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

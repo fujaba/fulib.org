@@ -58,7 +58,7 @@ function submit() {
 		solutionLink.href = link;
 
 		tokenLabel.innerText = result.token;
-		localStorage.setItem(`assignment/${assignmentID}/solution/${result.id}/token`, result.token);
+		setSolutionToken(assignmentID, result.id, result.token);
 
 		$('#successModal').modal('show');
 	});
