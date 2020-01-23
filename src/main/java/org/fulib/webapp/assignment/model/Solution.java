@@ -6,24 +6,26 @@ public class Solution
 {
 	// =============== Constants ===============
 
-	public static final String PROPERTY_id         = "id";
+	public static final String PROPERTY_id = "id";
+	public static final String PROPERTY_token = "token";
 	public static final String PROPERTY_assignment = "assignment";
-	public static final String PROPERTY_name       = "name";
-	public static final String PROPERTY_studentID  = "studentID";
-	public static final String PROPERTY_email      = "email";
-	public static final String PROPERTY_solution   = "solution";
-	public static final String PROPERTY_timeStamp  = "timeStamp";
+	public static final String PROPERTY_name = "name";
+	public static final String PROPERTY_studentID = "studentID";
+	public static final String PROPERTY_email = "email";
+	public static final String PROPERTY_solution = "solution";
+	public static final String PROPERTY_timeStamp = "timeStamp";
 
 	// =============== Fields ===============
 
 	private final String id;
+	private String token;
 
 	private Assignment assignment;
 
-	private String  name;
-	private String  studentID;
-	private String  email;
-	private String  solution;
+	private String name;
+	private String studentID;
+	private String email;
+	private String solution;
 	private Instant timeStamp;
 
 	// =============== Constructors ===============
@@ -38,6 +40,16 @@ public class Solution
 	public String getID()
 	{
 		return this.id;
+	}
+
+	public String getToken()
+	{
+		return this.token;
+	}
+
+	public void setToken(String token)
+	{
+		this.token = token;
 	}
 
 	public Assignment getAssignment()
