@@ -72,13 +72,17 @@ public class Solutions
 			return "{}";
 		}
 
+		final String solutionToken = solution.getToken();
+		final String solutionTokenHeader = request.headers("Solution-Token");
+
 		// NB: we use the assignment resolved via the solution, NOT the one we'd get from assignmentID!
 		// Otherwise, someone could create their own assignment, forge the request with that assignment ID
 		// and a solutionID belonging to a different assignment, and gain access to the solution without having
 		// the token of the assignment it actually belongs to.
+		final String assignmentToken = solution.getAssignment().getToken();
+		final String assignmentTokenHeader = request.headers("Assignment-Token");
 
-		final String token = request.headers("Assignment-Token");
-		if (!token.equals(solution.getAssignment().getToken()))
+		if (!solutionToken.equals(solutionTokenHeader) && !assignmentToken.equals(assignmentTokenHeader))
 		{
 			response.status(401);
 			// language=JSON
