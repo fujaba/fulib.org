@@ -31,7 +31,8 @@ public class Solutions
 		final String solutionID = IDGenerator.generateID();
 		final String token = IDGenerator.generateToken();
 
-		final Solution solution = fromJson(solutionID, assignment, new JSONObject(request.body()));
+		final Solution solution = fromJson(solutionID, new JSONObject(request.body()));
+		solution.setAssignment(assignment);
 		solution.setToken(token);
 		solution.setTimeStamp(timeStamp);
 
@@ -44,10 +45,9 @@ public class Solutions
 		return result.toString(2);
 	}
 
-	private static Solution fromJson(String id, Assignment assignment, JSONObject obj)
+	private static Solution fromJson(String id, JSONObject obj)
 	{
 		final Solution solution = new Solution(id);
-		solution.setAssignment(assignment);
 		solution.setName(obj.getString(Solution.PROPERTY_name));
 		solution.setStudentID(obj.getString(Solution.PROPERTY_studentID));
 		solution.setEmail(obj.getString(Solution.PROPERTY_email));
