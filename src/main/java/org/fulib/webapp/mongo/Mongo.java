@@ -216,6 +216,7 @@ public class Mongo
 	{
 		final Document doc = new Document();
 		doc.put(Solution.PROPERTY_id, solution.getID());
+		doc.put(Solution.PROPERTY_token, solution.getToken());
 		doc.put(Solution.PROPERTY_assignment, solution.getAssignment().getID());
 		doc.put(Solution.PROPERTY_name, solution.getName());
 		doc.put(Solution.PROPERTY_studentID, solution.getStudentID());
@@ -240,6 +241,7 @@ public class Mongo
 	{
 		final String id = doc.getString(Solution.PROPERTY_id);
 		final Solution solution = new Solution(id);
+		solution.setToken(doc.getString(Solution.PROPERTY_token));
 
 		final String assignmentID = doc.getString(Solution.PROPERTY_assignment);
 		final Assignment assignment = this.getAssignment(assignmentID);
