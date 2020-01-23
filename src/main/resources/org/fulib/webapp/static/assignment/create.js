@@ -95,8 +95,7 @@ function submit() {
 	}
 
 	api('POST', '/assignment', data, result => {
-		const url = new URL(window.location);
-		const link = `${url.protocol}//${url.host}/assignment/${result.id}`;
+		const link = absoluteLink(`/assignment/${result.id}`);
 		const solutionsLinkRef = link + '/solutions';
 		titleLabel.innerText = titleInput.value;
 		assignmentLink.href = link;

@@ -47,6 +47,11 @@ function autoSave(prefix, ...elements) {
 
 }
 
+function absoluteLink(path) {
+	const url = new URL(window.location);
+	return `${url.protocol}//${url.host}${path}`
+}
+
 function addTab(tabHolder, contentHolder, id, header, content) {
 	// https://getbootstrap.com/docs/4.0/components/navs/#javascript-behavior
 
