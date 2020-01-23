@@ -35,10 +35,15 @@ function loadSolutions() {
 
 		solutions = result.solutions;
 
-		removeChildren(solutionList);
-		for (let index = 0; index < solutions.length; index++) {
-			const solution = solutions[index];
-			const html = `
+		renderSolutions(solutionList, solutions);
+	});
+}
+
+function renderSolutions(elementList, solutions) {
+	removeChildren(elementList);
+	for (let index = 0; index < solutions.length; index++) {
+		const solution = solutions[index];
+		const html = `
 			<div id="solution${index}Item" class="list-group-item list-group-item-action">
 				<div>
 					<span class="h5" id="solution${index}NameLabel">Loading...</span>
@@ -56,24 +61,23 @@ function loadSolutions() {
 				</a>
 			</div>
 			`;
-			solutionList.insertAdjacentHTML('beforeend', html);
+		elementList.insertAdjacentHTML('beforeend', html);
 
-			const solutionNameLabel = document.getElementById(`solution${index}NameLabel`);
-			const solutionPointsLabel = document.getElementById(`solution${index}PointsLabel`);
-			const solutionStudentIDLabel = document.getElementById(`solution${index}StudentIDLabel`);
-			const solutionEmailLink = document.getElementById(`solution${index}EmailLink`);
-			const solutionLink = document.getElementById(`solution${index}Link`);
-			const solutionTimeStampLabel = document.getElementById(`solution${index}TimeStampLabel`);
+		const solutionNameLabel = document.getElementById(`solution${index}NameLabel`);
+		const solutionPointsLabel = document.getElementById(`solution${index}PointsLabel`);
+		const solutionStudentIDLabel = document.getElementById(`solution${index}StudentIDLabel`);
+		const solutionEmailLink = document.getElementById(`solution${index}EmailLink`);
+		const solutionLink = document.getElementById(`solution${index}Link`);
+		const solutionTimeStampLabel = document.getElementById(`solution${index}TimeStampLabel`);
 
-			solutionNameLabel.innerText = solution.name;
-			solutionPointsLabel.innerText = 'X/X'; // TODO
-			solutionStudentIDLabel.innerText = solution.studentID;
-			solutionEmailLink.innerText = solution.email;
-			solutionEmailLink.href = `mailto:${solution.email}`;
-			solutionLink.href = `/assignment/${assignmentID}/solution/${solution.id}`;
-			solutionTimeStampLabel.innerText = new Date(solution.timeStamp).toLocaleString();
-		}
-	});
+		solutionNameLabel.innerText = solution.name;
+		solutionPointsLabel.innerText = 'X/X'; // TODO
+		solutionStudentIDLabel.innerText = solution.studentID;
+		solutionEmailLink.innerText = solution.email;
+		solutionEmailLink.href = `mailto:${solution.email}`;
+		solutionLink.href = `/assignment/${assignmentID}/solution/${solution.id}`;
+		solutionTimeStampLabel.innerText = new Date(solution.timeStamp).toLocaleString();
+	}
 }
 
 function updateSearch() {
