@@ -14,6 +14,7 @@ const solutionInputCM = CodeMirror.fromTextArea(solutionInput, {
 });
 
 const submissionTimeLabel = document.getElementById('submissionTimeLabel');
+const solutionLink = document.getElementById('solutionLink');
 
 // =============== Initialization ===============
 
@@ -50,6 +51,11 @@ function submit() {
 	api('POST', `/assignment/${assignmentID}/solution`, data, result => {
 		const timeStamp = new Date(result.timeStamp);
 		submissionTimeLabel.innerText = timeStamp.toLocaleString();
+
+		const link = absoluteLink(`/assignment/${assignmentID}/solution/${(result.id)}`);
+		solutionLink.innerText = link;
+		solutionLink.href = link;
+
 		$('#successModal').modal('show');
 	});
 }
