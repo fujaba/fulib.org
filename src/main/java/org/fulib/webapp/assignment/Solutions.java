@@ -10,7 +10,6 @@ import spark.Response;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.UUID;
 
 public class Solutions
 {
@@ -24,8 +23,7 @@ public class Solutions
 		if (assignment == null)
 		{
 			response.status(404);
-			// language=JSON
-			return "{\n" + "  \"error\": \"assignment with id '" + assignmentID + "'' not found\"\n" + "}";
+			return unknownAssignmentError(assignmentID);
 		}
 
 		final String solutionID = IDGenerator.generateID();
@@ -118,6 +116,12 @@ public class Solutions
 		}
 
 		final Assignment assignment = Mongo.get().getAssignment(assignmentID);
+		if (assignment == null)
+		{
+			response.status(404);
+			return unknownAssignmentError(assignmentID);
+		}
+
 		final String token = request.headers("Assignment-Token");
 
 		if (!token.equals(assignment.getToken()))
@@ -143,5 +147,11 @@ public class Solutions
 		result.put("solutions", array);
 
 		return result.toString(2);
+	}
+
+	private static String unknownAssignmentError(String assignmentID)
+	{
+		// language=JSON
+		return "{\n" + "  \"error\": \"assignment with id '" + assignmentID + "'' not found\"\n" + "}";
 	}
 }
