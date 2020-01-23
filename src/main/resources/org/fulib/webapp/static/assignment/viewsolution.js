@@ -1,6 +1,6 @@
 // =============== Elements ===============
 
-const submitTimeStampDiv = document.getElementById('submitTimeStampDiv');
+const viewSolutionDiv = document.getElementById('viewSolutionDiv');
 const submitTimeStampLabel = document.getElementById('submitTimeStampLabel');
 
 const submitDiv = document.getElementById('submitDiv');
@@ -54,7 +54,7 @@ function loadSolution() {
 		studentIDInput.readOnly = true;
 
 		submitDiv.hidden = true;
-		submitTimeStampDiv.hidden = false;
+		viewSolutionDiv.hidden = false;
 		submitTimeStampLabel.innerText = new Date(result.timeStamp).toLocaleString();
 	});
 }
