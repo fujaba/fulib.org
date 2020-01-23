@@ -40,43 +40,43 @@ function loadSolutions() {
 }
 
 function renderSolutions(elementList, solutions) {
-	ensureListChildren(elementList, solutions.length, index => `
-		<div id="solution${index}Item" class="list-group-item list-group-item-action">
+	ensureListChildren(elementList, solutions.length, _ => `
+		<div class="list-group-item list-group-item-action solution-item">
 			<div>
-				<span class="h5" id="solution${index}NameLabel">Loading...</span>
+				<span class="h5 solution-name-label">Loading...</span>
 			</div>
 			<div>
 				<small>
-					<span id="solution${index}StudentIDLabel">Loading...</span>
+					<span class="solution-studentid-label">Loading...</span>
 					&mdash;
-					<a id="solution${index}EmailLink">Loading...</a>
+					<a class="solution-email-link">Loading...</a>
 				</small>
 			</div>
-			<a id="solution${index}Link">
-				<span id="solution${index}TimeStampLabel">Loading...</span>
-				<span class="badge badge-primary badge-pill" id="solution${index}PointsLabel">.../...</span>
+			<a class="solution-link">
+				<span class="solution-timestamp-label">Loading...</span>
+				<span class="badge badge-primary badge-pill solution-points-label">.../...</span>
 			</a>
 		</div>
 		`
 	);
 
+	const nameLabels = elementList.getElementsByClassName('solution-name-label');
+	const pointsLabels = document.getElementsByClassName(`solution-points-label`);
+	const studentIDLabels = document.getElementsByClassName(`solution-studentid-label`);
+	const emailLinks = document.getElementsByClassName(`solution-email-link`);
+	const solutionLinks = document.getElementsByClassName(`solution-link`);
+	const timeStampLabels = document.getElementsByClassName(`solution-timestamp-label`);
+
 	for (let index = 0; index < solutions.length; index++) {
 		const solution = solutions[index];
 
-		const solutionNameLabel = document.getElementById(`solution${index}NameLabel`);
-		const solutionPointsLabel = document.getElementById(`solution${index}PointsLabel`);
-		const solutionStudentIDLabel = document.getElementById(`solution${index}StudentIDLabel`);
-		const solutionEmailLink = document.getElementById(`solution${index}EmailLink`);
-		const solutionLink = document.getElementById(`solution${index}Link`);
-		const solutionTimeStampLabel = document.getElementById(`solution${index}TimeStampLabel`);
-
-		solutionNameLabel.innerText = solution.name;
-		solutionPointsLabel.innerText = 'X/X'; // TODO
-		solutionStudentIDLabel.innerText = solution.studentID;
-		solutionEmailLink.innerText = solution.email;
-		solutionEmailLink.href = `mailto:${solution.email}`;
-		solutionLink.href = `/assignment/${assignmentID}/solution/${solution.id}`;
-		solutionTimeStampLabel.innerText = new Date(solution.timeStamp).toLocaleString();
+		nameLabels[index].innerText = solution.name;
+		pointsLabels[index].innerText = 'X/X'; // TODO
+		studentIDLabels[index].innerText = solution.studentID;
+		emailLinks[index].innerText = solution.email;
+		emailLinks[index].href = `mailto:${solution.email}`;
+		solutionLinks[index].href = `/assignment/${assignmentID}/solution/${solution.id}`;
+		timeStampLabels[index].innerText = new Date(solution.timeStamp).toLocaleString();
 	}
 }
 
