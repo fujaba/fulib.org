@@ -29,13 +29,17 @@ public class Solutions
 		}
 
 		final String solutionID = IDGenerator.generateID();
+		final String token = IDGenerator.generateToken();
+
 		final Solution solution = fromJson(solutionID, assignment, new JSONObject(request.body()));
+		solution.setToken(token);
 		solution.setTimeStamp(timeStamp);
 
 		Mongo.get().saveSolution(solution);
 
 		final JSONObject result = new JSONObject();
 		result.put("id", solutionID);
+		result.put("token", token);
 		result.put("timeStamp", timeStamp.toString());
 		return result.toString(2);
 	}
@@ -48,6 +52,7 @@ public class Solutions
 		solution.setStudentID(obj.getString(Solution.PROPERTY_studentID));
 		solution.setEmail(obj.getString(Solution.PROPERTY_email));
 		solution.setSolution(obj.getString(Solution.PROPERTY_solution));
+		// don't include token!
 		return solution;
 	}
 
@@ -97,6 +102,7 @@ public class Solutions
 		obj.put(Solution.PROPERTY_email, solution.getEmail());
 		obj.put(Solution.PROPERTY_solution, solution.getSolution());
 		obj.put(Solution.PROPERTY_timeStamp, solution.getTimeStamp());
+		// don't include token!
 
 		return obj;
 	}
