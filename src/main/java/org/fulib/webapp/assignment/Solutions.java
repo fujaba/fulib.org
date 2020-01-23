@@ -35,7 +35,7 @@ public class Solutions
 		Mongo.get().saveSolution(solution);
 
 		final JSONObject result = new JSONObject();
-		result.put("solutionID", solutionID);
+		result.put("id", solutionID);
 		result.put("timeStamp", timeStamp.toString());
 		return result.toString(2);
 	}
