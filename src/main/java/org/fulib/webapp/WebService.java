@@ -1,6 +1,7 @@
 package org.fulib.webapp;
 
 import org.fulib.webapp.assignment.Assignments;
+import org.fulib.webapp.assignment.Comments;
 import org.fulib.webapp.assignment.Solutions;
 import org.fulib.webapp.projectzip.ProjectZip;
 import org.fulib.webapp.tool.RunCodeGen;
@@ -61,6 +62,8 @@ public class WebService
 		service.post("/assignment/:assignmentID/solution", Solutions::create);
 		service.get("/assignment/:assignmentID/solution/:solutionID", Solutions::get);
 		service.get("/assignment/:assignmentID/solutions", Solutions::getAll);
+
+		service.get("/assignment/:assignmentID/solution/:parentID/comments", Comments::getChildren);
 
 		service.exception(Exception.class, (exception, request, response) -> {
 			Logger.getGlobal().log(Level.SEVERE, "unhandled exception processing request", exception);
