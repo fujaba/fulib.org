@@ -25,7 +25,10 @@ const solutionID = new URL(window.location).searchParams.get('solution');
 		commentEmailInput,
 	);
 
-	loadSolution();
+	if (solutionID) {
+		loadSolution();
+		loadComments();
+	}
 })();
 
 // =============== Functions ===============
@@ -46,10 +49,6 @@ function setSolutionToken(assignmentID, solutionID, token) {
 }
 
 function loadSolution() {
-	if (!solutionID) {
-		return;
-	}
-
 	const headers = getTokenHeaders();
 	apih('GET', `/assignment/${assignmentID}/solution/${solutionID}`, headers, null, result => {
 		if (result.error === 'invalid token') {
@@ -71,7 +70,10 @@ function loadSolution() {
 		viewSolutionDiv.hidden = false;
 		submitTimeStampLabel.innerText = new Date(result.timeStamp).toLocaleString();
 	});
+}
 
+function loadComments() {
+	const headers = getTokenHeaders();
 	apih('GET', `/assignment/${assignmentID}/solution/${solutionID}/comments`, headers, null, result => {
 		renderComments(result.children);
 	});
@@ -132,6 +134,6 @@ function submitComment() {
 		comment.timeStamp = result.timeStamp;
 		comment.html = result.html;
 
-		// TODO add to list
+		loadComments();
 	});
 }
