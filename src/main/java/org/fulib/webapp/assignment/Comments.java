@@ -23,7 +23,7 @@ public class Comments
 		final String commentID = IDGenerator.generateID();
 		final Comment comment = fromJson(commentID, new JSONObject(request.body()));
 
-		final String html = comment.getMarkdown(); // TODO render markdown
+		final String html = MarkdownUtil.renderHtml(comment.getMarkdown());
 
 		comment.setParent(parentID);
 		comment.setTimeStamp(timeStamp);
