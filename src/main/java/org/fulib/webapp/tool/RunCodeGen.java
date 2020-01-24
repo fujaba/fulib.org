@@ -30,10 +30,7 @@ public class RunCodeGen
 		final String body = req.body();
 		final JSONObject jsonObject = new JSONObject(body);
 
-		final CodeGenData input = new CodeGenData();
-		input.setScenarioText(jsonObject.getString("scenarioText"));
-		input.setPackageName(jsonObject.getString("packageName"));
-		input.setScenarioFileName(jsonObject.getString("scenarioFileName"));
+		final CodeGenData input = fromJson(jsonObject);
 
 		final Result result = run(input);
 
@@ -48,6 +45,15 @@ public class RunCodeGen
 			Mongo.get().log(req.ip(), req.userAgent(), body, resultBody);
 		}
 		return resultBody;
+	}
+
+	private static CodeGenData fromJson(JSONObject obj)
+	{
+		final CodeGenData input = new CodeGenData();
+		input.setScenarioText(obj.getString("scenarioText"));
+		input.setPackageName(obj.getString("packageName"));
+		input.setScenarioFileName(obj.getString("scenarioFileName"));
+		return input;
 	}
 
 	private static JSONObject toJson(Result result)
