@@ -138,15 +138,7 @@ public class RunCodeGen
 
 			if (exitCode == 0 || (exitCode & 4) != 0) // scenarioc did not fail
 			{
-				// collect test methods
-				Files.walk(testSrcDir)
-				     .filter(Tools::isJava)
-				     .forEach(file -> readTestMethods(result.getMethods(), file));
-
-				Files.walk(modelSrcDir)
-				     .filter(Tools::isJava)
-				     .sorted()
-				     .forEach(file -> readModelMethods(result.getMethods(), file));
+				collectTestMethods(modelSrcDir, testSrcDir, result.getMethods());
 
 				// read class diagram
 				final Path classDiagramFile = modelSrcDir.resolve(packageDir).resolve("classDiagram.svg");
@@ -239,41 +231,27 @@ public class RunCodeGen
 		return diagram;
 	}
 
-	private static void readTestMethods(List<Method> methods, Path file)
-	{
-		try
-		{
-			tryReadTestMethods(methods, file);
-		}
-		catch (Exception e)
-		{
-			throw new RuntimeException(e);
-		}
-	}
+	// --------------- Methods ---------------
 
-	private static void tryReadTestMethods(List<Method> methods, Path file) throws IOException, JSONException
+	private static void collectTestMethods(Path modelSrcDir, Path testSrcDir, List<Method> methods) throws IOException
 	{
-		tryReadMethods(methods, file, false);
-	}
-
-	private static void readModelMethods(List<Method> methods, Path file)
-	{
-		try
-		{
-			tryReadModelMethod(methods, file);
-		}
-		catch (Exception e)
-		{
-			throw new RuntimeException(e);
-		}
-	}
-
-	private static void tryReadModelMethod(List<Method> methods, Path file) throws IOException, JSONException
-	{
-		tryReadMethods(methods, file, true);
+		Files.walk(testSrcDir).filter(Tools::isJava).forEach(file -> tryReadMethods(methods, file, false));
+		Files.walk(modelSrcDir).filter(Tools::isJava).sorted().forEach(file -> tryReadMethods(methods, file, true));
 	}
 
 	private static void tryReadMethods(List<Method> methods, Path file, boolean modelFilter)
+	{
+		try
+		{
+			readMethods(methods, file, modelFilter);
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
+	private static void readMethods(List<Method> methods, Path file, boolean modelFilter)
 		throws IOException, JSONException
 	{
 		final String filePath = file.toString();
