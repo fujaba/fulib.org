@@ -1,5 +1,19 @@
+/* --------------- CodeMirror --------------- */
+
 .CodeMirror {
-	border:        1px solid gray;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #ced4da;
+	border-radius: .25rem;
+}
+
+[data-theme="dark"] .CodeMirror {
+	border-color: #404040;
+}
+
+.CodeMirror:focus-within {
+	outline: 0;
+	box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25)
 }
 
 /* --------------- Sticky footer styles --------------- */
