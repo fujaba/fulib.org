@@ -13,6 +13,7 @@ import com.mongodb.client.model.Sorts;
 import org.bson.Document;
 import org.fulib.webapp.WebService;
 import org.fulib.webapp.assignment.model.Assignment;
+import org.fulib.webapp.assignment.model.Comment;
 import org.fulib.webapp.assignment.model.Solution;
 import org.fulib.webapp.assignment.model.Task;
 
@@ -32,7 +33,8 @@ public class Mongo
 
 	public static final String LOG_COLLECTION_NAME = "request-log";
 	public static final String ASSIGNMENT_COLLECTION_NAME = "assignments";
-	public static final String SOLUTION_COLLECTION_NAME   = "solutions";
+	public static final String SOLUTION_COLLECTION_NAME = "solutions";
+	public static final String COMMENT_COLLECTION_NAME = "comments";
 
 	// =============== Static Fields ===============
 
@@ -46,6 +48,7 @@ public class Mongo
 	private MongoCollection<Document> requestLog;
 	private MongoCollection<Document> assignments;
 	private MongoCollection<Document> solutions;
+	private MongoCollection<Document> comments;
 
 	// =============== Static Methods ===============
 
@@ -85,6 +88,11 @@ public class Mongo
 		this.solutions.createIndex(Indexes.ascending(Solution.PROPERTY_id));
 		this.solutions.createIndex(Indexes.ascending(Solution.PROPERTY_assignment));
 		this.solutions.createIndex(Indexes.ascending(Solution.PROPERTY_timeStamp));
+
+		this.comments = this.database.getCollection(COMMENT_COLLECTION_NAME);
+		this.comments.createIndex(Indexes.ascending(Comment.PROPERTY_id));
+		this.comments.createIndex(Indexes.ascending(Comment.PROPERTY_parent));
+		this.comments.createIndex(Indexes.ascending(Comment.PROPERTY_timeStamp));
 	}
 
 	private static String getURL()
@@ -264,5 +272,56 @@ public class Mongo
 		                     .sort(Sorts.ascending(Solution.PROPERTY_timeStamp))
 		                     .map(this::doc2Solution)
 		                     .into(new ArrayList<>());
+	}
+
+	public Comment getComment(String id)
+	{
+		final Document doc = this.comments.find(Filters.eq(Comment.PROPERTY_id, id)).first();
+		if (doc == null)
+		{
+			return null;
+		}
+
+		return this.doc2Comment(doc);
+	}
+
+	public List<Comment> getComments(String parent)
+	{
+		return this.comments.find(Filters.eq(Comment.PROPERTY_parent, parent))
+		                    .sort(Sorts.ascending(Comment.PROPERTY_timeStamp))
+		                    .map(Mongo::doc2Comment)
+		                    .into(new ArrayList<>());
+	}
+
+	public void saveComment(Comment comment)
+	{
+		final Document doc = comment2Doc(comment);
+		this.comments.replaceOne(Filters.eq(Comment.PROPERTY_id, comment.getID()), doc,
+		                         new ReplaceOptions().upsert(true));
+	}
+
+	private static Comment doc2Comment(Document doc)
+	{
+		final Comment comment = new Comment(doc.getString(Comment.PROPERTY_id));
+		comment.setParent(doc.getString(Comment.PROPERTY_parent));
+		comment.setTimeStamp(doc.getDate(Comment.PROPERTY_timeStamp).toInstant());
+		comment.setAuthor(doc.getString(Comment.PROPERTY_author));
+		comment.setEmail(doc.getString(Comment.PROPERTY_email));
+		comment.setMarkdown(doc.getString(Comment.PROPERTY_markdown));
+		comment.setHtml(doc.getString(Comment.PROPERTY_html));
+		return comment;
+	}
+
+	private static Document comment2Doc(Comment comment)
+	{
+		final Document doc = new Document();
+		doc.put(Comment.PROPERTY_id, comment.getID());
+		doc.put(Comment.PROPERTY_parent, comment.getParent());
+		doc.put(Comment.PROPERTY_timeStamp, comment.getTimeStamp());
+		doc.put(Comment.PROPERTY_author, comment.getAuthor());
+		doc.put(Comment.PROPERTY_email, comment.getEmail());
+		doc.put(Comment.PROPERTY_markdown, comment.getMarkdown());
+		doc.put(Comment.PROPERTY_html, comment.getHtml());
+		return doc;
 	}
 }
