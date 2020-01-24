@@ -6,6 +6,9 @@ const submitTimeStampLabel = document.getElementById('submitTimeStampLabel');
 const submitDiv = document.getElementById('submitDiv');
 
 const commentList = document.getElementById('commentList');
+const commentNameInput = document.getElementById('commentNameInput');
+const commentEmailInput = document.getElementById('commentEmailInput');
+const commentBodyInput = document.getElementById('commentBodyInput');
 
 const assignmentTokenInput = document.getElementById('assignmentTokenInput');
 const solutionTokenInput = document.getElementById('solutionTokenInput');
@@ -121,4 +124,25 @@ function submitToken() {
 	if (solutionToken && solutionID) {
 		setSolutionToken(assignmentID, solutionID, solutionToken);
 	}
+}
+
+function submitComment() {
+	const comment = {
+		name: commentNameInput.value,
+		email: commentEmailInput.value,
+		markdown: commentBodyInput.value,
+	};
+
+	const headers = {
+		'Assignment-Token': getAssignmentToken(assignmentID),
+		'Solution-Token': getSolutionToken(assignmentID, solutionID),
+	};
+	apih('POST', `assignment/${assignmentID}/solution/${solutionID}/comments`, headers, comment, result => {
+		// fill server-generated fields
+		comment.id = result.id;
+		comment.timeStamp = result.timeStamp;
+		comment.html = result.html;
+
+		// TODO add to list
+	});
 }
