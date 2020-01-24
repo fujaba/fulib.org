@@ -38,7 +38,7 @@ public class Mongo
 
 	// =============== Static Fields ===============
 
-	private static Mongo theMongo = null;
+	private static final Mongo instance = new Mongo();
 
 	// =============== Fields ===============
 
@@ -54,17 +54,12 @@ public class Mongo
 
 	public static Mongo get()
 	{
-		if (theMongo == null)
-		{
-			theMongo = new Mongo();
-		}
-
-		return theMongo;
+		return instance;
 	}
 
 	// =============== Constructors ===============
 
-	public Mongo()
+	private Mongo()
 	{
 		final String url = getURL();
 		if (url == null)
