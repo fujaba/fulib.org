@@ -34,10 +34,10 @@ function check() {
 	};
 	api('POST', `/assignment/${assignmentID}/check`, data, result => {
 		for (let i = 0; i < result.tasks.length; i++) {
+			const task = result.tasks[i];
 			console.log(task.output);
 
 			for (const taskList of document.getElementsByClassName('assignment-task-list')) {
-				const task = result.tasks[i];
 				const taskItem = taskList.children[i];
 
 				if (task.points === 0) {
