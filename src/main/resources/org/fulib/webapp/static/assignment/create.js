@@ -158,6 +158,14 @@ function addTask() {
 
 	taskList.insertAdjacentHTML('beforeend', html);
 
+	const descriptionInput = document.getElementById(`taskDescriptionInput${index}`);
+	const pointsInput = document.getElementById(`taskPointsInput${index}`);
+
+	autoSave(`assignment/create/`,
+		descriptionInput,
+		pointsInput,
+	);
+
 	const verificationInput = document.getElementById('taskVerificationInput' + index);
 	verificationInput.codeMirror = CodeMirror.fromTextArea(verificationInput, verificationConfig);
 }
