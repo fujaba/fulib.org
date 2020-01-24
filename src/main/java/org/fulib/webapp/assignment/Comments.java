@@ -29,6 +29,8 @@ public class Comments
 		comment.setTimeStamp(timeStamp);
 		comment.setHtml(html);
 
+		Mongo.get().saveComment(comment);
+
 		final JSONObject result = new JSONObject();
 
 		result.put(Comment.PROPERTY_id, commentID);
