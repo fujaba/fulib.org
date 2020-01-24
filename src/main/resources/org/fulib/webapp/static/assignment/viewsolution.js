@@ -20,6 +20,11 @@ const solutionID = new URL(window.location).searchParams.get('solution');
 // =============== Initialization ===============
 
 (() => {
+	autoSave(`assignment/comment/`,
+		commentNameInput,
+		commentEmailInput,
+	);
+
 	loadSolution();
 })();
 
