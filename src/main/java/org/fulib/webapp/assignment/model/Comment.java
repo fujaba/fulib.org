@@ -8,9 +8,9 @@ public class Comment
 
 	public static final String PROPERTY_id = "id";
 	public static final String PROPERTY_parent = "parent";
+	public static final String PROPERTY_timeStamp = "timeStamp";
 	public static final String PROPERTY_author = "author";
 	public static final String PROPERTY_email = "email";
-	public static final String PROPERTY_timeStamp = "timeStamp";
 	public static final String PROPERTY_markdown = "markdown";
 	public static final String PROPERTY_html = "html";
 
