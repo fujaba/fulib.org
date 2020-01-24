@@ -10,7 +10,7 @@ public class Result
 	public static final String PROPERTY_exitCode = "exitCode";
 	public static final String PROPERTY_output = "output";
 	public static final String PROPERTY_classDiagram = "classDiagram";
-	public static final String PROPERTY_diagrams = "diagrams";
+	public static final String PROPERTY_objectDiagrams = "objectDiagrams";
 	public static final String PROPERTY_methods = "methods";
 
 	// =============== Fields ===============
@@ -18,7 +18,7 @@ public class Result
 	private int exitCode;
 	private String output;
 	private String classDiagram;
-	private List<Diagram> diagrams = new ArrayList<>();
+	private List<Diagram> objectDiagrams = new ArrayList<>();
 	private List<Method> methods = new ArrayList<>();
 
 	// =============== Properties ===============
@@ -53,9 +53,9 @@ public class Result
 		this.classDiagram = classDiagram;
 	}
 
-	public List<Diagram> getDiagrams()
+	public List<Diagram> getObjectDiagrams()
 	{
-		return this.diagrams;
+		return this.objectDiagrams;
 	}
 
 	public List<Method> getMethods()
