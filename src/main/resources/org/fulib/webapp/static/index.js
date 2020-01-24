@@ -260,6 +260,7 @@ function handleResponse(response) {
 
 	removeChildren(classDiagram);
 	classDiagram.innerHTML = response.classDiagram || 'No model classes to display.';
+	classDiagram.firstElementChild.classList.add('diagram');
 
 	displayObjectDiagrams(response);
 
@@ -316,6 +317,7 @@ function renderObjectDiagram(objectDiagram) {
 	} else if (name.endsWith('.svg')) {
 		const div = document.createElement('div');
 		div.innerHTML = content;
+		div.firstElementChild.classList.add('diagram');
 		return div;
 	} else if (name.endsWith('.yaml') || name.endsWith('.txt')) {
 		const pre = document.createElement('pre');
