@@ -184,8 +184,7 @@ public class Mongo
 	public void saveAssignment(Assignment assignment)
 	{
 		final Document doc = assignment2Doc(assignment);
-		this.assignments.replaceOne(Filters.eq(Assignment.PROPERTY_id, assignment.getID()), doc,
-		                            new ReplaceOptions().upsert(true));
+		upsert(this.assignments, doc, Assignment.PROPERTY_id);
 	}
 
 	private static Document assignment2Doc(Assignment assignment)
@@ -218,8 +217,7 @@ public class Mongo
 	public void saveSolution(Solution solution)
 	{
 		final Document doc = solution2Doc(solution);
-		this.solutions.replaceOne(Filters.eq(Solution.PROPERTY_id, solution.getID()), doc,
-		                          new ReplaceOptions().upsert(true));
+		upsert(this.solutions, doc, Solution.PROPERTY_id);
 	}
 
 	private static Document solution2Doc(Solution solution)
@@ -282,7 +280,7 @@ public class Mongo
 			return null;
 		}
 
-		return this.doc2Comment(doc);
+		return doc2Comment(doc);
 	}
 
 	public List<Comment> getComments(String parent)
@@ -296,8 +294,7 @@ public class Mongo
 	public void saveComment(Comment comment)
 	{
 		final Document doc = comment2Doc(comment);
-		this.comments.replaceOne(Filters.eq(Comment.PROPERTY_id, comment.getID()), doc,
-		                         new ReplaceOptions().upsert(true));
+		upsert(this.comments, doc, Comment.PROPERTY_id);
 	}
 
 	private static Comment doc2Comment(Document doc)
@@ -323,5 +320,11 @@ public class Mongo
 		doc.put(Comment.PROPERTY_markdown, comment.getMarkdown());
 		doc.put(Comment.PROPERTY_html, comment.getHtml());
 		return doc;
+	}
+
+	private static void upsert(MongoCollection<Document> collection, Document doc, String idProperty)
+	{
+		collection.replaceOne(Filters.eq(idProperty, doc.getString(idProperty)), doc,
+		                      new ReplaceOptions().upsert(true));
 	}
 }
