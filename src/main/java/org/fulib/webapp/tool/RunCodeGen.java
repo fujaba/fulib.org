@@ -77,7 +77,8 @@ public class RunCodeGen
 		{
 			methodsArray.put(toJson(method));
 		}
-		resultObj.put(Result.PROPERTY_methods, methodsArray);
+		// TODO use Result.PROPERTY_methods (renaming testMethods -> methods)
+		resultObj.put("testMethods", methodsArray);
 
 		return resultObj;
 	}
