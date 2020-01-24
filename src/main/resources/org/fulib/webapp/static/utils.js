@@ -70,6 +70,17 @@ function delayedUpdate(codeMirror, delay, update) {
 	});
 }
 
+function autoSaveCM(key, codeMirror, postHook = undefined) {
+	codeMirror.setValue(localStorage.getItem(key) || '');
+
+	delayedUpdate(codeMirror, 1000, () => {
+		localStorage.setItem(key, codeMirror.getValue());
+		if (postHook) {
+			postHook();
+		}
+	});
+}
+
 function absoluteLink(path) {
 	const url = new URL(window.location);
 	return `${url.protocol}//${url.host}${path}`
