@@ -8,9 +8,7 @@ import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
 
-import java.security.SecureRandom;
 import java.time.Instant;
-import java.util.UUID;
 
 public class Assignments
 {
@@ -20,6 +18,9 @@ public class Assignments
 		final String token = IDGenerator.generateToken();
 		final Assignment assignment = fromJson(id, new JSONObject(request.body()));
 		assignment.setToken(token);
+
+		final String descriptionHtml = MarkdownUtil.renderHtml(assignment.getDescription());
+		assignment.setDescriptionHtml(descriptionHtml);
 
 		Mongo.get().saveAssignment(assignment);
 
@@ -35,6 +36,7 @@ public class Assignments
 	{
 		final Assignment assignment = new Assignment(id);
 
+		// id, token and description html generated server-side
 		assignment.setTitle(obj.getString(Assignment.PROPERTY_title));
 		assignment.setDescription(obj.getString(Assignment.PROPERTY_description));
 		assignment.setAuthor(obj.getString(Assignment.PROPERTY_author));
@@ -82,6 +84,7 @@ public class Assignments
 		final JSONObject obj = new JSONObject();
 		obj.put(Assignment.PROPERTY_title, assignment.getTitle());
 		obj.put(Assignment.PROPERTY_description, assignment.getDescription());
+		obj.put(Assignment.PROPERTY_descriptionHtml, assignment.getDescriptionHtml());
 		obj.put(Assignment.PROPERTY_author, assignment.getAuthor());
 		obj.put(Assignment.PROPERTY_email, assignment.getEmail());
 		obj.put(Assignment.PROPERTY_deadline, assignment.getDeadline().toString());

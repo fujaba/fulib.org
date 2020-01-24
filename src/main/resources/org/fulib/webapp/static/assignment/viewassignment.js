@@ -36,7 +36,13 @@ function loadAssignment() {
 		emailLabel.innerText = result.email;
 		emailLabel.href = `mailto:${result.email}`;
 		deadlineLabel.innerText = new Date(result.deadline).toLocaleString();
-		descriptionLabel.innerText = result.description;
+
+		if (result.descriptionHtml) {
+			descriptionLabel.innerHTML = result.descriptionHtml;
+		}
+		else {
+			descriptionLabel.innerText = result.description;
+		}
 
 		removeChildren(taskList);
 		for (let task of result.tasks) {

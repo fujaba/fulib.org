@@ -12,6 +12,7 @@ public class Assignment
 	public static final String PROPERTY_token = "token";
 	public static final String PROPERTY_title = "title";
 	public static final String PROPERTY_description = "description";
+	public static final String PROPERTY_descriptionHtml = "descriptionHtml";
 	public static final String PROPERTY_author = "author";
 	public static final String PROPERTY_email = "email";
 	public static final String PROPERTY_deadline = "deadline";
@@ -25,6 +26,7 @@ public class Assignment
 
 	private String title;
 	private String description;
+	private String descriptionHtml;
 	private String author;
 	private String email;
 	private Instant deadline;
@@ -74,6 +76,16 @@ public class Assignment
 	public void setDescription(String description)
 	{
 		this.description = description;
+	}
+
+	public String getDescriptionHtml()
+	{
+		return this.descriptionHtml;
+	}
+
+	public void setDescriptionHtml(String descriptionHtml)
+	{
+		this.descriptionHtml = descriptionHtml;
 	}
 
 	public String getAuthor()

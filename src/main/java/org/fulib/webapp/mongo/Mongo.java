@@ -163,6 +163,7 @@ public class Mongo
 		assignment.setToken(doc.getString(Assignment.PROPERTY_token));
 		assignment.setTitle(doc.getString(Assignment.PROPERTY_title));
 		assignment.setDescription(doc.getString(Assignment.PROPERTY_description));
+		assignment.setDescriptionHtml(doc.getString(Assignment.PROPERTY_descriptionHtml));
 		assignment.setAuthor(doc.getString(Assignment.PROPERTY_author));
 		assignment.setEmail(doc.getString(Assignment.PROPERTY_email));
 		assignment.setDeadline(doc.getDate(Assignment.PROPERTY_deadline).toInstant());
@@ -194,6 +195,7 @@ public class Mongo
 		doc.put(Assignment.PROPERTY_token, assignment.getToken());
 		doc.put(Assignment.PROPERTY_title, assignment.getTitle());
 		doc.put(Assignment.PROPERTY_description, assignment.getDescription());
+		doc.put(Assignment.PROPERTY_descriptionHtml, assignment.getDescriptionHtml());
 		doc.put(Assignment.PROPERTY_author, assignment.getAuthor());
 		doc.put(Assignment.PROPERTY_email, assignment.getEmail());
 		doc.put(Assignment.PROPERTY_deadline, assignment.getDeadline());
