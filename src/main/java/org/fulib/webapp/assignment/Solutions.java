@@ -4,6 +4,9 @@ import org.fulib.webapp.assignment.model.Assignment;
 import org.fulib.webapp.assignment.model.Solution;
 import org.fulib.webapp.assignment.model.Task;
 import org.fulib.webapp.mongo.Mongo;
+import org.fulib.webapp.tool.RunCodeGen;
+import org.fulib.webapp.tool.model.CodeGenData;
+import org.fulib.webapp.tool.model.Result;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import spark.Request;
@@ -18,8 +21,6 @@ import java.util.List;
 
 public class Solutions
 {
-	private static final String TEMP_DIR_PREFIX = "fulibScenarios";
-
 	public static Object create(Request request, Response response)
 	{
 		final Instant timeStamp = Instant.now();
@@ -50,7 +51,7 @@ public class Solutions
 		return result.toString(2);
 	}
 
-	public static Object check(Request request, Response response) throws IOException
+	public static Object check(Request request, Response response) throws Exception
 	{
 		final String assignmentID = request.params("assignmentID");
 		final Assignment assignment = Mongo.get().getAssignment(assignmentID);
@@ -61,36 +62,45 @@ public class Solutions
 			return unknownAssignmentError(assignmentID);
 		}
 
-		// TODO finally { delete }
-		final Path tempDir = Files.createTempDirectory(TEMP_DIR_PREFIX);
-		final Path srcDir = tempDir.resolve("src");
-		final Path modelSrcDir = tempDir.resolve("model_src");
-		final Path testSrcDir = tempDir.resolve("test_src");
-		final Path modelClassesDir = tempDir.resolve("model_classes");
-		final Path testClassesDir = tempDir.resolve("test_classes");
-
 		final JSONObject requestObj = new JSONObject(request.body());
 		final String solution = requestObj.getString(Solution.PROPERTY_solution);
 
-		// TODO write solution to file, compile, run
-
-		final JSONObject result = new JSONObject();
+		final JSONObject resultObj = new JSONObject();
 
 		final JSONArray tasksArray = new JSONArray();
 
 		int totalPoints = 0;
 		for (final Task task : assignment.getTasks())
 		{
-			final JSONObject taskObj = new JSONObject();
-			final int points = 10; // TODO grading
+			final Result result = runTask(solution, task);
+
+			final int points = result.getExitCode() == 0 ? task.getPoints() : 0;
 			totalPoints += points;
+
+			final JSONObject taskObj = new JSONObject();
 			taskObj.put("points", points);
+			taskObj.put("output", result.getOutput());
+			tasksArray.put(taskObj);
 		}
 
-		result.put("totalPoints", totalPoints);
-		result.put("tasks", tasksArray);
+		resultObj.put("totalPoints", totalPoints);
+		resultObj.put("tasks", tasksArray);
 
-		return result.toString(2);
+		return resultObj.toString(2);
+	}
+
+	private static Result runTask(String solution, Task task) throws Exception
+	{
+		final String scenario =
+			"# Solution\n\n" + solution + "\n\n## Verification\n\n" + task.getVerification() + "\n\n";
+
+		final CodeGenData input = new CodeGenData();
+		input.setScenarioText(scenario);
+		input.setPackageName("assignment");
+		input.setScenarioFileName("solution.md");
+
+		// TODO make it ignore diagrams and methods
+		return RunCodeGen.run(input);
 	}
 
 	private static void writeToFile(String solution, Task task, Path file) throws IOException
