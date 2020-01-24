@@ -2,6 +2,7 @@ package org.fulib.webapp.assignment;
 
 import org.fulib.webapp.assignment.model.Assignment;
 import org.fulib.webapp.assignment.model.Solution;
+import org.fulib.webapp.assignment.model.Task;
 import org.fulib.webapp.mongo.Mongo;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -40,6 +41,41 @@ public class Solutions
 		result.put("id", solutionID);
 		result.put("token", token);
 		result.put("timeStamp", timeStamp.toString());
+		return result.toString(2);
+	}
+
+	public static Object check(Request request, Response response)
+	{
+		final String assignmentID = request.params("assignmentID");
+		final Assignment assignment = Mongo.get().getAssignment(assignmentID);
+
+		if (assignment == null)
+		{
+			response.status(404);
+			return unknownAssignmentError(assignmentID);
+		}
+
+		final JSONObject requestObj = new JSONObject(request.body());
+		final String solution = requestObj.getString(Solution.PROPERTY_solution);
+
+		// TODO write solution to file, compile, run
+
+		final JSONObject result = new JSONObject();
+
+		final JSONArray tasksArray = new JSONArray();
+
+		int totalPoints = 0;
+		for (final Task task : assignment.getTasks())
+		{
+			final JSONObject taskObj = new JSONObject();
+			final int points = 10; // TODO grading
+			totalPoints += points;
+			taskObj.put("points", points);
+		}
+
+		result.put("totalPoints", totalPoints);
+		result.put("tasks", tasksArray);
+
 		return result.toString(2);
 	}
 
