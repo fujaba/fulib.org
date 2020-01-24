@@ -134,6 +134,8 @@ function submitComment() {
 		comment.timeStamp = result.timeStamp;
 		comment.html = result.html;
 
+		commentBodyInput.value = '';
+
 		loadComments();
 	});
 }
