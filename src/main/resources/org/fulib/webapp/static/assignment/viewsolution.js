@@ -9,6 +9,7 @@ const commentList = document.getElementById('commentList');
 const commentNameInput = document.getElementById('commentNameInput');
 const commentEmailInput = document.getElementById('commentEmailInput');
 const commentBodyInput = document.getElementById('commentBodyInput');
+const commentSubmitButton = document.getElementById('commentSubmitButton');
 
 const assignmentTokenInput = document.getElementById('assignmentTokenInput');
 const solutionTokenInput = document.getElementById('solutionTokenInput');
@@ -127,6 +128,8 @@ function submitComment() {
 		markdown: commentBodyInput.value,
 	};
 
+	commentSubmitButton.disabled = true;
+
 	const headers = getTokenHeaders();
 	apih('POST', `/assignment/${assignmentID}/solution/${solutionID}/comments`, headers, comment, result => {
 		// fill server-generated fields
@@ -134,6 +137,7 @@ function submitComment() {
 		comment.timeStamp = result.timeStamp;
 		comment.html = result.html;
 
+		commentSubmitButton.disabled = false;
 		commentBodyInput.value = '';
 
 		loadComments();
