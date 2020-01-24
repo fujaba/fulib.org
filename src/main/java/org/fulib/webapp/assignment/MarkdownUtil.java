@@ -19,7 +19,7 @@ public class MarkdownUtil
 
 	private static final Parser PARSER = Parser.builder().extensions(EXTENSIONS).build();
 
-	private static final HtmlRenderer RENDERER = HtmlRenderer.builder().escapeHtml(true).build();
+	private static final HtmlRenderer RENDERER = HtmlRenderer.builder().extensions(EXTENSIONS).escapeHtml(true).build();
 
 	public static String renderHtml(String markdown)
 	{
