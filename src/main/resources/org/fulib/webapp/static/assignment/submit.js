@@ -4,6 +4,8 @@ const nameInput = document.getElementById('nameInput');
 const studentIDInput = document.getElementById('studentIDInput');
 const emailInput = document.getElementById('emailInput');
 
+const submitButton = document.getElementById('submitButton');
+
 const solutionInfo = document.getElementById('solutionInfo');
 
 const submissionTimeLabel = document.getElementById('submissionTimeLabel');
@@ -55,6 +57,9 @@ function check() {
 }
 
 function submit() {
+	submitButton.disabled = true;
+	submitButton.innerText = 'Submitting...';
+
 	const data = {
 		assignmentID: assignmentID,
 		name: nameInput.value,
@@ -73,6 +78,9 @@ function submit() {
 
 		tokenLabel.innerText = result.token;
 		setSolutionToken(assignmentID, result.id, result.token);
+
+		submitButton.disabled = false;
+		submitButton.innerText = 'Submit';
 
 		$('#successModal').modal('show');
 	});
