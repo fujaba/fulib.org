@@ -120,6 +120,8 @@ public class Mongo
 
 	// =============== Methods ===============
 
+	// --------------- Logging ---------------
+
 	public void log(String ip, String userAgent, String request, String response)
 	{
 		if (this.requestLog == null)
@@ -146,6 +148,8 @@ public class Mongo
 
 		this.requestLog.insertOne(document);
 	}
+
+	// --------------- Assignments ---------------
 
 	public Assignment getAssignment(String id)
 	{
@@ -214,25 +218,7 @@ public class Mongo
 		return doc;
 	}
 
-	public void saveSolution(Solution solution)
-	{
-		final Document doc = solution2Doc(solution);
-		upsert(this.solutions, doc, Solution.PROPERTY_id);
-	}
-
-	private static Document solution2Doc(Solution solution)
-	{
-		final Document doc = new Document();
-		doc.put(Solution.PROPERTY_id, solution.getID());
-		doc.put(Solution.PROPERTY_token, solution.getToken());
-		doc.put(Solution.PROPERTY_assignment, solution.getAssignment().getID());
-		doc.put(Solution.PROPERTY_name, solution.getName());
-		doc.put(Solution.PROPERTY_studentID, solution.getStudentID());
-		doc.put(Solution.PROPERTY_email, solution.getEmail());
-		doc.put(Solution.PROPERTY_solution, solution.getSolution());
-		doc.put(Solution.PROPERTY_timeStamp, solution.getTimeStamp());
-		return doc;
-	}
+	// --------------- Solutions ---------------
 
 	public Solution getSolution(String id)
 	{
@@ -243,6 +229,14 @@ public class Mongo
 		}
 
 		return this.doc2Solution(doc);
+	}
+
+	public List<Solution> getSolutions(String assignmentID)
+	{
+		return this.solutions.find(Filters.eq(Solution.PROPERTY_assignment, assignmentID))
+		                     .sort(Sorts.ascending(Solution.PROPERTY_timeStamp))
+		                     .map(this::doc2Solution)
+		                     .into(new ArrayList<>());
 	}
 
 	private Solution doc2Solution(Document doc)
@@ -264,13 +258,27 @@ public class Mongo
 		return solution;
 	}
 
-	public List<Solution> getSolutions(String assignmentID)
+	public void saveSolution(Solution solution)
 	{
-		return this.solutions.find(Filters.eq(Solution.PROPERTY_assignment, assignmentID))
-		                     .sort(Sorts.ascending(Solution.PROPERTY_timeStamp))
-		                     .map(this::doc2Solution)
-		                     .into(new ArrayList<>());
+		final Document doc = solution2Doc(solution);
+		upsert(this.solutions, doc, Solution.PROPERTY_id);
 	}
+
+	private static Document solution2Doc(Solution solution)
+	{
+		final Document doc = new Document();
+		doc.put(Solution.PROPERTY_id, solution.getID());
+		doc.put(Solution.PROPERTY_token, solution.getToken());
+		doc.put(Solution.PROPERTY_assignment, solution.getAssignment().getID());
+		doc.put(Solution.PROPERTY_name, solution.getName());
+		doc.put(Solution.PROPERTY_studentID, solution.getStudentID());
+		doc.put(Solution.PROPERTY_email, solution.getEmail());
+		doc.put(Solution.PROPERTY_solution, solution.getSolution());
+		doc.put(Solution.PROPERTY_timeStamp, solution.getTimeStamp());
+		return doc;
+	}
+
+	// --------------- Comments ---------------
 
 	public Comment getComment(String id)
 	{
@@ -291,12 +299,6 @@ public class Mongo
 		                    .into(new ArrayList<>());
 	}
 
-	public void saveComment(Comment comment)
-	{
-		final Document doc = comment2Doc(comment);
-		upsert(this.comments, doc, Comment.PROPERTY_id);
-	}
-
 	private static Comment doc2Comment(Document doc)
 	{
 		final Comment comment = new Comment(doc.getString(Comment.PROPERTY_id));
@@ -307,6 +309,12 @@ public class Mongo
 		comment.setMarkdown(doc.getString(Comment.PROPERTY_markdown));
 		comment.setHtml(doc.getString(Comment.PROPERTY_html));
 		return comment;
+	}
+
+	public void saveComment(Comment comment)
+	{
+		final Document doc = comment2Doc(comment);
+		upsert(this.comments, doc, Comment.PROPERTY_id);
 	}
 
 	private static Document comment2Doc(Comment comment)
@@ -321,6 +329,8 @@ public class Mongo
 		doc.put(Comment.PROPERTY_html, comment.getHtml());
 		return doc;
 	}
+
+	// --------------- Helpers ---------------
 
 	private static void upsert(MongoCollection<Document> collection, Document doc, String idProperty)
 	{
