@@ -4,6 +4,8 @@ const nameInput = document.getElementById('nameInput');
 const studentIDInput = document.getElementById('studentIDInput');
 const emailInput = document.getElementById('emailInput');
 
+const solutionInfo = document.getElementById('solutionInfo');
+
 const solutionInput = document.getElementById('solutionInput');
 const solutionInputCM = CodeMirror.fromTextArea(solutionInput, {
 	theme: 'idea',
@@ -43,6 +45,8 @@ function updateEditorTheme(theme = getTheme()) {
 }
 
 function check() {
+	solutionInfo.innerText = 'Checking...';
+
 	const data = {
 		solution: solutionInputCM.getValue(),
 	};
@@ -62,6 +66,8 @@ function check() {
 
 			console.log(task.output);
 		}
+
+		solutionInfo.innerText = 'Your solution was checked automatically. Don\'t forget to submit when you are done!';
 	});
 }
 
