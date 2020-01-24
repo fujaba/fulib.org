@@ -84,10 +84,11 @@ function renderComments(comments) {
 	ensureListChildren(commentList, comments.length, _ => `
 		<div class="card mb-3">
 			<div class="card-header">
-				<div class="d-flex w-100 justify-content-between">
-					<span class="comment-author"></span>
-					<span class="comment-timestamp"></span>
-				</div>
+				<span class="comment-author"></span>
+				&bullet;
+				<a class="comment-email"></a>
+				&bullet;
+				<span class="comment-timestamp text-muted"></span>
 			</div>
 			<div class="card-body">
 				<div class="card-text comment-body"></div>
@@ -97,6 +98,7 @@ function renderComments(comments) {
 	);
 
 	const authors = commentList.getElementsByClassName('comment-author');
+	const emails = commentList.getElementsByClassName('comment-email');
 	const timeStamps = commentList.getElementsByClassName('comment-timestamp');
 	const bodies = commentList.getElementsByClassName('comment-body');
 
@@ -104,6 +106,8 @@ function renderComments(comments) {
 		const comment = comments[index];
 
 		authors[index].innerText = comment.author;
+		emails[index].innerText = comment.email;
+		emails[index].href = 'mailto:' + comment.email;
 		timeStamps[index].innerText = new Date(comment.timeStamp).toLocaleString();
 		bodies[index].innerHTML = comment.html;
 	}
