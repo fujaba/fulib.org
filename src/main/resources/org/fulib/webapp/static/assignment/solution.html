@@ -50,86 +50,109 @@
 		<li>Loading...</li>
 	</ol>
 
-	<h2><label for="solutionInput">Your Solution</label></h2>
+	<h2><label for="solutionInput">Solution</label></h2>
 	<p>
 		<textarea id="solutionInput"></textarea>
 	</p>
-	<p id="solutionInfo">
-		Your solution is checked automatically when you make changes.
-	</p>
 
-	<h2>Your Info</h2>
+	<h2>Info</h2>
 
 	<form>
 		<div class="form-group row">
 			<label for="nameInput" class="col-sm-2 col-form-label">Name</label>
 			<div class="col-sm-10">
-				<input type="text" class="form-control" id="nameInput" placeholder="John Doe">
+				<input type="text" class="form-control" id="nameInput" readonly>
 			</div>
 		</div>
 		<div class="form-group row">
 			<label for="studentIDInput" class="col-sm-2 col-form-label">Student ID</label>
 			<div class="col-sm-10">
-				<input type="text" class="form-control" id="studentIDInput" placeholder="12345678">
+				<input type="text" class="form-control" id="studentIDInput" readonly>
 			</div>
 		</div>
 		<div class="form-group row">
 			<label for="emailInput" class="col-sm-2 col-form-label">E-Mail</label>
 			<div class="col-sm-10">
-				<input type="text" class="form-control" id="emailInput" placeholder="jdoe@example.com">
+				<input type="text" class="form-control" id="emailInput" readonly>
 			</div>
 		</div>
 	</form>
 
-	<div class="text-center">
-		<p>
-			When you are done with your solution, click "Submit".
-			You can still make changes afterwards.
-		</p>
-		<button type="button" class="btn btn-primary btn-lg" onclick="submit()">Submit</button>
+	<p class="text-center">
+		Submitted <b id="submitTimeStampLabel"></b>.
+	</p>
+
+	<h2>Comments</h2>
+	<div id="commentList">
 	</div>
+
+	<h2>New Comment</h2>
+	<form>
+		<div class="form-group row">
+			<label for="commentNameInput" class="col-sm-2 col-form-label">Name</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" id="commentNameInput" placeholder="John Doe">
+			</div>
+		</div>
+		<div class="form-group row">
+			<label for="commentEmailInput" class="col-sm-2 col-form-label">E-Mail</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" id="commentEmailInput" placeholder="jdoe@example.com">
+			</div>
+		</div>
+		<div class="form-group row">
+			<label for="commentBodyInput" class="col-sm-2 col-form-label">Body</label>
+			<div class="col-sm-10">
+				<textarea class="form-control" id="commentBodyInput"></textarea>
+				<small class="form-text text-muted">
+					<a href="https://commonmark.org/help/">Markdown syntax</a> is supported.
+				</small>
+			</div>
+		</div>
+	</form>
+	<button type="button" class="btn btn-primary" id="commentSubmitButton" onclick="submitComment()">Submit Comment</button>
 
 	<div class="text-center">
 		<script src="https://app.clashsoft.de/darkmode/darkswitch.js"></script>
 	</div>
 </div>
 
-<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
+<div class="modal fade" id="tokenModal" tabindex="-1" role="dialog" aria-labelledby="tokenModalLabel"
      aria-hidden="true">
-	<div class="modal-dialog modal-lg" role="document">
+	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="successModalLabel">Solution Submitted</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
+				<h5 class="modal-title" id="tokenModalLabel">Authorization Required</h5>
 			</div>
 			<div class="modal-body">
 				<p>
-					Congratulations! Your solution has been submitted!
+					Please enter the token for this solution to view it:
 				</p>
+				<form>
+					<div class="form-group">
+						<label class="sr-only" for="solutionTokenInput">Solution Token</label>
+						<input type="text" class="form-control text-monospace" id="solutionTokenInput"
+						       placeholder="XXXX-XXXX-XXXX-XXXX">
+					</div>
+				</form>
 				<p>
-					Submission Time: <b id="submissionTimeLabel"></b>
+					If you are the assignment administrator or tutor, enter the assignment token here:
 				</p>
-				<p>
-					You can view your submission with the following link:
-				</p>
-				<p class="text-center">
-					<a class="text-monospace" id="solutionLink"></a>
-				</p>
-				<p>
-					To view your solution and comments, you may be asked for the following token.
-					Please save it or note it down somewhere.
-				</p>
-				<p class="text-center">
-					<span class="h4 text-monospace" id="tokenLabel"></span>
-				</p>
-				<p>
-					If you want to make changes, you can close this window and submit again.
-				</p>
+				<form>
+					<div class="form-group">
+						<label class="sr-only" for="assignmentTokenInput">Assignment Token</label>
+						<input type="text" class="form-control text-monospace" id="assignmentTokenInput"
+						       placeholder="XXXX-XXXX-XXXX-XXXX">
+					</div>
+				</form>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">
+					Cancel
+				</button>
+				<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="submitToken()">
+					Submit
+				</button>
 			</div>
 		</div>
 	</div>
@@ -179,7 +202,7 @@
 <script type="text/javascript" src="../utils.js"></script>
 <script type="text/javascript" src="viewassignment.js"></script>
 <script type="text/javascript" src="solution.base.js"></script>
-<script type="text/javascript" src="submit.js"></script>
+<script type="text/javascript" src="solution.js"></script>
 
 </body>
 </html>

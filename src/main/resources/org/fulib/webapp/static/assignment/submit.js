@@ -6,15 +6,6 @@ const emailInput = document.getElementById('emailInput');
 
 const solutionInfo = document.getElementById('solutionInfo');
 
-const solutionInput = document.getElementById('solutionInput');
-const solutionInputCM = CodeMirror.fromTextArea(solutionInput, {
-	theme: 'idea',
-	mode: 'markdown',
-	lineNumbers: true,
-	lineWrapping: true,
-	styleActiveLine: true,
-});
-
 const submissionTimeLabel = document.getElementById('submissionTimeLabel');
 const solutionLink = document.getElementById('solutionLink');
 const tokenLabel = document.getElementById('tokenLabel');
@@ -22,11 +13,7 @@ const tokenLabel = document.getElementById('tokenLabel');
 // =============== Initialization ===============
 
 (() => {
-	try {
-		// may fail if darktheme/network is unavailable
-		updateEditorTheme();
-		themeChangeHandlers.push(updateEditorTheme);
-	} catch {}
+	autoUpdateEditorTheme();
 
 	autoSave('assignment/view/',
 		nameInput,
@@ -38,11 +25,6 @@ const tokenLabel = document.getElementById('tokenLabel');
 })();
 
 // =============== Functions ===============
-
-function updateEditorTheme(theme = getTheme()) {
-	let editorTheme = theme === 'dark' ? 'darcula' : 'idea';
-	solutionInputCM.setOption('theme', editorTheme);
-}
 
 function check() {
 	solutionInfo.innerText = 'Checking...';

@@ -133,7 +133,7 @@ public class Solutions
 
 		if (request.contentType() == null || !request.contentType().startsWith("application/json"))
 		{
-			response.redirect("/assignment/view.html?id=" + assignmentID + "&solution=" + solutionID);
+			response.redirect("/assignment/solution.html?id=" + assignmentID + "&solution=" + solutionID);
 			return "";
 		}
 

@@ -1,9 +1,6 @@
 // =============== Elements ===============
 
-const viewSolutionDiv = document.getElementById('viewSolutionDiv');
 const submitTimeStampLabel = document.getElementById('submitTimeStampLabel');
-
-const submitDiv = document.getElementById('submitDiv');
 
 const commentList = document.getElementById('commentList');
 const commentNameInput = document.getElementById('commentNameInput');
@@ -21,33 +18,20 @@ const solutionID = new URL(window.location).searchParams.get('solution');
 // =============== Initialization ===============
 
 (() => {
+	solutionInputCM.options.readOnly = true;
+
+	autoUpdateEditorTheme();
+
 	autoSave(`assignment/comment/`,
 		commentNameInput,
 		commentEmailInput,
 	);
 
-	if (solutionID) {
-		loadSolution();
-		loadComments();
-	}
+	loadSolution();
+	loadComments();
 })();
 
 // =============== Functions ===============
-
-function getTokenHeaders() {
-	return {
-		'Assignment-Token': getAssignmentToken(assignmentID),
-		'Solution-Token': getSolutionToken(assignmentID, solutionID),
-	};
-}
-
-function getSolutionToken(assignmentID, solutionID) {
-	return localStorage.getItem(`assignment/${assignmentID}/solution/${solutionID}/token`);
-}
-
-function setSolutionToken(assignmentID, solutionID, token) {
-	localStorage.setItem(`assignment/${assignmentID}/solution/${solutionID}/token`, token);
-}
 
 function loadSolution() {
 	const headers = getTokenHeaders();
@@ -61,14 +45,6 @@ function loadSolution() {
 		nameInput.value = result.name;
 		emailInput.value = result.email;
 		studentIDInput.value = result.studentID;
-
-		solutionInputCM.options.readOnly = true;
-		nameInput.readOnly = true;
-		emailInput.readOnly = true;
-		studentIDInput.readOnly = true;
-
-		submitDiv.hidden = true;
-		viewSolutionDiv.hidden = false;
 		submitTimeStampLabel.innerText = new Date(result.timeStamp).toLocaleString();
 	});
 }
