@@ -56,7 +56,18 @@ function autoSave(prefix, ...elements) {
 		}
 		element.onchange = () => localStorage.setItem(key, element.value);
 	}
+}
 
+function delayedUpdate(codeMirror, delay, update) {
+	let timeoutToken;
+	codeMirror.on('changes', () => {
+		clearTimeout(timeoutToken);
+		timeoutToken = setTimeout(() => update(), delay);
+	});
+	codeMirror.on('blur', () => {
+		clearTimeout(timeoutToken);
+		update();
+	});
 }
 
 function absoluteLink(path) {
