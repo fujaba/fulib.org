@@ -55,6 +55,8 @@ let nextTaskIndex = 0;
 		deadlineTimeInput,
 		descriptionInput,
 	);
+
+	autoSaveCM('assignment/create/solutionInput', solutionInputCM);
 })();
 
 // =============== Functions ===============
@@ -166,8 +168,11 @@ function addTask() {
 		pointsInput,
 	);
 
-	const verificationInput = document.getElementById('taskVerificationInput' + index);
-	verificationInput.codeMirror = CodeMirror.fromTextArea(verificationInput, verificationConfig);
+	const verificationInput = document.getElementById(`taskVerificationInput${index}`);
+	const verificationInputCM = CodeMirror.fromTextArea(verificationInput, verificationConfig);
+	verificationInput.codeMirror = verificationInputCM;
+
+	autoSaveCM(`assignment/create/taskVerificationInput${index}`, verificationInputCM);
 }
 
 function removeTask(index) {
