@@ -8,29 +8,29 @@ public class Assignment
 {
 	// =============== Constants ===============
 
-	public static final String PROPERTY_id          = "id";
-	public static final String PROPERTY_token       = "token";
-	public static final String PROPERTY_title       = "title";
+	public static final String PROPERTY_id = "id";
+	public static final String PROPERTY_token = "token";
+	public static final String PROPERTY_title = "title";
 	public static final String PROPERTY_description = "description";
-	public static final String PROPERTY_author      = "author";
-	public static final String PROPERTY_email       = "email";
-	public static final String PROPERTY_deadline    = "deadline";
-	public static final String PROPERTY_tasks       = "tasks";
-	public static final String PROPERTY_solution    = "solution";
+	public static final String PROPERTY_author = "author";
+	public static final String PROPERTY_email = "email";
+	public static final String PROPERTY_deadline = "deadline";
+	public static final String PROPERTY_tasks = "tasks";
+	public static final String PROPERTY_solution = "solution";
 
 	// =============== Fields ===============
 
 	private final String id;
-	private       String token;
+	private String token;
 
-	private String  title;
-	private String  description;
-	private String  author;
-	private String  email;
+	private String title;
+	private String description;
+	private String author;
+	private String email;
 	private Instant deadline;
 
 	private List<Task> tasks = new ArrayList<>();
-	private String     solution;
+	private String solution;
 
 	// =============== Constructors ===============
 
