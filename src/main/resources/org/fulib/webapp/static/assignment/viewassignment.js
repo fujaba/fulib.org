@@ -1,13 +1,3 @@
-// =============== Elements ===============
-
-const titleLabel = document.getElementById('titleLabel');
-const authorLabel = document.getElementById('authorLabel');
-const emailLabel = document.getElementById('emailLabel');
-const deadlineLabel = document.getElementById('deadlineLabel');
-const descriptionLabel = document.getElementById('descriptionLabel');
-
-const taskList = document.getElementById('taskList');
-
 // =============== Variables ===============
 
 const assignmentID = new URL(window.location).searchParams.get('id');
@@ -31,24 +21,40 @@ function setAssignmentToken(assignmentID, token) {
 function loadAssignment() {
 	api('GET', `/assignment/${assignmentID}`, null, result => {
 		document.title = result.title;
-		titleLabel.innerText = result.title;
-		authorLabel.innerText = result.author;
-		emailLabel.innerText = result.email;
-		emailLabel.href = `mailto:${result.email}`;
-		deadlineLabel.innerText = new Date(result.deadline).toLocaleString();
 
-		if (result.descriptionHtml) {
-			descriptionLabel.innerHTML = result.descriptionHtml;
-		}
-		else {
-			descriptionLabel.innerText = result.description;
+		for (let titleLabel of document.getElementsByClassName('assignment-title')) {
+			titleLabel.innerText = result.title;
 		}
 
-		removeChildren(taskList);
-		for (let task of result.tasks) {
-			const li = document.createElement('li');
-			li.innerText = task.description;
-			taskList.appendChild(li);
+		for (let authorLabel of document.getElementsByClassName('assignment-author')) {
+			authorLabel.innerText = result.author;
+		}
+
+		for (let emailLabel of document.getElementsByClassName('assignment-email')) {
+			emailLabel.innerText = result.email;
+			emailLabel.href = `mailto:${result.email}`;
+		}
+
+		const deadlineText = new Date(result.deadline).toLocaleString();
+		for (let deadlineLabel of document.getElementsByClassName('assignment-deadline')) {
+			deadlineLabel.innerText = deadlineText;
+		}
+
+		for (let descriptionLabel of document.getElementsByClassName('assignment-description')) {
+			if (result.descriptionHtml) {
+				descriptionLabel.innerHTML = result.descriptionHtml;
+			} else {
+				descriptionLabel.innerText = result.description;
+			}
+		}
+
+		for (let taskList of document.getElementsByClassName('assignment-task-list')) {
+			removeChildren(taskList);
+			for (let task of result.tasks) {
+				const li = document.createElement('li');
+				li.innerText = task.description;
+				taskList.appendChild(li);
+			}
 		}
 	});
 }

@@ -34,19 +34,20 @@ function check() {
 	};
 	api('POST', `/assignment/${assignmentID}/check`, data, result => {
 		for (let i = 0; i < result.tasks.length; i++) {
-			const task = result.tasks[i];
-			const taskItem = taskList.children[i];
-
-			if (task.points === 0) {
-				taskItem.classList.remove('text-success');
-				taskItem.classList.add('text-danger');
-			}
-			else {
-				taskItem.classList.remove('text-danger');
-				taskItem.classList.add('text-success');
-			}
-
 			console.log(task.output);
+
+			for (const taskList of document.getElementsByClassName('assignment-task-list')) {
+				const task = result.tasks[i];
+				const taskItem = taskList.children[i];
+
+				if (task.points === 0) {
+					taskItem.classList.remove('text-success');
+					taskItem.classList.add('text-danger');
+				} else {
+					taskItem.classList.remove('text-danger');
+					taskItem.classList.add('text-success');
+				}
+			}
 		}
 
 		solutionInfo.innerText = 'Your solution was checked automatically. Don\'t forget to submit when you are done!';
