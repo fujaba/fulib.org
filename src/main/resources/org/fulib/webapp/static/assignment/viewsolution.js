@@ -61,27 +61,10 @@ function loadSolution() {
 		submitDiv.hidden = true;
 		viewSolutionDiv.hidden = false;
 		submitTimeStampLabel.innerText = new Date(result.timeStamp).toLocaleString();
+	});
 
-		const comments = [
-			{
-				id: '12341234-5678-2312-23123123',
-				timeStamp: '2020-01-01T16:34:00Z',
-				author: 'Adrian',
-				email: 'adrian@example.org',
-				markdown: 'hello world',
-				html: 'hello world',
-			},
-			{
-				id: '12479109-5678-2312-23123123',
-				timeStamp: '2020-01-01T17:34:00Z',
-				author: 'Testus',
-				email: 'testus@example.org',
-				markdown: 'I use `code` and **bold** and *italic* formatting',
-				html: 'I use <code>code</code> and <b>bold</b> and <i>italic</i> formatting',
-			},
-		];
-
-		renderComments(comments);
+	apih('GET', `/assignment/${assignmentID}/solution/${solutionID}/comments`, headers, null, result => {
+		renderComments(result.children);
 	});
 }
 
@@ -128,7 +111,7 @@ function submitToken() {
 
 function submitComment() {
 	const comment = {
-		name: commentNameInput.value,
+		author: commentNameInput.value,
 		email: commentEmailInput.value,
 		markdown: commentBodyInput.value,
 	};
@@ -137,7 +120,7 @@ function submitComment() {
 		'Assignment-Token': getAssignmentToken(assignmentID),
 		'Solution-Token': getSolutionToken(assignmentID, solutionID),
 	};
-	apih('POST', `assignment/${assignmentID}/solution/${solutionID}/comments`, headers, comment, result => {
+	apih('POST', `/assignment/${assignmentID}/solution/${solutionID}/comments`, headers, comment, result => {
 		// fill server-generated fields
 		comment.id = result.id;
 		comment.timeStamp = result.timeStamp;
