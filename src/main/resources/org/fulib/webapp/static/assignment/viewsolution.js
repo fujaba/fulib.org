@@ -30,6 +30,13 @@ const solutionID = new URL(window.location).searchParams.get('solution');
 
 // =============== Functions ===============
 
+function getTokenHeaders() {
+	return {
+		'Assignment-Token': getAssignmentToken(assignmentID),
+		'Solution-Token': getSolutionToken(assignmentID, solutionID),
+	};
+}
+
 function getSolutionToken(assignmentID, solutionID) {
 	return localStorage.getItem(`assignment/${assignmentID}/solution/${solutionID}/token`);
 }
@@ -43,10 +50,7 @@ function loadSolution() {
 		return;
 	}
 
-	const headers = {
-		'Assignment-Token': getAssignmentToken(assignmentID),
-		'Solution-Token': getSolutionToken(assignmentID, solutionID),
-	};
+	const headers = getTokenHeaders();
 	apih('GET', `/assignment/${assignmentID}/solution/${solutionID}`, headers, null, result => {
 		if (result.error === 'invalid token') {
 			$('#tokenModal').modal('show');
@@ -121,10 +125,7 @@ function submitComment() {
 		markdown: commentBodyInput.value,
 	};
 
-	const headers = {
-		'Assignment-Token': getAssignmentToken(assignmentID),
-		'Solution-Token': getSolutionToken(assignmentID, solutionID),
-	};
+	const headers = getTokenHeaders();
 	apih('POST', `/assignment/${assignmentID}/solution/${solutionID}/comments`, headers, comment, result => {
 		// fill server-generated fields
 		comment.id = result.id;
