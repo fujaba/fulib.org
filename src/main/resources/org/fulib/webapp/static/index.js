@@ -216,34 +216,16 @@ function submit() {
 }
 
 function handleResponse(response) {
-	function foldInternalCalls(outputLines) {
-		const packageNamePrefix = `\tat ${(packageNameField.value || defaults.packageName).replace('/', '.')}.`;
-		const result = [];
-		let counter = 0;
-		for (let line of outputLines) {
-			if (line.startsWith('\tat org.fulib.scenarios.tool.') ||
-				line.startsWith('\tat ') && !line.startsWith('\tat org.fulib.') &&
-				!line.startsWith(packageNamePrefix)) {
-				counter++;
-			} else {
-				if (counter > 0) {
-					result.push(counter === 1 ? '\t(1 internal call)' : '\t(' + counter + ' internal calls)');
-					counter = 0;
-				}
-				result.push(line);
-			}
-		}
-		return result;
-	}
-
 	console.log(response.output);
 	console.log('exit code: ' + response.exitCode);
 
 	let javaCode = '';
 	if (response.exitCode !== 0) {
-		javaCode += foldInternalCalls(response.output.split('\n')).map(function(line) {
-			return '// ' + line;
-		}).join('\n') + '\n';
+		const packageName = (packageNameField.value || defaults.packageName).replace('/', '.');
+		const outputLines = response.output.split('\n');
+		const foldedCalls = foldInternalCalls(outputLines, packageName);
+		const linesAsComments = foldedCalls.map(line => `// ${line}\n`).join();
+		javaCode += linesAsComments;
 		setFailure(response.exitCode & 3);
 	} else {
 		setFailure(progressElements.length);

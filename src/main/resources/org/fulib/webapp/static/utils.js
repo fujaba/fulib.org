@@ -81,6 +81,26 @@ function autoSaveCM(key, codeMirror, postHook = undefined) {
 	});
 }
 
+function foldInternalCalls(outputLines, packageName) {
+	const packageNamePrefix = `\tat ${packageName}.`;
+	const result = [];
+	let foldedLines = 0;
+	for (let line of outputLines) {
+		if (line.startsWith('\tat org.fulib.scenarios.tool.') ||
+			line.startsWith('\tat ') && !line.startsWith('\tat org.fulib.') &&
+			!line.startsWith(packageNamePrefix)) {
+			foldedLines++;
+		} else {
+			if (foldedLines > 0) {
+				result.push(foldedLines === 1 ? '\t(1 internal call)' : `\t(${foldedLines} internal calls)`);
+				foldedLines = 0;
+			}
+			result.push(line);
+		}
+	}
+	return result;
+}
+
 function absoluteLink(path) {
 	const url = new URL(window.location);
 	return `${url.protocol}//${url.host}${path}`
