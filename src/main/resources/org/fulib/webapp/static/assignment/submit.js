@@ -31,6 +31,13 @@ const tokenLabel = document.getElementById('tokenLabel');
 		studentIDInput,
 		emailInput,
 	);
+
+	const key = 'assignment/view/solutionInput';
+	solutionInputCM.setValue(localStorage.getItem(key) || '');
+
+	delayedUpdate(solutionInputCM, 1000, () => {
+		localStorage.setItem(key, solutionInputCM.getValue());
+	});
 })();
 
 // =============== Functions ===============
