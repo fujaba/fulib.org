@@ -32,7 +32,7 @@ const tokenLabel = document.getElementById('tokenLabel');
 		emailInput,
 	);
 
-	autoSaveCM('assignment/view/solutionInput', solutionInputCM);
+	autoSaveCM('assignment/view/solutionInput', solutionInputCM, check);
 })();
 
 // =============== Functions ===============
@@ -40,6 +40,29 @@ const tokenLabel = document.getElementById('tokenLabel');
 function updateEditorTheme(theme = getTheme()) {
 	let editorTheme = theme === 'dark' ? 'darcula' : 'idea';
 	solutionInputCM.setOption('theme', editorTheme);
+}
+
+function check() {
+	const data = {
+		solution: solutionInputCM.getValue(),
+	};
+	api('POST', `/assignment/${assignmentID}/check`, data, result => {
+		for (let i = 0; i < result.tasks.length; i++) {
+			const task = result.tasks[i];
+			const taskItem = taskList.children[i];
+
+			if (task.points === 0) {
+				taskItem.classList.remove('text-success');
+				taskItem.classList.add('text-danger');
+			}
+			else {
+				taskItem.classList.remove('text-danger');
+				taskItem.classList.add('text-success');
+			}
+
+			console.log(task.output);
+		}
+	});
 }
 
 function submit() {
