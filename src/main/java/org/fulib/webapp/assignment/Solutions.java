@@ -9,11 +9,17 @@ import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.util.List;
 
 public class Solutions
 {
+	private static final String TEMP_DIR_PREFIX = "fulibScenarios";
+
 	public static Object create(Request request, Response response)
 	{
 		final Instant timeStamp = Instant.now();
@@ -44,7 +50,7 @@ public class Solutions
 		return result.toString(2);
 	}
 
-	public static Object check(Request request, Response response)
+	public static Object check(Request request, Response response) throws IOException
 	{
 		final String assignmentID = request.params("assignmentID");
 		final Assignment assignment = Mongo.get().getAssignment(assignmentID);
@@ -54,6 +60,14 @@ public class Solutions
 			response.status(404);
 			return unknownAssignmentError(assignmentID);
 		}
+
+		// TODO finally { delete }
+		final Path tempDir = Files.createTempDirectory(TEMP_DIR_PREFIX);
+		final Path srcDir = tempDir.resolve("src");
+		final Path modelSrcDir = tempDir.resolve("model_src");
+		final Path testSrcDir = tempDir.resolve("test_src");
+		final Path modelClassesDir = tempDir.resolve("model_classes");
+		final Path testClassesDir = tempDir.resolve("test_classes");
 
 		final JSONObject requestObj = new JSONObject(request.body());
 		final String solution = requestObj.getString(Solution.PROPERTY_solution);
@@ -77,6 +91,18 @@ public class Solutions
 		result.put("tasks", tasksArray);
 
 		return result.toString(2);
+	}
+
+	private static void writeToFile(String solution, Task task, Path file) throws IOException
+	{
+		try (final BufferedWriter writer = Files.newBufferedWriter(file))
+		{
+			writer.write("# Solution\n\n");
+			writer.write(solution);
+			writer.write("\n\n## Verification");
+			writer.write(task.getVerification());
+			writer.write("\n\n");
+		}
 	}
 
 	private static Solution fromJson(String id, JSONObject obj)
