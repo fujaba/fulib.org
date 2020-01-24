@@ -16,8 +16,8 @@ public class Mongo
 	// =============== Constants ===============
 
 	public static final String PASSWORD_ENV_KEY = "FULIB_ORG_MONGODB_PASSWORD";
-	public static final String HOST_ENV_KEY     = "FULIB_ORG_MONGODB_HOST";
-	public static final String USER_ENV_KEY     = "FULIB_ORG_MONGODB_USER";
+	public static final String HOST_ENV_KEY = "FULIB_ORG_MONGODB_HOST";
+	public static final String USER_ENV_KEY = "FULIB_ORG_MONGODB_USER";
 
 	public static final String DATABASE_NAME = "fulib-org";
 
@@ -29,7 +29,7 @@ public class Mongo
 
 	// =============== Fields ===============
 
-	private MongoClient   mongoClient;
+	private MongoClient mongoClient;
 	private MongoDatabase database;
 
 	private MongoCollection<Document> requestLog;
@@ -52,8 +52,10 @@ public class Mongo
 		}
 
 		final ConnectionString connString = new ConnectionString(url);
-		final MongoClientSettings settings = MongoClientSettings.builder().applyConnectionString(connString)
-		                                                        .retryWrites(true).build();
+		final MongoClientSettings settings = MongoClientSettings.builder()
+		                                                        .applyConnectionString(connString)
+		                                                        .retryWrites(true)
+		                                                        .build();
 		this.mongoClient = MongoClients.create(settings);
 		this.database = this.mongoClient.getDatabase(DATABASE_NAME);
 		this.requestLog = this.database.getCollection(LOG_COLLECTION_NAME);
