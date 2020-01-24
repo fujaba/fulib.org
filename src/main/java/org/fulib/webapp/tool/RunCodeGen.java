@@ -168,6 +168,8 @@ public class RunCodeGen
 		}
 	}
 
+	// --------------- Object Diagrams ---------------
+
 	private static void collectObjectDiagrams(List<Diagram> diagrams, String scenarioText, Path packagePath)
 		throws IOException
 	{
@@ -200,31 +202,27 @@ public class RunCodeGen
 			return index;
 		})).forEach(file -> {
 			final String relativeName = packagePath.relativize(file).toString();
-			addObjectDiagram(diagrams, file, relativeName);
+			diagrams.add(readObjectDiagram(file, relativeName));
 		});
 	}
 
-	private static void addObjectDiagram(List<Diagram> diagrams, Path file, String fileName)
+	private static Diagram readObjectDiagram(Path file, String fileName)
 	{
+		final byte[] content;
 		try
 		{
-			tryAddObjectDiagram(diagrams, file, fileName);
+			content = Files.readAllBytes(file);
 		}
-		catch (Exception e)
+		catch (IOException e)
 		{
 			throw new RuntimeException(e);
 		}
-	}
-
-	private static void tryAddObjectDiagram(List<Diagram> diagrams, Path file, String fileName)
-		throws JSONException, IOException
-	{
-		final byte[] content = Files.readAllBytes(file);
 
 		final Diagram diagram = new Diagram();
 		diagram.setName(fileName);
 
-		switch (fileName.substring(fileName.lastIndexOf('.')))
+		final String fileExtension = fileName.substring(fileName.lastIndexOf('.'));
+		switch (fileExtension)
 		{
 		case ".png":
 			final String base64Content = Base64.getEncoder().encodeToString(content);
@@ -238,7 +236,7 @@ public class RunCodeGen
 			break;
 		}
 
-		diagrams.add(diagram);
+		return diagram;
 	}
 
 	private static void readTestMethods(List<Method> methods, Path file)
