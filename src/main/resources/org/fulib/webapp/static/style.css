@@ -25,7 +25,7 @@ body {
 
 /* --------------- Dark Mode for Diagrams --------------- */
 
-[data-theme="dark"] img,
-[data-theme="dark"] svg {
+[data-theme="dark"] img.diagram,
+[data-theme="dark"] svg.diagram {
 	filter: invert(100%);
 }

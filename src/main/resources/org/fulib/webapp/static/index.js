@@ -309,6 +309,7 @@ function renderObjectDiagram(objectDiagram) {
 
 	if (name.endsWith('.png')) {
 		const image = document.createElement('img');
+		image.classList.add('diagram');
 		image.src = 'data:image/png;base64,' + content;
 		image.alt = name;
 		return image;
