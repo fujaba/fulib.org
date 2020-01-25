@@ -208,6 +208,10 @@ function addTask() {
 }
 
 function removeTask(index) {
+	if (!confirm('Are you sure you want to remove this task?')) {
+		return;
+	}
+
 	const taskItem = document.getElementById(`taskItem${index}`);
 	taskList.removeChild(taskItem);
 
