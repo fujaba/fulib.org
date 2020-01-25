@@ -25,7 +25,7 @@ public class Solutions
 {
 	// --------------- Submission ---------------
 
-	public static Object create(Request request, Response response)
+	public static Object create(Request request, Response response) throws Exception
 	{
 		final Instant timeStamp = Instant.now();
 
@@ -46,6 +46,9 @@ public class Solutions
 		solution.setToken(token);
 		solution.setTimeStamp(timeStamp);
 
+		final List<TaskResult> results = runTasks(solution.getSolution(), assignment.getTasks());
+		solution.getResults().addAll(results);
+
 		Mongo.get().saveSolution(solution);
 
 		final JSONObject result = new JSONObject();
@@ -58,11 +61,12 @@ public class Solutions
 	private static Solution fromJson(String id, JSONObject obj)
 	{
 		final Solution solution = new Solution(id);
+		// assignment set from query parameter
+		// id, token, timestamp and results generated server-side
 		solution.setName(obj.getString(Solution.PROPERTY_name));
 		solution.setStudentID(obj.getString(Solution.PROPERTY_studentID));
 		solution.setEmail(obj.getString(Solution.PROPERTY_email));
 		solution.setSolution(obj.getString(Solution.PROPERTY_solution));
-		// don't include token!
 		return solution;
 	}
 
