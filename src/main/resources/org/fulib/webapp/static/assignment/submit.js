@@ -35,22 +35,7 @@ function check() {
 		solution: solutionInputCM.getValue(),
 	};
 	api('POST', `/assignment/${assignmentID}/check`, data, result => {
-		for (let i = 0; i < result.tasks.length; i++) {
-			const task = result.tasks[i];
-			console.log(task.output);
-
-			for (const taskList of document.getElementsByClassName('assignment-task-list')) {
-				const taskItem = taskList.children[i];
-
-				if (task.points === 0) {
-					taskItem.classList.remove('text-success');
-					taskItem.classList.add('text-danger');
-				} else {
-					taskItem.classList.remove('text-danger');
-					taskItem.classList.add('text-success');
-				}
-			}
-		}
+		renderResults(data.tasks);
 
 		solutionInfo.innerText = 'Your solution was checked automatically. Don\'t forget to submit when you are done!';
 	});

@@ -46,6 +46,8 @@ function loadSolution() {
 		emailInput.value = result.email;
 		studentIDInput.value = result.studentID;
 		submitTimeStampLabel.innerText = new Date(result.timeStamp).toLocaleString();
+
+		renderResults(result.results);
 	});
 }
 
