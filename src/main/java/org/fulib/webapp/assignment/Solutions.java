@@ -242,18 +242,6 @@ public class Solutions
 		return obj;
 	}
 
-	private static void writeToFile(String solution, Task task, Path file) throws IOException
-	{
-		try (final BufferedWriter writer = Files.newBufferedWriter(file))
-		{
-			writer.write("# Solution\n\n");
-			writer.write(solution);
-			writer.write("\n\n## Verification");
-			writer.write(task.getVerification());
-			writer.write("\n\n");
-		}
-	}
-
 	// --------------- Helpers ---------------
 
 	private static String unknownAssignmentError(String assignmentID)
