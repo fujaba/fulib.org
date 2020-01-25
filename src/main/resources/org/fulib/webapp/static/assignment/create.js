@@ -61,8 +61,8 @@ let nextTaskIndex = 0;
 	autoSaveCM('assignment/create/solutionInput', solutionInputCM);
 
 	function hasSavedTask(index) {
-		for (const id of [ 'Description', 'Points', 'Verification' ]) {
-			if (localStorage.getItem(`assignment/create/task${id}Input${index}`)) {
+		for (const id of [ 'description', 'points', 'verification' ]) {
+			if (localStorage.getItem(`assignment/create/task/${index}/${id}Input`)) {
 				return true;
 			}
 		}
@@ -163,21 +163,21 @@ function addTask() {
 	<li id="taskItem${index}">
 		<form>
 			<div class="form-group row">
-				<label for="taskDescriptionInput${index}" class="col-sm-2 col-form-label">Description</label>
+				<label for="task/${index}/descriptionInput" class="col-sm-2 col-form-label">Description</label>
 				<div class="col-sm-10">
-					<input type="text" class="form-control" id="taskDescriptionInput${index}">
+					<input type="text" class="form-control" id="task/${index}/descriptionInput">
 				</div>
 			</div>
 			<div class="form-group row">
-				<label for="taskPointsInput${index}" class="col-sm-2 col-form-label">Points</label>
+				<label for="task/${index}/pointsInput" class="col-sm-2 col-form-label">Points</label>
 				<div class="col-sm-10">
-					<input type="number" class="form-control" id="taskPointsInput${index}" min="0">
+					<input type="number" class="form-control" id="task/${index}/pointsInput" min="0">
 				</div>
 			</div>
 			<div class="form-group row">
-				<label for="taskVerificationInput${index}" class="col-sm-2 col-form-label">Verification</label>
+				<label for="task/${index}/verificationInput" class="col-sm-2 col-form-label">Verification</label>
 				<div class="col-sm-10">
-					<textarea id="taskVerificationInput${index}"></textarea>
+					<textarea id="task/${index}/verificationInput"></textarea>
 				</div>
 			</div>
 		</form>
@@ -187,26 +187,26 @@ function addTask() {
 
 	taskList.insertAdjacentHTML('beforeend', html);
 
-	const descriptionInput = document.getElementById(`taskDescriptionInput${index}`);
-	const pointsInput = document.getElementById(`taskPointsInput${index}`);
+	const descriptionInput = document.getElementById(`task/${index}/descriptionInput`);
+	const pointsInput = document.getElementById(`task/${index}/pointsInput`);
 
 	autoSave(`assignment/create/`,
 		descriptionInput,
 		pointsInput,
 	);
 
-	const verificationInput = document.getElementById(`taskVerificationInput${index}`);
+	const verificationInput = document.getElementById(`task/${index}/verificationInput`);
 	const verificationInputCM = CodeMirror.fromTextArea(verificationInput, verificationConfig);
 	verificationInput.codeMirror = verificationInputCM;
 
-	autoSaveCM(`assignment/create/taskVerificationInput${index}`, verificationInputCM);
+	autoSaveCM(`assignment/create/task/${index}/verificationInput`, verificationInputCM);
 }
 
 function removeTask(index) {
-	const taskItem = document.getElementById('taskItem' + index);
+	const taskItem = document.getElementById(`taskItem${index}`);
 	taskList.removeChild(taskItem);
 
-	for (const id of [ 'Description', 'Points', 'Verification' ]) {
-		localStorage.removeItem(`assignment/create/task${id}Input${index}`);
+	for (const id of [ 'description', 'points', 'verification' ]) {
+		localStorage.removeItem(`assignment/create/task/${index}/${id}Input`);
 	}
 }
