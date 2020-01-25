@@ -1,6 +1,8 @@
 package org.fulib.webapp.assignment.model;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Solution
 {
@@ -14,6 +16,7 @@ public class Solution
 	public static final String PROPERTY_email = "email";
 	public static final String PROPERTY_solution = "solution";
 	public static final String PROPERTY_timeStamp = "timeStamp";
+	public static final String PROPERTY_results = "results";
 
 	// =============== Fields ===============
 
@@ -27,6 +30,8 @@ public class Solution
 	private String email;
 	private String solution;
 	private Instant timeStamp;
+
+	private List<TaskResult> results = new ArrayList<>();
 
 	// =============== Constructors ===============
 
@@ -110,5 +115,10 @@ public class Solution
 	public void setTimeStamp(Instant timeStamp)
 	{
 		this.timeStamp = timeStamp;
+	}
+
+	public List<TaskResult> getResults()
+	{
+		return this.results;
 	}
 }
