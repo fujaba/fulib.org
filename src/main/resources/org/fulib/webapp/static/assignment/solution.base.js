@@ -1,27 +1,26 @@
-// =============== Elements ===============
+// =============== Constants ===============
 
-const solutionInput = document.getElementById('solutionInput');
-const solutionInputCM = CodeMirror.fromTextArea(solutionInput, {
+const solutionInputConfig = {
 	theme: 'idea',
 	mode: 'markdown',
 	lineNumbers: true,
 	lineWrapping: true,
 	styleActiveLine: true,
-});
+};
 
 // =============== Functions ===============
 
-function autoUpdateEditorTheme() {
+function autoUpdateEditorTheme(codeMirror) {
 	try {
 		// may fail if darktheme/network is unavailable
-		updateEditorTheme();
-		themeChangeHandlers.push(updateEditorTheme);
+		updateEditorTheme(codeMirror, getTheme());
+		themeChangeHandlers.push(theme => updateEditorTheme(codeMirror, theme));
 	} catch {}
 }
 
-function updateEditorTheme(theme = getTheme()) {
+function updateEditorTheme(codeMirror, theme) {
 	let editorTheme = theme === 'dark' ? 'darcula' : 'idea';
-	solutionInputCM.setOption('theme', editorTheme);
+	codeMirror.setOption('theme', editorTheme);
 }
 
 function getSolutionIDFromURL() {

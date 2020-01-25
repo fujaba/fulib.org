@@ -1,5 +1,11 @@
 // =============== Elements ===============
 
+const solutionInput = document.getElementById('solutionInput');
+const solutionInputCM = CodeMirror.fromTextArea(solutionInput, {
+	...solutionInputConfig,
+	readOnly: true,
+});
+
 const submitTimeStampLabel = document.getElementById('submitTimeStampLabel');
 
 const commentList = document.getElementById('commentList');
@@ -19,9 +25,7 @@ const solutionID = getSolutionIDFromURL();
 // =============== Initialization ===============
 
 (() => {
-	solutionInputCM.options.readOnly = true;
-
-	autoUpdateEditorTheme();
+	autoUpdateEditorTheme(solutionInputCM);
 
 	autoSave(`assignment/comment/`,
 		commentNameInput,

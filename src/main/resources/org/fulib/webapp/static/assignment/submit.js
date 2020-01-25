@@ -1,5 +1,8 @@
 // =============== Elements ===============
 
+const solutionInput = document.getElementById('solutionInput');
+const solutionInputCM = CodeMirror.fromTextArea(solutionInput, solutionInputConfig);
+
 const nameInput = document.getElementById('nameInput');
 const studentIDInput = document.getElementById('studentIDInput');
 const emailInput = document.getElementById('emailInput');
@@ -17,7 +20,7 @@ const assignmentID = getAssignmentIDFromURL();
 // =============== Initialization ===============
 
 (() => {
-	autoUpdateEditorTheme();
+	autoUpdateEditorTheme(solutionInputCM);
 
 	loadAssignment(assignmentID, renderAssignment);
 
