@@ -59,6 +59,23 @@ let nextTaskIndex = 0;
 	);
 
 	autoSaveCM('assignment/create/solutionInput', solutionInputCM);
+
+	function hasSavedTask(index) {
+		for (const id of [ 'Description', 'Points', 'Verification' ]) {
+			if (localStorage.getItem(`assignment/create/task${id}Input${index}`)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	for (let i = 0; ; i++) {
+		if (hasSavedTask(i)) {
+			addTask();
+		} else {
+			break;
+		}
+	}
 })();
 
 // =============== Functions ===============
