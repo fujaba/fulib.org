@@ -8,12 +8,17 @@ const solutionList = document.getElementById('solutionList');
 
 // =============== Variables ===============
 
+const assignmentID = getAssignmentIDFromURL();
+
 let solutions;
 
 // =============== Initialization ===============
 
 (() => {
-	loadSolutions();
+	loadAssignment(assignmentID, assignment => {
+		renderAssignment(assignment);
+		loadSolutions();
+	});
 })();
 
 // =============== Functions ===============

@@ -13,6 +13,7 @@ const solutionTokenInput = document.getElementById('solutionTokenInput');
 
 // =============== Fields ===============
 
+const assignmentID = getAssignmentIDFromURL();
 const solutionID = new URL(window.location).searchParams.get('solution');
 
 // =============== Initialization ===============
@@ -27,8 +28,11 @@ const solutionID = new URL(window.location).searchParams.get('solution');
 		commentEmailInput,
 	);
 
-	loadSolution();
-	loadComments();
+	loadAssignment(assignmentID, assignment => {
+		renderAssignment(assignment);
+		loadSolution();
+		loadComments();
+	});
 })();
 
 // =============== Functions ===============

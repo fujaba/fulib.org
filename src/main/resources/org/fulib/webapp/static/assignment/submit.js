@@ -12,10 +12,14 @@ const submissionTimeLabel = document.getElementById('submissionTimeLabel');
 const solutionLink = document.getElementById('solutionLink');
 const tokenLabel = document.getElementById('tokenLabel');
 
+const assignmentID = getAssignmentIDFromURL();
+
 // =============== Initialization ===============
 
 (() => {
 	autoUpdateEditorTheme();
+
+	loadAssignment(assignmentID, renderAssignment);
 
 	autoSave('assignment/view/',
 		nameInput,
