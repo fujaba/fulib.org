@@ -168,6 +168,14 @@ public class Solutions
 		obj.put(Solution.PROPERTY_timeStamp, solution.getTimeStamp());
 		// don't include token!
 
+		final JSONArray results = new JSONArray();
+		for (final TaskResult result : solution.getResults())
+		{
+			final JSONObject resultObj = toJson(result);
+			results.put(resultObj);
+		}
+		obj.put(Solution.PROPERTY_results, results);
+
 		return obj;
 	}
 
