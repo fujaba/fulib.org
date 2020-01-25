@@ -35,55 +35,13 @@ const solutionID = getSolutionIDFromURL();
 				$('#tokenModal').modal('show');
 			}
 		});
-		loadComments();
+		loadComments(assignmentID, solutionID, comments => {
+			renderComments(commentList, comments);
+		});
 	});
 })();
 
 // =============== Functions ===============
-
-function loadComments(completionHandler = undefined) {
-	const headers = getTokenHeaders();
-	apih('GET', `/assignment/${assignmentID}/solution/${solutionID}/comments`, headers, null, result => {
-		renderComments(result.children);
-
-		if (completionHandler) {
-			completionHandler();
-		}
-	});
-}
-
-function renderComments(comments) {
-	ensureListChildren(commentList, comments.length, _ => `
-		<div class="card mb-3">
-			<div class="card-header">
-				<span class="comment-author"></span>
-				&bullet;
-				<a class="comment-email"></a>
-				&bullet;
-				<span class="comment-timestamp text-muted"></span>
-			</div>
-			<div class="card-body">
-				<div class="card-text comment-body"></div>
-			</div>
-		</div>
-		`
-	);
-
-	const authors = commentList.getElementsByClassName('comment-author');
-	const emails = commentList.getElementsByClassName('comment-email');
-	const timeStamps = commentList.getElementsByClassName('comment-timestamp');
-	const bodies = commentList.getElementsByClassName('comment-body');
-
-	for (let index = 0; index < comments.length; index++) {
-		const comment = comments[index];
-
-		authors[index].innerText = comment.author;
-		emails[index].innerText = comment.email;
-		emails[index].href = 'mailto:' + comment.email;
-		timeStamps[index].innerText = new Date(comment.timeStamp).toLocaleString();
-		bodies[index].innerHTML = comment.html;
-	}
-}
 
 function submitToken() {
 	const assignmentToken = assignmentTokenInput.value;
