@@ -13,29 +13,36 @@ import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Solutions
 {
+	private static final String SOLUTION_ID_QUERY_PARAM = "solutionID";
+	private static final String ASSIGNMENT_ID_QUERY_PARAM = "assignmentID";
+
+	private static final String SOLUTION_TOKEN_HEADER = "Solution-Token";
+	private static final String ASSIGNMENT_TOKEN_HEADER = "Assignment-Token";
+
+	// language=JSON
+	private static final String INVALID_TOKEN_RESPONSE = "{\n" + "  \"error\": \"invalid token\"\n" + "}\n";
+	// language=JSON
+	private static final String UNKNOWN_ASSIGNMENT_RESPONSE = "{\n  \"error\": \"assignment with id '%s'' not found\"\n}";
+
 	// --------------- Submission ---------------
 
 	public static Object create(Request request, Response response) throws Exception
 	{
 		final Instant timeStamp = Instant.now();
 
-		final String assignmentID = request.params("assignmentID");
+		final String assignmentID = request.params(ASSIGNMENT_ID_QUERY_PARAM);
 		final Assignment assignment = Mongo.get().getAssignment(assignmentID);
 
 		if (assignment == null)
 		{
 			response.status(404);
-			return unknownAssignmentError(assignmentID);
+			return String.format(UNKNOWN_ASSIGNMENT_RESPONSE, assignmentID);
 		}
 
 		final String solutionID = IDGenerator.generateID();
@@ -52,9 +59,9 @@ public class Solutions
 		Mongo.get().saveSolution(solution);
 
 		final JSONObject result = new JSONObject();
-		result.put("id", solutionID);
-		result.put("token", token);
-		result.put("timeStamp", timeStamp.toString());
+		result.put(Solution.PROPERTY_id, solutionID);
+		result.put(Solution.PROPERTY_token, token);
+		result.put(Solution.PROPERTY_timeStamp, timeStamp.toString());
 		return result.toString(2);
 	}
 
@@ -74,8 +81,8 @@ public class Solutions
 
 	public static Object get(Request request, Response response)
 	{
-		final String assignmentID = request.params("assignmentID");
-		final String solutionID = request.params("solutionID");
+		final String assignmentID = request.params(ASSIGNMENT_ID_QUERY_PARAM);
+		final String solutionID = request.params(SOLUTION_ID_QUERY_PARAM);
 
 		if (request.contentType() == null || !request.contentType().startsWith("application/json"))
 		{
@@ -91,20 +98,19 @@ public class Solutions
 		}
 
 		final String solutionToken = solution.getToken();
-		final String solutionTokenHeader = request.headers("Solution-Token");
+		final String solutionTokenHeader = request.headers(SOLUTION_TOKEN_HEADER);
 
 		// NB: we use the assignment resolved via the solution, NOT the one we'd get from assignmentID!
 		// Otherwise, someone could create their own assignment, forge the request with that assignment ID
 		// and a solutionID belonging to a different assignment, and gain access to the solution without having
 		// the token of the assignment it actually belongs to.
 		final String assignmentToken = solution.getAssignment().getToken();
-		final String assignmentTokenHeader = request.headers("Assignment-Token");
+		final String assignmentTokenHeader = request.headers(ASSIGNMENT_TOKEN_HEADER);
 
 		if (!solutionToken.equals(solutionTokenHeader) && !assignmentToken.equals(assignmentTokenHeader))
 		{
 			response.status(401);
-			// language=JSON
-			return "{\n" + "  \"error\": \"invalid token\"\n" + "}\n";
+			return INVALID_TOKEN_RESPONSE;
 		}
 
 		final JSONObject obj = toJson(solution);
@@ -113,7 +119,7 @@ public class Solutions
 
 	public static Object getAll(Request request, Response response)
 	{
-		final String assignmentID = request.params("assignmentID");
+		final String assignmentID = request.params(ASSIGNMENT_ID_QUERY_PARAM);
 
 		if (request.contentType() == null || !request.contentType().startsWith("application/json"))
 		{
@@ -125,16 +131,15 @@ public class Solutions
 		if (assignment == null)
 		{
 			response.status(404);
-			return unknownAssignmentError(assignmentID);
+			return String.format(UNKNOWN_ASSIGNMENT_RESPONSE, assignmentID);
 		}
 
-		final String token = request.headers("Assignment-Token");
+		final String token = request.headers(ASSIGNMENT_TOKEN_HEADER);
 
 		if (!token.equals(assignment.getToken()))
 		{
 			response.status(401);
-			// language=JSON
-			return "{\n" + "  \"error\": \"invalid token\"\n" + "}\n";
+			return INVALID_TOKEN_RESPONSE;
 		}
 
 		final List<Solution> solutions = Mongo.get().getSolutions(assignmentID);
@@ -183,13 +188,13 @@ public class Solutions
 
 	public static Object check(Request request, Response response) throws Exception
 	{
-		final String assignmentID = request.params("assignmentID");
+		final String assignmentID = request.params(ASSIGNMENT_ID_QUERY_PARAM);
 		final Assignment assignment = Mongo.get().getAssignment(assignmentID);
 
 		if (assignment == null)
 		{
 			response.status(404);
-			return unknownAssignmentError(assignmentID);
+			return String.format(UNKNOWN_ASSIGNMENT_RESPONSE, assignmentID);
 		}
 
 		final JSONObject requestObj = new JSONObject(request.body());
@@ -248,13 +253,5 @@ public class Solutions
 		obj.put(TaskResult.PROPERTY_points, taskResult.getPoints());
 		obj.put(TaskResult.PROPERTY_output, taskResult.getOutput());
 		return obj;
-	}
-
-	// --------------- Helpers ---------------
-
-	private static String unknownAssignmentError(String assignmentID)
-	{
-		// language=JSON
-		return "{\n" + "  \"error\": \"assignment with id '" + assignmentID + "'' not found\"\n" + "}";
 	}
 }
