@@ -49,10 +49,14 @@ function loadSolution() {
 	});
 }
 
-function loadComments() {
+function loadComments(completionHandler = undefined) {
 	const headers = getTokenHeaders();
 	apih('GET', `/assignment/${assignmentID}/solution/${solutionID}/comments`, headers, null, result => {
 		renderComments(result.children);
+
+		if (completionHandler) {
+			completionHandler();
+		}
 	});
 }
 
@@ -109,6 +113,7 @@ function submitComment() {
 	};
 
 	commentSubmitButton.disabled = true;
+	commentSubmitButton.innerText = 'Submitting Comment...';
 
 	const headers = getTokenHeaders();
 	apih('POST', `/assignment/${assignmentID}/solution/${solutionID}/comments`, headers, comment, result => {
@@ -117,9 +122,12 @@ function submitComment() {
 		comment.timeStamp = result.timeStamp;
 		comment.html = result.html;
 
-		commentSubmitButton.disabled = false;
 		commentBodyInput.value = '';
+		commentSubmitButton.innerText = 'Loading Your New Comment...';
 
-		loadComments();
+		loadComments(() => {
+			commentSubmitButton.disabled = false;
+			commentSubmitButton.innerText = 'Submit Comment';
+		});
 	});
 }
