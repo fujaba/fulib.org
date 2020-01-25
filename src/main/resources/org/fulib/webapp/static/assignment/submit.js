@@ -42,7 +42,7 @@ function check() {
 		solution: solutionInputCM.getValue(),
 	};
 	api('POST', `/assignment/${assignmentID}/check`, data, result => {
-		renderResults(data.results);
+		renderResults(result.results);
 
 		solutionInfo.innerText = 'Your solution was checked automatically. Don\'t forget to submit when you are done!';
 	});

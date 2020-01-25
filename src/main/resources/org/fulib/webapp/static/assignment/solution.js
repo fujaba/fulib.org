@@ -79,7 +79,8 @@ function submitComment() {
 		commentBodyInput.value = '';
 		commentSubmitButton.innerText = 'Loading Your New Comment...';
 
-		loadComments(() => {
+		loadComments(assignmentID, solutionID, comments => {
+			renderComments(commentList, comments);
 			commentSubmitButton.disabled = false;
 			commentSubmitButton.innerText = 'Submit Comment';
 		});
