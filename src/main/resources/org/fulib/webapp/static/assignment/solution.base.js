@@ -24,6 +24,10 @@ function updateEditorTheme(theme = getTheme()) {
 	solutionInputCM.setOption('theme', editorTheme);
 }
 
+function getSolutionIDFromURL() {
+	return new URL(window.location).searchParams.get('solution');
+}
+
 function getTokenHeaders() {
 	return {
 		'Assignment-Token': getAssignmentToken(assignmentID),
@@ -37,6 +41,28 @@ function getSolutionToken(assignmentID, solutionID) {
 
 function setSolutionToken(assignmentID, solutionID, token) {
 	localStorage.setItem(`assignment/${assignmentID}/solution/${solutionID}/token`, token);
+}
+
+function loadSolution(assignmentID, solutionID, handler, errorHandler) {
+	const headers = getTokenHeaders();
+	apih('GET', `/assignment/${assignmentID}/solution/${solutionID}`, headers, null, result => {
+		if (result.error) {
+			errorHandler(result.error);
+		}
+		else {
+			handler(result);
+		}
+	});
+}
+
+function renderSolution(solution) {
+	solutionInputCM.setValue(solution.solution);
+	nameInput.value = solution.name;
+	emailInput.value = solution.email;
+	studentIDInput.value = solution.studentID;
+	submitTimeStampLabel.innerText = new Date(solution.timeStamp).toLocaleString();
+
+	renderResults(solution.results);
 }
 
 function renderResults(results) {

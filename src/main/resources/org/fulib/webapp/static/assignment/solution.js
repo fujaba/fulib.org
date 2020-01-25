@@ -14,7 +14,7 @@ const solutionTokenInput = document.getElementById('solutionTokenInput');
 // =============== Fields ===============
 
 const assignmentID = getAssignmentIDFromURL();
-const solutionID = new URL(window.location).searchParams.get('solution');
+const solutionID = getSolutionIDFromURL();
 
 // =============== Initialization ===============
 
@@ -30,30 +30,16 @@ const solutionID = new URL(window.location).searchParams.get('solution');
 
 	loadAssignment(assignmentID, assignment => {
 		renderAssignment(assignment);
-		loadSolution();
+		loadSolution(assignmentID, solutionID, renderSolution, error => {
+			if (error === 'invalid token') {
+				$('#tokenModal').modal('show');
+			}
+		});
 		loadComments();
 	});
 })();
 
 // =============== Functions ===============
-
-function loadSolution() {
-	const headers = getTokenHeaders();
-	apih('GET', `/assignment/${assignmentID}/solution/${solutionID}`, headers, null, result => {
-		if (result.error === 'invalid token') {
-			$('#tokenModal').modal('show');
-			return;
-		}
-
-		solutionInputCM.setValue(result.solution);
-		nameInput.value = result.name;
-		emailInput.value = result.email;
-		studentIDInput.value = result.studentID;
-		submitTimeStampLabel.innerText = new Date(result.timeStamp).toLocaleString();
-
-		renderResults(result.results);
-	});
-}
 
 function loadComments(completionHandler = undefined) {
 	const headers = getTokenHeaders();
