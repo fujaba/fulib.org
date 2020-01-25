@@ -86,10 +86,7 @@ function updateEditorTheme(theme = getTheme()) {
 	verificationInputCM.setOption('theme', editorTheme);
 }
 
-function submit() {
-	submitButton.disabled = true;
-	submitButton.innerText = 'Submitting...';
-
+function gatherData() {
 	const data = {
 		title: titleInput.value,
 		author: authorInput.value,
@@ -117,6 +114,14 @@ function submit() {
 			verification: verificationInputCM.getValue(),
 		});
 	}
+	return data;
+}
+
+function submit() {
+	submitButton.disabled = true;
+	submitButton.innerText = 'Submitting...';
+
+	const data = gatherData();
 
 	api('POST', '/assignment', data, result => {
 		const link = absoluteLink(`/assignment/${result.id}`);
