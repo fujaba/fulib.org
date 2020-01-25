@@ -69,15 +69,24 @@ function renderSolutions(elementList, solutions) {
 
 	for (let index = 0; index < solutions.length; index++) {
 		const solution = solutions[index];
+		const total = computeTotalPoints(solution);
 
 		nameLabels[index].innerText = solution.name;
-		pointsLabels[index].innerText = 'X/X'; // TODO
+		pointsLabels[index].innerText = `${total}/X`; // TODO assignment points
 		studentIDLabels[index].innerText = solution.studentID;
 		emailLinks[index].innerText = solution.email;
 		emailLinks[index].href = `mailto:${solution.email}`;
 		solutionLinks[index].href = `/assignment/${assignmentID}/solution/${solution.id}`;
 		timeStampLabels[index].innerText = new Date(solution.timeStamp).toLocaleString();
 	}
+}
+
+function computeTotalPoints(solution) {
+	let total = 0;
+	for (const result of solution.results) {
+		total += result.points;
+	}
+	return total;
 }
 
 function updateSearch() {
