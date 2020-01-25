@@ -9,6 +9,8 @@ const descriptionInput = document.getElementById('descriptionInput');
 
 const taskList = document.getElementById('taskList');
 
+const submitButton = document.getElementById('submitButton');
+
 const titleLabel = document.getElementById('titleLabel');
 const assignmentLink = document.getElementById('assignmentLink');
 const copyAssignmentLinkButton = document.getElementById('copyAssignmentLinkButton');
@@ -68,6 +70,9 @@ function updateEditorTheme(theme = getTheme()) {
 }
 
 function submit() {
+	submitButton.disabled = true;
+	submitButton.innerText = 'Submitting...';
+
 	const data = {
 		title: titleInput.value,
 		author: authorInput.value,
@@ -99,6 +104,10 @@ function submit() {
 	api('POST', '/assignment', data, result => {
 		const link = absoluteLink(`/assignment/${result.id}`);
 		const solutionsLinkRef = link + '/solutions';
+
+		submitButton.disabled = false;
+		submitButton.innerText = 'Submit';
+
 		titleLabel.innerText = titleInput.value;
 		assignmentLink.href = link;
 		assignmentLink.innerText = link;
@@ -106,6 +115,7 @@ function submit() {
 		solutionsLink.innerText = solutionsLinkRef;
 		tokenLabel.innerText = result.token;
 		localStorage.setItem(`assignment/${result.id}/token`, result.token);
+
 		$('#successModal').modal('show');
 	});
 }
