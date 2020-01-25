@@ -3,6 +3,7 @@ package org.fulib.webapp.assignment;
 import org.fulib.webapp.assignment.model.Assignment;
 import org.fulib.webapp.assignment.model.Solution;
 import org.fulib.webapp.assignment.model.Task;
+import org.fulib.webapp.assignment.model.TaskResult;
 import org.fulib.webapp.mongo.Mongo;
 import org.fulib.webapp.tool.RunCodeGen;
 import org.fulib.webapp.tool.model.CodeGenData;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Solutions
@@ -65,21 +67,17 @@ public class Solutions
 		final JSONObject requestObj = new JSONObject(request.body());
 		final String solution = requestObj.getString(Solution.PROPERTY_solution);
 
-		final JSONObject resultObj = new JSONObject();
+		final List<TaskResult> results = runTasks(solution, assignment.getTasks());
 
+		final JSONObject resultObj = new JSONObject();
 		final JSONArray tasksArray = new JSONArray();
 
 		int totalPoints = 0;
-		for (final Task task : assignment.getTasks())
+		for (final TaskResult result : results)
 		{
-			final Result result = runTask(solution, task);
+			totalPoints += result.getPoints();
 
-			final int points = result.getExitCode() == 0 ? task.getPoints() : 0;
-			totalPoints += points;
-
-			final JSONObject taskObj = new JSONObject();
-			taskObj.put("points", points);
-			taskObj.put("output", result.getOutput());
+			final JSONObject taskObj = toJson(result);
 			tasksArray.put(taskObj);
 		}
 
@@ -89,7 +87,18 @@ public class Solutions
 		return resultObj.toString(2);
 	}
 
-	private static Result runTask(String solution, Task task) throws Exception
+	private static List<TaskResult> runTasks(String solution, List<Task> tasks) throws Exception
+	{
+		final List<TaskResult> results = new ArrayList<>(tasks.size());
+		for (final Task task : tasks)
+		{
+			final TaskResult result = runTask(solution, task);
+			results.add(result);
+		}
+		return results;
+	}
+
+	private static TaskResult runTask(String solution, Task task) throws Exception
 	{
 		final String scenario =
 			"# Solution\n\n" + solution + "\n\n## Verification\n\n" + task.getVerification() + "\n\n";
@@ -100,7 +109,21 @@ public class Solutions
 		input.setScenarioFileName("solution.md");
 
 		// TODO make it ignore diagrams and methods
-		return RunCodeGen.run(input);
+		final Result result = RunCodeGen.run(input);
+
+		final int points = result.getExitCode() == 0 ? task.getPoints() : 0;
+		final TaskResult taskResult = new TaskResult();
+		taskResult.setPoints(points);
+		taskResult.setOutput(result.getOutput());
+		return taskResult;
+	}
+
+	private static JSONObject toJson(TaskResult taskResult)
+	{
+		final JSONObject obj = new JSONObject();
+		obj.put(TaskResult.PROPERTY_points, taskResult.getPoints());
+		obj.put(TaskResult.PROPERTY_output, taskResult.getOutput());
+		return obj;
 	}
 
 	private static void writeToFile(String solution, Task task, Path file) throws IOException
