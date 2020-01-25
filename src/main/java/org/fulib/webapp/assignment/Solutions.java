@@ -198,19 +198,15 @@ public class Solutions
 		final List<TaskResult> results = runTasks(solution, assignment.getTasks());
 
 		final JSONObject resultObj = new JSONObject();
-		final JSONArray tasksArray = new JSONArray();
+		final JSONArray resultsArray = new JSONArray();
 
-		int totalPoints = 0;
 		for (final TaskResult result : results)
 		{
-			totalPoints += result.getPoints();
-
 			final JSONObject taskObj = toJson(result);
-			tasksArray.put(taskObj);
+			resultsArray.put(taskObj);
 		}
 
-		resultObj.put("totalPoints", totalPoints);
-		resultObj.put("tasks", tasksArray);
+		resultObj.put(Solution.PROPERTY_results, resultsArray);
 
 		return resultObj.toString(2);
 	}
