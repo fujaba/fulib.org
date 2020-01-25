@@ -103,9 +103,9 @@ function gatherData() {
 			continue;
 		}
 
-		const descriptionInput = document.getElementById('taskDescriptionInput' + i);
-		const pointsInput = document.getElementById('taskPointsInput' + i);
-		const verificationInput = document.getElementById('taskVerificationInput' + i);
+		const descriptionInput = document.getElementById(`task/${i}/descriptionInput`);
+		const pointsInput = document.getElementById(`task/${i}/pointsInput`);
+		const verificationInput = document.getElementById(`task/${i}/verificationInput`);
 		const verificationInputCM = verificationInput.codeMirror;
 
 		data.tasks.push({
