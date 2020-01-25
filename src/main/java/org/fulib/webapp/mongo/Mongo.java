@@ -12,14 +12,12 @@ import com.mongodb.client.model.ReplaceOptions;
 import com.mongodb.client.model.Sorts;
 import org.bson.Document;
 import org.fulib.webapp.WebService;
-import org.fulib.webapp.assignment.model.Assignment;
-import org.fulib.webapp.assignment.model.Comment;
-import org.fulib.webapp.assignment.model.Solution;
-import org.fulib.webapp.assignment.model.Task;
+import org.fulib.webapp.assignment.model.*;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Mongo
 {
@@ -252,7 +250,20 @@ public class Mongo
 		solution.setSolution(doc.getString(Solution.PROPERTY_solution));
 		solution.setTimeStamp(doc.getDate(Solution.PROPERTY_timeStamp).toInstant());
 
+		for (final Document document : doc.getList(Solution.PROPERTY_results, Document.class))
+		{
+			solution.getResults().add(doc2TaskResult(document));
+		}
+
 		return solution;
+	}
+
+	private static TaskResult doc2TaskResult(Document document)
+	{
+		final TaskResult taskResult = new TaskResult();
+		taskResult.setPoints(document.getInteger(TaskResult.PROPERTY_points));
+		taskResult.setOutput(document.getString(TaskResult.PROPERTY_output));
+		return taskResult;
 	}
 
 	public void saveSolution(Solution solution)
@@ -272,6 +283,16 @@ public class Mongo
 		doc.put(Solution.PROPERTY_email, solution.getEmail());
 		doc.put(Solution.PROPERTY_solution, solution.getSolution());
 		doc.put(Solution.PROPERTY_timeStamp, solution.getTimeStamp());
+		doc.put(Solution.PROPERTY_results,
+		        solution.getResults().stream().map(Mongo::taskResult2Doc).collect(Collectors.toList()));
+		return doc;
+	}
+
+	private static Document taskResult2Doc(TaskResult taskResult)
+	{
+		final Document doc = new Document();
+		doc.put(TaskResult.PROPERTY_points, taskResult.getPoints());
+		doc.put(TaskResult.PROPERTY_output, taskResult.getOutput());
 		return doc;
 	}
 
