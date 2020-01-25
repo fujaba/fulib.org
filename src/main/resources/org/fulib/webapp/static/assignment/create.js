@@ -205,4 +205,8 @@ function addTask() {
 function removeTask(index) {
 	const taskItem = document.getElementById('taskItem' + index);
 	taskList.removeChild(taskItem);
+
+	for (const id of [ 'Description', 'Points', 'Verification' ]) {
+		localStorage.removeItem(`assignment/create/task${id}Input${index}`);
+	}
 }
