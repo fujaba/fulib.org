@@ -88,7 +88,11 @@ function renderResults(results) {
 		const index = pointsLabel.dataset.taskIndex;
 		const result = results[index];
 
-		pointsLabel.innerText = `${result.points}/X`; // TODO max. possible points
+		// TODO this is kinda hacky. Should be done by gaining access to the task object
+		const slashPos = pointsLabel.innerText.indexOf('/');
+		const taskPoints = slashPos >= 0 ? pointsLabel.innerText.substring(slashPos + 1) : pointsLabel.innerText;
+
+		pointsLabel.innerText = `${result.points}/${taskPoints}`;
 
 		pointsLabel.classList.remove('badge-secondary');
 		if (result.points === 0) {
