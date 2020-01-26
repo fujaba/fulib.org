@@ -48,22 +48,14 @@ function loadSolutions() {
 
 function renderSolutions(elementList, solutions) {
 	ensureListChildren(elementList, solutions.length, _ => `
-		<div class="list-group-item list-group-item-action solution-item">
-			<div>
-				<span class="h5 solution-name-label">Loading...</span>
-			</div>
-			<div>
-				<small>
-					<span class="solution-studentid-label">Loading...</span>
-					&mdash;
-					<a class="solution-email-link">Loading...</a>
-				</small>
-			</div>
-			<a class="solution-link">
-				<span class="solution-timestamp-label">Loading...</span>
-				<span class="badge badge-primary badge-pill solution-points-label">.../...</span>
-			</a>
-		</div>
+		<tr>
+			<td class="solution-name-label"></td>
+			<td class="solution-studentid-label"></td>
+			<td><a class="solution-email-link"></a></td>
+			<td class="solution-timestamp-label"></td>
+			<td><span class="badge badge-primary badge-pill solution-points-label"></span></td>
+			<td><a class="solution-link">View</a></td>
+		</tr>
 		`
 	);
 
