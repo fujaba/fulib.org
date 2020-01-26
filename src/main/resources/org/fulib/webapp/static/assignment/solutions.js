@@ -48,7 +48,7 @@ function loadSolutions() {
 
 function renderSolutions(elementList, solutions) {
 	ensureListChildren(elementList, solutions.length, _ => `
-		<tr>
+		<tr class="solution-item">
 			<td class="solution-name-label"></td>
 			<td class="solution-studentid-label"></td>
 			<td><a class="solution-email-link"></a></td>
@@ -91,15 +91,17 @@ function computeTotalPoints(solution) {
 }
 
 function updateSearch() {
+	const items = document.getElementsByClassName('solution-item');
+
 	const searchText = searchInput.value;
 	const searchWords = searchText.split(/\s+/);
 
 	const solutionCount = solutionList.children.length;
 	for (let index = 0; index < solutionCount; index++) {
-		const link = document.getElementById(`solution${index}Item`);
+		const item = items[index];
 		const solution = solutions[index];
 
-		link.hidden = !includeInSearch(solution, searchWords);
+		item.hidden = !includeInSearch(solution, searchWords);
 	}
 }
 
