@@ -45,12 +45,25 @@ function renderAssignment(assignment) {
 		}
 	}
 
-	for (let taskList of document.getElementsByClassName('assignment-task-list')) {
-		removeChildren(taskList);
-		for (let task of assignment.tasks) {
-			const li = document.createElement('li');
-			li.innerText = task.description;
-			taskList.appendChild(li);
-		}
+	for (const taskList of document.getElementsByClassName('assignment-task-list')) {
+		ensureListChildren(taskList, assignment.tasks.length, index => `
+		<li>
+			<span class="assignment-task-description" data-task-index="${index}"></span>
+			
+			<span class="badge badge-secondary assignment-task-points" data-task-index="${index}"></span>
+		</li>
+		`);
+	}
+
+	for (const descriptionLabel of document.getElementsByClassName('assignment-task-description')) {
+		const index = descriptionLabel.dataset.taskIndex;
+		const task = assignment.tasks[index];
+		descriptionLabel.innerText = task.description;
+	}
+
+	for (const pointsLabel of document.getElementsByClassName('assignment-task-points')) {
+		const index = pointsLabel.dataset.taskIndex;
+		const task = assignment.tasks[index];
+		pointsLabel.innerText = task.points;
 	}
 }
