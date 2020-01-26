@@ -10,13 +10,15 @@ const solutionList = document.getElementById('solutionList');
 
 const assignmentID = getAssignmentIDFromURL();
 
+let assignment;
 let solutions;
 
 // =============== Initialization ===============
 
 (() => {
-	loadAssignment(assignmentID, assignment => {
-		renderAssignment(assignment);
+	loadAssignment(assignmentID, result => {
+		assignment = result;
+		renderAssignment(result);
 		loadSolutions();
 	});
 })();
@@ -72,12 +74,14 @@ function renderSolutions(elementList, solutions) {
 	const solutionLinks = document.getElementsByClassName(`solution-link`);
 	const timeStampLabels = document.getElementsByClassName(`solution-timestamp-label`);
 
+	const assignmentTotal = assignment.tasks.reduce((sum, task) => sum + task.points, 0);
+
 	for (let index = 0; index < solutions.length; index++) {
 		const solution = solutions[index];
 		const total = computeTotalPoints(solution);
 
 		nameLabels[index].innerText = solution.name;
-		pointsLabels[index].innerText = `${total}/X`; // TODO assignment points
+		pointsLabels[index].innerText = `${total}/${assignmentTotal}`;
 		studentIDLabels[index].innerText = solution.studentID;
 		emailLinks[index].innerText = solution.email;
 		emailLinks[index].href = `mailto:${solution.email}`;
