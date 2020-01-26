@@ -65,20 +65,39 @@ function renderSolution(solution) {
 }
 
 function renderResults(results) {
-	for (let i = 0; i < results.length; i++) {
-		const task = results[i];
+	const taskLists = document.getElementsByClassName('assignment-task-list');
+	const pointsLabels = document.getElementsByClassName('assignment-task-points');
 
-		for (const taskList of document.getElementsByClassName('assignment-task-list')) {
+	for (const taskList of taskLists) {
+		for (let i = 0; i < results.length; i++) {
 			const taskItem = taskList.children[i];
+			const result = results[i];
 
-			// TODO show output and points somewhere
-			if (task.points === 0) {
+			// TODO show output
+			if (result.points === 0) {
 				taskItem.classList.remove('text-success');
 				taskItem.classList.add('text-danger');
 			} else {
 				taskItem.classList.remove('text-danger');
 				taskItem.classList.add('text-success');
 			}
+		}
+	}
+
+	for (const pointsLabel of pointsLabels) {
+		const index = pointsLabel.dataset.taskIndex;
+		const result = results[index];
+
+		pointsLabel.innerText = `${result.points}/X`; // TODO max. possible points
+
+		pointsLabel.classList.remove('badge-secondary');
+		if (result.points === 0) {
+			pointsLabel.classList.remove('badge-success');
+			pointsLabel.classList.add('badge-danger');
+		}
+		else {
+			pointsLabel.classList.remove('badge-danger');
+			pointsLabel.classList.add('badge-success');
 		}
 	}
 }
