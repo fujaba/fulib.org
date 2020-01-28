@@ -33,6 +33,7 @@ public class Mongo
 	public static final String ASSIGNMENT_COLLECTION_NAME = "assignments";
 	public static final String SOLUTION_COLLECTION_NAME = "solutions";
 	public static final String COMMENT_COLLECTION_NAME = "comments";
+	public static final String ASSIGNEE_COLLECTION_NAME = "assignee";
 
 	// =============== Static Fields ===============
 
@@ -47,6 +48,7 @@ public class Mongo
 	private MongoCollection<Document> assignments;
 	private MongoCollection<Document> solutions;
 	private MongoCollection<Document> comments;
+	private MongoCollection<Document> assignees;
 
 	// =============== Static Methods ===============
 
@@ -86,6 +88,10 @@ public class Mongo
 		this.comments.createIndex(Indexes.ascending(Comment.PROPERTY_id));
 		this.comments.createIndex(Indexes.ascending(Comment.PROPERTY_parent));
 		this.comments.createIndex(Indexes.ascending(Comment.PROPERTY_timeStamp));
+
+		this.assignees = this.database.getCollection(ASSIGNEE_COLLECTION_NAME);
+		this.assignees.createIndex(Indexes.ascending(Solution.PROPERTY_id));
+		this.assignees.createIndex(Indexes.ascending(Solution.PROPERTY_assignee));
 	}
 
 	private static String getURL()
@@ -255,7 +261,23 @@ public class Mongo
 			solution.getResults().add(doc2TaskResult(document));
 		}
 
+		solution.setAssignee(this.getAssignee(id));
+
 		return solution;
+	}
+
+	private String getAssignee(String solutionID)
+	{
+		final Document doc = this.assignees.find(Filters.eq(Solution.PROPERTY_id, solutionID)).first();
+		return doc != null ? doc.getString(Solution.PROPERTY_assignee) : null;
+	}
+
+	private void saveAssignee(String solutionID, String assignee)
+	{
+		final Document doc = new Document();
+		doc.put(Solution.PROPERTY_id, solutionID);
+		doc.put(Solution.PROPERTY_assignee, assignee);
+		upsert(this.assignees, doc, Solution.PROPERTY_id);
 	}
 
 	private static TaskResult doc2TaskResult(Document document)
@@ -270,6 +292,7 @@ public class Mongo
 	{
 		final Document doc = solution2Doc(solution);
 		upsert(this.solutions, doc, Solution.PROPERTY_id);
+		this.saveAssignee(solution.getID(), solution.getAssignee());
 	}
 
 	private static Document solution2Doc(Solution solution)
