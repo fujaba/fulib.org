@@ -181,6 +181,8 @@ public class Solutions
 		}
 		obj.put(Solution.PROPERTY_results, results);
 
+		obj.put(Solution.PROPERTY_assignee, solution.getAssignee());
+
 		return obj;
 	}
 
