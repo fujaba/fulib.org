@@ -107,8 +107,6 @@ function loadData(data) {
 	deadlineTimeInput.value = deadline.toLocaleTimeString();
 	descriptionInput.value = data.description;
 	solutionInputCM.setValue(data.solution);
-
-	// TODO tasks
 }
 
 function submit() {
@@ -234,6 +232,18 @@ function removeTask(id) {
 	const taskIDs = loadTaskIDs();
 	taskIDs.splice(taskIDs.indexOf(id), 1);
 	saveTaskIDs(taskIDs);
+}
+
+function clearTasks() {
+	removeChildren(taskList);
+
+	for (const id of loadTaskIDs()) {
+		for (const element of ['description', 'points', 'verification']) {
+			localStorage.removeItem(`assignment/create/task/${id}/${element}Input`);
+		}
+	}
+
+	saveTaskIDs([]);
 }
 
 function onRemoveTask(id) {
