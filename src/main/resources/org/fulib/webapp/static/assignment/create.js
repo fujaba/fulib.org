@@ -78,15 +78,10 @@ function gatherData() {
 		tasks: [],
 	};
 
-	for (let i = 0; i < nextTaskIndex; i++) {
-		const listItem = document.getElementById('taskItem' + i);
-		if (!listItem) {
-			continue;
-		}
-
-		const descriptionInput = document.getElementById(`task/${i}/descriptionInput`);
-		const pointsInput = document.getElementById(`task/${i}/pointsInput`);
-		const verificationInput = document.getElementById(`task/${i}/verificationInput`);
+	for (const id of loadTaskIDs()) {
+		const descriptionInput = document.getElementById(`task/${id}/descriptionInput`);
+		const pointsInput = document.getElementById(`task/${id}/pointsInput`);
+		const verificationInput = document.getElementById(`task/${id}/verificationInput`);
 		const verificationInputCM = verificationInput.codeMirror;
 
 		data.tasks.push({
