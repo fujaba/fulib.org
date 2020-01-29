@@ -100,8 +100,8 @@ function loadData(data) {
 	authorInput.value = data.author;
 	emailInput.value = data.email;
 	const deadline = new Date(data.deadline);
-	deadlineDateInput.value = deadline.toLocaleDateString();
-	deadlineTimeInput.value = deadline.toLocaleTimeString();
+	deadlineDateInput.valueAsDate = deadline;
+	deadlineTimeInput.valueAsDate = deadline;
 	descriptionInput.value = data.description;
 	solutionInputCM.setValue(data.solution);
 
