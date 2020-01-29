@@ -58,6 +58,16 @@ function downloadJson(data, name) {
 	document.body.removeChild(a);
 }
 
+function readJson(file, handler) {
+	const reader = new FileReader();
+	reader.onload = event => {
+		const text = event.target.result;
+		const data = JSON.parse(text);
+		handler(data);
+	};
+	reader.readAsText(file);
+}
+
 function autoSave(prefix, ...elements) {
 	for (const element of elements) {
 		const key = prefix + element.id;

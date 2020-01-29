@@ -1,5 +1,7 @@
 // =============== Elements ===============
 
+const importFile = document.getElementById('importFile');
+
 const titleInput = document.getElementById('titleInput');
 const authorInput = document.getElementById('authorInput');
 const emailInput = document.getElementById('emailInput');
@@ -114,6 +116,13 @@ function loadData(data) {
 
 function onExport() {
 	downloadJson(gatherData(), titleInput.value);
+}
+
+function onImport() {
+	const file = importFile.files[0];
+	readJson(file, data => {
+		this.loadData(data);
+	});
 }
 
 function submit() {
