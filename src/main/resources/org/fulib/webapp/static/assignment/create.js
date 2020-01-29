@@ -107,6 +107,14 @@ function loadData(data) {
 	deadlineTimeInput.value = deadline.toLocaleTimeString();
 	descriptionInput.value = data.description;
 	solutionInputCM.setValue(data.solution);
+
+	clearTasks();
+	const taskIDs = [];
+	for (let id = 0; id < data.tasks.length; id++) {
+		taskIDs.push(id);
+		addTask(id, data.tasks[id]);
+	}
+	saveTaskIDs(taskIDs);
 }
 
 function submit() {
