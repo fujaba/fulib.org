@@ -112,6 +112,10 @@ function loadData(data) {
 	saveTaskIDs(taskIDs);
 }
 
+function onExport() {
+	downloadJson(gatherData(), titleInput.value);
+}
+
 function submit() {
 	submitButton.disabled = true;
 	submitButton.innerText = 'Submitting...';
