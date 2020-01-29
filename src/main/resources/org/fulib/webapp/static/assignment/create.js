@@ -173,7 +173,7 @@ function newTaskID() {
 	return newID;
 }
 
-function addTask(id = undefined) {
+function addTask(id = undefined, task = undefined) {
 	if (typeof id === 'undefined') {
 		id = newTaskID();
 	}
@@ -209,15 +209,20 @@ function addTask(id = undefined) {
 	const descriptionInput = document.getElementById(`task/${id}/descriptionInput`);
 	const pointsInput = document.getElementById(`task/${id}/pointsInput`);
 
-	autoSave(`assignment/create/`,
-		descriptionInput,
-		pointsInput,
-	);
-
 	const verificationInput = document.getElementById(`task/${id}/verificationInput`);
 	const verificationInputCM = CodeMirror.fromTextArea(verificationInput, verificationConfig);
 	verificationInput.codeMirror = verificationInputCM;
 
+	if (task) {
+		descriptionInput.value = task.description;
+		pointsInput.value = task.points;
+		verificationInputCM.setValue(task.verification);
+	}
+
+	autoSave(`assignment/create/`,
+		descriptionInput,
+		pointsInput,
+	);
 	autoSaveCM(`assignment/create/task/${id}/verificationInput`, verificationInputCM);
 }
 
