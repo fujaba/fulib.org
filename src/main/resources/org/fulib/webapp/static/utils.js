@@ -47,6 +47,17 @@ function copyToClipboard(text) {
 	document.body.removeChild(textArea);
 }
 
+function downloadJson(data, name) {
+	const jsonStr = JSON.stringify(data, undefined, "  ");
+	const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(jsonStr)}`;
+	const a = document.createElement('a');
+	a.href = dataStr;
+	a.download = `${name}.json`;
+	document.body.appendChild(a);
+	a.click();
+	document.body.removeChild(a);
+}
+
 function autoSave(prefix, ...elements) {
 	for (const element of elements) {
 		const key = prefix + element.id;
