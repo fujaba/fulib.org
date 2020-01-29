@@ -117,6 +117,19 @@ function gatherData() {
 	return data;
 }
 
+function loadData(data) {
+	titleInput.value = data.title;
+	authorInput.value = data.author;
+	emailInput.value = data.email;
+	const deadline = new Date(data.deadline);
+	deadlineDateInput.value = deadline.toLocaleDateString();
+	deadlineTimeInput.value = deadline.toLocaleTimeString();
+	descriptionInput.value = data.description;
+	solutionInputCM.setValue(data.solution);
+
+	// TODO tasks
+}
+
 function submit() {
 	submitButton.disabled = true;
 	submitButton.innerText = 'Submitting...';
