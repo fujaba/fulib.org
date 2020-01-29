@@ -202,7 +202,7 @@ function addTask(id = undefined) {
 				</div>
 			</div>
 		</form>
-		<button type="button" class="btn btn-danger" onclick="removeTask(${id})">Remove Task</button>
+		<button type="button" class="btn btn-danger" onclick="onRemoveTask(${id})">Remove Task</button>
 	</li>
 	`;
 
@@ -224,10 +224,6 @@ function addTask(id = undefined) {
 }
 
 function removeTask(id) {
-	if (!confirm('Are you sure you want to remove this task?')) {
-		return;
-	}
-
 	const taskItem = document.getElementById(`taskItem${id}`);
 	taskList.removeChild(taskItem);
 
@@ -238,6 +234,12 @@ function removeTask(id) {
 	const taskIDs = loadTaskIDs();
 	taskIDs.splice(taskIDs.indexOf(id), 1);
 	saveTaskIDs(taskIDs);
+}
+
+function onRemoveTask(id) {
+	if (confirm('Are you sure you want to remove this task?')) {
+		removeTask(id);
+	}
 }
 
 function loadTasks() {
