@@ -266,13 +266,13 @@ public class Mongo
 		return solution;
 	}
 
-	private String getAssignee(String solutionID)
+	public String getAssignee(String solutionID)
 	{
 		final Document doc = this.assignees.find(Filters.eq(Solution.PROPERTY_id, solutionID)).first();
 		return doc != null ? doc.getString(Solution.PROPERTY_assignee) : null;
 	}
 
-	private void saveAssignee(String solutionID, String assignee)
+	public void saveAssignee(String solutionID, String assignee)
 	{
 		final Document doc = new Document();
 		doc.put(Solution.PROPERTY_id, solutionID);
