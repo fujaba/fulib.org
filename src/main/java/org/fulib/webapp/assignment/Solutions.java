@@ -97,17 +97,11 @@ public class Solutions
 			return "{}";
 		}
 
-		final String solutionToken = solution.getToken();
-		final String solutionTokenHeader = request.headers(SOLUTION_TOKEN_HEADER);
-
 		// NB: we use the assignment resolved via the solution, NOT the one we'd get from assignmentID!
 		// Otherwise, someone could create their own assignment, forge the request with that assignment ID
 		// and a solutionID belonging to a different assignment, and gain access to the solution without having
 		// the token of the assignment it actually belongs to.
-		final String assignmentToken = solution.getAssignment().getToken();
-		final String assignmentTokenHeader = request.headers(ASSIGNMENT_TOKEN_HEADER);
-
-		if (!solutionToken.equals(solutionTokenHeader) && !assignmentToken.equals(assignmentTokenHeader))
+		if (!isAuthorized(request, solution) && !isAuthorized(request, solution.getAssignment()))
 		{
 			response.status(401);
 			return INVALID_TOKEN_RESPONSE;
@@ -115,6 +109,20 @@ public class Solutions
 
 		final JSONObject obj = toJson(solution);
 		return obj.toString(2);
+	}
+
+	private static boolean isAuthorized(Request request, Solution solution)
+	{
+		final String solutionToken = solution.getToken();
+		final String solutionTokenHeader = request.headers(SOLUTION_TOKEN_HEADER);
+		return solutionToken.equals(solutionTokenHeader);
+	}
+
+	private static boolean isAuthorized(Request request, Assignment assignment)
+	{
+		final String assignmentToken = assignment.getToken();
+		final String assignmentTokenHeader = request.headers(ASSIGNMENT_TOKEN_HEADER);
+		return assignmentToken.equals(assignmentTokenHeader);
 	}
 
 	public static Object getAll(Request request, Response response)
@@ -134,9 +142,7 @@ public class Solutions
 			return String.format(UNKNOWN_ASSIGNMENT_RESPONSE, assignmentID);
 		}
 
-		final String token = request.headers(ASSIGNMENT_TOKEN_HEADER);
-
-		if (!token.equals(assignment.getToken()))
+		if (isAuthorized(request, assignment))
 		{
 			response.status(401);
 			return INVALID_TOKEN_RESPONSE;
