@@ -29,6 +29,7 @@ public class Solutions
 	private static final String INVALID_TOKEN_RESPONSE = "{\n" + "  \"error\": \"invalid token\"\n" + "}\n";
 	// language=JSON
 	private static final String UNKNOWN_ASSIGNMENT_RESPONSE = "{\n  \"error\": \"assignment with id '%s'' not found\"\n}";
+	private static final String UNKNOWN_SOLUTION_RESPONSE = "{\n  \"error\": \"solution with id '%s'' not found\"\n}";
 
 	// --------------- Submission ---------------
 
@@ -94,7 +95,7 @@ public class Solutions
 		if (solution == null)
 		{
 			response.status(404);
-			return "{}";
+			return String.format(UNKNOWN_SOLUTION_RESPONSE, solutionID);
 		}
 
 		// NB: we use the assignment resolved via the solution, NOT the one we'd get from assignmentID!
