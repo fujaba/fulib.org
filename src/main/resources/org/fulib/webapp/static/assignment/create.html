@@ -34,6 +34,20 @@
 <div class="container">
 	<h1>Create Assignment</h1>
 
+	<form class="form-inline">
+		<div class="input-group mb-2 mr-sm-2">
+			<div class="custom-file">
+				<input type="file" class="custom-file-input" id="importFile" aria-describedby="importFileLabel"
+				onchange="this.nextElementSibling.innerText = this.files[0].name">
+				<label class="custom-file-label" for="importFile">Choose file</label>
+			</div>
+			<div class="input-group-append">
+				<button type="button" class="btn btn-primary" onclick="onImport()">Import</button>
+			</div>
+		</div>
+		<button type="button" class="btn btn-primary mb-2 mr-sm-2" onclick="onExport()">Export</button>
+	</form>
+
 	<h2>General Info</h2>
 
 	<form>
@@ -98,7 +112,7 @@ laborum.
 		<p>
 			Click "Submit" to finalize your assignment and generate a link.
 		</p>
-		<button type="button" class="btn btn-primary btn-lg" id="submitButton" onclick="submit()">
+		<button type="button" class="btn btn-primary btn-lg" id="submitButton" onclick="onSubmit()">
 			Submit
 		</button>
 	</div>
