@@ -64,6 +64,9 @@ public class WebService
 		service.get("/assignment/:assignmentID/solutions", Solutions::getAll);
 		service.post("/assignment/:assignmentID/check", Solutions::check);
 
+		service.get("/assignment/:assignmentID/solution/:solutionID/assignee", Solutions::getAssignee);
+		service.put("/assignment/:assignmentID/solution/:solutionID/assignee", Solutions::setAssignee);
+
 		service.get("/assignment/:assignmentID/solution/:parentID/comments", Comments::getChildren);
 		service.post("/assignment/:assignmentID/solution/:parentID/comments", Comments::post);
 
