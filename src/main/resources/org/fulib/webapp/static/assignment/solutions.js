@@ -54,6 +54,7 @@ function renderSolutions(elementList, solutions) {
 			<td><a class="solution-email-link"></a></td>
 			<td class="solution-timestamp-label"></td>
 			<td><span class="badge badge-primary badge-pill solution-points-label"></span></td>
+			<td><input class="form-control solution-assignee-input"></td>
 			<td><a class="solution-link">View</a></td>
 		</tr>
 		`
@@ -65,6 +66,7 @@ function renderSolutions(elementList, solutions) {
 	const emailLinks = document.getElementsByClassName(`solution-email-link`);
 	const solutionLinks = document.getElementsByClassName(`solution-link`);
 	const timeStampLabels = document.getElementsByClassName(`solution-timestamp-label`);
+	const assigneeInputs = document.getElementsByClassName('solution-assignee-input');
 
 	const assignmentTotal = assignment.tasks.reduce((sum, task) => sum + task.points, 0);
 
@@ -79,6 +81,12 @@ function renderSolutions(elementList, solutions) {
 		emailLinks[index].href = `mailto:${solution.email}`;
 		solutionLinks[index].href = `/assignment/${assignmentID}/solution/${solution.id}`;
 		timeStampLabels[index].innerText = new Date(solution.timeStamp).toLocaleString();
+
+		// extra variables to avoid capture problems
+		const solutionID = solution.id;
+		const assigneeInput = assigneeInputs[index];
+		assigneeInput.value = solution.assignee || '';
+		assigneeInput.onchange = () => setAssignee(assignmentID, solutionID, assigneeInput.value);
 	}
 }
 
@@ -88,6 +96,16 @@ function computeTotalPoints(solution) {
 		total += result.points;
 	}
 	return total;
+}
+
+function setAssignee(assignmentID, solutionID, assignee) {
+	const headers = {
+		'Assignment-Token': getAssignmentToken(assignmentID),
+	};
+	const body = {
+		assignee: assignee,
+	};
+	apih('PUT', `/assignment/${assignmentID}/solution/${solutionID}/assignee`, headers, body, _ => {});
 }
 
 function updateSearch() {
