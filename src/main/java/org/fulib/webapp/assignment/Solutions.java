@@ -143,7 +143,7 @@ public class Solutions
 			return String.format(UNKNOWN_ASSIGNMENT_RESPONSE, assignmentID);
 		}
 
-		if (isAuthorized(request, assignment))
+		if (!isAuthorized(request, assignment))
 		{
 			response.status(401);
 			return INVALID_TOKEN_RESPONSE;
