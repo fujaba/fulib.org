@@ -78,6 +78,12 @@ function onRemoveTask(id) {
 	}
 }
 
+function onClearTasks() {
+	if (taskList.childElementCount > 0 && confirm('Are you sure you want to remove ALL tasks?')) {
+		clearTasks();
+	}
+}
+
 function onSubmit() {
 	submitButton.disabled = true;
 	submitButton.innerText = 'Submitting...';
