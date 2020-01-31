@@ -98,17 +98,26 @@ public class Solutions
 			return String.format(UNKNOWN_SOLUTION_RESPONSE, solutionID);
 		}
 
+		final boolean privileged;
 		// NB: we use the assignment resolved via the solution, NOT the one we'd get from assignmentID!
 		// Otherwise, someone could create their own assignment, forge the request with that assignment ID
 		// and a solutionID belonging to a different assignment, and gain access to the solution without having
 		// the token of the assignment it actually belongs to.
-		if (!isAuthorized(request, solution) && !isAuthorized(request, solution.getAssignment()))
+		if (isAuthorized(request, solution.getAssignment()))
+		{
+			privileged = true;
+		}
+		else if (isAuthorized(request, solution))
+		{
+			privileged = false;
+		}
+		else
 		{
 			response.status(401);
 			return INVALID_TOKEN_RESPONSE;
 		}
 
-		final JSONObject obj = toJson(solution);
+		final JSONObject obj = toJson(solution, privileged);
 		return obj.toString(2);
 	}
 
@@ -159,7 +168,7 @@ public class Solutions
 
 		for (final Solution solution : solutions)
 		{
-			array.put(toJson(solution));
+			array.put(toJson(solution, true));
 		}
 
 		result.put("solutions", array);
@@ -167,7 +176,7 @@ public class Solutions
 		return result.toString(2);
 	}
 
-	private static JSONObject toJson(Solution solution)
+	private static JSONObject toJson(Solution solution, boolean privileged)
 	{
 		final JSONObject obj = new JSONObject();
 
@@ -188,7 +197,10 @@ public class Solutions
 		}
 		obj.put(Solution.PROPERTY_results, results);
 
-		obj.put(Solution.PROPERTY_assignee, solution.getAssignee());
+		if (privileged)
+		{
+			obj.put(Solution.PROPERTY_assignee, solution.getAssignee());
+		}
 
 		return obj;
 	}
