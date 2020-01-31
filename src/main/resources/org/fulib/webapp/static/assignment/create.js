@@ -248,9 +248,14 @@ function addTask(id = undefined, task = undefined) {
 		pointsInput,
 	);
 	autoSaveCM(`assignment/create/task/${id}/verificationInput`, verificationInputCM);
+
+	autoUpdateEditorTheme(verificationInputCM);
 }
 
 function removeTask(id) {
+	const verificationInput = document.getElementById(`task/${id}/verificationInput`);
+	removeEditorThemeChangeHandler(verificationInput.codeMirror);
+
 	const taskItem = document.getElementById(`taskItem${id}`);
 	taskList.removeChild(taskItem);
 
@@ -264,13 +269,15 @@ function removeTask(id) {
 }
 
 function clearTasks() {
-	removeChildren(taskList);
-
 	for (const id of loadTaskIDs()) {
+		const verificationInput = document.getElementById(`task/${id}/verificationInput`);
+		removeEditorThemeChangeHandler(verificationInput.codeMirror);
+
 		for (const element of ['description', 'points', 'verification']) {
 			localStorage.removeItem(`assignment/create/task/${id}/${element}Input`);
 		}
 	}
 
+	removeChildren(taskList);
 	saveTaskIDs([]);
 }
