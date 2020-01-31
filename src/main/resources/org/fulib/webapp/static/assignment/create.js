@@ -41,16 +41,7 @@ const verificationConfig = {
 // =============== Initialization ===============
 
 (() => {
-	try { // may fail if darktheme/network is unavailable
-		function updateEditorTheme(theme = getTheme()) {
-			let editorTheme = theme === 'dark' ? 'darcula' : 'idea';
-			solutionInputCM.setOption('theme', editorTheme);
-			verificationInputCM.setOption('theme', editorTheme);
-		}
-
-		updateEditorTheme();
-		themeChangeHandlers.push(updateEditorTheme);
-	} catch {}
+	autoUpdateEditorTheme(solutionInputCM);
 
 	autoSave('assignment/create/',
 		titleInput,

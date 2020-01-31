@@ -10,19 +10,6 @@ const solutionInputConfig = {
 
 // =============== Functions ===============
 
-function autoUpdateEditorTheme(codeMirror) {
-	try {
-		// may fail if darktheme/network is unavailable
-		updateEditorTheme(codeMirror, getTheme());
-		themeChangeHandlers.push(theme => updateEditorTheme(codeMirror, theme));
-	} catch {}
-}
-
-function updateEditorTheme(codeMirror, theme) {
-	let editorTheme = theme === 'dark' ? 'darcula' : 'idea';
-	codeMirror.setOption('theme', editorTheme);
-}
-
 function getSolutionIDFromURL() {
 	return new URL(window.location).searchParams.get('solution');
 }

@@ -102,6 +102,20 @@ function autoSaveCM(key, codeMirror, postHook = undefined) {
 	});
 }
 
+function autoUpdateEditorTheme(codeMirror) {
+	try {
+		// may fail if darktheme/network is unavailable
+		updateEditorTheme(codeMirror, getTheme());
+		const handler = theme => updateEditorTheme(codeMirror, theme);
+		themeChangeHandlers.push(handler);
+	} catch {}
+}
+
+function updateEditorTheme(codeMirror, theme) {
+	let editorTheme = theme === 'dark' ? 'darcula' : 'idea';
+	codeMirror.setOption('theme', editorTheme);
+}
+
 function foldInternalCalls(outputLines, packageName) {
 	const packageNamePrefix = `\tat ${packageName}.`;
 	const result = [];
