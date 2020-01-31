@@ -108,7 +108,22 @@ function autoUpdateEditorTheme(codeMirror) {
 		updateEditorTheme(codeMirror, getTheme());
 		const handler = theme => updateEditorTheme(codeMirror, theme);
 		themeChangeHandlers.push(handler);
+
+		const id = 'A' + Math.random();
+		handler.autoUpdateThemeID = id;
+		codeMirror.autoUpdateThemeID = id;
 	} catch {}
+}
+
+function removeEditorThemeChangeHandler(codeMirror) {
+	if (!themeChangeHandlers) {
+		return;
+	}
+
+	const index = themeChangeHandlers.findIndex(h => h.autoUpdateThemeID === codeMirror.autoUpdateThemeID);
+	if (index >= 0) {
+		themeChangeHandlers.splice(index, 1);
+	}
 }
 
 function updateEditorTheme(codeMirror, theme) {
