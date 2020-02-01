@@ -1,5 +1,8 @@
 package org.fulib.webapp.assignment.model;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,13 +39,15 @@ public class Assignment
 
 	// =============== Constructors ===============
 
-	public Assignment(String id)
+	@BsonCreator
+	public Assignment(@BsonProperty(PROPERTY_id) String id)
 	{
 		this.id = id;
 	}
 
 	// =============== Properties ===============
 
+	@BsonProperty(PROPERTY_id)
 	public String getID()
 	{
 		return this.id;
@@ -121,6 +126,12 @@ public class Assignment
 	public List<Task> getTasks()
 	{
 		return this.tasks;
+	}
+
+	public void setTasks(List<Task> tasks)
+	{
+		this.tasks.clear();
+		this.tasks.addAll(tasks);
 	}
 
 	public int getTotalPoints()

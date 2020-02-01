@@ -50,7 +50,7 @@ public class Mongo
 	private MongoDatabase database;
 
 	private MongoCollection<Document> requestLog;
-	private MongoCollection<Document> assignments;
+	private MongoCollection<Assignment> assignments;
 	private MongoCollection<Document> solutions;
 	private MongoCollection<Comment> comments;
 
@@ -87,7 +87,8 @@ public class Mongo
 		this.database = this.mongoClient.getDatabase(DATABASE_NAME);
 		this.requestLog = this.database.getCollection(LOG_COLLECTION_NAME);
 
-		this.assignments = this.database.getCollection(ASSIGNMENT_COLLECTION_NAME);
+		this.assignments = this.database.getCollection(ASSIGNMENT_COLLECTION_NAME, Assignment.class)
+		                                .withCodecRegistry(this.pojoCodecRegistry);
 		this.assignments.createIndex(Indexes.ascending(Assignment.PROPERTY_id));
 
 		this.solutions = this.database.getCollection(SOLUTION_COLLECTION_NAME);
@@ -160,71 +161,12 @@ public class Mongo
 
 	public Assignment getAssignment(String id)
 	{
-		final Document doc = this.assignments.find(Filters.eq(Assignment.PROPERTY_id, id)).first();
-		if (doc == null)
-		{
-			return null;
-		}
-
-		return doc2Assignment(id, doc);
-	}
-
-	private static Assignment doc2Assignment(String id, Document doc)
-	{
-		final Assignment assignment = new Assignment(id);
-		assignment.setToken(doc.getString(Assignment.PROPERTY_token));
-		assignment.setTitle(doc.getString(Assignment.PROPERTY_title));
-		assignment.setDescription(doc.getString(Assignment.PROPERTY_description));
-		assignment.setDescriptionHtml(doc.getString(Assignment.PROPERTY_descriptionHtml));
-		assignment.setAuthor(doc.getString(Assignment.PROPERTY_author));
-		assignment.setEmail(doc.getString(Assignment.PROPERTY_email));
-		assignment.setDeadline(doc.getDate(Assignment.PROPERTY_deadline).toInstant());
-		assignment.setSolution(doc.getString(Assignment.PROPERTY_solution));
-
-		for (final Document taskDoc : doc.getList(Assignment.PROPERTY_tasks, Document.class))
-		{
-			final Task task = new Task();
-			task.setDescription(taskDoc.getString(Task.PROPERTY_description));
-			task.setPoints(taskDoc.getInteger(Task.PROPERTY_points));
-			task.setVerification(taskDoc.getString(Task.PROPERTY_verification));
-			assignment.getTasks().add(task);
-		}
-
-		return assignment;
+		return this.assignments.find(Filters.eq(Assignment.PROPERTY_id, id)).first();
 	}
 
 	public void saveAssignment(Assignment assignment)
 	{
-		final Document doc = assignment2Doc(assignment);
-		upsert(this.assignments, doc, Assignment.PROPERTY_id);
-	}
-
-	private static Document assignment2Doc(Assignment assignment)
-	{
-		final Document doc = new Document();
-
-		doc.put(Assignment.PROPERTY_id, assignment.getID());
-		doc.put(Assignment.PROPERTY_token, assignment.getToken());
-		doc.put(Assignment.PROPERTY_title, assignment.getTitle());
-		doc.put(Assignment.PROPERTY_description, assignment.getDescription());
-		doc.put(Assignment.PROPERTY_descriptionHtml, assignment.getDescriptionHtml());
-		doc.put(Assignment.PROPERTY_author, assignment.getAuthor());
-		doc.put(Assignment.PROPERTY_email, assignment.getEmail());
-		doc.put(Assignment.PROPERTY_deadline, assignment.getDeadline());
-		doc.put(Assignment.PROPERTY_solution, assignment.getSolution());
-
-		final List<Document> tasks = new ArrayList<>();
-		for (final Task task : assignment.getTasks())
-		{
-			final Document taskDoc = new Document();
-			taskDoc.put(Task.PROPERTY_description, task.getDescription());
-			taskDoc.put(Task.PROPERTY_points, task.getPoints());
-			taskDoc.put(Task.PROPERTY_verification, task.getVerification());
-			tasks.add(taskDoc);
-		}
-		doc.put(Assignment.PROPERTY_tasks, tasks);
-
-		return doc;
+		upsert(this.assignments, assignment, Assignment.PROPERTY_id, assignment.getID());
 	}
 
 	// --------------- Solutions ---------------
