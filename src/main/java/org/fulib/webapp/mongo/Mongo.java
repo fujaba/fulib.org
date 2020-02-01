@@ -11,6 +11,9 @@ import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.ReplaceOptions;
 import com.mongodb.client.model.Sorts;
 import org.bson.Document;
+import org.bson.codecs.configuration.CodecProvider;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
 import org.fulib.webapp.WebService;
 import org.fulib.webapp.assignment.model.*;
 
@@ -18,6 +21,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public class Mongo
 {
@@ -46,7 +52,14 @@ public class Mongo
 	private MongoCollection<Document> requestLog;
 	private MongoCollection<Document> assignments;
 	private MongoCollection<Document> solutions;
-	private MongoCollection<Document> comments;
+	private MongoCollection<Comment> comments;
+
+	private final CodecProvider pojoCodecProvider = PojoCodecProvider.builder()
+	                                                                 .register(Assignment.class.getPackage().getName())
+	                                                                 .build();
+
+	private final CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
+	                                                               fromProviders(this.pojoCodecProvider));
 
 	// =============== Static Methods ===============
 
@@ -82,7 +95,8 @@ public class Mongo
 		this.solutions.createIndex(Indexes.ascending(Solution.PROPERTY_assignment));
 		this.solutions.createIndex(Indexes.ascending(Solution.PROPERTY_timeStamp));
 
-		this.comments = this.database.getCollection(COMMENT_COLLECTION_NAME);
+		this.comments = this.database.getCollection(COMMENT_COLLECTION_NAME, Comment.class)
+		                             .withCodecRegistry(this.pojoCodecRegistry);
 		this.comments.createIndex(Indexes.ascending(Comment.PROPERTY_id));
 		this.comments.createIndex(Indexes.ascending(Comment.PROPERTY_parent));
 		this.comments.createIndex(Indexes.ascending(Comment.PROPERTY_timeStamp));
@@ -300,39 +314,19 @@ public class Mongo
 
 	public Comment getComment(String id)
 	{
-		final Document doc = this.comments.find(Filters.eq(Comment.PROPERTY_id, id)).first();
-		if (doc == null)
-		{
-			return null;
-		}
-
-		return doc2Comment(doc);
+		return this.comments.find(Filters.eq(Comment.PROPERTY_id, id)).first();
 	}
 
 	public List<Comment> getComments(String parent)
 	{
 		return this.comments.find(Filters.eq(Comment.PROPERTY_parent, parent))
 		                    .sort(Sorts.ascending(Comment.PROPERTY_timeStamp))
-		                    .map(Mongo::doc2Comment)
 		                    .into(new ArrayList<>());
-	}
-
-	private static Comment doc2Comment(Document doc)
-	{
-		final Comment comment = new Comment(doc.getString(Comment.PROPERTY_id));
-		comment.setParent(doc.getString(Comment.PROPERTY_parent));
-		comment.setTimeStamp(doc.getDate(Comment.PROPERTY_timeStamp).toInstant());
-		comment.setAuthor(doc.getString(Comment.PROPERTY_author));
-		comment.setEmail(doc.getString(Comment.PROPERTY_email));
-		comment.setMarkdown(doc.getString(Comment.PROPERTY_markdown));
-		comment.setHtml(doc.getString(Comment.PROPERTY_html));
-		return comment;
 	}
 
 	public void saveComment(Comment comment)
 	{
-		final Document doc = comment2Doc(comment);
-		upsert(this.comments, doc, Comment.PROPERTY_id);
+		upsert(this.comments, comment, Comment.PROPERTY_id, comment.getID());
 	}
 
 	private static Document comment2Doc(Comment comment)
@@ -352,7 +346,11 @@ public class Mongo
 
 	private static void upsert(MongoCollection<Document> collection, Document doc, String idProperty)
 	{
-		collection.replaceOne(Filters.eq(idProperty, doc.getString(idProperty)), doc,
-		                      new ReplaceOptions().upsert(true));
+		upsert(collection, doc, idProperty, doc.getString(idProperty));
+	}
+
+	private static <T> void upsert(MongoCollection<T> collection, T doc, String idPropertyName, Object idPropertyValue)
+	{
+		collection.replaceOne(Filters.eq(idPropertyName, idPropertyValue), doc, new ReplaceOptions().upsert(true));
 	}
 }
