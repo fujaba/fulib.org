@@ -2,7 +2,7 @@
 
 function loadComments(assignmentID, solutionID, handler) {
 	const headers = getTokenHeaders();
-	apih('GET', `/assignment/${assignmentID}/solution/${solutionID}/comments`, headers, null, result => {
+	apih('GET', `/assignments/${assignmentID}/solutions/${solutionID}/comments`, headers, null, result => {
 		handler(result.children);
 	});
 }

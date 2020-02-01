@@ -57,16 +57,16 @@ public class WebService
 		service.post("/runcodegen", RunCodeGen::handle);
 		service.post("/projectzip", ProjectZip::handle);
 
-		service.post("/assignment", Assignments::create);
-		service.path("/assignment/:assignmentID", () -> {
+		service.post("/assignments", Assignments::create);
+		service.path("/assignments/:assignmentID", () -> {
 			service.get("", Assignments::get);
 
 			service.get("/solutions", Solutions::getAll);
-			service.get("/solution/:solutionID", Solutions::get);
+			service.get("/solutions/:solutionID", Solutions::get);
 			service.post("/check", Solutions::check);
-			service.post("/solution", Solutions::create);
+			service.post("/solutions", Solutions::create);
 
-			service.path("/solution/:parentID", () -> {
+			service.path("/solutions/:parentID", () -> {
 				service.get("/comments", Comments::getChildren);
 				service.post("/comments", Comments::post);
 			});

@@ -41,7 +41,7 @@ function check() {
 	const data = {
 		solution: solutionInputCM.getValue(),
 	};
-	api('POST', `/assignment/${assignmentID}/check`, data, result => {
+	api('POST', `/assignments/${assignmentID}/check`, data, result => {
 		renderResults(result.results);
 
 		solutionInfo.innerText = 'Your solution was checked automatically. Don\'t forget to submit when you are done!';
@@ -60,11 +60,11 @@ function submit() {
 		solution: solutionInputCM.getValue(),
 	};
 
-	api('POST', `/assignment/${assignmentID}/solution`, data, result => {
+	api('POST', `/assignments/${assignmentID}/solution`, data, result => {
 		const timeStamp = new Date(result.timeStamp);
 		submissionTimeLabel.innerText = timeStamp.toLocaleString();
 
-		const link = absoluteLink(`/assignment/${assignmentID}/solution/${(result.id)}`);
+		const link = absoluteLink(`/assignments/${assignmentID}/solutions/${(result.id)}`);
 		solutionLink.innerText = link;
 		solutionLink.href = link;
 
