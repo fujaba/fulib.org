@@ -128,12 +128,6 @@ public class Assignment
 		return this.tasks;
 	}
 
-	public void setTasks(List<Task> tasks)
-	{
-		this.tasks.clear();
-		this.tasks.addAll(tasks);
-	}
-
 	public int getTotalPoints()
 	{
 		return this.tasks.stream().mapToInt(Task::getPoints).sum();

@@ -13,9 +13,14 @@ import com.mongodb.client.model.Sorts;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.Convention;
+import org.bson.codecs.pojo.Conventions;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.fulib.webapp.WebService;
-import org.fulib.webapp.assignment.model.*;
+import org.fulib.webapp.assignment.model.Assignment;
+import org.fulib.webapp.assignment.model.Comment;
+import org.fulib.webapp.assignment.model.Solution;
+import org.fulib.webapp.assignment.model.TaskResult;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -54,8 +59,16 @@ public class Mongo
 	private MongoCollection<Document> solutions;
 	private MongoCollection<Comment> comments;
 
+	private final List<Convention> conventions;
+
+	{
+		this.conventions = new ArrayList<>(Conventions.DEFAULT_CONVENTIONS);
+		this.conventions.add(Conventions.USE_GETTERS_FOR_SETTERS); // to use get<List>().add(...) instead of set<List>()
+	}
+
 	private final CodecProvider pojoCodecProvider = PojoCodecProvider.builder()
 	                                                                 .register(Assignment.class.getPackage().getName())
+	                                                                 .conventions(this.conventions)
 	                                                                 .build();
 
 	private final CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
