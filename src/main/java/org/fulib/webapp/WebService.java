@@ -56,16 +56,21 @@ public class WebService
 
 		service.post("/runcodegen", RunCodeGen::handle);
 		service.post("/projectzip", ProjectZip::handle);
+
 		service.post("/assignment", Assignments::create);
-		service.get("/assignment/:id", Assignments::get);
+		service.path("/assignment/:assignmentID", () -> {
+			service.get("", Assignments::get);
 
-		service.post("/assignment/:assignmentID/solution", Solutions::create);
-		service.get("/assignment/:assignmentID/solution/:solutionID", Solutions::get);
-		service.get("/assignment/:assignmentID/solutions", Solutions::getAll);
-		service.post("/assignment/:assignmentID/check", Solutions::check);
+			service.get("/solutions", Solutions::getAll);
+			service.get("/solution/:solutionID", Solutions::get);
+			service.post("/check", Solutions::check);
+			service.post("/solution", Solutions::create);
 
-		service.get("/assignment/:assignmentID/solution/:parentID/comments", Comments::getChildren);
-		service.post("/assignment/:assignmentID/solution/:parentID/comments", Comments::post);
+			service.path("/solution/:parentID", () -> {
+				service.get("/comments", Comments::getChildren);
+				service.post("/comments", Comments::post);
+			});
+		});
 
 		service.exception(Exception.class, (exception, request, response) -> {
 			Logger.getGlobal().log(Level.SEVERE, "unhandled exception processing request", exception);
