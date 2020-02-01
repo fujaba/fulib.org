@@ -57,18 +57,27 @@ public class WebService
 		service.post("/runcodegen", RunCodeGen::handle);
 		service.post("/projectzip", ProjectZip::handle);
 
-		service.post("/assignments", Assignments::create);
-		service.path("/assignments/:assignmentID", () -> {
-			service.get("", Assignments::get);
+		service.path("/assignments", () -> {
+			service.post("", Assignments::create);
 
-			service.get("/solutions", Solutions::getAll);
-			service.get("/solutions/:solutionID", Solutions::get);
-			service.post("/check", Solutions::check);
-			service.post("/solutions", Solutions::create);
+			service.path("/:assignmentID", () -> {
+				service.get("", Assignments::get);
 
-			service.path("/solutions/:parentID", () -> {
-				service.get("/comments", Comments::getChildren);
-				service.post("/comments", Comments::post);
+				service.post("/check", Solutions::check);
+
+				service.path("/solutions", () -> {
+					service.post("", Solutions::create);
+					service.get("", Solutions::getAll);
+
+					service.path("/:solutionID", () -> {
+						service.get("", Solutions::get);
+
+						service.path("/comments", () -> {
+							service.post("", Comments::post);
+							service.get("", Comments::getChildren);
+						});
+					});
+				});
 			});
 		});
 
