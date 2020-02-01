@@ -60,7 +60,7 @@ function submit() {
 		solution: solutionInputCM.getValue(),
 	};
 
-	api('POST', `/assignments/${assignmentID}/solution`, data, result => {
+	api('POST', `/assignments/${assignmentID}/solutions`, data, result => {
 		const timeStamp = new Date(result.timeStamp);
 		submissionTimeLabel.innerText = timeStamp.toLocaleString();
 

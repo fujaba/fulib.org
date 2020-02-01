@@ -90,7 +90,7 @@ function onSubmit() {
 
 	const data = gatherData();
 
-	api('POST', '/assignment', data, result => {
+	api('POST', '/assignments', data, result => {
 		const link = absoluteLink(`/assignments/${result.id}`);
 		const solutionsLinkRef = link + '/solutions';
 
