@@ -33,6 +33,7 @@ public class Mongo
 	public static final String ASSIGNMENT_COLLECTION_NAME = "assignments";
 	public static final String SOLUTION_COLLECTION_NAME = "solutions";
 	public static final String COMMENT_COLLECTION_NAME = "comments";
+	public static final String CORRECTION_COLLECTION_NAME = "corrections";
 
 	// =============== Static Fields ===============
 
@@ -47,6 +48,7 @@ public class Mongo
 	private MongoCollection<Document> assignments;
 	private MongoCollection<Document> solutions;
 	private MongoCollection<Document> comments;
+	private MongoCollection<Document> corrections;
 
 	// =============== Static Methods ===============
 
@@ -86,6 +88,11 @@ public class Mongo
 		this.comments.createIndex(Indexes.ascending(Comment.PROPERTY_id));
 		this.comments.createIndex(Indexes.ascending(Comment.PROPERTY_parent));
 		this.comments.createIndex(Indexes.ascending(Comment.PROPERTY_timeStamp));
+
+		this.corrections = this.database.getCollection(CORRECTION_COLLECTION_NAME);
+		this.corrections.createIndex(Indexes.ascending(TaskCorrection.PROPERTY_solutionID));
+		this.corrections.createIndex(Indexes.ascending(TaskCorrection.PROPERTY_taskID));
+		this.corrections.createIndex(Indexes.ascending(TaskCorrection.PROPERTY_timeStamp));
 	}
 
 	private static String getURL()
@@ -345,6 +352,48 @@ public class Mongo
 		doc.put(Comment.PROPERTY_email, comment.getEmail());
 		doc.put(Comment.PROPERTY_markdown, comment.getMarkdown());
 		doc.put(Comment.PROPERTY_html, comment.getHtml());
+		return doc;
+	}
+
+	// --------------- Corrections ---------------
+
+	public List<TaskCorrection> getCorrections(String solutionID)
+	{
+		return this.corrections.find(Filters.eq(TaskCorrection.PROPERTY_solutionID, solutionID))
+		                       .sort(Sorts.ascending(TaskCorrection.PROPERTY_timeStamp))
+		                       .map(Mongo::doc2Correction)
+		                       .into(new ArrayList<>());
+	}
+
+	public void addTaskCorrection(TaskCorrection correction)
+	{
+		this.corrections.insertOne(correction2Doc(correction));
+	}
+
+	private static TaskCorrection doc2Correction(Document doc)
+	{
+		final String solutionID = doc.getString(TaskCorrection.PROPERTY_solutionID);
+		final int taskID = doc.getInteger(TaskCorrection.PROPERTY_taskID);
+
+		final TaskCorrection result = new TaskCorrection(solutionID, taskID);
+
+		result.setTimeStamp(doc.getDate(TaskCorrection.PROPERTY_timeStamp).toInstant());
+		result.setAuthor(doc.getString(TaskCorrection.PROPERTY_author));
+		result.setPoints(doc.getInteger(TaskCorrection.PROPERTY_points));
+		result.setNote(doc.getString(TaskCorrection.PROPERTY_note));
+
+		return result;
+	}
+
+	private static Document correction2Doc(TaskCorrection taskCorrection)
+	{
+		final Document doc = new Document();
+		doc.put(TaskCorrection.PROPERTY_solutionID, taskCorrection.getSolutionID());
+		doc.put(TaskCorrection.PROPERTY_taskID, taskCorrection.getTaskID());
+		doc.put(TaskCorrection.PROPERTY_timeStamp, taskCorrection.getTimeStamp());
+		doc.put(TaskCorrection.PROPERTY_author, taskCorrection.getAuthor());
+		doc.put(TaskCorrection.PROPERTY_points, taskCorrection.getPoints());
+		doc.put(TaskCorrection.PROPERTY_note, taskCorrection.getNote());
 		return doc;
 	}
 
