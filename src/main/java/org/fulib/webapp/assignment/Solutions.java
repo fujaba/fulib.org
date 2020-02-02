@@ -186,19 +186,8 @@ public class Solutions
 	public static Object getCorrections(Request request, Response response)
 	{
 		final String solutionID = request.params("solutionID");
-		final Solution solution = Mongo.get().getSolution(solutionID);
-
-		if (solution == null)
-		{
-			response.status(404);
-			return String.format(UNKNOWN_SOLUTION_RESPONSE, solutionID);
-		}
-
-		if (!isAuthorized(request, solution) && !isAuthorized(request, solution.getAssignment()))
-		{
-			response.status(401);
-			return INVALID_TOKEN_RESPONSE;
-		}
+		final Solution solution = getSolutionOr404(solutionID);
+		checkPrivilege(request, solution);
 
 		final List<TaskCorrection> corrections = Mongo.get().getCorrections(solutionID);
 
