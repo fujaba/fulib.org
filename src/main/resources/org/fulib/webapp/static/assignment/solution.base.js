@@ -10,19 +10,6 @@ const solutionInputConfig = {
 
 // =============== Functions ===============
 
-function autoUpdateEditorTheme(codeMirror) {
-	try {
-		// may fail if darktheme/network is unavailable
-		updateEditorTheme(codeMirror, getTheme());
-		themeChangeHandlers.push(theme => updateEditorTheme(codeMirror, theme));
-	} catch {}
-}
-
-function updateEditorTheme(codeMirror, theme) {
-	let editorTheme = theme === 'dark' ? 'darcula' : 'idea';
-	codeMirror.setOption('theme', editorTheme);
-}
-
 function getSolutionIDFromURL() {
 	return new URL(window.location).searchParams.get('solution');
 }
@@ -35,16 +22,16 @@ function getTokenHeaders() {
 }
 
 function getSolutionToken(assignmentID, solutionID) {
-	return localStorage.getItem(`assignment/${assignmentID}/solution/${solutionID}/token`);
+	return localStorage.getItem(`assignment/${assignmentID}/solutions/${solutionID}/token`);
 }
 
 function setSolutionToken(assignmentID, solutionID, token) {
-	localStorage.setItem(`assignment/${assignmentID}/solution/${solutionID}/token`, token);
+	localStorage.setItem(`assignment/${assignmentID}/solutions/${solutionID}/token`, token);
 }
 
 function loadSolution(assignmentID, solutionID, handler, errorHandler) {
 	const headers = getTokenHeaders();
-	apih('GET', `/assignment/${assignmentID}/solution/${solutionID}`, headers, null, result => {
+	apih('GET', `/assignments/${assignmentID}/solutions/${solutionID}`, headers, null, result => {
 		if (result.error) {
 			errorHandler(result.error);
 		}

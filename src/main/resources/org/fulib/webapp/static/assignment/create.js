@@ -41,16 +41,7 @@ const verificationConfig = {
 // =============== Initialization ===============
 
 (() => {
-	try { // may fail if darktheme/network is unavailable
-		function updateEditorTheme(theme = getTheme()) {
-			let editorTheme = theme === 'dark' ? 'darcula' : 'idea';
-			solutionInputCM.setOption('theme', editorTheme);
-			verificationInputCM.setOption('theme', editorTheme);
-		}
-
-		updateEditorTheme();
-		themeChangeHandlers.push(updateEditorTheme);
-	} catch {}
+	autoUpdateEditorTheme(solutionInputCM);
 
 	autoSave('assignment/create/',
 		titleInput,
@@ -87,14 +78,20 @@ function onRemoveTask(id) {
 	}
 }
 
+function onClearTasks() {
+	if (taskList.childElementCount > 0 && confirm('Are you sure you want to remove ALL tasks?')) {
+		clearTasks();
+	}
+}
+
 function onSubmit() {
 	submitButton.disabled = true;
 	submitButton.innerText = 'Submitting...';
 
 	const data = gatherData();
 
-	api('POST', '/assignment', data, result => {
-		const link = absoluteLink(`/assignment/${result.id}`);
+	api('POST', '/assignments', data, result => {
+		const link = absoluteLink(`/assignments/${result.id}`);
 		const solutionsLinkRef = link + '/solutions';
 
 		submitButton.disabled = false;
@@ -257,9 +254,14 @@ function addTask(id = undefined, task = undefined) {
 		pointsInput,
 	);
 	autoSaveCM(`assignment/create/task/${id}/verificationInput`, verificationInputCM);
+
+	autoUpdateEditorTheme(verificationInputCM);
 }
 
 function removeTask(id) {
+	const verificationInput = document.getElementById(`task/${id}/verificationInput`);
+	removeEditorThemeChangeHandler(verificationInput.codeMirror);
+
 	const taskItem = document.getElementById(`taskItem${id}`);
 	taskList.removeChild(taskItem);
 
@@ -273,13 +275,15 @@ function removeTask(id) {
 }
 
 function clearTasks() {
-	removeChildren(taskList);
-
 	for (const id of loadTaskIDs()) {
+		const verificationInput = document.getElementById(`task/${id}/verificationInput`);
+		removeEditorThemeChangeHandler(verificationInput.codeMirror);
+
 		for (const element of ['description', 'points', 'verification']) {
 			localStorage.removeItem(`assignment/create/task/${id}/${element}Input`);
 		}
 	}
 
+	removeChildren(taskList);
 	saveTaskIDs([]);
 }

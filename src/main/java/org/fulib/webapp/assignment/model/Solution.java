@@ -1,5 +1,9 @@
 package org.fulib.webapp.assignment.model;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
+import org.bson.codecs.pojo.annotations.BsonProperty;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,13 +42,15 @@ public class Solution
 
 	// =============== Constructors ===============
 
-	public Solution(String id)
+	@BsonCreator
+	public Solution(@BsonProperty(PROPERTY_id) String id)
 	{
 		this.id = id;
 	}
 
 	// =============== Properties ===============
 
+	@BsonProperty(PROPERTY_id)
 	public String getID()
 	{
 		return this.id;
@@ -60,14 +66,29 @@ public class Solution
 		this.token = token;
 	}
 
+	@BsonIgnore
 	public Assignment getAssignment()
 	{
 		return this.assignment;
 	}
 
+	@BsonIgnore
 	public void setAssignment(Assignment assignment)
 	{
 		this.assignment = assignment;
+	}
+
+	@BsonProperty(PROPERTY_assignment)
+	public String getAssignmentID()
+	{
+		return this.getAssignment().getID();
+	}
+
+	@BsonProperty(PROPERTY_assignment)
+	public void setAssignmentID(String assignmentID)
+	{
+		this.assignment = new Assignment(assignmentID);
+		// replaced in Mongo.getAssignment
 	}
 
 	public String getName()

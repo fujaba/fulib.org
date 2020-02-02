@@ -109,8 +109,8 @@ init();
 
 function init() {
 	saveTheme = theme => trySetStorage('theme', theme);
-	updateEditorTheme();
-	themeChangeHandlers.push(updateEditorTheme);
+	autoUpdateEditorTheme(scenarioInputCodeMirror);
+	autoUpdateEditorTheme(javaTestOutputCodeMirror);
 
 	loadPrivacy();
 	loadConfig();
@@ -124,12 +124,6 @@ function init() {
 }
 
 // =============== Functions ===============
-
-function updateEditorTheme(theme = getTheme()) {
-	let editorTheme = theme === 'dark' ? 'darcula' : 'idea';
-	scenarioInputCodeMirror.setOption('theme', editorTheme);
-	javaTestOutputCodeMirror.setOption('theme', editorTheme);
-}
 
 // --------------- Privacy ---------------
 

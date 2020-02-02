@@ -1,5 +1,8 @@
 package org.fulib.webapp.assignment.model;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
+
 import java.time.Instant;
 
 public class Comment
@@ -30,11 +33,13 @@ public class Comment
 
 	// =============== Constructors ===============
 
-	public Comment(String id)
+	@BsonCreator
+	public Comment(@BsonProperty(PROPERTY_id) String id)
 	{
 		this.id = id;
 	}
 
+	@BsonProperty(PROPERTY_id)
 	public String getID()
 	{
 		return this.id;

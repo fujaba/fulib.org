@@ -34,7 +34,7 @@ function loadSolutions() {
 	const headers = {
 		'Assignment-Token': getAssignmentToken(assignmentID),
 	};
-	apih('GET', `/assignment/${assignmentID}/solutions`, headers, null, result => {
+	apih('GET', `/assignments/${assignmentID}/solutions`, headers, null, result => {
 		if (result.error === 'invalid token') {
 			$('#tokenModal').modal('show');
 			return;
@@ -79,7 +79,7 @@ function renderSolutions(elementList, solutions) {
 		studentIDLabels[index].innerText = solution.studentID;
 		emailLinks[index].innerText = solution.email;
 		emailLinks[index].href = `mailto:${solution.email}`;
-		solutionLinks[index].href = `/assignment/${assignmentID}/solution/${solution.id}`;
+		solutionLinks[index].href = `/assignments/${assignmentID}/solutions/${solution.id}`;
 		timeStampLabels[index].innerText = new Date(solution.timeStamp).toLocaleString();
 
 		// extra variables to avoid capture problems

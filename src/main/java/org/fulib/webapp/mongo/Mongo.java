@@ -11,13 +11,24 @@ import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.ReplaceOptions;
 import com.mongodb.client.model.Sorts;
 import org.bson.Document;
+import org.bson.codecs.configuration.CodecProvider;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.Convention;
+import org.bson.codecs.pojo.Conventions;
+import org.bson.codecs.pojo.PojoCodecProvider;
 import org.fulib.webapp.WebService;
-import org.fulib.webapp.assignment.model.*;
+import org.fulib.webapp.assignment.model.Assignment;
+import org.fulib.webapp.assignment.model.Comment;
+import org.fulib.webapp.assignment.model.Solution;
+import org.fulib.webapp.assignment.model.TaskResult;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public class Mongo
 {
@@ -45,10 +56,25 @@ public class Mongo
 	private MongoDatabase database;
 
 	private MongoCollection<Document> requestLog;
-	private MongoCollection<Document> assignments;
-	private MongoCollection<Document> solutions;
-	private MongoCollection<Document> comments;
+	private MongoCollection<Assignment> assignments;
+	private MongoCollection<Solution> solutions;
+	private MongoCollection<Comment> comments;
 	private MongoCollection<Document> assignees;
+
+	private final List<Convention> conventions;
+
+	{
+		this.conventions = new ArrayList<>(Conventions.DEFAULT_CONVENTIONS);
+		this.conventions.add(Conventions.USE_GETTERS_FOR_SETTERS); // to use get<List>().add(...) instead of set<List>()
+	}
+
+	private final CodecProvider pojoCodecProvider = PojoCodecProvider.builder()
+	                                                                 .register(Assignment.class.getPackage().getName())
+	                                                                 .conventions(this.conventions)
+	                                                                 .build();
+
+	private final CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
+	                                                               fromProviders(this.pojoCodecProvider));
 
 	// =============== Static Methods ===============
 
@@ -76,15 +102,18 @@ public class Mongo
 		this.database = this.mongoClient.getDatabase(DATABASE_NAME);
 		this.requestLog = this.database.getCollection(LOG_COLLECTION_NAME);
 
-		this.assignments = this.database.getCollection(ASSIGNMENT_COLLECTION_NAME);
+		this.assignments = this.database.getCollection(ASSIGNMENT_COLLECTION_NAME, Assignment.class)
+		                                .withCodecRegistry(this.pojoCodecRegistry);
 		this.assignments.createIndex(Indexes.ascending(Assignment.PROPERTY_id));
 
-		this.solutions = this.database.getCollection(SOLUTION_COLLECTION_NAME);
+		this.solutions = this.database.getCollection(SOLUTION_COLLECTION_NAME, Solution.class)
+		                              .withCodecRegistry(this.pojoCodecRegistry);
 		this.solutions.createIndex(Indexes.ascending(Solution.PROPERTY_id));
 		this.solutions.createIndex(Indexes.ascending(Solution.PROPERTY_assignment));
 		this.solutions.createIndex(Indexes.ascending(Solution.PROPERTY_timeStamp));
 
-		this.comments = this.database.getCollection(COMMENT_COLLECTION_NAME);
+		this.comments = this.database.getCollection(COMMENT_COLLECTION_NAME, Comment.class)
+		                             .withCodecRegistry(this.pojoCodecRegistry);
 		this.comments.createIndex(Indexes.ascending(Comment.PROPERTY_id));
 		this.comments.createIndex(Indexes.ascending(Comment.PROPERTY_parent));
 		this.comments.createIndex(Indexes.ascending(Comment.PROPERTY_timeStamp));
@@ -152,118 +181,47 @@ public class Mongo
 
 	public Assignment getAssignment(String id)
 	{
-		final Document doc = this.assignments.find(Filters.eq(Assignment.PROPERTY_id, id)).first();
-		if (doc == null)
-		{
-			return null;
-		}
-
-		return doc2Assignment(id, doc);
-	}
-
-	private static Assignment doc2Assignment(String id, Document doc)
-	{
-		final Assignment assignment = new Assignment(id);
-		assignment.setToken(doc.getString(Assignment.PROPERTY_token));
-		assignment.setTitle(doc.getString(Assignment.PROPERTY_title));
-		assignment.setDescription(doc.getString(Assignment.PROPERTY_description));
-		assignment.setDescriptionHtml(doc.getString(Assignment.PROPERTY_descriptionHtml));
-		assignment.setAuthor(doc.getString(Assignment.PROPERTY_author));
-		assignment.setEmail(doc.getString(Assignment.PROPERTY_email));
-		assignment.setDeadline(doc.getDate(Assignment.PROPERTY_deadline).toInstant());
-		assignment.setSolution(doc.getString(Assignment.PROPERTY_solution));
-
-		for (final Document taskDoc : doc.getList(Assignment.PROPERTY_tasks, Document.class))
-		{
-			final Task task = new Task();
-			task.setDescription(taskDoc.getString(Task.PROPERTY_description));
-			task.setPoints(taskDoc.getInteger(Task.PROPERTY_points));
-			task.setVerification(taskDoc.getString(Task.PROPERTY_verification));
-			assignment.getTasks().add(task);
-		}
-
-		return assignment;
+		return this.assignments.find(Filters.eq(Assignment.PROPERTY_id, id)).first();
 	}
 
 	public void saveAssignment(Assignment assignment)
 	{
-		final Document doc = assignment2Doc(assignment);
-		upsert(this.assignments, doc, Assignment.PROPERTY_id);
-	}
-
-	private static Document assignment2Doc(Assignment assignment)
-	{
-		final Document doc = new Document();
-
-		doc.put(Assignment.PROPERTY_id, assignment.getID());
-		doc.put(Assignment.PROPERTY_token, assignment.getToken());
-		doc.put(Assignment.PROPERTY_title, assignment.getTitle());
-		doc.put(Assignment.PROPERTY_description, assignment.getDescription());
-		doc.put(Assignment.PROPERTY_descriptionHtml, assignment.getDescriptionHtml());
-		doc.put(Assignment.PROPERTY_author, assignment.getAuthor());
-		doc.put(Assignment.PROPERTY_email, assignment.getEmail());
-		doc.put(Assignment.PROPERTY_deadline, assignment.getDeadline());
-		doc.put(Assignment.PROPERTY_solution, assignment.getSolution());
-
-		final List<Document> tasks = new ArrayList<>();
-		for (final Task task : assignment.getTasks())
-		{
-			final Document taskDoc = new Document();
-			taskDoc.put(Task.PROPERTY_description, task.getDescription());
-			taskDoc.put(Task.PROPERTY_points, task.getPoints());
-			taskDoc.put(Task.PROPERTY_verification, task.getVerification());
-			tasks.add(taskDoc);
-		}
-		doc.put(Assignment.PROPERTY_tasks, tasks);
-
-		return doc;
+		upsert(this.assignments, assignment, Assignment.PROPERTY_id, assignment.getID());
 	}
 
 	// --------------- Solutions ---------------
 
 	public Solution getSolution(String id)
 	{
-		final Document doc = this.solutions.find(Filters.eq(Solution.PROPERTY_id, id)).first();
-		if (doc == null)
+		final Solution solution = this.solutions.find(Filters.eq(Solution.PROPERTY_id, id)).first();
+		if (solution == null)
 		{
 			return null;
 		}
 
-		return this.doc2Solution(doc);
+		return this.resolveAssignment(solution);
 	}
 
 	public List<Solution> getSolutions(String assignmentID)
 	{
 		return this.solutions.find(Filters.eq(Solution.PROPERTY_assignment, assignmentID))
 		                     .sort(Sorts.ascending(Solution.PROPERTY_timeStamp))
-		                     .map(this::doc2Solution)
+		                     .map(this::resolveAssignment)
 		                     .into(new ArrayList<>());
 	}
 
-	private Solution doc2Solution(Document doc)
+	private Solution resolveAssignment(Solution solution)
 	{
-		final String id = doc.getString(Solution.PROPERTY_id);
-		final Solution solution = new Solution(id);
-		solution.setToken(doc.getString(Solution.PROPERTY_token));
-
-		final String assignmentID = doc.getString(Solution.PROPERTY_assignment);
+		// workaround, see Solution#setAssignmentID
+		final String assignmentID = solution.getAssignmentID();
 		final Assignment assignment = this.getAssignment(assignmentID);
 		solution.setAssignment(assignment);
-
-		solution.setName(doc.getString(Solution.PROPERTY_name));
-		solution.setStudentID(doc.getString(Solution.PROPERTY_studentID));
-		solution.setEmail(doc.getString(Solution.PROPERTY_email));
-		solution.setSolution(doc.getString(Solution.PROPERTY_solution));
-		solution.setTimeStamp(doc.getDate(Solution.PROPERTY_timeStamp).toInstant());
-
-		for (final Document document : doc.getList(Solution.PROPERTY_results, Document.class))
-		{
-			solution.getResults().add(doc2TaskResult(document));
-		}
-
-		solution.setAssignee(this.getAssignee(id));
-
 		return solution;
+	}
+
+	public void saveSolution(Solution solution)
+	{
+		upsert(this.solutions, solution, Solution.PROPERTY_id, solution.getID());
 	}
 
 	public String getAssignee(String solutionID)
@@ -280,82 +238,23 @@ public class Mongo
 		upsert(this.assignees, doc, Solution.PROPERTY_id);
 	}
 
-	private static TaskResult doc2TaskResult(Document document)
-	{
-		final TaskResult taskResult = new TaskResult();
-		taskResult.setPoints(document.getInteger(TaskResult.PROPERTY_points));
-		taskResult.setOutput(document.getString(TaskResult.PROPERTY_output));
-		return taskResult;
-	}
-
-	public void saveSolution(Solution solution)
-	{
-		final Document doc = solution2Doc(solution);
-		upsert(this.solutions, doc, Solution.PROPERTY_id);
-		this.saveAssignee(solution.getID(), solution.getAssignee());
-	}
-
-	private static Document solution2Doc(Solution solution)
-	{
-		final Document doc = new Document();
-		doc.put(Solution.PROPERTY_id, solution.getID());
-		doc.put(Solution.PROPERTY_token, solution.getToken());
-		doc.put(Solution.PROPERTY_assignment, solution.getAssignment().getID());
-		doc.put(Solution.PROPERTY_name, solution.getName());
-		doc.put(Solution.PROPERTY_studentID, solution.getStudentID());
-		doc.put(Solution.PROPERTY_email, solution.getEmail());
-		doc.put(Solution.PROPERTY_solution, solution.getSolution());
-		doc.put(Solution.PROPERTY_timeStamp, solution.getTimeStamp());
-		doc.put(Solution.PROPERTY_results,
-		        solution.getResults().stream().map(Mongo::taskResult2Doc).collect(Collectors.toList()));
-		return doc;
-	}
-
-	private static Document taskResult2Doc(TaskResult taskResult)
-	{
-		final Document doc = new Document();
-		doc.put(TaskResult.PROPERTY_points, taskResult.getPoints());
-		doc.put(TaskResult.PROPERTY_output, taskResult.getOutput());
-		return doc;
-	}
-
 	// --------------- Comments ---------------
 
 	public Comment getComment(String id)
 	{
-		final Document doc = this.comments.find(Filters.eq(Comment.PROPERTY_id, id)).first();
-		if (doc == null)
-		{
-			return null;
-		}
-
-		return doc2Comment(doc);
+		return this.comments.find(Filters.eq(Comment.PROPERTY_id, id)).first();
 	}
 
 	public List<Comment> getComments(String parent)
 	{
 		return this.comments.find(Filters.eq(Comment.PROPERTY_parent, parent))
 		                    .sort(Sorts.ascending(Comment.PROPERTY_timeStamp))
-		                    .map(Mongo::doc2Comment)
 		                    .into(new ArrayList<>());
-	}
-
-	private static Comment doc2Comment(Document doc)
-	{
-		final Comment comment = new Comment(doc.getString(Comment.PROPERTY_id));
-		comment.setParent(doc.getString(Comment.PROPERTY_parent));
-		comment.setTimeStamp(doc.getDate(Comment.PROPERTY_timeStamp).toInstant());
-		comment.setAuthor(doc.getString(Comment.PROPERTY_author));
-		comment.setEmail(doc.getString(Comment.PROPERTY_email));
-		comment.setMarkdown(doc.getString(Comment.PROPERTY_markdown));
-		comment.setHtml(doc.getString(Comment.PROPERTY_html));
-		return comment;
 	}
 
 	public void saveComment(Comment comment)
 	{
-		final Document doc = comment2Doc(comment);
-		upsert(this.comments, doc, Comment.PROPERTY_id);
+		upsert(this.comments, comment, Comment.PROPERTY_id, comment.getID());
 	}
 
 	private static Document comment2Doc(Comment comment)
@@ -375,7 +274,11 @@ public class Mongo
 
 	private static void upsert(MongoCollection<Document> collection, Document doc, String idProperty)
 	{
-		collection.replaceOne(Filters.eq(idProperty, doc.getString(idProperty)), doc,
-		                      new ReplaceOptions().upsert(true));
+		upsert(collection, doc, idProperty, doc.getString(idProperty));
+	}
+
+	private static <T> void upsert(MongoCollection<T> collection, T doc, String idPropertyName, Object idPropertyValue)
+	{
+		collection.replaceOne(Filters.eq(idPropertyName, idPropertyValue), doc, new ReplaceOptions().upsert(true));
 	}
 }

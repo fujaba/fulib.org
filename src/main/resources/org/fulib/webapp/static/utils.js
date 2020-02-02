@@ -102,6 +102,35 @@ function autoSaveCM(key, codeMirror, postHook = undefined) {
 	});
 }
 
+function autoUpdateEditorTheme(codeMirror) {
+	try {
+		// may fail if darktheme/network is unavailable
+		updateEditorTheme(codeMirror, getTheme());
+		const handler = theme => updateEditorTheme(codeMirror, theme);
+		themeChangeHandlers.push(handler);
+
+		const id = 'A' + Math.random();
+		handler.autoUpdateThemeID = id;
+		codeMirror.autoUpdateThemeID = id;
+	} catch {}
+}
+
+function removeEditorThemeChangeHandler(codeMirror) {
+	if (!themeChangeHandlers) {
+		return;
+	}
+
+	const index = themeChangeHandlers.findIndex(h => h.autoUpdateThemeID === codeMirror.autoUpdateThemeID);
+	if (index >= 0) {
+		themeChangeHandlers.splice(index, 1);
+	}
+}
+
+function updateEditorTheme(codeMirror, theme) {
+	let editorTheme = theme === 'dark' ? 'darcula' : 'idea';
+	codeMirror.setOption('theme', editorTheme);
+}
+
 function foldInternalCalls(outputLines, packageName) {
 	const packageNamePrefix = `\tat ${packageName}.`;
 	const result = [];
