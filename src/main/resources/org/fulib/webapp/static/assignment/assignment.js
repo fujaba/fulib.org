@@ -13,7 +13,7 @@ function setAssignmentToken(assignmentID, token) {
 }
 
 function loadAssignment(id, resultHandler) {
-	api('GET', `/assignment/${id}`, null, resultHandler);
+	api('GET', `/assignments/${id}`, null, resultHandler);
 }
 
 function renderAssignment(assignment) {

@@ -60,7 +60,7 @@ public class Assignments
 
 	public static Object get(Request request, Response response)
 	{
-		final String id = request.params("id");
+		final String id = request.params("assignmentID");
 
 		if (request.contentType() == null || !request.contentType().startsWith("application/json"))
 		{

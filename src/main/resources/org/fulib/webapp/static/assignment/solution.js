@@ -70,7 +70,7 @@ function submitComment() {
 	commentSubmitButton.innerText = 'Submitting Comment...';
 
 	const headers = getTokenHeaders();
-	apih('POST', `/assignment/${assignmentID}/solution/${solutionID}/comments`, headers, comment, result => {
+	apih('POST', `/assignments/${assignmentID}/solutions/${solutionID}/comments`, headers, comment, result => {
 		// fill server-generated fields
 		comment.id = result.id;
 		comment.timeStamp = result.timeStamp;

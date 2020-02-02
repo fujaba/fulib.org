@@ -16,7 +16,7 @@ public class Comments
 	{
 		final Instant timeStamp = Instant.now();
 
-		final String parentID = request.params("parentID");
+		final String parentID = request.params("solutionID");
 
 		// TODO parentID validation (is there an assignment, solution, or comment with that ID?)
 
@@ -53,7 +53,7 @@ public class Comments
 
 	public static Object getChildren(Request request, Response response)
 	{
-		final String parentID = request.params("parentID");
+		final String parentID = request.params("solutionID");
 
 		JSONObject result = new JSONObject();
 		JSONArray array = new JSONArray();
