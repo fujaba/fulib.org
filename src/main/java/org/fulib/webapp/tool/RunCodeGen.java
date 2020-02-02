@@ -23,9 +23,24 @@ import java.util.logging.Logger;
 
 public class RunCodeGen
 {
+	// =============== Constants ===============
+
 	private static final String TEMP_DIR_PREFIX = "fulibScenarios";
 
-	public static String handle(Request req, Response res) throws Exception
+	// =============== Fields ===============
+
+	private final Mongo db;
+
+	// =============== Constructors ===============
+
+	public RunCodeGen(Mongo db)
+	{
+		this.db = db;
+	}
+
+	// =============== Methods ===============
+
+	public String handle(Request req, Response res) throws Exception
 	{
 		final String body = req.body();
 		final JSONObject jsonObject = new JSONObject(body);
@@ -42,10 +57,12 @@ public class RunCodeGen
 
 		if (jsonObject.has("privacy") && "all".equals(jsonObject.get("privacy")))
 		{
-			Mongo.get().log(req.ip(), req.userAgent(), body, resultBody);
+			this.db.log(req.ip(), req.userAgent(), body, resultBody);
 		}
 		return resultBody;
 	}
+
+	// =============== Static Methods ===============
 
 	private static CodeGenData fromJson(JSONObject obj)
 	{
