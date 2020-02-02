@@ -7,11 +7,48 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
+import spark.Spark;
 
 import java.time.Instant;
 
 public class Assignments
 {
+	// =============== Constants ===============
+
+	private static final String ASSIGNMENT_TOKEN_HEADER = "Assignment-Token";
+
+	// language=JSON
+	private static final String INVALID_TOKEN_RESPONSE = "{\n" + "  \"error\": \"invalid Assignment-Token\"\n" + "}\n";
+	// language=JSON
+	static final String UNKNOWN_ASSIGNMENT_RESPONSE = "{\n  \"error\": \"assignment with id '%s'' not found\"\n}";
+
+	// =============== Static Methods ===============
+
+	static Assignment getAssignmentOr404(String id)
+	{
+		final Assignment assignment = Mongo.get().getAssignment(id);
+		if (assignment == null)
+		{
+			Spark.halt(404, String.format(UNKNOWN_ASSIGNMENT_RESPONSE, id));
+		}
+		return assignment;
+	}
+
+	static void checkPrivilege(Request request, Assignment assignment)
+	{
+		if (!isAuthorized(request, assignment))
+		{
+			Spark.halt(401, INVALID_TOKEN_RESPONSE);
+		}
+	}
+
+	static boolean isAuthorized(Request request, Assignment assignment)
+	{
+		final String assignmentToken = assignment.getToken();
+		final String assignmentTokenHeader = request.headers(ASSIGNMENT_TOKEN_HEADER);
+		return assignmentToken.equals(assignmentTokenHeader);
+	}
+
 	public static Object create(Request request, Response response)
 	{
 		final String id = IDGenerator.generateID();
@@ -68,13 +105,7 @@ public class Assignments
 			return "";
 		}
 
-		Assignment assignment = Mongo.get().getAssignment(id);
-		if (assignment == null)
-		{
-			response.status(404);
-			return "{}";
-		}
-
+		Assignment assignment = getAssignmentOr404(id);
 		final JSONObject obj = toJson(assignment);
 		return obj.toString(2);
 	}
