@@ -1,9 +1,6 @@
 package org.fulib.webapp.assignment;
 
-import org.fulib.webapp.assignment.model.Assignment;
-import org.fulib.webapp.assignment.model.Solution;
-import org.fulib.webapp.assignment.model.Task;
-import org.fulib.webapp.assignment.model.TaskResult;
+import org.fulib.webapp.assignment.model.*;
 import org.fulib.webapp.mongo.Mongo;
 import org.fulib.webapp.tool.RunCodeGen;
 import org.fulib.webapp.tool.model.CodeGenData;
@@ -188,6 +185,52 @@ public class Solutions
 		}
 		obj.put(Solution.PROPERTY_results, results);
 
+		return obj;
+	}
+
+	// --------------- Corrections ---------------
+
+	public static Object getCorrections(Request request, Response response)
+	{
+		final String solutionID = request.params("solutionID");
+		final Solution solution = Mongo.get().getSolution(solutionID);
+
+		if (solution == null)
+		{
+			response.status(404);
+			return String.format(UNKNOWN_SOLUTION_RESPONSE, solutionID);
+		}
+
+		if (!isAuthorized(request, solution) && !isAuthorized(request, solution.getAssignment()))
+		{
+			response.status(401);
+			return INVALID_TOKEN_RESPONSE;
+		}
+
+		final List<TaskCorrection> corrections = Mongo.get().getCorrections(solutionID);
+
+		final JSONObject result = new JSONObject();
+		final JSONArray array = new JSONArray();
+
+		for (final TaskCorrection correction : corrections)
+		{
+			array.put(toJson(correction));
+		}
+
+		result.put("corrections", array);
+
+		return result.toString(2);
+	}
+
+	private static JSONObject toJson(TaskCorrection correction)
+	{
+		final JSONObject obj = new JSONObject();
+		obj.put(TaskCorrection.PROPERTY_solutionID, correction.getSolutionID());
+		obj.put(TaskCorrection.PROPERTY_taskID, correction.getTaskID());
+		obj.put(TaskCorrection.PROPERTY_timeStamp, correction.getTimeStamp());
+		obj.put(TaskCorrection.PROPERTY_author, correction.getAuthor());
+		obj.put(TaskCorrection.PROPERTY_points, correction.getPoints());
+		obj.put(TaskCorrection.PROPERTY_note, correction.getNote());
 		return obj;
 	}
 

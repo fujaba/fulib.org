@@ -72,6 +72,10 @@ public class WebService
 					service.path("/:solutionID", () -> {
 						service.get("", Solutions::get);
 
+						service.path("/corrections", () -> {
+							service.get("", Solutions::getCorrections);
+						});
+
 						service.path("/comments", () -> {
 							service.post("", Comments::post);
 							service.get("", Comments::getChildren);
