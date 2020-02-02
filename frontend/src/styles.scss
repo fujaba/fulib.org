@@ -5,41 +5,42 @@
   border-style: solid;
   border-color: #ced4da;
   border-radius: .25rem;
-}
 
-[data-theme="dark"] .CodeMirror {
-  border-color: #404040;
-}
-
-.CodeMirror:focus-within {
-  outline: 0;
-  box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25)
+  &:focus-within {
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25)
+  }
 }
 
 /* --------------- Sticky footer styles --------------- */
 /* adapted from https://getbootstrap.com/docs/4.0/examples/sticky-footer/ */
 
+$footer-height: 60px;
+
 html {
-  position:   relative;
+  position: relative;
   min-height: 100%;
 }
 
 body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
+  margin-bottom: $footer-height;
 }
 
 .footer {
   position: absolute;
-  bottom:   0;
-  width:    100%;
-  /* Set the fixed height of the footer here */
-  height:   60px;
+  bottom: 0;
+  width: 100%;
+  height: $footer-height;
 }
 
-/* --------------- Dark Mode for Diagrams --------------- */
+/* --------------- Dark Mode Overrides --------------- */
 
-[data-theme="dark"] img.diagram,
-[data-theme="dark"] svg.diagram {
-  filter: invert(100%);
+[data-theme="dark"] {
+  .CodeMirror {
+    border-color: #404040;
+  }
+
+  img.diagram, svg.diagram {
+    filter: invert(100%);
+  }
 }
