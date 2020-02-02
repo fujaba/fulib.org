@@ -7,11 +7,29 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
+import spark.Spark;
 
 import java.time.Instant;
 
 public class Assignments
 {
+	// =============== Constants ===============
+
+	// language=JSON
+	static final String UNKNOWN_ASSIGNMENT_RESPONSE = "{\n  \"error\": \"assignment with id '%s'' not found\"\n}";
+
+	// =============== Static Methods ===============
+
+	static Assignment getAssignmentOr404(String id)
+	{
+		final Assignment assignment = Mongo.get().getAssignment(id);
+		if (assignment == null)
+		{
+			Spark.halt(404, String.format(UNKNOWN_ASSIGNMENT_RESPONSE, id));
+		}
+		return assignment;
+	}
+
 	public static Object create(Request request, Response response)
 	{
 		final String id = IDGenerator.generateID();
@@ -68,13 +86,7 @@ public class Assignments
 			return "";
 		}
 
-		Assignment assignment = Mongo.get().getAssignment(id);
-		if (assignment == null)
-		{
-			response.status(404);
-			return "{}";
-		}
-
+		Assignment assignment = getAssignmentOr404(id);
 		final JSONObject obj = toJson(assignment);
 		return obj.toString(2);
 	}

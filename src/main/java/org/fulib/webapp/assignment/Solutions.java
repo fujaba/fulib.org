@@ -27,8 +27,6 @@ public class Solutions
 
 	// language=JSON
 	private static final String INVALID_TOKEN_RESPONSE = "{\n" + "  \"error\": \"invalid token\"\n" + "}\n";
-	// language=JSON
-	private static final String UNKNOWN_ASSIGNMENT_RESPONSE = "{\n  \"error\": \"assignment with id '%s'' not found\"\n}";
 	private static final String UNKNOWN_SOLUTION_RESPONSE = "{\n  \"error\": \"solution with id '%s'' not found\"\n}";
 
 	// --------------- Submission ---------------
@@ -38,13 +36,7 @@ public class Solutions
 		final Instant timeStamp = Instant.now();
 
 		final String assignmentID = request.params(ASSIGNMENT_ID_QUERY_PARAM);
-		final Assignment assignment = Mongo.get().getAssignment(assignmentID);
-
-		if (assignment == null)
-		{
-			response.status(404);
-			return String.format(UNKNOWN_ASSIGNMENT_RESPONSE, assignmentID);
-		}
+		final Assignment assignment = Assignments.getAssignmentOr404(assignmentID);
 
 		final String solutionID = IDGenerator.generateID();
 		final String token = IDGenerator.generateToken();
@@ -136,12 +128,7 @@ public class Solutions
 			return "";
 		}
 
-		final Assignment assignment = Mongo.get().getAssignment(assignmentID);
-		if (assignment == null)
-		{
-			response.status(404);
-			return String.format(UNKNOWN_ASSIGNMENT_RESPONSE, assignmentID);
-		}
+		final Assignment assignment = Assignments.getAssignmentOr404(assignmentID);
 
 		if (!isAuthorized(request, assignment))
 		{
@@ -196,13 +183,7 @@ public class Solutions
 	public static Object check(Request request, Response response) throws Exception
 	{
 		final String assignmentID = request.params(ASSIGNMENT_ID_QUERY_PARAM);
-		final Assignment assignment = Mongo.get().getAssignment(assignmentID);
-
-		if (assignment == null)
-		{
-			response.status(404);
-			return String.format(UNKNOWN_ASSIGNMENT_RESPONSE, assignmentID);
-		}
+		final Assignment assignment = Assignments.getAssignmentOr404(assignmentID);
 
 		final JSONObject requestObj = new JSONObject(request.body());
 		final String solution = requestObj.getString(Solution.PROPERTY_solution);
