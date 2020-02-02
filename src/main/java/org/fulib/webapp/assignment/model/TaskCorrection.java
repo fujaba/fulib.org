@@ -1,5 +1,8 @@
 package org.fulib.webapp.assignment.model;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
+
 import java.time.Instant;
 
 public class TaskCorrection
@@ -26,7 +29,9 @@ public class TaskCorrection
 
 	// =============== Constructors ===============
 
-	public TaskCorrection(String solutionID, int taskID)
+	@BsonCreator
+	public TaskCorrection(@BsonProperty(PROPERTY_solutionID) String solutionID,
+		@BsonProperty(PROPERTY_taskID) int taskID)
 	{
 		this.solutionID = solutionID;
 		this.taskID = taskID;

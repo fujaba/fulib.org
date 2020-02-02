@@ -17,12 +17,14 @@ import org.bson.codecs.pojo.Convention;
 import org.bson.codecs.pojo.Conventions;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.fulib.webapp.WebService;
-import org.fulib.webapp.assignment.model.*;
+import org.fulib.webapp.assignment.model.Assignment;
+import org.fulib.webapp.assignment.model.Comment;
+import org.fulib.webapp.assignment.model.Solution;
+import org.fulib.webapp.assignment.model.TaskCorrection;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
@@ -56,7 +58,7 @@ public class Mongo
 	private MongoCollection<Assignment> assignments;
 	private MongoCollection<Solution> solutions;
 	private MongoCollection<Comment> comments;
-	private MongoCollection<Document> corrections;
+	private MongoCollection<TaskCorrection> corrections;
 
 	private final List<Convention> conventions;
 
@@ -115,7 +117,8 @@ public class Mongo
 		this.comments.createIndex(Indexes.ascending(Comment.PROPERTY_parent));
 		this.comments.createIndex(Indexes.ascending(Comment.PROPERTY_timeStamp));
 
-		this.corrections = this.database.getCollection(CORRECTION_COLLECTION_NAME);
+		this.corrections = this.database.getCollection(CORRECTION_COLLECTION_NAME, TaskCorrection.class)
+		                                .withCodecRegistry(this.pojoCodecRegistry);
 		this.corrections.createIndex(Indexes.ascending(TaskCorrection.PROPERTY_solutionID));
 		this.corrections.createIndex(Indexes.ascending(TaskCorrection.PROPERTY_taskID));
 		this.corrections.createIndex(Indexes.ascending(TaskCorrection.PROPERTY_timeStamp));
@@ -260,40 +263,12 @@ public class Mongo
 	{
 		return this.corrections.find(Filters.eq(TaskCorrection.PROPERTY_solutionID, solutionID))
 		                       .sort(Sorts.ascending(TaskCorrection.PROPERTY_timeStamp))
-		                       .map(Mongo::doc2Correction)
 		                       .into(new ArrayList<>());
 	}
 
 	public void addTaskCorrection(TaskCorrection correction)
 	{
-		this.corrections.insertOne(correction2Doc(correction));
-	}
-
-	private static TaskCorrection doc2Correction(Document doc)
-	{
-		final String solutionID = doc.getString(TaskCorrection.PROPERTY_solutionID);
-		final int taskID = doc.getInteger(TaskCorrection.PROPERTY_taskID);
-
-		final TaskCorrection result = new TaskCorrection(solutionID, taskID);
-
-		result.setTimeStamp(doc.getDate(TaskCorrection.PROPERTY_timeStamp).toInstant());
-		result.setAuthor(doc.getString(TaskCorrection.PROPERTY_author));
-		result.setPoints(doc.getInteger(TaskCorrection.PROPERTY_points));
-		result.setNote(doc.getString(TaskCorrection.PROPERTY_note));
-
-		return result;
-	}
-
-	private static Document correction2Doc(TaskCorrection taskCorrection)
-	{
-		final Document doc = new Document();
-		doc.put(TaskCorrection.PROPERTY_solutionID, taskCorrection.getSolutionID());
-		doc.put(TaskCorrection.PROPERTY_taskID, taskCorrection.getTaskID());
-		doc.put(TaskCorrection.PROPERTY_timeStamp, taskCorrection.getTimeStamp());
-		doc.put(TaskCorrection.PROPERTY_author, taskCorrection.getAuthor());
-		doc.put(TaskCorrection.PROPERTY_points, taskCorrection.getPoints());
-		doc.put(TaskCorrection.PROPERTY_note, taskCorrection.getNote());
-		return doc;
+		this.corrections.insertOne(correction);
 	}
 
 	// --------------- Helpers ---------------
