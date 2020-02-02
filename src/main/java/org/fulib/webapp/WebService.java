@@ -1,5 +1,6 @@
 package org.fulib.webapp;
 
+import org.fulib.webapp.mongo.Mongo;
 import org.fulib.webapp.projectzip.ProjectZip;
 import org.fulib.webapp.tool.RunCodeGen;
 import spark.Service;
@@ -51,7 +52,10 @@ public class WebService
 
 		service.redirect.get("/github", "https://github.com/fujaba/fulib.org");
 
-		service.post("/runcodegen", RunCodeGen::handle);
+		final Mongo db = Mongo.get();
+		final RunCodeGen runCodeGen = new RunCodeGen(db);
+
+		service.post("/runcodegen", runCodeGen::handle);
 		service.post("/projectzip", ProjectZip::handle);
 
 		service.exception(Exception.class, (exception, request, response) -> {
