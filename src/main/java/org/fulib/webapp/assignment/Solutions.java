@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
+import spark.Spark;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -23,11 +24,49 @@ public class Solutions
 	private static final String ASSIGNMENT_ID_QUERY_PARAM = "assignmentID";
 
 	private static final String SOLUTION_TOKEN_HEADER = "Solution-Token";
-	private static final String ASSIGNMENT_TOKEN_HEADER = "Assignment-Token";
 
 	// language=JSON
-	private static final String INVALID_TOKEN_RESPONSE = "{\n" + "  \"error\": \"invalid token\"\n" + "}\n";
+	private static final String INVALID_TOKEN_RESPONSE = "{\n" + "  \"error\": \"invalid Assignment-Token or Solution-Token\"\n" + "}\n";
 	private static final String UNKNOWN_SOLUTION_RESPONSE = "{\n  \"error\": \"solution with id '%s'' not found\"\n}";
+
+	// =============== Static Methods ===============
+
+	static Solution getSolutionOr404(String id)
+	{
+		final Solution solution = Mongo.get().getSolution(id);
+		if (solution == null)
+		{
+			Spark.halt(404, String.format(UNKNOWN_SOLUTION_RESPONSE, id));
+		}
+		return solution;
+	}
+
+	static boolean checkPrivilege(Request request, Solution solution)
+	{
+		// NB: we use the assignment resolved via the solution, NOT the one we'd get from assignmentID!
+		// Otherwise, someone could create their own assignment, forge the request with that assignment ID
+		// and a solutionID belonging to a different assignment, and gain access to the solution without having
+		// the token of the assignment it actually belongs to.
+		if (Assignments.isAuthorized(request, solution.getAssignment()))
+		{
+			return true;
+		}
+		else if (isAuthorized(request, solution))
+		{
+			return false;
+		}
+		else
+		{
+			throw Spark.halt(401, INVALID_TOKEN_RESPONSE);
+		}
+	}
+
+	private static boolean isAuthorized(Request request, Solution solution)
+	{
+		final String solutionToken = solution.getToken();
+		final String solutionTokenHeader = request.headers(SOLUTION_TOKEN_HEADER);
+		return solutionToken.equals(solutionTokenHeader);
+	}
 
 	// --------------- Submission ---------------
 
@@ -83,39 +122,11 @@ public class Solutions
 			return "";
 		}
 
-		final Solution solution = Mongo.get().getSolution(solutionID);
-		if (solution == null)
-		{
-			response.status(404);
-			return String.format(UNKNOWN_SOLUTION_RESPONSE, solutionID);
-		}
-
-		// NB: we use the assignment resolved via the solution, NOT the one we'd get from assignmentID!
-		// Otherwise, someone could create their own assignment, forge the request with that assignment ID
-		// and a solutionID belonging to a different assignment, and gain access to the solution without having
-		// the token of the assignment it actually belongs to.
-		if (!isAuthorized(request, solution) && !isAuthorized(request, solution.getAssignment()))
-		{
-			response.status(401);
-			return INVALID_TOKEN_RESPONSE;
-		}
+		final Solution solution = getSolutionOr404(solutionID);
+		checkPrivilege(request, solution);
 
 		final JSONObject obj = toJson(solution);
 		return obj.toString(2);
-	}
-
-	private static boolean isAuthorized(Request request, Solution solution)
-	{
-		final String solutionToken = solution.getToken();
-		final String solutionTokenHeader = request.headers(SOLUTION_TOKEN_HEADER);
-		return solutionToken.equals(solutionTokenHeader);
-	}
-
-	private static boolean isAuthorized(Request request, Assignment assignment)
-	{
-		final String assignmentToken = assignment.getToken();
-		final String assignmentTokenHeader = request.headers(ASSIGNMENT_TOKEN_HEADER);
-		return assignmentToken.equals(assignmentTokenHeader);
 	}
 
 	public static Object getAll(Request request, Response response)
@@ -129,12 +140,7 @@ public class Solutions
 		}
 
 		final Assignment assignment = Assignments.getAssignmentOr404(assignmentID);
-
-		if (!isAuthorized(request, assignment))
-		{
-			response.status(401);
-			return INVALID_TOKEN_RESPONSE;
-		}
+		Assignments.checkPrivilege(request, assignment);
 
 		final List<Solution> solutions = Mongo.get().getSolutions(assignmentID);
 
