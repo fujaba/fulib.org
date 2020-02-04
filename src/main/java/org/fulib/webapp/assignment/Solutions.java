@@ -236,6 +236,22 @@ public class Solutions
 		return result.toString(2);
 	}
 
+	public static Object postCorrection(Request request, Response response)
+	{
+		final Instant timeStamp = Instant.now();
+
+		final String solutionID = request.params("solutionID");
+		final Solution solution = getSolutionOr404(solutionID);
+		checkPrivilege(request, solution);
+
+		final TaskCorrection correction = json2Correction(solutionID, new JSONObject(request.body()));
+		correction.setTimeStamp(timeStamp);
+
+		final JSONObject result = new JSONObject();
+		result.put(TaskCorrection.PROPERTY_timeStamp, timeStamp.toString());
+		return result.toString(2);
+	}
+
 	private static JSONObject toJson(TaskCorrection correction)
 	{
 		final JSONObject obj = new JSONObject();
@@ -246,6 +262,17 @@ public class Solutions
 		obj.put(TaskCorrection.PROPERTY_points, correction.getPoints());
 		obj.put(TaskCorrection.PROPERTY_note, correction.getNote());
 		return obj;
+	}
+
+	private static TaskCorrection json2Correction(String solutionID, JSONObject obj)
+	{
+		final int taskID = obj.getInt(TaskCorrection.PROPERTY_taskID);
+		final TaskCorrection correction = new TaskCorrection(solutionID, taskID);
+		correction.setAuthor(obj.getString(TaskCorrection.PROPERTY_author));
+		correction.setPoints(obj.getInt(TaskCorrection.PROPERTY_points));
+		correction.setNote(obj.getString(TaskCorrection.PROPERTY_note));
+		// timestamp generated server-side
+		return correction;
 	}
 
 	// --------------- Checking ---------------

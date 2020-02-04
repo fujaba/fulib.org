@@ -82,6 +82,7 @@ public class WebService
 						});
 
 						service.path("/corrections", () -> {
+							service.post("", Solutions::postCorrection);
 							service.get("", Solutions::getCorrections);
 						});
 
