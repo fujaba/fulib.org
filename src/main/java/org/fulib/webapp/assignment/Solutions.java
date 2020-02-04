@@ -120,9 +120,9 @@ public class Solutions
 		}
 
 		final Solution solution = getSolutionOr404(solutionID);
-		checkPrivilege(request, solution);
+		final boolean privileged = checkPrivilege(request, solution);
 
-		final JSONObject obj = toJson(solution);
+		final JSONObject obj = toJson(solution, privileged);
 		return obj.toString(2);
 	}
 
@@ -149,7 +149,7 @@ public class Solutions
 
 		for (final Solution solution : solutions)
 		{
-			array.put(toJson(solution));
+			array.put(toJson(solution, true));
 		}
 
 		result.put("solutions", array);
@@ -157,7 +157,7 @@ public class Solutions
 		return result.toString(2);
 	}
 
-	private static JSONObject toJson(Solution solution)
+	private static JSONObject toJson(Solution solution, boolean privileged)
 	{
 		final JSONObject obj = new JSONObject();
 
@@ -178,7 +178,39 @@ public class Solutions
 		}
 		obj.put(Solution.PROPERTY_results, results);
 
+		if (privileged)
+		{
+			obj.put(Solution.PROPERTY_assignee, solution.getAssignee());
+		}
+
 		return obj;
+	}
+
+	// --------------- Assignees ---------------
+
+	public static Object getAssignee(Request request, Response response)
+	{
+		final String solutionID = request.params("solutionID");
+		final Solution solution = getSolutionOr404(solutionID);
+		Assignments.checkPrivilege(request, solution.getAssignment());
+
+		final JSONObject result = new JSONObject();
+		result.put(Solution.PROPERTY_assignee, solution.getAssignee());
+		return result.toString(2);
+	}
+
+	public static Object setAssignee(Request request, Response response)
+	{
+		final String solutionID = request.params("solutionID");
+		final Solution solution = getSolutionOr404(solutionID);
+		Assignments.checkPrivilege(request, solution.getAssignment());
+
+		final JSONObject body = new JSONObject(request.body());
+		final String assignee = body.getString(Solution.PROPERTY_assignee);
+
+		Mongo.get().saveAssignee(solutionID, assignee);
+
+		return "{}";
 	}
 
 	// --------------- Corrections ---------------

@@ -43,6 +43,7 @@ public class Mongo
 	public static final String ASSIGNMENT_COLLECTION_NAME = "assignments";
 	public static final String SOLUTION_COLLECTION_NAME = "solutions";
 	public static final String COMMENT_COLLECTION_NAME = "comments";
+	public static final String ASSIGNEE_COLLECTION_NAME = "assignee";
 	public static final String CORRECTION_COLLECTION_NAME = "corrections";
 
 	// =============== Static Fields ===============
@@ -58,6 +59,7 @@ public class Mongo
 	private MongoCollection<Assignment> assignments;
 	private MongoCollection<Solution> solutions;
 	private MongoCollection<Comment> comments;
+	private MongoCollection<Document> assignees;
 	private MongoCollection<TaskCorrection> corrections;
 
 	private final List<Convention> conventions;
@@ -116,6 +118,10 @@ public class Mongo
 		this.comments.createIndex(Indexes.ascending(Comment.PROPERTY_id));
 		this.comments.createIndex(Indexes.ascending(Comment.PROPERTY_parent));
 		this.comments.createIndex(Indexes.ascending(Comment.PROPERTY_timeStamp));
+
+		this.assignees = this.database.getCollection(ASSIGNEE_COLLECTION_NAME);
+		this.assignees.createIndex(Indexes.ascending(Solution.PROPERTY_id));
+		this.assignees.createIndex(Indexes.ascending(Solution.PROPERTY_assignee));
 
 		this.corrections = this.database.getCollection(CORRECTION_COLLECTION_NAME, TaskCorrection.class)
 		                                .withCodecRegistry(this.pojoCodecRegistry);
@@ -223,6 +229,20 @@ public class Mongo
 	public void saveSolution(Solution solution)
 	{
 		upsert(this.solutions, solution, Solution.PROPERTY_id, solution.getID());
+	}
+
+	public String getAssignee(String solutionID)
+	{
+		final Document doc = this.assignees.find(Filters.eq(Solution.PROPERTY_id, solutionID)).first();
+		return doc != null ? doc.getString(Solution.PROPERTY_assignee) : null;
+	}
+
+	public void saveAssignee(String solutionID, String assignee)
+	{
+		final Document doc = new Document();
+		doc.put(Solution.PROPERTY_id, solutionID);
+		doc.put(Solution.PROPERTY_assignee, assignee);
+		upsert(this.assignees, doc, Solution.PROPERTY_id);
 	}
 
 	// --------------- Comments ---------------

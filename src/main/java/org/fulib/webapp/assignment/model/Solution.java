@@ -21,6 +21,7 @@ public class Solution
 	public static final String PROPERTY_solution = "solution";
 	public static final String PROPERTY_timeStamp = "timeStamp";
 	public static final String PROPERTY_results = "results";
+	public static final String PROPERTY_assignee = "assignee";
 
 	// =============== Fields ===============
 
@@ -36,6 +37,8 @@ public class Solution
 	private Instant timeStamp;
 
 	private List<TaskResult> results = new ArrayList<>();
+
+	private String assignee;
 
 	// =============== Constructors ===============
 
@@ -141,5 +144,15 @@ public class Solution
 	public List<TaskResult> getResults()
 	{
 		return this.results;
+	}
+
+	public String getAssignee()
+	{
+		return this.assignee;
+	}
+
+	public void setAssignee(String assignee)
+	{
+		this.assignee = assignee;
 	}
 }

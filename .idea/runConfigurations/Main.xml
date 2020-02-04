@@ -1,0 +1,20 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Main" type="Application" factoryName="Application">
+    <envs>
+      <env name="FULIB_ORG_MONGODB_USER" value="fulibDotOrg" />
+      <env name="FULIB_ORG_MONGODB_HOST" value="localhost" />
+      <env name="FULIB_ORG_MONGODB_PASSWORD" value="fulibDotOrg" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="org.fulib.webapp.WebService" />
+    <module name="fulibDotOrg.main" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="org.fulib.webapp.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
