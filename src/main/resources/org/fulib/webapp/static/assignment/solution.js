@@ -17,6 +17,10 @@ const commentSubmitButton = document.getElementById('commentSubmitButton');
 const assignmentTokenInput = document.getElementById('assignmentTokenInput');
 const solutionTokenInput = document.getElementById('solutionTokenInput');
 
+const gradingNameInput = document.getElementById('gradingNameInput');
+const gradingPointsInput = document.getElementById('gradingPointsInput');
+const gradingNoteInput = document.getElementById('gradingNoteInput');
+
 // =============== Fields ===============
 
 const assignmentID = getAssignmentIDFromURL();
@@ -84,5 +88,18 @@ function submitComment() {
 			commentSubmitButton.disabled = false;
 			commentSubmitButton.innerText = 'Submit Comment';
 		});
+	});
+}
+
+function submitGrading() {
+	const headers = {
+		'Assignment-Token': getAssignmentToken(assignmentID),
+	};
+	const data = {
+		author: gradingNameInput.value,
+		points: gradingPointsInput.value,
+		note: gradingPointsInput.value,
+	};
+	apih('POST', `/assignments/${assignmentID}/solutions/${solutionID}/corrections`, headers, data, result => {
 	});
 }
