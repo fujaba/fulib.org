@@ -242,7 +242,7 @@ public class Solutions
 
 		final String solutionID = request.params("solutionID");
 		final Solution solution = getSolutionOr404(solutionID);
-		checkPrivilege(request, solution);
+		Assignments.checkPrivilege(request, solution.getAssignment());
 
 		final TaskGrading grading = json2Grading(solutionID, new JSONObject(request.body()));
 		grading.setTimeStamp(timeStamp);
