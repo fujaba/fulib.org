@@ -20,7 +20,7 @@ import org.fulib.webapp.WebService;
 import org.fulib.webapp.assignment.model.Assignment;
 import org.fulib.webapp.assignment.model.Comment;
 import org.fulib.webapp.assignment.model.Solution;
-import org.fulib.webapp.assignment.model.TaskCorrection;
+import org.fulib.webapp.assignment.model.TaskGrading;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -60,7 +60,7 @@ public class Mongo
 	private MongoCollection<Solution> solutions;
 	private MongoCollection<Comment> comments;
 	private MongoCollection<Document> assignees;
-	private MongoCollection<TaskCorrection> corrections;
+	private MongoCollection<TaskGrading> gradings;
 
 	private final List<Convention> conventions;
 
@@ -123,11 +123,11 @@ public class Mongo
 		this.assignees.createIndex(Indexes.ascending(Solution.PROPERTY_id));
 		this.assignees.createIndex(Indexes.ascending(Solution.PROPERTY_assignee));
 
-		this.corrections = this.database.getCollection(CORRECTION_COLLECTION_NAME, TaskCorrection.class)
-		                                .withCodecRegistry(this.pojoCodecRegistry);
-		this.corrections.createIndex(Indexes.ascending(TaskCorrection.PROPERTY_solutionID));
-		this.corrections.createIndex(Indexes.ascending(TaskCorrection.PROPERTY_taskID));
-		this.corrections.createIndex(Indexes.ascending(TaskCorrection.PROPERTY_timeStamp));
+		this.gradings = this.database.getCollection(CORRECTION_COLLECTION_NAME, TaskGrading.class)
+		                             .withCodecRegistry(this.pojoCodecRegistry);
+		this.gradings.createIndex(Indexes.ascending(TaskGrading.PROPERTY_solutionID));
+		this.gradings.createIndex(Indexes.ascending(TaskGrading.PROPERTY_taskID));
+		this.gradings.createIndex(Indexes.ascending(TaskGrading.PROPERTY_timeStamp));
 	}
 
 	private static String getURL()
@@ -277,18 +277,18 @@ public class Mongo
 		return doc;
 	}
 
-	// --------------- Corrections ---------------
+	// --------------- Grading ---------------
 
-	public List<TaskCorrection> getCorrections(String solutionID)
+	public List<TaskGrading> getGradingHistory(String solutionID)
 	{
-		return this.corrections.find(Filters.eq(TaskCorrection.PROPERTY_solutionID, solutionID))
-		                       .sort(Sorts.ascending(TaskCorrection.PROPERTY_timeStamp))
-		                       .into(new ArrayList<>());
+		return this.gradings.find(Filters.eq(TaskGrading.PROPERTY_solutionID, solutionID))
+		                    .sort(Sorts.ascending(TaskGrading.PROPERTY_timeStamp))
+		                    .into(new ArrayList<>());
 	}
 
-	public void addTaskCorrection(TaskCorrection correction)
+	public void addGrading(TaskGrading grading)
 	{
-		this.corrections.insertOne(correction);
+		this.gradings.insertOne(grading);
 	}
 
 	// --------------- Helpers ---------------

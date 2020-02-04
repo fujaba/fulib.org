@@ -5,7 +5,7 @@ import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import java.time.Instant;
 
-public class TaskCorrection
+public class TaskGrading
 {
 	// =============== Constants ===============
 
@@ -30,8 +30,7 @@ public class TaskCorrection
 	// =============== Constructors ===============
 
 	@BsonCreator
-	public TaskCorrection(@BsonProperty(PROPERTY_solutionID) String solutionID,
-		@BsonProperty(PROPERTY_taskID) int taskID)
+	public TaskGrading(@BsonProperty(PROPERTY_solutionID) String solutionID, @BsonProperty(PROPERTY_taskID) int taskID)
 	{
 		this.solutionID = solutionID;
 		this.taskID = taskID;

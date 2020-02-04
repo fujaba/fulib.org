@@ -215,28 +215,28 @@ public class Solutions
 
 	// --------------- Corrections ---------------
 
-	public static Object getCorrections(Request request, Response response)
+	public static Object getGradings(Request request, Response response)
 	{
 		final String solutionID = request.params("solutionID");
 		final Solution solution = getSolutionOr404(solutionID);
 		checkPrivilege(request, solution);
 
-		final List<TaskCorrection> corrections = Mongo.get().getCorrections(solutionID);
+		final List<TaskGrading> history = Mongo.get().getGradingHistory(solutionID);
 
 		final JSONObject result = new JSONObject();
 		final JSONArray array = new JSONArray();
 
-		for (final TaskCorrection correction : corrections)
+		for (final TaskGrading grading : history)
 		{
-			array.put(toJson(correction));
+			array.put(toJson(grading));
 		}
 
-		result.put("corrections", array);
+		result.put("gradings", array);
 
 		return result.toString(2);
 	}
 
-	public static Object postCorrection(Request request, Response response)
+	public static Object postGrading(Request request, Response response)
 	{
 		final Instant timeStamp = Instant.now();
 
@@ -244,35 +244,35 @@ public class Solutions
 		final Solution solution = getSolutionOr404(solutionID);
 		checkPrivilege(request, solution);
 
-		final TaskCorrection correction = json2Correction(solutionID, new JSONObject(request.body()));
-		correction.setTimeStamp(timeStamp);
+		final TaskGrading grading = json2Grading(solutionID, new JSONObject(request.body()));
+		grading.setTimeStamp(timeStamp);
 
 		final JSONObject result = new JSONObject();
-		result.put(TaskCorrection.PROPERTY_timeStamp, timeStamp.toString());
+		result.put(TaskGrading.PROPERTY_timeStamp, timeStamp.toString());
 		return result.toString(2);
 	}
 
-	private static JSONObject toJson(TaskCorrection correction)
+	private static JSONObject toJson(TaskGrading grading)
 	{
 		final JSONObject obj = new JSONObject();
-		obj.put(TaskCorrection.PROPERTY_solutionID, correction.getSolutionID());
-		obj.put(TaskCorrection.PROPERTY_taskID, correction.getTaskID());
-		obj.put(TaskCorrection.PROPERTY_timeStamp, correction.getTimeStamp());
-		obj.put(TaskCorrection.PROPERTY_author, correction.getAuthor());
-		obj.put(TaskCorrection.PROPERTY_points, correction.getPoints());
-		obj.put(TaskCorrection.PROPERTY_note, correction.getNote());
+		obj.put(TaskGrading.PROPERTY_solutionID, grading.getSolutionID());
+		obj.put(TaskGrading.PROPERTY_taskID, grading.getTaskID());
+		obj.put(TaskGrading.PROPERTY_timeStamp, grading.getTimeStamp());
+		obj.put(TaskGrading.PROPERTY_author, grading.getAuthor());
+		obj.put(TaskGrading.PROPERTY_points, grading.getPoints());
+		obj.put(TaskGrading.PROPERTY_note, grading.getNote());
 		return obj;
 	}
 
-	private static TaskCorrection json2Correction(String solutionID, JSONObject obj)
+	private static TaskGrading json2Grading(String solutionID, JSONObject obj)
 	{
-		final int taskID = obj.getInt(TaskCorrection.PROPERTY_taskID);
-		final TaskCorrection correction = new TaskCorrection(solutionID, taskID);
-		correction.setAuthor(obj.getString(TaskCorrection.PROPERTY_author));
-		correction.setPoints(obj.getInt(TaskCorrection.PROPERTY_points));
-		correction.setNote(obj.getString(TaskCorrection.PROPERTY_note));
+		final int taskID = obj.getInt(TaskGrading.PROPERTY_taskID);
+		final TaskGrading grading = new TaskGrading(solutionID, taskID);
+		grading.setAuthor(obj.getString(TaskGrading.PROPERTY_author));
+		grading.setPoints(obj.getInt(TaskGrading.PROPERTY_points));
+		grading.setNote(obj.getString(TaskGrading.PROPERTY_note));
 		// timestamp generated server-side
-		return correction;
+		return grading;
 	}
 
 	// --------------- Checking ---------------

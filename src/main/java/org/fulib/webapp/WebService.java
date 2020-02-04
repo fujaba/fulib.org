@@ -81,9 +81,9 @@ public class WebService
 							service.put("", Solutions::setAssignee);
 						});
 
-						service.path("/corrections", () -> {
-							service.post("", Solutions::postCorrection);
-							service.get("", Solutions::getCorrections);
+						service.path("/gradings", () -> {
+							service.post("", Solutions::postGrading);
+							service.get("", Solutions::getGradings);
 						});
 
 						service.path("/comments", () -> {
