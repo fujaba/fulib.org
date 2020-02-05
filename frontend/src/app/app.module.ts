@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
@@ -14,6 +15,7 @@ import { FourPaneEditorComponent } from './component/four-pane-editor/four-pane-
   ],
   imports: [
     BrowserModule,
+    FormsModule,
     CodemirrorModule,
     AppRoutingModule,
   ],
