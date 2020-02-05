@@ -7,7 +7,8 @@ dependencies:
   '@angular/platform-browser': 8.2.14_ecb0ad61817e3ede6ce462931a5e5041
   '@angular/platform-browser-dynamic': 8.2.14_4c5c48e73106d2e9b7131da2a9d6eb8e
   '@angular/router': 8.2.14_e94a473af1c39c32436b93512d471216
-  '@ctrl/ngx-codemirror': 2.2.1_af08dcaca42a08f1cc072f2a8fe47696
+  '@ctrl/ngx-codemirror': 2.2.1_d25e878356cf7752394a41b0e22ef690
+  codemirror: 5.51.0
   rxjs: 6.4.0
   tslib: 1.10.0
   zone.js: 0.9.1
@@ -1119,11 +1120,12 @@ packages:
     dev: true
     resolution:
       integrity: sha512-jBD+G8+LWpMBBWvVcdr4QysjUE4mU/syrhN17o1u3gx0/WzJB1kwiVZAXRtWbsIPOwW8pF/YJV5+nmetPzepXg==
-  /@ctrl/ngx-codemirror/2.2.1_af08dcaca42a08f1cc072f2a8fe47696:
+  /@ctrl/ngx-codemirror/2.2.1_d25e878356cf7752394a41b0e22ef690:
     dependencies:
       '@angular/core': 8.2.14_rxjs@6.4.0+zone.js@0.9.1
       '@angular/forms': 8.2.14_e94a473af1c39c32436b93512d471216
       '@types/codemirror': 0.0.81
+      codemirror: 5.51.0
       tslib: 1.10.0
     dev: false
     peerDependencies:
@@ -2348,6 +2350,10 @@ packages:
       tslint: ^5.0.0
     resolution:
       integrity: sha512-awBZXFcJUyC5HMYXiHzjr3D24tww2l1D1OqtfA9vUhEtYr32a65A+Gblm/OvsO+HuKLYzn8EDMw1inSM3VbxWA==
+  /codemirror/5.51.0:
+    dev: false
+    resolution:
+      integrity: sha512-vyuYYRv3eXL0SCuZA4spRFlKNzQAewHcipRQCOKgRy7VNAvZxTKzbItdbCl4S5AgPZ5g3WkHp+ibWQwv9TLG7Q==
   /collection-visit/1.0.0:
     dependencies:
       map-visit: 1.0.0
@@ -8154,6 +8160,7 @@ specifiers:
   '@types/jasminewd2': ~2.0.3
   '@types/node': ~8.9.4
   codelyzer: ^5.0.0
+  codemirror: ^5.51.0
   jasmine-core: ~3.4.0
   jasmine-spec-reporter: ~4.2.1
   karma: ~4.1.0
