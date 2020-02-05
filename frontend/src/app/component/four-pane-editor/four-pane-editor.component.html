@@ -1,1 +1,74 @@
-<p>four-pane-editor works!</p>
+<main role="main" class="wrap pb-5 m-4">
+  <div class="row pb-4">
+    <div class="col-md-12 col-lg-6">
+      <h2>Scenario</h2>
+      <div class="d-flex flex-wrap align-items-baseline" style="min-height: 2.5rem; margin-left: -.25rem;">
+        <div class="pl-1">
+          <label for="exampleSelect">Load Example:</label>
+          <select class="form-control form-control-sm d-inline" style="width: auto"
+                  id="exampleSelect" onchange="selectExample(this.value)">
+            <option value="">-</option>
+          </select>
+        </div>
+        <div class="pl-1 text-danger" id="exampleWarning" hidden>
+          Changes to the example will not be saved!
+        </div>
+        <div class="mr-auto"><!-- Spacer --></div>
+        <div class="pl-1">
+          <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal"
+                  data-target="#configModal">
+            Configure Project
+          </button>
+        </div>
+        <div class="pl-1">
+          <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="tooltip"
+                  title="Shortcuts: Ctrl-&#9166; / &#8984;&#9166;, Ctrl-S / &#8984;S" onclick="submit()">
+            Compile and Run
+          </button>
+        </div>
+      </div>
+      <textarea class="form-control" id="scenarioInput"></textarea>
+    </div>
+
+    <div class="col-md-12 col-lg-6">
+      <h2>Java Test Code</h2>
+      <div style="min-height: 2.5rem">
+        <div class="progress">
+          <div id="scenarioCompileProgress" class="progress-bar bg-success" role="progressbar"
+               style="width: 24.25%">
+            Scenario Compiler
+          </div>
+          <div class="progress-bar bg-light" role="progressbar" style="width: 1%"></div>
+          <div id="modelCompileProgress" class="progress-bar bg-success" role="progressbar"
+               style="width: 24.25%">
+            Java Model Compiler
+          </div>
+          <div class="progress-bar bg-light" role="progressbar" style="width: 1%"></div>
+          <div id="testCompileProgress" class="progress-bar bg-success" role="progressbar"
+               style="width: 24.25%">
+            Java Test Compiler
+          </div>
+          <div class="progress-bar bg-light" role="progressbar" style="width: 1%"></div>
+          <div id="testRunProgress" class="progress-bar bg-success" role="progressbar" style="width: 24.25%">
+            Test Run
+          </div>
+        </div>
+      </div>
+      <textarea class="form-control" id="javaTestOutput"></textarea>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 col-lg-6">
+      <h2>Class Diagram</h2>
+      <div id="classDiagram"></div>
+    </div>
+
+    <div class="col-md-12 col-lg-6">
+      <h2>Object Diagrams</h2>
+      <div class="svg" id="objectDiagrams"></div>
+      <ul class="nav nav-tabs" id="objectDiagramTab" role="tablist"></ul>
+      <div class="tab-content" id="objectDiagramTabContent"></div>
+    </div>
+  </div>
+</main>
