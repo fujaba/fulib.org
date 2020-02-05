@@ -7,6 +7,7 @@ dependencies:
   '@angular/platform-browser': 8.2.14_ecb0ad61817e3ede6ce462931a5e5041
   '@angular/platform-browser-dynamic': 8.2.14_4c5c48e73106d2e9b7131da2a9d6eb8e
   '@angular/router': 8.2.14_e94a473af1c39c32436b93512d471216
+  '@ctrl/ngx-codemirror': 2.2.1_af08dcaca42a08f1cc072f2a8fe47696
   rxjs: 6.4.0
   tslib: 1.10.0
   zone.js: 0.9.1
@@ -1118,6 +1119,19 @@ packages:
     dev: true
     resolution:
       integrity: sha512-jBD+G8+LWpMBBWvVcdr4QysjUE4mU/syrhN17o1u3gx0/WzJB1kwiVZAXRtWbsIPOwW8pF/YJV5+nmetPzepXg==
+  /@ctrl/ngx-codemirror/2.2.1_af08dcaca42a08f1cc072f2a8fe47696:
+    dependencies:
+      '@angular/core': 8.2.14_rxjs@6.4.0+zone.js@0.9.1
+      '@angular/forms': 8.2.14_e94a473af1c39c32436b93512d471216
+      '@types/codemirror': 0.0.81
+      tslib: 1.10.0
+    dev: false
+    peerDependencies:
+      '@angular/core': '>=8.0.0'
+      '@angular/forms': '>=8.0.0'
+      codemirror: ^5.48.2
+    resolution:
+      integrity: sha512-WjGOkNUfrNCvR1jSZiR1wy5WKV1ZGfIljfak6zs2DtWRtXcE1Ks0EoNUPhe8IMeaCQ7UppNuGmYPOKTlaVXjJg==
   /@istanbuljs/schema/0.1.2:
     dev: true
     engines:
@@ -1170,6 +1184,16 @@ packages:
       npm: '>= 6.2.0'
     resolution:
       integrity: sha512-NvCKn3QfpRjx1EzL56q9IC9fRtDXZP4bMGs/2tj+wtdBNHgm6ZJMJ9qc4mGeztKGbDFLmnX3Xz0XawAl+KeYzQ==
+  /@types/codemirror/0.0.81:
+    dependencies:
+      '@types/tern': 0.23.3
+    dev: false
+    resolution:
+      integrity: sha512-QoeIb9tn/TZp0IzNyMKlcwHR6pHxNoIW9mKqF7asAsj+AWqpFOEUsxia756L6WKBQNk2psHpu+aFuIFqo3Ac0A==
+  /@types/estree/0.0.42:
+    dev: false
+    resolution:
+      integrity: sha512-K1DPVvnBCPxzD+G51/cxVIoc2X8uUVl1zpJeE6iKcgHMj4+tbat5Xu4TjV7v2QSDbIeAfLi2hIk+u2+s0MlpUQ==
   /@types/events/3.0.0:
     dev: true
     resolution:
@@ -1212,6 +1236,12 @@ packages:
     dev: true
     resolution:
       integrity: sha512-K5K+yml8LTo9bWJI/rECfIPrGgxdpeNbj+d53lwN4QjW1MCwlkhUms+gtdzigTeUyBr09+u8BwOIY3MXvHdcsA==
+  /@types/tern/0.23.3:
+    dependencies:
+      '@types/estree': 0.0.42
+    dev: false
+    resolution:
+      integrity: sha512-imDtS4TAoTcXk0g7u4kkWqedB3E4qpjXzCpD2LU5M5NAXHzCDsypyvXSaG7mM8DKYkCRa7tFp4tS/lp/Wo7Q3w==
   /@types/webpack-sources/0.1.6:
     dependencies:
       '@types/node': 8.9.5
@@ -8119,6 +8149,7 @@ specifiers:
   '@angular/platform-browser': ~8.2.14
   '@angular/platform-browser-dynamic': ~8.2.14
   '@angular/router': ~8.2.14
+  '@ctrl/ngx-codemirror': ^2.2.1
   '@types/jasmine': ~3.3.8
   '@types/jasminewd2': ~2.0.3
   '@types/node': ~8.9.4
