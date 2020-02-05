@@ -27,7 +27,19 @@
           </button>
         </div>
       </div>
-      <textarea class="form-control" id="scenarioInput"></textarea>
+      <ngx-codemirror [(ngModel)]="scenarioText" [options]="{
+        theme: 'idea',
+        mode: 'markdown',
+        lineNumbers: true,
+        lineWrapping: true,
+        styleActiveLine: true,
+        extraKeys: {
+          'Ctrl-Enter': submit,
+          'Cmd-Enter': submit,
+          'Ctrl-S': submit,
+          'Cmd-S': submit
+        }
+      }"></ngx-codemirror>
     </div>
 
     <div class="col-md-12 col-lg-6">
@@ -54,7 +66,13 @@
           </div>
         </div>
       </div>
-      <textarea class="form-control" id="javaTestOutput"></textarea>
+      <ngx-codemirror [(ngModel)]="javaCode" [options]="{
+        theme: 'idea',
+        lineNumbers: true,
+        matchBrackets: true,
+        readOnly: true,
+        mode: 'text/x-java'
+      }"></ngx-codemirror>
     </div>
   </div>
 

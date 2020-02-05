@@ -6,10 +6,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./four-pane-editor.component.scss']
 })
 export class FourPaneEditorComponent implements OnInit {
+  scenarioText: string = 'test foo bar';
+  javaCode: string = 'System.out.println("Hello World");';
 
   constructor() { }
 
   ngOnInit() {
   }
 
+  submit(): void {
+    console.log('submit');
+  }
 }
