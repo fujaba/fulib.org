@@ -5,9 +5,14 @@
       <div class="d-flex flex-wrap align-items-baseline" style="min-height: 2.5rem; margin-left: -.25rem;">
         <div class="pl-1">
           <label for="exampleSelect">Load Example:</label>
-          <select class="form-control form-control-sm d-inline" style="width: auto"
-                  id="exampleSelect" onchange="selectExample(this.value)">
-            <option value="">-</option>
+          <select class="form-control form-control-sm d-inline" style="width: auto" id="exampleSelect" [(ngModel)]="selectedExample">
+            <option value="" [ngValue]="null">-</option>
+            <optgroup *ngFor="let category of exampleCategories; index as categoryIndex"
+                      label="{{categoryIndex + 1}}. {{category.name}}">
+              <option *ngFor="let example of category.examples; index as exampleIndex"
+                      label="{{categoryIndex + 1}}.{{exampleIndex + 1}}. {{example.name}}"
+                      [ngValue]="example"></option>
+            </optgroup>
           </select>
         </div>
         <div class="pl-1 text-danger" id="exampleWarning" hidden>

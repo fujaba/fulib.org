@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {ExamplesService} from "../../examples.service";
+import ExampleCategory from "../../model/example-category";
+import Example from "../../model/example";
 
 @Component({
   selector: 'app-four-pane-editor',
@@ -9,12 +12,27 @@ export class FourPaneEditorComponent implements OnInit {
   scenarioText: string = 'test foo bar';
   javaCode: string = 'System.out.println("Hello World");';
 
-  constructor() { }
+  exampleCategories: ExampleCategory[];
+  _selectedExample: Example;
+
+  constructor(
+    private examplesService: ExamplesService,
+  ) { }
 
   ngOnInit() {
+    this.exampleCategories = this.examplesService.getCategories();
   }
 
   submit(): void {
     console.log('submit');
+  }
+
+  get selectedExample() {
+    return this._selectedExample;
+  }
+
+  set selectedExample(value: Example) {
+    console.log('selected ' + value.name);
+    this._selectedExample = value;
   }
 }
