@@ -1,5 +1,7 @@
 import {Injectable} from '@angular/core';
 
+import {HttpClient} from '@angular/common/http'
+
 import {Observable, of} from 'rxjs';
 import {tap} from 'rxjs/operators';
 
@@ -10,6 +12,8 @@ import Example from "./model/example";
   providedIn: 'root'
 })
 export class ExamplesService {
+  private url = 'http://localhost:4567/examples';
+
   private readonly categories: ExampleCategory[] = [
     {
       name: 'Definitions', examples: [
@@ -69,6 +73,7 @@ export class ExamplesService {
     if (example.scenario) {
       return of(example.scenario);
     }
-    return of('foo').pipe(tap(text => example.scenario = text));
+    const url = `${this.url}/${example.category.name.toLowerCase()}/${example.name.replace(' ', '')}.md`;
+    return this.http.get(url, { responseType: 'text'}).pipe(tap(text => example.scenario = text));
   }
 }
