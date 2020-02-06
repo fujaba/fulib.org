@@ -15,7 +15,7 @@
             </optgroup>
           </select>
         </div>
-        <div class="pl-1 text-danger" id="exampleWarning" hidden>
+        <div class="pl-1 text-danger" [hidden]="!selectedExample">
           Changes to the example will not be saved!
         </div>
         <div class="mr-auto"><!-- Spacer --></div>
