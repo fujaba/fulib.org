@@ -113,9 +113,34 @@
 
     <div class="col-md-12 col-lg-6">
       <h2>Object Diagrams</h2>
-      <div class="svg" id="objectDiagrams"></div>
-      <ul class="nav nav-tabs" id="objectDiagramTab" role="tablist"></ul>
-      <div class="tab-content" id="objectDiagramTabContent"></div>
+      <div *ngIf="!response">
+        Loading...
+      </div>
+
+      <ng-container *ngIf="response && response.objectDiagrams">
+        <ul ngbNav #objectDiagramTabs="ngbNav" [(activeId)]="activeObjectDiagramTab" class="nav-tabs">
+          <li *ngFor="let diagram of response.objectDiagrams; index as index" [ngbNavItem]="index">
+            <a ngbNavLink>{{diagram.name}}</a>
+            <ng-template ngbNavContent>
+              <img *ngIf="diagram.name.endsWith('.png')"
+                   class="diagram" src="data:image/png;base64,{{diagram.content}}"
+                   alt="{{diagram.name}}">
+              <div *ngIf="diagram.name.endsWith('.svg')"
+                   [innerHTML]="response.classDiagram | safeHtml"
+                   class="diagram"
+              ></div>
+              <pre *ngIf="diagram.name.endsWith('.yaml') || diagram.name.endsWith('.txt')">{{diagram.content}}</pre>
+              <iframe *ngIf="diagram.name.endsWith('.html')"
+                      width="100%" height="500px"
+                      [srcdoc]="diagram.content | safeHtml"
+                      src="data:text/html,<strong>Your browser cannot display this mockup!</strong>"
+              ></iframe>
+            </ng-template>
+          </li>
+        </ul>
+
+        <div [ngbNavOutlet]="objectDiagramTabs" class="mt-2"></div>
+      </ng-container>
     </div>
   </div>
 </main>

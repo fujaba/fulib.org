@@ -16,6 +16,7 @@ export class FourPaneEditorComponent implements OnInit {
   response: Response | null;
 
   exampleCategories: ExampleCategory[];
+  activeObjectDiagramTab: number;
 
   constructor(
     private examplesService: ExamplesService,
