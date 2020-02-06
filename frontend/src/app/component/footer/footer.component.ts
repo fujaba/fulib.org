@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, AfterViewInit, ViewChild} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {PrivacyService, Privacy} from "../../privacy.service";
 
@@ -7,17 +7,29 @@ import {PrivacyService, Privacy} from "../../privacy.service";
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.scss']
 })
-export class FooterComponent implements OnInit {
+export class FooterComponent implements OnInit, AfterViewInit {
   constructor(
     public readonly modalService: NgbModal,
     private privacyService: PrivacyService,
   ) {
   }
 
+  @ViewChild('privacyModal', {static: false}) privacyModal;
+
   privacy: Privacy;
 
   ngOnInit(): void {
     this.loadPrivacy();
+  }
+
+  ngAfterViewInit(): void {
+    if (this.privacyService.privacy === null) {
+      this.openPrivacyModal();
+    }
+  }
+
+  openPrivacyModal(): void {
+    this.modalService.open(this.privacyModal, {ariaLabelledBy: 'privacyModalLabel'})
   }
 
   loadPrivacy(): void {
