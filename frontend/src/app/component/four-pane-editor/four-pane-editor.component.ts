@@ -14,7 +14,7 @@ export class FourPaneEditorComponent implements OnInit {
   javaCode: string = 'System.out.println("Hello World");';
 
   exampleCategories: ExampleCategory[];
-  _selectedExample: Example;
+  _selectedExample: Example | null;
 
   constructor(
     private examplesService: ExamplesService,
@@ -37,8 +37,13 @@ export class FourPaneEditorComponent implements OnInit {
     return this._selectedExample;
   }
 
-  set selectedExample(value: Example) {
+  set selectedExample(value: Example | null) {
     this._selectedExample = value;
-    this.examplesService.getScenario(value).subscribe(scenario => this.scenarioText = scenario);
+    if (value) {
+      this.examplesService.getScenario(value).subscribe(scenario => this.scenarioText = scenario);
+    }
+    else {
+      this.scenarioText = this.scenarioEditorService.storedScenario;
+    }
   }
 }

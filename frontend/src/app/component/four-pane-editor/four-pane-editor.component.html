@@ -6,7 +6,7 @@
         <div class="pl-1">
           <label for="exampleSelect">Load Example:</label>
           <select class="form-control form-control-sm d-inline" style="width: auto" id="exampleSelect" [(ngModel)]="selectedExample">
-            <option value="" [ngValue]="null">-</option>
+            <option [ngValue]="null">-</option>
             <optgroup *ngFor="let category of exampleCategories; index as categoryIndex"
                       label="{{categoryIndex + 1}}. {{category.name}}">
               <option *ngFor="let example of category.examples; index as exampleIndex"
