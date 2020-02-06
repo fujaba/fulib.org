@@ -13,7 +13,18 @@ export class ScenarioEditorService {
 There is a Car with name Herbie.
 `;
 
+  public readonly defaultPackageName = 'org.example';
+  public readonly defaultProjectName = 'scenario';
+  public readonly defaultProjectVersion = '0.1.0';
+  public readonly defaultScenarioFileName = 'Scenario.md';
+
   private _storedScenario?: string;
+
+  private _packageName: string | null;
+  private _projectName: string | null;
+  private _projectVersion: string | null;
+  private _scenarioFileName: string | null;
+
   private _selectedExample: Example | null;
 
   constructor(
@@ -50,6 +61,50 @@ There is a Car with name Herbie.
     }
     else {
       localStorage.removeItem('selectedExample');
+    }
+  }
+
+  get packageName(): string {
+    return this._packageName || localStorage.getItem('packageName') || this.defaultPackageName;
+  }
+
+  set packageName(value: string) {
+    if (this._packageName !== value) {
+      this._packageName = value;
+      localStorage.setItem('packageName', value);
+    }
+  }
+
+  get projectName(): string {
+    return this._projectName || localStorage.getItem('projectName') || this.defaultProjectName;
+  }
+
+  set projectName(value: string) {
+    if (this._projectName !== value) {
+      this._projectName = value;
+      localStorage.setItem('projectName', value);
+    }
+  }
+
+  get projectVersion(): string {
+    return this._projectVersion || localStorage.getItem('projectVersion') || this.defaultProjectVersion;
+  }
+
+  set projectVersion(value: string) {
+    if (this._projectVersion !== value) {
+      this._projectVersion = value;
+      localStorage.setItem('projectVersion', value);
+    }
+  }
+
+  get scenarioFileName(): string {
+    return this._scenarioFileName || localStorage.getItem('scenarioFileName') || this.defaultScenarioFileName;
+  }
+
+  set scenarioFileName(value: string) {
+    if (this._scenarioFileName !== value) {
+      this._scenarioFileName = value;
+      localStorage.setItem('scenarioFileName', value);
     }
   }
 }
