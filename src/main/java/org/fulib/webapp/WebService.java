@@ -46,7 +46,7 @@ public class WebService
 		if (new File(resourceFolder).exists())
 		{
 			// dev environment, allow CORS
-			service.before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
+			enableCORS(service);
 
 			staticHandler.configureExternal(resourceFolder);
 		}
@@ -69,5 +69,24 @@ public class WebService
 		});
 
 		Logger.getGlobal().info("scenario server started on http://localhost:4567");
+	}
+
+	private static void enableCORS(Service service)
+	{
+		service.before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
+
+		service.options("/*", (req, res) -> {
+			String accessControlRequestHeaders = req.headers("Access-Control-Request-Headers");
+			if (accessControlRequestHeaders != null) {
+				res.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
+			}
+
+			String accessControlRequestMethod = req.headers("Access-Control-Request-Method");
+			if (accessControlRequestMethod != null) {
+				res.header("Access-Control-Allow-Methods", accessControlRequestMethod);
+			}
+
+			return "OK";
+		});
 	}
 }
