@@ -44,7 +44,7 @@ body {
     border-color: #404040;
   }
 
-  img.diagram, svg.diagram {
+  img.diagram, .diagram > svg {
     filter: invert(100%);
   }
 }
