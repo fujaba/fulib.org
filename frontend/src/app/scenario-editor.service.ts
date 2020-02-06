@@ -6,7 +6,6 @@ import {ExamplesService} from "./examples.service";
   providedIn: 'root'
 })
 export class ScenarioEditorService {
-  private persistenceKey = 'storedScenario';
   private defaultScenario = `# My First Scenario
 
 // start typing your scenario or select an example using the dropdown above.
@@ -23,13 +22,13 @@ There is a Car with name Herbie.
   }
 
   get storedScenario(): string {
-    return this._storedScenario || localStorage.getItem(this.persistenceKey) || this.defaultScenario;
+    return this._storedScenario || localStorage.getItem('storedScenario') || this.defaultScenario;
   }
 
   set storedScenario(value: string) {
     if (this._storedScenario !== value) {
       this._storedScenario = value;
-      localStorage.setItem(this.persistenceKey, value);
+      localStorage.setItem('storedScenario', value);
     }
   }
 
