@@ -13,13 +13,15 @@ import {SafeHtmlPipe} from "./pipes/safe-html.pipe";
 import { AppComponent } from './component/app.component';
 import { FourPaneEditorComponent } from './component/four-pane-editor/four-pane-editor.component';
 import { ConfigModalComponent } from './component/config-modal/config-modal.component';
+import { FooterComponent } from './component/footer/footer.component';
 
 @NgModule({
   declarations: [
     SafeHtmlPipe,
     AppComponent,
     FourPaneEditorComponent,
-    ConfigModalComponent
+    ConfigModalComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,
