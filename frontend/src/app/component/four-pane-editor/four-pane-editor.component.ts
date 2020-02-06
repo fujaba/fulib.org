@@ -20,7 +20,8 @@ export class FourPaneEditorComponent implements OnInit {
   constructor(
     private examplesService: ExamplesService,
     private scenarioEditorService: ScenarioEditorService,
-  ) { }
+  ) {
+  }
 
   ngOnInit() {
     this.exampleCategories = this.examplesService.getCategories();
@@ -46,7 +47,44 @@ export class FourPaneEditorComponent implements OnInit {
   }
 
   get javaCode() {
-    return !this.response ? '// loading...' : 'System.out.println("Hello world");';
+    if (!this.response) {
+      return '// Loading...'
+    }
+
+    let javaCode = '';
+    if (this.response.exitCode !== 0) {
+      const outputLines = this.response.output.split('\n');
+      javaCode += this.foldInternalCalls(outputLines).map(line => `// ${line}\n`).join('');
+    }
+
+    for (let testMethod of this.response.testMethods || []) {
+      javaCode += `// --------------- ${testMethod.name} in class ${testMethod.className} ---------------\n\n`;
+      javaCode += testMethod.body;
+      javaCode += '\n';
+    }
+
+    return javaCode;
+  }
+
+  private foldInternalCalls(outputLines: string[]): string[] {
+    const packageName = this.scenarioEditorService.packageName.replace('/', '.');
+    const packageNamePrefix = `\tat ${packageName}.`;
+    const result = [];
+    let counter = 0;
+    for (let line of outputLines) {
+      if (line.startsWith('\tat org.fulib.scenarios.tool.') ||
+        line.startsWith('\tat ') && !line.startsWith('\tat org.fulib.') &&
+        !line.startsWith(packageNamePrefix)) {
+        counter++;
+      } else {
+        if (counter > 0) {
+          result.push(counter === 1 ? '\t(1 internal call)' : `\t(${counter} internal calls)`);
+          counter = 0;
+        }
+        result.push(line);
+      }
+    }
+    return result;
   }
 
   get selectedExample() {
@@ -61,8 +99,7 @@ export class FourPaneEditorComponent implements OnInit {
   private loadExample(value: Example | null): void {
     if (value) {
       this.examplesService.getScenario(value).subscribe(scenario => this.scenarioText = scenario);
-    }
-    else {
+    } else {
       this.scenarioText = this.scenarioEditorService.storedScenario;
     }
     this.submit();
