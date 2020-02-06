@@ -3,6 +3,8 @@ import {ExamplesService} from "../../examples.service";
 import ExampleCategory from "../../model/example-category";
 import Example from "../../model/example";
 import {ScenarioEditorService} from "../../scenario-editor.service";
+import Response from "../../model/codegen/response";
+import Request from "../../model/codegen/request";
 
 @Component({
   selector: 'app-four-pane-editor',
@@ -11,7 +13,7 @@ import {ScenarioEditorService} from "../../scenario-editor.service";
 })
 export class FourPaneEditorComponent implements OnInit {
   scenarioText: string;
-  javaCode: string = 'System.out.println("Hello World");';
+  response: Response | null;
 
   exampleCategories: ExampleCategory[];
 
@@ -26,10 +28,25 @@ export class FourPaneEditorComponent implements OnInit {
   }
 
   submit(): void {
-    console.log('submit');
     if (!this.selectedExample) {
       this.scenarioEditorService.storedScenario = this.scenarioText;
     }
+
+    this.response = null;
+    const request: Request = {
+      privacy: 'all', // TODO
+      packageName: this.scenarioEditorService.packageName,
+      scenarioFileName: this.scenarioEditorService.scenarioFileName,
+      scenarioText: this.scenarioText,
+      selectedExample: this.selectedExample ? this.selectedExample.name : undefined,
+    };
+    this.scenarioEditorService.submit(request).subscribe(response => {
+      this.response = response;
+    });
+  }
+
+  get javaCode() {
+    return !this.response ? '// loading...' : 'System.out.println("Hello world");';
   }
 
   get selectedExample() {
