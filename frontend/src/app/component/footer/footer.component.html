@@ -50,26 +50,25 @@
 
     <div class="form-check">
       <label class="form-check-label">
-        <input id="privacy-all" class="form-check-input" type="radio" name="privacy" value="all">
+        <input class="form-check-input" type="radio" value="all" [(ngModel)]="privacy">
         I agree to the use of local and remote data storage.
       </label>
     </div>
     <div class="form-check">
       <label class="form-check-label">
-        <input id="privacy-local" class="form-check-input" type="radio" name="privacy" value="local">
+        <input class="form-check-input" type="radio" value="local" [(ngModel)]="privacy">
         I agree to the use of local data storage, but not remote.
       </label>
     </div>
     <div class="form-check">
       <label class="form-check-label">
-        <input id="privacy-none" class="form-check-input" type="radio" name="privacy" value="none">
+        <input class="form-check-input" type="radio" value="none" [(ngModel)]="privacy">
         I do not agree to the use of local or remote data storage.
       </label>
     </div>
     <div class="form-check">
       <label class="form-check-label">
-        <input id="privacy-nobanner" class="form-check-input" type="radio" name="privacy"
-               value="nobanner">
+        <input class="form-check-input" type="radio" value="nobanner" [(ngModel)]="privacy">
         I do not agree to the use of local or remote data storage,
         except for the use of local storage to hide this popup in the future.
       </label>

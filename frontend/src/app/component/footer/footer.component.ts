@@ -12,10 +12,12 @@ export class FooterComponent implements OnInit {
   ) {
   }
 
+  privacy: string;
+
   ngOnInit() {
   }
 
   savePrivacy() {
-
+    console.log(this.privacy);
   }
 }
