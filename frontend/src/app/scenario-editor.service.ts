@@ -6,6 +6,7 @@ import Example from "./model/example";
 import {ExamplesService} from "./examples.service";
 import Request from "./model/codegen/request";
 import Response from "./model/codegen/response";
+import ProjectZipRequest from "./model/project-zip-request";
 
 @Injectable({
   providedIn: 'root'
@@ -118,5 +119,9 @@ There is a Car with name Herbie.
 
   submit(codeGenRequest: Request): Observable<Response> {
     return this.http.post<Response>(this.apiUrl + '/runcodegen', codeGenRequest);
+  }
+
+  downloadZip(projectZipRequest: ProjectZipRequest): Observable<Blob> {
+    return this.http.post(this.apiUrl + '/projectzip', projectZipRequest, {responseType: "blob"});
   }
 }
