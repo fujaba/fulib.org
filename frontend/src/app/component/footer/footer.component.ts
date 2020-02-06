@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {PrivacyService, Privacy} from "../../privacy.service";
 
 @Component({
   selector: 'app-footer',
@@ -9,15 +10,21 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 export class FooterComponent implements OnInit {
   constructor(
     public readonly modalService: NgbModal,
+    private privacyService: PrivacyService,
   ) {
   }
 
-  privacy: string;
+  privacy: Privacy;
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.loadPrivacy();
   }
 
-  savePrivacy() {
-    console.log(this.privacy);
+  loadPrivacy(): void {
+    this.privacy = this.privacyService.privacy || 'none';
+  }
+
+  savePrivacy(): void {
+    this.privacyService.privacy = this.privacy;
   }
 }

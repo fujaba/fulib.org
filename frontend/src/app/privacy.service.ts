@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-type Privacy = 'all' | 'local' | 'none' | 'nobanner';
+export type Privacy = 'all' | 'local' | 'none' | 'nobanner';
 
 @Injectable({
   providedIn: 'root'
