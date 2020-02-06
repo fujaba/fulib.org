@@ -126,7 +126,7 @@
                    class="diagram" src="data:image/png;base64,{{diagram.content}}"
                    alt="{{diagram.name}}">
               <div *ngIf="diagram.name.endsWith('.svg')"
-                   [innerHTML]="response.classDiagram | safeHtml"
+                   [innerHTML]="diagram.content | safeHtml"
                    class="diagram"
               ></div>
               <pre *ngIf="diagram.name.endsWith('.yaml') || diagram.name.endsWith('.txt')">{{diagram.content}}</pre>
