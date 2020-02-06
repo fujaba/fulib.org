@@ -20,8 +20,7 @@
         </div>
         <div class="mr-auto"><!-- Spacer --></div>
         <div class="pl-1">
-          <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal"
-                  data-target="#configModal">
+          <button type="button" class="btn btn-outline-secondary btn-sm" (click)="configModalComponent.open()">
             Configure Project
           </button>
         </div>
@@ -95,3 +94,5 @@
     </div>
   </div>
 </main>
+
+<app-config-modal #configModalComponent></app-config-modal>

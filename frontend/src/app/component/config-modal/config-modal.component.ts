@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 
+declare var $: any;
+
 @Component({
   selector: 'app-config-modal',
   templateUrl: './config-modal.component.html',
@@ -15,6 +17,10 @@ export class ConfigModalComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  open(): void {
+    $('#configModal').modal('show');
   }
 
   private save(): void {
