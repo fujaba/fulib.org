@@ -9,8 +9,10 @@ dependencies:
   '@angular/router': 8.2.14_e94a473af1c39c32436b93512d471216
   '@ctrl/ngx-codemirror': 2.2.1_d25e878356cf7752394a41b0e22ef690
   '@ng-bootstrap/ng-bootstrap': 5.2.1_28f38c6b3dcfb84e8962d3e70abde5c8
+  '@types/file-saver': 2.0.1
   bootstrap: 4.3.1
   codemirror: 5.51.0
+  file-saver: 2.0.2
   rxjs: 6.4.0
   tslib: 1.10.0
   zone.js: 0.9.1
@@ -1217,6 +1219,10 @@ packages:
     dev: true
     resolution:
       integrity: sha512-EaObqwIvayI5a8dCzhFrjKzVwKLxjoG9T6Ppd5CEo07LRKfQ8Yokw54r5+Wq7FaBQ+yXRvQAYPrHwya1/UFt9g==
+  /@types/file-saver/2.0.1:
+    dev: false
+    resolution:
+      integrity: sha512-g1QUuhYVVAamfCifK7oB7G3aIl4BbOyzDOqVyUfEr4tfBKrXfeH+M+Tg7HKCXSrbzxYdhyCP7z9WbKo0R2hBCw==
   /@types/glob/7.1.1:
     dependencies:
       '@types/events': 3.0.0
@@ -3404,6 +3410,10 @@ packages:
       webpack: ^4.0.0
     resolution:
       integrity: sha512-+xZnaK5R8kBJrHK0/6HRlrKNamvVS5rjyuju+rnyxRGuwUJwpAMsVzUl5dz6rK8brkzjV6JpcFNjp6NqV0g1OQ==
+  /file-saver/2.0.2:
+    dev: false
+    resolution:
+      integrity: sha512-Wz3c3XQ5xroCxd1G8b7yL0Ehkf0TC9oYC6buPFkNnU9EnaPlifeAFCyCh+iewXTyFRcg0a6j3J7FmJsIhlhBdw==
   /file-uri-to-path/1.0.0:
     dev: true
     optional: true
@@ -8183,12 +8193,14 @@ specifiers:
   '@angular/router': ~8.2.14
   '@ctrl/ngx-codemirror': ^2.2.1
   '@ng-bootstrap/ng-bootstrap': ^5.2.1
+  '@types/file-saver': ^2.0.1
   '@types/jasmine': ~3.3.8
   '@types/jasminewd2': ~2.0.3
   '@types/node': ~8.9.4
   bootstrap: ~4.3.1
   codelyzer: ^5.0.0
   codemirror: ^5.51.0
+  file-saver: ^2.0.2
   jasmine-core: ~3.4.0
   jasmine-spec-reporter: ~4.2.1
   karma: ~4.1.0
