@@ -45,5 +45,6 @@ export class FourPaneEditorComponent implements OnInit {
     else {
       this.scenarioText = this.scenarioEditorService.storedScenario;
     }
+    this.submit();
   }
 }
