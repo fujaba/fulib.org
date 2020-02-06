@@ -20,4 +20,19 @@ export class PrivacyService {
       localStorage.setItem('privacy', value);
     }
   }
+
+  get allowLocalStorage(): boolean {
+    const privacy = this.privacy;
+    return privacy && privacy !== 'none';
+  }
+
+  getStorage(key: string): string | null {
+    return this.allowLocalStorage ? localStorage.getItem(key) : null;
+  }
+
+  setStorage(key: string, value: string) {
+    if (this.allowLocalStorage) {
+      localStorage.setItem(key, value);
+    }
+  }
 }
