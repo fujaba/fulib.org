@@ -14,6 +14,7 @@ import { AppComponent } from './component/app.component';
 import { FourPaneEditorComponent } from './component/four-pane-editor/four-pane-editor.component';
 import { ConfigModalComponent } from './component/config-modal/config-modal.component';
 import { FooterComponent } from './component/footer/footer.component';
+import { DarkSwitchComponent } from './dark-switch/dark-switch.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { FooterComponent } from './component/footer/footer.component';
     AppComponent,
     FourPaneEditorComponent,
     ConfigModalComponent,
-    FooterComponent
+    FooterComponent,
+    DarkSwitchComponent
   ],
   imports: [
     BrowserModule,
