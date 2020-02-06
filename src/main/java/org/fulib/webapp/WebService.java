@@ -4,6 +4,7 @@ import org.fulib.webapp.mongo.Mongo;
 import org.fulib.webapp.projectzip.ProjectZip;
 import org.fulib.webapp.tool.RunCodeGen;
 import spark.Service;
+import spark.staticfiles.StaticFilesConfiguration;
 
 import java.io.File;
 import java.util.Properties;
@@ -39,16 +40,21 @@ public class WebService
 
 		service.port(4567);
 
+		final StaticFilesConfiguration staticHandler = new StaticFilesConfiguration();
 		final String staticFolder = "/org/fulib/webapp/static";
 		final String resourceFolder = "src/main/resources" + staticFolder;
 		if (new File(resourceFolder).exists())
 		{
-			service.staticFiles.externalLocation(resourceFolder);
+			// dev environment, allow CORS
+			service.before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
+
+			staticHandler.configureExternal(resourceFolder);
 		}
 		else
 		{
-			service.staticFiles.location(staticFolder);
+			staticHandler.configure(staticFolder);
 		}
+		service.before((request, response) -> staticHandler.consume(request.raw(), response.raw()));
 
 		service.redirect.get("/github", "https://github.com/fujaba/fulib.org");
 
