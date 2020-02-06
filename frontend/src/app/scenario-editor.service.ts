@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
@@ -14,14 +14,17 @@ There is a Car with name Herbie.
 
   private _storedScenario?: string;
 
-  constructor() { }
+  constructor() {
+  }
 
   get storedScenario(): string {
     return this._storedScenario || localStorage.getItem(this.persistenceKey) || this.defaultScenario;
   }
 
   set storedScenario(value: string) {
-    this._storedScenario = value;
-    localStorage.setItem(this.persistenceKey, value);
+    if (this._storedScenario !== value) {
+      this._storedScenario = value;
+      localStorage.setItem(this.persistenceKey, value);
+    }
   }
 }
