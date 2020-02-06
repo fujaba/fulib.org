@@ -8,6 +8,7 @@ dependencies:
   '@angular/platform-browser-dynamic': 8.2.14_4c5c48e73106d2e9b7131da2a9d6eb8e
   '@angular/router': 8.2.14_e94a473af1c39c32436b93512d471216
   '@ctrl/ngx-codemirror': 2.2.1_d25e878356cf7752394a41b0e22ef690
+  bootstrap: 4.3.1
   codemirror: 5.51.0
   rxjs: 6.4.0
   tslib: 1.10.0
@@ -1901,6 +1902,15 @@ packages:
     dev: true
     resolution:
       integrity: sha1-jokKGD2O6aI5OzhExpGkK897yfU=
+  /bootstrap/4.3.1:
+    dev: false
+    engines:
+      node: '>=6'
+    peerDependencies:
+      jquery: 1.9.1 - 3
+      popper.js: ^1.14.7
+    resolution:
+      integrity: sha512-rXqOmH1VilAt2DyPzluTi2blhk17bO7ef+zLLPlWvG494pDxcM234pJ8wTc/6R40UWizAIIMgxjvxZg5kmsbag==
   /brace-expansion/1.1.11:
     dependencies:
       balanced-match: 1.0.0
@@ -8159,6 +8169,7 @@ specifiers:
   '@types/jasmine': ~3.3.8
   '@types/jasminewd2': ~2.0.3
   '@types/node': ~8.9.4
+  bootstrap: ~4.3.1
   codelyzer: ^5.0.0
   codemirror: ^5.51.0
   jasmine-core: ~3.4.0
