@@ -32,7 +32,7 @@ export class FourPaneEditorComponent implements OnInit {
   }
 
   set selectedExample(value: Example) {
-    console.log('selected ' + value.name);
     this._selectedExample = value;
+    this.examplesService.getScenario(value).subscribe(scenario => this.scenarioText = scenario);
   }
 }
