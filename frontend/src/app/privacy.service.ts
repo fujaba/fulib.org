@@ -15,15 +15,22 @@ export class PrivacyService {
   }
 
   set privacy(value: Privacy | null) {
-    if (this._privacy !== value) {
-      this._privacy = value;
+    if (this._privacy === value) {
+      return;
+    }
+
+    this._privacy = value;
+    if (value && value !== 'none') {
       localStorage.setItem('privacy', value);
+    }
+    else {
+      localStorage.removeItem('privacy');
     }
   }
 
   get allowLocalStorage(): boolean {
     const privacy = this.privacy;
-    return privacy && privacy !== 'none';
+    return privacy && privacy !== 'none' && privacy !== 'nobanner';
   }
 
   getStorage(key: string): string | null {
