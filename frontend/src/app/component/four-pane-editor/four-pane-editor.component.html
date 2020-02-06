@@ -5,7 +5,8 @@
       <div class="d-flex flex-wrap align-items-baseline" style="min-height: 2.5rem; margin-left: -.25rem;">
         <div class="pl-1">
           <label for="exampleSelect">Load Example:</label>
-          <select class="form-control form-control-sm d-inline" style="width: auto" id="exampleSelect" [(ngModel)]="selectedExample">
+          <select class="form-control form-control-sm d-inline" style="width: auto" id="exampleSelect"
+                  [(ngModel)]="selectedExample">
             <option [ngValue]="null">-</option>
             <optgroup *ngFor="let category of exampleCategories; index as categoryIndex"
                       label="{{categoryIndex + 1}}. {{category.name}}">
@@ -50,22 +51,39 @@
       <h2>Java Test Code</h2>
       <div style="min-height: 2.5rem">
         <div class="progress">
-          <div id="scenarioCompileProgress" class="progress-bar bg-success" role="progressbar"
-               style="width: 24.25%">
+          <div class="progress-bar"
+               role="progressbar"
+               style="width: 24.25%"
+               [class.bg-success]="response && toolSuccess(0)"
+               [class.bg-danger]="response && !toolSuccess(0)"
+          >
             Scenario Compiler
           </div>
           <div class="progress-bar bg-light" role="progressbar" style="width: 1%"></div>
-          <div id="modelCompileProgress" class="progress-bar bg-success" role="progressbar"
-               style="width: 24.25%">
+          <div class="progress-bar"
+               role="progressbar"
+               style="width: 24.25%"
+               [class.bg-success]="response && toolSuccess(1)"
+               [class.bg-danger]="response && !toolSuccess(1)"
+          >
             Java Model Compiler
           </div>
           <div class="progress-bar bg-light" role="progressbar" style="width: 1%"></div>
-          <div id="testCompileProgress" class="progress-bar bg-success" role="progressbar"
-               style="width: 24.25%">
+          <div class="progress-bar"
+               role="progressbar"
+               style="width: 24.25%"
+               [class.bg-success]="response && toolSuccess(2)"
+               [class.bg-danger]="response && !toolSuccess(2)"
+          >
             Java Test Compiler
           </div>
           <div class="progress-bar bg-light" role="progressbar" style="width: 1%"></div>
-          <div id="testRunProgress" class="progress-bar bg-success" role="progressbar" style="width: 24.25%">
+          <div class="progress-bar"
+               role="progressbar"
+               style="width: 24.25%"
+               [class.bg-success]="response && toolSuccess(3)"
+               [class.bg-danger]="response && !toolSuccess(3)"
+          >
             Test Run
           </div>
         </div>

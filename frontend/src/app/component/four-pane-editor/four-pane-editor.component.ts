@@ -87,6 +87,10 @@ export class FourPaneEditorComponent implements OnInit {
     return result;
   }
 
+  private toolSuccess(index: number) {
+    return this.response.exitCode == 0 || (this.response.exitCode & 3) > index;
+  }
+
   get selectedExample() {
     return this.scenarioEditorService.selectedExample;
   }
