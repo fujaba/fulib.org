@@ -11,6 +11,8 @@ import Response from "./model/codegen/response";
   providedIn: 'root'
 })
 export class ScenarioEditorService {
+  private apiUrl = 'http://localhost:4567';
+
   private defaultScenario = `# My First Scenario
 
 // start typing your scenario or select an example using the dropdown above.
@@ -115,6 +117,6 @@ There is a Car with name Herbie.
   }
 
   submit(codeGenRequest: Request): Observable<Response> {
-    return this.http.post<Response>('runcodegen', codeGenRequest);
+    return this.http.post<Response>(this.apiUrl + '/runcodegen', codeGenRequest);
   }
 }
