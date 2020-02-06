@@ -1,9 +1,10 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ScenarioEditorService} from "../../scenario-editor.service";
 
-import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
+import {saveAs} from 'file-saver'
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
-declare var $: any;
+import ProjectZipRequest from "../../model/project-zip-request";
 
 @Component({
   selector: 'app-config-modal',
@@ -44,6 +45,16 @@ export class ConfigModalComponent implements OnInit {
   }
 
   private downloadProjectZip(): void {
-
+    const request: ProjectZipRequest = {
+      privacy: 'all', // TODO
+      packageName: this.packageName,
+      projectName: this.projectName,
+      projectVersion: this.projectVersion,
+      scenarioFileName: this.scenarioFileName,
+      scenarioText: this.scenarioEditorService.storedScenario,
+    };
+    this.scenarioEditorService.downloadZip(request).subscribe(blob => {
+      saveAs(blob, `${this.projectName}.zip`);
+    });
   }
 }
