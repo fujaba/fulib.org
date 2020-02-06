@@ -9,7 +9,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form>
+        <div class="form">
           <div class="form-group">
             <label for="packageNameField">Package/Group Name</label>
             <input type="text" class="form-control" id="packageNameField" placeholder="org.example"
@@ -25,14 +25,14 @@
             <!-- pattern from https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string -->
             <input type="text" class="form-control" id="projectVersionField" placeholder="0.1.0"
                    pattern="^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
-                   [(ngModel)]="version">
+                   [(ngModel)]="projectVersion">
           </div>
           <div class="form-group">
             <label for="scenarioFileNameField">Scenario File Name</label>
             <input type="text" class="form-control" id="scenarioFileNameField" placeholder="Scenario.md"
                    pattern="^[\w._\-]+\.md$" [(ngModel)]="scenarioFileName">
           </div>
-        </form>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" (click)="save()" data-dismiss="modal">
