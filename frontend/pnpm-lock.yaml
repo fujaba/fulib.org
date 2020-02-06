@@ -8,6 +8,7 @@ dependencies:
   '@angular/platform-browser-dynamic': 8.2.14_4c5c48e73106d2e9b7131da2a9d6eb8e
   '@angular/router': 8.2.14_e94a473af1c39c32436b93512d471216
   '@ctrl/ngx-codemirror': 2.2.1_d25e878356cf7752394a41b0e22ef690
+  '@ng-bootstrap/ng-bootstrap': 5.2.1_28f38c6b3dcfb84e8962d3e70abde5c8
   bootstrap: 4.3.1
   codemirror: 5.51.0
   rxjs: 6.4.0
@@ -1141,6 +1142,21 @@ packages:
       node: '>=8'
     resolution:
       integrity: sha512-tsAQNx32a8CoFhjhijUIhI4kccIAgmGhy8LZMZgGfmXcpMbPRUqn5LWmgRttILi6yeGmBJd2xsPkFMs0PzgPCw==
+  /@ng-bootstrap/ng-bootstrap/5.2.1_28f38c6b3dcfb84e8962d3e70abde5c8:
+    dependencies:
+      '@angular/common': 8.2.14_@angular+core@8.2.14+rxjs@6.4.0
+      '@angular/core': 8.2.14_rxjs@6.4.0+zone.js@0.9.1
+      '@angular/forms': 8.2.14_e94a473af1c39c32436b93512d471216
+      rxjs: 6.4.0
+      tslib: 1.10.0
+    dev: false
+    peerDependencies:
+      '@angular/common': ^8.0.0
+      '@angular/core': ^8.0.0
+      '@angular/forms': ^8.0.0
+      rxjs: ^6.4.0
+    resolution:
+      integrity: sha512-73/FX3wkDCQgdTBIa/pAOUB+DQLbag2vET3NIaqNz8Zno6cilkefY1zdlQ2zbwONcGzCyoTPFAUPivHgvoy9/w==
   /@ngtools/webpack/8.3.24_177969776f9abbb18f72b9c4c5822988:
     dependencies:
       '@angular-devkit/core': 8.3.24
@@ -8166,6 +8182,7 @@ specifiers:
   '@angular/platform-browser-dynamic': ~8.2.14
   '@angular/router': ~8.2.14
   '@ctrl/ngx-codemirror': ^2.2.1
+  '@ng-bootstrap/ng-bootstrap': ^5.2.1
   '@types/jasmine': ~3.3.8
   '@types/jasminewd2': ~2.0.3
   '@types/node': ~8.9.4
