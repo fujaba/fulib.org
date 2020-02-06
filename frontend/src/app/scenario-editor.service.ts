@@ -1,6 +1,11 @@
 import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
+
 import Example from "./model/example";
 import {ExamplesService} from "./examples.service";
+import Request from "./model/codegen/request";
+import Response from "./model/codegen/response";
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +34,7 @@ There is a Car with name Herbie.
 
   constructor(
     private examplesService: ExamplesService,
+    private http: HttpClient,
   ) {
   }
 
@@ -106,5 +112,9 @@ There is a Car with name Herbie.
       this._scenarioFileName = value;
       localStorage.setItem('scenarioFileName', value);
     }
+  }
+
+  submit(codeGenRequest: Request): Observable<Response> {
+    return this.http.post<Response>('runcodegen', codeGenRequest);
   }
 }
