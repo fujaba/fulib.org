@@ -51,7 +51,14 @@ export class ExamplesService {
     },
   ];
 
-  constructor() {
+  constructor(
+    private http: HttpClient,
+  ) {
+    for (let category of this.categories) {
+      for (let example of category.examples) {
+        example.category = category;
+      }
+    }
   }
 
   getCategories(): ExampleCategory[] {
