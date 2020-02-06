@@ -14,7 +14,6 @@ export class FourPaneEditorComponent implements OnInit {
   javaCode: string = 'System.out.println("Hello World");';
 
   exampleCategories: ExampleCategory[];
-  _selectedExample: Example | null;
 
   constructor(
     private examplesService: ExamplesService,
@@ -22,8 +21,8 @@ export class FourPaneEditorComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.scenarioText = this.scenarioEditorService.storedScenario;
     this.exampleCategories = this.examplesService.getCategories();
+    this.loadExample(this.selectedExample);
   }
 
   submit(): void {
@@ -34,11 +33,15 @@ export class FourPaneEditorComponent implements OnInit {
   }
 
   get selectedExample() {
-    return this._selectedExample;
+    return this.scenarioEditorService.selectedExample;
   }
 
   set selectedExample(value: Example | null) {
-    this._selectedExample = value;
+    this.scenarioEditorService.selectedExample = value;
+    this.loadExample(value);
+  }
+
+  private loadExample(value: Example | null): void {
     if (value) {
       this.examplesService.getScenario(value).subscribe(scenario => this.scenarioText = scenario);
     }
