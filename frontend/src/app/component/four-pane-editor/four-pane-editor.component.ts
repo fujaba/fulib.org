@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ExamplesService} from "../../examples.service";
 import ExampleCategory from "../../model/example-category";
 import Example from "../../model/example";
+import {ScenarioEditorService} from "../../scenario-editor.service";
 
 @Component({
   selector: 'app-four-pane-editor',
@@ -9,7 +10,7 @@ import Example from "../../model/example";
   styleUrls: ['./four-pane-editor.component.scss']
 })
 export class FourPaneEditorComponent implements OnInit {
-  scenarioText: string = 'test foo bar';
+  scenarioText: string;
   javaCode: string = 'System.out.println("Hello World");';
 
   exampleCategories: ExampleCategory[];
@@ -17,14 +18,19 @@ export class FourPaneEditorComponent implements OnInit {
 
   constructor(
     private examplesService: ExamplesService,
+    private scenarioEditorService: ScenarioEditorService,
   ) { }
 
   ngOnInit() {
+    this.scenarioText = this.scenarioEditorService.storedScenario;
     this.exampleCategories = this.examplesService.getCategories();
   }
 
   submit(): void {
     console.log('submit');
+    if (!this.selectedExample) {
+      this.scenarioEditorService.storedScenario = this.scenarioText;
+    }
   }
 
   get selectedExample() {
