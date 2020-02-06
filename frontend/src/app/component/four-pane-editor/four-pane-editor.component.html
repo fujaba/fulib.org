@@ -33,7 +33,7 @@
         </div>
       </div>
       <ngx-codemirror [(ngModel)]="scenarioText" [options]="{
-        theme: 'idea',
+        theme: editorTheme,
         mode: 'markdown',
         lineNumbers: true,
         lineWrapping: true,
@@ -89,7 +89,7 @@
         </div>
       </div>
       <ngx-codemirror [ngModel]="javaCode" [options]="{
-        theme: 'idea',
+        theme: editorTheme,
         lineNumbers: true,
         matchBrackets: true,
         readOnly: true,

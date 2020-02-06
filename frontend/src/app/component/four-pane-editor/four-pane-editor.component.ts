@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {ExamplesService} from "../../examples.service";
 import ExampleCategory from "../../model/example-category";
 import Example from "../../model/example";
@@ -6,17 +6,23 @@ import {ScenarioEditorService} from "../../scenario-editor.service";
 import Response from "../../model/codegen/response";
 import Request from "../../model/codegen/request";
 
+export declare const themeChangeHandlers: (() => void)[];
+export declare function getTheme(): string;
+
 @Component({
   selector: 'app-four-pane-editor',
   templateUrl: './four-pane-editor.component.html',
   styleUrls: ['./four-pane-editor.component.scss']
 })
-export class FourPaneEditorComponent implements OnInit {
+export class FourPaneEditorComponent implements OnInit, OnDestroy {
   scenarioText: string;
   response: Response | null;
 
   exampleCategories: ExampleCategory[];
   activeObjectDiagramTab: number;
+
+  editorTheme: string;
+  editorThemeHandler: () => void;
 
   constructor(
     private examplesService: ExamplesService,
@@ -27,6 +33,19 @@ export class FourPaneEditorComponent implements OnInit {
   ngOnInit() {
     this.exampleCategories = this.examplesService.getCategories();
     this.loadExample(this.selectedExample);
+
+    this.updateEditorThemes();
+    this.editorThemeHandler = () => this.updateEditorThemes();
+    themeChangeHandlers.push(this.editorThemeHandler);
+  }
+
+  ngOnDestroy(): void {
+    const index = themeChangeHandlers.indexOf(this.editorThemeHandler);
+    themeChangeHandlers.splice(index, 1);
+  }
+
+  private updateEditorThemes(): void {
+    this.editorTheme = getTheme() === 'dark' ? 'darcula' : 'idea';
   }
 
   submit(): void {
