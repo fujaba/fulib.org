@@ -7,6 +7,7 @@ import {ExamplesService} from "./examples.service";
 import Request from "./model/codegen/request";
 import Response from "./model/codegen/response";
 import ProjectZipRequest from "./model/project-zip-request";
+import {PrivacyService} from "./privacy.service";
 
 @Injectable({
   providedIn: 'root'
@@ -37,18 +38,19 @@ There is a Car with name Herbie.
 
   constructor(
     private examplesService: ExamplesService,
+    private privacyService: PrivacyService,
     private http: HttpClient,
   ) {
   }
 
   get storedScenario(): string {
-    return this._storedScenario || localStorage.getItem('storedScenario') || this.defaultScenario;
+    return this._storedScenario || this.privacyService.getStorage('storedScenario') || this.defaultScenario;
   }
 
   set storedScenario(value: string) {
     if (this._storedScenario !== value) {
       this._storedScenario = value;
-      localStorage.setItem('storedScenario', value);
+      this.privacyService.setStorage('storedScenario', value);
     }
   }
 
@@ -56,7 +58,7 @@ There is a Car with name Herbie.
     if (this._selectedExample) {
       return this._selectedExample;
     }
-    const storedName = localStorage.getItem('selectedExample');
+    const storedName = this.privacyService.getStorage('selectedExample');
     if (!storedName) {
       return null;
     }
@@ -66,7 +68,7 @@ There is a Car with name Herbie.
   set selectedExample(example: Example | null) {
     this._selectedExample = example;
     if (example) {
-      localStorage.setItem('selectedExample', example.name);
+      this.privacyService.setStorage('selectedExample', example.name);
     }
     else {
       localStorage.removeItem('selectedExample');
@@ -74,46 +76,46 @@ There is a Car with name Herbie.
   }
 
   get packageName(): string {
-    return this._packageName || localStorage.getItem('packageName') || this.defaultPackageName;
+    return this._packageName || this.privacyService.getStorage('packageName') || this.defaultPackageName;
   }
 
   set packageName(value: string) {
     if (this._packageName !== value) {
       this._packageName = value;
-      localStorage.setItem('packageName', value);
+      this.privacyService.setStorage('packageName', value);
     }
   }
 
   get projectName(): string {
-    return this._projectName || localStorage.getItem('projectName') || this.defaultProjectName;
+    return this._projectName || this.privacyService.getStorage('projectName') || this.defaultProjectName;
   }
 
   set projectName(value: string) {
     if (this._projectName !== value) {
       this._projectName = value;
-      localStorage.setItem('projectName', value);
+      this.privacyService.setStorage('projectName', value);
     }
   }
 
   get projectVersion(): string {
-    return this._projectVersion || localStorage.getItem('projectVersion') || this.defaultProjectVersion;
+    return this._projectVersion || this.privacyService.getStorage('projectVersion') || this.defaultProjectVersion;
   }
 
   set projectVersion(value: string) {
     if (this._projectVersion !== value) {
       this._projectVersion = value;
-      localStorage.setItem('projectVersion', value);
+      this.privacyService.setStorage('projectVersion', value);
     }
   }
 
   get scenarioFileName(): string {
-    return this._scenarioFileName || localStorage.getItem('scenarioFileName') || this.defaultScenarioFileName;
+    return this._scenarioFileName || this.privacyService.getStorage('scenarioFileName') || this.defaultScenarioFileName;
   }
 
   set scenarioFileName(value: string) {
     if (this._scenarioFileName !== value) {
       this._scenarioFileName = value;
-      localStorage.setItem('scenarioFileName', value);
+      this.privacyService.setStorage('scenarioFileName', value);
     }
   }
 
