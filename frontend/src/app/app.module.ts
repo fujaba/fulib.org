@@ -5,6 +5,8 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http'
 
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+
 
 import { AppRoutingModule } from './app-routing.module';
 import {SafeHtmlPipe} from "./pipes/safe-html.pipe";
@@ -23,6 +25,7 @@ import { ConfigModalComponent } from './component/config-modal/config-modal.comp
     BrowserModule,
     FormsModule,
     HttpClientModule,
+    NgbModule,
     CodemirrorModule,
     AppRoutingModule,
   ],
