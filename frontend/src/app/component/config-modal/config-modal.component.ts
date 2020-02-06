@@ -1,5 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ScenarioEditorService} from "../../scenario-editor.service";
+
+import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 
 declare var $: any;
 
@@ -9,6 +11,8 @@ declare var $: any;
   styleUrls: ['./config-modal.component.scss']
 })
 export class ConfigModalComponent implements OnInit {
+  @ViewChild('content', {static: true}) content;
+
   packageName: string;
   projectName: any;
   projectVersion: any;
@@ -16,6 +20,7 @@ export class ConfigModalComponent implements OnInit {
 
   constructor(
     private scenarioEditorService: ScenarioEditorService,
+    private modalService: NgbModal,
   ) {
   }
 
@@ -27,7 +32,8 @@ export class ConfigModalComponent implements OnInit {
     this.projectName = this.scenarioEditorService.projectName;
     this.projectVersion = this.scenarioEditorService.projectVersion;
     this.scenarioFileName = this.scenarioEditorService.scenarioFileName;
-    $('#configModal').modal('show');
+
+    this.modalService.open(this.content);
   }
 
   private save(): void {
