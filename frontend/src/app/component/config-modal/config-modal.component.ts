@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-config-modal',
@@ -6,10 +6,22 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./config-modal.component.scss']
 })
 export class ConfigModalComponent implements OnInit {
+  packageName: string;
+  projectName: any;
+  version: any;
+  scenarioFileName: any;
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit() {
   }
 
+  private save(): void {
+
+  }
+
+  private downloadProjectZip(): void {
+
+  }
 }
