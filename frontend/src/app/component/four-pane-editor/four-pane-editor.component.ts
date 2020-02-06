@@ -102,10 +102,15 @@ export class FourPaneEditorComponent implements OnInit {
 
   private loadExample(value: Example | null): void {
     if (value) {
-      this.examplesService.getScenario(value).subscribe(scenario => this.scenarioText = scenario);
+      this.response = null;
+      this.scenarioText = '// Loading Example...';
+      this.examplesService.getScenario(value).subscribe(scenario => {
+        this.scenarioText = scenario;
+        this.submit();
+      });
     } else {
       this.scenarioText = this.scenarioEditorService.storedScenario;
+      this.submit();
     }
-    this.submit();
   }
 }
