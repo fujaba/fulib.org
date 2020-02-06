@@ -39,10 +39,10 @@
         lineWrapping: true,
         styleActiveLine: true,
         extraKeys: {
-          'Ctrl-Enter': submit,
-          'Cmd-Enter': submit,
-          'Ctrl-S': submit,
-          'Cmd-S': submit
+          'Ctrl-Enter': submit.bind(this),
+          'Cmd-Enter': submit.bind(this),
+          'Ctrl-S': submit.bind(this),
+          'Cmd-S': submit.bind(this)
         }
       }"></ngx-codemirror>
     </div>
