@@ -9,11 +9,13 @@ import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './component/app.component';
 import { FourPaneEditorComponent } from './component/four-pane-editor/four-pane-editor.component';
+import { ConfigModalComponent } from './component/config-modal/config-modal.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    FourPaneEditorComponent
+    FourPaneEditorComponent,
+    ConfigModalComponent
   ],
   imports: [
     BrowserModule,
