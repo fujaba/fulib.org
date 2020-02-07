@@ -130,10 +130,7 @@
       </a>
     </p>
     <div class="text-center">
-      <script>
-        const s = '<a href="mailto:spam@fbi.gov">I am not sure / I want to send an E-Mail instead</a>';
-        document.write(s.replace('spam', 'contact').replace('fbi.gov', 'fulib.org'));
-      </script>
+      <a href="mailto:{{contactEmail}}">I am not sure / I want to send an E-Mail instead</a>
     </div>
   </div>
 </ng-template>
