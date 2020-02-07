@@ -1,0 +1,20 @@
+/* --------------- Sticky footer styles --------------- */
+/* adapted from https://getbootstrap.com/docs/4.0/examples/sticky-footer/ */
+
+$footer-height: 60px;
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: $footer-height;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: $footer-height;
+}
