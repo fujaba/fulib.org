@@ -11,5 +11,5 @@ body {
   position: absolute;
   bottom: 0;
   width: 100%;
-  height: $footer-height;
+  min-height: $footer-height;
 }
