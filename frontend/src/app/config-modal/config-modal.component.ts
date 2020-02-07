@@ -40,14 +40,14 @@ export class ConfigModalComponent implements OnInit {
     this.modalService.open(this.content);
   }
 
-  private save(): void {
+  save(): void {
     this.scenarioEditorService.packageName = this.packageName;
     this.scenarioEditorService.projectName = this.projectName;
     this.scenarioEditorService.projectVersion = this.projectVersion;
     this.scenarioEditorService.scenarioFileName = this.scenarioFileName;
   }
 
-  private downloadProjectZip(): void {
+  downloadProjectZip(): void {
     const request: ProjectZipRequest = {
       privacy: this.privacyService.privacy,
       packageName: this.packageName,

@@ -112,7 +112,7 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
     return result;
   }
 
-  private toolSuccess(index: number) {
+  toolSuccess(index: number) {
     return this.response.exitCode == 0 || (this.response.exitCode & 3) > index;
   }
 
