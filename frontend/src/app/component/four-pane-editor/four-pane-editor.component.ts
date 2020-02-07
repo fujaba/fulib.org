@@ -7,6 +7,7 @@ import ExampleCategory from "../../model/example-category";
 import Example from "../../model/example";
 import Response from "../../model/codegen/response";
 import Request from "../../model/codegen/request";
+import {PrivacyService} from "../../privacy.service";
 
 export declare const themeChangeHandlers: (() => void)[];
 
@@ -30,6 +31,7 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
   constructor(
     private examplesService: ExamplesService,
     private scenarioEditorService: ScenarioEditorService,
+    private privacyService: PrivacyService,
   ) {
   }
 
@@ -58,7 +60,7 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
 
     this.response = null;
     const request: Request = {
-      privacy: 'all', // TODO
+      privacy: this.privacyService.privacy,
       packageName: this.scenarioEditorService.packageName,
       scenarioFileName: this.scenarioEditorService.scenarioFileName,
       scenarioText: this.scenarioText,

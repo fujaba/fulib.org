@@ -6,6 +6,7 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ScenarioEditorService} from "../../scenario-editor.service";
 
 import ProjectZipRequest from "../../model/project-zip-request";
+import {PrivacyService} from "../../privacy.service";
 
 @Component({
   selector: 'app-config-modal',
@@ -22,6 +23,7 @@ export class ConfigModalComponent implements OnInit {
 
   constructor(
     private scenarioEditorService: ScenarioEditorService,
+    private privacyService: PrivacyService,
     private modalService: NgbModal,
   ) {
   }
@@ -47,7 +49,7 @@ export class ConfigModalComponent implements OnInit {
 
   private downloadProjectZip(): void {
     const request: ProjectZipRequest = {
-      privacy: 'all', // TODO
+      privacy: this.privacyService.privacy,
       packageName: this.packageName,
       projectName: this.projectName,
       projectVersion: this.projectVersion,
