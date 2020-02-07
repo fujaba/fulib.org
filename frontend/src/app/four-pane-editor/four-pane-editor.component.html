@@ -118,7 +118,7 @@
 
     <ng-container *ngIf="response && response.objectDiagrams">
       <ul ngbNav #objectDiagramTabs="ngbNav" [(activeId)]="activeObjectDiagramTab" class="nav-tabs">
-        <li *ngFor="let diagram of response.objectDiagrams; index as index" [ngbNavItem]="index">
+        <li *ngFor="let diagram of response.objectDiagrams; index as diagramIndex" [ngbNavItem]="diagramIndex + 1">
           <a ngbNavLink>{{diagram.name}}</a>
           <ng-template ngbNavContent>
             <img *ngIf="diagram.name.endsWith('.png')"

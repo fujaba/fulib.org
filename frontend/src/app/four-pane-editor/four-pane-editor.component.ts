@@ -23,7 +23,7 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
   response: Response | null;
 
   exampleCategories: ExampleCategory[];
-  activeObjectDiagramTab: number;
+  _activeObjectDiagramTab: number = 1;
 
   editorTheme: string;
   editorThemeHandler: () => void;
@@ -114,6 +114,15 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
 
   private toolSuccess(index: number) {
     return this.response.exitCode == 0 || (this.response.exitCode & 3) > index;
+  }
+
+  get activeObjectDiagramTab(): number {
+    const numDiagrams = this.response && this.response.objectDiagrams ? this.response.objectDiagrams.length : 0;
+    return Math.min(this._activeObjectDiagramTab, numDiagrams);
+  }
+
+  set activeObjectDiagramTab(value: number) {
+    this._activeObjectDiagramTab = value;
   }
 
   get selectedExample() {
