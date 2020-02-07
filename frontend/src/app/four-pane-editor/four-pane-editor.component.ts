@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, NgZone} from '@angular/core';
 
 import {ExamplesService} from "../examples.service";
 import {ScenarioEditorService} from "../scenario-editor.service";
@@ -28,10 +28,13 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
   editorTheme: string;
   editorThemeHandler: () => void;
 
+  submitHandler = () => this.zone.run(() => this.submit());
+
   constructor(
     private examplesService: ExamplesService,
     private scenarioEditorService: ScenarioEditorService,
     private privacyService: PrivacyService,
+    private zone: NgZone,
   ) {
   }
 
