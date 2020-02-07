@@ -1,13 +1,13 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 
-import {ExamplesService} from "../../examples.service";
-import {ScenarioEditorService} from "../../scenario-editor.service";
+import {ExamplesService} from "../examples.service";
+import {ScenarioEditorService} from "../scenario-editor.service";
 
-import ExampleCategory from "../../model/example-category";
-import Example from "../../model/example";
-import Response from "../../model/codegen/response";
-import Request from "../../model/codegen/request";
-import {PrivacyService} from "../../privacy.service";
+import ExampleCategory from "../model/example-category";
+import Example from "../model/example";
+import Response from "../model/codegen/response";
+import Request from "../model/codegen/request";
+import {PrivacyService} from "../privacy.service";
 
 export declare const themeChangeHandlers: (() => void)[];
 

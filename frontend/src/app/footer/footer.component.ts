@@ -2,7 +2,7 @@ import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
-import {Privacy, PrivacyService} from "../../privacy.service";
+import {Privacy, PrivacyService} from "../privacy.service";
 
 @Component({
   selector: 'app-footer',

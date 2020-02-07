@@ -3,10 +3,10 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {saveAs} from 'file-saver'
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
-import {ScenarioEditorService} from "../../scenario-editor.service";
+import {ScenarioEditorService} from "../scenario-editor.service";
 
-import ProjectZipRequest from "../../model/project-zip-request";
-import {PrivacyService} from "../../privacy.service";
+import ProjectZipRequest from "../model/project-zip-request";
+import {PrivacyService} from "../privacy.service";
 
 @Component({
   selector: 'app-config-modal',
