@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 
 export type Privacy = 'all' | 'local' | 'none' | 'nobanner';
 
@@ -8,7 +8,8 @@ export type Privacy = 'all' | 'local' | 'none' | 'nobanner';
 export class PrivacyService {
   private _privacy: Privacy | null;
 
-  constructor() { }
+  constructor() {
+  }
 
   get privacy(): Privacy | null {
     return this._privacy || localStorage.getItem('privacy') as Privacy;
@@ -22,8 +23,7 @@ export class PrivacyService {
     this._privacy = value;
     if (value && value !== 'none') {
       localStorage.setItem('privacy', value);
-    }
-    else {
+    } else {
       localStorage.removeItem('privacy');
     }
   }

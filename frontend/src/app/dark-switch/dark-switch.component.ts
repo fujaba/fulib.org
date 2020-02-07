@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 declare function setTheme(theme: string);
+
 declare function getTheme(): string;
+
 declare const themeChangeHandlers: (() => void)[];
 
 @Component({
@@ -12,7 +14,8 @@ declare const themeChangeHandlers: (() => void)[];
 export class DarkSwitchComponent implements OnInit {
   private _enabled: boolean;
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit() {
     this.loadEnabled();

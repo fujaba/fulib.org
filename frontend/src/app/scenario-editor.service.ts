@@ -69,8 +69,7 @@ There is a Car with name Herbie.
     this._selectedExample = example;
     if (example) {
       this.privacyService.setStorage('selectedExample', example.name);
-    }
-    else {
+    } else {
       localStorage.removeItem('selectedExample');
     }
   }

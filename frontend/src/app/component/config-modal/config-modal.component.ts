@@ -1,8 +1,9 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {ScenarioEditorService} from "../../scenario-editor.service";
 
 import {saveAs} from 'file-saver'
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+
+import {ScenarioEditorService} from "../../scenario-editor.service";
 
 import ProjectZipRequest from "../../model/project-zip-request";
 

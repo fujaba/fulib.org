@@ -74,7 +74,7 @@ export class ExamplesService {
       return of(example.scenario);
     }
     const url = `${this.url}/${example.category.name.toLowerCase()}/${example.name.replace(' ', '')}.md`;
-    return this.http.get(url, { responseType: 'text'}).pipe(tap(text => example.scenario = text));
+    return this.http.get(url, {responseType: 'text'}).pipe(tap(text => example.scenario = text));
   }
 
   getExampleByName(name: string): Example | null {

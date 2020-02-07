@@ -1,20 +1,21 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
-import { NgModule } from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {FormsModule} from '@angular/forms';
+import {NgModule} from '@angular/core';
+import {HttpClientModule} from '@angular/common/http'
 
-import { HttpClientModule } from '@angular/common/http'
-
-import { CodemirrorModule } from '@ctrl/ngx-codemirror';
+import {CodemirrorModule} from '@ctrl/ngx-codemirror';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
+import {AppRoutingModule} from './app-routing.module';
 
-import { AppRoutingModule } from './app-routing.module';
 import {SafeHtmlPipe} from "./pipes/safe-html.pipe";
-import { AppComponent } from './component/app.component';
-import { FourPaneEditorComponent } from './component/four-pane-editor/four-pane-editor.component';
-import { ConfigModalComponent } from './component/config-modal/config-modal.component';
-import { FooterComponent } from './component/footer/footer.component';
-import { DarkSwitchComponent } from './dark-switch/dark-switch.component';
+
+import {AppComponent} from './component/app.component';
+import {FourPaneEditorComponent} from './component/four-pane-editor/four-pane-editor.component';
+import {ConfigModalComponent} from './component/config-modal/config-modal.component';
+import {FooterComponent} from './component/footer/footer.component';
+
+import {DarkSwitchComponent} from './dark-switch/dark-switch.component';
 
 @NgModule({
   declarations: [
@@ -36,4 +37,5 @@ import { DarkSwitchComponent } from './dark-switch/dark-switch.component';
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}
