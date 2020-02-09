@@ -40,21 +40,13 @@ public class WebService
 
 		service.port(4567);
 
-		final StaticFilesConfiguration staticHandler = new StaticFilesConfiguration();
-		final String staticFolder = "/org/fulib/webapp/static";
-		final String resourceFolder = "src/main/resources" + staticFolder;
-		if (new File(resourceFolder).exists())
+		service.staticFiles.location("/org/fulib/webapp/static");
+
+		if (new File("build.gradle").exists())
 		{
 			// dev environment, allow CORS
 			enableCORS(service);
-
-			staticHandler.configureExternal(resourceFolder);
 		}
-		else
-		{
-			staticHandler.configure(staticFolder);
-		}
-		service.before((request, response) -> staticHandler.consume(request.raw(), response.raw()));
 
 		service.redirect.get("/github", "https://github.com/fujaba/fulib.org");
 
@@ -73,6 +65,8 @@ public class WebService
 
 	private static void enableCORS(Service service)
 	{
+		service.staticFiles.header("Access-Control-Allow-Origin", "*");
+
 		service.before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
 
 		service.options("/*", (req, res) -> {
