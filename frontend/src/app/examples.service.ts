@@ -8,12 +8,12 @@ import {tap} from 'rxjs/operators';
 import ExampleCategory from "./model/example-category";
 import Example from "./model/example";
 
+import {environment} from "../environments/environment";
+
 @Injectable({
   providedIn: 'root'
 })
 export class ExamplesService {
-  private url = 'http://localhost:4567/examples';
-
   private readonly categories: ExampleCategory[] = [
     {
       name: 'Definitions', examples: [
@@ -73,7 +73,7 @@ export class ExamplesService {
     if (example.scenario) {
       return of(example.scenario);
     }
-    const url = `${this.url}/${example.category.name.toLowerCase()}/${example.name.replace(' ', '')}.md`;
+    const url = `${environment.apiURL}/examples/${example.category.name.toLowerCase()}/${example.name.replace(' ', '')}.md`;
     return this.http.get(url, {responseType: 'text'}).pipe(tap(text => example.scenario = text));
   }
 

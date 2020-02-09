@@ -9,12 +9,12 @@ import Response from "./model/codegen/response";
 import ProjectZipRequest from "./model/project-zip-request";
 import {PrivacyService} from "./privacy.service";
 
+import {environment} from "../environments/environment";
+
 @Injectable({
   providedIn: 'root'
 })
 export class ScenarioEditorService {
-  private apiUrl = 'http://localhost:4567';
-
   private defaultScenario = `# My First Scenario
 
 // start typing your scenario or select an example using the dropdown above.
@@ -119,10 +119,10 @@ There is a Car with name Herbie.
   }
 
   submit(codeGenRequest: Request): Observable<Response> {
-    return this.http.post<Response>(this.apiUrl + '/runcodegen', codeGenRequest);
+    return this.http.post<Response>(environment.apiURL + '/runcodegen', codeGenRequest);
   }
 
   downloadZip(projectZipRequest: ProjectZipRequest): Observable<Blob> {
-    return this.http.post(this.apiUrl + '/projectzip', projectZipRequest, {responseType: "blob"});
+    return this.http.post(environment.apiURL + '/projectzip', projectZipRequest, {responseType: "blob"});
   }
 }
