@@ -88,6 +88,10 @@ public class WebService
 			});
 		});
 
+		service.notFound((req, res) -> {
+			return WebService.class.getResourceAsStream("static/index.html");
+		});
+
 		service.exception(Exception.class, (exception, request, response) -> {
 			Logger.getGlobal().log(Level.SEVERE, "unhandled exception processing request", exception);
 		});
