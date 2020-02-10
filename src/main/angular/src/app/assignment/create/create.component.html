@@ -136,7 +136,8 @@
         {{baseURL}}/assignment/{{id}}
       </a>
       <button id="copyAssignmentLinkButton" type="button" class="btn btn-sm btn-outline-primary"
-              onclick="onCopyAssignmentLink()">Copy
+              ngxClipboard *ngxClipboardIfSupported cbContent="{{baseURL}}/assignment/{{id}}">
+        Copy
       </button>
     </p>
     <p>
@@ -147,7 +148,8 @@
         {{baseURL}}/assignment/{{id}}/solutions
       </a>
       <button id="copySolutionsLinkButton" type="button" class="btn btn-sm btn-outline-primary"
-              onclick="onCopySolutionsLink()">Copy
+              ngxClipboard *ngxClipboardIfSupported cbContent="{{baseURL}}/assignment/{{id}}/solutions">
+        Copy
       </button>
     </p>
     <p>
@@ -157,7 +159,7 @@
     <p class="text-center">
       <span class="h4 text-monospace">{{token}}</span>
       <button id="copyTokenButton" type="button" class="btn btn-sm btn-outline-secondary"
-              onclick="onCopyToken()">
+              ngxClipboard *ngxClipboardIfSupported [cbContent]="token">
         Copy
       </button>
     </p>

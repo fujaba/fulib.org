@@ -6,6 +6,7 @@ import {HttpClientModule} from '@angular/common/http'
 import {CodemirrorModule} from '@ctrl/ngx-codemirror';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {DateValueAccessorModule} from 'angular-date-value-accessor';
+import {ClipboardModule} from 'ngx-clipboard';
 
 import {AppRoutingModule} from './app-routing.module';
 
@@ -38,6 +39,7 @@ import { AutothemeCodemirrorComponent } from './autotheme-codemirror/autotheme-c
     NgbModule,
     CodemirrorModule,
     DateValueAccessorModule,
+    ClipboardModule,
     AppRoutingModule,
   ],
   providers: [],
