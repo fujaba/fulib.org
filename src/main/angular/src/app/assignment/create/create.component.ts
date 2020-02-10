@@ -47,7 +47,28 @@ laborum.`.replace(/\s+/g, ' ');
     } as Assignment;
   }
 
+  setAssignment(a: Assignment): void {
+    this.title = a.title;
+    this.description = a.description;
+    this.author = a.author;
+    this.email = a.email;
+    this.deadlineDate = a.deadline.toISOString().substring(0, 10);
+    this.deadlineTime = a.deadline.toISOString().substring(11, 19);
+    this.tasks = a.tasks;
+    this.solution = a.solution;
+  }
+
   onImport() {
+    const reader = new FileReader();
+    reader.onload = _ => {
+      const text = reader.result as string;
+      const reviver = (k, v) => k === 'deadline' ? new Date(v) : v;
+      const data = JSON.parse(text, reviver);
+      const assignment = new Assignment();
+      Object.assign(assignment, data);
+      this.setAssignment(assignment);
+    };
+    reader.readAsText(this.importFile);
   }
 
   onExport() {
