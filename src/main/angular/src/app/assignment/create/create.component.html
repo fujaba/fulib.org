@@ -61,7 +61,13 @@
 
   <h2><label for="solutionInput">Sample Solution</label></h2>
   <p>
-    <textarea id="solutionInput" [(ngModel)]="sampleSolution"></textarea>
+    <ngx-codemirror id="solutionInput" [(ngModel)]="sampleSolution" [options]="{
+      theme: 'idea',
+      mode: 'markdown',
+      lineNumbers: true,
+      lineWrapping: true,
+      styleActiveLine: true
+    }"></ngx-codemirror>
   </p>
 
   <h2>Tasks</h2>
