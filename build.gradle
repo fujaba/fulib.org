@@ -7,7 +7,7 @@ plugins {
 	id 'maven-publish'
 	id 'com.jfrog.bintray' version '1.8.4'
 	id 'de.clashsoft.simple-publish' version '0.3.0'
-	id 'de.clashsoft.angular-gradle' version '0.1.5'
+	id 'de.clashsoft.angular-gradle' version '0.1.6'
 	id 'com.github.johnrengelman.shadow' version '4.0.4'
 }
 
