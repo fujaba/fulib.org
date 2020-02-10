@@ -9,7 +9,7 @@ Available at https://www.fulib.org.
 
 ### General
 
-You can simplfy set up this project after cloning using the Gradle import feature of your IDE.
+You can simply set up this project after cloning using the Gradle import feature of your IDE.
 
 ### MongoDB
 
@@ -39,4 +39,4 @@ FULIB_ORG_MONGODB_PASSWORD=fulibDotOrg
 > If you selected a custom username and password in the step above,
 > use them instead of `fulibDotOrg` in the env variables, too!
 
-IntelliJ users can also use the predefined `Main` run configuration with the above environment variables already set.
+IntelliJ users can also use the predefined run configurations with the above environment variables already set.
