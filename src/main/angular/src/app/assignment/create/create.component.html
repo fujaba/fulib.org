@@ -11,10 +11,10 @@
         </label>
       </div>
       <div class="input-group-append">
-        <button type="button" class="btn btn-primary" onclick="onImport()">Import</button>
+        <button type="button" class="btn btn-primary" (click)="onImport()">Import</button>
       </div>
     </div>
-    <button type="button" class="btn btn-primary mb-2 mr-sm-2" onclick="onExport()">Export</button>
+    <button type="button" class="btn btn-primary mb-2 mr-sm-2" (click)="onExport()">Export</button>
   </div>
 
   <h2>General Info</h2>
@@ -61,7 +61,7 @@
 
   <h2><label for="solutionInput">Sample Solution</label></h2>
   <p>
-    <app-autotheme-codemirror id="solutionInput" [(content)]="sampleSolution" [options]="{
+    <app-autotheme-codemirror id="solutionInput" [(content)]="solution" [options]="{
       mode: 'markdown',
       lineNumbers: true,
       lineWrapping: true,

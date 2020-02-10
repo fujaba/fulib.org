@@ -1,5 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import Task from '../model/task';
+import Assignment from '../model/assignment';
+
+import {saveAs} from 'file-saver';
 
 @Component({
   selector: 'app-create',
@@ -19,7 +22,7 @@ magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
 consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
 pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
 laborum.`.replace(/\s+/g, ' ');
-  sampleSolution: string;
+  solution: string;
 
   tasks: Task[] = [];
 
@@ -27,6 +30,31 @@ laborum.`.replace(/\s+/g, ' ');
   }
 
   ngOnInit() {
+  }
+
+  getAssignment(): Assignment {
+    return {
+      id: undefined,
+      token: undefined,
+      title: this.title,
+      description: this.description,
+      descriptionHtml: undefined,
+      author: this.author,
+      email: this.email,
+      deadline: new Date(this.deadlineDate + ' ' + this.deadlineTime),
+      solution: this.solution,
+      tasks: this.tasks,
+    } as Assignment;
+  }
+
+  onImport() {
+  }
+
+  onExport() {
+    const assignment = this.getAssignment();
+    const replacer = (k, v) => v instanceof Date ? v.toISOString() : v;
+    const content = JSON.stringify(assignment, replacer, '  ');
+    saveAs(new Blob([content], {type: 'application/json'}), this.title + '.json');
   }
 
   addTask() {
