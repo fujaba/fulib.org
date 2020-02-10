@@ -33,6 +33,14 @@
             "scripts": []
           },
           "configurations": {
+            "gradle": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.gradle.ts"
+                }
+              ]
+            },
             "production": {
               "fileReplacements": [
                 {
