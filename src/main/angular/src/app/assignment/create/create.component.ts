@@ -1,8 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import Task from '../model/task';
 import Assignment from '../model/assignment';
-
-import {saveAs} from 'file-saver';
+import {AssignmentService} from '../assignment.service';
 
 @Component({
   selector: 'app-create',
@@ -26,7 +25,9 @@ laborum.`.replace(/\s+/g, ' ');
 
   tasks: Task[] = [];
 
-  constructor() {
+  constructor(
+    private assignmentService: AssignmentService,
+  ) {
   }
 
   ngOnInit() {
@@ -59,23 +60,13 @@ laborum.`.replace(/\s+/g, ' ');
   }
 
   onImport() {
-    const reader = new FileReader();
-    reader.onload = _ => {
-      const text = reader.result as string;
-      const reviver = (k, v) => k === 'deadline' ? new Date(v) : v;
-      const data = JSON.parse(text, reviver);
-      const assignment = new Assignment();
-      Object.assign(assignment, data);
-      this.setAssignment(assignment);
-    };
-    reader.readAsText(this.importFile);
+    this.assignmentService.upload(this.importFile)
+      .subscribe(result => this.setAssignment(result));
   }
 
   onExport() {
     const assignment = this.getAssignment();
-    const replacer = (k, v) => v instanceof Date ? v.toISOString() : v;
-    const content = JSON.stringify(assignment, replacer, '  ');
-    saveAs(new Blob([content], {type: 'application/json'}), this.title + '.json');
+    this.assignmentService.download(assignment);
   }
 
   addTask() {
