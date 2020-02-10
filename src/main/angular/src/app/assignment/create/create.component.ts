@@ -15,8 +15,8 @@ export class CreateComponent implements OnInit {
   title: string;
   author: string;
   email: string;
-  deadlineDate: string;
-  deadlineTime: string;
+  deadlineDate: Date;
+  deadlineTime: Date;
   description: string = `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
 magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
 consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
@@ -41,7 +41,7 @@ laborum.`.replace(/\s+/g, ' ');
       descriptionHtml: undefined,
       author: this.author,
       email: this.email,
-      deadline: new Date(this.deadlineDate + ' ' + this.deadlineTime),
+      deadline: new Date(this.deadlineDate.toDateString() + ' ' + this.deadlineTime.toTimeString()),
       solution: this.solution,
       tasks: this.tasks,
     } as Assignment;
@@ -52,8 +52,8 @@ laborum.`.replace(/\s+/g, ' ');
     this.description = a.description;
     this.author = a.author;
     this.email = a.email;
-    this.deadlineDate = a.deadline.toISOString().substring(0, 10);
-    this.deadlineTime = a.deadline.toISOString().substring(11, 19);
+    this.deadlineDate = a.deadline;
+    this.deadlineTime = a.deadline;
     this.tasks = a.tasks;
     this.solution = a.solution;
   }

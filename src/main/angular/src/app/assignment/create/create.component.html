@@ -41,11 +41,11 @@
     <div class="form-group row">
       <label for="deadlineDateInput" class="col-sm-2 col-form-label">Deadline</label>
       <div class="col-sm-3">
-        <input type="date" class="form-control" id="deadlineDateInput" [(ngModel)]="deadlineDate">
+        <input type="date" class="form-control" id="deadlineDateInput" [(ngModel)]="deadlineDate" useValueAsDate>
       </div>
       <label for="deadlineTimeInput" class="sr-only">Time</label>
       <div class="col-sm-2">
-        <input type="time" class="form-control" id="deadlineTimeInput" [(ngModel)]="deadlineTime">
+        <input type="time" class="form-control" id="deadlineTimeInput" [(ngModel)]="deadlineTime" useValueAsDate>
       </div>
     </div>
   </div>
