@@ -61,13 +61,12 @@
 
   <h2><label for="solutionInput">Sample Solution</label></h2>
   <p>
-    <ngx-codemirror id="solutionInput" [(ngModel)]="sampleSolution" [options]="{
-      theme: 'idea',
+    <app-autotheme-codemirror id="solutionInput" [(content)]="sampleSolution" [options]="{
       mode: 'markdown',
       lineNumbers: true,
       lineWrapping: true,
       styleActiveLine: true
-    }"></ngx-codemirror>
+    }"></app-autotheme-codemirror>
   </p>
 
   <h2>Tasks</h2>
@@ -89,13 +88,12 @@
         <div class="form-group row">
           <label for="task/{{id}}/verificationInput" class="col-sm-2 col-form-label">Verification</label>
           <div class="col-sm-10">
-            <ngx-codemirror id="task/{{id}}/verificationInput" [(ngModel)]="task.verification" [options]="{
-              theme: 'idea',
+            <app-autotheme-codemirror id="task/{{id}}/verificationInput" [(content)]="task.verification" [options]="{
               mode: 'markdown',
               lineNumbers: true,
               lineWrapping: true,
               styleActiveLine: true
-            }"></ngx-codemirror>
+            }"></app-autotheme-codemirror>
           </div>
         </div>
       </div>
