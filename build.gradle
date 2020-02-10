@@ -122,8 +122,8 @@ String getDependencyVersion(Configuration config, String group, String name) {
 // --------------- Angular ---------------
 
 angular {
-	appDir = 'frontend'
-	outputDir = 'frontend/dist'
+	appDir = 'src/main/angular'
+	outputDir = 'src/main/angular/dist'
 }
 
 processResources.filesMatching("frontend/**") {
