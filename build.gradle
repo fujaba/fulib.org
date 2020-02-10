@@ -126,8 +126,8 @@ angular {
 	outputDir = 'src/main/angular/dist'
 }
 
-processResources.filesMatching("frontend/**") {
-	it.path = it.path.replace('frontend', 'org/fulib/webapp/static')
+processResources.filesMatching('fulibDotOrg/**') {
+	it.path = it.path.replace('fulibDotOrg', 'org/fulib/webapp/static')
 }
 
 // --------------- Project Zip Wrapper ---------------
