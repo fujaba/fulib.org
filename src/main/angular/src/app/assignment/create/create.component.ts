@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import Task from '../model/task';
 
 @Component({
   selector: 'app-create',
@@ -20,9 +21,23 @@ pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui offi
 laborum.`.replace(/\s+/g, ' ');
   sampleSolution: string;
 
+  tasks: Task[] = [];
+
   constructor() {
   }
 
   ngOnInit() {
+  }
+
+  addTask() {
+    this.tasks.push(new Task());
+  }
+
+  clearTasks() {
+    this.tasks.length = 0;
+  }
+
+  removeTask(id: number) {
+    this.tasks.splice(id, 1);
   }
 }

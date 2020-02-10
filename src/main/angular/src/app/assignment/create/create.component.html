@@ -71,11 +71,40 @@
   </p>
 
   <h2>Tasks</h2>
-  <ol id="taskList">
+  <ol>
+    <li *ngFor="let task of tasks; let id = index">
+      <div class="form">
+        <div class="form-group row">
+          <label for="task/{{id}}/descriptionInput" class="col-sm-2 col-form-label">Description</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="task/{{id}}/descriptionInput" [(ngModel)]="task.description">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="task/{{id}}/pointsInput" class="col-sm-2 col-form-label">Points</label>
+          <div class="col-sm-10">
+            <input type="number" class="form-control" id="task/{{id}}/pointsInput" min="0" [(ngModel)]="task.points">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="task/{{id}}/verificationInput" class="col-sm-2 col-form-label">Verification</label>
+          <div class="col-sm-10">
+            <ngx-codemirror id="task/{{id}}/verificationInput" [(ngModel)]="task.verification" [options]="{
+              theme: 'idea',
+              mode: 'markdown',
+              lineNumbers: true,
+              lineWrapping: true,
+              styleActiveLine: true
+            }"></ngx-codemirror>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="btn btn-danger" (click)="removeTask(id)">Remove Task</button>
+    </li>
   </ol>
   <p>
-    <button type="button" class="btn btn-success" onclick="addTask()">Add Task</button>
-    <button type="button" class="btn btn-danger" onclick="onClearTasks()">Remove All Tasks</button>
+    <button type="button" class="btn btn-success" (click)="addTask()">Add Task</button>
+    <button type="button" class="btn btn-danger" (click)="clearTasks()">Remove All Tasks</button>
   </p>
 
   <div class="text-center">
