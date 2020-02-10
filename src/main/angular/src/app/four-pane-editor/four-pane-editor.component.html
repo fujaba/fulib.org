@@ -31,7 +31,7 @@
         </button>
       </div>
     </div>
-    <ngx-codemirror [(ngModel)]="scenarioText" [options]="{
+    <app-autotheme-codemirror [(content)]="scenarioText" [options]="{
         theme: editorTheme,
         mode: 'markdown',
         lineNumbers: true,
@@ -43,7 +43,7 @@
           'Ctrl-S': submitHandler,
           'Cmd-S': submitHandler
         }
-      }"></ngx-codemirror>
+      }"></app-autotheme-codemirror>
   </div>
 
   <div class="col-md-12 col-lg-6">
@@ -87,13 +87,13 @@
         </div>
       </div>
     </div>
-    <ngx-codemirror [ngModel]="javaCode" [options]="{
+    <app-autotheme-codemirror [content]="javaCode" [options]="{
         theme: editorTheme,
         lineNumbers: true,
         matchBrackets: true,
         readOnly: true,
         mode: 'text/x-java'
-      }"></ngx-codemirror>
+      }"></app-autotheme-codemirror>
   </div>
 </div>
 
