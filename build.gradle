@@ -7,6 +7,7 @@ plugins {
 	id 'maven-publish'
 	id 'com.jfrog.bintray' version '1.8.4'
 	id 'de.clashsoft.simple-publish' version '0.3.0'
+	id 'de.clashsoft.angular-gradle' version '0.1.6'
 	id 'com.github.johnrengelman.shadow' version '4.0.4'
 }
 
@@ -130,6 +131,17 @@ String getDependencyVersion(Configuration config, String group, String name) {
 		def id = it.moduleVersion.id
 		id.group == group && id.name == name ? id.version : null
 	}
+}
+
+// --------------- Angular ---------------
+
+angular {
+	appDir = 'src/main/angular'
+	outputDir = 'src/main/angular/dist'
+}
+
+processResources.filesMatching('fulibDotOrg/**') {
+	it.path = it.path.replace('fulibDotOrg', 'org/fulib/webapp/static')
 }
 
 // --------------- Project Zip Wrapper ---------------

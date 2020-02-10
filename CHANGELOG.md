@@ -120,3 +120,10 @@
 
 + Added examples for GUI prototyping using FulibMockups.
 * Updated to FulibScenarios v1.0.0.
+
+# fulib.org v1.1.0
+
+* Updated to FulibTools v1.1.0.
+* Major improvements to style and dark mode.
+* Cleaned up the backend code.
+* Rewrote the frontend with Angular.

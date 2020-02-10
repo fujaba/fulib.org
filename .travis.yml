@@ -8,11 +8,18 @@ jdk:
 services:
   - docker
 
+node_js: "13.7.0"
+
+# ensures version detection in build.gradle always works, even if the newest tag was more than 50 commits ago
+git:
+  depth: false
+
 # --------------- Rancher Deployment ---------------
 
 before_install:
   - sudo apt-get update
   - sudo apt-get install -y jq
+  - npm install -g @angular/cli
 
 deploy:
   provider: script
@@ -28,6 +35,8 @@ before_cache:
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 
 cache:
+  npm: true
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
+    - src/main/angular/node_modules

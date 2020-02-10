@@ -7,6 +7,7 @@ import org.fulib.webapp.mongo.Mongo;
 import org.fulib.webapp.projectzip.ProjectZip;
 import org.fulib.webapp.tool.RunCodeGen;
 import spark.Service;
+import spark.staticfiles.StaticFilesConfiguration;
 
 import java.io.File;
 import java.util.Properties;
@@ -42,15 +43,12 @@ public class WebService
 
 		service.port(4567);
 
-		final String staticFolder = "/org/fulib/webapp/static";
-		final String resourceFolder = "src/main/resources" + staticFolder;
-		if (new File(resourceFolder).exists())
+		service.staticFiles.location("/org/fulib/webapp/static");
+
+		if (new File("build.gradle").exists())
 		{
-			service.staticFiles.externalLocation(resourceFolder);
-		}
-		else
-		{
-			service.staticFiles.location(staticFolder);
+			// dev environment, allow CORS
+			enableCORS(service);
 		}
 
 		service.redirect.get("/github", "https://github.com/fujaba/fulib.org");
@@ -95,5 +93,26 @@ public class WebService
 		});
 
 		Logger.getGlobal().info("scenario server started on http://localhost:4567");
+	}
+
+	private static void enableCORS(Service service)
+	{
+		service.staticFiles.header("Access-Control-Allow-Origin", "*");
+
+		service.before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
+
+		service.options("/*", (req, res) -> {
+			String accessControlRequestHeaders = req.headers("Access-Control-Request-Headers");
+			if (accessControlRequestHeaders != null) {
+				res.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
+			}
+
+			String accessControlRequestMethod = req.headers("Access-Control-Request-Method");
+			if (accessControlRequestMethod != null) {
+				res.header("Access-Control-Allow-Methods", accessControlRequestMethod);
+			}
+
+			return "OK";
+		});
 	}
 }
