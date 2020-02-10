@@ -17,6 +17,7 @@ import {FooterComponent} from './footer/footer.component';
 
 import {DarkSwitchComponent} from './dark-switch/dark-switch.component';
 import { CreateComponent } from './assignment/create/create.component';
+import { AutothemeCodemirrorComponent } from './autotheme-codemirror/autotheme-codemirror.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { CreateComponent } from './assignment/create/create.component';
     ConfigModalComponent,
     FooterComponent,
     DarkSwitchComponent,
-    CreateComponent
+    CreateComponent,
+    AutothemeCodemirrorComponent
   ],
   imports: [
     BrowserModule,
