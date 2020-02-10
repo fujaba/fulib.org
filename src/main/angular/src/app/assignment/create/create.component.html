@@ -109,8 +109,8 @@
     <p>
       Click "Submit" to finalize your assignment and generate a link.
     </p>
-    <button type="button" class="btn btn-primary btn-lg" id="submitButton" onclick="onSubmit()">
-      Submit
+    <button type="button" class="btn btn-primary btn-lg" id="submitButton" (click)="submit()" [class.disabled]="submitting">
+      {{submitting ? 'Submitting...' : 'Submit'}}
     </button>
   </div>
 </div>

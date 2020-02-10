@@ -21,6 +21,8 @@ export class CreateComponent implements OnInit {
 
   tasks: Task[] = [];
 
+  submitting = false;
+
   constructor(
     private assignmentService: AssignmentService,
   ) {
@@ -75,5 +77,14 @@ export class CreateComponent implements OnInit {
 
   removeTask(id: number) {
     this.tasks.splice(id, 1);
+  }
+
+  submit() {
+    this.submitting = true;
+    this.assignmentService.submit(this.getAssignment())
+      .subscribe(result => {
+        console.log(result);
+        this.submitting = false;
+      });
   }
 }

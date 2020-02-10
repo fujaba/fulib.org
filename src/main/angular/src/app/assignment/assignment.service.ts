@@ -1,15 +1,20 @@
 import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http'
 import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 
 import {saveAs} from 'file-saver';
 
 import Assignment from './model/assignment';
+import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AssignmentService {
-  constructor() {
+  constructor(
+    private http: HttpClient,
+  ) {
   }
 
   download(assignment: Assignment): void {
@@ -31,5 +36,15 @@ export class AssignmentService {
       };
       reader.readAsText(file);
     });
+  }
+
+  submit(assignment: Assignment): Observable<Assignment> {
+    return this.http.post<Partial<Assignment>>(environment.apiURL + '/assignments', assignment)
+      .pipe(map(partialResult => {
+        const result = new Assignment();
+        Object.assign(result, assignment);
+        Object.assign(result, partialResult);
+        return result;
+      }));
   }
 }
