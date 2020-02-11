@@ -39,8 +39,7 @@ export class SolveComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      const id = params['id'];
-      this.assignmentService.get(id).subscribe(result => {
+      this.assignmentService.get(params.id).subscribe(result => {
         this.assignment = result;
       });
     });
