@@ -16,6 +16,8 @@ export class SolveComponent implements OnInit {
   studentID: string;
   email: string;
 
+  submitting: boolean;
+
   constructor(
     private assignmentService: AssignmentService,
     private route: ActivatedRoute,
@@ -28,5 +30,9 @@ export class SolveComponent implements OnInit {
         this.assignment = result;
       });
     });
+  }
+
+  submit() {
+    this.submitting = true;
   }
 }

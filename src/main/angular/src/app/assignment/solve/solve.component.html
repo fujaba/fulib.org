@@ -68,13 +68,11 @@
       When you are done with your solution, click "Submit".
       You can still make changes afterwards.
     </p>
-    <button type="button" class="btn btn-primary btn-lg" id="submitButton" onclick="submit()">
-      Submit
+    <button type="button" class="btn btn-primary btn-lg"
+            [disabled]="submitting"
+            (click)="submit()">
+      {{submitting ? 'Submitting...' : 'Submit'}}
     </button>
-  </div>
-
-  <div class="text-center">
-    <script src="https://app.clashsoft.de/darkmode/darkswitch.js"></script>
   </div>
 </div>
 
