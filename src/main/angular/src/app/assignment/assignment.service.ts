@@ -49,6 +49,10 @@ export class AssignmentService {
   }
 
   get(id: string): Observable<Assignment> {
-    return this.http.get<Assignment>(`${environment.apiURL}/assignment/${id}`);
+    return this.http.get<Assignment>(`${environment.apiURL}/assignments/${id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
   }
 }
