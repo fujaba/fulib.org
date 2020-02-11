@@ -20,6 +20,7 @@ import {FooterComponent} from './footer/footer.component';
 import {DarkSwitchComponent} from './dark-switch/dark-switch.component';
 import { CreateComponent } from './assignment/create/create.component';
 import { AutothemeCodemirrorComponent } from './autotheme-codemirror/autotheme-codemirror.component';
+import { SolveComponent } from './assignment/solve/solve.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { AutothemeCodemirrorComponent } from './autotheme-codemirror/autotheme-c
     FooterComponent,
     DarkSwitchComponent,
     CreateComponent,
-    AutothemeCodemirrorComponent
+    AutothemeCodemirrorComponent,
+    SolveComponent
   ],
   imports: [
     BrowserModule,
