@@ -1,5 +1,6 @@
 package org.fulib.webapp.assignment;
 
+import org.fulib.webapp.WebService;
 import org.fulib.webapp.assignment.model.Assignment;
 import org.fulib.webapp.assignment.model.Task;
 import org.fulib.webapp.mongo.Mongo;
@@ -101,8 +102,7 @@ public class Assignments
 
 		if (request.contentType() == null || !request.contentType().startsWith("application/json"))
 		{
-			response.redirect("/assignment/view.html?id=" + id);
-			return "";
+			return WebService.serveIndex(request, response);
 		}
 
 		Assignment assignment = getAssignmentOr404(id);

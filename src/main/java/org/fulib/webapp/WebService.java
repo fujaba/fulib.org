@@ -6,8 +6,9 @@ import org.fulib.webapp.assignment.Solutions;
 import org.fulib.webapp.mongo.Mongo;
 import org.fulib.webapp.projectzip.ProjectZip;
 import org.fulib.webapp.tool.RunCodeGen;
+import spark.Request;
+import spark.Response;
 import spark.Service;
-import spark.staticfiles.StaticFilesConfiguration;
 
 import java.io.File;
 import java.util.Properties;
@@ -88,9 +89,7 @@ public class WebService
 			});
 		});
 
-		service.notFound((req, res) -> {
-			return WebService.class.getResourceAsStream("static/index.html");
-		});
+		service.notFound(WebService::serveIndex);
 
 		service.exception(Exception.class, (exception, request, response) -> {
 			Logger.getGlobal().log(Level.SEVERE, "unhandled exception processing request", exception);
@@ -118,5 +117,10 @@ public class WebService
 
 			return "OK";
 		});
+	}
+
+	public static Object serveIndex(Request req, Response res)
+	{
+		return WebService.class.getResourceAsStream("static/index.html");
 	}
 }
