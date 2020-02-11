@@ -1,34 +1,61 @@
 <footer class="page-footer font-small">
 
-
-<div class="navbar footer bg-light bg-darkmode-dark">
-  <div>
-    <a href="https://github.com/fujaba/fulib.org" title="Web App on GitHub">Web App</a>
-    v$$version$$
-    &mdash;
-    <a href="https://github.com/fujaba/fulibScenarios" title="Fulib Scenarios on GitHub">Fulib Scenarios</a>
-    v$$fulibScenariosVersion$$
-    &mdash;
-    <a href="https://github.com/fujaba/fulibMockups" title="Fulib Mockups on GitHub">Fulib Mockups</a>
-    v$$fulibMockupsVersion$$
+<nav class="footer navbar navbar-expand-sm navbar-dark bg-dark">
+  <a class="navbar-brand" routerLink=".">fulib.org</a>
+  <button class="navbar-toggler" type="button" (click)="menuCollapsed = !menuCollapsed">
+    &#9776;
+  </button>
+  <div [ngbCollapse]="menuCollapsed" class="collapse navbar-collapse">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" routerLink=".">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="https://fujaba.gitbook.io/fulib-scenarios/">
+          Documentation
+        </a>
+      </li>
+      <li class="nav-item" ngbDropdown placement="top-right">
+        <a class="nav-link" ngbDropdownToggle id="githubDropdown" role="button" style="cursor: pointer">
+          GitHub
+        </a>
+        <div ngbDropdownMenu aria-labelledby="githubDropdown">
+          <a ngbDropdownItem href="https://github.com/fujaba/fulib.org">
+            Web App (v$$version$$)
+          </a>
+          <a ngbDropdownItem href="https://github.com/fujaba/fulibScenarios">
+            Fulib Scenarios (v$$fulibScenariosVersion$$)
+          </a>
+          <a ngbDropdownItem href="https://github.com/fujaba/fulibMockups">
+            Fulib Mockups (v$$fulibMockupsVersion$$)
+          </a>
+        </div>
+      </li>
+      <li class="nav-item" ngbDropdown placement="top-right">
+        <a class="nav-link" ngbDropdownToggle id="legalDropdown" role="button" style="cursor: pointer">
+          Legal
+        </a>
+        <div ngbDropdownMenu aria-labelledby="legalDropdown">
+          <a ngbDropdownItem href="http://www.uni-kassel.de/uni/impressum.html">
+            Imprint
+          </a>
+          <a ngbDropdownItem href="https://www.uni-kassel.de/uni/footer-2/datenschutz/">
+            Privacy Policy
+          </a>
+          <button ngbDropdownItem (click)="openPrivacyModal()">
+            Edit Privacy Preferences
+          </button>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="."
+           (click)="modalService.open(feedbackModal, {ariaLabelledBy: 'feedbackModalLabel'})">
+          Feedback
+        </a>
+      </li>
+    </ul>
   </div>
-  <app-dark-switch></app-dark-switch>
-  <div>
-    <a href="https://fujaba.gitbook.io/fulib-scenarios/">Documentation</a>
-    &mdash;
-    <a href="#" (click)="modalService.open(feedbackModal, {ariaLabelledBy: 'feedbackModalLabel'})">
-      Leave Feedback
-    </a>
-    &mdash;
-    <a href="http://www.uni-kassel.de/uni/impressum.html">Imprint</a>
-    &mdash;
-    <a href="https://www.uni-kassel.de/uni/footer-2/datenschutz/">Privacy Policy</a>
-    &mdash;
-    <a href="#" (click)="openPrivacyModal()">
-      Edit Privacy Preferences
-    </a>
-  </div>
-</div>
+</nav>
 
 </footer>
 

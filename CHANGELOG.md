@@ -127,3 +127,4 @@
 * Major improvements to style and dark mode.
 * Cleaned up the backend code.
 * Rewrote the frontend with Angular.
+* Overhauled the page footer.
