@@ -21,9 +21,19 @@
 
   <h2>Tasks</h2>
   <ol *ngIf="assignment">
-    <li *ngFor="let task of assignment.tasks">
+    <li *ngFor="let task of assignment.tasks; let i = index"
+        [class.text-success]="results && results[i].points == task.points"
+        [class.text-danger]="results && results[i].points < task.points"
+    >
       {{task.description}}
-      <span class="badge badge-secondary">{{task.points}}</span>
+      <span class="badge"
+            [class.badge-secondary]="!results"
+            [class.badge-success]="results && results[i].points == task.points"
+            [class.badge-danger]="results && results[i].points < task.points"
+      >
+        <ng-container *ngIf="results">{{results[i].points}} / </ng-container>
+        {{task.points}}
+      </span>
     </li>
   </ol>
   <p *ngIf="!assignment">

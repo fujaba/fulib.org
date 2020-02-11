@@ -7,6 +7,7 @@ import Assignment from '../model/assignment';
 import {AssignmentService} from '../assignment.service';
 import Solution from '../model/solution';
 import {SolutionService} from '../solution.service';
+import TaskResult from '../model/task-result';
 
 @Component({
   selector: 'app-solve',
@@ -21,6 +22,9 @@ export class SolveComponent implements OnInit {
   name: string;
   studentID: string;
   email: string;
+
+  checking = false;
+  results?: TaskResult[];
 
   // TODO does not work with Angular Universal
   baseURL = window.location.origin;
@@ -60,6 +64,7 @@ export class SolveComponent implements OnInit {
       this.id = result.id;
       this.token = result.token;
       this.timeStamp = result.timeStamp;
+      this.results = result.results;
 
       this.modalService.open(this.successModal, {ariaLabelledBy: 'successModalLabel', size: 'xl'});
       this.submitting = false;
