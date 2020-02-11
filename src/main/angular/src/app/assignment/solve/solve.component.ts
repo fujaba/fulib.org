@@ -5,6 +5,8 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 import Assignment from '../model/assignment';
 import {AssignmentService} from '../assignment.service';
+import Solution from '../model/solution';
+import {SolutionService} from '../solution.service';
 
 @Component({
   selector: 'app-solve',
@@ -30,6 +32,7 @@ export class SolveComponent implements OnInit {
 
   constructor(
     private assignmentService: AssignmentService,
+    private solutionService: SolutionService,
     private route: ActivatedRoute,
     private modalService: NgbModal,
   ) {}
@@ -45,10 +48,22 @@ export class SolveComponent implements OnInit {
 
   submit() {
     this.submitting = true;
-    this.id = 'placeholder-id';
-    this.token = 'placeholder-token';
-    this.timeStamp = new Date();
-    this.modalService.open(this.successModal, {ariaLabelledBy: 'successModalLabel', size: 'xl'});
-    this.submitting = false;
+
+    const solution: Solution = {
+      assignment: this.assignment,
+      name: this.name,
+      studentID: this.studentID,
+      email: this.email,
+      solution: this.solution,
+    };
+
+    this.solutionService.submit(solution).subscribe(result => {
+      this.id = result.id;
+      this.token = result.token;
+      this.timeStamp = result.timeStamp;
+
+      this.modalService.open(this.successModal, {ariaLabelledBy: 'successModalLabel', size: 'xl'});
+      this.submitting = false;
+    })
   }
 }
