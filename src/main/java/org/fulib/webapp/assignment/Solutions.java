@@ -90,11 +90,21 @@ public class Solutions
 
 		Mongo.get().saveSolution(solution);
 
-		final JSONObject result = new JSONObject();
-		result.put(Solution.PROPERTY_id, solutionID);
-		result.put(Solution.PROPERTY_token, token);
-		result.put(Solution.PROPERTY_timeStamp, timeStamp.toString());
-		return result.toString(2);
+		final JSONObject resultObj = new JSONObject();
+		resultObj.put(Solution.PROPERTY_id, solutionID);
+		resultObj.put(Solution.PROPERTY_token, token);
+		resultObj.put(Solution.PROPERTY_timeStamp, timeStamp.toString());
+
+		final JSONArray resultsArray = new JSONArray();
+
+		for (final TaskResult result : results)
+		{
+			resultsArray.put(toJson(result));
+		}
+
+		resultObj.put(Solution.PROPERTY_results, resultsArray);
+
+		return resultObj.toString(2);
 	}
 
 	private static Solution fromJson(String id, JSONObject obj)
