@@ -94,6 +94,7 @@ dependencies {
 
 processResources {
 	def version = project.version.toString()
+	def fulibVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulib')
 	def fulibToolsVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulibTools')
 	def fulibScenariosVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulibScenarios')
 	def fulibGradleVersion = getDependencyVersion(buildscript.configurations.classpath, 'org.fulib', 'fulibGradle')
@@ -107,6 +108,7 @@ processResources {
 	]) {
 		filter {
 			it = it.replace('$$version$$', version)
+			it = it.replace('$$fulibVersion$$', fulibVersion)
 			it = it.replace('$$fulibToolsVersion$$', fulibToolsVersion)
 			it = it.replace('$$fulibScenariosVersion$$', fulibScenariosVersion)
 			it = it.replace('$$fulibMockupsVersion$$', fulibMockupsVersion)
