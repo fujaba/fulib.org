@@ -7,8 +7,8 @@ import {SolveComponent} from './assignment/solve/solve.component';
 
 const routes: Routes = [
   {path: '', component: FourPaneEditorComponent},
-  {path: 'assignment/create', component: CreateComponent},
-  {path: 'assignment/:id', component: SolveComponent},
+  {path: 'assignments/create', component: CreateComponent},
+  {path: 'assignments/:id', component: SolveComponent},
 ];
 
 @NgModule({
