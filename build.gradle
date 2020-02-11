@@ -99,8 +99,12 @@ processResources {
 	def fulibGradleVersion = getDependencyVersion(buildscript.configurations.classpath, 'org.fulib', 'fulibGradle')
 	def fulibMockupsVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulibMockups')
 
-	filesMatching([ 'org/fulib/webapp/static/index.html', 'org/fulib/webapp/projectzip/build.gradle',
-	                'org/fulib/webapp/version.properties' ]) {
+	filesMatching([
+			'**/index.html',
+			'**/*.js',
+			'org/fulib/webapp/projectzip/build.gradle',
+			'org/fulib/webapp/version.properties',
+	]) {
 		filter {
 			it = it.replace('$$version$$', version)
 			it = it.replace('$$fulibToolsVersion$$', fulibToolsVersion)
