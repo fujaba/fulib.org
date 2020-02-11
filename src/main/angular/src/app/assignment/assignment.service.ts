@@ -53,6 +53,11 @@ export class AssignmentService {
       headers: {
         'Content-Type': 'application/json',
       },
-    });
+    }).pipe(
+      map(a => {
+        a.id = id;
+        return a;
+      })
+    );
   }
 }
