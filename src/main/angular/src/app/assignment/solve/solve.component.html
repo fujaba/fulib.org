@@ -29,7 +29,12 @@
 
   <h2><label for="solutionInput">Your Solution</label></h2>
   <p>
-    <textarea id="solutionInput"></textarea>
+    <app-autotheme-codemirror id="solutionInput" [(content)]="solution" [options]="{
+      mode: 'markdown',
+      lineNumbers: true,
+      lineWrapping: true,
+      styleActiveLine: true
+    }"></app-autotheme-codemirror>
   </p>
   <p id="solutionInfo">
     Your solution is checked automatically when you make changes.

@@ -11,6 +11,7 @@ import {AssignmentService} from '../assignment.service';
 })
 export class SolveComponent implements OnInit {
   assignment: Assignment;
+  solution: string;
 
   constructor(
     private assignmentService: AssignmentService,
