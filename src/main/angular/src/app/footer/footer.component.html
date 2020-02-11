@@ -16,6 +16,16 @@
         </a>
       </li>
       <li class="nav-item" ngbDropdown placement="top-right">
+        <a class="nav-link" ngbDropdownToggle id="assignmentsDropdown" role="button" style="cursor: pointer">
+          Assignments
+        </a>
+        <div ngbDropdownMenu aria-labelledby="assignmentsDropdown">
+          <a ngbDropdownItem routerLink="/assignment/create">
+            Create Assignment
+          </a>
+        </div>
+      </li>
+      <li class="nav-item" ngbDropdown placement="top-right">
         <a class="nav-link" ngbDropdownToggle id="githubDropdown" role="button" style="cursor: pointer">
           GitHub
         </a>
