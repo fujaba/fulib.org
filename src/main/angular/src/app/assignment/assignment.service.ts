@@ -47,4 +47,8 @@ export class AssignmentService {
         return result;
       }));
   }
+
+  get(id: string): Observable<Assignment> {
+    return this.http.get<Assignment>(`${environment.apiURL}/assignment/${id}`);
+  }
 }
