@@ -20,12 +20,15 @@
   </p>
 
   <h2>Tasks</h2>
-  <ol>
+  <ol *ngIf="assignment">
     <li *ngFor="let task of assignment.tasks">
       {{task.description}}
       <span class="badge badge-secondary">{{task.points}}</span>
     </li>
   </ol>
+  <p *ngIf="!assignment">
+    Loading Tasks...
+  </p>
 
   <h2><label for="solutionInput">Your Solution</label></h2>
   <p>
