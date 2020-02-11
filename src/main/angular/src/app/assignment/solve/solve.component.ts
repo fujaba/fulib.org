@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 import Assignment from '../model/assignment';
 import {AssignmentService} from '../assignment.service';
@@ -10,17 +12,26 @@ import {AssignmentService} from '../assignment.service';
   styleUrls: ['./solve.component.scss']
 })
 export class SolveComponent implements OnInit {
+  @ViewChild('successModal', {static: true}) successModal;
+
   assignment: Assignment;
   solution: string;
   name: string;
   studentID: string;
   email: string;
 
+  // TODO does not work with Angular Universal
+  baseURL = window.location.origin;
+  id: string;
+  token: string;
+  timeStamp: Date;
+
   submitting: boolean;
 
   constructor(
     private assignmentService: AssignmentService,
     private route: ActivatedRoute,
+    private modalService: NgbModal,
   ) {}
 
   ngOnInit() {
@@ -34,5 +45,10 @@ export class SolveComponent implements OnInit {
 
   submit() {
     this.submitting = true;
+    this.id = 'placeholder-id';
+    this.token = 'placeholder-token';
+    this.timeStamp = new Date();
+    this.modalService.open(this.successModal, {ariaLabelledBy: 'successModalLabel', size: 'xl'});
+    this.submitting = false;
   }
 }

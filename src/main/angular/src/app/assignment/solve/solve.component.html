@@ -76,43 +76,40 @@
   </div>
 </div>
 
-<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
-     aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="successModalLabel">Solution Submitted</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p>
-          Congratulations! Your solution has been submitted!
-        </p>
-        <p>
-          Submission Time: <b id="submissionTimeLabel"></b>
-        </p>
-        <p>
-          You can view your submission with the following link:
-        </p>
-        <p class="text-center">
-          <a class="text-monospace" id="solutionLink"></a>
-        </p>
-        <p>
-          To view your solution and comments, you may be asked for the following token.
-          Please save it or note it down somewhere.
-        </p>
-        <p class="text-center">
-          <span class="h4 text-monospace" id="tokenLabel"></span>
-        </p>
-        <p>
-          If you want to make changes, you can close this window and submit again.
-        </p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
+<ng-template #successModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title" id="successModalLabel">Solution Submitted</h5>
+    <button type="button" class="close" aria-label="Close" (click)="modal.close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
   </div>
-</div>
+  <div class="modal-body">
+    <p>
+      Congratulations! Your solution has been submitted!
+    </p>
+    <p>
+      Submission Time: <b>{{timeStamp | date:'medium'}}</b>
+    </p>
+    <p>
+      You can view your submission with the following link:
+    </p>
+    <p class="text-center">
+      <a class="text-monospace" href="/assignments/{{assignment.id}}/solutions/{{id}}">
+        {{baseURL}}/assignments/{{assignment.id}}/solutions/{{id}}
+      </a>
+    </p>
+    <p>
+      To view your solution and comments, you may be asked for the following token.
+      Please save it or note it down somewhere.
+    </p>
+    <p class="text-center">
+      <span class="h4 text-monospace">{{token}}</span>
+    </p>
+    <p>
+      If you want to make changes, you can close this window and submit again.
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.close()">Close</button>
+  </div>
+</ng-template>
