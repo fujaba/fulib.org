@@ -1,5 +1,6 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, OnDestroy, AfterViewInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
@@ -14,8 +15,9 @@ import TaskResult from '../model/task-result';
   templateUrl: './solve.component.html',
   styleUrls: ['./solve.component.scss']
 })
-export class SolveComponent implements OnInit {
+export class SolveComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('successModal', {static: true}) successModal;
+  @ViewChild('solutionInput', {static: true}) solutionInput;
 
   assignment: Assignment;
   solution: string;
@@ -46,6 +48,28 @@ export class SolveComponent implements OnInit {
       this.assignmentService.get(params.id).subscribe(result => {
         this.assignment = result;
       });
+    });
+  }
+
+  ngAfterViewInit() {
+    this.solutionInput.contentChange.pipe(
+      debounceTime(1000),
+      distinctUntilChanged(),
+    ).subscribe(() => {
+      this.check();
+    });
+  }
+
+  ngOnDestroy() {
+    this.solutionInput.contentChange.unsubscribe();
+  }
+
+  check() {
+    this.checking = true;
+
+    this.solutionService.check({assignment: this.assignment, solution: this.solution}).subscribe(result => {
+      this.checking = false;
+      this.results = result.results;
     });
   }
 

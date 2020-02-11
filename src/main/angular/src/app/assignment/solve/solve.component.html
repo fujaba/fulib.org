@@ -42,15 +42,18 @@
 
   <h2><label for="solutionInput">Your Solution</label></h2>
   <p>
-    <app-autotheme-codemirror id="solutionInput" [(content)]="solution" [options]="{
+    <app-autotheme-codemirror id="solutionInput" #solutionInput [(content)]="solution" [options]="{
       mode: 'markdown',
       lineNumbers: true,
       lineWrapping: true,
       styleActiveLine: true
     }"></app-autotheme-codemirror>
   </p>
-  <p id="solutionInfo">
-    Your solution is checked automatically when you make changes.
+  <p>
+    {{checking ? 'Checking...'
+    : (results ? 'Your solution was checked automatically. Don\'t forget to submit when you are done!'
+      : 'Your solution is checked automatically when you make changes.')
+    }}
   </p>
 
   <h2>Your Info</h2>
