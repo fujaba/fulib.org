@@ -1,1 +1,104 @@
-<p>solve works!</p>
+<div class="container">
+  <h1 class="assignment-title">Loading...</h1>
+  <p class="text-muted">
+    by <span class="assignment-author">Loading...</span>
+    &mdash;
+    <a class="assignment-email">Loading...</a>
+    &mdash;
+    Deadline: <span class="assignment-deadline">Loading...</span>
+  </p>
+
+  <p class="assignment-description">
+    Loading Description...
+  </p>
+
+  <h2>Tasks</h2>
+  <ol class="assignment-task-list">
+  </ol>
+
+  <h2><label for="solutionInput">Your Solution</label></h2>
+  <p>
+    <textarea id="solutionInput"></textarea>
+  </p>
+  <p id="solutionInfo">
+    Your solution is checked automatically when you make changes.
+  </p>
+
+  <h2>Your Info</h2>
+
+  <form>
+    <div class="form-group row">
+      <label for="nameInput" class="col-sm-2 col-form-label">Name</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="nameInput" placeholder="John Doe">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="studentIDInput" class="col-sm-2 col-form-label">Student ID</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="studentIDInput" placeholder="12345678">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="emailInput" class="col-sm-2 col-form-label">E-Mail</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="emailInput" placeholder="jdoe@example.com">
+      </div>
+    </div>
+  </form>
+
+  <div class="text-center">
+    <p>
+      When you are done with your solution, click "Submit".
+      You can still make changes afterwards.
+    </p>
+    <button type="button" class="btn btn-primary btn-lg" id="submitButton" onclick="submit()">
+      Submit
+    </button>
+  </div>
+
+  <div class="text-center">
+    <script src="https://app.clashsoft.de/darkmode/darkswitch.js"></script>
+  </div>
+</div>
+
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="successModalLabel">Solution Submitted</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Congratulations! Your solution has been submitted!
+        </p>
+        <p>
+          Submission Time: <b id="submissionTimeLabel"></b>
+        </p>
+        <p>
+          You can view your submission with the following link:
+        </p>
+        <p class="text-center">
+          <a class="text-monospace" id="solutionLink"></a>
+        </p>
+        <p>
+          To view your solution and comments, you may be asked for the following token.
+          Please save it or note it down somewhere.
+        </p>
+        <p class="text-center">
+          <span class="h4 text-monospace" id="tokenLabel"></span>
+        </p>
+        <p>
+          If you want to make changes, you can close this window and submit again.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
