@@ -13,7 +13,7 @@ import {environment} from '../../environments/environment';
 })
 export class AssignmentService {
   private _draft?: Assignment | null;
-  private _tokens: Map<string, string>;
+  private _tokens = new Map<string, string>();
 
   constructor(
     private http: HttpClient,
