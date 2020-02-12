@@ -44,4 +44,13 @@ export class SolutionListComponent implements OnInit {
   sumPoints(arr: {points: number}[]) {
     return arr.reduce((acc, item) => acc + item.points, 0);
   }
+
+  setAssignee(solution: Solution, input: HTMLInputElement) {
+    input.disabled = true;
+    solution.assignment = this.assignment;
+    solution.assignee = input.value;
+    this.solutionService.setAssignee(solution, input.value).subscribe(() => {
+      input.disabled = false;
+    });
+  }
 }
