@@ -1,5 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import {Observable, EMPTY} from 'rxjs';
+import {catchError} from 'rxjs/operators';
 
 import {SolutionService} from '../solution.service';
 import {AssignmentService} from '../assignment.service';
@@ -14,6 +16,8 @@ import Comment from '../model/comment';
   styleUrls: ['./solution.component.scss']
 })
 export class SolutionComponent implements OnInit {
+  @ViewChild('tokenModal', {static: true}) tokenModal;
+
   assignmentID: string;
   assignment?: Assignment;
   solutionID: string;
@@ -50,7 +54,15 @@ export class SolutionComponent implements OnInit {
   }
 
   loadSolution(): void {
-    this.solutionService.get(this.assignmentID, this.solutionID).subscribe(solution => {
+    this.solutionService.get(this.assignmentID, this.solutionID).pipe(
+      catchError(err => {
+        if (err.status === 401) {
+          this.tokenModal.open();
+          return EMPTY;
+        }
+        throw err;
+      }),
+    ).subscribe(solution => {
       this.solution = solution;
       this.loadCommentDraft();
     });
@@ -93,5 +105,15 @@ export class SolutionComponent implements OnInit {
       this.saveCommentDraft();
       this.submittingComment = false;
     });
+  }
+
+  setTokens(solutionToken: string, assignmentToken: string): void {
+    if (solutionToken) {
+      this.solutionService.setToken(this.solutionID, solutionToken);
+    }
+    if (assignmentToken) {
+      this.assignmentService.setToken(this.assignmentID, assignmentToken);
+    }
+    this.loadSolution();
   }
 }

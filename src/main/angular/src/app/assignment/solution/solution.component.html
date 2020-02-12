@@ -128,3 +128,5 @@
     {{submittingComment ? 'Submitting Comment...' : 'Submit Comment'}}
   </button>
 </div>
+
+<app-token-modal #tokenModal (submit)="setTokens($event.solutionToken, $event.assignmentToken)"></app-token-modal>
