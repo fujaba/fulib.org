@@ -22,6 +22,7 @@ import { CreateComponent } from './assignment/create/create.component';
 import { AutothemeCodemirrorComponent } from './autotheme-codemirror/autotheme-codemirror.component';
 import { SolveComponent } from './assignment/solve/solve.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { SolutionComponent } from './assignment/solution/solution.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     AutothemeCodemirrorComponent,
     SolveComponent,
     PageNotFoundComponent,
+    SolutionComponent,
   ],
   imports: [
     BrowserModule,
