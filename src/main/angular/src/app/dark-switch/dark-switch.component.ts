@@ -4,8 +4,6 @@ declare function setTheme(theme: string);
 
 declare function getTheme(): string;
 
-declare const themeChangeHandlers: (() => void)[];
-
 @Component({
   selector: 'app-dark-switch',
   templateUrl: './dark-switch.component.html',
@@ -22,7 +20,11 @@ export class DarkSwitchComponent implements OnInit {
   }
 
   private loadEnabled(): void {
-    this._enabled = getTheme() === 'dark';
+    // TODO try-catch not needed once darkmode is an npm package
+    try {
+      this._enabled = getTheme() === 'dark';
+    } catch {
+    }
   }
 
   get enabled(): boolean {
@@ -30,7 +32,11 @@ export class DarkSwitchComponent implements OnInit {
   }
 
   set enabled(value: boolean) {
-    this._enabled = value;
-    setTheme(value ? 'dark' : 'light');
+    // TODO try-catch not needed once darkmode is an npm package
+    try {
+      this._enabled = value;
+      setTheme(value ? 'dark' : 'light');
+    } catch {
+    }
   }
 }
