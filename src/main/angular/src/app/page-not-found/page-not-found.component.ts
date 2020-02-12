@@ -13,11 +13,11 @@ export class PageNotFoundComponent implements OnInit {
 
   constructor(
     router: Router,
+    title: Title,
     private location: Location,
-    private title: Title,
   ) {
-    title.setTitle('404 - Page not found');
     this.path = router.url;
+    title.setTitle('404 - Page not found');
   }
 
   ngOnInit() {
