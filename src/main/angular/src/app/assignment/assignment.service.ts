@@ -12,15 +12,47 @@ import {environment} from '../../environments/environment';
   providedIn: 'root'
 })
 export class AssignmentService {
+  private _draft?: Assignment | null;
+
   constructor(
     private http: HttpClient,
   ) {
   }
 
-  download(assignment: Assignment): void {
+  get draft(): Assignment | null {
+    if (typeof this._draft === 'undefined') {
+      const json = localStorage.getItem('assignmentDraft');
+      this._draft = json ? this.fromJson(json) : null;
+    }
+    return this._draft;
+  }
+
+  set draft(value: Assignment | null) {
+    this._draft = value;
+    if (value) {
+      localStorage.setItem('assignmentDraft', JSON.stringify(value));
+    }
+    else {
+      localStorage.removeItem('assignmentDraft');
+    }
+  }
+
+  fromJson(json: string): Assignment {
+    const reviver = (k, v) => k === 'deadline' ? new Date(v) : v;
+    const data = JSON.parse(json, reviver);
+    const assignment = new Assignment();
+    Object.assign(assignment, data);
+    return assignment;
+  }
+
+  toJson(assignment: Assignment, space?: string): string {
     const replacer = (k, v) => v instanceof Date ? v.toISOString() : v;
-    const content = JSON.stringify(assignment, replacer, '  ');
-    saveAs(new Blob([content], {type: 'application/json'}), assignment.title + '.json');
+    return JSON.stringify(assignment, replacer, space);
+  }
+
+  download(assignment: Assignment): void {
+    const json = this.toJson(assignment, '  ');
+    saveAs(new Blob([json], {type: 'application/json'}), assignment.title + '.json');
   }
 
   upload(file: File): Observable<Assignment> {
@@ -28,10 +60,7 @@ export class AssignmentService {
       const reader = new FileReader();
       reader.onload = _ => {
         const text = reader.result as string;
-        const reviver = (k, v) => k === 'deadline' ? new Date(v) : v;
-        const data = JSON.parse(text, reviver);
-        const assignment = new Assignment();
-        Object.assign(assignment, data);
+        const assignment = this.fromJson(text);
         subscriber.next(assignment);
       };
       reader.readAsText(file);
