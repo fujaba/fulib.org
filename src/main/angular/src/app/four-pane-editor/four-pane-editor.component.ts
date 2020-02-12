@@ -1,4 +1,7 @@
-import {Component, OnInit, NgZone} from '@angular/core';
+import {Component, OnInit, OnDestroy, ViewChild, NgZone} from '@angular/core';
+import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
+
+import {AutothemeCodemirrorComponent} from '../autotheme-codemirror/autotheme-codemirror.component';
 
 import {ExamplesService} from "../examples.service";
 import {ScenarioEditorService} from "../scenario-editor.service";
@@ -14,7 +17,9 @@ import {PrivacyService} from "../privacy.service";
   templateUrl: './four-pane-editor.component.html',
   styleUrls: ['./four-pane-editor.component.scss']
 })
-export class FourPaneEditorComponent implements OnInit {
+export class FourPaneEditorComponent implements OnInit, OnDestroy {
+  @ViewChild('scenarioInput', {static: true}) scenarioInput: AutothemeCodemirrorComponent;
+
   scenarioText: string;
   response: Response | null;
 
@@ -34,6 +39,17 @@ export class FourPaneEditorComponent implements OnInit {
   ngOnInit() {
     this.exampleCategories = this.examplesService.getCategories();
     this.loadExample(this.selectedExample);
+
+    this.scenarioInput.contentChange.pipe(
+      debounceTime(1000),
+      distinctUntilChanged(),
+    ).subscribe(() => {
+      this.submit();
+    })
+  }
+
+  ngOnDestroy() {
+    this.scenarioInput.contentChange.unsubscribe();
   }
 
   submit(): void {
@@ -41,7 +57,6 @@ export class FourPaneEditorComponent implements OnInit {
       this.scenarioEditorService.storedScenario = this.scenarioText;
     }
 
-    this.response = null;
     const request: Request = {
       privacy: this.privacyService.privacy,
       packageName: this.scenarioEditorService.packageName,
