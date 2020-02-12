@@ -179,4 +179,16 @@ export class SolutionService {
       }),
     );
   }
+
+  setAssignee(solution: Solution, assignee: string): Observable<void> {
+    const body = {
+      assignee,
+    };
+    const headers = {};
+    const assignmentToken = this.assignmentService.getToken(solution.assignment.id);
+    if (assignmentToken) {
+      headers['Assignment-Token'] = assignmentToken;
+    }
+    return this.http.put<void>(`${environment.apiURL}/assignments/${solution.assignment.id}/solutions/${solution.id}/assignee`, body, {headers});
+  }
 }
