@@ -100,12 +100,14 @@ export class AssignmentService {
   }
 
   get(id: string): Observable<Assignment> {
-    return this.http.get<Assignment>(`${environment.apiURL}/assignments/${id}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Assignment-Token': this.getToken(id) || undefined,
-      },
-    }).pipe(
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    const token = this.getToken(id);
+    if (token) {
+      headers['Assignment-Token'] = token;
+    }
+    return this.http.get<Assignment>(`${environment.apiURL}/assignments/${id}`, {headers}).pipe(
       map(a => {
         a.id = id;
         a.token = this.getToken(id);
