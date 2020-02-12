@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class StorageService {
-  private properties: Map<string, string>;
+  private properties = new Map<string, string>();
 
   constructor() {
   }
