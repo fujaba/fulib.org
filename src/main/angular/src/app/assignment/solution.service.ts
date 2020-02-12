@@ -5,14 +5,37 @@ import {map} from 'rxjs/operators';
 
 import Solution, {CheckResult, CheckSolution} from './model/solution';
 import {environment} from '../../environments/environment';
+import Assignment from './model/assignment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SolutionService {
+  private _drafts = new Map<string, string | null>();
+
   constructor(
     private http: HttpClient,
   ) {
+  }
+
+  getDraft(assignment: Assignment): string | null {
+    let draft = this._drafts.get(assignment.id);
+    if (typeof draft === 'undefined') {
+      draft = localStorage.getItem(`solutionDraft/${assignment.id}`);
+      this._drafts.set(assignment.id, draft);
+    }
+    return draft;
+  }
+
+  setDraft(assignment: Assignment, solution: string | null): void {
+    this._drafts.set(assignment.id, solution);
+    const key = `solutionDraft/${assignment.id}`;
+    if (solution) {
+      localStorage.setItem(key, solution);
+    }
+    else {
+      localStorage.removeItem(key);
+    }
   }
 
   check(solution: CheckSolution): Observable<CheckResult> {
