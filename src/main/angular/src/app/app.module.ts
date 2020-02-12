@@ -23,6 +23,7 @@ import { AutothemeCodemirrorComponent } from './autotheme-codemirror/autotheme-c
 import { SolveComponent } from './assignment/solve/solve.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { SolutionComponent } from './assignment/solution/solution.component';
+import { TokenModalComponent } from './assignment/token-modal/token-modal.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { SolutionComponent } from './assignment/solution/solution.component';
     SolveComponent,
     PageNotFoundComponent,
     SolutionComponent,
+    TokenModalComponent,
   ],
   imports: [
     BrowserModule,
