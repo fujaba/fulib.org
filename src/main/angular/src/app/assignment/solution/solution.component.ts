@@ -17,24 +17,11 @@ export class SolutionComponent implements OnInit {
   assignment?: Assignment;
   solution?: Solution;
 
-  comments?: Comment[] = [
-    {
-      parent: null,
-      author: 'Testus',
-      email: 'test@example.org',
-      markdown: '*Hello World*',
-      html: '<b>Hello World</b>',
-      timeStamp: new Date(),
-    },
-    {
-      parent: null,
-      author: 'The Corrector',
-      email: 'correct@uni-kassel.de',
-      markdown: '`0P` very bad',
-      html: '<code>0P</code> very bad',
-      timeStamp: new Date(),
-    },
-  ];
+  comments?: Comment[];
+
+  commentName: string;
+  commentEmail: string;
+  commentBody: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -54,5 +41,22 @@ export class SolutionComponent implements OnInit {
         this.solution = solution;
       })
     })
+  }
+
+  submitComment(): void {
+    if (!this.comments) {
+      this.comments = [];
+    }
+
+    this.comments.push({
+      parent: null,
+      timeStamp: new Date(),
+      author: this.commentName,
+      email: this.commentEmail,
+      markdown: this.commentBody,
+      html: this.commentBody,
+    });
+
+    this.commentBody = '';
   }
 }
