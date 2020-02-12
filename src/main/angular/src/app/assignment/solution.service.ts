@@ -120,6 +120,7 @@ export class SolutionService {
   submit(solution: Solution): Observable<Solution> {
     return this.http.post<Solution>(`${environment.apiURL}/assignments/${solution.assignment.id}/solutions`, solution).pipe(
       map(partialResult => {
+        this.setToken(partialResult.id, partialResult.token);
         const result = new Solution();
         Object.assign(result, solution);
         Object.assign(result, partialResult);
@@ -137,6 +138,7 @@ export class SolutionService {
     }).pipe(
       map(solution => {
         solution.id = id;
+        solution.token = this.getToken(id);
         return solution;
       })
     );
