@@ -8,112 +8,57 @@ import {environment} from '../../environments/environment';
 import Assignment from './model/assignment';
 import {AssignmentService} from './assignment.service';
 import Comment from './model/comment';
+import {StorageService} from '../storage.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SolutionService {
-  private _name?: string | null;
-  private _studentID?: string | null;
-  private _email?: string | null;
-  private _drafts = new Map<string, string | null>();
-  private _tokens = new Map<string, string | null>();
-
   constructor(
     private http: HttpClient,
+    private storageService: StorageService,
     private assignmentService: AssignmentService,
   ) {
   }
 
   get name(): string | null {
-    if (typeof this._name === 'undefined') {
-      this._name = localStorage.getItem('solutionName');
-    }
-    return this._name
+    return this.storageService.get('solutionName');
   }
 
   set name(value: string | null) {
-    this._name = value;
-    if (value) {
-      localStorage.setItem('solutionName', value);
-    }
-    else {
-      localStorage.removeItem('solutionName');
-    }
+    this.storageService.set('solutionName', value);
   }
 
   get studentID(): string | null {
-    if (typeof this._studentID === 'undefined') {
-      this._studentID = localStorage.getItem('solutionStudentID');
-    }
-    return this._studentID
+    return this.storageService.get('solutionStudentID');
   }
 
   set studentID(value: string | null) {
-    this._studentID = value;
-    if (value) {
-      localStorage.setItem('solutionStudentID', value);
-    }
-    else {
-      localStorage.removeItem('solutionStudentID');
-    }
+    this.storageService.set('solutionStudentID', value);
   }
 
   get email(): string | null {
-    if (typeof this._email === 'undefined') {
-      this._email = localStorage.getItem('solutionEmail');
-    }
-    return this._email
+    return this.storageService.get('solutionEmail');
   }
 
   set email(value: string | null) {
-    this._email = value;
-    if (value) {
-      localStorage.setItem('solutionEmail', value);
-    }
-    else {
-      localStorage.removeItem('solutionEmail');
-    }
+    this.storageService.set('solutionEmail', value);
   }
 
   getDraft(assignment: Assignment): string | null {
-    let draft = this._drafts.get(assignment.id);
-    if (typeof draft === 'undefined') {
-      draft = localStorage.getItem(`solutionDraft/${assignment.id}`);
-      this._drafts.set(assignment.id, draft);
-    }
-    return draft;
+    return this.storageService.get(`solutionDraft/${assignment.id}`);
   }
 
   setDraft(assignment: Assignment, solution: string | null): void {
-    this._drafts.set(assignment.id, solution);
-    const key = `solutionDraft/${assignment.id}`;
-    if (solution) {
-      localStorage.setItem(key, solution);
-    }
-    else {
-      localStorage.removeItem(key);
-    }
+    this.storageService.set(`solutionDraft/${assignment.id}`, solution);
   }
 
   getToken(id: string): string | null {
-    let token = this._tokens.get(id);
-    if (typeof token == 'undefined') {
-      token = localStorage.getItem(`solutionToken/${id}`);
-      this._tokens.set(id, token);
-    }
-    return token;
+    return this.storageService.get(`solutionToken/${id}`);
   }
 
   setToken(id: string, token: string | null): void {
-    this._tokens.set(id, token);
-    const key = `solutionToken/${id}`;
-    if (token) {
-      localStorage.setItem(key, token);
-    }
-    else {
-      localStorage.removeItem(key);
-    }
+    this.storageService.set(`solutionToken/${id}`, token);
   }
 
   check(solution: CheckSolution): Observable<CheckResult> {

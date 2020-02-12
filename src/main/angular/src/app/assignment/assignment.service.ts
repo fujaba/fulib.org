@@ -7,16 +7,17 @@ import {saveAs} from 'file-saver';
 
 import Assignment from './model/assignment';
 import {environment} from '../../environments/environment';
+import {StorageService} from '../storage.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AssignmentService {
   private _draft?: Assignment | null;
-  private _tokens = new Map<string, string>();
 
   constructor(
     private http: HttpClient,
+    private storage: StorageService,
   ) {
   }
 
@@ -39,23 +40,11 @@ export class AssignmentService {
   }
 
   getToken(id: string): string | null {
-    let token = this._tokens.get(id);
-    if (typeof token == 'undefined') {
-      token = localStorage.getItem(`assignmentToken/${id}`);
-      this._tokens.set(id, token);
-    }
-    return token;
+    return this.storage.get(`assignmentToken/${id}`);
   }
 
   setToken(id: string, token: string | null): void {
-    this._tokens.set(id, token);
-    const key = `assignmentToken/${id}`;
-    if (token) {
-      localStorage.setItem(key, token);
-    }
-    else {
-      localStorage.removeItem(key);
-    }
+    this.storage.set(`assignmentToken/${id}`, token);
   }
 
   fromJson(json: string): Assignment {
