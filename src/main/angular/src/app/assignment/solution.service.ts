@@ -6,6 +6,7 @@ import {map} from 'rxjs/operators';
 import Solution, {CheckResult, CheckSolution} from './model/solution';
 import {environment} from '../../environments/environment';
 import Assignment from './model/assignment';
+import {AssignmentService} from './assignment.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,7 @@ export class SolutionService {
 
   constructor(
     private http: HttpClient,
+    private assignmentService: AssignmentService,
   ) {
   }
 
@@ -134,6 +136,8 @@ export class SolutionService {
     return this.http.get<Solution>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${id}`, {
       headers: {
         'Content-Type': 'application/json',
+        'Solution-Token': this.getToken(id) || undefined,
+        'Assignment-Token': this.assignmentService.getToken(assignmentID) || undefined,
       },
     }).pipe(
       map(solution => {

@@ -103,6 +103,7 @@ export class AssignmentService {
     return this.http.get<Assignment>(`${environment.apiURL}/assignments/${id}`, {
       headers: {
         'Content-Type': 'application/json',
+        'Assignment-Token': this.getToken(id) || undefined,
       },
     }).pipe(
       map(a => {
