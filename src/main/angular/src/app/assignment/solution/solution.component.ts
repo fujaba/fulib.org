@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 
 import {SolutionService} from '../solution.service';
@@ -39,24 +39,27 @@ export class SolutionComponent implements OnInit {
       });
       this.solutionService.get(assignmentID, solutionID).subscribe(solution => {
         this.solution = solution;
-      })
-    })
+      });
+      this.solutionService.getComments(assignmentID, solutionID).subscribe(comments => {
+        this.comments = comments;
+      });
+    });
   }
 
   submitComment(): void {
-    if (!this.comments) {
-      this.comments = [];
-    }
-
-    this.comments.push({
-      parent: null,
-      timeStamp: new Date(),
+    this.solution.assignment = this.assignment;
+    const comment: Comment = {
+      parent: this.solution.id,
       author: this.commentName,
       email: this.commentEmail,
       markdown: this.commentBody,
-      html: this.commentBody,
+    };
+    this.solutionService.postComment(this.solution, comment).subscribe(result => {
+      if (!this.comments) {
+        this.comments = [];
+      }
+      this.comments.push(result);
+      this.commentBody = '';
     });
-
-    this.commentBody = '';
   }
 }
