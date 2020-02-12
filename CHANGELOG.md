@@ -126,5 +126,5 @@
 * Updated to FulibTools v1.1.0.
 * Major improvements to style and dark mode.
 * Cleaned up the backend code.
-* Rewrote the frontend with Angular.
-* Overhauled the page footer.
+* Rewrote the frontend with Angular. #63
+* Overhauled the page footer. #64
