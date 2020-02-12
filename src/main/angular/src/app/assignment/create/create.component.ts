@@ -40,6 +40,10 @@ export class CreateComponent implements OnInit {
   }
 
   ngOnInit() {
+    const draft = this.assignmentService.draft;
+    if (draft) {
+      this.setAssignment(draft);
+    }
   }
 
   getAssignment(): Assignment {
@@ -66,6 +70,11 @@ export class CreateComponent implements OnInit {
     this.deadlineTime = a.deadline;
     this.tasks = a.tasks;
     this.solution = a.solution;
+    this.assignmentService.draft = a;
+  }
+
+  saveDraft() {
+    this.assignmentService.draft = this.getAssignment();
   }
 
   onImport() {

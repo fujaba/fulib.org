@@ -23,29 +23,34 @@
     <div class="form-group row">
       <label for="titleInput" class="col-sm-2 col-form-label">Title</label>
       <div class="col-sm-10">
-        <input type="text" class="form-control" id="titleInput" placeholder="Assignment X" [(ngModel)]="title">
+        <input type="text" class="form-control" id="titleInput" placeholder="Assignment X"
+               [(ngModel)]="title" (change)="saveDraft()">
       </div>
     </div>
     <div class="form-group row">
       <label for="authorInput" class="col-sm-2 col-form-label">Your Name</label>
       <div class="col-sm-10">
-        <input type="text" class="form-control" id="authorInput" placeholder="John Doe" [(ngModel)]="author">
+        <input type="text" class="form-control" id="authorInput" placeholder="John Doe"
+               [(ngModel)]="author" (change)="saveDraft()">
       </div>
     </div>
     <div class="form-group row">
       <label for="emailInput" class="col-sm-2 col-form-label">Your E-Mail</label>
       <div class="col-sm-10">
-        <input type="text" class="form-control" id="emailInput" placeholder="jdoe@example.com" [(ngModel)]="email">
+        <input type="text" class="form-control" id="emailInput" placeholder="jdoe@example.com"
+               [(ngModel)]="email" (change)="saveDraft()">
       </div>
     </div>
     <div class="form-group row">
       <label for="deadlineDateInput" class="col-sm-2 col-form-label">Deadline</label>
       <div class="col-sm-3">
-        <input type="date" class="form-control" id="deadlineDateInput" [(ngModel)]="deadlineDate" useValueAsDate>
+        <input type="date" class="form-control" id="deadlineDateInput"
+               [(ngModel)]="deadlineDate" useValueAsDate (change)="saveDraft()">
       </div>
       <label for="deadlineTimeInput" class="sr-only">Time</label>
       <div class="col-sm-2">
-        <input type="time" class="form-control" id="deadlineTimeInput" [(ngModel)]="deadlineTime" useValueAsDate>
+        <input type="time" class="form-control" id="deadlineTimeInput"
+               [(ngModel)]="deadlineTime" useValueAsDate (change)="saveDraft()">
       </div>
     </div>
   </div>
@@ -53,7 +58,8 @@
   <h2><label for="descriptionInput">Description</label></h2>
 
   <p>
-    <textarea id="descriptionInput" class="form-control" rows="6" [(ngModel)]="description"></textarea>
+    <textarea id="descriptionInput" class="form-control" rows="6" [(ngModel)]="description"
+              (change)="saveDraft()"></textarea>
     <small class="text-muted">
       <a href="https://commonmark.org/help/">Markdown syntax</a> is supported.
     </small>
@@ -61,7 +67,7 @@
 
   <h2><label for="solutionInput">Sample Solution</label></h2>
   <p>
-    <app-autotheme-codemirror id="solutionInput" [(content)]="solution" [options]="{
+    <app-autotheme-codemirror id="solutionInput" [(content)]="solution" (change)="saveDraft()" [options]="{
       mode: 'markdown',
       lineNumbers: true,
       lineWrapping: true,
@@ -76,19 +82,24 @@
         <div class="form-group row">
           <label for="task/{{id}}/descriptionInput" class="col-sm-2 col-form-label">Description</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control" id="task/{{id}}/descriptionInput" [(ngModel)]="task.description">
+            <input type="text" class="form-control" id="task/{{id}}/descriptionInput"
+                   [(ngModel)]="task.description" (change)="saveDraft()">
           </div>
         </div>
         <div class="form-group row">
           <label for="task/{{id}}/pointsInput" class="col-sm-2 col-form-label">Points</label>
           <div class="col-sm-10">
-            <input type="number" class="form-control" id="task/{{id}}/pointsInput" min="0" [(ngModel)]="task.points">
+            <input type="number" class="form-control" id="task/{{id}}/pointsInput" min="0"
+                   [(ngModel)]="task.points" (change)="saveDraft()">
           </div>
         </div>
         <div class="form-group row">
           <label for="task/{{id}}/verificationInput" class="col-sm-2 col-form-label">Verification</label>
           <div class="col-sm-10">
-            <app-autotheme-codemirror id="task/{{id}}/verificationInput" [(content)]="task.verification" [options]="{
+            <app-autotheme-codemirror id="task/{{id}}/verificationInput"
+                                      [(content)]="task.verification"
+                                      (change)="saveDraft()"
+                                      [options]="{
               mode: 'markdown',
               lineNumbers: true,
               lineWrapping: true,
