@@ -17,6 +17,7 @@ import {FooterComponent} from './footer/footer.component';
 
 import {DarkSwitchComponent} from './dark-switch/dark-switch.component';
 import { AutothemeCodemirrorComponent } from './autotheme-codemirror/autotheme-codemirror.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { AutothemeCodemirrorComponent } from './autotheme-codemirror/autotheme-c
     FooterComponent,
     DarkSwitchComponent,
     AutothemeCodemirrorComponent,
+    PageNotFoundComponent,
   ],
   imports: [
     BrowserModule,
