@@ -21,6 +21,7 @@ import {DarkSwitchComponent} from './dark-switch/dark-switch.component';
 import { CreateComponent } from './assignment/create/create.component';
 import { AutothemeCodemirrorComponent } from './autotheme-codemirror/autotheme-codemirror.component';
 import { SolveComponent } from './assignment/solve/solve.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { SolveComponent } from './assignment/solve/solve.component';
     DarkSwitchComponent,
     CreateComponent,
     AutothemeCodemirrorComponent,
-    SolveComponent
+    SolveComponent,
+    PageNotFoundComponent,
   ],
   imports: [
     BrowserModule,
