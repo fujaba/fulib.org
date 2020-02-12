@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
@@ -10,7 +10,8 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 export class TokenModalComponent implements OnInit {
   @ViewChild('tokenModal', {static: true}) tokenModal;
 
-  @Output() submit = new EventEmitter<{ solutionToken: string; assignmentToken: string; }>();
+  @Input() solution: boolean;
+  @Output() submit = new EventEmitter<{ solutionToken?: string; assignmentToken: string; }>();
 
   solutionToken: string;
   assignmentToken: string;
@@ -29,7 +30,7 @@ export class TokenModalComponent implements OnInit {
 
   submitTokens(): void {
     this.submit.emit({
-      solutionToken: this.solutionToken,
+      solutionToken: this.solution ? this.solutionToken : undefined,
       assignmentToken: this.assignmentToken,
     });
   }

@@ -3,18 +3,23 @@
     <h5 class="modal-title" id="tokenModalLabel">Authorization Required</h5>
   </div>
   <div class="modal-body">
-    <p>
-      Please enter the token for this solution to view it:
-    </p>
-    <div class="form">
-      <div class="form-group">
-        <label class="sr-only" for="solutionTokenInput">Solution Token</label>
-        <input type="text" class="form-control text-monospace" id="solutionTokenInput"
-               placeholder="XXXX-XXXX-XXXX-XXXX" [(ngModel)]="solutionToken">
+    <ng-container *ngIf="solution">
+      <p>
+        Please enter the token for this solution to view it:
+      </p>
+      <div class="form">
+        <div class="form-group">
+          <label class="sr-only" for="solutionTokenInput">Solution Token</label>
+          <input type="text" class="form-control text-monospace" id="solutionTokenInput"
+                 placeholder="XXXX-XXXX-XXXX-XXXX" [(ngModel)]="solutionToken">
+        </div>
       </div>
-    </div>
-    <p>
-      If you are the assignment administrator or tutor, enter the assignment token here:
+      <p>
+        If you are the assignment administrator or tutor, enter the assignment token here:
+      </p>
+    </ng-container>
+    <p *ngIf="!solution">
+      Please enter the token for this assignment to view solutions:
     </p>
     <div class="form">
       <div class="form-group">
