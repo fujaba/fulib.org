@@ -91,6 +91,7 @@ export class AssignmentService {
   submit(assignment: Assignment): Observable<Assignment> {
     return this.http.post<Partial<Assignment>>(environment.apiURL + '/assignments', assignment)
       .pipe(map(partialResult => {
+        this.setToken(partialResult.id, partialResult.token);
         const result = new Assignment();
         Object.assign(result, assignment);
         Object.assign(result, partialResult);
@@ -106,6 +107,7 @@ export class AssignmentService {
     }).pipe(
       map(a => {
         a.id = id;
+        a.token = this.getToken(id);
         return a;
       })
     );
