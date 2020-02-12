@@ -22,6 +22,7 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
 
   scenarioText: string;
   response: Response | null;
+  submitting: boolean;
 
   exampleCategories: ExampleCategory[];
   _activeObjectDiagramTab: number = 1;
@@ -57,6 +58,7 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
       this.scenarioEditorService.storedScenario = this.scenarioText;
     }
 
+    this.submitting = true;
     const request: Request = {
       privacy: this.privacyService.privacy,
       packageName: this.scenarioEditorService.packageName,
@@ -65,6 +67,7 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
       selectedExample: this.selectedExample ? this.selectedExample.name : undefined,
     };
     this.scenarioEditorService.submit(request).subscribe(response => {
+      this.submitting = false;
       this.response = response;
     });
   }
