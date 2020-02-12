@@ -133,6 +133,29 @@ export class SolutionService {
     );
   }
 
+  getAll(assignment: Assignment | string): Observable<Solution[]> {
+    const assignmentID = asID(assignment);
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    const assignmentToken = this.assignmentService.getToken(assignmentID);
+    if (assignmentToken) {
+      headers['Assignment-Token'] = assignmentToken;
+    }
+    return this.http.get<{solutions: Solution[]}>(`${environment.apiURL}/assignments/${assignmentID}/solutions`, {headers}).pipe(
+      map(result => {
+        for (let solution of result.solutions) {
+          solution.token = this.getToken(solution.id);
+        }
+        return result.solutions;
+      }),
+      catchError(err => {
+        err.error.status = err.status;
+        throw err.error;
+      }),
+    );
+  }
+
   getComments(assignment: Assignment | string, id: string): Observable<Comment[]> {
     const assignmentID = asID(assignment);
     return this.http.get<{ children: Comment[] }>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${id}/comments`).pipe(
