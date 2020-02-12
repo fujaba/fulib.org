@@ -13,6 +13,7 @@ import {environment} from '../../environments/environment';
 })
 export class AssignmentService {
   private _draft?: Assignment | null;
+  private _tokens: Map<string, string>;
 
   constructor(
     private http: HttpClient,
@@ -34,6 +35,26 @@ export class AssignmentService {
     }
     else {
       localStorage.removeItem('assignmentDraft');
+    }
+  }
+
+  getToken(id: string): string | null {
+    let token = this._tokens.get(id);
+    if (typeof token == 'undefined') {
+      token = localStorage.getItem(`assignmentToken/${id}`);
+      this._tokens.set(id, token);
+    }
+    return token;
+  }
+
+  setToken(id: string, token: string | null): void {
+    this._tokens.set(id, token);
+    const key = `assignmentToken/${id}`;
+    if (token) {
+      localStorage.setItem(key, token);
+    }
+    else {
+      localStorage.removeItem(key);
     }
   }
 
