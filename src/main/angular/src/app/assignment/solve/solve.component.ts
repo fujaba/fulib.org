@@ -64,6 +64,32 @@ export class SolveComponent implements OnInit, AfterViewInit, OnDestroy {
     this.solutionInput.contentChange.unsubscribe();
   }
 
+  getSolution(): Solution {
+    return {
+      assignment: this.assignment,
+      id: this.id,
+      token: this.token,
+      name: this.name,
+      studentID: this.studentID,
+      email: this.email,
+      solution: this.solution,
+      timeStamp: this.timeStamp,
+      results: this.results,
+    };
+  }
+
+  setSolution(result: Solution): void {
+    this.id = result.id;
+    this.token = result.token;
+    this.assignment = result.assignment;
+    this.name = result.name;
+    this.studentID = result.studentID;
+    this.email = result.email;
+    this.solution = result.solution;
+    this.timeStamp = result.timeStamp;
+    this.results = result.results;
+  }
+
   check() {
     this.checking = true;
 
@@ -75,21 +101,8 @@ export class SolveComponent implements OnInit, AfterViewInit, OnDestroy {
 
   submit() {
     this.submitting = true;
-
-    const solution: Solution = {
-      assignment: this.assignment,
-      name: this.name,
-      studentID: this.studentID,
-      email: this.email,
-      solution: this.solution,
-    };
-
-    this.solutionService.submit(solution).subscribe(result => {
-      this.id = result.id;
-      this.token = result.token;
-      this.timeStamp = result.timeStamp;
-      this.results = result.results;
-
+    this.solutionService.submit(this.getSolution()).subscribe(result => {
+      this.setSolution(result);
       this.modalService.open(this.successModal, {ariaLabelledBy: 'successModalLabel', size: 'xl'});
       this.submitting = false;
     })
