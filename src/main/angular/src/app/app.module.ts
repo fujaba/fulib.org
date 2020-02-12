@@ -24,6 +24,7 @@ import { SolveComponent } from './assignment/solve/solve.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { SolutionComponent } from './assignment/solution/solution.component';
 import { TokenModalComponent } from './assignment/token-modal/token-modal.component';
+import { SolutionListComponent } from './assignment/solution-list/solution-list.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { TokenModalComponent } from './assignment/token-modal/token-modal.compon
     PageNotFoundComponent,
     SolutionComponent,
     TokenModalComponent,
+    SolutionListComponent,
   ],
   imports: [
     BrowserModule,
