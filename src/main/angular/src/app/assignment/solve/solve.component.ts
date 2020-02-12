@@ -47,6 +47,7 @@ export class SolveComponent implements OnInit, AfterViewInit, OnDestroy {
     this.route.params.subscribe(params => {
       this.assignmentService.get(params.id).subscribe(result => {
         this.assignment = result;
+        this.loadDraft();
       });
     });
   }
@@ -88,6 +89,20 @@ export class SolveComponent implements OnInit, AfterViewInit, OnDestroy {
     this.solution = result.solution;
     this.timeStamp = result.timeStamp;
     this.results = result.results;
+  }
+
+  loadDraft(): void {
+    this.name = this.solutionService.name || '';
+    this.studentID = this.solutionService.studentID || '';
+    this.email = this.solutionService.email || '';
+    this.solution = this.solutionService.getDraft(this.assignment) || '';
+  }
+
+  saveDraft(): void {
+    this.solutionService.name = this.name;
+    this.solutionService.studentID = this.studentID;
+    this.solutionService.email = this.email;
+    this.solutionService.setDraft(this.assignment, this.solution);
   }
 
   check() {
