@@ -145,8 +145,7 @@ public class Solutions
 
 		if (request.contentType() == null || !request.contentType().startsWith("application/json"))
 		{
-			response.redirect("/assignment/solutions.html?id=" + assignmentID);
-			return "";
+			return WebService.serveIndex(request, response);
 		}
 
 		final Assignment assignment = Assignments.getAssignmentOr404(assignmentID);
