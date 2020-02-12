@@ -40,11 +40,24 @@ export class SolutionComponent implements OnInit {
       });
       this.solutionService.get(assignmentID, solutionID).subscribe(solution => {
         this.solution = solution;
+        this.loadCommentDraft();
       });
       this.solutionService.getComments(assignmentID, solutionID).subscribe(comments => {
         this.comments = comments;
       });
     });
+  }
+
+  loadCommentDraft(): void {
+    this.commentName = this.solutionService.commentName;
+    this.commentEmail = this.solutionService.commentEmail;
+    this.commentBody = this.solutionService.getCommentDraft(this.solution);
+  }
+
+  saveCommentDraft(): void {
+    this.solutionService.commentName = this.commentName;
+    this.solutionService.commentEmail = this.commentEmail;
+    this.solutionService.setCommentDraft(this.solution, this.commentBody);
   }
 
   submitComment(): void {
@@ -63,6 +76,7 @@ export class SolutionComponent implements OnInit {
       }
       this.comments.push(result);
       this.commentBody = '';
+      this.saveCommentDraft();
       this.submittingComment = false;
     });
   }
