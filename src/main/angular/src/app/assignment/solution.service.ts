@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {catchError, map} from 'rxjs/operators';
 
 import Solution, {CheckResult, CheckSolution} from './model/solution';
 import {environment} from '../../environments/environment';
@@ -121,7 +121,11 @@ export class SolutionService {
         solution.id = id;
         solution.token = this.getToken(id);
         return solution;
-      })
+      }),
+      catchError(err => {
+        err.error.status = err.status;
+        throw err.error;
+      }),
     );
   }
 
