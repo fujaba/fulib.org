@@ -20,12 +20,10 @@ import org.fulib.webapp.WebService;
 import org.fulib.webapp.assignment.model.Assignment;
 import org.fulib.webapp.assignment.model.Comment;
 import org.fulib.webapp.assignment.model.Solution;
-import org.fulib.webapp.assignment.model.TaskResult;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
@@ -199,19 +197,20 @@ public class Mongo
 			return null;
 		}
 
-		return this.resolveAssignment(solution);
+		return this.resolve(solution);
 	}
 
 	public List<Solution> getSolutions(String assignmentID)
 	{
 		return this.solutions.find(Filters.eq(Solution.PROPERTY_assignment, assignmentID))
 		                     .sort(Sorts.ascending(Solution.PROPERTY_timeStamp))
-		                     .map(this::resolveAssignment)
+		                     .map(this::resolve)
 		                     .into(new ArrayList<>());
 	}
 
-	private Solution resolveAssignment(Solution solution)
+	private Solution resolve(Solution solution)
 	{
+		solution.setAssignee(this.getAssignee(solution.getID()));
 		// workaround, see Solution#setAssignmentID
 		final String assignmentID = solution.getAssignmentID();
 		final Assignment assignment = this.getAssignment(assignmentID);
