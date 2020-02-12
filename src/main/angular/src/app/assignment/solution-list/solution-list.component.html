@@ -31,4 +31,35 @@
   <p *ngIf="!assignment">
     Loading Tasks...
   </p>
+
+  <h2>Solutions</h2>
+  <table class="table table-bordered table-hover" *ngIf="solutions">
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Student ID</th>
+      <th>E-Mail</th>
+      <th>Submitted</th>
+      <th>Points</th>
+      <th>Assignee</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let solution of solutions">
+        <td>{{solution.name}}</td>
+        <td>{{solution.studentID}}</td>
+        <td><a href="mailto:{{solution.email}}">{{solution.email}}</a></td>
+        <td>{{solution.timeStamp | date:'medium'}}</td>
+        <td><span class="badge badge-primary badge-pill">
+          {{totalResultPoints(solution)}} / {{totalPoints}}
+        </span></td>
+        <td><input class="form-control" [ngModel]="solution.assignee"></td>
+        <td><a routerLink="/assignment/{{assignmentID}}/solutions/{{solution.id}}">View</a></td>
+      </tr>
+    </tbody>
+  </table>
+  <p *ngIf="!solutions">
+    Loading Solutions...
+  </p>
 </div>
