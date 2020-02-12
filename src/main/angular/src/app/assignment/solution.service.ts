@@ -106,4 +106,18 @@ export class SolutionService {
       })
     );
   }
+
+  get(assignment: Assignment | string, id: string): Observable<Solution> {
+    const assignmentID = typeof assignment === 'string' ? assignment : assignment.id;
+    return this.http.get<Solution>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).pipe(
+      map(solution => {
+        solution.id = id;
+        return solution;
+      })
+    );
+  }
 }
