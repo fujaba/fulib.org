@@ -10,6 +10,10 @@ import {AssignmentService} from './assignment.service';
 import Comment from './model/comment';
 import {StorageService} from '../storage.service';
 
+function asID(id: {id?: string} | string): string {
+  return typeof id === 'string' ? id : id.id;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -70,12 +74,12 @@ export class SolutionService {
   }
 
   getCommentDraft(solution: Solution | string): string | null {
-    const solutionID = typeof solution === 'string' ? solution : solution.id;
+    const solutionID = asID(solution);
     return this.storageService.get(`commentDraft/${solutionID}`);
   }
 
   setCommentDraft(solution: Solution | string, draft: string | null) {
-    const solutionID = typeof solution === 'string' ? solution : solution.id;
+    const solutionID = asID(solution);
     this.storageService.set(`commentDraft/${solutionID}`, draft);
   }
 
@@ -104,7 +108,7 @@ export class SolutionService {
   }
 
   get(assignment: Assignment | string, id: string): Observable<Solution> {
-    const assignmentID = typeof assignment === 'string' ? assignment : assignment.id;
+    const assignmentID = asID(assignment);
     const headers = {
       'Content-Type': 'application/json',
     };
@@ -130,7 +134,7 @@ export class SolutionService {
   }
 
   getComments(assignment: Assignment | string, id: string): Observable<Comment[]> {
-    const assignmentID = typeof assignment === 'string' ? assignment : assignment.id;
+    const assignmentID = asID(assignment);
     return this.http.get<{ children: Comment[] }>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${id}/comments`).pipe(
       map(result => {
         for (let comment of result.children) {
