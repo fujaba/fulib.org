@@ -53,6 +53,32 @@ export class SolutionService {
     this.storageService.set(`solutionDraft/${assignment.id}`, solution);
   }
 
+  get commentName(): string | null {
+    return this.storageService.get('commentName');
+  }
+
+  set commentName(value: string | null) {
+    this.storageService.set('commentName', value);
+  }
+
+  get commentEmail(): string | null {
+    return this.storageService.get('commentEmail');
+  }
+
+  set commentEmail(value: string | null) {
+    this.storageService.set('commentEmail', value);
+  }
+
+  getCommentDraft(solution: Solution | string): string | null {
+    const solutionID = typeof solution === 'string' ? solution : solution.id;
+    return this.storageService.get(`commentDraft/${solutionID}`);
+  }
+
+  setCommentDraft(solution: Solution | string, draft: string | null) {
+    const solutionID = typeof solution === 'string' ? solution : solution.id;
+    this.storageService.set(`commentDraft/${solutionID}`, draft);
+  }
+
   getToken(id: string): string | null {
     return this.storageService.get(`solutionToken/${id}`);
   }
