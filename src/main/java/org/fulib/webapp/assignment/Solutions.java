@@ -1,5 +1,6 @@
 package org.fulib.webapp.assignment;
 
+import org.fulib.webapp.WebService;
 import org.fulib.webapp.assignment.model.Assignment;
 import org.fulib.webapp.assignment.model.Solution;
 import org.fulib.webapp.assignment.model.Task;
@@ -128,8 +129,7 @@ public class Solutions
 
 		if (request.contentType() == null || !request.contentType().startsWith("application/json"))
 		{
-			response.redirect("/assignment/solution.html?id=" + assignmentID + "&solution=" + solutionID);
-			return "";
+			return WebService.serveIndex(request, response);
 		}
 
 		final Solution solution = getSolutionOr404(solutionID);
