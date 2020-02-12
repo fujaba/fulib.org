@@ -15,6 +15,7 @@ export class SolutionService {
   private _studentID?: string | null;
   private _email?: string | null;
   private _drafts = new Map<string, string | null>();
+  private _tokens = new Map<string, string | null>();
 
   constructor(
     private http: HttpClient,
@@ -86,6 +87,26 @@ export class SolutionService {
     const key = `solutionDraft/${assignment.id}`;
     if (solution) {
       localStorage.setItem(key, solution);
+    }
+    else {
+      localStorage.removeItem(key);
+    }
+  }
+
+  getToken(id: string): string | null {
+    let token = this._tokens.get(id);
+    if (typeof token == 'undefined') {
+      token = localStorage.getItem(`solutionToken/${id}`);
+      this._tokens.set(id, token);
+    }
+    return token;
+  }
+
+  setToken(id: string, token: string | null): void {
+    this._tokens.set(id, token);
+    const key = `solutionToken/${id}`;
+    if (token) {
+      localStorage.setItem(key, token);
     }
     else {
       localStorage.removeItem(key);
