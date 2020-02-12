@@ -74,4 +74,8 @@
       </div>
     </div>
   </div>
+
+  <p class="text-center" *ngIf="solution">
+    Submitted <b>{{solution.timeStamp | date:'medium'}}</b>.
+  </p>
 </div>
