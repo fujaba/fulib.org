@@ -6,6 +6,7 @@ import {AssignmentService} from '../assignment.service';
 
 import Assignment from '../model/assignment';
 import Solution from '../model/solution';
+import Comment from '../model/comment';
 
 @Component({
   selector: 'app-solution',
@@ -15,6 +16,25 @@ import Solution from '../model/solution';
 export class SolutionComponent implements OnInit {
   assignment?: Assignment;
   solution?: Solution;
+
+  comments?: Comment[] = [
+    {
+      parent: null,
+      author: 'Testus',
+      email: 'test@example.org',
+      markdown: '*Hello World*',
+      html: '<b>Hello World</b>',
+      timeStamp: new Date(),
+    },
+    {
+      parent: null,
+      author: 'The Corrector',
+      email: 'correct@uni-kassel.de',
+      markdown: '`0P` very bad',
+      html: '<code>0P</code> very bad',
+      timeStamp: new Date(),
+    },
+  ];
 
   constructor(
     private route: ActivatedRoute,

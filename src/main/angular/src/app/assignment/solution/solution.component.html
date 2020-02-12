@@ -78,4 +78,20 @@
   <p class="text-center" *ngIf="solution">
     Submitted <b>{{solution.timeStamp | date:'medium'}}</b>.
   </p>
+
+  <h2>Comments</h2>
+  <div>
+    <div class="card mb-3" *ngFor="let comment of comments">
+      <div class="card-header">
+        {{comment.author}}
+        &#8226;
+        <a href="mailto:{{comment.email}}">{{comment.email}}</a>
+        &#8226;
+        <span class="text-muted">{{comment.timeStamp | date:'medium'}}</span>
+      </div>
+      <div class="card-body">
+        <div class="card-text" [innerHTML]="comment.html | safeHtml"></div>
+      </div>
+    </div>
+  </div>
 </div>
