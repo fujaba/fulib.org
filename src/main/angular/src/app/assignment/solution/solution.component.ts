@@ -14,7 +14,9 @@ import Comment from '../model/comment';
   styleUrls: ['./solution.component.scss']
 })
 export class SolutionComponent implements OnInit {
+  assignmentID: string;
   assignment?: Assignment;
+  solutionID: string;
   solution?: Solution;
 
   comments?: Comment[];
@@ -33,18 +35,30 @@ export class SolutionComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      const assignmentID = params.aid;
-      const solutionID = params.sid;
-      this.assignmentService.get(assignmentID).subscribe(assignment => {
-        this.assignment = assignment;
-      });
-      this.solutionService.get(assignmentID, solutionID).subscribe(solution => {
-        this.solution = solution;
-        this.loadCommentDraft();
-      });
-      this.solutionService.getComments(assignmentID, solutionID).subscribe(comments => {
-        this.comments = comments;
-      });
+      this.assignmentID = params.aid;
+      this.solutionID = params.sid;
+      this.loadAssignment();
+      this.loadSolution();
+      this.loadComments();
+    });
+  }
+
+  loadAssignment(): void {
+    this.assignmentService.get(this.assignmentID).subscribe(assignment => {
+      this.assignment = assignment;
+    });
+  }
+
+  loadSolution(): void {
+    this.solutionService.get(this.assignmentID, this.solutionID).subscribe(solution => {
+      this.solution = solution;
+      this.loadCommentDraft();
+    });
+  }
+
+  loadComments(): void {
+    this.solutionService.getComments(this.assignmentID, this.solutionID).subscribe(comments => {
+      this.comments = comments;
     });
   }
 
