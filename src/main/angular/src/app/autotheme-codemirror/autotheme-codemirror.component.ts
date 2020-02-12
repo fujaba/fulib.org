@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 
 declare const themeChangeHandlers: (() => void)[];
 
@@ -17,21 +17,34 @@ export class AutothemeCodemirrorComponent implements OnInit, OnDestroy {
 
   editorThemeHandler: () => void;
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit() {
     this.updateEditorThemes();
     this.editorThemeHandler = () => this.updateEditorThemes();
-    themeChangeHandlers.push(this.editorThemeHandler);
+    // TODO try-catch not needed once darkmode is an npm package
+    try {
+      themeChangeHandlers.push(this.editorThemeHandler);
+    } catch {
+    }
   }
 
   ngOnDestroy(): void {
-    const index = themeChangeHandlers.indexOf(this.editorThemeHandler);
-    themeChangeHandlers.splice(index, 1);
+    // TODO try-catch not needed once darkmode is an npm package
+    try {
+      const index = themeChangeHandlers.indexOf(this.editorThemeHandler);
+      themeChangeHandlers.splice(index, 1);
+    } catch {
+    }
   }
 
   private updateEditorThemes(): void {
-    this.options.theme = getTheme() === 'dark' ? 'darcula' : 'idea';
+    // TODO try-catch not needed once darkmode is an npm package
+    try {
+      this.options.theme = getTheme() === 'dark' ? 'darcula' : 'idea';
+    } catch {
+    }
   }
 
   setContent(value: string) {
