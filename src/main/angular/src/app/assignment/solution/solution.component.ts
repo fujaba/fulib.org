@@ -22,6 +22,7 @@ export class SolutionComponent implements OnInit {
   commentName: string;
   commentEmail: string;
   commentBody: string;
+  submittingComment: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -47,6 +48,8 @@ export class SolutionComponent implements OnInit {
   }
 
   submitComment(): void {
+    this.submittingComment = true;
+
     this.solution.assignment = this.assignment;
     const comment: Comment = {
       parent: this.solution.id,
@@ -60,6 +63,7 @@ export class SolutionComponent implements OnInit {
       }
       this.comments.push(result);
       this.commentBody = '';
+      this.submittingComment = false;
     });
   }
 }
