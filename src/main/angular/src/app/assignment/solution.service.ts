@@ -11,11 +11,65 @@ import Assignment from './model/assignment';
   providedIn: 'root'
 })
 export class SolutionService {
+  private _name?: string | null;
+  private _studentID?: string | null;
+  private _email?: string | null;
   private _drafts = new Map<string, string | null>();
 
   constructor(
     private http: HttpClient,
   ) {
+  }
+
+  get name(): string | null {
+    if (typeof this._name === 'undefined') {
+      this._name = localStorage.getItem('solutionName');
+    }
+    return this._name
+  }
+
+  set name(value: string | null) {
+    this._name = value;
+    if (value) {
+      localStorage.setItem('solutionName', value);
+    }
+    else {
+      localStorage.removeItem('solutionName');
+    }
+  }
+
+  get studentID(): string | null {
+    if (typeof this._studentID === 'undefined') {
+      this._studentID = localStorage.getItem('solutionStudentID');
+    }
+    return this._studentID
+  }
+
+  set studentID(value: string | null) {
+    this._studentID = value;
+    if (value) {
+      localStorage.setItem('solutionStudentID', value);
+    }
+    else {
+      localStorage.removeItem('solutionStudentID');
+    }
+  }
+
+  get email(): string | null {
+    if (typeof this._email === 'undefined') {
+      this._email = localStorage.getItem('solutionEmail');
+    }
+    return this._email
+  }
+
+  set email(value: string | null) {
+    this._email = value;
+    if (value) {
+      localStorage.setItem('solutionEmail', value);
+    }
+    else {
+      localStorage.removeItem('solutionEmail');
+    }
   }
 
   getDraft(assignment: Assignment): string | null {
