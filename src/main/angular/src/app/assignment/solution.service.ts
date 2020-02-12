@@ -7,6 +7,7 @@ import Solution, {CheckResult, CheckSolution} from './model/solution';
 import {environment} from '../../environments/environment';
 import Assignment from './model/assignment';
 import {AssignmentService} from './assignment.service';
+import Comment from './model/comment';
 
 @Injectable({
   providedIn: 'root'
@@ -150,6 +151,30 @@ export class SolutionService {
         solution.token = this.getToken(id);
         return solution;
       })
+    );
+  }
+
+  getComments(assignment: Assignment | string, id: string): Observable<Comment[]> {
+    const assignmentID = typeof assignment === 'string' ? assignment : assignment.id;
+    return this.http.get<{ children: Comment[] }>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${id}/comments`).pipe(
+      map(result => {
+        for (let comment of result.children) {
+          comment.parent = id;
+        }
+        return result.children;
+      }),
+    );
+  }
+
+  postComment(solution: Solution, comment: Comment): Observable<Comment> {
+    return this.http.post<Comment>(`${environment.apiURL}/assignments/${solution.assignment.id}/solutions/${solution.id}/comments`, comment).pipe(
+      map(partialResult => {
+        const result = new Comment();
+        result.parent = solution.id;
+        Object.assign(result, comment);
+        Object.assign(result, partialResult);
+        return result;
+      }),
     );
   }
 }
