@@ -32,7 +32,7 @@ public class Mongo
 	private MongoClient mongoClient;
 	private MongoDatabase database;
 
-	private MongoCollection<Document> requestLog;
+	MongoCollection<Document> requestLog;
 
 	// =============== Static Methods ===============
 
