@@ -1,8 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 
-declare function setTheme(theme: string);
-
-declare function getTheme(): string;
+import {ThemeService} from '../theme.service';
 
 @Component({
   selector: 'app-dark-switch',
@@ -12,7 +10,9 @@ declare function getTheme(): string;
 export class DarkSwitchComponent implements OnInit {
   private _enabled: boolean;
 
-  constructor() {
+  constructor(
+    private themeService: ThemeService,
+  ) {
   }
 
   ngOnInit() {
@@ -20,11 +20,7 @@ export class DarkSwitchComponent implements OnInit {
   }
 
   private loadEnabled(): void {
-    // TODO try-catch not needed once darkmode is an npm package
-    try {
-      this._enabled = getTheme() === 'dark';
-    } catch {
-    }
+    this.enabled = this.themeService.theme === 'dark';
   }
 
   get enabled(): boolean {
@@ -32,11 +28,7 @@ export class DarkSwitchComponent implements OnInit {
   }
 
   set enabled(value: boolean) {
-    // TODO try-catch not needed once darkmode is an npm package
-    try {
-      this._enabled = value;
-      setTheme(value ? 'dark' : 'light');
-    } catch {
-    }
+    this._enabled = value;
+    this.themeService.theme = value ? 'dark' : 'light';
   }
 }
