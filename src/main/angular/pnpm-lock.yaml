@@ -11,6 +11,7 @@ dependencies:
   '@ng-bootstrap/ng-bootstrap': 5.2.1_28f38c6b3dcfb84e8962d3e70abde5c8
   '@types/file-saver': 2.0.1
   bootstrap: 4.3.1
+  bootstrap-darkmode: 0.4.0
   codemirror: 5.51.0
   file-saver: 2.0.2
   rxjs: 6.4.0
@@ -1924,6 +1925,10 @@ packages:
     dev: true
     resolution:
       integrity: sha1-jokKGD2O6aI5OzhExpGkK897yfU=
+  /bootstrap-darkmode/0.4.0:
+    dev: false
+    resolution:
+      integrity: sha512-1A6ScKhRrm1NhTJ79wsJTtKhVpvzqaXWk/gQaJ2/INvm2FNQY8kD54YKT/TWU3VkDzHIPWyjV71Va9cXjUoDLQ==
   /bootstrap/4.3.1:
     dev: false
     engines:
@@ -8198,6 +8203,7 @@ specifiers:
   '@types/jasminewd2': ~2.0.3
   '@types/node': ~8.9.4
   bootstrap: ~4.3.1
+  bootstrap-darkmode: ^0.4.0
   codelyzer: ^5.0.0
   codemirror: ^5.51.0
   file-saver: ^2.0.2
