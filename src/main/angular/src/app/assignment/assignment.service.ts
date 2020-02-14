@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http'
+import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 
@@ -8,6 +8,8 @@ import {saveAs} from 'file-saver';
 import Assignment from './model/assignment';
 import {environment} from '../../environments/environment';
 import {StorageService} from '../storage.service';
+
+type AssignmentResponse = { id: string, token: string };
 
 @Injectable({
   providedIn: 'root'
@@ -78,12 +80,13 @@ export class AssignmentService {
   }
 
   submit(assignment: Assignment): Observable<Assignment> {
-    return this.http.post<Partial<Assignment>>(environment.apiURL + '/assignments', assignment)
-      .pipe(map(partialResult => {
-        this.setToken(partialResult.id, partialResult.token);
-        const result = new Assignment();
-        Object.assign(result, assignment);
-        Object.assign(result, partialResult);
+    return this.http.post<AssignmentResponse>(environment.apiURL + '/assignments', assignment)
+      .pipe(map(response => {
+        this.setToken(response.id, response.token);
+        const result: Assignment = {
+          ...assignment,
+          ...response,
+        };
         return result;
       }));
   }

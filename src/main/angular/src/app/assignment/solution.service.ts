@@ -14,6 +14,9 @@ function asID(id: {id?: string} | string): string {
   return typeof id === 'string' ? id : id.id;
 }
 
+type SolutionResponse = { id: string, timeStamp: string, token: string };
+type CommentResponse = { id: string, timeStamp: string, html: string };
+
 @Injectable({
   providedIn: 'root'
 })
@@ -96,12 +99,14 @@ export class SolutionService {
   }
 
   submit(solution: Solution): Observable<Solution> {
-    return this.http.post<Solution>(`${environment.apiURL}/assignments/${solution.assignment.id}/solutions`, solution).pipe(
-      map(partialResult => {
-        this.setToken(partialResult.id, partialResult.token);
-        const result = new Solution();
-        Object.assign(result, solution);
-        Object.assign(result, partialResult);
+    return this.http.post<SolutionResponse>(`${environment.apiURL}/assignments/${solution.assignment.id}/solutions`, solution).pipe(
+      map(response => {
+        this.setToken(response.id, response.token);
+        const result: Solution = {
+          ...solution,
+          ...response,
+          timeStamp: new Date(response.timeStamp),
+        };
         return result;
       })
     );
@@ -169,12 +174,14 @@ export class SolutionService {
   }
 
   postComment(solution: Solution, comment: Comment): Observable<Comment> {
-    return this.http.post<Comment>(`${environment.apiURL}/assignments/${solution.assignment.id}/solutions/${solution.id}/comments`, comment).pipe(
-      map(partialResult => {
-        const result = new Comment();
-        result.parent = solution.id;
-        Object.assign(result, comment);
-        Object.assign(result, partialResult);
+    return this.http.post<CommentResponse>(`${environment.apiURL}/assignments/${solution.assignment.id}/solutions/${solution.id}/comments`, comment).pipe(
+      map(response => {
+        const result: Comment = {
+          ...comment,
+          parent: solution.id,
+          ...response,
+          timeStamp: new Date(response.timeStamp),
+        };
         return result;
       }),
     );
