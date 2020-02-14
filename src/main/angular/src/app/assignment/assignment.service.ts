@@ -23,6 +23,8 @@ export class AssignmentService {
   ) {
   }
 
+  // --------------- Assignment Drafts ---------------
+
   get draft(): Assignment | null {
     if (typeof this._draft === 'undefined') {
       const json = localStorage.getItem('assignmentDraft');
@@ -41,6 +43,8 @@ export class AssignmentService {
     }
   }
 
+  // --------------- Tokens ---------------
+
   getToken(id: string): string | null {
     return this.storage.get(`assignmentToken/${id}`);
   }
@@ -48,6 +52,8 @@ export class AssignmentService {
   setToken(id: string, token: string | null): void {
     this.storage.set(`assignmentToken/${id}`, token);
   }
+
+  // --------------- JSON Conversion ---------------
 
   fromJson(json: string): Assignment {
     const reviver = (k, v) => k === 'deadline' ? new Date(v) : v;
@@ -61,6 +67,8 @@ export class AssignmentService {
     const replacer = (k, v) => v instanceof Date ? v.toISOString() : v;
     return JSON.stringify(assignment, replacer, space);
   }
+
+  // --------------- Import/Export ---------------
 
   download(assignment: Assignment): void {
     const json = this.toJson(assignment, '  ');
@@ -78,6 +86,8 @@ export class AssignmentService {
       reader.readAsText(file);
     });
   }
+
+  // --------------- HTTP Methods ---------------
 
   submit(assignment: Assignment): Observable<Assignment> {
     return this.http.post<AssignmentResponse>(environment.apiURL + '/assignments', assignment)

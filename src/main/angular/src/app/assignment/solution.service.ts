@@ -28,6 +28,8 @@ export class SolutionService {
   ) {
   }
 
+  // --------------- Solution Drafts ---------------
+
   get name(): string | null {
     return this.storageService.get('solutionName');
   }
@@ -60,6 +62,8 @@ export class SolutionService {
     this.storageService.set(`solutionDraft/${assignment.id}`, solution);
   }
 
+  // --------------- Comment Drafts ---------------
+
   get commentName(): string | null {
     return this.storageService.get('commentName');
   }
@@ -86,6 +90,8 @@ export class SolutionService {
     this.storageService.set(`commentDraft/${solutionID}`, draft);
   }
 
+  // --------------- Tokens ---------------
+
   getToken(id: string): string | null {
     return this.storageService.get(`solutionToken/${id}`);
   }
@@ -93,6 +99,8 @@ export class SolutionService {
   setToken(id: string, token: string | null): void {
     this.storageService.set(`solutionToken/${id}`, token);
   }
+
+  // --------------- HTTP Methods ---------------
 
   check(solution: CheckSolution): Observable<CheckResult> {
     return this.http.post<CheckResult>(`${environment.apiURL}/assignments/${solution.assignment.id}/check`, solution);
