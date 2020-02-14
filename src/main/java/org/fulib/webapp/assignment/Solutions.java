@@ -1,10 +1,7 @@
 package org.fulib.webapp.assignment;
 
 import org.fulib.webapp.WebService;
-import org.fulib.webapp.assignment.model.Assignment;
-import org.fulib.webapp.assignment.model.Solution;
-import org.fulib.webapp.assignment.model.Task;
-import org.fulib.webapp.assignment.model.TaskResult;
+import org.fulib.webapp.assignment.model.*;
 import org.fulib.webapp.mongo.Mongo;
 import org.fulib.webapp.tool.RunCodeGen;
 import org.fulib.webapp.tool.model.CodeGenData;
@@ -223,6 +220,68 @@ public class Solutions
 		Mongo.get().saveAssignee(solutionID, assignee);
 
 		return "{}";
+	}
+
+	// --------------- Corrections ---------------
+
+	public static Object getGradings(Request request, Response response)
+	{
+		final String solutionID = request.params("solutionID");
+		final Solution solution = getSolutionOr404(solutionID);
+		checkPrivilege(request, solution);
+
+		final List<TaskGrading> history = Mongo.get().getGradingHistory(solutionID);
+
+		final JSONObject result = new JSONObject();
+		final JSONArray array = new JSONArray();
+
+		for (final TaskGrading grading : history)
+		{
+			array.put(toJson(grading));
+		}
+
+		result.put("gradings", array);
+
+		return result.toString(2);
+	}
+
+	public static Object postGrading(Request request, Response response)
+	{
+		final Instant timeStamp = Instant.now();
+
+		final String solutionID = request.params("solutionID");
+		final Solution solution = getSolutionOr404(solutionID);
+		Assignments.checkPrivilege(request, solution.getAssignment());
+
+		final TaskGrading grading = json2Grading(solutionID, new JSONObject(request.body()));
+		grading.setTimeStamp(timeStamp);
+
+		final JSONObject result = new JSONObject();
+		result.put(TaskGrading.PROPERTY_timeStamp, timeStamp.toString());
+		return result.toString(2);
+	}
+
+	private static JSONObject toJson(TaskGrading grading)
+	{
+		final JSONObject obj = new JSONObject();
+		obj.put(TaskGrading.PROPERTY_solutionID, grading.getSolutionID());
+		obj.put(TaskGrading.PROPERTY_taskID, grading.getTaskID());
+		obj.put(TaskGrading.PROPERTY_timeStamp, grading.getTimeStamp());
+		obj.put(TaskGrading.PROPERTY_author, grading.getAuthor());
+		obj.put(TaskGrading.PROPERTY_points, grading.getPoints());
+		obj.put(TaskGrading.PROPERTY_note, grading.getNote());
+		return obj;
+	}
+
+	private static TaskGrading json2Grading(String solutionID, JSONObject obj)
+	{
+		final int taskID = obj.getInt(TaskGrading.PROPERTY_taskID);
+		final TaskGrading grading = new TaskGrading(solutionID, taskID);
+		grading.setAuthor(obj.getString(TaskGrading.PROPERTY_author));
+		grading.setPoints(obj.getInt(TaskGrading.PROPERTY_points));
+		grading.setNote(obj.getString(TaskGrading.PROPERTY_note));
+		// timestamp generated server-side
+		return grading;
 	}
 
 	// --------------- Checking ---------------

@@ -80,6 +80,11 @@ public class WebService
 							service.put("", Solutions::setAssignee);
 						});
 
+						service.path("/gradings", () -> {
+							service.post("", Solutions::postGrading);
+							service.get("", Solutions::getGradings);
+						});
+
 						service.path("/comments", () -> {
 							service.post("", Comments::post);
 							service.get("", Comments::getChildren);

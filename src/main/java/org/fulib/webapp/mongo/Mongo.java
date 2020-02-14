@@ -20,6 +20,7 @@ import org.fulib.webapp.WebService;
 import org.fulib.webapp.assignment.model.Assignment;
 import org.fulib.webapp.assignment.model.Comment;
 import org.fulib.webapp.assignment.model.Solution;
+import org.fulib.webapp.assignment.model.TaskGrading;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,6 +44,7 @@ public class Mongo
 	public static final String SOLUTION_COLLECTION_NAME = "solutions";
 	public static final String COMMENT_COLLECTION_NAME = "comments";
 	public static final String ASSIGNEE_COLLECTION_NAME = "assignee";
+	public static final String CORRECTION_COLLECTION_NAME = "corrections";
 
 	// =============== Static Fields ===============
 
@@ -58,6 +60,7 @@ public class Mongo
 	private MongoCollection<Solution> solutions;
 	private MongoCollection<Comment> comments;
 	private MongoCollection<Document> assignees;
+	private MongoCollection<TaskGrading> gradings;
 
 	private final List<Convention> conventions;
 
@@ -119,6 +122,12 @@ public class Mongo
 		this.assignees = this.database.getCollection(ASSIGNEE_COLLECTION_NAME);
 		this.assignees.createIndex(Indexes.ascending(Solution.PROPERTY_id));
 		this.assignees.createIndex(Indexes.ascending(Solution.PROPERTY_assignee));
+
+		this.gradings = this.database.getCollection(CORRECTION_COLLECTION_NAME, TaskGrading.class)
+		                             .withCodecRegistry(this.pojoCodecRegistry);
+		this.gradings.createIndex(Indexes.ascending(TaskGrading.PROPERTY_solutionID));
+		this.gradings.createIndex(Indexes.ascending(TaskGrading.PROPERTY_taskID));
+		this.gradings.createIndex(Indexes.ascending(TaskGrading.PROPERTY_timeStamp));
 	}
 
 	private static String getURL()
@@ -267,6 +276,20 @@ public class Mongo
 		doc.put(Comment.PROPERTY_markdown, comment.getMarkdown());
 		doc.put(Comment.PROPERTY_html, comment.getHtml());
 		return doc;
+	}
+
+	// --------------- Grading ---------------
+
+	public List<TaskGrading> getGradingHistory(String solutionID)
+	{
+		return this.gradings.find(Filters.eq(TaskGrading.PROPERTY_solutionID, solutionID))
+		                    .sort(Sorts.ascending(TaskGrading.PROPERTY_timeStamp))
+		                    .into(new ArrayList<>());
+	}
+
+	public void addGrading(TaskGrading grading)
+	{
+		this.gradings.insertOne(grading);
 	}
 
 	// --------------- Helpers ---------------
