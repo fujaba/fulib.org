@@ -16,6 +16,8 @@ export class SolutionListComponent implements OnInit {
   assignment?: Assignment;
   totalPoints?: number;
   solutions?: Solution[];
+  searchText: string = '';
+  filteredSolutions?: Solution[];
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -33,6 +35,7 @@ export class SolutionListComponent implements OnInit {
       });
       this.solutionService.getAll(this.assignmentID).subscribe(solutions => {
         this.solutions = solutions;
+        this.updateSearch();
       });
     });
   }
@@ -52,5 +55,19 @@ export class SolutionListComponent implements OnInit {
     this.solutionService.setAssignee(solution, input.value).subscribe(() => {
       input.disabled = false;
     });
+  }
+
+  updateSearch() {
+    const searchWords = this.searchText.split(/\s+/);
+    this.filteredSolutions = this.solutions.filter(solution => this.includeInSearch(solution, searchWords));
+  }
+
+  includeInSearch({name, studentID, email}: Solution, searchWords: string[]): boolean {
+    for (const searchWord of searchWords) {
+      if (name.indexOf(searchWord) >= 0 || studentID.indexOf(searchWord) >= 0 || email.indexOf(searchWord) >= 0) {
+        return true;
+      }
+    }
+    return false;
   }
 }
