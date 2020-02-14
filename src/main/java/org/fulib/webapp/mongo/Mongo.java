@@ -53,7 +53,7 @@ public class Mongo
 	private MongoClient mongoClient;
 	private MongoDatabase database;
 
-	private MongoCollection<Document> requestLog;
+	MongoCollection<Document> requestLog;
 	private MongoCollection<Assignment> assignments;
 	private MongoCollection<Solution> solutions;
 	private MongoCollection<Comment> comments;
