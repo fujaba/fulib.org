@@ -1,16 +1,16 @@
-import {Component, OnInit, OnDestroy, ViewChild, NgZone} from '@angular/core';
+import {Component, NgZone, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 
 import {AutothemeCodemirrorComponent} from '../autotheme-codemirror/autotheme-codemirror.component';
 
-import {ExamplesService} from "../examples.service";
-import {ScenarioEditorService} from "../scenario-editor.service";
+import {ExamplesService} from '../examples.service';
+import {ScenarioEditorService} from '../scenario-editor.service';
 
-import ExampleCategory from "../model/example-category";
-import Example from "../model/example";
-import Response from "../model/codegen/response";
-import Request from "../model/codegen/request";
-import {PrivacyService} from "../privacy.service";
+import ExampleCategory from '../model/example-category';
+import Example from '../model/example';
+import Response from '../model/codegen/response';
+import Request from '../model/codegen/request';
+import {PrivacyService} from '../privacy.service';
 
 @Component({
   selector: 'app-four-pane-editor',
@@ -28,6 +28,7 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
   _activeObjectDiagramTab: number = 1;
 
   submitHandler = () => this.zone.run(() => this.submit());
+  annotationHandler = () => this.getAnnotations();
 
   constructor(
     private examplesService: ExamplesService,
@@ -115,6 +116,36 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
 
   toolSuccess(index: number) {
     return this.response.exitCode == 0 || (this.response.exitCode & 3) > index;
+  }
+
+  getAnnotations(): {severity: string, message: string, from: {line: number, ch: number}, to: {line: number, ch: number}}[] {
+    if (!this.response) {
+      return [];
+    }
+
+    const result = [];
+
+    for (const line of this.response.output.split('\n')) {
+      const match = /^.*\.md:(\d+):(\d+): (error|warning|note): (.*)$/.exec(line);
+      if (!match) {
+        continue;
+      }
+
+      const row = +match[1] - 1;
+      const col = +match[2];
+      const endCol = col + 10; // TODO we don't have this info from the output
+      const severity = match[3];
+      const message = match[4];
+
+      result.push({
+        severity,
+        message,
+        from: { line: row, ch: col },
+        to: { line: row, ch: endCol },
+      });
+    }
+
+    return result;
   }
 
   get activeObjectDiagramTab(): number {
