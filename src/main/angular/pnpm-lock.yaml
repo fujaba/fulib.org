@@ -9,6 +9,7 @@ dependencies:
   '@angular/router': 8.2.14_e94a473af1c39c32436b93512d471216
   '@ctrl/ngx-codemirror': 2.2.1_d25e878356cf7752394a41b0e22ef690
   '@ng-bootstrap/ng-bootstrap': 5.2.3_28f38c6b3dcfb84e8962d3e70abde5c8
+  '@types/codemirror': 0.0.85
   '@types/file-saver': 2.0.1
   angular-date-value-accessor: 0.0.2_@angular+core@8.2.14
   bootstrap: 4.3.1
@@ -1214,6 +1215,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-QoeIb9tn/TZp0IzNyMKlcwHR6pHxNoIW9mKqF7asAsj+AWqpFOEUsxia756L6WKBQNk2psHpu+aFuIFqo3Ac0A==
+  /@types/codemirror/0.0.85:
+    dependencies:
+      '@types/tern': 0.23.3
+    dev: false
+    resolution:
+      integrity: sha512-ZAVyNzXAHu/mkvvZlq2IYPBjm4X3mEno27epXpBRXwWbX75zAAeGZfubXxft1kWNqBSI2f50kvuJTG+fRwHaNg==
   /@types/estree/0.0.42:
     dev: false
     resolution:
@@ -8213,6 +8220,7 @@ specifiers:
   '@angular/router': ~8.2.14
   '@ctrl/ngx-codemirror': ^2.2.1
   '@ng-bootstrap/ng-bootstrap': ^5.2.3
+  '@types/codemirror': ^0.0.85
   '@types/file-saver': ^2.0.1
   '@types/jasmine': ~3.3.16
   '@types/jasminewd2': ~2.0.8

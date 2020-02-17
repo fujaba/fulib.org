@@ -21,6 +21,7 @@
     "@angular/router": "~8.2.14",
     "@ctrl/ngx-codemirror": "^2.2.1",
     "@ng-bootstrap/ng-bootstrap": "^5.2.3",
+    "@types/codemirror": "^0.0.85",
     "@types/file-saver": "^2.0.1",
     "angular-date-value-accessor": "^0.0.2",
     "bootstrap": "~4.3.1",
