@@ -63,6 +63,7 @@ export class SolutionComponent implements OnInit {
       this.loadAssignment();
       this.loadSolution();
       this.loadComments();
+      this.loadGradings();
     });
   }
 
@@ -90,6 +91,12 @@ export class SolutionComponent implements OnInit {
   loadComments(): void {
     this.solutionService.getComments(this.assignmentID, this.solutionID).subscribe(comments => {
       this.comments = comments;
+    });
+  }
+
+  loadGradings(): void {
+    this.solutionService.getGradings({id: this.solutionID, assignment: this.assignmentID}).subscribe(gradings => {
+      this.gradings = gradings;
     });
   }
 
