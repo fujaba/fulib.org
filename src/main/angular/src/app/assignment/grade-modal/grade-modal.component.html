@@ -1,1 +1,38 @@
-<p>grade-modal works!</p>
+<ng-template #gradeModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title" id="gradeModalLabel">Grade Task</h5>
+  </div>
+  <div class="modal-body">
+    <div class="form">
+      <div class="form-group row">
+        <label for="nameInput" class="col-sm-2 col-form-label">Name</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" id="nameInput"
+                 [(ngModel)]="name">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="pointsInput" class="col-sm-2 col-form-label">Points</label>
+        <div class="col-sm-10">
+          <input type="number" class="form-control" id="pointsInput" min="0" step="1"
+                 [(ngModel)]="points">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="noteInput" class="col-sm-2 col-form-label">Note</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" id="noteInput"
+                 [(ngModel)]="note">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.close()">
+      Cancel
+    </button>
+    <button type="button" class="btn btn-primary" (click)="submit(); modal.close()">
+      Submit
+    </button>
+  </div>
+</ng-template>
