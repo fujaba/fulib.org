@@ -9,6 +9,7 @@ import {AssignmentService} from '../assignment.service';
 import Assignment from '../model/assignment';
 import Solution from '../model/solution';
 import Comment from '../model/comment';
+import TaskGrading from '../model/task-grading';
 
 @Component({
   selector: 'app-solution',
@@ -23,6 +24,24 @@ export class SolutionComponent implements OnInit {
   solutionID: string;
   solution?: Solution;
 
+  gradings?: TaskGrading[] = [
+    {
+      solution: undefined,
+      taskID: 1,
+      timeStamp: new Date(),
+      author: 'Testus',
+      points: 3,
+      note: 'actually better',
+    },
+    {
+      solution: undefined,
+      taskID: 4,
+      timeStamp: new Date(),
+      author: 'Adrian',
+      points: 1,
+      note: 'points off',
+    },
+  ];
   comments?: Comment[];
 
   commentName: string;

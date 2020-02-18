@@ -38,6 +38,19 @@
     Loading Tasks...
   </p>
 
+  <h2>Grading History</h2>
+  <ul *ngIf="gradings">
+    <li *ngFor="let grading of gradings">
+      <span class="text-muted">{{grading.timeStamp | date:'medium'}}: </span>
+      <b>{{grading.author}}</b> graded task <b>{{grading.taskID + 1}}</b>:
+      <span class="badge badge-secondary">{{grading.points}}</span>
+      {{grading.note}}
+    </li>
+  </ul>
+  <p *ngIf="!gradings">
+    Loading Gradings...
+  </p>
+
   <h2><label for="solutionInput">Solution</label></h2>
   <p>
     <app-autotheme-codemirror id="solutionInput" [content]="solution?.solution || 'Loading...'" [options]="{
