@@ -9,6 +9,7 @@ import Assignment from './model/assignment';
 import {AssignmentService} from './assignment.service';
 import Comment from './model/comment';
 import {StorageService} from '../storage.service';
+import TaskGrading from './model/task-grading';
 
 function asID(id: {id?: string} | string): string {
   return typeof id === 'string' ? id : id.id;
@@ -16,6 +17,7 @@ function asID(id: {id?: string} | string): string {
 
 type SolutionResponse = { id: string, timeStamp: string, token: string };
 type CommentResponse = { id: string, timeStamp: string, html: string };
+type TaskGradingResponse = { timeStamp: string };
 
 @Injectable({
   providedIn: 'root'
@@ -193,6 +195,54 @@ export class SolutionService {
         return result;
       }),
     );
+  }
+
+  getGradings(solution: {id: string, assignment: Assignment | string}): Observable<TaskGrading[]> {
+    const solutionID = solution.id;
+    const assignmentID = asID(solution.assignment);
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    const token = this.getToken(solutionID);
+    if (token) {
+      headers['Solution-Token'] = token;
+    }
+    const assignmentToken = this.assignmentService.getToken(assignmentID);
+    if (assignmentToken) {
+      headers['Assignment-Token'] = assignmentToken;
+    }
+    return this.http.get<{ gradings: TaskGrading[] }>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${solutionID}/gradings`, {headers}).pipe(
+      map(response => response.gradings),
+      catchError(err => {
+        err.error.status = err.status;
+        throw err.error;
+      }),
+    );
+  }
+
+  postGrading(grading: TaskGrading): Observable<TaskGrading> {
+    const solutionID = grading.solution.id;
+    const assignmentID = grading.solution.assignment.id;
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    const assignmentToken = this.assignmentService.getToken(assignmentID);
+    if (assignmentToken) {
+      headers['Assignment-Token'] = assignmentToken;
+    }
+    return this.http.post<TaskGradingResponse>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${solutionID}/gradings`, grading, {headers}).pipe(
+      map(response => {
+        const result: TaskGrading = {
+          ...grading,
+          timeStamp: new Date(response.timeStamp),
+        };
+        return result;
+      }),
+      catchError(err => {
+        err.error.status = err.status;
+        throw err.error;
+      }),
+    )
   }
 
   setAssignee(solution: Solution, assignee: string): Observable<void> {
