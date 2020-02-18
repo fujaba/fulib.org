@@ -1,8 +1,10 @@
+import Solution from './solution';
+
 export default class TaskGrading {
-  solutionID: string;
+  solution: Solution;
   taskID: number;
 
-  timeStamp: Date;
+  timeStamp?: Date;
   author: string;
   points: number;
   note: string;
