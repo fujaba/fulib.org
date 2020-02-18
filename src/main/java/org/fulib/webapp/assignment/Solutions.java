@@ -66,6 +66,18 @@ public class Solutions
 		return solutionToken.equals(solutionTokenHeader);
 	}
 
+	private static void checkAssignmentID(Request request, Solution solution)
+	{
+		final String assignmentID = request.params(ASSIGNMENT_ID_QUERY_PARAM);
+		if (assignmentID != null && !assignmentID.equals(solution.getAssignmentID()))
+		{
+			// language=JSON
+			Spark.halt(400, String.format(
+				"{\n  \"error\": \"assignment ID from URL '%s' does not match assignment ID of solution '%s'\"\n}",
+				assignmentID, solution.getAssignmentID()));
+		}
+	}
+
 	// --------------- Submission ---------------
 
 	public static Object create(Request request, Response response) throws Exception
@@ -121,7 +133,6 @@ public class Solutions
 
 	public static Object get(Request request, Response response)
 	{
-		final String assignmentID = request.params(ASSIGNMENT_ID_QUERY_PARAM);
 		final String solutionID = request.params(SOLUTION_ID_QUERY_PARAM);
 
 		if (request.contentType() == null || !request.contentType().startsWith("application/json"))
@@ -130,6 +141,7 @@ public class Solutions
 		}
 
 		final Solution solution = getSolutionOr404(solutionID);
+		checkAssignmentID(request, solution);
 		final boolean privileged = checkPrivilege(request, solution);
 
 		final JSONObject obj = toJson(solution, privileged);
@@ -201,6 +213,7 @@ public class Solutions
 	{
 		final String solutionID = request.params("solutionID");
 		final Solution solution = getSolutionOr404(solutionID);
+		checkAssignmentID(request, solution);
 		Assignments.checkPrivilege(request, solution.getAssignment());
 
 		final JSONObject result = new JSONObject();
@@ -212,6 +225,7 @@ public class Solutions
 	{
 		final String solutionID = request.params("solutionID");
 		final Solution solution = getSolutionOr404(solutionID);
+		checkAssignmentID(request, solution);
 		Assignments.checkPrivilege(request, solution.getAssignment());
 
 		final JSONObject body = new JSONObject(request.body());
@@ -228,6 +242,7 @@ public class Solutions
 	{
 		final String solutionID = request.params("solutionID");
 		final Solution solution = getSolutionOr404(solutionID);
+		checkAssignmentID(request, solution);
 		checkPrivilege(request, solution);
 
 		final List<TaskGrading> history = Mongo.get().getGradingHistory(solutionID);
@@ -251,6 +266,7 @@ public class Solutions
 
 		final String solutionID = request.params("solutionID");
 		final Solution solution = getSolutionOr404(solutionID);
+		checkAssignmentID(request, solution);
 		Assignments.checkPrivilege(request, solution.getAssignment());
 
 		final TaskGrading grading = json2Grading(solutionID, new JSONObject(request.body()));
