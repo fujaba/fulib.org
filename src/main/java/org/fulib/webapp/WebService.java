@@ -60,39 +60,7 @@ public class WebService
 		service.post("/runcodegen", runCodeGen::handle);
 		service.post("/projectzip", ProjectZip::handle);
 
-		service.path("/assignments", () -> {
-			service.post("", Assignments::create);
-
-			service.path("/:assignmentID", () -> {
-				service.get("", Assignments::get);
-
-				service.post("/check", Solutions::check);
-
-				service.path("/solutions", () -> {
-					service.post("", Solutions::create);
-					service.get("", Solutions::getAll);
-
-					service.path("/:solutionID", () -> {
-						service.get("", Solutions::get);
-
-						service.path("/assignee", () -> {
-							service.get("", Solutions::getAssignee);
-							service.put("", Solutions::setAssignee);
-						});
-
-						service.path("/gradings", () -> {
-							service.post("", Solutions::postGrading);
-							service.get("", Solutions::getGradings);
-						});
-
-						service.path("/comments", () -> {
-							service.post("", Comments::post);
-							service.get("", Comments::getChildren);
-						});
-					});
-				});
-			});
-		});
+		addAssignmentsRoutes(service);
 
 		service.notFound(WebService::serveIndex);
 
@@ -101,6 +69,54 @@ public class WebService
 		});
 
 		Logger.getGlobal().info("scenario server started on http://localhost:4567");
+	}
+
+	private static void addAssignmentsRoutes(Service service)
+	{
+		service.path("/assignments", () -> {
+			service.post("", Assignments::create);
+
+			service.path("/:assignmentID", () -> addAssignmentRoutes(service));
+		});
+	}
+
+	private static void addAssignmentRoutes(Service service)
+	{
+		service.get("", Assignments::get);
+
+		service.post("/check", Solutions::check);
+
+		addSolutionsRoutes(service);
+	}
+
+	private static void addSolutionsRoutes(Service service)
+	{
+		service.path("/solutions", () -> {
+			service.post("", Solutions::create);
+			service.get("", Solutions::getAll);
+
+			service.path("/:solutionID", () -> addSolutionRoutes(service));
+		});
+	}
+
+	private static void addSolutionRoutes(Service service)
+	{
+		service.get("", Solutions::get);
+
+		service.path("/assignee", () -> {
+			service.get("", Solutions::getAssignee);
+			service.put("", Solutions::setAssignee);
+		});
+
+		service.path("/gradings", () -> {
+			service.post("", Solutions::postGrading);
+			service.get("", Solutions::getGradings);
+		});
+
+		service.path("/comments", () -> {
+			service.post("", Comments::post);
+			service.get("", Comments::getChildren);
+		});
 	}
 
 	private static void enableCORS(Service service)
