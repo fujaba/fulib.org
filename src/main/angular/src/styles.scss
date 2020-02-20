@@ -39,3 +39,12 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/* --------------- Misc. --------------- */
+
+.dropdown-item-checked::before {
+  position: absolute;
+  left: .4rem;
+  content: '✓';
+  font-weight: 600;
+}
