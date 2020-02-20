@@ -26,22 +26,28 @@
         </a>
         <div ngbDropdownMenu aria-labelledby="githubDropdown">
           <a ngbDropdownItem href="https://github.com/fujaba/fulib.org">
-            Web App <span class="text-muted">(v$$version$$)</span>
+            Web App
+            <span class="text-muted" *ngIf="versions && versions['fulib.org']"> (v{{versions['fulib.org']}})</span>
           </a>
           <a ngbDropdownItem href="https://github.com/fujaba/fulibScenarios">
-            Fulib Scenarios <span class="text-muted">(v$$fulibScenariosVersion$$)</span>
+            Fulib Scenarios
+            <span class="text-muted" *ngIf="versions?.fulibScenarios"> (v{{versions.fulibScenarios}})</span>
           </a>
           <a ngbDropdownItem href="https://github.com/fujaba/fulibMockups">
-            Fulib Mockups <span class="text-muted">(v$$fulibMockupsVersion$$)</span>
+            Fulib Mockups
+            <span class="text-muted" *ngIf="versions?.fulibMockups"> (v{{versions.fulibMockups}})</span>
           </a>
           <a ngbDropdownItem href="https://github.com/fujaba/fulib">
-            Fulib <span class="text-muted">(v$$fulibVersion$$)</span>
+            Fulib
+            <span class="text-muted" *ngIf="versions?.fulib">(v{{versions.fulib}})</span>
           </a>
           <a ngbDropdownItem href="https://github.com/fujaba/fulibTools">
-            Fulib Tools <span class="text-muted">(v$$fulibToolsVersion$$)</span>
+            Fulib Tools
+            <span class="text-muted" *ngIf="versions?.fulibTools">(v{{versions.fulibTools}})</span>
           </a>
           <a ngbDropdownItem href="https://github.com/fujaba/fulibGradle">
-            Fulib Gradle <span class="text-muted">(v$$fulibGradleVersion$$)</span>
+            Fulib Gradle
+            <span class="text-muted" *ngIf="versions?.fulibGradle">(v{{versions.fulibGradle}})</span>
           </a>
         </div>
       </li>

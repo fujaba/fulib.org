@@ -3,6 +3,7 @@ import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 import {Privacy, PrivacyService} from "../privacy.service";
+import {ChangelogService, Versions} from '../changelog.service';
 
 @Component({
   selector: 'app-footer',
@@ -13,6 +14,7 @@ export class FooterComponent implements OnInit, AfterViewInit {
   constructor(
     public readonly modalService: NgbModal,
     private privacyService: PrivacyService,
+    private changelogService: ChangelogService,
   ) {
   }
 
@@ -22,8 +24,10 @@ export class FooterComponent implements OnInit, AfterViewInit {
   contactEmail = 'spam@fbi.gov'.replace('spam', 'contact').replace('fbi.gov', 'fulib.org');
 
   menuCollapsed: boolean;
+  versions?: Versions;
 
   ngOnInit(): void {
+    this.versions = this.changelogService.currentVersions;
     this.loadPrivacy();
   }
 
