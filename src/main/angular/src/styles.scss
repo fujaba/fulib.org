@@ -42,6 +42,10 @@ body {
 
 /* --------------- Misc. --------------- */
 
+a[href^="http"]::after {
+  content: '↗';
+}
+
 .dropdown-item-checked::before {
   position: absolute;
   left: .4rem;
