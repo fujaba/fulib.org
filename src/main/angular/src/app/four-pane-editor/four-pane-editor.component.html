@@ -25,11 +25,23 @@
         </button>
       </div>
       <div class="pl-1">
-        <button type="button" class="btn btn-outline-primary btn-sm"
-                ngbTooltip="Shortcuts: Ctrl-&#9166; / &#8984;&#9166;, Ctrl-S / &#8984;S"
-                (click)="submit()" [disabled]="submitting">
-          Compile and Run
-        </button>
+        <div class="btn-group">
+          <button type="button" class="btn btn-outline-primary btn-sm"
+                  ngbTooltip="Shortcuts: Ctrl-&#9166; / &#8984;&#9166;, Ctrl-S / &#8984;S"
+                  (click)="submit()" [disabled]="submitting">
+            Compile and Run
+          </button>
+          <div class="btn-group" ngbDropdown role="group" aria-label="Compile and Run Options">
+            <button class="btn btn-outline-primary btn-sm dropdown-toggle-split" ngbDropdownToggle></button>
+            <div class="dropdown-menu" ngbDropdownMenu>
+              <button ngbDropdownItem (click)="autoSubmit = !autoSubmit" [class.dropdown-item-checked]="autoSubmit">
+                Automatically Compile and Run
+                <br/>
+                when the scenario changes
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <app-autotheme-codemirror #scenarioInput [(content)]="scenarioText" [options]="{
