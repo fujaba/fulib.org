@@ -23,7 +23,6 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
   scenarioText: string;
   response: Response | null;
   submitting: boolean;
-  autoSubmit: boolean;
 
   exampleCategories: ExampleCategory[];
   _activeObjectDiagramTab: number = 1;
@@ -150,5 +149,13 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
       this.scenarioText = this.scenarioEditorService.storedScenario;
       this.submit();
     }
+  }
+
+  get autoSubmit(): boolean {
+    return this.scenarioEditorService.autoSubmit;
+  }
+
+  set autoSubmit(value: boolean) {
+    this.scenarioEditorService.autoSubmit = value;
   }
 }
