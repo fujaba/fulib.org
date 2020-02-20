@@ -1,6 +1,9 @@
 <ng-template #changelogModal let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="changelogModalTitle">What's New on fulib.org</h4>
+    <h4 class="modal-title" id="changelogModalTitle">
+      What's New on fulib.org
+      <span class="text-muted"> (since v{{lastUsedVersions['fulib.org']}})</span>
+    </h4>
     <button type="button" class="close" aria-label="Close" (click)="modal.close()">
       <span aria-hidden="true">&times;</span>
     </button>

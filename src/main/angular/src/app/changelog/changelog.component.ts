@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
-import {ChangelogService} from '../changelog.service';
+import {ChangelogService, Versions} from '../changelog.service';
 
 @Component({
   selector: 'app-changelog',
@@ -11,6 +11,7 @@ import {ChangelogService} from '../changelog.service';
 export class ChangelogComponent implements OnInit, AfterViewInit {
   @ViewChild('changelogModal', {static: true}) changelogModal;
 
+  lastUsedVersions: Versions;
   changelog: string;
 
   constructor(
@@ -19,6 +20,7 @@ export class ChangelogComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit() {
+    this.lastUsedVersions = this.changelogService.lastUsedVersions;
   }
 
   ngAfterViewInit() {
@@ -27,7 +29,7 @@ export class ChangelogComponent implements OnInit, AfterViewInit {
   }
 
   private loadChangelog() {
-    const lastUsedVersions = this.changelogService.lastUsedVersions;
+    const lastUsedVersions = this.lastUsedVersions;
     if (!lastUsedVersions) {
       // never used the website before, they probably don't care about the changelogs
       return;
