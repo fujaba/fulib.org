@@ -77,6 +77,9 @@ export class ChangelogService {
     return this.loadRawChangelog('fujaba/' + repo).pipe(
       flatMap(rawChangelog => {
         const partialChangelog = this.partialChangelog(rawChangelog, lastUsedVersion);
+        if (!partialChangelog) { // already newest version
+          return EMPTY;
+        }
         const issueLinks = this.replaceIssueLinks('fujaba/' + repo, partialChangelog);
         return this.renderMarkdown(issueLinks);
       })
