@@ -34,6 +34,11 @@ export class ChangelogComponent implements OnInit, AfterViewInit {
     }
 
     const lastUsedVersion = lastUsedVersions['fulib.org'];
+    if (!lastUsedVersion) {
+      // probably a dev server where versions are not injected; don't show the changelog
+      return;
+    }
+
     this.changelogService.getChangelog('fulib.org', lastUsedVersion).subscribe(changelog => {
       this.changelog = changelog;
       this.modalService.open(this.changelogModal, {ariaLabelledBy: 'changelogModalLabel', size: 'xl'});
