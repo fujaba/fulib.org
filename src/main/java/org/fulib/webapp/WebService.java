@@ -2,6 +2,7 @@ package org.fulib.webapp;
 
 import org.fulib.webapp.assignment.Assignments;
 import org.fulib.webapp.assignment.Comments;
+import org.fulib.webapp.assignment.MarkdownUtil;
 import org.fulib.webapp.assignment.Solutions;
 import org.fulib.webapp.mongo.Mongo;
 import org.fulib.webapp.projectzip.ProjectZip;
@@ -61,6 +62,11 @@ public class WebService
 		service.post("/projectzip", ProjectZip::handle);
 
 		addAssignmentsRoutes(service);
+
+		service.post("/rendermarkdown", (request, response) -> {
+			response.type("text/html");
+			return MarkdownUtil.renderHtml(request.body());
+		});
 
 		service.notFound(WebService::serveIndex);
 
