@@ -15,6 +15,7 @@ import {ConfigModalComponent} from './config-modal/config-modal.component';
 import {FooterComponent} from './footer/footer.component';
 
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { ChangelogComponent } from './changelog/changelog.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     ConfigModalComponent,
     FooterComponent,
     PageNotFoundComponent,
+    ChangelogComponent,
   ],
   imports: [
     BrowserModule,
