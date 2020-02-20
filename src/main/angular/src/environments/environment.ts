@@ -5,6 +5,14 @@
 export const environment = {
   production: false,
   apiURL: 'http://localhost:4567',
+  versions: {
+    'fulib.org': undefined,
+    fulib: undefined,
+    fulibTools: undefined,
+    fulibScenarios: undefined,
+    fulibMockups: undefined,
+    fulibGradle: undefined,
+  },
 };
 
 /*

@@ -27,12 +27,7 @@ export class ChangelogService {
 
   public get currentVersions(): Versions {
     return {
-      'fulib.org': '$$version$$',
-      fulib: '$$fulibVersion$$',
-      fulibTools: '$$fulibToolsVersion$$',
-      fulibScenarios: '$$fulibScenariosVersion$$',
-      fulibMockups: '$$fulibMockupsVersion$$',
-      fulibGradle: '$$fulibGradleVersion$$',
+      ...environment.versions,
     };
   };
 
