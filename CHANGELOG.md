@@ -123,6 +123,7 @@
 
 # fulib.org v1.1.0
 
++ Added a toggle to the Compile and Run button that does it automatically when the scenario changes. #65
 + When visiting a new version of fulib.org, the changelog since the last visited version is shown. #66
 * Updated to FulibTools v1.1.0.
 * Major improvements to style and dark mode.
