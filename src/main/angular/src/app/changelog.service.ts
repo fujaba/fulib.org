@@ -52,9 +52,18 @@ export class ChangelogService {
     return this.http.post(`${environment.apiURL}/rendermarkdown`, md, {responseType: 'text'});
   }
 
-  private partialChangelog(fullChangelog: string, lastUsedVersion: string) {
-    const versionIndex = fullChangelog.indexOf(lastUsedVersion);
-    const nextVersionIndex = fullChangelog.indexOf('\n# ', versionIndex) + 1;
+  private partialChangelog(fullChangelog: string, lastUsedVersion: string): string {
+    const pattern = `#.*${lastUsedVersion.replace(/\./g, '\\.')}\n`;
+    const versionIndex = fullChangelog.search(pattern);
+    if (versionIndex < 0) { // unknown version
+      return '';
+    }
+
+    const nextLineIndex = fullChangelog.indexOf('\n', versionIndex); // must be > 0 because pattern ends with a line break
+    const nextVersionIndex = fullChangelog.indexOf('\n# ', nextLineIndex) + 1;
+    if (nextVersionIndex <= 0) { // i.e., indexOf returned < 0
+      return '';
+    }
     return fullChangelog.substring(nextVersionIndex);
   }
 
