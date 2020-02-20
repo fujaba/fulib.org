@@ -63,11 +63,18 @@ export class ChangelogService {
     return fullChangelog.substring(nextVersionIndex);
   }
 
+  private replaceIssueLinks(repo: string, markdown: string): string {
+    return markdown.replace(/#(\d+)/g, (match, issueID) => {
+      return `[${match}](https://github.com/${repo}/issues/${issueID})`;
+    })
+  }
+
   getChangelog(repo: keyof Versions, lastUsedVersion: string): Observable<string> {
     return this.loadRawChangelog('fujaba/' + repo).pipe(
       flatMap(rawChangelog => {
         const partialChangelog = this.partialChangelog(rawChangelog, lastUsedVersion);
-        return this.renderMarkdown(partialChangelog);
+        const issueLinks = this.replaceIssueLinks('fujaba/' + repo, partialChangelog);
+        return this.renderMarkdown(issueLinks);
       })
     );
   }
