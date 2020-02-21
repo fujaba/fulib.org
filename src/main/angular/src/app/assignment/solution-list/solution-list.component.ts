@@ -62,7 +62,7 @@ export class SolutionListComponent implements OnInit {
   }
 
   updateSearch() {
-    const searchWords = this.searchText.split(/\s+/);
+    const searchWords = this.searchText.split(/\s+/).map(s => s.replace('+', ' '));
     this.filteredSolutions = this.solutions.filter(solution => this.includeInSearch(solution, searchWords));
   }
 
@@ -129,7 +129,7 @@ export class SolutionListComponent implements OnInit {
       }
       else if (lastWord.startsWith(propertyPrefix)) {
         const possibleValues = this.collectAllValues(propertyName).slice(0, 10);
-        results.push(...possibleValues.map(v => prefix + propertyPrefix + v));
+        results.push(...possibleValues.map(v => prefix + propertyPrefix + v.replace(' ', '+')));
       }
     }
     return results;
