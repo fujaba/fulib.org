@@ -62,10 +62,13 @@ export class SolutionListComponent implements OnInit {
     this.filteredSolutions = this.solutions.filter(solution => this.includeInSearch(solution, searchWords));
   }
 
-  includeInSearch({name, studentID, email}: Solution, searchWords: string[]): boolean {
+  includeInSearch(solution: Solution, searchWords: string[]): boolean {
+    const properties = [solution.name, solution.studentID, solution.email, solution.assignee];
     for (const searchWord of searchWords) {
-      if (name.indexOf(searchWord) >= 0 || studentID.indexOf(searchWord) >= 0 || email.indexOf(searchWord) >= 0) {
-        return true;
+      for (const property of properties) {
+        if (property && property.indexOf(searchWord) >= 0) {
+          return true;
+        }
       }
     }
     return false;

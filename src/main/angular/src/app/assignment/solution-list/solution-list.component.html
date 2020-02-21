@@ -35,7 +35,7 @@
   <h2>Solutions</h2>
   <div class="form-inline mb-3">
     <label for="searchInput" class="mr-sm-2">Search:</label>
-    <input type="text" class="form-control mr-sm-2" id="searchInput" placeholder="Name, Student ID, E-Mail"
+    <input type="text" class="form-control mr-sm-2" id="searchInput" placeholder="Name, Student ID, E-Mail, Assignee"
            [(ngModel)]="searchText" (change)="updateSearch()">
     <ng-container *ngIf="solutions && filteredSolutions && solutions.length != filteredSolutions.length">
       Showing {{filteredSolutions.length}} of {{solutions.length}} solutions.
