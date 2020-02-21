@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import {Observable} from 'rxjs';
+import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 
 import Assignment from '../model/assignment';
 import {AssignmentService} from '../assignment.service';
@@ -89,5 +91,38 @@ export class SolutionListComponent implements OnInit {
       }
     }
     return false;
+  }
+
+  typeahead = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      map(searchInput => this.autoComplete(searchInput)),
+    );
+
+  private autoComplete(searchInput: string): string[] {
+    const results = [];
+    for (const propertyName of SolutionListComponent.searchableProperties) {
+      const propertyPrefix = propertyName + ':';
+      if (propertyName.startsWith(searchInput)) {
+        results.push(propertyPrefix);
+      }
+      else if (searchInput.startsWith(propertyPrefix)) {
+        const possibleValues = this.collectAllValues(propertyName).slice(0, 10);
+        results.push(...possibleValues.map(v => propertyPrefix + v));
+      }
+    }
+    return results;
+  }
+
+  private collectAllValues(propertyName: string): string[] {
+    const valueSet = new Set<string>();
+    for (let solution of this.solutions) {
+      const propertyValue = solution[propertyName] as string;
+      if (propertyValue) {
+        valueSet.add(propertyValue);
+      }
+    }
+    return [...valueSet].sort();
   }
 }
