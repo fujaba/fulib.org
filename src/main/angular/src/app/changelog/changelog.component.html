@@ -9,7 +9,10 @@
     </button>
   </div>
   <div class="modal-body">
-    <div [innerHTML]="changelog | safeHtml"></div>
+    <div *ngFor="let entry of changelogs">
+      <h1>{{entry.repo}}</h1>
+      <div [innerHTML]="entry.changelog | safeHtml"></div>
+    </div>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-primary" (click)="modal.close()">Close</button>
