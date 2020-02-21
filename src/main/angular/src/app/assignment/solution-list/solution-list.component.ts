@@ -30,7 +30,7 @@ export class SolutionListComponent implements OnInit {
   ) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.activatedRoute.params.subscribe(params => {
       this.assignmentID = params.id;
       this.assignmentService.get(this.assignmentID).subscribe(assignment => {
@@ -44,15 +44,15 @@ export class SolutionListComponent implements OnInit {
     });
   }
 
-  totalResultPoints(solution: Solution) {
+  totalResultPoints(solution: Solution): number {
     return this.sumPoints(solution.results);
   }
 
-  sumPoints(arr: {points: number}[]) {
+  private sumPoints(arr: {points: number}[]): number {
     return arr.reduce((acc, item) => acc + item.points, 0);
   }
 
-  setAssignee(solution: Solution, input: HTMLInputElement) {
+  setAssignee(solution: Solution, input: HTMLInputElement): void {
     input.disabled = true;
     solution.assignment = this.assignment;
     solution.assignee = input.value;
@@ -61,12 +61,12 @@ export class SolutionListComponent implements OnInit {
     });
   }
 
-  updateSearch() {
+  updateSearch(): void {
     const searchWords = this.searchText.split(/\s+/).map(s => s.replace('+', ' '));
     this.filteredSolutions = this.solutions.filter(solution => this.includeInSearch(solution, searchWords));
   }
 
-  includeInSearch(solution: Solution, searchWords: string[]): boolean {
+  private includeInSearch(solution: Solution, searchWords: string[]): boolean {
     for (const searchWord of searchWords) {
       const colonIndex = searchWord.indexOf(':');
       if (colonIndex > 0) {
@@ -90,7 +90,7 @@ export class SolutionListComponent implements OnInit {
     return true;
   }
 
-  hasAnyPropertyWithValue(solution: Solution, searchWord: string) {
+  private hasAnyPropertyWithValue(solution: Solution, searchWord: string): boolean {
     for (const propertyName of SolutionListComponent.searchableProperties) {
       const propertyValue = solution[propertyName] as string;
       if (propertyValue && propertyValue.indexOf(searchWord) >= 0) {
@@ -100,7 +100,7 @@ export class SolutionListComponent implements OnInit {
     return false;
   }
 
-  typeahead = (text$: Observable<string>) =>
+  typeahead = (text$: Observable<string>): Observable<string[]> =>
     text$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
