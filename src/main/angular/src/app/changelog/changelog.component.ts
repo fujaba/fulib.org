@@ -35,6 +35,7 @@ export class ChangelogComponent implements OnInit, AfterViewInit {
       return;
     }
 
+    let open = false;
     const keys = Object.keys(lastUsedVersions) as (keyof Versions)[];
     for (const key of keys) {
       const lastUsedVersion = lastUsedVersions[key];
@@ -46,7 +47,11 @@ export class ChangelogComponent implements OnInit, AfterViewInit {
       this._changelogs[key] = '';
       this.changelogService.getChangelog(key, lastUsedVersion).subscribe(changelog => {
         this._changelogs[key] = changelog;
-        this.modalService.open(this.changelogModal, {ariaLabelledBy: 'changelogModalLabel', size: 'xl'});
+
+        if (!open) {
+          open = true;
+          this.modalService.open(this.changelogModal, {ariaLabelledBy: 'changelogModalLabel', size: 'xl'});
+        }
       });
     }
   }
