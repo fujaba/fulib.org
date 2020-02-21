@@ -77,17 +77,24 @@ export class SolutionListComponent implements OnInit {
 
         const searchValue = searchWord.substring(colonIndex + 1);
         const propertyValue = solution[propertyName] as string;
-        if (propertyValue && propertyValue.indexOf(searchValue) >= 0) {
-          return true;
+        if (!propertyValue || propertyValue.indexOf(searchValue) < 0) {
+          return false;
         }
         continue;
       }
 
-      for (const propertyName of SolutionListComponent.searchableProperties) {
-        const propertyValue = solution[propertyName] as string;
-        if (propertyValue && propertyValue.indexOf(searchWord) >= 0) {
-          return true;
-        }
+      if (!this.hasAnyPropertyWithValue(solution, searchWord)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  hasAnyPropertyWithValue(solution: Solution, searchWord: string) {
+    for (const propertyName of SolutionListComponent.searchableProperties) {
+      const propertyValue = solution[propertyName] as string;
+      if (propertyValue && propertyValue.indexOf(searchWord) >= 0) {
+        return true;
       }
     }
     return false;
@@ -109,7 +116,7 @@ export class SolutionListComponent implements OnInit {
       }
       else if (searchInput.startsWith(propertyPrefix)) {
         const possibleValues = this.collectAllValues(propertyName).slice(0, 10);
-        results.push(...possibleValues.map(v => propertyPrefix + v));
+        results.push(...possibleValues.map(v => prefix + propertyPrefix + v));
       }
     }
     return results;
