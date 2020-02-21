@@ -44,7 +44,9 @@ export class FourPaneEditorComponent implements OnInit {
       debounceTime(1000),
       distinctUntilChanged(),
     ).subscribe(() => {
-      this.submit();
+      if (this.autoSubmit) {
+        this.submit();
+      }
     })
   }
 
@@ -146,5 +148,13 @@ export class FourPaneEditorComponent implements OnInit {
       this.scenarioText = this.scenarioEditorService.storedScenario;
       this.submit();
     }
+  }
+
+  get autoSubmit(): boolean {
+    return this.scenarioEditorService.autoSubmit;
+  }
+
+  set autoSubmit(value: boolean) {
+    this.scenarioEditorService.autoSubmit = value;
   }
 }

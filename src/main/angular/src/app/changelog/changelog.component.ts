@@ -12,7 +12,9 @@ export class ChangelogComponent implements OnInit, AfterViewInit {
   @ViewChild('changelogModal', {static: true}) changelogModal;
 
   lastUsedVersions: Versions;
-  changelog: string;
+  private _changelogs = new Versions();
+
+  activeRepo: string;
 
   constructor(
     private modalService: NgbModal,
@@ -35,16 +37,38 @@ export class ChangelogComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    const lastUsedVersion = lastUsedVersions['fulib.org'];
-    if (!lastUsedVersion) {
-      // probably a dev server where versions are not injected; don't show the changelog
-      return;
-    }
+    let open = false;
+    const keys = Object.keys(lastUsedVersions) as (keyof Versions)[];
+    for (const key of keys) {
+      const lastUsedVersion = lastUsedVersions[key];
+      if (!lastUsedVersion) {
+        // probably a dev server where versions are not injected; don't show the changelog
+        continue;
+      }
 
-    this.changelogService.getChangelog('fulib.org', lastUsedVersion).subscribe(changelog => {
-      this.changelog = changelog;
-      this.modalService.open(this.changelogModal, {ariaLabelledBy: 'changelogModalLabel', size: 'xl'});
-    });
+      this._changelogs[key] = '';
+      this.changelogService.getChangelog(key, lastUsedVersion).subscribe(changelog => {
+        this._changelogs[key] = changelog;
+
+        if (!this.activeRepo) {
+          this.activeRepo = key;
+        }
+
+        if (!open) {
+          open = true;
+          this.modalService.open(this.changelogModal, {ariaLabelledBy: 'changelogModalLabel', size: 'xl'});
+        }
+      });
+    }
+  }
+
+  get changelogs(): {repo: string, changelog: string}[] {
+    return Object.keys(this._changelogs)
+      .filter(repo => this._changelogs[repo])
+      .map(repo => ({
+        repo,
+        changelog: this._changelogs[repo],
+      }));
   }
 
   private updateLastUsedVersion() {

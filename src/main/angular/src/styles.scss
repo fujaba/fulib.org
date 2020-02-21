@@ -39,3 +39,16 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/* --------------- Misc. --------------- */
+
+a[href^="http"]::after {
+  content: '↗';
+}
+
+.dropdown-item-checked::before {
+  position: absolute;
+  left: .4rem;
+  content: '✓';
+  font-weight: 600;
+}
