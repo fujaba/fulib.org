@@ -14,6 +14,8 @@ export class ChangelogComponent implements OnInit, AfterViewInit {
   lastUsedVersions: Versions;
   private _changelogs = new Versions();
 
+  activeRepo: string;
+
   constructor(
     private modalService: NgbModal,
     private changelogService: ChangelogService,
@@ -47,6 +49,10 @@ export class ChangelogComponent implements OnInit, AfterViewInit {
       this._changelogs[key] = '';
       this.changelogService.getChangelog(key, lastUsedVersion).subscribe(changelog => {
         this._changelogs[key] = changelog;
+
+        if (!this.activeRepo) {
+          this.activeRepo = key;
+        }
 
         if (!open) {
           open = true;
