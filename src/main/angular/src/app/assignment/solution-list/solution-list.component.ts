@@ -12,6 +12,8 @@ import {SolutionService} from '../solution.service';
   styleUrls: ['./solution-list.component.scss']
 })
 export class SolutionListComponent implements OnInit {
+  static readonly searchableProperties: (keyof Solution)[] = ['name', 'studentID', 'email', 'assignee'];
+
   assignmentID: string;
   assignment?: Assignment;
   totalPoints?: number;
@@ -63,21 +65,25 @@ export class SolutionListComponent implements OnInit {
   }
 
   includeInSearch(solution: Solution, searchWords: string[]): boolean {
-    const properties = [solution.name, solution.studentID, solution.email, solution.assignee];
     for (const searchWord of searchWords) {
       const colonIndex = searchWord.indexOf(':');
       if (colonIndex > 0) {
         const propertyName = searchWord.substring(0, colonIndex);
+        if (!SolutionListComponent.searchableProperties.includes(propertyName as keyof Solution)) {
+          continue;
+        }
+
         const searchValue = searchWord.substring(colonIndex + 1);
-        const property = solution[propertyName];
-        if (property && property.indexOf(searchValue) >= 0) {
+        const propertyValue = solution[propertyName] as string;
+        if (propertyValue && propertyValue.indexOf(searchValue) >= 0) {
           return true;
         }
         continue;
       }
 
-      for (const property of properties) {
-        if (property && property.indexOf(searchWord) >= 0) {
+      for (const propertyName of SolutionListComponent.searchableProperties) {
+        const propertyValue = solution[propertyName] as string;
+        if (propertyValue && propertyValue.indexOf(searchWord) >= 0) {
           return true;
         }
       }
