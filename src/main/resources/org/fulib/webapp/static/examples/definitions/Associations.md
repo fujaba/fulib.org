@@ -36,3 +36,8 @@ Charlie has best-friend and is best-friend of Dude.
 
 // This also works with to-many associations.
 Bob has friends and is one of the friends of Alice and Charlie.
+
+# More Info
+
+// You can learn more about associations in the documentation:
+// https://fujaba.gitbook.io/fulib-scenarios/language/sentences/definition-sentences#associations
