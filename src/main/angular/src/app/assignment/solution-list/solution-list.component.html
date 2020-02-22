@@ -44,6 +44,28 @@
            placeholder="Name, Student ID, E-Mail, Assignee"
            [(ngModel)]="searchText" (change)="updateSearch()"
            [ngbTypeahead]="typeahead" [resultFormatter]="formatTypeahead">
+    <button type="button" class="btn btn-outline-secondary"
+            [ngbPopover]="searchHelp" popoverTitle="Search Help">
+      Help
+    </button>
+    <ng-template #searchHelp>
+      <ul>
+        <li>Search terms are separated by spaces and case sensitive</li>
+        <li>Each search term has to match for a result to be shown</li>
+        <li>To search for terms including spaces, use <code>+</code> in their place<br/>
+          E.g. <code>John+Doe</code>
+        </li>
+        <li>To search for specific attributes, enter <code>attribute:value</code><br/>
+          E.g. <code>studentID:1234</code>, <code>email:@example.org</code>, or <code>assignee:John+Doe</code><br/>
+          Supported attribute names (case sensitive):
+          <ul>
+            <li *ngFor="let propertyName of searchableProperties">
+              <code>{{propertyName}}</code>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </ng-template>
   </div>
   <table class="table table-bordered table-hover" *ngIf="solutions">
     <thead>

@@ -14,7 +14,7 @@ import {SolutionService} from '../solution.service';
   styleUrls: ['./solution-list.component.scss']
 })
 export class SolutionListComponent implements OnInit {
-  static readonly searchableProperties: (keyof Solution)[] = ['name', 'studentID', 'email', 'assignee'];
+  readonly searchableProperties: (keyof Solution)[] = ['name', 'studentID', 'email', 'assignee'];
 
   assignmentID: string;
   assignment?: Assignment;
@@ -71,7 +71,7 @@ export class SolutionListComponent implements OnInit {
       const colonIndex = searchWord.indexOf(':');
       if (colonIndex > 0) {
         const propertyName = searchWord.substring(0, colonIndex);
-        if (!SolutionListComponent.searchableProperties.includes(propertyName as keyof Solution)) {
+        if (!this.searchableProperties.includes(propertyName as keyof Solution)) {
           continue;
         }
 
@@ -91,7 +91,7 @@ export class SolutionListComponent implements OnInit {
   }
 
   private hasAnyPropertyWithValue(solution: Solution, searchWord: string): boolean {
-    for (const propertyName of SolutionListComponent.searchableProperties) {
+    for (const propertyName of this.searchableProperties) {
       const propertyValue = solution[propertyName] as string;
       if (propertyValue && propertyValue.indexOf(searchWord) >= 0) {
         return true;
@@ -122,7 +122,7 @@ export class SolutionListComponent implements OnInit {
     const lastWord = searchInput.substring(lastSpaceIndex + 1);
 
     const results = [];
-    for (const propertyName of SolutionListComponent.searchableProperties) {
+    for (const propertyName of this.searchableProperties) {
       const propertyPrefix = propertyName + ':';
       if (propertyName.startsWith(lastWord)) {
         results.push(prefix + propertyPrefix);
