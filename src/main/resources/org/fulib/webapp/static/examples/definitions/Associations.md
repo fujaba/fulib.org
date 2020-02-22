@@ -23,3 +23,16 @@ Uni Kassel has students and is uni of Alice, Bob, Charlie, Dude.
 Alice has uni and is one of the students of the Uni Kassel.
 
 // Note that "one of" indicates that the reverse association is to-many.
+
+# Special Associations
+
+There are Students with name Alice, Bob, Charlie, Dude.
+
+// Associations can also target the original class.
+Alice has right-neighbor and is left-neighbor of Bob.
+
+// You can also create an association whose reverse is itself:
+Charlie has best-friend and is best-friend of Dude.
+
+// This also works with to-many associations.
+Bob has friends and is one of the friends of Alice and Charlie.
