@@ -25,7 +25,9 @@
       "dnsSearch": [],
       "domainName": null,
       "environment": {
-        "fulib_org_mongo": "<fulib_org_mongo>"
+        "FULIB_ORG_MONGODB_USER": "<FULIB_ORG_MONGODB_USER>",
+        "FULIB_ORG_MONGODB_HOST": "<FULIB_ORG_MONGODB_HOST>",
+        "FULIB_ORG_MONGODB_PASSWORD": "<FULIB_ORG_MONGODB_PASSWORD>"
       },
       "healthInterval": null,
       "healthRetries": null,

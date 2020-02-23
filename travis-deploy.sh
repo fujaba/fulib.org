@@ -25,7 +25,11 @@ rancherURL="http://avocado.uniks.de:8080/v2-beta/projects/1a5/services/1s173"
 
 echo "Upgrading Rancher ..."
 
-config="$(sed 's|<fulib_org_mongo>|'"$fulib_org_mongo"'|g' rancher_config.json)"
+config="$(sed "\
+s|<FULIB_ORG_MONGODB_HOST>|$FULIB_ORG_MONGODB_HOST|g;\
+s|<FULIB_ORG_MONGODB_USER>|$FULIB_ORG_MONGODB_USER|g;\
+s|<FULIB_ORG_MONGODB_PASSWORD>|$FULIB_ORG_MONGODB_PASSWORD|g;\
+" rancher_config.json)"
 
 curl -s \
 	-u "$RANCHER_ACCESS:$RANCHER_KEY" \
