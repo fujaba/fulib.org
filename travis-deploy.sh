@@ -14,6 +14,9 @@ function waitForState() {
 	fi
 }
 
+rm build/libs/fulibDotOrg-*-all.jar
+./gradlew shadowJar
+
 echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
 docker build -t "$DOCKER_USERNAME"/fulib_scenarios:latest .
 docker push "$DOCKER_USERNAME"/fulib_scenarios:latest
