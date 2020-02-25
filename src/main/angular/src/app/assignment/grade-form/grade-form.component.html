@@ -16,3 +16,17 @@
 <button type="button" class="btn btn-primary" (click)="doSubmit()">
   Submit
 </button>
+
+<h4>History</h4>
+<ul *ngIf="gradings">
+  <li *ngFor="let grading of filteredGradings">
+    <b>{{grading.author}}</b>
+    on
+    <span class="text-muted">{{grading.timeStamp | date:'medium'}}: </span>
+    <span class="badge badge-secondary">{{grading.points}}</span>
+    {{grading.note}}
+  </li>
+</ul>
+<p *ngIf="!gradings">
+  Loading...
+</p>

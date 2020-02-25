@@ -11,16 +11,19 @@ import TaskGrading from '../model/task-grading';
 export class GradeFormComponent implements OnInit {
   @Input() solution: Solution;
   @Input() taskID: number;
+  @Input() gradings?: TaskGrading[];
 
   name: string;
   points: number;
   note: string;
 
-  @Output() submit = new EventEmitter<TaskGrading>();
-
   constructor(
     private solutionService: SolutionService,
   ) {
+  }
+
+  get filteredGradings(): TaskGrading[] {
+    return this.gradings.filter(t => this.taskID === t.taskID);
   }
 
   ngOnInit() {
@@ -35,7 +38,7 @@ export class GradeFormComponent implements OnInit {
       author: this.name,
     };
     this.solutionService.postGrading(grading).subscribe(result => {
-      this.submit.emit(result);
+      this.gradings.push(result);
     });
   }
 }
