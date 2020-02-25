@@ -272,6 +272,8 @@ public class Solutions
 		final TaskGrading grading = json2Grading(solutionID, new JSONObject(request.body()));
 		grading.setTimeStamp(timeStamp);
 
+		Mongo.get().addGrading(grading);
+
 		final JSONObject result = new JSONObject();
 		result.put(TaskGrading.PROPERTY_timeStamp, timeStamp.toString());
 		return result.toString(2);
