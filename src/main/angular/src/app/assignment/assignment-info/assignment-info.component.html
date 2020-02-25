@@ -1,1 +1,20 @@
-<p>assignment-info works!</p>
+<h1>{{assignment ? assignment.title : 'Loading...'}}</h1>
+<p class="text-muted">
+  <ng-container *ngIf="assignment">
+    by {{assignment.author}}
+    &mdash;
+    <a href="mailto:{{assignment.email}}">{{assignment.email}}</a>
+    &mdash;
+    Deadline: {{assignment.deadline | date:'medium'}}
+  </ng-container>
+  <ng-container *ngIf="!assignment">
+    Loading...
+  </ng-container>
+</p>
+
+<p *ngIf="assignment" [innerHTML]="assignment.descriptionHtml | safeHtml">
+</p>
+<p *ngIf="!assignment">
+  Loading Description...
+</p>
+

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import Assignment from '../model/assignment';
 
 @Component({
   selector: 'app-assignment-info',
@@ -6,10 +7,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./assignment-info.component.scss']
 })
 export class AssignmentInfoComponent implements OnInit {
+  @Input() assignment?: Assignment;
 
-  constructor() { }
-
-  ngOnInit() {
+  constructor() {
   }
 
+  ngOnInit(): void {
+  }
 }
