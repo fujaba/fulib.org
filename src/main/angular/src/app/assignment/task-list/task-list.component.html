@@ -30,7 +30,7 @@
       Grade
     </a>
     <ng-template #gradePopoverContent>
-      <app-grade-form></app-grade-form>
+      <app-grade-form [solution]="solution" [taskID]="i"></app-grade-form>
     </ng-template>
   </li>
 </ol>
