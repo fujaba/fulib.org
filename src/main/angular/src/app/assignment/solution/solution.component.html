@@ -32,6 +32,14 @@
       >
         {{solution.results[i].points}} / {{task.points}}
       </span>
+      <a role="button" style="cursor: pointer" class="text-primary"
+         *ngIf="solution.results[i].output"
+         [ngbPopover]="outputPopoverContent" popoverTitle="Output" placement="right" autoClose="outside">
+        View Output
+      </a>
+      <ng-template #outputPopoverContent>
+        <pre>{{solution.results[i].output}}</pre>
+      </ng-template>
     </li>
   </ol>
   <p *ngIf="!assignment || !solution">
