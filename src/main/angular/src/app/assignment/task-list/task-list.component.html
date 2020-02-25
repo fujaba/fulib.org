@@ -21,6 +21,17 @@
     <ng-template #outputPopoverContent>
       <pre>{{results[i].output}}</pre>
     </ng-template>
+    <span *ngIf="solution && results && results[i].output" class="text-muted">
+      &#8226;
+    </span>
+    <a role="button" style="cursor: pointer" class="text-primary"
+       *ngIf="results && solution"
+       [ngbPopover]="gradePopoverContent" popoverTitle="Grade" placement="right" autoClose="outside">
+      Grade
+    </a>
+    <ng-template #gradePopoverContent>
+      <app-grade-form></app-grade-form>
+    </ng-template>
   </li>
 </ol>
 <p *ngIf="!assignment">

@@ -1,7 +1,7 @@
 <div class="container">
   <app-assignment-info [assignment]="assignment"></app-assignment-info>
 
-  <app-task-list [assignment]="assignment" [results]="solution?.results"></app-task-list>
+  <app-task-list [assignment]="assignment" [results]="solution?.results" [solution]="solution"></app-task-list>
 
   <h2>Grading History</h2>
   <ul *ngIf="gradings">
