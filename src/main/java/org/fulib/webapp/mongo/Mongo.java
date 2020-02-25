@@ -44,7 +44,7 @@ public class Mongo
 	public static final String SOLUTION_COLLECTION_NAME = "solutions";
 	public static final String COMMENT_COLLECTION_NAME = "comments";
 	public static final String ASSIGNEE_COLLECTION_NAME = "assignee";
-	public static final String CORRECTION_COLLECTION_NAME = "corrections";
+	public static final String GRADING_COLLECTION_NAME = "gradings";
 
 	// =============== Static Fields ===============
 
@@ -123,7 +123,7 @@ public class Mongo
 		this.assignees.createIndex(Indexes.ascending(Solution.PROPERTY_id));
 		this.assignees.createIndex(Indexes.ascending(Solution.PROPERTY_assignee));
 
-		this.gradings = this.database.getCollection(CORRECTION_COLLECTION_NAME, TaskGrading.class)
+		this.gradings = this.database.getCollection(GRADING_COLLECTION_NAME, TaskGrading.class)
 		                             .withCodecRegistry(this.pojoCodecRegistry);
 		this.gradings.createIndex(Indexes.ascending(TaskGrading.PROPERTY_solutionID));
 		this.gradings.createIndex(Indexes.ascending(TaskGrading.PROPERTY_taskID));
