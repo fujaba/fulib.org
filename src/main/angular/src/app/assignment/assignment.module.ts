@@ -18,7 +18,6 @@ import {TokenModalComponent} from './token-modal/token-modal.component';
 import {SolutionListComponent} from './solution-list/solution-list.component';
 import { AssignmentInfoComponent } from './assignment-info/assignment-info.component';
 import { TaskListComponent } from './task-list/task-list.component';
-import { GradeModalComponent } from './grade-modal/grade-modal.component';
 import { GradeFormComponent } from './grade-form/grade-form.component';
 
 @NgModule({
@@ -30,7 +29,6 @@ import { GradeFormComponent } from './grade-form/grade-form.component';
     SolutionListComponent,
     AssignmentInfoComponent,
     TaskListComponent,
-    GradeModalComponent,
     GradeFormComponent,
   ],
   imports: [
