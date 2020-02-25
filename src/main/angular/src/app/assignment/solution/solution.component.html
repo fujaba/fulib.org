@@ -1,32 +1,7 @@
 <div class="container">
   <app-assignment-info [assignment]="assignment"></app-assignment-info>
 
-  <h2>Tasks</h2>
-  <ol *ngIf="assignment && solution">
-    <li *ngFor="let task of assignment.tasks; let i = index"
-        [class.text-success]="solution.results[i].points == task.points"
-        [class.text-danger]="solution.results[i].points < task.points"
-    >
-      {{task.description}}
-      <span class="badge"
-            [class.badge-success]="solution.results[i].points == task.points"
-            [class.badge-danger]="solution.results[i].points < task.points"
-      >
-        {{solution.results[i].points}} / {{task.points}}
-      </span>
-      <a role="button" style="cursor: pointer" class="text-primary"
-         *ngIf="solution.results[i].output"
-         [ngbPopover]="outputPopoverContent" popoverTitle="Output" placement="right" autoClose="outside">
-        View Output
-      </a>
-      <ng-template #outputPopoverContent>
-        <pre>{{solution.results[i].output}}</pre>
-      </ng-template>
-    </li>
-  </ol>
-  <p *ngIf="!assignment || !solution">
-    Loading Tasks...
-  </p>
+  <app-task-list [assignment]="assignment" [results]="solution?.results"></app-task-list>
 
   <h2><label for="solutionInput">Solution</label></h2>
   <p>

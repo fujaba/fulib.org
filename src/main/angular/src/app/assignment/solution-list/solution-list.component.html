@@ -1,18 +1,7 @@
 <div class="container">
   <app-assignment-info [assignment]="assignment"></app-assignment-info>
 
-  <h2>Tasks</h2>
-  <ol *ngIf="assignment">
-    <li *ngFor="let task of assignment.tasks; let i = index">
-      {{task.description}}
-      <span class="badge badge-secondary">
-        {{task.points}}
-      </span>
-    </li>
-  </ol>
-  <p *ngIf="!assignment">
-    Loading Tasks...
-  </p>
+  <app-task-list [assignment]="assignment"></app-task-list>
 
   <h2>
     Solutions
