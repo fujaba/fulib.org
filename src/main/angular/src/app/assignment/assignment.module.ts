@@ -19,6 +19,7 @@ import {SolutionListComponent} from './solution-list/solution-list.component';
 import { AssignmentInfoComponent } from './assignment-info/assignment-info.component';
 import { TaskListComponent } from './task-list/task-list.component';
 import { GradeModalComponent } from './grade-modal/grade-modal.component';
+import { GradeFormComponent } from './grade-form/grade-form.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { GradeModalComponent } from './grade-modal/grade-modal.component';
     AssignmentInfoComponent,
     TaskListComponent,
     GradeModalComponent,
+    GradeFormComponent,
   ],
   imports: [
     CommonModule,
