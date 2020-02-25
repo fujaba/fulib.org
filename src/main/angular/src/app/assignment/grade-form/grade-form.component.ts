@@ -27,6 +27,15 @@ export class GradeFormComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.loadDraft();
+  }
+
+  loadDraft(): void {
+    this.name = this.solutionService.commentName;
+  }
+
+  saveDraft(): void {
+    this.solutionService.commentName = this.name;
   }
 
   doSubmit(): void {
