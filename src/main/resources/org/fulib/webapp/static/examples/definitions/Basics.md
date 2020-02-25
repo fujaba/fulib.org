@@ -27,3 +27,8 @@
 // You can modify the text at will to experiment.
 // Make sure to click 'Compile and Run' when you are done to view the results.
 // Changes to examples will be reset once you load a different example.
+
+# More Info
+
+// Learn more about the basics in the documentation:
+// https://fujaba.gitbook.io/fulib-scenarios/language/basics

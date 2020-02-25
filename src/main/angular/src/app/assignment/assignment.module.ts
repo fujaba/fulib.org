@@ -16,6 +16,8 @@ import {SolveComponent} from './solve/solve.component';
 import {SolutionComponent} from './solution/solution.component';
 import {TokenModalComponent} from './token-modal/token-modal.component';
 import {SolutionListComponent} from './solution-list/solution-list.component';
+import { AssignmentInfoComponent } from './assignment-info/assignment-info.component';
+import { TaskListComponent } from './task-list/task-list.component';
 import { GradeModalComponent } from './grade-modal/grade-modal.component';
 
 @NgModule({
@@ -25,6 +27,8 @@ import { GradeModalComponent } from './grade-modal/grade-modal.component';
     SolutionComponent,
     TokenModalComponent,
     SolutionListComponent,
+    AssignmentInfoComponent,
+    TaskListComponent,
     GradeModalComponent,
   ],
   imports: [

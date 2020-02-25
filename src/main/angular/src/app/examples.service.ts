@@ -21,7 +21,6 @@ export class ExamplesService {
         {name: 'Simple Definitions'},
         {name: 'Complex Definitions'},
         {name: 'Associations'},
-        {name: 'Special Associations'},
       ]
     },
     {

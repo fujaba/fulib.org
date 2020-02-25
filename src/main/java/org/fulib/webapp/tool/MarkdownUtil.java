@@ -1,4 +1,4 @@
-package org.fulib.webapp.assignment;
+package org.fulib.webapp.tool;
 
 import org.commonmark.Extension;
 import org.commonmark.ext.autolink.AutolinkExtension;
