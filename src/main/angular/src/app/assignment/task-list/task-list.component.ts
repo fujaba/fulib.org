@@ -18,4 +18,19 @@ export class TaskListComponent implements OnInit {
 
   ngOnInit() {
   }
+
+  getColorClass(taskID: number) {
+    if (!this.results) {
+      return 'secondary';
+    }
+    const points = this.results[taskID].points;
+    const maxPoints = this.assignment.tasks[taskID].points;
+    if (points === maxPoints) {
+      return 'success';
+    }
+    if (points === 0) {
+      return 'danger';
+    }
+    return 'warning';
+  }
 }
