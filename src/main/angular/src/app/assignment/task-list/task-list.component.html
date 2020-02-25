@@ -4,7 +4,7 @@
       class="text-{{getColorClass(i)}}">
     {{task.description}}
     <span class="badge badge-{{getColorClass(i)}}">
-      <ng-container *ngIf="results">{{results[i].points}} / </ng-container>
+      <ng-container *ngIf="results">{{getTaskPoints(i)}} / </ng-container>
     {{task.points}}
     </span>
     <a role="button" style="cursor: pointer" class="text-primary"
