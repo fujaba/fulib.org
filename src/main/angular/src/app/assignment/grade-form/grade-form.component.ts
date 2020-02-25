@@ -6,10 +6,16 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./grade-form.component.scss']
 })
 export class GradeFormComponent implements OnInit {
+  name: string;
+  points: number;
+  note: string;
 
   constructor() { }
 
   ngOnInit() {
   }
 
+  submit(): void {
+    // TODO
+  }
 }
