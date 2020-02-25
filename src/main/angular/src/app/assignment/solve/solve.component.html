@@ -50,8 +50,7 @@
 
   <h2><label for="solutionInput">Your Solution</label></h2>
   <p>
-    <app-autotheme-codemirror id="solutionInput" #solutionInput [(content)]="solution" (change)="saveDraft()"
-                              [options]="{
+    <app-autotheme-codemirror id="solutionInput" #solutionInput [(content)]="solution" [options]="{
       mode: 'markdown',
       lineNumbers: true,
       lineWrapping: true,

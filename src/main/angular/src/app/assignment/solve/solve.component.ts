@@ -106,6 +106,7 @@ export class SolveComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   check() {
+    this.saveDraft();
     this.checking = true;
 
     this.solutionService.check({assignment: this.assignment, solution: this.solution}).subscribe(result => {
