@@ -16,6 +16,7 @@ import {SolveComponent} from './solve/solve.component';
 import {SolutionComponent} from './solution/solution.component';
 import {TokenModalComponent} from './token-modal/token-modal.component';
 import {SolutionListComponent} from './solution-list/solution-list.component';
+import { AssignmentInfoComponent } from './assignment-info/assignment-info.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import {SolutionListComponent} from './solution-list/solution-list.component';
     SolutionComponent,
     TokenModalComponent,
     SolutionListComponent,
+    AssignmentInfoComponent,
   ],
   imports: [
     CommonModule,
