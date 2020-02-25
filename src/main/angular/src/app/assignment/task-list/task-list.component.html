@@ -9,7 +9,7 @@
     </span>
     <a role="button" style="cursor: pointer" class="text-primary"
        *ngIf="results && results[i].output"
-       [ngbPopover]="outputPopoverContent" popoverTitle="Output" placement="right" autoClose="outside">
+       [ngbPopover]="outputPopoverContent" popoverTitle="Output" placement="right" autoClose="outside" container="body">
       View Output
     </a>
     <ng-template #outputPopoverContent>
@@ -20,7 +20,7 @@
     </span>
     <a role="button" style="cursor: pointer" class="text-primary"
        *ngIf="results && solution"
-       [ngbPopover]="gradePopoverContent" popoverTitle="Grade" placement="right" autoClose="outside">
+       [ngbPopover]="gradePopoverContent" popoverTitle="Grade" placement="right" autoClose="outside" container="body">
       Grade
     </a>
     <ng-template #gradePopoverContent>
