@@ -56,10 +56,14 @@ export class ChangelogComponent implements OnInit, AfterViewInit {
 
         if (!open) {
           open = true;
-          this.modalService.open(this.changelogModal, {ariaLabelledBy: 'changelogModalLabel', size: 'xl'});
+          this.openModal();
         }
       });
     }
+  }
+
+  private openModal() {
+    this.modalService.open(this.changelogModal, {ariaLabelledBy: 'changelogModalLabel', size: 'xl'});
   }
 
   get changelogs(): {repo: string, changelog: string}[] {
@@ -73,5 +77,20 @@ export class ChangelogComponent implements OnInit, AfterViewInit {
 
   private updateLastUsedVersion() {
     this.changelogService.lastUsedVersions = this.changelogService.currentVersions;
+  }
+
+  open(): void {
+    const repos = this.changelogService.repos;
+    this.activeRepo = repos[0];
+    this.lastUsedVersions = undefined;
+
+    this.openModal();
+
+    for (const repo of repos) {
+      this._changelogs[repo] = '';
+      this.changelogService.getChangelog(repo).subscribe(changelog => {
+        this._changelogs[repo] = changelog;
+      });
+    }
   }
 }

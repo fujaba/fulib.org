@@ -25,6 +25,10 @@ export class ChangelogService {
   ) {
   }
 
+  public get repos(): (keyof Versions)[] {
+    return ['fulib.org', 'fulib', 'fulibTools', 'fulibScenarios', 'fulibMockups', 'fulibGradle'];
+  }
+
   public get currentVersions(): Versions {
     return {
       ...environment.versions,
