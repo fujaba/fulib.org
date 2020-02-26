@@ -12,3 +12,8 @@ We expect that Kassel has country Germany.
 // To check for String values, you need to quote the word.
 // Otherwise you will refer to the object.
 We expect that Germany has name "Germany".
+
+# More Info
+
+// Check out the documentation page on expectation entences:
+// https://fujaba.gitbook.io/fulib-scenarios/language/sentences/test-sentences#expect-sentences

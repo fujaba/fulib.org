@@ -24,3 +24,8 @@ We expect that credits of Alice is not greater than credits of Bob.
 We expect that 20 is greater than 10.
 We expect that 20 is greater equal 20.
 We expect that 20 is not greater than 30.
+
+# More Info
+
+// View more info about conditional operators in the documentation:
+// https://fujaba.gitbook.io/fulib-scenarios/language/expressions/conditionals
