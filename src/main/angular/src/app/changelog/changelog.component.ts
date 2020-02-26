@@ -26,11 +26,11 @@ export class ChangelogComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.loadChangelog();
+    this.openFromLastUsedVersion();
     this.updateLastUsedVersion();
   }
 
-  private loadChangelog() {
+  private openFromLastUsedVersion() {
     const lastUsedVersions = this.lastUsedVersions;
     if (!lastUsedVersions) {
       // never used the website before, they probably don't care about the changelogs
