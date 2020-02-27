@@ -95,7 +95,7 @@ export class SolveComponent implements OnInit, AfterViewInit, OnDestroy {
     this.name = this.solutionService.name || '';
     this.studentID = this.solutionService.studentID || '';
     this.email = this.solutionService.email || '';
-    this.solution = this.solutionService.getDraft(this.assignment) || '';
+    this.solution = this.solutionService.getDraft(this.assignment) || this.assignment.templateSolution;
   }
 
   saveDraft(): void {
