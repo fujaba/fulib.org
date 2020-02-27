@@ -1,14 +1,16 @@
 <div class="row">
   <div class="col-md-3 bg-light bg-darkmode-dark">
-    <h1>{{course?.title || 'Loading Title...'}}</h1>
+    <div class="container">
+      <h1>{{course?.title || 'Loading Title...'}}</h1>
 
-    <div [innerHTML]="(course?.descriptionHtml || 'Loading Description...') | safeHtml"></div>
+      <div [innerHTML]="(course?.descriptionHtml || 'Loading Description...') | safeHtml"></div>
 
-    <ol>
-      <li *ngFor="let assignment of course?.assignments">
-        {{assignment.title}}
-      </li>
-    </ol>
+      <ol>
+        <li *ngFor="let assignment of course?.assignments">
+          {{assignment.title}}
+        </li>
+      </ol>
+    </div>
   </div>
   <div class="col-md-9">
     <app-solve *ngIf="assignmentID"></app-solve>
