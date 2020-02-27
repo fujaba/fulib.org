@@ -66,40 +66,46 @@
         </div>
       </div>
     </li>
-  </ol>
+    <li class="timeline-item">
+      <div class="timeline-item-badge bg-secondary">
+        +
+      </div>
+      <div class="timeline-item-body">
+        <div class="card">
+          <div class="card-header">
+            <div class="form-inline">
+              <span class="sr-only">New Comment</span>
 
-  <h2>New Comment</h2>
-  <div class="form">
-    <div class="form-group row">
-      <label for="commentNameInput" class="col-sm-2 col-form-label">Name</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control" id="commentNameInput" placeholder="John Doe"
-               [(ngModel)]="commentName" (change)="saveCommentDraft()">
+              <label for="commentNameInput" class="sr-only">Name</label>
+              <input type="text" class="form-control mr-2" id="commentNameInput" placeholder="John Doe"
+                     [(ngModel)]="commentName" (change)="saveCommentDraft()">
+
+              <span class="mr-2">&#8226;</span>
+
+              <label for="commentEmailInput" class="sr-only">Email</label>
+              <input type="text" class="form-control mr-2" id="commentEmailInput" placeholder="jdoe@example.com"
+                     [(ngModel)]="commentEmail" (change)="saveCommentDraft()">
+
+              <span class="mr-2">&#8226;</span>
+
+              <button type="button" class="btn btn-primary mr-2" id="commentSubmitButton"
+                      (click)="submitComment()" [disabled]="submittingComment">
+                {{submittingComment ? 'Commenting...' : 'Comment'}}
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <textarea class="form-control" id="commentBodyInput"
+                      [(ngModel)]="commentBody" (change)="saveCommentDraft()">
+            </textarea>
+            <small class="form-text text-muted">
+              <a href="https://commonmark.org/help/">Markdown syntax</a> is supported.
+            </small>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="form-group row">
-      <label for="commentEmailInput" class="col-sm-2 col-form-label">E-Mail</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control" id="commentEmailInput" placeholder="jdoe@example.com"
-               [(ngModel)]="commentEmail" (change)="saveCommentDraft()">
-      </div>
-    </div>
-    <div class="form-group row">
-      <label for="commentBodyInput" class="col-sm-2 col-form-label">Body</label>
-      <div class="col-sm-10">
-        <textarea class="form-control" id="commentBodyInput"
-                  [(ngModel)]="commentBody" (change)="saveCommentDraft()">
-        </textarea>
-        <small class="form-text text-muted">
-          <a href="https://commonmark.org/help/">Markdown syntax</a> is supported.
-        </small>
-      </div>
-    </div>
-  </div>
-  <button type="button" class="btn btn-primary" id="commentSubmitButton"
-          (click)="submitComment()" [disabled]="submittingComment">
-    {{submittingComment ? 'Submitting Comment...' : 'Submit Comment'}}
-  </button>
+    </li>
+  </ol>
 </div>
 
 <app-token-modal #tokenModal [solution]="true" (submit)="setTokens($event.solutionToken, $event.assignmentToken)">
