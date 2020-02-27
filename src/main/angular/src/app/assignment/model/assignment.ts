@@ -13,4 +13,5 @@ export default class Assignment {
 
   tasks: Task[];
   solution: string;
+  templateSolution: string;
 }
