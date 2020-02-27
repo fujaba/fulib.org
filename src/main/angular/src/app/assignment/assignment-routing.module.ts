@@ -12,6 +12,7 @@ const routes: Routes = [
   {path: ':aid/solutions', component: SolutionListComponent},
   {path: ':aid/solutions/:sid', component: SolutionComponent},
   {path: 'courses/:cid', component: CourseComponent},
+  {path: 'courses/:cid/assignments/:aid', component: CourseComponent},
 ];
 
 @NgModule({

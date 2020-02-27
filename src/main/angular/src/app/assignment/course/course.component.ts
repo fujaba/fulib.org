@@ -12,6 +12,8 @@ export class CourseComponent implements OnInit {
   courseID?: string;
   course?: Course;
 
+  assignmentID?: string;
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private courseService: CourseService,
@@ -23,6 +25,8 @@ export class CourseComponent implements OnInit {
       this.courseService.get(this.courseID).subscribe(course => {
         this.course = course;
       });
+
+      this.assignmentID = params.aid;
     })
   }
 }
