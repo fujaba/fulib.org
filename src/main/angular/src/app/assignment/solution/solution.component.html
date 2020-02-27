@@ -46,20 +46,27 @@
   </p>
 
   <h2>Comments</h2>
-  <div>
-    <div class="card mb-3" *ngFor="let comment of comments">
-      <div class="card-header">
-        {{comment.author}}
-        &#8226;
-        <a href="mailto:{{comment.email}}">{{comment.email}}</a>
-        &#8226;
-        <span class="text-muted">{{comment.timeStamp | date:'medium'}}</span>
+  <ol class="timeline-list">
+    <li *ngFor="let comment of comments" class="timeline-item">
+      <div class="timeline-item-badge bg-secondary">
+        {{comment.author.charAt(0)}}
       </div>
-      <div class="card-body">
-        <div class="card-text" [innerHTML]="comment.html | safeHtml"></div>
+      <div class="timeline-item-body">
+        <div class="card">
+          <div class="card-header">
+            {{comment.author}}
+            &#8226;
+            <a href="mailto:{{comment.email}}">{{comment.email}}</a>
+            &#8226;
+            <span class="text-muted">{{comment.timeStamp | date:'medium'}}</span>
+          </div>
+          <div class="card-body">
+            <div class="card-text" [innerHTML]="comment.html | safeHtml"></div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
+    </li>
+  </ol>
 
   <h2>New Comment</h2>
   <div class="form">
