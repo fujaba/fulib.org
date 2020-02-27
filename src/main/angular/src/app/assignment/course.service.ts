@@ -11,10 +11,29 @@ type CourseResponse = { id: string, descriptionHtml: string }
   providedIn: 'root'
 })
 export class CourseService {
+  private _draft?: Course | null;
 
   constructor(
     private http: HttpClient,
   ) {
+  }
+
+  public get draft(): Course | null {
+    if (typeof this._draft === 'undefined') {
+      const json = localStorage.getItem('courseDraft');
+      this._draft = json ? {...JSON.parse(json)} : null;
+    }
+    return this._draft;
+  }
+
+  public set draft(value: Course | null) {
+    this._draft = value;
+    if (value) {
+      localStorage.setItem('courseDraft', JSON.stringify(value));
+    }
+    else {
+      localStorage.removeItem('courseDraft');
+    }
   }
 
   public get(id: string): Observable<Course> {
