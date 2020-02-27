@@ -78,7 +78,7 @@ export class CreateCourseComponent implements OnInit {
   }
 
   getNewID(): string {
-    const pattern = /assignments\/([\w-]+)/;
+    const pattern = /^.*assignments\/([\w-]+)/;
     const match = pattern.exec(this.newAssignment);
     if (match) {
       return match[1];
