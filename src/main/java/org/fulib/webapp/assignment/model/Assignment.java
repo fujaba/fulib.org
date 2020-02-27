@@ -21,7 +21,7 @@ public class Assignment
 	public static final String PROPERTY_deadline = "deadline";
 	public static final String PROPERTY_tasks = "tasks";
 	public static final String PROPERTY_solution = "solution";
-	public static final String PROPERTY_templateSolution = "solution";
+	public static final String PROPERTY_templateSolution = "templateSolution";
 
 	// =============== Fields ===============
 
