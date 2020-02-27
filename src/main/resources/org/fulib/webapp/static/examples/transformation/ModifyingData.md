@@ -72,3 +72,8 @@ We remove 5 from dollars of Bob.
 // Of course, this also works with variables.
 We add 5 to shared-account.
 We remove 3 from shared-account.
+
+# More Info
+
+// Write sentences as well as Add and Remove are explained in the documentation:
+// https://fujaba.gitbook.io/fulib-scenarios/language/sentences/write-sentences

@@ -28,3 +28,8 @@ The Pumps has price 42.42.
 
 // The .tables.html format shows nicely formatted tables:
 ![Amazon](images/products.tables.html)
+
+# More Info
+
+// The documentation goes into more depth about how to create diagrams and display data:
+// https://fujaba.gitbook.io/fulib-scenarios/language/sentences/test-sentences#diagram-sentences

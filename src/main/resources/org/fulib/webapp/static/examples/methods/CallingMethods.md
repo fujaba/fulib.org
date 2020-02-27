@@ -25,3 +25,10 @@ GenerateRevenue writes 9000 into revenue of Foosoft.
 
 // If you use a sentence that does not match the subject of the call, you will end up back in the test method scope.
 We expect that Foosoft has revenue 9000.
+
+# More Info
+
+// Go to the next example, 'Passing Arguments', for more advanced method calling.
+
+// Or read about method calls in the documentation:
+// https://fujaba.gitbook.io/fulib-scenarios/language/sentences/call-sentences

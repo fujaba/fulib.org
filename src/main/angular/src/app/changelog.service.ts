@@ -25,6 +25,10 @@ export class ChangelogService {
   ) {
   }
 
+  public get repos(): (keyof Versions)[] {
+    return ['fulib.org', 'fulib', 'fulibTools', 'fulibScenarios', 'fulibMockups', 'fulibGradle'];
+  }
+
   public get currentVersions(): Versions {
     return {
       ...environment.versions,
@@ -73,14 +77,14 @@ export class ChangelogService {
     })
   }
 
-  getChangelog(repo: keyof Versions, lastUsedVersion: string): Observable<string> {
+  getChangelog(repo: keyof Versions, lastUsedVersion?: string): Observable<string> {
     return this.loadRawChangelog('fujaba/' + repo).pipe(
-      flatMap(rawChangelog => {
-        const partialChangelog = this.partialChangelog(rawChangelog, lastUsedVersion);
-        if (!partialChangelog) { // already newest version
+      flatMap(fullChangelog => {
+        const changelog = lastUsedVersion ? this.partialChangelog(fullChangelog, lastUsedVersion) : fullChangelog;
+        if (!changelog) { // already newest version
           return EMPTY;
         }
-        const issueLinks = this.replaceIssueLinks('fujaba/' + repo, partialChangelog);
+        const issueLinks = this.replaceIssueLinks('fujaba/' + repo, changelog);
         return this.renderMarkdown(issueLinks);
       })
     );

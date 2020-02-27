@@ -22,3 +22,8 @@ There is a University with name Study-Right.
 Study-Right has students Alice, Bob, Carli, and Dude.
 
 We take a student from students of Study-Right and we write hello into world of student.
+
+# More Info
+
+// The documentation has a page dedicated to loop sentences:
+// https://fujaba.gitbook.io/fulib-scenarios/language/sentences/loop-sentences
