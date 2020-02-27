@@ -27,13 +27,14 @@ public class Course
 	// =============== Constructors ===============
 
 	@BsonCreator
-	public Course(@BsonProperty String id)
+	public Course(@BsonProperty(PROPERTY_id) String id)
 	{
 		this.id = id;
 	}
 
 	// =============== Properties ===============
 
+	@BsonProperty(PROPERTY_id)
 	public String getId()
 	{
 		return this.id;
