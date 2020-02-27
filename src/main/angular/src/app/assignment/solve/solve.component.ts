@@ -45,7 +45,7 @@ export class SolveComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.assignmentService.get(params.id).subscribe(result => {
+      this.assignmentService.get(params.aid).subscribe(result => {
         this.assignment = result;
         this.loadDraft();
       });

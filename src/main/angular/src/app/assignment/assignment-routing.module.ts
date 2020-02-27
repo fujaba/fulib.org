@@ -8,8 +8,8 @@ import {CourseComponent} from './course/course.component';
 
 const routes: Routes = [
   {path: 'create', component: CreateComponent},
-  {path: ':id', component: SolveComponent},
-  {path: ':id/solutions', component: SolutionListComponent},
+  {path: ':aid', component: SolveComponent},
+  {path: ':aid/solutions', component: SolutionListComponent},
   {path: ':aid/solutions/:sid', component: SolutionComponent},
   {path: 'courses/:cid', component: CourseComponent},
 ];

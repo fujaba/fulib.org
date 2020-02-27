@@ -32,7 +32,7 @@ export class SolutionListComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(params => {
-      this.assignmentID = params.id;
+      this.assignmentID = params.aid;
       this.assignmentService.get(this.assignmentID).subscribe(assignment => {
         this.assignment = assignment;
         this.totalPoints = this.sumPoints(assignment.tasks);
