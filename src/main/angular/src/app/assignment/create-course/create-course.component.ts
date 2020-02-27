@@ -86,6 +86,11 @@ export class CreateCourseComponent implements OnInit {
     return this.newAssignment;
   }
 
+  removeAssignment(index: number) {
+    this.assignments.splice(index, 1);
+    this.saveDraft();
+  }
+
   submit(): void {
     this.submitting = true;
     this.courseService.create(this.getCourse()).subscribe(course => {

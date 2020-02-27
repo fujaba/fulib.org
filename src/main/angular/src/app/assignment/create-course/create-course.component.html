@@ -39,6 +39,10 @@
             <span class="timeline-item-body">
               {{assignment?.title || 'Loading...'}}
             </span>
+            <button type="button" class="btn btn-danger ml-auto" aria-label="Remove"
+                    (click)="removeAssignment(i)">
+              <span aria-hidden="true">&times;</span>
+            </button>
           </li>
         </ul>
       </div>
