@@ -14,6 +14,7 @@ public class Course
 	public static final String PROPERTY_description = "description";
 	public static final String PROPERTY_descriptionHtml = "descriptionHtml";
 	public static final String PROPERTY_assignments = "assignments";
+	public static final String PROPERTY_assignmentIds = "assignmentIds";
 
 	// =============== Fields ===============
 
