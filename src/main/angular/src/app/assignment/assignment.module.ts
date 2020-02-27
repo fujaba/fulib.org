@@ -20,6 +20,7 @@ import { AssignmentInfoComponent } from './assignment-info/assignment-info.compo
 import { TaskListComponent } from './task-list/task-list.component';
 import { GradeFormComponent } from './grade-form/grade-form.component';
 import { CourseComponent } from './course/course.component';
+import { CreateCourseComponent } from './create-course/create-course.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { CourseComponent } from './course/course.component';
     TaskListComponent,
     GradeFormComponent,
     CourseComponent,
+    CreateCourseComponent,
   ],
   imports: [
     CommonModule,
