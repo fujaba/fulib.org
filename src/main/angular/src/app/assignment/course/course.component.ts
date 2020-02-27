@@ -47,4 +47,14 @@ export class CourseComponent implements OnInit {
       });
     })
   }
+
+  getBadgeColor(assignment: Assignment) {
+    if (!assignment) {
+      return 'secondary';
+    }
+    if (assignment.id === this.assignmentID) {
+      return 'primary';
+    }
+    return 'secondary';
+  }
 }

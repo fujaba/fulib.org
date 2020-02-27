@@ -1,6 +1,5 @@
 $outline-color: #777;
 $badge-color: #fff;
-$badge-bg: #404040;
 
 .assignment-list {
   border-top: 1px solid $outline-color;
@@ -47,7 +46,6 @@ $badge-bg: #404040;
   flex-shrink: 0;
 
   color: $badge-color;
-  background-color: $badge-bg;
   border: 2px solid $outline-color;
   border-radius: 50%;
 }

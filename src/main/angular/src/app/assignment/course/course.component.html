@@ -7,7 +7,7 @@
 
       <ol class="assignment-list">
         <li *ngFor="let assignment of course?.assignments; let i=index" class="assignment-item">
-          <div class="assignment-item-badge">
+          <div class="assignment-item-badge bg-{{getBadgeColor(assignment)}}">
             {{i + 1}}
           </div>
           <div class="assignment-item-body">
