@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
 
 import {saveAs} from 'file-saver';
@@ -16,6 +16,7 @@ type AssignmentResponse = { id: string, token: string };
 })
 export class AssignmentService {
   private _draft?: Assignment | null;
+  private _cache = new Map<string, Assignment>();
 
   constructor(
     private http: HttpClient,
@@ -97,11 +98,17 @@ export class AssignmentService {
           ...assignment,
           ...response,
         };
+        this._cache.set(response.id, result);
         return result;
       }));
   }
 
   get(id: string): Observable<Assignment> {
+    const cached = this._cache.get(id);
+    if (cached) {
+      return of(cached);
+    }
+
     const headers = {
       'Content-Type': 'application/json',
     };
@@ -113,8 +120,9 @@ export class AssignmentService {
       map(a => {
         a.id = id;
         a.token = this.getToken(id);
+        this._cache.set(id, a);
         return a;
-      })
+      }),
     );
   }
 }
