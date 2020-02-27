@@ -7,7 +7,9 @@
 
       <ol>
         <li *ngFor="let assignment of course?.assignments">
-          {{assignment.title}}
+          <a routerLink="/assignments/courses/{{courseID}}/assignments/{{assignment.id}}">
+            {{assignment.title}}
+          </a>
         </li>
       </ol>
     </div>
