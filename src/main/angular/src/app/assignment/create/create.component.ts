@@ -23,6 +23,7 @@ export class CreateComponent implements OnInit {
   deadlineTime: Date;
   description: string;
   solution: string;
+  templateSolution: string;
 
   tasks: Task[] = [];
 
@@ -57,6 +58,7 @@ export class CreateComponent implements OnInit {
       email: this.email,
       deadline: new Date(this.deadlineDate.toDateString() + ' ' + this.deadlineTime.toTimeString()),
       solution: this.solution,
+      templateSolution: this.templateSolution,
       tasks: this.tasks,
     } as Assignment;
   }
@@ -70,6 +72,7 @@ export class CreateComponent implements OnInit {
     this.deadlineTime = a.deadline;
     this.tasks = a.tasks;
     this.solution = a.solution;
+    this.templateSolution = a.templateSolution;
     this.assignmentService.draft = a;
   }
 
