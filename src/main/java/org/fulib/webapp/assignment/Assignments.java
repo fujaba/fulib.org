@@ -82,6 +82,7 @@ public class Assignments
 		assignment.setEmail(obj.getString(Assignment.PROPERTY_email));
 		assignment.setDeadline(Instant.parse(obj.getString(Assignment.PROPERTY_deadline)));
 		assignment.setSolution(obj.getString(Assignment.PROPERTY_solution));
+		assignment.setTemplateSolution(obj.getString(Assignment.PROPERTY_templateSolution));
 
 		for (final Object taskItem : obj.getJSONArray(Assignment.PROPERTY_tasks))
 		{
@@ -120,6 +121,7 @@ public class Assignments
 		obj.put(Assignment.PROPERTY_author, assignment.getAuthor());
 		obj.put(Assignment.PROPERTY_email, assignment.getEmail());
 		obj.put(Assignment.PROPERTY_deadline, assignment.getDeadline().toString());
+		obj.put(Assignment.PROPERTY_templateSolution, assignment.getTemplateSolution());
 		// do NOT include solution or token!
 
 		final JSONArray tasks = new JSONArray();

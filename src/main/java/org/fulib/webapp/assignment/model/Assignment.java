@@ -21,6 +21,7 @@ public class Assignment
 	public static final String PROPERTY_deadline = "deadline";
 	public static final String PROPERTY_tasks = "tasks";
 	public static final String PROPERTY_solution = "solution";
+	public static final String PROPERTY_templateSolution = "solution";
 
 	// =============== Fields ===============
 
@@ -36,6 +37,7 @@ public class Assignment
 
 	private List<Task> tasks = new ArrayList<>();
 	private String solution;
+	private String templateSolution;
 
 	// =============== Constructors ===============
 
@@ -141,5 +143,15 @@ public class Assignment
 	public void setSolution(String solution)
 	{
 		this.solution = solution;
+	}
+
+	public String getTemplateSolution()
+	{
+		return this.templateSolution;
+	}
+
+	public void setTemplateSolution(String templateSolution)
+	{
+		this.templateSolution = templateSolution;
 	}
 }
