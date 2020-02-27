@@ -1,4 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+
 import Assignment from '../model/assignment';
 import {AssignmentService} from '../assignment.service';
 import Course from '../model/course';
@@ -10,6 +12,8 @@ import {CourseService} from '../course.service';
   styleUrls: ['./create-course.component.scss']
 })
 export class CreateCourseComponent implements OnInit {
+  @ViewChild('successModal', {static: true}) successModal;
+
   title: string;
   description: string;
   assignments: Assignment[] = [];
@@ -18,9 +22,14 @@ export class CreateCourseComponent implements OnInit {
 
   submitting = false;
 
+  id?: string;
+  // TODO does not work with Angular Universal
+  baseURL = window.location.origin;
+
   constructor(
     private assignmentService: AssignmentService,
     private courseService: CourseService,
+    private modalService: NgbModal,
   ) {
   }
 
@@ -80,8 +89,9 @@ export class CreateCourseComponent implements OnInit {
   submit(): void {
     this.submitting = true;
     this.courseService.create(this.getCourse()).subscribe(course => {
-      console.log(course);
+      this.id = course.id;
       this.submitting = false;
+      this.modalService.open(this.successModal, {ariaLabelledBy: 'successModalLabel', size: 'xl'});
     });
   }
 }
