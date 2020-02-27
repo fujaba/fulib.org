@@ -5,11 +5,16 @@
 
       <div [innerHTML]="(course?.descriptionHtml || 'Loading Description...') | safeHtml"></div>
 
-      <ol>
-        <li *ngFor="let assignment of course?.assignments">
-          <a routerLink="/assignments/courses/{{courseID}}/assignments/{{assignment.id}}">
-            {{assignment.title}}
-          </a>
+      <ol class="assignment-list">
+        <li *ngFor="let assignment of course?.assignments; let i=index" class="assignment-item">
+          <div class="assignment-item-badge">
+            {{i + 1}}
+          </div>
+          <div class="assignment-item-body">
+            <a routerLink="/assignments/courses/{{courseID}}/assignments/{{assignment?.id}}">
+              {{assignment?.title || 'Loading...'}}
+            </a>
+          </div>
         </li>
       </ol>
     </div>
