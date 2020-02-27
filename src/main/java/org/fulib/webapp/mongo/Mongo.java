@@ -17,10 +17,7 @@ import org.bson.codecs.pojo.Convention;
 import org.bson.codecs.pojo.Conventions;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.fulib.webapp.WebService;
-import org.fulib.webapp.assignment.model.Assignment;
-import org.fulib.webapp.assignment.model.Comment;
-import org.fulib.webapp.assignment.model.Solution;
-import org.fulib.webapp.assignment.model.TaskGrading;
+import org.fulib.webapp.assignment.model.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,6 +38,7 @@ public class Mongo
 
 	public static final String LOG_COLLECTION_NAME = "request-log";
 	public static final String ASSIGNMENT_COLLECTION_NAME = "assignments";
+	public static final String COURSE_COLLECTION_NAME = "courses";
 	public static final String SOLUTION_COLLECTION_NAME = "solutions";
 	public static final String COMMENT_COLLECTION_NAME = "comments";
 	public static final String ASSIGNEE_COLLECTION_NAME = "assignee";
@@ -57,6 +55,7 @@ public class Mongo
 
 	MongoCollection<Document> requestLog;
 	private MongoCollection<Assignment> assignments;
+	private MongoCollection<Course> courses;
 	private MongoCollection<Solution> solutions;
 	private MongoCollection<Comment> comments;
 	private MongoCollection<Document> assignees;
@@ -106,6 +105,10 @@ public class Mongo
 		this.assignments = this.database.getCollection(ASSIGNMENT_COLLECTION_NAME, Assignment.class)
 		                                .withCodecRegistry(this.pojoCodecRegistry);
 		this.assignments.createIndex(Indexes.ascending(Assignment.PROPERTY_id));
+
+		this.courses = this.database.getCollection(COURSE_COLLECTION_NAME, Course.class)
+		                            .withCodecRegistry(this.pojoCodecRegistry);
+		this.courses.createIndex(Indexes.ascending(Course.PROPERTY_id));
 
 		this.solutions = this.database.getCollection(SOLUTION_COLLECTION_NAME, Solution.class)
 		                              .withCodecRegistry(this.pojoCodecRegistry);
@@ -194,6 +197,18 @@ public class Mongo
 	public void saveAssignment(Assignment assignment)
 	{
 		upsert(this.assignments, assignment, Assignment.PROPERTY_id, assignment.getID());
+	}
+
+	// --------------- Courses ---------------
+
+	public Course getCourse(String id)
+	{
+		return this.courses.find(Filters.eq(Course.PROPERTY_id, id)).first();
+	}
+
+	public void saveCourse(Course course)
+	{
+		upsert(this.courses, course, Course.PROPERTY_id, course.getId());
 	}
 
 	// --------------- Solutions ---------------
