@@ -73,7 +73,6 @@ export class CreateComponent implements OnInit {
     this.tasks = a.tasks;
     this.solution = a.solution;
     this.templateSolution = a.templateSolution;
-    this.assignmentService.draft = a;
   }
 
   saveDraft() {
@@ -81,8 +80,10 @@ export class CreateComponent implements OnInit {
   }
 
   onImport() {
-    this.assignmentService.upload(this.importFile)
-      .subscribe(result => this.setAssignment(result));
+    this.assignmentService.upload(this.importFile).subscribe(result => {
+      this.setAssignment(result);
+      this.assignmentService.draft = result;
+    });
   }
 
   onExport() {
