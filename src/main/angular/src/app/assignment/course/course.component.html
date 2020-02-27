@@ -5,12 +5,12 @@
 
       <div [innerHTML]="(course?.descriptionHtml || 'Loading Description...') | safeHtml"></div>
 
-      <ol class="assignment-list">
-        <li *ngFor="let assignment of course?.assignments; let i=index" class="assignment-item">
-          <div class="assignment-item-badge bg-{{getBadgeColor(assignment)}}">
+      <ol class="timeline-list">
+        <li *ngFor="let assignment of course?.assignments; let i=index" class="timeline-item">
+          <div class="timeline-item-badge bg-{{getBadgeColor(assignment)}}">
             {{i + 1}}
           </div>
-          <div class="assignment-item-body">
+          <div class="timeline-item-body">
             <a routerLink="/assignments/courses/{{courseID}}/assignments/{{assignment?.id}}">
               {{assignment?.title || 'Loading...'}}
             </a>
