@@ -16,6 +16,8 @@ export class CreateCourseComponent implements OnInit {
 
   newAssignment: string;
 
+  submitting = false;
+
   constructor(
     private assignmentService: AssignmentService,
     private courseService: CourseService,
@@ -73,5 +75,13 @@ export class CreateCourseComponent implements OnInit {
       return match[1];
     }
     return this.newAssignment;
+  }
+
+  submit(): void {
+    this.submitting = true;
+    this.courseService.create(this.getCourse()).subscribe(course => {
+      console.log(course);
+      this.submitting = false;
+    });
   }
 }
