@@ -16,6 +16,7 @@ dependencies:
   bootstrap-darkmode: 0.4.0
   codemirror: 5.52.0
   file-saver: 2.0.2
+  ng2-dragula: 2.1.1_@angular+core@8.2.14+rxjs@6.4.0
   ngx-clipboard: 12.3.1_ecb0ad61817e3ede6ce462931a5e5041
   rxjs: 6.4.0
   tslib: 1.11.0
@@ -1221,6 +1222,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-ZAVyNzXAHu/mkvvZlq2IYPBjm4X3mEno27epXpBRXwWbX75zAAeGZfubXxft1kWNqBSI2f50kvuJTG+fRwHaNg==
+  /@types/dragula/2.1.35:
+    dev: false
+    resolution:
+      integrity: sha512-kh0O22j8QVh7xU0P6Penwext6xVMNldVEzvtOAHU1/AzdluYstc9pe2nUL3fS6IZRyzSoSGvdR/u8zP2iIZmnA==
   /@types/estree/0.0.42:
     dev: false
     resolution:
@@ -1766,6 +1771,10 @@ packages:
     dev: true
     resolution:
       integrity: sha1-x57Zf380y48robyXkLzDZkdLS3k=
+  /atoa/1.0.0:
+    dev: false
+    resolution:
+      integrity: sha1-DMDpGkgOc4+SPrwQNnZHF3mzSkk=
   /atob/2.1.2:
     dev: true
     engines:
@@ -2551,6 +2560,13 @@ packages:
       node: '>= 0.6'
     resolution:
       integrity: sha512-hIP3EEPs8tB9AT1L+NUqtwOAps4mk2Zob89MWXMHjHWg9milF/j4osnnQLXBCBFBk/tvIG/tUc9mOUJiPBhPXA==
+  /contra/1.9.4:
+    dependencies:
+      atoa: 1.0.0
+      ticky: 1.0.1
+    dev: false
+    resolution:
+      integrity: sha1-9TveQtfltZhcrk2ZqNYQUm3o8o0=
   /convert-source-map/1.7.0:
     dependencies:
       safe-buffer: 5.1.2
@@ -2695,6 +2711,12 @@ packages:
       node: '>=4.8'
     resolution:
       integrity: sha512-eTVLrBSt7fjbDygz805pMnstIs2VTBNkRm0qxZd+M7A5XDdxVRWO5MxGBXZhjY4cqLYLdtrGqRf8mBPmzwSpWQ==
+  /crossvent/1.5.4:
+    dependencies:
+      custom-event: 1.0.0
+    dev: false
+    resolution:
+      integrity: sha1-2ixPj0DJR4JRe/K+7BBEFIGUq5I=
   /crypto-browserify/3.12.0:
     dependencies:
       browserify-cipher: 1.0.1
@@ -2734,6 +2756,10 @@ packages:
     hasBin: true
     resolution:
       integrity: sha1-yBSQPkViM3GgR3tAEJqq++6t27Q=
+  /custom-event/1.0.0:
+    dev: false
+    resolution:
+      integrity: sha1-LkYovhncSyFLXAJjDFlx6BFhgGI=
   /custom-event/1.0.1:
     dev: true
     resolution:
@@ -2988,6 +3014,13 @@ packages:
       npm: '>=1.2'
     resolution:
       integrity: sha512-jnjyiM6eRyZl2H+W8Q/zLMA481hzi0eszAaBUzIVnmYVDBbnLxVNnfu1HgEBvCbL+71FrxMl3E6lpKH7Ge3OXA==
+  /dragula/3.7.2:
+    dependencies:
+      contra: 1.9.4
+      crossvent: 1.5.4
+    dev: false
+    resolution:
+      integrity: sha1-SjXJ05gf+sGpScKcpyhQWOhzk84=
   /duplexify/3.7.1:
     dependencies:
       end-of-stream: 1.4.4
@@ -5360,6 +5393,18 @@ packages:
     dev: true
     resolution:
       integrity: sha512-iyam8fBuCUpWeKPGpaNMetEocMt364qkCsfL9JuhjXX6dRnguRVOfk2GZaDpPjcOKiiXCPINZC1GczQ7iTq3Zw==
+  /ng2-dragula/2.1.1_@angular+core@8.2.14+rxjs@6.4.0:
+    dependencies:
+      '@angular/core': 8.2.14_rxjs@6.4.0+zone.js@0.9.1
+      '@types/dragula': 2.1.35
+      dragula: 3.7.2
+      rxjs: 6.4.0
+    dev: false
+    peerDependencies:
+      '@angular/core': '>=6.0.0'
+      rxjs: '>=6.0.0'
+    resolution:
+      integrity: sha512-PSo6N2Ja894KDogVLLBI0Hzpylikay7L1hWqp+qQmW+qsNsNT9J/6J2Qim9XwGzK4VQZjAwBJaJjgJ/TijRkLQ==
   /ngx-clipboard/12.3.1_ecb0ad61817e3ede6ce462931a5e5041:
     dependencies:
       '@angular/common': 8.2.14_@angular+core@8.2.14+rxjs@6.4.0
@@ -7486,6 +7531,10 @@ packages:
     dev: true
     resolution:
       integrity: sha512-eHY7nBftgThBqOyHGVN+l8gF0BucP09fMo0oO/Lb0w1OF80dJv+lDVpXG60WMQvkcxAkNybKsrEIE3ZtKGmPrA==
+  /ticky/1.0.1:
+    dev: false
+    resolution:
+      integrity: sha1-t8+nHnaPHJAAxJe5FRswlHxQ5G0=
   /timers-browserify/2.0.11:
     dependencies:
       setimmediate: 1.0.5
@@ -8261,6 +8310,7 @@ specifiers:
   karma-coverage-istanbul-reporter: ~2.0.6
   karma-jasmine: ~2.0.1
   karma-jasmine-html-reporter: ^1.5.2
+  ng2-dragula: ^2.1.1
   ngx-clipboard: ^12.3.1
   protractor: ~5.4.3
   rxjs: ~6.4.0
