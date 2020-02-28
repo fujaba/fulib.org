@@ -1,6 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {DragulaService} from 'ng2-dragula';
 
 import Task from '../model/task';
 import Assignment from '../model/assignment';
@@ -42,7 +43,13 @@ export class CreateComponent implements OnInit {
   constructor(
     private assignmentService: AssignmentService,
     private modalService: NgbModal,
+    private dragulaService: DragulaService,
   ) {
+    dragulaService.createGroup('TASKS', {
+      moves(el, container, handle) {
+        return handle.classList.contains('handle');
+      }
+    });
   }
 
   ngOnInit() {
