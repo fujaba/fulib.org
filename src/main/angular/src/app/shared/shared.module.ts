@@ -7,12 +7,14 @@ import {CodemirrorModule} from '@ctrl/ngx-codemirror';
 import {SafeHtmlPipe} from '../pipes/safe-html.pipe';
 import {DarkSwitchComponent} from '../dark-switch/dark-switch.component';
 import {AutothemeCodemirrorComponent} from '../autotheme-codemirror/autotheme-codemirror.component';
+import { CollapseButtonComponent } from '../collapse-button/collapse-button.component';
 
 @NgModule({
   declarations: [
     SafeHtmlPipe,
     DarkSwitchComponent,
     AutothemeCodemirrorComponent,
+    CollapseButtonComponent,
   ],
   imports: [
     FormsModule,
@@ -23,6 +25,7 @@ import {AutothemeCodemirrorComponent} from '../autotheme-codemirror/autotheme-co
     SafeHtmlPipe,
     DarkSwitchComponent,
     AutothemeCodemirrorComponent,
+    CollapseButtonComponent,
   ],
 })
 export class SharedModule { }
