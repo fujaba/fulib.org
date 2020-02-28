@@ -74,7 +74,7 @@ $badge-color: #fff;
   margin-left: 16px;
 }
 
-.timeline-item:before {
+.timeline-item:not(.gu-mirror):before {
   display: block;
   position: absolute;
   top: 0;
