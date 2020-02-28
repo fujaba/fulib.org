@@ -78,6 +78,9 @@ export class CreateComponent implements OnInit {
     this.tasks = a.tasks;
     this.solution = a.solution;
     this.templateSolution = a.templateSolution;
+
+    this.collapse.solution = !a.solution;
+    this.collapse.templateSolution = !a.templateSolution;
   }
 
   saveDraft() {
