@@ -75,7 +75,7 @@ export class CreateComponent implements OnInit {
     this.email = a.email;
     this.deadlineDate = a.deadline;
     this.deadlineTime = a.deadline;
-    this.tasks = a.tasks;
+    this.tasks = a.tasks.map(t => ({...t, collapsed: !!t['collapsed']}));
     this.solution = a.solution;
     this.templateSolution = a.templateSolution;
 
