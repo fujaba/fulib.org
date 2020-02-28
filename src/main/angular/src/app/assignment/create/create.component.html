@@ -100,7 +100,7 @@
   </p>
 
   <h2>Tasks</h2>
-  <ol>
+  <ol dragula="TASKS" [(dragulaModel)]="tasks" (dragulaModelChange)="saveDraft()">
     <li *ngFor="let task of tasks; let id = index">
       <div class="d-flex align-items-center mb-2">
         <div class="mr-2">
@@ -109,6 +109,9 @@
         </div>
         <app-collapse-button class="ml-auto" [(collapsed)]="task.collapsed" (collapsedChange)="saveDraft()">
         </app-collapse-button>
+        <div class="btn btn-secondary ml-2 handle" aria-label="Reorder">
+          <span class="handle" aria-hidden="true">&equiv;</span>
+        </div>
         <button type="button" class="btn btn-danger ml-2" (click)="removeTask(id)" aria-label="Remove">
           <span aria-hidden="true">&times;</span>
         </button>
