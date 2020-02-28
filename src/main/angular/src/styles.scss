@@ -142,3 +142,8 @@ $badge-color: #fff;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
   filter: alpha(opacity=20);
 }
+
+/* The mirrored list item is not part of a <ul> or <ol>, this prevents it from displaying strangely */
+li.gu-mirror {
+  list-style: none;
+}
