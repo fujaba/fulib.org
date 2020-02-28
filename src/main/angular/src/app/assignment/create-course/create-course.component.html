@@ -31,7 +31,8 @@
             <button class="btn btn-outline-secondary" type="button" (click)="addAssignment()">+</button>
           </div>
         </div>
-        <ul class="timeline-list" dragula="ASSIGNMENTS" [(dragulaModel)]="assignments">
+        <ul class="timeline-list" dragula="ASSIGNMENTS"
+            [(dragulaModel)]="assignments" (dragulaModelChange)="saveDraft()">
           <li *ngFor="let assignment of assignments; let i=index" class="timeline-item">
             <span class="timeline-item-badge bg-secondary">
               {{i+1}}

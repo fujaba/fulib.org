@@ -17,7 +17,7 @@ export class CreateCourseComponent implements OnInit {
 
   title: string;
   description: string;
-  private _assignments: Assignment[] = [];
+  assignments: Assignment[] = [];
 
   newAssignment: string;
 
@@ -40,15 +40,6 @@ export class CreateCourseComponent implements OnInit {
     });
   }
 
-  get assignments(): Assignment[] {
-    return this._assignments;
-  }
-
-  set assignments(value: Assignment[]) {
-    this._assignments = value;
-    this.saveDraft();
-  }
-
   ngOnInit() {
     this.loadDraft();
   }
@@ -57,7 +48,7 @@ export class CreateCourseComponent implements OnInit {
     return {
       title: this.title,
       description: this.description,
-      assignmentIds: this._assignments.map(a => a.id),
+      assignmentIds: this.assignments.map(a => a.id),
     };
   }
 
@@ -65,10 +56,10 @@ export class CreateCourseComponent implements OnInit {
     this.title = course.title;
     this.description = course.description;
 
-    this._assignments = new Array<Assignment>(course.assignmentIds.length);
+    this.assignments = new Array<Assignment>(course.assignmentIds.length);
     for (let i = 0; i < course.assignmentIds.length; i++) {
       this.assignmentService.get(course.assignmentIds[i]).subscribe(assignment => {
-        this._assignments[i] = assignment;
+        this.assignments[i] = assignment;
       });
     }
   }
@@ -87,7 +78,7 @@ export class CreateCourseComponent implements OnInit {
   addAssignment() {
     const newID = this.getNewID();
     this.assignmentService.get(newID).subscribe(assignment => {
-      this._assignments.push(assignment);
+      this.assignments.push(assignment);
       this.newAssignment = '';
       this.saveDraft();
     });
@@ -103,7 +94,7 @@ export class CreateCourseComponent implements OnInit {
   }
 
   removeAssignment(index: number) {
-    this._assignments.splice(index, 1);
+    this.assignments.splice(index, 1);
     this.saveDraft();
   }
 
