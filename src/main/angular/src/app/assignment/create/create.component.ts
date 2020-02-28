@@ -30,7 +30,7 @@ export class CreateComponent implements OnInit {
   solution: string;
   templateSolution: string;
 
-  tasks: Task[] = [];
+  tasks: (Task & {collapsed: boolean})[] = [];
 
   submitting = false;
   id: string;
