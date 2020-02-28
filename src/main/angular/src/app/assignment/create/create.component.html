@@ -105,7 +105,7 @@
       <div class="d-flex align-items-center mb-2">
         <div class="mr-2">
           {{task.description || '(no description)'}}
-          <span class="badge badge-secondary">{{task.points || '?'}}</span>
+          <span class="badge badge-secondary">{{task.points === 0 || task.points > 0 ? task.points : '?'}}</span>
         </div>
         <app-collapse-button class="ml-auto" [(collapsed)]="task.collapsed" (collapsedChange)="saveDraft()">
         </app-collapse-button>
