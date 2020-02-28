@@ -1,1 +1,10 @@
-<p>collapse-button works!</p>
+<label>
+  <span class="sr-only">
+    {{collapsed ? 'Expand' : 'Collapse'}}
+  </span>
+  <button type="button" class="btn btn-secondary" (click)="toggle()">
+    <span aria-hidden="true">
+      {{collapsed ? '+' : '-'}}
+    </span>
+  </button>
+</label>
