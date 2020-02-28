@@ -65,8 +65,11 @@
     </small>
   </p>
 
-  <h2><label for="solutionInput">Sample Solution</label></h2>
-  <p>
+  <h2>
+    <label for="solutionInput">Sample Solution</label>
+    <app-collapse-button class="ml-2" [(collapsed)]="collapse.solution"></app-collapse-button>
+  </h2>
+  <p [ngbCollapse]="collapse.solution">
     <app-autotheme-codemirror id="solutionInput" [(content)]="solution" (change)="saveDraft()" [options]="{
       mode: 'markdown',
       lineNumbers: true,
@@ -79,8 +82,11 @@
     </small>
   </p>
 
-  <h2><label for="templateSolutionInput">Template Solution</label></h2>
-  <p>
+  <h2>
+    <label for="templateSolutionInput">Template Solution</label>
+    <app-collapse-button class="ml-2" [(collapsed)]="collapse.templateSolution"></app-collapse-button>
+  </h2>
+  <p [ngbCollapse]="collapse.templateSolution">
     <app-autotheme-codemirror id="templateSolutionInput" [(content)]="templateSolution" (change)="saveDraft()" [options]="{
       mode: 'markdown',
       lineNumbers: true,

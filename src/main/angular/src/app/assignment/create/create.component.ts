@@ -16,6 +16,11 @@ export class CreateComponent implements OnInit {
 
   importFile: File;
 
+  collapse = {
+    solution: false,
+    templateSolution: false,
+  };
+
   title: string;
   author: string;
   email: string;
