@@ -107,7 +107,7 @@ export class CreateComponent implements OnInit {
   }
 
   addTask() {
-    this.tasks.push(new Task());
+    this.tasks.push({...new Task(), collapsed: false});
   }
 
   clearTasks() {
