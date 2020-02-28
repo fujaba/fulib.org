@@ -6,6 +6,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {DateValueAccessorModule} from 'angular-date-value-accessor';
 import {ClipboardModule} from 'ngx-clipboard';
+import {DragulaModule} from 'ng2-dragula';
 
 import {SharedModule} from '../shared/shared.module';
 
@@ -43,6 +44,7 @@ import { CreateCourseComponent } from './create-course/create-course.component';
     NgbModule,
     DateValueAccessorModule,
     ClipboardModule,
+    DragulaModule.forRoot(),
     AssignmentRoutingModule,
   ]
 })
