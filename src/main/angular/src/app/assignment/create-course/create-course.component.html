@@ -24,14 +24,14 @@
     <div class="form-group row">
       <label for="titleInput" class="col-sm-2 col-form-label">Assignments</label>
       <div class="col-sm-10">
-        <div class="input-group">
+        <div class="input-group mb-3">
           <input type="text" class="form-control" id="assignmentInput" placeholder="ID or URL"
                  [(ngModel)]="newAssignment" (change)="saveDraft()">
           <div class="input-group-append">
             <button class="btn btn-outline-secondary" type="button" (click)="addAssignment()">+</button>
           </div>
         </div>
-        <ul class="timeline-list">
+        <ul class="timeline-list" dragula="ASSIGNMENTS" [(dragulaModel)]="assignments">
           <li *ngFor="let assignment of assignments; let i=index" class="timeline-item">
             <span class="timeline-item-badge bg-secondary">
               {{i+1}}
@@ -45,6 +45,9 @@
             </button>
           </li>
         </ul>
+        <small class="text-muted">
+          Drag and Drop to change the order.
+        </small>
       </div>
     </div>
   </div>
