@@ -1,5 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {DragulaService} from 'ng2-dragula';
 
 import Assignment from '../model/assignment';
 import {AssignmentService} from '../assignment.service';
@@ -30,7 +31,13 @@ export class CreateCourseComponent implements OnInit {
     private assignmentService: AssignmentService,
     private courseService: CourseService,
     private modalService: NgbModal,
+    private dragulaService: DragulaService,
   ) {
+    dragulaService.createGroup('ASSIGNMENTS', {
+      moves(el, container, handle) {
+        return handle.classList.contains('handle');
+      }
+    });
   }
 
   ngOnInit() {
