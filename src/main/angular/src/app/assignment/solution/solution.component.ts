@@ -101,7 +101,7 @@ export class SolutionComponent implements OnInit {
   }
 
   loadGradings(): void {
-    this.solutionService.getGradings({id: this.solutionID, assignment: this.assignmentID}).subscribe(gradings => {
+    this.solutionService.getGradings(this.assignmentID, this.solutionID).subscribe(gradings => {
       this.gradings = gradings;
     });
   }
