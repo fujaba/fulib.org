@@ -90,8 +90,17 @@
     <p>
       If you want to make changes, you can close this window and submit again.
     </p>
+    <p *ngIf="nextAssignment">
+      Otherwise, you may continue to the next assignment of this course, titled <b>{{nextAssignment.title}}</b>!
+    </p>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-secondary" (click)="modal.close()">Close</button>
+    <a *ngIf="nextAssignment"
+       class="btn btn-primary"
+       routerLink="/assignments/courses/{{course.id}}/assignments/{{nextAssignment.id}}"
+       (click)="modal.close()">
+      Continue
+    </a>
   </div>
 </ng-template>

@@ -1,9 +1,12 @@
 import {Component, OnInit, OnDestroy, AfterViewInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
+import {zip} from 'rxjs';
+import {debounceTime, distinctUntilChanged, flatMap} from 'rxjs/operators';
 
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
+import Course from '../model/course';
+import {CourseService} from '../course.service';
 import Assignment from '../model/assignment';
 import {AssignmentService} from '../assignment.service';
 import Solution from '../model/solution';
@@ -19,6 +22,7 @@ export class SolveComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('successModal', {static: true}) successModal;
   @ViewChild('solutionInput', {static: true}) solutionInput;
 
+  course?: Course;
   assignment: Assignment;
   solution: string;
   name: string;
@@ -36,7 +40,10 @@ export class SolveComponent implements OnInit, AfterViewInit, OnDestroy {
 
   submitting: boolean;
 
+  nextAssignment?: Assignment | null;
+
   constructor(
+    private courseService: CourseService,
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
     private route: ActivatedRoute,
@@ -45,10 +52,24 @@ export class SolveComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.assignmentService.get(params.aid).subscribe(result => {
+      const assignment$ = this.assignmentService.get(params.aid);
+      assignment$.subscribe(result => {
         this.assignment = result;
         this.loadDraft();
       });
+
+      const course$ = this.courseService.get(params.cid);
+      if (params.cid) {
+        course$.subscribe(result => {
+          this.course = result;
+        });
+
+        zip(course$, assignment$).pipe(
+          flatMap(([course, assignment]) => this.assignmentService.getNext(course, assignment)),
+        ).subscribe(result => {
+          this.nextAssignment = result;
+        });
+      }
     });
   }
 
