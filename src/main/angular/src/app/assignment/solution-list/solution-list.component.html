@@ -55,7 +55,15 @@
         <td>{{solution.name}}</td>
         <td>{{solution.studentID}}</td>
         <td><a href="mailto:{{solution.email}}">{{solution.email}}</a></td>
-        <td>{{solution.timeStamp | date:'medium'}}</td>
+        <td>
+          <span *ngIf="assignment.deadline < solution.timeStamp"
+            class="text-danger" ngbTooltip="Submitted after Deadline">
+            {{solution.timeStamp | date:'medium'}}
+          </span>
+          <span *ngIf="solution.timeStamp <= assignment.deadline">
+            {{solution.timeStamp | date:'medium'}}
+          </span>
+        </td>
         <td><span class="badge badge-primary badge-pill">
           {{totalResultPoints(solution)}} / {{totalPoints}}
         </span></td>
