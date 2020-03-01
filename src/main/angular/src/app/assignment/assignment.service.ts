@@ -8,6 +8,7 @@ import {saveAs} from 'file-saver';
 import Assignment from './model/assignment';
 import {environment} from '../../environments/environment';
 import {StorageService} from '../storage.service';
+import Course from './model/course';
 
 type AssignmentResponse = { id: string, token: string };
 
@@ -124,5 +125,16 @@ export class AssignmentService {
         return a;
       }),
     );
+  }
+
+  getNext(course: Course, assignment: Assignment): Observable<Assignment | null> {
+    const ids = course.assignmentIds;
+    const index = ids.indexOf(assignment.id);
+    if (index < 0 || index + 1 >= ids.length) {
+      return of(null);
+    }
+
+    const nextID = ids[index + 1];
+    return this.get(nextID);
   }
 }
