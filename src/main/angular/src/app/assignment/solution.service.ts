@@ -11,7 +11,7 @@ import Comment from './model/comment';
 import {StorageService} from '../storage.service';
 import TaskGrading from './model/task-grading';
 
-function asID(id: {id?: string} | string): string {
+function asID(id: { id?: string } | string): string {
   return typeof id === 'string' ? id : id.id;
 }
 
@@ -118,7 +118,7 @@ export class SolutionService {
           timeStamp: new Date(response.timeStamp),
         };
         return result;
-      })
+      }),
     );
   }
 
@@ -157,7 +157,7 @@ export class SolutionService {
     if (assignmentToken) {
       headers['Assignment-Token'] = assignmentToken;
     }
-    return this.http.get<{solutions: Solution[]}>(`${environment.apiURL}/assignments/${assignmentID}/solutions`, {headers}).pipe(
+    return this.http.get<{ solutions: Solution[] }>(`${environment.apiURL}/assignments/${assignmentID}/solutions`, {headers}).pipe(
       map(result => {
         for (let solution of result.solutions) {
           solution.token = this.getToken(solution.id);
@@ -197,7 +197,7 @@ export class SolutionService {
     );
   }
 
-  getGradings(solution: {id: string, assignment: Assignment | string}): Observable<TaskGrading[]> {
+  getGradings(solution: { id: string, assignment: Assignment | string }): Observable<TaskGrading[]> {
     const solutionID = solution.id;
     const assignmentID = asID(solution.assignment);
     const headers = {
@@ -242,7 +242,7 @@ export class SolutionService {
         err.error.status = err.status;
         throw err.error;
       }),
-    )
+    );
   }
 
   setAssignee(solution: Solution, assignee: string): Observable<void> {
