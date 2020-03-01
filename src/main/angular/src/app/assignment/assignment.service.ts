@@ -39,8 +39,7 @@ export class AssignmentService {
     this._draft = value;
     if (value) {
       localStorage.setItem('assignmentDraft', JSON.stringify(value));
-    }
-    else {
+    } else {
       localStorage.removeItem('assignmentDraft');
     }
   }
@@ -92,8 +91,8 @@ export class AssignmentService {
   // --------------- HTTP Methods ---------------
 
   submit(assignment: Assignment): Observable<Assignment> {
-    return this.http.post<AssignmentResponse>(environment.apiURL + '/assignments', assignment)
-      .pipe(map(response => {
+    return this.http.post<AssignmentResponse>(environment.apiURL + '/assignments', assignment).pipe(
+      map(response => {
         this.setToken(response.id, response.token);
         const result: Assignment = {
           ...assignment,
@@ -101,7 +100,8 @@ export class AssignmentService {
         };
         this._cache.set(response.id, result);
         return result;
-      }));
+      }),
+    );
   }
 
   get(id: string): Observable<Assignment> {
