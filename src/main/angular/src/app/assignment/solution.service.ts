@@ -96,12 +96,14 @@ export class SolutionService {
 
   // --------------- Tokens ---------------
 
-  getToken(id: string): string | null {
-    return this.storageService.get(`solutionToken/${id}`);
+  getToken(assignment: Assignment | string, id: string): string | null {
+    const assignmentID = asID(assignment);
+    return this.storageService.get(`solutionToken/${assignmentID}/${id}`);
   }
 
-  setToken(id: string, token: string | null): void {
-    this.storageService.set(`solutionToken/${id}`, token);
+  setToken(assignment: Assignment | string, id: string, token: string | null): void {
+    const assignmentID = asID(assignment);
+    this.storageService.set(`solutionToken/${assignmentID}/${id}`, token);
   }
 
   // --------------- HTTP Methods ---------------
@@ -113,7 +115,7 @@ export class SolutionService {
   submit(solution: Solution): Observable<Solution> {
     return this.http.post<SolutionResponse>(`${environment.apiURL}/assignments/${solution.assignment.id}/solutions`, solution).pipe(
       map(response => {
-        this.setToken(response.id, response.token);
+        this.setToken(solution.assignment.id, response.id, response.token);
         const result: Solution = {
           ...solution,
           ...response,
@@ -129,7 +131,7 @@ export class SolutionService {
     const headers = {
       'Content-Type': 'application/json',
     };
-    const token = this.getToken(id);
+    const token = this.getToken(assignmentID, id);
     if (token) {
       headers['Solution-Token'] = token;
     }
@@ -140,7 +142,7 @@ export class SolutionService {
     return this.http.get<Solution>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${id}`, {headers}).pipe(
       map(solution => {
         solution.id = id;
-        solution.token = this.getToken(id);
+        solution.token = token;
         return solution;
       }),
       catchError(err => {
@@ -162,7 +164,7 @@ export class SolutionService {
     return this.http.get<{ solutions: Solution[] }>(`${environment.apiURL}/assignments/${assignmentID}/solutions`, {headers}).pipe(
       map(result => {
         for (let solution of result.solutions) {
-          solution.token = this.getToken(solution.id);
+          solution.token = this.getToken(assignmentID, solution.id);
         }
         return result.solutions;
       }),
@@ -204,7 +206,7 @@ export class SolutionService {
     const headers = {
       'Content-Type': 'application/json',
     };
-    const token = this.getToken(id);
+    const token = this.getToken(assignmentID, id);
     if (token) {
       headers['Solution-Token'] = token;
     }

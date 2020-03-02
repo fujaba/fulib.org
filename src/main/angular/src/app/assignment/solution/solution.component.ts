@@ -141,7 +141,7 @@ export class SolutionComponent implements OnInit {
 
   setTokens(solutionToken: string, assignmentToken: string): void {
     if (solutionToken) {
-      this.solutionService.setToken(this.solutionID, solutionToken);
+      this.solutionService.setToken(this.assignmentID, this.solutionID, solutionToken);
     }
     if (assignmentToken) {
       this.assignmentService.setToken(this.assignmentID, assignmentToken);
