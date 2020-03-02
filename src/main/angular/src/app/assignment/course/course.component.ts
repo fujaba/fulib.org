@@ -4,6 +4,7 @@ import Course from '../model/course';
 import {CourseService} from '../course.service';
 import Assignment from '../model/assignment';
 import {AssignmentService} from '../assignment.service';
+import {SolutionService} from '../solution.service';
 
 @Component({
   selector: 'app-course',
@@ -14,11 +15,14 @@ export class CourseComponent implements OnInit {
   courseID?: string;
   course?: Course;
 
+  latestSolutionIDs?: string[];
+
   assignmentID?: string;
 
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    private solutionService: SolutionService,
     private assignmentService: AssignmentService,
     private courseService: CourseService,
   ) { }
@@ -37,23 +41,34 @@ export class CourseComponent implements OnInit {
           this.router.navigate(['assignments', 'courses', this.courseID, 'assignments', firstAssignment]);
         }
 
+        const solutions = this.solutionService.getOwnIds();
+        this.latestSolutionIDs = new Array<string>(assignmentIds.length);
+
         course.assignments = new Array<Assignment>(assignmentIds.length);
         for (let i = 0; i < assignmentIds.length; i++) {
           const id = assignmentIds[i];
           this.assignmentService.get(id).subscribe(assignment => {
             course.assignments[i] = assignment;
           });
+
+          const lastSolutionID = solutions.find(({assignment}) => id === assignment);
+          if (lastSolutionID) {
+            this.latestSolutionIDs[i] = lastSolutionID.id;
+          }
         }
       });
     })
   }
 
-  getBadgeColor(assignment: Assignment) {
+  getBadgeColor(index: number, assignment: Assignment) {
     if (!assignment) {
       return 'secondary';
     }
     if (assignment.id === this.assignmentID) {
       return 'primary';
+    }
+    if (this.latestSolutionIDs && this.latestSolutionIDs[index]) {
+      return 'success';
     }
     return 'secondary';
   }

@@ -7,13 +7,17 @@
 
       <ol class="timeline-list">
         <li *ngFor="let assignment of course?.assignments; let i=index" class="timeline-item">
-          <div class="timeline-item-badge bg-{{getBadgeColor(assignment)}}">
+          <div class="timeline-item-badge bg-{{getBadgeColor(i, assignment)}}">
             {{i + 1}}
           </div>
           <div class="timeline-item-body">
             <a routerLink="/assignments/courses/{{courseID}}/assignments/{{assignment?.id}}">
               {{assignment?.title || 'Loading...'}}
             </a>
+            <ng-container *ngIf="latestSolutionIDs && latestSolutionIDs[i]">
+              &#8226;
+              Done!
+            </ng-container>
           </div>
         </li>
       </ol>
