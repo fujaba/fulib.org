@@ -23,7 +23,7 @@ export class FooterComponent implements OnInit, AfterViewInit {
   privacy: Privacy;
   contactEmail = 'spam@fbi.gov'.replace('spam', 'contact').replace('fbi.gov', 'fulib.org');
 
-  menuCollapsed: boolean;
+  menuCollapsed = true;
   versions?: Versions;
 
   ngOnInit(): void {
