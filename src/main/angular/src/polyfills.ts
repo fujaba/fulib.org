@@ -57,9 +57,17 @@
  */
 import 'zone.js/dist/zone'; // Included with Angular CLI.
 
+/***************************************************************************************************
+ * APPLICATION IMPORTS
+ */
+
 // Dragula
 // from https://github.com/valor-software/ng2-dragula/#1-important-add-the-following-line-to-your-polyfillsts
 (window as any).global = window;
+
+/***************************************************************************************************
+ * EXTENSION METHODS
+ */
 
 declare global {
   interface Array<T> {
@@ -85,7 +93,3 @@ Array.prototype.findLastIndex = function findLastIndex<T>(predicate: (value: T, 
   }
   return -1;
 };
-
-/***************************************************************************************************
- * APPLICATION IMPORTS
- */
