@@ -106,7 +106,7 @@ export class SolutionService {
     this.storageService.set(`solutionToken/${assignmentID}/${id}`, token);
   }
 
-  getOwn(assignment?: Assignment | string): Observable<Solution> {
+  getOwnIds(assignment?: Assignment | string): { assignment: string, id: string; }[] {
     const assignmentID = assignment ? asID(assignment) : null;
 
     const pattern = /^solutionToken\/(.*)\/(.*)$/;
@@ -127,7 +127,11 @@ export class SolutionService {
       ids.push({assignment, id});
     }
 
-    return of(...ids).pipe(flatMap(({assignment, id}) => this.get(assignment, id)));
+    return ids;
+  }
+
+  getOwn(assignment?: Assignment | string): Observable<Solution> {
+    return of(...this.getOwnIds(assignment)).pipe(flatMap(({assignment, id}) => this.get(assignment, id)))
   }
 
   // --------------- HTTP Methods ---------------
