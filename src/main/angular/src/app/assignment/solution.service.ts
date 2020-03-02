@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {catchError, map} from 'rxjs/operators';
+import {Observable, of} from 'rxjs';
+import {catchError, flatMap, map} from 'rxjs/operators';
 
 import Solution, {CheckResult, CheckSolution} from './model/solution';
 import {environment} from '../../environments/environment';
@@ -104,6 +104,30 @@ export class SolutionService {
   setToken(assignment: Assignment | string, id: string, token: string | null): void {
     const assignmentID = asID(assignment);
     this.storageService.set(`solutionToken/${assignmentID}/${id}`, token);
+  }
+
+  getOwn(assignment?: Assignment | string): Observable<Solution> {
+    const assignmentID = assignment ? asID(assignment) : null;
+
+    const pattern = /^solutionToken\/(.*)\/(.*)$/;
+    const ids: { assignment: string, id: string; }[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      const match = pattern.exec(key);
+      if (!match) {
+        continue;
+      }
+
+      const assignment = match[1] as string;
+      if (assignmentID && assignment !== assignmentID) {
+        continue;
+      }
+
+      const id = match[2] as string;
+      ids.push({assignment, id});
+    }
+
+    return of(...ids).pipe(flatMap(({assignment, id}) => this.get(assignment, id)));
   }
 
   // --------------- HTTP Methods ---------------
