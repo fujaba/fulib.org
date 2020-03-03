@@ -144,6 +144,8 @@ String getDependencyVersion(Configuration config, String group, String name) {
 angular {
 	appDir = 'src/main/angular'
 	outputDir = 'src/main/angular/dist'
+	packageManager = 'pnpm'
+	packageManagerArgs = [ 'install', '--shamefully-hoist' ]
 }
 
 processResources.filesMatching('fulibDotOrg/**') {
