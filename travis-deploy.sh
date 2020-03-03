@@ -18,8 +18,8 @@ rm build/libs/fulibDotOrg-*-all.jar
 ./gradlew shadowJar
 
 echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
-docker build -t "$DOCKER_USERNAME"/fulib_scenarios:latest .
-docker push "$DOCKER_USERNAME"/fulib_scenarios:latest
+docker build -t "$DOCKER_USERNAME"/fulib_scenarios_"$DOCKER_VERSION":latest .
+docker push "$DOCKER_USERNAME"/fulib_scenarios_"$DOCKER_VERSION":latest
 
 rancherURL="http://avocado.uniks.de:8080/v2-beta/projects/1a5/services/1s173"
 
