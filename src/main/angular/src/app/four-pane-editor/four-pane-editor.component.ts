@@ -18,7 +18,7 @@ import {PrivacyService} from "../privacy.service";
   templateUrl: './four-pane-editor.component.html',
   styleUrls: ['./four-pane-editor.component.scss']
 })
-export class FourPaneEditorComponent implements OnInit {
+export class FourPaneEditorComponent implements OnInit, OnDestroy {
   @ViewChild('scenarioInput', {static: true}) scenarioInput: AutothemeCodemirrorComponent;
 
   _selectedExample: Example | null;
