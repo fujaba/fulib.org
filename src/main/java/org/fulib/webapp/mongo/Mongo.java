@@ -15,58 +15,80 @@ public class Mongo
 {
 	// =============== Constants ===============
 
-	public static final String PASSWORD_ENV_KEY = "fulib_org_mongo";
-	public static final String SERVER           = "avocado.uniks.de";
-	public static final String PORT             = "38128";
-	public static final String USER             = "seadmin";
-	public static final String DATABASE_NAME    = "fulib-org";
-	public static final String COLLECTION_NAME  = "request-log";
+	public static final String PASSWORD_ENV_KEY = "FULIB_ORG_MONGODB_PASSWORD";
+	public static final String HOST_ENV_KEY = "FULIB_ORG_MONGODB_HOST";
+	public static final String USER_ENV_KEY = "FULIB_ORG_MONGODB_USER";
+
+	public static final String DATABASE_NAME = "fulib-org";
+
+	public static final String LOG_COLLECTION_NAME = "request-log";
 
 	// =============== Static Fields ===============
 
-	private static Mongo theMongo = null;
+	private static final Mongo instance = new Mongo();
 
 	// =============== Fields ===============
 
-	private MongoClient               mongoClient = null;
-	private MongoDatabase             database    = null;
-	private MongoCollection<Document> coll        = null;
+	private MongoClient mongoClient;
+	private MongoDatabase database;
+
+	MongoCollection<Document> requestLog;
 
 	// =============== Static Methods ===============
 
 	public static Mongo get()
 	{
-		if (theMongo == null)
-		{
-			theMongo = new Mongo();
-		}
-
-		return theMongo;
+		return instance;
 	}
 
 	// =============== Constructors ===============
 
-	public Mongo()
+	private Mongo()
 	{
-		final String password = System.getenv(PASSWORD_ENV_KEY);
-
-		if (password != null && !password.isEmpty())
+		final String url = getURL();
+		if (url == null)
 		{
-			ConnectionString connString = new ConnectionString(
-				"mongodb://" + USER + ":" + password + "@" + SERVER + ":" + PORT);
-			MongoClientSettings settings = MongoClientSettings.builder().applyConnectionString(connString)
-			                                                  .retryWrites(true).build();
-			this.mongoClient = MongoClients.create(settings);
-			this.database = this.mongoClient.getDatabase(DATABASE_NAME);
-			this.coll = this.database.getCollection(COLLECTION_NAME);
+			return;
 		}
+
+		final ConnectionString connString = new ConnectionString(url);
+		final MongoClientSettings settings = MongoClientSettings.builder()
+		                                                        .applyConnectionString(connString)
+		                                                        .retryWrites(true)
+		                                                        .build();
+		this.mongoClient = MongoClients.create(settings);
+		this.database = this.mongoClient.getDatabase(DATABASE_NAME);
+		this.requestLog = this.database.getCollection(LOG_COLLECTION_NAME);
+	}
+
+	private static String getURL()
+	{
+		final String host = System.getenv(HOST_ENV_KEY);
+		if (host == null || host.isEmpty())
+		{
+			return null;
+		}
+
+		final String user = System.getenv(USER_ENV_KEY);
+		if (user == null || user.isEmpty())
+		{
+			return null;
+		}
+
+		final String password = System.getenv(PASSWORD_ENV_KEY);
+		if (password == null || password.isEmpty())
+		{
+			return null;
+		}
+
+		return "mongodb://" + user + ":" + password + "@" + host;
 	}
 
 	// =============== Methods ===============
 
 	public void log(String ip, String userAgent, String request, String response)
 	{
-		if (this.coll == null)
+		if (this.requestLog == null)
 		{
 			return;
 		}
@@ -88,6 +110,6 @@ public class Mongo
 		document.put("request", Document.parse(request));
 		document.put("response", Document.parse(response));
 
-		this.coll.insertOne(document);
+		this.requestLog.insertOne(document);
 	}
 }

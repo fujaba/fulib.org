@@ -1,0 +1,54 @@
+@import "~bootstrap/scss/bootstrap";
+@import "~bootstrap-darkmode/darktheme";
+
+@import "~codemirror/lib/codemirror";
+@import "~codemirror/theme/idea";
+@import "~codemirror/theme/darcula";
+
+/* --------------- CodeMirror --------------- */
+
+.CodeMirror {
+  border-width: 1px;
+  border-style: solid;
+  border-color: #ced4da;
+  border-radius: .25rem;
+
+  &:focus-within {
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25)
+  }
+}
+
+/* --------------- Dark Mode Overrides --------------- */
+
+[data-theme="dark"] {
+  .CodeMirror {
+    border-color: #404040;
+  }
+
+  img.diagram, .diagram > svg {
+    filter: invert(100%);
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+/* --------------- Misc. --------------- */
+
+a[href^="http"]::after {
+  content: '↗';
+}
+
+.dropdown-item-checked::before {
+  position: absolute;
+  left: .4rem;
+  content: '✓';
+  font-weight: 600;
+}

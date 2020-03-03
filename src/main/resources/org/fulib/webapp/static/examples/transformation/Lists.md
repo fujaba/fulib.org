@@ -47,3 +47,11 @@ We expect that all numbers which are less than 0 are empty.
 // Or if it contains an element:
 We expect that some-large-numbers contain 65.
 We expect that some-large-numbers do not contain 55.
+
+# More Info
+
+// Lists and ranges are described in detail in the Collections page of the documentation:
+// https://fujaba.gitbook.io/fulib-scenarios/language/expressions/collections
+
+// Vectorized Access in particular is explained in the page about Access:
+// https://fujaba.gitbook.io/fulib-scenarios/language/expressions/access#vectorization

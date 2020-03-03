@@ -1,0 +1,32 @@
+<ng-template #changelogModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="changelogModalTitle">
+      What's New on fulib.org
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="d-flex">
+      <ul ngbNav #nav="ngbNav" [(activeId)]="activeRepo" class="nav-pills mr-4" orientation="vertical">
+          <li *ngFor="let entry of changelogs" [ngbNavItem]="entry.repo">
+            <a ngbNavLink>
+              {{entry.repo}}
+              <ng-container *ngIf="lastUsedVersions">
+                <br/>
+                <span class="badge badge-secondary">since v{{lastUsedVersions[entry.repo]}}</span>
+              </ng-container>
+            </a>
+            <ng-template ngbNavContent>
+              <div [innerHTML]="entry.changelog | safeHtml"></div>
+            </ng-template>
+          </li>
+      </ul>
+      <div [ngbNavOutlet]="nav"></div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="modal.close()">Close</button>
+  </div>
+</ng-template>

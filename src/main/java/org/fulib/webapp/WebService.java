@@ -1,9 +1,13 @@
 package org.fulib.webapp;
 
+import org.fulib.webapp.mongo.Mongo;
 import org.fulib.webapp.projectzip.ProjectZip;
+import org.fulib.webapp.tool.MarkdownUtil;
 import org.fulib.webapp.tool.RunCodeGen;
 import spark.Service;
+import spark.staticfiles.StaticFilesConfiguration;
 
+import java.io.File;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,8 +31,8 @@ public class WebService
 		}
 
 		VERSION = props.getProperty("webapp.version");
-		FULIB_SCENARIOS_VERSION = props.getProperty("fulib-scenarios.version");
-		FULIB_MOCKUPS_VERSION = props.getProperty("fulib-mockups.version");
+		FULIB_SCENARIOS_VERSION = props.getProperty("fulibScenarios.version");
+		FULIB_MOCKUPS_VERSION = props.getProperty("fulibMockups.version");
 	}
 
 	public static void main(String[] args)
@@ -38,15 +42,51 @@ public class WebService
 		service.port(4567);
 
 		service.staticFiles.location("/org/fulib/webapp/static");
+
+		if (new File("build.gradle").exists())
+		{
+			// dev environment, allow CORS
+			enableCORS(service);
+		}
+
 		service.redirect.get("/github", "https://github.com/fujaba/fulib.org");
 
-		service.post("/runcodegen", RunCodeGen::handle);
+		final Mongo db = Mongo.get();
+		final RunCodeGen runCodeGen = new RunCodeGen(db);
+
+		service.post("/runcodegen", runCodeGen::handle);
 		service.post("/projectzip", ProjectZip::handle);
+
+		service.post("/rendermarkdown", (request, response) -> {
+			response.type("text/html");
+			return MarkdownUtil.renderHtml(request.body());
+		});
 
 		service.exception(Exception.class, (exception, request, response) -> {
 			Logger.getGlobal().log(Level.SEVERE, "unhandled exception processing request", exception);
 		});
 
 		Logger.getGlobal().info("scenario server started on http://localhost:4567");
+	}
+
+	private static void enableCORS(Service service)
+	{
+		service.staticFiles.header("Access-Control-Allow-Origin", "*");
+
+		service.before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
+
+		service.options("/*", (req, res) -> {
+			String accessControlRequestHeaders = req.headers("Access-Control-Request-Headers");
+			if (accessControlRequestHeaders != null) {
+				res.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
+			}
+
+			String accessControlRequestMethod = req.headers("Access-Control-Request-Method");
+			if (accessControlRequestMethod != null) {
+				res.header("Access-Control-Allow-Methods", accessControlRequestMethod);
+			}
+
+			return "OK";
+		});
 	}
 }

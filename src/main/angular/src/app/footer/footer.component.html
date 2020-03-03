@@ -1,0 +1,197 @@
+<footer class="page-footer font-small">
+
+<nav class="footer navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" routerLink="/">fulib.org</a>
+  <button class="navbar-toggler" type="button" (click)="menuCollapsed = !menuCollapsed">
+    &#9776;
+  </button>
+  <div [ngbCollapse]="menuCollapsed" class="collapse navbar-collapse">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <a class="nav-link" routerLink="/">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="https://fujaba.gitbook.io/fulib-scenarios/">
+          Documentation
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="https://stackoverflow.com/questions/tagged/fulibScenarios">
+          StackOverflow
+        </a>
+      </li>
+      <li class="nav-item">
+        <a role="button" class="nav-link" style="cursor: pointer" (click)="changelog.open()">
+          What's New
+        </a>
+      </li>
+      <li class="nav-item" ngbDropdown placement="top-right">
+        <a class="nav-link" ngbDropdownToggle id="githubDropdown" role="button" style="cursor: pointer">
+          GitHub
+        </a>
+        <div ngbDropdownMenu aria-labelledby="githubDropdown">
+          <a ngbDropdownItem href="https://github.com/fujaba/fulib.org">
+            Web App
+            <span class="text-muted" *ngIf="versions && versions['fulib.org']"> (v{{versions['fulib.org']}})</span>
+          </a>
+          <a ngbDropdownItem href="https://github.com/fujaba/fulibScenarios">
+            Fulib Scenarios
+            <span class="text-muted" *ngIf="versions?.fulibScenarios"> (v{{versions.fulibScenarios}})</span>
+          </a>
+          <a ngbDropdownItem href="https://github.com/fujaba/fulibMockups">
+            Fulib Mockups
+            <span class="text-muted" *ngIf="versions?.fulibMockups"> (v{{versions.fulibMockups}})</span>
+          </a>
+          <a ngbDropdownItem href="https://github.com/fujaba/fulib">
+            Fulib
+            <span class="text-muted" *ngIf="versions?.fulib">(v{{versions.fulib}})</span>
+          </a>
+          <a ngbDropdownItem href="https://github.com/fujaba/fulibTools">
+            Fulib Tools
+            <span class="text-muted" *ngIf="versions?.fulibTools">(v{{versions.fulibTools}})</span>
+          </a>
+          <a ngbDropdownItem href="https://github.com/fujaba/fulibGradle">
+            Fulib Gradle
+            <span class="text-muted" *ngIf="versions?.fulibGradle">(v{{versions.fulibGradle}})</span>
+          </a>
+        </div>
+      </li>
+      <li class="nav-item" ngbDropdown placement="top-right">
+        <a class="nav-link" ngbDropdownToggle id="legalDropdown" role="button" style="cursor: pointer">
+          Legal
+        </a>
+        <div ngbDropdownMenu aria-labelledby="legalDropdown">
+          <a ngbDropdownItem href="http://www.uni-kassel.de/uni/impressum.html">
+            Imprint
+          </a>
+          <a ngbDropdownItem href="https://www.uni-kassel.de/uni/footer-2/datenschutz/">
+            Privacy Policy
+          </a>
+          <button ngbDropdownItem (click)="openPrivacyModal()">
+            Edit Privacy Preferences
+          </button>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" role="button" style="cursor: pointer"
+           (click)="modalService.open(feedbackModal, {ariaLabelledBy: 'feedbackModalLabel'})">
+          Feedback
+        </a>
+      </li>
+      <li class="nav-item">
+        <span class="nav-link">
+          <app-dark-switch></app-dark-switch>
+        </span>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+</footer>
+
+<app-changelog #changelog></app-changelog>
+
+<ng-template #privacyModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title" id="privacyModalLabel">We value your privacy!</h5>
+    <button type="button" class="close" aria-label="Close" (click)="modal.close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>
+      This website uses cookies and other local data storage technology to make your experience more
+      pleasant.
+      Remote data is stored anonymously and used only for scientific and analytic purposes.
+    </p>
+
+    <p>
+      Please select your preferred privacy option below:
+    </p>
+
+    <div class="form-check">
+      <label class="form-check-label">
+        <input class="form-check-input" type="radio" value="all" [(ngModel)]="privacy">
+        I agree to the use of local and remote data storage.
+      </label>
+    </div>
+    <div class="form-check">
+      <label class="form-check-label">
+        <input class="form-check-input" type="radio" value="local" [(ngModel)]="privacy">
+        I agree to the use of local data storage, but not remote.
+      </label>
+    </div>
+    <div class="form-check">
+      <label class="form-check-label">
+        <input class="form-check-input" type="radio" value="none" [(ngModel)]="privacy">
+        I do not agree to the use of local or remote data storage.
+      </label>
+    </div>
+    <div class="form-check">
+      <label class="form-check-label">
+        <input class="form-check-input" type="radio" value="nobanner" [(ngModel)]="privacy">
+        I do not agree to the use of local or remote data storage,
+        except for the use of local storage to hide this popup in the future.
+      </label>
+    </div>
+
+    <p></p>
+
+    <p>
+      You can show this popup again and edit your preferences at any time by selecting
+      <b>Legal</b> &rarr; <b>Edit Privacy Preferences</b> at the bottom of the page.
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="modal.close(); savePrivacy()">
+      Save & Close
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #feedbackModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title" id="feedbackModalLabel">Leave Feedback</h5>
+    <button type="button" class="close" aria-label="Close" (click)="modal.close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>
+      Please select the relevant option below.
+      You will be redirected to a page with further instructions.
+    </p>
+    <p>
+      I want to leave feedback regarding...
+    </p>
+    <p>
+      <a role="button" class="btn btn-outline-secondary btn-block"
+         href="https://github.com/fujaba/fulibScenarios/issues/new/choose">
+        The scenario or Java code (Fulib Scenarios)
+      </a>
+      <a role="button" class="btn btn-outline-secondary btn-block"
+         href="https://github.com/fujaba/fulibMockups/issues/new/choose">
+        The HTML mockups (Fulib Mockups)
+      </a>
+      <a role="button" class="btn btn-outline-secondary btn-block"
+         href="https://github.com/fujaba/fulib/issues/new/choose">
+        The generated model classes (Fulib)
+      </a>
+      <a role="button" class="btn btn-outline-secondary btn-block"
+         href="https://github.com/fujaba/fulibTools/issues/new/choose">
+        The object and class diagrams (Fulib Tools)
+      </a>
+      <a role="button" class="btn btn-outline-secondary btn-block"
+         href="https://github.com/fujaba/fulibGradle/issues/new/choose">
+        The Gradle plugin (Fulib Gradle)
+      </a>
+      <a role="button" class="btn btn-outline-secondary btn-block"
+         href="https://github.com/fujaba/fulib.org/issues/new/choose">
+        This Website itself (fulib.org)
+      </a>
+    </p>
+    <div class="text-center">
+      <a href="mailto:{{contactEmail}}">I am not sure / I want to send an E-Mail instead</a>
+    </div>
+  </div>
+</ng-template>

@@ -2,6 +2,10 @@ package org.fulib.webapp.tool;
 
 import org.fulib.StrUtil;
 import org.fulib.webapp.mongo.Mongo;
+import org.fulib.webapp.tool.model.CodeGenData;
+import org.fulib.webapp.tool.model.Diagram;
+import org.fulib.webapp.tool.model.Method;
+import org.fulib.webapp.tool.model.Result;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,9 +23,101 @@ import java.util.logging.Logger;
 
 public class RunCodeGen
 {
-	private static final String TEMP_DIR_PREFIX    = "fulibScenarios";
+	// =============== Constants ===============
 
-	public static String handle(Request req, Response res) throws Exception
+	private static final String TEMP_DIR_PREFIX = "fulibScenarios";
+
+	// =============== Fields ===============
+
+	private final Mongo db;
+
+	// =============== Constructors ===============
+
+	public RunCodeGen(Mongo db)
+	{
+		this.db = db;
+	}
+
+	// =============== Methods ===============
+
+	public String handle(Request req, Response res) throws Exception
+	{
+		final String body = req.body();
+		final JSONObject jsonObject = new JSONObject(body);
+
+		final CodeGenData input = fromJson(jsonObject);
+
+		final Result result = run(input);
+
+		final JSONObject resultObj = toJson(result);
+
+		res.type("application/json");
+
+		final String resultBody = resultObj.toString(3);
+
+		if (jsonObject.has("privacy") && "all".equals(jsonObject.get("privacy")))
+		{
+			this.db.log(req.ip(), req.userAgent(), body, resultBody);
+		}
+		return resultBody;
+	}
+
+	// =============== Static Methods ===============
+
+	private static CodeGenData fromJson(JSONObject obj)
+	{
+		final CodeGenData input = new CodeGenData();
+		input.setScenarioText(obj.getString("scenarioText"));
+		input.setPackageName(obj.getString("packageName"));
+		input.setScenarioFileName(obj.getString("scenarioFileName"));
+		return input;
+	}
+
+	private static JSONObject toJson(Result result)
+	{
+		final JSONObject resultObj = new JSONObject();
+
+		resultObj.put(Result.PROPERTY_exitCode, result.getExitCode());
+		resultObj.put(Result.PROPERTY_output, result.getOutput());
+
+		resultObj.put(Result.PROPERTY_classDiagram, result.getClassDiagram());
+
+		final JSONArray objectDiagramArray = new JSONArray();
+		for (final Diagram diagram : result.getObjectDiagrams())
+		{
+			objectDiagramArray.put(toJson(diagram));
+		}
+		resultObj.put(Result.PROPERTY_objectDiagrams, objectDiagramArray);
+
+		final JSONArray methodsArray = new JSONArray();
+		for (final Method method : result.getMethods())
+		{
+			methodsArray.put(toJson(method));
+		}
+		// TODO use Result.PROPERTY_methods (renaming testMethods -> methods)
+		resultObj.put("testMethods", methodsArray);
+
+		return resultObj;
+	}
+
+	private static JSONObject toJson(Diagram diagram)
+	{
+		final JSONObject methodObj = new JSONObject();
+		methodObj.put(Diagram.PROPERTY_name, diagram.getName());
+		methodObj.put(Diagram.PROPERTY_content, diagram.getContent());
+		return methodObj;
+	}
+
+	private static JSONObject toJson(Method method)
+	{
+		final JSONObject methodObj = new JSONObject();
+		methodObj.put(Method.PROPERTY_className, method.getClassName());
+		methodObj.put(Method.PROPERTY_name, method.getName());
+		methodObj.put(Method.PROPERTY_body, method.getBody());
+		return methodObj;
+	}
+
+	public static Result run(CodeGenData input) throws Exception
 	{
 		final Path codegendir = Files.createTempDirectory(TEMP_DIR_PREFIX);
 		final Path srcDir = codegendir.resolve("src");
@@ -32,12 +128,10 @@ public class RunCodeGen
 
 		try
 		{
-			final String body = req.body();
-			final JSONObject jsonObject = new JSONObject(body);
-			final String bodyText = jsonObject.getString("scenarioText");
-			final String packageName = jsonObject.getString("packageName");
+			final String bodyText = input.getScenarioText();
+			final String packageName = input.getPackageName();
 			final String packageDir = packageName.replace('.', '/');
-			final String scenarioFileName = jsonObject.getString("scenarioFileName");
+			final String scenarioFileName = input.getScenarioFileName();
 			final Path packagePath = srcDir.resolve(packageDir);
 
 			// create source directory and write source scenario file
@@ -54,12 +148,12 @@ public class RunCodeGen
 			final int exitCode = Tools.genCompileRun(out, out, srcDir, modelSrcDir, testSrcDir, modelClassesDir,
 			                                         testClassesDir, "--class-diagram-svg", "--object-diagram-svg");
 
-			final JSONObject result = new JSONObject();
-
-			result.put("exitCode", exitCode);
+			final Result result = new Result();
+			result.setExitCode(exitCode);
 
 			final String output = new String(out.toByteArray(), StandardCharsets.UTF_8);
-			result.put("output", output.replace(codegendir.toString(), "."));
+			final String sanitizedOutput = output.replace(codegendir.toString(), ".");
+			result.setOutput(sanitizedOutput);
 
 			if (exitCode < 0) // exception occurred
 			{
@@ -68,15 +162,7 @@ public class RunCodeGen
 
 			if (exitCode == 0 || (exitCode & 4) != 0) // scenarioc did not fail
 			{
-				// collect test methods
-				final JSONArray methodArray = new JSONArray();
-
-				Files.walk(testSrcDir).filter(Tools::isJava).forEach(file -> readTestMethods(methodArray, file));
-
-				Files.walk(modelSrcDir).filter(Tools::isJava).sorted()
-				     .forEach(file -> readModelMethods(methodArray, file));
-
-				result.put("testMethods", methodArray);
+				collectTestMethods(modelSrcDir, testSrcDir, result.getMethods());
 
 				// read class diagram
 				final Path classDiagramFile = modelSrcDir.resolve(packageDir).resolve("classDiagram.svg");
@@ -84,22 +170,13 @@ public class RunCodeGen
 				{
 					final byte[] bytes = Files.readAllBytes(classDiagramFile);
 					final String svgText = new String(bytes, StandardCharsets.UTF_8);
-					result.put("classDiagram", svgText);
+					result.setClassDiagram(svgText);
 				}
 
-				final JSONArray objectDiagrams = collectObjectDiagrams(bodyText, packagePath);
-				result.put("objectDiagrams", objectDiagrams);
+				collectObjectDiagrams(result.getObjectDiagrams(), bodyText, packagePath);
 			}
 
-			res.type("application/json");
-
-			final String resultBody = result.toString(3);
-
-			if (jsonObject.has("privacy") && "all".equals(jsonObject.get("privacy")))
-			{
-				Mongo.get().log(req.ip(), req.userAgent(), body, resultBody);
-			}
-			return resultBody;
+			return result;
 		}
 		finally
 		{
@@ -107,10 +184,11 @@ public class RunCodeGen
 		}
 	}
 
-	private static JSONArray collectObjectDiagrams(String scenarioText, Path packagePath) throws IOException
-	{
-		final JSONArray objectDiagrams = new JSONArray();
+	// --------------- Object Diagrams ---------------
 
+	private static void collectObjectDiagrams(List<Diagram> diagrams, String scenarioText, Path packagePath)
+		throws IOException
+	{
 		// sorting is O(n log n) with n = number of object diagrams,
 		// while a comparison takes O(m) steps to search for the occurrence in the text of length m.
 		// thus, we use a cache for the index of occurrence to avoid excessive searching during sort.
@@ -140,53 +218,56 @@ public class RunCodeGen
 			return index;
 		})).forEach(file -> {
 			final String relativeName = packagePath.relativize(file).toString();
-			addObjectDiagram(objectDiagrams, file, relativeName);
+			diagrams.add(readObjectDiagram(file, relativeName));
 		});
-		return objectDiagrams;
 	}
 
-	private static void addObjectDiagram(JSONArray objectDiagrams, Path file, String fileName)
+	private static Diagram readObjectDiagram(Path file, String fileName)
 	{
+		final byte[] content;
 		try
 		{
-			tryAddObjectDiagram(objectDiagrams, file, fileName);
+			content = Files.readAllBytes(file);
 		}
-		catch (Exception e)
+		catch (IOException e)
 		{
 			throw new RuntimeException(e);
 		}
-	}
 
-	private static void tryAddObjectDiagram(JSONArray objectDiagrams, Path file, String fileName)
-		throws JSONException, IOException
-	{
-		final byte[] content = Files.readAllBytes(file);
+		final Diagram diagram = new Diagram();
+		diagram.setName(fileName);
 
-		final JSONObject object = new JSONObject();
-		object.put("name", fileName);
-
-		switch (fileName.substring(fileName.lastIndexOf('.')))
+		final String fileExtension = fileName.substring(fileName.lastIndexOf('.'));
+		switch (fileExtension)
 		{
 		case ".png":
 			final String base64Content = Base64.getEncoder().encodeToString(content);
-			object.put("content", base64Content);
+			diagram.setContent(base64Content);
 			break;
 		case ".yaml":
 		case ".svg":
 		case ".html":
 		case ".txt":
-			object.put("content", new String(content, StandardCharsets.UTF_8));
+			diagram.setContent(new String(content, StandardCharsets.UTF_8));
 			break;
 		}
 
-		objectDiagrams.put(object);
+		return diagram;
 	}
 
-	private static void readTestMethods(JSONArray methodArray, Path file)
+	// --------------- Methods ---------------
+
+	private static void collectTestMethods(Path modelSrcDir, Path testSrcDir, List<Method> methods) throws IOException
+	{
+		Files.walk(testSrcDir).filter(Tools::isJava).forEach(file -> tryReadMethods(methods, file, false));
+		Files.walk(modelSrcDir).filter(Tools::isJava).sorted().forEach(file -> tryReadMethods(methods, file, true));
+	}
+
+	private static void tryReadMethods(List<Method> methods, Path file, boolean modelFilter)
 	{
 		try
 		{
-			tryReadTestMethods(methodArray, file);
+			readMethods(methods, file, modelFilter);
 		}
 		catch (Exception e)
 		{
@@ -194,34 +275,12 @@ public class RunCodeGen
 		}
 	}
 
-	private static void tryReadTestMethods(JSONArray methodArray, Path file) throws IOException, JSONException
-	{
-		tryReadMethods(methodArray, file, false);
-	}
-
-	private static void readModelMethods(JSONArray methodArray, Path file)
-	{
-		try
-		{
-			tryReadModelMethod(methodArray, file);
-		}
-		catch (Exception e)
-		{
-			throw new RuntimeException(e);
-		}
-	}
-
-	private static void tryReadModelMethod(JSONArray methodArray, Path file) throws IOException, JSONException
-	{
-		tryReadMethods(methodArray, file, true);
-	}
-
-	private static void tryReadMethods(JSONArray methodArray, Path file, boolean modelFilter)
+	private static void readMethods(List<Method> methods, Path file, boolean modelFilter)
 		throws IOException, JSONException
 	{
 		final String filePath = file.toString();
-		final String className = filePath
-			                         .substring(filePath.lastIndexOf(File.separator) + 1, filePath.lastIndexOf('.'));
+		final String className = filePath.substring(filePath.lastIndexOf(File.separator) + 1,
+		                                            filePath.lastIndexOf('.'));
 
 		final Set<String> properties = modelFilter ? new HashSet<>() : null;
 		final List<String> lines = Files.readAllLines(file);
@@ -247,11 +306,11 @@ public class RunCodeGen
 			}
 			else if (methodName != null && "   }".equals(line))
 			{
-				final JSONObject method = new JSONObject();
-				method.put("className", className);
-				method.put("name", methodName);
-				method.put("body", methodBody.toString());
-				methodArray.put(method);
+				final Method method = new Method();
+				method.setClassName(className);
+				method.setName(methodName);
+				method.setBody(methodBody.toString());
+				methods.add(method);
 
 				methodName = null;
 				methodBody = null;
@@ -263,8 +322,9 @@ public class RunCodeGen
 		}
 	}
 
-	static final Set<String> DEFAULT_METHODS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
-		"firePropertyChange", "addPropertyChangeListener", "removePropertyChangeListener", "removeYou", "toString")));
+	static final Set<String> DEFAULT_METHODS = Collections.unmodifiableSet(new HashSet<>(
+		Arrays.asList("firePropertyChange", "addPropertyChangeListener", "removePropertyChangeListener", "removeYou",
+		              "toString")));
 
 	// must be sorted by longest first
 	static final String[] DEFAULT_PROPERTY_METHODS = { "without", "with", "get", "set" };
