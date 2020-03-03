@@ -33,7 +33,7 @@
       "healthRetries": null,
       "healthTimeout": null,
       "hostname": null,
-      "imageUuid": "docker:zuendorf/fulib_scenarios:latest",
+      "imageUuid": "<RANCHER_UPDATE_IMAGE>",
       "instanceTriggeredStop": "stop",
       "ioMaximumBandwidth": null,
       "ioMaximumIOps": null,
