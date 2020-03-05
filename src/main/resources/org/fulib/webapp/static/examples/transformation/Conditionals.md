@@ -20,3 +20,8 @@ As 2 is not 3, we write 1 into x, we write 2 into y, and we write 3 into sum.
 // You can emulate it by inverting the condition.
 
 As 2 is 3, we write -1 into sum.
+
+# More Info
+
+// View the documentation page about conditionals:
+// https://fujaba.gitbook.io/fulib-scenarios/language/sentences/conditional-sentences

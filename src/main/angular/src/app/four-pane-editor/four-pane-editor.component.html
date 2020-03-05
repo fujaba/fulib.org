@@ -4,7 +4,8 @@
     <div class="d-flex flex-wrap align-items-baseline" style="min-height: 2.5rem; margin-left: -.25rem;">
       <div class="pl-1">
         <label>Load Example:
-          <select class="form-control form-control-sm d-inline" style="width: auto" [(ngModel)]="selectedExample">
+          <select class="form-control form-control-sm d-inline" style="width: auto"
+                  [ngModel]="selectedExample" (ngModelChange)="selectExample($event)">
             <option [ngValue]="null">-</option>
             <optgroup *ngFor="let category of exampleCategories; index as categoryIndex"
                       label="{{categoryIndex + 1}}. {{category.name}}">
@@ -25,11 +26,23 @@
         </button>
       </div>
       <div class="pl-1">
-        <button type="button" class="btn btn-outline-primary btn-sm"
-                ngbTooltip="Shortcuts: Ctrl-&#9166; / &#8984;&#9166;, Ctrl-S / &#8984;S"
-                (click)="submit()" [disabled]="submitting">
-          Compile and Run
-        </button>
+        <div class="btn-group">
+          <button type="button" class="btn btn-outline-primary btn-sm"
+                  ngbTooltip="Shortcuts: Ctrl-&#9166; / &#8984;&#9166;, Ctrl-S / &#8984;S"
+                  (click)="submit()" [disabled]="submitting">
+            Compile and Run
+          </button>
+          <div class="btn-group" ngbDropdown role="group" aria-label="Compile and Run Options">
+            <button class="btn btn-outline-primary btn-sm dropdown-toggle-split" ngbDropdownToggle></button>
+            <div class="dropdown-menu" ngbDropdownMenu>
+              <button ngbDropdownItem (click)="autoSubmit = !autoSubmit" [class.dropdown-item-checked]="autoSubmit">
+                Automatically Compile and Run
+                <br/>
+                when the scenario changes
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <app-autotheme-codemirror #scenarioInput [(content)]="scenarioText" [options]="{

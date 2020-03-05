@@ -123,7 +123,20 @@
 
 # fulib.org v1.1.0
 
+## New Features
+
++ Added a toggle to the Compile and Run button that does it automatically when the scenario changes. #65
++ When visiting a new version of fulib.org, the changelog since the last visited version is shown. #66
++ Examples can now be linked by adding a query parameter like `?example=Basics` to the URL. #68
++ Added documentation links at the end of examples. #69
+
+## Tool Updates 
+
 * Updated to FulibTools v1.1.0.
+* Updated to FulibScenarios v1.1.0.
+
+## Improvements
+
 * Major improvements to style and dark mode.
 * Cleaned up the backend code.
 * Rewrote the frontend with Angular. #63

@@ -60,11 +60,11 @@ repositories {
 }
 
 dependencies {
-	fulibScenarios group: 'org.fulib', name: 'fulibScenarios', version: '1.0.0'
+	fulibScenarios group: 'org.fulib', name: 'fulibScenarios', version: '1.1.0'
 
 	// --------------- Fulib Libraries ---------------
 
-	compile group: 'org.fulib', name: 'fulibScenarios', version: '1.0.0'
+	compile group: 'org.fulib', name: 'fulibScenarios', version: '1.1.0'
 
 	compile group: 'org.fulib', name: 'fulibMockups', version: '0.2.0'
 
@@ -88,6 +88,20 @@ dependencies {
 	// compile instead of testCompile because the web service uses it
 	// https://mvnrepository.com/artifact/junit/junit
 	compile group: 'junit', name: 'junit', version: '4.12'
+
+	// --------------- CommonMark ---------------
+
+	// https://mvnrepository.com/artifact/com.atlassian.commonmark/commonmark
+	compile group: 'com.atlassian.commonmark', name: 'commonmark', version: '0.14.0'
+
+	// https://mvnrepository.com/artifact/com.atlassian.commonmark/commonmark-ext-gfm-tables
+	compile group: 'com.atlassian.commonmark', name: 'commonmark-ext-gfm-tables', version: '0.14.0'
+
+	// https://mvnrepository.com/artifact/com.atlassian.commonmark/commonmark-ext-autolink
+	compile group: 'com.atlassian.commonmark', name: 'commonmark-ext-autolink', version: '0.14.0'
+
+	// https://mvnrepository.com/artifact/com.atlassian.commonmark/commonmark-ext-gfm-strikethrough
+	compile group: 'com.atlassian.commonmark', name: 'commonmark-ext-gfm-strikethrough', version: '0.14.0'
 }
 
 // --------------- Version Injection ---------------
@@ -130,6 +144,8 @@ String getDependencyVersion(Configuration config, String group, String name) {
 angular {
 	appDir = 'src/main/angular'
 	outputDir = 'src/main/angular/dist'
+	packageManager = 'pnpm'
+	packageManagerArgs = [ 'install', '--shamefully-hoist' ]
 }
 
 processResources.filesMatching('fulibDotOrg/**') {

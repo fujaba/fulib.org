@@ -14,3 +14,9 @@ Kassel has 200000 inhabitants.
 
 // Numeric attributes with a decimal point translate to the Java type 'double'.
 Kassel has area 106.78 (sq km).
+
+# More Info
+
+// Check out the next example, "Complex Definitions".
+// Or learn more about these definition sentences in the documentation:
+// https://fujaba.gitbook.io/fulib-scenarios/language/sentences/definition-sentences

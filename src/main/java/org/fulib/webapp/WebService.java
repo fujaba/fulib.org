@@ -2,6 +2,7 @@ package org.fulib.webapp;
 
 import org.fulib.webapp.mongo.Mongo;
 import org.fulib.webapp.projectzip.ProjectZip;
+import org.fulib.webapp.tool.MarkdownUtil;
 import org.fulib.webapp.tool.RunCodeGen;
 import spark.Service;
 import spark.staticfiles.StaticFilesConfiguration;
@@ -55,6 +56,11 @@ public class WebService
 
 		service.post("/runcodegen", runCodeGen::handle);
 		service.post("/projectzip", ProjectZip::handle);
+
+		service.post("/rendermarkdown", (request, response) -> {
+			response.type("text/html");
+			return MarkdownUtil.renderHtml(request.body());
+		});
 
 		service.exception(Exception.class, (exception, request, response) -> {
 			Logger.getGlobal().log(Level.SEVERE, "unhandled exception processing request", exception);

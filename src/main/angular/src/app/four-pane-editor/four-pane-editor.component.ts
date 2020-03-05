@@ -1,4 +1,5 @@
 import {Component, NgZone, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Router, ActivatedRoute} from '@angular/router';
 import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 
 import {AutothemeCodemirrorComponent} from '../autotheme-codemirror/autotheme-codemirror.component';
@@ -20,6 +21,7 @@ import {PrivacyService} from '../privacy.service';
 export class FourPaneEditorComponent implements OnInit, OnDestroy {
   @ViewChild('scenarioInput', {static: true}) scenarioInput: AutothemeCodemirrorComponent;
 
+  _selectedExample: Example | null;
   scenarioText: string;
   response: Response | null;
   submitting: boolean;
@@ -34,19 +36,32 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
     private examplesService: ExamplesService,
     private scenarioEditorService: ScenarioEditorService,
     private privacyService: PrivacyService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
     private zone: NgZone,
   ) {
   }
 
   ngOnInit() {
     this.exampleCategories = this.examplesService.getCategories();
-    this.loadExample(this.selectedExample);
 
     this.scenarioInput.contentChange.pipe(
       debounceTime(1000),
       distinctUntilChanged(),
     ).subscribe(() => {
-      this.submit();
+      if (this.autoSubmit) {
+        this.submit();
+      }
+    });
+
+    this.activatedRoute.queryParams.subscribe(queryParams => {
+      const exampleName = queryParams.example as string;
+      if (exampleName) {
+        this.selectedExample = this.examplesService.getExampleByName(exampleName);
+      }
+      else {
+        this.selectedExample = this.scenarioEditorService.selectedExample;
+      }
     })
   }
 
@@ -158,12 +173,18 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
   }
 
   get selectedExample() {
-    return this.scenarioEditorService.selectedExample;
+    return this._selectedExample;
   }
 
   set selectedExample(value: Example | null) {
-    this.scenarioEditorService.selectedExample = value;
+    this._selectedExample = value;
     this.loadExample(value);
+  }
+
+  selectExample(value: Example | null): void {
+    this.selectedExample = value;
+    this.router.navigate([], {queryParams: { example: value ? value.name : undefined }});
+    this.scenarioEditorService.selectedExample = value;
   }
 
   private loadExample(value: Example | null): void {
@@ -178,5 +199,13 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
       this.scenarioText = this.scenarioEditorService.storedScenario;
       this.submit();
     }
+  }
+
+  get autoSubmit(): boolean {
+    return this.scenarioEditorService.autoSubmit;
+  }
+
+  set autoSubmit(value: boolean) {
+    this.scenarioEditorService.autoSubmit = value;
   }
 }

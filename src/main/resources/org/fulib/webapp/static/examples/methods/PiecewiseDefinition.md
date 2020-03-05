@@ -17,3 +17,8 @@ We call min with x 10 and with y 3.
 min answers with y.
 
 We expect that the answer is 3.
+
+# More Info
+
+// Learn more about method calls in the documentation:
+// https://fujaba.gitbook.io/fulib-scenarios/language/sentences/call-sentences

@@ -25,13 +25,15 @@
       "dnsSearch": [],
       "domainName": null,
       "environment": {
-        "fulib_org_mongo": "<fulib_org_mongo>"
+        "FULIB_ORG_MONGODB_USER": "<FULIB_ORG_MONGODB_USER>",
+        "FULIB_ORG_MONGODB_HOST": "<FULIB_ORG_MONGODB_HOST>",
+        "FULIB_ORG_MONGODB_PASSWORD": "<FULIB_ORG_MONGODB_PASSWORD>"
       },
       "healthInterval": null,
       "healthRetries": null,
       "healthTimeout": null,
       "hostname": null,
-      "imageUuid": "docker:zuendorf/fulib_scenarios:latest",
+      "imageUuid": "<RANCHER_UPDATE_IMAGE>",
       "instanceTriggeredStop": "stop",
       "ioMaximumBandwidth": null,
       "ioMaximumIOps": null,

@@ -21,3 +21,8 @@ There is a Student with name Alice and with 20 credits.
 There are the Students Bob, Carli, and Dora.
 
 There are Students with name Eyshe, Felice, and Gloria, and with credits 15, 30, 35.
+
+# More Info
+
+// Learn more about definitions with 'There' sentences in the documentation:
+// https://fujaba.gitbook.io/fulib-scenarios/language/sentences/definition-sentences#there-sentences
