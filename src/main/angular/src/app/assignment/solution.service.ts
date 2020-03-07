@@ -3,13 +3,14 @@ import {HttpClient} from '@angular/common/http';
 import {Observable, of} from 'rxjs';
 import {catchError, flatMap, map} from 'rxjs/operators';
 
-import Solution, {CheckResult, CheckSolution} from './model/solution';
+import Solution from './model/solution';
 import {environment} from '../../environments/environment';
 import Assignment from './model/assignment';
 import {AssignmentService} from './assignment.service';
 import Comment from './model/comment';
 import {StorageService} from '../storage.service';
 import TaskGrading from './model/task-grading';
+import {CheckResult, CheckSolution} from './model/check';
 
 function asID(id: { id?: string } | string): string {
   return typeof id === 'string' ? id : id.id;
