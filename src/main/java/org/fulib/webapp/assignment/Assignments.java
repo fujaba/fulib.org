@@ -108,11 +108,12 @@ public class Assignments
 		}
 
 		Assignment assignment = getAssignmentOr404(id);
-		final JSONObject obj = toJson(assignment);
+		final boolean privileged = isAuthorized(request, assignment);
+		final JSONObject obj = toJson(assignment, privileged);
 		return obj.toString(2);
 	}
 
-	private static JSONObject toJson(Assignment assignment)
+	private static JSONObject toJson(Assignment assignment, boolean privileged)
 	{
 		final JSONObject obj = new JSONObject();
 		obj.put(Assignment.PROPERTY_title, assignment.getTitle());
@@ -122,14 +123,19 @@ public class Assignments
 		obj.put(Assignment.PROPERTY_email, assignment.getEmail());
 		obj.put(Assignment.PROPERTY_deadline, assignment.getDeadline().toString());
 		obj.put(Assignment.PROPERTY_templateSolution, assignment.getTemplateSolution());
-		// do NOT include solution or token!
+		// do NOT include token!
+
+		if (privileged)
+		{
+			obj.put(Assignment.PROPERTY_solution, assignment.getSolution());
+		}
 
 		final JSONArray tasks = new JSONArray();
 		for (final Task task : assignment.getTasks())
 		{
 			JSONObject taskObj = new JSONObject();
 			taskObj.put(Task.PROPERTY_description, task.getDescription());
-			taskObj.put(Task.PROPERTY_points, task.getPoints()); // TODO do we really want to expose these?
+			taskObj.put(Task.PROPERTY_points, task.getPoints());
 			// exclude verification
 			tasks.put(taskObj);
 		}
