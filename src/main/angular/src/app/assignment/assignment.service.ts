@@ -9,6 +9,7 @@ import Assignment from './model/assignment';
 import {environment} from '../../environments/environment';
 import {StorageService} from '../storage.service';
 import Course from './model/course';
+import {CheckAssignment, CheckResult} from './model/check';
 
 type AssignmentResponse = { id: string, token: string };
 
@@ -91,6 +92,10 @@ export class AssignmentService {
   }
 
   // --------------- HTTP Methods ---------------
+
+  check(assignment: CheckAssignment): Observable<CheckResult> {
+    return this.http.post<CheckResult>(`${environment.apiURL}/assignments/create/check`, assignment);
+  }
 
   submit(assignment: Assignment): Observable<Assignment> {
     return this.http.post<AssignmentResponse>(environment.apiURL + '/assignments', assignment).pipe(
