@@ -110,10 +110,6 @@ export class CreateComponent implements OnInit {
     this.tasks.push({...new Task(), collapsed: false});
   }
 
-  clearTasks() {
-    this.tasks.length = 0;
-  }
-
   removeTask(id: number) {
     this.tasks.splice(id, 1);
   }
