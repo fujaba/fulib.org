@@ -51,6 +51,8 @@ export class AssignmentService {
   }
 
   setToken(id: string, token: string | null): void {
+    // changing the token invalidates the cache because it changes the response
+    this._cache.delete(id);
     this.storage.set(`assignmentToken/${id}`, token);
   }
 
