@@ -10,6 +10,7 @@
   <p [ngbCollapse]="solutionCollapsed">
     <app-autotheme-codemirror [content]="assignment === undefined ? 'Loading...' : assignment.solution" [options]="{
       mode: 'markdown',
+      autoRefresh: true,
       lineNumbers: true,
       lineWrapping: true,
       styleActiveLine: true,
