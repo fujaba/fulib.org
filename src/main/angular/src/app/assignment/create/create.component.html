@@ -142,7 +142,7 @@
     <app-collapse-button class="ml-2" [(collapsed)]="collapse.solution"></app-collapse-button>
   </h2>
   <p [ngbCollapse]="collapse.solution">
-    <app-autotheme-codemirror id="solutionInput" [(content)]="solution" (change)="saveDraft()" [options]="{
+    <app-autotheme-codemirror id="solutionInput" #solutionInput [(content)]="solution" (change)="saveDraft()" [options]="{
       mode: 'markdown',
       autoRefresh: true,
       lineNumbers: true,
@@ -152,6 +152,10 @@
     <small class="text-muted">
       You can provide a sample solution to ensure your assignment is solvable.
       Students cannot see this.
+      {{checking ? 'Checking...'
+      : (results ? 'The sample solution was checked automatically.'
+        : 'The sample solution is checked automatically when you change it.')
+      }}
     </small>
   </p>
 

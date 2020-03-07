@@ -1,4 +1,5 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {debounceTime, distinctUntilChanged, flatMap} from 'rxjs/operators';
 
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {DragulaService} from 'ng2-dragula';
@@ -6,13 +7,15 @@ import {DragulaService} from 'ng2-dragula';
 import Task from '../model/task';
 import Assignment from '../model/assignment';
 import {AssignmentService} from '../assignment.service';
+import TaskResult from '../model/task-result';
 
 @Component({
   selector: 'app-create',
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss']
 })
-export class CreateComponent implements OnInit {
+export class CreateComponent implements OnInit, AfterViewInit {
+  @ViewChild('solutionInput', {static: true}) solutionInput;
   @ViewChild('successModal', {static: true}) successModal;
 
   importFile: File = null;
@@ -32,6 +35,9 @@ export class CreateComponent implements OnInit {
   templateSolution = '';
 
   tasks: (Task & {collapsed: boolean})[] = [];
+
+  checking = false;
+  results?: TaskResult[];
 
   submitting = false;
   id?: string;
@@ -57,6 +63,15 @@ export class CreateComponent implements OnInit {
     if (draft) {
       this.setAssignment(draft);
     }
+  }
+
+  ngAfterViewInit(): void {
+    this.solutionInput.contentChange.pipe(
+      debounceTime(1000),
+      distinctUntilChanged(),
+    ).subscribe(() => {
+      this.check();
+    });
   }
 
   getAssignment(): Assignment {
@@ -88,6 +103,14 @@ export class CreateComponent implements OnInit {
 
     this.collapse.solution = !a.solution;
     this.collapse.templateSolution = !a.templateSolution;
+  }
+
+  check(): void {
+    this.checking = true;
+    this.assignmentService.check({solution: this.solution, tasks: this.tasks}).subscribe(response => {
+      this.checking = false;
+      this.results = response.results;
+    })
   }
 
   saveDraft() {
