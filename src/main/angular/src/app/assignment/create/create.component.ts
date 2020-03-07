@@ -15,27 +15,27 @@ import {AssignmentService} from '../assignment.service';
 export class CreateComponent implements OnInit {
   @ViewChild('successModal', {static: true}) successModal;
 
-  importFile: File;
+  importFile: File = null;
 
   collapse = {
     solution: false,
     templateSolution: false,
   };
 
-  title: string;
-  author: string;
-  email: string;
+  title = '';
+  author = '';
+  email = '';
   deadlineDate: Date;
   deadlineTime: Date;
-  description: string;
-  solution: string;
-  templateSolution: string;
+  description = '';
+  solution = '';
+  templateSolution = '';
 
   tasks: (Task & {collapsed: boolean})[] = [];
 
   submitting = false;
-  id: string;
-  token: string;
+  id?: string;
+  token?: string;
 
   // TODO does not work with Angular Universal
   baseURL = window.location.origin;
