@@ -65,40 +65,6 @@
     </small>
   </p>
 
-  <h2>
-    <label for="solutionInput">Sample Solution</label>
-    <app-collapse-button class="ml-2" [(collapsed)]="collapse.solution"></app-collapse-button>
-  </h2>
-  <p [ngbCollapse]="collapse.solution">
-    <app-autotheme-codemirror id="solutionInput" [(content)]="solution" (change)="saveDraft()" [options]="{
-      mode: 'markdown',
-      lineNumbers: true,
-      lineWrapping: true,
-      styleActiveLine: true
-    }"></app-autotheme-codemirror>
-    <small class="text-muted">
-      You can provide a sample solution to ensure your assignment is solvable.
-      Students cannot see this.
-    </small>
-  </p>
-
-  <h2>
-    <label for="templateSolutionInput">Template Solution</label>
-    <app-collapse-button class="ml-2" [(collapsed)]="collapse.templateSolution"></app-collapse-button>
-  </h2>
-  <p [ngbCollapse]="collapse.templateSolution">
-    <app-autotheme-codemirror id="templateSolutionInput" [(content)]="templateSolution" (change)="saveDraft()" [options]="{
-      mode: 'markdown',
-      lineNumbers: true,
-      lineWrapping: true,
-      styleActiveLine: true
-    }"></app-autotheme-codemirror>
-    <small class="text-muted">
-      Optional. This will be shown to students in the solution editor when they first open your assignment.
-      You can instruct them to fill in blanks or make changes.
-    </small>
-  </p>
-
   <h2>Tasks</h2>
   <ol dragula="TASKS" [(dragulaModel)]="tasks" (dragulaModelChange)="saveDraft()">
     <li *ngFor="let task of tasks; let id = index">
@@ -151,6 +117,40 @@
   <p>
     <button type="button" class="btn btn-success" (click)="addTask()">Add Task</button>
     <button type="button" class="btn btn-danger" (click)="clearTasks()">Remove All Tasks</button>
+  </p>
+
+  <h2>
+    <label for="templateSolutionInput">Template Solution</label>
+    <app-collapse-button class="ml-2" [(collapsed)]="collapse.templateSolution"></app-collapse-button>
+  </h2>
+  <p [ngbCollapse]="collapse.templateSolution">
+    <app-autotheme-codemirror id="templateSolutionInput" [(content)]="templateSolution" (change)="saveDraft()" [options]="{
+      mode: 'markdown',
+      lineNumbers: true,
+      lineWrapping: true,
+      styleActiveLine: true
+    }"></app-autotheme-codemirror>
+    <small class="text-muted">
+      Optional. This will be shown to students in the solution editor when they first open your assignment.
+      You can instruct them to fill in blanks or make changes.
+    </small>
+  </p>
+
+  <h2>
+    <label for="solutionInput">Sample Solution</label>
+    <app-collapse-button class="ml-2" [(collapsed)]="collapse.solution"></app-collapse-button>
+  </h2>
+  <p [ngbCollapse]="collapse.solution">
+    <app-autotheme-codemirror id="solutionInput" [(content)]="solution" (change)="saveDraft()" [options]="{
+      mode: 'markdown',
+      lineNumbers: true,
+      lineWrapping: true,
+      styleActiveLine: true
+    }"></app-autotheme-codemirror>
+    <small class="text-muted">
+      You can provide a sample solution to ensure your assignment is solvable.
+      Students cannot see this.
+    </small>
   </p>
 
   <div class="text-center">
