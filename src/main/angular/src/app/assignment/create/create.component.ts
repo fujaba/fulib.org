@@ -131,7 +131,7 @@ export class CreateComponent implements OnInit, AfterViewInit {
   }
 
   addTask(): void {
-    this.tasks.push({...new Task(), collapsed: false});
+    this.tasks.push({description: '', points: undefined, verification: '', collapsed: false});
     if (this.results) {
       this.results.push(undefined);
     }
