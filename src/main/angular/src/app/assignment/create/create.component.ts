@@ -58,7 +58,7 @@ export class CreateComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const draft = this.assignmentService.draft;
     if (draft) {
       this.setAssignment(draft);
@@ -113,11 +113,11 @@ export class CreateComponent implements OnInit, AfterViewInit {
     })
   }
 
-  saveDraft() {
+  saveDraft(): void {
     this.assignmentService.draft = this.getAssignment();
   }
 
-  onImport() {
+  onImport(): void {
     this.assignmentService.upload(this.importFile).subscribe(result => {
       this.setAssignment(result);
       this.saveDraft();
@@ -125,12 +125,12 @@ export class CreateComponent implements OnInit, AfterViewInit {
     });
   }
 
-  onExport() {
+  onExport(): void {
     const assignment = this.getAssignment();
     this.assignmentService.download(assignment);
   }
 
-  addTask() {
+  addTask(): void {
     this.tasks.push({...new Task(), collapsed: false});
     if (this.results) {
       this.results.push(undefined);
@@ -138,7 +138,7 @@ export class CreateComponent implements OnInit, AfterViewInit {
     this.saveDraft();
   }
 
-  removeTask(id: number) {
+  removeTask(id: number): void {
     this.tasks.splice(id, 1);
     if (this.results) {
       this.results.splice(id, 1);
@@ -146,15 +146,14 @@ export class CreateComponent implements OnInit, AfterViewInit {
     this.saveDraft();
   }
 
-  submit() {
+  submit(): void {
     this.submitting = true;
-    this.assignmentService.submit(this.getAssignment())
-      .subscribe(result => {
-        this.submitting = false;
-        this.id = result.id;
-        this.token = result.token;
-        this.modalService.open(this.successModal, {ariaLabelledBy: 'successModalLabel', size: 'xl'});
-      });
+    this.assignmentService.submit(this.getAssignment()).subscribe(result => {
+      this.submitting = false;
+      this.id = result.id;
+      this.token = result.token;
+      this.modalService.open(this.successModal, {ariaLabelledBy: 'successModalLabel', size: 'xl'});
+    });
   }
 
   getColorClass(taskID: number): string {
