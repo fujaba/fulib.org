@@ -11,12 +11,12 @@
       lineWrapping: true,
       styleActiveLine: true
     }"></app-autotheme-codemirror>
-  </p>
-  <p>
-    {{checking ? 'Checking...'
-    : (results ? 'Your solution was checked automatically. Don\'t forget to submit when you are done!'
-      : 'Your solution is checked automatically when you make changes.')
-    }}
+    <small class="text-muted">
+      {{checking ? 'Checking...'
+      : (results ? 'Your solution was checked automatically. Don\'t forget to submit when you are done!'
+        : 'Your solution is checked automatically when you make changes.')
+      }}
+    </small>
   </p>
 
   <h2>Your Info</h2>
