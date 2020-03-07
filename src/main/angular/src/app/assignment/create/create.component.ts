@@ -120,7 +120,7 @@ export class CreateComponent implements OnInit, AfterViewInit {
   onImport() {
     this.assignmentService.upload(this.importFile).subscribe(result => {
       this.setAssignment(result);
-      this.assignmentService.draft = result;
+      this.saveDraft();
       this.results = undefined;
     });
   }
@@ -135,6 +135,7 @@ export class CreateComponent implements OnInit, AfterViewInit {
     if (this.results) {
       this.results.push(undefined);
     }
+    this.saveDraft();
   }
 
   removeTask(id: number) {
@@ -142,6 +143,7 @@ export class CreateComponent implements OnInit, AfterViewInit {
     if (this.results) {
       this.results.splice(id, 1);
     }
+    this.saveDraft();
   }
 
   submit() {
