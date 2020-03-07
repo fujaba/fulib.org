@@ -88,14 +88,20 @@ public class Assignments
 		{
 			final JSONObject taskObj = (JSONObject) taskItem;
 
-			final Task task = new Task();
-			task.setDescription(taskObj.getString(Task.PROPERTY_description));
-			task.setPoints(taskObj.getInt(Task.PROPERTY_points));
-			task.setVerification(taskObj.getString(Task.PROPERTY_verification));
+			final Task task = json2Task(taskObj);
 			assignment.getTasks().add(task);
 		}
 
 		return assignment;
+	}
+
+	static Task json2Task(JSONObject taskObj)
+	{
+		final Task task = new Task();
+		task.setDescription(taskObj.getString(Task.PROPERTY_description));
+		task.setPoints(taskObj.getInt(Task.PROPERTY_points));
+		task.setVerification(taskObj.getString(Task.PROPERTY_verification));
+		return task;
 	}
 
 	public static Object get(Request request, Response response)

@@ -306,13 +306,28 @@ public class Solutions
 
 	public static Object check(Request request, Response response) throws Exception
 	{
-		final String assignmentID = request.params(ASSIGNMENT_ID_QUERY_PARAM);
-		final Assignment assignment = Assignments.getAssignmentOr404(assignmentID);
+		final List<Task> tasks;
 
 		final JSONObject requestObj = new JSONObject(request.body());
-		final String solution = requestObj.getString(Solution.PROPERTY_solution);
+		final String solution = requestObj.getString(Assignment.PROPERTY_solution);
 
-		final List<TaskResult> results = runTasks(solution, assignment.getTasks());
+		final String assignmentID = request.params(ASSIGNMENT_ID_QUERY_PARAM);
+		if (assignmentID == null)
+		{
+			final JSONArray taskArray = requestObj.getJSONArray(Assignment.PROPERTY_tasks);
+			tasks = new ArrayList<>(taskArray.length());
+			for (final Object taskObj : taskArray)
+			{
+				tasks.add(Assignments.json2Task((JSONObject) taskObj));
+			}
+		}
+		else
+		{
+			final Assignment assignment = Assignments.getAssignmentOr404(assignmentID);
+			tasks = assignment.getTasks();
+		}
+
+		final List<TaskResult> results = runTasks(solution, tasks);
 
 		final JSONObject resultObj = new JSONObject();
 		final JSONArray resultsArray = new JSONArray();

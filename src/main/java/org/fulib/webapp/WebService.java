@@ -88,6 +88,8 @@ public class WebService
 		service.path("/assignments", () -> {
 			service.post("", Assignments::create);
 
+			service.post("/create/check", Solutions::check);
+
 			service.path("/:assignmentID", () -> addAssignmentRoutes(service));
 		});
 	}
