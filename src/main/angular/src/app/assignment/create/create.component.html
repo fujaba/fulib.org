@@ -67,11 +67,13 @@
 
   <h2>Tasks</h2>
   <ol dragula="TASKS" [(dragulaModel)]="tasks" (dragulaModelChange)="saveDraft()">
-    <li *ngFor="let task of tasks; let id = index">
+    <li *ngFor="let task of tasks; let id = index" class="text-{{getColorClass(id)}}">
       <div class="d-flex align-items-center mb-2">
         <div class="mr-2">
           {{task.description || '(no description)'}}
-          <span class="badge badge-secondary">{{task.points === 0 || task.points > 0 ? task.points : '?'}}</span>
+          <span class="badge badge-{{getColorClass(id) || 'secondary'}}">
+            {{task.points === 0 || task.points > 0 ? task.points : '?'}}
+          </span>
         </div>
         <app-collapse-button class="ml-auto" [(collapsed)]="task.collapsed" (collapsedChange)="saveDraft()">
         </app-collapse-button>

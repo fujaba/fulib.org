@@ -121,6 +121,7 @@ export class CreateComponent implements OnInit, AfterViewInit {
     this.assignmentService.upload(this.importFile).subscribe(result => {
       this.setAssignment(result);
       this.assignmentService.draft = result;
+      this.results = undefined;
     });
   }
 
@@ -131,10 +132,16 @@ export class CreateComponent implements OnInit, AfterViewInit {
 
   addTask() {
     this.tasks.push({...new Task(), collapsed: false});
+    if (this.results) {
+      this.results.push(undefined);
+    }
   }
 
   removeTask(id: number) {
     this.tasks.splice(id, 1);
+    if (this.results) {
+      this.results.splice(id, 1);
+    }
   }
 
   submit() {
@@ -146,5 +153,18 @@ export class CreateComponent implements OnInit, AfterViewInit {
         this.token = result.token;
         this.modalService.open(this.successModal, {ariaLabelledBy: 'successModalLabel', size: 'xl'});
       });
+  }
+
+  getColorClass(taskID: number): string {
+    if (!this.results) {
+      return '';
+    }
+    const result = this.results[taskID];
+    if (!result) {
+      return '';
+    }
+
+    const points = result.points;
+    return points === 0 ? 'danger' : 'success';
   }
 }
