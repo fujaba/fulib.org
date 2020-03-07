@@ -3,6 +3,17 @@
 
   <app-task-list [assignment]="assignment"></app-task-list>
 
+  <h2>Sample Solution</h2>
+  <p>
+    <app-autotheme-codemirror [content]="assignment === undefined ? 'Loading...' : assignment.solution" [options]="{
+      mode: 'markdown',
+      lineNumbers: true,
+      lineWrapping: true,
+      styleActiveLine: true,
+      readOnly: true
+    }"></app-autotheme-codemirror>
+  </p>
+
   <h2>
     Solutions
     <span class="text-muted" *ngIf="solutions">
