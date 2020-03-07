@@ -3,8 +3,11 @@
 
   <app-task-list [assignment]="assignment"></app-task-list>
 
-  <h2>Sample Solution</h2>
-  <p>
+  <h2>
+    Sample Solution
+    <app-collapse-button [(collapsed)]="solutionCollapsed"></app-collapse-button>
+  </h2>
+  <p [ngbCollapse]="solutionCollapsed">
     <app-autotheme-codemirror [content]="assignment === undefined ? 'Loading...' : assignment.solution" [options]="{
       mode: 'markdown',
       lineNumbers: true,

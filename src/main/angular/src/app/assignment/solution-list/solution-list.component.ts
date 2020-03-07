@@ -23,6 +23,8 @@ export class SolutionListComponent implements OnInit {
   searchText: string = '';
   filteredSolutions?: Solution[];
 
+  solutionCollapsed = true;
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private assignmentService: AssignmentService,
