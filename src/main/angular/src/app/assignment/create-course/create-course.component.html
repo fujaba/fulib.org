@@ -82,11 +82,11 @@
       You can now give your students the following link:
     </p>
     <p>
-      <a class="text-monospace" href="/assignments/courses/{{id}}">
-        {{baseURL}}/assignments/courses/{{id}}
+      <a class="text-monospace" [routerLink]="getLink(false)" (click)="modal.close()">
+        {{getLink(true)}}
       </a>
       <button type="button" class="btn btn-sm btn-outline-primary"
-              ngxClipboard *ngxClipboardIfSupported cbContent="{{baseURL}}/assignments/{{id}}">
+              ngxClipboard *ngxClipboardIfSupported [cbContent]="getLink(true)">
         Copy
       </button>
     </p>

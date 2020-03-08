@@ -1,4 +1,5 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, OnInit, ViewChild} from '@angular/core';
+import {DOCUMENT} from '@angular/common';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {DragulaService} from 'ng2-dragula';
 
@@ -24,15 +25,17 @@ export class CreateCourseComponent implements OnInit {
   submitting = false;
 
   id?: string;
-  // TODO does not work with Angular Universal
-  baseURL = window.location.origin;
+
+  private readonly origin: string;
 
   constructor(
     private assignmentService: AssignmentService,
     private courseService: CourseService,
     private modalService: NgbModal,
     private dragulaService: DragulaService,
+    @Inject(DOCUMENT) document: Document,
   ) {
+    this.origin = document.location.origin;
     dragulaService.createGroup('ASSIGNMENTS', {
       moves(el, container, handle) {
         return handle.classList.contains('handle');
@@ -105,5 +108,9 @@ export class CreateCourseComponent implements OnInit {
       this.submitting = false;
       this.modalService.open(this.successModal, {ariaLabelledBy: 'successModalLabel', size: 'xl'});
     });
+  }
+
+  getLink(origin: boolean): string {
+    return `${origin ? this.origin : ''}/assignments/courses/${this.id}`;
   }
 }
