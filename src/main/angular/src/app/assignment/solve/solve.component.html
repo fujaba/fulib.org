@@ -79,6 +79,10 @@
       <a class="text-monospace" [routerLink]="getLink(false)" (click)="modal.close()">
         {{getLink(true)}}
       </a>
+      <button type="button" class="btn btn-sm btn-outline-primary"
+              ngxClipboard *ngxClipboardIfSupported [cbContent]="getLink(true)">
+        Copy
+      </button>
     </p>
     <p>
       To view your solution and comments, you may be asked for the following token.
@@ -86,6 +90,10 @@
     </p>
     <p class="text-center">
       <span class="h4 text-monospace">{{token}}</span>
+      <button type="button" class="btn btn-sm btn-outline-secondary"
+              ngxClipboard *ngxClipboardIfSupported [cbContent]="token">
+        Copy
+      </button>
     </p>
     <p>
       If you want to make changes, you can close this window and submit again.
