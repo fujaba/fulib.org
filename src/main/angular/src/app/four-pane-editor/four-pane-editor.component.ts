@@ -30,7 +30,7 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
   _activeObjectDiagramTab: number = 1;
 
   submitHandler = () => this.zone.run(() => this.submit());
-  annotationHandler = () => this.getAnnotations();
+  annotationHandler = () => this.zone.run(() => this.getAnnotations());
 
   constructor(
     private examplesService: ExamplesService,
