@@ -6,8 +6,10 @@ import {SolutionListComponent} from './solution-list/solution-list.component';
 import {SolutionComponent} from './solution/solution.component';
 import {CreateCourseComponent} from './create-course/create-course.component';
 import {CourseComponent} from './course/course.component';
+import {AssignmentListComponent} from './assignment-list/assignment-list.component';
 
 const routes: Routes = [
+  {path: '', component: AssignmentListComponent},
   {path: 'create', component: CreateComponent},
   {path: ':aid', component: SolveComponent},
   {path: ':aid/solutions', component: SolutionListComponent},
