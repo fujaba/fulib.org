@@ -1,4 +1,5 @@
-import {Component, OnInit, OnDestroy, AfterViewInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {DOCUMENT} from '@angular/common';
 import {ActivatedRoute} from '@angular/router';
 import {zip} from 'rxjs';
 import {debounceTime, distinctUntilChanged, flatMap} from 'rxjs/operators';
@@ -32,13 +33,13 @@ export class SolveComponent implements OnInit, AfterViewInit, OnDestroy {
   checking = false;
   results?: TaskResult[];
 
-  // TODO does not work with Angular Universal
-  baseURL = window.location.origin;
   id: string;
   token: string;
   timeStamp: Date;
 
   submitting: boolean;
+
+  private readonly origin: string;
 
   nextAssignment?: Assignment | null;
 
@@ -48,7 +49,10 @@ export class SolveComponent implements OnInit, AfterViewInit, OnDestroy {
     private solutionService: SolutionService,
     private route: ActivatedRoute,
     private modalService: NgbModal,
-  ) {}
+    @Inject(DOCUMENT) document: Document,
+  ) {
+    this.origin = document.location.origin;
+  }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -143,5 +147,9 @@ export class SolveComponent implements OnInit, AfterViewInit, OnDestroy {
       this.modalService.open(this.successModal, {ariaLabelledBy: 'successModalLabel', size: 'xl'});
       this.submitting = false;
     })
+  }
+
+  getLink(origin: boolean): string {
+    return `${origin ? this.origin : ''}/assignments/${this.assignment.id}/solutions/${this.id}`;
   }
 }

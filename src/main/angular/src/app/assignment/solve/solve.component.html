@@ -76,8 +76,8 @@
       You can view your submission with the following link:
     </p>
     <p class="text-center">
-      <a class="text-monospace" href="/assignments/{{assignment.id}}/solutions/{{id}}">
-        {{baseURL}}/assignments/{{assignment.id}}/solutions/{{id}}
+      <a class="text-monospace" [routerLink]="getLink(false)" (click)="modal.close()">
+        {{getLink(true)}}
       </a>
     </p>
     <p>
