@@ -24,24 +24,7 @@ export class SolutionComponent implements OnInit {
   solutionID: string;
   solution?: Solution;
 
-  gradings?: TaskGrading[] = [
-    {
-      solution: undefined,
-      taskID: 1,
-      timeStamp: new Date(),
-      author: 'Testus',
-      points: 3,
-      note: 'actually better',
-    },
-    {
-      solution: undefined,
-      taskID: 4,
-      timeStamp: new Date(),
-      author: 'Adrian',
-      points: 1,
-      note: 'points off',
-    },
-  ];
+  gradings?: TaskGrading[];
   comments?: Comment[];
 
   commentName: string;
