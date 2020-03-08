@@ -7,9 +7,11 @@ import {SolutionComponent} from './solution/solution.component';
 import {CreateCourseComponent} from './create-course/create-course.component';
 import {CourseComponent} from './course/course.component';
 import {AssignmentListComponent} from './assignment-list/assignment-list.component';
+import {MySolutionListComponent} from './my-solution-list/my-solution-list.component';
 
 const routes: Routes = [
   {path: '', component: AssignmentListComponent},
+  {path: 'solutions', component: MySolutionListComponent},
   {path: 'create', component: CreateComponent},
   {path: ':aid', component: SolveComponent},
   {path: ':aid/solutions', component: SolutionListComponent},
