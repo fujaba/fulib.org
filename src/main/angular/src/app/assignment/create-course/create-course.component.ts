@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DOCUMENT} from '@angular/common';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {DragulaService} from 'ng2-dragula';
@@ -13,7 +13,7 @@ import {CourseService} from '../course.service';
   templateUrl: './create-course.component.html',
   styleUrls: ['./create-course.component.scss']
 })
-export class CreateCourseComponent implements OnInit {
+export class CreateCourseComponent implements OnInit, OnDestroy {
   @ViewChild('successModal', {static: true}) successModal;
 
   title: string;
@@ -36,15 +36,19 @@ export class CreateCourseComponent implements OnInit {
     @Inject(DOCUMENT) document: Document,
   ) {
     this.origin = document.location.origin;
-    dragulaService.createGroup('ASSIGNMENTS', {
+  }
+
+  ngOnInit() {
+    this.dragulaService.createGroup('ASSIGNMENTS', {
       moves(el, container, handle) {
         return handle.classList.contains('handle');
       }
     });
+    this.loadDraft();
   }
 
-  ngOnInit() {
-    this.loadDraft();
+  ngOnDestroy(): void {
+    this.dragulaService.destroy('ASSIGNMENTS');
   }
 
   getCourse(): Course {

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Inject, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DOCUMENT} from '@angular/common';
 import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 
@@ -15,7 +15,7 @@ import TaskResult from '../model/task-result';
   templateUrl: './create.component.html',
   styleUrls: ['./create.component.scss']
 })
-export class CreateComponent implements OnInit, AfterViewInit {
+export class CreateComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('solutionInput', {static: true}) solutionInput;
   @ViewChild('successModal', {static: true}) successModal;
 
@@ -53,18 +53,23 @@ export class CreateComponent implements OnInit, AfterViewInit {
     @Inject(DOCUMENT) document: Document,
   ) {
     this.origin = document.location.origin;
-    dragulaService.createGroup('TASKS', {
+  }
+
+  ngOnInit(): void {
+    this.dragulaService.createGroup('TASKS', {
       moves(el, container, handle) {
         return handle.classList.contains('handle');
       }
     });
-  }
 
-  ngOnInit(): void {
     const draft = this.assignmentService.draft;
     if (draft) {
       this.setAssignment(draft);
     }
+  }
+
+  ngOnDestroy(): void {
+    this.dragulaService.destroy('TASKS');
   }
 
   ngAfterViewInit(): void {
