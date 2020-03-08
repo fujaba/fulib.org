@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable, of} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {flatMap, map} from 'rxjs/operators';
 
 import {saveAs} from 'file-saver';
 
@@ -10,6 +10,7 @@ import {environment} from '../../environments/environment';
 import {StorageService} from '../storage.service';
 import Course from './model/course';
 import {CheckAssignment, CheckResult} from './model/check';
+import Solution from './model/solution';
 
 type AssignmentResponse = { id: string, token: string };
 
@@ -92,6 +93,27 @@ export class AssignmentService {
   }
 
   // --------------- HTTP Methods ---------------
+
+  getOwnIds(): string[] {
+    const pattern = /^assignmentToken\/(.*)$/;
+    const ids: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      const match = pattern.exec(key);
+      if (!match) {
+        continue;
+      }
+
+      const id = match[1] as string;
+      ids.push(id);
+    }
+
+    return ids;
+  }
+
+  getOwn(): Observable<Assignment> {
+    return of(...this.getOwnIds()).pipe(flatMap(id => this.get(id)));
+  }
 
   check(assignment: CheckAssignment): Observable<CheckResult> {
     return this.http.post<CheckResult>(`${environment.apiURL}/assignments/create/check`, assignment);
