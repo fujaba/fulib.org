@@ -23,6 +23,7 @@ import { GradeFormComponent } from './grade-form/grade-form.component';
 import { CourseComponent } from './course/course.component';
 import { CreateCourseComponent } from './create-course/create-course.component';
 import { AssignmentListComponent } from './assignment-list/assignment-list.component';
+import { MySolutionListComponent } from './my-solution-list/my-solution-list.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { AssignmentListComponent } from './assignment-list/assignment-list.compo
     CourseComponent,
     CreateCourseComponent,
     AssignmentListComponent,
+    MySolutionListComponent,
   ],
   imports: [
     CommonModule,
