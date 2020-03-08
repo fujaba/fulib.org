@@ -1,5 +1,6 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {debounceTime, distinctUntilChanged, flatMap} from 'rxjs/operators';
+import {AfterViewInit, Component, Inject, OnInit, ViewChild} from '@angular/core';
+import {DOCUMENT} from '@angular/common';
+import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {DragulaService} from 'ng2-dragula';
@@ -43,14 +44,15 @@ export class CreateComponent implements OnInit, AfterViewInit {
   id?: string;
   token?: string;
 
-  // TODO does not work with Angular Universal
-  baseURL = window.location.origin;
+  private readonly origin: string;
 
   constructor(
     private assignmentService: AssignmentService,
     private modalService: NgbModal,
     private dragulaService: DragulaService,
+    @Inject(DOCUMENT) document: Document,
   ) {
+    this.origin = document.location.origin;
     dragulaService.createGroup('TASKS', {
       moves(el, container, handle) {
         return handle.classList.contains('handle');
@@ -167,5 +169,13 @@ export class CreateComponent implements OnInit, AfterViewInit {
 
     const points = result.points;
     return points === 0 ? 'danger' : 'success';
+  }
+
+  getSolveLink(origin: boolean): string {
+    return `${origin ? this.origin : ''}/assignments/${this.id}`;
+  }
+
+  getSolutionsLink(origin: boolean): string {
+    return `${origin ? this.origin : ''}/assignments/${this.id}/solutions`;
   }
 }
