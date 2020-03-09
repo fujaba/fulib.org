@@ -206,7 +206,18 @@ export class SolutionService {
 
   getComments(assignment: Assignment | string, id: string): Observable<Comment[]> {
     const assignmentID = asID(assignment);
-    return this.http.get<{ children: Comment[] }>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${id}/comments`).pipe(
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    const token = this.getToken(assignmentID, id);
+    if (token) {
+      headers['Solution-Token'] = token;
+    }
+    const assignmentToken = this.assignmentService.getToken(assignmentID);
+    if (assignmentToken) {
+      headers['Assignment-Token'] = assignmentToken;
+    }
+    return this.http.get<{ children: Comment[] }>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${id}/comments`, {headers}).pipe(
       map(result => {
         for (let comment of result.children) {
           comment.parent = id;
@@ -217,7 +228,19 @@ export class SolutionService {
   }
 
   postComment(solution: Solution, comment: Comment): Observable<Comment> {
-    return this.http.post<CommentResponse>(`${environment.apiURL}/assignments/${solution.assignment.id}/solutions/${solution.id}/comments`, comment).pipe(
+    const assignmentID = solution.assignment.id;
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    const token = this.getToken(assignmentID, solution.id);
+    if (token) {
+      headers['Solution-Token'] = token;
+    }
+    const assignmentToken = this.assignmentService.getToken(assignmentID);
+    if (assignmentToken) {
+      headers['Assignment-Token'] = assignmentToken;
+    }
+    return this.http.post<CommentResponse>(`${environment.apiURL}/assignments/${solution.assignment.id}/solutions/${solution.id}/comments`, comment, {headers}).pipe(
       map(response => {
         const result: Comment = {
           ...comment,
