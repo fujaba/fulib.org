@@ -38,22 +38,30 @@ export class SolutionListComponent implements OnInit {
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(params => {
       this.assignmentID = params.aid;
-      this.assignmentService.get(this.assignmentID).subscribe(assignment => {
-        this.assignment = assignment;
-        this.totalPoints = this.sumPoints(assignment.tasks);
-      });
-      this.solutionService.getAll(this.assignmentID).pipe(
-        catchError(err => {
-          if (err.status === 401) {
-            this.tokenModal.open();
-            return EMPTY;
-          }
-          throw err;
-        }),
-      ).subscribe(solutions => {
-        this.solutions = solutions;
-        this.updateSearch();
-      });
+      this.loadAssignment();
+      this.loadSolutions();
+    });
+  }
+
+  private loadAssignment() {
+    this.assignmentService.get(this.assignmentID).subscribe(assignment => {
+      this.assignment = assignment;
+      this.totalPoints = this.sumPoints(assignment.tasks);
+    });
+  }
+
+  private loadSolutions() {
+    this.solutionService.getAll(this.assignmentID).pipe(
+      catchError(err => {
+        if (err.status === 401) {
+          this.tokenModal.open();
+          return EMPTY;
+        }
+        throw err;
+      }),
+    ).subscribe(solutions => {
+      this.solutions = solutions;
+      this.updateSearch();
     });
   }
 
@@ -161,5 +169,6 @@ export class SolutionListComponent implements OnInit {
 
   setToken(assignmentToken: string): void {
     this.assignmentService.setToken(this.assignmentID, assignmentToken);
+    this.loadSolutions();
   }
 }
