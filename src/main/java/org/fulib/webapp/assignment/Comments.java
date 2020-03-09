@@ -39,6 +39,7 @@ public class Comments
 		result.put(Comment.PROPERTY_id, commentID);
 		result.put(Comment.PROPERTY_timeStamp, timeStamp.toString());
 		result.put(Comment.PROPERTY_html, html);
+		result.put(Comment.PROPERTY_distinguished, privileged);
 
 		return result.toString(2);
 	}
