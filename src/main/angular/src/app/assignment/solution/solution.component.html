@@ -55,6 +55,9 @@
         <div class="card">
           <div class="card-header">
             {{comment.author}}
+            <span *ngIf="comment.distinguished" class="badge badge-primary" ngbTooltip="Assignment Authority">
+              &#10003;
+            </span>
             &#8226;
             <a href="mailto:{{comment.email}}">{{comment.email}}</a>
             &#8226;

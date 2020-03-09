@@ -10,4 +10,6 @@ export default class Comment {
 
   markdown: string;
   html?: string;
+
+  distinguished?: boolean;
 }
