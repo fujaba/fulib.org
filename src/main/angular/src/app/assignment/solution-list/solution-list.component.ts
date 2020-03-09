@@ -23,7 +23,7 @@ export class SolutionListComponent implements OnInit {
   assignment?: Assignment;
   totalPoints?: number;
   solutions?: Solution[];
-  searchText: string = '';
+  searchText = '';
   filteredSolutions?: Solution[];
 
   solutionCollapsed = true;
@@ -61,7 +61,7 @@ export class SolutionListComponent implements OnInit {
     return this.sumPoints(solution.results);
   }
 
-  private sumPoints(arr: {points: number}[]): number {
+  private sumPoints(arr: { points: number }[]): number {
     return arr.reduce((acc, item) => acc + item.points, 0);
   }
 
@@ -113,12 +113,13 @@ export class SolutionListComponent implements OnInit {
     return false;
   }
 
-  typeahead = (text$: Observable<string>): Observable<string[]> =>
-    text$.pipe(
+  typeahead = (text$: Observable<string>): Observable<string[]> => {
+    return text$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
       map(searchInput => this.autoComplete(searchInput)),
     );
+  }
 
   formatTypeahead = (suggestion: string): string => {
     const lastSpaceIndex = suggestion.lastIndexOf(' ');
@@ -126,7 +127,7 @@ export class SolutionListComponent implements OnInit {
       return '... ' + suggestion.substring(lastSpaceIndex + 1);
     }
     return suggestion;
-  };
+  }
 
   private autoComplete(searchInput: string): string[] {
     const lastSpaceIndex = searchInput.lastIndexOf(' ');
@@ -139,8 +140,7 @@ export class SolutionListComponent implements OnInit {
       const propertyPrefix = propertyName + ':';
       if (propertyName.startsWith(lastWord)) {
         results.push(prefix + propertyPrefix);
-      }
-      else if (lastWord.startsWith(propertyPrefix)) {
+      } else if (lastWord.startsWith(propertyPrefix)) {
         const possibleValues = this.collectAllValues(propertyName).slice(0, 10);
         results.push(...possibleValues.map(v => prefix + propertyPrefix + v.replace(' ', '+')));
       }
@@ -150,7 +150,7 @@ export class SolutionListComponent implements OnInit {
 
   private collectAllValues(propertyName: string): string[] {
     const valueSet = new Set<string>();
-    for (let solution of this.solutions) {
+    for (const solution of this.solutions) {
       const propertyValue = solution[propertyName] as string;
       if (propertyValue) {
         valueSet.add(propertyValue);
