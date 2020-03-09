@@ -16,9 +16,7 @@
         {{assignment.title}}
       </h3>
       <p class="text-muted">
-        by {{assignment.author}}
-        &mdash;
-        <a href="mailto:{{assignment.email}}">{{assignment.email}}</a>
+        by <app-author-name [name]="assignment.author" [email]="assignment.email"></app-author-name>
         &mdash;
         Deadline: {{assignment.deadline | date:'medium'}}
       </p>

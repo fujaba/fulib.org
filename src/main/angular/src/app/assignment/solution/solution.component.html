@@ -54,12 +54,10 @@
       <div class="timeline-item-body">
         <div class="card">
           <div class="card-header">
-            {{comment.author}}
+            <app-author-name [name]="comment.author" [email]="comment.email"></app-author-name>
             <span *ngIf="comment.distinguished" class="badge badge-primary" ngbTooltip="Assignment Authority">
               &#10003;
             </span>
-            &#8226;
-            <a href="mailto:{{comment.email}}">{{comment.email}}</a>
             &#8226;
             <span class="text-muted">{{comment.timeStamp | date:'medium'}}</span>
           </div>

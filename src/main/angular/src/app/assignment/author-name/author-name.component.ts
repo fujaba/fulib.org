@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-author-name',
@@ -6,8 +6,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./author-name.component.scss']
 })
 export class AuthorNameComponent implements OnInit {
+  @Input() name: string;
+  @Input() email: string;
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit() {
   }
