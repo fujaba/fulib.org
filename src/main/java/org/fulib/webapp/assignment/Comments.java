@@ -1,6 +1,7 @@
 package org.fulib.webapp.assignment;
 
 import org.fulib.webapp.assignment.model.Comment;
+import org.fulib.webapp.assignment.model.Solution;
 import org.fulib.webapp.mongo.Mongo;
 import org.fulib.webapp.tool.MarkdownUtil;
 import org.json.JSONArray;
@@ -17,18 +18,19 @@ public class Comments
 	{
 		final Instant timeStamp = Instant.now();
 
-		final String parentID = request.params("solutionID");
-
-		// TODO parentID validation (is there an assignment, solution, or comment with that ID?)
+		final String solutionID = request.params("solutionID");
+		final Solution solution = Solutions.getSolutionOr404(solutionID);
+		final boolean privileged = Solutions.checkPrivilege(request, solution);
 
 		final String commentID = IDGenerator.generateID();
 		final Comment comment = fromJson(commentID, new JSONObject(request.body()));
 
 		final String html = MarkdownUtil.renderHtml(comment.getMarkdown());
 
-		comment.setParent(parentID);
+		comment.setParent(solutionID);
 		comment.setTimeStamp(timeStamp);
 		comment.setHtml(html);
+		comment.setDistinguished(privileged);
 
 		Mongo.get().saveComment(comment);
 
@@ -54,12 +56,14 @@ public class Comments
 
 	public static Object getChildren(Request request, Response response)
 	{
-		final String parentID = request.params("solutionID");
+		final String solutionID = request.params("solutionID");
+		final Solution solution = Solutions.getSolutionOr404(solutionID);
+		Solutions.checkPrivilege(request, solution);
 
 		JSONObject result = new JSONObject();
 		JSONArray array = new JSONArray();
 
-		final List<Comment> comments = Mongo.get().getComments(parentID);
+		final List<Comment> comments = Mongo.get().getComments(solutionID);
 		for (final Comment comment : comments)
 		{
 			array.put(toJson(comment));
@@ -80,6 +84,7 @@ public class Comments
 		obj.put(Comment.PROPERTY_email, comment.getEmail());
 		obj.put(Comment.PROPERTY_markdown, comment.getMarkdown());
 		obj.put(Comment.PROPERTY_html, comment.getHtml());
+		obj.put(Comment.PROPERTY_distinguished, comment.isDistinguished());
 		return obj;
 	}
 }
