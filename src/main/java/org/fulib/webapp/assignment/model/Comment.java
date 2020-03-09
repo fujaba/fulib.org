@@ -16,6 +16,7 @@ public class Comment
 	public static final String PROPERTY_email = "email";
 	public static final String PROPERTY_markdown = "markdown";
 	public static final String PROPERTY_html = "html";
+	public static final String PROPERTY_distinguished = "distinguished";
 
 	// =============== Fields ===============
 
@@ -30,6 +31,8 @@ public class Comment
 
 	private String markdown;
 	private String html;
+
+	private boolean distinguished;
 
 	// =============== Constructors ===============
 
@@ -103,5 +106,15 @@ public class Comment
 	public void setHtml(String html)
 	{
 		this.html = html;
+	}
+
+	public boolean isDistinguished()
+	{
+		return this.distinguished;
+	}
+
+	public void setDistinguished(boolean distinguished)
+	{
+		this.distinguished = distinguished;
 	}
 }
