@@ -92,3 +92,5 @@
     Loading Solutions...
   </p>
 </div>
+
+<app-token-modal #tokenModal [solution]="false" (submit)="setToken($event.assignmentToken)"></app-token-modal>

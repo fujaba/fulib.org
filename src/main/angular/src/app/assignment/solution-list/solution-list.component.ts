@@ -1,12 +1,13 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {Observable} from 'rxjs';
-import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
+import {EMPTY, Observable} from 'rxjs';
+import {catchError, debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 
 import Assignment from '../model/assignment';
 import {AssignmentService} from '../assignment.service';
 import Solution from '../model/solution';
 import {SolutionService} from '../solution.service';
+import {TokenModalComponent} from '../token-modal/token-modal.component';
 
 @Component({
   selector: 'app-solution-list',
@@ -14,6 +15,8 @@ import {SolutionService} from '../solution.service';
   styleUrls: ['./solution-list.component.scss']
 })
 export class SolutionListComponent implements OnInit {
+  @ViewChild('tokenModal', {static: true}) tokenModal: TokenModalComponent;
+
   readonly searchableProperties: (keyof Solution)[] = ['name', 'studentID', 'email', 'assignee'];
 
   assignmentID: string;
@@ -39,7 +42,15 @@ export class SolutionListComponent implements OnInit {
         this.assignment = assignment;
         this.totalPoints = this.sumPoints(assignment.tasks);
       });
-      this.solutionService.getAll(this.assignmentID).subscribe(solutions => {
+      this.solutionService.getAll(this.assignmentID).pipe(
+        catchError(err => {
+          if (err.status === 401) {
+            this.tokenModal.open();
+            return EMPTY;
+          }
+          throw err;
+        }),
+      ).subscribe(solutions => {
         this.solutions = solutions;
         this.updateSearch();
       });
@@ -146,5 +157,9 @@ export class SolutionListComponent implements OnInit {
       }
     }
     return [...valueSet].sort();
+  }
+
+  setToken(assignmentToken: string): void {
+    this.assignmentService.setToken(this.assignmentID, assignmentToken);
   }
 }
