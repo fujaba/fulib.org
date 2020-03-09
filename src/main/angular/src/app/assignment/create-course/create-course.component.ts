@@ -1,6 +1,9 @@
 import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DOCUMENT} from '@angular/common';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {Observable} from 'rxjs';
+import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
+
 import {DragulaService} from 'ng2-dragula';
 
 import Assignment from '../model/assignment';
@@ -28,6 +31,24 @@ export class CreateCourseComponent implements OnInit, OnDestroy {
 
   private readonly origin: string;
 
+  private ownAssignments: Assignment[] = [];
+
+  search = (text$: Observable<string>): Observable<string[]> => {
+    return text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      map(term => {
+        if (term.length < 2 || this.ownAssignments.length === 0) {
+          return [];
+        }
+        const lowerTerm = term.toLowerCase();
+        return this.ownAssignments
+          .filter(a => a.title.toLowerCase().indexOf(lowerTerm) >= 0)
+          .map(a => `${a.title} (${a.id})`);
+      }),
+    );
+  }
+
   constructor(
     private assignmentService: AssignmentService,
     private courseService: CourseService,
@@ -45,6 +66,9 @@ export class CreateCourseComponent implements OnInit, OnDestroy {
       }
     });
     this.loadDraft();
+    this.assignmentService.getOwn().subscribe(next => {
+      this.ownAssignments.push(next);
+    });
   }
 
   ngOnDestroy(): void {
@@ -92,10 +116,10 @@ export class CreateCourseComponent implements OnInit, OnDestroy {
   }
 
   getNewID(): string {
-    const pattern = /^.*assignments\/([\w-]+)/;
+    const pattern = /^.*(?:assignments\/([\w-]+)|\(([\w-]+)\))/;
     const match = pattern.exec(this.newAssignment);
     if (match) {
-      return match[1];
+      return match[1] || match[2];
     }
     return this.newAssignment;
   }

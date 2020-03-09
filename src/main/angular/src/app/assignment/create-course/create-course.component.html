@@ -25,8 +25,9 @@
       <label for="titleInput" class="col-sm-2 col-form-label">Assignments</label>
       <div class="col-sm-10">
         <div class="input-group mb-3">
-          <input type="text" class="form-control" id="assignmentInput" placeholder="ID or URL"
-                 [(ngModel)]="newAssignment" (change)="saveDraft()" (keyup.enter)="addAssignment()">
+          <input type="text" class="form-control" id="assignmentInput" placeholder="Start typing to search your assignments or paste ID or URL"
+                 [(ngModel)]="newAssignment" [ngbTypeahead]="search"
+                 (change)="saveDraft()" (keyup.enter)="addAssignment()">
           <div class="input-group-append">
             <button class="btn btn-outline-secondary" type="button" (click)="addAssignment()">+</button>
           </div>
