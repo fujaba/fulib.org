@@ -119,20 +119,20 @@ export class SolutionService {
         continue;
       }
 
-      const assignment = match[1] as string;
-      if (assignmentID && assignment !== assignmentID) {
+      const matchedAssignmentID = match[1] as string;
+      if (assignmentID && matchedAssignmentID !== assignmentID) {
         continue;
       }
 
       const id = match[2] as string;
-      ids.push({assignment, id});
+      ids.push({assignment: matchedAssignmentID, id});
     }
 
     return ids;
   }
 
   getOwn(assignment?: Assignment | string): Observable<Solution> {
-    return of(...this.getOwnIds(assignment)).pipe(flatMap(({assignment, id}) => this.get(assignment, id)))
+    return of(...this.getOwnIds(assignment)).pipe(flatMap(({assignment: assignmentID, id}) => this.get(assignmentID, id)));
   }
 
   // --------------- HTTP Methods ---------------
@@ -160,14 +160,8 @@ export class SolutionService {
     const headers = {
       'Content-Type': 'application/json',
     };
-    const token = this.getToken(assignmentID, id);
-    if (token) {
-      headers['Solution-Token'] = token;
-    }
-    const assignmentToken = this.assignmentService.getToken(assignmentID);
-    if (assignmentToken) {
-      headers['Assignment-Token'] = assignmentToken;
-    }
+    const token = this.addSolutionToken(headers, assignmentID, id);
+    this.addAssignmentToken(headers, assignmentID);
     return this.http.get<Solution>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${id}`, {headers}).pipe(
       map(solution => {
         solution.id = id;
@@ -186,13 +180,10 @@ export class SolutionService {
     const headers = {
       'Content-Type': 'application/json',
     };
-    const assignmentToken = this.assignmentService.getToken(assignmentID);
-    if (assignmentToken) {
-      headers['Assignment-Token'] = assignmentToken;
-    }
+    this.addAssignmentToken(headers, assignmentID);
     return this.http.get<{ solutions: Solution[] }>(`${environment.apiURL}/assignments/${assignmentID}/solutions`, {headers}).pipe(
       map(result => {
-        for (let solution of result.solutions) {
+        for (const solution of result.solutions) {
           solution.token = this.getToken(assignmentID, solution.id);
         }
         return result.solutions;
@@ -209,17 +200,11 @@ export class SolutionService {
     const headers = {
       'Content-Type': 'application/json',
     };
-    const token = this.getToken(assignmentID, id);
-    if (token) {
-      headers['Solution-Token'] = token;
-    }
-    const assignmentToken = this.assignmentService.getToken(assignmentID);
-    if (assignmentToken) {
-      headers['Assignment-Token'] = assignmentToken;
-    }
+    this.addSolutionToken(headers, assignmentID, id);
+    this.addAssignmentToken(headers, assignmentID);
     return this.http.get<{ children: Comment[] }>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${id}/comments`, {headers}).pipe(
       map(result => {
-        for (let comment of result.children) {
+        for (const comment of result.children) {
           comment.parent = id;
         }
         return result.children;
@@ -232,14 +217,8 @@ export class SolutionService {
     const headers = {
       'Content-Type': 'application/json',
     };
-    const token = this.getToken(assignmentID, solution.id);
-    if (token) {
-      headers['Solution-Token'] = token;
-    }
-    const assignmentToken = this.assignmentService.getToken(assignmentID);
-    if (assignmentToken) {
-      headers['Assignment-Token'] = assignmentToken;
-    }
+    this.addSolutionToken(headers, assignmentID, solution.id);
+    this.addAssignmentToken(headers, assignmentID);
     return this.http.post<CommentResponse>(`${environment.apiURL}/assignments/${solution.assignment.id}/solutions/${solution.id}/comments`, comment, {headers}).pipe(
       map(response => {
         const result: Comment = {
@@ -258,14 +237,8 @@ export class SolutionService {
     const headers = {
       'Content-Type': 'application/json',
     };
-    const token = this.getToken(assignmentID, id);
-    if (token) {
-      headers['Solution-Token'] = token;
-    }
-    const assignmentToken = this.assignmentService.getToken(assignmentID);
-    if (assignmentToken) {
-      headers['Assignment-Token'] = assignmentToken;
-    }
+    this.addSolutionToken(headers, assignmentID, id);
+    this.addAssignmentToken(headers, assignmentID);
     return this.http.get<{ gradings: TaskGrading[] }>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${id}/gradings`, {headers}).pipe(
       map(response => response.gradings),
       catchError(err => {
@@ -281,10 +254,7 @@ export class SolutionService {
     const headers = {
       'Content-Type': 'application/json',
     };
-    const assignmentToken = this.assignmentService.getToken(assignmentID);
-    if (assignmentToken) {
-      headers['Assignment-Token'] = assignmentToken;
-    }
+    this.addAssignmentToken(headers, assignmentID);
     return this.http.post<TaskGradingResponse>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${solutionID}/gradings`, grading, {headers}).pipe(
       map(response => {
         const result: TaskGrading = {
@@ -305,10 +275,23 @@ export class SolutionService {
       assignee,
     };
     const headers = {};
-    const assignmentToken = this.assignmentService.getToken(solution.assignment.id);
+    const assignmentID = solution.assignment.id;
+    this.addAssignmentToken(headers, assignmentID);
+    return this.http.put<void>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${solution.id}/assignee`, body, {headers});
+  }
+
+  private addAssignmentToken(headers: any, assignmentID: string) {
+    const assignmentToken = this.assignmentService.getToken(assignmentID);
     if (assignmentToken) {
       headers['Assignment-Token'] = assignmentToken;
     }
-    return this.http.put<void>(`${environment.apiURL}/assignments/${solution.assignment.id}/solutions/${solution.id}/assignee`, body, {headers});
+  }
+
+  private addSolutionToken(headers: any, assignmentID: string, solutionID: string): string {
+    const token = this.getToken(assignmentID, solutionID);
+    if (token) {
+      headers['Solution-Token'] = token;
+    }
+    return token;
   }
 }
