@@ -9,7 +9,7 @@ export default class Assignment {
   descriptionHtml?: string;
   author: string;
   email: string;
-  deadline: Date;
+  deadline: Date | null;
 
   tasks: Task[];
   solution: string;

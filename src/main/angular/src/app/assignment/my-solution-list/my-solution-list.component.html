@@ -10,8 +10,10 @@
       </h3>
       <p class="text-muted">
         by <app-author-name [name]="assignment.author" [email]="assignment.email"></app-author-name>
-        &mdash;
-        Deadline: {{assignment.deadline | date:'medium'}}
+        <ng-container *ngIf="assignment.deadline">
+          &mdash;
+          Deadline: {{assignment.deadline | date:'medium'}}
+        </ng-container>
       </p>
       <p>
 

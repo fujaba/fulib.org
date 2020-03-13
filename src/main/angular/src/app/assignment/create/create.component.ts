@@ -82,6 +82,9 @@ export class CreateComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getAssignment(): Assignment {
+    const deadline = this.deadlineDate && this.deadlineTime
+      ? new Date(this.deadlineDate.toDateString() + ' ' + this.deadlineTime.toTimeString())
+      : null;
     return {
       id: undefined,
       token: undefined,
@@ -90,7 +93,7 @@ export class CreateComponent implements OnInit, AfterViewInit, OnDestroy {
       descriptionHtml: undefined,
       author: this.author,
       email: this.email,
-      deadline: new Date(this.deadlineDate.toDateString() + ' ' + this.deadlineTime.toTimeString()),
+      deadline,
       solution: this.solution,
       templateSolution: this.templateSolution,
       tasks: this.tasks,

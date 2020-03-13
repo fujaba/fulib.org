@@ -71,13 +71,17 @@
         <td>{{solution.studentID}}</td>
         <td><a href="mailto:{{solution.email}}">{{solution.email}}</a></td>
         <td>
-          <span *ngIf="assignment.deadline < solution.timeStamp"
-            class="text-danger" ngbTooltip="Submitted after Deadline">
+          <ng-container
+            *ngIf="assignment.deadline && assignment.deadline < solution.timeStamp; then thenBlock else elseBlock">
+          </ng-container>
+          <ng-template #thenBlock>
+            <span class="text-danger" ngbTooltip="Submitted after Deadline">
+              {{solution.timeStamp | date:'medium'}}
+            </span>
+          </ng-template>
+          <ng-template #elseBlock>
             {{solution.timeStamp | date:'medium'}}
-          </span>
-          <span *ngIf="solution.timeStamp <= assignment.deadline">
-            {{solution.timeStamp | date:'medium'}}
-          </span>
+          </ng-template>
         </td>
         <td><span class="badge badge-primary badge-pill">
           {{totalResultPoints(solution)}} / {{totalPoints}}

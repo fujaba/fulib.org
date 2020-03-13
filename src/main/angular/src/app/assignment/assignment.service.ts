@@ -61,7 +61,7 @@ export class AssignmentService {
   // --------------- JSON Conversion ---------------
 
   fromJson(json: string): Assignment {
-    const reviver = (k, v) => k === 'deadline' ? new Date(v) : v;
+    const reviver = (k, v) => k === 'deadline' && v ? new Date(v) : v;
     const data = JSON.parse(json, reviver);
     const assignment = new Assignment();
     Object.assign(assignment, data);
@@ -69,8 +69,7 @@ export class AssignmentService {
   }
 
   toJson(assignment: Assignment, space?: string): string {
-    const replacer = (k, v) => v instanceof Date ? v.toISOString() : v;
-    return JSON.stringify(assignment, replacer, space);
+    return JSON.stringify(assignment, undefined, space);
   }
 
   // --------------- Import/Export ---------------
