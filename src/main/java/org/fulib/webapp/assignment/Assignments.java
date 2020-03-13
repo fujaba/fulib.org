@@ -80,7 +80,11 @@ public class Assignments
 		assignment.setDescription(obj.getString(Assignment.PROPERTY_description));
 		assignment.setAuthor(obj.getString(Assignment.PROPERTY_author));
 		assignment.setEmail(obj.getString(Assignment.PROPERTY_email));
-		assignment.setDeadline(Instant.parse(obj.getString(Assignment.PROPERTY_deadline)));
+		final String deadline = obj.optString(Assignment.PROPERTY_deadline);
+		if (deadline != null)
+		{
+			assignment.setDeadline(Instant.parse(deadline));
+		}
 		assignment.setSolution(obj.getString(Assignment.PROPERTY_solution));
 		assignment.setTemplateSolution(obj.getString(Assignment.PROPERTY_templateSolution));
 
@@ -127,7 +131,11 @@ public class Assignments
 		obj.put(Assignment.PROPERTY_descriptionHtml, assignment.getDescriptionHtml());
 		obj.put(Assignment.PROPERTY_author, assignment.getAuthor());
 		obj.put(Assignment.PROPERTY_email, assignment.getEmail());
-		obj.put(Assignment.PROPERTY_deadline, assignment.getDeadline().toString());
+		final Instant deadline = assignment.getDeadline();
+		if (deadline != null)
+		{
+			obj.put(Assignment.PROPERTY_deadline, deadline.toString());
+		}
 		obj.put(Assignment.PROPERTY_templateSolution, assignment.getTemplateSolution());
 		// do NOT include token!
 
