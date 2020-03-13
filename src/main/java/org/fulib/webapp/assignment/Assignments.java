@@ -80,7 +80,7 @@ public class Assignments
 		assignment.setDescription(obj.getString(Assignment.PROPERTY_description));
 		assignment.setAuthor(obj.getString(Assignment.PROPERTY_author));
 		assignment.setEmail(obj.getString(Assignment.PROPERTY_email));
-		final String deadline = obj.optString(Assignment.PROPERTY_deadline);
+		final String deadline = obj.optString(Assignment.PROPERTY_deadline, null);
 		if (deadline != null)
 		{
 			assignment.setDeadline(Instant.parse(deadline));
