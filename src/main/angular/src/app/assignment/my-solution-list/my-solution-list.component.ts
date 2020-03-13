@@ -19,7 +19,8 @@ export class MySolutionListComponent implements OnInit {
   }
 
   get assignments(): Assignment[] {
-    return Array.from(this._assignments.values()).map(a => a.assignment).filter(a => a);
+    // TODO see sort performance concern in assignment list component
+    return Array.from(this._assignments.values()).map(a => a.assignment).filter(a => a).sort(Assignment.comparator);
   }
 
   getSolutions(assignment: Assignment): Solution[] {
@@ -27,10 +28,7 @@ export class MySolutionListComponent implements OnInit {
   }
 
   ngOnInit() {
-    for (let ids of this.solutionService.getOwnIds()) {
-      const aid = ids.assignment;
-      const sid = ids.id;
-
+    for (const {assignment: aid, id: sid} of this.solutionService.getOwnIds()) {
       let holder = this._assignments.get(aid);
       if (!holder) {
         holder = {
@@ -42,7 +40,11 @@ export class MySolutionListComponent implements OnInit {
         this.assignmentService.get(aid).subscribe(assignment => holder.assignment = assignment);
       }
 
-      this.solutionService.get(aid, sid).subscribe(solution => holder.solutions.push(solution));
+      this.solutionService.get(aid, sid).subscribe(solution => {
+        holder.solutions.push(solution);
+        // TODO see sort performance concern in assignment list component
+        holder.solutions.sort((a, b) => new Date(a.timeStamp).getTime() - new Date(b.timeStamp).getTime());
+      });
     }
   }
 }
