@@ -46,6 +46,9 @@
       <div class="col-sm-3">
         <input type="date" class="form-control" id="deadlineDateInput"
                [(ngModel)]="deadlineDate" useValueAsDate (change)="saveDraft()">
+        <small class="text-muted">
+          Optional.
+        </small>
       </div>
       <label for="deadlineTimeInput" class="sr-only">Time</label>
       <div class="col-sm-2">
