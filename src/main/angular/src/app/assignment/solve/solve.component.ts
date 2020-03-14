@@ -54,7 +54,7 @@ export class SolveComponent implements OnInit, AfterViewInit, OnDestroy {
     this.origin = document.location.origin;
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.route.params.subscribe(params => {
       const assignment$ = this.assignmentService.get(params.aid);
       assignment$.subscribe(result => {
@@ -77,7 +77,7 @@ export class SolveComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     this.solutionInput.contentChange.pipe(
       debounceTime(1000),
       distinctUntilChanged(),
@@ -86,7 +86,7 @@ export class SolveComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.solutionInput.contentChange.unsubscribe();
   }
 
@@ -130,7 +130,7 @@ export class SolveComponent implements OnInit, AfterViewInit, OnDestroy {
     this.solutionService.setDraft(this.assignment, this.solution);
   }
 
-  check() {
+  check(): void {
     this.saveDraft();
     this.checking = true;
 
@@ -140,13 +140,13 @@ export class SolveComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  submit() {
+  submit(): void {
     this.submitting = true;
     this.solutionService.submit(this.getSolution()).subscribe(result => {
       this.setSolution(result);
       this.modalService.open(this.successModal, {ariaLabelledBy: 'successModalLabel', size: 'xl'});
       this.submitting = false;
-    })
+    });
   }
 
   getLink(origin: boolean): string {
