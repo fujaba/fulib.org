@@ -49,7 +49,7 @@
       </div>
       <label for="deadlineTimeInput" class="sr-only">Time</label>
       <div class="col-sm-2">
-        <input type="time" class="form-control" id="deadlineTimeInput"
+        <input type="time" class="form-control" id="deadlineTimeInput" [disabled]="!deadlineDate"
                [(ngModel)]="deadlineTime" useValueAsDate (change)="saveDraft()">
       </div>
     </div>
