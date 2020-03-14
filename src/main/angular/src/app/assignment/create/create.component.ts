@@ -81,10 +81,17 @@ export class CreateComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  getDeadline(): Date | null {
+    if (this.deadlineDate && this.deadlineTime) {
+      return new Date(this.deadlineDate.toDateString() + ' ' + this.deadlineTime.toTimeString());
+    } else if (this.deadlineDate) {
+      return this.deadlineDate;
+    } else {
+      return null;
+    }
+  }
+
   getAssignment(): Assignment {
-    const deadline = this.deadlineDate && this.deadlineTime
-      ? new Date(this.deadlineDate.toDateString() + ' ' + this.deadlineTime.toTimeString())
-      : null;
     return {
       id: undefined,
       token: undefined,
@@ -93,7 +100,7 @@ export class CreateComponent implements OnInit, AfterViewInit, OnDestroy {
       descriptionHtml: undefined,
       author: this.author,
       email: this.email,
-      deadline,
+      deadline: this.getDeadline(),
       solution: this.solution,
       templateSolution: this.templateSolution,
       tasks: this.tasks,
