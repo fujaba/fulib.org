@@ -67,6 +67,7 @@ public class Assignments
 
 		responseJson.put(Assignment.PROPERTY_id, id);
 		responseJson.put(Assignment.PROPERTY_token, token);
+		responseJson.put(Assignment.PROPERTY_descriptionHtml, descriptionHtml);
 
 		return responseJson.toString(2);
 	}
