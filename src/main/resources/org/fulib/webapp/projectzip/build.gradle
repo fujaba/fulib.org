@@ -22,6 +22,9 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.fulib/fulibTools
 	testCompile group: 'org.fulib', name: 'fulibTools', version: '$$fulibToolsVersion$$'
 
+	// https://mvnrepository.com/artifact/org.fulib/fulibTables
+	testCompile group: 'org.fulib', name: 'fulibTables', version: '$$fulibTablesVersion$$'
+
 	// https://mvnrepository.com/artifact/org.fulib/fulibMockups
 	testCompile group: 'org.fulib', name: 'fulibMockups', version: '$$fulibMockupsVersion$$'
 
