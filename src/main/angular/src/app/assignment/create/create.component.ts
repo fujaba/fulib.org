@@ -17,6 +17,7 @@ import TaskResult from '../model/task-result';
 })
 export class CreateComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('solutionInput', {static: true}) solutionInput;
+  @ViewChild('templateSolutionInput', {static: true}) templateSolutionInput;
   @ViewChild('successModal', {static: true}) successModal;
 
   importFile: File = null;
@@ -70,6 +71,9 @@ export class CreateComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.dragulaService.destroy('TASKS');
+
+    this.solutionInput.contentChange.unsubscribe();
+    this.templateSolutionInput.contentChange.unsubscribe();
   }
 
   ngAfterViewInit(): void {
@@ -78,6 +82,13 @@ export class CreateComponent implements OnInit, AfterViewInit, OnDestroy {
       distinctUntilChanged(),
     ).subscribe(() => {
       this.check();
+    });
+
+    this.templateSolutionInput.contentChange.pipe(
+      debounceTime(1000),
+      distinctUntilChanged(),
+    ).subscribe(() => {
+      this.saveDraft();
     });
   }
 
