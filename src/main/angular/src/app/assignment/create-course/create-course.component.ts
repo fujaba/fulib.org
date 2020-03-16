@@ -106,6 +106,18 @@ export class CreateCourseComponent implements OnInit, OnDestroy {
     this.courseService.draft = this.getCourse();
   }
 
+  onImport(file: File): void {
+    this.courseService.upload(file).subscribe(result => {
+      this.setCourse(result);
+      this.saveDraft();
+    });
+  }
+
+  onExport(): void {
+    const course = this.getCourse();
+    this.courseService.download(course);
+  }
+
   addAssignment() {
     const newID = this.getNewID();
     this.assignmentService.get(newID).subscribe(assignment => {
