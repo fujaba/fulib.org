@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 
 @Component({
   selector: 'app-import-export',
@@ -7,7 +7,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ImportExportComponent implements OnInit {
 
-  constructor() { }
+  importFile: File = null;
+
+  @Output() import = new EventEmitter<File>();
+  @Output() export = new EventEmitter<void>();
+
+  constructor() {
+  }
 
   ngOnInit() {
   }

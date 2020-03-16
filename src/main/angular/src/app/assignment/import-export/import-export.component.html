@@ -1,1 +1,15 @@
-<p>import-export works!</p>
+<div class="form-inline">
+  <div class="input-group mb-2 mr-sm-2">
+    <div class="custom-file">
+      <input type="file" class="custom-file-input" id="importFile" aria-describedby="importFileLabel"
+             (change)="importFile = $event.target.files[0]">
+      <label class="custom-file-label" for="importFile" id="importFileLabel">
+        {{importFile ? importFile.name : 'Choose file'}}
+      </label>
+    </div>
+    <div class="input-group-append">
+      <button type="button" class="btn btn-primary" (click)="import.emit(this.importFile)">Import</button>
+    </div>
+  </div>
+  <button type="button" class="btn btn-primary mb-2 mr-sm-2" (click)="export.emit()">Export</button>
+</div>
