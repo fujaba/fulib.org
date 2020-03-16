@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable, EMPTY} from 'rxjs';
+import {EMPTY, Observable} from 'rxjs';
 import {flatMap} from 'rxjs/operators';
 
 import {PrivacyService} from './privacy.service';
@@ -10,6 +10,7 @@ export class Versions {
   'fulib.org': string;
   fulib: string;
   fulibTools: string;
+  fulibTables: string;
   fulibScenarios: string;
   fulibMockups: string;
   fulibGradle: string;
@@ -26,7 +27,15 @@ export class ChangelogService {
   }
 
   public get repos(): (keyof Versions)[] {
-    return ['fulib.org', 'fulib', 'fulibTools', 'fulibScenarios', 'fulibMockups', 'fulibGradle'];
+    return [
+      'fulib.org',
+      'fulib',
+      'fulibTools',
+      'fulibTables',
+      'fulibScenarios',
+      'fulibMockups',
+      'fulibGradle',
+    ];
   }
 
   public get currentVersions(): Versions {
