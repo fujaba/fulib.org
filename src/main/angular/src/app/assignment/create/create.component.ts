@@ -20,8 +20,6 @@ export class CreateComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('templateSolutionInput', {static: true}) templateSolutionInput;
   @ViewChild('successModal', {static: true}) successModal;
 
-  importFile: File = null;
-
   collapse = {
     solution: false,
     templateSolution: false,
@@ -145,8 +143,8 @@ export class CreateComponent implements OnInit, AfterViewInit, OnDestroy {
     this.assignmentService.draft = this.getAssignment();
   }
 
-  onImport(): void {
-    this.assignmentService.upload(this.importFile).subscribe(result => {
+  onImport(file: File): void {
+    this.assignmentService.upload(file).subscribe(result => {
       this.setAssignment(result);
       this.saveDraft();
       this.results = undefined;
