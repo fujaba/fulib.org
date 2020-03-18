@@ -63,6 +63,14 @@
           <span class="badge badge-{{getColorClass(id) || 'secondary'}}">
             {{task.points === 0 || task.points > 0 ? task.points : '?'}}
           </span>
+          <a role="button" style="cursor: pointer" class="text-primary"
+             *ngIf="results && results[id].output"
+             [ngbPopover]="outputPopoverContent" popoverTitle="Output" placement="right" autoClose="outside" container="body">
+            View Output
+          </a>
+          <ng-template #outputPopoverContent>
+            <pre>{{results[id].output}}</pre>
+          </ng-template>
         </div>
         <app-collapse-button class="ml-auto" [(collapsed)]="task.collapsed" (collapsedChange)="saveDraft()">
         </app-collapse-button>
