@@ -141,3 +141,23 @@
 * Cleaned up the backend code.
 * Rewrote the frontend with Angular. #63
 * Overhauled the page footer. #64
+
+# fulib.org v1.2.0
+
+## New Features
+
++ Added Assignments and related functionality:
+  + Assignment creation form #48 #55 #62 #71 #72 #74 #78
+  + Assignment viewer #49 #61
+  + List of solutions for an assignment #50 #52 #57 #73
+  + Solution viewer #53 #54 #56 #58 #77
+  + List of created assignments #75
+  + List of own solutions #76
+  + Courses #70
+
+## Tool Updates
+
++ Added a dependency on FulibTables v1.3.0.
+* Updated to FulibScenarios v1.2.0.
+* Updated to FulibGradle v0.3.0.
+* Updated to Gradle v6.3.
