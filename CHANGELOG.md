@@ -161,3 +161,11 @@
 * Updated to FulibScenarios v1.2.0.
 * Updated to FulibGradle v0.3.0.
 * Updated to Gradle v6.3.
+
+# fulib.org v1.3.0
+
+## Tool Updates
+
+* Updated to FulibScenarios v1.3.0.
+* Updated to FulibGradle v0.4.0.
+* Downloaded Gradle Projects now use JUnit v4.13.
