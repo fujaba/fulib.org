@@ -5,7 +5,7 @@ plugins {
 	id 'application'
 	id 'maven-publish'
 	// https://plugins.gradle.org/plugin/org.fulib.fulibGradle
-	id 'org.fulib.fulibGradle' version '0.3.0'
+	id 'org.fulib.fulibGradle' version '0.4.0'
 	// https://plugins.gradle.org/plugin/de.clashsoft.simple-publish
 	id 'de.clashsoft.simple-publish' version '0.6.0'
 	// https://plugins.gradle.org/plugin/de.clashsoft.angular-gradle
