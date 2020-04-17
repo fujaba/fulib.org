@@ -7,7 +7,7 @@ plugins {
 	// https://plugins.gradle.org/plugin/org.fulib.fulibGradle
 	id 'org.fulib.fulibGradle' version '0.3.0'
 	// https://plugins.gradle.org/plugin/de.clashsoft.simple-publish
-	id 'de.clashsoft.simple-publish' version '0.3.0'
+	id 'de.clashsoft.simple-publish' version '0.6.0'
 	// https://plugins.gradle.org/plugin/de.clashsoft.angular-gradle
 	id 'de.clashsoft.angular-gradle' version '0.1.6'
 	// https://plugins.gradle.org/plugin/com.github.johnrengelman.shadow
@@ -24,14 +24,11 @@ description = 'The fulib.org website and Fulib Scenarios Web App'
 
 publishInfo {
 	websiteUrl = 'https://www.fulib.org/'
-	issueTrackerUrl = 'https://github.com/fujaba/fulib.org/issues'
-	vcsUrl = 'https://github.com/fujaba/fulib.org'
 	githubRepo = 'fujaba/fulib.org'
 	labels = [ 'fulib', 'scenarios', 'webapp', 'website' ]
 
 	license {
-		shortName = 'BSD 3-Clause'
-		longName = 'BSD 3-Clause "New" or "Revised" License'
+		name = 'BSD 3-Clause'
 		url = 'https://opensource.org/licenses/BSD-3-Clause'
 	}
 
