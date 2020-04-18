@@ -20,6 +20,7 @@ export class ConfigModalComponent implements OnInit {
   projectName: any;
   projectVersion: any;
   scenarioFileName: any;
+  decoratorClassName: string;
 
   constructor(
     private scenarioEditorService: ScenarioEditorService,
@@ -36,6 +37,7 @@ export class ConfigModalComponent implements OnInit {
     this.projectName = this.scenarioEditorService.projectName;
     this.projectVersion = this.scenarioEditorService.projectVersion;
     this.scenarioFileName = this.scenarioEditorService.scenarioFileName;
+    this.decoratorClassName = this.scenarioEditorService.decoratorClassName;
 
     this.modalService.open(this.content);
   }
@@ -45,6 +47,7 @@ export class ConfigModalComponent implements OnInit {
     this.scenarioEditorService.projectName = this.projectName;
     this.scenarioEditorService.projectVersion = this.projectVersion;
     this.scenarioEditorService.scenarioFileName = this.scenarioFileName;
+    this.scenarioEditorService.decoratorClassName = this.decoratorClassName;
   }
 
   downloadProjectZip(): void {
@@ -55,6 +58,7 @@ export class ConfigModalComponent implements OnInit {
       projectVersion: this.projectVersion,
       scenarioFileName: this.scenarioFileName,
       scenarioText: this.scenarioEditorService.storedScenario,
+      decoratorClassName: this.decoratorClassName,
     };
     this.scenarioEditorService.downloadZip(request).subscribe(blob => {
       saveAs(blob, `${this.projectName}.zip`);
