@@ -24,13 +24,16 @@ public class ProjectZip
 		final String projectName = jsonObject.getString("projectName");
 		final String projectVersion = jsonObject.getString("projectVersion");
 		final String bodyText = jsonObject.getString("scenarioText");
+		final String decoratorClassName = jsonObject.optString("decoratorClassName", null);
+
+		final String packageDir = packageName.replace('.', '/');
 
 		response.type("application/zip");
 		try (final ZipOutputStream zip = new ZipOutputStream(response.raw().getOutputStream()))
 		{
 			final byte[] buffer = new byte[8192];
 
-			zip.putNextEntry(new ZipEntry("src/main/scenarios/" + packageName.replace('.', '/') + "/" + fileName));
+			zip.putNextEntry(new ZipEntry("src/main/scenarios/" + packageDir + "/" + fileName));
 			zip.write(bodyText.getBytes(StandardCharsets.UTF_8));
 
 			copy("default.gitignore", ".gitignore", zip, buffer);
@@ -54,6 +57,18 @@ public class ProjectZip
 				final String result = content.replace("$$packageName$$", packageName)
 				                             .replace("$$projectVersion$$", projectVersion);
 				IOUtils.write(result, zip, StandardCharsets.UTF_8);
+			}
+
+			if (decoratorClassName != null && !decoratorClassName.isEmpty())
+			{
+				zip.putNextEntry(new ZipEntry("src/gen/java/" + packageDir + "/" + decoratorClassName + ".java"));
+				try (final InputStream input = ProjectZip.class.getResourceAsStream("Decorator.java"))
+				{
+					final String content = IOUtils.toString(input, StandardCharsets.UTF_8);
+					final String result = content.replace("$$packageName$$", packageName)
+					                             .replace("$$decoratorClassName$$", decoratorClassName);
+					IOUtils.write(result, zip, StandardCharsets.UTF_8);
+				}
 			}
 		}
 
