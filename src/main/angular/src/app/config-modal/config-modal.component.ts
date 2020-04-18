@@ -1,12 +1,12 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 
-import {saveAs} from 'file-saver'
+import {saveAs} from 'file-saver';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
-import {ScenarioEditorService} from "../scenario-editor.service";
+import {ScenarioEditorService} from '../scenario-editor.service';
 
-import ProjectZipRequest from "../model/project-zip-request";
-import {PrivacyService} from "../privacy.service";
+import ProjectZipRequest from '../model/project-zip-request';
+import {PrivacyService} from '../privacy.service';
 
 @Component({
   selector: 'app-config-modal',
@@ -17,9 +17,9 @@ export class ConfigModalComponent implements OnInit {
   @ViewChild('content', {static: true}) content;
 
   packageName: string;
-  projectName: any;
-  projectVersion: any;
-  scenarioFileName: any;
+  projectName: string;
+  projectVersion: string;
+  scenarioFileName: string;
   decoratorClassName: string;
 
   constructor(
@@ -29,7 +29,7 @@ export class ConfigModalComponent implements OnInit {
   ) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
   open(): void {
