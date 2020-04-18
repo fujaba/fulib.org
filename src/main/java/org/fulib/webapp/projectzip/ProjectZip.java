@@ -62,7 +62,7 @@ public class ProjectZip
 			if (decoratorClassName != null && !decoratorClassName.isEmpty())
 			{
 				zip.putNextEntry(new ZipEntry("src/gen/java/" + packageDir + "/" + decoratorClassName + ".java"));
-				try (final InputStream input = ProjectZip.class.getResourceAsStream("Decorator.java"))
+				try (final InputStream input = ProjectZip.class.getResourceAsStream("Decorator.java.txt"))
 				{
 					final String content = IOUtils.toString(input, StandardCharsets.UTF_8);
 					final String result = content.replace("$$packageName$$", packageName)
