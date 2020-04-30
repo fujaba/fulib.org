@@ -11,6 +11,7 @@ import {ChangelogService, Versions} from '../changelog.service';
 export class ChangelogComponent implements OnInit, AfterViewInit {
   @ViewChild('changelogModal', {static: true}) changelogModal;
 
+  currentVersions: Versions;
   lastUsedVersions: Versions;
   private _changelogs = new Versions();
 
@@ -31,6 +32,7 @@ export class ChangelogComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.lastUsedVersions = this.changelogService.lastUsedVersions;
+    this.currentVersions = this.changelogService.currentVersions;
   }
 
   ngAfterViewInit() {
@@ -95,7 +97,6 @@ export class ChangelogComponent implements OnInit, AfterViewInit {
   open(): void {
     const repos = this.changelogService.repos;
     this.activeRepo = repos[0];
-    this.lastUsedVersions = undefined;
 
     this.openModal();
 
