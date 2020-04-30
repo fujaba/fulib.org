@@ -74,19 +74,39 @@ export class ChangelogService {
     return this.http.post(`${environment.apiURL}/rendermarkdown`, md, {responseType: 'text'});
   }
 
-  private partialChangelog(fullChangelog: string, lastUsedVersion: string): string {
-    const pattern = `#.*${lastUsedVersion.replace(/\./g, '\\.')}\n`;
-    const versionIndex = fullChangelog.search(pattern);
-    if (versionIndex < 0) { // unknown version
-      return '';
+  private partialChangelog(fullChangelog: string, lastUsedVersion: string, currentVersion?: string): string {
+    let result = '';
+    let version = undefined;
+
+    loop: for (const line of fullChangelog.split('\n')) {
+      if (line.startsWith('# ')) { // indicating a version headline
+        if (line.includes(lastUsedVersion)) {
+          version = 'lastUsed'
+        }
+        else if (currentVersion && line.includes(currentVersion)) {
+          version = 'current';
+        }
+        else { // some other version
+          switch (version) {
+            case 'lastUsed': // the ones after lastUsed are new and therefore interesting
+              version = 'new';
+              break;
+            case 'current': // the ones after current are too new, and their features are not available, so they are not interesting
+              version = 'future';
+              break loop;
+          }
+        }
+      }
+
+      switch (version) {
+        case 'new':
+        case 'current':
+          result += line + '\n';
+          break;
+      }
     }
 
-    const nextLineIndex = fullChangelog.indexOf('\n', versionIndex); // must be > 0 because pattern ends with a line break
-    const nextVersionIndex = fullChangelog.indexOf('\n# ', nextLineIndex) + 1;
-    if (nextVersionIndex <= 0) { // i.e., indexOf returned < 0
-      return '';
-    }
-    return fullChangelog.substring(nextVersionIndex);
+    return result;
   }
 
   private replaceIssueLinks(repo: string, markdown: string): string {
@@ -95,10 +115,10 @@ export class ChangelogService {
     })
   }
 
-  getChangelog(repo: keyof Versions, lastUsedVersion?: string): Observable<string> {
+  getChangelog(repo: keyof Versions, lastUsedVersion?: string, currentVersion?: string): Observable<string> {
     return this.loadRawChangelog('fujaba/' + repo).pipe(
       flatMap(fullChangelog => {
-        const changelog = lastUsedVersion ? this.partialChangelog(fullChangelog, lastUsedVersion) : fullChangelog;
+        const changelog = lastUsedVersion ? this.partialChangelog(fullChangelog, lastUsedVersion, currentVersion) : fullChangelog;
         if (!changelog) { // already newest version
           return EMPTY;
         }

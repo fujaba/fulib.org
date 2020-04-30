@@ -47,6 +47,8 @@ export class ChangelogComponent implements OnInit, AfterViewInit {
       return;
     }
 
+    const currentVersions = this.changelogService.currentVersions;
+
     let open = false;
     for (const repo of this.changelogService.repos) {
       const lastUsedVersion = lastUsedVersions[repo];
@@ -55,8 +57,10 @@ export class ChangelogComponent implements OnInit, AfterViewInit {
         continue;
       }
 
+      const currentVersion = currentVersions[repo];
+
       this._changelogs[repo] = '';
-      this.changelogService.getChangelog(repo, lastUsedVersion).subscribe(changelog => {
+      this.changelogService.getChangelog(repo, lastUsedVersion, currentVersion).subscribe(changelog => {
         this._changelogs[repo] = changelog;
 
         if (!this.activeRepo) {
