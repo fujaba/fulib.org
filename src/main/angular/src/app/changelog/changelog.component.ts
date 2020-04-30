@@ -53,15 +53,20 @@ export class ChangelogComponent implements OnInit, AfterViewInit {
 
     let open = false;
     for (const repo of this.changelogService.repos) {
+      this._changelogs[repo] = '';
+
       const lastUsedVersion = lastUsedVersions[repo];
-      if (!lastUsedVersion) {
+      const currentVersion = currentVersions[repo];
+      if (!lastUsedVersion || !currentVersion) {
         // probably a dev server where versions are not injected; don't show the changelog
         continue;
       }
 
-      const currentVersion = currentVersions[repo];
+      if (lastUsedVersion === currentVersion) {
+        // no changes, nothing to show
+        continue;
+      }
 
-      this._changelogs[repo] = '';
       this.changelogService.getChangelog(repo, lastUsedVersion, currentVersion).subscribe(changelog => {
         this._changelogs[repo] = changelog;
 
