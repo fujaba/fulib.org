@@ -20,7 +20,8 @@ export class ChangelogComponent implements OnInit, AfterViewInit {
   constructor(
     private modalService: NgbModal,
     private changelogService: ChangelogService,
-  ) { }
+  ) {
+  }
 
   get autoShow(): boolean {
     return this.changelogService.autoShow;
@@ -30,19 +31,19 @@ export class ChangelogComponent implements OnInit, AfterViewInit {
     this.changelogService.autoShow = value;
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.lastUsedVersions = this.changelogService.lastUsedVersions;
     this.currentVersions = this.changelogService.currentVersions;
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     if (this.autoShow) {
       this.openFromLastUsedVersion();
       this.updateLastUsedVersion();
     }
   }
 
-  private openFromLastUsedVersion() {
+  private openFromLastUsedVersion(): void {
     const lastUsedVersions = this.lastUsedVersions;
     if (!lastUsedVersions) {
       // never used the website before, they probably don't care about the changelogs
@@ -82,11 +83,11 @@ export class ChangelogComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private openModal() {
+  private openModal(): void {
     this.modalService.open(this.changelogModal, {ariaLabelledBy: 'changelogModalLabel', size: 'xl'});
   }
 
-  get changelogs(): {repo: string, changelog: string}[] {
+  get changelogs(): { repo: string, changelog: string }[] {
     return Object.keys(this._changelogs)
       .filter(repo => this._changelogs[repo])
       .map(repo => ({
@@ -95,8 +96,9 @@ export class ChangelogComponent implements OnInit, AfterViewInit {
       }));
   }
 
-  private updateLastUsedVersion() {
-    this.changelogService.lastUsedVersions = this.changelogService.currentVersions;
+  private updateLastUsedVersion(): void {
+    this.lastUsedVersions = this.currentVersions;
+    this.changelogService.lastUsedVersions = this.currentVersions;
   }
 
   open(): void {
