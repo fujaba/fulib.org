@@ -26,6 +26,15 @@ export class ChangelogService {
   ) {
   }
 
+  public get autoShow(): boolean {
+    const storage = this.privacyService.getStorage('autoShowChangelog');
+    return storage !== 'false';
+  }
+
+  public set autoShow(value: boolean) {
+    this.privacyService.setStorage('autoShowChangelog', `${value}`);
+  }
+
   public get repos(): (keyof Versions)[] {
     return [
       'fulib.org',

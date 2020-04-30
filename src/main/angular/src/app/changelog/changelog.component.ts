@@ -21,13 +21,23 @@ export class ChangelogComponent implements OnInit, AfterViewInit {
     private changelogService: ChangelogService,
   ) { }
 
+  get autoShow(): boolean {
+    return this.changelogService.autoShow;
+  }
+
+  set autoShow(value: boolean) {
+    this.changelogService.autoShow = value;
+  }
+
   ngOnInit() {
     this.lastUsedVersions = this.changelogService.lastUsedVersions;
   }
 
   ngAfterViewInit() {
-    this.openFromLastUsedVersion();
-    this.updateLastUsedVersion();
+    if (this.autoShow) {
+      this.openFromLastUsedVersion();
+      this.updateLastUsedVersion();
+    }
   }
 
   private openFromLastUsedVersion() {
