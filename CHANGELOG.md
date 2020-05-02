@@ -180,3 +180,13 @@
 
 * Improved the way version numbers are displayed in the changelog sidebar.
 * The changelog no longer shows future versions.
+
+# fulib.org v1.3.1
+
+## General
+
+* Merged changes from v1.2.1 into the v1.3 branch.
+
+## New Features
+
++ Downladed Gradle projects can now include a decorator class whose name is configurable.
