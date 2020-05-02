@@ -169,3 +169,14 @@
 * Updated to FulibScenarios v1.3.0.
 * Updated to FulibGradle v0.4.0.
 * Downloaded Gradle Projects now use JUnit v4.13.
+
+# fulib.org v1.2.1
+
+## New Features
+
++ Added a checkbox to toggle whether the changelog should open automatically when a new update was released.
+
+## Improvements
+
+* Improved the way version numbers are displayed in the changelog sidebar.
+* The changelog no longer shows future versions.
