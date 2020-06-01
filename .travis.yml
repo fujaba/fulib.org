@@ -17,7 +17,8 @@ git:
 before_install:
   - sudo apt-get update
   - sudo apt-get install -y jq
-  - nvm use 13.7.0
+  - nvm install 13.7
+  - nvm use 13.7
   - npm install -g pnpm @angular/cli
   - ng config -g cli.packageManager pnpm
 
