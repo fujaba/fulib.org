@@ -19,7 +19,7 @@
 
       </p>
       <div class="list-group">
-        <a *ngFor="let solution of getSolutions(assignment); let last=last"
+        <a *ngFor="let solution of getSolutions(assignment)"
            class="list-group-item list-group-item-action"
            routerLink="/assignments/{{assignment.id}}/solutions/{{solution.id}}">
           by <app-author-name [name]="solution.name" [email]="solution.email"></app-author-name>
@@ -27,12 +27,14 @@
           {{solution.studentID}}
           &mdash;
           Submitted: {{solution.timeStamp | date:'medium'}}
-
-          <a *ngIf="last"
-             role="button" class="btn btn-success" style="cursor: pointer"
-             routerLink="/assignments/{{assignment.id}}">
-            Edit
-          </a>
+        </a>
+        <a class="list-group-item list-group-item-action"
+           routerLink="/assignments/{{assignment.id}}">
+          by <app-author-name [name]="name" [email]="email"></app-author-name>
+          &mdash;
+          {{studentID}}
+          &mdash;
+          <span class="text-success">Current Draft</span>
         </a>
       </div>
     </li>

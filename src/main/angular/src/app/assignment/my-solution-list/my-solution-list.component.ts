@@ -18,6 +18,18 @@ export class MySolutionListComponent implements OnInit {
   ) {
   }
 
+  get name(): string | null {
+    return this.solutionService.name;
+  }
+
+  get email(): string | null {
+    return this.solutionService.email;
+  }
+
+  get studentID(): string | null {
+    return this.solutionService.studentID;
+  }
+
   get assignments(): Assignment[] {
     // TODO see sort performance concern in assignment list component
     return Array.from(this._assignments.values()).map(a => a.assignment).filter(a => a).sort(Assignment.comparator);
