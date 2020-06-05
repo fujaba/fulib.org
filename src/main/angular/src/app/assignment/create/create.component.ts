@@ -28,8 +28,8 @@ export class CreateComponent implements OnInit, AfterViewInit, OnDestroy {
   title = '';
   author = '';
   email = '';
-  deadlineDate: Date;
-  deadlineTime: Date;
+  deadlineDate: string;
+  deadlineTime: string;
   description = '';
   solution = '';
   templateSolution = '';
@@ -91,13 +91,7 @@ export class CreateComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getDeadline(): Date | null {
-    if (this.deadlineDate && this.deadlineTime) {
-      return new Date(this.deadlineDate.toDateString() + ' ' + this.deadlineTime.toTimeString());
-    } else if (this.deadlineDate) {
-      return this.deadlineDate;
-    } else {
-      return null;
-    }
+    return this.deadlineDate ? new Date(this.deadlineDate + ' ' + (this.deadlineTime || '00:00')) : null;
   }
 
   getAssignment(): Assignment {
@@ -121,8 +115,15 @@ export class CreateComponent implements OnInit, AfterViewInit, OnDestroy {
     this.description = a.description;
     this.author = a.author;
     this.email = a.email;
-    this.deadlineDate = a.deadline;
-    this.deadlineTime = a.deadline;
+    let deadline = a.deadline;
+    if (deadline) {
+      this.deadlineDate = `${deadline.getFullYear()}-${String(deadline.getMonth() + 1).padStart(2, '0')}-${String(deadline.getDate()).padStart(2, '0')}`;
+      this.deadlineTime = `${String(deadline.getHours()).padStart(2, '0')}:${String(deadline.getMinutes()).padStart(2, '0')}:${String(deadline.getSeconds()).padStart(2, '0')}`;
+    }
+    else {
+      this.deadlineDate = null;
+      this.deadlineTime = null;
+    }
     this.tasks = a.tasks.map(t => ({...t, collapsed: !!t['collapsed']}));
     this.solution = a.solution;
     this.templateSolution = a.templateSolution;
