@@ -11,7 +11,6 @@ dependencies:
   '@ng-bootstrap/ng-bootstrap': 5.3.0_28f38c6b3dcfb84e8962d3e70abde5c8
   '@types/codemirror': 0.0.85
   '@types/file-saver': 2.0.1
-  angular-date-value-accessor: 0.0.2_@angular+core@8.2.14
   bootstrap: 4.3.1
   bootstrap-darkmode: 0.4.0
   codemirror: 5.52.2
@@ -1541,14 +1540,6 @@ packages:
       node: '>=0.4.2'
     resolution:
       integrity: sha1-SlKCrBZHKek2Gbz9OtFR+BfOkfU=
-  /angular-date-value-accessor/0.0.2_@angular+core@8.2.14:
-    dependencies:
-      '@angular/core': 8.2.14_rxjs@6.4.0+zone.js@0.9.1
-    dev: false
-    peerDependencies:
-      '@angular/core': '*'
-    resolution:
-      integrity: sha1-Pp7ZH6SFJa6T82hw9FOelpdervU=
   /ansi-colors/3.2.4:
     dev: true
     engines:
@@ -8360,7 +8351,6 @@ specifiers:
   '@types/jasmine': ~3.3.16
   '@types/jasminewd2': ~2.0.8
   '@types/node': ~8.9.5
-  angular-date-value-accessor: ^0.0.2
   bootstrap: ~4.3.1
   bootstrap-darkmode: ^0.4.0
   codelyzer: ^5.2.2
