@@ -16,8 +16,8 @@
           </select>
         </label>
       </div>
-      <div class="pl-1 text-danger" [hidden]="!selectedExample">
-        Changes to the example will not be saved!
+      <div class="pl-1" [hidden]="!selectedExample">
+        <span class="text-warning" ngbTooltip="Changes to the example will not be saved!">&#9888;</span>
       </div>
       <div class="mr-auto"><!-- Spacer --></div>
       <div class="pl-1">
