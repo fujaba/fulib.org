@@ -28,7 +28,7 @@ devDependencies:
   '@types/file-saver': 2.0.1
   '@types/jasmine': 3.3.16
   '@types/jasminewd2': 2.0.8
-  '@types/node': 12.12.44
+  '@types/node': 13.7.7
   codelyzer: 5.2.2_cec2703d9f6c0179f3ff56082cf81972
   jasmine-core: 3.4.0
   jasmine-spec-reporter: 4.2.1
@@ -1457,10 +1457,10 @@ packages:
     dev: true
     resolution:
       integrity: sha512-tHq6qdbT9U1IRSGf14CL0pUlULksvY9OZ+5eEgl1N7t+OA3tGvNpxJCzuKQlsNgCVwbAs670L1vcVQi8j9HjnA==
-  /@types/node/12.12.44:
+  /@types/node/13.7.7:
     dev: true
     resolution:
-      integrity: sha512-jM6QVv0Sm5d3nW+nUD5jSzPcO6oPqboitSNcwgBay9hifVq/Rauq1PYnROnsmuw45JMBiTnsPAno0bKu2e2xrg==
+      integrity: sha512-Uo4chgKbnPNlxQwoFmYIwctkQVkMMmsAoGGU4JKwLuvBefF0pCq4FybNSnfkfRCpC7ZW7kttcC/TrRtAJsvGtg==
   /@types/node/8.9.5:
     dev: true
     resolution:
@@ -9588,7 +9588,7 @@ specifiers:
   '@types/file-saver': ^2.0.1
   '@types/jasmine': ~3.3.16
   '@types/jasminewd2': ~2.0.8
-  '@types/node': ^12.11.1
+  '@types/node': ~13.7.7
   bootstrap: ~4.4.1
   bootstrap-darkmode: ^0.4.0
   codelyzer: ^5.1.2
