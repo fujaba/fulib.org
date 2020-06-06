@@ -4,7 +4,6 @@ import {FormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {DateValueAccessorModule} from 'angular-date-value-accessor';
 import {ClipboardModule} from 'ngx-clipboard';
 import {DragulaModule} from 'ng2-dragula';
 
@@ -50,7 +49,6 @@ import { ImportExportComponent } from './import-export/import-export.component';
     FormsModule,
     HttpClientModule,
     NgbModule,
-    DateValueAccessorModule,
     ClipboardModule,
     DragulaModule.forRoot(),
     AssignmentRoutingModule,
