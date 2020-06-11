@@ -90,6 +90,7 @@
               <span class="mr-2">&#8226;</span>
 
               <button type="button" class="btn btn-primary mr-2" id="commentSubmitButton"
+                      ngbTooltip="Keyboard Shortcuts: Ctrl-&#9166;"
                       (click)="submitComment()" [disabled]="submittingComment">
                 {{submittingComment ? 'Submitting...' : 'Submit'}}
               </button>
@@ -97,7 +98,7 @@
           </div>
           <div class="card-body">
             <textarea class="form-control" id="commentBodyInput"
-                      [(ngModel)]="commentBody" (change)="saveCommentDraft()">
+                      [(ngModel)]="commentBody" (change)="saveCommentDraft()" (keyup.control.enter)="submitComment()">
             </textarea>
             <small class="form-text text-muted">
               <a href="https://commonmark.org/help/">Markdown syntax</a> is supported.
