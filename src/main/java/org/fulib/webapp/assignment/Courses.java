@@ -17,7 +17,7 @@ public class Courses
 	// language=JSON
 	static final String UNKNOWN_COURSE_RESPONSE = "{\n  \"error\": \"course with id '%s'' not found\"\n}";
 
-	private Mongo mongo;
+	private final Mongo mongo;
 
 	public Courses(Mongo mongo)
 	{

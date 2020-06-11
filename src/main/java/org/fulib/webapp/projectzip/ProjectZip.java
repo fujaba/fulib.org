@@ -15,7 +15,7 @@ import java.util.zip.ZipOutputStream;
 
 public class ProjectZip
 {
-	private Mongo mongo;
+	private final Mongo mongo;
 
 	public ProjectZip(Mongo mongo)
 	{

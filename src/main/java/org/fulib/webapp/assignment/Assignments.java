@@ -26,7 +26,7 @@ public class Assignments
 
 	// =============== Fields ===============
 
-	private Mongo mongo;
+	private final Mongo mongo;
 
 	// =============== Constructors ===============
 
