@@ -15,7 +15,14 @@ import java.util.zip.ZipOutputStream;
 
 public class ProjectZip
 {
-	public static Object handle(Request request, Response response) throws IOException, JSONException
+	private Mongo mongo;
+
+	public ProjectZip(Mongo mongo)
+	{
+		this.mongo = mongo;
+	}
+
+	public Object handle(Request request, Response response) throws IOException, JSONException
 	{
 		final String body = request.body();
 		final JSONObject jsonObject = new JSONObject(body);
@@ -74,7 +81,7 @@ public class ProjectZip
 
 		if (jsonObject.has("privacy") && "all".equals(jsonObject.get("privacy")))
 		{
-			Mongo.get().log(request.ip(), request.userAgent(), body, "{}");
+			this.mongo.log(request.ip(), request.userAgent(), body, "{}");
 		}
 
 		return response.raw();

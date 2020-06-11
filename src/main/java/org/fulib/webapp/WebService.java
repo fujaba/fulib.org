@@ -58,9 +58,10 @@ public class WebService
 
 		final Mongo db = Mongo.get();
 		final RunCodeGen runCodeGen = new RunCodeGen(db);
+		final ProjectZip projectZip = new ProjectZip(db);
 
 		service.post("/runcodegen", runCodeGen::handle);
-		service.post("/projectzip", ProjectZip::handle);
+		service.post("/projectzip", projectZip::handle);
 
 		addAssignmentsRoutes(service);
 
