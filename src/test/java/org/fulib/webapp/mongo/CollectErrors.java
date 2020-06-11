@@ -4,6 +4,7 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.fulib.webapp.WebService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,8 +32,9 @@ public class CollectErrors
 		int totalCount = 0;
 		int totalFound = 0;
 
-		for (final Document document : Mongo.get().requestLog.find(filter)
-		                                                     .projection(Projections.include("response.output")))
+		for (final Document document : new Mongo(WebService.getMongoURL()).requestLog
+			.find(filter)
+			.projection(Projections.include("response.output")))
 		{
 			totalCount++;
 

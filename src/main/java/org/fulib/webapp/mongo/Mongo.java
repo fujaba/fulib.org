@@ -30,10 +30,6 @@ public class Mongo
 {
 	// =============== Constants ===============
 
-	public static final String PASSWORD_ENV_KEY = "FULIB_ORG_MONGODB_PASSWORD";
-	public static final String HOST_ENV_KEY = "FULIB_ORG_MONGODB_HOST";
-	public static final String USER_ENV_KEY = "FULIB_ORG_MONGODB_USER";
-
 	public static final String DATABASE_NAME = "fulib-org";
 
 	public static final String LOG_COLLECTION_NAME = "request-log";
@@ -43,10 +39,6 @@ public class Mongo
 	public static final String COMMENT_COLLECTION_NAME = "comments";
 	public static final String ASSIGNEE_COLLECTION_NAME = "assignee";
 	public static final String GRADING_COLLECTION_NAME = "gradings";
-
-	// =============== Static Fields ===============
-
-	private static final Mongo instance = new Mongo();
 
 	// =============== Fields ===============
 
@@ -76,18 +68,10 @@ public class Mongo
 	private final CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
 	                                                               fromProviders(this.pojoCodecProvider));
 
-	// =============== Static Methods ===============
-
-	public static Mongo get()
-	{
-		return instance;
-	}
-
 	// =============== Constructors ===============
 
-	private Mongo()
+	public Mongo(String url)
 	{
-		final String url = getURL();
 		if (url == null)
 		{
 			return;
@@ -131,29 +115,6 @@ public class Mongo
 		this.gradings.createIndex(Indexes.ascending(TaskGrading.PROPERTY_solutionID));
 		this.gradings.createIndex(Indexes.ascending(TaskGrading.PROPERTY_taskID));
 		this.gradings.createIndex(Indexes.ascending(TaskGrading.PROPERTY_timeStamp));
-	}
-
-	private static String getURL()
-	{
-		final String host = System.getenv(HOST_ENV_KEY);
-		if (host == null || host.isEmpty())
-		{
-			return null;
-		}
-
-		final String user = System.getenv(USER_ENV_KEY);
-		if (user == null || user.isEmpty())
-		{
-			return null;
-		}
-
-		final String password = System.getenv(PASSWORD_ENV_KEY);
-		if (password == null || password.isEmpty())
-		{
-			return null;
-		}
-
-		return "mongodb://" + user + ":" + password + "@" + host;
 	}
 
 	// =============== Methods ===============
