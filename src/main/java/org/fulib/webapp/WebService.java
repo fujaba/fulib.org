@@ -64,8 +64,9 @@ public class WebService
 		service.post("/projectzip", projectZip::handle);
 
 		final Assignments assignments = new Assignments(db);
+		final Comments comments = new Comments(db);
 
-		addAssignmentsRoutes(service, assignments);
+		addAssignmentsRoutes(service, assignments, comments);
 
 		final Courses courses = new Courses(db);
 
@@ -88,37 +89,37 @@ public class WebService
 		Logger.getGlobal().info("scenario server started on http://localhost:4567");
 	}
 
-	private static void addAssignmentsRoutes(Service service, Assignments assignments)
+	private static void addAssignmentsRoutes(Service service, Assignments assignments, Comments comments)
 	{
 		service.path("/assignments", () -> {
 			service.post("", assignments::create);
 
 			service.post("/create/check", Solutions::check);
 
-			service.path("/:assignmentID", () -> addAssignmentRoutes(service, assignments));
+			service.path("/:assignmentID", () -> addAssignmentRoutes(service, assignments, comments));
 		});
 	}
 
-	private static void addAssignmentRoutes(Service service, Assignments assignments)
+	private static void addAssignmentRoutes(Service service, Assignments assignments, Comments comments)
 	{
 		service.get("", assignments::get);
 
 		service.post("/check", Solutions::check);
 
-		addSolutionsRoutes(service);
+		addSolutionsRoutes(service, comments);
 	}
 
-	private static void addSolutionsRoutes(Service service)
+	private static void addSolutionsRoutes(Service service, Comments comments)
 	{
 		service.path("/solutions", () -> {
 			service.post("", Solutions::create);
 			service.get("", Solutions::getAll);
 
-			service.path("/:solutionID", () -> addSolutionRoutes(service));
+			service.path("/:solutionID", () -> addSolutionRoutes(service, comments));
 		});
 	}
 
-	private static void addSolutionRoutes(Service service)
+	private static void addSolutionRoutes(Service service, Comments comments)
 	{
 		service.get("", Solutions::get);
 
@@ -133,8 +134,8 @@ public class WebService
 		});
 
 		service.path("/comments", () -> {
-			service.post("", Comments::post);
-			service.get("", Comments::getChildren);
+			service.post("", comments::post);
+			service.get("", comments::getChildren);
 		});
 	}
 

@@ -14,7 +14,14 @@ import java.util.List;
 
 public class Comments
 {
-	public static Object post(Request request, Response response)
+	private final Mongo mongo;
+
+	public Comments(Mongo mongo)
+	{
+		this.mongo = mongo;
+	}
+
+	public Object post(Request request, Response response)
 	{
 		final Instant timeStamp = Instant.now();
 
@@ -32,7 +39,7 @@ public class Comments
 		comment.setHtml(html);
 		comment.setDistinguished(privileged);
 
-		Mongo.get().saveComment(comment);
+		this.mongo.saveComment(comment);
 
 		final JSONObject result = new JSONObject();
 
@@ -55,7 +62,7 @@ public class Comments
 		return comment;
 	}
 
-	public static Object getChildren(Request request, Response response)
+	public Object getChildren(Request request, Response response)
 	{
 		final String solutionID = request.params("solutionID");
 		final Solution solution = Solutions.getSolutionOr404(solutionID);
@@ -64,7 +71,7 @@ public class Comments
 		JSONObject result = new JSONObject();
 		JSONArray array = new JSONArray();
 
-		final List<Comment> comments = Mongo.get().getComments(solutionID);
+		final List<Comment> comments = this.mongo.getComments(solutionID);
 		for (final Comment comment : comments)
 		{
 			array.put(toJson(comment));
