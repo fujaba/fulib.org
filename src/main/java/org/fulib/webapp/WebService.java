@@ -61,14 +61,68 @@ public class WebService
 
 		service.staticFiles.location("/org/fulib/webapp/static");
 
-		if (new File("build.gradle").exists())
+		if (isDevEnv())
 		{
-			// dev environment, allow CORS
 			enableCORS();
 		}
 
-		service.redirect.get("/github", "https://github.com/fujaba/fulib.org");
+		setupRedirects();
 
+		initComponents();
+
+		addMainRoutes();
+		addAssignmentsRoutes();
+		addCoursesRoutes();
+		addUtilRoutes();
+
+		service.notFound(WebService::serveIndex);
+
+		setupExceptionHandler();
+
+		Logger.getGlobal().info("scenario server started on http://localhost:4567");
+	}
+
+	private boolean isDevEnv()
+	{
+		return new File("build.gradle").exists();
+	}
+
+	private void setupRedirects()
+	{
+		service.redirect.get("/github", "https://github.com/fujaba/fulib.org");
+	}
+
+	private void addMainRoutes()
+	{
+		service.post("/runcodegen", runCodeGen::handle);
+		service.post("/projectzip", projectZip::handle);
+	}
+
+	private void addUtilRoutes()
+	{
+		service.post("/rendermarkdown", (request, response) -> {
+			response.type("text/html");
+			return MarkdownUtil.renderHtml(request.body());
+		});
+	}
+
+	private void addCoursesRoutes()
+	{
+		service.path("/courses", () -> {
+			service.post("", courses::create);
+			service.get("/:courseID", courses::get);
+		});
+	}
+
+	private void setupExceptionHandler()
+	{
+		service.exception(Exception.class, (exception, request, response) -> {
+			Logger.getGlobal().log(Level.SEVERE, "unhandled exception processing request", exception);
+		});
+	}
+
+	private void initComponents()
+	{
 		db = Mongo.get();
 		runCodeGen = new RunCodeGen(db);
 		projectZip = new ProjectZip(db);
@@ -76,29 +130,6 @@ public class WebService
 		comments = new Comments(db);
 		solutions = new Solutions(db);
 		courses = new Courses(db);
-
-		service.post("/runcodegen", runCodeGen::handle);
-		service.post("/projectzip", projectZip::handle);
-
-		addAssignmentsRoutes();
-
-		service.path("/courses", () -> {
-			service.post("", courses::create);
-			service.get("/:courseID", courses::get);
-		});
-
-		service.post("/rendermarkdown", (request, response) -> {
-			response.type("text/html");
-			return MarkdownUtil.renderHtml(request.body());
-		});
-
-		service.notFound(WebService::serveIndex);
-
-		service.exception(Exception.class, (exception, request, response) -> {
-			Logger.getGlobal().log(Level.SEVERE, "unhandled exception processing request", exception);
-		});
-
-		Logger.getGlobal().info("scenario server started on http://localhost:4567");
 	}
 
 	private void addAssignmentsRoutes()
