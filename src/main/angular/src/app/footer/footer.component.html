@@ -44,33 +44,10 @@
           GitHub
         </a>
         <div ngbDropdownMenu aria-labelledby="githubDropdown">
-          <a ngbDropdownItem href="https://github.com/fujaba/fulib.org">
-            fulib.org
-            <span class="text-muted" *ngIf="versions && versions['fulib.org']"> (v{{versions['fulib.org']}})</span>
-          </a>
-          <a ngbDropdownItem href="https://github.com/fujaba/fulibScenarios">
-            Fulib Scenarios
-            <span class="text-muted" *ngIf="versions?.fulibScenarios"> (v{{versions.fulibScenarios}})</span>
-          </a>
-          <a ngbDropdownItem href="https://github.com/fujaba/fulibMockups">
-            Fulib Mockups
-            <span class="text-muted" *ngIf="versions?.fulibMockups"> (v{{versions.fulibMockups}})</span>
-          </a>
-          <a ngbDropdownItem href="https://github.com/fujaba/fulib">
-            Fulib
-            <span class="text-muted" *ngIf="versions?.fulib">(v{{versions.fulib}})</span>
-          </a>
-          <a ngbDropdownItem href="https://github.com/fujaba/fulibTools">
-            Fulib Tools
-            <span class="text-muted" *ngIf="versions?.fulibTools">(v{{versions.fulibTools}})</span>
-          </a>
-          <a ngbDropdownItem href="https://github.com/fujaba/fulibTables">
-            Fulib Tables
-            <span class="text-muted" *ngIf="versions?.fulibTables">(v{{versions.fulibTables}})</span>
-          </a>
-          <a ngbDropdownItem href="https://github.com/fujaba/fulibGradle">
-            Fulib Gradle
-            <span class="text-muted" *ngIf="versions?.fulibGradle">(v{{versions.fulibGradle}})</span>
+          <a *ngFor="let repo of repos"
+            ngbDropdownItem href="https://github.com/fujaba/{{repo}}">
+            {{repo}}
+            <span class="text-muted" *ngIf="versions && versions[repo]"> (v{{versions[repo]}})</span>
           </a>
         </div>
       </li>
