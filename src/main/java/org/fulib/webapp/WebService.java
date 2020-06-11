@@ -19,6 +19,8 @@ import java.util.logging.Logger;
 
 public class WebService
 {
+	// =============== Static Fields ===============
+
 	public static final String VERSION;
 	public static final String FULIB_SCENARIOS_VERSION;
 	public static final String FULIB_MOCKUPS_VERSION;
@@ -40,6 +42,8 @@ public class WebService
 		FULIB_MOCKUPS_VERSION = props.getProperty("fulibMockups.version");
 	}
 
+	// =============== Fields ===============
+
 	private Service service;
 	private final Mongo db;
 	private final RunCodeGen runCodeGen;
@@ -48,6 +52,8 @@ public class WebService
 	private final Comments comments;
 	private final Solutions solutions;
 	private final Courses courses;
+
+	// =============== Constructors ===============
 
 	public WebService()
 	{
@@ -60,10 +66,14 @@ public class WebService
 		courses = new Courses(db);
 	}
 
+	// =============== Static Methods ===============
+
 	public static void main(String[] args)
 	{
 		new WebService().start();
 	}
+
+	// =============== Methods ===============
 
 	public void start()
 	{
@@ -90,6 +100,8 @@ public class WebService
 
 		Logger.getGlobal().info("scenario server started on http://localhost:4567");
 	}
+
+	// --------------- Helpers ---------------
 
 	private boolean isDevEnv()
 	{
