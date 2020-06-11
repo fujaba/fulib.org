@@ -63,7 +63,9 @@ public class WebService
 		service.post("/runcodegen", runCodeGen::handle);
 		service.post("/projectzip", projectZip::handle);
 
-		addAssignmentsRoutes(service);
+		final Assignments assignments = new Assignments(db);
+
+		addAssignmentsRoutes(service, assignments);
 
 		service.path("/courses", () -> {
 			service.post("", Courses::create);
@@ -84,20 +86,20 @@ public class WebService
 		Logger.getGlobal().info("scenario server started on http://localhost:4567");
 	}
 
-	private static void addAssignmentsRoutes(Service service)
+	private static void addAssignmentsRoutes(Service service, Assignments assignments)
 	{
 		service.path("/assignments", () -> {
-			service.post("", Assignments::create);
+			service.post("", assignments::create);
 
 			service.post("/create/check", Solutions::check);
 
-			service.path("/:assignmentID", () -> addAssignmentRoutes(service));
+			service.path("/:assignmentID", () -> addAssignmentRoutes(service, assignments));
 		});
 	}
 
-	private static void addAssignmentRoutes(Service service)
+	private static void addAssignmentRoutes(Service service, Assignments assignments)
 	{
-		service.get("", Assignments::get);
+		service.get("", assignments::get);
 
 		service.post("/check", Solutions::check);
 

@@ -85,7 +85,7 @@ public class Solutions
 		final Instant timeStamp = Instant.now();
 
 		final String assignmentID = request.params(ASSIGNMENT_ID_QUERY_PARAM);
-		final Assignment assignment = Assignments.getAssignmentOr404(assignmentID);
+		final Assignment assignment = Assignments.getAssignmentOr404(Mongo.get(), assignmentID);
 
 		final String solutionID = IDGenerator.generateID();
 		final String token = IDGenerator.generateToken();
@@ -157,7 +157,7 @@ public class Solutions
 			return WebService.serveIndex(request, response);
 		}
 
-		final Assignment assignment = Assignments.getAssignmentOr404(assignmentID);
+		final Assignment assignment = Assignments.getAssignmentOr404(Mongo.get(), assignmentID);
 		Assignments.checkPrivilege(request, assignment);
 
 		final List<Solution> solutions = Mongo.get().getSolutions(assignmentID);
@@ -323,7 +323,7 @@ public class Solutions
 		}
 		else
 		{
-			final Assignment assignment = Assignments.getAssignmentOr404(assignmentID);
+			final Assignment assignment = Assignments.getAssignmentOr404(Mongo.get(), assignmentID);
 			tasks = assignment.getTasks();
 		}
 

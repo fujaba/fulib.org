@@ -24,11 +24,22 @@ public class Assignments
 	// language=JSON
 	static final String UNKNOWN_ASSIGNMENT_RESPONSE = "{\n  \"error\": \"assignment with id '%s'' not found\"\n}";
 
+	// =============== Fields ===============
+
+	private Mongo mongo;
+
+	// =============== Constructors ===============
+
+	public Assignments(Mongo mongo)
+	{
+		this.mongo = mongo;
+	}
+
 	// =============== Static Methods ===============
 
-	static Assignment getAssignmentOr404(String id)
+	static Assignment getAssignmentOr404(Mongo mongo, String id)
 	{
-		final Assignment assignment = Mongo.get().getAssignment(id);
+		final Assignment assignment = mongo.getAssignment(id);
 		if (assignment == null)
 		{
 			Spark.halt(404, String.format(UNKNOWN_ASSIGNMENT_RESPONSE, id));
@@ -51,7 +62,7 @@ public class Assignments
 		return assignmentToken.equals(assignmentTokenHeader);
 	}
 
-	public static Object create(Request request, Response response)
+	public Object create(Request request, Response response)
 	{
 		final String id = IDGenerator.generateID();
 		final String token = IDGenerator.generateToken();
@@ -61,7 +72,7 @@ public class Assignments
 		final String descriptionHtml = MarkdownUtil.renderHtml(assignment.getDescription());
 		assignment.setDescriptionHtml(descriptionHtml);
 
-		Mongo.get().saveAssignment(assignment);
+		this.mongo.saveAssignment(assignment);
 
 		JSONObject responseJson = new JSONObject();
 
@@ -109,7 +120,7 @@ public class Assignments
 		return task;
 	}
 
-	public static Object get(Request request, Response response)
+	public Object get(Request request, Response response)
 	{
 		final String id = request.params("assignmentID");
 
@@ -118,7 +129,7 @@ public class Assignments
 			return WebService.serveIndex(request, response);
 		}
 
-		Assignment assignment = getAssignmentOr404(id);
+		Assignment assignment = getAssignmentOr404(this.mongo, id);
 		final boolean privileged = isAuthorized(request, assignment);
 		final JSONObject obj = toJson(assignment, privileged);
 		return obj.toString(2);
