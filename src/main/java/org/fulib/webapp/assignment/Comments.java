@@ -26,7 +26,7 @@ public class Comments
 		final Instant timeStamp = Instant.now();
 
 		final String solutionID = request.params("solutionID");
-		final Solution solution = Solutions.getSolutionOr404(solutionID);
+		final Solution solution = Solutions.getSolutionOr404(this.mongo, solutionID);
 		final boolean privileged = Solutions.checkPrivilege(request, solution);
 
 		final String commentID = IDGenerator.generateID();
@@ -65,7 +65,7 @@ public class Comments
 	public Object getChildren(Request request, Response response)
 	{
 		final String solutionID = request.params("solutionID");
-		final Solution solution = Solutions.getSolutionOr404(solutionID);
+		final Solution solution = Solutions.getSolutionOr404(this.mongo, solutionID);
 		Solutions.checkPrivilege(request, solution);
 
 		JSONObject result = new JSONObject();

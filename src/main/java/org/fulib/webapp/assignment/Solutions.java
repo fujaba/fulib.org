@@ -27,11 +27,18 @@ public class Solutions
 	private static final String INVALID_TOKEN_RESPONSE = "{\n" + "  \"error\": \"invalid Assignment-Token or Solution-Token\"\n" + "}\n";
 	private static final String UNKNOWN_SOLUTION_RESPONSE = "{\n  \"error\": \"solution with id '%s'' not found\"\n}";
 
+	private final Mongo mongo;
+
+	public Solutions(Mongo mongo)
+	{
+		this.mongo = mongo;
+	}
+
 	// =============== Static Methods ===============
 
-	static Solution getSolutionOr404(String id)
+	static Solution getSolutionOr404(Mongo mongo, String id)
 	{
-		final Solution solution = Mongo.get().getSolution(id);
+		final Solution solution = mongo.getSolution(id);
 		if (solution == null)
 		{
 			Spark.halt(404, String.format(UNKNOWN_SOLUTION_RESPONSE, id));
@@ -80,12 +87,12 @@ public class Solutions
 
 	// --------------- Submission ---------------
 
-	public static Object create(Request request, Response response) throws Exception
+	public Object create(Request request, Response response) throws Exception
 	{
 		final Instant timeStamp = Instant.now();
 
 		final String assignmentID = request.params(ASSIGNMENT_ID_QUERY_PARAM);
-		final Assignment assignment = Assignments.getAssignmentOr404(Mongo.get(), assignmentID);
+		final Assignment assignment = Assignments.getAssignmentOr404(this.mongo, assignmentID);
 
 		final String solutionID = IDGenerator.generateID();
 		final String token = IDGenerator.generateToken();
@@ -98,7 +105,7 @@ public class Solutions
 		final List<TaskResult> results = runTasks(solution.getSolution(), assignment.getTasks());
 		solution.getResults().addAll(results);
 
-		Mongo.get().saveSolution(solution);
+		this.mongo.saveSolution(solution);
 
 		final JSONObject resultObj = new JSONObject();
 		resultObj.put(Solution.PROPERTY_id, solutionID);
@@ -131,7 +138,7 @@ public class Solutions
 
 	// --------------- Read ---------------
 
-	public static Object get(Request request, Response response)
+	public Object get(Request request, Response response)
 	{
 		final String solutionID = request.params(SOLUTION_ID_QUERY_PARAM);
 
@@ -140,7 +147,7 @@ public class Solutions
 			return WebService.serveIndex(request, response);
 		}
 
-		final Solution solution = getSolutionOr404(solutionID);
+		final Solution solution = getSolutionOr404(this.mongo, solutionID);
 		checkAssignmentID(request, solution);
 		final boolean privileged = checkPrivilege(request, solution);
 
@@ -148,7 +155,7 @@ public class Solutions
 		return obj.toString(2);
 	}
 
-	public static Object getAll(Request request, Response response)
+	public Object getAll(Request request, Response response)
 	{
 		final String assignmentID = request.params(ASSIGNMENT_ID_QUERY_PARAM);
 
@@ -157,10 +164,10 @@ public class Solutions
 			return WebService.serveIndex(request, response);
 		}
 
-		final Assignment assignment = Assignments.getAssignmentOr404(Mongo.get(), assignmentID);
+		final Assignment assignment = Assignments.getAssignmentOr404(this.mongo, assignmentID);
 		Assignments.checkPrivilege(request, assignment);
 
-		final List<Solution> solutions = Mongo.get().getSolutions(assignmentID);
+		final List<Solution> solutions = this.mongo.getSolutions(assignmentID);
 
 		final JSONObject result = new JSONObject();
 
@@ -209,10 +216,10 @@ public class Solutions
 
 	// --------------- Assignees ---------------
 
-	public static Object getAssignee(Request request, Response response)
+	public Object getAssignee(Request request, Response response)
 	{
 		final String solutionID = request.params("solutionID");
-		final Solution solution = getSolutionOr404(solutionID);
+		final Solution solution = getSolutionOr404(this.mongo, solutionID);
 		checkAssignmentID(request, solution);
 		Assignments.checkPrivilege(request, solution.getAssignment());
 
@@ -221,31 +228,31 @@ public class Solutions
 		return result.toString(2);
 	}
 
-	public static Object setAssignee(Request request, Response response)
+	public Object setAssignee(Request request, Response response)
 	{
 		final String solutionID = request.params("solutionID");
-		final Solution solution = getSolutionOr404(solutionID);
+		final Solution solution = getSolutionOr404(this.mongo, solutionID);
 		checkAssignmentID(request, solution);
 		Assignments.checkPrivilege(request, solution.getAssignment());
 
 		final JSONObject body = new JSONObject(request.body());
 		final String assignee = body.getString(Solution.PROPERTY_assignee);
 
-		Mongo.get().saveAssignee(solutionID, assignee);
+		this.mongo.saveAssignee(solutionID, assignee);
 
 		return "{}";
 	}
 
 	// --------------- Corrections ---------------
 
-	public static Object getGradings(Request request, Response response)
+	public Object getGradings(Request request, Response response)
 	{
 		final String solutionID = request.params("solutionID");
-		final Solution solution = getSolutionOr404(solutionID);
+		final Solution solution = getSolutionOr404(this.mongo, solutionID);
 		checkAssignmentID(request, solution);
 		checkPrivilege(request, solution);
 
-		final List<TaskGrading> history = Mongo.get().getGradingHistory(solutionID);
+		final List<TaskGrading> history = this.mongo.getGradingHistory(solutionID);
 
 		final JSONObject result = new JSONObject();
 		final JSONArray array = new JSONArray();
@@ -260,19 +267,19 @@ public class Solutions
 		return result.toString(2);
 	}
 
-	public static Object postGrading(Request request, Response response)
+	public Object postGrading(Request request, Response response)
 	{
 		final Instant timeStamp = Instant.now();
 
 		final String solutionID = request.params("solutionID");
-		final Solution solution = getSolutionOr404(solutionID);
+		final Solution solution = getSolutionOr404(this.mongo, solutionID);
 		checkAssignmentID(request, solution);
 		Assignments.checkPrivilege(request, solution.getAssignment());
 
 		final TaskGrading grading = json2Grading(solutionID, new JSONObject(request.body()));
 		grading.setTimeStamp(timeStamp);
 
-		Mongo.get().addGrading(grading);
+		this.mongo.addGrading(grading);
 
 		final JSONObject result = new JSONObject();
 		result.put(TaskGrading.PROPERTY_timeStamp, timeStamp.toString());
@@ -304,7 +311,7 @@ public class Solutions
 
 	// --------------- Checking ---------------
 
-	public static Object check(Request request, Response response) throws Exception
+	public Object check(Request request, Response response) throws Exception
 	{
 		final List<Task> tasks;
 
@@ -323,7 +330,7 @@ public class Solutions
 		}
 		else
 		{
-			final Assignment assignment = Assignments.getAssignmentOr404(Mongo.get(), assignmentID);
+			final Assignment assignment = Assignments.getAssignmentOr404(this.mongo, assignmentID);
 			tasks = assignment.getTasks();
 		}
 

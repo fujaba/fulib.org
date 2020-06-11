@@ -65,8 +65,9 @@ public class WebService
 
 		final Assignments assignments = new Assignments(db);
 		final Comments comments = new Comments(db);
+		final Solutions solutions = new Solutions(db);
 
-		addAssignmentsRoutes(service, assignments, comments);
+		addAssignmentsRoutes(service, assignments, comments, solutions);
 
 		final Courses courses = new Courses(db);
 
@@ -89,48 +90,50 @@ public class WebService
 		Logger.getGlobal().info("scenario server started on http://localhost:4567");
 	}
 
-	private static void addAssignmentsRoutes(Service service, Assignments assignments, Comments comments)
+	private static void addAssignmentsRoutes(Service service, Assignments assignments, Comments comments,
+		Solutions solutions)
 	{
 		service.path("/assignments", () -> {
 			service.post("", assignments::create);
 
-			service.post("/create/check", Solutions::check);
+			service.post("/create/check", solutions::check);
 
-			service.path("/:assignmentID", () -> addAssignmentRoutes(service, assignments, comments));
+			service.path("/:assignmentID", () -> addAssignmentRoutes(service, assignments, comments, solutions));
 		});
 	}
 
-	private static void addAssignmentRoutes(Service service, Assignments assignments, Comments comments)
+	private static void addAssignmentRoutes(Service service, Assignments assignments, Comments comments,
+		Solutions solutions)
 	{
 		service.get("", assignments::get);
 
-		service.post("/check", Solutions::check);
+		service.post("/check", solutions::check);
 
-		addSolutionsRoutes(service, comments);
+		addSolutionsRoutes(service, comments, solutions);
 	}
 
-	private static void addSolutionsRoutes(Service service, Comments comments)
+	private static void addSolutionsRoutes(Service service, Comments comments, Solutions solutions)
 	{
 		service.path("/solutions", () -> {
-			service.post("", Solutions::create);
-			service.get("", Solutions::getAll);
+			service.post("", solutions::create);
+			service.get("", solutions::getAll);
 
-			service.path("/:solutionID", () -> addSolutionRoutes(service, comments));
+			service.path("/:solutionID", () -> addSolutionRoutes(service, comments, solutions));
 		});
 	}
 
-	private static void addSolutionRoutes(Service service, Comments comments)
+	private static void addSolutionRoutes(Service service, Comments comments, Solutions solutions)
 	{
-		service.get("", Solutions::get);
+		service.get("", solutions::get);
 
 		service.path("/assignee", () -> {
-			service.get("", Solutions::getAssignee);
-			service.put("", Solutions::setAssignee);
+			service.get("", solutions::getAssignee);
+			service.put("", solutions::setAssignee);
 		});
 
 		service.path("/gradings", () -> {
-			service.post("", Solutions::postGrading);
-			service.get("", Solutions::getGradings);
+			service.post("", solutions::postGrading);
+			service.get("", solutions::getGradings);
 		});
 
 		service.path("/comments", () -> {
@@ -147,12 +150,14 @@ public class WebService
 
 		service.options("/*", (req, res) -> {
 			String accessControlRequestHeaders = req.headers("Access-Control-Request-Headers");
-			if (accessControlRequestHeaders != null) {
+			if (accessControlRequestHeaders != null)
+			{
 				res.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
 			}
 
 			String accessControlRequestMethod = req.headers("Access-Control-Request-Method");
-			if (accessControlRequestMethod != null) {
+			if (accessControlRequestMethod != null)
+			{
 				res.header("Access-Control-Allow-Methods", accessControlRequestMethod);
 			}
 
