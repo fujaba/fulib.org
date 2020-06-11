@@ -17,10 +17,17 @@ public class Courses
 	// language=JSON
 	static final String UNKNOWN_COURSE_RESPONSE = "{\n  \"error\": \"course with id '%s'' not found\"\n}";
 
-	public static Object get(Request request, Response response)
+	private Mongo mongo;
+
+	public Courses(Mongo mongo)
+	{
+		this.mongo = mongo;
+	}
+
+	public Object get(Request request, Response response)
 	{
 		final String id = request.params("courseID");
-		final Course course = Mongo.get().getCourse(id);
+		final Course course = this.mongo.getCourse(id);
 		if (course == null)
 		{
 			throw Spark.halt(404, String.format(UNKNOWN_COURSE_RESPONSE, id));
@@ -35,7 +42,7 @@ public class Courses
 		return result.toString(2);
 	}
 
-	public static Object create(Request request, Response response)
+	public Object create(Request request, Response response)
 	{
 		final String id = IDGenerator.generateID();
 		final Course course = new Course(id);
@@ -53,7 +60,7 @@ public class Courses
 		}
 		course.setAssignmentIds(assignmentIds);
 
-		Mongo.get().saveCourse(course);
+		this.mongo.saveCourse(course);
 
 		final JSONObject result = new JSONObject();
 		result.put(Course.PROPERTY_id, course.getId());

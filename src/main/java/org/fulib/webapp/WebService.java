@@ -67,9 +67,11 @@ public class WebService
 
 		addAssignmentsRoutes(service, assignments);
 
+		final Courses courses = new Courses(db);
+
 		service.path("/courses", () -> {
-			service.post("", Courses::create);
-			service.get("/:courseID", Courses::get);
+			service.post("", courses::create);
+			service.get("/:courseID", courses::get);
 		});
 
 		service.post("/rendermarkdown", (request, response) -> {
