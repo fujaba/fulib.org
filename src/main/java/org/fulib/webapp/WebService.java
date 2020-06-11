@@ -40,10 +40,23 @@ public class WebService
 		FULIB_MOCKUPS_VERSION = props.getProperty("fulibMockups.version");
 	}
 
+	private Service service;
+	private Mongo db;
+	private RunCodeGen runCodeGen;
+	private ProjectZip projectZip;
+	private Assignments assignments;
+	private Comments comments;
+	private Solutions solutions;
+	private Courses courses;
+
 	public static void main(String[] args)
 	{
-		final Service service = Service.ignite();
+		new WebService().start();
+	}
 
+	public void start()
+	{
+		service = Service.ignite();
 		service.port(4567);
 
 		service.staticFiles.location("/org/fulib/webapp/static");
@@ -51,25 +64,23 @@ public class WebService
 		if (new File("build.gradle").exists())
 		{
 			// dev environment, allow CORS
-			enableCORS(service);
+			enableCORS();
 		}
 
 		service.redirect.get("/github", "https://github.com/fujaba/fulib.org");
 
-		final Mongo db = Mongo.get();
-		final RunCodeGen runCodeGen = new RunCodeGen(db);
-		final ProjectZip projectZip = new ProjectZip(db);
+		db = Mongo.get();
+		runCodeGen = new RunCodeGen(db);
+		projectZip = new ProjectZip(db);
+		assignments = new Assignments(db);
+		comments = new Comments(db);
+		solutions = new Solutions(db);
+		courses = new Courses(db);
 
 		service.post("/runcodegen", runCodeGen::handle);
 		service.post("/projectzip", projectZip::handle);
 
-		final Assignments assignments = new Assignments(db);
-		final Comments comments = new Comments(db);
-		final Solutions solutions = new Solutions(db);
-
-		addAssignmentsRoutes(service, assignments, comments, solutions);
-
-		final Courses courses = new Courses(db);
+		addAssignmentsRoutes();
 
 		service.path("/courses", () -> {
 			service.post("", courses::create);
@@ -90,39 +101,37 @@ public class WebService
 		Logger.getGlobal().info("scenario server started on http://localhost:4567");
 	}
 
-	private static void addAssignmentsRoutes(Service service, Assignments assignments, Comments comments,
-		Solutions solutions)
+	private void addAssignmentsRoutes()
 	{
 		service.path("/assignments", () -> {
 			service.post("", assignments::create);
 
 			service.post("/create/check", solutions::check);
 
-			service.path("/:assignmentID", () -> addAssignmentRoutes(service, assignments, comments, solutions));
+			service.path("/:assignmentID", this::addAssignmentRoutes);
 		});
 	}
 
-	private static void addAssignmentRoutes(Service service, Assignments assignments, Comments comments,
-		Solutions solutions)
+	private void addAssignmentRoutes()
 	{
 		service.get("", assignments::get);
 
 		service.post("/check", solutions::check);
 
-		addSolutionsRoutes(service, comments, solutions);
+		addSolutionsRoutes();
 	}
 
-	private static void addSolutionsRoutes(Service service, Comments comments, Solutions solutions)
+	private void addSolutionsRoutes()
 	{
 		service.path("/solutions", () -> {
 			service.post("", solutions::create);
 			service.get("", solutions::getAll);
 
-			service.path("/:solutionID", () -> addSolutionRoutes(service, comments, solutions));
+			service.path("/:solutionID", this::addSolutionRoutes);
 		});
 	}
 
-	private static void addSolutionRoutes(Service service, Comments comments, Solutions solutions)
+	private void addSolutionRoutes()
 	{
 		service.get("", solutions::get);
 
@@ -142,7 +151,7 @@ public class WebService
 		});
 	}
 
-	private static void enableCORS(Service service)
+	private void enableCORS()
 	{
 		service.staticFiles.header("Access-Control-Allow-Origin", "*");
 
