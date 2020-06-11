@@ -41,13 +41,24 @@ public class WebService
 	}
 
 	private Service service;
-	private Mongo db;
-	private RunCodeGen runCodeGen;
-	private ProjectZip projectZip;
-	private Assignments assignments;
-	private Comments comments;
-	private Solutions solutions;
-	private Courses courses;
+	private final Mongo db;
+	private final RunCodeGen runCodeGen;
+	private final ProjectZip projectZip;
+	private final Assignments assignments;
+	private final Comments comments;
+	private final Solutions solutions;
+	private final Courses courses;
+
+	public WebService()
+	{
+		db = Mongo.get();
+		runCodeGen = new RunCodeGen(db);
+		projectZip = new ProjectZip(db);
+		assignments = new Assignments(db);
+		comments = new Comments(db);
+		solutions = new Solutions(db);
+		courses = new Courses(db);
+	}
 
 	public static void main(String[] args)
 	{
@@ -67,8 +78,6 @@ public class WebService
 		}
 
 		setupRedirects();
-
-		initComponents();
 
 		addMainRoutes();
 		addAssignmentsRoutes();
@@ -119,17 +128,6 @@ public class WebService
 		service.exception(Exception.class, (exception, request, response) -> {
 			Logger.getGlobal().log(Level.SEVERE, "unhandled exception processing request", exception);
 		});
-	}
-
-	private void initComponents()
-	{
-		db = Mongo.get();
-		runCodeGen = new RunCodeGen(db);
-		projectZip = new ProjectZip(db);
-		assignments = new Assignments(db);
-		comments = new Comments(db);
-		solutions = new Solutions(db);
-		courses = new Courses(db);
 	}
 
 	private void addAssignmentsRoutes()
