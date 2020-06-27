@@ -30,9 +30,9 @@
            placeholder="Name, Student ID, E-Mail, Assignee"
            [(ngModel)]="searchText" (change)="updateSearch()"
            [ngbTypeahead]="typeahead" [resultFormatter]="formatTypeahead">
-    <button type="button" class="btn btn-outline-secondary"
+    <button type="button" class="btn btn-outline-secondary" ngbTooltip="View Search Help"
             [ngbPopover]="searchHelp" popoverTitle="Search Help">
-      Help
+      ?
     </button>
     <ng-template #searchHelp>
       <ul>
