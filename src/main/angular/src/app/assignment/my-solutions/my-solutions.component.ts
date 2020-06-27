@@ -5,11 +5,11 @@ import {SolutionService} from '../solution.service';
 import {AssignmentService} from '../assignment.service';
 
 @Component({
-  selector: 'app-my-solution-list',
-  templateUrl: './my-solution-list.component.html',
-  styleUrls: ['./my-solution-list.component.scss']
+  selector: 'app-my-solutions',
+  templateUrl: './my-solutions.component.html',
+  styleUrls: ['./my-solutions.component.scss']
 })
-export class MySolutionListComponent implements OnInit {
+export class MySolutionsComponent implements OnInit {
   private _assignments = new Map<string, { assignment: Assignment, solutions: Solution[] }>();
 
   constructor(

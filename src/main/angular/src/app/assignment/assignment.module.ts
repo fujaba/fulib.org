@@ -22,7 +22,7 @@ import { GradeFormComponent } from './grade-form/grade-form.component';
 import { CourseComponent } from './course/course.component';
 import { CreateCourseComponent } from './create-course/create-course.component';
 import { MyAssignmentsComponent } from './my-assignments/my-assignments.component';
-import { MySolutionListComponent } from './my-solution-list/my-solution-list.component';
+import { MySolutionsComponent } from './my-solutions/my-solutions.component';
 import { AuthorNameComponent } from './author-name/author-name.component';
 import { ImportExportComponent } from './import-export/import-export.component';
 
@@ -39,7 +39,7 @@ import { ImportExportComponent } from './import-export/import-export.component';
     CourseComponent,
     CreateCourseComponent,
     MyAssignmentsComponent,
-    MySolutionListComponent,
+    MySolutionsComponent,
     AuthorNameComponent,
     ImportExportComponent,
   ],
