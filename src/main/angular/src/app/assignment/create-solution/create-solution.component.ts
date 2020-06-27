@@ -15,11 +15,11 @@ import {SolutionService} from '../solution.service';
 import TaskResult from '../model/task-result';
 
 @Component({
-  selector: 'app-solve',
-  templateUrl: './solve.component.html',
-  styleUrls: ['./solve.component.scss']
+  selector: 'app-create-solution',
+  templateUrl: './create-solution.component.html',
+  styleUrls: ['./create-solution.component.scss']
 })
-export class SolveComponent implements OnInit, AfterViewInit, OnDestroy {
+export class CreateSolutionComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('successModal', {static: true}) successModal;
   @ViewChild('solutionInput', {static: true}) solutionInput;
 

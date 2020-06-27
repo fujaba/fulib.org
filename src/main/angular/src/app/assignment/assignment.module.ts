@@ -12,7 +12,7 @@ import {SharedModule} from '../shared/shared.module';
 import {AssignmentRoutingModule} from './assignment-routing.module';
 
 import {CreateAssignmentComponent} from './create-assignment/create-assignment.component';
-import {SolveComponent} from './solve/solve.component';
+import {CreateSolutionComponent} from './create-solution/create-solution.component';
 import {SolutionComponent} from './solution/solution.component';
 import {TokenModalComponent} from './token-modal/token-modal.component';
 import {SolutionTableComponent} from './solution-table/solution-table.component';
@@ -29,7 +29,7 @@ import { ImportExportComponent } from './import-export/import-export.component';
 @NgModule({
   declarations: [
     CreateAssignmentComponent,
-    SolveComponent,
+    CreateSolutionComponent,
     SolutionComponent,
     TokenModalComponent,
     SolutionTableComponent,
