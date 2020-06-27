@@ -59,7 +59,12 @@
     <li *ngFor="let task of tasks; let id = index" class="text-{{getColorClass(id)}}">
       <div class="d-flex align-items-center mb-2">
         <div class="mr-2">
-          {{task.description || '(no description)'}}
+          <del *ngIf="task.deleted; else taskDesc" class="text-muted">
+            <ng-container *ngTemplateOutlet="taskDesc"></ng-container>
+          </del>
+          <ng-template #taskDesc>
+            {{task.description || '(no description)'}}
+          </ng-template>
           <span class="badge badge-{{getColorClass(id) || 'secondary'}}">
             {{task.points === 0 || task.points > 0 ? task.points : '?'}}
           </span>
@@ -77,8 +82,11 @@
         <div class="btn btn-secondary ml-2 handle" aria-label="Reorder">
           <span class="handle" aria-hidden="true">&equiv;</span>
         </div>
-        <button type="button" class="btn btn-danger ml-2" (click)="removeTask(id)" aria-label="Remove">
+        <button *ngIf="!task.deleted" type="button" class="btn btn-danger ml-2" (click)="removeTask(id)" aria-label="Remove">
           <span aria-hidden="true">&times;</span>
+        </button>
+        <button *ngIf="task.deleted" type="button" class="btn btn-success ml-2" (click)="restoreTask(id)" aria-label="Restore">
+          <span aria-hidden="true">&#8634;</span>
         </button>
       </div>
       <div class="form mb-3" [ngbCollapse]="task.collapsed">

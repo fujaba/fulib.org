@@ -34,7 +34,7 @@ export class CreateComponent implements OnInit, AfterViewInit, OnDestroy {
   solution = '';
   templateSolution = '';
 
-  tasks: (Task & {collapsed: boolean})[] = [];
+  tasks: (Task & {collapsed: boolean, deleted: boolean})[] = [];
 
   checking = false;
   results?: TaskResult[];
@@ -94,7 +94,7 @@ export class CreateComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.deadlineDate ? new Date(this.deadlineDate + ' ' + (this.deadlineTime || '00:00')) : null;
   }
 
-  getAssignment(): Assignment {
+  getAssignment(keepDeleted: boolean = false): Assignment {
     return {
       id: undefined,
       token: undefined,
@@ -106,7 +106,7 @@ export class CreateComponent implements OnInit, AfterViewInit, OnDestroy {
       deadline: this.getDeadline(),
       solution: this.solution,
       templateSolution: this.templateSolution,
-      tasks: this.tasks,
+      tasks: keepDeleted ? this.tasks : this.tasks.filter(t => !t.deleted),
     } as Assignment;
   }
 
@@ -124,7 +124,7 @@ export class CreateComponent implements OnInit, AfterViewInit, OnDestroy {
       this.deadlineDate = null;
       this.deadlineTime = null;
     }
-    this.tasks = a.tasks.map(t => ({...t, collapsed: !!t['collapsed']}));
+    this.tasks = a.tasks.map(t => ({...t, collapsed: !!t['collapsed'], deleted: !!t['deleted']}));
     this.solution = a.solution;
     this.templateSolution = a.templateSolution;
 
@@ -141,7 +141,7 @@ export class CreateComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   saveDraft(): void {
-    this.assignmentService.draft = this.getAssignment();
+    this.assignmentService.draft = this.getAssignment(true);
   }
 
   onImport(file: File): void {
@@ -158,7 +158,7 @@ export class CreateComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   addTask(): void {
-    this.tasks.push({description: '', points: undefined, verification: '', collapsed: false});
+    this.tasks.push({description: '', points: undefined, verification: '', collapsed: false, deleted: false});
     if (this.results) {
       this.results.push(undefined);
     }
@@ -166,10 +166,12 @@ export class CreateComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   removeTask(id: number): void {
-    this.tasks.splice(id, 1);
-    if (this.results) {
-      this.results.splice(id, 1);
-    }
+    this.tasks[id].deleted = true;
+    this.saveDraft();
+  }
+
+  restoreTask(id: number): void {
+    this.tasks[id].deleted = false;
     this.saveDraft();
   }
 
