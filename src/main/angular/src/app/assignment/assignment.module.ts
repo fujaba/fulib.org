@@ -15,7 +15,7 @@ import {CreateAssignmentComponent} from './create-assignment/create-assignment.c
 import {SolveComponent} from './solve/solve.component';
 import {SolutionComponent} from './solution/solution.component';
 import {TokenModalComponent} from './token-modal/token-modal.component';
-import {SolutionListComponent} from './solution-list/solution-list.component';
+import {SolutionTableComponent} from './solution-table/solution-table.component';
 import { AssignmentInfoComponent } from './assignment-info/assignment-info.component';
 import { TaskListComponent } from './task-list/task-list.component';
 import { GradeFormComponent } from './grade-form/grade-form.component';
@@ -32,7 +32,7 @@ import { ImportExportComponent } from './import-export/import-export.component';
     SolveComponent,
     SolutionComponent,
     TokenModalComponent,
-    SolutionListComponent,
+    SolutionTableComponent,
     AssignmentInfoComponent,
     TaskListComponent,
     GradeFormComponent,

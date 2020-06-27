@@ -10,11 +10,11 @@ import {SolutionService} from '../solution.service';
 import {TokenModalComponent} from '../token-modal/token-modal.component';
 
 @Component({
-  selector: 'app-solution-list',
-  templateUrl: './solution-list.component.html',
-  styleUrls: ['./solution-list.component.scss']
+  selector: 'app-solution-table',
+  templateUrl: './solution-table.component.html',
+  styleUrls: ['./solution-table.component.scss']
 })
-export class SolutionListComponent implements OnInit {
+export class SolutionTableComponent implements OnInit {
   @ViewChild('tokenModal', {static: true}) tokenModal: TokenModalComponent;
 
   readonly searchableProperties: (keyof Solution)[] = ['name', 'studentID', 'email', 'assignee'];
