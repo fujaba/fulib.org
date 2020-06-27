@@ -79,13 +79,17 @@
         </div>
         <app-collapse-button class="ml-auto" [(collapsed)]="task.collapsed" (collapsedChange)="saveDraft()">
         </app-collapse-button>
-        <div class="btn btn-secondary ml-2 handle" aria-label="Reorder">
+        <div class="btn btn-secondary ml-2 handle" aria-label="Reorder" ngbTooltip="Drag to Reorder">
           <span class="handle" aria-hidden="true">&equiv;</span>
         </div>
-        <button *ngIf="!task.deleted" type="button" class="btn btn-danger ml-2" (click)="removeTask(id)" aria-label="Remove">
+        <button *ngIf="!task.deleted"
+                type="button" class="btn btn-danger ml-2" aria-label="Remove" ngbTooltip="Remove"
+                (click)="removeTask(id)">
           <span aria-hidden="true">&times;</span>
         </button>
-        <button *ngIf="task.deleted" type="button" class="btn btn-success ml-2" (click)="restoreTask(id)" aria-label="Restore">
+        <button *ngIf="task.deleted"
+                type="button" class="btn btn-success ml-2" aria-label="Restore" ngbTooltip="Restore"
+                (click)="restoreTask(id)">
           <span aria-hidden="true">&#8634;</span>
         </button>
       </div>
