@@ -8,6 +8,7 @@ import {SafeHtmlPipe} from '../pipes/safe-html.pipe';
 import {DarkSwitchComponent} from '../dark-switch/dark-switch.component';
 import {AutothemeCodemirrorComponent} from '../autotheme-codemirror/autotheme-codemirror.component';
 import { CollapseButtonComponent } from '../collapse-button/collapse-button.component';
+import {NgbCollapseModule, NgbTooltipModule} from "@ng-bootstrap/ng-bootstrap";
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { CollapseButtonComponent } from '../collapse-button/collapse-button.comp
     FormsModule,
     CommonModule,
     CodemirrorModule,
+    NgbTooltipModule,
   ],
   exports: [
     SafeHtmlPipe,

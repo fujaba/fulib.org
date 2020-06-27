@@ -2,7 +2,7 @@
   <span class="sr-only">
     {{collapsed ? 'Expand' : 'Collapse'}}
   </span>
-  <button type="button" class="btn btn-secondary" (click)="toggle()">
+  <button type="button" class="btn btn-secondary" (click)="toggle()" [ngbTooltip]="collapsed ? 'Expand' : 'Collapse'">
     <span aria-hidden="true">
       {{collapsed ? '+' : '\u2212'}}
     </span>
