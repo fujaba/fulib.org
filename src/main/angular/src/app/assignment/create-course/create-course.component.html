@@ -33,7 +33,10 @@
            [(ngModel)]="newAssignment" [ngbTypeahead]="search"
            (change)="saveDraft()" (keyup.enter)="addAssignment()">
     <div class="input-group-append">
-      <button class="btn btn-success" type="button" (click)="addAssignment()">+</button>
+      <button class="btn btn-success" type="button" ngbTooltip="Keyboard Shortcut: &#9166;"
+              (click)="addAssignment()">
+        +
+      </button>
     </div>
   </div>
   <ul class="timeline-list" dragula="ASSIGNMENTS"
@@ -45,10 +48,10 @@
       <span class="timeline-item-body">
               {{assignment?.title || 'Loading...'}}
             </span>
-      <div class="btn btn-secondary ml-auto handle" aria-label="Reorder">
+      <div class="btn btn-secondary ml-auto handle" aria-label="Reorder" ngbTooltip="Drag to Reorder">
         <span class="handle" aria-hidden="true">&equiv;</span>
       </div>
-      <button type="button" class="btn btn-danger ml-2" aria-label="Remove"
+      <button type="button" class="btn btn-danger ml-2" aria-label="Remove" ngbTooltip="Remove"
               (click)="removeAssignment(i)">
         <span aria-hidden="true">&times;</span>
       </button>
