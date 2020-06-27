@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {CreateComponent} from './create/create.component';
+import {CreateAssignmentComponent} from './create-assignment/create-assignment.component';
 import {SolveComponent} from './solve/solve.component';
 import {SolutionListComponent} from './solution-list/solution-list.component';
 import {SolutionComponent} from './solution/solution.component';
@@ -12,7 +12,7 @@ import {MySolutionListComponent} from './my-solution-list/my-solution-list.compo
 const routes: Routes = [
   {path: '', component: AssignmentListComponent},
   {path: 'solutions', component: MySolutionListComponent},
-  {path: 'create', component: CreateComponent},
+  {path: 'create', component: CreateAssignmentComponent},
   {path: ':aid', component: SolveComponent},
   {path: ':aid/solutions', component: SolutionListComponent},
   {path: ':aid/solutions/:sid', component: SolutionComponent},

@@ -11,7 +11,7 @@ import {SharedModule} from '../shared/shared.module';
 
 import {AssignmentRoutingModule} from './assignment-routing.module';
 
-import {CreateComponent} from './create/create.component';
+import {CreateAssignmentComponent} from './create-assignment/create-assignment.component';
 import {SolveComponent} from './solve/solve.component';
 import {SolutionComponent} from './solution/solution.component';
 import {TokenModalComponent} from './token-modal/token-modal.component';
@@ -28,7 +28,7 @@ import { ImportExportComponent } from './import-export/import-export.component';
 
 @NgModule({
   declarations: [
-    CreateComponent,
+    CreateAssignmentComponent,
     SolveComponent,
     SolutionComponent,
     TokenModalComponent,

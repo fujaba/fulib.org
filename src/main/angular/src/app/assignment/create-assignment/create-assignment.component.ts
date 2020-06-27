@@ -11,11 +11,11 @@ import {AssignmentService} from '../assignment.service';
 import TaskResult from '../model/task-result';
 
 @Component({
-  selector: 'app-create',
-  templateUrl: './create.component.html',
-  styleUrls: ['./create.component.scss']
+  selector: 'app-create-assignment',
+  templateUrl: './create-assignment.component.html',
+  styleUrls: ['./create-assignment.component.scss']
 })
-export class CreateComponent implements OnInit, AfterViewInit, OnDestroy {
+export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('solutionInput', {static: true}) solutionInput;
   @ViewChild('templateSolutionInput', {static: true}) templateSolutionInput;
   @ViewChild('successModal', {static: true}) successModal;
