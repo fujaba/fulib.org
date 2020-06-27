@@ -21,7 +21,7 @@ import { TaskListComponent } from './task-list/task-list.component';
 import { GradeFormComponent } from './grade-form/grade-form.component';
 import { CourseComponent } from './course/course.component';
 import { CreateCourseComponent } from './create-course/create-course.component';
-import { AssignmentListComponent } from './assignment-list/assignment-list.component';
+import { MyAssignmentsComponent } from './my-assignments/my-assignments.component';
 import { MySolutionListComponent } from './my-solution-list/my-solution-list.component';
 import { AuthorNameComponent } from './author-name/author-name.component';
 import { ImportExportComponent } from './import-export/import-export.component';
@@ -38,7 +38,7 @@ import { ImportExportComponent } from './import-export/import-export.component';
     GradeFormComponent,
     CourseComponent,
     CreateCourseComponent,
-    AssignmentListComponent,
+    MyAssignmentsComponent,
     MySolutionListComponent,
     AuthorNameComponent,
     ImportExportComponent,

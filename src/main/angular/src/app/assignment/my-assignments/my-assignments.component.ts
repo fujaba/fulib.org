@@ -3,11 +3,11 @@ import {AssignmentService} from '../assignment.service';
 import Assignment from '../model/assignment';
 
 @Component({
-  selector: 'app-assignment-list',
-  templateUrl: './assignment-list.component.html',
-  styleUrls: ['./assignment-list.component.scss']
+  selector: 'app-my-assignments',
+  templateUrl: './my-assignments.component.html',
+  styleUrls: ['./my-assignments.component.scss']
 })
-export class AssignmentListComponent implements OnInit {
+export class MyAssignmentsComponent implements OnInit {
   assignments?: Assignment[];
 
   constructor(

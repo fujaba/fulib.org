@@ -6,11 +6,11 @@ import {SolutionListComponent} from './solution-list/solution-list.component';
 import {SolutionComponent} from './solution/solution.component';
 import {CreateCourseComponent} from './create-course/create-course.component';
 import {CourseComponent} from './course/course.component';
-import {AssignmentListComponent} from './assignment-list/assignment-list.component';
+import {MyAssignmentsComponent} from './my-assignments/my-assignments.component';
 import {MySolutionListComponent} from './my-solution-list/my-solution-list.component';
 
 const routes: Routes = [
-  {path: '', component: AssignmentListComponent},
+  {path: '', component: MyAssignmentsComponent},
   {path: 'solutions', component: MySolutionListComponent},
   {path: 'create', component: CreateAssignmentComponent},
   {path: ':aid', component: SolveComponent},
