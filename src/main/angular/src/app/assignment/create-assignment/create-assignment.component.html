@@ -115,7 +115,7 @@
             }"></app-autotheme-codemirror>
           </div>
         </div>
-        <div class="form-group row" *ngIf="results && results[id].output">
+        <div class="form-group row" *ngIf="!task.deleted && results && results[id].output">
           <label for="task/{{id}}/output" class="col-sm-2 col-form-label">Output</label>
           <div class="col-sm-10">
             <app-autotheme-codemirror id="task/{{id}}/output" [(content)]="results[id].output" [options]="{
