@@ -18,4 +18,9 @@ export class ImportExportComponent implements OnInit {
   ngOnInit() {
   }
 
+  onImport(): void {
+    if (this.importFile) {
+      this.import.emit(this.importFile);
+    }
+  }
 }
