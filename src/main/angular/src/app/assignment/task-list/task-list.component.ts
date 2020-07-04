@@ -15,6 +15,8 @@ export class TaskListComponent implements OnInit {
   @Input() results?: TaskResult[];
   @Input() gradings?: TaskGrading[];
 
+  outputExpanded: boolean[] = []
+
   constructor() {
   }
 

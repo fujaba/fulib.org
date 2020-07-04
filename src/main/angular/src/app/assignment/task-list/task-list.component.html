@@ -9,12 +9,9 @@
     </span>
     <a role="button" style="cursor: pointer" class="text-primary"
        *ngIf="results && results[i].output"
-       [ngbPopover]="outputPopoverContent" popoverTitle="Output" placement="right" autoClose="outside" container="body">
-      View Output
+       (click)="outputExpanded[i] = !outputExpanded[i]">
+      {{outputExpanded[i] ? 'Hide Output' : 'Show Output'}}
     </a>
-    <ng-template #outputPopoverContent>
-      <pre>{{results[i].output}}</pre>
-    </ng-template>
     <span *ngIf="solution && results && results[i].output" class="text-muted">
       &#8226;
     </span>
@@ -26,6 +23,13 @@
     <ng-template #gradePopoverContent>
       <app-grade-form [solution]="solution" [taskID]="i" [gradings]="gradings"></app-grade-form>
     </ng-template>
+    <div [ngbCollapse]="!outputExpanded[i]" class="my-3">
+      <app-autotheme-codemirror [content]="results[i].output" [options]="{
+        autoRefresh: true,
+        lineNumbers: true,
+        readOnly: true
+      }"></app-autotheme-codemirror>
+    </div>
   </li>
 </ol>
 <p *ngIf="!assignment">
