@@ -68,14 +68,6 @@
           <span class="badge badge-{{getColorClass(id) || 'secondary'}}">
             {{task.points === 0 || task.points > 0 ? task.points : '?'}}
           </span>
-          <a role="button" style="cursor: pointer" class="text-primary"
-             *ngIf="results && results[id].output"
-             [ngbPopover]="outputPopoverContent" popoverTitle="Output" placement="right" autoClose="outside" container="body">
-            View Output
-          </a>
-          <ng-template #outputPopoverContent>
-            <pre>{{results[id].output}}</pre>
-          </ng-template>
         </div>
         <app-collapse-button class="ml-auto" [(collapsed)]="task.collapsed" (collapsedChange)="saveDraft()">
         </app-collapse-button>
@@ -119,6 +111,16 @@
               autoRefresh: true,
               lineNumbers: true,
               lineWrapping: true,
+              styleActiveLine: true
+            }"></app-autotheme-codemirror>
+          </div>
+        </div>
+        <div class="form-group row" *ngIf="results && results[id].output">
+          <label for="task/{{id}}/output" class="col-sm-2 col-form-label">Output</label>
+          <div class="col-sm-10">
+            <app-autotheme-codemirror id="task/{{id}}/output" [(content)]="results[id].output" [options]="{
+              autoRefresh: true,
+              lineNumbers: true,
               styleActiveLine: true
             }"></app-autotheme-codemirror>
           </div>
