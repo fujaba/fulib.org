@@ -56,16 +56,16 @@
 
   <h2>Tasks</h2>
   <ol dragula="TASKS" [(dragulaModel)]="tasks" (dragulaModelChange)="saveDraft()">
-    <li *ngFor="let task of tasks; let id = index" class="text-{{getColorClass(id)}}">
+    <li *ngFor="let task of tasks; let id = index" class="text-{{task.deleted ? 'muted' : getColorClass(id)}}">
       <div class="d-flex align-items-center mb-2">
         <div class="mr-2">
-          <del *ngIf="task.deleted; else taskDesc" class="text-muted">
+          <del *ngIf="task.deleted; else taskDesc">
             <ng-container *ngTemplateOutlet="taskDesc"></ng-container>
           </del>
           <ng-template #taskDesc>
             {{task.description || '(no description)'}}
           </ng-template>
-          <span class="badge badge-{{getColorClass(id) || 'secondary'}}">
+          <span class="badge badge-{{task.deleted ? 'secondary' : getColorClass(id) || 'secondary'}}">
             {{task.points === 0 || task.points > 0 ? task.points : '?'}}
           </span>
         </div>
