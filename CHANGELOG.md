@@ -189,4 +189,4 @@
 
 ## New Features
 
-+ Downladed Gradle projects can now include a decorator class whose name is configurable.
++ Downloaded Gradle projects can now include a decorator class whose name is configurable.
