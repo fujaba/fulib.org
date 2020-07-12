@@ -31,10 +31,6 @@ jobs:
                node-version: '14'
          -  name: Install PNPM
             run: npm install -g pnpm
-         -  name: Install Angular CLI
-            run: pnpm install -g @angular/cli
-         -  name: Setup Angular CLI to use PNPM
-            run: ng config -g cli.packageManager pnpm
          -  name: Cache Gradle packages
             uses: actions/cache@v2
             with:
@@ -47,5 +43,9 @@ jobs:
                path: ~/.pnpm-store
                key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
                restore-keys: ${{ runner.os }}-pnpm
+         -  name: Install Angular CLI
+            run: pnpm install -g @angular/cli
+         -  name: Setup Angular CLI to use PNPM
+            run: ng config -g cli.packageManager pnpm
          -  name: Build with Gradle
             run: ./gradlew build
