@@ -190,3 +190,38 @@
 ## New Features
 
 + Downloaded Gradle projects can now include a decorator class whose name is configurable.
+
+# fulib.org v1.4.0
+
+## General
+
+* Updated to Angular 9.
+* Cleaned up the backend code.
+
+## QoL and Usability Improvements
+
+* General
+  * Cleaned up the GitHub menu in the footer.
+  * The warning text when an example is selected is now hidden behind the tooltip of an icon.
+  * Improved the tooltip of the `Compile and Run` button.
+  * Added tooltips to collapse/expand buttons.
+  
+* Assignment Creation
+  * Tasks in the assignment creation form can now be restored after deletion.
+  * Added tooltips to the buttons in the assignment creation form.
+  * Added tooltips to the buttons in the course creation form.
+  * Outputs in the task lists during assignment creation are now shown below the verification editor.
+  * Import buttons are now disabled and have a tooltip if no file is selected.
+  
+* Viewing Solutions
+  * Replaced the `Edit` button in the My Solutions list with a separate item for the current draft. #82
+  * Changed the button label for submitting comments to `Submit`.
+  * Added the Ctrl-Enter shortcut for the comment submit button.
+  * Outputs in the task list of solutions are now shown in a collapsible editor.
+
+* Grading Solutions
+  * Changed the button label for search help to `?` and added a tooltip.
+
+# Bugfixes
+
+* Fixed a timezone problem with deadlines in the assignment creation form. #83
