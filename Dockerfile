@@ -1,4 +1,4 @@
-FROM openjdk:8
+FROM openjdk:8-jdk-alpine
 RUN mkdir /scenarios
 WORKDIR /scenarios
 COPY ./build/libs/fulibDotOrg-*-all.jar fulibDotOrg-latest-all.jar
