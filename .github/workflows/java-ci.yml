@@ -51,7 +51,7 @@ jobs:
             run: ./gradlew build
          -  name: Extract branch name
             shell: bash
-            run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+            run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF##*/})"
             id: extract_branch
          -  name: Build and Release the Docker image
             if: matrix.os == 'ubuntu' && matrix.java == 8 && (steps.extract_branch.outputs.branch == 'deploy' || steps.extract_branch.outputs.branch == 'develop')
