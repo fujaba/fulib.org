@@ -49,3 +49,24 @@ jobs:
             run: ng config -g cli.packageManager pnpm
          -  name: Build with Gradle
             run: ./gradlew build
+         -  name: Extract branch name
+            shell: bash
+            run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+            id: extract_branch
+         -  name: Build and Release the Docker image
+            if: steps.extract_branch.outputs.branch == 'deploy' || steps.extract_branch.outputs.branch == 'develop'
+            run: |
+               docker login ${{ secrets.DOCKER_REGISTRY }} -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+               docker build -t ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org:${{ steps.extract_branch.outputs.branch }} .
+               docker push ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org:${{ steps.extract_branch.outputs.branch }}
+         -  name: Deploy the Docker image to rancher
+            if: steps.extract_branch.outputs.branch == 'deploy' || steps.extract_branch.outputs.branch == 'develop'
+            uses: sekassel-research/actions-rancher-update@1.1.1
+            with:
+               rancher_url: ${{ secrets.RANCHER_URL }}
+               rancher_access: ${{ secrets.RANCHER_ACCESS }}
+               rancher_key: ${{ secrets.RANCHER_KEY }}
+               project_id: ${{ secrets.RANCHER_PROJECT }}
+               stack_name: ${{ secrets.RANCHER_STACK }}
+               service_name: ${{ secrets.RANCHER_SERVICE }}-${{ steps.extract_branch.outputs.branch }}
+               docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org:${{ steps.extract_branch.outputs.branch }}
