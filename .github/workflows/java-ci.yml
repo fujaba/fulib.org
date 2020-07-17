@@ -54,13 +54,13 @@ jobs:
             run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
             id: extract_branch
          -  name: Build and Release the Docker image
-            if: runner.os == 'ubuntu' && matrix.java == 8 && (steps.extract_branch.outputs.branch == 'deploy' || steps.extract_branch.outputs.branch == 'develop')
+            if: matrix.os == 'ubuntu' && matrix.java == 8 && (steps.extract_branch.outputs.branch == 'deploy' || steps.extract_branch.outputs.branch == 'develop')
             run: |
                docker login ${{ secrets.DOCKER_REGISTRY }} -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
                docker build -t ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org:${{ steps.extract_branch.outputs.branch }} .
                docker push ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org:${{ steps.extract_branch.outputs.branch }}
          -  name: Deploy the Docker image to rancher
-            if: runner.os == 'ubuntu' && matrix.java == 8 && (steps.extract_branch.outputs.branch == 'deploy' || steps.extract_branch.outputs.branch == 'develop')
+            if: matrix.os == 'ubuntu' && matrix.java == 8 && (steps.extract_branch.outputs.branch == 'deploy' || steps.extract_branch.outputs.branch == 'develop')
             uses: sekassel-research/actions-rancher-update@1.1.1
             with:
                rancher_url: ${{ secrets.RANCHER_URL }}
