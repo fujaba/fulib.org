@@ -1,0 +1,37 @@
+<h2>Tasks</h2>
+<ol *ngIf="assignment">
+  <li *ngFor="let task of assignment.tasks; let i = index"
+      class="text-{{getColorClass(i)}}">
+    {{task.description}}
+    <span class="badge badge-{{getColorClass(i)}}">
+      <ng-container *ngIf="results">{{getTaskPoints(i)}} / </ng-container>
+    {{task.points}}
+    </span>
+    <a role="button" style="cursor: pointer" class="text-primary"
+       *ngIf="results && results[i].output"
+       (click)="outputExpanded[i] = !outputExpanded[i]">
+      {{outputExpanded[i] ? 'Hide Output' : 'Show Output'}}
+    </a>
+    <span *ngIf="solution && results && results[i].output" class="text-muted">
+      &#8226;
+    </span>
+    <a role="button" style="cursor: pointer" class="text-primary"
+       *ngIf="results && solution"
+       [ngbPopover]="gradePopoverContent" popoverTitle="Grade" placement="right" autoClose="outside" container="body">
+      Grade
+    </a>
+    <ng-template #gradePopoverContent>
+      <app-grade-form [solution]="solution" [taskID]="i" [gradings]="gradings"></app-grade-form>
+    </ng-template>
+    <div *ngIf="results && results[i].output" [ngbCollapse]="!outputExpanded[i]" class="my-3">
+      <app-autotheme-codemirror [content]="results[i].output" [options]="{
+        autoRefresh: true,
+        lineNumbers: true,
+        readOnly: true
+      }"></app-autotheme-codemirror>
+    </div>
+  </li>
+</ol>
+<p *ngIf="!assignment">
+  Loading Tasks...
+</p>

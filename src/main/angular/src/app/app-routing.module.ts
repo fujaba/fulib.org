@@ -6,6 +6,7 @@ import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
 
 const routes: Routes = [
   {path: '', component: FourPaneEditorComponent},
+  {path: 'assignments', loadChildren: () => import('./assignment/assignment.module').then(m => m.AssignmentModule)},
   {path: '**', component: PageNotFoundComponent}
 ];
 

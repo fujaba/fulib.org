@@ -1,12 +1,12 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 
-import {saveAs} from 'file-saver'
+import {saveAs} from 'file-saver';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
-import {ScenarioEditorService} from "../scenario-editor.service";
+import {ScenarioEditorService} from '../scenario-editor.service';
 
-import ProjectZipRequest from "../model/project-zip-request";
-import {PrivacyService} from "../privacy.service";
+import ProjectZipRequest from '../model/project-zip-request';
+import {PrivacyService} from '../privacy.service';
 
 @Component({
   selector: 'app-config-modal',
@@ -17,9 +17,10 @@ export class ConfigModalComponent implements OnInit {
   @ViewChild('content', {static: true}) content;
 
   packageName: string;
-  projectName: any;
-  projectVersion: any;
-  scenarioFileName: any;
+  projectName: string;
+  projectVersion: string;
+  scenarioFileName: string;
+  decoratorClassName: string;
 
   constructor(
     private scenarioEditorService: ScenarioEditorService,
@@ -28,7 +29,7 @@ export class ConfigModalComponent implements OnInit {
   ) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
   open(): void {
@@ -36,6 +37,7 @@ export class ConfigModalComponent implements OnInit {
     this.projectName = this.scenarioEditorService.projectName;
     this.projectVersion = this.scenarioEditorService.projectVersion;
     this.scenarioFileName = this.scenarioEditorService.scenarioFileName;
+    this.decoratorClassName = this.scenarioEditorService.decoratorClassName;
 
     this.modalService.open(this.content);
   }
@@ -45,6 +47,7 @@ export class ConfigModalComponent implements OnInit {
     this.scenarioEditorService.projectName = this.projectName;
     this.scenarioEditorService.projectVersion = this.projectVersion;
     this.scenarioEditorService.scenarioFileName = this.scenarioFileName;
+    this.scenarioEditorService.decoratorClassName = this.decoratorClassName;
   }
 
   downloadProjectZip(): void {
@@ -55,6 +58,7 @@ export class ConfigModalComponent implements OnInit {
       projectVersion: this.projectVersion,
       scenarioFileName: this.scenarioFileName,
       scenarioText: this.scenarioEditorService.storedScenario,
+      decoratorClassName: this.decoratorClassName,
     };
     this.scenarioEditorService.downloadZip(request).subscribe(blob => {
       saveAs(blob, `${this.projectName}.zip`);

@@ -15,7 +15,14 @@ import java.util.zip.ZipOutputStream;
 
 public class ProjectZip
 {
-	public static Object handle(Request request, Response response) throws IOException, JSONException
+	private final Mongo mongo;
+
+	public ProjectZip(Mongo mongo)
+	{
+		this.mongo = mongo;
+	}
+
+	public Object handle(Request request, Response response) throws IOException, JSONException
 	{
 		final String body = request.body();
 		final JSONObject jsonObject = new JSONObject(body);
@@ -24,13 +31,16 @@ public class ProjectZip
 		final String projectName = jsonObject.getString("projectName");
 		final String projectVersion = jsonObject.getString("projectVersion");
 		final String bodyText = jsonObject.getString("scenarioText");
+		final String decoratorClassName = jsonObject.optString("decoratorClassName", null);
+
+		final String packageDir = packageName.replace('.', '/');
 
 		response.type("application/zip");
 		try (final ZipOutputStream zip = new ZipOutputStream(response.raw().getOutputStream()))
 		{
 			final byte[] buffer = new byte[8192];
 
-			zip.putNextEntry(new ZipEntry("src/main/scenarios/" + packageName.replace('.', '/') + "/" + fileName));
+			zip.putNextEntry(new ZipEntry("src/main/scenarios/" + packageDir + "/" + fileName));
 			zip.write(bodyText.getBytes(StandardCharsets.UTF_8));
 
 			copy("default.gitignore", ".gitignore", zip, buffer);
@@ -55,11 +65,23 @@ public class ProjectZip
 				                             .replace("$$projectVersion$$", projectVersion);
 				IOUtils.write(result, zip, StandardCharsets.UTF_8);
 			}
+
+			if (decoratorClassName != null && !decoratorClassName.isEmpty())
+			{
+				zip.putNextEntry(new ZipEntry("src/gen/java/" + packageDir + "/" + decoratorClassName + ".java"));
+				try (final InputStream input = ProjectZip.class.getResourceAsStream("Decorator.java.txt"))
+				{
+					final String content = IOUtils.toString(input, StandardCharsets.UTF_8);
+					final String result = content.replace("$$packageName$$", packageName)
+					                             .replace("$$decoratorClassName$$", decoratorClassName);
+					IOUtils.write(result, zip, StandardCharsets.UTF_8);
+				}
+			}
 		}
 
 		if (jsonObject.has("privacy") && "all".equals(jsonObject.get("privacy")))
 		{
-			Mongo.get().log(request.ip(), request.userAgent(), body, "{}");
+			this.mongo.log(request.ip(), request.userAgent(), body, "{}");
 		}
 
 		return response.raw();

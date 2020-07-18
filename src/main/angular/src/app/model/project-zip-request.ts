@@ -5,4 +5,5 @@ export default class ProjectZipRequest {
   projectVersion: string;
   scenarioFileName: string;
   scenarioText: string;
+  decoratorClassName?: string;
 }

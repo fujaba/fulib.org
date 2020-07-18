@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable, EMPTY} from 'rxjs';
+import {EMPTY, Observable} from 'rxjs';
 import {flatMap} from 'rxjs/operators';
 
 import {PrivacyService} from './privacy.service';
@@ -10,6 +10,7 @@ export class Versions {
   'fulib.org': string;
   fulib: string;
   fulibTools: string;
+  fulibTables: string;
   fulibScenarios: string;
   fulibMockups: string;
   fulibGradle: string;
@@ -25,8 +26,25 @@ export class ChangelogService {
   ) {
   }
 
+  public get autoShow(): boolean {
+    const storage = this.privacyService.getStorage('autoShowChangelog');
+    return storage !== 'false';
+  }
+
+  public set autoShow(value: boolean) {
+    this.privacyService.setStorage('autoShowChangelog', `${value}`);
+  }
+
   public get repos(): (keyof Versions)[] {
-    return ['fulib.org', 'fulib', 'fulibTools', 'fulibScenarios', 'fulibMockups', 'fulibGradle'];
+    return [
+      'fulib.org',
+      'fulib',
+      'fulibTools',
+      'fulibTables',
+      'fulibScenarios',
+      'fulibMockups',
+      'fulibGradle',
+    ];
   }
 
   public get currentVersions(): Versions {
@@ -56,19 +74,39 @@ export class ChangelogService {
     return this.http.post(`${environment.apiURL}/rendermarkdown`, md, {responseType: 'text'});
   }
 
-  private partialChangelog(fullChangelog: string, lastUsedVersion: string): string {
-    const pattern = `#.*${lastUsedVersion.replace(/\./g, '\\.')}\n`;
-    const versionIndex = fullChangelog.search(pattern);
-    if (versionIndex < 0) { // unknown version
-      return '';
+  private partialChangelog(fullChangelog: string, lastUsedVersion: string, currentVersion?: string): string {
+    let result = '';
+    let version = undefined;
+
+    loop: for (const line of fullChangelog.split('\n')) {
+      if (line.startsWith('# ')) { // indicating a version headline
+        if (line.includes(lastUsedVersion)) {
+          version = 'lastUsed'
+        }
+        else if (currentVersion && line.includes(currentVersion)) {
+          version = 'current';
+        }
+        else { // some other version
+          switch (version) {
+            case 'lastUsed': // the ones after lastUsed are new and therefore interesting
+              version = 'new';
+              break;
+            case 'current': // the ones after current are too new, and their features are not available, so they are not interesting
+              version = 'future';
+              break loop;
+          }
+        }
+      }
+
+      switch (version) {
+        case 'new':
+        case 'current':
+          result += line + '\n';
+          break;
+      }
     }
 
-    const nextLineIndex = fullChangelog.indexOf('\n', versionIndex); // must be > 0 because pattern ends with a line break
-    const nextVersionIndex = fullChangelog.indexOf('\n# ', nextLineIndex) + 1;
-    if (nextVersionIndex <= 0) { // i.e., indexOf returned < 0
-      return '';
-    }
-    return fullChangelog.substring(nextVersionIndex);
+    return result;
   }
 
   private replaceIssueLinks(repo: string, markdown: string): string {
@@ -77,10 +115,10 @@ export class ChangelogService {
     })
   }
 
-  getChangelog(repo: keyof Versions, lastUsedVersion?: string): Observable<string> {
+  getChangelog(repo: keyof Versions, lastUsedVersion?: string, currentVersion?: string): Observable<string> {
     return this.loadRawChangelog('fujaba/' + repo).pipe(
       flatMap(fullChangelog => {
-        const changelog = lastUsedVersion ? this.partialChangelog(fullChangelog, lastUsedVersion) : fullChangelog;
+        const changelog = lastUsedVersion ? this.partialChangelog(fullChangelog, lastUsedVersion, currentVersion) : fullChangelog;
         if (!changelog) { // already newest version
           return EMPTY;
         }

@@ -5,41 +5,20 @@ jdk:
   - openjdk8
   - openjdk11
   - openjdk12
-services:
-  - docker
 
 # ensures version detection in build.gradle always works, even if the newest tag was more than 50 commits ago
 git:
   depth: false
 
-# --------------- Rancher Deployment ---------------
+# --------------- Installation ---------------
 
 before_install:
   - sudo apt-get update
   - sudo apt-get install -y jq
-  - nvm use 13.3.0
+  - nvm install 13.7
+  - nvm use 13.7
   - npm install -g pnpm @angular/cli
   - ng config -g cli.packageManager pnpm
-
-deploy:
-  - provider: script
-    script: bash travis-deploy.sh
-    skip_cleanup: true
-    on:
-      branch: deploy 
-      jdk: openjdk8
-  - provider: script
-    script: bash travis-deploy.sh
-    skip_cleanup: true
-    on:
-      branch: develop 
-      jdk: openjdk8
-  - provider: script
-    script: bash travis-deploy.sh
-    skip_cleanup: true
-    on:
-      branch: assignments
-      jdk: openjdk8
 
 # --------------- Gradle Cache ---------------
 

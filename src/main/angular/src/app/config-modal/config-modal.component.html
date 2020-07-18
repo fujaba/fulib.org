@@ -29,6 +29,12 @@
         <input type="text" class="form-control" id="scenarioFileNameField" placeholder="Scenario.md"
                pattern="^[\w._\-]+\.md$" [(ngModel)]="scenarioFileName">
       </div>
+      <div class="form-group">
+        <label for="decoratorClassNameField">Decorator Class Name</label>
+        <input type="text" class="form-control" id="decoratorClassNameField"
+               pattern="^[\w_]+$" [(ngModel)]="decoratorClassName">
+        <small class="form-text text-muted">Optional. If empty, no decorator class will be generated.</small>
+      </div>
     </div>
   </div>
   <div class="modal-footer">

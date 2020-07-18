@@ -26,6 +26,7 @@ There is a Car with name Herbie.
   public readonly defaultProjectName = 'scenario';
   public readonly defaultProjectVersion = '0.1.0';
   public readonly defaultScenarioFileName = 'Scenario.md';
+  public readonly defaultDecoratorClassName = 'GenModel';
 
   private _storedScenario?: string;
 
@@ -33,6 +34,7 @@ There is a Car with name Herbie.
   private _projectName: string | null;
   private _projectVersion: string | null;
   private _scenarioFileName: string | null;
+  private _decoratorClassName: string | null;
 
   private _selectedExample: Example | null;
 
@@ -129,6 +131,17 @@ There is a Car with name Herbie.
     if (this._scenarioFileName !== value) {
       this._scenarioFileName = value;
       this.privacyService.setStorage('scenarioFileName', value);
+    }
+  }
+
+  get decoratorClassName(): string {
+    return this._decoratorClassName || this.privacyService.getStorage('decoratorClassName') || this.defaultDecoratorClassName;
+  }
+
+  set decoratorClassName(value: string) {
+    if (this._decoratorClassName !== value) {
+      this._decoratorClassName = value;
+      this.privacyService.setStorage('decoratorClassName', value);
     }
   }
 

@@ -3,12 +3,17 @@
 plugins {
 	id 'java'
 	id 'application'
-	id 'org.fulib.fulibGradle' version '0.2.0'
 	id 'maven-publish'
-	id 'com.jfrog.bintray' version '1.8.4'
-	id 'de.clashsoft.simple-publish' version '0.3.0'
+	// https://plugins.gradle.org/plugin/org.fulib.fulibGradle
+	id 'org.fulib.fulibGradle' version '0.4.0'
+	// https://plugins.gradle.org/plugin/de.clashsoft.simple-publish
+	id 'de.clashsoft.simple-publish' version '0.6.0'
+	// https://plugins.gradle.org/plugin/de.clashsoft.angular-gradle
 	id 'de.clashsoft.angular-gradle' version '0.1.6'
-	id 'com.github.johnrengelman.shadow' version '4.0.4'
+	// https://plugins.gradle.org/plugin/com.github.johnrengelman.shadow
+	id 'com.github.johnrengelman.shadow' version '5.2.0'
+	// https://plugins.gradle.org/plugin/com.jfrog.bintray
+	id 'com.jfrog.bintray' version '1.8.5'
 }
 
 // --------------- Publication Info ---------------
@@ -19,14 +24,11 @@ description = 'The fulib.org website and Fulib Scenarios Web App'
 
 publishInfo {
 	websiteUrl = 'https://www.fulib.org/'
-	issueTrackerUrl = 'https://github.com/fujaba/fulib.org/issues'
-	vcsUrl = 'https://github.com/fujaba/fulib.org'
 	githubRepo = 'fujaba/fulib.org'
 	labels = [ 'fulib', 'scenarios', 'webapp', 'website' ]
 
 	license {
-		shortName = 'BSD 3-Clause'
-		longName = 'BSD 3-Clause "New" or "Revised" License'
+		name = 'BSD 3-Clause'
 		url = 'https://opensource.org/licenses/BSD-3-Clause'
 	}
 
@@ -60,34 +62,36 @@ repositories {
 }
 
 dependencies {
-	fulibScenarios group: 'org.fulib', name: 'fulibScenarios', version: '1.1.0'
+	fulibScenarios group: 'org.fulib', name: 'fulibScenarios', version: '1.3.0'
 
 	// --------------- Fulib Libraries ---------------
 
-	compile group: 'org.fulib', name: 'fulibScenarios', version: '1.1.0'
+	compile group: 'org.fulib', name: 'fulibScenarios', version: '1.3.0'
 
 	compile group: 'org.fulib', name: 'fulibMockups', version: '0.2.0'
+
+	compile group: 'org.fulib', name: 'fulibTables', version: '1.3.0'
 
 	// --------------- Other Libraries ---------------
 
 	// https://mvnrepository.com/artifact/commons-io/commons-io
-	compile group: 'commons-io', name: 'commons-io', version: '2.4'
+	compile group: 'commons-io', name: 'commons-io', version: '2.6'
 
 	// https://mvnrepository.com/artifact/org.slf4j/slf4j-nop
-	compile group: 'org.slf4j', name: 'slf4j-nop', version: '1.7.26'
+	compile group: 'org.slf4j', name: 'slf4j-nop', version: '1.7.30'
 
 	// https://mvnrepository.com/artifact/com.sparkjava/spark-core
 	compile group: 'com.sparkjava', name: 'spark-core', version: '2.9.1'
 
 	// https://mvnrepository.com/artifact/org.json/json
-	compile group: 'org.json', name: 'json', version: '20180813'
+	compile group: 'org.json', name: 'json', version: '20190722'
 
 	// https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync
-	compile group: 'org.mongodb', name: 'mongodb-driver-sync', version: '3.11.0'
+	compile group: 'org.mongodb', name: 'mongodb-driver-sync', version: '3.12.3'
 
 	// compile instead of testCompile because the web service uses it
 	// https://mvnrepository.com/artifact/junit/junit
-	compile group: 'junit', name: 'junit', version: '4.12'
+	compile group: 'junit', name: 'junit', version: '4.13'
 
 	// --------------- CommonMark ---------------
 
@@ -110,6 +114,7 @@ processResources {
 	def version = project.version.toString()
 	def fulibVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulib')
 	def fulibToolsVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulibTools')
+	def fulibTablesVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulibTables')
 	def fulibScenariosVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulibScenarios')
 	def fulibGradleVersion = getDependencyVersion(buildscript.configurations.classpath, 'org.fulib', 'fulibGradle')
 	def fulibMockupsVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulibMockups')
@@ -124,6 +129,7 @@ processResources {
 			it = it.replace('$$version$$', version)
 			it = it.replace('$$fulibVersion$$', fulibVersion)
 			it = it.replace('$$fulibToolsVersion$$', fulibToolsVersion)
+			it = it.replace('$$fulibTablesVersion$$', fulibTablesVersion)
 			it = it.replace('$$fulibScenariosVersion$$', fulibScenariosVersion)
 			it = it.replace('$$fulibMockupsVersion$$', fulibMockupsVersion)
 			it = it.replace('$$fulibGradleVersion$$', fulibGradleVersion)
@@ -148,8 +154,8 @@ angular {
 	packageManagerArgs = [ 'install', '--shamefully-hoist' ]
 }
 
-processResources.filesMatching('fulibDotOrg/**') {
-	it.path = it.path.replace('fulibDotOrg', 'org/fulib/webapp/static')
+processResources.filesMatching('fulib.org/**') {
+	it.path = it.path.replace('fulib.org', 'org/fulib/webapp/static')
 }
 
 // --------------- Project Zip Wrapper ---------------

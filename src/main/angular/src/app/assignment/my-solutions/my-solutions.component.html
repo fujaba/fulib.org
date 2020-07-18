@@ -1,0 +1,42 @@
+<div class="container">
+  <h1>My Solutions</h1>
+
+  <ul class="list-group">
+    <li *ngFor="let assignment of assignments"
+        class="list-group-item"
+    >
+      <h3>
+        {{assignment.title}}
+      </h3>
+      <p class="text-muted">
+        by <app-author-name [name]="assignment.author" [email]="assignment.email"></app-author-name>
+        <ng-container *ngIf="assignment.deadline">
+          &mdash;
+          Deadline: {{assignment.deadline | date:'medium'}}
+        </ng-container>
+      </p>
+      <p>
+
+      </p>
+      <div class="list-group">
+        <a *ngFor="let solution of getSolutions(assignment)"
+           class="list-group-item list-group-item-action"
+           routerLink="/assignments/{{assignment.id}}/solutions/{{solution.id}}">
+          by <app-author-name [name]="solution.name" [email]="solution.email"></app-author-name>
+          &mdash;
+          {{solution.studentID}}
+          &mdash;
+          Submitted: {{solution.timeStamp | date:'medium'}}
+        </a>
+        <a class="list-group-item list-group-item-action"
+           routerLink="/assignments/{{assignment.id}}">
+          by <app-author-name [name]="name" [email]="email"></app-author-name>
+          &mdash;
+          {{studentID}}
+          &mdash;
+          <span class="text-success">Current Draft</span>
+        </a>
+      </div>
+    </li>
+  </ul>
+</div>

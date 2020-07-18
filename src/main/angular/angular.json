@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "fulibDotOrg": {
+    "fulib.org": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,12 +17,12 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/fulibDotOrg",
+            "outputPath": "dist/fulib.org",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
-            "aot": false,
+            "aot": true,
             "assets": [
               "src/favicon.ico",
               "src/assets"
@@ -34,6 +34,12 @@
           },
           "configurations": {
             "gradle": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -53,7 +59,6 @@
               "sourceMap": false,
               "extractCss": true,
               "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
@@ -75,18 +80,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "fulibDotOrg:build"
+            "browserTarget": "fulib.org:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "fulibDotOrg:build:production"
+              "browserTarget": "fulib.org:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "fulibDotOrg:build"
+            "browserTarget": "fulib.org:build"
           }
         },
         "test": {
@@ -123,15 +128,15 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "fulibDotOrg:serve"
+            "devServerTarget": "fulib.org:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "fulibDotOrg:serve:production"
+              "devServerTarget": "fulib.org:serve:production"
             }
           }
         }
       }
     }},
-  "defaultProject": "fulibDotOrg"
+  "defaultProject": "fulib.org"
 }

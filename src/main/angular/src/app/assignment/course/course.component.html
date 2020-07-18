@@ -1,0 +1,29 @@
+<div class="row">
+  <div class="col-md-3 bg-light bg-darkmode-dark">
+    <div class="container" style="position: sticky; top: 0">
+      <h1>{{course?.title || 'Loading Title...'}}</h1>
+
+      <div [innerHTML]="(course?.descriptionHtml || 'Loading Description...') | safeHtml"></div>
+
+      <ol class="timeline-list">
+        <li *ngFor="let assignment of course?.assignments; let i=index" class="timeline-item">
+          <div class="timeline-item-badge bg-{{getBadgeColor(i, assignment)}}">
+            {{i + 1}}
+          </div>
+          <div class="timeline-item-body">
+            <a routerLink="/assignments/courses/{{courseID}}/assignments/{{assignment?.id}}">
+              {{assignment?.title || 'Loading...'}}
+            </a>
+            <ng-container *ngIf="latestSolutionIDs && latestSolutionIDs[i]">
+              &#8226;
+              Done!
+            </ng-container>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <app-create-solution *ngIf="assignmentID"></app-create-solution>
+  </div>
+</div>

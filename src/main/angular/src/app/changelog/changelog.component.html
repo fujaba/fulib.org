@@ -13,10 +13,13 @@
           <li *ngFor="let entry of changelogs" [ngbNavItem]="entry.repo">
             <a ngbNavLink>
               {{entry.repo}}
-              <ng-container *ngIf="lastUsedVersions">
-                <br/>
-                <span class="badge badge-secondary">since v{{lastUsedVersions[entry.repo]}}</span>
-              </ng-container>
+              <br/>
+              <span class="badge badge-secondary">
+                <ng-container *ngIf="lastUsedVersions && lastUsedVersions[entry.repo] !== currentVersions[entry.repo]">
+                  v{{lastUsedVersions[entry.repo]}} &rarr;
+                </ng-container>
+                v{{currentVersions[entry.repo]}}
+              </span>
             </a>
             <ng-template ngbNavContent>
               <div [innerHTML]="entry.changelog | safeHtml"></div>
@@ -27,6 +30,10 @@
     </div>
   </div>
   <div class="modal-footer">
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="checkbox" id="autoShowCheckbox" [(ngModel)]="autoShow">
+      <label class="form-check-label" for="autoShowCheckbox">Automatically show this window</label>
+    </div>
     <button type="button" class="btn btn-primary" (click)="modal.close()">Close</button>
   </div>
 </ng-template>
