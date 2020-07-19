@@ -172,6 +172,7 @@ public class WebService
 	private void addAssignmentsRoutes()
 	{
 		service.path("/assignments", () -> {
+			service.get("", assignments::getAll);
 			service.post("", assignments::create);
 
 			service.post("/create/check", solutions::check);

@@ -14,7 +14,7 @@ import spark.Response;
 import spark.Spark;
 
 import java.time.Instant;
-import java.util.Objects;
+import java.util.List;
 
 public class Assignments
 {
@@ -161,6 +161,42 @@ public class Assignments
 		final boolean privileged = isAuthorized(request, assignment);
 		final JSONObject obj = toJson(assignment, privileged);
 		return obj.toString(2);
+	}
+
+	public Object getAll(Request request, Response response)
+	{
+		if (request.contentType() == null || !request.contentType().startsWith("application/json"))
+		{
+			return WebService.serveIndex(request, response);
+		}
+
+		final String userIdParam = request.queryParamOrDefault("userId", null);
+
+		final String userId = getUserId(request);
+		if (userId == null)
+		{
+			throw Spark.halt(401, INVALID_TOKEN_RESPONSE);
+		}
+		if (userIdParam == null)
+		{
+			// language=JSON
+			throw Spark.halt(400, "{\n" + "  \"error\": \"missing userId query parameter\"\n" + "}");
+		}
+		if (!userId.equals(userIdParam))
+		{
+			// language=JSON
+			throw Spark.halt(400,
+			                 "{\n" + "  \"error\": \"userId query parameter does not match ID of logged-in user\"\n"
+			                 + "}");
+		}
+
+		final List<Assignment> assignments = this.mongo.getAssignmentsByUser(userId);
+		final JSONArray array = new JSONArray();
+		for (final Assignment assignment : assignments)
+		{
+			array.put(toJson(assignment, true));
+		}
+		return array.toString(2);
 	}
 
 	private static JSONObject toJson(Assignment assignment, boolean privileged)
