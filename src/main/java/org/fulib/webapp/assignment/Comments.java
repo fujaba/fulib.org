@@ -32,6 +32,12 @@ public class Comments
 		final String commentID = IDGenerator.generateID();
 		final Comment comment = fromJson(commentID, new JSONObject(request.body()));
 
+		final String userId = Assignments.getUserId(request);
+		if (userId != null)
+		{
+			comment.setUserId(userId);
+		}
+
 		final String html = MarkdownUtil.renderHtml(comment.getMarkdown());
 
 		comment.setParent(solutionID);
@@ -88,6 +94,7 @@ public class Comments
 		obj.put(Comment.PROPERTY_id, comment.getID());
 		obj.put(Comment.PROPERTY_parent, comment.getParent());
 		obj.put(Comment.PROPERTY_timeStamp, comment.getTimeStamp().toString());
+		obj.put(Comment.PROPERTY_userId, comment.getUserId());
 		obj.put(Comment.PROPERTY_author, comment.getAuthor());
 		obj.put(Comment.PROPERTY_email, comment.getEmail());
 		obj.put(Comment.PROPERTY_markdown, comment.getMarkdown());
