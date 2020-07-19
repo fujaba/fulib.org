@@ -58,12 +58,12 @@ export class FooterComponent implements OnInit, AfterViewInit {
   }
 
   login(): void {
-    this.keycloak.login({
-      redirectUri: window.location.href,
-    }).then(() => console.log('success'));
+    this.keycloak.login().then(() => {
+    });
   }
 
   logout(): void {
-    this.keycloak.logout(window.location.href).then(() => console.log('success'));
+    this.keycloak.logout().then(() => {
+    });
   }
 }
