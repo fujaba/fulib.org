@@ -1,6 +1,6 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule} from '@angular/forms';
-import {NgModule} from '@angular/core';
+import {ApplicationRef, DoBootstrap, NgModule} from '@angular/core';
 import {HttpClientModule} from '@angular/common/http'
 
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -16,6 +16,10 @@ import {FooterComponent} from './footer/footer.component';
 
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { ChangelogComponent } from './changelog/changelog.component';
+import {KeycloakAngularModule, KeycloakService} from "keycloak-angular";
+import {environment} from "../environments/environment";
+
+const keycloakService = new KeycloakService();
 
 @NgModule({
   declarations: [
@@ -31,11 +35,29 @@ import { ChangelogComponent } from './changelog/changelog.component';
     FormsModule,
     HttpClientModule,
     NgbModule,
+    KeycloakAngularModule,
     SharedModule,
     AppRoutingModule,
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [
+    {
+      provide: KeycloakService,
+      useValue: keycloakService,
+    }
+  ],
 })
-export class AppModule {
+export class AppModule implements DoBootstrap {
+  ngDoBootstrap(appRef: ApplicationRef): void {
+    keycloakService.init({
+      config: {
+        clientId: 'fulib.org',
+        realm: 'fulib.org',
+        url: environment.authURL,
+      },
+    }).then(() => {
+      appRef.bootstrap(AppComponent);
+    }).catch(error => {
+      console.log('failed to init keycloak', error);
+    });
+  }
 }

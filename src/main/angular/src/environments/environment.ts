@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   apiURL: 'http://localhost:4567',
+  authURL: 'http://localhost:8080/auth',
   versions: {
     // replace undefined with a version string for debugging the changelog view.
     'fulib.org': undefined,
