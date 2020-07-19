@@ -16,6 +16,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.fulib.webapp.assignment.Assignments.getUserId;
+
 public class Solutions
 {
 	private static final String SOLUTION_ID_QUERY_PARAM = "solutionID";
@@ -68,6 +70,12 @@ public class Solutions
 
 	private static boolean isAuthorized(Request request, Solution solution)
 	{
+		final String userId = getUserId(request);
+		if (userId != null && userId.equals(solution.getUserId()))
+		{
+			return true;
+		}
+
 		final String solutionToken = solution.getToken();
 		final String solutionTokenHeader = request.headers(SOLUTION_TOKEN_HEADER);
 		return solutionToken.equals(solutionTokenHeader);
@@ -102,6 +110,12 @@ public class Solutions
 		solution.setToken(token);
 		solution.setTimeStamp(timeStamp);
 
+		final String userId = getUserId(request);
+		if (userId != null)
+		{
+			solution.setUserId(userId);
+		}
+
 		final List<TaskResult> results = runTasks(solution.getSolution(), assignment.getTasks());
 		solution.getResults().addAll(results);
 
@@ -109,6 +123,7 @@ public class Solutions
 
 		final JSONObject resultObj = new JSONObject();
 		resultObj.put(Solution.PROPERTY_id, solutionID);
+		resultObj.put(Solution.PROPERTY_userId, userId);
 		resultObj.put(Solution.PROPERTY_token, token);
 		resultObj.put(Solution.PROPERTY_timeStamp, timeStamp.toString());
 
@@ -191,6 +206,7 @@ public class Solutions
 
 		obj.put(Solution.PROPERTY_id, solution.getID());
 		obj.put(Solution.PROPERTY_assignment, solution.getAssignment().getID());
+		obj.put(Solution.PROPERTY_userId, solution.getUserId());
 		obj.put(Solution.PROPERTY_name, solution.getName());
 		obj.put(Solution.PROPERTY_studentID, solution.getStudentID());
 		obj.put(Solution.PROPERTY_email, solution.getEmail());
