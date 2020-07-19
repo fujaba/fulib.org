@@ -1,9 +1,11 @@
 package org.fulib.webapp.assignment;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import org.fulib.webapp.WebService;
 import org.fulib.webapp.assignment.model.Assignment;
 import org.fulib.webapp.assignment.model.Task;
 import org.fulib.webapp.mongo.Mongo;
+import org.fulib.webapp.tool.Authenticator;
 import org.fulib.webapp.tool.MarkdownUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -12,6 +14,7 @@ import spark.Response;
 import spark.Spark;
 
 import java.time.Instant;
+import java.util.Objects;
 
 public class Assignments
 {
@@ -57,6 +60,19 @@ public class Assignments
 
 	static boolean isAuthorized(Request request, Assignment assignment)
 	{
+		try
+		{
+			final DecodedJWT jwt = Authenticator.getJWT(request.headers("Authorization"));
+			final String userId = jwt.getSubject();
+			if (userId.equals(assignment.getUserId()))
+			{
+				return true;
+			}
+		}
+		catch (IllegalArgumentException ignored)
+		{
+		}
+
 		final String assignmentToken = assignment.getToken();
 		final String assignmentTokenHeader = request.headers(ASSIGNMENT_TOKEN_HEADER);
 		return assignmentToken.equals(assignmentTokenHeader);
@@ -69,6 +85,16 @@ public class Assignments
 		final Assignment assignment = fromJson(id, new JSONObject(request.body()));
 		assignment.setToken(token);
 
+		try
+		{
+			final DecodedJWT jwt = Authenticator.getJWT(request.headers("Authorization"));
+			final String userId = jwt.getSubject();
+			assignment.setUserId(userId);
+		}
+		catch (IllegalArgumentException ignored)
+		{
+		}
+
 		final String descriptionHtml = MarkdownUtil.renderHtml(assignment.getDescription());
 		assignment.setDescriptionHtml(descriptionHtml);
 
@@ -78,6 +104,7 @@ public class Assignments
 
 		responseJson.put(Assignment.PROPERTY_id, id);
 		responseJson.put(Assignment.PROPERTY_token, token);
+		responseJson.put(Assignment.PROPERTY_userId, assignment.getUserId());
 		responseJson.put(Assignment.PROPERTY_descriptionHtml, descriptionHtml);
 
 		return responseJson.toString(2);
@@ -141,6 +168,7 @@ public class Assignments
 		obj.put(Assignment.PROPERTY_title, assignment.getTitle());
 		obj.put(Assignment.PROPERTY_description, assignment.getDescription());
 		obj.put(Assignment.PROPERTY_descriptionHtml, assignment.getDescriptionHtml());
+		obj.put(Assignment.PROPERTY_userId, assignment.getUserId());
 		obj.put(Assignment.PROPERTY_author, assignment.getAuthor());
 		obj.put(Assignment.PROPERTY_email, assignment.getEmail());
 		final Instant deadline = assignment.getDeadline();
