@@ -16,6 +16,7 @@ public class Assignment
 	public static final String PROPERTY_title = "title";
 	public static final String PROPERTY_description = "description";
 	public static final String PROPERTY_descriptionHtml = "descriptionHtml";
+	public static final String PROPERTY_userId = "userId";
 	public static final String PROPERTY_author = "author";
 	public static final String PROPERTY_email = "email";
 	public static final String PROPERTY_deadline = "deadline";
