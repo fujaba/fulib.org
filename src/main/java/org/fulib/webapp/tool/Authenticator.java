@@ -2,7 +2,6 @@ package org.fulib.webapp.tool;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
@@ -16,9 +15,9 @@ import java.util.Base64;
 
 public class Authenticator
 {
-	private static final String PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAovqo489IGGIbBeBelkYDgPBRrIv7yarm/U2+ihVFCvq4YGFix9EkpdGXvL6Kerhfmn1OCESpkVZumCFPaXBCiIq5bhNddJBVVZ5Gj9k7wyBNl0rbc7eDnAyE5kVl+HLLpLQmzUrU8lH93astJOF84SmiT1xYQHjxKwH6n7JiensISEwbTvg/pLQGSRF3sL9/Kf0GPsA7RTXh/ZnAk02PAUX9bBm81jePjIG5DGDPh61L1pANYPb/wi9M5LKDnVnIl/J9U4Rx8vHetYJdopt+9aQfDYEeIF7SWysaOqrIQh3vUtk0YaXjXZdnTaxiEa8G4jiSbQGOjemRcn8KA53OmwIDAQAB";
+	private static final String PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqXRqDqazjttiWl5vPQkmNK9hb7I9e6mzJ9CFHpvzODdbSON11ldlZjVAq0lDgUZOfzl9c9jcdZeUyEAhU2gL6T2+hxYrRguImOFVy/r2bCt7yieVH7GZ3HdEeDz+ucCleAkf7YzmZQKGNVcVpJQyIWUgWanPBvTkM2N0R9s2m82BIVagkJcAuFtpR+aDMpKQGdAkUBJK57hSgZTn08+YM0pLvoiN8I+afsD4gECoKTbOZ7YMk8dXUSycZ0nqFZSArZ02LBXZ1DV8Iy67Ds45cnXSubop42G0fWYonOrpr9a7kYTUnSNj0DcsFjYY9d7CovWxldM1FGmN12eiIipYdwIDAQAB";
 	private static final Algorithm ALGORITHM;
-	private static final String[] ISSUERS = { "http://localhost:8080/auth/realms/fulib.org" };
+	private static final String[] ISSUERS = { "https://avocado.uniks.de/auth/realms/fulib.org" };
 
 	static
 	{

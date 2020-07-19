@@ -50,7 +50,7 @@ export class AppModule implements DoBootstrap {
   ngDoBootstrap(appRef: ApplicationRef): void {
     keycloakService.init({
       config: {
-        clientId: 'fulib.org',
+        clientId: environment.authClientId,
         realm: 'fulib.org',
         url: environment.authURL,
       },
