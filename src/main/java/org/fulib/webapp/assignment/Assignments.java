@@ -58,19 +58,24 @@ public class Assignments
 		}
 	}
 
-	static boolean isAuthorized(Request request, Assignment assignment)
-	{
+	static String getUserId(Request request) {
 		try
 		{
 			final DecodedJWT jwt = Authenticator.getJWT(request.headers("Authorization"));
-			final String userId = jwt.getSubject();
-			if (userId.equals(assignment.getUserId()))
-			{
-				return true;
-			}
+			return jwt.getSubject();
 		}
 		catch (IllegalArgumentException ignored)
 		{
+			return null;
+		}
+	}
+
+	static boolean isAuthorized(Request request, Assignment assignment)
+	{
+		final String userId = getUserId(request);
+		if (userId != null && userId.equals(assignment.getUserId()))
+		{
+			return true;
 		}
 
 		final String assignmentToken = assignment.getToken();
@@ -85,14 +90,10 @@ public class Assignments
 		final Assignment assignment = fromJson(id, new JSONObject(request.body()));
 		assignment.setToken(token);
 
-		try
+		final String userId = getUserId(request);
+		if (userId != null)
 		{
-			final DecodedJWT jwt = Authenticator.getJWT(request.headers("Authorization"));
-			final String userId = jwt.getSubject();
 			assignment.setUserId(userId);
-		}
-		catch (IllegalArgumentException ignored)
-		{
 		}
 
 		final String descriptionHtml = MarkdownUtil.renderHtml(assignment.getDescription());
@@ -104,7 +105,7 @@ public class Assignments
 
 		responseJson.put(Assignment.PROPERTY_id, id);
 		responseJson.put(Assignment.PROPERTY_token, token);
-		responseJson.put(Assignment.PROPERTY_userId, assignment.getUserId());
+		responseJson.put(Assignment.PROPERTY_userId, userId);
 		responseJson.put(Assignment.PROPERTY_descriptionHtml, descriptionHtml);
 
 		return responseJson.toString(2);
