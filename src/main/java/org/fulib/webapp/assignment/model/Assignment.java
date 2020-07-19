@@ -31,6 +31,7 @@ public class Assignment
 	private String title;
 	private String description;
 	private String descriptionHtml;
+	private String userId;
 	private String author;
 	private String email;
 	private Instant deadline;
@@ -93,6 +94,16 @@ public class Assignment
 	public void setDescriptionHtml(String descriptionHtml)
 	{
 		this.descriptionHtml = descriptionHtml;
+	}
+
+	public String getUserId()
+	{
+		return userId;
+	}
+
+	public void setUserId(String userId)
+	{
+		this.userId = userId;
 	}
 
 	public String getAuthor()
