@@ -98,6 +98,7 @@ public class Mongo
 		this.solutions = this.database.getCollection(SOLUTION_COLLECTION_NAME, Solution.class)
 		                              .withCodecRegistry(this.pojoCodecRegistry);
 		this.solutions.createIndex(Indexes.ascending(Solution.PROPERTY_id));
+		this.solutions.createIndex(Indexes.ascending(Solution.PROPERTY_userId));
 		this.solutions.createIndex(Indexes.ascending(Solution.PROPERTY_assignment));
 		this.solutions.createIndex(Indexes.ascending(Solution.PROPERTY_timeStamp));
 
@@ -197,6 +198,15 @@ public class Mongo
 		                     .sort(Sorts.ascending(Solution.PROPERTY_timeStamp))
 		                     .map(this::resolve)
 		                     .into(new ArrayList<>());
+	}
+
+	public List<Solution> getSolutionsByUser(String userId)
+	{
+		return this.solutions
+			.find(Filters.eq(Solution.PROPERTY_userId, userId))
+			.sort(Sorts.ascending(Solution.PROPERTY_assignment, Solution.PROPERTY_timeStamp))
+			.map(this::resolve)
+			.into(new ArrayList<>());
 	}
 
 	private Solution resolve(Solution solution)
