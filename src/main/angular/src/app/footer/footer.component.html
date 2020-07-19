@@ -83,19 +83,19 @@
           <app-dark-switch></app-dark-switch>
         </span>
       </li>
-      <li class="nav-item" *ngIf="!username">
-        <a class="nav-link" style="cursor: pointer" (click)="login()">
-          Not logged in.
-          Login
-        </a>
-      </li>
-      <li class="nav-item" *ngIf="username">
-        <a class="nav-link" style="cursor: pointer" (click)="logout()">
-          Logged in as <b>{{username}}</b>.
-          Logout
-        </a>
-      </li>
     </ul>
+    <span class="navbar-text" *ngIf="username">
+      Logged in as <b>{{username}}</b>.
+      <a role="button" style="cursor: pointer" (click)="logout()">
+        Logout
+      </a>
+    </span>
+    <span class="navbar-text" *ngIf="!username">
+      Not logged in.
+      <a role="button" style="cursor: pointer" (click)="login()">
+        Login
+      </a>
+    </span>
   </div>
 </nav>
 
