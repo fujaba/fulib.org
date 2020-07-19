@@ -89,6 +89,7 @@ public class Mongo
 		this.assignments = this.database.getCollection(ASSIGNMENT_COLLECTION_NAME, Assignment.class)
 		                                .withCodecRegistry(this.pojoCodecRegistry);
 		this.assignments.createIndex(Indexes.ascending(Assignment.PROPERTY_id));
+		this.assignments.createIndex(Indexes.ascending(Assignment.PROPERTY_userId));
 
 		this.courses = this.database.getCollection(COURSE_COLLECTION_NAME, Course.class)
 		                            .withCodecRegistry(this.pojoCodecRegistry);
@@ -153,6 +154,11 @@ public class Mongo
 	public Assignment getAssignment(String id)
 	{
 		return this.assignments.find(Filters.eq(Assignment.PROPERTY_id, id)).first();
+	}
+
+	public List<Assignment> getAssignmentsByUser(String userId)
+	{
+		return this.assignments.find(Filters.eq(Assignment.PROPERTY_userId, userId)).into(new ArrayList<>());
 	}
 
 	public void saveAssignment(Assignment assignment)
