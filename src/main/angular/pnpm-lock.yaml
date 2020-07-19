@@ -14,8 +14,8 @@ dependencies:
   bootstrap-darkmode: 0.4.0
   codemirror: 5.54.0
   file-saver: 2.0.2
-  keycloak-angular: 7.3.1_1fcc3a0130f5f1bed05d7699f04beee5
-  keycloak-js: 10.0.2
+  keycloak-angular: 7.3.1_ffcbbc175231ff652ebb1692c378ebeb
+  keycloak-js: 7.0.1
   ng2-dragula: 2.1.1_@angular+core@9.1.9+rxjs@6.5.5
   ngx-clipboard: 13.0.1_b3acba3a3e8178276319b1f515dfbcb2
   rxjs: 6.5.5
@@ -5455,12 +5455,12 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-xckiDqyNi512U4dXGOOSyLKPwek6X/vUizSy2f3geYevbLj+UIdvNwbn7IwfUIL2g1GXEPWt/87qFD1fBbl/Uw==
-  /keycloak-angular/7.3.1_1fcc3a0130f5f1bed05d7699f04beee5:
+  /keycloak-angular/7.3.1_ffcbbc175231ff652ebb1692c378ebeb:
     dependencies:
       '@angular/common': 9.1.9_e64d04627aeca35d73d770258b6ad465
       '@angular/core': 9.1.9_ca296a5e5adc0afc8d32926df5677b5e
       '@angular/router': 9.1.9_69d4d166744ae27120a4a095c35c9cfe
-      keycloak-js: 10.0.2
+      keycloak-js: 7.0.1
       tslib: 1.11.1
     dev: false
     peerDependencies:
@@ -5471,13 +5471,13 @@ packages:
       tslib: ^1.10.0
     resolution:
       integrity: sha512-lU1ErzCOOmvwmfM0rAf6Nlf65CkG1EpnXpGpdaeViCUcJOdU+ChMcjez78Ekv5qUFkNZsNccs2m5xUaU/1bqlw==
-  /keycloak-js/10.0.2:
+  /keycloak-js/7.0.1:
     dependencies:
       base64-js: 1.3.1
       js-sha256: 0.9.0
     dev: false
     resolution:
-      integrity: sha512-7nkg4Ob1khHGcNbuK36AMndKUEuIQFpNlWU9ygWs7nSBPCI9VZ8dJjjXfKJHm0ewgcqLFGPIJ6bxxRlfcQ6sLg==
+      integrity: sha512-gefTlb6DjvqH2wTbXCs3o2d54Ot6lvFb0ynF4aU75ucUq9qQ1p1+lm+1OcRRC34nPCG16joPz2QNxNVXi8Bmng==
   /killable/1.0.1:
     dev: true
     resolution:
@@ -9630,7 +9630,7 @@ specifiers:
   karma-jasmine: ~2.0.1
   karma-jasmine-html-reporter: ^1.5.3
   keycloak-angular: ^7.3.1
-  keycloak-js: ^10.0.2
+  keycloak-js: 7.0.1
   ng2-dragula: ^2.1.1
   ngx-clipboard: ^13.0.1
   protractor: ~5.4.4
