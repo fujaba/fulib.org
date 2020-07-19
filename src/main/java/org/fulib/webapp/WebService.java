@@ -94,6 +94,7 @@ public class WebService
 		setupRedirects();
 
 		addMainRoutes();
+		this.service.get("/solutions", this.solutions::getAll);
 		addAssignmentsRoutes();
 		addCoursesRoutes();
 		addUtilRoutes();

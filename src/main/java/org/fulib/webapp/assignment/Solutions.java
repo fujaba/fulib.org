@@ -200,6 +200,42 @@ public class Solutions
 		return result.toString(2);
 	}
 
+	public Object getAll(Request request, Response response)
+	{
+		if (request.contentType() == null || !request.contentType().startsWith("application/json"))
+		{
+			return WebService.serveIndex(request, response);
+		}
+
+		final String userIdParam = request.queryParamOrDefault("userId", null);
+
+		final String userId = getUserId(request);
+		if (userId == null)
+		{
+			throw Spark.halt(401, INVALID_TOKEN_RESPONSE);
+		}
+		if (userIdParam == null)
+		{
+			// language=JSON
+			throw Spark.halt(400, "{\n" + "  \"error\": \"missing userId query parameter\"\n" + "}");
+		}
+		if (!userId.equals(userIdParam))
+		{
+			// language=JSON
+			throw Spark.halt(400,
+			                 "{\n" + "  \"error\": \"userId query parameter does not match ID of logged-in user\"\n"
+			                 + "}");
+		}
+
+		final List<Solution> solutions = this.mongo.getSolutionsByUser(userId);
+		final JSONArray array = new JSONArray();
+		for (final Solution solution : solutions)
+		{
+			array.put(toJson(solution, true));
+		}
+		return array.toString(2);
+	}
+
 	private static JSONObject toJson(Solution solution, boolean privileged)
 	{
 		final JSONObject obj = new JSONObject();
