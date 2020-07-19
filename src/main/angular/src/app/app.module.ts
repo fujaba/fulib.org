@@ -54,6 +54,9 @@ export class AppModule implements DoBootstrap {
         realm: 'fulib.org',
         url: environment.authURL,
       },
+      initOptions: {
+        onLoad: 'check-sso',
+      },
     }).then(() => {
       appRef.bootstrap(AppComponent);
     }).catch(error => {
