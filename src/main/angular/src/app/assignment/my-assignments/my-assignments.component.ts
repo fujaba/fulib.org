@@ -17,11 +17,8 @@ export class MyAssignmentsComponent implements OnInit {
 
   ngOnInit() {
     this.assignments = [];
-    this.assignmentService.getOwn().subscribe(next => {
-      this.assignments.push(next);
-      // TODO this can cause problems with lots of assignments.
-      //      either they need to be sorted once after the last one is added,
-      //      or a sorted set should be used
+    this.assignmentService.getOwn().subscribe(results => {
+      this.assignments = results;
       this.assignments.sort(Assignment.comparator);
     });
   }

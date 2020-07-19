@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable, of} from 'rxjs';
+import {forkJoin, Observable, of} from 'rxjs';
 import {flatMap, map} from 'rxjs/operators';
 
 import {saveAs} from 'file-saver';
@@ -11,6 +11,8 @@ import {StorageService} from '../storage.service';
 import Course from './model/course';
 import {CheckAssignment, CheckResult} from './model/check';
 import Solution from './model/solution';
+import {KeycloakService} from "keycloak-angular";
+import {fromPromise} from "rxjs/internal-compatibility";
 
 type AssignmentResponse = { id: string, token: string };
 
@@ -24,6 +26,7 @@ export class AssignmentService {
   constructor(
     private http: HttpClient,
     private storage: StorageService,
+    private keycloak: KeycloakService,
   ) {
   }
 
@@ -110,8 +113,32 @@ export class AssignmentService {
     return ids;
   }
 
-  getOwn(): Observable<Assignment> {
-    return of(...this.getOwnIds()).pipe(flatMap(id => this.get(id)));
+  getOwn(): Observable<Assignment[]> {
+    return fromPromise(this.keycloak.isLoggedIn()).pipe(
+      flatMap(loggedIn => {
+        if (loggedIn) {
+          const subject = this.keycloak.getKeycloakInstance().subject;
+          return this.getByUserId(subject);
+        } else {
+          return forkJoin(this.getOwnIds().map(id => this.get(id)));
+        }
+      })
+    );
+  }
+
+  getByUserId(userId: string): Observable<Assignment[]> {
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    return this.http.get<Assignment[]>(`${environment.apiURL}/assignments`, {params: {userId}, headers}).pipe(
+      map(results => {
+        for (let result of results) {
+          result.token = this.getToken(result.id);
+          this._cache.set(result.id, result);
+        }
+        return results;
+      }),
+    );
   }
 
   check(assignment: CheckAssignment): Observable<CheckResult> {
