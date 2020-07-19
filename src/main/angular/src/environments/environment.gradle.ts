@@ -1,6 +1,7 @@
 export const environment = {
   production: false,
   apiURL: '',
+  authURL: 'http://localhost:8080/auth',
   versions: {
     'fulib.org': '$$version$$',
     fulib: '$$fulibVersion$$',

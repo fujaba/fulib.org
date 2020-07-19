@@ -1,6 +1,7 @@
 export const environment = {
   production: true,
   apiURL: '',
+  authURL: 'TODO',
   versions: {
     'fulib.org': '$$version$$',
     fulib: '$$fulibVersion$$',
