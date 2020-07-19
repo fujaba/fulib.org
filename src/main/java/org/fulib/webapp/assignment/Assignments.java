@@ -202,6 +202,7 @@ public class Assignments
 	private static JSONObject toJson(Assignment assignment, boolean privileged)
 	{
 		final JSONObject obj = new JSONObject();
+		obj.put(Assignment.PROPERTY_id, assignment.getID());
 		obj.put(Assignment.PROPERTY_title, assignment.getTitle());
 		obj.put(Assignment.PROPERTY_description, assignment.getDescription());
 		obj.put(Assignment.PROPERTY_descriptionHtml, assignment.getDescriptionHtml());
