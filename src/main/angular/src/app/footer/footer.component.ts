@@ -4,6 +4,7 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 import {Privacy, PrivacyService} from "../privacy.service";
 import {ChangelogService, Versions} from '../changelog.service';
+import {KeycloakService} from "keycloak-angular";
 
 @Component({
   selector: 'app-footer',
@@ -15,6 +16,7 @@ export class FooterComponent implements OnInit, AfterViewInit {
     public readonly modalService: NgbModal,
     private privacyService: PrivacyService,
     private changelogService: ChangelogService,
+    private keycloak: KeycloakService,
   ) {
   }
 
@@ -25,10 +27,13 @@ export class FooterComponent implements OnInit, AfterViewInit {
 
   menuCollapsed = true;
 
+  username: string;
+
   repos?: (keyof Versions)[];
   versions?: Versions;
 
   ngOnInit(): void {
+    this.username = this.keycloak.getUsername();
     this.repos = this.changelogService.repos;
     this.versions = this.changelogService.currentVersions;
     this.loadPrivacy();
@@ -50,5 +55,15 @@ export class FooterComponent implements OnInit, AfterViewInit {
 
   savePrivacy(): void {
     this.privacyService.privacy = this.privacy;
+  }
+
+  login(): void {
+    this.keycloak.login({
+      redirectUri: window.location.href,
+    }).then(() => console.log('success'));
+  }
+
+  logout(): void {
+    this.keycloak.logout(window.location.href).then(() => console.log('success'));
   }
 }
