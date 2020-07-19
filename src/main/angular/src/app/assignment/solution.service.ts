@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable, of} from 'rxjs';
+import {forkJoin, Observable} from 'rxjs';
 import {catchError, flatMap, map} from 'rxjs/operators';
 
 import Solution from './model/solution';
@@ -11,6 +11,8 @@ import Comment from './model/comment';
 import {StorageService} from '../storage.service';
 import TaskGrading from './model/task-grading';
 import {CheckResult, CheckSolution} from './model/check';
+import {fromPromise} from "rxjs/internal-compatibility";
+import {KeycloakService} from "keycloak-angular";
 
 function asID(id: { id?: string } | string): string {
   return typeof id === 'string' ? id : id.id;
@@ -30,6 +32,7 @@ export class SolutionService {
     private http: HttpClient,
     private storageService: StorageService,
     private assignmentService: AssignmentService,
+    private keycloak: KeycloakService,
   ) {
   }
 
@@ -131,6 +134,21 @@ export class SolutionService {
     return ids;
   }
 
+  getOwn(): Observable<Solution[]> {
+    return fromPromise(this.keycloak.isLoggedIn()).pipe(
+      flatMap(loggedIn => {
+        if (loggedIn) {
+          const subject = this.keycloak.getKeycloakInstance().subject;
+          return this.getByUserId(subject);
+        } else {
+          return forkJoin(this.getOwnIds().map(({assignment, id}) => this.get(assignment, id))).pipe(
+            map(solutions => solutions.sort((a, b) => a.timeStamp.getTime() - b.timeStamp.getTime())),
+          );
+        }
+      })
+    );
+  }
+
   // --------------- HTTP Methods ---------------
 
   check(solution: CheckSolution): Observable<CheckResult> {
@@ -187,6 +205,20 @@ export class SolutionService {
       catchError(err => {
         err.error.status = err.status;
         throw err.error;
+      }),
+    );
+  }
+
+  getByUserId(userId: string): Observable<Solution[]> {
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    return this.http.get<Solution[]>(`${environment.apiURL}/solutions`, {params: {userId}, headers}).pipe(
+      map(solutions => {
+        for (let solution of solutions) {
+          // solution.token = this.getToken(solution.assignment.id, solution.id);
+        }
+        return solutions;
       }),
     );
   }

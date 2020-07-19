@@ -40,23 +40,21 @@ export class MySolutionsComponent implements OnInit {
   }
 
   ngOnInit() {
-    for (const {assignment: aid, id: sid} of this.solutionService.getOwnIds()) {
-      let holder = this._assignments.get(aid);
-      if (!holder) {
-        holder = {
-          assignment: undefined,
-          solutions: [],
-        };
-        this._assignments.set(aid, holder);
+    this.solutionService.getOwn().subscribe(solutions => {
+      for (const solution of solutions) {
+        const aid: string = solution.assignment as any;
+        let holder = this._assignments.get(aid);
+        if (!holder) {
+          holder = {
+            assignment: undefined,
+            solutions: [],
+          };
+          this._assignments.set(aid, holder);
 
-        this.assignmentService.get(aid).subscribe(assignment => holder.assignment = assignment);
-      }
-
-      this.solutionService.get(aid, sid).subscribe(solution => {
+          this.assignmentService.get(aid).subscribe(assignment => holder.assignment = assignment);
+        }
         holder.solutions.push(solution);
-        // TODO see sort performance concern in assignment list component
-        holder.solutions.sort((a, b) => new Date(a.timeStamp).getTime() - new Date(b.timeStamp).getTime());
-      });
-    }
+      }
+    });
   }
 }
