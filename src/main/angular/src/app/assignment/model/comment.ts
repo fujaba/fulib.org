@@ -5,6 +5,7 @@ export default class Comment {
 
   timeStamp?: Date;
 
+  userId?: string;
   author: string;
   email: string;
 

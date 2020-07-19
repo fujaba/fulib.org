@@ -7,6 +7,7 @@ export default class Assignment {
   title: string;
   description: string;
   descriptionHtml?: string;
+  userId?: string;
   author: string;
   email: string;
   deadline: Date | null;
