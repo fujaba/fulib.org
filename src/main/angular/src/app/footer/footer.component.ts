@@ -33,7 +33,11 @@ export class FooterComponent implements OnInit, AfterViewInit {
   versions?: Versions;
 
   ngOnInit(): void {
-    this.username = this.keycloak.getUsername();
+    this.keycloak.isLoggedIn().then(loggedIn => {
+      if (loggedIn) {
+        this.username = this.keycloak.getUsername();
+      }
+    });
     this.repos = this.changelogService.repos;
     this.versions = this.changelogService.currentVersions;
     this.loadPrivacy();
