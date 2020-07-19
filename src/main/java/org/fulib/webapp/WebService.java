@@ -194,7 +194,7 @@ public class WebService
 	{
 		service.path("/solutions", () -> {
 			service.post("", solutions::create);
-			service.get("", solutions::getAll);
+			service.get("", solutions::getByAssignment);
 
 			service.path("/:solutionID", this::addSolutionRoutes);
 		});

@@ -170,7 +170,7 @@ public class Solutions
 		return obj.toString(2);
 	}
 
-	public Object getAll(Request request, Response response)
+	public Object getByAssignment(Request request, Response response)
 	{
 		final String assignmentID = request.params(ASSIGNMENT_ID_QUERY_PARAM);
 
