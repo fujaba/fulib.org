@@ -141,16 +141,16 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
     const result = [];
 
     for (const line of this.response.output.split('\n')) {
-      const match = /^.*\.md:(\d+):(\d+): (error|warning|note): (.*)$/.exec(line);
+      const match = /^.*\.md:(\d+):(\d+)(?:-(\d+))?: (error|warning|note): (.*)$/.exec(line);
       if (!match) {
         continue;
       }
 
       const row = +match[1] - 1;
       const col = +match[2];
-      const endCol = col + 10; // TODO we don't have this info from the output
-      const severity = match[3];
-      const message = match[4];
+      const endCol = +(match[3] || col) + 1;
+      const severity = match[4];
+      const message = match[5];
 
       result.push({
         severity,
