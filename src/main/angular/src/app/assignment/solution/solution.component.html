@@ -79,13 +79,13 @@
 
               <label for="commentNameInput" class="sr-only">Name</label>
               <input type="text" class="form-control mr-2" id="commentNameInput" placeholder="John Doe"
-                     [(ngModel)]="commentName" (change)="saveCommentDraft()">
+                     [(ngModel)]="commentName" (change)="saveCommentDraft()" [disabled]="loggedIn">
 
               <span class="mr-2">&#8226;</span>
 
               <label for="commentEmailInput" class="sr-only">Email</label>
               <input type="text" class="form-control mr-2" id="commentEmailInput" placeholder="jdoe@example.com"
-                     [(ngModel)]="commentEmail" (change)="saveCommentDraft()">
+                     [(ngModel)]="commentEmail" (change)="saveCommentDraft()" [disabled]="loggedIn">
 
               <span class="mr-2">&#8226;</span>
 

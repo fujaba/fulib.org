@@ -10,6 +10,7 @@ import Assignment from '../model/assignment';
 import Solution from '../model/solution';
 import Comment from '../model/comment';
 import TaskGrading from '../model/task-grading';
+import {KeycloakService} from "keycloak-angular";
 
 @Component({
   selector: 'app-solution',
@@ -27,6 +28,7 @@ export class SolutionComponent implements OnInit {
   gradings?: TaskGrading[];
   comments?: Comment[];
 
+  loggedIn = false;
   commentName: string;
   commentEmail: string;
   commentBody: string;
@@ -36,6 +38,7 @@ export class SolutionComponent implements OnInit {
     private route: ActivatedRoute,
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
+    private keycloak: KeycloakService,
   ) {
   }
 
@@ -93,6 +96,18 @@ export class SolutionComponent implements OnInit {
     this.commentName = this.solutionService.commentName;
     this.commentEmail = this.solutionService.commentEmail;
     this.commentBody = this.solutionService.getCommentDraft(this.solution);
+
+    this.keycloak.isLoggedIn().then(loggedIn => {
+      if (!loggedIn) {
+        return;
+      }
+
+      this.keycloak.loadUserProfile().then(profile => {
+        this.loggedIn = true;
+        this.commentName = `${profile.firstName} ${profile.lastName}`;
+        this.commentEmail = profile.email;
+      });
+    });
   }
 
   saveCommentDraft(): void {
