@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import Solution from '../model/solution';
 import {SolutionService} from '../solution.service';
 import TaskGrading from '../model/task-grading';
+import {KeycloakService} from "keycloak-angular";
 
 @Component({
   selector: 'app-grade-form',
@@ -13,12 +14,14 @@ export class GradeFormComponent implements OnInit {
   @Input() taskID: number;
   @Input() gradings?: TaskGrading[];
 
+  loggedIn = false;
   name: string;
   points: number;
   note: string;
 
   constructor(
     private solutionService: SolutionService,
+    private keycloak: KeycloakService,
   ) {
   }
 
@@ -32,6 +35,17 @@ export class GradeFormComponent implements OnInit {
 
   loadDraft(): void {
     this.name = this.solutionService.commentName;
+
+    this.keycloak.isLoggedIn().then(loggedIn => {
+      if (!loggedIn) {
+        return;
+      }
+
+      this.keycloak.loadUserProfile().then(profile => {
+        this.loggedIn = true;
+        this.name = `${profile.firstName} ${profile.lastName}`;
+      });
+    });
   }
 
   saveDraft(): void {

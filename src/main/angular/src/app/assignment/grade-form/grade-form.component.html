@@ -9,7 +9,8 @@
   </div>
   <div class="form-group">
     <label for="nameInput">Name</label>
-    <input type="text" class="form-control" id="nameInput" [(ngModel)]="name" (change)="saveDraft()">
+    <input type="text" class="form-control" id="nameInput" [(ngModel)]="name" (change)="saveDraft()"
+           [disabled]="loggedIn">
   </div>
 </div>
 
