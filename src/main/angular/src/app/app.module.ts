@@ -18,6 +18,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { ChangelogComponent } from './changelog/changelog.component';
 import {KeycloakAngularModule, KeycloakService} from "keycloak-angular";
 import {environment} from "../environments/environment";
+import {UserModule} from "./user/user.module";
 
 const keycloakService = new KeycloakService();
 
@@ -38,6 +39,7 @@ const keycloakService = new KeycloakService();
     KeycloakAngularModule,
     SharedModule,
     AppRoutingModule,
+    UserModule,
   ],
   providers: [
     {
