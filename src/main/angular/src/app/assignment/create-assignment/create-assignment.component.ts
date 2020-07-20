@@ -9,7 +9,7 @@ import Task from '../model/task';
 import Assignment from '../model/assignment';
 import {AssignmentService} from '../assignment.service';
 import TaskResult from '../model/task-result';
-import {KeycloakService} from "keycloak-angular";
+import {UserService} from "../../user/user.service";
 
 @Component({
   selector: 'app-create-assignment',
@@ -51,7 +51,7 @@ export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestr
     private assignmentService: AssignmentService,
     private modalService: NgbModal,
     private dragulaService: DragulaService,
-    private keycloak: KeycloakService,
+    private users: UserService,
     @Inject(DOCUMENT) document: Document,
   ) {
     this.origin = document.location.origin;
@@ -69,16 +69,13 @@ export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestr
       this.setAssignment(draft);
     }
 
-    this.keycloak.isLoggedIn().then(loggedIn => {
-      if (!loggedIn) {
-        return;
-      }
-
-      this.keycloak.loadUserProfile().then(profile => {
+    // TODO unsubscribe
+    this.users.current$.subscribe(user => {
+      if (user) {
         this.loggedIn = true;
-        this.author = `${profile.firstName} ${profile.lastName}`;
-        this.email = profile.email;
-      });
+        this.author = `${user.firstName} ${user.lastName}`;
+        this.email = user.email;
+      }
     });
   }
 
