@@ -20,6 +20,22 @@
   }
 }
 
+.CodeMirror-lint-tooltip {
+  // .tooltip
+  @include reset-text();
+  @include font-size($tooltip-font-size);
+  word-wrap: break-word;
+  opacity: 0;
+
+  // .tooltip-inner
+  max-width: $tooltip-max-width;
+  padding: $tooltip-padding-y $tooltip-padding-x;
+  color: $tooltip-color;
+  text-align: center;
+  background-color: $tooltip-bg;
+  @include border-radius($tooltip-border-radius);
+}
+
 /* --------------- Dark Mode Overrides --------------- */
 
 [data-theme="dark"] {
