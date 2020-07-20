@@ -13,6 +13,7 @@ import {AssignmentService} from '../assignment.service';
 import Solution from '../model/solution';
 import {SolutionService} from '../solution.service';
 import TaskResult from '../model/task-result';
+import {KeycloakService} from "keycloak-angular";
 
 @Component({
   selector: 'app-create-solution',
@@ -26,6 +27,7 @@ export class CreateSolutionComponent implements OnInit, AfterViewInit, OnDestroy
   course?: Course;
   assignment: Assignment;
   solution: string;
+  loggedIn = false;
   name: string;
   studentID: string;
   email: string;
@@ -49,6 +51,7 @@ export class CreateSolutionComponent implements OnInit, AfterViewInit, OnDestroy
     private solutionService: SolutionService,
     private route: ActivatedRoute,
     private modalService: NgbModal,
+    private keycloak: KeycloakService,
     @Inject(DOCUMENT) document: Document,
   ) {
     this.origin = document.location.origin;
@@ -60,6 +63,18 @@ export class CreateSolutionComponent implements OnInit, AfterViewInit, OnDestroy
       assignment$.subscribe(result => {
         this.assignment = result;
         this.loadDraft();
+      });
+
+      this.keycloak.isLoggedIn().then(loggedIn => {
+        if (!loggedIn) {
+          return;
+        }
+
+        this.keycloak.loadUserProfile().then(profile => {
+          this.loggedIn = true;
+          this.name = `${profile.firstName} ${profile.lastName}`;
+          this.email = profile.email;
+        });
       });
 
       const course$ = this.courseService.get(params.cid);
