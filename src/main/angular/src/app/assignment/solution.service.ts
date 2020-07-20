@@ -287,6 +287,7 @@ export class SolutionService {
       map(response => {
         const result: TaskGrading = {
           ...grading,
+          ...response,
           timeStamp: new Date(response.timeStamp),
         };
         return result;

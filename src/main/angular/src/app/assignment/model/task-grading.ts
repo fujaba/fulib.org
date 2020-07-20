@@ -5,6 +5,7 @@ export default class TaskGrading {
   taskID: number;
 
   timeStamp?: Date;
+  userId?: string;
   author: string;
   points: number;
   note: string;

@@ -24,6 +24,9 @@
     {{grading.note}}
     &#8226;
     {{grading.author}}
+    <span *ngIf="grading.userId" class="badge badge-pill badge-primary" ngbTooltip="Registered">
+      &#10003;
+    </span>
     &#8226;
     <span class="text-muted">{{grading.timeStamp | date:'medium'}}</span>
   </li>
