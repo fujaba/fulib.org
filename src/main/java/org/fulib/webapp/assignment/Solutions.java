@@ -331,10 +331,17 @@ public class Solutions
 		final TaskGrading grading = json2Grading(solutionID, new JSONObject(request.body()));
 		grading.setTimeStamp(timeStamp);
 
+		final String userId = Assignments.getUserId(request);
+		if (userId != null)
+		{
+			grading.setUserId(userId);
+		}
+
 		this.mongo.addGrading(grading);
 
 		final JSONObject result = new JSONObject();
 		result.put(TaskGrading.PROPERTY_timeStamp, timeStamp.toString());
+		result.put(TaskGrading.PROPERTY_userId, userId);
 		return result.toString(2);
 	}
 
@@ -344,6 +351,7 @@ public class Solutions
 		obj.put(TaskGrading.PROPERTY_solutionID, grading.getSolutionID());
 		obj.put(TaskGrading.PROPERTY_taskID, grading.getTaskID());
 		obj.put(TaskGrading.PROPERTY_timeStamp, grading.getTimeStamp());
+		obj.put(TaskGrading.PROPERTY_userId, grading.getUserId());
 		obj.put(TaskGrading.PROPERTY_author, grading.getAuthor());
 		obj.put(TaskGrading.PROPERTY_points, grading.getPoints());
 		obj.put(TaskGrading.PROPERTY_note, grading.getNote());
