@@ -173,10 +173,37 @@
     </small>
   </p>
 
-  <div class="text-center">
+  <p class="text-center">
+    Click "Submit" to finalize your assignment and generate a link.
+  </p>
+  <div *ngIf="!loggedIn" class="alert alert-warning" role="alert">
+    <h4 class="alert-heading">
+      Warning!
+    </h4>
     <p>
-      Click "Submit" to finalize your assignment and generate a link.
+      You are currently not logged in, therefore submitting this assignment as a guest.
     </p>
+    <p>
+      Logging in has the following advantages:
+    </p>
+    <ul>
+      <li>
+        You will be shown as Registered <span class="badge badge-pill badge-primary">&#10003;</span>
+        to students viewing your assignment.
+      </li>
+      <li>
+        You can view student submissions on other devices without entering the generated token.
+      </li>
+      <li>
+        You will have access to future features like notifications and improved access control.
+      </li>
+    </ul>
+    <p>
+      You can login or register using the link in the bottom right corner of the page.
+    </p>
+  </div>
+
+  <div class="text-center">
     <button type="button" class="btn btn-primary btn-lg" id="submitButton" (click)="submit()"
             [disabled]="submitting">
       {{submitting ? 'Submitting...' : 'Submit'}}
