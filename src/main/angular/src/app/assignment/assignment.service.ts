@@ -10,9 +10,7 @@ import {environment} from '../../environments/environment';
 import {StorageService} from '../storage.service';
 import Course from './model/course';
 import {CheckAssignment, CheckResult} from './model/check';
-import Solution from './model/solution';
-import {KeycloakService} from "keycloak-angular";
-import {fromPromise} from "rxjs/internal-compatibility";
+import {UserService} from "../user/user.service";
 
 type AssignmentResponse = { id: string, token: string };
 
@@ -26,7 +24,7 @@ export class AssignmentService {
   constructor(
     private http: HttpClient,
     private storage: StorageService,
-    private keycloak: KeycloakService,
+    private users: UserService,
   ) {
   }
 
@@ -114,15 +112,14 @@ export class AssignmentService {
   }
 
   getOwn(): Observable<Assignment[]> {
-    return fromPromise(this.keycloak.isLoggedIn()).pipe(
-      flatMap(loggedIn => {
-        if (loggedIn) {
-          const subject = this.keycloak.getKeycloakInstance().subject;
-          return this.getByUserId(subject);
+    return this.users.current$.pipe(
+      flatMap(user => {
+        if (user) {
+          return this.getByUserId(user.id);
         } else {
           return forkJoin(this.getOwnIds().map(id => this.get(id)));
         }
-      })
+      }),
     );
   }
 

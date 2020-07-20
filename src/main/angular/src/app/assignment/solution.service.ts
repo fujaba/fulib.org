@@ -11,8 +11,7 @@ import Comment from './model/comment';
 import {StorageService} from '../storage.service';
 import TaskGrading from './model/task-grading';
 import {CheckResult, CheckSolution} from './model/check';
-import {fromPromise} from "rxjs/internal-compatibility";
-import {KeycloakService} from "keycloak-angular";
+import {UserService} from "../user/user.service";
 
 function asID(id: { id?: string } | string): string {
   return typeof id === 'string' ? id : id.id;
@@ -32,7 +31,7 @@ export class SolutionService {
     private http: HttpClient,
     private storageService: StorageService,
     private assignmentService: AssignmentService,
-    private keycloak: KeycloakService,
+    private users: UserService,
   ) {
   }
 
@@ -135,17 +134,16 @@ export class SolutionService {
   }
 
   getOwn(): Observable<Solution[]> {
-    return fromPromise(this.keycloak.isLoggedIn()).pipe(
-      flatMap(loggedIn => {
-        if (loggedIn) {
-          const subject = this.keycloak.getKeycloakInstance().subject;
-          return this.getByUserId(subject);
+    return this.users.current$.pipe(
+      flatMap(user => {
+        if (user) {
+          return this.getByUserId(user.id);
         } else {
           return forkJoin(this.getOwnIds().map(({assignment, id}) => this.get(assignment, id))).pipe(
             map(solutions => solutions.sort((a, b) => a.timeStamp.getTime() - b.timeStamp.getTime())),
           );
         }
-      })
+      }),
     );
   }
 
