@@ -9,6 +9,7 @@ import Task from '../model/task';
 import Assignment from '../model/assignment';
 import {AssignmentService} from '../assignment.service';
 import TaskResult from '../model/task-result';
+import {KeycloakService} from "keycloak-angular";
 
 @Component({
   selector: 'app-create-assignment',
@@ -26,6 +27,7 @@ export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestr
   };
 
   title = '';
+  loggedIn = false;
   author = '';
   email = '';
   deadlineDate: string;
@@ -49,6 +51,7 @@ export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestr
     private assignmentService: AssignmentService,
     private modalService: NgbModal,
     private dragulaService: DragulaService,
+    private keycloak: KeycloakService,
     @Inject(DOCUMENT) document: Document,
   ) {
     this.origin = document.location.origin;
@@ -65,6 +68,18 @@ export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestr
     if (draft) {
       this.setAssignment(draft);
     }
+
+    this.keycloak.isLoggedIn().then(loggedIn => {
+      if (!loggedIn) {
+        return;
+      }
+
+      this.keycloak.loadUserProfile().then(profile => {
+        this.loggedIn = true;
+        this.author = `${profile.firstName} ${profile.lastName}`;
+        this.email = profile.email;
+      });
+    });
   }
 
   ngOnDestroy(): void {
