@@ -10,6 +10,7 @@ export class Versions {
   'fulib.org': string;
   fulib: string;
   fulibTools: string;
+  fulibYaml: string;
   fulibTables: string;
   fulibScenarios: string;
   fulibMockups: string;
@@ -40,6 +41,7 @@ export class ChangelogService {
       'fulib.org',
       'fulib',
       'fulibTools',
+      'fulibYaml',
       'fulibTables',
       'fulibScenarios',
       'fulibMockups',
