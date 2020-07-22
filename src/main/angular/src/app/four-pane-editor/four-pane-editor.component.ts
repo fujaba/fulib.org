@@ -1,5 +1,5 @@
-import {Component, OnInit, OnDestroy, ViewChild, NgZone} from '@angular/core';
-import {Router, ActivatedRoute} from '@angular/router';
+import {Component, NgZone, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 
 import {AutothemeCodemirrorComponent} from '../autotheme-codemirror/autotheme-codemirror.component';
@@ -55,13 +55,8 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
     });
 
     this.activatedRoute.queryParams.subscribe(queryParams => {
-      const exampleName = queryParams.example as string;
-      if (exampleName) {
-        this.selectedExample = this.examplesService.getExampleByName(exampleName);
-      }
-      else {
-        this.selectedExample = this.scenarioEditorService.selectedExample;
-      }
+      const exampleName: string = queryParams.example;
+      this.selectedExample = exampleName ? this.examplesService.getExampleByName(exampleName) : this.scenarioEditorService.selectedExample;
     })
   }
 
@@ -80,7 +75,7 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
       packageName: this.scenarioEditorService.packageName,
       scenarioFileName: this.scenarioEditorService.scenarioFileName,
       scenarioText: this.scenarioText,
-      selectedExample: this.selectedExample ? this.selectedExample.name : undefined,
+      selectedExample: this.selectedExample?.name,
     };
     this.scenarioEditorService.submit(request).subscribe(response => {
       this.submitting = false;
@@ -111,9 +106,8 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
     const result = [];
     let counter = 0;
     for (let line of outputLines) {
-      if (line.startsWith('\tat org.fulib.scenarios.tool.') ||
-        line.startsWith('\tat ') && !line.startsWith('\tat org.fulib.') &&
-        !line.startsWith(packageNamePrefix)) {
+      if (line.startsWith('\tat org.fulib.scenarios.tool.')
+        || line.startsWith('\tat ') && !line.startsWith('\tat org.fulib.') && !line.startsWith(packageNamePrefix)) {
         counter++;
       } else {
         if (counter > 0) {
@@ -131,7 +125,7 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
   }
 
   get activeObjectDiagramTab(): number {
-    const numDiagrams = this.response && this.response.objectDiagrams ? this.response.objectDiagrams.length : 0;
+    const numDiagrams = this.response?.objectDiagrams?.length ?? 0;
     return Math.min(this._activeObjectDiagramTab, numDiagrams);
   }
 
@@ -150,7 +144,7 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
 
   selectExample(value: Example | null): void {
     this.selectedExample = value;
-    this.router.navigate([], {queryParams: { example: value ? value.name : undefined }});
+    this.router.navigate([], {queryParams: {example: value?.name}});
     this.scenarioEditorService.selectedExample = value;
   }
 
