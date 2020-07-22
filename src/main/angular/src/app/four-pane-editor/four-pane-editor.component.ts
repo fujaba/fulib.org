@@ -24,6 +24,7 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
   _selectedExample: Example | null;
   scenarioText: string;
   response: Response | null;
+  javaCode: string = '// Loading...';
   submitting: boolean;
 
   exampleCategories: ExampleCategory[];
@@ -84,14 +85,11 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
     this.scenarioEditorService.submit(request).subscribe(response => {
       this.submitting = false;
       this.response = response;
+      this.javaCode = this.renderJavaCode();
     });
   }
 
-  get javaCode() {
-    if (!this.response) {
-      return '// Loading...'
-    }
-
+  private renderJavaCode(): string {
     let javaCode = '';
     if (this.response.exitCode !== 0) {
       const outputLines = this.response.output.split('\n');
