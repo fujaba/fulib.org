@@ -1,7 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component} from '@angular/core';
 import {Location} from '@angular/common';
-import {Title} from '@angular/platform-browser';
-import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-page-not-found',
@@ -12,12 +10,9 @@ export class PageNotFoundComponent {
   path: string;
 
   constructor(
-    router: Router,
-    title: Title,
     private location: Location,
   ) {
-    this.path = router.url;
-    title.setTitle('404 - Page not found');
+    this.path = location.path();
   }
 
   goBack(): void {
