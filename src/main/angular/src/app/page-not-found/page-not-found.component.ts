@@ -8,7 +8,7 @@ import {Router} from '@angular/router';
   templateUrl: './page-not-found.component.html',
   styleUrls: ['./page-not-found.component.scss']
 })
-export class PageNotFoundComponent implements OnInit {
+export class PageNotFoundComponent {
   path: string;
 
   constructor(
@@ -18,9 +18,6 @@ export class PageNotFoundComponent implements OnInit {
   ) {
     this.path = router.url;
     title.setTitle('404 - Page not found');
-  }
-
-  ngOnInit() {
   }
 
   goBack(): void {
