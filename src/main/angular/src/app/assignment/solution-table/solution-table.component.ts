@@ -75,7 +75,6 @@ export class SolutionTableComponent implements OnInit {
 
   setAssignee(solution: Solution, input: HTMLInputElement): void {
     input.disabled = true;
-    solution.assignment = this.assignment;
     solution.assignee = input.value;
     this.solutionService.setAssignee(solution, input.value).subscribe(() => {
       input.disabled = false;

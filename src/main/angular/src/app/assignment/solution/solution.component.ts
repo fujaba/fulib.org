@@ -53,9 +53,6 @@ export class SolutionComponent implements OnInit {
   loadAssignment(): void {
     this.assignmentService.get(this.assignmentID).subscribe(assignment => {
       this.assignment = assignment;
-      if (this.solution) {
-        this.solution.assignment = assignment;
-      }
     });
   }
 
@@ -70,9 +67,6 @@ export class SolutionComponent implements OnInit {
       }),
     ).subscribe(solution => {
       this.solution = solution;
-      if (this.assignment) {
-        this.solution.assignment = this.assignment;
-      }
       this.loadCommentDraft();
     });
   }
@@ -104,7 +98,6 @@ export class SolutionComponent implements OnInit {
   submitComment(): void {
     this.submittingComment = true;
 
-    this.solution.assignment = this.assignment;
     const comment: Comment = {
       parent: this.solution.id,
       author: this.commentName,

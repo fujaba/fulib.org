@@ -138,9 +138,9 @@ export class SolutionService {
   }
 
   submit(solution: Solution): Observable<Solution> {
-    return this.http.post<SolutionResponse>(`${environment.apiURL}/assignments/${solution.assignment.id}/solutions`, solution).pipe(
+    return this.http.post<SolutionResponse>(`${environment.apiURL}/assignments/${solution.assignment}/solutions`, solution).pipe(
       map(response => {
-        this.setToken(solution.assignment.id, response.id, response.token);
+        this.setToken(solution.assignment, response.id, response.token);
         const result: Solution = {
           ...solution,
           ...response,
@@ -209,13 +209,13 @@ export class SolutionService {
   }
 
   postComment(solution: Solution, comment: Comment): Observable<Comment> {
-    const assignmentID = solution.assignment.id;
+    const assignmentID = solution.assignment;
     const headers = {
       'Content-Type': 'application/json',
     };
     this.addSolutionToken(headers, assignmentID, solution.id);
     this.addAssignmentToken(headers, assignmentID);
-    return this.http.post<CommentResponse>(`${environment.apiURL}/assignments/${solution.assignment.id}/solutions/${solution.id}/comments`, comment, {headers}).pipe(
+    return this.http.post<CommentResponse>(`${environment.apiURL}/assignments/${solution.assignment}/solutions/${solution.id}/comments`, comment, {headers}).pipe(
       map(response => {
         const result: Comment = {
           ...comment,
@@ -246,7 +246,7 @@ export class SolutionService {
 
   postGrading(grading: TaskGrading): Observable<TaskGrading> {
     const solutionID = grading.solution.id;
-    const assignmentID = grading.solution.assignment.id;
+    const assignmentID = grading.solution.assignment;
     const headers = {
       'Content-Type': 'application/json',
     };
@@ -271,7 +271,7 @@ export class SolutionService {
       assignee,
     };
     const headers = {};
-    const assignmentID = solution.assignment.id;
+    const assignmentID = solution.assignment;
     this.addAssignmentToken(headers, assignmentID);
     return this.http.put<void>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${solution.id}/assignee`, body, {headers});
   }

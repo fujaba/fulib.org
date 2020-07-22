@@ -92,7 +92,7 @@ export class CreateSolutionComponent implements OnInit, AfterViewInit, OnDestroy
 
   getSolution(): Solution {
     return {
-      assignment: this.assignment,
+      assignment: this.assignment.id,
       id: this.id,
       token: this.token,
       name: this.name,
@@ -107,7 +107,6 @@ export class CreateSolutionComponent implements OnInit, AfterViewInit, OnDestroy
   setSolution(result: Solution): void {
     this.id = result.id;
     this.token = result.token;
-    this.assignment = result.assignment;
     this.name = result.name;
     this.studentID = result.studentID;
     this.email = result.email;
