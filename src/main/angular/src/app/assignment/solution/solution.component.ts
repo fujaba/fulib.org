@@ -1,7 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {Observable, EMPTY} from 'rxjs';
-import {catchError} from 'rxjs/operators';
 
 import {SolutionService} from '../solution.service';
 import {AssignmentService} from '../assignment.service';
@@ -57,17 +55,13 @@ export class SolutionComponent implements OnInit {
   }
 
   loadSolution(): void {
-    this.solutionService.get(this.assignmentID, this.solutionID).pipe(
-      catchError(err => {
-        if (err.status === 401) {
-          this.tokenModal.open();
-          return EMPTY;
-        }
-        throw err;
-      }),
-    ).subscribe(solution => {
+    this.solutionService.get(this.assignmentID, this.solutionID).subscribe(solution => {
       this.solution = solution;
       this.loadCommentDraft();
+    }, error => {
+      if (error.status === 401) {
+        this.tokenModal.open();
+      }
     });
   }
 

@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable, of} from 'rxjs';
-import {catchError, flatMap, map} from 'rxjs/operators';
+import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
 
 import Solution from './model/solution';
 import {environment} from '../../environments/environment';
@@ -164,10 +164,6 @@ export class SolutionService {
         solution.token = token;
         return solution;
       }),
-      catchError(err => {
-        err.error.status = err.status;
-        throw err.error;
-      }),
     );
   }
 
@@ -183,10 +179,6 @@ export class SolutionService {
           solution.token = this.getToken(assignmentID, solution.id);
         }
         return result.solutions;
-      }),
-      catchError(err => {
-        err.error.status = err.status;
-        throw err.error;
       }),
     );
   }
@@ -237,10 +229,6 @@ export class SolutionService {
     this.addAssignmentToken(headers, assignmentID);
     return this.http.get<{ gradings: TaskGrading[] }>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${id}/gradings`, {headers}).pipe(
       map(response => response.gradings),
-      catchError(err => {
-        err.error.status = err.status;
-        throw err.error;
-      }),
     );
   }
 
@@ -258,10 +246,6 @@ export class SolutionService {
           timeStamp: new Date(response.timeStamp),
         };
         return result;
-      }),
-      catchError(err => {
-        err.error.status = err.status;
-        throw err.error;
       }),
     );
   }
