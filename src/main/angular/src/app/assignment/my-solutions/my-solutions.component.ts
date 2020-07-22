@@ -3,6 +3,7 @@ import Solution from '../model/solution';
 import Assignment from '../model/assignment';
 import {SolutionService} from '../solution.service';
 import {AssignmentService} from '../assignment.service';
+import {forkJoin} from "rxjs";
 
 @Component({
   selector: 'app-my-solutions',
@@ -10,7 +11,8 @@ import {AssignmentService} from '../assignment.service';
   styleUrls: ['./my-solutions.component.scss']
 })
 export class MySolutionsComponent implements OnInit {
-  private _assignments = new Map<string, { assignment: Assignment, solutions: Solution[] }>();
+  assignments?: Assignment[];
+  solutions?: Map<string, Solution[]>;
 
   constructor(
     private solutionService: SolutionService,
@@ -30,33 +32,28 @@ export class MySolutionsComponent implements OnInit {
     return this.solutionService.studentID;
   }
 
-  get assignments(): Assignment[] {
-    // TODO see sort performance concern in assignment list component
-    return Array.from(this._assignments.values()).map(a => a.assignment).filter(a => a).sort(Assignment.comparator);
-  }
-
-  getSolutions(assignment: Assignment): Solution[] {
-    return this._assignments.get(assignment.id).solutions;
-  }
-
   ngOnInit() {
-    for (const {assignment: aid, id: sid} of this.solutionService.getOwnIds()) {
-      let holder = this._assignments.get(aid);
-      if (!holder) {
-        holder = {
-          assignment: undefined,
-          solutions: [],
-        };
-        this._assignments.set(aid, holder);
+    const compoundIds = this.solutionService.getOwnIds();
+    const assignmentIds = [...new Set<string>(compoundIds.map(id => id.assignment))];
 
-        this.assignmentService.get(aid).subscribe(assignment => holder.assignment = assignment);
+    const assignments = forkJoin(assignmentIds.map(aid => this.assignmentService.get(aid)));
+    const solutions = forkJoin(compoundIds.map(cid => this.solutionService.get(cid.assignment, cid.id)));
+
+    forkJoin([assignments, solutions]).subscribe(([assignments, solutions]) => {
+      this.assignments = assignments.sort(Assignment.comparator);
+      this.solutions = new Map<string, Solution[]>();
+
+      for (const assignment of this.assignments) {
+        this.solutions.set(assignment.id, []);
       }
 
-      this.solutionService.get(aid, sid).subscribe(solution => {
-        holder.solutions.push(solution);
-        // TODO see sort performance concern in assignment list component
-        holder.solutions.sort((a, b) => new Date(a.timeStamp).getTime() - new Date(b.timeStamp).getTime());
-      });
-    }
+      for (const solution of solutions) {
+        this.solutions.get(solution.assignment).push(solution);
+      }
+
+      for (const [_, solutionList] of this.solutions) {
+        solutionList.sort((a, b) => new Date(a.timeStamp).getTime() - new Date(b.timeStamp).getTime());
+      }
+    });
   }
 }
