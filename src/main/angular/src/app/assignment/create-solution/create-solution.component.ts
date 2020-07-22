@@ -117,10 +117,10 @@ export class CreateSolutionComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   loadDraft(): void {
-    this.name = this.solutionService.name || '';
-    this.studentID = this.solutionService.studentID || '';
-    this.email = this.solutionService.email || '';
-    this.solution = this.solutionService.getDraft(this.assignment) || this.assignment.templateSolution;
+    this.name = this.solutionService.name ?? '';
+    this.studentID = this.solutionService.studentID ?? '';
+    this.email = this.solutionService.email ?? '';
+    this.solution = this.solutionService.getDraft(this.assignment) ?? this.assignment.templateSolution;
   }
 
   saveDraft(): void {

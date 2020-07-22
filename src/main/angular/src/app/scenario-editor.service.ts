@@ -48,7 +48,7 @@ There is a Car with name Herbie.
   }
 
   get storedScenario(): string {
-    return this._storedScenario || this.privacyService.getStorage('storedScenario') || this.defaultScenario;
+    return this._storedScenario ?? this.privacyService.getStorage('storedScenario') ?? this.defaultScenario;
   }
 
   set storedScenario(value: string) {
@@ -91,7 +91,7 @@ There is a Car with name Herbie.
   }
 
   get packageName(): string {
-    return this._packageName || this.privacyService.getStorage('packageName') || this.defaultPackageName;
+    return this._packageName ?? this.privacyService.getStorage('packageName') ?? this.defaultPackageName;
   }
 
   set packageName(value: string) {
@@ -102,7 +102,7 @@ There is a Car with name Herbie.
   }
 
   get projectName(): string {
-    return this._projectName || this.privacyService.getStorage('projectName') || this.defaultProjectName;
+    return this._projectName ?? this.privacyService.getStorage('projectName') ?? this.defaultProjectName;
   }
 
   set projectName(value: string) {
@@ -113,7 +113,7 @@ There is a Car with name Herbie.
   }
 
   get projectVersion(): string {
-    return this._projectVersion || this.privacyService.getStorage('projectVersion') || this.defaultProjectVersion;
+    return this._projectVersion ?? this.privacyService.getStorage('projectVersion') ?? this.defaultProjectVersion;
   }
 
   set projectVersion(value: string) {
@@ -124,7 +124,7 @@ There is a Car with name Herbie.
   }
 
   get scenarioFileName(): string {
-    return this._scenarioFileName || this.privacyService.getStorage('scenarioFileName') || this.defaultScenarioFileName;
+    return this._scenarioFileName ?? this.privacyService.getStorage('scenarioFileName') ?? this.defaultScenarioFileName;
   }
 
   set scenarioFileName(value: string) {
@@ -135,7 +135,7 @@ There is a Car with name Herbie.
   }
 
   get decoratorClassName(): string {
-    return this._decoratorClassName || this.privacyService.getStorage('decoratorClassName') || this.defaultDecoratorClassName;
+    return this._decoratorClassName ?? this.privacyService.getStorage('decoratorClassName') ?? this.defaultDecoratorClassName;
   }
 
   set decoratorClassName(value: string) {

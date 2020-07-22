@@ -91,7 +91,7 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
       javaCode += this.foldInternalCalls(outputLines).map(line => `// ${line}\n`).join('');
     }
 
-    for (let testMethod of this.response.testMethods || []) {
+    for (let testMethod of this.response.testMethods ?? []) {
       javaCode += `// --------------- ${testMethod.name} in class ${testMethod.className} ---------------\n\n`;
       javaCode += testMethod.body;
       javaCode += '\n';

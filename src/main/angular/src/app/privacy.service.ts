@@ -12,7 +12,7 @@ export class PrivacyService {
   }
 
   get privacy(): Privacy | null {
-    return this._privacy || localStorage.getItem('privacy') as Privacy;
+    return this._privacy ?? localStorage.getItem('privacy') as Privacy;
   }
 
   set privacy(value: Privacy | null) {

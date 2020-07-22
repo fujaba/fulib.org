@@ -131,7 +131,7 @@ export class CreateCourseComponent implements OnInit, OnDestroy {
     const pattern = /^.*(?:assignments\/([\w-]+)|\(([\w-]+)\))/;
     const match = pattern.exec(this.newAssignment);
     if (match) {
-      return match[1] || match[2];
+      return match[1] ?? match[2];
     }
     return this.newAssignment;
   }

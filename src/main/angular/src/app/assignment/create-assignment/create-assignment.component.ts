@@ -91,7 +91,7 @@ export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   getDeadline(): Date | null {
-    return this.deadlineDate ? new Date(this.deadlineDate + ' ' + (this.deadlineTime || '00:00')) : null;
+    return this.deadlineDate ? new Date(this.deadlineDate + ' ' + (this.deadlineTime ?? '00:00')) : null;
   }
 
   getAssignment(keepDeleted: boolean = false): Assignment {
