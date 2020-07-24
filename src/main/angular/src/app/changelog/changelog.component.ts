@@ -13,7 +13,7 @@ export class ChangelogComponent implements OnInit, AfterViewInit {
 
   repos: (keyof Versions)[] = [];
   currentVersions: Versions;
-  lastUsedVersions: Versions;
+  lastUsedVersions: Versions | null;
   changelogs = new Versions();
 
   activeRepo: string;

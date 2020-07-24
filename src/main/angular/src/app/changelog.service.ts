@@ -7,14 +7,14 @@ import {PrivacyService} from './privacy.service';
 import {environment} from '../environments/environment';
 
 export class Versions {
-  'fulib.org': string;
-  fulib: string;
-  fulibTools: string;
-  fulibYaml: string;
-  fulibTables: string;
-  fulibScenarios: string;
-  fulibMockups: string;
-  fulibGradle: string;
+  'fulib.org'?: string;
+  fulib?: string;
+  fulibTools?: string;
+  fulibYaml?: string;
+  fulibTables?: string;
+  fulibScenarios?: string;
+  fulibMockups?: string;
+  fulibGradle?: string;
 }
 
 @Injectable({
@@ -78,17 +78,15 @@ export class ChangelogService {
 
   private partialChangelog(fullChangelog: string, lastUsedVersion: string, currentVersion?: string): string {
     let result = '';
-    let version = undefined;
+    let version = '';
 
     loop: for (const line of fullChangelog.split('\n')) {
       if (line.startsWith('# ')) { // indicating a version headline
         if (line.includes(lastUsedVersion)) {
-          version = 'lastUsed'
-        }
-        else if (currentVersion && line.includes(currentVersion)) {
+          version = 'lastUsed';
+        } else if (currentVersion && line.includes(currentVersion)) {
           version = 'current';
-        }
-        else { // some other version
+        } else { // some other version
           switch (version) {
             case 'lastUsed': // the ones after lastUsed are new and therefore interesting
               version = 'new';
