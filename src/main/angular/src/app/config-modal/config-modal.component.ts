@@ -49,7 +49,7 @@ export class ConfigModalComponent {
 
   downloadProjectZip(): void {
     const request: ProjectZipRequest = {
-      privacy: this.privacyService.privacy,
+      privacy: this.privacyService.privacy || 'none',
       packageName: this.packageName,
       projectName: this.projectName,
       projectVersion: this.projectVersion,
