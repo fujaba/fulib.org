@@ -13,7 +13,7 @@ import TaskGrading from './model/task-grading';
 import {CheckResult, CheckSolution} from './model/check';
 
 function asID(id: { id?: string } | string): string {
-  return typeof id === 'string' ? id : id.id;
+  return typeof id === 'string' ? id : id.id!;
 }
 
 type AssignmentId = { id: string; };
@@ -113,7 +113,7 @@ export class SolutionService {
     const pattern = /^solutionToken\/(.*)\/(.*)$/;
     const ids: { assignment: string, id: string; }[] = [];
     for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
+      const key = localStorage.key(i)!;
       const match = pattern.exec(key);
       if (!match) {
         continue;
@@ -161,7 +161,7 @@ export class SolutionService {
     return this.http.get<Solution>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${id}`, {headers}).pipe(
       map(solution => {
         solution.id = id;
-        solution.token = token;
+        solution.token = token ?? undefined;
         return solution;
       }),
     );
@@ -176,7 +176,7 @@ export class SolutionService {
     return this.http.get<{ solutions: Solution[] }>(`${environment.apiURL}/assignments/${assignmentID}/solutions`, {headers}).pipe(
       map(result => {
         for (const solution of result.solutions) {
-          solution.token = this.getToken(assignmentID, solution.id);
+          solution.token = this.getToken(assignmentID, solution.id!) ?? undefined;
         }
         return result.solutions;
       }),
@@ -205,13 +205,13 @@ export class SolutionService {
     const headers = {
       'Content-Type': 'application/json',
     };
-    this.addSolutionToken(headers, assignmentID, solution.id);
+    this.addSolutionToken(headers, assignmentID, solution.id!);
     this.addAssignmentToken(headers, assignmentID);
     return this.http.post<CommentResponse>(`${environment.apiURL}/assignments/${solution.assignment}/solutions/${solution.id}/comments`, comment, {headers}).pipe(
       map(response => {
         const result: Comment = {
           ...comment,
-          parent: solution.id,
+          parent: solution.id!,
           ...response,
           timeStamp: new Date(response.timeStamp),
         };
@@ -267,7 +267,7 @@ export class SolutionService {
     }
   }
 
-  private addSolutionToken(headers: any, assignmentID: string, solutionID: string): string {
+  private addSolutionToken(headers: any, assignmentID: string, solutionID: string): string | null {
     const token = this.getToken(assignmentID, solutionID);
     if (token) {
       headers['Solution-Token'] = token;
