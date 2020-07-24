@@ -28,8 +28,8 @@ export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestr
   title = '';
   author = '';
   email = '';
-  deadlineDate: string;
-  deadlineTime: string;
+  deadlineDate: string | null;
+  deadlineTime: string | null;
   description = '';
   solution = '';
   templateSolution = '';
@@ -56,8 +56,8 @@ export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestr
 
   ngOnInit(): void {
     this.dragulaService.createGroup('TASKS', {
-      moves(el, container, handle) {
-        return handle.classList.contains('handle');
+      moves(el, container, handle): boolean {
+        return handle?.classList.contains('handle') ?? false;
       }
     });
 
@@ -158,9 +158,9 @@ export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   addTask(): void {
-    this.tasks.push({description: '', points: undefined, verification: '', collapsed: false, deleted: false});
+    this.tasks.push({description: '', points: undefined!, verification: '', collapsed: false, deleted: false});
     if (this.results) {
-      this.results.push(undefined);
+      this.results.push(undefined!);
     }
     this.saveDraft();
   }

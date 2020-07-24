@@ -32,7 +32,7 @@ export class TaskListComponent implements OnInit {
         }
       }
     }
-    return this.results[taskID].points;
+    return this.results![taskID].points;
   }
 
   getColorClass(taskID: number) {
@@ -40,7 +40,7 @@ export class TaskListComponent implements OnInit {
       return 'secondary';
     }
     const points = this.getTaskPoints(taskID);
-    const maxPoints = this.assignment.tasks[taskID].points;
+    const maxPoints = this.assignment!.tasks[taskID].points;
     if (points === maxPoints) {
       return 'success';
     }

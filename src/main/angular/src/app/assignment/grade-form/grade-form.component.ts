@@ -11,7 +11,7 @@ import TaskGrading from '../model/task-grading';
 export class GradeFormComponent implements OnInit {
   @Input() solution: Solution;
   @Input() taskID: number;
-  @Input() gradings?: TaskGrading[];
+  @Input() gradings: TaskGrading[];
 
   name: string;
   points: number;
@@ -31,7 +31,7 @@ export class GradeFormComponent implements OnInit {
   }
 
   loadDraft(): void {
-    this.name = this.solutionService.commentName;
+    this.name = this.solutionService.commentName || '';
   }
 
   saveDraft(): void {

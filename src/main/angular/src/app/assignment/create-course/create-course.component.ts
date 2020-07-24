@@ -61,8 +61,8 @@ export class CreateCourseComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.dragulaService.createGroup('ASSIGNMENTS', {
-      moves(el, container, handle) {
-        return handle.classList.contains('handle');
+      moves(el, container, handle): boolean {
+        return handle?.classList.contains('handle') ?? false;
       }
     });
     this.loadDraft();
@@ -79,7 +79,7 @@ export class CreateCourseComponent implements OnInit, OnDestroy {
     return {
       title: this.title,
       description: this.description,
-      assignmentIds: this.assignments.map(a => a.id),
+      assignmentIds: this.assignments.map(a => a.id!),
     };
   }
 
@@ -87,9 +87,10 @@ export class CreateCourseComponent implements OnInit, OnDestroy {
     this.title = course.title;
     this.description = course.description;
 
-    this.assignments = new Array<Assignment>(course.assignmentIds.length);
-    for (let i = 0; i < course.assignmentIds.length; i++) {
-      this.assignmentService.get(course.assignmentIds[i]).subscribe(assignment => {
+    const assignmentIds = course.assignmentIds!;
+    this.assignments = new Array<Assignment>(assignmentIds.length);
+    for (let i = 0; i < assignmentIds.length; i++) {
+      this.assignmentService.get(assignmentIds[i]).subscribe(assignment => {
         this.assignments[i] = assignment;
       });
     }

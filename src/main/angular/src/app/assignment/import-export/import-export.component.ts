@@ -7,7 +7,7 @@ import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 })
 export class ImportExportComponent implements OnInit {
 
-  importFile: File = null;
+  importFile?: File;
 
   @Output() import = new EventEmitter<File>();
   @Output() export = new EventEmitter<void>();
