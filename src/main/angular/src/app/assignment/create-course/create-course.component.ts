@@ -66,8 +66,8 @@ export class CreateCourseComponent implements OnInit, OnDestroy {
       }
     });
     this.loadDraft();
-    this.assignmentService.getOwn().subscribe(next => {
-      this.ownAssignments.push(next);
+    this.assignmentService.getOwn().subscribe(assignments => {
+      this.ownAssignments = assignments;
     });
   }
 
