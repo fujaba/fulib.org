@@ -10,6 +10,7 @@ export const environment = {
     'fulib.org': undefined,
     fulib: undefined,
     fulibTools: undefined,
+    fulibYaml: undefined,
     fulibTables: undefined,
     fulibScenarios: undefined,
     fulibMockups: undefined,

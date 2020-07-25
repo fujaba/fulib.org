@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {EMPTY, Observable} from 'rxjs';
-import {catchError, debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
+import {Observable} from 'rxjs';
+import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 
 import Assignment from '../model/assignment';
 import {AssignmentService} from '../assignment.service';
@@ -51,17 +51,13 @@ export class SolutionTableComponent implements OnInit {
   }
 
   private loadSolutions() {
-    this.solutionService.getAll(this.assignmentID).pipe(
-      catchError(err => {
-        if (err.status === 401) {
-          this.tokenModal.open();
-          return EMPTY;
-        }
-        throw err;
-      }),
-    ).subscribe(solutions => {
+    this.solutionService.getAll(this.assignmentID).subscribe(solutions => {
       this.solutions = solutions;
       this.updateSearch();
+    }, error => {
+      if (error.status === 401) {
+        this.tokenModal.open();
+      }
     });
   }
 
@@ -75,7 +71,6 @@ export class SolutionTableComponent implements OnInit {
 
   setAssignee(solution: Solution, input: HTMLInputElement): void {
     input.disabled = true;
-    solution.assignment = this.assignment;
     solution.assignee = input.value;
     this.solutionService.setAssignee(solution, input.value).subscribe(() => {
       input.disabled = false;

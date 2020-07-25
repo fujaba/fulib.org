@@ -8,7 +8,7 @@
   </p>
 
   <div class="list-group">
-    <a *ngFor="let assignment of assignments"
+    <a *ngFor="let assignment of assignments || []"
        class="list-group-item list-group-item-action"
        routerLink="/assignments/{{assignment.id}}/solutions"
     >

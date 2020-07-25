@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable, of} from 'rxjs';
+import {forkJoin, Observable, of} from 'rxjs';
 import {flatMap, map} from 'rxjs/operators';
 
 import {saveAs} from 'file-saver';
@@ -110,8 +110,8 @@ export class AssignmentService {
     return ids;
   }
 
-  getOwn(): Observable<Assignment> {
-    return of(...this.getOwnIds()).pipe(flatMap(id => this.get(id)));
+  getOwn(): Observable<Assignment[]> {
+    return forkJoin(this.getOwnIds().map(id => this.get(id)));
   }
 
   check(assignment: CheckAssignment): Observable<CheckResult> {

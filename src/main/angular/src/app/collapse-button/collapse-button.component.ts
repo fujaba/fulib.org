@@ -1,18 +1,15 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 
 @Component({
   selector: 'app-collapse-button',
   templateUrl: './collapse-button.component.html',
   styleUrls: ['./collapse-button.component.scss']
 })
-export class CollapseButtonComponent implements OnInit {
+export class CollapseButtonComponent {
   @Input() collapsed: boolean = false;
   @Output() collapsedChange = new EventEmitter<boolean>();
 
   constructor() {
-  }
-
-  ngOnInit() {
   }
 
   toggle(): void {

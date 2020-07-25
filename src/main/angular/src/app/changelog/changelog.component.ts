@@ -11,9 +11,10 @@ import {ChangelogService, Versions} from '../changelog.service';
 export class ChangelogComponent implements OnInit, AfterViewInit {
   @ViewChild('changelogModal', {static: true}) changelogModal;
 
+  repos: (keyof Versions)[] = [];
   currentVersions: Versions;
   lastUsedVersions: Versions;
-  private _changelogs = new Versions();
+  changelogs = new Versions();
 
   activeRepo: string;
 
@@ -32,6 +33,7 @@ export class ChangelogComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.repos = this.changelogService.repos;
     this.lastUsedVersions = this.changelogService.lastUsedVersions;
     this.currentVersions = this.changelogService.currentVersions;
   }
@@ -53,9 +55,8 @@ export class ChangelogComponent implements OnInit, AfterViewInit {
     const currentVersions = this.changelogService.currentVersions;
 
     let open = false;
-    for (const repo of this.changelogService.repos) {
-      this._changelogs[repo] = '';
-
+    for (const repo of this.repos) {
+      this.changelogs[repo] = '';
       const lastUsedVersion = lastUsedVersions[repo];
       const currentVersion = currentVersions[repo];
       if (!lastUsedVersion || !currentVersion) {
@@ -69,7 +70,7 @@ export class ChangelogComponent implements OnInit, AfterViewInit {
       }
 
       this.changelogService.getChangelog(repo, lastUsedVersion, currentVersion).subscribe(changelog => {
-        this._changelogs[repo] = changelog;
+        this.changelogs[repo] = changelog;
 
         if (!this.activeRepo) {
           this.activeRepo = repo;
@@ -87,30 +88,20 @@ export class ChangelogComponent implements OnInit, AfterViewInit {
     this.modalService.open(this.changelogModal, {ariaLabelledBy: 'changelogModalLabel', size: 'xl'});
   }
 
-  get changelogs(): { repo: string, changelog: string }[] {
-    return Object.keys(this._changelogs)
-      .filter(repo => this._changelogs[repo])
-      .map(repo => ({
-        repo,
-        changelog: this._changelogs[repo],
-      }));
-  }
-
   private updateLastUsedVersion(): void {
     this.lastUsedVersions = this.currentVersions;
     this.changelogService.lastUsedVersions = this.currentVersions;
   }
 
   open(): void {
-    const repos = this.changelogService.repos;
-    this.activeRepo = repos[0];
+    this.activeRepo = this.repos[0];
 
     this.openModal();
 
-    for (const repo of repos) {
-      this._changelogs[repo] = '';
+    for (const repo of this.repos) {
+      this.changelogs[repo] = 'Loading...';
       this.changelogService.getChangelog(repo).subscribe(changelog => {
-        this._changelogs[repo] = changelog;
+        this.changelogs[repo] = changelog;
       });
     }
   }

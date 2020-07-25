@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 
 import {saveAs} from 'file-saver';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
@@ -13,7 +13,7 @@ import {PrivacyService} from '../privacy.service';
   templateUrl: './config-modal.component.html',
   styleUrls: ['./config-modal.component.scss']
 })
-export class ConfigModalComponent implements OnInit {
+export class ConfigModalComponent {
   @ViewChild('content', {static: true}) content;
 
   packageName: string;
@@ -27,9 +27,6 @@ export class ConfigModalComponent implements OnInit {
     private privacyService: PrivacyService,
     private modalService: NgbModal,
   ) {
-  }
-
-  ngOnInit(): void {
   }
 
   open(): void {

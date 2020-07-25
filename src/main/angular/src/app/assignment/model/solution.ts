@@ -1,10 +1,9 @@
-import Assignment from './assignment';
 import TaskResult from './task-result';
 
 export default class Solution {
   id?: string;
   token?: string;
-  assignment: Assignment;
+  assignment: string;
 
   name: string;
   studentID: string;
