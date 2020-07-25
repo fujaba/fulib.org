@@ -19,7 +19,7 @@
 
       </p>
       <div class="list-group">
-        <a *ngFor="let solution of getSolutions(assignment)"
+        <a *ngFor="let solution of solutions.get(assignment.id)"
            class="list-group-item list-group-item-action"
            routerLink="/assignments/{{assignment.id}}/solutions/{{solution.id}}">
           by <app-author-name [name]="solution.name" [email]="solution.email"></app-author-name>

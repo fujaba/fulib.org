@@ -54,7 +54,7 @@ export class FooterComponent implements OnInit, AfterViewInit {
   }
 
   loadPrivacy(): void {
-    this.privacy = this.privacyService.privacy || 'none';
+    this.privacy = this.privacyService.privacy ?? 'none';
   }
 
   savePrivacy(): void {

@@ -10,21 +10,23 @@
   <div class="modal-body">
     <div class="d-flex">
       <ul ngbNav #nav="ngbNav" [(activeId)]="activeRepo" class="nav-pills mr-4" orientation="vertical">
-          <li *ngFor="let entry of changelogs" [ngbNavItem]="entry.repo">
+        <ng-container *ngFor="let repo of repos">
+          <li *ngIf="changelogs[repo]" [ngbNavItem]="repo">
             <a ngbNavLink>
-              {{entry.repo}}
+              {{repo}}
               <br/>
               <span class="badge badge-secondary">
-                <ng-container *ngIf="lastUsedVersions && lastUsedVersions[entry.repo] !== currentVersions[entry.repo]">
-                  v{{lastUsedVersions[entry.repo]}} &rarr;
+                <ng-container *ngIf="lastUsedVersions && lastUsedVersions[repo] !== currentVersions[repo]">
+                  v{{lastUsedVersions[repo]}} &rarr;
                 </ng-container>
-                v{{currentVersions[entry.repo]}}
+                v{{currentVersions[repo]}}
               </span>
             </a>
             <ng-template ngbNavContent>
-              <div [innerHTML]="entry.changelog | safeHtml"></div>
+              <div [innerHTML]="changelogs[repo] | safeHtml"></div>
             </ng-template>
           </li>
+        </ng-container>
       </ul>
       <div [ngbNavOutlet]="nav"></div>
     </div>

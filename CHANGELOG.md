@@ -195,8 +195,11 @@
 
 ## General
 
++ Added fulibYaml to GitHub links and What's New.
+* Updated to fulibScenarios v1.4.0.
 * Updated to Angular 9.
 * Cleaned up the backend code.
+* Cleaned up the frontend code and improved performance.
 
 ## QoL and Usability Improvements
 
@@ -225,3 +228,4 @@
 # Bugfixes
 
 * Fixed a timezone problem with deadlines in the assignment creation form. #83
+* Fixed 404 pages changing the tab title until the page is reloaded.

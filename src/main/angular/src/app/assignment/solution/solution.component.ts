@@ -1,7 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {Observable, EMPTY} from 'rxjs';
-import {catchError} from 'rxjs/operators';
 
 import {SolutionService} from '../solution.service';
 import {AssignmentService} from '../assignment.service';
@@ -56,27 +54,17 @@ export class SolutionComponent implements OnInit {
   loadAssignment(): void {
     this.assignmentService.get(this.assignmentID).subscribe(assignment => {
       this.assignment = assignment;
-      if (this.solution) {
-        this.solution.assignment = assignment;
-      }
     });
   }
 
   loadSolution(): void {
-    this.solutionService.get(this.assignmentID, this.solutionID).pipe(
-      catchError(err => {
-        if (err.status === 401) {
-          this.tokenModal.open();
-          return EMPTY;
-        }
-        throw err;
-      }),
-    ).subscribe(solution => {
+    this.solutionService.get(this.assignmentID, this.solutionID).subscribe(solution => {
       this.solution = solution;
-      if (this.assignment) {
-        this.solution.assignment = this.assignment;
-      }
       this.loadCommentDraft();
+    }, error => {
+      if (error.status === 401) {
+        this.tokenModal.open();
+      }
     });
   }
 
@@ -116,7 +104,6 @@ export class SolutionComponent implements OnInit {
   submitComment(): void {
     this.submittingComment = true;
 
-    this.solution.assignment = this.assignment;
     const comment: Comment = {
       parent: this.solution.id,
       author: this.commentName,

@@ -103,10 +103,10 @@ export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   getDeadline(): Date | null {
-    return this.deadlineDate ? new Date(this.deadlineDate + ' ' + (this.deadlineTime || '00:00')) : null;
+    return this.deadlineDate ? new Date(this.deadlineDate + ' ' + (this.deadlineTime ?? '00:00')) : null;
   }
 
-  getAssignment(keepDeleted: boolean = false): Assignment {
+  getAssignment(): Assignment {
     return {
       id: undefined,
       token: undefined,
@@ -118,7 +118,7 @@ export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestr
       deadline: this.getDeadline(),
       solution: this.solution,
       templateSolution: this.templateSolution,
-      tasks: keepDeleted ? this.tasks : this.tasks.filter(t => !t.deleted),
+      tasks: this.tasks.filter(t => !t.deleted),
     } as Assignment;
   }
 
@@ -153,7 +153,7 @@ export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   saveDraft(): void {
-    this.assignmentService.draft = this.getAssignment(true);
+    this.assignmentService.draft = this.getAssignment();
   }
 
   onImport(file: File): void {

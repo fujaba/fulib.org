@@ -66,8 +66,8 @@ export class CreateCourseComponent implements OnInit, OnDestroy {
       }
     });
     this.loadDraft();
-    this.assignmentService.getOwn().subscribe(results => {
-      this.ownAssignments = results;
+    this.assignmentService.getOwn().subscribe(assignments => {
+      this.ownAssignments = assignments;
     });
   }
 
@@ -131,7 +131,7 @@ export class CreateCourseComponent implements OnInit, OnDestroy {
     const pattern = /^.*(?:assignments\/([\w-]+)|\(([\w-]+)\))/;
     const match = pattern.exec(this.newAssignment);
     if (match) {
-      return match[1] || match[2];
+      return match[1] ?? match[2];
     }
     return this.newAssignment;
   }

@@ -104,7 +104,7 @@ export class CreateSolutionComponent implements OnInit, AfterViewInit, OnDestroy
 
   getSolution(): Solution {
     return {
-      assignment: this.assignment,
+      assignment: this.assignment.id,
       id: this.id,
       token: this.token,
       name: this.name,
@@ -119,7 +119,6 @@ export class CreateSolutionComponent implements OnInit, AfterViewInit, OnDestroy
   setSolution(result: Solution): void {
     this.id = result.id;
     this.token = result.token;
-    this.assignment = result.assignment;
     this.name = result.name;
     this.studentID = result.studentID;
     this.email = result.email;
@@ -129,10 +128,10 @@ export class CreateSolutionComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   loadDraft(): void {
-    this.name = this.solutionService.name || '';
-    this.studentID = this.solutionService.studentID || '';
-    this.email = this.solutionService.email || '';
-    this.solution = this.solutionService.getDraft(this.assignment) || this.assignment.templateSolution;
+    this.name = this.solutionService.name ?? '';
+    this.studentID = this.solutionService.studentID ?? '';
+    this.email = this.solutionService.email ?? '';
+    this.solution = this.solutionService.getDraft(this.assignment) ?? this.assignment.templateSolution;
   }
 
   saveDraft(): void {

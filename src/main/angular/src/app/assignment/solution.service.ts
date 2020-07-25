@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {forkJoin, Observable} from 'rxjs';
-import {catchError, flatMap, map} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 
 import Solution from './model/solution';
 import {environment} from '../../environments/environment';
@@ -154,9 +154,9 @@ export class SolutionService {
   }
 
   submit(solution: Solution): Observable<Solution> {
-    return this.http.post<SolutionResponse>(`${environment.apiURL}/assignments/${solution.assignment.id}/solutions`, solution).pipe(
+    return this.http.post<SolutionResponse>(`${environment.apiURL}/assignments/${solution.assignment}/solutions`, solution).pipe(
       map(response => {
-        this.setToken(solution.assignment.id, response.id, response.token);
+        this.setToken(solution.assignment, response.id, response.token);
         const result: Solution = {
           ...solution,
           ...response,
@@ -180,10 +180,6 @@ export class SolutionService {
         solution.token = token;
         return solution;
       }),
-      catchError(err => {
-        err.error.status = err.status;
-        throw err.error;
-      }),
     );
   }
 
@@ -199,10 +195,6 @@ export class SolutionService {
           solution.token = this.getToken(assignmentID, solution.id);
         }
         return result.solutions;
-      }),
-      catchError(err => {
-        err.error.status = err.status;
-        throw err.error;
       }),
     );
   }
@@ -239,13 +231,13 @@ export class SolutionService {
   }
 
   postComment(solution: Solution, comment: Comment): Observable<Comment> {
-    const assignmentID = solution.assignment.id;
+    const assignmentID = solution.assignment;
     const headers = {
       'Content-Type': 'application/json',
     };
     this.addSolutionToken(headers, assignmentID, solution.id);
     this.addAssignmentToken(headers, assignmentID);
-    return this.http.post<CommentResponse>(`${environment.apiURL}/assignments/${solution.assignment.id}/solutions/${solution.id}/comments`, comment, {headers}).pipe(
+    return this.http.post<CommentResponse>(`${environment.apiURL}/assignments/${solution.assignment}/solutions/${solution.id}/comments`, comment, {headers}).pipe(
       map(response => {
         const result: Comment = {
           ...comment,
@@ -267,16 +259,12 @@ export class SolutionService {
     this.addAssignmentToken(headers, assignmentID);
     return this.http.get<{ gradings: TaskGrading[] }>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${id}/gradings`, {headers}).pipe(
       map(response => response.gradings),
-      catchError(err => {
-        err.error.status = err.status;
-        throw err.error;
-      }),
     );
   }
 
   postGrading(grading: TaskGrading): Observable<TaskGrading> {
     const solutionID = grading.solution.id;
-    const assignmentID = grading.solution.assignment.id;
+    const assignmentID = grading.solution.assignment;
     const headers = {
       'Content-Type': 'application/json',
     };
@@ -290,10 +278,6 @@ export class SolutionService {
         };
         return result;
       }),
-      catchError(err => {
-        err.error.status = err.status;
-        throw err.error;
-      }),
     );
   }
 
@@ -302,7 +286,7 @@ export class SolutionService {
       assignee,
     };
     const headers = {};
-    const assignmentID = solution.assignment.id;
+    const assignmentID = solution.assignment;
     this.addAssignmentToken(headers, assignmentID);
     return this.http.put<void>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${solution.id}/assignee`, body, {headers});
   }

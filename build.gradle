@@ -62,11 +62,11 @@ repositories {
 }
 
 dependencies {
-	fulibScenarios group: 'org.fulib', name: 'fulibScenarios', version: '1.3.0'
+	fulibScenarios group: 'org.fulib', name: 'fulibScenarios', version: '1.4.0'
 
 	// --------------- Fulib Libraries ---------------
 
-	compile group: 'org.fulib', name: 'fulibScenarios', version: '1.3.0'
+	compile group: 'org.fulib', name: 'fulibScenarios', version: '1.4.0'
 
 	compile group: 'org.fulib', name: 'fulibMockups', version: '0.2.0'
 
@@ -117,6 +117,7 @@ processResources {
 	def version = project.version.toString()
 	def fulibVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulib')
 	def fulibToolsVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulibTools')
+	def fulibYamlVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulibYaml')
 	def fulibTablesVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulibTables')
 	def fulibScenariosVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulibScenarios')
 	def fulibGradleVersion = getDependencyVersion(buildscript.configurations.classpath, 'org.fulib', 'fulibGradle')
@@ -132,6 +133,7 @@ processResources {
 			it = it.replace('$$version$$', version)
 			it = it.replace('$$fulibVersion$$', fulibVersion)
 			it = it.replace('$$fulibToolsVersion$$', fulibToolsVersion)
+			it = it.replace('$$fulibYamlVersion$$', fulibYamlVersion)
 			it = it.replace('$$fulibTablesVersion$$', fulibTablesVersion)
 			it = it.replace('$$fulibScenariosVersion$$', fulibScenariosVersion)
 			it = it.replace('$$fulibMockupsVersion$$', fulibMockupsVersion)

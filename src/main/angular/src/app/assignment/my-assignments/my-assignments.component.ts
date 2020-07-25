@@ -15,11 +15,9 @@ export class MyAssignmentsComponent implements OnInit {
   ) {
   }
 
-  ngOnInit() {
-    this.assignments = [];
-    this.assignmentService.getOwn().subscribe(results => {
-      this.assignments = results;
-      this.assignments.sort(Assignment.comparator);
+  ngOnInit(): void {
+    this.assignmentService.getOwn().subscribe(assignments => {
+      this.assignments = assignments.sort(Assignment.comparator);
     });
   }
 }
