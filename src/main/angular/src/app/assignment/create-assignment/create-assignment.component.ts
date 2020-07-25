@@ -158,9 +158,9 @@ export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   addTask(): void {
-    this.tasks.push({description: '', points: undefined!, verification: '', collapsed: false, deleted: false});
+    this.tasks.push({description: '', points: 0, verification: '', collapsed: false, deleted: false});
     if (this.results) {
-      this.results.push(undefined!);
+      this.results.push({output: '', points: 0});
     }
     this.saveDraft();
   }

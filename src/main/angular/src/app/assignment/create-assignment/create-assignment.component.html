@@ -66,7 +66,7 @@
             {{task.description || '(no description)'}}
           </ng-template>
           <span class="badge badge-{{task.deleted ? 'secondary' : getColorClass(id) || 'secondary'}}">
-            {{task.points === 0 || task.points > 0 ? task.points : '?'}}
+            {{task.points}}
           </span>
         </div>
         <app-collapse-button class="ml-auto" [(collapsed)]="task.collapsed" (collapsedChange)="saveDraft()">
