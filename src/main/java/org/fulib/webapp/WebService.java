@@ -115,6 +115,16 @@ public class WebService
 		Logger.getGlobal().info("scenario server started on http://localhost:4567");
 	}
 
+	void awaitStart()
+	{
+		service.awaitInitialization();
+	}
+
+	void awaitStop()
+	{
+		service.awaitStop();
+	}
+
 	// --------------- Helpers ---------------
 
 	public static String getMongoURL()
