@@ -4,8 +4,10 @@ import org.fulib.webapp.assignment.model.Course;
 import org.fulib.webapp.mongo.Mongo;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import spark.HaltException;
 import spark.Request;
 import spark.Response;
 
@@ -54,5 +56,32 @@ public class CoursesTest
 		assertThat(course.getDescription(), equalTo(DESCRIPTION));
 		assertThat(course.getDescriptionHtml(), equalTo(DESCRIPTION_HTML));
 		assertThat(course.getAssignmentIds(), hasItems("a1", "a2"));
+	}
+
+	@Test
+	public void get404()
+	{
+		final Mongo db = mock(Mongo.class);
+		final Courses courses = new Courses(db);
+
+		final Request request = mock(Request.class);
+
+		when(request.params("courseID")).thenReturn("-1");
+		when(request.contentType()).thenReturn("application/json");
+		when(db.getCourse("-1")).thenReturn(null);
+
+		final Response response = mock(Response.class);
+
+		try
+		{
+			courses.get(request, response);
+			Assert.fail("did not throw HaltException");
+		}
+		catch (HaltException ex)
+		{
+			assertThat(ex.statusCode(), equalTo(404));
+			final JSONObject body = new JSONObject(ex.body());
+			assertThat(body.getString("error"), equalTo("course with id '-1'' not found")); // TODO '
+		}
 	}
 }
