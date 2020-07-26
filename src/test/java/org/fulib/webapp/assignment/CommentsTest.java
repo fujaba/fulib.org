@@ -65,7 +65,7 @@ public class CommentsTest
 		when(request.params("solutionID")).thenReturn(SOLUTION_ID);
 		when(db.getSolution(SOLUTION_ID)).thenReturn(solution);
 
-		checkInvalidToken(comments, request, response);
+		checkInvalidToken(() -> comments.post(request, response));
 	}
 
 	@Test
@@ -82,7 +82,7 @@ public class CommentsTest
 		when(request.headers("Solution-Token")).thenReturn("s456");
 		when(db.getSolution(SOLUTION_ID)).thenReturn(solution);
 
-		checkInvalidToken(comments, request, response);
+		checkInvalidToken(() -> comments.post(request, response));
 	}
 
 	@Test
@@ -99,21 +99,21 @@ public class CommentsTest
 		when(request.headers("Assignment-Token")).thenReturn("a456");
 		when(db.getSolution(SOLUTION_ID)).thenReturn(solution);
 
-		checkInvalidToken(comments, request, response);
+		checkInvalidToken(() -> comments.post(request, response));
 	}
 
-	private void checkInvalidToken(Comments comments, Request request, Response response)
+	private void checkInvalidToken(Runnable body)
 	{
 		try
 		{
-			comments.post(request, response);
+			body.run();
 			fail("did not throw HaltException");
 		}
 		catch (HaltException ex)
 		{
 			assertThat(ex.statusCode(), equalTo(401));
-			final JSONObject body = new JSONObject(ex.body());
-			assertThat(body.getString("error"), equalTo("invalid Assignment-Token or Solution-Token"));
+			final JSONObject responseObj = new JSONObject(ex.body());
+			assertThat(responseObj.getString("error"), equalTo("invalid Assignment-Token or Solution-Token"));
 		}
 	}
 
@@ -228,5 +228,55 @@ public class CommentsTest
 			final JSONObject body = new JSONObject(ex.body());
 			assertThat(body.getString("error"), equalTo("solution with id '-1'' not found")); // TODO '
 		}
+	}
+
+	@Test
+	public void getChildrenWithoutToken()
+	{
+		final Mongo db = mock(Mongo.class);
+		final Comments comments = new Comments(db);
+		final Request request = mock(Request.class);
+		final Response response = mock(Response.class);
+
+		final Solution solution = createExampleSolution();
+
+		when(request.params("solutionID")).thenReturn(SOLUTION_ID);
+		when(db.getSolution(SOLUTION_ID)).thenReturn(solution);
+
+		checkInvalidToken(() -> comments.getChildren(request, response));
+	}
+
+	@Test
+	public void getChildrenWithWrongSolutionToken()
+	{
+		final Mongo db = mock(Mongo.class);
+		final Comments comments = new Comments(db);
+		final Request request = mock(Request.class);
+		final Response response = mock(Response.class);
+
+		final Solution solution = createExampleSolution();
+
+		when(request.params("solutionID")).thenReturn(SOLUTION_ID);
+		when(request.headers("Solution-Token")).thenReturn("s456");
+		when(db.getSolution(SOLUTION_ID)).thenReturn(solution);
+
+		checkInvalidToken(() -> comments.getChildren(request, response));
+	}
+
+	@Test
+	public void getChildrenWithWrongAssignmentToken()
+	{
+		final Mongo db = mock(Mongo.class);
+		final Comments comments = new Comments(db);
+		final Request request = mock(Request.class);
+		final Response response = mock(Response.class);
+
+		final Solution solution = createExampleSolution();
+
+		when(request.params("solutionID")).thenReturn(SOLUTION_ID);
+		when(request.headers("Assignment-Token")).thenReturn("a456");
+		when(db.getSolution(SOLUTION_ID)).thenReturn(solution);
+
+		checkInvalidToken(() -> comments.getChildren(request, response));
 	}
 }
