@@ -4,12 +4,16 @@ import org.fulib.webapp.assignment.model.Assignment;
 import org.fulib.webapp.assignment.model.Comment;
 import org.fulib.webapp.assignment.model.Solution;
 import org.fulib.webapp.mongo.Mongo;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import spark.HaltException;
 import spark.Request;
 import spark.Response;
+
+import java.time.Instant;
+import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -27,6 +31,10 @@ public class CommentsTest
 	private static final String EMAIL = "test@example.org";
 	private static final String BODY = "Hello there";
 	private static final String BODY_HTML = "<p>Hello there</p>\n";
+
+	private static final String ID = "c1";
+	private static final String TIMESTAMP = "2020-01-01T12:00:00Z";
+	private static final boolean DISTINGUISHED = false;
 
 	@Test
 	public void post404()
@@ -278,5 +286,50 @@ public class CommentsTest
 		when(db.getSolution(SOLUTION_ID)).thenReturn(solution);
 
 		checkInvalidToken(() -> comments.getChildren(request, response));
+	}
+
+	@Test
+	public void getChildren()
+	{
+		final Mongo db = mock(Mongo.class);
+		final Comments comments = new Comments(db);
+		final Request request = mock(Request.class);
+		final Response response = mock(Response.class);
+
+		final Solution solution = createExampleSolution();
+		final Comment comment = createExampleComment();
+
+		when(request.params("solutionID")).thenReturn(SOLUTION_ID);
+		when(request.headers("Solution-Token")).thenReturn(SOLUTION_TOKEN);
+		when(db.getSolution(SOLUTION_ID)).thenReturn(solution);
+		when(db.getComments(SOLUTION_ID)).thenReturn(Collections.singletonList(comment));
+
+		final String responseBody = (String) comments.getChildren(request, response);
+
+		final JSONObject responseObj = new JSONObject(responseBody);
+		final JSONArray children = responseObj.getJSONArray("children");
+		final JSONObject commentObj = children.getJSONObject(0);
+
+		assertThat(commentObj.getString("id"), notNullValue());
+		assertThat(commentObj.getString("parent"), equalTo(SOLUTION_ID));
+		assertThat(commentObj.getString("timeStamp"), equalTo(TIMESTAMP));
+		assertThat(commentObj.getString("author"), equalTo(AUTHOR));
+		assertThat(commentObj.getString("email"), equalTo(EMAIL));
+		assertThat(commentObj.getString("markdown"), equalTo(BODY));
+		assertThat(commentObj.getString("html"), equalTo(BODY_HTML));
+		assertThat(commentObj.getBoolean("distinguished"), equalTo(false));
+	}
+
+	private Comment createExampleComment()
+	{
+		final Comment comment = new Comment(ID);
+		comment.setParent(SOLUTION_ID);
+		comment.setTimeStamp(Instant.parse(TIMESTAMP));
+		comment.setAuthor(AUTHOR);
+		comment.setEmail(EMAIL);
+		comment.setMarkdown(BODY);
+		comment.setHtml(BODY_HTML);
+		comment.setDistinguished(DISTINGUISHED);
+		return comment;
 	}
 }
