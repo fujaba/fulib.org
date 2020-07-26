@@ -205,4 +205,28 @@ public class CommentsTest
 		assertThat(responseObj.getString("html"), equalTo(BODY_HTML));
 		assertThat(responseObj.getBoolean("distinguished"), equalTo(distinguished));
 	}
+
+	@Test
+	public void getChildren404()
+	{
+		final Mongo db = mock(Mongo.class);
+		final Comments comments = new Comments(db);
+		final Request request = mock(Request.class);
+		final Response response = mock(Response.class);
+
+		when(request.params("solutionID")).thenReturn("-1");
+		when(db.getSolution("-1")).thenReturn(null);
+
+		try
+		{
+			comments.getChildren(request, response);
+			fail("did not throw HaltException");
+		}
+		catch (HaltException ex)
+		{
+			assertThat(ex.statusCode(), equalTo(404));
+			final JSONObject body = new JSONObject(ex.body());
+			assertThat(body.getString("error"), equalTo("solution with id '-1'' not found")); // TODO '
+		}
+	}
 }
