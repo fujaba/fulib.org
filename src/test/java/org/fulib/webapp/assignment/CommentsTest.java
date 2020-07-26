@@ -137,25 +137,52 @@ public class CommentsTest
 		final Response response = mock(Response.class);
 
 		final Solution solution = createExampleSolution();
-
-		final JSONObject requestObj = new JSONObject();
-		requestObj.put("author", AUTHOR);
-		requestObj.put("email", EMAIL);
-		requestObj.put("markdown", BODY);
+		final String requestBody = createPostRequestBody();
 
 		when(request.params("solutionID")).thenReturn(SOLUTION_ID);
 		when(request.headers("Solution-Token")).thenReturn(SOLUTION_TOKEN);
-		when(request.body()).thenReturn(requestObj.toString());
+		when(request.body()).thenReturn(requestBody);
 		when(db.getSolution(SOLUTION_ID)).thenReturn(solution);
 
 		final String responseBody = (String) comments.post(request, response);
 
-		final JSONObject responseObj = new JSONObject(responseBody);
-		assertThat(responseObj.getString("id"), notNullValue());
-		assertThat(responseObj.getString("timeStamp"), notNullValue());
-		assertThat(responseObj.getString("html"), equalTo(BODY_HTML));
-		assertThat(responseObj.getBoolean("distinguished"), equalTo(false));
+		this.checkPostResponse(responseBody, false);
+		this.checkNewDbObject(db, false);
+	}
 
+	@Test
+	public void postWithAssignmentToken()
+	{
+		final Mongo db = mock(Mongo.class);
+		final Comments comments = new Comments(db);
+		final Request request = mock(Request.class);
+		final Response response = mock(Response.class);
+
+		final Solution solution = createExampleSolution();
+		final String requestBody = createPostRequestBody();
+
+		when(request.params("solutionID")).thenReturn(SOLUTION_ID);
+		when(request.headers("Assignment-Token")).thenReturn(ASSIGNMENT_TOKEN);
+		when(request.body()).thenReturn(requestBody);
+		when(db.getSolution(SOLUTION_ID)).thenReturn(solution);
+
+		final String responseBody = (String) comments.post(request, response);
+
+		this.checkPostResponse(responseBody, true);
+		this.checkNewDbObject(db, true);
+	}
+
+	private String createPostRequestBody()
+	{
+		final JSONObject requestObj = new JSONObject();
+		requestObj.put("author", AUTHOR);
+		requestObj.put("email", EMAIL);
+		requestObj.put("markdown", BODY);
+		return requestObj.toString();
+	}
+
+	private void checkNewDbObject(Mongo db, boolean distinguished)
+	{
 		final ArgumentCaptor<Comment> commentCaptor = ArgumentCaptor.forClass(Comment.class);
 		verify(db).saveComment(commentCaptor.capture());
 
@@ -167,6 +194,15 @@ public class CommentsTest
 		assertThat(comment.getEmail(), equalTo(EMAIL));
 		assertThat(comment.getMarkdown(), equalTo(BODY));
 		assertThat(comment.getHtml(), equalTo(BODY_HTML));
-		assertThat(comment.isDistinguished(), equalTo(false));
+		assertThat(comment.isDistinguished(), equalTo(distinguished));
+	}
+
+	private void checkPostResponse(String responseBody, boolean distinguished)
+	{
+		final JSONObject responseObj = new JSONObject(responseBody);
+		assertThat(responseObj.getString("id"), notNullValue());
+		assertThat(responseObj.getString("timeStamp"), notNullValue());
+		assertThat(responseObj.getString("html"), equalTo(BODY_HTML));
+		assertThat(responseObj.getBoolean("distinguished"), equalTo(distinguished));
 	}
 }
