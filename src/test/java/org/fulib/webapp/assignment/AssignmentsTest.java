@@ -180,6 +180,59 @@ public class AssignmentsTest
 		final String responseBody = (String) assignments.get(request, response);
 		final JSONObject responseObj = new JSONObject(responseBody);
 
+		assertThat(responseObj.has("solution"), equalTo(false));
+
+		this.checkGetResponse(responseObj);
+	}
+
+	@Test
+	public void getWithWrongToken()
+	{
+		final Mongo db = mock(Mongo.class);
+		final Assignments assignments = new Assignments(db);
+
+		final Request request = mock(Request.class);
+
+		when(request.params("assignmentID")).thenReturn(ID);
+		when(request.contentType()).thenReturn("application/json");
+		when(request.headers("Assignment-Token")).thenReturn("456");
+		when(db.getAssignment(ID)).thenReturn(createExampleAssignment());
+
+		final Response response = mock(Response.class);
+
+		final String responseBody = (String) assignments.get(request, response);
+		final JSONObject responseObj = new JSONObject(responseBody);
+
+		assertThat(responseObj.has("solution"), equalTo(false));
+
+		this.checkGetResponse(responseObj);
+	}
+
+	@Test
+	public void getWithToken()
+	{
+		final Mongo db = mock(Mongo.class);
+		final Assignments assignments = new Assignments(db);
+
+		final Request request = mock(Request.class);
+
+		when(request.params("assignmentID")).thenReturn(ID);
+		when(request.contentType()).thenReturn("application/json");
+		when(request.headers("Assignment-Token")).thenReturn(TOKEN);
+		when(db.getAssignment(ID)).thenReturn(createExampleAssignment());
+
+		final Response response = mock(Response.class);
+
+		final String responseBody = (String) assignments.get(request, response);
+		final JSONObject responseObj = new JSONObject(responseBody);
+
+		assertThat(responseObj.getString("solution"), equalTo(SOLUTION));
+
+		this.checkGetResponse(responseObj);
+	}
+
+	private void checkGetResponse(JSONObject responseObj)
+	{
 		assertThat(responseObj.has("id"), equalTo(false));
 		assertThat(responseObj.has("token"), equalTo(false));
 		assertThat(responseObj.getString("title"), equalTo(TITLE));
@@ -188,7 +241,6 @@ public class AssignmentsTest
 		assertThat(responseObj.getString("author"), equalTo(AUTHOR));
 		assertThat(responseObj.getString("email"), equalTo(EMAIL));
 		assertThat(responseObj.getString("deadline"), equalTo(DEADLINE));
-		assertThat(responseObj.has("solution"), equalTo(false));
 		assertThat(responseObj.getString("templateSolution"), equalTo(TEMPLATE_SOLUTION));
 
 		final JSONObject task0 = responseObj.getJSONArray("tasks").getJSONObject(0);
