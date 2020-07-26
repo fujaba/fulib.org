@@ -11,6 +11,8 @@ import spark.HaltException;
 import spark.Request;
 import spark.Response;
 
+import java.util.Arrays;
+
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
@@ -83,5 +85,42 @@ public class CoursesTest
 			final JSONObject body = new JSONObject(ex.body());
 			assertThat(body.getString("error"), equalTo("course with id '-1'' not found")); // TODO '
 		}
+	}
+
+	@Test
+	public void get()
+	{
+		final Mongo db = mock(Mongo.class);
+		final Courses courses = new Courses(db);
+
+		final Request request = mock(Request.class);
+
+		when(request.params("courseID")).thenReturn(ID);
+		when(request.contentType()).thenReturn("application/json");
+		when(db.getCourse(ID)).thenReturn(createExampleCourse());
+
+		final Response response = mock(Response.class);
+
+		final String responseBody = (String) courses.get(request, response);
+		final JSONObject responseObj = new JSONObject(responseBody);
+
+		assertThat(responseObj.getString("id"), equalTo(ID));
+		assertThat(responseObj.getString("title"), equalTo(TITLE));
+		assertThat(responseObj.getString("description"), equalTo(DESCRIPTION));
+		assertThat(responseObj.getString("descriptionHtml"), equalTo(DESCRIPTION_HTML));
+
+		final JSONArray assignmentIds = responseObj.getJSONArray("assignmentIds");
+		assertThat(assignmentIds.getString(0), equalTo("a1"));
+		assertThat(assignmentIds.getString(1), equalTo("a2"));
+	}
+
+	private Course createExampleCourse()
+	{
+		final Course course = new Course(ID);
+		course.setTitle(TITLE);
+		course.setDescription(DESCRIPTION);
+		course.setDescriptionHtml(DESCRIPTION_HTML);
+		course.setAssignmentIds(Arrays.asList("a1", "a2"));
+		return course;
 	}
 }
