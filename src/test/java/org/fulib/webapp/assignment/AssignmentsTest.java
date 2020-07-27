@@ -21,8 +21,8 @@ import static org.mockito.Mockito.*;
 
 public class AssignmentsTest
 {
-	private static final String ID = "1";
-	private static final String TOKEN = "123";
+	private static final String ID = "a1";
+	private static final String TOKEN = "a123";
 	private static final String AUTHOR = "Testus";
 	private static final String TITLE = "Test Example";
 	private static final String DESCRIPTION = "An assignment for the test.";
@@ -195,7 +195,7 @@ public class AssignmentsTest
 
 		when(request.params("assignmentID")).thenReturn(ID);
 		when(request.contentType()).thenReturn("application/json");
-		when(request.headers("Assignment-Token")).thenReturn("456");
+		when(request.headers("Assignment-Token")).thenReturn("a456");
 		when(db.getAssignment(ID)).thenReturn(createExampleAssignment());
 
 		final Response response = mock(Response.class);
