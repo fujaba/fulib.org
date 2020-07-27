@@ -14,6 +14,7 @@ import spark.Request;
 import spark.Response;
 
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -38,9 +39,14 @@ public class SolutionsTest
 		when(request.params("assignmentID")).thenReturn("-1");
 		when(db.getAssignment("-1")).thenReturn(null);
 
+		check404(() -> solutions.create(request, response));
+	}
+
+	private void check404(Callable<?> runnable) throws Exception
+	{
 		try
 		{
-			solutions.create(request, response);
+			runnable.call();
 			fail("did not throw HaltException");
 		}
 		catch (HaltException ex)
@@ -155,5 +161,24 @@ public class SolutionsTest
 		final JSONObject responseObj = new JSONObject(responseBody);
 
 		checkResults(responseObj);
+	}
+
+	@Test
+	public void check404() throws Exception
+	{
+		final Mongo db = mock(Mongo.class);
+		final Solutions solutions = new Solutions(db);
+		final Request request = mock(Request.class);
+		final Response response = mock(Response.class);
+
+		final JSONObject requestObj = new JSONObject();
+		requestObj.put("solution", SOLUTION);
+		final String requestBody = requestObj.toString();
+
+		when(request.body()).thenReturn(requestBody);
+		when(request.params("assignmentID")).thenReturn("-1");
+		when(db.getAssignment("-1")).thenReturn(null);
+
+		check404(() -> solutions.check(request, response));
 	}
 }
