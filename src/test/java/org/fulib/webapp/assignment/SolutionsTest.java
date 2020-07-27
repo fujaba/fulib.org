@@ -39,10 +39,10 @@ public class SolutionsTest
 		when(request.params("assignmentID")).thenReturn("-1");
 		when(db.getAssignment("-1")).thenReturn(null);
 
-		check404(() -> solutions.create(request, response));
+		expect404(() -> solutions.create(request, response));
 	}
 
-	private void check404(Callable<?> runnable) throws Exception
+	private void expect404(Callable<?> runnable) throws Exception
 	{
 		try
 		{
@@ -179,7 +179,7 @@ public class SolutionsTest
 		when(request.params("assignmentID")).thenReturn("-1");
 		when(db.getAssignment("-1")).thenReturn(null);
 
-		check404(() -> solutions.check(request, response));
+		expect404(() -> solutions.check(request, response));
 	}
 
 	@Test
