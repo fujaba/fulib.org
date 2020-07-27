@@ -109,7 +109,8 @@ public class SolutionsTest
 
 		final JSONObject result1 = results.getJSONObject(1);
 		assertThat(result1.getString("output"), CoreMatchers.startsWith(
-			"solution(assignment.SolutionTest)failed:\norg.fulib.patterns.NoMatchException: no matches for s1"));
+			"solution(assignment.SolutionTest)failed:" + System.lineSeparator()
+			+ "org.fulib.patterns.NoMatchException: no matches for s1"));
 		assertThat(result1.getInt("points"), equalTo(0));
 	}
 
@@ -137,7 +138,8 @@ public class SolutionsTest
 
 		final TaskResult result1 = results.get(1);
 		assertThat(result1.getOutput(), CoreMatchers.startsWith(
-			"solution(assignment.SolutionTest)failed:\norg.fulib.patterns.NoMatchException: no matches for s1"));
+			"solution(assignment.SolutionTest)failed:" + System.lineSeparator()
+			+ "org.fulib.patterns.NoMatchException: no matches for s1"));
 		assertThat(result1.getPoints(), equalTo(0));
 	}
 
