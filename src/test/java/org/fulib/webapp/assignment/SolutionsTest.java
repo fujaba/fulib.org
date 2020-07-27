@@ -181,4 +181,28 @@ public class SolutionsTest
 
 		check404(() -> solutions.check(request, response));
 	}
+
+	@Test
+	public void check() throws Exception
+	{
+		final Mongo db = mock(Mongo.class);
+		final Solutions solutions = new Solutions(db);
+		final Request request = mock(Request.class);
+		final Response response = mock(Response.class);
+
+		final Assignment assignment = AssignmentsTest.createExampleAssignment();
+
+		final JSONObject requestObj = new JSONObject();
+		requestObj.put("solution", SOLUTION);
+		final String requestBody = requestObj.toString();
+
+		when(request.body()).thenReturn(requestBody);
+		when(request.params("assignmentID")).thenReturn(assignment.getID());
+		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
+
+		final String responseBody = (String) solutions.check(request, response);
+		final JSONObject responseObj = new JSONObject(responseBody);
+
+		checkResults(responseObj);
+	}
 }
