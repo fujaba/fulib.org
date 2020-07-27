@@ -134,7 +134,7 @@ public class AssignmentsTest
 		}
 	}
 
-	private Assignment createExampleAssignment()
+	static Assignment createExampleAssignment()
 	{
 		final Assignment assignment = new Assignment(ID);
 		assignment.setToken(TOKEN);
