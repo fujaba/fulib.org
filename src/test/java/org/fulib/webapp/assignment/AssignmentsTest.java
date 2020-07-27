@@ -56,18 +56,7 @@ public class AssignmentsTest
 		requestObj.put("deadline", DEADLINE);
 		requestObj.put("solution", SOLUTION);
 		requestObj.put("templateSolution", TEMPLATE_SOLUTION);
-
-		final JSONObject task0Obj = new JSONObject();
-		task0Obj.put("description", TASK0_DESCRIPTION);
-		task0Obj.put("points", TASK0_POINTS);
-		task0Obj.put("verification", TASK0_VERIFICATION);
-
-		final JSONObject task1Obj = new JSONObject();
-		task1Obj.put("description", TASK1_DESCRIPTION);
-		task1Obj.put("points", TASK1_POINTS);
-		task1Obj.put("verification", TASK1_VERIFICATION);
-
-		requestObj.put("tasks", new JSONArray().put(task0Obj).put(task1Obj));
+		requestObj.put("tasks", createTasksJSON());
 
 		final String requestBody = requestObj.toString();
 		when(request.body()).thenReturn(requestBody);
@@ -105,6 +94,21 @@ public class AssignmentsTest
 		assertThat(task1.getDescription(), equalTo(TASK1_DESCRIPTION));
 		assertThat(task1.getPoints(), equalTo(TASK1_POINTS));
 		assertThat(task1.getVerification(), equalTo(TASK1_VERIFICATION));
+	}
+
+	static JSONArray createTasksJSON()
+	{
+		final JSONObject task0Obj = new JSONObject();
+		task0Obj.put("description", TASK0_DESCRIPTION);
+		task0Obj.put("points", TASK0_POINTS);
+		task0Obj.put("verification", TASK0_VERIFICATION);
+
+		final JSONObject task1Obj = new JSONObject();
+		task1Obj.put("description", TASK1_DESCRIPTION);
+		task1Obj.put("points", TASK1_POINTS);
+		task1Obj.put("verification", TASK1_VERIFICATION);
+
+		return new JSONArray().put(task0Obj).put(task1Obj);
 	}
 
 	@Test

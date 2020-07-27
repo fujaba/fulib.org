@@ -90,6 +90,11 @@ public class SolutionsTest
 		assertThat(responseObj.getString("token"), notNullValue());
 		assertThat(responseObj.getString("timeStamp"), notNullValue());
 
+		checkResults(responseObj);
+	}
+
+	private void checkResults(JSONObject responseObj)
+	{
 		final JSONArray results = responseObj.getJSONArray("results");
 
 		final JSONObject result0 = results.getJSONObject(0);
@@ -128,5 +133,27 @@ public class SolutionsTest
 		assertThat(result1.getOutput(), CoreMatchers.startsWith(
 			"solution(assignment.SolutionTest)failed:\norg.fulib.patterns.NoMatchException: no matches for s1"));
 		assertThat(result1.getPoints(), equalTo(0));
+	}
+
+	@Test
+	public void checkNoAssignment() throws Exception
+	{
+		final Mongo db = mock(Mongo.class);
+		final Solutions solutions = new Solutions(db);
+		final Request request = mock(Request.class);
+		final Response response = mock(Response.class);
+
+		final JSONObject requestObj = new JSONObject();
+		requestObj.put("tasks", AssignmentsTest.createTasksJSON());
+		requestObj.put("solution", SOLUTION);
+		final String requestBody = requestObj.toString();
+
+		when(request.body()).thenReturn(requestBody);
+		when(request.params("assignmentID")).thenReturn(null);
+
+		final String responseBody = (String) solutions.check(request, response);
+		final JSONObject responseObj = new JSONObject(responseBody);
+
+		checkResults(responseObj);
 	}
 }
