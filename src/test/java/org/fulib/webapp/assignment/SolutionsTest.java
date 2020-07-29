@@ -163,6 +163,68 @@ public class SolutionsTest
 		           () -> solutions.get(request, response));
 	}
 
+	@Test
+	public void getWithoutToken() throws Exception
+	{
+		final Mongo db = mock(Mongo.class);
+		final Solutions solutions = new Solutions(db);
+		final Request request = mock(Request.class);
+		final Response response = mock(Response.class);
+
+		final Solution solution = createSolution();
+		final Assignment assignment = solution.getAssignment();
+
+		when(db.getSolution(ID)).thenReturn(solution);
+		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
+		when(request.contentType()).thenReturn("application/json");
+		when(request.params("solutionID")).thenReturn(ID);
+		when(request.params("assignmentID")).thenReturn(assignment.getID());
+
+		expectHalt(401, "invalid Assignment-Token or Solution-Token", () -> solutions.get(request, response));
+	}
+
+	@Test
+	public void getWithWrongAssignmentToken() throws Exception
+	{
+		final Mongo db = mock(Mongo.class);
+		final Solutions solutions = new Solutions(db);
+		final Request request = mock(Request.class);
+		final Response response = mock(Response.class);
+
+		final Solution solution = createSolution();
+		final Assignment assignment = solution.getAssignment();
+
+		when(db.getSolution(ID)).thenReturn(solution);
+		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
+		when(request.contentType()).thenReturn("application/json");
+		when(request.params("solutionID")).thenReturn(ID);
+		when(request.params("assignmentID")).thenReturn(assignment.getID());
+		when(request.headers("Assignment-Token")).thenReturn("a456");
+
+		expectHalt(401, "invalid Assignment-Token or Solution-Token", () -> solutions.get(request, response));
+	}
+
+	@Test
+	public void getWithWrongSolutionToken() throws Exception
+	{
+		final Mongo db = mock(Mongo.class);
+		final Solutions solutions = new Solutions(db);
+		final Request request = mock(Request.class);
+		final Response response = mock(Response.class);
+
+		final Solution solution = createSolution();
+		final Assignment assignment = solution.getAssignment();
+
+		when(db.getSolution(ID)).thenReturn(solution);
+		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
+		when(request.contentType()).thenReturn("application/json");
+		when(request.params("solutionID")).thenReturn(ID);
+		when(request.params("assignmentID")).thenReturn(assignment.getID());
+		when(request.headers("Solution-Token")).thenReturn("s456");
+
+		expectHalt(401, "invalid Assignment-Token or Solution-Token", () -> solutions.get(request, response));
+	}
+
 	private static Solution createSolution()
 	{
 		final Solution solution = new Solution(ID);
