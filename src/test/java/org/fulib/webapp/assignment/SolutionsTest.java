@@ -13,6 +13,7 @@ import spark.HaltException;
 import spark.Request;
 import spark.Response;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -27,6 +28,11 @@ public class SolutionsTest
 	private static final String EMAIL = "test@example.org";
 	private static final String STUDENT_ID = "12345678";
 	private static final String SOLUTION = "There is a Student.";
+	private static final String ID = "s1";
+	private static final String TOKEN = "s123";
+	private static final String TIMESTAMP = "2025-01-01T12:00:00Z";
+	private static final String RESULT1_OUTPUT = "solution(assignment.SolutionTest)failed:" + System.lineSeparator()
+	                                             + "org.fulib.patterns.NoMatchException: no matches for s1";
 
 	@Test
 	public void create404() throws Exception
@@ -44,20 +50,15 @@ public class SolutionsTest
 
 	private void expect404(Callable<?> runnable) throws Exception
 	{
-		try
-		{
-			runnable.call();
-			fail("did not throw HaltException");
-		}
-		catch (HaltException ex)
-		{
-			assertThat(ex.statusCode(), equalTo(404));
-			final JSONObject body = new JSONObject(ex.body());
-			assertThat(body.getString("error"), equalTo("assignment with id '-1'' not found")); // TODO '
-		}
+		expectHalt(404, "assignment with id '-1'' not found", runnable);
 	}
 
 	private void expectSolution404(Callable<?> runnable) throws Exception
+	{
+		expectHalt(404, "solution with id '-1'' not found", runnable);
+	}
+
+	private void expectHalt(int status, String error, Callable<?> runnable) throws Exception
 	{
 		try
 		{
@@ -66,9 +67,9 @@ public class SolutionsTest
 		}
 		catch (HaltException ex)
 		{
-			assertThat(ex.statusCode(), equalTo(404));
+			assertThat(ex.statusCode(), equalTo(status));
 			final JSONObject body = new JSONObject(ex.body());
-			assertThat(body.getString("error"), equalTo("solution with id '-1'' not found")); // TODO '
+			assertThat(body.getString("error"), equalTo(error));
 		}
 	}
 
@@ -123,9 +124,7 @@ public class SolutionsTest
 		assertThat(result0.getInt("points"), equalTo(5));
 
 		final JSONObject result1 = results.getJSONObject(1);
-		assertThat(result1.getString("output"), CoreMatchers.startsWith(
-			"solution(assignment.SolutionTest)failed:" + System.lineSeparator()
-			+ "org.fulib.patterns.NoMatchException: no matches for s1"));
+		assertThat(result1.getString("output"), CoreMatchers.startsWith(RESULT1_OUTPUT));
 		assertThat(result1.getInt("points"), equalTo(0));
 	}
 
@@ -152,9 +151,7 @@ public class SolutionsTest
 		assertThat(result0.getPoints(), equalTo(5));
 
 		final TaskResult result1 = results.get(1);
-		assertThat(result1.getOutput(), CoreMatchers.startsWith(
-			"solution(assignment.SolutionTest)failed:" + System.lineSeparator()
-			+ "org.fulib.patterns.NoMatchException: no matches for s1"));
+		assertThat(result1.getOutput(), CoreMatchers.startsWith(RESULT1_OUTPUT));
 		assertThat(result1.getPoints(), equalTo(0));
 	}
 
@@ -170,6 +167,52 @@ public class SolutionsTest
 		when(request.params("solutionID")).thenReturn("-1");
 
 		expectSolution404(() -> solutions.get(request, response));
+	}
+
+	@Test
+	public void getWrongAssignmentID() throws Exception
+	{
+		final Mongo db = mock(Mongo.class);
+		final Solutions solutions = new Solutions(db);
+		final Request request = mock(Request.class);
+		final Response response = mock(Response.class);
+
+		final Solution solution = createSolution();
+		final Assignment assignment = solution.getAssignment();
+
+		when(db.getSolution(ID)).thenReturn(solution);
+		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
+		when(request.contentType()).thenReturn("application/json");
+		when(request.params("solutionID")).thenReturn(ID);
+		when(request.params("assignmentID")).thenReturn("a2");
+
+		expectHalt(400, "assignment ID from URL 'a2' does not match assignment ID of solution 'a1'",
+		           () -> solutions.get(request, response));
+	}
+
+	private static Solution createSolution()
+	{
+		final Solution solution = new Solution(ID);
+		solution.setToken(TOKEN);
+		solution.setAssignment(AssignmentsTest.createExampleAssignment());
+		solution.setName(NAME);
+		solution.setStudentID(STUDENT_ID);
+		solution.setEmail(EMAIL);
+		solution.setSolution(SOLUTION);
+		solution.setTimeStamp(Instant.parse(TIMESTAMP));
+		solution.setAssignee(null);
+
+		final TaskResult result0 = new TaskResult();
+		result0.setOutput("");
+		result0.setPoints(5);
+		solution.getResults().add(result0);
+
+		final TaskResult result1 = new TaskResult();
+		result1.setOutput(RESULT1_OUTPUT);
+		result1.setPoints(0);
+		solution.getResults().add(result1);
+
+		return solution;
 	}
 
 	@Test
