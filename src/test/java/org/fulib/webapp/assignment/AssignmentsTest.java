@@ -112,7 +112,7 @@ public class AssignmentsTest
 	}
 
 	@Test
-	public void get404()
+	public void get404() throws Exception
 	{
 		final Mongo db = mock(Mongo.class);
 		final Assignments assignments = new Assignments(db);
@@ -125,17 +125,7 @@ public class AssignmentsTest
 
 		final Response response = mock(Response.class);
 
-		try
-		{
-			assignments.get(request, response);
-			Assert.fail("did not throw HaltException");
-		}
-		catch (HaltException ex)
-		{
-			assertThat(ex.statusCode(), equalTo(404));
-			final JSONObject body = new JSONObject(ex.body());
-			assertThat(body.getString("error"), equalTo("assignment with id '-1'' not found")); // TODO '
-		}
+		TestHelper.expectHalt(404, "assignment with id '-1'' not found", () -> assignments.get(request, response));
 	}
 
 	static Assignment createExampleAssignment()

@@ -61,7 +61,7 @@ public class CoursesTest
 	}
 
 	@Test
-	public void get404()
+	public void get404() throws Exception
 	{
 		final Mongo db = mock(Mongo.class);
 		final Courses courses = new Courses(db);
@@ -74,17 +74,7 @@ public class CoursesTest
 
 		final Response response = mock(Response.class);
 
-		try
-		{
-			courses.get(request, response);
-			Assert.fail("did not throw HaltException");
-		}
-		catch (HaltException ex)
-		{
-			assertThat(ex.statusCode(), equalTo(404));
-			final JSONObject body = new JSONObject(ex.body());
-			assertThat(body.getString("error"), equalTo("course with id '-1'' not found")); // TODO '
-		}
+		TestHelper.expectHalt(404, "course with id '-1'' not found", () -> courses.get(request, response));
 	}
 
 	@Test

@@ -8,17 +8,16 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import spark.HaltException;
 import spark.Request;
 import spark.Response;
 
 import java.time.Instant;
 import java.util.Collections;
+import java.util.concurrent.Callable;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
 public class CommentsTest
@@ -37,7 +36,7 @@ public class CommentsTest
 	private static final boolean DISTINGUISHED = false;
 
 	@Test
-	public void post404()
+	public void post404() throws Exception
 	{
 		final Mongo db = mock(Mongo.class);
 		final Comments comments = new Comments(db);
@@ -47,21 +46,11 @@ public class CommentsTest
 		when(request.params("solutionID")).thenReturn("-1");
 		when(db.getSolution("-1")).thenReturn(null);
 
-		try
-		{
-			comments.post(request, response);
-			fail("did not throw HaltException");
-		}
-		catch (HaltException ex)
-		{
-			assertThat(ex.statusCode(), equalTo(404));
-			final JSONObject body = new JSONObject(ex.body());
-			assertThat(body.getString("error"), equalTo("solution with id '-1'' not found")); // TODO '
-		}
+		TestHelper.expectHalt(404, "solution with id '-1'' not found", () -> comments.post(request, response));
 	}
 
 	@Test
-	public void postWithoutToken()
+	public void postWithoutToken() throws Exception
 	{
 		final Mongo db = mock(Mongo.class);
 		final Comments comments = new Comments(db);
@@ -77,7 +66,7 @@ public class CommentsTest
 	}
 
 	@Test
-	public void postWithWrongSolutionToken()
+	public void postWithWrongSolutionToken() throws Exception
 	{
 		final Mongo db = mock(Mongo.class);
 		final Comments comments = new Comments(db);
@@ -94,7 +83,7 @@ public class CommentsTest
 	}
 
 	@Test
-	public void postWithWrongAssignmentToken()
+	public void postWithWrongAssignmentToken() throws Exception
 	{
 		final Mongo db = mock(Mongo.class);
 		final Comments comments = new Comments(db);
@@ -110,19 +99,9 @@ public class CommentsTest
 		checkInvalidToken(() -> comments.post(request, response));
 	}
 
-	private void checkInvalidToken(Runnable body)
+	private void checkInvalidToken(Callable<?> body) throws Exception
 	{
-		try
-		{
-			body.run();
-			fail("did not throw HaltException");
-		}
-		catch (HaltException ex)
-		{
-			assertThat(ex.statusCode(), equalTo(401));
-			final JSONObject responseObj = new JSONObject(ex.body());
-			assertThat(responseObj.getString("error"), equalTo("invalid Assignment-Token or Solution-Token"));
-		}
+		TestHelper.expectHalt(401, "invalid Assignment-Token or Solution-Token", body);
 	}
 
 	private Solution createExampleSolution()
@@ -215,7 +194,7 @@ public class CommentsTest
 	}
 
 	@Test
-	public void getChildren404()
+	public void getChildren404() throws Exception
 	{
 		final Mongo db = mock(Mongo.class);
 		final Comments comments = new Comments(db);
@@ -225,21 +204,11 @@ public class CommentsTest
 		when(request.params("solutionID")).thenReturn("-1");
 		when(db.getSolution("-1")).thenReturn(null);
 
-		try
-		{
-			comments.getChildren(request, response);
-			fail("did not throw HaltException");
-		}
-		catch (HaltException ex)
-		{
-			assertThat(ex.statusCode(), equalTo(404));
-			final JSONObject body = new JSONObject(ex.body());
-			assertThat(body.getString("error"), equalTo("solution with id '-1'' not found")); // TODO '
-		}
+		TestHelper.expectHalt(404, "solution with id '-1'' not found", () -> comments.getChildren(request, response));
 	}
 
 	@Test
-	public void getChildrenWithoutToken()
+	public void getChildrenWithoutToken() throws Exception
 	{
 		final Mongo db = mock(Mongo.class);
 		final Comments comments = new Comments(db);
@@ -255,7 +224,7 @@ public class CommentsTest
 	}
 
 	@Test
-	public void getChildrenWithWrongSolutionToken()
+	public void getChildrenWithWrongSolutionToken() throws Exception
 	{
 		final Mongo db = mock(Mongo.class);
 		final Comments comments = new Comments(db);
@@ -272,7 +241,7 @@ public class CommentsTest
 	}
 
 	@Test
-	public void getChildrenWithWrongAssignmentToken()
+	public void getChildrenWithWrongAssignmentToken() throws Exception
 	{
 		final Mongo db = mock(Mongo.class);
 		final Comments comments = new Comments(db);
