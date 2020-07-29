@@ -9,17 +9,15 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import spark.HaltException;
 import spark.Request;
 import spark.Response;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.concurrent.Callable;
 
+import static org.fulib.webapp.assignment.TestHelper.expectHalt;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
 public class SolutionsTest
@@ -253,22 +251,5 @@ public class SolutionsTest
 		final JSONObject responseObj = new JSONObject(responseBody);
 
 		checkResults(responseObj);
-	}
-
-	// --------------- Helpers ---------------
-
-	private static void expectHalt(int status, String error, Callable<?> runnable) throws Exception
-	{
-		try
-		{
-			runnable.call();
-			fail("did not throw HaltException");
-		}
-		catch (HaltException ex)
-		{
-			assertThat(ex.statusCode(), equalTo(status));
-			final JSONObject body = new JSONObject(ex.body());
-			assertThat(body.getString("error"), equalTo(error));
-		}
 	}
 }
