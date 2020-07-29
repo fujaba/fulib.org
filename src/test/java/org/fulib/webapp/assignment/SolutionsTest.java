@@ -45,32 +45,7 @@ public class SolutionsTest
 		when(request.params("assignmentID")).thenReturn("-1");
 		when(db.getAssignment("-1")).thenReturn(null);
 
-		expect404(() -> solutions.create(request, response));
-	}
-
-	private void expect404(Callable<?> runnable) throws Exception
-	{
-		expectHalt(404, "assignment with id '-1'' not found", runnable);
-	}
-
-	private void expectSolution404(Callable<?> runnable) throws Exception
-	{
-		expectHalt(404, "solution with id '-1'' not found", runnable);
-	}
-
-	private void expectHalt(int status, String error, Callable<?> runnable) throws Exception
-	{
-		try
-		{
-			runnable.call();
-			fail("did not throw HaltException");
-		}
-		catch (HaltException ex)
-		{
-			assertThat(ex.statusCode(), equalTo(status));
-			final JSONObject body = new JSONObject(ex.body());
-			assertThat(body.getString("error"), equalTo(error));
-		}
+		expectHalt(404, "assignment with id '-1'' not found", () -> solutions.create(request, response));
 	}
 
 	@Test
@@ -166,7 +141,7 @@ public class SolutionsTest
 		when(request.contentType()).thenReturn("application/json");
 		when(request.params("solutionID")).thenReturn("-1");
 
-		expectSolution404(() -> solutions.get(request, response));
+		expectHalt(404, "solution with id '-1'' not found", () -> solutions.get(request, response));
 	}
 
 	@Test
@@ -253,7 +228,7 @@ public class SolutionsTest
 		when(request.params("assignmentID")).thenReturn("-1");
 		when(db.getAssignment("-1")).thenReturn(null);
 
-		expect404(() -> solutions.check(request, response));
+		expectHalt(404, "assignment with id '-1'' not found", () -> solutions.check(request, response));
 	}
 
 	@Test
@@ -278,5 +253,22 @@ public class SolutionsTest
 		final JSONObject responseObj = new JSONObject(responseBody);
 
 		checkResults(responseObj);
+	}
+
+	// --------------- Helpers ---------------
+
+	private static void expectHalt(int status, String error, Callable<?> runnable) throws Exception
+	{
+		try
+		{
+			runnable.call();
+			fail("did not throw HaltException");
+		}
+		catch (HaltException ex)
+		{
+			assertThat(ex.statusCode(), equalTo(status));
+			final JSONObject body = new JSONObject(ex.body());
+			assertThat(body.getString("error"), equalTo(error));
+		}
 	}
 }
