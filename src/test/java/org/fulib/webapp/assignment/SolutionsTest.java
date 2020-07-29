@@ -57,6 +57,21 @@ public class SolutionsTest
 		}
 	}
 
+	private void expectSolution404(Callable<?> runnable) throws Exception
+	{
+		try
+		{
+			runnable.call();
+			fail("did not throw HaltException");
+		}
+		catch (HaltException ex)
+		{
+			assertThat(ex.statusCode(), equalTo(404));
+			final JSONObject body = new JSONObject(ex.body());
+			assertThat(body.getString("error"), equalTo("solution with id '-1'' not found")); // TODO '
+		}
+	}
+
 	@Test
 	public void create() throws Exception
 	{
@@ -141,6 +156,20 @@ public class SolutionsTest
 			"solution(assignment.SolutionTest)failed:" + System.lineSeparator()
 			+ "org.fulib.patterns.NoMatchException: no matches for s1"));
 		assertThat(result1.getPoints(), equalTo(0));
+	}
+
+	@Test
+	public void get404() throws Exception
+	{
+		final Mongo db = mock(Mongo.class);
+		final Solutions solutions = new Solutions(db);
+		final Request request = mock(Request.class);
+		final Response response = mock(Response.class);
+
+		when(request.contentType()).thenReturn("application/json");
+		when(request.params("solutionID")).thenReturn("-1");
+
+		expectSolution404(() -> solutions.get(request, response));
 	}
 
 	@Test
