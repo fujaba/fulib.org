@@ -31,6 +31,7 @@ public class SolutionsTest
 	private static final String TIMESTAMP = "2025-01-01T12:00:00Z";
 	private static final String RESULT1_OUTPUT = "solution(assignment.SolutionTest)failed:" + System.lineSeparator()
 	                                             + "org.fulib.patterns.NoMatchException: no matches for s1";
+	private static final String ASSIGNEE = "Adrian";
 
 	@Test
 	public void create404() throws Exception
@@ -225,6 +226,85 @@ public class SolutionsTest
 		expectHalt(401, "invalid Assignment-Token or Solution-Token", () -> solutions.get(request, response));
 	}
 
+	@Test
+	public void getWithSolutionToken()
+	{
+		final Mongo db = mock(Mongo.class);
+		final Solutions solutions = new Solutions(db);
+		final Request request = mock(Request.class);
+		final Response response = mock(Response.class);
+
+		final Solution solution = createSolution();
+		final Assignment assignment = solution.getAssignment();
+
+		when(db.getSolution(ID)).thenReturn(solution);
+		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
+		when(request.contentType()).thenReturn("application/json");
+		when(request.params("solutionID")).thenReturn(ID);
+		when(request.params("assignmentID")).thenReturn(assignment.getID());
+		when(request.headers("Solution-Token")).thenReturn(TOKEN);
+
+		final String responseBody = (String) solutions.get(request, response);
+		final JSONObject responseObj = new JSONObject(responseBody);
+
+		checkGetResponse(responseObj, false);
+	}
+
+	@Test
+	public void getWithAssignmentToken()
+	{
+		final Mongo db = mock(Mongo.class);
+		final Solutions solutions = new Solutions(db);
+		final Request request = mock(Request.class);
+		final Response response = mock(Response.class);
+
+		final Solution solution = createSolution();
+		final Assignment assignment = solution.getAssignment();
+
+		when(db.getSolution(ID)).thenReturn(solution);
+		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
+		when(request.contentType()).thenReturn("application/json");
+		when(request.params("solutionID")).thenReturn(ID);
+		when(request.params("assignmentID")).thenReturn(assignment.getID());
+		when(request.headers("Assignment-Token")).thenReturn(assignment.getToken());
+
+		final String responseBody = (String) solutions.get(request, response);
+		final JSONObject responseObj = new JSONObject(responseBody);
+
+		checkGetResponse(responseObj, true);
+	}
+
+	private void checkGetResponse(JSONObject responseObj, boolean privileged)
+	{
+		assertThat(responseObj.getString("id"), equalTo(ID));
+		assertThat(responseObj.getString("assignment"), equalTo("a1"));
+		assertThat(responseObj.getString("name"), equalTo(NAME));
+		assertThat(responseObj.getString("studentID"), equalTo(STUDENT_ID));
+		assertThat(responseObj.getString("email"), equalTo(EMAIL));
+		assertThat(responseObj.getString("solution"), equalTo(SOLUTION));
+		assertThat(responseObj.getString("timeStamp"), equalTo(TIMESTAMP));
+		assertThat(responseObj.has("token"), equalTo(false));
+
+		if (privileged)
+		{
+			assertThat(responseObj.getString("assignee"), equalTo(ASSIGNEE));
+		}
+		else
+		{
+			assertThat(responseObj.has("assignee"), equalTo(false));
+		}
+
+		final JSONArray results = responseObj.getJSONArray("results");
+
+		final JSONObject result0 = results.getJSONObject(0);
+		assertThat(result0.getString("output"), equalTo(""));
+		assertThat(result0.getInt("points"), equalTo(5));
+
+		final JSONObject result1 = results.getJSONObject(1);
+		assertThat(result1.getString("output"), CoreMatchers.startsWith(RESULT1_OUTPUT));
+		assertThat(result1.getInt("points"), equalTo(0));
+	}
+
 	private static Solution createSolution()
 	{
 		final Solution solution = new Solution(ID);
@@ -235,7 +315,7 @@ public class SolutionsTest
 		solution.setEmail(EMAIL);
 		solution.setSolution(SOLUTION);
 		solution.setTimeStamp(Instant.parse(TIMESTAMP));
-		solution.setAssignee(null);
+		solution.setAssignee(ASSIGNEE);
 
 		final TaskResult result0 = new TaskResult();
 		result0.setOutput("");
