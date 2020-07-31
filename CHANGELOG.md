@@ -198,6 +198,7 @@
 + Added fulibYaml to GitHub links and What's New.
 * Updated to fulibScenarios v1.4.0.
 * Updated to Angular 9.
+* Updated to Gradle v6.5.1.
 * Cleaned up the backend code.
 * Cleaned up the frontend code and improved performance.
 
