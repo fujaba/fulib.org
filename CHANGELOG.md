@@ -230,3 +230,15 @@
 
 * Fixed a timezone problem with deadlines in the assignment creation form. #83
 * Fixed 404 pages changing the tab title until the page is reloaded.
+
+# fulib.org v1.4.1
+
+## General
+
+* Updated to fulib v1.2.1.
+* Updated to fulibTools v1.2.1.
+* Updated to fulibScenarios v1.4.1.
+
+## Bugfixes
+
+* Form fields in the Project Configuration window are now properly validated. #47 #87
