@@ -62,11 +62,11 @@ repositories {
 }
 
 dependencies {
-	fulibScenarios group: 'org.fulib', name: 'fulibScenarios', version: '1.4.0'
+	fulibScenarios group: 'org.fulib', name: 'fulibScenarios', version: '1.4.1'
 
 	// --------------- Fulib Libraries ---------------
 
-	compile group: 'org.fulib', name: 'fulibScenarios', version: '1.4.0'
+	compile group: 'org.fulib', name: 'fulibScenarios', version: '1.4.1'
 
 	compile group: 'org.fulib', name: 'fulibMockups', version: '0.2.0'
 
