@@ -59,8 +59,8 @@ jobs:
             shell: bash
             run: |
                case "${GITHUB_REF##*/}" in
-                  develop) echo "##[set-output name=suffix;]$(echo develop)"
-                  *)       echo "##[set-output name=suffix;]$(echo deploy)"
+                  develop) echo "##[set-output name=suffix;]$(echo develop)" ;;
+                  *)       echo "##[set-output name=suffix;]$(echo deploy)" ;;
                esac
          -  name: Build and Release the Docker image
             if: matrix.os == 'ubuntu' && matrix.java == 8 && (steps.extract_branch.outputs.branch == 'develop' || startsWith(github.ref, 'refs/tags/v'))
