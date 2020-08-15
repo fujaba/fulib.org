@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {forkJoin, Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {forkJoin, Observable, of} from 'rxjs';
+import {flatMap, map} from 'rxjs/operators';
 
 import Solution from './model/solution';
 import {environment} from '../../environments/environment';
@@ -133,15 +133,24 @@ export class SolutionService {
     return ids;
   }
 
-  getOwn(): Observable<Solution[]> {
+  getOwn(): Observable<[Assignment[], Solution[]]> {
     return this.users.current$.pipe(
       flatMap(user => {
         if (user) {
-          return this.getByUserId(user.id);
+          return this.getByUserId(user.id).pipe(flatMap(solutions => {
+            const assignmentIds = [...new Set<string>(solutions.map(s => s.assignment))];
+            const assignments = forkJoin(assignmentIds.map(aid => this.assignmentService.get(aid)));
+
+            return forkJoin([assignments, of(solutions)]);
+          }));
         } else {
-          return forkJoin(this.getOwnIds().map(({assignment, id}) => this.get(assignment, id))).pipe(
-            map(solutions => solutions.sort((a, b) => a.timeStamp.getTime() - b.timeStamp.getTime())),
-          );
+          const compoundIds = this.getOwnIds();
+          const assignmentIds = [...new Set<string>(compoundIds.map(id => id.assignment))];
+
+          const assignments = forkJoin(assignmentIds.map(aid => this.assignmentService.get(aid)));
+          const solutions = forkJoin(compoundIds.map(cid => this.get(cid.assignment, cid.id)));
+
+          return forkJoin([assignments, solutions]);
         }
       }),
     );
