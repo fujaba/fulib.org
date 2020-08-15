@@ -226,7 +226,7 @@
 * Grading Solutions
   * Changed the button label for search help to `?` and added a tooltip.
 
-# Bugfixes
+## Bugfixes
 
 * Fixed a timezone problem with deadlines in the assignment creation form. #83
 * Fixed 404 pages changing the tab title until the page is reloaded.
