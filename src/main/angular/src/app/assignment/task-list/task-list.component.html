@@ -7,19 +7,16 @@
       <ng-container *ngIf="results">{{getTaskPoints(i)}} / </ng-container>
     {{task.points}}
     </span>
-    <a role="button" style="cursor: pointer" class="text-primary"
+    <button type="button" class="btn btn-sm btn-outline-secondary m-1 p-1"
        *ngIf="results && results[i].output"
        (click)="outputExpanded[i] = !outputExpanded[i]">
       {{outputExpanded[i] ? 'Hide Output' : 'Show Output'}}
-    </a>
-    <span *ngIf="solution && results && results[i].output" class="text-muted">
-      &#8226;
-    </span>
-    <a role="button" style="cursor: pointer" class="text-primary"
+    </button>
+    <button type="button" class="btn btn-sm btn-outline-primary m-1 p-1"
        *ngIf="results && solution"
        [ngbPopover]="gradePopoverContent" popoverTitle="Grade" placement="right" autoClose="outside" container="body">
       Grade
-    </a>
+    </button>
     <ng-template #gradePopoverContent>
       <app-grade-form [solution]="solution" [taskID]="i" [gradings]="gradings"></app-grade-form>
     </ng-template>
