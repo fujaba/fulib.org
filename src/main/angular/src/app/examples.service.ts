@@ -72,7 +72,7 @@ export class ExamplesService {
     if (example.scenario) {
       return of(example.scenario);
     }
-    const url = `${environment.apiURL}/examples/${example.category.name.toLowerCase()}/${example.name.replace(' ', '')}.md`;
+    const url = `${environment.apiURL}/examples/${example.category!.name.toLowerCase()}/${example.name.replace(' ', '')}.md`;
     return this.http.get(url, {responseType: 'text'}).pipe(tap(text => example.scenario = text));
   }
 

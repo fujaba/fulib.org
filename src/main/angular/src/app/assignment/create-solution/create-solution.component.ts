@@ -33,9 +33,9 @@ export class CreateSolutionComponent implements OnInit, AfterViewInit, OnDestroy
   checking = false;
   results?: TaskResult[];
 
-  id: string;
-  token: string;
-  timeStamp: Date;
+  id?: string;
+  token?: string;
+  timeStamp?: Date;
 
   submitting: boolean;
 
@@ -92,7 +92,7 @@ export class CreateSolutionComponent implements OnInit, AfterViewInit, OnDestroy
 
   getSolution(): Solution {
     return {
-      assignment: this.assignment.id,
+      assignment: this.assignment.id!,
       id: this.id,
       token: this.token,
       name: this.name,

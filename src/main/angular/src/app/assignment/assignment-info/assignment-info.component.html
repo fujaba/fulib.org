@@ -12,7 +12,7 @@
   </ng-container>
 </p>
 
-<p *ngIf="assignment" [innerHTML]="assignment.descriptionHtml | safeHtml">
+<p *ngIf="assignment" [innerHTML]="assignment.descriptionHtml! | safeHtml">
 </p>
 <p *ngIf="!assignment">
   Loading Description...

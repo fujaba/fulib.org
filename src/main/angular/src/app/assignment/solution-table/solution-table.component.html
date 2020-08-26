@@ -72,7 +72,7 @@
         <td><a href="mailto:{{solution.email}}">{{solution.email}}</a></td>
         <td>
           <ng-container
-            *ngIf="assignment.deadline && assignment.deadline < solution.timeStamp; then thenBlock else elseBlock">
+            *ngIf="assignment?.deadline && assignment?.deadline < solution.timeStamp; then thenBlock else elseBlock">
           </ng-container>
           <ng-template #thenBlock>
             <span class="text-danger" ngbTooltip="Submitted after Deadline">

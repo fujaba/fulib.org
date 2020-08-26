@@ -3,5 +3,5 @@ export default class Request {
   packageName: string;
   scenarioFileName: string;
   scenarioText: string;
-  selectedExample: string;
+  selectedExample?: string;
 }

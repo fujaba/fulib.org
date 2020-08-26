@@ -71,7 +71,7 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
 
     this.submitting = true;
     const request: Request = {
-      privacy: this.privacyService.privacy,
+      privacy: this.privacyService.privacy ?? 'none',
       packageName: this.scenarioEditorService.packageName,
       scenarioFileName: this.scenarioEditorService.scenarioFileName,
       scenarioText: this.scenarioText,
@@ -85,6 +85,10 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
   }
 
   private renderJavaCode(): string {
+    if (!this.response) {
+      return '';
+    }
+
     let javaCode = '';
     if (this.response.exitCode !== 0) {
       const outputLines = this.response.output.split('\n');
@@ -103,7 +107,7 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
   private foldInternalCalls(outputLines: string[]): string[] {
     const packageName = this.scenarioEditorService.packageName.replace('/', '.');
     const packageNamePrefix = `\tat ${packageName}.`;
-    const result = [];
+    const result: string[] = [];
     let counter = 0;
     for (let line of outputLines) {
       if (line.startsWith('\tat org.fulib.scenarios.tool.')
@@ -121,7 +125,7 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
   }
 
   toolSuccess(index: number) {
-    return this.response.exitCode == 0 || (this.response.exitCode & 3) > index;
+    return this.response && (this.response.exitCode == 0 || (this.response.exitCode & 3) > index);
   }
 
   get activeObjectDiagramTab(): number {

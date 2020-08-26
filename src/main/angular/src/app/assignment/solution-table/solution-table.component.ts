@@ -62,7 +62,7 @@ export class SolutionTableComponent implements OnInit {
   }
 
   totalResultPoints(solution: Solution): number {
-    return this.sumPoints(solution.results);
+    return this.sumPoints(solution.results!);
   }
 
   private sumPoints(arr: { points: number }[]): number {
@@ -79,7 +79,7 @@ export class SolutionTableComponent implements OnInit {
 
   updateSearch(): void {
     const searchWords = this.searchText.split(/\s+/).map(s => s.replace('+', ' '));
-    this.filteredSolutions = this.solutions.filter(solution => this.includeInSearch(solution, searchWords));
+    this.filteredSolutions = this.solutions!.filter(solution => this.includeInSearch(solution, searchWords));
   }
 
   private includeInSearch(solution: Solution, searchWords: string[]): boolean {
@@ -138,7 +138,7 @@ export class SolutionTableComponent implements OnInit {
     const prefix = searchInput.substring(0, lastSpaceIndex + 1);
     const lastWord = searchInput.substring(lastSpaceIndex + 1);
 
-    const results = [];
+    const results: string[] = [];
     for (const propertyName of this.searchableProperties) {
       const propertyPrefix = propertyName + ':';
       if (propertyName.startsWith(lastWord)) {
@@ -153,7 +153,7 @@ export class SolutionTableComponent implements OnInit {
 
   private collectAllValues(propertyName: string): string[] {
     const valueSet = new Set<string>();
-    for (const solution of this.solutions) {
+    for (const solution of this.solutions!) {
       const propertyValue = solution[propertyName] as string;
       if (propertyValue) {
         valueSet.add(propertyValue);

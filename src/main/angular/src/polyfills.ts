@@ -81,7 +81,7 @@ declare global {
   }
 }
 
-Array.prototype.findLast = function findLastIndex<T>(predicate: (value: T, index: number, obj: T[]) => boolean): number {
+Array.prototype.findLast = function findLast<T>(predicate: (value: T, index: number, obj: T[]) => boolean): T | undefined {
   for (let l = this.length - 1; l >= 0; l--) {
     if (predicate(this[l], l, this)) {
       return this[l];

@@ -97,7 +97,7 @@ export class AssignmentService {
     const pattern = /^assignmentToken\/(.*)$/;
     const ids: string[] = [];
     for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
+      const key = localStorage.key(i)!;
       const match = pattern.exec(key);
       if (!match) {
         continue;
@@ -148,7 +148,7 @@ export class AssignmentService {
     return this.http.get<Assignment>(`${environment.apiURL}/assignments/${id}`, {headers}).pipe(
       map(a => {
         a.id = id;
-        a.token = this.getToken(id);
+        a.token = this.getToken(id) ?? undefined;
         this._cache.set(id, a);
         return a;
       }),
@@ -156,8 +156,8 @@ export class AssignmentService {
   }
 
   getNext(course: Course, assignment: Assignment): Observable<Assignment | null> {
-    const ids = course.assignmentIds;
-    const index = ids.indexOf(assignment.id);
+    const ids = course.assignmentIds!;
+    const index = ids.indexOf(assignment.id!);
     if (index < 0 || index + 1 >= ids.length) {
       return of(null);
     }

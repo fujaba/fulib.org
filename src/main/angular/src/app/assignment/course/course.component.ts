@@ -31,14 +31,15 @@ export class CourseComponent implements OnInit {
     this.activatedRoute.params.subscribe(params => {
       this.assignmentID = params.aid;
 
-      this.courseID = params.cid;
-      this.courseService.get(this.courseID).subscribe(course => {
+      const courseID: string = params.cid;
+      this.courseID = courseID;
+      this.courseService.get(courseID).subscribe(course => {
         this.course = course;
 
-        const assignmentIds = course.assignmentIds;
+        const assignmentIds = course.assignmentIds!;
         if (!this.assignmentID) {
           const firstAssignment = assignmentIds[0];
-          this.router.navigate(['assignments', 'courses', this.courseID, 'assignments', firstAssignment]);
+          this.router.navigate(['assignments', 'courses', courseID, 'assignments', firstAssignment]);
         }
 
         const solutions = this.solutionService.getOwnIds();
@@ -48,7 +49,7 @@ export class CourseComponent implements OnInit {
         for (let i = 0; i < assignmentIds.length; i++) {
           const id = assignmentIds[i];
           this.assignmentService.get(id).subscribe(assignment => {
-            course.assignments[i] = assignment;
+            course.assignments![i] = assignment;
           });
 
           const lastSolutionID = solutions.find(({assignment}) => id === assignment);

@@ -78,27 +78,27 @@ export class SolutionComponent implements OnInit {
   }
 
   loadCommentDraft(): void {
-    this.commentName = this.solutionService.commentName;
-    this.commentEmail = this.solutionService.commentEmail;
-    this.commentBody = this.solutionService.getCommentDraft(this.solution);
+    this.commentName = this.solutionService.commentName || '';
+    this.commentEmail = this.solutionService.commentEmail || '';
+    this.commentBody = this.solutionService.getCommentDraft(this.solution!) || '';
   }
 
   saveCommentDraft(): void {
     this.solutionService.commentName = this.commentName;
     this.solutionService.commentEmail = this.commentEmail;
-    this.solutionService.setCommentDraft(this.solution, this.commentBody);
+    this.solutionService.setCommentDraft(this.solution!, this.commentBody);
   }
 
   submitComment(): void {
     this.submittingComment = true;
 
     const comment: Comment = {
-      parent: this.solution.id,
+      parent: this.solution!.id!,
       author: this.commentName,
       email: this.commentEmail,
       markdown: this.commentBody,
     };
-    this.solutionService.postComment(this.solution, comment).subscribe(result => {
+    this.solutionService.postComment(this.solution!, comment).subscribe(result => {
       if (!this.comments) {
         this.comments = [];
       }
