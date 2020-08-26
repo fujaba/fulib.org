@@ -6,7 +6,7 @@ import {ChangelogService, Versions} from '../changelog.service';
 @Component({
   selector: 'app-changelog',
   templateUrl: './changelog.component.html',
-  styleUrls: ['./changelog.component.scss']
+  styleUrls: ['./changelog.component.scss'],
 })
 export class ChangelogComponent implements OnInit, AfterViewInit {
   @ViewChild('changelogModal', {static: true}) changelogModal;

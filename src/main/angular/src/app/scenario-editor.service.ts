@@ -2,17 +2,17 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 
-import Example from "./model/example";
-import {ExamplesService} from "./examples.service";
-import Request from "./model/codegen/request";
-import Response from "./model/codegen/response";
-import ProjectZipRequest from "./model/project-zip-request";
-import {PrivacyService} from "./privacy.service";
+import Example from './model/example';
+import {ExamplesService} from './examples.service';
+import Request from './model/codegen/request';
+import Response from './model/codegen/response';
+import ProjectZipRequest from './model/project-zip-request';
+import {PrivacyService} from './privacy.service';
 
-import {environment} from "../environments/environment";
+import {environment} from '../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ScenarioEditorService {
   private defaultScenario = `# My First Scenario
@@ -150,6 +150,6 @@ There is a Car with name Herbie.
   }
 
   downloadZip(projectZipRequest: ProjectZipRequest): Observable<Blob> {
-    return this.http.post(environment.apiURL + '/projectzip', projectZipRequest, {responseType: "blob"});
+    return this.http.post(environment.apiURL + '/projectzip', projectZipRequest, {responseType: 'blob'});
   }
 }

@@ -3,12 +3,12 @@ import Solution from '../model/solution';
 import Assignment from '../model/assignment';
 import {SolutionService} from '../solution.service';
 import {AssignmentService} from '../assignment.service';
-import {forkJoin} from "rxjs";
+import {forkJoin} from 'rxjs';
 
 @Component({
   selector: 'app-my-solutions',
   templateUrl: './my-solutions.component.html',
-  styleUrls: ['./my-solutions.component.scss']
+  styleUrls: ['./my-solutions.component.scss'],
 })
 export class MySolutionsComponent implements OnInit {
   assignments?: Assignment[];

@@ -23,7 +23,7 @@ type CommentResponse = { id: string, timeStamp: string, html: string };
 type TaskGradingResponse = { timeStamp: string };
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SolutionService {
   constructor(

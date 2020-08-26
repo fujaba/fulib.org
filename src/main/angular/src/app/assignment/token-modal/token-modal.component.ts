@@ -5,7 +5,7 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: 'app-token-modal',
   templateUrl: './token-modal.component.html',
-  styleUrls: ['./token-modal.component.scss']
+  styleUrls: ['./token-modal.component.scss'],
 })
 export class TokenModalComponent implements OnInit {
   @ViewChild('tokenModal', {static: true}) tokenModal;

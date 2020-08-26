@@ -17,7 +17,7 @@ import TaskResult from '../model/task-result';
 @Component({
   selector: 'app-create-solution',
   templateUrl: './create-solution.component.html',
-  styleUrls: ['./create-solution.component.scss']
+  styleUrls: ['./create-solution.component.scss'],
 })
 export class CreateSolutionComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('successModal', {static: true}) successModal;

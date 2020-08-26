@@ -1,4 +1,4 @@
-import Example from "./example";
+import Example from './example';
 
 export default class ExampleCategory {
   name: string;

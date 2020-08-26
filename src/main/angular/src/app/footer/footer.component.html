@@ -45,7 +45,7 @@
         </a>
         <div ngbDropdownMenu aria-labelledby="githubDropdown">
           <a *ngFor="let repo of repos"
-            ngbDropdownItem href="https://github.com/fujaba/{{repo}}">
+             ngbDropdownItem href="https://github.com/fujaba/{{repo}}">
             {{repo}}
             <span class="text-muted" *ngIf="versions && versions[repo]"> (v{{versions[repo]}})</span>
           </a>

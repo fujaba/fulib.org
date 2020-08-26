@@ -1,7 +1,7 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule} from '@angular/forms';
 import {NgModule} from '@angular/core';
-import {HttpClientModule} from '@angular/common/http'
+import {HttpClientModule} from '@angular/common/http';
 
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
@@ -14,8 +14,8 @@ import {FourPaneEditorComponent} from './four-pane-editor/four-pane-editor.compo
 import {ConfigModalComponent} from './config-modal/config-modal.component';
 import {FooterComponent} from './footer/footer.component';
 
-import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { ChangelogComponent } from './changelog/changelog.component';
+import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
+import {ChangelogComponent} from './changelog/changelog.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +35,7 @@ import { ChangelogComponent } from './changelog/changelog.component';
     AppRoutingModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {
 }

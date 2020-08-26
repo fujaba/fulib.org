@@ -14,7 +14,7 @@ import {CourseService} from '../course.service';
 @Component({
   selector: 'app-create-course',
   templateUrl: './create-course.component.html',
-  styleUrls: ['./create-course.component.scss']
+  styleUrls: ['./create-course.component.scss'],
 })
 export class CreateCourseComponent implements OnInit, OnDestroy {
   @ViewChild('successModal', {static: true}) successModal;
@@ -47,7 +47,7 @@ export class CreateCourseComponent implements OnInit, OnDestroy {
           .map(a => `${a.title} (${a.id})`);
       }),
     );
-  }
+  };
 
   constructor(
     private assignmentService: AssignmentService,
@@ -63,7 +63,7 @@ export class CreateCourseComponent implements OnInit, OnDestroy {
     this.dragulaService.createGroup('ASSIGNMENTS', {
       moves(el, container, handle): boolean {
         return handle?.classList.contains('handle') ?? false;
-      }
+      },
     });
     this.loadDraft();
     this.assignmentService.getOwn().subscribe(assignments => {

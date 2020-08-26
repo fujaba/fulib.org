@@ -13,7 +13,7 @@ import TaskResult from '../model/task-result';
 @Component({
   selector: 'app-create-assignment',
   templateUrl: './create-assignment.component.html',
-  styleUrls: ['./create-assignment.component.scss']
+  styleUrls: ['./create-assignment.component.scss'],
 })
 export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('solutionInput', {static: true}) solutionInput;
@@ -34,7 +34,7 @@ export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestr
   solution = '';
   templateSolution = '';
 
-  tasks: (Task & {collapsed: boolean, deleted: boolean})[] = [];
+  tasks: (Task & { collapsed: boolean, deleted: boolean })[] = [];
 
   checking = false;
   results?: TaskResult[];
@@ -58,7 +58,7 @@ export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestr
     this.dragulaService.createGroup('TASKS', {
       moves(el, container, handle): boolean {
         return handle?.classList.contains('handle') ?? false;
-      }
+      },
     });
 
     const draft = this.assignmentService.draft;
@@ -119,8 +119,7 @@ export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestr
     if (deadline) {
       this.deadlineDate = `${deadline.getFullYear()}-${String(deadline.getMonth() + 1).padStart(2, '0')}-${String(deadline.getDate()).padStart(2, '0')}`;
       this.deadlineTime = `${String(deadline.getHours()).padStart(2, '0')}:${String(deadline.getMinutes()).padStart(2, '0')}:${String(deadline.getSeconds()).padStart(2, '0')}`;
-    }
-    else {
+    } else {
       this.deadlineDate = null;
       this.deadlineTime = null;
     }
@@ -137,7 +136,7 @@ export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestr
     this.assignmentService.check({solution: this.solution, tasks: this.tasks}).subscribe(response => {
       this.checking = false;
       this.results = response.results;
-    })
+    });
   }
 
   saveDraft(): void {

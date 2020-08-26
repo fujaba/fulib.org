@@ -8,7 +8,7 @@ import {environment} from '../../environments/environment';
 type CourseResponse = { id: string, descriptionHtml: string }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CourseService {
   private _draft?: Course | null;
@@ -82,7 +82,7 @@ export class CourseService {
         } as Course;
         this._cache.set(response.id, result);
         return result;
-      })
+      }),
     );
   }
 }

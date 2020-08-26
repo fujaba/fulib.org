@@ -4,19 +4,19 @@ import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 
 import {AutothemeCodemirrorComponent} from '../autotheme-codemirror/autotheme-codemirror.component';
 
-import {ExamplesService} from "../examples.service";
-import {ScenarioEditorService} from "../scenario-editor.service";
+import {ExamplesService} from '../examples.service';
+import {ScenarioEditorService} from '../scenario-editor.service';
 
-import ExampleCategory from "../model/example-category";
-import Example from "../model/example";
-import Response from "../model/codegen/response";
-import Request from "../model/codegen/request";
-import {PrivacyService} from "../privacy.service";
+import ExampleCategory from '../model/example-category';
+import Example from '../model/example';
+import Response from '../model/codegen/response';
+import Request from '../model/codegen/request';
+import {PrivacyService} from '../privacy.service';
 
 @Component({
   selector: 'app-four-pane-editor',
   templateUrl: './four-pane-editor.component.html',
-  styleUrls: ['./four-pane-editor.component.scss']
+  styleUrls: ['./four-pane-editor.component.scss'],
 })
 export class FourPaneEditorComponent implements OnInit, OnDestroy {
   @ViewChild('scenarioInput', {static: true}) scenarioInput: AutothemeCodemirrorComponent;
@@ -57,7 +57,7 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
     this.activatedRoute.queryParams.subscribe(queryParams => {
       const exampleName: string = queryParams.example;
       this.selectedExample = exampleName ? this.examplesService.getExampleByName(exampleName) : this.scenarioEditorService.selectedExample;
-    })
+    });
   }
 
   ngOnDestroy() {

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import Course from '../model/course';
 import {CourseService} from '../course.service';
@@ -9,7 +9,7 @@ import {SolutionService} from '../solution.service';
 @Component({
   selector: 'app-course',
   templateUrl: './course.component.html',
-  styleUrls: ['./course.component.scss']
+  styleUrls: ['./course.component.scss'],
 })
 export class CourseComponent implements OnInit {
   courseID?: string;
@@ -25,7 +25,8 @@ export class CourseComponent implements OnInit {
     private solutionService: SolutionService,
     private assignmentService: AssignmentService,
     private courseService: CourseService,
-  ) { }
+  ) {
+  }
 
   ngOnInit() {
     this.activatedRoute.params.subscribe(params => {
@@ -58,7 +59,7 @@ export class CourseComponent implements OnInit {
           }
         }
       });
-    })
+    });
   }
 
   getBadgeColor(index: number, assignment: Assignment) {
