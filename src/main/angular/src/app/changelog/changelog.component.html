@@ -8,28 +8,25 @@
     </button>
   </div>
   <div class="modal-body">
-    <div class="d-flex">
-      <ul ngbNav #nav="ngbNav" [(activeId)]="activeRepo" class="nav-pills mr-4" orientation="vertical">
-        <ng-container *ngFor="let repo of repos">
-          <li *ngIf="changelogs[repo]" [ngbNavItem]="repo">
-            <a ngbNavLink>
-              {{repo}}
-              <br/>
-              <span class="badge badge-secondary">
-                <ng-container *ngIf="lastUsedVersions && lastUsedVersions[repo] !== currentVersions[repo]">
-                  v{{lastUsedVersions[repo]}} &rarr;
-                </ng-container>
-                v{{currentVersions[repo]}}
-              </span>
-            </a>
-            <ng-template ngbNavContent>
-              <div [innerHTML]="changelogs[repo] | safeHtml"></div>
-            </ng-template>
-          </li>
-        </ng-container>
-      </ul>
-      <div [ngbNavOutlet]="nav"></div>
-    </div>
+    <ul ngbNav #nav="ngbNav" [(activeId)]="activeRepo" class="nav-tabs">
+      <ng-container *ngFor="let repo of repos">
+        <li *ngIf="changelogs[repo]" [ngbNavItem]="repo">
+          <a ngbNavLink>
+            {{repo}}
+            <span class="badge badge-secondary">
+              <ng-container *ngIf="lastUsedVersions && lastUsedVersions[repo] !== currentVersions[repo]">
+                v{{lastUsedVersions[repo]}} &rarr;
+              </ng-container>
+              v{{currentVersions[repo]}}
+            </span>
+          </a>
+          <ng-template ngbNavContent>
+            <div [innerHTML]="changelogs[repo] | safeHtml"></div>
+          </ng-template>
+        </li>
+      </ng-container>
+    </ul>
+    <div [ngbNavOutlet]="nav"></div>
   </div>
   <div class="modal-footer">
     <div class="form-check form-check-inline">
