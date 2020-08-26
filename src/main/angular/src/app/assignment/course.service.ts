@@ -4,7 +4,6 @@ import {Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
 import Course from './model/course';
 import {environment} from '../../environments/environment';
-import Assignment from './model/assignment';
 
 type CourseResponse = { id: string, descriptionHtml: string }
 
@@ -24,11 +23,11 @@ export class CourseService {
   // --------------- Draft ---------------
 
   public get draft(): Course | null {
-    if (typeof this._draft === 'undefined') {
-      const json = localStorage.getItem('courseDraft');
-      this._draft = json ? {...JSON.parse(json)} : null;
+    if (typeof this._draft !== 'undefined') {
+      return this._draft;
     }
-    return this._draft;
+    const json = localStorage.getItem('courseDraft');
+    return this._draft = json ? JSON.parse(json) : null;
   }
 
   public set draft(value: Course | null) {
@@ -81,7 +80,7 @@ export class CourseService {
           ...course,
           ...response,
         } as Course;
-        this._cache.set(course.id, result);
+        this._cache.set(response.id, result);
         return result;
       })
     );
