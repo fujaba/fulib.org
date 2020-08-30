@@ -1,8 +1,8 @@
 import {AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DOCUMENT} from '@angular/common';
 import {ActivatedRoute} from '@angular/router';
-import {zip} from 'rxjs';
-import {debounceTime, distinctUntilChanged, flatMap} from 'rxjs/operators';
+import {forkJoin, of} from 'rxjs';
+import {debounceTime, distinctUntilChanged, switchMap, tap} from 'rxjs/operators';
 
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
@@ -41,7 +41,7 @@ export class CreateSolutionComponent implements OnInit, AfterViewInit, OnDestroy
 
   private readonly origin: string;
 
-  nextAssignment?: Assignment | null;
+  nextAssignment?: Assignment;
 
   constructor(
     private courseService: CourseService,
@@ -55,25 +55,17 @@ export class CreateSolutionComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      const assignment$ = this.assignmentService.get(params.aid);
-      assignment$.subscribe(result => {
-        this.assignment = result;
-        this.loadDraft();
-      });
-
-      const course$ = this.courseService.get(params.cid);
-      if (params.cid) {
-        course$.subscribe(result => {
-          this.course = result;
-        });
-
-        zip(course$, assignment$).pipe(
-          flatMap(([course, assignment]) => this.assignmentService.getNext(course, assignment)),
-        ).subscribe(result => {
-          this.nextAssignment = result;
-        });
-      }
+    this.route.params.pipe(
+      switchMap(params => forkJoin({
+        assignment: this.assignmentService.get(params.aid).pipe(tap(assignment => {
+          this.assignment = assignment;
+          this.loadDraft()
+        })),
+        course: params.cid ? this.courseService.get(params.cid).pipe(tap(course => this.course = course)) : of(undefined),
+      })),
+      switchMap(({assignment, course}) => assignment && course ? this.assignmentService.getNext(course, assignment) : of(undefined)),
+    ).subscribe(next => {
+      this.nextAssignment = next;
     });
   }
 

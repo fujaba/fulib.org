@@ -155,11 +155,11 @@ export class AssignmentService {
     );
   }
 
-  getNext(course: Course, assignment: Assignment): Observable<Assignment | null> {
+  getNext(course: Course, assignment: Assignment): Observable<Assignment | undefined> {
     const ids = course.assignmentIds!;
     const index = ids.indexOf(assignment.id!);
     if (index < 0 || index + 1 >= ids.length) {
-      return of(null);
+      return of(undefined);
     }
 
     const nextID = ids[index + 1];
