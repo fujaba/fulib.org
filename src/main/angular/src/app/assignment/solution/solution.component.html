@@ -111,5 +111,5 @@
   </ol>
 </div>
 
-<app-token-modal #tokenModal [solution]="true" (submit)="setTokens($event.solutionToken, $event.assignmentToken)">
+<app-token-modal #tokenModal [solution]="true" (submitTokens)="setTokens($event.solutionToken, $event.assignmentToken)">
 </app-token-modal>

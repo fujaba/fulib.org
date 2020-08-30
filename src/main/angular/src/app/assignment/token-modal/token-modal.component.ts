@@ -11,7 +11,7 @@ export class TokenModalComponent implements OnInit {
   @ViewChild('tokenModal', {static: true}) tokenModal;
 
   @Input() solution: boolean;
-  @Output() submit = new EventEmitter<{ solutionToken?: string; assignmentToken: string; }>();
+  @Output() submitTokens = new EventEmitter<{ solutionToken?: string; assignmentToken: string; }>();
 
   solutionToken: string;
   assignmentToken: string;
@@ -28,8 +28,8 @@ export class TokenModalComponent implements OnInit {
     this.modalService.open(this.tokenModal, {ariaLabelledBy: 'tokenModalLabel'});
   }
 
-  submitTokens(): void {
-    this.submit.emit({
+  submit(): void {
+    this.submitTokens.emit({
       solutionToken: this.solution ? this.solutionToken : undefined,
       assignmentToken: this.assignmentToken,
     });
