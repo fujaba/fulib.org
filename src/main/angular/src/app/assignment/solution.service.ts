@@ -209,7 +209,9 @@ export class SolutionService {
     };
     this.addSolutionToken(headers, assignmentID, id);
     this.addAssignmentToken(headers, assignmentID);
-    return this.http.get<{ children: Comment[] }>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${id}/comments`, {headers}).pipe(
+
+    const url = `${environment.apiURL}/assignments/${assignmentID}/solutions/${id}/comments`;
+    return this.http.get<{ children: Comment[] }>(url, {headers}).pipe(
       map(result => {
         for (const comment of result.children) {
           comment.parent = id;
@@ -226,7 +228,9 @@ export class SolutionService {
     };
     this.addSolutionToken(headers, assignmentID, solution.id!);
     this.addAssignmentToken(headers, assignmentID);
-    return this.http.post<CommentResponse>(`${environment.apiURL}/assignments/${solution.assignment}/solutions/${solution.id}/comments`, comment, {headers}).pipe(
+
+    const url = `${environment.apiURL}/assignments/${solution.assignment}/solutions/${solution.id}/comments`;
+    return this.http.post<CommentResponse>(url, comment, {headers}).pipe(
       map(response => {
         const result: Comment = {
           ...comment,
@@ -246,7 +250,9 @@ export class SolutionService {
     };
     this.addSolutionToken(headers, assignmentID, id);
     this.addAssignmentToken(headers, assignmentID);
-    return this.http.get<{ gradings: TaskGrading[] }>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${id}/gradings`, {headers}).pipe(
+
+    const url = `${environment.apiURL}/assignments/${assignmentID}/solutions/${id}/gradings`;
+    return this.http.get<{ gradings: TaskGrading[] }>(url, {headers}).pipe(
       map(response => response.gradings),
     );
   }
@@ -258,7 +264,9 @@ export class SolutionService {
       'Content-Type': 'application/json',
     };
     this.addAssignmentToken(headers, assignmentID);
-    return this.http.post<TaskGradingResponse>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${solutionID}/gradings`, grading, {headers}).pipe(
+
+    const url = `${environment.apiURL}/assignments/${assignmentID}/solutions/${solutionID}/gradings`;
+    return this.http.post<TaskGradingResponse>(url, grading, {headers}).pipe(
       map(response => {
         const result: TaskGrading = {
           ...grading,

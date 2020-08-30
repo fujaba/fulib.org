@@ -117,8 +117,15 @@ export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestr
     this.email = a.email;
     const deadline = a.deadline;
     if (deadline) {
-      this.deadlineDate = `${deadline.getFullYear()}-${String(deadline.getMonth() + 1).padStart(2, '0')}-${String(deadline.getDate()).padStart(2, '0')}`;
-      this.deadlineTime = `${String(deadline.getHours()).padStart(2, '0')}:${String(deadline.getMinutes()).padStart(2, '0')}:${String(deadline.getSeconds()).padStart(2, '0')}`;
+      const year = deadline.getFullYear();
+      const month = String(deadline.getMonth() + 1).padStart(2, '0');
+      const day = String(deadline.getDate()).padStart(2, '0');
+      this.deadlineDate = `${year}-${month}-${day}`;
+
+      const hour = String(deadline.getHours()).padStart(2, '0');
+      const minute = String(deadline.getMinutes()).padStart(2, '0');
+      const second = String(deadline.getSeconds()).padStart(2, '0');
+      this.deadlineTime = `${hour}:${minute}:${second}`;
     } else {
       this.deadlineDate = null;
       this.deadlineTime = null;
