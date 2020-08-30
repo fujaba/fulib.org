@@ -57,8 +57,8 @@ export class ExamplesService {
   constructor(
     private http: HttpClient,
   ) {
-    for (let category of this.categories) {
-      for (let example of category.examples) {
+    for (const category of this.categories) {
+      for (const example of category.examples) {
         example.category = category;
       }
     }

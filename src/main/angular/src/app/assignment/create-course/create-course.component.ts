@@ -89,7 +89,7 @@ export class CreateCourseComponent implements OnInit, OnDestroy {
 
     forkJoin(course.assignmentIds!.map(id => this.assignmentService.get(id))).subscribe(assignments => {
       this.assignments = assignments;
-    })
+    });
   }
 
   loadDraft(): void {

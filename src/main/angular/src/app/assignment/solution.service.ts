@@ -16,11 +16,30 @@ function asID(id: { id?: string } | string): string {
   return typeof id === 'string' ? id : id.id!;
 }
 
-type AssignmentId = { id: string; };
-type SolutionId = { id: string, assignment: AssignmentId; };
-type SolutionResponse = { id: string, timeStamp: string, token: string };
-type CommentResponse = { id: string, timeStamp: string, html: string };
-type TaskGradingResponse = { timeStamp: string };
+interface AssignmentId {
+  id: string;
+}
+
+interface SolutionId {
+  id: string;
+  assignment: AssignmentId;
+}
+
+interface SolutionResponse {
+  id: string;
+  timeStamp: string;
+  token: string;
+}
+
+interface CommentResponse {
+  id: string;
+  timeStamp: string;
+  html: string;
+}
+
+interface TaskGradingResponse {
+  timeStamp: string;
+}
 
 @Injectable({
   providedIn: 'root',

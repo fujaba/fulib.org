@@ -59,7 +59,7 @@ export class CreateSolutionComponent implements OnInit, AfterViewInit, OnDestroy
       switchMap(params => forkJoin({
         assignment: this.assignmentService.get(params.aid).pipe(tap(assignment => {
           this.assignment = assignment;
-          this.loadDraft()
+          this.loadDraft();
         })),
         course: params.cid ? this.courseService.get(params.cid).pipe(tap(course => this.course = course)) : of(undefined),
       })),

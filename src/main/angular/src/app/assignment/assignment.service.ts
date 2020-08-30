@@ -11,7 +11,10 @@ import {StorageService} from '../storage.service';
 import Course from './model/course';
 import {CheckAssignment, CheckResult} from './model/check';
 
-type AssignmentResponse = { id: string, token: string };
+interface AssignmentResponse {
+  id: string;
+  token: string;
+}
 
 @Injectable({
   providedIn: 'root',

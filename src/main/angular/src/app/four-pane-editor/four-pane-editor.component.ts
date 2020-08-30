@@ -24,11 +24,11 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
   _selectedExample: Example | null;
   scenarioText: string;
   response: Response | null;
-  javaCode: string = '// Loading...';
+  javaCode = '// Loading...';
   submitting: boolean;
 
   exampleCategories: ExampleCategory[];
-  _activeObjectDiagramTab: number = 1;
+  _activeObjectDiagramTab = 1;
 
   submitHandler = () => this.zone.run(() => this.submit());
 
@@ -95,7 +95,7 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
       javaCode += this.foldInternalCalls(outputLines).map(line => `// ${line}\n`).join('');
     }
 
-    for (let testMethod of this.response.testMethods ?? []) {
+    for (const testMethod of this.response.testMethods ?? []) {
       javaCode += `// --------------- ${testMethod.name} in class ${testMethod.className} ---------------\n\n`;
       javaCode += testMethod.body;
       javaCode += '\n';
@@ -109,7 +109,7 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
     const packageNamePrefix = `\tat ${packageName}.`;
     const result: string[] = [];
     let counter = 0;
-    for (let line of outputLines) {
+    for (const line of outputLines) {
       if (line.startsWith('\tat org.fulib.scenarios.tool.')
         || line.startsWith('\tat ') && !line.startsWith('\tat org.fulib.') && !line.startsWith(packageNamePrefix)) {
         counter++;

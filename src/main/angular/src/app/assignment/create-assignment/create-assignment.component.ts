@@ -115,7 +115,7 @@ export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestr
     this.description = a.description;
     this.author = a.author;
     this.email = a.email;
-    let deadline = a.deadline;
+    const deadline = a.deadline;
     if (deadline) {
       this.deadlineDate = `${deadline.getFullYear()}-${String(deadline.getMonth() + 1).padStart(2, '0')}-${String(deadline.getDate()).padStart(2, '0')}`;
       this.deadlineTime = `${String(deadline.getHours()).padStart(2, '0')}:${String(deadline.getMinutes()).padStart(2, '0')}:${String(deadline.getSeconds()).padStart(2, '0')}`;
