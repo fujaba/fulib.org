@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {Observable} from 'rxjs';
+import {ActivatedRoute, Router} from '@angular/router';
+import {combineLatest, Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 
 import Assignment from '../model/assignment';
@@ -30,14 +30,18 @@ export class SolutionTableComponent implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
+    private router: Router,
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
   ) {
   }
 
   ngOnInit(): void {
-    this.activatedRoute.params.subscribe(params => {
+    combineLatest([this.activatedRoute.params, this.activatedRoute.queryParams]).subscribe(([params, query]) => {
       this.assignmentID = params.aid;
+      if (query.atok) {
+        this.assignmentService.setToken(params.aid, query.atok);
+      }
       this.loadAssignment();
       this.loadSolutions();
     });
@@ -163,7 +167,12 @@ export class SolutionTableComponent implements OnInit {
   }
 
   setToken(assignmentToken: string): void {
-    this.assignmentService.setToken(this.assignmentID, assignmentToken);
-    this.loadSolutions();
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParamsHandling: 'merge',
+      queryParams: {
+        atok: assignmentToken,
+      },
+    });
   }
 }

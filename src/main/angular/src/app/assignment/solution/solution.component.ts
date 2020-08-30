@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 
 import {SolutionService} from '../solution.service';
 import {AssignmentService} from '../assignment.service';
@@ -8,6 +8,7 @@ import Assignment from '../model/assignment';
 import Solution from '../model/solution';
 import Comment from '../model/comment';
 import TaskGrading from '../model/task-grading';
+import {combineLatest} from 'rxjs';
 
 @Component({
   selector: 'app-solution',
@@ -32,15 +33,22 @@ export class SolutionComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
   ) {
   }
 
   ngOnInit() {
-    this.route.params.subscribe(params => {
+    combineLatest([this.route.params, this.route.queryParams]).subscribe(([params, query]) => {
       this.assignmentID = params.aid;
       this.solutionID = params.sid;
+      if (query.atok) {
+        this.assignmentService.setToken(params.aid, query.atok);
+      }
+      if (query.stok) {
+        this.solutionService.setToken(params.aid, params.sid, query.stok);
+      }
       this.loadAssignment();
       this.loadSolution();
       this.loadComments();
@@ -110,12 +118,13 @@ export class SolutionComponent implements OnInit {
   }
 
   setTokens(solutionToken: string, assignmentToken: string): void {
-    if (solutionToken) {
-      this.solutionService.setToken(this.assignmentID, this.solutionID, solutionToken);
-    }
-    if (assignmentToken) {
-      this.assignmentService.setToken(this.assignmentID, assignmentToken);
-    }
-    this.loadSolution();
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParamsHandling: 'merge',
+      queryParams: {
+        atok: assignmentToken,
+        stok: solutionToken,
+      },
+    });
   }
 }
