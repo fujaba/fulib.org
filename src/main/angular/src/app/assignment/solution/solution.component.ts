@@ -8,19 +8,18 @@ import Assignment from '../model/assignment';
 import Solution from '../model/solution';
 import Comment from '../model/comment';
 import TaskGrading from '../model/task-grading';
-import {combineLatest} from 'rxjs';
+import {combineLatest, forkJoin} from 'rxjs';
+import {map, switchMap, tap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-solution',
   templateUrl: './solution.component.html',
-  styleUrls: ['./solution.component.scss']
+  styleUrls: ['./solution.component.scss'],
 })
 export class SolutionComponent implements OnInit {
   @ViewChild('tokenModal', {static: true}) tokenModal;
 
-  assignmentID: string;
   assignment?: Assignment;
-  solutionID: string;
   solution?: Solution;
 
   gradings?: TaskGrading[];
@@ -40,48 +39,32 @@ export class SolutionComponent implements OnInit {
   }
 
   ngOnInit() {
-    combineLatest([this.route.params, this.route.queryParams]).subscribe(([params, query]) => {
-      this.assignmentID = params.aid;
-      this.solutionID = params.sid;
-      if (query.atok) {
-        this.assignmentService.setToken(params.aid, query.atok);
-      }
-      if (query.stok) {
-        this.solutionService.setToken(params.aid, params.sid, query.stok);
-      }
-      this.loadAssignment();
-      this.loadSolution();
-      this.loadComments();
-      this.loadGradings();
-    });
-  }
-
-  loadAssignment(): void {
-    this.assignmentService.get(this.assignmentID).subscribe(assignment => {
-      this.assignment = assignment;
-    });
-  }
-
-  loadSolution(): void {
-    this.solutionService.get(this.assignmentID, this.solutionID).subscribe(solution => {
-      this.solution = solution;
-      this.loadCommentDraft();
+    combineLatest([this.route.params, this.route.queryParams]).pipe(
+      map(([params, query]) => {
+        const assignmentId = params.aid;
+        if (query.atok) {
+          this.assignmentService.setToken(assignmentId, query.atok);
+        }
+        const solutionId = params.sid;
+        if (query.stok) {
+          this.solutionService.setToken(assignmentId, solutionId, query.stok);
+        }
+        return [assignmentId, solutionId];
+      }),
+      switchMap(([assignmentId, solutionId]) => forkJoin([
+        this.assignmentService.get(assignmentId).pipe(tap(assignment => this.assignment = assignment)),
+        this.solutionService.get(assignmentId, solutionId).pipe(tap(solution => {
+          this.solution = solution;
+          this.loadCommentDraft();
+        })),
+        this.solutionService.getComments(assignmentId, solutionId).pipe(tap(comments => this.comments = comments)),
+        this.solutionService.getGradings(assignmentId, solutionId).pipe(tap(gradings => this.gradings = gradings)),
+      ])),
+    ).subscribe(_ => {
     }, error => {
       if (error.status === 401) {
         this.tokenModal.open();
       }
-    });
-  }
-
-  loadComments(): void {
-    this.solutionService.getComments(this.assignmentID, this.solutionID).subscribe(comments => {
-      this.comments = comments;
-    });
-  }
-
-  loadGradings(): void {
-    this.solutionService.getGradings(this.assignmentID, this.solutionID).subscribe(gradings => {
-      this.gradings = gradings;
     });
   }
 
