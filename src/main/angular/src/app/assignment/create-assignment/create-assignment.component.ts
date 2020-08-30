@@ -34,7 +34,7 @@ export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestr
   solution = '';
   templateSolution = '';
 
-  tasks: (Task & { collapsed: boolean, deleted: boolean })[] = [];
+  tasks: Task[] = [];
 
   checking = false;
   results?: TaskResult[];
@@ -130,7 +130,7 @@ export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestr
       this.deadlineDate = null;
       this.deadlineTime = null;
     }
-    this.tasks = a.tasks.map(t => ({...t, collapsed: !!t['collapsed'], deleted: !!t['deleted']}));
+    this.tasks = a.tasks.map(t => ({...t})); // deep copy
     this.solution = a.solution;
     this.templateSolution = a.templateSolution;
 
