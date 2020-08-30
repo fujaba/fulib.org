@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {combineLatest, Observable} from 'rxjs';
-import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
+import {combineLatest, forkJoin, Observable} from 'rxjs';
+import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 
 import Assignment from '../model/assignment';
 import {AssignmentService} from '../assignment.service';
@@ -37,27 +37,25 @@ export class SolutionTableComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    combineLatest([this.activatedRoute.params, this.activatedRoute.queryParams]).subscribe(([params, query]) => {
-      this.assignmentID = params.aid;
-      if (query.atok) {
-        this.assignmentService.setToken(params.aid, query.atok);
-      }
-      this.loadAssignment();
-      this.loadSolutions();
-    });
-  }
-
-  private loadAssignment() {
-    this.assignmentService.get(this.assignmentID).subscribe(assignment => {
-      this.assignment = assignment;
-      this.totalPoints = this.sumPoints(assignment.tasks);
-    });
-  }
-
-  private loadSolutions() {
-    this.solutionService.getAll(this.assignmentID).subscribe(solutions => {
-      this.solutions = solutions;
-      this.updateSearch();
+    combineLatest([this.activatedRoute.params, this.activatedRoute.queryParams]).pipe(
+      map(([params, query]) => {
+        const assignmentId = params.aid;
+        if (query.atok) {
+          this.assignmentService.setToken(assignmentId, query.atok);
+        }
+        return assignmentId;
+      }),
+      switchMap(assignmentId => forkJoin([
+        this.assignmentService.get(assignmentId).pipe(tap(assignment => {
+          this.assignment = assignment;
+          this.totalPoints = this.sumPoints(assignment.tasks);
+        })),
+        this.solutionService.getAll(assignmentId).pipe(tap(solutions => {
+          this.solutions = solutions;
+          this.updateSearch();
+        })),
+      ])),
+    ).subscribe(_ => {
     }, error => {
       if (error.status === 401) {
         this.tokenModal.open();
