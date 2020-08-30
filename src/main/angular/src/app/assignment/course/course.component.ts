@@ -5,6 +5,7 @@ import {CourseService} from '../course.service';
 import Assignment from '../model/assignment';
 import {AssignmentService} from '../assignment.service';
 import {SolutionService} from '../solution.service';
+import {switchMap, tap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-course',
@@ -29,36 +30,37 @@ export class CourseComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.activatedRoute.params.subscribe(params => {
-      this.assignmentID = params.aid;
+    this.activatedRoute.params.pipe(
+      tap(params => {
+        this.assignmentID = params.aid;
+        this.courseID = params.cid;
+      }),
+      switchMap(params => this.courseService.get(params.cid)),
+    ).subscribe(course => {
+      this.course = course;
 
-      const courseID: string = params.cid;
-      this.courseID = courseID;
-      this.courseService.get(courseID).subscribe(course => {
-        this.course = course;
+      const assignmentIds = course.assignmentIds!;
+      if (!this.assignmentID) {
+        const firstAssignment = assignmentIds[0];
+        this.router.navigate(['assignments', 'courses', course.id, 'assignments', firstAssignment]);
+        return;
+      }
 
-        const assignmentIds = course.assignmentIds!;
-        if (!this.assignmentID) {
-          const firstAssignment = assignmentIds[0];
-          this.router.navigate(['assignments', 'courses', courseID, 'assignments', firstAssignment]);
+      const solutions = this.solutionService.getOwnIds();
+      this.latestSolutionIDs = new Array<string>(assignmentIds.length);
+
+      course.assignments = new Array<Assignment>(assignmentIds.length);
+      for (let i = 0; i < assignmentIds.length; i++) {
+        const id = assignmentIds[i];
+        this.assignmentService.get(id).subscribe(assignment => {
+          course.assignments![i] = assignment;
+        });
+
+        const lastSolutionID = solutions.find(({assignment}) => id === assignment);
+        if (lastSolutionID) {
+          this.latestSolutionIDs[i] = lastSolutionID.id;
         }
-
-        const solutions = this.solutionService.getOwnIds();
-        this.latestSolutionIDs = new Array<string>(assignmentIds.length);
-
-        course.assignments = new Array<Assignment>(assignmentIds.length);
-        for (let i = 0; i < assignmentIds.length; i++) {
-          const id = assignmentIds[i];
-          this.assignmentService.get(id).subscribe(assignment => {
-            course.assignments![i] = assignment;
-          });
-
-          const lastSolutionID = solutions.find(({assignment}) => id === assignment);
-          if (lastSolutionID) {
-            this.latestSolutionIDs[i] = lastSolutionID.id;
-          }
-        }
-      });
+      }
     });
   }
 
