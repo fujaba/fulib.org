@@ -125,7 +125,7 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
   }
 
   toolSuccess(index: number) {
-    return this.response && (this.response.exitCode == 0 || (this.response.exitCode & 3) > index);
+    return this.response && (this.response.exitCode === 0 || (this.response.exitCode % 4) > index);
   }
 
   get activeObjectDiagramTab(): number {

@@ -53,7 +53,7 @@ export class ChangelogService {
     return {
       ...environment.versions,
     };
-  };
+  }
 
   public get lastUsedVersions(): Versions | null {
     const stored = this.privacyService.getStorage('lastUsedVersions');
