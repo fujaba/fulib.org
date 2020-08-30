@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {forkJoin, Observable, of} from 'rxjs';
-import {flatMap, map} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 
 import {saveAs} from 'file-saver';
 
@@ -10,12 +10,14 @@ import {environment} from '../../environments/environment';
 import {StorageService} from '../storage.service';
 import Course from './model/course';
 import {CheckAssignment, CheckResult} from './model/check';
-import Solution from './model/solution';
 
-type AssignmentResponse = { id: string, token: string };
+interface AssignmentResponse {
+  id: string;
+  token: string;
+}
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AssignmentService {
   private _draft?: Assignment | null;

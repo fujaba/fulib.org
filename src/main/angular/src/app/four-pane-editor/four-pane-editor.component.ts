@@ -4,19 +4,19 @@ import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 
 import {AutothemeCodemirrorComponent} from '../autotheme-codemirror/autotheme-codemirror.component';
 
-import {ExamplesService} from "../examples.service";
-import {ScenarioEditorService} from "../scenario-editor.service";
+import {ExamplesService} from '../examples.service';
+import {ScenarioEditorService} from '../scenario-editor.service';
 
-import ExampleCategory from "../model/example-category";
-import Example from "../model/example";
-import Response from "../model/codegen/response";
-import Request from "../model/codegen/request";
-import {PrivacyService} from "../privacy.service";
+import ExampleCategory from '../model/example-category';
+import Example from '../model/example';
+import Response from '../model/codegen/response';
+import Request from '../model/codegen/request';
+import {PrivacyService} from '../privacy.service';
 
 @Component({
   selector: 'app-four-pane-editor',
   templateUrl: './four-pane-editor.component.html',
-  styleUrls: ['./four-pane-editor.component.scss']
+  styleUrls: ['./four-pane-editor.component.scss'],
 })
 export class FourPaneEditorComponent implements OnInit, OnDestroy {
   @ViewChild('scenarioInput', {static: true}) scenarioInput: AutothemeCodemirrorComponent;
@@ -24,11 +24,11 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
   _selectedExample: Example | null;
   scenarioText: string;
   response: Response | null;
-  javaCode: string = '// Loading...';
+  javaCode = '// Loading...';
   submitting: boolean;
 
   exampleCategories: ExampleCategory[];
-  _activeObjectDiagramTab: number = 1;
+  _activeObjectDiagramTab = 1;
 
   submitHandler = () => this.zone.run(() => this.submit());
 
@@ -57,7 +57,7 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
     this.activatedRoute.queryParams.subscribe(queryParams => {
       const exampleName: string = queryParams.example;
       this.selectedExample = exampleName ? this.examplesService.getExampleByName(exampleName) : this.scenarioEditorService.selectedExample;
-    })
+    });
   }
 
   ngOnDestroy() {
@@ -95,7 +95,7 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
       javaCode += this.foldInternalCalls(outputLines).map(line => `// ${line}\n`).join('');
     }
 
-    for (let testMethod of this.response.testMethods ?? []) {
+    for (const testMethod of this.response.testMethods ?? []) {
       javaCode += `// --------------- ${testMethod.name} in class ${testMethod.className} ---------------\n\n`;
       javaCode += testMethod.body;
       javaCode += '\n';
@@ -109,7 +109,7 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
     const packageNamePrefix = `\tat ${packageName}.`;
     const result: string[] = [];
     let counter = 0;
-    for (let line of outputLines) {
+    for (const line of outputLines) {
       if (line.startsWith('\tat org.fulib.scenarios.tool.')
         || line.startsWith('\tat ') && !line.startsWith('\tat org.fulib.') && !line.startsWith(packageNamePrefix)) {
         counter++;
@@ -125,7 +125,7 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
   }
 
   toolSuccess(index: number) {
-    return this.response && (this.response.exitCode == 0 || (this.response.exitCode & 3) > index);
+    return this.response && (this.response.exitCode === 0 || (this.response.exitCode % 4) > index);
   }
 
   get activeObjectDiagramTab(): number {

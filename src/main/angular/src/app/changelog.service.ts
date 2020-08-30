@@ -18,7 +18,7 @@ export class Versions {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ChangelogService {
   constructor(
@@ -53,7 +53,7 @@ export class ChangelogService {
     return {
       ...environment.versions,
     };
-  };
+  }
 
   public get lastUsedVersions(): Versions | null {
     const stored = this.privacyService.getStorage('lastUsedVersions');
@@ -112,7 +112,7 @@ export class ChangelogService {
   private replaceIssueLinks(repo: string, markdown: string): string {
     return markdown.replace(/#(\d+)/g, (match, issueID) => {
       return `[${match}](https://github.com/${repo}/issues/${issueID})`;
-    })
+    });
   }
 
   getChangelog(repo: keyof Versions, lastUsedVersion?: string, currentVersion?: string): Observable<string> {
@@ -124,7 +124,7 @@ export class ChangelogService {
         }
         const issueLinks = this.replaceIssueLinks('fujaba/' + repo, changelog);
         return this.renderMarkdown(issueLinks);
-      })
+      }),
     );
   }
 }

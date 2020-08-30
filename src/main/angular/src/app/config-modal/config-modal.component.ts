@@ -11,7 +11,7 @@ import {PrivacyService} from '../privacy.service';
 @Component({
   selector: 'app-config-modal',
   templateUrl: './config-modal.component.html',
-  styleUrls: ['./config-modal.component.scss']
+  styleUrls: ['./config-modal.component.scss'],
 })
 export class ConfigModalComponent {
   @ViewChild('content', {static: true}) content;

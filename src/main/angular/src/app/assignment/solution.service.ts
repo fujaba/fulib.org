@@ -16,14 +16,33 @@ function asID(id: { id?: string } | string): string {
   return typeof id === 'string' ? id : id.id!;
 }
 
-type AssignmentId = { id: string; };
-type SolutionId = { id: string, assignment: AssignmentId; };
-type SolutionResponse = { id: string, timeStamp: string, token: string };
-type CommentResponse = { id: string, timeStamp: string, html: string };
-type TaskGradingResponse = { timeStamp: string };
+interface AssignmentId {
+  id: string;
+}
+
+interface SolutionId {
+  id: string;
+  assignment: AssignmentId;
+}
+
+interface SolutionResponse {
+  id: string;
+  timeStamp: string;
+  token: string;
+}
+
+interface CommentResponse {
+  id: string;
+  timeStamp: string;
+  html: string;
+}
+
+interface TaskGradingResponse {
+  timeStamp: string;
+}
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SolutionService {
   constructor(
@@ -190,7 +209,9 @@ export class SolutionService {
     };
     this.addSolutionToken(headers, assignmentID, id);
     this.addAssignmentToken(headers, assignmentID);
-    return this.http.get<{ children: Comment[] }>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${id}/comments`, {headers}).pipe(
+
+    const url = `${environment.apiURL}/assignments/${assignmentID}/solutions/${id}/comments`;
+    return this.http.get<{ children: Comment[] }>(url, {headers}).pipe(
       map(result => {
         for (const comment of result.children) {
           comment.parent = id;
@@ -207,7 +228,9 @@ export class SolutionService {
     };
     this.addSolutionToken(headers, assignmentID, solution.id!);
     this.addAssignmentToken(headers, assignmentID);
-    return this.http.post<CommentResponse>(`${environment.apiURL}/assignments/${solution.assignment}/solutions/${solution.id}/comments`, comment, {headers}).pipe(
+
+    const url = `${environment.apiURL}/assignments/${solution.assignment}/solutions/${solution.id}/comments`;
+    return this.http.post<CommentResponse>(url, comment, {headers}).pipe(
       map(response => {
         const result: Comment = {
           ...comment,
@@ -227,7 +250,9 @@ export class SolutionService {
     };
     this.addSolutionToken(headers, assignmentID, id);
     this.addAssignmentToken(headers, assignmentID);
-    return this.http.get<{ gradings: TaskGrading[] }>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${id}/gradings`, {headers}).pipe(
+
+    const url = `${environment.apiURL}/assignments/${assignmentID}/solutions/${id}/gradings`;
+    return this.http.get<{ gradings: TaskGrading[] }>(url, {headers}).pipe(
       map(response => response.gradings),
     );
   }
@@ -239,7 +264,9 @@ export class SolutionService {
       'Content-Type': 'application/json',
     };
     this.addAssignmentToken(headers, assignmentID);
-    return this.http.post<TaskGradingResponse>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${solutionID}/gradings`, grading, {headers}).pipe(
+
+    const url = `${environment.apiURL}/assignments/${assignmentID}/solutions/${solutionID}/gradings`;
+    return this.http.post<TaskGradingResponse>(url, grading, {headers}).pipe(
       map(response => {
         const result: TaskGrading = {
           ...grading,

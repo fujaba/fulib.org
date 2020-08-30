@@ -12,7 +12,7 @@ import {TokenModalComponent} from '../token-modal/token-modal.component';
 @Component({
   selector: 'app-solution-table',
   templateUrl: './solution-table.component.html',
-  styleUrls: ['./solution-table.component.scss']
+  styleUrls: ['./solution-table.component.scss'],
 })
 export class SolutionTableComponent implements OnInit {
   @ViewChild('tokenModal', {static: true}) tokenModal: TokenModalComponent;
@@ -124,7 +124,7 @@ export class SolutionTableComponent implements OnInit {
       distinctUntilChanged(),
       map(searchInput => this.autoComplete(searchInput)),
     );
-  }
+  };
 
   formatTypeahead = (suggestion: string): string => {
     const lastSpaceIndex = suggestion.lastIndexOf(' ');
@@ -132,7 +132,7 @@ export class SolutionTableComponent implements OnInit {
       return '... ' + suggestion.substring(lastSpaceIndex + 1);
     }
     return suggestion;
-  }
+  };
 
   private autoComplete(searchInput: string): string[] {
     const lastSpaceIndex = searchInput.lastIndexOf(' ');

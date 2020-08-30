@@ -2,13 +2,13 @@ import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
-import {Privacy, PrivacyService} from "../privacy.service";
+import {Privacy, PrivacyService} from '../privacy.service';
 import {ChangelogService, Versions} from '../changelog.service';
 
 @Component({
   selector: 'app-footer',
   templateUrl: './footer.component.html',
-  styleUrls: ['./footer.component.scss']
+  styleUrls: ['./footer.component.scss'],
 })
 export class FooterComponent implements OnInit, AfterViewInit {
   constructor(
@@ -41,7 +41,7 @@ export class FooterComponent implements OnInit, AfterViewInit {
   }
 
   openPrivacyModal(): void {
-    this.modalService.open(this.privacyModal, {ariaLabelledBy: 'privacyModalLabel'})
+    this.modalService.open(this.privacyModal, {ariaLabelledBy: 'privacyModalLabel'});
   }
 
   loadPrivacy(): void {

@@ -5,7 +5,7 @@ import {ThemeService} from '../theme.service';
 @Component({
   selector: 'app-autotheme-codemirror',
   templateUrl: './autotheme-codemirror.component.html',
-  styleUrls: ['./autotheme-codemirror.component.scss']
+  styleUrls: ['./autotheme-codemirror.component.scss'],
 })
 export class AutothemeCodemirrorComponent implements OnInit, OnDestroy {
   @Input() content: string;

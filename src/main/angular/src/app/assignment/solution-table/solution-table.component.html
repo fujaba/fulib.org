@@ -21,7 +21,8 @@
   <h2>
     Solutions
     <span class="text-muted" *ngIf="solutions">
-      (<span *ngIf="filteredSolutions && solutions.length != filteredSolutions.length">{{filteredSolutions.length}} of </span>{{solutions.length}})
+      (<span *ngIf="filteredSolutions && solutions.length != filteredSolutions.length">{{filteredSolutions.length}}
+      of </span>{{solutions.length}})
     </span>
   </h2>
   <div class="form-inline mb-3 d-flex">
@@ -39,11 +40,11 @@
         <li>Search terms are separated by spaces and case sensitive</li>
         <li>Each search term has to match for a result to be shown</li>
         <li>To search for terms including spaces, use <code>+</code> in their place<br/>
-          E.g. <code>John+Doe</code>
+            E.g. <code>John+Doe</code>
         </li>
         <li>To search for specific attributes, enter <code>attribute:value</code><br/>
-          E.g. <code>studentID:1234</code>, <code>email:@example.org</code>, or <code>assignee:John+Doe</code><br/>
-          Supported attribute names (case sensitive):
+            E.g. <code>studentID:1234</code>, <code>email:@example.org</code>, or <code>assignee:John+Doe</code><br/>
+            Supported attribute names (case sensitive):
           <ul>
             <li *ngFor="let propertyName of searchableProperties">
               <code>{{propertyName}}</code>
@@ -66,30 +67,30 @@
     </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let solution of filteredSolutions">
-        <td>{{solution.name}}</td>
-        <td>{{solution.studentID}}</td>
-        <td><a href="mailto:{{solution.email}}">{{solution.email}}</a></td>
-        <td>
-          <ng-container
-            *ngIf="assignment?.deadline && assignment?.deadline < solution.timeStamp; then thenBlock else elseBlock">
-          </ng-container>
-          <ng-template #thenBlock>
+    <tr *ngFor="let solution of filteredSolutions">
+      <td>{{solution.name}}</td>
+      <td>{{solution.studentID}}</td>
+      <td><a href="mailto:{{solution.email}}">{{solution.email}}</a></td>
+      <td>
+        <ng-container
+          *ngIf="assignment?.deadline && assignment?.deadline < solution.timeStamp; then thenBlock else elseBlock">
+        </ng-container>
+        <ng-template #thenBlock>
             <span class="text-danger" ngbTooltip="Submitted after Deadline">
               {{solution.timeStamp | date:'medium'}}
             </span>
-          </ng-template>
-          <ng-template #elseBlock>
-            {{solution.timeStamp | date:'medium'}}
-          </ng-template>
-        </td>
-        <td><span class="badge badge-primary badge-pill">
+        </ng-template>
+        <ng-template #elseBlock>
+          {{solution.timeStamp | date:'medium'}}
+        </ng-template>
+      </td>
+      <td><span class="badge badge-primary badge-pill">
           {{totalResultPoints(solution)}} / {{totalPoints}}
         </span></td>
-        <td><input class="form-control" #assigneeInput
-                   [ngModel]="solution.assignee" (change)="setAssignee(solution, assigneeInput)"></td>
-        <td><a class="btn btn-primary" routerLink="/assignments/{{assignmentID}}/solutions/{{solution.id}}">View</a></td>
-      </tr>
+      <td><input class="form-control" #assigneeInput
+                 [ngModel]="solution.assignee" (change)="setAssignee(solution, assigneeInput)"></td>
+      <td><a class="btn btn-primary" routerLink="/assignments/{{assignmentID}}/solutions/{{solution.id}}">View</a></td>
+    </tr>
     </tbody>
   </table>
   <p *ngIf="!solutions">
@@ -97,4 +98,4 @@
   </p>
 </div>
 
-<app-token-modal #tokenModal [solution]="false" (submit)="setToken($event.assignmentToken)"></app-token-modal>
+<app-token-modal #tokenModal [solution]="false" (submitTokens)="setToken($event.assignmentToken)"></app-token-modal>

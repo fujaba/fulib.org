@@ -17,7 +17,7 @@ import TaskResult from '../model/task-result';
 @Component({
   selector: 'app-create-solution',
   templateUrl: './create-solution.component.html',
-  styleUrls: ['./create-solution.component.scss']
+  styleUrls: ['./create-solution.component.scss'],
 })
 export class CreateSolutionComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('successModal', {static: true}) successModal;
@@ -59,7 +59,7 @@ export class CreateSolutionComponent implements OnInit, AfterViewInit, OnDestroy
       switchMap(params => forkJoin({
         assignment: this.assignmentService.get(params.aid).pipe(tap(assignment => {
           this.assignment = assignment;
-          this.loadDraft()
+          this.loadDraft();
         })),
         course: params.cid ? this.courseService.get(params.cid).pipe(tap(course => this.course = course)) : of(undefined),
       })),

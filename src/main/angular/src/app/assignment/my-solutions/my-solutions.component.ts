@@ -3,12 +3,12 @@ import Solution from '../model/solution';
 import Assignment from '../model/assignment';
 import {SolutionService} from '../solution.service';
 import {AssignmentService} from '../assignment.service';
-import {forkJoin} from "rxjs";
+import {forkJoin} from 'rxjs';
 
 @Component({
   selector: 'app-my-solutions',
   templateUrl: './my-solutions.component.html',
-  styleUrls: ['./my-solutions.component.scss']
+  styleUrls: ['./my-solutions.component.scss'],
 })
 export class MySolutionsComponent implements OnInit {
   assignments?: Assignment[];
@@ -36,10 +36,10 @@ export class MySolutionsComponent implements OnInit {
     const compoundIds = this.solutionService.getOwnIds();
     const assignmentIds = [...new Set<string>(compoundIds.map(id => id.assignment))];
 
-    const assignments = forkJoin(assignmentIds.map(aid => this.assignmentService.get(aid)));
-    const solutions = forkJoin(compoundIds.map(cid => this.solutionService.get(cid.assignment, cid.id)));
+    const assignments$ = forkJoin(assignmentIds.map(aid => this.assignmentService.get(aid)));
+    const solutions$ = forkJoin(compoundIds.map(cid => this.solutionService.get(cid.assignment, cid.id)));
 
-    forkJoin([assignments, solutions]).subscribe(([assignments, solutions]) => {
+    forkJoin([assignments$, solutions$]).subscribe(([assignments, solutions]) => {
       this.assignments = assignments.sort(Assignment.comparator);
       this.solutions = new Map<string, Solution[]>();
 

@@ -29,7 +29,8 @@
 
   <h2>Assignments</h2>
   <div class="input-group mb-3">
-    <input type="text" class="form-control" id="assignmentInput" placeholder="Start typing to search your assignments or paste ID or URL"
+    <input type="text" class="form-control" id="assignmentInput"
+           placeholder="Start typing to search your assignments or paste ID or URL"
            [(ngModel)]="newAssignment" [ngbTypeahead]="search"
            (change)="saveDraft()" (keyup.enter)="addAssignment()">
     <div class="input-group-append">
@@ -43,7 +44,7 @@
       [(dragulaModel)]="assignments" (dragulaModelChange)="saveDraft()">
     <li *ngFor="let assignment of assignments; let i=index" class="timeline-item">
             <span class="timeline-item-badge bg-secondary">
-              {{i+1}}
+              {{i + 1}}
             </span>
       <span class="timeline-item-body">
               {{assignment?.title || 'Loading...'}}

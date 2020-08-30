@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 export type Privacy = 'all' | 'local' | 'none' | 'nobanner';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PrivacyService {
   private _privacy: Privacy | null;
