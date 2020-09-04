@@ -49,8 +49,6 @@ publishInfo {
 
 mainClassName = 'org.fulib.webapp.WebService'
 
-sourceCompatibility = 1.8
-
 shadowJar.archiveClassifier = 'all'
 
 // --------------- Dependencies ---------------
