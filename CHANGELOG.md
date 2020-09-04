@@ -242,3 +242,20 @@
 ## Bugfixes
 
 * Form fields in the Project Configuration window are now properly validated. #47 #87
+
+# fulib.org v1.4.2
+
+## General
+
+* Updated to fulib v1.2.3.
+* Updated to fulibTools v1.2.1.
+* Updated to fulibScenarios v1.4.2.
+
+## Improvements
+
+* What's New now arranges repos as tabs. #88 #91
+* Improved the accessibility for some links in the footer. #89
+* Made the "Show Output" and "Grade" links in task lists actual buttons. #89
+* The query parameter `atok` can now be used to set the assignment token when viewing all solutions. #92
+* The query parameters `atok` and `stok` can be now be used to set the assignment or solution token when viewing a solution. #92
+* Downloaded `build.gradle` files no longer dictate Java version compatibility. #94
