@@ -1,5 +1,6 @@
 plugins {
 	id 'java'
+	// https://plugins.gradle.org/plugin/org.fulib.fulibGradle
 	id 'org.fulib.fulibGradle' version '$$fulibGradleVersion$$'
 }
 
