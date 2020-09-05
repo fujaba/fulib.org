@@ -23,7 +23,7 @@
 
 @mixin darkmode-ext {
   .CodeMirror {
-    border-color: #404040;
+    border-color: $default-border;
   }
 
   img.diagram, .diagram > svg {
