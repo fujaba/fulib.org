@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {ThemeService} from 'ng-bootstrap-darkmode';
-import {Subscription} from 'rxjs';
+import {fromEvent, of, Subscription} from 'rxjs';
+import {map, switchMap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-autotheme-codemirror',
@@ -21,7 +22,13 @@ export class AutothemeCodemirrorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.subscription = this.themeService.theme$.subscribe(theme => this.updateEditorThemes(theme));
+    this.subscription = this.themeService.theme$.pipe(
+      switchMap(theme => {
+        return theme === 'auto' ? fromEvent<MediaQueryListEvent>(window.matchMedia('(prefers-color-scheme: dark)'), 'change').pipe(
+          map(event => event.matches ? 'dark' : 'light'),
+        ) : of(theme);
+      }),
+    ).subscribe(theme => this.updateEditorThemes(theme));
   }
 
   ngOnDestroy(): void {
@@ -29,9 +36,6 @@ export class AutothemeCodemirrorComponent implements OnInit, OnDestroy {
   }
 
   private updateEditorThemes(theme: string | null): void {
-    if (theme === 'auto') {
-      theme = this.themeService.detectedTheme;
-    }
     this.options.theme = theme === 'dark' ? 'darcula' : 'idea';
   }
 
