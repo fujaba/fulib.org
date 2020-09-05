@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-
-import {ThemeService} from '../theme.service';
+import {ThemeService} from 'ng-bootstrap-darkmode';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-autotheme-codemirror',
@@ -13,7 +13,7 @@ export class AutothemeCodemirrorComponent implements OnInit, OnDestroy {
 
   @Input() options: any;
 
-  editorThemeHandler: () => void;
+  private subscription: Subscription;
 
   constructor(
     private themeService: ThemeService,
@@ -21,17 +21,15 @@ export class AutothemeCodemirrorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.updateEditorThemes();
-    this.editorThemeHandler = () => this.updateEditorThemes();
-    this.themeService.addChangeHandler(this.editorThemeHandler);
+    this.subscription = this.themeService.theme$.subscribe(theme => this.updateEditorThemes(theme));
   }
 
   ngOnDestroy(): void {
-    this.themeService.removeHandler(this.editorThemeHandler);
+    this.subscription.unsubscribe();
   }
 
-  private updateEditorThemes(): void {
-    this.options.theme = this.themeService.theme === 'dark' ? 'darcula' : 'idea';
+  private updateEditorThemes(theme: string | null): void {
+    this.options.theme = theme === 'dark' ? 'darcula' : 'idea';
   }
 
   setContent(value: string) {
