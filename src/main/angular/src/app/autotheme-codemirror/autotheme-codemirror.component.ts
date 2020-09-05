@@ -29,6 +29,9 @@ export class AutothemeCodemirrorComponent implements OnInit, OnDestroy {
   }
 
   private updateEditorThemes(theme: string | null): void {
+    if (theme === 'auto') {
+      theme = this.themeService.detectedTheme;
+    }
     this.options.theme = theme === 'dark' ? 'darcula' : 'idea';
   }
 
