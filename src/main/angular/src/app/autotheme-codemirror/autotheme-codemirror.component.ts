@@ -23,11 +23,7 @@ export class AutothemeCodemirrorComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.subscription = this.themeService.theme$.pipe(
-      switchMap(theme => {
-        return theme === 'auto' ? fromEvent<MediaQueryListEvent>(window.matchMedia('(prefers-color-scheme: dark)'), 'change').pipe(
-          map(event => event.matches ? 'dark' : 'light'),
-        ) : of(theme);
-      }),
+      switchMap(theme => theme === 'auto' ? this.themeService.detectedTheme$ : of(theme)),
     ).subscribe(theme => this.updateEditorThemes(theme));
   }
 
