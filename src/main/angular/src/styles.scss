@@ -21,14 +21,24 @@
 
 /* --------------- Dark Mode Overrides --------------- */
 
-[data-theme="dark"] {
+@mixin darkmode-ext {
   .CodeMirror {
-    border-color: #404040;
+    border-color: $default-border;
   }
 
   img.diagram, .diagram > svg {
     filter: invert(100%);
   }
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-theme="auto"] {
+    @include darkmode-ext;
+  }
+}
+
+[data-theme="dark"] {
+  @include darkmode-ext;
 }
 
 html {

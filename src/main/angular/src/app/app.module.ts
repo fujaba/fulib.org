@@ -16,6 +16,7 @@ import {FooterComponent} from './footer/footer.component';
 
 import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
 import {ChangelogComponent} from './changelog/changelog.component';
+import {NgBootstrapDarkmodeModule} from 'ng-bootstrap-darkmode';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import {ChangelogComponent} from './changelog/changelog.component';
     FormsModule,
     HttpClientModule,
     NgbModule,
+    NgBootstrapDarkmodeModule,
     SharedModule,
     AppRoutingModule,
   ],

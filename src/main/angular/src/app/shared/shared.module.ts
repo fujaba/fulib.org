@@ -5,7 +5,6 @@ import {FormsModule} from '@angular/forms';
 import {CodemirrorModule} from '@ctrl/ngx-codemirror';
 
 import {SafeHtmlPipe} from '../pipes/safe-html.pipe';
-import {DarkSwitchComponent} from '../dark-switch/dark-switch.component';
 import {AutothemeCodemirrorComponent} from '../autotheme-codemirror/autotheme-codemirror.component';
 import {CollapseButtonComponent} from '../collapse-button/collapse-button.component';
 import {NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
@@ -13,7 +12,6 @@ import {NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
 @NgModule({
   declarations: [
     SafeHtmlPipe,
-    DarkSwitchComponent,
     AutothemeCodemirrorComponent,
     CollapseButtonComponent,
   ],
@@ -25,7 +23,6 @@ import {NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
   ],
   exports: [
     SafeHtmlPipe,
-    DarkSwitchComponent,
     AutothemeCodemirrorComponent,
     CollapseButtonComponent,
   ],
