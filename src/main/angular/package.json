@@ -26,7 +26,7 @@
     "bootstrap-darkmode": "^0.7.0",
     "codemirror": "^5.54.0",
     "file-saver": "^2.0.2",
-    "ng-bootstrap-darkmode": "^0.3.0",
+    "ng-bootstrap-darkmode": "^0.4.0",
     "ng2-dragula": "^2.1.1",
     "ngx-clipboard": "^13.0.1",
     "rxjs": "~6.5.5",
