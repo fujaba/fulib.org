@@ -71,9 +71,15 @@ export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestr
 
     // TODO unsubscribe
     this.users.current$.subscribe(user => {
-      if (user) {
-        this.loggedIn = true;
+      if (!user) {
+        return;
+      }
+
+      this.loggedIn = true;
+      if (user.firstName && user.lastName) {
         this.author = `${user.firstName} ${user.lastName}`;
+      }
+      if (user.email) {
         this.email = user.email;
       }
     });

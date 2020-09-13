@@ -73,9 +73,15 @@ export class CreateSolutionComponent implements OnInit, AfterViewInit, OnDestroy
 
     // TODO unsubscribe
     this.users.current$.subscribe(user => {
-      if (user) {
-        this.loggedIn = true;
+      if (!user) {
+        return;
+      }
+
+      this.loggedIn = true;
+      if (user.firstName && user.lastName) {
         this.name = `${user.firstName} ${user.lastName}`;
+      }
+      if (user.email) {
         this.email = user.email;
       }
     });

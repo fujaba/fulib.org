@@ -78,9 +78,15 @@ export class SolutionComponent implements OnInit {
 
     // TODO unsubscribe
     this.users.current$.subscribe(user => {
-      if (user) {
-        this.loggedIn = true;
+      if (!user) {
+        return;
+      }
+
+      this.loggedIn = true;
+      if (user.firstName && user.lastName) {
         this.commentName = `${user.firstName} ${user.lastName}`;
+      }
+      if (user.email) {
         this.commentEmail = user.email;
       }
     });

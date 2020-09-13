@@ -155,7 +155,7 @@ export class SolutionService {
   getOwn(): Observable<[Assignment[], Solution[]]> {
     return this.users.current$.pipe(
       flatMap(user => {
-        if (user) {
+        if (user && user.id) {
           return this.getByUserId(user.id).pipe(flatMap(solutions => {
             const assignmentIds = [...new Set<string>(solutions.map(s => s.assignment))];
             const assignments = forkJoin(assignmentIds.map(aid => this.assignmentService.get(aid)));

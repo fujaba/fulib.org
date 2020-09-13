@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {forkJoin, Observable, of} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {flatMap, map} from 'rxjs/operators';
 
 import {saveAs} from 'file-saver';
 
@@ -117,7 +117,7 @@ export class AssignmentService {
   getOwn(): Observable<Assignment[]> {
     return this.users.current$.pipe(
       flatMap(user => {
-        if (user) {
+        if (user && user.id) {
           return this.getByUserId(user.id);
         } else {
           return forkJoin(this.getOwnIds().map(id => this.get(id)));
@@ -133,8 +133,8 @@ export class AssignmentService {
     return this.http.get<Assignment[]>(`${environment.apiURL}/assignments`, {params: {userId}, headers}).pipe(
       map(results => {
         for (let result of results) {
-          result.token = this.getToken(result.id);
-          this._cache.set(result.id, result);
+          result.token = this.getToken(result.id!) ?? undefined;
+          this._cache.set(result.id!, result);
         }
         return results;
       }),
