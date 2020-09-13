@@ -16,15 +16,15 @@ import {CreateSolutionComponent} from './create-solution/create-solution.compone
 import {SolutionComponent} from './solution/solution.component';
 import {TokenModalComponent} from './token-modal/token-modal.component';
 import {SolutionTableComponent} from './solution-table/solution-table.component';
-import { AssignmentInfoComponent } from './assignment-info/assignment-info.component';
-import { TaskListComponent } from './task-list/task-list.component';
-import { GradeFormComponent } from './grade-form/grade-form.component';
-import { CourseComponent } from './course/course.component';
-import { CreateCourseComponent } from './create-course/create-course.component';
-import { MyAssignmentsComponent } from './my-assignments/my-assignments.component';
-import { MySolutionsComponent } from './my-solutions/my-solutions.component';
-import { AuthorNameComponent } from './author-name/author-name.component';
-import { ImportExportComponent } from './import-export/import-export.component';
+import {AssignmentInfoComponent} from './assignment-info/assignment-info.component';
+import {TaskListComponent} from './task-list/task-list.component';
+import {GradeFormComponent} from './grade-form/grade-form.component';
+import {CourseComponent} from './course/course.component';
+import {CreateCourseComponent} from './create-course/create-course.component';
+import {MyAssignmentsComponent} from './my-assignments/my-assignments.component';
+import {MySolutionsComponent} from './my-solutions/my-solutions.component';
+import {AuthorNameComponent} from './author-name/author-name.component';
+import {ImportExportComponent} from './import-export/import-export.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +52,7 @@ import { ImportExportComponent } from './import-export/import-export.component';
     ClipboardModule,
     DragulaModule.forRoot(),
     AssignmentRoutingModule,
-  ]
+  ],
 })
 export class AssignmentModule {
 }

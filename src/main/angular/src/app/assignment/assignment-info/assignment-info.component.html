@@ -1,7 +1,8 @@
 <h1>{{assignment ? assignment.title : 'Loading...'}}</h1>
 <p class="text-muted">
   <ng-container *ngIf="assignment">
-    by <app-author-name [name]="assignment.author" [email]="assignment.email"></app-author-name>
+    by
+    <app-author-name [name]="assignment.author" [email]="assignment.email"></app-author-name>
     <span *ngIf="assignment.userId" class="badge badge-pill badge-primary" ngbTooltip="Registered">
       &#10003;
     </span>
@@ -15,7 +16,7 @@
   </ng-container>
 </p>
 
-<p *ngIf="assignment" [innerHTML]="assignment.descriptionHtml | safeHtml">
+<p *ngIf="assignment" [innerHTML]="assignment.descriptionHtml! | safeHtml">
 </p>
 <p *ngIf="!assignment">
   Loading Description...

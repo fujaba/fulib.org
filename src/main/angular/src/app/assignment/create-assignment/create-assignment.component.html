@@ -66,7 +66,7 @@
             {{task.description || '(no description)'}}
           </ng-template>
           <span class="badge badge-{{task.deleted ? 'secondary' : getColorClass(id) || 'secondary'}}">
-            {{task.points === 0 || task.points > 0 ? task.points : '?'}}
+            {{task.points}}
           </span>
         </div>
         <app-collapse-button class="ml-auto" [(collapsed)]="task.collapsed" (collapsedChange)="saveDraft()">
@@ -137,7 +137,8 @@
     <app-collapse-button class="ml-2" [(collapsed)]="collapse.templateSolution"></app-collapse-button>
   </h2>
   <p [ngbCollapse]="collapse.templateSolution">
-    <app-autotheme-codemirror id="templateSolutionInput" #templateSolutionInput [(content)]="templateSolution" [options]="{
+    <app-autotheme-codemirror id="templateSolutionInput" #templateSolutionInput [(content)]="templateSolution"
+                              [options]="{
       mode: 'markdown',
       autoRefresh: true,
       lineNumbers: true,

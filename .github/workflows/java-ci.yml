@@ -53,14 +53,23 @@ jobs:
             shell: bash
             run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF##*/})"
             id: extract_branch
+         -  name: Extract service name
+            id: extract_service
+            if: matrix.os == 'ubuntu' && matrix.java == 8 && (steps.extract_branch.outputs.branch == 'develop' || startsWith(github.ref, 'refs/tags/v'))
+            shell: bash
+            run: |
+               case "${GITHUB_REF##*/}" in
+                  develop) echo "##[set-output name=suffix;]$(echo develop)" ;;
+                  *)       echo "##[set-output name=suffix;]$(echo deploy)" ;;
+               esac
          -  name: Build and Release the Docker image
-            if: matrix.os == 'ubuntu' && matrix.java == 8 && (steps.extract_branch.outputs.branch == 'deploy' || steps.extract_branch.outputs.branch == 'develop')
+            if: matrix.os == 'ubuntu' && matrix.java == 8 && (steps.extract_branch.outputs.branch == 'develop' || startsWith(github.ref, 'refs/tags/v'))
             run: |
                docker login ${{ secrets.DOCKER_REGISTRY }} -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
                docker build -t ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org:${{ steps.extract_branch.outputs.branch }} .
                docker push ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org:${{ steps.extract_branch.outputs.branch }}
          -  name: Deploy the Docker image to rancher
-            if: matrix.os == 'ubuntu' && matrix.java == 8 && (steps.extract_branch.outputs.branch == 'deploy' || steps.extract_branch.outputs.branch == 'develop')
+            if: matrix.os == 'ubuntu' && matrix.java == 8 && (steps.extract_branch.outputs.branch == 'develop' || startsWith(github.ref, 'refs/tags/v'))
             uses: sekassel-research/actions-rancher-update@1.1.1
             with:
                rancher_url: ${{ secrets.RANCHER_URL }}
@@ -68,5 +77,5 @@ jobs:
                rancher_key: ${{ secrets.RANCHER_KEY }}
                project_id: ${{ secrets.RANCHER_PROJECT }}
                stack_name: ${{ secrets.RANCHER_STACK }}
-               service_name: ${{ secrets.RANCHER_SERVICE }}-${{ steps.extract_branch.outputs.branch }}
+               service_name: ${{ secrets.RANCHER_SERVICE }}-${{ steps.extract_service.outputs.suffix }}
                docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org:${{ steps.extract_branch.outputs.branch }}

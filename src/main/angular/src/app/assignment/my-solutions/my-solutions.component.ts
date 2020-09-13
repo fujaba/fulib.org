@@ -3,12 +3,12 @@ import Solution from '../model/solution';
 import Assignment from '../model/assignment';
 import {SolutionService} from '../solution.service';
 import {AssignmentService} from '../assignment.service';
-import {forkJoin} from "rxjs";
+import {forkJoin} from 'rxjs';
 
 @Component({
   selector: 'app-my-solutions',
   templateUrl: './my-solutions.component.html',
-  styleUrls: ['./my-solutions.component.scss']
+  styleUrls: ['./my-solutions.component.scss'],
 })
 export class MySolutionsComponent implements OnInit {
   assignments?: Assignment[];
@@ -38,15 +38,15 @@ export class MySolutionsComponent implements OnInit {
       this.solutions = new Map<string, Solution[]>();
 
       for (const assignment of this.assignments) {
-        this.solutions.set(assignment.id, []);
+        this.solutions.set(assignment.id!, []);
       }
 
       for (const solution of solutions) {
-        this.solutions.get(solution.assignment).push(solution);
+        this.solutions.get(solution.assignment)!.push(solution);
       }
 
       for (const [_, solutionList] of this.solutions) {
-        solutionList.sort((a, b) => new Date(a.timeStamp).getTime() - new Date(b.timeStamp).getTime());
+        solutionList.sort((a, b) => new Date(a.timeStamp || 0).getTime() - new Date(b.timeStamp || 0).getTime());
       }
     });
   }

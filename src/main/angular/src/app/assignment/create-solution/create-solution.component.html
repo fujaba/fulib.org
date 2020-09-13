@@ -106,7 +106,7 @@
     <button type="button" class="btn btn-secondary" (click)="modal.close()">Close</button>
     <a *ngIf="nextAssignment"
        class="btn btn-primary"
-       routerLink="/assignments/courses/{{course.id}}/assignments/{{nextAssignment.id}}"
+       routerLink="/assignments/courses/{{course!.id}}/assignments/{{nextAssignment.id}}"
        (click)="modal.close()">
       Continue
     </a>

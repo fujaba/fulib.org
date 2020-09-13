@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import Solution from '../model/solution';
 import {SolutionService} from '../solution.service';
 import TaskGrading from '../model/task-grading';
@@ -7,12 +7,12 @@ import {UserService} from "../../user/user.service";
 @Component({
   selector: 'app-grade-form',
   templateUrl: './grade-form.component.html',
-  styleUrls: ['./grade-form.component.scss']
+  styleUrls: ['./grade-form.component.scss'],
 })
 export class GradeFormComponent implements OnInit {
   @Input() solution: Solution;
   @Input() taskID: number;
-  @Input() gradings?: TaskGrading[];
+  @Input() gradings: TaskGrading[];
 
   loggedIn = false;
   name: string;
@@ -34,7 +34,7 @@ export class GradeFormComponent implements OnInit {
   }
 
   loadDraft(): void {
-    this.name = this.solutionService.commentName;
+    this.name = this.solutionService.commentName || '';
 
     // TODO unsubscribe
     this.users.current$.subscribe(user => {

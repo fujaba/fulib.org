@@ -16,7 +16,7 @@
         </a>
       </li>
       <li class="nav-item" routerLinkActive="active" ngbDropdown placement="top-right">
-        <a class="nav-link" ngbDropdownToggle id="assignmentsDropdown" role="button" style="cursor: pointer">
+        <a tabindex="0" class="nav-link" ngbDropdownToggle id="assignmentsDropdown" role="button">
           Assignments
         </a>
         <div ngbDropdownMenu aria-labelledby="assignmentsDropdown">
@@ -40,19 +40,19 @@
         </a>
       </li>
       <li class="nav-item" ngbDropdown placement="top-right">
-        <a class="nav-link" ngbDropdownToggle id="githubDropdown" role="button" style="cursor: pointer">
+        <a tabindex="0" class="nav-link" ngbDropdownToggle id="githubDropdown" role="button">
           GitHub
         </a>
         <div ngbDropdownMenu aria-labelledby="githubDropdown">
           <a *ngFor="let repo of repos"
-            ngbDropdownItem href="https://github.com/fujaba/{{repo}}">
+             ngbDropdownItem href="https://github.com/fujaba/{{repo}}">
             {{repo}}
             <span class="text-muted" *ngIf="versions && versions[repo]"> (v{{versions[repo]}})</span>
           </a>
         </div>
       </li>
       <li class="nav-item" ngbDropdown placement="top-right">
-        <a class="nav-link" ngbDropdownToggle id="legalDropdown" role="button" style="cursor: pointer">
+        <a tabindex="0" class="nav-link" ngbDropdownToggle id="legalDropdown" role="button">
           Legal
         </a>
         <div ngbDropdownMenu aria-labelledby="legalDropdown">
@@ -68,12 +68,12 @@
         </div>
       </li>
       <li class="nav-item">
-        <a role="button" class="nav-link" style="cursor: pointer" (click)="changelog.open()">
+        <a tabindex="0" role="button" class="nav-link" (click)="changelog.open()">
           What's New
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" role="button" style="cursor: pointer"
+        <a tabindex="0" class="nav-link" role="button"
            (click)="modalService.open(feedbackModal, {ariaLabelledBy: 'feedbackModalLabel'})">
           Feedback
         </a>

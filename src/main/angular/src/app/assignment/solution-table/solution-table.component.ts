@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {Observable} from 'rxjs';
-import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
+import {ActivatedRoute, Router} from '@angular/router';
+import {combineLatest, forkJoin, Observable} from 'rxjs';
+import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 
 import Assignment from '../model/assignment';
 import {AssignmentService} from '../assignment.service';
@@ -12,7 +12,7 @@ import {TokenModalComponent} from '../token-modal/token-modal.component';
 @Component({
   selector: 'app-solution-table',
   templateUrl: './solution-table.component.html',
-  styleUrls: ['./solution-table.component.scss']
+  styleUrls: ['./solution-table.component.scss'],
 })
 export class SolutionTableComponent implements OnInit {
   @ViewChild('tokenModal', {static: true}) tokenModal: TokenModalComponent;
@@ -30,30 +30,32 @@ export class SolutionTableComponent implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
+    private router: Router,
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
   ) {
   }
 
   ngOnInit(): void {
-    this.activatedRoute.params.subscribe(params => {
-      this.assignmentID = params.aid;
-      this.loadAssignment();
-      this.loadSolutions();
-    });
-  }
-
-  private loadAssignment() {
-    this.assignmentService.get(this.assignmentID).subscribe(assignment => {
-      this.assignment = assignment;
-      this.totalPoints = this.sumPoints(assignment.tasks);
-    });
-  }
-
-  private loadSolutions() {
-    this.solutionService.getAll(this.assignmentID).subscribe(solutions => {
-      this.solutions = solutions;
-      this.updateSearch();
+    combineLatest([this.activatedRoute.params, this.activatedRoute.queryParams]).pipe(
+      map(([params, query]) => {
+        const assignmentId = params.aid;
+        if (query.atok) {
+          this.assignmentService.setToken(assignmentId, query.atok);
+        }
+        return assignmentId;
+      }),
+      switchMap(assignmentId => forkJoin([
+        this.assignmentService.get(assignmentId).pipe(tap(assignment => {
+          this.assignment = assignment;
+          this.totalPoints = this.sumPoints(assignment.tasks);
+        })),
+        this.solutionService.getAll(assignmentId).pipe(tap(solutions => {
+          this.solutions = solutions;
+          this.updateSearch();
+        })),
+      ])),
+    ).subscribe(_ => {
     }, error => {
       if (error.status === 401) {
         this.tokenModal.open();
@@ -62,7 +64,7 @@ export class SolutionTableComponent implements OnInit {
   }
 
   totalResultPoints(solution: Solution): number {
-    return this.sumPoints(solution.results);
+    return this.sumPoints(solution.results!);
   }
 
   private sumPoints(arr: { points: number }[]): number {
@@ -79,7 +81,7 @@ export class SolutionTableComponent implements OnInit {
 
   updateSearch(): void {
     const searchWords = this.searchText.split(/\s+/).map(s => s.replace('+', ' '));
-    this.filteredSolutions = this.solutions.filter(solution => this.includeInSearch(solution, searchWords));
+    this.filteredSolutions = this.solutions!.filter(solution => this.includeInSearch(solution, searchWords));
   }
 
   private includeInSearch(solution: Solution, searchWords: string[]): boolean {
@@ -122,7 +124,7 @@ export class SolutionTableComponent implements OnInit {
       distinctUntilChanged(),
       map(searchInput => this.autoComplete(searchInput)),
     );
-  }
+  };
 
   formatTypeahead = (suggestion: string): string => {
     const lastSpaceIndex = suggestion.lastIndexOf(' ');
@@ -130,7 +132,7 @@ export class SolutionTableComponent implements OnInit {
       return '... ' + suggestion.substring(lastSpaceIndex + 1);
     }
     return suggestion;
-  }
+  };
 
   private autoComplete(searchInput: string): string[] {
     const lastSpaceIndex = searchInput.lastIndexOf(' ');
@@ -138,7 +140,7 @@ export class SolutionTableComponent implements OnInit {
     const prefix = searchInput.substring(0, lastSpaceIndex + 1);
     const lastWord = searchInput.substring(lastSpaceIndex + 1);
 
-    const results = [];
+    const results: string[] = [];
     for (const propertyName of this.searchableProperties) {
       const propertyPrefix = propertyName + ':';
       if (propertyName.startsWith(lastWord)) {
@@ -153,7 +155,7 @@ export class SolutionTableComponent implements OnInit {
 
   private collectAllValues(propertyName: string): string[] {
     const valueSet = new Set<string>();
-    for (const solution of this.solutions) {
+    for (const solution of this.solutions!) {
       const propertyValue = solution[propertyName] as string;
       if (propertyValue) {
         valueSet.add(propertyValue);
@@ -163,7 +165,12 @@ export class SolutionTableComponent implements OnInit {
   }
 
   setToken(assignmentToken: string): void {
-    this.assignmentService.setToken(this.assignmentID, assignmentToken);
-    this.loadSolutions();
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParamsHandling: 'merge',
+      queryParams: {
+        atok: assignmentToken,
+      },
+    });
   }
 }

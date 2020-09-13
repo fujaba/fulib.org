@@ -7,18 +7,18 @@ import {PrivacyService} from './privacy.service';
 import {environment} from '../environments/environment';
 
 export class Versions {
-  'fulib.org': string;
-  fulib: string;
-  fulibTools: string;
-  fulibYaml: string;
-  fulibTables: string;
-  fulibScenarios: string;
-  fulibMockups: string;
-  fulibGradle: string;
+  'fulib.org'?: string;
+  fulib?: string;
+  fulibTools?: string;
+  fulibYaml?: string;
+  fulibTables?: string;
+  fulibScenarios?: string;
+  fulibMockups?: string;
+  fulibGradle?: string;
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ChangelogService {
   constructor(
@@ -53,7 +53,7 @@ export class ChangelogService {
     return {
       ...environment.versions,
     };
-  };
+  }
 
   public get lastUsedVersions(): Versions | null {
     const stored = this.privacyService.getStorage('lastUsedVersions');
@@ -78,17 +78,15 @@ export class ChangelogService {
 
   private partialChangelog(fullChangelog: string, lastUsedVersion: string, currentVersion?: string): string {
     let result = '';
-    let version = undefined;
+    let version = '';
 
     loop: for (const line of fullChangelog.split('\n')) {
       if (line.startsWith('# ')) { // indicating a version headline
         if (line.includes(lastUsedVersion)) {
-          version = 'lastUsed'
-        }
-        else if (currentVersion && line.includes(currentVersion)) {
+          version = 'lastUsed';
+        } else if (currentVersion && line.includes(currentVersion)) {
           version = 'current';
-        }
-        else { // some other version
+        } else { // some other version
           switch (version) {
             case 'lastUsed': // the ones after lastUsed are new and therefore interesting
               version = 'new';
@@ -114,7 +112,7 @@ export class ChangelogService {
   private replaceIssueLinks(repo: string, markdown: string): string {
     return markdown.replace(/#(\d+)/g, (match, issueID) => {
       return `[${match}](https://github.com/${repo}/issues/${issueID})`;
-    })
+    });
   }
 
   getChangelog(repo: keyof Versions, lastUsedVersion?: string, currentVersion?: string): Observable<string> {
@@ -126,7 +124,7 @@ export class ChangelogService {
         }
         const issueLinks = this.replaceIssueLinks('fujaba/' + repo, changelog);
         return this.renderMarkdown(issueLinks);
-      })
+      }),
     );
   }
 }

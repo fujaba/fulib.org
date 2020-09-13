@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 
 import {CodemirrorModule} from '@ctrl/ngx-codemirror';
@@ -7,8 +7,8 @@ import {CodemirrorModule} from '@ctrl/ngx-codemirror';
 import {SafeHtmlPipe} from '../pipes/safe-html.pipe';
 import {DarkSwitchComponent} from '../dark-switch/dark-switch.component';
 import {AutothemeCodemirrorComponent} from '../autotheme-codemirror/autotheme-codemirror.component';
-import { CollapseButtonComponent } from '../collapse-button/collapse-button.component';
-import {NgbCollapseModule, NgbTooltipModule} from "@ng-bootstrap/ng-bootstrap";
+import {CollapseButtonComponent} from '../collapse-button/collapse-button.component';
+import {NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -30,4 +30,5 @@ import {NgbCollapseModule, NgbTooltipModule} from "@ng-bootstrap/ng-bootstrap";
     CollapseButtonComponent,
   ],
 })
-export class SharedModule { }
+export class SharedModule {
+}

@@ -7,7 +7,7 @@ import TaskGrading from '../model/task-grading';
 @Component({
   selector: 'app-task-list',
   templateUrl: './task-list.component.html',
-  styleUrls: ['./task-list.component.scss']
+  styleUrls: ['./task-list.component.scss'],
 })
 export class TaskListComponent implements OnInit {
   @Input() assignment?: Assignment;
@@ -15,7 +15,7 @@ export class TaskListComponent implements OnInit {
   @Input() results?: TaskResult[];
   @Input() gradings?: TaskGrading[];
 
-  outputExpanded: boolean[] = []
+  outputExpanded: boolean[] = [];
 
   constructor() {
   }
@@ -32,7 +32,7 @@ export class TaskListComponent implements OnInit {
         }
       }
     }
-    return this.results[taskID].points;
+    return this.results![taskID].points;
   }
 
   getColorClass(taskID: number) {
@@ -40,7 +40,7 @@ export class TaskListComponent implements OnInit {
       return 'secondary';
     }
     const points = this.getTaskPoints(taskID);
-    const maxPoints = this.assignment.tasks[taskID].points;
+    const maxPoints = this.assignment!.tasks[taskID].points;
     if (points === maxPoints) {
       return 'success';
     }
