@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 
 import {saveAs} from 'file-saver';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
@@ -13,9 +13,7 @@ import {PrivacyService} from '../privacy.service';
   templateUrl: './config-modal.component.html',
   styleUrls: ['./config-modal.component.scss'],
 })
-export class ConfigModalComponent {
-  @ViewChild('content', {static: true}) content;
-
+export class ConfigModalComponent implements OnInit {
   packageName: string;
   projectName: string;
   projectVersion: string;
@@ -25,18 +23,15 @@ export class ConfigModalComponent {
   constructor(
     private scenarioEditorService: ScenarioEditorService,
     private privacyService: PrivacyService,
-    private modalService: NgbModal,
   ) {
   }
 
-  open(): void {
+  ngOnInit(): void {
     this.packageName = this.scenarioEditorService.packageName;
     this.projectName = this.scenarioEditorService.projectName;
     this.projectVersion = this.scenarioEditorService.projectVersion;
     this.scenarioFileName = this.scenarioEditorService.scenarioFileName;
     this.decoratorClassName = this.scenarioEditorService.decoratorClassName;
-
-    this.modalService.open(this.content);
   }
 
   save(): void {
