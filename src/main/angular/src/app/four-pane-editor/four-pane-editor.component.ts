@@ -13,6 +13,18 @@ import Response from '../model/codegen/response';
 import Request from '../model/codegen/request';
 import {PrivacyService} from '../privacy.service';
 
+interface Position {
+  line: number;
+  ch: number;
+}
+
+interface Marker {
+  severity: string;
+  message: string;
+  from: Position;
+  to: Position;
+}
+
 @Component({
   selector: 'app-four-pane-editor',
   templateUrl: './four-pane-editor.component.html',
@@ -129,12 +141,12 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
     return this.response && (this.response.exitCode === 0 || (this.response.exitCode % 4) > index);
   }
 
-  getAnnotations(): { severity: string, message: string, from: { line: number, ch: number }, to: { line: number, ch: number } }[] {
+  getAnnotations(): Marker[] {
     if (!this.response) {
       return [];
     }
 
-    const result = [];
+    const result: Marker[] = [];
 
     for (const line of this.response.output.split('\n')) {
       const match = /^.*\.md:(\d+):(\d+)(?:-(\d+))?: (error|warning|note): (.*)$/.exec(line);
