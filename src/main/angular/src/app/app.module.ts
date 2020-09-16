@@ -19,6 +19,7 @@ import {ChangelogComponent} from './changelog/changelog.component';
 import {NgBootstrapDarkmodeModule} from 'ng-bootstrap-darkmode';
 import {ModalComponent} from './modal/modal.component';
 import {FeedbackComponent} from './feedback/feedback.component';
+import { PrivacyComponent } from './privacy/privacy.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import {FeedbackComponent} from './feedback/feedback.component';
     ChangelogComponent,
     ModalComponent,
     FeedbackComponent,
+    PrivacyComponent,
   ],
   imports: [
     BrowserModule,

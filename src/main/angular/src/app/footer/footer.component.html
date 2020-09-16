@@ -62,9 +62,9 @@
           <a ngbDropdownItem href="https://www.uni-kassel.de/uni/footer-2/datenschutz/">
             Privacy Policy
           </a>
-          <button ngbDropdownItem (click)="openPrivacyModal()">
+          <a ngbDropdownItem [routerLink]="[{outlets: {modal: 'privacy'}}]">
             Edit Privacy Preferences
-          </button>
+          </a>
         </div>
       </li>
       <li class="nav-item">
@@ -86,60 +86,3 @@
 
 <app-changelog #changelog></app-changelog>
 
-<ng-template #privacyModal let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title" id="privacyModalLabel">We value your privacy!</h5>
-    <button type="button" class="close" aria-label="Close" (click)="modal.close()">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <p>
-      This website uses cookies and other local data storage technology to make your experience more
-      pleasant.
-      Remote data is stored anonymously and used only for scientific and analytic purposes.
-    </p>
-
-    <p>
-      Please select your preferred privacy option below:
-    </p>
-
-    <div class="form-check">
-      <label class="form-check-label">
-        <input class="form-check-input" type="radio" value="all" [(ngModel)]="privacy">
-        I agree to the use of local and remote data storage.
-      </label>
-    </div>
-    <div class="form-check">
-      <label class="form-check-label">
-        <input class="form-check-input" type="radio" value="local" [(ngModel)]="privacy">
-        I agree to the use of local data storage, but not remote.
-      </label>
-    </div>
-    <div class="form-check">
-      <label class="form-check-label">
-        <input class="form-check-input" type="radio" value="none" [(ngModel)]="privacy">
-        I do not agree to the use of local or remote data storage.
-      </label>
-    </div>
-    <div class="form-check">
-      <label class="form-check-label">
-        <input class="form-check-input" type="radio" value="nobanner" [(ngModel)]="privacy">
-        I do not agree to the use of local or remote data storage,
-        except for the use of local storage to hide this popup in the future.
-      </label>
-    </div>
-
-    <p></p>
-
-    <p>
-      You can show this popup again and edit your preferences at any time by selecting
-      <b>Legal</b> &rarr; <b>Edit Privacy Preferences</b> at the bottom of the page.
-    </p>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-primary" (click)="modal.close(); savePrivacy()">
-      Save & Close
-    </button>
-  </div>
-</ng-template>
