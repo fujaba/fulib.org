@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 
@@ -9,6 +9,8 @@ import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./modal.component.scss'],
 })
 export class ModalComponent implements OnInit {
+  @Input() size?: 'sm' | 'lg' | 'xl' | string;
+
   @ViewChild('modal', {static: true}) modal;
   openModal?: NgbModalRef;
 
@@ -21,7 +23,10 @@ export class ModalComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.openModal = this.modalService.open(this.modal, {ariaLabelledBy: 'title'});
+    this.openModal = this.modalService.open(this.modal, {
+      ariaLabelledBy: 'title',
+      size: this.size,
+    });
   }
 
   close(event?: any): void {
