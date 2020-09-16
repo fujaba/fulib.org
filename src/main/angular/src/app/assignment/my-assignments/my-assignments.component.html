@@ -2,7 +2,7 @@
   <h1>My Assignments</h1>
 
   <p>
-    <a role="button" class="btn btn-success" style="cursor: pointer" routerLink="/assignments/create">
+    <a class="btn btn-success" routerLink="/assignments/create">
       Create New Assignment
     </a>
   </p>
@@ -16,7 +16,8 @@
         {{assignment.title}}
       </h3>
       <p class="text-muted">
-        by <app-author-name [name]="assignment.author" [email]="assignment.email"></app-author-name>
+        by
+        <app-author-name [name]="assignment.author" [email]="assignment.email"></app-author-name>
         <ng-container *ngIf="assignment.deadline">
           &mdash;
           Deadline: {{assignment.deadline | date:'medium'}}

@@ -1,21 +1,18 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 import {saveAs} from 'file-saver';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-
-import {ScenarioEditorService} from '../scenario-editor.service';
 
 import ProjectZipRequest from '../model/project-zip-request';
 import {PrivacyService} from '../privacy.service';
 
-@Component({
-  selector: 'app-config-modal',
-  templateUrl: './config-modal.component.html',
-  styleUrls: ['./config-modal.component.scss']
-})
-export class ConfigModalComponent {
-  @ViewChild('content', {static: true}) content;
+import {ScenarioEditorService} from '../scenario-editor.service';
 
+@Component({
+  selector: 'app-config',
+  templateUrl: './config.component.html',
+  styleUrls: ['./config.component.scss'],
+})
+export class ConfigComponent implements OnInit {
   packageName: string;
   projectName: string;
   projectVersion: string;
@@ -25,18 +22,15 @@ export class ConfigModalComponent {
   constructor(
     private scenarioEditorService: ScenarioEditorService,
     private privacyService: PrivacyService,
-    private modalService: NgbModal,
   ) {
   }
 
-  open(): void {
+  ngOnInit(): void {
     this.packageName = this.scenarioEditorService.packageName;
     this.projectName = this.scenarioEditorService.projectName;
     this.projectVersion = this.scenarioEditorService.projectVersion;
     this.scenarioFileName = this.scenarioEditorService.scenarioFileName;
     this.decoratorClassName = this.scenarioEditorService.decoratorClassName;
-
-    this.modalService.open(this.content);
   }
 
   save(): void {
@@ -49,7 +43,7 @@ export class ConfigModalComponent {
 
   downloadProjectZip(): void {
     const request: ProjectZipRequest = {
-      privacy: this.privacyService.privacy,
+      privacy: this.privacyService.privacy || 'none',
       packageName: this.packageName,
       projectName: this.projectName,
       projectVersion: this.projectVersion,

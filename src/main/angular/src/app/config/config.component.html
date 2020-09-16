@@ -1,0 +1,91 @@
+<app-modal #modal>
+  <ng-container modal-header>
+    Configure Project
+  </ng-container>
+  <ng-container modal-body>
+    <div class="form">
+      <div class="form-group">
+        <label for="packageNameField">Package/Group Name</label>
+        <input type="text" class="form-control" id="packageNameField" placeholder="org.example"
+               pattern="^\w+(\.\w+)*$"
+               [(ngModel)]="packageName" #packageNameModel="ngModel"
+               [class.is-invalid]="packageNameModel.invalid && (packageNameModel.touched || packageNameModel.dirty)"
+        >
+        <div class="invalid-feedback"
+             [class.d-block]="packageNameModel.invalid && (packageNameModel.touched || packageNameModel.dirty)">
+          Package Name must be one or more Java identifiers separated by dots.
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="projectNameField">Project Name</label>
+        <input type="text" class="form-control" id="projectNameField" placeholder="scenario"
+               pattern="^[\w._\-]*$"
+               [(ngModel)]="projectName" #projectNameModel="ngModel"
+               [class.is-invalid]="projectNameModel.invalid && (projectNameModel.touched || projectNameModel.dirty)"
+        >
+        <div class="invalid-feedback"
+             [class.d-block]="projectNameModel.invalid && (projectNameModel.touched || projectNameModel.dirty)">
+          Project Name must be an Java identifier that may contain dots, underscores and dashes.
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="projectVersionField">Version</label>
+        <!-- pattern from https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string -->
+        <input type="text" class="form-control" id="projectVersionField" placeholder="0.1.0"
+               pattern="^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
+               [(ngModel)]="projectVersion" #projectVersionModel="ngModel"
+               [class.is-invalid]="projectVersionModel.invalid && (projectVersionModel.touched || projectVersionModel.dirty)"
+        >
+        <div class="invalid-feedback"
+             [class.d-block]="projectVersionModel.invalid && (projectVersionModel.touched || projectVersionModel.dirty)">
+          Version must be a valid <a href="https://semver.org/">Semantic Version</a> string.
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="scenarioFileNameField">Scenario File Name</label>
+        <input type="text" class="form-control" id="scenarioFileNameField" placeholder="Scenario.md"
+               pattern="^[\w._\-]+\.md$"
+               [(ngModel)]="scenarioFileName" #scenarioFileNameModel="ngModel"
+               [class.is-invalid]="scenarioFileNameModel.invalid && (scenarioFileNameModel.touched || scenarioFileNameModel.dirty)"
+        >
+        <div class="invalid-feedback"
+             [class.d-block]="scenarioFileNameModel.invalid && (scenarioFileNameModel.touched || scenarioFileNameModel.dirty)">
+          Scenario File Name must be a Java identifier that may contain dots, underscores and dashes,
+          and ends with <code>.md</code>.
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="decoratorClassNameField">Decorator Class Name</label>
+        <input type="text" class="form-control" id="decoratorClassNameField"
+               pattern="^[\w_]*$"
+               [(ngModel)]="decoratorClassName" #decoratorClassNameModel="ngModel"
+               [class.is-invalid]="decoratorClassNameModel.invalid && (decoratorClassNameModel.touched || decoratorClassNameModel.dirty)"
+        >
+        <div class="invalid-feedback"
+             [class.d-block]="decoratorClassNameModel.invalid && (decoratorClassNameModel.touched || decoratorClassNameModel.dirty)">
+          Decorator Class Name must be either empty or a valid Java identifier.
+        </div>
+        <small class="form-text text-muted">Optional. If empty, no decorator class will be generated.</small>
+      </div>
+    </div>
+    <hr/>
+    <h4>Download as Gradle Project</h4>
+    <p>
+      You can download your scenario prepared as a Gradle project.
+      Just extract the downloaded Zip file to a folder and open it with your favorite IDE.
+      Make sure to run the <code>check</code> task afterwards to generate Java classes and execute the
+      tests.
+    </p>
+    <button type="button" class="btn btn-success" (click)="downloadProjectZip()">
+      Download
+    </button>
+  </ng-container>
+  <ng-container modal-footer>
+    <button type="button" class="btn btn-primary"
+            [disabled]="!packageNameModel.valid || !projectNameModel.valid || !projectVersionModel.valid || !scenarioFileNameModel.valid || !decoratorClassNameModel.valid"
+            (click)="save(); modal.close()"
+    >
+      Save & Close
+    </button>
+  </ng-container>
+</app-modal>

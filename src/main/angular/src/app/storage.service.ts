@@ -1,29 +1,28 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class StorageService {
-  private properties = new Map<string, string>();
+  private properties = new Map<string, string | null>();
 
   constructor() {
   }
 
   get(key: string): string | null {
-    let token = this.properties.get(key);
-    if (typeof token == 'undefined') {
-      token = localStorage.getItem(key);
-      this.properties.set(key, token);
+    let value: string | null | undefined = this.properties.get(key);
+    if (value === undefined) {
+      value = localStorage.getItem(key);
+      this.properties.set(key, value);
     }
-    return token;
+    return value;
   }
 
   set(key: string, value: string | null) {
     this.properties.set(key, value);
-    if (value) {
+    if (value !== null) {
       localStorage.setItem(key, value);
-    }
-    else {
+    } else {
       localStorage.removeItem(key);
     }
   }
