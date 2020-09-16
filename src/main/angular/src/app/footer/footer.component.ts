@@ -31,7 +31,7 @@ export class FooterComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     if (this.privacyService.privacy === null) {
       this.router.navigate([{outlets: {modal: 'privacy'}}], {relativeTo: this.route});
-    } else if (Object.keys(this.changelogService.newVersions).length) {
+    } else if (this.changelogService.autoShow && Object.keys(this.changelogService.newVersions).length) {
       this.router.navigate([{outlets: {modal: 'changelog'}}], {relativeTo: this.route});
     }
   }
