@@ -21,7 +21,6 @@ export class FooterComponent implements OnInit, AfterViewInit {
   @ViewChild('privacyModal', {static: false}) privacyModal;
 
   privacy: Privacy;
-  contactEmail = 'spam@fbi.gov'.replace('spam', 'contact').replace('fbi.gov', 'fulib.org');
 
   menuCollapsed = true;
 
