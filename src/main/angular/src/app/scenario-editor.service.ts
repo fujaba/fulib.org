@@ -11,6 +11,18 @@ import {PrivacyService} from './privacy.service';
 
 import {environment} from '../environments/environment';
 
+export interface Position {
+  line: number;
+  ch: number;
+}
+
+export interface Marker {
+  severity: string;
+  message: string;
+  from: Position;
+  to: Position;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -151,5 +163,31 @@ There is a Car with name Herbie.
 
   downloadZip(projectZipRequest: ProjectZipRequest): Observable<Blob> {
     return this.http.post(environment.apiURL + '/projectzip', projectZipRequest, {responseType: 'blob'});
+  }
+
+  lint(response: Response): Marker[] {
+    const result: Marker[] = [];
+
+    for (const line of response.output.split('\n')) {
+      const match = /^.*\.md:(\d+):(\d+)(?:-(\d+))?: (error|warning|note): (.*)$/.exec(line);
+      if (!match) {
+        continue;
+      }
+
+      const row = +match[1] - 1;
+      const col = +match[2];
+      const endCol = +(match[3] || col) + 1;
+      const severity = match[4];
+      const message = match[5];
+
+      result.push({
+        severity,
+        message,
+        from: {line: row, ch: col},
+        to: {line: row, ch: endCol},
+      });
+    }
+
+    return result;
   }
 }

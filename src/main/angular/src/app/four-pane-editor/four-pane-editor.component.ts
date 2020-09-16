@@ -13,18 +13,6 @@ import Response from '../model/codegen/response';
 import Request from '../model/codegen/request';
 import {PrivacyService} from '../privacy.service';
 
-interface Position {
-  line: number;
-  ch: number;
-}
-
-interface Marker {
-  severity: string;
-  message: string;
-  from: Position;
-  to: Position;
-}
-
 @Component({
   selector: 'app-four-pane-editor',
   templateUrl: './four-pane-editor.component.html',
@@ -43,7 +31,7 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
   _activeObjectDiagramTab = 1;
 
   submitHandler = () => this.zone.run(() => this.submit());
-  annotationHandler = () => this.zone.run(() => this.getAnnotations());
+  annotationHandler = () => this.zone.run(() => this.response ? this.scenarioEditorService.lint(this.response) : []);
 
   constructor(
     private examplesService: ExamplesService,
@@ -140,36 +128,6 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
 
   toolSuccess(index: number) {
     return this.response && (this.response.exitCode === 0 || (this.response.exitCode % 4) > index);
-  }
-
-  getAnnotations(): Marker[] {
-    if (!this.response) {
-      return [];
-    }
-
-    const result: Marker[] = [];
-
-    for (const line of this.response.output.split('\n')) {
-      const match = /^.*\.md:(\d+):(\d+)(?:-(\d+))?: (error|warning|note): (.*)$/.exec(line);
-      if (!match) {
-        continue;
-      }
-
-      const row = +match[1] - 1;
-      const col = +match[2];
-      const endCol = +(match[3] || col) + 1;
-      const severity = match[4];
-      const message = match[5];
-
-      result.push({
-        severity,
-        message,
-        from: {line: row, ch: col},
-        to: {line: row, ch: endCol},
-      });
-    }
-
-    return result;
   }
 
   get activeObjectDiagramTab(): number {
