@@ -94,7 +94,7 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
     let javaCode = '';
     if (this.response.exitCode !== 0) {
       const outputLines = this.response.output.split('\n');
-      javaCode += this.foldInternalCalls(outputLines).map(line => `// ${line}\n`).join('');
+      javaCode += this.scenarioEditorService.foldInternalCalls(outputLines).map(line => `// ${line}\n`).join('');
     }
 
     for (const testMethod of this.response.testMethods ?? []) {
@@ -104,26 +104,6 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
     }
 
     return javaCode;
-  }
-
-  private foldInternalCalls(outputLines: string[]): string[] {
-    const packageName = this.scenarioEditorService.packageName.replace('/', '.');
-    const packageNamePrefix = `\tat ${packageName}.`;
-    const result: string[] = [];
-    let counter = 0;
-    for (const line of outputLines) {
-      if (line.startsWith('\tat org.fulib.scenarios.tool.')
-        || line.startsWith('\tat ') && !line.startsWith('\tat org.fulib.') && !line.startsWith(packageNamePrefix)) {
-        counter++;
-      } else {
-        if (counter > 0) {
-          result.push(counter === 1 ? '\t(1 internal call)' : `\t(${counter} internal calls)`);
-          counter = 0;
-        }
-        result.push(line);
-      }
-    }
-    return result;
   }
 
   toolSuccess(index: number) {
