@@ -16,7 +16,8 @@ import {FooterComponent} from './footer/footer.component';
 
 import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
 import {ChangelogComponent} from './changelog/changelog.component';
-import {NgBootstrapDarkmodeModule} from 'ng-bootstrap-darkmode';
+import {NgBootstrapDarkmodeModule, THEME_LOADER, THEME_SAVER, ThemeLoader, ThemeSaver} from 'ng-bootstrap-darkmode';
+import {PrivacyService} from './privacy.service';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,22 @@ import {NgBootstrapDarkmodeModule} from 'ng-bootstrap-darkmode';
     SharedModule,
     AppRoutingModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: THEME_LOADER,
+      deps: [PrivacyService],
+      useFactory(privacyService: PrivacyService): ThemeLoader {
+        return () => privacyService.getStorage('theme');
+      }
+    },
+    {
+      provide: THEME_SAVER,
+      deps: [PrivacyService],
+      useFactory(privacyService: PrivacyService): ThemeSaver {
+        return (theme) => privacyService.setStorage('theme', theme);
+      }
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {
