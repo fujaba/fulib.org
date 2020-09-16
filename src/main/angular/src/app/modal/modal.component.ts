@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 
@@ -8,7 +8,7 @@ import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
   templateUrl: './modal.component.html',
   styleUrls: ['./modal.component.scss'],
 })
-export class ModalComponent implements OnInit {
+export class ModalComponent implements OnInit, OnDestroy {
   @Input() size?: 'sm' | 'lg' | 'xl' | string;
 
   @ViewChild('modal', {static: true}) modal;
@@ -33,6 +33,10 @@ export class ModalComponent implements OnInit {
       this.modalClose.next(result);
     };
     this.openModal.result.then(handler, handler);
+  }
+
+  ngOnDestroy(): void {
+    this.openModal?.close();
   }
 
   close(event?: any): void {
