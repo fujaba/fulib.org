@@ -36,6 +36,20 @@
   @include border-radius($tooltip-border-radius);
 }
 
+.CodeMirror-lint-tooltip {
+  text-align: left;
+}
+
+.CodeMirror-lint-marker-error, .CodeMirror-lint-message-error {
+  // https://primer.style/octicons/x-circle-16
+  background-image: url(escape-svg('data:image/svg+xml;utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path fill="#ff0000" fill-rule="evenodd" d="M3.404 12.596a6.5 6.5 0 119.192-9.192 6.5 6.5 0 01-9.192 9.192zM2.344 2.343a8 8 0 1011.313 11.314A8 8 0 002.343 2.343zM6.03 4.97a.75.75 0 00-1.06 1.06L6.94 8 4.97 9.97a.75.75 0 101.06 1.06L8 9.06l1.97 1.97a.75.75 0 101.06-1.06L9.06 8l1.97-1.97a.75.75 0 10-1.06-1.06L8 6.94 6.03 4.97z"></path></svg>'));
+}
+
+.CodeMirror-lint-marker-warning, .CodeMirror-lint-message-warning {
+  // https://primer.style/octicons/issue-opened-16
+  background-image: url(escape-svg('data:image/svg+xml;utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path fill="#f4c82d" fill-rule="evenodd" d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm9 3a1 1 0 11-2 0 1 1 0 012 0zm-.25-6.25a.75.75 0 00-1.5 0v3.5a.75.75 0 001.5 0v-3.5z"></path></svg>'));
+}
+
 /* --------------- Dark Mode Overrides --------------- */
 
 @mixin darkmode-ext {
