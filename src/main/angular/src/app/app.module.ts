@@ -17,6 +17,7 @@ import {FooterComponent} from './footer/footer.component';
 import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
 import {ChangelogComponent} from './changelog/changelog.component';
 import {NgBootstrapDarkmodeModule} from 'ng-bootstrap-darkmode';
+import {ModalComponent} from './modal/modal.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import {NgBootstrapDarkmodeModule} from 'ng-bootstrap-darkmode';
     FooterComponent,
     PageNotFoundComponent,
     ChangelogComponent,
+    ModalComponent,
   ],
   imports: [
     BrowserModule,
