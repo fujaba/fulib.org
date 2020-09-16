@@ -27,12 +27,15 @@ export class ModalComponent implements OnInit {
       ariaLabelledBy: 'title',
       size: this.size,
     });
+
+    const handler = result => {
+      this.router.navigate([{outlets: {modal: null}}]);
+      this.modalClose.next(result);
+    };
+    this.openModal.result.then(handler, handler);
   }
 
   close(event?: any): void {
-    console.log('close');
     this.openModal?.close(event);
-    this.router.navigate([{outlets: {modal: null}}]);
-    this.modalClose.next(event);
   }
 }
