@@ -11,7 +11,7 @@ import {AppRoutingModule} from './app-routing.module';
 
 import {AppComponent} from './app.component';
 import {FourPaneEditorComponent} from './four-pane-editor/four-pane-editor.component';
-import {ConfigModalComponent} from './config-modal/config-modal.component';
+import {ConfigComponent} from './config/config.component';
 import {FooterComponent} from './footer/footer.component';
 
 import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
@@ -25,7 +25,7 @@ import { PrivacyComponent } from './privacy/privacy.component';
   declarations: [
     AppComponent,
     FourPaneEditorComponent,
-    ConfigModalComponent,
+    ConfigComponent,
     FooterComponent,
     PageNotFoundComponent,
     ChangelogComponent,

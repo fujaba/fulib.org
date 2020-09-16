@@ -9,11 +9,11 @@ import ProjectZipRequest from '../model/project-zip-request';
 import {PrivacyService} from '../privacy.service';
 
 @Component({
-  selector: 'app-config-modal',
-  templateUrl: './config-modal.component.html',
-  styleUrls: ['./config-modal.component.scss'],
+  selector: 'app-config',
+  templateUrl: './config.component.html',
+  styleUrls: ['./config.component.scss'],
 })
-export class ConfigModalComponent implements OnInit {
+export class ConfigComponent implements OnInit {
   packageName: string;
   projectName: string;
   projectVersion: string;
