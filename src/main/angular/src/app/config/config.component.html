@@ -1,11 +1,8 @@
-<ng-template #content let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title" id="configModalLabel">Configure Project</h5>
-    <button type="button" class="close" aria-label="Close" (click)="modal.close()">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
+<app-modal #modal>
+  <ng-container modal-header>
+    Configure Project
+  </ng-container>
+  <ng-container modal-body>
     <div class="form">
       <div class="form-group">
         <label for="packageNameField">Package/Group Name</label>
@@ -71,37 +68,24 @@
         <small class="form-text text-muted">Optional. If empty, no decorator class will be generated.</small>
       </div>
     </div>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-primary"
-            [disabled]="!packageNameModel.valid || !projectNameModel.valid || !projectVersionModel.valid || !scenarioFileNameModel.valid || !decoratorClassNameModel.valid"
-            (click)="save(); modal.close()"
-    >
-      Save & Close
-    </button>
-  </div>
-  <div class="modal-header">
-    <h5 class="modal-title">Download as Gradle Project</h5>
-  </div>
-  <div class="modal-body">
+    <hr/>
+    <h4>Download as Gradle Project</h4>
     <p>
       You can download your scenario prepared as a Gradle project.
       Just extract the downloaded Zip file to a folder and open it with your favorite IDE.
       Make sure to run the <code>check</code> task afterwards to generate Java classes and execute the
       tests.
     </p>
-    <form>
-      <!--
-      <div class="form-check">
-        <input type="checkbox" class="form-check-input" id="includeJavaFXCheckBox">
-        <label class="form-check-label" for="includeJavaFXCheckBox">Include JavaFX Dependency</label>
-      </div>
-      -->
-    </form>
-  </div>
-  <div class="modal-footer">
     <button type="button" class="btn btn-success" (click)="downloadProjectZip()">
       Download
     </button>
-  </div>
-</ng-template>
+  </ng-container>
+  <ng-container modal-footer>
+    <button type="button" class="btn btn-primary"
+            [disabled]="!packageNameModel.valid || !projectNameModel.valid || !projectVersionModel.valid || !scenarioFileNameModel.valid || !decoratorClassNameModel.valid"
+            (click)="save(); modal.close()"
+    >
+      Save & Close
+    </button>
+  </ng-container>
+</app-modal>

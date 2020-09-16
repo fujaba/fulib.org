@@ -1,13 +1,8 @@
-<ng-template #changelogModal let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" id="changelogModalTitle">
-      What's New on fulib.org
-    </h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.close()">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
+<app-modal #modal size="xl">
+  <ng-container modal-header>
+    What's New on fulib.org
+  </ng-container>
+  <ng-container modal-body>
     <ul ngbNav #nav="ngbNav" [(activeId)]="activeRepo" class="nav-tabs">
       <ng-container *ngFor="let repo of repos">
         <li *ngIf="changelogs[repo]" [ngbNavItem]="repo">
@@ -27,12 +22,12 @@
       </ng-container>
     </ul>
     <div [ngbNavOutlet]="nav"></div>
-  </div>
-  <div class="modal-footer">
+  </ng-container>
+  <ng-container modal-footer>
     <div class="form-check form-check-inline">
       <input class="form-check-input" type="checkbox" id="autoShowCheckbox" [(ngModel)]="autoShow">
       <label class="form-check-label" for="autoShowCheckbox">Automatically show this window</label>
     </div>
     <button type="button" class="btn btn-primary" (click)="modal.close()">Close</button>
-  </div>
-</ng-template>
+  </ng-container>
+</app-modal>
