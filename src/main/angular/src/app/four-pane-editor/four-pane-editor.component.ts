@@ -94,6 +94,7 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
       this.submitting = false;
       this.response = response;
       this.javaCode = this.renderJavaCode();
+      (this.scenarioInput.ngxCodemirror.codeMirror as any)?.performLint?.();
     });
   }
 
