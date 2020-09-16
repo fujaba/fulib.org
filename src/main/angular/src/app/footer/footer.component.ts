@@ -1,10 +1,8 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-
-import {Privacy, PrivacyService} from '../privacy.service';
 import {ChangelogService, Versions} from '../changelog.service';
+
+import {PrivacyService} from '../privacy.service';
 
 @Component({
   selector: 'app-footer',
@@ -33,6 +31,8 @@ export class FooterComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     if (this.privacyService.privacy === null) {
       this.router.navigate([{outlets: {modal: 'privacy'}}], {relativeTo: this.route});
+    } else if (Object.keys(this.changelogService.newVersions).length) {
+      this.router.navigate([{outlets: {modal: 'changelog'}}], {relativeTo: this.route});
     }
   }
 }

@@ -68,7 +68,7 @@
         </div>
       </li>
       <li class="nav-item">
-        <a tabindex="0" role="button" class="nav-link" (click)="changelog.open()">
+        <a class="nav-link" [routerLink]="[{outlets: {modal: 'changelog'}}]">
           What's New
         </a>
       </li>
@@ -83,6 +83,3 @@
 </nav>
 
 </footer>
-
-<app-changelog #changelog></app-changelog>
-

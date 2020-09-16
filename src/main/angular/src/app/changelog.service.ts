@@ -68,6 +68,26 @@ export class ChangelogService {
     }
   }
 
+  get newVersions(): Versions {
+    const lastUsedVersions = this.lastUsedVersions;
+    if (!lastUsedVersions) {
+      return {};
+    }
+
+    const currentVersions = this.currentVersions;
+
+    const result: Versions = {};
+    for (const repo of this.repos) {
+      const lastUsedVersion = lastUsedVersions[repo];
+      const currentVersion = currentVersions[repo];
+      if (lastUsedVersion && currentVersion && currentVersion !== lastUsedVersion) {
+        result[repo] = currentVersion;
+      }
+    }
+
+    return result;
+  }
+
   private loadRawChangelog(repo: string): Observable<string> {
     return this.http.get(`https://raw.githubusercontent.com/${repo}/master/CHANGELOG.md`, {responseType: 'text'});
   }

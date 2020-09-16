@@ -1,5 +1,6 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
+import {ChangelogComponent} from './changelog/changelog.component';
 import {ConfigComponent} from './config/config.component';
 import {FeedbackComponent} from './feedback/feedback.component';
 
@@ -14,6 +15,7 @@ const routes: Routes = [
   {outlet: 'modal', path: 'feedback', component: FeedbackComponent},
   {outlet: 'modal', path: 'privacy', component: PrivacyComponent},
   {outlet: 'modal', path: 'config', component: ConfigComponent},
+  {outlet: 'modal', path: 'changelog', component: ChangelogComponent},
 ];
 
 @NgModule({
