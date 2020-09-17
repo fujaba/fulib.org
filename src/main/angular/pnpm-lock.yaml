@@ -8,13 +8,13 @@ dependencies:
   '@angular/platform-browser': 9.1.9_97f5765cc412167c69d7a5ecd4f64dbe
   '@angular/platform-browser-dynamic': 9.1.9_7bf80fb17ba5eabaa446cba7192a133e
   '@angular/router': 9.1.9_69d4d166744ae27120a4a095c35c9cfe
-  '@ctrl/ngx-codemirror': 3.1.3_b3c2af2237fa4e2e98ae5f3091bb5c2b
+  '@ctrl/ngx-codemirror': 3.1.3_e275cbcdb5d87185bd645159822e764f
   '@ng-bootstrap/ng-bootstrap': 6.1.0_4d61a7c5eb8bef80d3b0d500e8e21afa
   bootstrap: 4.4.1
   bootstrap-darkmode: 0.7.0
-  codemirror: 5.54.0
+  codemirror: 5.57.0
   file-saver: 2.0.2
-  ng-bootstrap-darkmode: 0.4.0_4c41aa1162b9caa4b2a54efb839f8b2a
+  ng-bootstrap-darkmode: 0.4.0_c1a2b8221fa9b6559334dc7749689aec
   ng2-dragula: 2.1.1_@angular+core@9.1.9+rxjs@6.5.5
   ngx-clipboard: 13.0.1_b3acba3a3e8178276319b1f515dfbcb2
   rxjs: 6.5.5
@@ -25,7 +25,7 @@ devDependencies:
   '@angular/cli': 9.1.7
   '@angular/compiler-cli': 9.1.9_2f413ff5c64fd1dae548a576f4703ed2
   '@angular/language-service': 9.1.9
-  '@types/codemirror': 0.0.95
+  '@types/codemirror': 0.0.98
   '@types/file-saver': 2.0.1
   '@types/jasmine': 3.3.16
   '@types/jasminewd2': 2.0.8
@@ -1324,12 +1324,12 @@ packages:
     dev: true
     resolution:
       integrity: sha512-XjnvNqenk818r5zMaba+sLQjnbda31UfUURv3ei0qPQw4u+j2jMyJ5b11y8ZHYTRSI3NnInQkkkRT4fLqqPdHg==
-  /@ctrl/ngx-codemirror/3.1.3_b3c2af2237fa4e2e98ae5f3091bb5c2b:
+  /@ctrl/ngx-codemirror/3.1.3_e275cbcdb5d87185bd645159822e764f:
     dependencies:
       '@angular/core': 9.1.9_ca296a5e5adc0afc8d32926df5677b5e
       '@angular/forms': 9.1.9_69d4d166744ae27120a4a095c35c9cfe
       '@types/codemirror': 0.0.89
-      codemirror: 5.54.0
+      codemirror: 5.57.0
       tslib: 1.11.1
     dev: false
     peerDependencies:
@@ -1428,12 +1428,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-kLw8yUzz1dTAHQh+WYA/2Ka7YZUf5h3oHzgwP48xhbfmqqxrfp9lWuP9Ro26SUDHTthVl5afAa+DabsL1KD5oQ==
-  /@types/codemirror/0.0.95:
+  /@types/codemirror/0.0.98:
     dependencies:
       '@types/tern': 0.23.3
     dev: true
     resolution:
-      integrity: sha512-E7w4HS8/rR7Rxkga6j68n3/Mi4BJ870/OJJKRqytyWiM659KnbviSng/NPfM/FOjg7YL+5ruFF69FqoLChnPBw==
+      integrity: sha512-cbty5LPayy2vNSeuUdjNA9tggG+go5vAxmnLDRWpiZI5a+RDBi9dlozy4/jW/7P/gletbBWbQREEa7A81YxstA==
   /@types/color-name/1.1.1:
     resolution:
       integrity: sha512-rr+OQyAjxze7GgWrSaJwydHStIhHq2lvY3BOC2Mj7KnzI7XK0Uw1TOOdI9lDoajEbSWLiYgoo4f1R51erQfhPQ==
@@ -2715,10 +2715,10 @@ packages:
       tslint: ^5.0.0 || ^6.0.0
     resolution:
       integrity: sha512-jB4FZ1Sx7kZhvZVdf+N2BaKTdrrNZOL0Bj10RRfrhHrb3zEvXjJvvq298JPMJAiyiCS/v4zs1QlGU0ip7xGqeA==
-  /codemirror/5.54.0:
+  /codemirror/5.57.0:
     dev: false
     resolution:
-      integrity: sha512-Pgf3surv4zvw+KaW3doUU7pGjF0BPU8/sj7eglWJjzni46U/DDW8pu3nZY0QgQKUcICDXRkq8jZmq0y6KhxM3Q==
+      integrity: sha512-WGc6UL7Hqt+8a6ZAsj/f1ApQl3NPvHY/UQSzG6fB6l4BjExgVdhFaxd7mRTw1UCiYe/6q86zHP+kfvBQcZGvUg==
   /collection-visit/1.0.0:
     dependencies:
       map-visit: 1.0.0
@@ -6089,11 +6089,12 @@ packages:
     dev: true
     resolution:
       integrity: sha512-iyam8fBuCUpWeKPGpaNMetEocMt364qkCsfL9JuhjXX6dRnguRVOfk2GZaDpPjcOKiiXCPINZC1GczQ7iTq3Zw==
-  /ng-bootstrap-darkmode/0.4.0_4c41aa1162b9caa4b2a54efb839f8b2a:
+  /ng-bootstrap-darkmode/0.4.0_c1a2b8221fa9b6559334dc7749689aec:
     dependencies:
       '@angular/common': 9.1.9_e64d04627aeca35d73d770258b6ad465
       '@angular/core': 9.1.9_ca296a5e5adc0afc8d32926df5677b5e
       '@angular/forms': 9.1.9_69d4d166744ae27120a4a095c35c9cfe
+      bootstrap-darkmode: 0.7.0
       tslib: 1.11.1
     dev: false
     peerDependencies:
@@ -9618,7 +9619,7 @@ specifiers:
   '@angular/router': ~9.1.9
   '@ctrl/ngx-codemirror': ^3.1.3
   '@ng-bootstrap/ng-bootstrap': ^6.1.0
-  '@types/codemirror': ^0.0.95
+  '@types/codemirror': ^0.0.98
   '@types/file-saver': ^2.0.1
   '@types/jasmine': ~3.3.16
   '@types/jasminewd2': ~2.0.8
@@ -9626,7 +9627,7 @@ specifiers:
   bootstrap: ~4.4.1
   bootstrap-darkmode: ^0.7.0
   codelyzer: ^5.1.2
-  codemirror: ^5.54.0
+  codemirror: ^5.57.0
   file-saver: ^2.0.2
   jasmine-core: ~3.4.0
   jasmine-spec-reporter: ~4.2.1
