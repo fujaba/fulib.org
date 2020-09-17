@@ -3,10 +3,15 @@ import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 
 import 'codemirror/mode/markdown/markdown';
 import 'codemirror/mode/clike/clike';
+import 'codemirror/addon/mode/simple';
 import 'codemirror/addon/display/autorefresh';
+import * as CodeMirror from 'codemirror';
 
 import {AppModule} from './app/app.module';
 import {environment} from './environments/environment';
+import {ScenarioMode} from './scenario-mode';
+
+(CodeMirror as any).defineSimpleMode('scenario', ScenarioMode);
 
 if (environment.production) {
   enableProdMode();
