@@ -1,45 +1,39 @@
 import {Injectable} from '@angular/core';
+import {StorageService} from './storage.service';
 
 export type Privacy = 'all' | 'local' | 'none' | 'nobanner';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PrivacyService {
-  private _privacy: Privacy | null;
-
-  constructor() {
+  constructor(
+    private storageService: StorageService,
+  ) {
   }
 
   get privacy(): Privacy | null {
-    return this._privacy ?? localStorage.getItem('privacy') as Privacy;
+    return this.storageService.get('privacy') as Privacy;
   }
 
   set privacy(value: Privacy | null) {
-    if (this._privacy === value) {
-      return;
-    }
-
-    this._privacy = value;
-    if (value && value !== 'none') {
-      localStorage.setItem('privacy', value);
-    } else {
-      localStorage.removeItem('privacy');
-    }
+    this.storageService.set('privacy', value === 'none' ? null : value);
   }
 
   get allowLocalStorage(): boolean {
     const privacy = this.privacy;
-    return privacy && privacy !== 'none' && privacy !== 'nobanner';
+    return privacy !== null && privacy !== 'none' && privacy !== 'nobanner';
   }
 
   getStorage(key: string): string | null {
-    return this.allowLocalStorage ? localStorage.getItem(key) : null;
+    return this.allowLocalStorage ? this.storageService.get(key) : null;
   }
 
-  setStorage(key: string, value: string) {
-    if (this.allowLocalStorage) {
-      localStorage.setItem(key, value);
+  setStorage(key: string, value: string | null): void {
+    if (!this.allowLocalStorage) {
+      return;
     }
+
+    this.storageService.set(key, value);
   }
 }

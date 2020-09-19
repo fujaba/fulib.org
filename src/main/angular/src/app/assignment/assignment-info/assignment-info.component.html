@@ -1,7 +1,8 @@
 <h1>{{assignment ? assignment.title : 'Loading...'}}</h1>
 <p class="text-muted">
   <ng-container *ngIf="assignment">
-    by <app-author-name [name]="assignment.author" [email]="assignment.email"></app-author-name>
+    by
+    <app-author-name [name]="assignment.author" [email]="assignment.email"></app-author-name>
     <ng-container *ngIf="assignment.deadline">
       &mdash;
       Deadline: {{assignment.deadline | date:'medium'}}
@@ -12,7 +13,7 @@
   </ng-container>
 </p>
 
-<p *ngIf="assignment" [innerHTML]="assignment.descriptionHtml | safeHtml">
+<p *ngIf="assignment" [innerHTML]="assignment.descriptionHtml! | safeHtml">
 </p>
 <p *ngIf="!assignment">
   Loading Description...

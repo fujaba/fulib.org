@@ -15,5 +15,5 @@ export default class Assignment {
   solution: string;
   templateSolution: string;
 
-  static comparator = (a: Assignment, b: Assignment) => a.title.localeCompare(b.title) || a.id.localeCompare(b.id);
+  static comparator = (a: Assignment, b: Assignment) => a.title.localeCompare(b.title) || a.id!.localeCompare(b.id!);
 }

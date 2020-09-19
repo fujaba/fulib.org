@@ -21,9 +21,9 @@
       </div>
       <div class="mr-auto"><!-- Spacer --></div>
       <div class="pl-1">
-        <button type="button" class="btn btn-outline-secondary btn-sm" (click)="configModalComponent.open()">
+        <a role="button" class="btn btn-outline-secondary btn-sm" [routerLink]="[{outlets: {modal: 'config'}}]">
           Configure Project
-        </button>
+        </a>
       </div>
       <div class="pl-1">
         <div class="btn-group">
@@ -46,7 +46,7 @@
       </div>
     </div>
     <app-autotheme-codemirror #scenarioInput [(content)]="scenarioText" [options]="{
-        mode: 'markdown',
+        mode: 'scenario',
         lineNumbers: true,
         lineWrapping: true,
         styleActiveLine: true,
@@ -154,5 +154,3 @@
     </ng-container>
   </div>
 </div>
-
-<app-config-modal #configModalComponent></app-config-modal>

@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {forkJoin, Observable, of} from 'rxjs';
-import {flatMap, map} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 
 import {saveAs} from 'file-saver';
 
@@ -10,12 +10,14 @@ import {environment} from '../../environments/environment';
 import {StorageService} from '../storage.service';
 import Course from './model/course';
 import {CheckAssignment, CheckResult} from './model/check';
-import Solution from './model/solution';
 
-type AssignmentResponse = { id: string, token: string };
+interface AssignmentResponse {
+  id: string;
+  token: string;
+}
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AssignmentService {
   private _draft?: Assignment | null;
@@ -97,7 +99,7 @@ export class AssignmentService {
     const pattern = /^assignmentToken\/(.*)$/;
     const ids: string[] = [];
     for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
+      const key = localStorage.key(i)!;
       const match = pattern.exec(key);
       if (!match) {
         continue;
@@ -148,18 +150,18 @@ export class AssignmentService {
     return this.http.get<Assignment>(`${environment.apiURL}/assignments/${id}`, {headers}).pipe(
       map(a => {
         a.id = id;
-        a.token = this.getToken(id);
+        a.token = this.getToken(id) ?? undefined;
         this._cache.set(id, a);
         return a;
       }),
     );
   }
 
-  getNext(course: Course, assignment: Assignment): Observable<Assignment | null> {
-    const ids = course.assignmentIds;
-    const index = ids.indexOf(assignment.id);
+  getNext(course: Course, assignment: Assignment): Observable<Assignment | undefined> {
+    const ids = course.assignmentIds!;
+    const index = ids.indexOf(assignment.id!);
     if (index < 0 || index + 1 >= ids.length) {
-      return of(null);
+      return of(undefined);
     }
 
     const nextID = ids[index + 1];

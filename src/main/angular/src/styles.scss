@@ -21,14 +21,24 @@
 
 /* --------------- Dark Mode Overrides --------------- */
 
-[data-theme="dark"] {
+@mixin darkmode-ext {
   .CodeMirror {
-    border-color: #404040;
+    border-color: $default-border;
   }
 
   img.diagram, .diagram > svg {
     filter: invert(100%);
   }
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-theme="auto"] {
+    @include darkmode-ext;
+  }
+}
+
+[data-theme="dark"] {
+  @include darkmode-ext;
 }
 
 html {
@@ -37,7 +47,7 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+  padding-top: 4.5rem;
 }
 
 /* --------------- Misc. --------------- */
@@ -125,10 +135,12 @@ $badge-color: #fff;
   filter: alpha(opacity=80);
   pointer-events: none;
 }
+
 /* high-performance display:none; helper */
 .gu-hide {
   left: -9999px !important;
 }
+
 /* added to mirrorContainer (default = body) while dragging */
 .gu-unselectable {
   -webkit-user-select: none !important;
@@ -136,6 +148,7 @@ $badge-color: #fff;
   -ms-user-select: none !important;
   user-select: none !important;
 }
+
 /* added to the source element while its mirror is dragged */
 .gu-transit {
   opacity: 0.2;

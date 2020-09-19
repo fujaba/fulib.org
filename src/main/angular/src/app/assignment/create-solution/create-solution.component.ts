@@ -1,8 +1,8 @@
 import {AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DOCUMENT} from '@angular/common';
 import {ActivatedRoute} from '@angular/router';
-import {zip} from 'rxjs';
-import {debounceTime, distinctUntilChanged, flatMap} from 'rxjs/operators';
+import {forkJoin, of} from 'rxjs';
+import {debounceTime, distinctUntilChanged, switchMap, tap} from 'rxjs/operators';
 
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
@@ -17,7 +17,7 @@ import TaskResult from '../model/task-result';
 @Component({
   selector: 'app-create-solution',
   templateUrl: './create-solution.component.html',
-  styleUrls: ['./create-solution.component.scss']
+  styleUrls: ['./create-solution.component.scss'],
 })
 export class CreateSolutionComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('successModal', {static: true}) successModal;
@@ -33,15 +33,15 @@ export class CreateSolutionComponent implements OnInit, AfterViewInit, OnDestroy
   checking = false;
   results?: TaskResult[];
 
-  id: string;
-  token: string;
-  timeStamp: Date;
+  id?: string;
+  token?: string;
+  timeStamp?: Date;
 
   submitting: boolean;
 
   private readonly origin: string;
 
-  nextAssignment?: Assignment | null;
+  nextAssignment?: Assignment;
 
   constructor(
     private courseService: CourseService,
@@ -55,25 +55,17 @@ export class CreateSolutionComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      const assignment$ = this.assignmentService.get(params.aid);
-      assignment$.subscribe(result => {
-        this.assignment = result;
-        this.loadDraft();
-      });
-
-      const course$ = this.courseService.get(params.cid);
-      if (params.cid) {
-        course$.subscribe(result => {
-          this.course = result;
-        });
-
-        zip(course$, assignment$).pipe(
-          flatMap(([course, assignment]) => this.assignmentService.getNext(course, assignment)),
-        ).subscribe(result => {
-          this.nextAssignment = result;
-        });
-      }
+    this.route.params.pipe(
+      switchMap(params => forkJoin({
+        assignment: this.assignmentService.get(params.aid).pipe(tap(assignment => {
+          this.assignment = assignment;
+          this.loadDraft();
+        })),
+        course: params.cid ? this.courseService.get(params.cid).pipe(tap(course => this.course = course)) : of(undefined),
+      })),
+      switchMap(({assignment, course}) => assignment && course ? this.assignmentService.getNext(course, assignment) : of(undefined)),
+    ).subscribe(next => {
+      this.nextAssignment = next;
     });
   }
 
@@ -92,7 +84,7 @@ export class CreateSolutionComponent implements OnInit, AfterViewInit, OnDestroy
 
   getSolution(): Solution {
     return {
-      assignment: this.assignment.id,
+      assignment: this.assignment.id!,
       id: this.id,
       token: this.token,
       name: this.name,

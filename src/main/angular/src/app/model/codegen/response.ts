@@ -1,5 +1,5 @@
-import TestMethod from "./test-method";
-import Diagram from "./diagram";
+import TestMethod from './test-method';
+import Diagram from './diagram';
 
 export default class Response {
   output: string;

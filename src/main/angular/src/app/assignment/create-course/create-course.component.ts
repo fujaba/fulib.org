@@ -1,7 +1,7 @@
 import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DOCUMENT} from '@angular/common';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {Observable} from 'rxjs';
+import {forkJoin, Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 
 import {DragulaService} from 'ng2-dragula';
@@ -14,7 +14,7 @@ import {CourseService} from '../course.service';
 @Component({
   selector: 'app-create-course',
   templateUrl: './create-course.component.html',
-  styleUrls: ['./create-course.component.scss']
+  styleUrls: ['./create-course.component.scss'],
 })
 export class CreateCourseComponent implements OnInit, OnDestroy {
   @ViewChild('successModal', {static: true}) successModal;
@@ -47,7 +47,7 @@ export class CreateCourseComponent implements OnInit, OnDestroy {
           .map(a => `${a.title} (${a.id})`);
       }),
     );
-  }
+  };
 
   constructor(
     private assignmentService: AssignmentService,
@@ -61,9 +61,9 @@ export class CreateCourseComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.dragulaService.createGroup('ASSIGNMENTS', {
-      moves(el, container, handle) {
-        return handle.classList.contains('handle');
-      }
+      moves(el, container, handle): boolean {
+        return handle?.classList.contains('handle') ?? false;
+      },
     });
     this.loadDraft();
     this.assignmentService.getOwn().subscribe(assignments => {
@@ -79,7 +79,7 @@ export class CreateCourseComponent implements OnInit, OnDestroy {
     return {
       title: this.title,
       description: this.description,
-      assignmentIds: this.assignments.map(a => a.id),
+      assignmentIds: this.assignments.map(a => a.id!),
     };
   }
 
@@ -87,12 +87,9 @@ export class CreateCourseComponent implements OnInit, OnDestroy {
     this.title = course.title;
     this.description = course.description;
 
-    this.assignments = new Array<Assignment>(course.assignmentIds.length);
-    for (let i = 0; i < course.assignmentIds.length; i++) {
-      this.assignmentService.get(course.assignmentIds[i]).subscribe(assignment => {
-        this.assignments[i] = assignment;
-      });
-    }
+    forkJoin(course.assignmentIds!.map(id => this.assignmentService.get(id))).subscribe(assignments => {
+      this.assignments = assignments;
+    });
   }
 
   loadDraft(): void {

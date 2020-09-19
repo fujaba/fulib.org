@@ -7,7 +7,7 @@
   <h2><label for="solutionInput">Solution</label></h2>
   <p>
     <app-autotheme-codemirror id="solutionInput" [content]="solution?.solution || 'Loading...'" [options]="{
-      mode: 'markdown',
+      mode: 'scenario',
       lineNumbers: true,
       lineWrapping: true,
       styleActiveLine: true,
@@ -55,7 +55,8 @@
         <div class="card">
           <div class="card-header">
             <app-author-name [name]="comment.author" [email]="comment.email"></app-author-name>
-            <span *ngIf="comment.distinguished" class="badge badge-pill badge-primary" ngbTooltip="Assignment Authority">
+            <span *ngIf="comment.distinguished" class="badge badge-pill badge-primary"
+                  ngbTooltip="Assignment Authority">
               &#10003;
             </span>
             &#8226;
@@ -110,5 +111,5 @@
   </ol>
 </div>
 
-<app-token-modal #tokenModal [solution]="true" (submit)="setTokens($event.solutionToken, $event.assignmentToken)">
+<app-token-modal #tokenModal [solution]="true" (submitTokens)="setTokens($event.solutionToken, $event.assignmentToken)">
 </app-token-modal>

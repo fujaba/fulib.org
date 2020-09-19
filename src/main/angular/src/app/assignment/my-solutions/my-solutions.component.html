@@ -9,7 +9,8 @@
         {{assignment.title}}
       </h3>
       <p class="text-muted">
-        by <app-author-name [name]="assignment.author" [email]="assignment.email"></app-author-name>
+        by
+        <app-author-name [name]="assignment.author" [email]="assignment.email"></app-author-name>
         <ng-container *ngIf="assignment.deadline">
           &mdash;
           Deadline: {{assignment.deadline | date:'medium'}}
@@ -19,10 +20,11 @@
 
       </p>
       <div class="list-group">
-        <a *ngFor="let solution of solutions.get(assignment.id)"
+        <a *ngFor="let solution of solutions!.get(assignment.id!)"
            class="list-group-item list-group-item-action"
            routerLink="/assignments/{{assignment.id}}/solutions/{{solution.id}}">
-          by <app-author-name [name]="solution.name" [email]="solution.email"></app-author-name>
+          by
+          <app-author-name [name]="solution.name" [email]="solution.email"></app-author-name>
           &mdash;
           {{solution.studentID}}
           &mdash;
@@ -30,7 +32,8 @@
         </a>
         <a class="list-group-item list-group-item-action"
            routerLink="/assignments/{{assignment.id}}">
-          by <app-author-name [name]="name" [email]="email"></app-author-name>
+          by
+          <app-author-name [name]="name" [email]="email"></app-author-name>
           &mdash;
           {{studentID}}
           &mdash;

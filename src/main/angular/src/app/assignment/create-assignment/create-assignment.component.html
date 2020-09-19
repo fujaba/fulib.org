@@ -66,7 +66,7 @@
             {{task.description || '(no description)'}}
           </ng-template>
           <span class="badge badge-{{task.deleted ? 'secondary' : getColorClass(id) || 'secondary'}}">
-            {{task.points === 0 || task.points > 0 ? task.points : '?'}}
+            {{task.points}}
           </span>
         </div>
         <app-collapse-button class="ml-auto" [(collapsed)]="task.collapsed" (collapsedChange)="saveDraft()">
@@ -107,7 +107,7 @@
                                       [(content)]="task.verification"
                                       (change)="saveDraft()"
                                       [options]="{
-              mode: 'markdown',
+              mode: 'scenario',
               autoRefresh: true,
               lineNumbers: true,
               lineWrapping: true,
@@ -137,8 +137,9 @@
     <app-collapse-button class="ml-2" [(collapsed)]="collapse.templateSolution"></app-collapse-button>
   </h2>
   <p [ngbCollapse]="collapse.templateSolution">
-    <app-autotheme-codemirror id="templateSolutionInput" #templateSolutionInput [(content)]="templateSolution" [options]="{
-      mode: 'markdown',
+    <app-autotheme-codemirror id="templateSolutionInput" #templateSolutionInput [(content)]="templateSolution"
+                              [options]="{
+      mode: 'scenario',
       autoRefresh: true,
       lineNumbers: true,
       lineWrapping: true,
@@ -156,7 +157,7 @@
   </h2>
   <p [ngbCollapse]="collapse.solution">
     <app-autotheme-codemirror id="solutionInput" #solutionInput [(content)]="solution" [options]="{
-      mode: 'markdown',
+      mode: 'scenario',
       autoRefresh: true,
       lineNumbers: true,
       lineWrapping: true,
