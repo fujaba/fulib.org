@@ -5,11 +5,11 @@ import {ChangelogService, Versions} from '../changelog.service';
 import {PrivacyService} from '../privacy.service';
 
 @Component({
-  selector: 'app-footer',
-  templateUrl: './footer.component.html',
-  styleUrls: ['./footer.component.scss'],
+  selector: 'app-header',
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.scss'],
 })
-export class FooterComponent implements OnInit, AfterViewInit {
+export class HeaderComponent implements OnInit, AfterViewInit {
   constructor(
     private privacyService: PrivacyService,
     private changelogService: ChangelogService,
