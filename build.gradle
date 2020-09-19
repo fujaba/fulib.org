@@ -95,6 +95,9 @@ dependencies {
 	// https://mvnrepository.com/artifact/junit/junit
 	compile group: 'junit', name: 'junit', version: '4.13'
 
+	// https://mvnrepository.com/artifact/org.mockito/mockito-core
+	testCompile group: 'org.mockito', name: 'mockito-core', version: '3.4.4'
+
 	// --------------- CommonMark ---------------
 
 	// https://mvnrepository.com/artifact/com.atlassian.commonmark/commonmark
