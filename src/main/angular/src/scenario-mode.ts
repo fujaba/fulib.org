@@ -97,8 +97,8 @@ export const Keywords = [
 
 export const ScenarioMode: SimpleMode = {
   start: [
-    {regex: /\s*(##)(.*)$/, token: ['header', 'comment'], sol: true},
-    {regex: /\s*(#)(.*)$/, token: ['header', 'def'], sol: true},
+    {regex: /(\s*)(##)(.*)$/, token: [null, 'header', 'comment'], sol: true},
+    {regex: /(\s*)(#)(.*)$/, token: [null, 'header', 'def'], sol: true},
     {regex: /\/\/.*/, token: 'comment'},
     {regex: /\s*[+*-]/, token: 'operator', sol: true},
     {regex: /\s*[0-9]\./, token: 'number', sol: true},
@@ -110,7 +110,7 @@ export const ScenarioMode: SimpleMode = {
     {regex: /<!--/, token: 'comment', next: 'htmlComment'},
     {regex: /!\[/, token: 'image'},
     {regex: /]\(/, token: 'image', next: 'fileName'},
-    {regex: new RegExp(`(?:${Keywords.join('|')})\\b`), token: 'keyword'},
+    {regex: new RegExp(`(?:${Keywords.join('|')})(?![a-zA-Z0-9'_-])`), token: 'keyword'},
     {regex: /[a-zA-Z_][a-zA-Z0-9'_-]*/, token: 'variable'},
   ],
   parenComment: [
