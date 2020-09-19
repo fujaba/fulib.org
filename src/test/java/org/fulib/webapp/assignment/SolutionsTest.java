@@ -13,6 +13,7 @@ import spark.Request;
 import spark.Response;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 
 import static org.fulib.webapp.assignment.TestHelper.expectHalt;
@@ -328,6 +329,87 @@ public class SolutionsTest
 		solution.getResults().add(result1);
 
 		return solution;
+	}
+
+	@Test
+	public void getAll404() throws Exception
+	{
+		final Mongo db = mock(Mongo.class);
+		final Solutions solutions = new Solutions(db);
+		final Request request = mock(Request.class);
+		final Response response = mock(Response.class);
+
+		when(request.contentType()).thenReturn("application/json");
+		when(request.params("assignmentID")).thenReturn("-1");
+
+		expectHalt(404, "assignment with id '-1'' not found", () -> solutions.getAll(request, response));
+	}
+
+	@Test
+	public void getAllWithoutToken() throws Exception
+	{
+		final Mongo db = mock(Mongo.class);
+		final Solutions solutions = new Solutions(db);
+		final Request request = mock(Request.class);
+		final Response response = mock(Response.class);
+
+		final Solution solution = createSolution();
+		final Assignment assignment = solution.getAssignment();
+
+		when(db.getSolution(ID)).thenReturn(solution);
+		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
+		when(request.contentType()).thenReturn("application/json");
+		when(request.params("assignmentID")).thenReturn(assignment.getID());
+
+		expectHalt(401, "invalid Assignment-Token", () -> solutions.getAll(request, response));
+	}
+
+	@Test
+	public void getAllWithWrongToken() throws Exception
+	{
+		final Mongo db = mock(Mongo.class);
+		final Solutions solutions = new Solutions(db);
+		final Request request = mock(Request.class);
+		final Response response = mock(Response.class);
+
+		final Solution solution = createSolution();
+		final Assignment assignment = solution.getAssignment();
+
+		when(db.getSolution(ID)).thenReturn(solution);
+		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
+		when(request.contentType()).thenReturn("application/json");
+		when(request.params("assignmentID")).thenReturn(assignment.getID());
+		when(request.headers("Assignment-Token")).thenReturn("a456");
+
+		expectHalt(401, "invalid Assignment-Token", () -> solutions.getAll(request, response));
+	}
+
+	@Test
+	public void getAll()
+	{
+		final Mongo db = mock(Mongo.class);
+		final Solutions solutions = new Solutions(db);
+		final Request request = mock(Request.class);
+		final Response response = mock(Response.class);
+
+		final Solution solution = createSolution();
+		final Assignment assignment = solution.getAssignment();
+
+		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
+		when(db.getSolutions(assignment.getID())).thenReturn(Collections.singletonList(solution));
+		when(request.contentType()).thenReturn("application/json");
+		when(request.params("assignmentID")).thenReturn(assignment.getID());
+		when(request.headers("Assignment-Token")).thenReturn(assignment.getToken());
+
+		final String responseBody = (String) solutions.getAll(request, response);
+		final JSONObject responseObj = new JSONObject(responseBody);
+
+		assertThat(responseObj.getInt("count"), equalTo(1));
+
+		final JSONArray solutionArray = responseObj.getJSONArray("solutions");
+		assertThat(solutionArray.length(), equalTo(1));
+
+		checkGetResponse(solutionArray.getJSONObject(0), true);
 	}
 
 	@Test
