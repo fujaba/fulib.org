@@ -512,6 +512,112 @@ public class SolutionsTest
 	}
 
 	@Test
+	public void setAssignee404() throws Exception
+	{
+		final Mongo db = mock(Mongo.class);
+		final Solutions solutions = new Solutions(db);
+		final Request request = mock(Request.class);
+		final Response response = mock(Response.class);
+
+		when(db.getSolution("-1")).thenReturn(null);
+		when(request.params("solutionID")).thenReturn("-1");
+
+		expectHalt(404, "solution with id '-1'' not found", () -> solutions.setAssignee(request, response));
+	}
+
+	@Test
+	public void setAssigneeWrongAssignmentID() throws Exception
+	{
+		final Mongo db = mock(Mongo.class);
+		final Solutions solutions = new Solutions(db);
+		final Request request = mock(Request.class);
+		final Response response = mock(Response.class);
+
+		final Solution solution = createSolution();
+		final Assignment assignment = solution.getAssignment();
+
+		when(db.getSolution(ID)).thenReturn(solution);
+		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
+		when(request.params("solutionID")).thenReturn(ID);
+		when(request.params("assignmentID")).thenReturn("a2");
+
+		expectHalt(400, "assignment ID from URL 'a2' does not match assignment ID of solution 'a1'",
+		           () -> solutions.setAssignee(request, response));
+	}
+
+	@Test
+	public void setAssigneeWithoutToken() throws Exception
+	{
+		final Mongo db = mock(Mongo.class);
+		final Solutions solutions = new Solutions(db);
+		final Request request = mock(Request.class);
+		final Response response = mock(Response.class);
+
+		final Solution solution = createSolution();
+		final Assignment assignment = solution.getAssignment();
+
+		when(db.getSolution(ID)).thenReturn(solution);
+		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
+		when(request.contentType()).thenReturn("application/json");
+		when(request.params("solutionID")).thenReturn(ID);
+		when(request.params("assignmentID")).thenReturn(assignment.getID());
+
+		expectHalt(401, "invalid Assignment-Token", () -> solutions.setAssignee(request, response));
+	}
+
+	@Test
+	public void setAssigneeWithWrongToken() throws Exception
+	{
+		final Mongo db = mock(Mongo.class);
+		final Solutions solutions = new Solutions(db);
+		final Request request = mock(Request.class);
+		final Response response = mock(Response.class);
+
+		final Solution solution = createSolution();
+		final Assignment assignment = solution.getAssignment();
+
+		when(db.getSolution(ID)).thenReturn(solution);
+		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
+		when(request.contentType()).thenReturn("application/json");
+		when(request.params("solutionID")).thenReturn(ID);
+		when(request.params("assignmentID")).thenReturn(assignment.getID());
+		when(request.headers("Assignment-Token")).thenReturn("a456");
+
+		expectHalt(401, "invalid Assignment-Token", () -> solutions.setAssignee(request, response));
+	}
+
+	@Test
+	public void setAssignee()
+	{
+		final Mongo db = mock(Mongo.class);
+		final Solutions solutions = new Solutions(db);
+		final Request request = mock(Request.class);
+		final Response response = mock(Response.class);
+
+		final Solution solution = createSolution();
+		final Assignment assignment = solution.getAssignment();
+
+		final JSONObject requestObj = new JSONObject();
+		requestObj.put("assignee", "Peter");
+		final String requestBody = requestObj.toString();
+
+		when(db.getSolution(ID)).thenReturn(solution);
+		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
+		when(request.contentType()).thenReturn("application/json");
+		when(request.params("solutionID")).thenReturn(ID);
+		when(request.params("assignmentID")).thenReturn(assignment.getID());
+		when(request.headers("Assignment-Token")).thenReturn(assignment.getToken());
+		when(request.body()).thenReturn(requestBody);
+
+		final String responseBody = (String) solutions.setAssignee(request, response);
+		final JSONObject responseObj = new JSONObject(responseBody);
+
+		assertThat(responseObj, notNullValue());
+
+		verify(db).saveAssignee(ID, "Peter");
+	}
+
+	@Test
 	public void checkNoAssignment() throws Exception
 	{
 		final Mongo db = mock(Mongo.class);
