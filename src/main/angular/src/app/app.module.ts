@@ -12,7 +12,7 @@ import {AppComponent} from './app.component';
 import {ChangelogComponent} from './changelog/changelog.component';
 import {ConfigComponent} from './config/config.component';
 import {FeedbackComponent} from './feedback/feedback.component';
-import {FooterComponent} from './footer/footer.component';
+import {HeaderComponent} from './header/header.component';
 import {FourPaneEditorComponent} from './four-pane-editor/four-pane-editor.component';
 import {ModalComponent} from './modal/modal.component';
 import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
@@ -25,7 +25,7 @@ import {SharedModule} from './shared/shared.module';
     AppComponent,
     FourPaneEditorComponent,
     ConfigComponent,
-    FooterComponent,
+    HeaderComponent,
     PageNotFoundComponent,
     ChangelogComponent,
     ModalComponent,
