@@ -810,6 +810,124 @@ public class SolutionsTest
 	}
 
 	@Test
+	public void postGrading404() throws Exception
+	{
+		final Mongo db = mock(Mongo.class);
+		final Solutions solutions = new Solutions(db);
+		final Request request = mock(Request.class);
+		final Response response = mock(Response.class);
+
+		when(db.getSolution("-1")).thenReturn(null);
+		when(request.params("solutionID")).thenReturn("-1");
+
+		expectHalt(404, "solution with id '-1'' not found", () -> solutions.postGrading(request, response));
+	}
+
+	@Test
+	public void postGradingWrongAssignmentID() throws Exception
+	{
+		final Mongo db = mock(Mongo.class);
+		final Solutions solutions = new Solutions(db);
+		final Request request = mock(Request.class);
+		final Response response = mock(Response.class);
+
+		final Solution solution = createSolution();
+		final Assignment assignment = solution.getAssignment();
+
+		when(db.getSolution(ID)).thenReturn(solution);
+		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
+		when(request.params("solutionID")).thenReturn(ID);
+		when(request.params("assignmentID")).thenReturn("a2");
+
+		expectHalt(400, "assignment ID from URL 'a2' does not match assignment ID of solution 'a1'",
+		           () -> solutions.postGrading(request, response));
+	}
+
+	@Test
+	public void postGradingWithoutToken() throws Exception
+	{
+		final Mongo db = mock(Mongo.class);
+		final Solutions solutions = new Solutions(db);
+		final Request request = mock(Request.class);
+		final Response response = mock(Response.class);
+
+		final Solution solution = createSolution();
+		final Assignment assignment = solution.getAssignment();
+
+		when(db.getSolution(ID)).thenReturn(solution);
+		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
+		when(request.contentType()).thenReturn("application/json");
+		when(request.params("solutionID")).thenReturn(ID);
+		when(request.params("assignmentID")).thenReturn(assignment.getID());
+
+		expectHalt(401, "invalid Assignment-Token", () -> solutions.postGrading(request, response));
+	}
+
+	@Test
+	public void postGradingWithWrongToken() throws Exception
+	{
+		final Mongo db = mock(Mongo.class);
+		final Solutions solutions = new Solutions(db);
+		final Request request = mock(Request.class);
+		final Response response = mock(Response.class);
+
+		final Solution solution = createSolution();
+		final Assignment assignment = solution.getAssignment();
+
+		when(db.getSolution(ID)).thenReturn(solution);
+		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
+		when(request.contentType()).thenReturn("application/json");
+		when(request.params("solutionID")).thenReturn(ID);
+		when(request.params("assignmentID")).thenReturn(assignment.getID());
+		when(request.headers("Assignment-Token")).thenReturn("a456");
+
+		expectHalt(401, "invalid Assignment-Token", () -> solutions.postGrading(request, response));
+	}
+
+	@Test
+	public void postGrading()
+	{
+		final Mongo db = mock(Mongo.class);
+		final Solutions solutions = new Solutions(db);
+		final Request request = mock(Request.class);
+		final Response response = mock(Response.class);
+
+		final Solution solution = createSolution();
+		final Assignment assignment = solution.getAssignment();
+
+		final JSONObject requestObj = new JSONObject();
+		requestObj.put("taskID", 0);
+		requestObj.put("author", ASSIGNEE);
+		requestObj.put("points", 4);
+		requestObj.put("note", "very cool");
+		final String requestBody = requestObj.toString();
+
+		when(db.getSolution(ID)).thenReturn(solution);
+		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
+		when(request.contentType()).thenReturn("application/json");
+		when(request.params("solutionID")).thenReturn(ID);
+		when(request.params("assignmentID")).thenReturn(assignment.getID());
+		when(request.headers("Assignment-Token")).thenReturn(assignment.getToken());
+		when(request.body()).thenReturn(requestBody);
+
+		final String responseBody = (String) solutions.postGrading(request, response);
+		final JSONObject responseObj = new JSONObject(responseBody);
+
+		assertThat(responseObj.getString("timeStamp"), notNullValue());
+
+		final ArgumentCaptor<TaskGrading> captor = ArgumentCaptor.forClass(TaskGrading.class);
+		verify(db).addGrading(captor.capture());
+
+		final TaskGrading grading = captor.getValue();
+		assertThat(grading.getSolutionID(), equalTo(ID));
+		assertThat(grading.getTaskID(), equalTo(0));
+		assertThat(grading.getTimeStamp(), notNullValue());
+		assertThat(grading.getAuthor(), equalTo(ASSIGNEE));
+		assertThat(grading.getPoints(), equalTo(4));
+		assertThat(grading.getNote(), equalTo("very cool"));
+	}
+
+	@Test
 	public void checkNoAssignment() throws Exception
 	{
 		final Mongo db = mock(Mongo.class);
