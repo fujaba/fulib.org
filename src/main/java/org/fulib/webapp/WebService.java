@@ -49,7 +49,6 @@ public class WebService
 	// =============== Fields ===============
 
 	private Service service;
-	private final Mongo db;
 	private final RunCodeGen runCodeGen;
 	private final ProjectZip projectZip;
 	private final Assignments assignments;
@@ -61,13 +60,24 @@ public class WebService
 
 	public WebService()
 	{
-		db = new Mongo(getMongoURL());
-		runCodeGen = new RunCodeGen(db);
-		projectZip = new ProjectZip(db);
-		assignments = new Assignments(db);
-		comments = new Comments(db);
-		solutions = new Solutions(db);
-		courses = new Courses(db);
+		this(new Mongo(getMongoURL()));
+	}
+
+	WebService(Mongo db)
+	{
+		this(new RunCodeGen(db), new ProjectZip(db), new Assignments(db), new Comments(db), new Solutions(db),
+		     new Courses(db));
+	}
+
+	WebService(RunCodeGen runCodeGen, ProjectZip projectZip, Assignments assignments, Comments comments,
+		Solutions solutions, Courses courses)
+	{
+		this.runCodeGen = runCodeGen;
+		this.projectZip = projectZip;
+		this.assignments = assignments;
+		this.comments = comments;
+		this.solutions = solutions;
+		this.courses = courses;
 	}
 
 	// =============== Static Methods ===============
@@ -103,6 +113,16 @@ public class WebService
 		setupExceptionHandler();
 
 		Logger.getGlobal().info("scenario server started on http://localhost:4567");
+	}
+
+	void awaitStart()
+	{
+		service.awaitInitialization();
+	}
+
+	void awaitStop()
+	{
+		service.awaitStop();
 	}
 
 	// --------------- Helpers ---------------

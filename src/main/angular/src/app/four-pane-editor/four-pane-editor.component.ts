@@ -56,8 +56,12 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
     });
 
     this.activatedRoute.queryParams.subscribe(queryParams => {
-      const exampleName: string = queryParams.example;
-      this.selectedExample = exampleName ? this.examplesService.getExampleByName(exampleName) : this.scenarioEditorService.selectedExample;
+      const exampleName = queryParams.example;
+      if (exampleName) {
+        this.selectedExample = this.examplesService.getExampleByName(exampleName);
+      } else {
+        this.selectedExample = this.scenarioEditorService.selectedExample;
+      }
     });
   }
 
@@ -129,9 +133,8 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
   }
 
   selectExample(value: Example | null): void {
-    this.selectedExample = value;
-    this.router.navigate([], {queryParams: {example: value?.name}});
     this.scenarioEditorService.selectedExample = value;
+    this.router.navigate([], {queryParams: {example: value?.name}});
   }
 
   private loadExample(value: Example | null): void {

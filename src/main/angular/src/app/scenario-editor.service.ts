@@ -83,11 +83,7 @@ There is a Car with name Herbie.
 
   set selectedExample(example: Example | null) {
     this._selectedExample = example;
-    if (example) {
-      this.privacyService.setStorage('selectedExample', example.name);
-    } else {
-      localStorage.removeItem('selectedExample');
-    }
+    this.privacyService.setStorage('selectedExample', example ? example.name : null);
   }
 
   get autoSubmit(): boolean {

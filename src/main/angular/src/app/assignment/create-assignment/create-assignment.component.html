@@ -107,7 +107,7 @@
                                       [(content)]="task.verification"
                                       (change)="saveDraft()"
                                       [options]="{
-              mode: 'markdown',
+              mode: 'scenario',
               autoRefresh: true,
               lineNumbers: true,
               lineWrapping: true,
@@ -139,7 +139,7 @@
   <p [ngbCollapse]="collapse.templateSolution">
     <app-autotheme-codemirror id="templateSolutionInput" #templateSolutionInput [(content)]="templateSolution"
                               [options]="{
-      mode: 'markdown',
+      mode: 'scenario',
       autoRefresh: true,
       lineNumbers: true,
       lineWrapping: true,
@@ -157,7 +157,7 @@
   </h2>
   <p [ngbCollapse]="collapse.solution">
     <app-autotheme-codemirror id="solutionInput" #solutionInput [(content)]="solution" [options]="{
-      mode: 'markdown',
+      mode: 'scenario',
       autoRefresh: true,
       lineNumbers: true,
       lineWrapping: true,
