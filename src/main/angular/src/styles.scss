@@ -25,19 +25,14 @@
   @include reset-text();
   @include font-size($tooltip-font-size);
   word-wrap: break-word;
-  opacity: 0;
 
   // .tooltip-inner
   max-width: $tooltip-max-width;
-  padding: $tooltip-padding-y $tooltip-padding-x;
+  padding: $tooltip-padding-x $tooltip-padding-y;
   color: $tooltip-color;
-  text-align: center;
+  text-align: left;
   background-color: $tooltip-bg;
   @include border-radius($tooltip-border-radius);
-}
-
-.CodeMirror-lint-tooltip {
-  text-align: left;
 }
 
 .CodeMirror-lint-marker-error, .CodeMirror-lint-message-error {
