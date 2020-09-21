@@ -165,7 +165,7 @@ There is a Car with name Herbie.
     const result: Marker[] = [];
 
     for (const line of response.output.split('\n')) {
-      const match = /^.*\.md:(\d+):(\d+)(?:-(\d+))?: (error|warning|note): (.*)$/.exec(line);
+      const match = /^.*\.md:(\d+):(\d+)(?:-(\d+))?: (error|syntax|warning|note): (.*)$/.exec(line);
       if (!match) {
         continue;
       }
@@ -173,7 +173,7 @@ There is a Car with name Herbie.
       const row = +match[1] - 1;
       const col = +match[2];
       const endCol = +(match[3] || col) + 1;
-      const severity = match[4];
+      const severity = match[4] === 'syntax' ? 'error' : match[4];
       const message = match[5];
 
       result.push({
