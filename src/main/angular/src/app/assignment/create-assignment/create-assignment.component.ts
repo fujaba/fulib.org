@@ -137,7 +137,6 @@ export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestr
       this.checking = false;
       this.results = response.results;
       this.markers = this.assignmentService.lint(response);
-      console.log(response);
     });
   }
 
