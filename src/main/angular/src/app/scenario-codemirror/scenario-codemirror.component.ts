@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {AutothemeCodemirrorComponent} from '../autotheme-codemirror/autotheme-codemirror.component';
 import {Marker} from '../scenario-editor.service';
@@ -56,12 +56,21 @@ export class ScenarioCodemirrorComponent implements OnInit, OnDestroy {
     (this.scenarioInput?.ngxCodemirror?.codeMirror as any)?.performLint?.();
   }
 
+  get readOnly(): boolean {
+    return this.options.readOnly;
+  }
+
+  @Input()
+  set readOnly(value: boolean) {
+    this.options.readOnly = value;
+  }
+
   ngOnInit(): void {
     this.scenarioInput.contentChange.pipe(
       debounceTime(1000),
       distinctUntilChanged(),
     ).subscribe(() => {
-      if (this.autoSubmit) {
+      if (this.autoSubmit && !this.readOnly) {
         this.submit();
       }
     });
