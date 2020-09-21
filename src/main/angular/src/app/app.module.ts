@@ -19,6 +19,7 @@ import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
 import {PrivacyService} from './privacy.service';
 import {PrivacyComponent} from './privacy/privacy.component';
 import {SharedModule} from './shared/shared.module';
+import {ScenarioCodemirrorComponent} from './scenario-codemirror/scenario-codemirror.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import {SharedModule} from './shared/shared.module';
     ModalComponent,
     FeedbackComponent,
     PrivacyComponent,
+    ScenarioCodemirrorComponent,
   ],
   imports: [
     BrowserModule,

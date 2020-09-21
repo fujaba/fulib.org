@@ -45,23 +45,12 @@
         </div>
       </div>
     </div>
-    <app-autotheme-codemirror #scenarioInput [(content)]="scenarioText" [options]="{
-        mode: 'scenario',
-        lineNumbers: true,
-        lineWrapping: true,
-        styleActiveLine: true,
-        gutters: ['CodeMirror-lint-markers'],
-        extraKeys: {
-          'Ctrl-Enter': submitHandler,
-          'Cmd-Enter': submitHandler,
-          'Ctrl-S': submitHandler,
-          'Cmd-S': submitHandler
-        },
-        lint: {
-          lintOnChange: false,
-          getAnnotations: annotationHandler
-        }
-      }"></app-autotheme-codemirror>
+    <app-scenario-codemirror
+      [(content)]="scenarioText"
+      [autoSubmit]="autoSubmit"
+      [markers]="markers"
+      (save)="submit()"
+    ></app-scenario-codemirror>
   </div>
 
   <div class="col-md-12 col-lg-6">
