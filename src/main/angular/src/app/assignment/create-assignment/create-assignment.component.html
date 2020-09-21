@@ -156,13 +156,13 @@
     <app-collapse-button class="ml-2" [(collapsed)]="collapse.solution"></app-collapse-button>
   </h2>
   <p [ngbCollapse]="collapse.solution">
-    <app-autotheme-codemirror id="solutionInput" #solutionInput [(content)]="solution" [options]="{
-      mode: 'scenario',
-      autoRefresh: true,
-      lineNumbers: true,
-      lineWrapping: true,
-      styleActiveLine: true
-    }"></app-autotheme-codemirror>
+    <app-scenario-codemirror
+      id="solutionInput"
+      [(content)]="solution"
+      [autoSubmit]="true"
+      [markers]="markers"
+      (save)="check()"
+    ></app-scenario-codemirror>
     <small class="text-muted">
       You can provide a sample solution to ensure your assignment is solvable.
       Students cannot see this.

@@ -4,6 +4,7 @@ import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {DragulaService} from 'ng2-dragula';
+import {Marker} from '../../scenario-editor.service';
 
 import Task from '../model/task';
 import Assignment from '../model/assignment';
@@ -16,7 +17,6 @@ import TaskResult from '../model/task-result';
   styleUrls: ['./create-assignment.component.scss'],
 })
 export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('solutionInput', {static: true}) solutionInput;
   @ViewChild('templateSolutionInput', {static: true}) templateSolutionInput;
   @ViewChild('successModal', {static: true}) successModal;
 
@@ -38,6 +38,7 @@ export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestr
 
   checking = false;
   results?: TaskResult[];
+  markers: Marker[] = [];
 
   submitting = false;
   id?: string;
@@ -70,18 +71,10 @@ export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestr
   ngOnDestroy(): void {
     this.dragulaService.destroy('TASKS');
 
-    this.solutionInput.contentChange.unsubscribe();
     this.templateSolutionInput.contentChange.unsubscribe();
   }
 
   ngAfterViewInit(): void {
-    this.solutionInput.contentChange.pipe(
-      debounceTime(1000),
-      distinctUntilChanged(),
-    ).subscribe(() => {
-      this.check();
-    });
-
     this.templateSolutionInput.contentChange.pipe(
       debounceTime(1000),
       distinctUntilChanged(),
@@ -143,6 +136,8 @@ export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestr
     this.assignmentService.check({solution: this.solution, tasks: this.tasks}).subscribe(response => {
       this.checking = false;
       this.results = response.results;
+      this.markers = this.assignmentService.lint(response);
+      console.log(response);
     });
   }
 
@@ -155,6 +150,7 @@ export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestr
       this.setAssignment(result);
       this.saveDraft();
       this.results = undefined;
+      this.markers = [];
     });
   }
 
