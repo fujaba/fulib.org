@@ -4,6 +4,8 @@ import {forkJoin, Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
 
 import {saveAs} from 'file-saver';
+import Response from '../model/codegen/response';
+import {Marker, ScenarioEditorService} from '../scenario-editor.service';
 
 import Assignment from './model/assignment';
 import {environment} from '../../environments/environment';
@@ -26,6 +28,7 @@ export class AssignmentService {
   constructor(
     private http: HttpClient,
     private storage: StorageService,
+    private scenarioEditorService: ScenarioEditorService,
   ) {
   }
 
@@ -118,6 +121,27 @@ export class AssignmentService {
 
   check(assignment: CheckAssignment): Observable<CheckResult> {
     return this.http.post<CheckResult>(`${environment.apiURL}/assignments/create/check`, assignment);
+  }
+
+  lint(result: CheckResult): Marker[] {
+    const markers = [];
+
+    for (let i = 0; i < result.results.length; i++) {
+      const taskResult = result.results[i];
+      const response: Response = {
+        exitCode: 0,
+        output: taskResult.output,
+      };
+      const markers = this.scenarioEditorService.lint(response);
+      for (const marker of markers) {
+        marker.message = `[task ${i + 1}] ${marker.message}`;
+        marker.from.line -= 2;
+        marker.to.line -= 2;
+      }
+      markers.push(...markers);
+    }
+
+    return markers;
   }
 
   submit(assignment: Assignment): Observable<Assignment> {
