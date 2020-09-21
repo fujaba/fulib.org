@@ -124,7 +124,7 @@ export class AssignmentService {
   }
 
   lint(result: CheckResult): Marker[] {
-    const markers = [];
+    const markers: Marker[] = [];
 
     for (let i = 0; i < result.results.length; i++) {
       const taskResult = result.results[i];
@@ -132,13 +132,13 @@ export class AssignmentService {
         exitCode: 0,
         output: taskResult.output,
       };
-      const markers = this.scenarioEditorService.lint(response);
-      for (const marker of markers) {
+      const taskMarkers = this.scenarioEditorService.lint(response);
+      for (const marker of taskMarkers) {
         marker.message = `[task ${i + 1}] ${marker.message}`;
         marker.from.line -= 2;
         marker.to.line -= 2;
       }
-      markers.push(...markers);
+      markers.push(...taskMarkers);
     }
 
     return markers;
