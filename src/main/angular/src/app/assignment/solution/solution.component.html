@@ -6,13 +6,12 @@
 
   <h2><label for="solutionInput">Solution</label></h2>
   <p>
-    <app-autotheme-codemirror id="solutionInput" [content]="solution?.solution || 'Loading...'" [options]="{
-      mode: 'scenario',
-      lineNumbers: true,
-      lineWrapping: true,
-      styleActiveLine: true,
-      readOnly: true
-    }"></app-autotheme-codemirror>
+    <app-scenario-codemirror
+      id="solutionInput"
+      [content]="solution ? solution.solution : 'Loading...'"
+      [markers]="markers"
+      readOnly="true"
+    ></app-scenario-codemirror>
   </p>
 
   <h2>Info</h2>

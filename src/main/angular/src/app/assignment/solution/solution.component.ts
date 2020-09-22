@@ -1,15 +1,16 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-
-import {SolutionService} from '../solution.service';
+import {combineLatest, forkJoin} from 'rxjs';
+import {map, switchMap, tap} from 'rxjs/operators';
+import {Marker} from '../../scenario-editor.service';
 import {AssignmentService} from '../assignment.service';
 
 import Assignment from '../model/assignment';
-import Solution from '../model/solution';
 import Comment from '../model/comment';
+import Solution from '../model/solution';
 import TaskGrading from '../model/task-grading';
-import {combineLatest, forkJoin} from 'rxjs';
-import {map, switchMap, tap} from 'rxjs/operators';
+
+import {SolutionService} from '../solution.service';
 
 @Component({
   selector: 'app-solution',
@@ -21,6 +22,7 @@ export class SolutionComponent implements OnInit {
 
   assignment?: Assignment;
   solution?: Solution;
+  markers: Marker[] = [];
 
   gradings?: TaskGrading[];
   comments?: Comment[];
@@ -55,6 +57,7 @@ export class SolutionComponent implements OnInit {
         this.assignmentService.get(assignmentId).pipe(tap(assignment => this.assignment = assignment)),
         this.solutionService.get(assignmentId, solutionId).pipe(tap(solution => {
           this.solution = solution;
+          this.markers = this.assignmentService.lint({results: solution.results!});
           this.loadCommentDraft();
         })),
         this.solutionService.getComments(assignmentId, solutionId).pipe(tap(comments => this.comments = comments)),
