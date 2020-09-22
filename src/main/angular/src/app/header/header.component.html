@@ -56,6 +56,9 @@
           Legal
         </a>
         <div ngbDropdownMenu aria-labelledby="legalDropdown">
+          <a ngbDropdownItem [routerLink]="[{outlets: {modal: 'about'}}]">
+            About
+          </a>
           <a ngbDropdownItem href="http://www.uni-kassel.de/uni/impressum.html">
             Imprint
           </a>
