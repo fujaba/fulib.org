@@ -41,3 +41,7 @@ FULIB_ORG_MONGODB_PASSWORD=fulibDotOrg
 > use them instead of `fulibDotOrg` in the env variables, too!
 
 IntelliJ users can also use the predefined run configurations with the above environment variables already set.
+
+## License
+
+[MIT](LICENSE.md)
