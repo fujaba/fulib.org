@@ -53,7 +53,7 @@ export class ScenarioCodemirrorComponent implements OnInit, OnDestroy {
   @Input()
   set markers(value: Marker[]) {
     this._markers = value;
-    (this.scenarioInput?.ngxCodemirror?.codeMirror as any)?.performLint?.();
+    this.performLint();
   }
 
   get readOnly(): boolean {
@@ -74,6 +74,10 @@ export class ScenarioCodemirrorComponent implements OnInit, OnDestroy {
         this.submit();
       }
     });
+  }
+
+  private performLint() {
+    (this.scenarioInput?.ngxCodemirror?.codeMirror as any)?.performLint?.();
   }
 
   ngOnDestroy() {
