@@ -10,6 +10,7 @@ import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 })
 export class ModalComponent implements OnInit, OnDestroy {
   @Input() size?: 'sm' | 'lg' | 'xl' | string;
+  @Input() scrollable?: boolean;
 
   @ViewChild('modal', {static: true}) modal;
   openModal?: NgbModalRef;
@@ -26,6 +27,7 @@ export class ModalComponent implements OnInit, OnDestroy {
     this.openModal = this.modalService.open(this.modal, {
       ariaLabelledBy: 'title',
       size: this.size,
+      scrollable: this.scrollable,
     });
 
     const handler = result => {
