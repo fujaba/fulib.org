@@ -65,6 +65,15 @@ export class ScenarioCodemirrorComponent implements OnInit, OnDestroy {
     this.options.readOnly = value;
   }
 
+  get autoRefresh(): boolean {
+    return this.options.autoRefresh;
+  }
+
+  @Input()
+  set autoRefresh(value: boolean) {
+    this.options.autoRefresh = value;
+  }
+
   ngOnInit(): void {
     this.scenarioInput.contentChange.pipe(
       debounceTime(1000),
