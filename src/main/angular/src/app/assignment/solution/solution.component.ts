@@ -57,13 +57,15 @@ export class SolutionComponent implements OnInit {
         this.assignmentService.get(assignmentId).pipe(tap(assignment => this.assignment = assignment)),
         this.solutionService.get(assignmentId, solutionId).pipe(tap(solution => {
           this.solution = solution;
-          this.markers = this.assignmentService.lint({results: solution.results!});
           this.loadCommentDraft();
         })),
         this.solutionService.getComments(assignmentId, solutionId).pipe(tap(comments => this.comments = comments)),
         this.solutionService.getGradings(assignmentId, solutionId).pipe(tap(gradings => this.gradings = gradings)),
       ])),
-    ).subscribe(_ => {
+    ).subscribe(([_, solution]) => {
+      // NB: this happens here instead of where the solution is loaded above, because the solution text needs to be updated first.
+      // Otherwise the markers don't show up
+      this.markers = this.assignmentService.lint({results: solution.results!});
     }, error => {
       if (error.status === 401) {
         this.tokenModal.open();
