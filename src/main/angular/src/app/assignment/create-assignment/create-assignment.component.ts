@@ -16,8 +16,7 @@ import TaskResult from '../model/task-result';
   templateUrl: './create-assignment.component.html',
   styleUrls: ['./create-assignment.component.scss'],
 })
-export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('templateSolutionInput', {static: true}) templateSolutionInput;
+export class CreateAssignmentComponent implements OnInit, OnDestroy {
   @ViewChild('successModal', {static: true}) successModal;
 
   collapse = {
@@ -70,17 +69,6 @@ export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestr
 
   ngOnDestroy(): void {
     this.dragulaService.destroy('TASKS');
-
-    this.templateSolutionInput.contentChange.unsubscribe();
-  }
-
-  ngAfterViewInit(): void {
-    this.templateSolutionInput.contentChange.pipe(
-      debounceTime(1000),
-      distinctUntilChanged(),
-    ).subscribe(() => {
-      this.saveDraft();
-    });
   }
 
   getDeadline(): Date | null {

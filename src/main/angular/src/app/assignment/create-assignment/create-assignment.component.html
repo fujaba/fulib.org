@@ -103,16 +103,13 @@
         <div class="form-group row">
           <label for="task/{{id}}/verificationInput" class="col-sm-2 col-form-label">Verification</label>
           <div class="col-sm-10">
-            <app-autotheme-codemirror id="task/{{id}}/verificationInput"
-                                      [(content)]="task.verification"
-                                      (change)="saveDraft()"
-                                      [options]="{
-              mode: 'scenario',
-              autoRefresh: true,
-              lineNumbers: true,
-              lineWrapping: true,
-              styleActiveLine: true
-            }"></app-autotheme-codemirror>
+            <app-scenario-codemirror
+              id="task/{{id}}/verificationInput"
+              [content]="task.verification"
+              [autoRefresh]="true"
+              [autoSubmit]="true"
+              (save)="saveDraft()"
+            ></app-scenario-codemirror>
           </div>
         </div>
         <div class="form-group row" *ngIf="!task.deleted && results && results[id].output">
@@ -137,14 +134,13 @@
     <app-collapse-button class="ml-2" [(collapsed)]="collapse.templateSolution"></app-collapse-button>
   </h2>
   <p [ngbCollapse]="collapse.templateSolution">
-    <app-autotheme-codemirror id="templateSolutionInput" #templateSolutionInput [(content)]="templateSolution"
-                              [options]="{
-      mode: 'scenario',
-      autoRefresh: true,
-      lineNumbers: true,
-      lineWrapping: true,
-      styleActiveLine: true
-    }"></app-autotheme-codemirror>
+    <app-scenario-codemirror
+      id="templateSolutionInput"
+      [content]="templateSolution"
+      [autoRefresh]="true"
+      [autoSubmit]="true"
+      (save)="saveDraft()"
+    ></app-scenario-codemirror>
     <small class="text-muted">
       Optional. This will be shown to students in the solution editor when they first open your assignment.
       You can instruct them to fill in blanks or make changes.
