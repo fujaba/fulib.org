@@ -1,36 +1,30 @@
-import {Component, NgZone, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
-
-import {AutothemeCodemirrorComponent} from '../autotheme-codemirror/autotheme-codemirror.component';
 
 import {ExamplesService} from '../examples.service';
-import {ScenarioEditorService} from '../scenario-editor.service';
+import Request from '../model/codegen/request';
+import Response from '../model/codegen/response';
+import Example from '../model/example';
 
 import ExampleCategory from '../model/example-category';
-import Example from '../model/example';
-import Response from '../model/codegen/response';
-import Request from '../model/codegen/request';
 import {PrivacyService} from '../privacy.service';
+import {Marker, ScenarioEditorService} from '../scenario-editor.service';
 
 @Component({
   selector: 'app-four-pane-editor',
   templateUrl: './four-pane-editor.component.html',
   styleUrls: ['./four-pane-editor.component.scss'],
 })
-export class FourPaneEditorComponent implements OnInit, OnDestroy {
-  @ViewChild('scenarioInput', {static: true}) scenarioInput: AutothemeCodemirrorComponent;
-
+export class FourPaneEditorComponent implements OnInit {
   _selectedExample: Example | null;
   scenarioText: string;
   response: Response | null;
+  markers: Marker[] = [];
   javaCode = '// Loading...';
   submitting: boolean;
 
   exampleCategories: ExampleCategory[];
   _activeObjectDiagramTab = 1;
-
-  submitHandler = () => this.zone.run(() => this.submit());
 
   constructor(
     private examplesService: ExamplesService,
@@ -38,21 +32,11 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
     private privacyService: PrivacyService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private zone: NgZone,
   ) {
   }
 
   ngOnInit() {
     this.exampleCategories = this.examplesService.getCategories();
-
-    this.scenarioInput.contentChange.pipe(
-      debounceTime(1000),
-      distinctUntilChanged(),
-    ).subscribe(() => {
-      if (this.autoSubmit) {
-        this.submit();
-      }
-    });
 
     this.activatedRoute.queryParams.subscribe(queryParams => {
       const exampleName = queryParams.example;
@@ -62,10 +46,6 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
         this.selectedExample = this.scenarioEditorService.selectedExample;
       }
     });
-  }
-
-  ngOnDestroy() {
-    this.scenarioInput.contentChange.unsubscribe();
   }
 
   submit(): void {
@@ -85,6 +65,7 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
       this.submitting = false;
       this.response = response;
       this.javaCode = this.renderJavaCode();
+      this.markers = this.scenarioEditorService.lint(response);
     });
   }
 
@@ -96,7 +77,7 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
     let javaCode = '';
     if (this.response.exitCode !== 0) {
       const outputLines = this.response.output.split('\n');
-      javaCode += this.foldInternalCalls(outputLines).map(line => `// ${line}\n`).join('');
+      javaCode += this.scenarioEditorService.foldInternalCalls(outputLines).map(line => `// ${line}\n`).join('');
     }
 
     for (const testMethod of this.response.testMethods ?? []) {
@@ -106,26 +87,6 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
     }
 
     return javaCode;
-  }
-
-  private foldInternalCalls(outputLines: string[]): string[] {
-    const packageName = this.scenarioEditorService.packageName.replace('/', '.');
-    const packageNamePrefix = `\tat ${packageName}.`;
-    const result: string[] = [];
-    let counter = 0;
-    for (const line of outputLines) {
-      if (line.startsWith('\tat org.fulib.scenarios.tool.')
-        || line.startsWith('\tat ') && !line.startsWith('\tat org.fulib.') && !line.startsWith(packageNamePrefix)) {
-        counter++;
-      } else {
-        if (counter > 0) {
-          result.push(counter === 1 ? '\t(1 internal call)' : `\t(${counter} internal calls)`);
-          counter = 0;
-        }
-        result.push(line);
-      }
-    }
-    return result;
   }
 
   toolSuccess(index: number) {

@@ -1,15 +1,17 @@
-import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+
+import {saveAs} from 'file-saver';
 import {forkJoin, Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
 
-import {saveAs} from 'file-saver';
-
-import Assignment from './model/assignment';
 import {environment} from '../../environments/environment';
+import Response from '../model/codegen/response';
+import {Marker, ScenarioEditorService} from '../scenario-editor.service';
 import {StorageService} from '../storage.service';
-import Course from './model/course';
+import Assignment from './model/assignment';
 import {CheckAssignment, CheckResult} from './model/check';
+import Course from './model/course';
 
 interface AssignmentResponse {
   id: string;
@@ -26,6 +28,7 @@ export class AssignmentService {
   constructor(
     private http: HttpClient,
     private storage: StorageService,
+    private scenarioEditorService: ScenarioEditorService,
   ) {
   }
 
@@ -118,6 +121,42 @@ export class AssignmentService {
 
   check(assignment: CheckAssignment): Observable<CheckResult> {
     return this.http.post<CheckResult>(`${environment.apiURL}/assignments/create/check`, assignment);
+  }
+
+  lint(result: CheckResult): Marker[] {
+    const grouped = new Map<string, { marker: Marker, tasks: number[] }>();
+
+    for (let i = 0; i < result.results.length; i++) {
+      const taskNum = i + 1;
+      const taskResult = result.results[i];
+      const response: Response = {
+        exitCode: 0,
+        output: taskResult.output,
+      };
+
+      for (const marker of this.scenarioEditorService.lint(response)) {
+        marker.from.line -= 2;
+        marker.to.line -= 2;
+
+        const key = `${marker.from.line}:${marker.from.ch}-${marker.to.line}:${marker.to.ch}:${marker.severity}:${marker.message}`;
+        let entry = grouped.get(key);
+        if (entry) {
+          entry.tasks.push(taskNum);
+        } else {
+          entry = {marker, tasks: [taskNum]};
+          grouped.set(key, entry);
+        }
+      }
+    }
+
+    const markers: Marker[] = [];
+
+    for (const {marker, tasks} of grouped.values()) {
+      marker.message = `[${tasks.length == 1 ? 'task' : 'tasks'} ${tasks.join(', ')}] ${marker.message}`;
+      markers.push(marker);
+    }
+
+    return markers;
   }
 
   submit(assignment: Assignment): Observable<Assignment> {

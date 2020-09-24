@@ -146,7 +146,8 @@ public class RunCodeGen
 
 			// invoke scenario compiler
 			final int exitCode = Tools.genCompileRun(out, out, srcDir, modelSrcDir, testSrcDir, modelClassesDir,
-			                                         testClassesDir, "--class-diagram-svg", "--object-diagram-svg");
+			                                         testClassesDir, "--class-diagram-svg", "--object-diagram-svg",
+			                                         "--marker-end-columns");
 
 			final Result result = new Result();
 			result.setExitCode(exitCode);

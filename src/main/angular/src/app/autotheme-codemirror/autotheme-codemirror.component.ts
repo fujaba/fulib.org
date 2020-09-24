@@ -1,7 +1,8 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {CodemirrorComponent} from '@ctrl/ngx-codemirror';
 import {ThemeService} from 'ng-bootstrap-darkmode';
-import {fromEvent, of, Subscription} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
+import {of, Subscription} from 'rxjs';
+import {switchMap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-autotheme-codemirror',
@@ -13,6 +14,8 @@ export class AutothemeCodemirrorComponent implements OnInit, OnDestroy {
   @Output() contentChange = new EventEmitter<string>();
 
   @Input() options: any;
+
+  @ViewChild('ngxCodemirror') ngxCodemirror: CodemirrorComponent;
 
   private subscription: Subscription;
 

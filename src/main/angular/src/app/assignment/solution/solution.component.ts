@@ -1,15 +1,16 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-
-import {SolutionService} from '../solution.service';
+import {combineLatest, forkJoin} from 'rxjs';
+import {map, switchMap, tap} from 'rxjs/operators';
+import {Marker} from '../../scenario-editor.service';
 import {AssignmentService} from '../assignment.service';
 
 import Assignment from '../model/assignment';
-import Solution from '../model/solution';
 import Comment from '../model/comment';
+import Solution from '../model/solution';
 import TaskGrading from '../model/task-grading';
-import {combineLatest, forkJoin} from 'rxjs';
-import {map, switchMap, tap} from 'rxjs/operators';
+
+import {SolutionService} from '../solution.service';
 
 @Component({
   selector: 'app-solution',
@@ -21,6 +22,7 @@ export class SolutionComponent implements OnInit {
 
   assignment?: Assignment;
   solution?: Solution;
+  markers: Marker[] = [];
 
   gradings?: TaskGrading[];
   comments?: Comment[];
@@ -60,7 +62,10 @@ export class SolutionComponent implements OnInit {
         this.solutionService.getComments(assignmentId, solutionId).pipe(tap(comments => this.comments = comments)),
         this.solutionService.getGradings(assignmentId, solutionId).pipe(tap(gradings => this.gradings = gradings)),
       ])),
-    ).subscribe(_ => {
+    ).subscribe(([_, solution]) => {
+      // NB: this happens here instead of where the solution is loaded above, because the solution text needs to be updated first.
+      // Otherwise the markers don't show up
+      this.markers = this.assignmentService.lint({results: solution.results!});
     }, error => {
       if (error.status === 401) {
         this.tokenModal.open();
