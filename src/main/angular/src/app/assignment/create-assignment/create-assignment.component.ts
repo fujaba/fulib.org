@@ -132,6 +132,7 @@ export class CreateAssignmentComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   check(): void {
+    this.saveDraft();
     this.checking = true;
     this.assignmentService.check({solution: this.solution, tasks: this.tasks}).subscribe(response => {
       this.checking = false;
