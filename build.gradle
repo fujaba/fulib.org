@@ -125,6 +125,10 @@ processResources {
 	def fulibGradleVersion = getDependencyVersion(buildscript.configurations.classpath, 'org.fulib', 'fulibGradle')
 	def fulibMockupsVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulibMockups')
 
+	from('LICENSE.md') {
+		into 'org/fulib/webapp/static/'
+	}
+
 	filesMatching([
 			'**/index.html',
 			'**/*.js',

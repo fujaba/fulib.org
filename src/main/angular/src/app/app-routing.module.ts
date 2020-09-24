@@ -7,6 +7,7 @@ import {FeedbackComponent} from './feedback/feedback.component';
 import {PrivacyComponent} from './privacy/privacy.component';
 import {ConfigComponent} from './config/config.component';
 import {ChangelogComponent} from './changelog/changelog.component';
+import {AboutComponent} from './about/about.component';
 
 const routes: Routes = [
   {path: '', component: FourPaneEditorComponent},
@@ -16,6 +17,7 @@ const routes: Routes = [
   {outlet: 'modal', path: 'privacy', component: PrivacyComponent},
   {outlet: 'modal', path: 'config', component: ConfigComponent},
   {outlet: 'modal', path: 'changelog', component: ChangelogComponent},
+  {outlet: 'modal', path: 'about', component: AboutComponent},
 ];
 
 @NgModule({
