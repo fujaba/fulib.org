@@ -101,16 +101,16 @@ dependencies {
 	// --------------- CommonMark ---------------
 
 	// https://mvnrepository.com/artifact/com.atlassian.commonmark/commonmark
-	compile group: 'com.atlassian.commonmark', name: 'commonmark', version: '0.14.0'
+	compile group: 'com.atlassian.commonmark', name: 'commonmark', version: '0.15.2'
 
 	// https://mvnrepository.com/artifact/com.atlassian.commonmark/commonmark-ext-gfm-tables
-	compile group: 'com.atlassian.commonmark', name: 'commonmark-ext-gfm-tables', version: '0.14.0'
+	compile group: 'com.atlassian.commonmark', name: 'commonmark-ext-gfm-tables', version: '0.15.2'
 
 	// https://mvnrepository.com/artifact/com.atlassian.commonmark/commonmark-ext-autolink
-	compile group: 'com.atlassian.commonmark', name: 'commonmark-ext-autolink', version: '0.14.0'
+	compile group: 'com.atlassian.commonmark', name: 'commonmark-ext-autolink', version: '0.15.2'
 
 	// https://mvnrepository.com/artifact/com.atlassian.commonmark/commonmark-ext-gfm-strikethrough
-	compile group: 'com.atlassian.commonmark', name: 'commonmark-ext-gfm-strikethrough', version: '0.14.0'
+	compile group: 'com.atlassian.commonmark', name: 'commonmark-ext-gfm-strikethrough', version: '0.15.2'
 }
 
 // --------------- Version Injection ---------------
