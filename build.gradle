@@ -111,6 +111,9 @@ dependencies {
 
 	// https://mvnrepository.com/artifact/com.atlassian.commonmark/commonmark-ext-gfm-strikethrough
 	compile group: 'com.atlassian.commonmark', name: 'commonmark-ext-gfm-strikethrough', version: '0.15.2'
+
+	// https://mvnrepository.com/artifact/com.atlassian.commonmark/commonmark-ext-task-list-items
+	compile group: 'com.atlassian.commonmark', name: 'commonmark-ext-task-list-items', version: '0.15.2'
 }
 
 // --------------- Version Injection ---------------

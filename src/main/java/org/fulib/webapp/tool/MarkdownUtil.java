@@ -4,6 +4,7 @@ import org.commonmark.Extension;
 import org.commonmark.ext.autolink.AutolinkExtension;
 import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension;
 import org.commonmark.ext.gfm.tables.TablesExtension;
+import org.commonmark.ext.task.list.items.TaskListItemsExtension;
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
@@ -13,9 +14,13 @@ import java.util.List;
 
 public class MarkdownUtil
 {
-	private static final List<Extension> EXTENSIONS = Arrays.asList(TablesExtension.create(),
-	                                                                AutolinkExtension.create(),
-	                                                                StrikethroughExtension.create());
+	private static final Extension[] _EXTENSIONS = {
+		TablesExtension.create(),
+		AutolinkExtension.create(),
+		StrikethroughExtension.create(),
+		TaskListItemsExtension.create(),
+	};
+	private static final List<Extension> EXTENSIONS = Arrays.asList(_EXTENSIONS);
 
 	private static final Parser PARSER = Parser.builder().extensions(EXTENSIONS).build();
 
