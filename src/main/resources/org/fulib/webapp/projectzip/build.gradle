@@ -11,7 +11,6 @@ repositories {
 	mavenLocal()
 	mavenCentral()
 	jcenter()
-	maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
 }
 
 dependencies {
@@ -19,16 +18,19 @@ dependencies {
 	fulibScenarios group: 'org.fulib', name: 'fulibScenarios', version: '$$fulibScenariosVersion$$'
 
 	// https://mvnrepository.com/artifact/org.fulib/fulibTools
-	testCompile group: 'org.fulib', name: 'fulibTools', version: '$$fulibToolsVersion$$'
+	testImplementation group: 'org.fulib', name: 'fulibTools', version: '$$fulibToolsVersion$$'
 
 	// https://mvnrepository.com/artifact/org.fulib/fulibTables
-	testCompile group: 'org.fulib', name: 'fulibTables', version: '$$fulibTablesVersion$$'
+	testImplementation group: 'org.fulib', name: 'fulibTables', version: '$$fulibTablesVersion$$'
 
 	// https://mvnrepository.com/artifact/org.fulib/fulibMockups
-	testCompile group: 'org.fulib', name: 'fulibMockups', version: '$$fulibMockupsVersion$$'
+	testImplementation group: 'org.fulib', name: 'fulibMockups', version: '$$fulibMockupsVersion$$'
 
 	// https://mvnrepository.com/artifact/junit/junit
-	testCompile group: 'junit', name: 'junit', version: '4.13'
+	testImplementation group: 'junit', name: 'junit', version: '4.13'
+
+	// https://mvnrepository.com/artifact/org.slf4j/slf4j-nop
+	testImplementation group: 'org.slf4j', name: 'slf4j-nop', version: '1.7.30'
 }
 
 generateScenarioSource {
