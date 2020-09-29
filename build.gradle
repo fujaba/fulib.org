@@ -129,6 +129,15 @@ processResources {
 		into 'org/fulib/webapp/static/'
 	}
 
+	from('.') {
+		include 'gradle/wrapper/**', 'gradlew', 'gradlew.bat'
+		into 'org/fulib/webapp/projectzip'
+
+		// we have to save the wrapper jar as a zip, see
+		// https://imperceptiblethoughts.com/shadow/configuration/dependencies/#embedding-jar-files-inside-your-shadow-jar
+		rename 'gradle-wrapper.jar', 'gradle-wrapper.jar.zip'
+	}
+
 	filesMatching([
 			'**/index.html',
 			'**/*.js',
@@ -167,21 +176,6 @@ angular {
 
 processResources.filesMatching('fulib.org/**') {
 	it.path = it.path.replace('fulib.org', 'org/fulib/webapp/static')
-}
-
-// --------------- Project Zip Wrapper ---------------
-
-wrapper.doLast {
-	copy {
-		from '.'
-		include 'gradle/wrapper/**', 'gradlew', 'gradlew.bat'
-		into 'src/main/resources/org/fulib/webapp/projectzip'
-
-		// we have to save the wrapper jar as a zip, see
-		// https://imperceptiblethoughts.com/shadow/configuration/dependencies/
-		// "Embedding Jar Files Inside Your Shadow Jar"
-		rename 'gradle-wrapper.jar', 'gradle-wrapper.jar.zip'
-	}
 }
 
 // --------------- Test Scenarios ---------------
