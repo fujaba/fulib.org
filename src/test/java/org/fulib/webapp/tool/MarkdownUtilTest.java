@@ -22,6 +22,10 @@ public class MarkdownUtilTest
 		// autolink
 		assertThat(MarkdownUtil.renderHtml("www.fulib.org\n\nhttp://www.fulib.org"),
 		           equalTo("<p>www.fulib.org</p>\n<p><a href=\"http://www.fulib.org\">http://www.fulib.org</a></p>\n"));
+		// task lists
+		assertThat(MarkdownUtil.renderHtml("- [ ] first\n- [x] second"), equalTo(
+			"<ul>\n" + "<li><input type=\"checkbox\" disabled=\"\"> first</li>\n"
+			+ "<li><input type=\"checkbox\" disabled=\"\" checked=\"\"> second</li>\n" + "</ul>\n"));
 		// html escaping
 		assertThat(MarkdownUtil.renderHtml("<script>alert('XSS')</script>"),
 		           equalTo("<p>&lt;script&gt;alert('XSS')&lt;/script&gt;</p>\n"));
