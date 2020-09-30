@@ -259,3 +259,39 @@
 * The query parameter `atok` can now be used to set the assignment token when viewing all solutions. #92
 * The query parameters `atok` and `stok` can be now be used to set the assignment or solution token when viewing a solution. #92
 * Downloaded `build.gradle` files no longer dictate Java version compatibility. #94
+
+# fulib.org v1.5.0
+
+## General
+
+* Updated to fulib v1.3.0.
+* Updated to fulibTools v1.3.0.
+* Updated to fulibScenarios v1.5.1.
+* Updated to fulibYaml v1.4.0.
+* Updated to fulibTables v1.4.0.
+
+## New Features
+
++ Scenario editors now display errors, warnings and notes. #7 #86
++ Replaced the old dark mode switch with a new control that allows switching between light, automatic and dark mode. #95
+  > Automatic mode changes the theme automatically depending on user agent/OS preference.
++ Added lexical syntax highlighting for scenario editors. #97 #98
++ Added the About page for viewing third-party licenses under Legal in the navigation bar. #102
++ Added support for task lists when rendering Markdown. #106
++ Added an example for Placeholders. #107
++ Added a link for Getting Started under Help in the navigation bar. #108
++ Added a Close button to the Feedback modal. #108
+
+## Improvements
+
+* Modals now have proper URLs. #96
+  > This improves their compatibility with many browser features, including reload, back/forward, history, bookmarks, and sharing.
+* Changed the footer into a navigation bar at the top. #100
+* Downloaded Gradle projects now use `testImplementation` instead of `testCompile`. #103 #105
+* Downloaded Gradle projects now declare a test dependency on `slf4j-nop`. #103 #105
+* Downloaded Gradle projects no longer use the snapshots repository. #105
+* Restructured the navigation bar. #108
+
+## Removals
+
+- Removed the contact email from the Feedback modal. #108
