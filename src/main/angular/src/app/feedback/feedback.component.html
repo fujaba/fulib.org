@@ -1,4 +1,4 @@
-<app-modal>
+<app-modal #modal>
   <ng-container modal-header>
     Leave Feedback
   </ng-container>
@@ -40,5 +40,8 @@
         This Website itself (fulib.org)
       </a>
     </p>
+  </ng-container>
+  <ng-container modal-footer>
+    <button type="button" class="btn btn-primary" (click)="modal.close()">Close</button>
   </ng-container>
 </app-modal>
