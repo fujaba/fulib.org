@@ -10,11 +10,6 @@
       <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
         <a class="nav-link" routerLink="/">Home <span class="sr-only">(current)</span></a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="https://fujaba.gitbook.io/fulib-scenarios/">
-          Documentation
-        </a>
-      </li>
       <li class="nav-item" routerLinkActive="active" ngbDropdown>
         <a tabindex="0" class="nav-link" ngbDropdownToggle id="assignmentsDropdown" role="button">
           Assignments
@@ -34,11 +29,6 @@
           </a>
         </div>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="https://stackoverflow.com/questions/tagged/fulibScenarios">
-          StackOverflow
-        </a>
-      </li>
       <li class="nav-item" ngbDropdown>
         <a tabindex="0" class="nav-link" ngbDropdownToggle id="githubDropdown" role="button">
           GitHub
@@ -48,6 +38,25 @@
              ngbDropdownItem href="https://github.com/fujaba/{{repo}}">
             {{repo}}
             <span class="text-muted" *ngIf="versions && versions[repo]"> (v{{versions[repo]}})</span>
+          </a>
+        </div>
+      </li>
+      <li class="nav-item" ngbDropdown>
+        <a tabindex="0" class="nav-link" ngbDropdownToggle id="helpDropdown" role="button">
+          Help
+        </a>
+        <div ngbDropdownMenu aria-labelledby="helpDropdown">
+          <a ngbDropdownItem href="https://fujaba.gitbook.io/fulib-scenarios/web-app/getting-started">
+            Getting Started
+          </a>
+          <a ngbDropdownItem href="https://fujaba.gitbook.io/fulib-scenarios/">
+            fulibScenarios Documentation
+          </a>
+          <a ngbDropdownItem href="https://stackoverflow.com/questions/tagged/fulibScenarios">
+            fulibScenarios on StackOverflow
+          </a>
+          <a ngbDropdownItem [routerLink]="[{outlets: {modal: 'feedback'}}]">
+            Feedback
           </a>
         </div>
       </li>
@@ -73,11 +82,6 @@
       <li class="nav-item">
         <a class="nav-link" [routerLink]="[{outlets: {modal: 'changelog'}}]">
           What's New
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" [routerLink]="[{outlets: {modal: 'feedback'}}]">
-          Feedback
         </a>
       </li>
     </ul>
