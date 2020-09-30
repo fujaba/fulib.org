@@ -6,5 +6,4 @@ import {Component} from '@angular/core';
   styleUrls: ['./feedback.component.scss'],
 })
 export class FeedbackComponent {
-  contactEmail = 'spam@fbi.gov'.replace('spam', 'contact').replace('fbi.gov', 'fulib.org');
 }
