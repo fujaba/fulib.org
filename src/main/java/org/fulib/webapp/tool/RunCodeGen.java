@@ -20,12 +20,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RunCodeGen
 {
 	// =============== Constants ===============
 
 	private static final String TEMP_DIR_PREFIX = "fulibScenarios";
+
+	private static final Pattern PROPERTY_CONSTANT_PATTERN = Pattern.compile("^\\s*public static final String PROPERTY_\\w+ = \"(\\w+)\";$");
 
 	// =============== Fields ===============
 
@@ -291,10 +295,10 @@ public class RunCodeGen
 		for (String line : lines)
 		{
 			int end;
-			if (modelFilter && line.startsWith("   public static final String PROPERTY_")
-			    && (end = line.lastIndexOf(" = ")) >= 0)
+			Matcher matcher;
+			if (modelFilter && (matcher = PROPERTY_CONSTANT_PATTERN.matcher(line)).find())
 			{
-				properties.add(line.substring("   public static final String PROPERTY_".length(), end));
+				properties.add(matcher.group(1));
 			}
 			if (line.startsWith("   public ") && (end = line.lastIndexOf(')')) >= 0 && line.lastIndexOf('=') <= 0)
 			{
