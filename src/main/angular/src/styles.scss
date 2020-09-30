@@ -98,6 +98,10 @@ a[href^="http"]::after {
   font-weight: 600;
 }
 
+.dropdown-toggle.nav-link {
+  cursor: pointer;
+}
+
 /* --------------- Timelines --------------- */
 
 $outline-color: #777;
