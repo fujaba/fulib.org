@@ -50,6 +50,7 @@ export const Keywords = [
   // 'e.g.',
   'empty',
   'equal',
+  'Every',
   'expect',
   'from',
   'greater',
@@ -85,6 +86,7 @@ export const Keywords = [
   'then',
   'There', 'there',
   'through',
+  'type',
   'to',
   'We', 'we',
   'with',
@@ -93,6 +95,39 @@ export const Keywords = [
   'whose',
   'write',
   'writes',
+];
+
+export const Types = [
+  'void',
+  'boolean',
+  // numeric types
+  'byte',
+  'short',
+  'char',
+  'int',
+  'long',
+  'float',
+  'double',
+  // reference types
+  'Object',
+  'String',
+  'Number',
+  // wrapper types
+  'Void',
+  'Boolean',
+  'Byte',
+  'Short',
+  'Character',
+  'Integer',
+  'Long',
+  'Float',
+  'Double',
+  // lowercase variants
+  'object',
+  'string',
+  'number',
+  'character',
+  'integer',
 ];
 
 export const ScenarioMode: SimpleMode = {
@@ -110,6 +145,7 @@ export const ScenarioMode: SimpleMode = {
     {regex: /<!--/, token: 'comment', next: 'htmlComment'},
     {regex: /!\[/, token: 'image'},
     {regex: /]\(/, token: 'image', next: 'fileName'},
+    {regex: new RegExp(`(?:${Types.join('|')})(?![a-zA-Z0-9'_-])`), token: 'type'},
     {regex: new RegExp(`(?:${Keywords.join('|')})(?![a-zA-Z0-9'_-])`), token: 'keyword'},
     {regex: /[a-zA-Z_][a-zA-Z0-9'_-]*/, token: 'variable'},
   ],
