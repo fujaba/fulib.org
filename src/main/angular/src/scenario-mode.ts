@@ -23,7 +23,7 @@ interface SimpleMode {
   meta: Meta;
 }
 
-// keywords for fulibScenarios v1.4.2
+// keywords for fulibScenarios v1.5.1
 export const Keywords = [
   'a',
   'add',
