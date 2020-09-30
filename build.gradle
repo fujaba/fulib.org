@@ -20,7 +20,7 @@ plugins {
 
 group = 'org.fulib'
 version = "git describe --tags".execute().text[1..-2] // strip v and \n
-description = 'The fulib.org website and Fulib Scenarios Web App'
+description = 'The fulib.org website and fulibScenarios Web App'
 
 publishInfo {
 	websiteUrl = 'https://www.fulib.org/'

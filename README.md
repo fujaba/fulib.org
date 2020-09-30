@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/fujaba/fulib.org.svg?branch=master)](https://travis-ci.org/fujaba/fulib.org)
 [![Java CI](https://github.com/fujaba/fulib.org/workflows/Java%20CI/badge.svg)](https://github.com/fujaba/fulib.org/actions)
 
-A web app for [Fulib Scenarios](https://github.com/fujaba/fulibScenarios).
+A web app for [fulibScenarios](https://github.com/fujaba/fulibScenarios).
 Available at https://www.fulib.org.
 
 ## Building & Running

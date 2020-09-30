@@ -4,7 +4,7 @@
 
 # fulib.org v0.2.0
 
-+ Added support for HTML object diagrams / mockups from FulibScenarios v0.5.0. #18
++ Added support for HTML object diagrams / mockups from fulibScenarios v0.5.0. #18
 * Object diagrams are now sorted by order of occurrence in the scenario text. #17
 * Fixed static files missing from artifact.
 
@@ -21,18 +21,18 @@
 ### Frontend
 
 + Added the `Download Gradle Project` button. #19
-+ Added Web App and FulibScenarios version info and GitHub links. #20
++ Added Web App and fulibScenarios version info and GitHub links. #20
 * Object Diagrams are now shown as tabs instead of a long list. #23
 * The selected example is now persisted across sessions. #24
 
 ### Backend
 
 + Added the `/projectzip` API route. #19
-* Updated to FulibScenarios v0.5.0.
+* Updated to fulibScenarios v0.5.0.
 
 # fulib.org v0.3.1
 
-* Downloaded projects now use FulibScenarios v0.5.0.
+* Downloaded projects now use fulibScenarios v0.5.0.
 
 # fulib.org v0.3.2
 
@@ -40,15 +40,15 @@
 
 # fulib.org v0.3.3
 
-* Downloaded projects now use FulibMockups v0.1.0.
-* Downloaded projects now use FulibGradle v0.1.1.
+* Downloaded projects now use fulibMockups v0.1.0.
+* Downloaded projects now use fulibGradle v0.1.1.
 * Downloaded projects now use Gradle v5.5.1.
 
 # fulib.org v0.4.0
 
 + The Java Code now also shows model methods. #26
 + Added support for the `.txt` diagram format.
-* Updated to FulibScenarios v0.6.0.
+* Updated to fulibScenarios v0.6.0.
 * Internal stack trace lines in console output are now folded.
 
 # fulib.org v0.5.0
@@ -63,13 +63,13 @@
 + Added the `Associations` and `Special Associations` example scenarios. #35
 * Example scenarios in the dropdown are now numbered. #34
 * Updated all existing example scenarios. #33
-* Updated to FulibScenarios v0.7.0.
+* Updated to fulibScenarios v0.7.0.
 * Fixed small UI on mobile. #31
 
 # fulib.org v0.7.0
 
 + Added analytic request logging. #37
-* Updated to FulibScenarios v0.8.0.
+* Updated to fulibScenarios v0.8.0.
 
 # fulib.org v0.7.1
 
@@ -81,12 +81,12 @@
 + Added Search and Replace to the editor. #39
 + Added the `Transformations` example category and three examples.
 * Improved the page layout.
-* Updated FulibScenarios to v0.8.1 and FulibMockups to v0.2.0.
+* Updated fulibScenarios to v0.8.1 and fulibMockups to v0.2.0.
 * Updated CodeMirror to v5.48.4.
 
 # fulib.org v0.8.1
 
-* Updated FulibScenarios to v0.8.2.
+* Updated fulibScenarios to v0.8.2.
 * Replaced version placeholders.
 * Fixed `undefined` class diagram and replaced it with an info text.
 * The selected example is now included in the request.
@@ -95,7 +95,7 @@
 
 ### Scenarios
 
-* Updated to FulibScenarios v0.9.1.
+* Updated to fulibScenarios v0.9.1.
 + Added new examples for numeric Add and Remove, List Operations, .txt and .tables.html Object Diagrams, 'the answer', and piecewise method definitions. #45
 * Swapped the Transformation and Methods example chapters.
 * Improved existing examples. #38
@@ -118,8 +118,8 @@
 
 # fulib.org v1.0.0
 
-+ Added examples for GUI prototyping using FulibMockups.
-* Updated to FulibScenarios v1.0.0.
++ Added examples for GUI prototyping using fulibMockups.
+* Updated to fulibScenarios v1.0.0.
 
 # fulib.org v1.1.0
 
@@ -132,8 +132,8 @@
 
 ## Tool Updates 
 
-* Updated to FulibTools v1.1.0.
-* Updated to FulibScenarios v1.1.0.
+* Updated to fulibTools v1.1.0.
+* Updated to fulibScenarios v1.1.0.
 
 ## Improvements
 
@@ -157,17 +157,17 @@
 
 ## Tool Updates
 
-+ Added a dependency on FulibTables v1.3.0.
-* Updated to FulibScenarios v1.2.0.
-* Updated to FulibGradle v0.3.0.
++ Added a dependency on fulibTables v1.3.0.
+* Updated to fulibScenarios v1.2.0.
+* Updated to fulibGradle v0.3.0.
 * Updated to Gradle v6.3.
 
 # fulib.org v1.3.0
 
 ## Tool Updates
 
-* Updated to FulibScenarios v1.3.0.
-* Updated to FulibGradle v0.4.0.
+* Updated to fulibScenarios v1.3.0.
+* Updated to fulibGradle v0.4.0.
 * Downloaded Gradle Projects now use JUnit v4.13.
 
 # fulib.org v1.2.1
