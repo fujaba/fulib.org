@@ -1,5 +1,15 @@
-<div class="row m-4">
-  <div class="col-md-12 col-lg-6">
+<div class="h-100">
+<gridster [options]="{
+  draggable: {enabled: true},
+  resizable: {enabled: true},
+  minRows: 12,
+  maxRows: 12,
+  minCols: 12,
+  maxCols: 12,
+  swap: true,
+  displayGrid: 'onDrag&Resize'
+  }">
+  <gridster-item [item]="{x: 0, y: 0, rows: 6, cols: 6}" class="p-3">
     <h2>Scenario</h2>
     <div class="d-flex flex-wrap align-items-baseline" style="min-height: 2.5rem; margin-left: -.25rem;">
       <div class="pl-1">
@@ -51,9 +61,9 @@
       [markers]="markers"
       (save)="submit()"
     ></app-scenario-codemirror>
-  </div>
+  </gridster-item>
 
-  <div class="col-md-12 col-lg-6">
+  <gridster-item [item]="{x: 0, y: 1, rows: 6, cols: 6}" class="p-3">
     <h2>Java Test Code</h2>
     <div style="min-height: 2.5rem">
       <div class="progress">
@@ -100,11 +110,9 @@
         readOnly: true,
         mode: 'text/x-java'
       }"></app-autotheme-codemirror>
-  </div>
-</div>
+  </gridster-item>
 
-<div class="row m-4">
-  <div class="col-md-12 col-lg-6">
+  <gridster-item [item]="{x: 1, y: 0, rows: 6, cols: 6}" class="p-3">
     <h2>Class Diagram</h2>
     <div *ngIf="response && response.classDiagram" [innerHTML]="response.classDiagram | safeHtml" class="diagram">
     </div>
@@ -114,9 +122,9 @@
     <div *ngIf="!response">
       Loading...
     </div>
-  </div>
+  </gridster-item>
 
-  <div class="col-md-12 col-lg-6">
+  <gridster-item [item]="{x: 1, y: 1, rows: 6, cols: 6}" class="p-3">
     <h2>Object Diagrams</h2>
     <div *ngIf="!response">
       Loading...
@@ -146,5 +154,6 @@
 
       <div [ngbNavOutlet]="objectDiagramTabs" class="mt-2"></div>
     </ng-container>
-  </div>
+  </gridster-item>
+</gridster>
 </div>

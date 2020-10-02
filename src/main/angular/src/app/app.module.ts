@@ -4,6 +4,7 @@ import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
 
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {GridsterModule} from 'angular-gridster2';
 import {NgBootstrapDarkmodeModule, THEME_LOADER, THEME_SAVER, ThemeLoader, ThemeSaver} from 'ng-bootstrap-darkmode';
 
 import {AppRoutingModule} from './app-routing.module';
@@ -40,6 +41,7 @@ import {AboutComponent} from './about/about.component';
     HttpClientModule,
     NgbModule,
     NgBootstrapDarkmodeModule,
+    GridsterModule,
     SharedModule,
     AppRoutingModule,
   ],
