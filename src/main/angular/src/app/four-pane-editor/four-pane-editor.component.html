@@ -58,6 +58,7 @@
     <app-scenario-codemirror
       [(content)]="scenarioText"
       [autoSubmit]="autoSubmit"
+      [autoRefresh]="true"
       [markers]="markers"
       (save)="submit()"
     ></app-scenario-codemirror>
@@ -105,6 +106,7 @@
       </div>
     </div>
     <app-autotheme-codemirror [content]="javaCode" [options]="{
+        autoRefresh: true,
         lineNumbers: true,
         matchBrackets: true,
         readOnly: true,
