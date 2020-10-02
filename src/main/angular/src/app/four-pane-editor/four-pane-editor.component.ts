@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 
 import {ExamplesService} from '../examples.service';
+import {MarkdownService} from '../markdown.service';
 import Request from '../model/codegen/request';
 import Response from '../model/codegen/response';
 import Example from '../model/example';
@@ -22,6 +23,7 @@ export class FourPaneEditorComponent implements OnInit {
   markers: Marker[] = [];
   javaCode = '// Loading...';
   output = 'Loading...';
+  markdown = 'Loading...';
   submitting: boolean;
 
   exampleCategories: ExampleCategory[];
@@ -30,6 +32,7 @@ export class FourPaneEditorComponent implements OnInit {
   constructor(
     private examplesService: ExamplesService,
     private scenarioEditorService: ScenarioEditorService,
+    private markdownService: MarkdownService,
     private privacyService: PrivacyService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -68,6 +71,9 @@ export class FourPaneEditorComponent implements OnInit {
       this.javaCode = this.renderJavaCode();
       this.output = this.scenarioEditorService.foldInternalCalls(this.response.output.split('\n')).join('\n');
       this.markers = this.scenarioEditorService.lint(response);
+    });
+    this.markdownService.renderMarkdown(this.scenarioText).subscribe(rendered => {
+      this.markdown = rendered;
     });
   }
 

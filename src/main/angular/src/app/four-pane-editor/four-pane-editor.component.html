@@ -123,7 +123,12 @@
       }"></app-autotheme-codemirror>
   </gridster-item>
 
-  <gridster-item [item]="{x: 1, y: 0, rows: 6, cols: 6}" class="p-3">
+  <gridster-item [item]="{x: 1, y: 0, rows: 6, cols: 4}" class="p-3">
+    <h2>Markdown</h2>
+    <div [innerHTML]="markdown | safeHtml"></div>
+  </gridster-item>
+
+  <gridster-item [item]="{x: 1, y: 0, rows: 6, cols: 4}" class="p-3">
     <h2>Class Diagram</h2>
     <div *ngIf="response && response.classDiagram" [innerHTML]="response.classDiagram | safeHtml" class="diagram">
     </div>
@@ -135,7 +140,7 @@
     </div>
   </gridster-item>
 
-  <gridster-item [item]="{x: 1, y: 1, rows: 6, cols: 6}" class="p-3">
+  <gridster-item [item]="{x: 1, y: 1, rows: 6, cols: 4}" class="p-3">
     <h2>Object Diagrams</h2>
     <div *ngIf="!response">
       Loading...
