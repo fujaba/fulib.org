@@ -21,6 +21,7 @@ export class FourPaneEditorComponent implements OnInit {
   response: Response | null;
   markers: Marker[] = [];
   javaCode = '// Loading...';
+  output = 'Loading...';
   submitting: boolean;
 
   exampleCategories: ExampleCategory[];
@@ -65,6 +66,7 @@ export class FourPaneEditorComponent implements OnInit {
       this.submitting = false;
       this.response = response;
       this.javaCode = this.renderJavaCode();
+      this.output = this.scenarioEditorService.foldInternalCalls(this.response.output.split('\n')).join('\n');
       this.markers = this.scenarioEditorService.lint(response);
     });
   }
@@ -75,11 +77,6 @@ export class FourPaneEditorComponent implements OnInit {
     }
 
     let javaCode = '';
-    if (this.response.exitCode !== 0) {
-      const outputLines = this.response.output.split('\n');
-      javaCode += this.scenarioEditorService.foldInternalCalls(outputLines).map(line => `// ${line}\n`).join('');
-    }
-
     for (const testMethod of this.response.testMethods ?? []) {
       javaCode += `// --------------- ${testMethod.name} in class ${testMethod.className} ---------------\n\n`;
       javaCode += testMethod.body;

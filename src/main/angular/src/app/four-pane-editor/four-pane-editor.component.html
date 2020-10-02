@@ -9,7 +9,7 @@
   swap: true,
   displayGrid: 'onDrag&Resize'
   }">
-  <gridster-item [item]="{x: 0, y: 0, rows: 6, cols: 6}" class="p-3">
+  <gridster-item [item]="{x: 0, y: 0, rows: 6, cols: 4}" class="p-3">
     <h2>Scenario</h2>
     <div class="d-flex flex-wrap align-items-baseline" style="min-height: 2.5rem; margin-left: -.25rem;">
       <div class="pl-1">
@@ -64,8 +64,8 @@
     ></app-scenario-codemirror>
   </gridster-item>
 
-  <gridster-item [item]="{x: 0, y: 1, rows: 6, cols: 6}" class="p-3">
-    <h2>Java Test Code</h2>
+  <gridster-item [item]="{x: 0, y: 1, rows: 6, cols: 4}" class="p-3">
+    <h2>Output</h2>
     <div style="min-height: 2.5rem">
       <div class="progress">
         <div class="progress-bar"
@@ -105,6 +105,15 @@
         </div>
       </div>
     </div>
+    <app-autotheme-codemirror [content]="output" [options]="{
+        autoRefresh: true,
+        lineNumbers: true,
+        readOnly: true
+      }"></app-autotheme-codemirror>
+  </gridster-item>
+
+  <gridster-item [item]="{x: 0, y: 2, rows: 6, cols: 4}" class="p-3">
+    <h2>Java Test Code</h2>
     <app-autotheme-codemirror [content]="javaCode" [options]="{
         autoRefresh: true,
         lineNumbers: true,
