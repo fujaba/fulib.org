@@ -64,6 +64,10 @@
   img.diagram, .diagram > svg {
     filter: invert(100%);
   }
+
+  gridster-item {
+    background-color: $default-bg;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
