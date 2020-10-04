@@ -11,117 +11,122 @@
   }">
   <gridster-item [item]="{x: 0, y: 0, rows: 6, cols: 4}" class="p-3">
     <h2>Scenario</h2>
-    <div class="d-flex flex-wrap align-items-baseline" style="min-height: 2.5rem; margin-left: -.25rem;">
-      <div class="pl-1">
-        <label>Load Example:
-          <select class="form-control form-control-sm d-inline" style="width: auto"
-                  [ngModel]="selectedExample" (ngModelChange)="selectExample($event)">
-            <option [ngValue]="null">-</option>
-            <optgroup *ngFor="let category of exampleCategories; index as categoryIndex"
-                      label="{{categoryIndex + 1}}. {{category.name}}">
-              <option *ngFor="let example of category.examples; index as exampleIndex"
-                      label="{{categoryIndex + 1}}.{{exampleIndex + 1}}. {{example.name}}"
-                      [ngValue]="example"></option>
-            </optgroup>
-          </select>
-        </label>
-      </div>
-      <div class="pl-1" [hidden]="!selectedExample">
-        <span class="text-warning" ngbTooltip="Changes to the example will not be saved!">&#9888;</span>
-      </div>
-      <div class="mr-auto"><!-- Spacer --></div>
-      <div class="pl-1">
-        <a role="button" class="btn btn-outline-secondary btn-sm" [routerLink]="[{outlets: {modal: 'config'}}]">
-          Configure Project
-        </a>
-      </div>
-      <div class="pl-1">
-        <div class="btn-group">
-          <button type="button" class="btn btn-outline-primary btn-sm"
-                  ngbTooltip="Keyboard Shortcuts: Ctrl-&#9166;, &#8984;&#9166;, Ctrl-S, &#8984;S"
-                  (click)="submit()" [disabled]="submitting">
-            Compile and Run
-          </button>
-          <div class="btn-group" ngbDropdown role="group" aria-label="Compile and Run Options">
-            <button class="btn btn-outline-primary btn-sm dropdown-toggle-split" ngbDropdownToggle></button>
-            <div class="dropdown-menu" ngbDropdownMenu>
-              <button ngbDropdownItem (click)="autoSubmit = !autoSubmit" [class.dropdown-item-checked]="autoSubmit">
-                Automatically Compile and Run
-                <br/>
-                when the scenario changes
-              </button>
+    <div class="gridster-item-content">
+      <div class="d-flex flex-wrap align-items-baseline" style="min-height: 2.5rem; margin-left: -.25rem;">
+        <div class="pl-1">
+          <label>Load Example:
+            <select class="form-control form-control-sm d-inline" style="width: auto"
+                    [ngModel]="selectedExample" (ngModelChange)="selectExample($event)">
+              <option [ngValue]="null">-</option>
+              <optgroup *ngFor="let category of exampleCategories; index as categoryIndex"
+                        label="{{categoryIndex + 1}}. {{category.name}}">
+                <option *ngFor="let example of category.examples; index as exampleIndex"
+                        label="{{categoryIndex + 1}}.{{exampleIndex + 1}}. {{example.name}}"
+                        [ngValue]="example"></option>
+              </optgroup>
+            </select>
+          </label>
+        </div>
+        <div class="pl-1" [hidden]="!selectedExample">
+          <span class="text-warning" ngbTooltip="Changes to the example will not be saved!">&#9888;</span>
+        </div>
+        <div class="mr-auto"><!-- Spacer --></div>
+        <div class="pl-1">
+          <a role="button" class="btn btn-outline-secondary btn-sm" [routerLink]="[{outlets: {modal: 'config'}}]">
+            Configure Project
+          </a>
+        </div>
+        <div class="pl-1">
+          <div class="btn-group">
+            <button type="button" class="btn btn-outline-primary btn-sm"
+                    ngbTooltip="Keyboard Shortcuts: Ctrl-&#9166;, &#8984;&#9166;, Ctrl-S, &#8984;S"
+                    (click)="submit()" [disabled]="submitting">
+              Compile and Run
+            </button>
+            <div class="btn-group" ngbDropdown role="group" aria-label="Compile and Run Options">
+              <button class="btn btn-outline-primary btn-sm dropdown-toggle-split" ngbDropdownToggle></button>
+              <div class="dropdown-menu" ngbDropdownMenu>
+                <button ngbDropdownItem (click)="autoSubmit = !autoSubmit" [class.dropdown-item-checked]="autoSubmit">
+                  Automatically Compile and Run
+                  <br/>
+                  when the scenario changes
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      <app-scenario-codemirror
+        [(content)]="scenarioText"
+        [autoSubmit]="autoSubmit"
+        [autoRefresh]="true"
+        [markers]="markers"
+        (save)="submit()"
+      ></app-scenario-codemirror>
     </div>
-    <app-scenario-codemirror
-      class="gridster-item-content"
-      [(content)]="scenarioText"
-      [autoSubmit]="autoSubmit"
-      [autoRefresh]="true"
-      [markers]="markers"
-      (save)="submit()"
-    ></app-scenario-codemirror>
   </gridster-item>
 
   <gridster-item [item]="{x: 0, y: 1, rows: 6, cols: 4}" class="p-3">
     <h2>Output</h2>
-    <div style="min-height: 2.5rem">
-      <div class="progress">
-        <div class="progress-bar"
-             role="progressbar"
-             style="width: 24.25%"
-             [class.bg-success]="response && toolSuccess(0)"
-             [class.bg-danger]="response && !toolSuccess(0)"
-        >
-          Scenario Compiler
-        </div>
-        <div class="progress-bar bg-light bg-darkmode-dark" role="progressbar" style="width: 1%"></div>
-        <div class="progress-bar"
-             role="progressbar"
-             style="width: 24.25%"
-             [class.bg-success]="response && toolSuccess(1)"
-             [class.bg-danger]="response && !toolSuccess(1)"
-        >
-          Java Model Compiler
-        </div>
-        <div class="progress-bar bg-light bg-darkmode-dark" role="progressbar" style="width: 1%"></div>
-        <div class="progress-bar"
-             role="progressbar"
-             style="width: 24.25%"
-             [class.bg-success]="response && toolSuccess(2)"
-             [class.bg-danger]="response && !toolSuccess(2)"
-        >
-          Java Test Compiler
-        </div>
-        <div class="progress-bar bg-light bg-darkmode-dark" role="progressbar" style="width: 1%"></div>
-        <div class="progress-bar"
-             role="progressbar"
-             style="width: 24.25%"
-             [class.bg-success]="response && toolSuccess(3)"
-             [class.bg-danger]="response && !toolSuccess(3)"
-        >
-          Test Run
+    <div class="gridster-item-content">
+      <div style="min-height: 2.5rem">
+        <div class="progress">
+          <div class="progress-bar"
+               role="progressbar"
+               style="width: 24.25%"
+               [class.bg-success]="response && toolSuccess(0)"
+               [class.bg-danger]="response && !toolSuccess(0)"
+          >
+            Scenario Compiler
+          </div>
+          <div class="progress-bar bg-light bg-darkmode-dark" role="progressbar" style="width: 1%"></div>
+          <div class="progress-bar"
+               role="progressbar"
+               style="width: 24.25%"
+               [class.bg-success]="response && toolSuccess(1)"
+               [class.bg-danger]="response && !toolSuccess(1)"
+          >
+            Java Model Compiler
+          </div>
+          <div class="progress-bar bg-light bg-darkmode-dark" role="progressbar" style="width: 1%"></div>
+          <div class="progress-bar"
+               role="progressbar"
+               style="width: 24.25%"
+               [class.bg-success]="response && toolSuccess(2)"
+               [class.bg-danger]="response && !toolSuccess(2)"
+          >
+            Java Test Compiler
+          </div>
+          <div class="progress-bar bg-light bg-darkmode-dark" role="progressbar" style="width: 1%"></div>
+          <div class="progress-bar"
+               role="progressbar"
+               style="width: 24.25%"
+               [class.bg-success]="response && toolSuccess(3)"
+               [class.bg-danger]="response && !toolSuccess(3)"
+          >
+            Test Run
+          </div>
         </div>
       </div>
-    </div>
-    <app-autotheme-codemirror class="gridster-item-content" [content]="output" [options]="{
+      <app-autotheme-codemirror [content]="output" [options]="{
         autoRefresh: true,
         lineNumbers: true,
         readOnly: true
       }"></app-autotheme-codemirror>
+    </div>
   </gridster-item>
 
   <gridster-item [item]="{x: 0, y: 2, rows: 6, cols: 4}" class="p-3">
     <h2>Java Test Code</h2>
-    <app-autotheme-codemirror class="gridster-item-content" [content]="javaCode" [options]="{
+    <div class="gridster-item-content">
+      <app-autotheme-codemirror [content]="javaCode" [options]="{
         autoRefresh: true,
         lineNumbers: true,
         matchBrackets: true,
         readOnly: true,
         mode: 'text/x-java'
       }"></app-autotheme-codemirror>
+    </div>
   </gridster-item>
 
   <gridster-item [item]="{x: 1, y: 0, rows: 6, cols: 4}" class="p-3">
