@@ -12,39 +12,41 @@
   <gridster-item [item]="{x: 0, y: 0, rows: 6, cols: 4}" class="p-3">
     <h2>Scenario</h2>
     <div class="gridster-item-content">
-      <div class="d-flex flex-wrap align-items-baseline" style="min-height: 2.5rem; margin-left: -.25rem;">
-        <div class="pl-1">
-          <label>Load Example:
-            <select class="form-control form-control-sm d-inline" style="width: auto"
-                    [ngModel]="selectedExample" (ngModelChange)="selectExample($event)">
-              <option [ngValue]="null">-</option>
-              <optgroup *ngFor="let category of exampleCategories; index as categoryIndex"
-                        label="{{categoryIndex + 1}}. {{category.name}}">
-                <option *ngFor="let example of category.examples; index as exampleIndex"
-                        label="{{categoryIndex + 1}}.{{exampleIndex + 1}}. {{example.name}}"
-                        [ngValue]="example"></option>
-              </optgroup>
-            </select>
-          </label>
+      <div class="btn-toolbar mb-3 mx-n1" role="toolbar" aria-label="Toolbar">
+        <div class="input-group mx-1">
+          <div class="input-group-prepend">
+            <div class="input-group-text">
+              Load Example:
+            </div>
+          </div>
+          <select class="custom-select" aria-label="Selected Example"
+                  [ngModel]="selectedExample" (ngModelChange)="selectExample($event)">
+            <option [ngValue]="null">-</option>
+            <optgroup *ngFor="let category of exampleCategories; index as categoryIndex"
+                      label="{{categoryIndex + 1}}. {{category.name}}">
+              <option *ngFor="let example of category.examples; index as exampleIndex"
+                      label="{{categoryIndex + 1}}.{{exampleIndex + 1}}. {{example.name}}"
+                      [ngValue]="example"></option>
+            </optgroup>
+          </select>
+          <div class="input-group-append" *ngIf="selectedExample">
+            <div class="input-group-text text-warning" ngbTooltip="Changes to the example will not be saved!">
+              &#9888;
+            </div>
+          </div>
         </div>
-        <div class="pl-1" [hidden]="!selectedExample">
-          <span class="text-warning" ngbTooltip="Changes to the example will not be saved!">&#9888;</span>
-        </div>
-        <div class="mr-auto"><!-- Spacer --></div>
-        <div class="pl-1">
-          <a role="button" class="btn btn-outline-secondary btn-sm" [routerLink]="[{outlets: {modal: 'config'}}]">
+        <div class="ml-auto" role="group">
+          <a role="button" class="btn btn-outline-secondary mx-1" [routerLink]="[{outlets: {modal: 'config'}}]">
             Configure Project
           </a>
-        </div>
-        <div class="pl-1">
-          <div class="btn-group">
-            <button type="button" class="btn btn-outline-primary btn-sm"
+          <div class="btn-group mx-1" role="group">
+            <button type="button" class="btn btn-outline-primary"
                     ngbTooltip="Keyboard Shortcuts: Ctrl-&#9166;, &#8984;&#9166;, Ctrl-S, &#8984;S"
                     (click)="submit()" [disabled]="submitting">
               Compile and Run
             </button>
             <div class="btn-group" ngbDropdown role="group" aria-label="Compile and Run Options">
-              <button class="btn btn-outline-primary btn-sm dropdown-toggle-split" ngbDropdownToggle></button>
+              <button class="btn btn-outline-primary dropdown-toggle-split" ngbDropdownToggle></button>
               <div class="dropdown-menu" ngbDropdownMenu>
                 <button ngbDropdownItem (click)="autoSubmit = !autoSubmit" [class.dropdown-item-checked]="autoSubmit">
                   Automatically Compile and Run
