@@ -9636,7 +9636,7 @@ specifiers:
   '@types/jasmine': ~3.3.16
   '@types/jasminewd2': ~2.0.8
   '@types/node': ~13.7.7
-  angular-gridster2: '9'
+  angular-gridster2: ^9.3.3
   bootstrap: ~4.4.1
   bootstrap-darkmode: ^0.7.0
   codelyzer: ^5.1.2
