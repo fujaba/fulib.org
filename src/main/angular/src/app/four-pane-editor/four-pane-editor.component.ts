@@ -23,7 +23,7 @@ export class FourPaneEditorComponent implements OnInit {
   markers: Marker[] = [];
   javaCode = '// Loading...';
   output = 'Loading...';
-  markdown = 'Loading...';
+  markdown?: string;
   submitting: boolean;
 
   exampleCategories: ExampleCategory[];

@@ -126,7 +126,11 @@
 
   <gridster-item [item]="{x: 1, y: 0, rows: 6, cols: 4}" class="p-3">
     <h2>Markdown</h2>
-    <div [innerHTML]="markdown | safeHtml" class="gridster-item-content"></div>
+    <div class="gridster-item-content">
+      <ng-container *ngIf="markdown else loading">
+        <div [innerHTML]="markdown | safeHtml"></div>
+      </ng-container>
+    </div>
   </gridster-item>
 
   <gridster-item [item]="{x: 1, y: 0, rows: 6, cols: 4}" class="p-3">
