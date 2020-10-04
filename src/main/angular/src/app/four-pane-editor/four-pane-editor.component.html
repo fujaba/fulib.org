@@ -56,6 +56,7 @@
       </div>
     </div>
     <app-scenario-codemirror
+      class="gridster-item-content"
       [(content)]="scenarioText"
       [autoSubmit]="autoSubmit"
       [autoRefresh]="true"
@@ -105,7 +106,7 @@
         </div>
       </div>
     </div>
-    <app-autotheme-codemirror [content]="output" [options]="{
+    <app-autotheme-codemirror class="gridster-item-content" [content]="output" [options]="{
         autoRefresh: true,
         lineNumbers: true,
         readOnly: true
@@ -114,7 +115,7 @@
 
   <gridster-item [item]="{x: 0, y: 2, rows: 6, cols: 4}" class="p-3">
     <h2>Java Test Code</h2>
-    <app-autotheme-codemirror [content]="javaCode" [options]="{
+    <app-autotheme-codemirror class="gridster-item-content" [content]="javaCode" [options]="{
         autoRefresh: true,
         lineNumbers: true,
         matchBrackets: true,
@@ -125,13 +126,15 @@
 
   <gridster-item [item]="{x: 1, y: 0, rows: 6, cols: 4}" class="p-3">
     <h2>Markdown</h2>
-    <div [innerHTML]="markdown | safeHtml"></div>
+    <div [innerHTML]="markdown | safeHtml" class="gridster-item-content"></div>
   </gridster-item>
 
   <gridster-item [item]="{x: 1, y: 0, rows: 6, cols: 4}" class="p-3">
     <h2>Class Diagram</h2>
-    <div *ngIf="response && response.classDiagram" [innerHTML]="response.classDiagram | safeHtml" class="diagram">
-    </div>
+    <div *ngIf="response && response.classDiagram"
+         class="diagram gridster-item-content"
+         [innerHTML]="response.classDiagram | safeHtml"
+    ></div>
     <div *ngIf="response && !response.classDiagram">
       No model classes to display.
     </div>
@@ -146,7 +149,7 @@
       Loading...
     </div>
 
-    <ng-container *ngIf="response && response.objectDiagrams">
+    <div *ngIf="response && response.objectDiagrams" class="gridster-item-content">
       <ul ngbNav #objectDiagramTabs="ngbNav" [(activeId)]="activeObjectDiagramTab" class="nav-tabs">
         <li *ngFor="let diagram of response.objectDiagrams; index as diagramIndex" [ngbNavItem]="diagramIndex + 1">
           <a ngbNavLink>{{diagram.name}}</a>
@@ -169,7 +172,7 @@
       </ul>
 
       <div [ngbNavOutlet]="objectDiagramTabs" class="mt-2"></div>
-    </ng-container>
+    </div>
   </gridster-item>
 </gridster>
 </div>
