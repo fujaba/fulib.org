@@ -20,6 +20,10 @@
   }
 }
 
+.cm-h-100 .CodeMirror {
+  height: 100%;
+}
+
 .CodeMirror-lint-tooltip {
   // .tooltip
   @include reset-text();

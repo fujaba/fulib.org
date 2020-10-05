@@ -71,7 +71,7 @@
   <gridster-item [item]="{x: 0, y: 1, rows: 6, cols: 4}" class="p-3">
     <h2>Output</h2>
     <div class="gridster-item-content">
-      <div style="min-height: 2.5rem">
+      <div style="height: 2rem">
         <div class="progress">
           <div class="progress-bar"
                role="progressbar"
@@ -110,18 +110,20 @@
           </div>
         </div>
       </div>
-      <app-autotheme-codemirror [content]="output" [options]="{
-        autoRefresh: true,
-        lineNumbers: true,
-        readOnly: true
-      }"></app-autotheme-codemirror>
+      <div style="height: calc(100% - 2rem)">
+        <app-autotheme-codemirror class="cm-h-100" [content]="output" [options]="{
+          autoRefresh: true,
+          lineNumbers: true,
+          readOnly: true
+        }"></app-autotheme-codemirror>
+      </div>
     </div>
   </gridster-item>
 
   <gridster-item [item]="{x: 0, y: 2, rows: 6, cols: 4}" class="p-3">
     <h2>Java Test Code</h2>
     <div class="gridster-item-content">
-      <app-autotheme-codemirror [content]="javaCode" [options]="{
+      <app-autotheme-codemirror class="cm-h-100" [content]="javaCode" [options]="{
         autoRefresh: true,
         lineNumbers: true,
         matchBrackets: true,
