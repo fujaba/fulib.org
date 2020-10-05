@@ -135,7 +135,7 @@
     <h2>Markdown</h2>
     <div class="gridster-item-content">
       <ng-container *ngIf="markdown else loading">
-        <div [innerHTML]="markdown | safeHtml"></div>
+        <div class="h-100 overflow-auto" [innerHTML]="markdown | safeHtml"></div>
       </ng-container>
     </div>
   </gridster-item>

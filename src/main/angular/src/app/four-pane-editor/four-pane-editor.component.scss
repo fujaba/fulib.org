@@ -1,0 +1,5 @@
+.gridster-item-content {
+  $height: calc(100% - 3em);
+  height: $height;
+  max-height: $height;
+}
