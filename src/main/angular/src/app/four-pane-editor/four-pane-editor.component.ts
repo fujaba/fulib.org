@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {GridsterItem} from 'angular-gridster2';
 
 import {ExamplesService} from '../examples.service';
 import {MarkdownService} from '../markdown.service';
@@ -9,7 +10,7 @@ import Example from '../model/example';
 
 import ExampleCategory from '../model/example-category';
 import {PrivacyService} from '../privacy.service';
-import {Marker, ScenarioEditorService} from '../scenario-editor.service';
+import {Marker, Panels, ScenarioEditorService} from '../scenario-editor.service';
 
 @Component({
   selector: 'app-four-pane-editor',
@@ -17,6 +18,8 @@ import {Marker, ScenarioEditorService} from '../scenario-editor.service';
   styleUrls: ['./four-pane-editor.component.scss'],
 })
 export class FourPaneEditorComponent implements OnInit {
+  panels: Panels;
+
   _selectedExample: Example | null;
   scenarioText: string;
   response: Response | null;
@@ -29,6 +32,10 @@ export class FourPaneEditorComponent implements OnInit {
   exampleCategories: ExampleCategory[];
   _activeObjectDiagramTab = 1;
 
+  savePanels = () => {
+    this.scenarioEditorService.panels = this.panels;
+  };
+
   constructor(
     private examplesService: ExamplesService,
     private scenarioEditorService: ScenarioEditorService,
@@ -40,6 +47,8 @@ export class FourPaneEditorComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.panels = this.scenarioEditorService.panels;
+
     this.exampleCategories = this.examplesService.getCategories();
 
     this.activatedRoute.queryParams.subscribe(queryParams => {

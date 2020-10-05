@@ -49,6 +49,7 @@
     <gridster [options]="{
       draggable: {enabled: true},
       resizable: {enabled: true},
+      itemChangeCallback: savePanels,
       minRows: 12,
       maxRows: 12,
       minCols: 12,
@@ -56,7 +57,7 @@
       swap: true,
       displayGrid: 'onDrag&Resize'
     }">
-      <gridster-item [item]="{x: 0, y: 0, rows: 6, cols: 4}" class="p-3">
+      <gridster-item [item]="panels.scenario" class="p-3">
         <h2>Scenario</h2>
         <div class="gridster-item-content">
           <app-scenario-codemirror
@@ -70,7 +71,7 @@
         </div>
       </gridster-item>
 
-      <gridster-item [item]="{x: 4, y: 0, rows: 6, cols: 4}" class="p-3">
+      <gridster-item [item]="panels.output" class="p-3">
         <h2>Output</h2>
         <div class="gridster-item-content">
           <div style="height: 2rem">
@@ -114,7 +115,7 @@
         </div>
       </gridster-item>
 
-      <gridster-item [item]="{x: 8, y: 0, rows: 6, cols: 4}" class="p-3">
+      <gridster-item [item]="panels.java" class="p-3">
         <h2>Java Test Code</h2>
         <div class="gridster-item-content">
           <app-autotheme-codemirror class="cm-h-100" [content]="javaCode" [options]="{
@@ -127,7 +128,7 @@
         </div>
       </gridster-item>
 
-      <gridster-item [item]="{x: 0, y: 6, rows: 6, cols: 4}" class="p-3">
+      <gridster-item [item]="panels.markdown" class="p-3">
         <h2>Markdown</h2>
         <div class="gridster-item-content">
           <ng-container *ngIf="markdown else loading">
@@ -136,7 +137,7 @@
         </div>
       </gridster-item>
 
-      <gridster-item [item]="{x: 4, y: 6, rows: 6, cols: 4}" class="p-3">
+      <gridster-item [item]="panels.classDiagram" class="p-3">
         <h2>Class Diagram</h2>
         <div class="gridster-item-content">
           <ng-container *ngIf="response else loading">
@@ -151,7 +152,7 @@
         </div>
       </gridster-item>
 
-      <gridster-item [item]="{x: 8, y: 6, rows: 6, cols: 4}" class="p-3">
+      <gridster-item [item]="panels.objectDiagrams" class="p-3">
         <h2>Object Diagrams</h2>
         <div class="gridster-item-content">
           <ng-container *ngIf="response else loading">
