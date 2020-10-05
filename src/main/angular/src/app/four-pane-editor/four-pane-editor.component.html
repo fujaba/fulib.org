@@ -73,36 +73,28 @@
     <div class="gridster-item-content">
       <div style="height: 2rem">
         <div class="progress">
-          <div class="progress-bar"
-               role="progressbar"
-               style="width: 24.25%"
+          <div class="progress-bar status-item" role="progressbar"
                [class.bg-success]="response && toolSuccess(0)"
                [class.bg-danger]="response && !toolSuccess(0)"
           >
-            Scenario Compiler
+            Scenario
           </div>
-          <div class="progress-bar bg-light bg-darkmode-dark" role="progressbar" style="width: 1%"></div>
-          <div class="progress-bar"
-               role="progressbar"
-               style="width: 24.25%"
+          <div class="progress-bar bg-light bg-darkmode-dark status-separator" role="progressbar"></div>
+          <div class="progress-bar status-item" role="progressbar"
                [class.bg-success]="response && toolSuccess(1)"
                [class.bg-danger]="response && !toolSuccess(1)"
           >
-            Java Model Compiler
+            Model Code
           </div>
-          <div class="progress-bar bg-light bg-darkmode-dark" role="progressbar" style="width: 1%"></div>
-          <div class="progress-bar"
-               role="progressbar"
-               style="width: 24.25%"
+          <div class="progress-bar bg-light bg-darkmode-dark status-separator" role="progressbar"></div>
+          <div class="progress-bar status-item" role="progressbar"
                [class.bg-success]="response && toolSuccess(2)"
                [class.bg-danger]="response && !toolSuccess(2)"
           >
-            Java Test Compiler
+            Test Code
           </div>
-          <div class="progress-bar bg-light bg-darkmode-dark" role="progressbar" style="width: 1%"></div>
-          <div class="progress-bar"
-               role="progressbar"
-               style="width: 24.25%"
+          <div class="progress-bar bg-light bg-darkmode-dark status-separator" role="progressbar"></div>
+          <div class="progress-bar status-item" role="progressbar"
                [class.bg-success]="response && toolSuccess(3)"
                [class.bg-danger]="response && !toolSuccess(3)"
           >
