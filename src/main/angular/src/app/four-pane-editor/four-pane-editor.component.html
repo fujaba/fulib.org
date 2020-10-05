@@ -159,7 +159,7 @@
     <h2>Object Diagrams</h2>
     <div class="gridster-item-content">
       <ng-container *ngIf="response else loading">
-        <ng-container *ngIf="response.objectDiagrams.length else emptyObjectDiagrams">
+        <ng-container *ngIf="response.objectDiagrams?.length else emptyObjectDiagrams">
           <ul ngbNav #objectDiagramTabs="ngbNav" [(activeId)]="activeObjectDiagramTab" class="nav-tabs">
             <li *ngFor="let diagram of response.objectDiagrams; index as diagramIndex" [ngbNavItem]="diagramIndex + 1">
               <a ngbNavLink>{{diagram.name}}</a>
