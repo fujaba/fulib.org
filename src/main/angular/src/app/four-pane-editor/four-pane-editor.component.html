@@ -68,7 +68,7 @@
     </div>
   </gridster-item>
 
-  <gridster-item [item]="{x: 0, y: 1, rows: 6, cols: 4}" class="p-3">
+  <gridster-item [item]="{x: 4, y: 0, rows: 6, cols: 4}" class="p-3">
     <h2>Output</h2>
     <div class="gridster-item-content">
       <div style="height: 2rem">
@@ -112,7 +112,7 @@
     </div>
   </gridster-item>
 
-  <gridster-item [item]="{x: 0, y: 2, rows: 6, cols: 4}" class="p-3">
+  <gridster-item [item]="{x: 8, y: 0, rows: 6, cols: 4}" class="p-3">
     <h2>Java Test Code</h2>
     <div class="gridster-item-content">
       <app-autotheme-codemirror class="cm-h-100" [content]="javaCode" [options]="{
@@ -125,7 +125,7 @@
     </div>
   </gridster-item>
 
-  <gridster-item [item]="{x: 1, y: 0, rows: 6, cols: 4}" class="p-3">
+  <gridster-item [item]="{x: 0, y: 6, rows: 6, cols: 4}" class="p-3">
     <h2>Markdown</h2>
     <div class="gridster-item-content">
       <ng-container *ngIf="markdown else loading">
@@ -134,7 +134,7 @@
     </div>
   </gridster-item>
 
-  <gridster-item [item]="{x: 1, y: 0, rows: 6, cols: 4}" class="p-3">
+  <gridster-item [item]="{x: 4, y: 6, rows: 6, cols: 4}" class="p-3">
     <h2>Class Diagram</h2>
     <div class="gridster-item-content">
       <ng-container *ngIf="response else loading">
@@ -149,7 +149,7 @@
     </div>
   </gridster-item>
 
-  <gridster-item [item]="{x: 1, y: 1, rows: 6, cols: 4}" class="p-3">
+  <gridster-item [item]="{x: 8, y: 6, rows: 6, cols: 4}" class="p-3">
     <h2>Object Diagrams</h2>
     <div class="gridster-item-content">
       <ng-container *ngIf="response else loading">
