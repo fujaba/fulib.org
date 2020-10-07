@@ -173,45 +173,21 @@
       swap: true,
       displayGrid: 'onDrag&Resize'
     }">
-      <gridster-item [item]="panels.scenario" class="p-3">
-        <h2>Scenario</h2>
+      <gridster-item
+        *ngFor="let item of [
+          {id: 'scenario', title: 'Scenario', template: scenario},
+          {id: 'output', title: 'Output', template: output},
+          {id: 'java', title: 'Java Test Code', template: java},
+          {id: 'markdown', title: 'Markdown', template: markdown},
+          {id: 'classDiagram', title: 'Class Diagram', template: classDiagram},
+          {id: 'objectDiagrams', title: 'Object Diagrams', template: objectDiagrams}
+        ]"
+        [item]="panels[item.id]"
+        class="p-3"
+      >
+        <h2>{{item.title}}</h2>
         <div class="gridster-item-content">
-          <ng-container [ngTemplateOutlet]="scenario"></ng-container>
-        </div>
-      </gridster-item>
-
-      <gridster-item [item]="panels.output" class="p-3">
-        <h2>Output</h2>
-        <div class="gridster-item-content">
-          <ng-container [ngTemplateOutlet]="output"></ng-container>
-        </div>
-      </gridster-item>
-
-      <gridster-item [item]="panels.java" class="p-3">
-        <h2>Java Test Code</h2>
-        <div class="gridster-item-content">
-          <ng-container [ngTemplateOutlet]="java"></ng-container>
-        </div>
-      </gridster-item>
-
-      <gridster-item [item]="panels.markdown" class="p-3">
-        <h2>Markdown</h2>
-        <div class="gridster-item-content">
-          <ng-container [ngTemplateOutlet]="markdown"></ng-container>
-        </div>
-      </gridster-item>
-
-      <gridster-item [item]="panels.classDiagram" class="p-3">
-        <h2>Class Diagram</h2>
-        <div class="gridster-item-content">
-          <ng-container [ngTemplateOutlet]="classDiagram"></ng-container>
-        </div>
-      </gridster-item>
-
-      <gridster-item [item]="panels.objectDiagrams" class="p-3">
-        <h2>Object Diagrams</h2>
-        <div class="gridster-item-content">
-          <ng-container [ngTemplateOutlet]="objectDiagrams"></ng-container>
+          <ng-container [ngTemplateOutlet]="item.template"></ng-container>
         </div>
       </gridster-item>
     </gridster>
