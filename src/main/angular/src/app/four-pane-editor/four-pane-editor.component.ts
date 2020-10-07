@@ -36,6 +36,8 @@ export class FourPaneEditorComponent implements OnInit {
     this.scenarioEditorService.panels = this.panels;
   };
 
+  itemId = item => item.id;
+
   constructor(
     private examplesService: ExamplesService,
     private scenarioEditorService: ScenarioEditorService,
@@ -148,5 +150,10 @@ export class FourPaneEditorComponent implements OnInit {
 
   set autoSubmit(value: boolean) {
     this.scenarioEditorService.autoSubmit = value;
+  }
+
+  setPanelClosed(id: string, hidden: boolean): void {
+    this.panels[id].closed = hidden;
+    this.savePanels();
   }
 }

@@ -112,7 +112,14 @@
   </ng-container>
 </ng-template>
 
-<div class="h-100 d-flex flex-column">
+<div class="h-100 d-flex flex-column" *ngIf="[
+  {id: 'scenario', title: 'Scenario', template: scenario},
+  {id: 'output', title: 'Output', template: output},
+  {id: 'java', title: 'Java Test Code', template: java},
+  {id: 'markdown', title: 'Markdown', template: markdown},
+  {id: 'classDiagram', title: 'Class Diagram', template: classDiagram},
+  {id: 'objectDiagrams', title: 'Object Diagrams', template: objectDiagrams}
+] as items">
   <div class="btn-toolbar mb-3 mx-2" role="toolbar" aria-label="Toolbar">
     <div class="input-group mx-1">
       <div class="input-group-prepend">
@@ -173,24 +180,28 @@
       swap: true,
       displayGrid: 'onDrag&Resize'
     }">
-      <gridster-item
-        *ngFor="let item of [
-          {id: 'scenario', title: 'Scenario', template: scenario},
-          {id: 'output', title: 'Output', template: output},
-          {id: 'java', title: 'Java Test Code', template: java},
-          {id: 'markdown', title: 'Markdown', template: markdown},
-          {id: 'classDiagram', title: 'Class Diagram', template: classDiagram},
-          {id: 'objectDiagrams', title: 'Object Diagrams', template: objectDiagrams}
-        ]"
-        [item]="panels[item.id]"
-        class="p-3"
-      >
-        <h2>{{item.title}}</h2>
-        <div class="gridster-item-content">
-          <ng-container [ngTemplateOutlet]="item.template"></ng-container>
-        </div>
-      </gridster-item>
+      <ng-container *ngFor="let item of items; trackBy: itemId">
+        <gridster-item *ngIf="!panels[item.id].closed" [item]="panels[item.id]" class="p-3">
+          <h2>
+            {{item.title}}
+            <button type="button" class="close text-right" aria-label="Close" (click)="setPanelClosed(item.id, true)">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </h2>
+          <div class="gridster-item-content">
+            <ng-container [ngTemplateOutlet]="item.template"></ng-container>
+          </div>
+        </gridster-item>
+      </ng-container>
     </gridster>
+  </div>
+  <div class="bg-secondary">
+    <ng-container *ngFor="let item of items; trackBy: itemId">
+      <button *ngIf="panels[item.id].closed" type="button" class="btn btn-sm btn-secondary mr-1"
+              (click)="setPanelClosed(item.id, false)">
+        {{item.title}}
+      </button>
+    </ng-container>
   </div>
 </div>
 
