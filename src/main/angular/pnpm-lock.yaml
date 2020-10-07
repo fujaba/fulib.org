@@ -10,6 +10,7 @@ dependencies:
   '@angular/router': 9.1.9_69d4d166744ae27120a4a095c35c9cfe
   '@ctrl/ngx-codemirror': 3.1.3_92963ff6170818c3be2ce4438676b10c
   '@ng-bootstrap/ng-bootstrap': 6.1.0_4d61a7c5eb8bef80d3b0d500e8e21afa
+  angular-gridster2: 9.3.3_8afd4b0a404262bf48944066a6888698
   bootstrap: 4.4.1
   bootstrap-darkmode: 0.7.0
   codemirror: 5.58.0
@@ -1747,6 +1748,17 @@ packages:
     dev: true
     resolution:
       integrity: sha1-l6ERlkmyEa0zaR2fn0hqjsn74KM=
+  /angular-gridster2/9.3.3_8afd4b0a404262bf48944066a6888698:
+    dependencies:
+      '@angular/common': 9.1.9_e64d04627aeca35d73d770258b6ad465
+      '@angular/core': 9.1.9_ca296a5e5adc0afc8d32926df5677b5e
+      tslib: 1.11.1
+    dev: false
+    peerDependencies:
+      '@angular/common': ^9.1.0
+      '@angular/core': ^9.1.0
+    resolution:
+      integrity: sha512-la9+MSnJR8sQ7MJQCSmBAJMP65LiAsypK1MsYjZaSGF5lCPFIN5jQIMtvP9AjFje+5tNv6wJtQvCQGM0bzwoJA==
   /ansi-colors/3.2.4:
     dev: true
     engines:
@@ -9624,6 +9636,7 @@ specifiers:
   '@types/jasmine': ~3.3.16
   '@types/jasminewd2': ~2.0.8
   '@types/node': ~13.7.7
+  angular-gridster2: ^9.3.3
   bootstrap: ~4.4.1
   bootstrap-darkmode: ^0.7.0
   codelyzer: ^5.1.2

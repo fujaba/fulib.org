@@ -20,6 +20,10 @@
   }
 }
 
+.cm-h-100 .CodeMirror {
+  height: 100%;
+}
+
 .CodeMirror-lint-tooltip {
   // .tooltip
   @include reset-text();
@@ -64,6 +68,10 @@
   img.diagram, .diagram > svg {
     filter: invert(100%);
   }
+
+  gridster-item {
+    background-color: $default-bg;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -79,10 +87,12 @@
 html {
   position: relative;
   min-height: 100%;
+  height: 100%;
 }
 
 body {
   padding-top: 4.5rem;
+  height: 100%;
 }
 
 /* --------------- Misc. --------------- */

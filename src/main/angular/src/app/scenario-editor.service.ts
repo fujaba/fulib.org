@@ -23,6 +23,18 @@ export interface Marker {
   to: Position;
 }
 
+export interface Panels {
+  [id: string]: Panel;
+}
+
+export interface Panel {
+  closed?: boolean;
+  x: number;
+  y: number;
+  rows: number;
+  cols: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -39,6 +51,8 @@ There is a Car with name Herbie.
   public readonly defaultProjectVersion = '0.1.0';
   public readonly defaultScenarioFileName = 'Scenario.md';
   public readonly defaultDecoratorClassName = 'GenModel';
+
+  private _panels?: Panels;
 
   private _storedScenario?: string;
 
@@ -57,6 +71,34 @@ There is a Car with name Herbie.
     private privacyService: PrivacyService,
     private http: HttpClient,
   ) {
+  }
+
+  get panels(): Panels {
+    const panels = this._panels ?? JSON.parse(this.privacyService.getStorage('panels') ?? '{}') as Panels;
+    if (!panels.scenario) {
+      panels.scenario = {x: 0, y: 0, rows: 6, cols: 4};
+    }
+    if (!panels.output) {
+      panels.output = {x: 4, y: 0, rows: 6, cols: 4};
+    }
+    if (!panels.java) {
+      panels.java = {x: 8, y: 0, rows: 6, cols: 4};
+    }
+    if (!panels.markdown) {
+      panels.markdown = {x: 0, y: 6, rows: 6, cols: 4};
+    }
+    if (!panels.classDiagram) {
+      panels.classDiagram = {x: 4, y: 6, rows: 6, cols: 4};
+    }
+    if (!panels.objectDiagrams) {
+      panels.objectDiagrams = {x: 8, y: 6, rows: 6, cols: 4};
+    }
+    return panels;
+  }
+
+  set panels(value: Panels) {
+    this._panels = value;
+    this.privacyService.setStorage('panels', JSON.stringify(value));
   }
 
   get storedScenario(): string {

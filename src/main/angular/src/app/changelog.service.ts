@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {EMPTY, Observable} from 'rxjs';
 import {flatMap} from 'rxjs/operators';
+import {MarkdownService} from './markdown.service';
 
 import {PrivacyService} from './privacy.service';
 import {environment} from '../environments/environment';
@@ -24,6 +25,7 @@ export class ChangelogService {
   constructor(
     private privacyService: PrivacyService,
     private http: HttpClient,
+    private markdownService: MarkdownService,
   ) {
   }
 
@@ -92,10 +94,6 @@ export class ChangelogService {
     return this.http.get(`https://raw.githubusercontent.com/${repo}/master/CHANGELOG.md`, {responseType: 'text'});
   }
 
-  private renderMarkdown(md: string): Observable<string> {
-    return this.http.post(`${environment.apiURL}/rendermarkdown`, md, {responseType: 'text'});
-  }
-
   private partialChangelog(fullChangelog: string, lastUsedVersion: string, currentVersion?: string): string {
     let result = '';
     let version = '';
@@ -143,7 +141,7 @@ export class ChangelogService {
           return EMPTY;
         }
         const issueLinks = this.replaceIssueLinks('fujaba/' + repo, changelog);
-        return this.renderMarkdown(issueLinks);
+        return this.markdownService.renderMarkdown(issueLinks);
       }),
     );
   }
