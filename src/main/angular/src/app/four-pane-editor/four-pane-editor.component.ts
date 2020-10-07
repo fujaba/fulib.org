@@ -25,8 +25,8 @@ export class FourPaneEditorComponent implements OnInit {
   response: Response | null;
   markers: Marker[] = [];
   javaCode = '// Loading...';
-  output = 'Loading...';
-  markdown?: string;
+  outputText = 'Loading...';
+  markdownHtml?: string;
   submitting: boolean;
 
   exampleCategories: ExampleCategory[];
@@ -78,11 +78,11 @@ export class FourPaneEditorComponent implements OnInit {
       this.submitting = false;
       this.response = response;
       this.javaCode = this.renderJavaCode();
-      this.output = this.scenarioEditorService.foldInternalCalls(this.response.output.split('\n')).join('\n');
+      this.outputText = this.scenarioEditorService.foldInternalCalls(this.response.output.split('\n')).join('\n');
       this.markers = this.scenarioEditorService.lint(response);
     });
     this.markdownService.renderMarkdown(this.scenarioText).subscribe(rendered => {
-      this.markdown = rendered;
+      this.markdownHtml = rendered;
     });
   }
 

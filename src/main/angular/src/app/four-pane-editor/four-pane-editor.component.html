@@ -1,3 +1,117 @@
+<ng-template #scenario>
+  <app-scenario-codemirror
+    class="cm-h-100"
+    [(content)]="scenarioText"
+    [autoSubmit]="autoSubmit"
+    [autoRefresh]="true"
+    [markers]="markers"
+    (save)="submit()"
+  ></app-scenario-codemirror>
+</ng-template>
+
+<ng-template #output>
+  <div style="height: 2rem">
+    <div class="progress">
+      <div class="progress-bar status-item" role="progressbar"
+           [class.bg-success]="response && toolSuccess(0)"
+           [class.bg-danger]="response && !toolSuccess(0)"
+      >
+        Scenario
+      </div>
+      <div class="progress-bar bg-light bg-darkmode-dark status-separator" role="progressbar"></div>
+      <div class="progress-bar status-item" role="progressbar"
+           [class.bg-success]="response && toolSuccess(1)"
+           [class.bg-danger]="response && !toolSuccess(1)"
+      >
+        Model Code
+      </div>
+      <div class="progress-bar bg-light bg-darkmode-dark status-separator" role="progressbar"></div>
+      <div class="progress-bar status-item" role="progressbar"
+           [class.bg-success]="response && toolSuccess(2)"
+           [class.bg-danger]="response && !toolSuccess(2)"
+      >
+        Test Code
+      </div>
+      <div class="progress-bar bg-light bg-darkmode-dark status-separator" role="progressbar"></div>
+      <div class="progress-bar status-item" role="progressbar"
+           [class.bg-success]="response && toolSuccess(3)"
+           [class.bg-danger]="response && !toolSuccess(3)"
+      >
+        Test Run
+      </div>
+    </div>
+  </div>
+  <div style="height: calc(100% - 2rem)">
+    <app-autotheme-codemirror class="cm-h-100" [content]="outputText" [options]="{
+      autoRefresh: true,
+      lineNumbers: true,
+      readOnly: true
+    }"></app-autotheme-codemirror>
+  </div>
+</ng-template>
+
+<ng-template #java>
+  <app-autotheme-codemirror class="cm-h-100" [content]="javaCode" [options]="{
+    autoRefresh: true,
+    lineNumbers: true,
+    matchBrackets: true,
+    readOnly: true,
+    mode: 'text/x-java'
+  }"></app-autotheme-codemirror>
+</ng-template>
+
+<ng-template #markdown>
+  <ng-container *ngIf="markdownHtml else loading">
+    <div class="h-100 overflow-auto" [innerHTML]="markdownHtml | safeHtml"></div>
+  </ng-container>
+</ng-template>
+
+<ng-template #classDiagram>
+  <ng-container *ngIf="response else loading">
+    <div *ngIf="response.classDiagram else emptyClassDiagram"
+         class="diagram"
+         [innerHTML]="response.classDiagram | safeHtml"
+    ></div>
+    <ng-template #emptyClassDiagram>
+      No model classes to display.
+    </ng-template>
+  </ng-container>
+</ng-template>
+
+<ng-template #objectDiagrams>
+  <ng-container *ngIf="response else loading">
+    <ng-container *ngIf="response.objectDiagrams?.length else emptyObjectDiagrams">
+      <ul ngbNav #objectDiagramTabs="ngbNav" [(activeId)]="activeObjectDiagramTab" class="nav-tabs">
+        <li *ngFor="let diagram of response.objectDiagrams; index as diagramIndex"
+            [ngbNavItem]="diagramIndex + 1">
+          <a ngbNavLink>{{diagram.name}}</a>
+          <ng-template ngbNavContent>
+            <img *ngIf="diagram.name.endsWith('.png')"
+                 class="diagram" src="data:image/png;base64,{{diagram.content}}"
+                 alt="{{diagram.name}}">
+            <div *ngIf="diagram.name.endsWith('.svg')"
+                 [innerHTML]="diagram.content | safeHtml"
+                 class="diagram"
+            ></div>
+            <pre
+              *ngIf="diagram.name.endsWith('.yaml') || diagram.name.endsWith('.txt')">{{diagram.content}}</pre>
+            <iframe *ngIf="diagram.name.endsWith('.html')"
+                    width="100%" height="500px"
+                    [srcdoc]="diagram.content | safeHtml"
+                    src="data:text/html,<strong>Your browser cannot display this mockup!</strong>"
+            ></iframe>
+          </ng-template>
+        </li>
+      </ul>
+
+      <div [ngbNavOutlet]="objectDiagramTabs" class="mt-2"></div>
+    </ng-container>
+    <ng-template #emptyObjectDiagrams>
+      No object diagrams to display.
+    </ng-template>
+  </ng-container>
+</ng-template>
+
 <div class="h-100 d-flex flex-column">
   <div class="btn-toolbar mb-3 mx-2" role="toolbar" aria-label="Toolbar">
     <div class="input-group mx-1">
@@ -62,132 +176,42 @@
       <gridster-item [item]="panels.scenario" class="p-3">
         <h2>Scenario</h2>
         <div class="gridster-item-content">
-          <app-scenario-codemirror
-            class="cm-h-100"
-            [(content)]="scenarioText"
-            [autoSubmit]="autoSubmit"
-            [autoRefresh]="true"
-            [markers]="markers"
-            (save)="submit()"
-          ></app-scenario-codemirror>
+          <ng-container [ngTemplateOutlet]="scenario"></ng-container>
         </div>
       </gridster-item>
 
       <gridster-item [item]="panels.output" class="p-3">
         <h2>Output</h2>
         <div class="gridster-item-content">
-          <div style="height: 2rem">
-            <div class="progress">
-              <div class="progress-bar status-item" role="progressbar"
-                   [class.bg-success]="response && toolSuccess(0)"
-                   [class.bg-danger]="response && !toolSuccess(0)"
-              >
-                Scenario
-              </div>
-              <div class="progress-bar bg-light bg-darkmode-dark status-separator" role="progressbar"></div>
-              <div class="progress-bar status-item" role="progressbar"
-                   [class.bg-success]="response && toolSuccess(1)"
-                   [class.bg-danger]="response && !toolSuccess(1)"
-              >
-                Model Code
-              </div>
-              <div class="progress-bar bg-light bg-darkmode-dark status-separator" role="progressbar"></div>
-              <div class="progress-bar status-item" role="progressbar"
-                   [class.bg-success]="response && toolSuccess(2)"
-                   [class.bg-danger]="response && !toolSuccess(2)"
-              >
-                Test Code
-              </div>
-              <div class="progress-bar bg-light bg-darkmode-dark status-separator" role="progressbar"></div>
-              <div class="progress-bar status-item" role="progressbar"
-                   [class.bg-success]="response && toolSuccess(3)"
-                   [class.bg-danger]="response && !toolSuccess(3)"
-              >
-                Test Run
-              </div>
-            </div>
-          </div>
-          <div style="height: calc(100% - 2rem)">
-            <app-autotheme-codemirror class="cm-h-100" [content]="output" [options]="{
-              autoRefresh: true,
-              lineNumbers: true,
-              readOnly: true
-            }"></app-autotheme-codemirror>
-          </div>
+          <ng-container [ngTemplateOutlet]="output"></ng-container>
         </div>
       </gridster-item>
 
       <gridster-item [item]="panels.java" class="p-3">
         <h2>Java Test Code</h2>
         <div class="gridster-item-content">
-          <app-autotheme-codemirror class="cm-h-100" [content]="javaCode" [options]="{
-            autoRefresh: true,
-            lineNumbers: true,
-            matchBrackets: true,
-            readOnly: true,
-            mode: 'text/x-java'
-          }"></app-autotheme-codemirror>
+          <ng-container [ngTemplateOutlet]="java"></ng-container>
         </div>
       </gridster-item>
 
       <gridster-item [item]="panels.markdown" class="p-3">
         <h2>Markdown</h2>
         <div class="gridster-item-content">
-          <ng-container *ngIf="markdown else loading">
-            <div class="h-100 overflow-auto" [innerHTML]="markdown | safeHtml"></div>
-          </ng-container>
+          <ng-container [ngTemplateOutlet]="markdown"></ng-container>
         </div>
       </gridster-item>
 
       <gridster-item [item]="panels.classDiagram" class="p-3">
         <h2>Class Diagram</h2>
         <div class="gridster-item-content">
-          <ng-container *ngIf="response else loading">
-            <div *ngIf="response.classDiagram else emptyClassDiagram"
-                 class="diagram"
-                 [innerHTML]="response.classDiagram | safeHtml"
-            ></div>
-            <ng-template #emptyClassDiagram>
-              No model classes to display.
-            </ng-template>
-          </ng-container>
+          <ng-container [ngTemplateOutlet]="classDiagram"></ng-container>
         </div>
       </gridster-item>
 
       <gridster-item [item]="panels.objectDiagrams" class="p-3">
         <h2>Object Diagrams</h2>
         <div class="gridster-item-content">
-          <ng-container *ngIf="response else loading">
-            <ng-container *ngIf="response.objectDiagrams?.length else emptyObjectDiagrams">
-              <ul ngbNav #objectDiagramTabs="ngbNav" [(activeId)]="activeObjectDiagramTab" class="nav-tabs">
-                <li *ngFor="let diagram of response.objectDiagrams; index as diagramIndex"
-                    [ngbNavItem]="diagramIndex + 1">
-                  <a ngbNavLink>{{diagram.name}}</a>
-                  <ng-template ngbNavContent>
-                    <img *ngIf="diagram.name.endsWith('.png')"
-                         class="diagram" src="data:image/png;base64,{{diagram.content}}"
-                         alt="{{diagram.name}}">
-                    <div *ngIf="diagram.name.endsWith('.svg')"
-                         [innerHTML]="diagram.content | safeHtml"
-                         class="diagram"
-                    ></div>
-                    <pre
-                      *ngIf="diagram.name.endsWith('.yaml') || diagram.name.endsWith('.txt')">{{diagram.content}}</pre>
-                    <iframe *ngIf="diagram.name.endsWith('.html')"
-                            width="100%" height="500px"
-                            [srcdoc]="diagram.content | safeHtml"
-                            src="data:text/html,<strong>Your browser cannot display this mockup!</strong>"
-                    ></iframe>
-                  </ng-template>
-                </li>
-              </ul>
-
-              <div [ngbNavOutlet]="objectDiagramTabs" class="mt-2"></div>
-            </ng-container>
-            <ng-template #emptyObjectDiagrams>
-              No object diagrams to display.
-            </ng-template>
-          </ng-container>
+          <ng-container [ngTemplateOutlet]="objectDiagrams"></ng-container>
         </div>
       </gridster-item>
     </gridster>
