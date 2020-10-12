@@ -112,6 +112,24 @@ a[href^="http"]::after {
   cursor: pointer;
 }
 
+/* --------------- Markdown --------------- */
+
+.markdown {
+  blockquote {
+    color: $text-muted;
+    padding-left: 10px;
+    border-left: 2px solid $text-muted;
+  }
+
+  pre {
+    @extend .card;
+    @extend .bg-light;
+    @extend .bg-darkmode-dark;
+    padding: 10px;
+    border-radius: 5px;
+  }
+}
+
 /* --------------- Timelines --------------- */
 
 $outline-color: #777;
