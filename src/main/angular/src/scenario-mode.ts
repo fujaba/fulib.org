@@ -134,6 +134,7 @@ export const ScenarioMode: SimpleMode = {
   start: [
     {regex: /(\s*)(##)(.*)$/, token: [null, 'header', 'comment'], sol: true},
     {regex: /(\s*)(#)(.*)$/, token: [null, 'header', 'def'], sol: true},
+    {regex: /(\s*)(>)(.*)$/, token: [null, 'header', 'comment'], sol: true},
     {regex: /\/\/.*/, token: 'comment'},
     {regex: /\s*[+*-]/, token: 'operator', sol: true},
     {regex: /\s*[0-9]\./, token: 'number', sol: true},
