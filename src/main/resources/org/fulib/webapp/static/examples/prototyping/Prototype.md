@@ -162,4 +162,4 @@ Init calls login.
 
 ## Run it on heroku. 
 
-// so far manually: https://fulib-warehouse.herokuapp.com/
+> so far manually: https://fulib-warehouse.herokuapp.com/

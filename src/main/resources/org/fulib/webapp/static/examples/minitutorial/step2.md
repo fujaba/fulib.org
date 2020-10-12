@@ -1,16 +1,16 @@
 # Mini tutorial step 2.
 
-// To derive method behavior, we will go through multiple 
-// examples that show how the desired method should deal 
-// with different situations. For each situation we will identify 
-// the conditions that trigger the specific behavior. 
-// Fulib.org then collects all these condition action rules and 
-// generates our method. 
+> To derive method behavior, we will go through multiple 
+> examples that show how the desired method should deal 
+> with different situations. For each situation we will identify 
+> the conditions that trigger the specific behavior. 
+> Fulib.org then collects all these condition action rules and 
+> generates our method. 
 
-// As example let us plan our shoping trip.
-// We prepare a shoping list with a fixed budget. 
-// We shall then add items to the shoping list 
-// until the budget exceeded. Further items will be ignored. 
+> As example let us plan our shoping trip.
+> We prepare a shoping list with a fixed budget. 
+> We shall then add items to the shoping list 
+> until the budget exceeded. Further items will be ignored. 
 
 There is a shoping-list with budget 30.00.
 There are shopping-Items with name meat, bread, and coal
