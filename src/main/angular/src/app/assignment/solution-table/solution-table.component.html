@@ -8,14 +8,11 @@
     <app-collapse-button [(collapsed)]="solutionCollapsed"></app-collapse-button>
   </h2>
   <p [ngbCollapse]="solutionCollapsed">
-    <app-autotheme-codemirror [content]="assignment === undefined ? 'Loading...' : assignment.solution" [options]="{
-      mode: 'markdown',
-      autoRefresh: true,
-      lineNumbers: true,
-      lineWrapping: true,
-      styleActiveLine: true,
-      readOnly: true
-    }"></app-autotheme-codemirror>
+    <app-scenario-codemirror
+      [content]="assignment ? assignment.solution : 'Loading...'"
+      [readOnly]="true"
+      [autoRefresh]="true"
+    ></app-scenario-codemirror>
   </p>
 
   <h2>

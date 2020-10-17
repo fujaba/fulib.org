@@ -1,18 +1,19 @@
-import {AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DOCUMENT} from '@angular/common';
+import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {forkJoin, of} from 'rxjs';
-import {debounceTime, distinctUntilChanged, switchMap, tap} from 'rxjs/operators';
 
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-
-import Course from '../model/course';
+import {forkJoin, of} from 'rxjs';
+import {switchMap, tap} from 'rxjs/operators';
+import {Marker, ScenarioEditorService} from '../../scenario-editor.service';
+import {AssignmentService} from '../assignment.service';
 import {CourseService} from '../course.service';
 import Assignment from '../model/assignment';
-import {AssignmentService} from '../assignment.service';
+
+import Course from '../model/course';
 import Solution from '../model/solution';
-import {SolutionService} from '../solution.service';
 import TaskResult from '../model/task-result';
+import {SolutionService} from '../solution.service';
 import {UserService} from "../../user/user.service";
 
 @Component({
@@ -20,9 +21,8 @@ import {UserService} from "../../user/user.service";
   templateUrl: './create-solution.component.html',
   styleUrls: ['./create-solution.component.scss'],
 })
-export class CreateSolutionComponent implements OnInit, AfterViewInit, OnDestroy {
+export class CreateSolutionComponent implements OnInit {
   @ViewChild('successModal', {static: true}) successModal;
-  @ViewChild('solutionInput', {static: true}) solutionInput;
 
   course?: Course;
   assignment: Assignment;
@@ -34,6 +34,7 @@ export class CreateSolutionComponent implements OnInit, AfterViewInit, OnDestroy
 
   checking = false;
   results?: TaskResult[];
+  markers: Marker[] = [];
 
   id?: string;
   token?: string;
@@ -46,6 +47,7 @@ export class CreateSolutionComponent implements OnInit, AfterViewInit, OnDestroy
   nextAssignment?: Assignment;
 
   constructor(
+    private scenarioEditorService: ScenarioEditorService,
     private courseService: CourseService,
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
@@ -85,19 +87,6 @@ export class CreateSolutionComponent implements OnInit, AfterViewInit, OnDestroy
         this.email = user.email;
       }
     });
-  }
-
-  ngAfterViewInit(): void {
-    this.solutionInput.contentChange.pipe(
-      debounceTime(1000),
-      distinctUntilChanged(),
-    ).subscribe(() => {
-      this.check();
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.solutionInput.contentChange.unsubscribe();
   }
 
   getSolution(): Solution {
@@ -146,6 +135,7 @@ export class CreateSolutionComponent implements OnInit, AfterViewInit, OnDestroy
     this.solutionService.check({assignment: this.assignment, solution: this.solution}).subscribe(result => {
       this.checking = false;
       this.results = result.results;
+      this.markers = this.assignmentService.lint(result);
     });
   }
 

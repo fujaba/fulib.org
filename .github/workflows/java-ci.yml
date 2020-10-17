@@ -40,7 +40,9 @@ jobs:
          -  name: Cache PNPM Store
             uses: actions/cache@v2
             with:
-               path: ~/.pnpm-store
+               path: |
+                  ~/.pnpm-store
+                  /.pnpm-store
                key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
                restore-keys: ${{ runner.os }}-pnpm
          -  name: Install Angular CLI
@@ -48,7 +50,7 @@ jobs:
          -  name: Setup Angular CLI to use PNPM
             run: ng config -g cli.packageManager pnpm
          -  name: Build with Gradle
-            run: ./gradlew build
+            run: ./gradlew build && ./gradlew --stop
          -  name: Extract branch name
             shell: bash
             run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF##*/})"

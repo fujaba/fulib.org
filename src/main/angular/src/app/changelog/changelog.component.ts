@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 import {ChangelogService, Versions} from '../changelog.service';
@@ -8,13 +8,11 @@ import {ChangelogService, Versions} from '../changelog.service';
   templateUrl: './changelog.component.html',
   styleUrls: ['./changelog.component.scss'],
 })
-export class ChangelogComponent implements OnInit, AfterViewInit {
-  @ViewChild('changelogModal', {static: true}) changelogModal;
-
+export class ChangelogComponent implements OnInit {
   repos: (keyof Versions)[] = [];
   currentVersions: Versions;
   lastUsedVersions: Versions | null;
-  changelogs = new Versions();
+  changelogs: Versions;
 
   activeRepo: string;
 
@@ -36,73 +34,29 @@ export class ChangelogComponent implements OnInit, AfterViewInit {
     this.repos = this.changelogService.repos;
     this.lastUsedVersions = this.changelogService.lastUsedVersions;
     this.currentVersions = this.changelogService.currentVersions;
-  }
+    this.changelogs = new Versions();
 
-  ngAfterViewInit(): void {
-    if (this.autoShow) {
-      this.openFromLastUsedVersion();
-      this.updateLastUsedVersion();
-    }
-  }
-
-  private openFromLastUsedVersion(): void {
-    const lastUsedVersions = this.lastUsedVersions;
-    if (!lastUsedVersions) {
-      // never used the website before, they probably don't care about the changelogs
-      return;
-    }
-
-    const currentVersions = this.changelogService.currentVersions;
-
-    let open = false;
-    for (const repo of this.repos) {
-      this.changelogs[repo] = '';
-      const lastUsedVersion = lastUsedVersions[repo];
-      const currentVersion = currentVersions[repo];
-      if (!lastUsedVersion || !currentVersion) {
-        // probably a dev server where versions are not injected; don't show the changelog
-        continue;
+    const newVersions = this.changelogService.newVersions;
+    const newRepos = Object.keys(newVersions) as (keyof Versions)[];
+    if (newRepos.length === 0) {
+      // show all
+      this.activeRepo = this.repos[0];
+      for (const repo of this.repos) {
+        this.changelogs[repo] = 'Loading...';
+        this.changelogService.getChangelog(repo).subscribe(changelog => {
+          this.changelogs[repo] = changelog;
+        });
       }
-
-      if (lastUsedVersion === currentVersion) {
-        // no changes, nothing to show
-        continue;
+    } else {
+      // show only new
+      this.activeRepo = newRepos[0];
+      for (const repo of newRepos) {
+        this.changelogs[repo] = 'Loading...';
+        this.changelogService.getChangelog(repo, this.lastUsedVersions![repo], this.currentVersions[repo]).subscribe(changelog => {
+          this.changelogs[repo] = changelog;
+        });
       }
-
-      this.changelogService.getChangelog(repo, lastUsedVersion, currentVersion).subscribe(changelog => {
-        this.changelogs[repo] = changelog;
-
-        if (!this.activeRepo) {
-          this.activeRepo = repo;
-        }
-
-        if (!open) {
-          open = true;
-          this.openModal();
-        }
-      });
-    }
-  }
-
-  private openModal(): void {
-    this.modalService.open(this.changelogModal, {ariaLabelledBy: 'changelogModalLabel', size: 'xl'});
-  }
-
-  private updateLastUsedVersion(): void {
-    this.lastUsedVersions = this.currentVersions;
-    this.changelogService.lastUsedVersions = this.currentVersions;
-  }
-
-  open(): void {
-    this.activeRepo = this.repos[0];
-
-    this.openModal();
-
-    for (const repo of this.repos) {
-      this.changelogs[repo] = 'Loading...';
-      this.changelogService.getChangelog(repo).subscribe(changelog => {
-        this.changelogs[repo] = changelog;
-      });
+      this.changelogService.lastUsedVersions = this.currentVersions;
     }
   }
 }

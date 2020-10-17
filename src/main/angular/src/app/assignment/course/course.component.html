@@ -3,7 +3,7 @@
     <div class="container" style="position: sticky; top: 0">
       <h1>{{course?.title || 'Loading Title...'}}</h1>
 
-      <div [innerHTML]="(course?.descriptionHtml || 'Loading Description...') | safeHtml"></div>
+      <div class="markdown" [innerHTML]="(course?.descriptionHtml || 'Loading Description...') | safeHtml"></div>
 
       <ol class="timeline-list">
         <li *ngFor="let assignment of course?.assignments; let i=index" class="timeline-item">

@@ -1,67 +1,66 @@
-import {Component, NgZone, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
-
-import {AutothemeCodemirrorComponent} from '../autotheme-codemirror/autotheme-codemirror.component';
+import {GridsterItem} from 'angular-gridster2';
 
 import {ExamplesService} from '../examples.service';
-import {ScenarioEditorService} from '../scenario-editor.service';
+import {MarkdownService} from '../markdown.service';
+import Request from '../model/codegen/request';
+import Response from '../model/codegen/response';
+import Example from '../model/example';
 
 import ExampleCategory from '../model/example-category';
-import Example from '../model/example';
-import Response from '../model/codegen/response';
-import Request from '../model/codegen/request';
 import {PrivacyService} from '../privacy.service';
+import {Marker, Panels, ScenarioEditorService} from '../scenario-editor.service';
 
 @Component({
   selector: 'app-four-pane-editor',
   templateUrl: './four-pane-editor.component.html',
   styleUrls: ['./four-pane-editor.component.scss'],
 })
-export class FourPaneEditorComponent implements OnInit, OnDestroy {
-  @ViewChild('scenarioInput', {static: true}) scenarioInput: AutothemeCodemirrorComponent;
+export class FourPaneEditorComponent implements OnInit {
+  panels: Panels;
 
   _selectedExample: Example | null;
   scenarioText: string;
   response: Response | null;
+  markers: Marker[] = [];
   javaCode = '// Loading...';
+  outputText = 'Loading...';
+  markdownHtml?: string;
   submitting: boolean;
 
   exampleCategories: ExampleCategory[];
   _activeObjectDiagramTab = 1;
 
-  submitHandler = () => this.zone.run(() => this.submit());
+  savePanels = () => {
+    this.scenarioEditorService.panels = this.panels;
+  };
+
+  itemId = item => item.id;
 
   constructor(
     private examplesService: ExamplesService,
     private scenarioEditorService: ScenarioEditorService,
+    private markdownService: MarkdownService,
     private privacyService: PrivacyService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private zone: NgZone,
   ) {
   }
 
   ngOnInit() {
+    this.panels = this.scenarioEditorService.panels;
+
     this.exampleCategories = this.examplesService.getCategories();
 
-    this.scenarioInput.contentChange.pipe(
-      debounceTime(1000),
-      distinctUntilChanged(),
-    ).subscribe(() => {
-      if (this.autoSubmit) {
-        this.submit();
+    this.activatedRoute.queryParams.subscribe(queryParams => {
+      const exampleName = queryParams.example;
+      if (exampleName) {
+        this.selectedExample = this.examplesService.getExampleByName(exampleName);
+      } else {
+        this.selectedExample = this.scenarioEditorService.selectedExample;
       }
     });
-
-    this.activatedRoute.queryParams.subscribe(queryParams => {
-      const exampleName: string = queryParams.example;
-      this.selectedExample = exampleName ? this.examplesService.getExampleByName(exampleName) : this.scenarioEditorService.selectedExample;
-    });
-  }
-
-  ngOnDestroy() {
-    this.scenarioInput.contentChange.unsubscribe();
   }
 
   submit(): void {
@@ -81,6 +80,11 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
       this.submitting = false;
       this.response = response;
       this.javaCode = this.renderJavaCode();
+      this.outputText = this.scenarioEditorService.foldInternalCalls(this.response.output.split('\n')).join('\n');
+      this.markers = this.scenarioEditorService.lint(response);
+    });
+    this.markdownService.renderMarkdown(this.scenarioText).subscribe(rendered => {
+      this.markdownHtml = rendered;
     });
   }
 
@@ -90,11 +94,6 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
     }
 
     let javaCode = '';
-    if (this.response.exitCode !== 0) {
-      const outputLines = this.response.output.split('\n');
-      javaCode += this.foldInternalCalls(outputLines).map(line => `// ${line}\n`).join('');
-    }
-
     for (const testMethod of this.response.testMethods ?? []) {
       javaCode += `// --------------- ${testMethod.name} in class ${testMethod.className} ---------------\n\n`;
       javaCode += testMethod.body;
@@ -102,26 +101,6 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
     }
 
     return javaCode;
-  }
-
-  private foldInternalCalls(outputLines: string[]): string[] {
-    const packageName = this.scenarioEditorService.packageName.replace('/', '.');
-    const packageNamePrefix = `\tat ${packageName}.`;
-    const result: string[] = [];
-    let counter = 0;
-    for (const line of outputLines) {
-      if (line.startsWith('\tat org.fulib.scenarios.tool.')
-        || line.startsWith('\tat ') && !line.startsWith('\tat org.fulib.') && !line.startsWith(packageNamePrefix)) {
-        counter++;
-      } else {
-        if (counter > 0) {
-          result.push(counter === 1 ? '\t(1 internal call)' : `\t(${counter} internal calls)`);
-          counter = 0;
-        }
-        result.push(line);
-      }
-    }
-    return result;
   }
 
   toolSuccess(index: number) {
@@ -147,9 +126,8 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
   }
 
   selectExample(value: Example | null): void {
-    this.selectedExample = value;
-    this.router.navigate([], {queryParams: {example: value?.name}});
     this.scenarioEditorService.selectedExample = value;
+    this.router.navigate([], {queryParams: {example: value?.name}});
   }
 
   private loadExample(value: Example | null): void {
@@ -172,5 +150,10 @@ export class FourPaneEditorComponent implements OnInit, OnDestroy {
 
   set autoSubmit(value: boolean) {
     this.scenarioEditorService.autoSubmit = value;
+  }
+
+  setPanelClosed(id: string, hidden: boolean): void {
+    this.panels[id].closed = hidden;
+    this.savePanels();
   }
 }

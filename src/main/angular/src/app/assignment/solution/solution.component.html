@@ -6,13 +6,12 @@
 
   <h2><label for="solutionInput">Solution</label></h2>
   <p>
-    <app-autotheme-codemirror id="solutionInput" [content]="solution?.solution || 'Loading...'" [options]="{
-      mode: 'markdown',
-      lineNumbers: true,
-      lineWrapping: true,
-      styleActiveLine: true,
-      readOnly: true
-    }"></app-autotheme-codemirror>
+    <app-scenario-codemirror
+      id="solutionInput"
+      [content]="solution ? solution.solution : 'Loading...'"
+      [markers]="markers"
+      readOnly="true"
+    ></app-scenario-codemirror>
   </p>
 
   <h2>Info</h2>
@@ -63,7 +62,7 @@
             <span class="text-muted">{{comment.timeStamp | date:'medium'}}</span>
           </div>
           <div class="card-body">
-            <div class="card-text" [innerHTML]="comment.html | safeHtml"></div>
+            <div class="card-text markdown" [innerHTML]="comment.html | safeHtml"></div>
           </div>
         </div>
       </div>

@@ -5,12 +5,13 @@
 
   <h2><label for="solutionInput">Your Solution</label></h2>
   <p>
-    <app-autotheme-codemirror id="solutionInput" #solutionInput [(content)]="solution" [options]="{
-      mode: 'markdown',
-      lineNumbers: true,
-      lineWrapping: true,
-      styleActiveLine: true
-    }"></app-autotheme-codemirror>
+    <app-scenario-codemirror
+      id="solutionInput"
+      [(content)]="solution"
+      [autoSubmit]="true"
+      [markers]="markers"
+      (save)="check()"
+    ></app-scenario-codemirror>
     <small class="text-muted">
       {{checking ? 'Checking...'
       : (results ? 'Your solution was checked automatically. Don\'t forget to submit when you are done!'

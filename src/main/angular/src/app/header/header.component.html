@@ -1,0 +1,104 @@
+<header class="fixed-top">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" routerLink="/">fulib.org</a>
+  <button class="navbar-toggler" type="button" (click)="menuCollapsed = !menuCollapsed">
+    &#9776;
+  </button>
+  <div [ngbCollapse]="menuCollapsed" class="collapse navbar-collapse">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <a class="nav-link" routerLink="/">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item" routerLinkActive="active" ngbDropdown>
+        <a tabindex="0" class="nav-link" ngbDropdownToggle id="assignmentsDropdown" role="button">
+          Assignments
+        </a>
+        <div ngbDropdownMenu aria-labelledby="assignmentsDropdown">
+          <a ngbDropdownItem routerLink="/assignments/solutions">
+            My Solutions
+          </a>
+          <a ngbDropdownItem routerLink="/assignments">
+            My Assignments
+          </a>
+          <a ngbDropdownItem routerLink="/assignments/create">
+            Create Assignment
+          </a>
+          <a ngbDropdownItem routerLink="/assignments/courses/create">
+            Create Course
+          </a>
+        </div>
+      </li>
+      <li class="nav-item" ngbDropdown>
+        <a tabindex="0" class="nav-link" ngbDropdownToggle id="githubDropdown" role="button">
+          GitHub
+        </a>
+        <div ngbDropdownMenu aria-labelledby="githubDropdown">
+          <a *ngFor="let repo of repos"
+             ngbDropdownItem href="https://github.com/fujaba/{{repo}}">
+            {{repo}}
+            <span class="text-muted" *ngIf="versions && versions[repo]"> (v{{versions[repo]}})</span>
+          </a>
+        </div>
+      </li>
+      <li class="nav-item" ngbDropdown>
+        <a tabindex="0" class="nav-link" ngbDropdownToggle id="helpDropdown" role="button">
+          Help
+        </a>
+        <div ngbDropdownMenu aria-labelledby="helpDropdown">
+          <a ngbDropdownItem href="https://fujaba.gitbook.io/fulib-scenarios/web-app/getting-started">
+            Getting Started
+          </a>
+          <a ngbDropdownItem href="https://fujaba.gitbook.io/fulib-scenarios/">
+            fulibScenarios Documentation
+          </a>
+          <a ngbDropdownItem href="https://stackoverflow.com/questions/tagged/fulibScenarios">
+            fulibScenarios on StackOverflow
+          </a>
+          <a ngbDropdownItem [routerLink]="[{outlets: {modal: 'feedback'}}]">
+            Feedback
+          </a>
+        </div>
+      </li>
+      <li class="nav-item" ngbDropdown>
+        <a tabindex="0" class="nav-link" ngbDropdownToggle id="legalDropdown" role="button">
+          Legal
+        </a>
+        <div ngbDropdownMenu aria-labelledby="legalDropdown">
+          <a ngbDropdownItem [routerLink]="[{outlets: {modal: 'about'}}]">
+            About
+          </a>
+          <a ngbDropdownItem href="http://www.uni-kassel.de/uni/impressum.html">
+            Imprint
+          </a>
+          <a ngbDropdownItem href="https://www.uni-kassel.de/uni/footer-2/datenschutz/">
+            Privacy Policy
+          </a>
+          <a ngbDropdownItem [routerLink]="[{outlets: {modal: 'privacy'}}]">
+            Edit Privacy Preferences
+          </a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="[{outlets: {modal: 'changelog'}}]">
+          What's New
+        </a>
+      </li>
+    </ul>
+    <ngbd-theme-switch></ngbd-theme-switch>
+    <span class="navbar-text" *ngIf="username">
+      Logged in as <b>{{username}}</b>.
+      <a role="button" style="cursor: pointer" (click)="logout()">
+        Logout
+      </a>
+    </span>
+    <span class="navbar-text" *ngIf="!username">
+      Not logged in.
+      <a role="button" style="cursor: pointer" (click)="login()">
+        Login
+      </a>
+    </span>
+  </div>
+</nav>
+
+</header>

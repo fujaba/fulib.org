@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {EMPTY, Observable} from 'rxjs';
 import {flatMap} from 'rxjs/operators';
+import {MarkdownService} from './markdown.service';
 
 import {PrivacyService} from './privacy.service';
 import {environment} from '../environments/environment';
@@ -24,6 +25,7 @@ export class ChangelogService {
   constructor(
     private privacyService: PrivacyService,
     private http: HttpClient,
+    private markdownService: MarkdownService,
   ) {
   }
 
@@ -68,12 +70,28 @@ export class ChangelogService {
     }
   }
 
-  private loadRawChangelog(repo: string): Observable<string> {
-    return this.http.get(`https://raw.githubusercontent.com/${repo}/master/CHANGELOG.md`, {responseType: 'text'});
+  get newVersions(): Versions {
+    const lastUsedVersions = this.lastUsedVersions;
+    if (!lastUsedVersions) {
+      return {};
+    }
+
+    const currentVersions = this.currentVersions;
+
+    const result: Versions = {};
+    for (const repo of this.repos) {
+      const lastUsedVersion = lastUsedVersions[repo];
+      const currentVersion = currentVersions[repo];
+      if (lastUsedVersion && currentVersion && currentVersion !== lastUsedVersion) {
+        result[repo] = currentVersion;
+      }
+    }
+
+    return result;
   }
 
-  private renderMarkdown(md: string): Observable<string> {
-    return this.http.post(`${environment.apiURL}/rendermarkdown`, md, {responseType: 'text'});
+  private loadRawChangelog(repo: string): Observable<string> {
+    return this.http.get(`https://raw.githubusercontent.com/${repo}/master/CHANGELOG.md`, {responseType: 'text'});
   }
 
   private partialChangelog(fullChangelog: string, lastUsedVersion: string, currentVersion?: string): string {
@@ -123,7 +141,7 @@ export class ChangelogService {
           return EMPTY;
         }
         const issueLinks = this.replaceIssueLinks('fujaba/' + repo, changelog);
-        return this.renderMarkdown(issueLinks);
+        return this.markdownService.renderMarkdown(issueLinks);
       }),
     );
   }

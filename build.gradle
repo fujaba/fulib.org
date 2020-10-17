@@ -20,7 +20,7 @@ plugins {
 
 group = 'org.fulib'
 version = "git describe --tags".execute().text[1..-2] // strip v and \n
-description = 'The fulib.org website and Fulib Scenarios Web App'
+description = 'The fulib.org website and fulibScenarios Web App'
 
 publishInfo {
 	websiteUrl = 'https://www.fulib.org/'
@@ -61,35 +61,35 @@ repositories {
 
 dependencies {
 	// https://mvnrepository.com/artifact/org.fulib/fulibScenarios
-	fulibScenarios group: 'org.fulib', name: 'fulibScenarios', version: '1.4.2'
+	fulibScenarios group: 'org.fulib', name: 'fulibScenarios', version: '1.5.0'
 
 	// --------------- Fulib Libraries ---------------
 
 	// https://mvnrepository.com/artifact/org.fulib/fulibScenarios
-	compile group: 'org.fulib', name: 'fulibScenarios', version: '1.4.2'
+	compile group: 'org.fulib', name: 'fulibScenarios', version: '1.5.1'
 
 	// https://mvnrepository.com/artifact/org.fulib/fulibMockups
 	compile group: 'org.fulib', name: 'fulibMockups', version: '0.2.0'
 
 	// https://mvnrepository.com/artifact/org.fulib/fulibTables
-	compile group: 'org.fulib', name: 'fulibTables', version: '1.3.0'
+	compile group: 'org.fulib', name: 'fulibTables', version: '1.4.0'
 
 	// --------------- Other Libraries ---------------
 
 	// https://mvnrepository.com/artifact/commons-io/commons-io
-	compile group: 'commons-io', name: 'commons-io', version: '2.6'
+	compile group: 'commons-io', name: 'commons-io', version: '2.8.0'
 
 	// https://mvnrepository.com/artifact/org.slf4j/slf4j-nop
 	compile group: 'org.slf4j', name: 'slf4j-nop', version: '1.7.30'
 
 	// https://mvnrepository.com/artifact/com.sparkjava/spark-core
-	compile group: 'com.sparkjava', name: 'spark-core', version: '2.9.1'
+	compile group: 'com.sparkjava', name: 'spark-core', version: '2.9.2'
 
 	// https://mvnrepository.com/artifact/org.json/json
-	compile group: 'org.json', name: 'json', version: '20190722'
+	compile group: 'org.json', name: 'json', version: '20200518'
 
 	// https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync
-	compile group: 'org.mongodb', name: 'mongodb-driver-sync', version: '3.12.3'
+	compile group: 'org.mongodb', name: 'mongodb-driver-sync', version: '3.12.7'
 
 	// https://mvnrepository.com/artifact/com.auth0/java-jwt
 	compile group: 'com.auth0', name: 'java-jwt', version: '3.10.3'
@@ -98,19 +98,25 @@ dependencies {
 	// https://mvnrepository.com/artifact/junit/junit
 	compile group: 'junit', name: 'junit', version: '4.13'
 
+	// https://mvnrepository.com/artifact/org.mockito/mockito-core
+	testCompile group: 'org.mockito', name: 'mockito-core', version: '3.5.13'
+
 	// --------------- CommonMark ---------------
 
 	// https://mvnrepository.com/artifact/com.atlassian.commonmark/commonmark
-	compile group: 'com.atlassian.commonmark', name: 'commonmark', version: '0.14.0'
+	compile group: 'com.atlassian.commonmark', name: 'commonmark', version: '0.15.2'
 
 	// https://mvnrepository.com/artifact/com.atlassian.commonmark/commonmark-ext-gfm-tables
-	compile group: 'com.atlassian.commonmark', name: 'commonmark-ext-gfm-tables', version: '0.14.0'
+	compile group: 'com.atlassian.commonmark', name: 'commonmark-ext-gfm-tables', version: '0.15.2'
 
 	// https://mvnrepository.com/artifact/com.atlassian.commonmark/commonmark-ext-autolink
-	compile group: 'com.atlassian.commonmark', name: 'commonmark-ext-autolink', version: '0.14.0'
+	compile group: 'com.atlassian.commonmark', name: 'commonmark-ext-autolink', version: '0.15.2'
 
 	// https://mvnrepository.com/artifact/com.atlassian.commonmark/commonmark-ext-gfm-strikethrough
-	compile group: 'com.atlassian.commonmark', name: 'commonmark-ext-gfm-strikethrough', version: '0.14.0'
+	compile group: 'com.atlassian.commonmark', name: 'commonmark-ext-gfm-strikethrough', version: '0.15.2'
+
+	// https://mvnrepository.com/artifact/com.atlassian.commonmark/commonmark-ext-task-list-items
+	compile group: 'com.atlassian.commonmark', name: 'commonmark-ext-task-list-items', version: '0.15.2'
 }
 
 // --------------- Version Injection ---------------
@@ -124,6 +130,19 @@ processResources {
 	def fulibScenariosVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulibScenarios')
 	def fulibGradleVersion = getDependencyVersion(buildscript.configurations.classpath, 'org.fulib', 'fulibGradle')
 	def fulibMockupsVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulibMockups')
+
+	from('LICENSE.md') {
+		into 'org/fulib/webapp/static/'
+	}
+
+	from('.') {
+		include 'gradle/wrapper/**', 'gradlew', 'gradlew.bat'
+		into 'org/fulib/webapp/projectzip'
+
+		// we have to save the wrapper jar as a zip, see
+		// https://imperceptiblethoughts.com/shadow/configuration/dependencies/#embedding-jar-files-inside-your-shadow-jar
+		rename 'gradle-wrapper.jar', 'gradle-wrapper.jar.zip'
+	}
 
 	filesMatching([
 			'**/index.html',
@@ -163,21 +182,6 @@ angular {
 
 processResources.filesMatching('fulib.org/**') {
 	it.path = it.path.replace('fulib.org', 'org/fulib/webapp/static')
-}
-
-// --------------- Project Zip Wrapper ---------------
-
-wrapper.doLast {
-	copy {
-		from '.'
-		include 'gradle/wrapper/**', 'gradlew', 'gradlew.bat'
-		into 'src/main/resources/org/fulib/webapp/projectzip'
-
-		// we have to save the wrapper jar as a zip, see
-		// https://imperceptiblethoughts.com/shadow/configuration/dependencies/
-		// "Embedding Jar Files Inside Your Shadow Jar"
-		rename 'gradle-wrapper.jar', 'gradle-wrapper.jar.zip'
-	}
 }
 
 // --------------- Test Scenarios ---------------

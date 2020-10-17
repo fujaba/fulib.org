@@ -11,6 +11,30 @@ import {PrivacyService} from './privacy.service';
 
 import {environment} from '../environments/environment';
 
+export interface Position {
+  line: number;
+  ch: number;
+}
+
+export interface Marker {
+  severity: string;
+  message: string;
+  from: Position;
+  to: Position;
+}
+
+export interface Panels {
+  [id: string]: Panel;
+}
+
+export interface Panel {
+  closed?: boolean;
+  x: number;
+  y: number;
+  rows: number;
+  cols: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -27,6 +51,8 @@ There is a Car with name Herbie.
   public readonly defaultProjectVersion = '0.1.0';
   public readonly defaultScenarioFileName = 'Scenario.md';
   public readonly defaultDecoratorClassName = 'GenModel';
+
+  private _panels?: Panels;
 
   private _storedScenario?: string;
 
@@ -45,6 +71,34 @@ There is a Car with name Herbie.
     private privacyService: PrivacyService,
     private http: HttpClient,
   ) {
+  }
+
+  get panels(): Panels {
+    const panels = this._panels ?? JSON.parse(this.privacyService.getStorage('panels') ?? '{}') as Panels;
+    if (!panels.scenario) {
+      panels.scenario = {x: 0, y: 0, rows: 6, cols: 4};
+    }
+    if (!panels.output) {
+      panels.output = {x: 4, y: 0, rows: 6, cols: 4};
+    }
+    if (!panels.java) {
+      panels.java = {x: 8, y: 0, rows: 6, cols: 4};
+    }
+    if (!panels.markdown) {
+      panels.markdown = {x: 0, y: 6, rows: 6, cols: 4};
+    }
+    if (!panels.classDiagram) {
+      panels.classDiagram = {x: 4, y: 6, rows: 6, cols: 4};
+    }
+    if (!panels.objectDiagrams) {
+      panels.objectDiagrams = {x: 8, y: 6, rows: 6, cols: 4};
+    }
+    return panels;
+  }
+
+  set panels(value: Panels) {
+    this._panels = value;
+    this.privacyService.setStorage('panels', JSON.stringify(value));
   }
 
   get storedScenario(): string {
@@ -71,11 +125,7 @@ There is a Car with name Herbie.
 
   set selectedExample(example: Example | null) {
     this._selectedExample = example;
-    if (example) {
-      this.privacyService.setStorage('selectedExample', example.name);
-    } else {
-      localStorage.removeItem('selectedExample');
-    }
+    this.privacyService.setStorage('selectedExample', example ? example.name : null);
   }
 
   get autoSubmit(): boolean {
@@ -151,5 +201,51 @@ There is a Car with name Herbie.
 
   downloadZip(projectZipRequest: ProjectZipRequest): Observable<Blob> {
     return this.http.post(environment.apiURL + '/projectzip', projectZipRequest, {responseType: 'blob'});
+  }
+
+  lint(response: Response): Marker[] {
+    const result: Marker[] = [];
+
+    for (const line of response.output.split('\n')) {
+      const match = /^.*\.md:(\d+):(\d+)(?:-(\d+))?: (error|syntax|warning|note): (.*)$/.exec(line);
+      if (!match) {
+        continue;
+      }
+
+      const row = +match[1] - 1;
+      const col = +match[2];
+      const endCol = +(match[3] || col) + 1;
+      const severity = match[4] === 'syntax' ? 'error' : match[4];
+      const message = match[5];
+
+      result.push({
+        severity,
+        message,
+        from: {line: row, ch: col},
+        to: {line: row, ch: endCol},
+      });
+    }
+
+    return result;
+  }
+
+  foldInternalCalls(outputLines: string[]): string[] {
+    const packageName = this.packageName.replace('/', '.');
+    const packageNamePrefix = `\tat ${packageName}.`;
+    const result: string[] = [];
+    let counter = 0;
+    for (const line of outputLines) {
+      if (line.startsWith('\tat org.fulib.scenarios.tool.')
+        || line.startsWith('\tat ') && !line.startsWith('\tat org.fulib.') && !line.startsWith(packageNamePrefix)) {
+        counter++;
+      } else {
+        if (counter > 0) {
+          result.push(counter === 1 ? '\t(1 internal call)' : `\t(${counter} internal calls)`);
+          counter = 0;
+        }
+        result.push(line);
+      }
+    }
+    return result;
   }
 }
