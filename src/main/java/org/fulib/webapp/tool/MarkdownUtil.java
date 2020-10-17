@@ -31,6 +31,13 @@ public class MarkdownUtil
 		case "table":
 			attributes.put("class", "table table-bordered");
 			return;
+		case "code":
+			final String className = attributes.get("class");
+			if (className != null && className.startsWith("language-"))
+			{
+				attributes.put("data-language", className.substring("language-".length()));
+			}
+			return;
 		}
 	};
 	private static final HtmlRenderer RENDERER = HtmlRenderer.builder().extensions(EXTENSIONS).escapeHtml(true).attributeProviderFactory(context -> ATTRIBUTE_PROVIDER).build();
