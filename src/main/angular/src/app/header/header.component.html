@@ -85,19 +85,38 @@
         </a>
       </li>
     </ul>
-    <ngbd-theme-switch></ngbd-theme-switch>
-    <span class="navbar-text" *ngIf="username">
-      Logged in as <b>{{username}}</b>.
-      <a role="button" style="cursor: pointer" (click)="logout()">
-        Logout
-      </a>
-    </span>
-    <span class="navbar-text" *ngIf="!username">
-      Not logged in.
-      <a role="button" style="cursor: pointer" (click)="login()">
-        Login
-      </a>
-    </span>
+    <button type="button" class="btn btn-outline-light rounded-circle p-2"
+            [ngbPopover]="accountPopover" placement="bottom-right" autoClose="outside">
+      <!-- https://primer.style/octicons/person-24 -->
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+        <path fill="currentColor" fill-rule="evenodd"
+              d="M12 2.5a5.5 5.5 0 00-3.096 10.047 9.005 9.005 0 00-5.9 8.18.75.75 0 001.5.045 7.5 7.5 0 0114.993 0 .75.75 0 101.499-.044 9.005 9.005 0 00-5.9-8.181A5.5 5.5 0 0012 2.5zM8 8a4 4 0 118 0 4 4 0 01-8 0z"></path>
+      </svg>
+    </button>
+    <ng-template #accountPopover>
+      <ng-container *ngIf="username else notLoggedIn">
+        <p>
+          Logged in as <b>{{username}}</b>.
+        </p>
+        <div>
+          <button type="button" class="btn btn-secondary" (click)="logout()">
+            Logout
+          </button>
+        </div>
+      </ng-container>
+      <ng-template #notLoggedIn>
+        <p>
+          Not logged in.
+        </p>
+        <div>
+          <button type="button" class="btn btn-primary" (click)="login()">
+            Login
+          </button>
+        </div>
+      </ng-template>
+      <hr/>
+      <ngbd-theme-switch></ngbd-theme-switch>
+    </ng-template>
   </div>
 </nav>
 
