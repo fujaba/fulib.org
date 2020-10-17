@@ -41,12 +41,15 @@
       </div>
     </div>
   </div>
-  <div style="height: calc(100% - 2rem)">
+  <div style="height: calc(100% - 4rem)">
     <app-autotheme-codemirror class="cm-h-100" [content]="outputText" [options]="{
       autoRefresh: true,
       lineNumbers: true,
       readOnly: true
     }"></app-autotheme-codemirror>
+  </div>
+  <div *ngIf="response && (response | exception:scenarioText) as exception" style="height: 2rem">
+    It looks like an exception occurred. <a target="_blank" [href]="exception">Report an Issue</a>
   </div>
 </ng-template>
 

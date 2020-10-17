@@ -5,6 +5,7 @@ import {FormsModule} from '@angular/forms';
 import {CodemirrorModule} from '@ctrl/ngx-codemirror';
 
 import {SafeHtmlPipe} from '../pipes/safe-html.pipe';
+import {ExceptionPipe} from '../pipes/exception.pipe';
 import {AutothemeCodemirrorComponent} from '../autotheme-codemirror/autotheme-codemirror.component';
 import {CollapseButtonComponent} from '../collapse-button/collapse-button.component';
 import {NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
@@ -13,6 +14,7 @@ import {ScenarioCodemirrorComponent} from '../scenario-codemirror/scenario-codem
 @NgModule({
   declarations: [
     SafeHtmlPipe,
+    ExceptionPipe,
     AutothemeCodemirrorComponent,
     CollapseButtonComponent,
     ScenarioCodemirrorComponent,
@@ -25,6 +27,7 @@ import {ScenarioCodemirrorComponent} from '../scenario-codemirror/scenario-codem
   ],
   exports: [
     SafeHtmlPipe,
+    ExceptionPipe,
     AutothemeCodemirrorComponent,
     CollapseButtonComponent,
     ScenarioCodemirrorComponent,
