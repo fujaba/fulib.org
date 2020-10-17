@@ -15,8 +15,9 @@ public class MarkdownUtilTest
 		           equalTo("<h1>Hello World</h1>\n" + "<p>some <strong>bold</strong> and <em>italic</em> text</p>\n"));
 		// tables
 		assertThat(MarkdownUtil.renderHtml("| col1 | col2 |\n|-----|-----|\n|  v1  |  v2  |"), equalTo(
-			"<table>\n" + "<thead>\n" + "<tr>\n" + "<th>col1</th>\n" + "<th>col2</th>\n" + "</tr>\n" + "</thead>\n"
-			+ "<tbody>\n" + "<tr>\n" + "<td>v1</td>\n" + "<td>v2</td>\n" + "</tr>\n" + "</tbody>\n" + "</table>\n"));
+			"<table class=\"table table-bordered\">\n" + "<thead>\n" + "<tr>\n" + "<th>col1</th>\n" + "<th>col2</th>\n"
+			+ "</tr>\n" + "</thead>\n" + "<tbody>\n" + "<tr>\n" + "<td>v1</td>\n" + "<td>v2</td>\n" + "</tr>\n"
+			+ "</tbody>\n" + "</table>\n"));
 		// strikethrough
 		assertThat(MarkdownUtil.renderHtml("~~strikethrough~~"), equalTo("<p><del>strikethrough</del></p>\n"));
 		// autolink
@@ -29,5 +30,8 @@ public class MarkdownUtilTest
 		// html escaping
 		assertThat(MarkdownUtil.renderHtml("<script>alert('XSS')</script>"),
 		           equalTo("<p>&lt;script&gt;alert('XSS')&lt;/script&gt;</p>\n"));
+		// fenced code blocks with language
+		assertThat(MarkdownUtil.renderHtml("```java\nSystem.out.println();\n```"), equalTo(
+			"<pre><code class=\"language-java\" data-language=\"java\">System.out.println();\n" + "</code></pre>\n"));
 	}
 }

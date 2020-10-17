@@ -62,7 +62,7 @@
 
 <ng-template #markdown>
   <ng-container *ngIf="markdownHtml else loading">
-    <div class="h-100 overflow-auto" [innerHTML]="markdownHtml | safeHtml"></div>
+    <div class="h-100 overflow-auto markdown" [innerHTML]="markdownHtml | safeHtml"></div>
   </ng-container>
 </ng-template>
 
