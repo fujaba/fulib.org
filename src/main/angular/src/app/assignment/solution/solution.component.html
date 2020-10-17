@@ -62,7 +62,7 @@
             <span class="text-muted">{{comment.timeStamp | date:'medium'}}</span>
           </div>
           <div class="card-body">
-            <div class="card-text" [innerHTML]="comment.html | safeHtml"></div>
+            <div class="card-text markdown" [innerHTML]="comment.html | safeHtml"></div>
           </div>
         </div>
       </div>
