@@ -41,6 +41,7 @@ public class WebServiceTest
 
 		when(solutions.get(any(), any())).thenReturn("");
 		when(solutions.getAll(any(), any())).thenReturn("");
+		when(solutions.getByAssignment(any(), any())).thenReturn("");
 		when(solutions.check(any(), any())).thenReturn("");
 		when(solutions.create(any(), any())).thenReturn("");
 		when(solutions.getAssignee(any(), any())).thenReturn("");
@@ -76,6 +77,8 @@ public class WebServiceTest
 			checkRoute("POST", "/assignments/1/check");
 
 			// solutions
+			checkRoute("GET", "/solutions");
+
 			checkRoute("POST", "/assignments/1/solutions");
 			checkRoute("GET", "/assignments/1/solutions");
 			checkRoute("GET", "/assignments/1/solutions/2");
@@ -105,6 +108,7 @@ public class WebServiceTest
 
 		verify(solutions).get(any(), any());
 		verify(solutions).getAll(any(), any());
+		verify(solutions).getByAssignment(any(), any());
 		verify(solutions, times(2)).check(any(), any());
 		verify(solutions).create(any(), any());
 		verify(solutions).getAssignee(any(), any());
