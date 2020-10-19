@@ -84,6 +84,8 @@ export class AppModule implements DoBootstrap {
       },
       initOptions: {
         onLoad: 'check-sso',
+        // fixes an issue where keycloak-js would send refresh_token=undefined
+        checkLoginIframe: false,
       },
     }).then(() => {
       appRef.bootstrap(AppComponent);
