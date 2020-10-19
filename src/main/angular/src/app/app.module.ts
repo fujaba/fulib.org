@@ -72,7 +72,7 @@ const keycloakService = new KeycloakService();
       useValue: keycloakService,
     },
   ],
-  bootstrap: [AppComponent],
+  entryComponents: [AppComponent],
 })
 export class AppModule implements DoBootstrap {
   ngDoBootstrap(appRef: ApplicationRef): void {
