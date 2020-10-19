@@ -74,9 +74,6 @@
           <a ngbDropdownItem href="https://www.uni-kassel.de/uni/footer-2/datenschutz/">
             Privacy Policy
           </a>
-          <a ngbDropdownItem [routerLink]="[{outlets: {modal: 'privacy'}}]">
-            Edit Privacy Preferences
-          </a>
         </div>
       </li>
       <li class="nav-item">
@@ -101,6 +98,9 @@
             {{username ? 'Logout' : 'Login'}}
           </button>
           <div class="dropdown-divider"></div>
+          <a ngbDropdownItem [routerLink]="[{outlets: {modal: 'privacy'}}]">
+            Edit Privacy Preferences
+          </a>
           <div ngbDropdownItem>
             <ngbd-theme-switch></ngbd-theme-switch>
           </div>
