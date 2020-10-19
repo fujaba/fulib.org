@@ -26,7 +26,7 @@ export class SolutionComponent implements OnInit {
   markers: Marker[] = [];
 
   gradings?: TaskGrading[];
-  comments?: Comment[];
+  comments: Comment[] = [];
 
   loggedIn = false;
   commentName: string;
@@ -113,9 +113,6 @@ export class SolutionComponent implements OnInit {
       markdown: this.commentBody,
     };
     this.solutionService.postComment(this.solution!, comment).subscribe(result => {
-      if (!this.comments) {
-        this.comments = [];
-      }
       this.comments.push(result);
       this.commentBody = '';
       this.saveCommentDraft();
