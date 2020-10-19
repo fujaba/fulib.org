@@ -91,13 +91,14 @@
           </svg>
         </a>
         <div ngbDropdownMenu aria-labelledby="accountDropdown">
-          <span ngbDropdownItem>
-            {{username ? 'Logged in as ' : ''}}<b *ngIf="username">{{username}}</b>
+          <span class="dropdown-item-text text-muted">
+            {{username ? 'Logged in as ' : 'Not logged in'}}<b *ngIf="username">{{username}}</b>.
           </span>
           <button ngbDropdownItem (click)="username ? logout() : login()">
             {{username ? 'Logout' : 'Login'}}
           </button>
           <div class="dropdown-divider"></div>
+          <h6 class="dropdown-header">Settings</h6>
           <a ngbDropdownItem [routerLink]="[{outlets: {modal: 'privacy'}}]">
             Edit Privacy Preferences
           </a>
