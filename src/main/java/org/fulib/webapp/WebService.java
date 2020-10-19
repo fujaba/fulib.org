@@ -238,6 +238,8 @@ public class WebService
 		service.path("/comments", () -> {
 			service.post("", comments::post);
 			service.get("", comments::getChildren);
+
+			service.delete("/:commentID", comments::delete);
 		});
 	}
 

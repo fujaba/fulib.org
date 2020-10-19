@@ -28,7 +28,7 @@ export class SolutionComponent implements OnInit {
   gradings?: TaskGrading[];
   comments: Comment[] = [];
 
-  loggedIn = false;
+  userId?: string;
   commentName: string;
   commentEmail: string;
   commentBody: string;
@@ -84,10 +84,11 @@ export class SolutionComponent implements OnInit {
     // TODO unsubscribe
     this.users.current$.subscribe(user => {
       if (!user) {
+        this.userId = undefined;
         return;
       }
 
-      this.loggedIn = true;
+      this.userId = user.id;
       if (user.firstName && user.lastName) {
         this.commentName = `${user.firstName} ${user.lastName}`;
       }
@@ -128,6 +129,19 @@ export class SolutionComponent implements OnInit {
         atok: assignmentToken,
         stok: solutionToken,
       },
+    });
+  }
+
+  delete(comment: Comment): void {
+    if (!confirm('Are you sure you want to delete this comment? This action cannot be undone.')) {
+      return;
+    }
+
+    this.solutionService.deleteComment(this.solution!, comment).subscribe(result => {
+      const index = this.comments.indexOf(comment);
+      if (index >= 0) {
+        this.comments[index] = result;
+      }
     });
   }
 }

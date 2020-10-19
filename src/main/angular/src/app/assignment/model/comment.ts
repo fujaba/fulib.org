@@ -9,7 +9,7 @@ export default class Comment {
   author: string;
   email: string;
 
-  markdown: string;
+  markdown?: string;
   html?: string;
 
   distinguished?: boolean;

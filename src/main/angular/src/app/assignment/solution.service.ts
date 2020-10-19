@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {forkJoin, Observable, of} from 'rxjs';
-import {flatMap, map} from 'rxjs/operators';
+import {flatMap, map, mapTo} from 'rxjs/operators';
 
 import Solution from './model/solution';
 import {environment} from '../../environments/environment';
@@ -280,6 +280,11 @@ export class SolutionService {
         return result;
       }),
     );
+  }
+
+  deleteComment(solution: Solution, comment: Comment): Observable<Comment> {
+    const url = `${environment.apiURL}/assignments/${solution.assignment}/solutions/${solution.id}/comments/${comment.id}`;
+    return this.http.delete(url).pipe(mapTo({...comment, markdown: undefined, html: undefined}));
   }
 
   getGradings(assignment: Assignment | string, id: string): Observable<TaskGrading[]> {
