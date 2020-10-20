@@ -91,9 +91,13 @@
           </svg>
         </a>
         <div ngbDropdownMenu aria-labelledby="accountDropdown">
+          <h6 class="dropdown-header">Account</h6>
           <span class="dropdown-item-text text-muted">
             {{username ? 'Logged in as ' : 'Not logged in'}}<b *ngIf="username">{{username}}</b>.
           </span>
+          <a *ngIf="username" ngbDropdownItem href="https://avocado.uniks.de/auth/realms/fulib.org/account">
+            Edit Account
+          </a>
           <button ngbDropdownItem (click)="username ? logout() : login()">
             {{username ? 'Logout' : 'Login'}}
           </button>
