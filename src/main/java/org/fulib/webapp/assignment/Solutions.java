@@ -207,25 +207,7 @@ public class Solutions
 			return WebService.serveIndex(request, response);
 		}
 
-		final String userIdParam = request.queryParamOrDefault("userId", null);
-
-		final String userId = getUserId(request);
-		if (userId == null)
-		{
-			throw Spark.halt(401, INVALID_TOKEN_RESPONSE);
-		}
-		if (userIdParam == null)
-		{
-			// language=JSON
-			throw Spark.halt(400, "{\n" + "  \"error\": \"missing userId query parameter\"\n" + "}");
-		}
-		if (!userId.equals(userIdParam))
-		{
-			// language=JSON
-			throw Spark.halt(400,
-			                 "{\n" + "  \"error\": \"userId query parameter does not match ID of logged-in user\"\n"
-			                 + "}");
-		}
+		final String userId = Assignments.getAndCheckUserIdQueryParam(request);
 
 		final List<Solution> solutions = this.mongo.getSolutionsByUser(userId);
 		final JSONArray array = new JSONArray();
