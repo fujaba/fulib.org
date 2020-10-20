@@ -124,7 +124,7 @@ public class Comments
 		}
 		if (!userId.equals(comment.getUserId()))
 		{
-			throw Spark.halt(401, "{\n  \"error\": \"userId query parameter does not match ID of comment\"\n}\n");
+			throw Spark.halt(401, "{\n  \"error\": \"token user ID does not match ID of comment\"\n}\n");
 		}
 
 		comment.setMarkdown(null);
