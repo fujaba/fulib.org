@@ -34,6 +34,7 @@ public class WebServiceTest
 		when(projectZip.handle(any(), any())).thenReturn("");
 
 		when(courses.get(any(), any())).thenReturn("");
+		when(courses.getAll(any(), any())).thenReturn("");
 		when(courses.create(any(), any())).thenReturn("");
 
 		when(assignments.get(any(), any())).thenReturn("");
