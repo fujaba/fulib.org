@@ -34,6 +34,12 @@ public class Courses
 			throw Spark.halt(404, String.format(UNKNOWN_COURSE_RESPONSE, id));
 		}
 
+		final JSONObject result = toJSON(course);
+		return result.toString(2);
+	}
+
+	private static JSONObject toJSON(Course course)
+	{
 		final JSONObject result = new JSONObject();
 		result.put(Course.PROPERTY_id, course.getId());
 		result.put(Course.PROPERTY_userId, course.getUserId());
@@ -41,7 +47,7 @@ public class Courses
 		result.put(Course.PROPERTY_description, course.getDescription());
 		result.put(Course.PROPERTY_descriptionHtml, course.getDescriptionHtml());
 		result.put(Course.PROPERTY_assignmentIds, course.getAssignmentIds());
-		return result.toString(2);
+		return result;
 	}
 
 	public Object create(Request request, Response response)
@@ -73,6 +79,20 @@ public class Courses
 		final JSONObject result = new JSONObject();
 		result.put(Course.PROPERTY_id, course.getId());
 		result.put(Course.PROPERTY_descriptionHtml, course.getDescriptionHtml());
+		return result.toString(2);
+	}
+
+	public Object getAll(Request request, Response response)
+	{
+		final String userId = Assignments.getAndCheckUserIdQueryParam(request);
+
+		final List<Course> courses = this.mongo.getCoursesByUser(userId);
+
+		final JSONArray result = new JSONArray();
+		for (final Course course : courses)
+		{
+			result.put(toJSON(course));
+		}
 		return result.toString(2);
 	}
 }

@@ -174,6 +174,11 @@ public class Mongo
 		return this.courses.find(Filters.eq(Course.PROPERTY_id, id)).first();
 	}
 
+	public List<Course> getCoursesByUser(String userId)
+	{
+		return this.courses.find(Filters.eq(Course.PROPERTY_userId, userId)).into(new ArrayList<>());
+	}
+
 	public void saveCourse(Course course)
 	{
 		upsert(this.courses, course, Course.PROPERTY_id, course.getId());

@@ -68,6 +68,7 @@ public class WebServiceTest
 
 			// courses
 			checkRoute("POST", "/courses");
+			checkRoute("GET", "/courses?userId=1");
 			checkRoute("GET", "/courses/1");
 
 			// assignments
@@ -101,6 +102,7 @@ public class WebServiceTest
 		verify(projectZip).handle(any(), any());
 
 		verify(courses).get(any(), any());
+		verify(courses).getAll(any(), any());
 		verify(courses).create(any(), any());
 
 		verify(assignments).get(any(), any());

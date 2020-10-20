@@ -179,6 +179,7 @@ public class WebService
 	{
 		service.path("/courses", () -> {
 			service.post("", courses::create);
+			service.get("", courses::getAll);
 			service.get("/:courseID", courses::get);
 		});
 	}
