@@ -2,6 +2,7 @@ package org.fulib.webapp.assignment;
 
 import org.fulib.webapp.assignment.model.Course;
 import org.fulib.webapp.mongo.Mongo;
+import org.fulib.webapp.tool.Authenticator;
 import org.fulib.webapp.tool.MarkdownUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -35,6 +36,7 @@ public class Courses
 
 		final JSONObject result = new JSONObject();
 		result.put(Course.PROPERTY_id, course.getId());
+		result.put(Course.PROPERTY_userId, course.getUserId());
 		result.put(Course.PROPERTY_title, course.getTitle());
 		result.put(Course.PROPERTY_description, course.getDescription());
 		result.put(Course.PROPERTY_descriptionHtml, course.getDescriptionHtml());
@@ -46,6 +48,12 @@ public class Courses
 	{
 		final String id = IDGenerator.generateID();
 		final Course course = new Course(id);
+
+		final String userId = Assignments.getUserId(request);
+		if (userId != null)
+		{
+			course.setUserId(userId);
+		}
 
 		final JSONObject body = new JSONObject(request.body());
 		course.setTitle(body.getString(Course.PROPERTY_title));
