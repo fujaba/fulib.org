@@ -1,16 +1,16 @@
-import {AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DOCUMENT} from '@angular/common';
-import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
+import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {DragulaService} from 'ng2-dragula';
-import {Marker} from '../../scenario-editor.service';
+import {Subscription} from 'rxjs';
 
-import Task from '../model/task';
-import Assignment from '../model/assignment';
+import {Marker} from '../../scenario-editor.service';
+import {UserService} from '../../user/user.service';
 import {AssignmentService} from '../assignment.service';
+import Assignment from '../model/assignment';
+import Task from '../model/task';
 import TaskResult from '../model/task-result';
-import {UserService} from "../../user/user.service";
 
 @Component({
   selector: 'app-create-assignment',
@@ -47,6 +47,8 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
 
   private readonly origin: string;
 
+  private userSubscription: Subscription;
+
   constructor(
     private assignmentService: AssignmentService,
     private modalService: NgbModal,
@@ -69,8 +71,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
       this.setAssignment(draft);
     }
 
-    // TODO unsubscribe
-    this.users.current$.subscribe(user => {
+    this.userSubscription = this.users.current$.subscribe(user => {
       if (!user) {
         return;
       }
@@ -86,6 +87,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.userSubscription.unsubscribe();
     this.dragulaService.destroy('TASKS');
   }
 

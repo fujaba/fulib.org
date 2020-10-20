@@ -1,6 +1,6 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {combineLatest, forkJoin} from 'rxjs';
+import {combineLatest, forkJoin, Subscription} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
 import {Marker} from '../../scenario-editor.service';
 import {AssignmentService} from '../assignment.service';
@@ -18,7 +18,7 @@ import {UserService} from "../../user/user.service";
   templateUrl: './solution.component.html',
   styleUrls: ['./solution.component.scss'],
 })
-export class SolutionComponent implements OnInit {
+export class SolutionComponent implements OnInit, OnDestroy {
   @ViewChild('tokenModal', {static: true}) tokenModal;
 
   assignment?: Assignment;
@@ -33,6 +33,8 @@ export class SolutionComponent implements OnInit {
   commentEmail: string;
   commentBody: string;
   submittingComment: boolean;
+
+  private userSubscription: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -74,15 +76,8 @@ export class SolutionComponent implements OnInit {
         this.tokenModal.open();
       }
     });
-  }
 
-  loadCommentDraft(): void {
-    this.commentName = this.solutionService.commentName || '';
-    this.commentEmail = this.solutionService.commentEmail || '';
-    this.commentBody = this.solutionService.getCommentDraft(this.solution!) || '';
-
-    // TODO unsubscribe
-    this.users.current$.subscribe(user => {
+    this.userSubscription = this.users.current$.subscribe(user => {
       if (!user) {
         this.userId = undefined;
         return;
@@ -96,6 +91,16 @@ export class SolutionComponent implements OnInit {
         this.commentEmail = user.email;
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.userSubscription.unsubscribe();
+  }
+
+  loadCommentDraft(): void {
+    this.commentName = this.solutionService.commentName || '';
+    this.commentEmail = this.solutionService.commentEmail || '';
+    this.commentBody = this.solutionService.getCommentDraft(this.solution!) || '';
   }
 
   saveCommentDraft(): void {

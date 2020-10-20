@@ -1,9 +1,9 @@
 import {DOCUMENT} from '@angular/common';
-import {Component, Inject, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {forkJoin, of} from 'rxjs';
+import {forkJoin, of, Subscription} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
 import {Marker, ScenarioEditorService} from '../../scenario-editor.service';
 import {AssignmentService} from '../assignment.service';
@@ -21,7 +21,7 @@ import {UserService} from "../../user/user.service";
   templateUrl: './create-solution.component.html',
   styleUrls: ['./create-solution.component.scss'],
 })
-export class CreateSolutionComponent implements OnInit {
+export class CreateSolutionComponent implements OnInit, OnDestroy {
   @ViewChild('successModal', {static: true}) successModal;
 
   course?: Course;
@@ -45,6 +45,8 @@ export class CreateSolutionComponent implements OnInit {
   private readonly origin: string;
 
   nextAssignment?: Assignment;
+
+  private userSubscription: Subscription;
 
   constructor(
     private scenarioEditorService: ScenarioEditorService,
@@ -73,8 +75,7 @@ export class CreateSolutionComponent implements OnInit {
       this.nextAssignment = next;
     });
 
-    // TODO unsubscribe
-    this.users.current$.subscribe(user => {
+    this.userSubscription = this.users.current$.subscribe(user => {
       if (!user) {
         return;
       }
@@ -87,6 +88,10 @@ export class CreateSolutionComponent implements OnInit {
         this.email = user.email;
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.userSubscription.unsubscribe();
   }
 
   getSolution(): Solution {
