@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {forkJoin, Observable, of} from 'rxjs';
+import {flatMap, map, mapTo} from 'rxjs/operators';
 
 import Solution from './model/solution';
 import {environment} from '../../environments/environment';
@@ -11,6 +11,7 @@ import Comment from './model/comment';
 import {StorageService} from '../storage.service';
 import TaskGrading from './model/task-grading';
 import {CheckResult, CheckSolution} from './model/check';
+import {UserService} from "../user/user.service";
 
 function asID(id: { id?: string } | string): string {
   return typeof id === 'string' ? id : id.id!;
@@ -49,6 +50,7 @@ export class SolutionService {
     private http: HttpClient,
     private storageService: StorageService,
     private assignmentService: AssignmentService,
+    private users: UserService,
   ) {
   }
 
@@ -150,6 +152,29 @@ export class SolutionService {
     return ids;
   }
 
+  getOwn(): Observable<[Assignment[], Solution[]]> {
+    return this.users.current$.pipe(
+      flatMap(user => {
+        if (user && user.id) {
+          return this.getByUserId(user.id).pipe(flatMap(solutions => {
+            const assignmentIds = [...new Set<string>(solutions.map(s => s.assignment))];
+            const assignments = forkJoin(assignmentIds.map(aid => this.assignmentService.get(aid)));
+
+            return forkJoin([assignments, of(solutions)]);
+          }));
+        } else {
+          const compoundIds = this.getOwnIds();
+          const assignmentIds = [...new Set<string>(compoundIds.map(id => id.assignment))];
+
+          const assignments = forkJoin(assignmentIds.map(aid => this.assignmentService.get(aid)));
+          const solutions = forkJoin(compoundIds.map(cid => this.get(cid.assignment, cid.id)));
+
+          return forkJoin([assignments, solutions]);
+        }
+      }),
+    );
+  }
+
   // --------------- HTTP Methods ---------------
 
   check(solution: CheckSolution): Observable<CheckResult> {
@@ -202,6 +227,20 @@ export class SolutionService {
     );
   }
 
+  getByUserId(userId: string): Observable<Solution[]> {
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    return this.http.get<Solution[]>(`${environment.apiURL}/solutions`, {params: {userId}, headers}).pipe(
+      map(solutions => {
+        for (let solution of solutions) {
+          // solution.token = this.getToken(solution.assignment.id, solution.id);
+        }
+        return solutions;
+      }),
+    );
+  }
+
   getComments(assignment: Assignment | string, id: string): Observable<Comment[]> {
     const assignmentID = asID(assignment);
     const headers = {
@@ -243,6 +282,11 @@ export class SolutionService {
     );
   }
 
+  deleteComment(solution: Solution, comment: Comment): Observable<Comment> {
+    const url = `${environment.apiURL}/assignments/${solution.assignment}/solutions/${solution.id}/comments/${comment.id}`;
+    return this.http.delete(url).pipe(mapTo({...comment, markdown: undefined, html: undefined}));
+  }
+
   getGradings(assignment: Assignment | string, id: string): Observable<TaskGrading[]> {
     const assignmentID = asID(assignment);
     const headers = {
@@ -270,6 +314,7 @@ export class SolutionService {
       map(response => {
         const result: TaskGrading = {
           ...grading,
+          ...response,
           timeStamp: new Date(response.timeStamp),
         };
         return result;

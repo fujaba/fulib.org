@@ -104,6 +104,7 @@ public class WebService
 		setupRedirects();
 
 		addMainRoutes();
+		this.service.get("/solutions", this.solutions::getAll);
 		addAssignmentsRoutes();
 		addCoursesRoutes();
 		addUtilRoutes();
@@ -178,6 +179,7 @@ public class WebService
 	{
 		service.path("/courses", () -> {
 			service.post("", courses::create);
+			service.get("", courses::getAll);
 			service.get("/:courseID", courses::get);
 		});
 	}
@@ -192,6 +194,7 @@ public class WebService
 	private void addAssignmentsRoutes()
 	{
 		service.path("/assignments", () -> {
+			service.get("", assignments::getAll);
 			service.post("", assignments::create);
 
 			service.post("/create/check", solutions::check);
@@ -213,7 +216,7 @@ public class WebService
 	{
 		service.path("/solutions", () -> {
 			service.post("", solutions::create);
-			service.get("", solutions::getAll);
+			service.get("", solutions::getByAssignment);
 
 			service.path("/:solutionID", this::addSolutionRoutes);
 		});
@@ -236,6 +239,8 @@ public class WebService
 		service.path("/comments", () -> {
 			service.post("", comments::post);
 			service.get("", comments::getChildren);
+
+			service.delete("/:commentID", comments::delete);
 		});
 	}
 

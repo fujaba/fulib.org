@@ -334,7 +334,7 @@ public class SolutionsTest
 	}
 
 	@Test
-	public void getAll404() throws Exception
+	public void getByAssignment404() throws Exception
 	{
 		final Mongo db = mock(Mongo.class);
 		final Solutions solutions = new Solutions(db);
@@ -344,11 +344,11 @@ public class SolutionsTest
 		when(request.contentType()).thenReturn("application/json");
 		when(request.params("assignmentID")).thenReturn("-1");
 
-		expectHalt(404, "assignment with id '-1'' not found", () -> solutions.getAll(request, response));
+		expectHalt(404, "assignment with id '-1'' not found", () -> solutions.getByAssignment(request, response));
 	}
 
 	@Test
-	public void getAllWithoutToken() throws Exception
+	public void getByAssignmentWithoutToken() throws Exception
 	{
 		final Mongo db = mock(Mongo.class);
 		final Solutions solutions = new Solutions(db);
@@ -363,11 +363,11 @@ public class SolutionsTest
 		when(request.contentType()).thenReturn("application/json");
 		when(request.params("assignmentID")).thenReturn(assignment.getID());
 
-		expectHalt(401, "invalid Assignment-Token", () -> solutions.getAll(request, response));
+		expectHalt(401, "invalid Assignment-Token", () -> solutions.getByAssignment(request, response));
 	}
 
 	@Test
-	public void getAllWithWrongToken() throws Exception
+	public void getByAssignmentWithWrongToken() throws Exception
 	{
 		final Mongo db = mock(Mongo.class);
 		final Solutions solutions = new Solutions(db);
@@ -383,11 +383,11 @@ public class SolutionsTest
 		when(request.params("assignmentID")).thenReturn(assignment.getID());
 		when(request.headers("Assignment-Token")).thenReturn("a456");
 
-		expectHalt(401, "invalid Assignment-Token", () -> solutions.getAll(request, response));
+		expectHalt(401, "invalid Assignment-Token", () -> solutions.getByAssignment(request, response));
 	}
 
 	@Test
-	public void getAll()
+	public void getByAssignment()
 	{
 		final Mongo db = mock(Mongo.class);
 		final Solutions solutions = new Solutions(db);
@@ -403,7 +403,7 @@ public class SolutionsTest
 		when(request.params("assignmentID")).thenReturn(assignment.getID());
 		when(request.headers("Assignment-Token")).thenReturn(assignment.getToken());
 
-		final String responseBody = (String) solutions.getAll(request, response);
+		final String responseBody = (String) solutions.getByAssignment(request, response);
 		final JSONObject responseObj = new JSONObject(responseBody);
 
 		assertThat(responseObj.getInt("count"), equalTo(1));

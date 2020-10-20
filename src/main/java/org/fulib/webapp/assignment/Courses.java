@@ -2,6 +2,7 @@ package org.fulib.webapp.assignment;
 
 import org.fulib.webapp.assignment.model.Course;
 import org.fulib.webapp.mongo.Mongo;
+import org.fulib.webapp.tool.Authenticator;
 import org.fulib.webapp.tool.MarkdownUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -33,19 +34,32 @@ public class Courses
 			throw Spark.halt(404, String.format(UNKNOWN_COURSE_RESPONSE, id));
 		}
 
+		final JSONObject result = toJSON(course);
+		return result.toString(2);
+	}
+
+	private static JSONObject toJSON(Course course)
+	{
 		final JSONObject result = new JSONObject();
 		result.put(Course.PROPERTY_id, course.getId());
+		result.put(Course.PROPERTY_userId, course.getUserId());
 		result.put(Course.PROPERTY_title, course.getTitle());
 		result.put(Course.PROPERTY_description, course.getDescription());
 		result.put(Course.PROPERTY_descriptionHtml, course.getDescriptionHtml());
 		result.put(Course.PROPERTY_assignmentIds, course.getAssignmentIds());
-		return result.toString(2);
+		return result;
 	}
 
 	public Object create(Request request, Response response)
 	{
 		final String id = IDGenerator.generateID();
 		final Course course = new Course(id);
+
+		final String userId = Assignments.getUserId(request);
+		if (userId != null)
+		{
+			course.setUserId(userId);
+		}
 
 		final JSONObject body = new JSONObject(request.body());
 		course.setTitle(body.getString(Course.PROPERTY_title));
@@ -65,6 +79,20 @@ public class Courses
 		final JSONObject result = new JSONObject();
 		result.put(Course.PROPERTY_id, course.getId());
 		result.put(Course.PROPERTY_descriptionHtml, course.getDescriptionHtml());
+		return result.toString(2);
+	}
+
+	public Object getAll(Request request, Response response)
+	{
+		final String userId = Assignments.getAndCheckUserIdQueryParam(request);
+
+		final List<Course> courses = this.mongo.getCoursesByUser(userId);
+
+		final JSONArray result = new JSONArray();
+		for (final Course course : courses)
+		{
+			result.put(toJSON(course));
+		}
 		return result.toString(2);
 	}
 }

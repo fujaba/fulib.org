@@ -5,10 +5,11 @@ export default class Comment {
 
   timeStamp?: Date;
 
+  userId?: string;
   author: string;
   email: string;
 
-  markdown: string;
+  markdown?: string;
   html?: string;
 
   distinguished?: boolean;

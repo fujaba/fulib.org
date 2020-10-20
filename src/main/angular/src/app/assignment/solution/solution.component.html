@@ -60,9 +60,18 @@
             </span>
             &#8226;
             <span class="text-muted">{{comment.timeStamp | date:'medium'}}</span>
+            <ng-container *ngIf="userId && comment.userId === userId && comment.html !== undefined">
+              &#8226;
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(comment)">
+                Delete
+              </button>
+            </ng-container>
           </div>
           <div class="card-body">
-            <div class="card-text markdown" [innerHTML]="comment.html | safeHtml"></div>
+            <div class="card-text markdown" *ngIf="comment.html !== undefined" [innerHTML]="comment.html | safeHtml"></div>
+            <div class="card-text text-muted" *ngIf="comment.html === undefined">
+              <i>Deleted by user.</i>
+            </div>
           </div>
         </div>
       </div>
@@ -79,13 +88,13 @@
 
               <label for="commentNameInput" class="sr-only">Name</label>
               <input type="text" class="form-control mr-2" id="commentNameInput" placeholder="John Doe"
-                     [(ngModel)]="commentName" (change)="saveCommentDraft()">
+                     [(ngModel)]="commentName" (change)="saveCommentDraft()" [disabled]="!!userId">
 
               <span class="mr-2">&#8226;</span>
 
               <label for="commentEmailInput" class="sr-only">Email</label>
               <input type="text" class="form-control mr-2" id="commentEmailInput" placeholder="jdoe@example.com"
-                     [(ngModel)]="commentEmail" (change)="saveCommentDraft()">
+                     [(ngModel)]="commentEmail" (change)="saveCommentDraft()" [disabled]="!!userId">
 
               <span class="mr-2">&#8226;</span>
 

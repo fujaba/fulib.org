@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import Solution from '../model/solution';
 import {SolutionService} from '../solution.service';
 import TaskGrading from '../model/task-grading';
+import {UserService} from "../../user/user.service";
 
 @Component({
   selector: 'app-grade-form',
@@ -13,12 +14,14 @@ export class GradeFormComponent implements OnInit {
   @Input() taskID: number;
   @Input() gradings: TaskGrading[];
 
+  loggedIn = false;
   name: string;
   points: number;
   note: string;
 
   constructor(
     private solutionService: SolutionService,
+    private users: UserService,
   ) {
   }
 
@@ -32,6 +35,14 @@ export class GradeFormComponent implements OnInit {
 
   loadDraft(): void {
     this.name = this.solutionService.commentName || '';
+
+    // TODO unsubscribe
+    this.users.current$.subscribe(user => {
+      if (user) {
+        this.loggedIn = true;
+        this.name = `${user.firstName} ${user.lastName}`;
+      }
+    });
   }
 
   saveDraft(): void {

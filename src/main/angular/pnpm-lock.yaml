@@ -15,6 +15,8 @@ dependencies:
   bootstrap-darkmode: 0.7.0
   codemirror: 5.58.0
   file-saver: 2.0.2
+  keycloak-angular: 7.3.1_ffcbbc175231ff652ebb1692c378ebeb
+  keycloak-js: 7.0.1
   ng-bootstrap-darkmode: 0.4.0_c1a2b8221fa9b6559334dc7749689aec
   ng2-dragula: 2.1.1_@angular+core@9.1.9+rxjs@6.5.5
   ngx-clipboard: 13.0.1_b3acba3a3e8178276319b1f515dfbcb2
@@ -2090,7 +2092,6 @@ packages:
     resolution:
       integrity: sha1-c5JncZI7Whl0etZmqlzUv5xunOg=
   /base64-js/1.3.1:
-    dev: true
     resolution:
       integrity: sha512-mLQ4i2QO1ytvGWFWmcngKO//JXAQueZvwEKtjgQFM4jIK0kU+ytMfplL8j+n5mspOfjHwoAg+9yhb7BwAHm36g==
   /base64id/1.0.0:
@@ -5305,6 +5306,10 @@ packages:
       node: '>= 8.3'
     resolution:
       integrity: sha512-ZHhHtlxOWSxCoNOKHGbiLzXnl42ga9CxDr27H36Qn+15pQZd3R/F24jrmjDelw9j/iHUIWMWs08/u2QN50HHOg==
+  /js-sha256/0.9.0:
+    dev: false
+    resolution:
+      integrity: sha512-sga3MHh9sgQN2+pJ9VYZ+1LPwXOxuBJBA5nrR5/ofPfuiJBE2hnjsaN8se8JznOmGLN2p49Pe5U/ttafcs/apA==
   /js-tokens/3.0.2:
     dev: true
     resolution:
@@ -5480,6 +5485,29 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-xckiDqyNi512U4dXGOOSyLKPwek6X/vUizSy2f3geYevbLj+UIdvNwbn7IwfUIL2g1GXEPWt/87qFD1fBbl/Uw==
+  /keycloak-angular/7.3.1_ffcbbc175231ff652ebb1692c378ebeb:
+    dependencies:
+      '@angular/common': 9.1.9_e64d04627aeca35d73d770258b6ad465
+      '@angular/core': 9.1.9_ca296a5e5adc0afc8d32926df5677b5e
+      '@angular/router': 9.1.9_69d4d166744ae27120a4a095c35c9cfe
+      keycloak-js: 7.0.1
+      tslib: 1.11.1
+    dev: false
+    peerDependencies:
+      '@angular/common': '>= 9.0.0 < 10'
+      '@angular/core': '>= 9.0.0 < 10'
+      '@angular/router': '>= 9.0.0 < 10'
+      keycloak-js: '>= 3.4.3 < 7 || > 7 < 11'
+      tslib: ^1.10.0
+    resolution:
+      integrity: sha512-lU1ErzCOOmvwmfM0rAf6Nlf65CkG1EpnXpGpdaeViCUcJOdU+ChMcjez78Ekv5qUFkNZsNccs2m5xUaU/1bqlw==
+  /keycloak-js/7.0.1:
+    dependencies:
+      base64-js: 1.3.1
+      js-sha256: 0.9.0
+    dev: false
+    resolution:
+      integrity: sha512-gefTlb6DjvqH2wTbXCs3o2d54Ot6lvFb0ynF4aU75ucUq9qQ1p1+lm+1OcRRC34nPCG16joPz2QNxNVXi8Bmng==
   /killable/1.0.1:
     dev: true
     resolution:
@@ -9649,6 +9677,8 @@ specifiers:
   karma-coverage-istanbul-reporter: ~2.0.6
   karma-jasmine: ~2.0.1
   karma-jasmine-html-reporter: ^1.5.3
+  keycloak-angular: ^7.3.1
+  keycloak-js: 7.0.1
   ng-bootstrap-darkmode: ^0.4.0
   ng2-dragula: ^2.1.1
   ngx-clipboard: ^13.0.1

@@ -11,6 +11,7 @@ import Solution from '../model/solution';
 import TaskGrading from '../model/task-grading';
 
 import {SolutionService} from '../solution.service';
+import {UserService} from "../../user/user.service";
 
 @Component({
   selector: 'app-solution',
@@ -25,8 +26,9 @@ export class SolutionComponent implements OnInit {
   markers: Marker[] = [];
 
   gradings?: TaskGrading[];
-  comments?: Comment[];
+  comments: Comment[] = [];
 
+  userId?: string;
   commentName: string;
   commentEmail: string;
   commentBody: string;
@@ -37,6 +39,7 @@ export class SolutionComponent implements OnInit {
     private router: Router,
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
+    private users: UserService,
   ) {
   }
 
@@ -77,6 +80,22 @@ export class SolutionComponent implements OnInit {
     this.commentName = this.solutionService.commentName || '';
     this.commentEmail = this.solutionService.commentEmail || '';
     this.commentBody = this.solutionService.getCommentDraft(this.solution!) || '';
+
+    // TODO unsubscribe
+    this.users.current$.subscribe(user => {
+      if (!user) {
+        this.userId = undefined;
+        return;
+      }
+
+      this.userId = user.id;
+      if (user.firstName && user.lastName) {
+        this.commentName = `${user.firstName} ${user.lastName}`;
+      }
+      if (user.email) {
+        this.commentEmail = user.email;
+      }
+    });
   }
 
   saveCommentDraft(): void {
@@ -95,9 +114,6 @@ export class SolutionComponent implements OnInit {
       markdown: this.commentBody,
     };
     this.solutionService.postComment(this.solution!, comment).subscribe(result => {
-      if (!this.comments) {
-        this.comments = [];
-      }
       this.comments.push(result);
       this.commentBody = '';
       this.saveCommentDraft();
@@ -113,6 +129,19 @@ export class SolutionComponent implements OnInit {
         atok: assignmentToken,
         stok: solutionToken,
       },
+    });
+  }
+
+  delete(comment: Comment): void {
+    if (!confirm('Are you sure you want to delete this comment? This action cannot be undone.')) {
+      return;
+    }
+
+    this.solutionService.deleteComment(this.solution!, comment).subscribe(result => {
+      const index = this.comments.indexOf(comment);
+      if (index >= 0) {
+        this.comments[index] = result;
+      }
     });
   }
 }

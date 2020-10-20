@@ -227,7 +227,7 @@ public class AssignmentsTest
 
 	private void checkGetResponse(JSONObject responseObj)
 	{
-		assertThat(responseObj.has("id"), equalTo(false));
+		assertThat(responseObj.has("id"), equalTo(true));
 		assertThat(responseObj.has("token"), equalTo(false));
 		assertThat(responseObj.getString("title"), equalTo(TITLE));
 		assertThat(responseObj.getString("description"), equalTo(DESCRIPTION));

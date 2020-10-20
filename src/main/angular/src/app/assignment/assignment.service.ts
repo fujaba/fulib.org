@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 
 import {saveAs} from 'file-saver';
 import {forkJoin, Observable, of} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {flatMap, map} from 'rxjs/operators';
 
 import {environment} from '../../environments/environment';
 import Response from '../model/codegen/response';
@@ -12,6 +12,7 @@ import {StorageService} from '../storage.service';
 import Assignment from './model/assignment';
 import {CheckAssignment, CheckResult} from './model/check';
 import Course from './model/course';
+import {UserService} from "../user/user.service";
 
 interface AssignmentResponse {
   id: string;
@@ -29,6 +30,7 @@ export class AssignmentService {
     private http: HttpClient,
     private storage: StorageService,
     private scenarioEditorService: ScenarioEditorService,
+    private users: UserService,
   ) {
   }
 
@@ -116,7 +118,30 @@ export class AssignmentService {
   }
 
   getOwn(): Observable<Assignment[]> {
-    return forkJoin(this.getOwnIds().map(id => this.get(id)));
+    return this.users.current$.pipe(
+      flatMap(user => {
+        if (user && user.id) {
+          return this.getByUserId(user.id);
+        } else {
+          return forkJoin(this.getOwnIds().map(id => this.get(id)));
+        }
+      }),
+    );
+  }
+
+  getByUserId(userId: string): Observable<Assignment[]> {
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    return this.http.get<Assignment[]>(`${environment.apiURL}/assignments`, {params: {userId}, headers}).pipe(
+      map(results => {
+        for (let result of results) {
+          result.token = this.getToken(result.id!) ?? undefined;
+          this._cache.set(result.id!, result);
+        }
+        return results;
+      }),
+    );
   }
 
   check(assignment: CheckAssignment): Observable<CheckResult> {

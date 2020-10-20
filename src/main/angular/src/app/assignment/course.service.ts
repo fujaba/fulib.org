@@ -1,9 +1,12 @@
-import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+
 import {Observable, of} from 'rxjs';
-import {map} from 'rxjs/operators';
-import Course from './model/course';
+import {map, switchMap} from 'rxjs/operators';
+
 import {environment} from '../../environments/environment';
+import {UserService} from '../user/user.service';
+import Course from './model/course';
 
 interface CourseResponse {
   id: string;
@@ -20,6 +23,7 @@ export class CourseService {
 
   constructor(
     private http: HttpClient,
+    private userService: UserService,
   ) {
   }
 
@@ -86,6 +90,12 @@ export class CourseService {
         this._cache.set(response.id, result);
         return result;
       }),
+    );
+  }
+
+  getOwn(): Observable<Course[]> {
+    return this.userService.current$.pipe(
+      switchMap(user => user ? this.http.get<Course[]>(`${environment.apiURL}/courses`, {params: {userId: user.id!}}) : of([])),
     );
   }
 }

@@ -5,6 +5,7 @@ export default class Solution {
   token?: string;
   assignment: string;
 
+  userId?: string;
   name: string;
   studentID: string;
   email: string;

@@ -1,5 +1,6 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {KeycloakService} from 'keycloak-angular';
 import {ChangelogService, Versions} from '../changelog.service';
 
 import {PrivacyService} from '../privacy.service';
@@ -15,6 +16,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     private changelogService: ChangelogService,
     private router: Router,
     private route: ActivatedRoute,
+    private keycloak: KeycloakService,
   ) {
   }
 
@@ -23,7 +25,15 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   repos?: (keyof Versions)[];
   versions?: Versions;
 
+  username?: string;
+
   ngOnInit(): void {
+    this.keycloak.isLoggedIn().then(loggedIn => {
+      if (loggedIn) {
+        this.username = this.keycloak.getUsername();
+      }
+    });
+
     this.repos = this.changelogService.repos;
     this.versions = this.changelogService.currentVersions;
   }
@@ -34,5 +44,15 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     } else if (this.changelogService.autoShow && Object.keys(this.changelogService.newVersions).length) {
       this.router.navigate([{outlets: {modal: 'changelog'}}], {relativeTo: this.route});
     }
+  }
+
+  login(): void {
+    this.keycloak.login().then(() => {
+    });
+  }
+
+  logout(): void {
+    this.keycloak.logout().then(() => {
+    });
   }
 }

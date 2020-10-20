@@ -89,6 +89,7 @@ public class Mongo
 		this.assignments = this.database.getCollection(ASSIGNMENT_COLLECTION_NAME, Assignment.class)
 		                                .withCodecRegistry(this.pojoCodecRegistry);
 		this.assignments.createIndex(Indexes.ascending(Assignment.PROPERTY_id));
+		this.assignments.createIndex(Indexes.ascending(Assignment.PROPERTY_userId));
 
 		this.courses = this.database.getCollection(COURSE_COLLECTION_NAME, Course.class)
 		                            .withCodecRegistry(this.pojoCodecRegistry);
@@ -97,6 +98,7 @@ public class Mongo
 		this.solutions = this.database.getCollection(SOLUTION_COLLECTION_NAME, Solution.class)
 		                              .withCodecRegistry(this.pojoCodecRegistry);
 		this.solutions.createIndex(Indexes.ascending(Solution.PROPERTY_id));
+		this.solutions.createIndex(Indexes.ascending(Solution.PROPERTY_userId));
 		this.solutions.createIndex(Indexes.ascending(Solution.PROPERTY_assignment));
 		this.solutions.createIndex(Indexes.ascending(Solution.PROPERTY_timeStamp));
 
@@ -155,6 +157,11 @@ public class Mongo
 		return this.assignments.find(Filters.eq(Assignment.PROPERTY_id, id)).first();
 	}
 
+	public List<Assignment> getAssignmentsByUser(String userId)
+	{
+		return this.assignments.find(Filters.eq(Assignment.PROPERTY_userId, userId)).into(new ArrayList<>());
+	}
+
 	public void saveAssignment(Assignment assignment)
 	{
 		upsert(this.assignments, assignment, Assignment.PROPERTY_id, assignment.getID());
@@ -165,6 +172,11 @@ public class Mongo
 	public Course getCourse(String id)
 	{
 		return this.courses.find(Filters.eq(Course.PROPERTY_id, id)).first();
+	}
+
+	public List<Course> getCoursesByUser(String userId)
+	{
+		return this.courses.find(Filters.eq(Course.PROPERTY_userId, userId)).into(new ArrayList<>());
 	}
 
 	public void saveCourse(Course course)
@@ -191,6 +203,15 @@ public class Mongo
 		                     .sort(Sorts.ascending(Solution.PROPERTY_timeStamp))
 		                     .map(this::resolve)
 		                     .into(new ArrayList<>());
+	}
+
+	public List<Solution> getSolutionsByUser(String userId)
+	{
+		return this.solutions
+			.find(Filters.eq(Solution.PROPERTY_userId, userId))
+			.sort(Sorts.ascending(Solution.PROPERTY_assignment, Solution.PROPERTY_timeStamp))
+			.map(this::resolve)
+			.into(new ArrayList<>());
 	}
 
 	private Solution resolve(Solution solution)

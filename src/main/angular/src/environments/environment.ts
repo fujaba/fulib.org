@@ -5,6 +5,8 @@
 export const environment = {
   production: false,
   apiURL: 'http://localhost:4567',
+  authURL: 'https://avocado.uniks.de/auth',
+  authClientId: 'localhost',
   versions: {
     // replace undefined with a version string for debugging the changelog view.
     'fulib.org': undefined,

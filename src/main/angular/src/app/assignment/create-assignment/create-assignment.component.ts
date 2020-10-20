@@ -10,6 +10,7 @@ import Task from '../model/task';
 import Assignment from '../model/assignment';
 import {AssignmentService} from '../assignment.service';
 import TaskResult from '../model/task-result';
+import {UserService} from "../../user/user.service";
 
 @Component({
   selector: 'app-create-assignment',
@@ -25,6 +26,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   };
 
   title = '';
+  loggedIn = false;
   author = '';
   email = '';
   deadlineDate: string | null;
@@ -49,6 +51,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     private assignmentService: AssignmentService,
     private modalService: NgbModal,
     private dragulaService: DragulaService,
+    private users: UserService,
     @Inject(DOCUMENT) document: Document,
   ) {
     this.origin = document.location.origin;
@@ -65,6 +68,21 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     if (draft) {
       this.setAssignment(draft);
     }
+
+    // TODO unsubscribe
+    this.users.current$.subscribe(user => {
+      if (!user) {
+        return;
+      }
+
+      this.loggedIn = true;
+      if (user.firstName && user.lastName) {
+        this.author = `${user.firstName} ${user.lastName}`;
+      }
+      if (user.email) {
+        this.email = user.email;
+      }
+    });
   }
 
   ngOnDestroy(): void {

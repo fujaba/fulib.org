@@ -1,6 +1,8 @@
 export const environment = {
   production: false,
   apiURL: '',
+  authURL: 'https://avocado.uniks.de/auth',
+  authClientId: 'localhost',
   versions: {
     'fulib.org': '$$version$$',
     fulib: '$$fulibVersion$$',

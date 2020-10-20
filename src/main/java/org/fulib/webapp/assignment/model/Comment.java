@@ -12,6 +12,7 @@ public class Comment
 	public static final String PROPERTY_id = "id";
 	public static final String PROPERTY_parent = "parent";
 	public static final String PROPERTY_timeStamp = "timeStamp";
+	public static final String PROPERTY_userId = "userId";
 	public static final String PROPERTY_author = "author";
 	public static final String PROPERTY_email = "email";
 	public static final String PROPERTY_markdown = "markdown";
@@ -26,6 +27,7 @@ public class Comment
 
 	private Instant timeStamp;
 
+	private String userId;
 	private String author;
 	private String email;
 
@@ -66,6 +68,16 @@ public class Comment
 	public void setTimeStamp(Instant timeStamp)
 	{
 		this.timeStamp = timeStamp;
+	}
+
+	public String getUserId()
+	{
+		return userId;
+	}
+
+	public void setUserId(String userId)
+	{
+		this.userId = userId;
 	}
 
 	public String getAuthor()

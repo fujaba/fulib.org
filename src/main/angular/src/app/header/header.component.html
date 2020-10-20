@@ -21,6 +21,9 @@
           <a ngbDropdownItem routerLink="/assignments">
             My Assignments
           </a>
+          <a ngbDropdownItem routerLink="/assignments/courses">
+            My Courses
+          </a>
           <a ngbDropdownItem routerLink="/assignments/create">
             Create Assignment
           </a>
@@ -74,9 +77,6 @@
           <a ngbDropdownItem href="https://www.uni-kassel.de/uni/footer-2/datenschutz/">
             Privacy Policy
           </a>
-          <a ngbDropdownItem [routerLink]="[{outlets: {modal: 'privacy'}}]">
-            Edit Privacy Preferences
-          </a>
         </div>
       </li>
       <li class="nav-item">
@@ -84,8 +84,37 @@
           What's New
         </a>
       </li>
+      <li class="nav-item" ngbDropdown>
+        <a tabindex="0" class="nav-link" ngbDropdownToggle id="accountDropdown" role="button">
+          <span class="sr-only">Account</span>
+          <!-- https://primer.style/octicons/person-24 -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+            <path fill="currentColor" fill-rule="evenodd"
+                  d="M12 2.5a5.5 5.5 0 00-3.096 10.047 9.005 9.005 0 00-5.9 8.18.75.75 0 001.5.045 7.5 7.5 0 0114.993 0 .75.75 0 101.499-.044 9.005 9.005 0 00-5.9-8.181A5.5 5.5 0 0012 2.5zM8 8a4 4 0 118 0 4 4 0 01-8 0z"></path>
+          </svg>
+        </a>
+        <div ngbDropdownMenu aria-labelledby="accountDropdown">
+          <h6 class="dropdown-header">Account</h6>
+          <span class="dropdown-item-text text-muted">
+            {{username ? 'Logged in as ' : 'Not logged in'}}<b *ngIf="username">{{username}}</b>.
+          </span>
+          <a *ngIf="username" ngbDropdownItem href="https://avocado.uniks.de/auth/realms/fulib.org/account">
+            Edit Account
+          </a>
+          <button ngbDropdownItem (click)="username ? logout() : login()">
+            {{username ? 'Logout' : 'Login'}}
+          </button>
+          <div class="dropdown-divider"></div>
+          <h6 class="dropdown-header">Settings</h6>
+          <a ngbDropdownItem [routerLink]="[{outlets: {modal: 'privacy'}}]">
+            Edit Privacy Preferences
+          </a>
+          <div ngbDropdownItem>
+            <ngbd-theme-switch></ngbd-theme-switch>
+          </div>
+        </div>
+      </li>
     </ul>
-    <ngbd-theme-switch></ngbd-theme-switch>
   </div>
 </nav>
 

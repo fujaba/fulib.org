@@ -33,13 +33,7 @@ export class MySolutionsComponent implements OnInit {
   }
 
   ngOnInit() {
-    const compoundIds = this.solutionService.getOwnIds();
-    const assignmentIds = [...new Set<string>(compoundIds.map(id => id.assignment))];
-
-    const assignments$ = forkJoin(assignmentIds.map(aid => this.assignmentService.get(aid)));
-    const solutions$ = forkJoin(compoundIds.map(cid => this.solutionService.get(cid.assignment, cid.id)));
-
-    forkJoin([assignments$, solutions$]).subscribe(([assignments, solutions]) => {
+    this.solutionService.getOwn().subscribe(([assignments, solutions]) => {
       this.assignments = assignments.sort(Assignment.comparator);
       this.solutions = new Map<string, Solution[]>();
 

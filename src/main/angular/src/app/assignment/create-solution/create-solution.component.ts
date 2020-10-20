@@ -14,6 +14,7 @@ import Course from '../model/course';
 import Solution from '../model/solution';
 import TaskResult from '../model/task-result';
 import {SolutionService} from '../solution.service';
+import {UserService} from "../../user/user.service";
 
 @Component({
   selector: 'app-create-solution',
@@ -26,6 +27,7 @@ export class CreateSolutionComponent implements OnInit {
   course?: Course;
   assignment: Assignment;
   solution: string;
+  loggedIn = false;
   name: string;
   studentID: string;
   email: string;
@@ -51,6 +53,7 @@ export class CreateSolutionComponent implements OnInit {
     private solutionService: SolutionService,
     private route: ActivatedRoute,
     private modalService: NgbModal,
+    private users: UserService,
     @Inject(DOCUMENT) document: Document,
   ) {
     this.origin = document.location.origin;
@@ -68,6 +71,21 @@ export class CreateSolutionComponent implements OnInit {
       switchMap(({assignment, course}) => assignment && course ? this.assignmentService.getNext(course, assignment) : of(undefined)),
     ).subscribe(next => {
       this.nextAssignment = next;
+    });
+
+    // TODO unsubscribe
+    this.users.current$.subscribe(user => {
+      if (!user) {
+        return;
+      }
+
+      this.loggedIn = true;
+      if (user.firstName && user.lastName) {
+        this.name = `${user.firstName} ${user.lastName}`;
+      }
+      if (user.email) {
+        this.email = user.email;
+      }
     });
   }
 

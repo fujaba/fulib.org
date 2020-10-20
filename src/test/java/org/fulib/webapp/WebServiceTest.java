@@ -34,6 +34,7 @@ public class WebServiceTest
 		when(projectZip.handle(any(), any())).thenReturn("");
 
 		when(courses.get(any(), any())).thenReturn("");
+		when(courses.getAll(any(), any())).thenReturn("");
 		when(courses.create(any(), any())).thenReturn("");
 
 		when(assignments.get(any(), any())).thenReturn("");
@@ -41,6 +42,7 @@ public class WebServiceTest
 
 		when(solutions.get(any(), any())).thenReturn("");
 		when(solutions.getAll(any(), any())).thenReturn("");
+		when(solutions.getByAssignment(any(), any())).thenReturn("");
 		when(solutions.check(any(), any())).thenReturn("");
 		when(solutions.create(any(), any())).thenReturn("");
 		when(solutions.getAssignee(any(), any())).thenReturn("");
@@ -67,6 +69,7 @@ public class WebServiceTest
 
 			// courses
 			checkRoute("POST", "/courses");
+			checkRoute("GET", "/courses?userId=1");
 			checkRoute("GET", "/courses/1");
 
 			// assignments
@@ -76,6 +79,8 @@ public class WebServiceTest
 			checkRoute("POST", "/assignments/1/check");
 
 			// solutions
+			checkRoute("GET", "/solutions");
+
 			checkRoute("POST", "/assignments/1/solutions");
 			checkRoute("GET", "/assignments/1/solutions");
 			checkRoute("GET", "/assignments/1/solutions/2");
@@ -98,6 +103,7 @@ public class WebServiceTest
 		verify(projectZip).handle(any(), any());
 
 		verify(courses).get(any(), any());
+		verify(courses).getAll(any(), any());
 		verify(courses).create(any(), any());
 
 		verify(assignments).get(any(), any());
@@ -105,6 +111,7 @@ public class WebServiceTest
 
 		verify(solutions).get(any(), any());
 		verify(solutions).getAll(any(), any());
+		verify(solutions).getByAssignment(any(), any());
 		verify(solutions, times(2)).check(any(), any());
 		verify(solutions).create(any(), any());
 		verify(solutions).getAssignee(any(), any());
