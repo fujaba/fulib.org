@@ -9,11 +9,15 @@ import {ExceptionPipe} from '../pipes/exception.pipe';
 import {AutothemeCodemirrorComponent} from '../autotheme-codemirror/autotheme-codemirror.component';
 import {CollapseButtonComponent} from '../collapse-button/collapse-button.component';
 import {NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
+import {SafeResourceUrlPipe} from '../pipes/safe-resource-url.pipe';
+import {SafeUrlPipe} from '../pipes/safe-url.pipe';
 import {ScenarioCodemirrorComponent} from '../scenario-codemirror/scenario-codemirror.component';
 
 @NgModule({
   declarations: [
     SafeHtmlPipe,
+    SafeUrlPipe,
+    SafeResourceUrlPipe,
     ExceptionPipe,
     AutothemeCodemirrorComponent,
     CollapseButtonComponent,
@@ -27,6 +31,8 @@ import {ScenarioCodemirrorComponent} from '../scenario-codemirror/scenario-codem
   ],
   exports: [
     SafeHtmlPipe,
+    SafeUrlPipe,
+    SafeResourceUrlPipe,
     ExceptionPipe,
     AutothemeCodemirrorComponent,
     CollapseButtonComponent,

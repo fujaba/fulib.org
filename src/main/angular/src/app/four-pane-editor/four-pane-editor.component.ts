@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {GridsterItem} from 'angular-gridster2';
+import {environment} from '../../environments/environment';
 
 import {ExamplesService} from '../examples.service';
 import {MarkdownService} from '../markdown.service';
@@ -28,6 +29,8 @@ export class FourPaneEditorComponent implements OnInit {
   outputText = 'Loading...';
   markdownHtml?: string;
   submitting: boolean;
+
+  basePath = environment.apiURL + '/runcodegen';
 
   exampleCategories: ExampleCategory[];
   _activeObjectDiagramTab = 1;
