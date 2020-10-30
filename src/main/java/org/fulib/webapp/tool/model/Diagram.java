@@ -4,15 +4,27 @@ public class Diagram
 {
 	// =============== Constants ===============
 
+	public static final String PROPERTY_path = "path";
 	public static final String PROPERTY_name = "name";
 	public static final String PROPERTY_content = "content";
 
 	// =============== Fields ===============
 
+	private String path;
 	private String name;
 	private String content;
 
 	// =============== Properties ===============
+
+	public String getPath()
+	{
+		return this.path;
+	}
+
+	public void setPath(String path)
+	{
+		this.path = path;
+	}
 
 	public String getName()
 	{

@@ -118,6 +118,7 @@ public class RunCodeGen
 	{
 		final JSONObject methodObj = new JSONObject();
 		methodObj.put(Diagram.PROPERTY_name, diagram.getName());
+		methodObj.put(Diagram.PROPERTY_path, diagram.getPath());
 		methodObj.put(Diagram.PROPERTY_content, diagram.getContent());
 		return methodObj;
 	}
@@ -134,12 +135,13 @@ public class RunCodeGen
 	public Result run(CodeGenData input) throws Exception
 	{
 		final String id = UUID.randomUUID().toString();
-		final Path codegendir = Paths.get(this.getTempDir(), "runcodegen", id);
-		final Path srcDir = codegendir.resolve("src");
-		final Path modelSrcDir = codegendir.resolve("model_src");
-		final Path testSrcDir = codegendir.resolve("test_src");
-		final Path modelClassesDir = codegendir.resolve("model_classes");
-		final Path testClassesDir = codegendir.resolve("test_classes");
+		final Path tempDir = Paths.get(this.getTempDir());
+		final Path projectDir = tempDir.resolve("runcodegen").resolve(id);
+		final Path srcDir = projectDir.resolve("src");
+		final Path modelSrcDir = projectDir.resolve("model_src");
+		final Path testSrcDir = projectDir.resolve("test_src");
+		final Path modelClassesDir = projectDir.resolve("model_classes");
+		final Path testClassesDir = projectDir.resolve("test_classes");
 
 		try
 		{
@@ -168,7 +170,7 @@ public class RunCodeGen
 			result.setExitCode(exitCode);
 
 			final String output = new String(out.toByteArray(), StandardCharsets.UTF_8);
-			final String sanitizedOutput = output.replace(codegendir.toString(), ".");
+			final String sanitizedOutput = output.replace(projectDir.toString(), ".");
 			result.setOutput(sanitizedOutput);
 
 			if (exitCode < 0) // exception occurred
@@ -189,28 +191,28 @@ public class RunCodeGen
 					result.setClassDiagram(svgText);
 				}
 
-				collectObjectDiagrams(result.getObjectDiagrams(), bodyText, packagePath);
+				collectObjectDiagrams(result.getObjectDiagrams(), bodyText, projectDir, packagePath);
 			}
 
 			return result;
 		}
 		finally
 		{
-			this.deleter.schedule(() -> Tools.deleteRecursively(codegendir), 1, TimeUnit.HOURS);
+			this.deleter.schedule(() -> Tools.deleteRecursively(projectDir), 1, TimeUnit.HOURS);
 		}
 	}
 
 	// --------------- Object Diagrams ---------------
 
-	private static void collectObjectDiagrams(List<Diagram> diagrams, String scenarioText, Path packagePath)
-		throws IOException
+	private static void collectObjectDiagrams(List<Diagram> diagrams, String scenarioText, Path projectDir,
+		Path packageDir) throws IOException
 	{
 		// sorting is O(n log n) with n = number of object diagrams,
 		// while a comparison takes O(m) steps to search for the occurrence in the text of length m.
 		// thus, we use a cache for the index of occurrence to avoid excessive searching during sort.
 		final Map<Path, Integer> diagramOccurrenceMap = new HashMap<>();
 
-		Files.walk(packagePath).filter(file -> {
+		Files.walk(packageDir).filter(file -> {
 			final String fileName = file.toString();
 			return fileName.endsWith(".svg") || fileName.endsWith(".png") //
 			       || fileName.endsWith(".yaml") || fileName.endsWith(".html") || fileName.endsWith(".txt");
@@ -221,7 +223,7 @@ public class RunCodeGen
 				return cached;
 			}
 
-			final String fileName = packagePath.relativize(path).toString();
+			final String fileName = packageDir.relativize(path).toString();
 			int index = scenarioText.indexOf(fileName);
 			if (index < 0)
 			{
@@ -232,13 +234,10 @@ public class RunCodeGen
 
 			diagramOccurrenceMap.put(path, index);
 			return index;
-		})).forEach(file -> {
-			final String relativeName = packagePath.relativize(file).toString();
-			diagrams.add(readObjectDiagram(file, relativeName));
-		});
+		})).forEach(file -> diagrams.add(readObjectDiagram(file, projectDir, packageDir)));
 	}
 
-	private static Diagram readObjectDiagram(Path file, String fileName)
+	private static Diagram readObjectDiagram(Path file, Path projectDir, Path packageDir)
 	{
 		final byte[] content;
 		try
@@ -250,8 +249,12 @@ public class RunCodeGen
 			throw new RuntimeException(e);
 		}
 
+		final String fileName = packageDir.relativize(file).toString();
+		final String path = projectDir.relativize(file).toString();
+
 		final Diagram diagram = new Diagram();
 		diagram.setName(fileName);
+		diagram.setPath(path);
 
 		final String fileExtension = fileName.substring(fileName.lastIndexOf('.'));
 		switch (fileExtension)
