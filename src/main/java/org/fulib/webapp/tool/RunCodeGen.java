@@ -18,7 +18,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,13 +31,13 @@ public class RunCodeGen
 {
 	// =============== Constants ===============
 
-	private static final String TEMP_DIR_PREFIX = "fulibScenarios";
-
 	private static final Pattern PROPERTY_CONSTANT_PATTERN = Pattern.compile("^\\s*public static final String PROPERTY_\\w+ = \"(\\w+)\";$");
 
 	// =============== Fields ===============
 
 	private final Mongo db;
+	private final String tempDir = System.getProperty("java.io.tmpdir") + "/fulib.org/";
+	private final ScheduledExecutorService deleter = Executors.newScheduledThreadPool(1);
 
 	// =============== Constructors ===============
 
@@ -43,6 +47,11 @@ public class RunCodeGen
 	}
 
 	// =============== Methods ===============
+
+	public String getTempDir()
+	{
+		return this.tempDir;
+	}
 
 	public String handle(Request req, Response res) throws Exception
 	{
@@ -123,7 +132,8 @@ public class RunCodeGen
 
 	public Result run(CodeGenData input) throws Exception
 	{
-		final Path codegendir = Files.createTempDirectory(TEMP_DIR_PREFIX);
+		final String id = UUID.randomUUID().toString();
+		final Path codegendir = Paths.get(this.getTempDir(), "runcodegen", id);
 		final Path srcDir = codegendir.resolve("src");
 		final Path modelSrcDir = codegendir.resolve("model_src");
 		final Path testSrcDir = codegendir.resolve("test_src");
@@ -185,7 +195,7 @@ public class RunCodeGen
 		}
 		finally
 		{
-			Tools.deleteRecursively(codegendir);
+			this.deleter.schedule(() -> Tools.deleteRecursively(codegendir), 1, TimeUnit.HOURS);
 		}
 	}
 
