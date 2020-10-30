@@ -18,10 +18,12 @@ public class Courses
 	// language=JSON
 	static final String UNKNOWN_COURSE_RESPONSE = "{\n  \"error\": \"course with id '%s'' not found\"\n}";
 
+	private final MarkdownUtil markdownUtil;
 	private final Mongo mongo;
 
-	public Courses(Mongo mongo)
+	public Courses(MarkdownUtil markdownUtil, Mongo mongo)
 	{
+		this.markdownUtil = markdownUtil;
 		this.mongo = mongo;
 	}
 
@@ -64,7 +66,7 @@ public class Courses
 		final JSONObject body = new JSONObject(request.body());
 		course.setTitle(body.getString(Course.PROPERTY_title));
 		course.setDescription(body.getString(Course.PROPERTY_description));
-		course.setDescriptionHtml(MarkdownUtil.renderHtml(course.getDescription()));
+		course.setDescriptionHtml(this.markdownUtil.renderHtml(course.getDescription()));
 
 		final JSONArray assignmentIdArray = body.getJSONArray(Course.PROPERTY_assignmentIds);
 		final List<String> assignmentIds = new ArrayList<>();
