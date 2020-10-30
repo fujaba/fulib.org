@@ -10,6 +10,7 @@ public class Result
 	public static final String PROPERTY_id = "id";
 	public static final String PROPERTY_exitCode = "exitCode";
 	public static final String PROPERTY_output = "output";
+	public static final String PROPERTY_html = "html";
 	public static final String PROPERTY_classDiagram = "classDiagram";
 	public static final String PROPERTY_objectDiagrams = "objectDiagrams";
 	public static final String PROPERTY_methods = "methods";
@@ -20,6 +21,7 @@ public class Result
 	private int exitCode;
 	private String output;
 	private String classDiagram;
+	private String html;
 	private List<Diagram> objectDiagrams = new ArrayList<>();
 	private List<Method> methods = new ArrayList<>();
 
@@ -65,6 +67,16 @@ public class Result
 	public void setClassDiagram(String classDiagram)
 	{
 		this.classDiagram = classDiagram;
+	}
+
+	public String getHtml()
+	{
+		return this.html;
+	}
+
+	public void setHtml(String html)
+	{
+		this.html = html;
 	}
 
 	public List<Diagram> getObjectDiagrams()

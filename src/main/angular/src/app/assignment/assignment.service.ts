@@ -158,6 +158,7 @@ export class AssignmentService {
         id: '',
         exitCode: 0,
         output: taskResult.output,
+        html: '',
       };
 
       for (const marker of this.scenarioEditorService.lint(response)) {

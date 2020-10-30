@@ -15,6 +15,8 @@ import java.util.List;
 
 public class MarkdownUtil
 {
+	// =============== Fields ===============
+
 	private static final Extension[] _EXTENSIONS = {
 		TablesExtension.create(),
 		AutolinkExtension.create(),
@@ -38,6 +40,13 @@ public class MarkdownUtil
 				attributes.put("data-language", className.substring("language-".length()));
 			}
 			return;
+		case "img":
+			final String src;
+			if (this.imageBaseUrl != null && (src = attributes.get("src")) != null)
+			{
+				attributes.put("src", this.imageBaseUrl + src);
+			}
+			return;
 		}
 	};
 	private final HtmlRenderer renderer = HtmlRenderer
@@ -46,6 +55,22 @@ public class MarkdownUtil
 		.escapeHtml(true)
 		.attributeProviderFactory(context -> attributeProvider)
 		.build();
+
+	private String imageBaseUrl;
+
+	// =============== Properties ===============
+
+	public String getImageBaseUrl()
+	{
+		return this.imageBaseUrl;
+	}
+
+	public void setImageBaseUrl(String imageBaseUrl)
+	{
+		this.imageBaseUrl = imageBaseUrl;
+	}
+
+	// =============== Methods ===============
 
 	public String renderHtml(String markdown)
 	{

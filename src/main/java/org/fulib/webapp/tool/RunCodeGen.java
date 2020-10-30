@@ -111,6 +111,8 @@ public class RunCodeGen
 		// TODO use Result.PROPERTY_methods (renaming testMethods -> methods)
 		resultObj.put("testMethods", methodsArray);
 
+		resultObj.put(Result.PROPERTY_html, result.getHtml());
+
 		return resultObj;
 	}
 
@@ -192,6 +194,11 @@ public class RunCodeGen
 				}
 
 				collectObjectDiagrams(result.getObjectDiagrams(), bodyText, projectDir, packagePath);
+
+				final MarkdownUtil renderer = new MarkdownUtil();
+				renderer.setImageBaseUrl("/" + tempDir.relativize(packagePath).toString() + "/");
+				final String html = renderer.renderHtml(bodyText);
+				result.setHtml(html);
 			}
 
 			return result;
