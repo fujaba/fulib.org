@@ -99,8 +99,9 @@ public class WebService
 		service = Service.ignite();
 		service.port(4567);
 
-		service.externalStaticFileLocation(this.runCodeGen.getTempDir());
+		service.staticFiles.externalLocation(this.runCodeGen.getTempDir());
 		service.staticFiles.location("/org/fulib/webapp/static");
+		service.staticFiles.expireTime(60 * 60);
 
 		if (isDevEnv())
 		{
