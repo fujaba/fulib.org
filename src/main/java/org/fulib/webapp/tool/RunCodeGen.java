@@ -90,6 +90,7 @@ public class RunCodeGen
 	{
 		final JSONObject resultObj = new JSONObject();
 
+		resultObj.put(Result.PROPERTY_id, result.getId());
 		resultObj.put(Result.PROPERTY_exitCode, result.getExitCode());
 		resultObj.put(Result.PROPERTY_output, result.getOutput());
 
@@ -163,7 +164,7 @@ public class RunCodeGen
 			                                         testClassesDir, "--class-diagram-svg", "--object-diagram-svg",
 			                                         "--marker-end-columns");
 
-			final Result result = new Result();
+			final Result result = new Result(id);
 			result.setExitCode(exitCode);
 
 			final String output = new String(out.toByteArray(), StandardCharsets.UTF_8);

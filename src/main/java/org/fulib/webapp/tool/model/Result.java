@@ -7,6 +7,7 @@ public class Result
 {
 	// =============== Constants ===============
 
+	public static final String PROPERTY_id = "id";
 	public static final String PROPERTY_exitCode = "exitCode";
 	public static final String PROPERTY_output = "output";
 	public static final String PROPERTY_classDiagram = "classDiagram";
@@ -15,13 +16,26 @@ public class Result
 
 	// =============== Fields ===============
 
+	private String id;
 	private int exitCode;
 	private String output;
 	private String classDiagram;
 	private List<Diagram> objectDiagrams = new ArrayList<>();
 	private List<Method> methods = new ArrayList<>();
 
+	// =============== Constructors ===============
+
+	public Result(String id)
+	{
+		this.id = id;
+	}
+
 	// =============== Properties ===============
+
+	public String getId()
+	{
+		return this.id;
+	}
 
 	public int getExitCode()
 	{
