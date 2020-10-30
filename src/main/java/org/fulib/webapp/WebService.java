@@ -65,7 +65,12 @@ public class WebService
 
 	WebService(Mongo db)
 	{
-		this(new RunCodeGen(db), new ProjectZip(db), new Assignments(db), new Comments(db), new Solutions(db),
+		this(db, new RunCodeGen(db));
+	}
+
+	WebService(Mongo db, RunCodeGen runCodeGen)
+	{
+		this(runCodeGen, new ProjectZip(db), new Assignments(db), new Comments(db), new Solutions(runCodeGen, db),
 		     new Courses(db));
 	}
 

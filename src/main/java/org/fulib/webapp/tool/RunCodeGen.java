@@ -121,7 +121,7 @@ public class RunCodeGen
 		return methodObj;
 	}
 
-	public static Result run(CodeGenData input) throws Exception
+	public Result run(CodeGenData input) throws Exception
 	{
 		final Path codegendir = Files.createTempDirectory(TEMP_DIR_PREFIX);
 		final Path srcDir = codegendir.resolve("src");
