@@ -30,6 +30,7 @@ public class WebServiceTest
 		final Solutions solutions = mock(Solutions.class);
 		final Courses courses = mock(Courses.class);
 
+		when(runCodeGen.getTempDir()).thenReturn(System.getProperty("java.io.tmpdir"));
 		when(runCodeGen.handle(any(), any())).thenReturn("");
 		when(projectZip.handle(any(), any())).thenReturn("");
 
