@@ -100,8 +100,7 @@
               *ngIf="diagram.name.endsWith('.yaml') || diagram.name.endsWith('.txt')">{{diagram.content}}</pre>
             <iframe *ngIf="diagram.name.endsWith('.html')"
                     width="100%" height="500px"
-                    [srcdoc]="diagram.content | safeHtml"
-                    src="data:text/html,<strong>Your browser cannot display this mockup!</strong>"
+                    [src]="(basePath + '/' + response.id + '/' + diagram.path) | safeResourceUrl"
             ></iframe>
           </ng-template>
         </li>

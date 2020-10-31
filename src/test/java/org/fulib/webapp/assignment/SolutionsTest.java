@@ -5,9 +5,11 @@ import org.fulib.webapp.assignment.model.Solution;
 import org.fulib.webapp.assignment.model.TaskGrading;
 import org.fulib.webapp.assignment.model.TaskResult;
 import org.fulib.webapp.mongo.Mongo;
+import org.fulib.webapp.tool.RunCodeGen;
 import org.hamcrest.CoreMatchers;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import spark.Request;
@@ -36,14 +38,25 @@ public class SolutionsTest
 	                                             + "org.fulib.patterns.NoMatchException: no matches for s1";
 	private static final String ASSIGNEE = "Adrian";
 
+	private Mongo db;
+	private Solutions solutions;
+	private Request request;
+	private Response response;
+
+	@Before
+	public void setup()
+	{
+		this.db = mock(Mongo.class);
+		// TODO mock this
+		final RunCodeGen runCodeGen = new RunCodeGen(db);
+		this.solutions = new Solutions(runCodeGen, db);
+		this.request = mock(Request.class);
+		this.response = mock(Response.class);
+	}
+
 	@Test
 	public void create404() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		when(request.params("assignmentID")).thenReturn("-1");
 		when(db.getAssignment("-1")).thenReturn(null);
 
@@ -53,11 +66,6 @@ public class SolutionsTest
 	@Test
 	public void create() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Assignment assignment = AssignmentsTest.createExampleAssignment();
 		final String requestBody = createPostRequestBody();
 
@@ -135,11 +143,6 @@ public class SolutionsTest
 	@Test
 	public void get404() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		when(request.contentType()).thenReturn("application/json");
 		when(request.params("solutionID")).thenReturn("-1");
 
@@ -149,11 +152,6 @@ public class SolutionsTest
 	@Test
 	public void getWrongAssignmentID() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createSolution();
 		final Assignment assignment = solution.getAssignment();
 
@@ -170,11 +168,6 @@ public class SolutionsTest
 	@Test
 	public void getWithoutToken() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createSolution();
 		final Assignment assignment = solution.getAssignment();
 
@@ -190,11 +183,6 @@ public class SolutionsTest
 	@Test
 	public void getWithWrongAssignmentToken() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createSolution();
 		final Assignment assignment = solution.getAssignment();
 
@@ -211,11 +199,6 @@ public class SolutionsTest
 	@Test
 	public void getWithWrongSolutionToken() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createSolution();
 		final Assignment assignment = solution.getAssignment();
 
@@ -232,11 +215,6 @@ public class SolutionsTest
 	@Test
 	public void getWithSolutionToken()
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createSolution();
 		final Assignment assignment = solution.getAssignment();
 
@@ -256,11 +234,6 @@ public class SolutionsTest
 	@Test
 	public void getWithAssignmentToken()
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createSolution();
 		final Assignment assignment = solution.getAssignment();
 
@@ -336,11 +309,6 @@ public class SolutionsTest
 	@Test
 	public void getByAssignment404() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		when(request.contentType()).thenReturn("application/json");
 		when(request.params("assignmentID")).thenReturn("-1");
 
@@ -350,11 +318,6 @@ public class SolutionsTest
 	@Test
 	public void getByAssignmentWithoutToken() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createSolution();
 		final Assignment assignment = solution.getAssignment();
 
@@ -369,11 +332,6 @@ public class SolutionsTest
 	@Test
 	public void getByAssignmentWithWrongToken() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createSolution();
 		final Assignment assignment = solution.getAssignment();
 
@@ -389,11 +347,6 @@ public class SolutionsTest
 	@Test
 	public void getByAssignment()
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createSolution();
 		final Assignment assignment = solution.getAssignment();
 
@@ -417,11 +370,6 @@ public class SolutionsTest
 	@Test
 	public void getAssignee404() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		when(db.getSolution("-1")).thenReturn(null);
 		when(request.params("solutionID")).thenReturn("-1");
 
@@ -431,11 +379,6 @@ public class SolutionsTest
 	@Test
 	public void getAssigneeWrongAssignmentID() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createSolution();
 		final Assignment assignment = solution.getAssignment();
 
@@ -451,11 +394,6 @@ public class SolutionsTest
 	@Test
 	public void getAssigneeWithoutToken() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createSolution();
 		final Assignment assignment = solution.getAssignment();
 
@@ -471,11 +409,6 @@ public class SolutionsTest
 	@Test
 	public void getAssigneeWithWrongToken() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createSolution();
 		final Assignment assignment = solution.getAssignment();
 
@@ -492,11 +425,6 @@ public class SolutionsTest
 	@Test
 	public void getAssignee()
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createSolution();
 		final Assignment assignment = solution.getAssignment();
 
@@ -516,11 +444,6 @@ public class SolutionsTest
 	@Test
 	public void setAssignee404() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		when(db.getSolution("-1")).thenReturn(null);
 		when(request.params("solutionID")).thenReturn("-1");
 
@@ -530,11 +453,6 @@ public class SolutionsTest
 	@Test
 	public void setAssigneeWrongAssignmentID() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createSolution();
 		final Assignment assignment = solution.getAssignment();
 
@@ -550,11 +468,6 @@ public class SolutionsTest
 	@Test
 	public void setAssigneeWithoutToken() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createSolution();
 		final Assignment assignment = solution.getAssignment();
 
@@ -570,11 +483,6 @@ public class SolutionsTest
 	@Test
 	public void setAssigneeWithWrongToken() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createSolution();
 		final Assignment assignment = solution.getAssignment();
 
@@ -591,11 +499,6 @@ public class SolutionsTest
 	@Test
 	public void setAssignee()
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createSolution();
 		final Assignment assignment = solution.getAssignment();
 
@@ -622,11 +525,6 @@ public class SolutionsTest
 	@Test
 	public void getGradings404() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		when(db.getSolution("-1")).thenReturn(null);
 		when(request.params("solutionID")).thenReturn("-1");
 
@@ -636,11 +534,6 @@ public class SolutionsTest
 	@Test
 	public void getGradingsWrongAssignmentID() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createSolution();
 		final Assignment assignment = solution.getAssignment();
 
@@ -656,11 +549,6 @@ public class SolutionsTest
 	@Test
 	public void getGradingsWithoutToken() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createSolution();
 		final Assignment assignment = solution.getAssignment();
 
@@ -676,11 +564,6 @@ public class SolutionsTest
 	@Test
 	public void getGradingsWithWrongAssignmentToken() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createSolution();
 		final Assignment assignment = solution.getAssignment();
 
@@ -697,11 +580,6 @@ public class SolutionsTest
 	@Test
 	public void getGradingsWithWrongSolutionToken() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createSolution();
 		final Assignment assignment = solution.getAssignment();
 
@@ -718,11 +596,6 @@ public class SolutionsTest
 	@Test
 	public void getGradingsWithSolutionToken()
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createSolution();
 		final Assignment assignment = solution.getAssignment();
 		final List<TaskGrading> gradings = createGradings();
@@ -744,11 +617,6 @@ public class SolutionsTest
 	@Test
 	public void getGradingsWithAssignmentToken()
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createSolution();
 		final Assignment assignment = solution.getAssignment();
 		final List<TaskGrading> gradings = createGradings();
@@ -812,11 +680,6 @@ public class SolutionsTest
 	@Test
 	public void postGrading404() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		when(db.getSolution("-1")).thenReturn(null);
 		when(request.params("solutionID")).thenReturn("-1");
 
@@ -826,11 +689,6 @@ public class SolutionsTest
 	@Test
 	public void postGradingWrongAssignmentID() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createSolution();
 		final Assignment assignment = solution.getAssignment();
 
@@ -846,11 +704,6 @@ public class SolutionsTest
 	@Test
 	public void postGradingWithoutToken() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createSolution();
 		final Assignment assignment = solution.getAssignment();
 
@@ -866,11 +719,6 @@ public class SolutionsTest
 	@Test
 	public void postGradingWithWrongToken() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createSolution();
 		final Assignment assignment = solution.getAssignment();
 
@@ -887,11 +735,6 @@ public class SolutionsTest
 	@Test
 	public void postGrading()
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createSolution();
 		final Assignment assignment = solution.getAssignment();
 
@@ -930,11 +773,6 @@ public class SolutionsTest
 	@Test
 	public void checkNoAssignment() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final JSONObject requestObj = new JSONObject();
 		requestObj.put("tasks", AssignmentsTest.createTasksJSON());
 		requestObj.put("solution", SOLUTION);
@@ -952,11 +790,6 @@ public class SolutionsTest
 	@Test
 	public void check404() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final JSONObject requestObj = new JSONObject();
 		requestObj.put("solution", SOLUTION);
 		final String requestBody = requestObj.toString();
@@ -971,11 +804,6 @@ public class SolutionsTest
 	@Test
 	public void check() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Solutions solutions = new Solutions(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Assignment assignment = AssignmentsTest.createExampleAssignment();
 
 		final JSONObject requestObj = new JSONObject();

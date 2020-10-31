@@ -49,6 +49,7 @@ public class WebService
 	// =============== Fields ===============
 
 	private Service service;
+	private final MarkdownUtil markdownUtil = new MarkdownUtil();
 	private final RunCodeGen runCodeGen;
 	private final ProjectZip projectZip;
 	private final Assignments assignments;
@@ -65,8 +66,13 @@ public class WebService
 
 	WebService(Mongo db)
 	{
-		this(new RunCodeGen(db), new ProjectZip(db), new Assignments(db), new Comments(db), new Solutions(db),
-		     new Courses(db));
+		this(db, new MarkdownUtil(), new RunCodeGen(db));
+	}
+
+	WebService(Mongo db, MarkdownUtil markdownUtil, RunCodeGen runCodeGen)
+	{
+		this(runCodeGen, new ProjectZip(db), new Assignments(markdownUtil, db), new Comments(markdownUtil, db),
+		     new Solutions(runCodeGen, db), new Courses(markdownUtil, db));
 	}
 
 	WebService(RunCodeGen runCodeGen, ProjectZip projectZip, Assignments assignments, Comments comments,
@@ -94,7 +100,9 @@ public class WebService
 		service = Service.ignite();
 		service.port(4567);
 
+		service.staticFiles.externalLocation(this.runCodeGen.getTempDir());
 		service.staticFiles.location("/org/fulib/webapp/static");
+		service.staticFiles.expireTime(60 * 60);
 
 		if (isDevEnv())
 		{
@@ -171,7 +179,7 @@ public class WebService
 	{
 		service.post("/rendermarkdown", (request, response) -> {
 			response.type("text/html");
-			return MarkdownUtil.renderHtml(request.body());
+			return this.markdownUtil.renderHtml(request.body());
 		});
 	}
 

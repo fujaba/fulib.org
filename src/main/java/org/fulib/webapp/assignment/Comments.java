@@ -15,10 +15,12 @@ import java.util.List;
 
 public class Comments
 {
+	private final MarkdownUtil markdownUtil;
 	private final Mongo mongo;
 
-	public Comments(Mongo mongo)
+	public Comments(MarkdownUtil markdownUtil, Mongo mongo)
 	{
+		this.markdownUtil = markdownUtil;
 		this.mongo = mongo;
 	}
 
@@ -39,7 +41,7 @@ public class Comments
 			comment.setUserId(userId);
 		}
 
-		final String html = MarkdownUtil.renderHtml(comment.getMarkdown());
+		final String html = this.markdownUtil.renderHtml(comment.getMarkdown());
 
 		comment.setParent(solutionID);
 		comment.setTimeStamp(timeStamp);

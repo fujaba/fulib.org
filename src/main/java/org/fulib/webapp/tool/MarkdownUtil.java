@@ -15,6 +15,8 @@ import java.util.List;
 
 public class MarkdownUtil
 {
+	// =============== Fields ===============
+
 	private static final Extension[] _EXTENSIONS = {
 		TablesExtension.create(),
 		AutolinkExtension.create(),
@@ -25,7 +27,7 @@ public class MarkdownUtil
 
 	private static final Parser PARSER = Parser.builder().extensions(EXTENSIONS).build();
 
-	private static final AttributeProvider ATTRIBUTE_PROVIDER = (node, tagName, attributes) -> {
+	private final AttributeProvider attributeProvider = (node, tagName, attributes) -> {
 		switch (tagName)
 		{
 		case "table":
@@ -38,13 +40,41 @@ public class MarkdownUtil
 				attributes.put("data-language", className.substring("language-".length()));
 			}
 			return;
+		case "img":
+			final String src;
+			if (this.imageBaseUrl != null && (src = attributes.get("src")) != null)
+			{
+				attributes.put("src", this.imageBaseUrl + src);
+			}
+			return;
 		}
 	};
-	private static final HtmlRenderer RENDERER = HtmlRenderer.builder().extensions(EXTENSIONS).escapeHtml(true).attributeProviderFactory(context -> ATTRIBUTE_PROVIDER).build();
+	private final HtmlRenderer renderer = HtmlRenderer
+		.builder()
+		.extensions(EXTENSIONS)
+		.escapeHtml(true)
+		.attributeProviderFactory(context -> attributeProvider)
+		.build();
 
-	public static String renderHtml(String markdown)
+	private String imageBaseUrl;
+
+	// =============== Properties ===============
+
+	public String getImageBaseUrl()
+	{
+		return this.imageBaseUrl;
+	}
+
+	public void setImageBaseUrl(String imageBaseUrl)
+	{
+		this.imageBaseUrl = imageBaseUrl;
+	}
+
+	// =============== Methods ===============
+
+	public String renderHtml(String markdown)
 	{
 		final Node document = PARSER.parse(markdown);
-		return RENDERER.render(document);
+		return this.renderer.render(document);
 	}
 }

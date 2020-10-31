@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {GridsterItem} from 'angular-gridster2';
+import {environment} from '../../environments/environment';
 
 import {ExamplesService} from '../examples.service';
 import {MarkdownService} from '../markdown.service';
@@ -28,6 +29,8 @@ export class FourPaneEditorComponent implements OnInit {
   outputText = 'Loading...';
   markdownHtml?: string;
   submitting: boolean;
+
+  basePath = environment.apiURL + '/runcodegen';
 
   exampleCategories: ExampleCategory[];
   _activeObjectDiagramTab = 1;
@@ -80,11 +83,9 @@ export class FourPaneEditorComponent implements OnInit {
       this.submitting = false;
       this.response = response;
       this.javaCode = this.renderJavaCode();
+      this.markdownHtml = response.html.replace(new RegExp(`/runcodegen/${response.id}`, 'g'), match => environment.apiURL + match);
       this.outputText = this.scenarioEditorService.foldInternalCalls(this.response.output.split('\n')).join('\n');
       this.markers = this.scenarioEditorService.lint(response);
-    });
-    this.markdownService.renderMarkdown(this.scenarioText).subscribe(rendered => {
-      this.markdownHtml = rendered;
     });
   }
 

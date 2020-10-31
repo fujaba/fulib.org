@@ -2,12 +2,12 @@ package org.fulib.webapp.assignment;
 
 import org.fulib.webapp.assignment.model.Course;
 import org.fulib.webapp.mongo.Mongo;
+import org.fulib.webapp.tool.MarkdownUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import spark.HaltException;
 import spark.Request;
 import spark.Response;
 
@@ -24,14 +24,24 @@ public class CoursesTest
 	private static final String DESCRIPTION = "A course for the test.";
 	private static final String DESCRIPTION_HTML = "<p>A course for the test.</p>\n";
 
+	private Mongo db;
+	private Courses courses;
+	private Request request;
+	private Response response;
+
+	@Before
+	public void setup()
+	{
+		this.db = mock(Mongo.class);
+		final MarkdownUtil markdownUtil = new MarkdownUtil();
+		this.courses = new Courses(markdownUtil, db);
+		this.request = mock(Request.class);
+		this.response = mock(Response.class);
+	}
+
 	@Test
 	public void create()
 	{
-		final Mongo db = mock(Mongo.class);
-		final Courses courses = new Courses(db);
-
-		final Request request = mock(Request.class);
-
 		final JSONObject requestObj = new JSONObject();
 		requestObj.put("title", TITLE);
 		requestObj.put("description", DESCRIPTION);
@@ -40,8 +50,6 @@ public class CoursesTest
 
 		final String requestBody = requestObj.toString();
 		when(request.body()).thenReturn(requestBody);
-
-		final Response response = mock(Response.class);
 
 		final String responseBody = (String) courses.create(request, response);
 		final ArgumentCaptor<Course> courseCaptor = ArgumentCaptor.forClass(Course.class);
@@ -63,16 +71,9 @@ public class CoursesTest
 	@Test
 	public void get404() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Courses courses = new Courses(db);
-
-		final Request request = mock(Request.class);
-
 		when(request.params("courseID")).thenReturn("-1");
 		when(request.contentType()).thenReturn("application/json");
 		when(db.getCourse("-1")).thenReturn(null);
-
-		final Response response = mock(Response.class);
 
 		TestHelper.expectHalt(404, "course with id '-1'' not found", () -> courses.get(request, response));
 	}
@@ -80,16 +81,9 @@ public class CoursesTest
 	@Test
 	public void get()
 	{
-		final Mongo db = mock(Mongo.class);
-		final Courses courses = new Courses(db);
-
-		final Request request = mock(Request.class);
-
 		when(request.params("courseID")).thenReturn(ID);
 		when(request.contentType()).thenReturn("application/json");
 		when(db.getCourse(ID)).thenReturn(createExampleCourse());
-
-		final Response response = mock(Response.class);
 
 		final String responseBody = (String) courses.get(request, response);
 		final JSONObject responseObj = new JSONObject(responseBody);

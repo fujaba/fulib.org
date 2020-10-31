@@ -29,10 +29,12 @@ public class Solutions
 	private static final String INVALID_TOKEN_RESPONSE = "{\n" + "  \"error\": \"invalid Assignment-Token or Solution-Token\"\n" + "}\n";
 	private static final String UNKNOWN_SOLUTION_RESPONSE = "{\n  \"error\": \"solution with id '%s'' not found\"\n}";
 
+	private final RunCodeGen runCodeGen;
 	private final Mongo mongo;
 
-	public Solutions(Mongo mongo)
+	public Solutions(RunCodeGen runCodeGen, Mongo mongo)
 	{
+		this.runCodeGen = runCodeGen;
 		this.mongo = mongo;
 	}
 
@@ -376,7 +378,7 @@ public class Solutions
 			tasks = assignment.getTasks();
 		}
 
-		final List<TaskResult> results = runTasks(solution, tasks);
+		final List<TaskResult> results = this.runTasks(solution, tasks);
 
 		final JSONObject resultObj = new JSONObject();
 		final JSONArray resultsArray = new JSONArray();
@@ -392,18 +394,18 @@ public class Solutions
 		return resultObj.toString(2);
 	}
 
-	private static List<TaskResult> runTasks(String solution, List<Task> tasks) throws Exception
+	private List<TaskResult> runTasks(String solution, List<Task> tasks) throws Exception
 	{
 		final List<TaskResult> results = new ArrayList<>(tasks.size());
 		for (final Task task : tasks)
 		{
-			final TaskResult result = runTask(solution, task);
+			final TaskResult result = this.runTask(solution, task);
 			results.add(result);
 		}
 		return results;
 	}
 
-	private static TaskResult runTask(String solution, Task task) throws Exception
+	private TaskResult runTask(String solution, Task task) throws Exception
 	{
 		final String scenario =
 			"# Solution\n\n" + solution + "\n\n## Verification\n\n" + task.getVerification() + "\n\n";
@@ -414,7 +416,7 @@ public class Solutions
 		input.setScenarioFileName("solution.md");
 
 		// TODO make it ignore diagrams and methods
-		final Result result = RunCodeGen.run(input);
+		final Result result = this.runCodeGen.run(input);
 
 		final int points = result.getExitCode() == 0 ? task.getPoints() : 0;
 		final TaskResult taskResult = new TaskResult();

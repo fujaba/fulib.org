@@ -29,12 +29,14 @@ public class Assignments
 
 	// =============== Fields ===============
 
+	private final MarkdownUtil markdownUtil;
 	private final Mongo mongo;
 
 	// =============== Constructors ===============
 
-	public Assignments(Mongo mongo)
+	public Assignments(MarkdownUtil markdownUtil, Mongo mongo)
 	{
+		this.markdownUtil = markdownUtil;
 		this.mongo = mongo;
 	}
 
@@ -121,7 +123,7 @@ public class Assignments
 			assignment.setUserId(userId);
 		}
 
-		final String descriptionHtml = MarkdownUtil.renderHtml(assignment.getDescription());
+		final String descriptionHtml = this.markdownUtil.renderHtml(assignment.getDescription());
 		assignment.setDescriptionHtml(descriptionHtml);
 
 		this.mongo.saveAssignment(assignment);

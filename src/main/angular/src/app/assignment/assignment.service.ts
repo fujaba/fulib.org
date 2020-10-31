@@ -155,8 +155,10 @@ export class AssignmentService {
       const taskNum = i + 1;
       const taskResult = result.results[i];
       const response: Response = {
+        id: '',
         exitCode: 0,
         output: taskResult.output,
+        html: '',
       };
 
       for (const marker of this.scenarioEditorService.lint(response)) {
