@@ -78,16 +78,22 @@ public class Authenticator
 		}
 	}
 
-	public static String getAndCheckUserIdQueryParam(Request request)
+	public static String getUserIdOr401(Request request)
 	{
-		final String userIdParam = request.queryParamOrDefault("userId", null);
-
 		final String userId = getUserId(request);
 		if (userId == null)
 		{
 			// language=JSON
 			throw Spark.halt(401, "{\n" + "  \"error\": \"missing bearer token\"\n" + "}");
 		}
+		return userId;
+	}
+
+	public static String getAndCheckUserIdQueryParam(Request request)
+	{
+		final String userIdParam = request.queryParamOrDefault("userId", null);
+
+		final String userId = getUserIdOr401(request);
 		if (userIdParam == null)
 		{
 			// language=JSON

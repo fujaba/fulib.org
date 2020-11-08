@@ -121,11 +121,7 @@ public class Comments
 			throw Spark.halt(404, String.format("{\n  \"error\": \"comment with id '%s' not found\"\n}\n", commentID));
 		}
 
-		final String userId = Authenticator.getUserId(request);
-		if (userId == null)
-		{
-			throw Spark.halt(401, "{\n  \"error\": \"missing bearer token\"\n}\n");
-		}
+		final String userId = Authenticator.getUserIdOr401(request);
 		if (!userId.equals(comment.getUserId()))
 		{
 			throw Spark.halt(401, "{\n  \"error\": \"token user ID does not match ID of comment\"\n}\n");
