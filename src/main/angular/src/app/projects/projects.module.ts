@@ -5,10 +5,12 @@ import {FormsModule} from '@angular/forms';
 
 import {ProjectsRoutingModule} from './projects-routing.module';
 import {ProjectListComponent} from './project-list/project-list.component';
+import {ProjectWorkspaceComponent} from './project-workspace/project-workspace.component';
 
 @NgModule({
   declarations: [
     ProjectListComponent,
+    ProjectWorkspaceComponent,
   ],
   imports: [
     CommonModule,
