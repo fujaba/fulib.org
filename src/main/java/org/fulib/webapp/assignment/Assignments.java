@@ -5,6 +5,7 @@ import org.fulib.webapp.assignment.model.Assignment;
 import org.fulib.webapp.assignment.model.Task;
 import org.fulib.webapp.mongo.Mongo;
 import org.fulib.webapp.tool.Authenticator;
+import org.fulib.webapp.tool.IDGenerator;
 import org.fulib.webapp.tool.MarkdownUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;

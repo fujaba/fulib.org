@@ -3,6 +3,7 @@ package org.fulib.webapp.assignment;
 import org.fulib.webapp.assignment.model.Course;
 import org.fulib.webapp.mongo.Mongo;
 import org.fulib.webapp.tool.Authenticator;
+import org.fulib.webapp.tool.IDGenerator;
 import org.fulib.webapp.tool.MarkdownUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
