@@ -12,6 +12,7 @@ import {AboutComponent} from './about/about.component';
 const routes: Routes = [
   {path: '', component: FourPaneEditorComponent},
   {path: 'assignments', loadChildren: () => import('./assignment/assignment.module').then(m => m.AssignmentModule)},
+  {path: 'projects', loadChildren: () => import('./projects/projects.module').then(m => m.ProjectsModule)},
   {path: '**', component: PageNotFoundComponent},
   {outlet: 'modal', path: 'feedback', component: FeedbackComponent},
   {outlet: 'modal', path: 'privacy', component: PrivacyComponent},
