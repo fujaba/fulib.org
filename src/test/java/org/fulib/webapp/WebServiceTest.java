@@ -35,6 +35,7 @@ public class WebServiceTest
 		when(runCodeGen.handle(any(), any())).thenReturn("");
 		when(projectZip.handle(any(), any())).thenReturn("");
 
+		when(projects.get(any(), any())).thenReturn("");
 		when(projects.getAll(any(), any())).thenReturn("");
 		when(projects.create(any(), any())).thenReturn("");
 
@@ -76,6 +77,7 @@ public class WebServiceTest
 			// projects
 			checkRoute("POST", "/projects");
 			checkRoute("GET", "/projects");
+			checkRoute("GET", "/projects/1");
 
 			// courses
 			checkRoute("POST", "/courses");

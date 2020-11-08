@@ -184,6 +184,7 @@ public class WebService
 		service.path("/projects", () -> {
 			service.post("", projects::create);
 			service.get("", projects::getAll);
+			service.get("/:id", projects::get);
 		});
 	}
 

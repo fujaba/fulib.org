@@ -35,6 +35,7 @@ public class Project
 
 	// =============== Properties ===============
 
+	@BsonProperty
 	public String getId()
 	{
 		return id;

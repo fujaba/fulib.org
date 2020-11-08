@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
+import spark.Spark;
 
 import java.time.Instant;
 import java.util.List;
@@ -20,6 +21,31 @@ public class Projects
 	public Projects(Mongo mongo)
 	{
 		this.mongo = mongo;
+	}
+
+	public Object get(Request request, Response response)
+	{
+		if (request.contentType() == null || !request.contentType().startsWith("application/json"))
+		{
+			return WebService.serveIndex(request, response);
+		}
+
+		final String id = request.params("id");
+
+		final Project project = this.mongo.getProject(id);
+		if (project == null)
+		{
+			throw Spark.halt(404, String.format("{\n  \"error\": \"project with id '%s' not found\"\n}\n", id));
+		}
+
+		final String userId = Authenticator.getUserIdOr401(request);
+		if (!userId.equals(project.getUserId()))
+		{
+			throw Spark.halt(401, "{\n  \"error\": \"token user ID does not match ID of project\"\n}\n");
+		}
+
+		final JSONObject json = this.toJson(project);
+		return json.toString(2);
 	}
 
 	public Object getAll(Request request, Response response)
