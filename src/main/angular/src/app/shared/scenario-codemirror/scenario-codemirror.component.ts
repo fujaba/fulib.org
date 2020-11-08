@@ -1,7 +1,9 @@
-import {AfterViewInit, Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+
 import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
+
+import {Marker} from '../../model/codegen/marker';
 import {AutothemeCodemirrorComponent} from '../autotheme-codemirror/autotheme-codemirror.component';
-import {Marker} from '../scenario-editor.service';
 
 @Component({
   selector: 'app-scenario-codemirror',
