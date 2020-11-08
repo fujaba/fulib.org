@@ -16,6 +16,7 @@ export class ProjectWorkspaceComponent implements OnInit {
 
   exampleRoot: File = {
     name: '.',
+    info: 'project root',
     children: [
       {name: 'build.gradle'},
       {name: 'settings.gradle'},
