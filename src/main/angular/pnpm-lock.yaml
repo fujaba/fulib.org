@@ -45,7 +45,7 @@ devDependencies:
   ts-node: 7.0.1
   tslint: 5.15.0_typescript@3.8.3
   typescript: 3.8.3
-lockfileVersion: 5.1
+lockfileVersion: 5.2
 packages:
   /@angular-devkit/architect/0.901.7:
     dependencies:
@@ -117,7 +117,7 @@ packages:
       terser-webpack-plugin: 2.3.5_webpack@4.42.0
       tree-kill: 1.2.2
       typescript: 3.8.3
-      webpack: 4.42.0_webpack@4.42.0
+      webpack: 4.42.0
       webpack-dev-middleware: 3.7.2_webpack@4.42.0
       webpack-dev-server: 3.11.0_webpack@4.42.0
       webpack-merge: 4.2.2
@@ -158,7 +158,7 @@ packages:
       '@angular-devkit/architect': 0.901.7
       '@angular-devkit/core': 9.1.7
       rxjs: 6.5.4
-      webpack: 4.42.0_webpack@4.42.0
+      webpack: 4.42.0
       webpack-dev-server: 3.11.0_webpack@4.42.0
     dev: true
     engines:
@@ -1383,7 +1383,7 @@ packages:
       enhanced-resolve: 4.1.1
       rxjs: 6.5.4
       typescript: 3.8.3
-      webpack: 4.42.0_webpack@4.42.0
+      webpack: 4.42.0
       webpack-sources: 1.4.3
     dev: true
     engines:
@@ -2049,7 +2049,7 @@ packages:
       loader-utils: 1.2.3
       mkdirp: 0.5.5
       pify: 4.0.1
-      webpack: 4.42.0_webpack@4.42.0
+      webpack: 4.42.0
     dev: true
     engines:
       node: '>= 6.9'
@@ -2603,7 +2603,7 @@ packages:
       integrity: sha512-Kkht5ye6ZGmwv40uUDZztayT2ThLQGfnj/T71N/XzeZeo3nf8foyW7zGTsPYkEya3m5f3cAypH+qe7YOrM1U2Q==
   /circular-dependency-plugin/5.2.0_webpack@4.42.0:
     dependencies:
-      webpack: 4.42.0_webpack@4.42.0
+      webpack: 4.42.0
     dev: true
     engines:
       node: '>=6.0.0'
@@ -2954,7 +2954,7 @@ packages:
       p-limit: 2.3.0
       schema-utils: 1.0.0
       serialize-javascript: 2.1.2
-      webpack: 4.42.0_webpack@4.42.0
+      webpack: 4.42.0
       webpack-log: 2.0.0
     dev: true
     engines:
@@ -3086,7 +3086,7 @@ packages:
       postcss-value-parser: 4.0.3
       schema-utils: 2.6.5
       semver: 6.3.0
-      webpack: 4.42.0_webpack@4.42.0
+      webpack: 4.42.0
     dev: true
     engines:
       node: '>= 8.9.0'
@@ -3974,7 +3974,7 @@ packages:
     dependencies:
       loader-utils: 2.0.0
       schema-utils: 2.6.5
-      webpack: 4.42.0_webpack@4.42.0
+      webpack: 4.42.0
     dev: true
     engines:
       node: '>= 10.13.0'
@@ -5554,7 +5554,7 @@ packages:
       less: 3.11.1
       loader-utils: 1.4.0
       pify: 4.0.1
-      webpack: 4.42.0_webpack@4.42.0
+      webpack: 4.42.0
     dev: true
     engines:
       node: '>= 4.8.0'
@@ -5935,7 +5935,7 @@ packages:
       loader-utils: 1.4.0
       normalize-url: 1.9.1
       schema-utils: 1.0.0
-      webpack: 4.42.0_webpack@4.42.0
+      webpack: 4.42.0
       webpack-sources: 1.4.3
     dev: true
     engines:
@@ -7509,7 +7509,7 @@ packages:
     dependencies:
       loader-utils: 1.4.0
       schema-utils: 2.6.5
-      webpack: 4.42.0_webpack@4.42.0
+      webpack: 4.42.0
     dev: true
     engines:
       node: '>= 10.13.0'
@@ -7872,7 +7872,7 @@ packages:
       sass: 1.26.3
       schema-utils: 2.6.5
       semver: 6.3.0
-      webpack: 4.42.0_webpack@4.42.0
+      webpack: 4.42.0
     dev: true
     engines:
       node: '>= 8.9.0'
@@ -8346,7 +8346,7 @@ packages:
   /speed-measure-webpack-plugin/1.3.1_webpack@4.42.0:
     dependencies:
       chalk: 2.4.2
-      webpack: 4.42.0_webpack@4.42.0
+      webpack: 4.42.0
     dev: true
     engines:
       node: '>=6.0.0'
@@ -8606,7 +8606,7 @@ packages:
     dependencies:
       loader-utils: 1.4.0
       schema-utils: 2.6.5
-      webpack: 4.42.0_webpack@4.42.0
+      webpack: 4.42.0
     dev: true
     engines:
       node: '>= 8.9.0'
@@ -8747,7 +8747,7 @@ packages:
       serialize-javascript: 2.1.2
       source-map: 0.6.1
       terser: 4.6.10
-      webpack: 4.42.0_webpack@4.42.0
+      webpack: 4.42.0
       webpack-sources: 1.4.3
       worker-farm: 1.7.0
     dev: true
@@ -8767,7 +8767,7 @@ packages:
       serialize-javascript: 2.1.2
       source-map: 0.6.1
       terser: 4.6.10
-      webpack: 4.42.0_webpack@4.42.0
+      webpack: 4.42.0
       webpack-sources: 1.4.3
     dev: true
     engines:
@@ -9285,7 +9285,7 @@ packages:
       mime: 2.4.4
       mkdirp: 0.5.5
       range-parser: 1.2.1
-      webpack: 4.42.0_webpack@4.42.0
+      webpack: 4.42.0
       webpack-log: 2.0.0
     dev: true
     engines:
@@ -9325,7 +9325,7 @@ packages:
       strip-ansi: 3.0.1
       supports-color: 6.1.0
       url: 0.11.0
-      webpack: 4.42.0_webpack@4.42.0
+      webpack: 4.42.0
       webpack-dev-middleware: 3.7.2_webpack@4.42.0
       webpack-log: 2.0.0
       ws: 6.2.1
@@ -9366,7 +9366,7 @@ packages:
       integrity: sha512-lgTS3Xhv1lCOKo7SA5TjKXMjpSM4sBjNV5+q2bqesbSPs5FjGmU6jjtBSkX9b4qW87vDIsCIlUPOEhbZrMdjeQ==
   /webpack-subresource-integrity/1.4.0_webpack@4.42.0:
     dependencies:
-      webpack: 4.42.0_webpack@4.42.0
+      webpack: 4.42.0
       webpack-sources: 1.4.3
     dev: true
     engines:
@@ -9379,7 +9379,7 @@ packages:
         optional: true
     resolution:
       integrity: sha512-GB1kB/LwAWC3CxwcedGhMkxGpNZxSheCe1q+KJP1bakuieAdX/rGHEcf5zsEzhKXpqsGqokgsDoD9dIkr61VDQ==
-  /webpack/4.42.0_webpack@4.42.0:
+  /webpack/4.42.0:
     dependencies:
       '@webassemblyjs/ast': 1.8.5
       '@webassemblyjs/helper-module-context': 1.8.5
@@ -9408,8 +9408,6 @@ packages:
     engines:
       node: '>=6.11.5'
     hasBin: true
-    peerDependencies:
-      webpack: '*'
     resolution:
       integrity: sha512-EzJRHvwQyBiYrYqhyjW9AqM90dE4+s1/XtCfn7uWg6cS72zH+2VPFAlsnW0+W0cDi0XRjNKUMoJtpSi50+Ph6w==
   /websocket-driver/0.6.5:
@@ -9465,7 +9463,7 @@ packages:
   /worker-plugin/4.0.3_webpack@4.42.0:
     dependencies:
       loader-utils: 1.4.0
-      webpack: 4.42.0_webpack@4.42.0
+      webpack: 4.42.0
     dev: true
     peerDependencies:
       webpack: '>= 4'
