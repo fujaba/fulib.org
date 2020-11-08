@@ -2,11 +2,13 @@
   <rsz-layout class="row no-gutters" [directions]="['right']" [rFlex]="true">
     <rsz-layout class="cell" [directions]="['none']" [rFlex]="false">
       <h4>Explorer</h4>
+      <app-file-tree [root]="exampleRoot" [handler]="fileHandler"></app-file-tree>
     </rsz-layout>
   </rsz-layout>
   <rsz-layout class="row no-gutters" [directions]="['none']" [rFlex]="false">
     <rsz-layout class="cell" [directions]="['bottom']" [rFlex]="true">
       <h4>Editor</h4>
+      Current File: {{currentFile?.name}}
     </rsz-layout>
     <rsz-layout class="cell" [directions]="['none']" [rFlex]="false">
       <h4>Output</h4>
