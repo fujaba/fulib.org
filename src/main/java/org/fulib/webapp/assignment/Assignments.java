@@ -1,6 +1,5 @@
 package org.fulib.webapp.assignment;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
 import org.fulib.webapp.WebService;
 import org.fulib.webapp.assignment.model.Assignment;
 import org.fulib.webapp.assignment.model.Task;
@@ -60,46 +59,9 @@ public class Assignments
 		}
 	}
 
-	static String getUserId(Request request) {
-		try
-		{
-			final DecodedJWT jwt = Authenticator.getJWT(request.headers("Authorization"));
-			return jwt.getSubject();
-		}
-		catch (IllegalArgumentException ignored)
-		{
-			return null;
-		}
-	}
-
-	static String getAndCheckUserIdQueryParam(Request request)
-	{
-		final String userIdParam = request.queryParamOrDefault("userId", null);
-
-		final String userId = getUserId(request);
-		if (userId == null)
-		{
-			// language=JSON
-			throw Spark.halt(401, "{\n" + "  \"error\": \"missing bearer token\"\n" + "}");
-		}
-		if (userIdParam == null)
-		{
-			// language=JSON
-			throw Spark.halt(400, "{\n" + "  \"error\": \"missing userId query parameter\"\n" + "}");
-		}
-		if (!userId.equals(userIdParam))
-		{
-			// language=JSON
-			throw Spark.halt(400,
-			                 "{\n" + "  \"error\": \"userId query parameter does not match ID of logged-in user\"\n"
-			                 + "}");
-		}
-		return userId;
-	}
-
 	static boolean isAuthorized(Request request, Assignment assignment)
 	{
-		final String userId = getUserId(request);
+		final String userId = Authenticator.getUserId(request);
 		if (userId != null && userId.equals(assignment.getUserId()))
 		{
 			return true;
@@ -117,7 +79,7 @@ public class Assignments
 		final Assignment assignment = fromJson(id, new JSONObject(request.body()));
 		assignment.setToken(token);
 
-		final String userId = getUserId(request);
+		final String userId = Authenticator.getUserId(request);
 		if (userId != null)
 		{
 			assignment.setUserId(userId);
@@ -197,7 +159,7 @@ public class Assignments
 			return WebService.serveIndex(request, response);
 		}
 
-		final String userId = getAndCheckUserIdQueryParam(request);
+		final String userId = Authenticator.getAndCheckUserIdQueryParam(request);
 
 		final List<Assignment> assignments = this.mongo.getAssignmentsByUser(userId);
 		final JSONArray array = new JSONArray();

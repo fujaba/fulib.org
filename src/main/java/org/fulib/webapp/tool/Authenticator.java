@@ -5,6 +5,8 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
+import spark.Request;
+import spark.Spark;
 
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -61,5 +63,43 @@ public class Authenticator
 		{
 			throw new IllegalArgumentException("invalid token", ex);
 		}
+	}
+
+	public static String getUserId(Request request)
+	{
+		try
+		{
+			final DecodedJWT jwt = getJWT(request.headers("Authorization"));
+			return jwt.getSubject();
+		}
+		catch (IllegalArgumentException ignored)
+		{
+			return null;
+		}
+	}
+
+	public static String getAndCheckUserIdQueryParam(Request request)
+	{
+		final String userIdParam = request.queryParamOrDefault("userId", null);
+
+		final String userId = getUserId(request);
+		if (userId == null)
+		{
+			// language=JSON
+			throw Spark.halt(401, "{\n" + "  \"error\": \"missing bearer token\"\n" + "}");
+		}
+		if (userIdParam == null)
+		{
+			// language=JSON
+			throw Spark.halt(400, "{\n" + "  \"error\": \"missing userId query parameter\"\n" + "}");
+		}
+		if (!userId.equals(userIdParam))
+		{
+			// language=JSON
+			throw Spark.halt(400,
+			                 "{\n" + "  \"error\": \"userId query parameter does not match ID of logged-in user\"\n"
+			                 + "}");
+		}
+		return userId;
 	}
 }

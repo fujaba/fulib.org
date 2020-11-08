@@ -3,6 +3,7 @@ package org.fulib.webapp.assignment;
 import org.fulib.webapp.assignment.model.Comment;
 import org.fulib.webapp.assignment.model.Solution;
 import org.fulib.webapp.mongo.Mongo;
+import org.fulib.webapp.tool.Authenticator;
 import org.fulib.webapp.tool.MarkdownUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -35,7 +36,7 @@ public class Comments
 		final String commentID = IDGenerator.generateID();
 		final Comment comment = fromJson(commentID, new JSONObject(request.body()));
 
-		final String userId = Assignments.getUserId(request);
+		final String userId = Authenticator.getUserId(request);
 		if (userId != null)
 		{
 			comment.setUserId(userId);
@@ -119,7 +120,7 @@ public class Comments
 			throw Spark.halt(404, String.format("{\n  \"error\": \"comment with id '%s' not found\"\n}\n", commentID));
 		}
 
-		final String userId = Assignments.getUserId(request);
+		final String userId = Authenticator.getUserId(request);
 		if (userId == null)
 		{
 			throw Spark.halt(401, "{\n  \"error\": \"missing bearer token\"\n}\n");
