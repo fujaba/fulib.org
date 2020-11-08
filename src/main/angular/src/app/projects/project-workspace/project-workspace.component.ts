@@ -18,8 +18,10 @@ export class ProjectWorkspaceComponent implements OnInit {
     name: '.',
     info: 'project root',
     children: [
-      {name: 'build.gradle'},
-      {name: 'settings.gradle'},
+      {name: 'build.gradle', type: 'text/x-groovy'},
+      {name: 'settings.gradle', type: 'text/x-groovy'},
+      {name: '.gitignore', type: 'text/plain'},
+      {name: 'README.md', type: 'text/x-markdown'},
       {
         name: 'src',
         children: [

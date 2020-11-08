@@ -17,11 +17,17 @@
             </span>
           </a>
           <ng-template ngbNavContent>
-            <pre>{{ file.name }} content</pre>
+            <app-autotheme-codemirror class="cm-h-100" [options]="{
+              mode: file.type,
+              lineNumbers: true,
+              lineWrapping: true,
+              styleActiveLine: true,
+              autoRefresh: true
+            }"></app-autotheme-codemirror>
           </ng-template>
         </li>
       </ul>
-      <div [ngbNavOutlet]="nav" class="mt-2"></div>
+      <div [ngbNavOutlet]="nav" style="height: calc(100% - 40px)"></div>
     </rsz-layout>
     <rsz-layout class="cell" [directions]="['none']" [rFlex]="false">
       <h4>Output</h4>
