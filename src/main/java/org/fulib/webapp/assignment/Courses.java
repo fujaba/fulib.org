@@ -57,7 +57,7 @@ public class Courses
 		final String id = IDGenerator.generateID();
 		final Course course = new Course(id);
 
-		final String userId = Assignments.getUserId(request);
+		final String userId = Authenticator.getUserId(request);
 		if (userId != null)
 		{
 			course.setUserId(userId);
@@ -86,7 +86,7 @@ public class Courses
 
 	public Object getAll(Request request, Response response)
 	{
-		final String userId = Assignments.getAndCheckUserIdQueryParam(request);
+		final String userId = Authenticator.getAndCheckUserIdQueryParam(request);
 
 		final List<Course> courses = this.mongo.getCoursesByUser(userId);
 

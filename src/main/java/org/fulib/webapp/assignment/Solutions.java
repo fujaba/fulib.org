@@ -3,6 +3,7 @@ package org.fulib.webapp.assignment;
 import org.fulib.webapp.WebService;
 import org.fulib.webapp.assignment.model.*;
 import org.fulib.webapp.mongo.Mongo;
+import org.fulib.webapp.tool.Authenticator;
 import org.fulib.webapp.tool.RunCodeGen;
 import org.fulib.webapp.tool.model.CodeGenData;
 import org.fulib.webapp.tool.model.Result;
@@ -16,7 +17,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.fulib.webapp.assignment.Assignments.getUserId;
+import static org.fulib.webapp.tool.Authenticator.getUserId;
 
 public class Solutions
 {
@@ -209,7 +210,7 @@ public class Solutions
 			return WebService.serveIndex(request, response);
 		}
 
-		final String userId = Assignments.getAndCheckUserIdQueryParam(request);
+		final String userId = Authenticator.getAndCheckUserIdQueryParam(request);
 
 		final List<Solution> solutions = this.mongo.getSolutionsByUser(userId);
 		final JSONArray array = new JSONArray();
@@ -315,7 +316,7 @@ public class Solutions
 		final TaskGrading grading = json2Grading(solutionID, new JSONObject(request.body()));
 		grading.setTimeStamp(timeStamp);
 
-		final String userId = Assignments.getUserId(request);
+		final String userId = Authenticator.getUserId(request);
 		if (userId != null)
 		{
 			grading.setUserId(userId);
