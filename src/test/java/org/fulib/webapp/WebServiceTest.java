@@ -4,10 +4,10 @@ import org.fulib.webapp.assignment.Assignments;
 import org.fulib.webapp.assignment.Comments;
 import org.fulib.webapp.assignment.Courses;
 import org.fulib.webapp.assignment.Solutions;
+import org.fulib.webapp.projects.Projects;
 import org.fulib.webapp.projectzip.ProjectZip;
 import org.fulib.webapp.tool.RunCodeGen;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -25,6 +25,7 @@ public class WebServiceTest
 	{
 		final RunCodeGen runCodeGen = mock(RunCodeGen.class);
 		final ProjectZip projectZip = mock(ProjectZip.class);
+		final Projects projects = mock(Projects.class);
 		final Assignments assignments = mock(Assignments.class);
 		final Comments comments = mock(Comments.class);
 		final Solutions solutions = mock(Solutions.class);
@@ -33,6 +34,9 @@ public class WebServiceTest
 		when(runCodeGen.getTempDir()).thenReturn(System.getProperty("java.io.tmpdir"));
 		when(runCodeGen.handle(any(), any())).thenReturn("");
 		when(projectZip.handle(any(), any())).thenReturn("");
+
+		when(projects.getAll(any(), any())).thenReturn("");
+		when(projects.create(any(), any())).thenReturn("");
 
 		when(courses.get(any(), any())).thenReturn("");
 		when(courses.getAll(any(), any())).thenReturn("");
@@ -54,7 +58,8 @@ public class WebServiceTest
 		when(comments.getChildren(any(), any())).thenReturn("");
 		when(comments.post(any(), any())).thenReturn("");
 
-		final WebService service = new WebService(runCodeGen, projectZip, assignments, comments, solutions, courses);
+		final WebService service = new WebService(runCodeGen, projectZip, projects, assignments, comments, solutions,
+		                                          courses);
 		service.start();
 		service.awaitStart();
 
@@ -67,6 +72,10 @@ public class WebServiceTest
 			checkRoute("POST", "/runcodegen");
 			checkRoute("POST", "/projectzip");
 			checkRoute("POST", "/rendermarkdown");
+
+			// projects
+			checkRoute("POST", "/projects");
+			checkRoute("GET", "/projects");
 
 			// courses
 			checkRoute("POST", "/courses");

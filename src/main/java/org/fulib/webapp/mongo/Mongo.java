@@ -18,6 +18,7 @@ import org.bson.codecs.pojo.Conventions;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.fulib.webapp.WebService;
 import org.fulib.webapp.assignment.model.*;
+import org.fulib.webapp.projects.model.Project;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,6 +34,7 @@ public class Mongo
 	public static final String DATABASE_NAME = "fulib-org";
 
 	public static final String LOG_COLLECTION_NAME = "request-log";
+	public static final String PROJECT_COLLECTION_NAME = "projects";
 	public static final String ASSIGNMENT_COLLECTION_NAME = "assignments";
 	public static final String COURSE_COLLECTION_NAME = "courses";
 	public static final String SOLUTION_COLLECTION_NAME = "solutions";
@@ -46,6 +48,7 @@ public class Mongo
 	private MongoDatabase database;
 
 	MongoCollection<Document> requestLog;
+	private MongoCollection<Project> projects;
 	private MongoCollection<Assignment> assignments;
 	private MongoCollection<Course> courses;
 	private MongoCollection<Solution> solutions;
@@ -60,10 +63,11 @@ public class Mongo
 		this.conventions.add(Conventions.USE_GETTERS_FOR_SETTERS); // to use get<List>().add(...) instead of set<List>()
 	}
 
-	private final CodecProvider pojoCodecProvider = PojoCodecProvider.builder()
-	                                                                 .register(Assignment.class.getPackage().getName())
-	                                                                 .conventions(this.conventions)
-	                                                                 .build();
+	private final CodecProvider pojoCodecProvider = PojoCodecProvider
+		.builder()
+		.register(Assignment.class.getPackage().getName(), Project.class.getPackage().getName())
+		.conventions(this.conventions)
+		.build();
 
 	private final CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
 	                                                               fromProviders(this.pojoCodecProvider));
@@ -85,6 +89,13 @@ public class Mongo
 		this.mongoClient = MongoClients.create(settings);
 		this.database = this.mongoClient.getDatabase(DATABASE_NAME);
 		this.requestLog = this.database.getCollection(LOG_COLLECTION_NAME);
+
+		this.projects = this.database
+			.getCollection(PROJECT_COLLECTION_NAME, Project.class)
+			.withCodecRegistry(this.pojoCodecRegistry);
+		this.projects.createIndex(Indexes.ascending(Project.PROPERTY_ID));
+		this.projects.createIndex(Indexes.ascending(Project.PROPERTY_USER_ID));
+		this.projects.createIndex(Indexes.ascending(Project.PROPERTY_NAME));
 
 		this.assignments = this.database.getCollection(ASSIGNMENT_COLLECTION_NAME, Assignment.class)
 		                                .withCodecRegistry(this.pojoCodecRegistry);
@@ -148,6 +159,23 @@ public class Mongo
 		document.put("response", Document.parse(response));
 
 		this.requestLog.insertOne(document);
+	}
+
+	// --------------- Projects ---------------
+
+	public Project getProject(String id)
+	{
+		return this.projects.find(Filters.eq(Project.PROPERTY_ID, id)).first();
+	}
+
+	public List<Project> getProjectsByUser(String user)
+	{
+		return this.projects.find(Filters.eq(Project.PROPERTY_USER_ID, user)).into(new ArrayList<>());
+	}
+
+	public void saveProject(Project project)
+	{
+		upsert(this.projects, project, Project.PROPERTY_ID, project.getId());
 	}
 
 	// --------------- Assignments ---------------

@@ -1,0 +1,78 @@
+package org.fulib.webapp.projects;
+
+import org.fulib.webapp.WebService;
+import org.fulib.webapp.mongo.Mongo;
+import org.fulib.webapp.projects.model.Project;
+import org.fulib.webapp.tool.Authenticator;
+import org.fulib.webapp.tool.IDGenerator;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import spark.Request;
+import spark.Response;
+
+import java.time.Instant;
+import java.util.List;
+
+public class Projects
+{
+	private final Mongo mongo;
+
+	public Projects(Mongo mongo)
+	{
+		this.mongo = mongo;
+	}
+
+	public Object getAll(Request request, Response response)
+	{
+		if (request.contentType() == null || !request.contentType().startsWith("application/json"))
+		{
+			return WebService.serveIndex(request, response);
+		}
+
+		final String userId = Authenticator.getAndCheckUserIdQueryParam(request);
+
+		final List<Project> projects = this.mongo.getProjectsByUser(userId);
+		final JSONArray array = new JSONArray();
+		for (final Project project : projects)
+		{
+			array.put(toJson(project));
+		}
+		return array.toString(2);
+	}
+
+	private JSONObject toJson(Project project)
+	{
+		final JSONObject obj = new JSONObject();
+		obj.put(Project.PROPERTY_ID, project.getId());
+		obj.put(Project.PROPERTY_USER_ID, project.getUserId());
+		obj.put(Project.PROPERTY_NAME, project.getName());
+		obj.put(Project.PROPERTY_DESCRIPTION, project.getDescription());
+		obj.put(Project.PROPERTY_CREATED, project.getCreated().toString());
+		return obj;
+	}
+
+	public Object create(Request request, Response response)
+	{
+		final String id = IDGenerator.generateID();
+		final Project project = this.fromJson(id, new JSONObject(request.body()));
+
+		project.setCreated(Instant.now());
+
+		final String userId = Authenticator.getUserIdOr401(request);
+		project.setUserId(userId);
+
+		this.mongo.saveProject(project);
+
+		JSONObject responseJson = toJson(project);
+
+		return responseJson.toString(2);
+	}
+
+	private Project fromJson(String id, JSONObject obj)
+	{
+		final Project project = new Project(id);
+		project.setName(obj.getString(Project.PROPERTY_NAME));
+		project.setDescription(obj.getString(Project.PROPERTY_DESCRIPTION));
+		return project;
+	}
+}

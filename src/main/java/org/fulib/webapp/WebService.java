@@ -5,6 +5,7 @@ import org.fulib.webapp.assignment.Comments;
 import org.fulib.webapp.assignment.Courses;
 import org.fulib.webapp.assignment.Solutions;
 import org.fulib.webapp.mongo.Mongo;
+import org.fulib.webapp.projects.Projects;
 import org.fulib.webapp.projectzip.ProjectZip;
 import org.fulib.webapp.tool.MarkdownUtil;
 import org.fulib.webapp.tool.RunCodeGen;
@@ -52,6 +53,7 @@ public class WebService
 	private final MarkdownUtil markdownUtil = new MarkdownUtil();
 	private final RunCodeGen runCodeGen;
 	private final ProjectZip projectZip;
+	private final Projects projects;
 	private final Assignments assignments;
 	private final Comments comments;
 	private final Solutions solutions;
@@ -71,15 +73,16 @@ public class WebService
 
 	WebService(Mongo db, MarkdownUtil markdownUtil, RunCodeGen runCodeGen)
 	{
-		this(runCodeGen, new ProjectZip(db), new Assignments(markdownUtil, db), new Comments(markdownUtil, db),
-		     new Solutions(runCodeGen, db), new Courses(markdownUtil, db));
+		this(runCodeGen, new ProjectZip(db), new Projects(db), new Assignments(markdownUtil, db),
+		     new Comments(markdownUtil, db), new Solutions(runCodeGen, db), new Courses(markdownUtil, db));
 	}
 
-	WebService(RunCodeGen runCodeGen, ProjectZip projectZip, Assignments assignments, Comments comments,
-		Solutions solutions, Courses courses)
+	WebService(RunCodeGen runCodeGen, ProjectZip projectZip, Projects projects, Assignments assignments,
+		Comments comments, Solutions solutions, Courses courses)
 	{
 		this.runCodeGen = runCodeGen;
 		this.projectZip = projectZip;
+		this.projects = projects;
 		this.assignments = assignments;
 		this.comments = comments;
 		this.solutions = solutions;
@@ -112,6 +115,7 @@ public class WebService
 		setupRedirects();
 
 		addMainRoutes();
+		addProjectsRoutes();
 		this.service.get("/solutions", this.solutions::getAll);
 		addAssignmentsRoutes();
 		addCoursesRoutes();
@@ -173,6 +177,14 @@ public class WebService
 	{
 		service.post("/runcodegen", runCodeGen::handle);
 		service.post("/projectzip", projectZip::handle);
+	}
+
+	private void addProjectsRoutes()
+	{
+		service.path("/projects", () -> {
+			service.post("", projects::create);
+			service.get("", projects::getAll);
+		});
 	}
 
 	private void addUtilRoutes()
