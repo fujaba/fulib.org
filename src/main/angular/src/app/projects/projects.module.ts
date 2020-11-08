@@ -4,6 +4,7 @@ import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 
 import {NgxResizableModule} from '@3dgenomes/ngx-resizable';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 import {ProjectsRoutingModule} from './projects-routing.module';
 import {ProjectListComponent} from './project-list/project-list.component';
@@ -22,6 +23,7 @@ import {FileTreeComponent} from './file-tree/file-tree.component';
     NgxResizableModule,
     ProjectsRoutingModule,
     FormsModule,
+    NgbModule,
   ],
 })
 export class ProjectsModule {

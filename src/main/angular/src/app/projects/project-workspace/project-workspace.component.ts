@@ -31,16 +31,32 @@ export class ProjectWorkspaceComponent implements OnInit {
   };
 
   fileHandler: FileHandler = {
-    open: (file: File) => {
-      this.currentFile = file;
-    },
+    open: (file: File) => this.open(file),
   };
 
-  currentFile: File;
+  currentFile?: File;
+  openFiles: File[] = [];
 
   constructor() { }
 
   ngOnInit(): void {
   }
 
+  open(file: File) {
+    if (!this.openFiles.includes(file)) {
+      this.openFiles.push(file);
+    }
+    this.currentFile = file;
+  }
+
+  close(file: File) {
+    const index = this.openFiles.indexOf(file);
+    if (index >= 0) {
+      this.openFiles.splice(index, 1);
+      this.currentFile = this.openFiles[index] || this.openFiles[index - 1];
+    }
+    if (file === this.currentFile) {
+      this.currentFile = undefined;
+    }
+  }
 }
