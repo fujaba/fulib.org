@@ -5,16 +5,17 @@ import {ActivatedRoute} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {forkJoin, of, Subscription} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
-import {Marker, ScenarioEditorService} from '../../scenario-editor.service';
+
+import {Marker} from '../../model/codegen/marker';
+import {ScenarioEditorService} from '../../scenario-editor.service';
+import {UserService} from '../../user/user.service';
 import {AssignmentService} from '../assignment.service';
 import {CourseService} from '../course.service';
 import Assignment from '../model/assignment';
-
 import Course from '../model/course';
 import Solution from '../model/solution';
 import TaskResult from '../model/task-result';
 import {SolutionService} from '../solution.service';
-import {UserService} from "../../user/user.service";
 
 @Component({
   selector: 'app-create-solution',

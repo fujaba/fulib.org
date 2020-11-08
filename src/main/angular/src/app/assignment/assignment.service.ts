@@ -6,13 +6,14 @@ import {forkJoin, Observable, of} from 'rxjs';
 import {flatMap, map} from 'rxjs/operators';
 
 import {environment} from '../../environments/environment';
+import {Marker} from '../model/codegen/marker';
 import Response from '../model/codegen/response';
-import {Marker, ScenarioEditorService} from '../scenario-editor.service';
+import {ScenarioEditorService} from '../scenario-editor.service';
 import {StorageService} from '../storage.service';
+import {UserService} from '../user/user.service';
 import Assignment from './model/assignment';
 import {CheckAssignment, CheckResult} from './model/check';
 import Course from './model/course';
-import {UserService} from "../user/user.service";
 
 interface AssignmentResponse {
   id: string;
