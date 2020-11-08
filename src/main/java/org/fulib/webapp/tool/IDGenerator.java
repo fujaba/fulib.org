@@ -1,16 +1,16 @@
-package org.fulib.webapp.assignment;
+package org.fulib.webapp.tool;
 
 import java.security.SecureRandom;
 import java.util.UUID;
 
 public class IDGenerator
 {
-	static String generateID()
+	public static String generateID()
 	{
 		return UUID.randomUUID().toString();
 	}
 
-	static String generateToken()
+	public static String generateToken()
 	{
 		final SecureRandom random = new SecureRandom();
 		final long value = random.nextLong();
