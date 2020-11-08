@@ -23,6 +23,12 @@ export class ProjectsService {
     return this.http.post<Project>(`${environment.apiURL}/projects`, project);
   }
 
+  get(id: string): Observable<Project> {
+    return this.http.get<Project>(`${environment.apiURL}/projects/${id}`, {
+      headers: {'Content-Type': 'application/json'},
+    });
+  }
+
   getOwn(): Observable<Project[]> {
     return this.users.current$.pipe(switchMap(user => {
       if (!user || !user.id) {

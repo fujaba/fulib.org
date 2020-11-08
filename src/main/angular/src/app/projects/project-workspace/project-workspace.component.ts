@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {switchMap} from 'rxjs/operators';
 import {FileHandler} from '../file-tree/file-handler.interface';
 import {File} from '../model/file.interface';
+import {Project} from '../model/project.interface';
+import {ProjectsService} from '../projects.service';
 
 @Component({
   selector: 'app-project-workspace',
@@ -8,6 +12,8 @@ import {File} from '../model/file.interface';
   styleUrls: ['./project-workspace.component.scss']
 })
 export class ProjectWorkspaceComponent implements OnInit {
+  project: Project;
+
   exampleRoot: File = {
     name: '.',
     children: [
@@ -37,9 +43,16 @@ export class ProjectWorkspaceComponent implements OnInit {
   currentFile?: File;
   openFiles: File[] = [];
 
-  constructor() { }
+  constructor(
+    private route: ActivatedRoute,
+    private projectsService: ProjectsService,
+  ) { }
 
   ngOnInit(): void {
+    this.route.params.pipe(switchMap(params => this.projectsService.get(params.id))).subscribe(project => {
+      this.project = project;
+      this.exampleRoot.name = project.name;
+    });
   }
 
   open(file: File) {
