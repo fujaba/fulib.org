@@ -2,16 +2,15 @@ import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {combineLatest, forkJoin, Subscription} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
-import {Marker} from '../../scenario-editor.service';
-import {AssignmentService} from '../assignment.service';
 
+import {Marker} from '../../model/codegen/marker';
+import {UserService} from '../../user/user.service';
+import {AssignmentService} from '../assignment.service';
 import Assignment from '../model/assignment';
 import Comment from '../model/comment';
 import Solution from '../model/solution';
 import TaskGrading from '../model/task-grading';
-
 import {SolutionService} from '../solution.service';
-import {UserService} from "../../user/user.service";
 
 @Component({
   selector: 'app-solution',

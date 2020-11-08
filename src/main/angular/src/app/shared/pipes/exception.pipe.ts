@@ -1,5 +1,5 @@
 import {Pipe, PipeTransform} from '@angular/core';
-import Response from '../model/codegen/response';
+import Response from '../../model/codegen/response';
 
 @Pipe({name: 'exception'})
 export class ExceptionPipe implements PipeTransform {

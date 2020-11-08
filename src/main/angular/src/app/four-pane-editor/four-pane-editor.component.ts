@@ -1,17 +1,16 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {GridsterItem} from 'angular-gridster2';
-import {environment} from '../../environments/environment';
 
+import {environment} from '../../environments/environment';
 import {ExamplesService} from '../examples.service';
 import {MarkdownService} from '../markdown.service';
+import {Marker} from '../model/codegen/marker';
 import Request from '../model/codegen/request';
 import Response from '../model/codegen/response';
 import Example from '../model/example';
-
 import ExampleCategory from '../model/example-category';
 import {PrivacyService} from '../privacy.service';
-import {Marker, Panels, ScenarioEditorService} from '../scenario-editor.service';
+import {Panels, ScenarioEditorService} from '../scenario-editor.service';
 
 @Component({
   selector: 'app-four-pane-editor',

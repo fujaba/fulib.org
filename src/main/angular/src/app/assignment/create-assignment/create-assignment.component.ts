@@ -5,7 +5,7 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {DragulaService} from 'ng2-dragula';
 import {Subscription} from 'rxjs';
 
-import {Marker} from '../../scenario-editor.service';
+import {Marker} from '../../model/codegen/marker';
 import {UserService} from '../../user/user.service';
 import {AssignmentService} from '../assignment.service';
 import Assignment from '../model/assignment';

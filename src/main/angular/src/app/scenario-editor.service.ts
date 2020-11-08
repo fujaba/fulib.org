@@ -4,24 +4,13 @@ import {Observable} from 'rxjs';
 
 import Example from './model/example';
 import {ExamplesService} from './examples.service';
+import {Marker} from './model/codegen/marker';
 import Request from './model/codegen/request';
 import Response from './model/codegen/response';
 import ProjectZipRequest from './model/project-zip-request';
 import {PrivacyService} from './privacy.service';
 
 import {environment} from '../environments/environment';
-
-export interface Position {
-  line: number;
-  ch: number;
-}
-
-export interface Marker {
-  severity: string;
-  message: string;
-  from: Position;
-  to: Position;
-}
 
 export interface Panels {
   [id: string]: Panel;
