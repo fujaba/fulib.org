@@ -178,6 +178,11 @@ public class Mongo
 		upsert(this.projects, project, Project.PROPERTY_ID, project.getId());
 	}
 
+	public void deleteProject(String id)
+	{
+		this.projects.deleteOne(Filters.eq(Project.PROPERTY_ID, id));
+	}
+
 	// --------------- Assignments ---------------
 
 	public Assignment getAssignment(String id)

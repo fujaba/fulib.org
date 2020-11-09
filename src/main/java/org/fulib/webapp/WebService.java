@@ -186,6 +186,7 @@ public class WebService
 			service.get("", projects::getAll);
 			service.get("/:id", projects::get);
 			service.put("/:id", projects::update);
+			service.delete("/:id", projects::delete);
 		});
 	}
 

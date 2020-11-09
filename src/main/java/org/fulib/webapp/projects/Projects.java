@@ -128,4 +128,15 @@ public class Projects
 		final JSONObject json = this.toJson(project);
 		return json.toString(2);
 	}
+
+	public Object delete(Request request, Response response)
+	{
+		final String id = request.params("id");
+		final Project project = this.getOr404(id);
+		this.checkAuth(request, project);
+
+		this.mongo.deleteProject(id);
+
+		return "{}";
+	}
 }
