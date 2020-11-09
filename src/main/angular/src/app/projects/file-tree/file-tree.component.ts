@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
 import {File} from '../model/file.interface';
 import {FileHandler} from './file-handler.interface';
 
@@ -65,5 +66,14 @@ export class FileTreeComponent implements OnInit {
       this.root.parent = undefined;
       this.handler?.delete(this.root);
     }
+  }
+
+  openContextMenu(event: MouseEvent, dropdown: NgbDropdown) {
+    if (event.shiftKey || dropdown.isOpen()) {
+      return;
+    }
+
+    dropdown.open();
+    event.preventDefault();
   }
 }
