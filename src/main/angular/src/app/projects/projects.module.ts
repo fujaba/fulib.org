@@ -11,12 +11,14 @@ import {ProjectsRoutingModule} from './projects-routing.module';
 import {ProjectListComponent} from './project-list/project-list.component';
 import {ProjectWorkspaceComponent} from './project-workspace/project-workspace.component';
 import {FileTreeComponent} from './file-tree/file-tree.component';
+import { FileIconComponent } from './file-icon/file-icon.component';
 
 @NgModule({
   declarations: [
     ProjectListComponent,
     ProjectWorkspaceComponent,
     FileTreeComponent,
+    FileIconComponent,
   ],
   imports: [
     CommonModule,
