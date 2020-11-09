@@ -33,6 +33,10 @@ export class ProjectsService {
     return this.http.put<Project>(`${environment.apiURL}/projects/${project.id}`, project);
   }
 
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${environment.apiURL}/projects/${id}`);
+  }
+
   getOwn(): Observable<Project[]> {
     return this.users.current$.pipe(switchMap(user => {
       if (!user || !user.id) {
