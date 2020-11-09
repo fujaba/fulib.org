@@ -47,7 +47,9 @@ export class ProjectWorkspaceComponent implements OnInit {
             children: [
               {
                 name: 'java',
-                children: [],
+                children: [
+                  {name: 'Example.java', type: 'text/x-java'},
+                ],
               },
             ],
           },

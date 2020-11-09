@@ -20,8 +20,12 @@ export class FileIconComponent {
       case 'image/svg+xml':
       case 'image/png':
         return 'image';
-      default:
+      case 'text/x-groovy':
+        return 'gear';
+      case 'text/x-java':
         return 'file-code';
+      default:
+        return 'file';
     }
   }
 }
