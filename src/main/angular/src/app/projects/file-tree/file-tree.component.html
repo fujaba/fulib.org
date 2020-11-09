@@ -19,15 +19,15 @@
         {{root.info}}
       </span>
     </div>
-    <div ngbDropdown #dropdown="ngbDropdown">
-      <span class="dropdown-dots font-weight-bolder px-2" (click)="dropdown.toggle(); $event.stopImmediatePropagation()">
+    <div ngbDropdown #dropdown="ngbDropdown" (click)="$event.stopImmediatePropagation()">
+      <span class="dropdown-dots font-weight-bolder px-2" (click)="dropdown.toggle()">
         &#8942;
       </span>
       <div ngbDropdownMenu>
-        <button ngbDropdownItem>Open</button>
-        <button ngbDropdownItem (click)="startRenaming(); $event.stopImmediatePropagation()">Rename</button>
+        <button ngbDropdownItem (click)="open()">Open</button>
+        <button ngbDropdownItem (click)="startRenaming()">Rename</button>
         <div class="dropdown-divider"></div>
-        <button ngbDropdownItem class="text-danger" (click)="delete(); $event.stopImmediatePropagation()">Delete</button>
+        <button ngbDropdownItem class="text-danger" (click)="delete()">Delete</button>
       </div>
     </div>
   </div>
