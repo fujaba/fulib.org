@@ -9,7 +9,7 @@
     <rsz-layout class="cell" [directions]="['bottom']" [rFlex]="true">
       <ul ngbNav #nav="ngbNav" [(activeId)]="currentFile" class="nav-tabs">
         <li *ngFor="let file of openFiles" [ngbNavItem]="file">
-          <a ngbNavLink>
+          <a ngbNavLink (auxclick)="close(file); $event.preventDefault()">
             <app-file-icon [file]="file"></app-file-icon>
             {{ file.name }}
             <span class="close position-relative pl-2 font-weight-light"
