@@ -1,16 +1,26 @@
-<div class="content cols h-100">
-  <rsz-layout class="row no-gutters" [directions]="['right']" [rFlex]="true">
-    <rsz-layout class="cell" [directions]="['none']" [rFlex]="false">
-      <h4>Explorer</h4>
-      <app-file-tree [root]="exampleRoot" [handler]="fileHandler"></app-file-tree>
+<div class="d-flex h-100">
+  <div class="sidebar">
+    <div class="sidebar-item" ngbTooltip="Project" placement="right">
+      <img class="icon" src="assets/octicons/file-code-24.svg" alt="Project">
+    </div>
+    <div class="sidebar-item" ngbTooltip="Settings" placement="right">
+      <img class="icon" src="assets/octicons/gear-24.svg" alt="Settings">
+    </div>
+  </div>
+  <div class="flex-grow-1 content cols h-100">
+    <rsz-layout class="row no-gutters" [directions]="['right']" [rFlex]="true">
+      <rsz-layout class="cell" [directions]="['none']" [rFlex]="false">
+        <h4>Explorer</h4>
+        <app-file-tree [root]="exampleRoot" [handler]="fileHandler"></app-file-tree>
+      </rsz-layout>
     </rsz-layout>
-  </rsz-layout>
-  <rsz-layout class="row no-gutters" [directions]="['none']" [rFlex]="false">
-    <rsz-layout class="cell" [directions]="['bottom']" [rFlex]="true">
-      <app-file-tabs #fileTabs></app-file-tabs>
+    <rsz-layout class="row no-gutters" [directions]="['none']" [rFlex]="false">
+      <rsz-layout class="cell" [directions]="['bottom']" [rFlex]="true">
+        <app-file-tabs #fileTabs></app-file-tabs>
+      </rsz-layout>
+      <rsz-layout class="cell" [directions]="['none']" [rFlex]="false">
+        <h4>Output</h4>
+      </rsz-layout>
     </rsz-layout>
-    <rsz-layout class="cell" [directions]="['none']" [rFlex]="false">
-      <h4>Output</h4>
-    </rsz-layout>
-  </rsz-layout>
+  </div>
 </div>
