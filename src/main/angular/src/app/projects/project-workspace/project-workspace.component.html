@@ -12,7 +12,7 @@
   <div class="flex-grow-1 content cols h-100">
     <rsz-layout class="row no-gutters" [directions]="['right']" [rFlex]="true">
       <rsz-layout class="cell" [directions]="['none']" [rFlex]="false">
-        <ng-container *ngComponentOutlet="sidebarItems[active].component; injector: injector"></ng-container>
+        <ng-container *ngComponentOutlet="sidebarItems[active]?.component; injector: injector"></ng-container>
       </rsz-layout>
     </rsz-layout>
     <rsz-layout class="row no-gutters" [directions]="['none']" [rFlex]="false">

@@ -76,10 +76,7 @@ export class ProjectWorkspaceComponent implements OnInit {
 
   @ViewChild('fileTabs') fileTabs: FileTabsComponent;
 
-  sidebarItems: Record<string, SidebarItem> = {
-    project: {name: 'Project', icon: 'file-code', component: ProjectTreeComponent},
-    settings: {name: 'Settings', icon: 'gear', component: SettingsComponent},
-  };
+  sidebarItems: Record<string, SidebarItem> = {};
 
   injector: Injector;
 
@@ -113,6 +110,14 @@ export class ProjectWorkspaceComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.pipe(switchMap(params => this.projectsService.get(params.id))).subscribe(project => {
       this.project = project;
+      this.initSidebar();
     });
+  }
+
+  private initSidebar() {
+    this.sidebarItems = {
+      project: {name: 'Project', icon: 'file-code', component: ProjectTreeComponent},
+      settings: {name: 'Settings', icon: 'gear', component: SettingsComponent},
+    };
   }
 }
