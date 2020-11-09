@@ -17,6 +17,9 @@ export class FileIconComponent {
     switch (this.file.type) {
       case 'text/x-markdown':
         return 'markdown';
+      case 'image/svg+xml':
+      case 'image/png':
+        return 'image';
       default:
         return 'file-code';
     }

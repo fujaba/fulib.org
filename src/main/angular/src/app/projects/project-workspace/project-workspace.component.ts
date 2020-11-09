@@ -33,6 +33,13 @@ export class ProjectWorkspaceComponent implements OnInit {
       {name: '.gitignore', type: 'text/plain'},
       {name: 'README.md', type: 'text/x-markdown'},
       {
+        name: 'docs',
+        children: [
+          {name: 'example.png', type: 'image/png'},
+          {name: 'example.svg', type: 'image/svg+xml'},
+        ],
+      },
+      {
         name: 'src',
         children: [
           {
