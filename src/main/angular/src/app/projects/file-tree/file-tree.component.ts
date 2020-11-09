@@ -43,4 +43,27 @@ export class FileTreeComponent implements OnInit {
   cancelRenaming() {
     this.newName = undefined;
   }
+
+  delete() {
+    const parent = this.root.parent;
+    if (!parent) {
+      return;
+    }
+
+    const children = parent.children;
+    if (!children) {
+      return;
+    }
+
+    const index = children.indexOf(this.root);
+    if (index < 0) {
+      return;
+    }
+
+    if (confirm(`Delete ${this.root.name}?`)) {
+      children.splice(index, 1);
+      this.root.parent = undefined;
+      this.handler?.delete(this.root);
+    }
+  }
 }

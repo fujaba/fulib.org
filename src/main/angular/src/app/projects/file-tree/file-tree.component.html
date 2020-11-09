@@ -27,7 +27,7 @@
         <button ngbDropdownItem>Open</button>
         <button ngbDropdownItem (click)="startRenaming(); $event.stopImmediatePropagation()">Rename</button>
         <div class="dropdown-divider"></div>
-        <button ngbDropdownItem class="text-danger">Delete</button>
+        <button ngbDropdownItem class="text-danger" (click)="delete(); $event.stopImmediatePropagation()">Delete</button>
       </div>
     </div>
   </div>

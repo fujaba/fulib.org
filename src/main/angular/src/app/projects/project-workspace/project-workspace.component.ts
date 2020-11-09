@@ -6,6 +6,16 @@ import {File} from '../model/file.interface';
 import {Project} from '../model/project.interface';
 import {ProjectsService} from '../projects.service';
 
+function setParents(file: File): File {
+  if (file.children) {
+    for (const child of file.children){
+      child.parent = file;
+      setParents(child);
+    }
+  }
+  return file;
+}
+
 @Component({
   selector: 'app-project-workspace',
   templateUrl: './project-workspace.component.html',
@@ -14,7 +24,7 @@ import {ProjectsService} from '../projects.service';
 export class ProjectWorkspaceComponent implements OnInit {
   project: Project;
 
-  exampleRoot: File = {
+  exampleRoot: File = setParents({
     name: '.',
     info: 'project root',
     children: [
@@ -37,11 +47,12 @@ export class ProjectWorkspaceComponent implements OnInit {
         ],
       },
     ],
-  };
+  });
 
   fileHandler: FileHandler = {
     open: (file: File) => this.open(file),
     rename: (file: File) => {},
+    delete: (file: File) => this.close(file),
   };
 
   currentFile?: File;
