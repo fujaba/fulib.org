@@ -29,6 +29,10 @@ export class ProjectsService {
     });
   }
 
+  update(project: Project): Observable<Project> {
+    return this.http.put<Project>(`${environment.apiURL}/projects/${project.id}`, project);
+  }
+
   getOwn(): Observable<Project[]> {
     return this.users.current$.pipe(switchMap(user => {
       if (!user || !user.id) {
