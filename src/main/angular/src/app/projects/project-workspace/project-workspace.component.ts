@@ -1,15 +1,18 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, Injector, OnInit, Type, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {switchMap} from 'rxjs/operators';
-import {FileTabsComponent} from '../file-tabs/file-tabs.component';
 import {FileHandler} from '../file-handler';
+import {FileTabsComponent} from '../file-tabs/file-tabs.component';
+import {FILE_ROOT} from '../injection-tokens';
 import {File} from '../model/file.interface';
 import {Project} from '../model/project';
+import {ProjectTreeComponent} from '../project-tree/project-tree.component';
 import {ProjectsService} from '../projects.service';
+import {SettingsComponent} from '../settings/settings.component';
 
 function setParents(file: File): File {
   if (file.children) {
-    for (const child of file.children){
+    for (const child of file.children) {
       child.parent = file;
       setParents(child);
     }
@@ -17,10 +20,16 @@ function setParents(file: File): File {
   return file;
 }
 
+interface SidebarItem {
+  component: Type<any>;
+  name: string;
+  icon: string
+}
+
 @Component({
   selector: 'app-project-workspace',
   templateUrl: './project-workspace.component.html',
-  styleUrls: ['./project-workspace.component.scss']
+  styleUrls: ['./project-workspace.component.scss'],
 })
 export class ProjectWorkspaceComponent implements OnInit {
   project: Project;
@@ -67,9 +76,17 @@ export class ProjectWorkspaceComponent implements OnInit {
 
   @ViewChild('fileTabs') fileTabs: FileTabsComponent;
 
+  sidebarItems: Record<string, SidebarItem> = {
+    project: {name: 'Project', icon: 'file-code', component: ProjectTreeComponent},
+    settings: {name: 'Settings', icon: 'gear', component: SettingsComponent},
+  };
+
+  injector: Injector;
+
   active: string = 'project';
 
   constructor(
+    parentInjector: Injector,
     private route: ActivatedRoute,
     private projectsService: ProjectsService,
   ) {
@@ -80,6 +97,16 @@ export class ProjectWorkspaceComponent implements OnInit {
           this.project.name = value;
         }
       },
+    });
+
+    this.injector = Injector.create({
+      name: 'ProjectWorkspace',
+      parent: parentInjector,
+      providers: [
+        {provide: FILE_ROOT, useValue: this.exampleRoot},
+        {provide: FileHandler, useValue: this.fileHandler},
+        {provide: Project, useFactory: () => this.project},
+      ],
     });
   }
 

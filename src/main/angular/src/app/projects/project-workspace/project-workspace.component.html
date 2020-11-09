@@ -1,15 +1,4 @@
-<ng-template #project>
-  <app-file-tree [root]="exampleRoot" [handler]="fileHandler"></app-file-tree>
-</ng-template>
-
-<ng-template #settings>
-  <h4>Settings</h4>
-</ng-template>
-
-<div class="d-flex h-100" *ngIf="{
-  project: {name: 'Project', icon: 'file-code', template: project},
-  settings: {name: 'Settings', icon: 'gear', template: settings}
-} as sidebarItems">
+<div class="d-flex h-100">
   <div class="sidebar">
     <div *ngFor="let entry of sidebarItems | keyvalue"
          class="sidebar-item"
@@ -23,7 +12,7 @@
   <div class="flex-grow-1 content cols h-100">
     <rsz-layout class="row no-gutters" [directions]="['right']" [rFlex]="true">
       <rsz-layout class="cell" [directions]="['none']" [rFlex]="false">
-        <ng-container [ngTemplateOutlet]="sidebarItems[active].template"></ng-container>
+        <ng-container *ngComponentOutlet="sidebarItems[active].component; injector: injector"></ng-container>
       </rsz-layout>
     </rsz-layout>
     <rsz-layout class="row no-gutters" [directions]="['none']" [rFlex]="false">
