@@ -8,6 +8,10 @@
 
   &:hover {
     background: rgba(0, 0, 0, 0.25);
-    opacity: unset;
+    opacity: 1;
+  }
+
+  &.active {
+    opacity: 1;
   }
 }

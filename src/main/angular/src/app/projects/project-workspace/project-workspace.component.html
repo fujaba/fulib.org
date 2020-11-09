@@ -1,17 +1,29 @@
-<div class="d-flex h-100">
+<ng-template #project>
+  <app-file-tree [root]="exampleRoot" [handler]="fileHandler"></app-file-tree>
+</ng-template>
+
+<ng-template #settings>
+  <h4>Settings</h4>
+</ng-template>
+
+<div class="d-flex h-100" *ngIf="{
+  project: {name: 'Project', icon: 'file-code', template: project},
+  settings: {name: 'Settings', icon: 'gear', template: settings}
+} as sidebarItems">
   <div class="sidebar">
-    <div class="sidebar-item" ngbTooltip="Project" placement="right">
-      <img class="icon" src="assets/octicons/file-code-24.svg" alt="Project">
-    </div>
-    <div class="sidebar-item" ngbTooltip="Settings" placement="right">
-      <img class="icon" src="assets/octicons/gear-24.svg" alt="Settings">
+    <div *ngFor="let entry of sidebarItems | keyvalue"
+         class="sidebar-item"
+         [ngbTooltip]="entry.value.name" placement="right"
+         [class.active]="active == entry.key"
+         (click)="active = entry.key"
+    >
+      <img class="icon" src="assets/octicons/{{entry.value.icon}}-24.svg" [alt]="entry.value.name">
     </div>
   </div>
   <div class="flex-grow-1 content cols h-100">
     <rsz-layout class="row no-gutters" [directions]="['right']" [rFlex]="true">
       <rsz-layout class="cell" [directions]="['none']" [rFlex]="false">
-        <h4>Explorer</h4>
-        <app-file-tree [root]="exampleRoot" [handler]="fileHandler"></app-file-tree>
+        <ng-container [ngTemplateOutlet]="sidebarItems[active].template"></ng-container>
       </rsz-layout>
     </rsz-layout>
     <rsz-layout class="row no-gutters" [directions]="['none']" [rFlex]="false">

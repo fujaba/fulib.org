@@ -67,6 +67,8 @@ export class ProjectWorkspaceComponent implements OnInit {
 
   @ViewChild('fileTabs') fileTabs: FileTabsComponent;
 
+  active: string = 'project';
+
   constructor(
     private route: ActivatedRoute,
     private projectsService: ProjectsService,
