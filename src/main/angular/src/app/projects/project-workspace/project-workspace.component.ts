@@ -70,12 +70,20 @@ export class ProjectWorkspaceComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private projectsService: ProjectsService,
-  ) { }
+  ) {
+    Object.defineProperty(this.exampleRoot, 'name', {
+      get: () => this.project?.name,
+      set: (value) => {
+        if (this.project) {
+          this.project.name = value;
+        }
+      },
+    });
+  }
 
   ngOnInit(): void {
     this.route.params.pipe(switchMap(params => this.projectsService.get(params.id))).subscribe(project => {
       this.project = project;
-      this.exampleRoot.name = project.name;
     });
   }
 }
