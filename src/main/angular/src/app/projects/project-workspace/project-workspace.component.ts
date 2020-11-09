@@ -2,7 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {switchMap} from 'rxjs/operators';
 import {FileTabsComponent} from '../file-tabs/file-tabs.component';
-import {FileHandler} from '../file-tree/file-handler.interface';
+import {FileHandler} from '../file-handler';
 import {File} from '../model/file.interface';
 import {Project} from '../model/project';
 import {ProjectsService} from '../projects.service';

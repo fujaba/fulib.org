@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
 import {File} from '../model/file.interface';
-import {FileHandler} from './file-handler.interface';
+import {FileHandler} from '../file-handler';
 
 @Component({
   selector: 'app-file-tree',
