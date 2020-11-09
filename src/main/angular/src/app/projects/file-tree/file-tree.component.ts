@@ -13,6 +13,7 @@ export class FileTreeComponent implements OnInit {
   @Input() handler: FileHandler;
 
   expanded = false;
+  newName?: string;
 
   constructor() {
   }
@@ -27,5 +28,19 @@ export class FileTreeComponent implements OnInit {
     }
 
     this.handler?.open(this.root);
+  }
+
+  startRenaming() {
+    this.newName = this.root.name;
+  }
+
+  finishRenaming() {
+    this.root.name = this.newName!;
+    this.newName = undefined;
+    this.handler.rename(this.root);
+  }
+
+  cancelRenaming() {
+    this.newName = undefined;
   }
 }

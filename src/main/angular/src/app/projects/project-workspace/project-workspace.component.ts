@@ -41,6 +41,7 @@ export class ProjectWorkspaceComponent implements OnInit {
 
   fileHandler: FileHandler = {
     open: (file: File) => this.open(file),
+    rename: (file: File) => {},
   };
 
   currentFile?: File;

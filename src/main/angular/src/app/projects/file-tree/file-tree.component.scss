@@ -6,6 +6,14 @@
   }
 }
 
+.name-input {
+  background-color: transparent;
+  color: inherit;
+  width: 100%;
+  font-size: 1em;
+  border: 1px solid #007bff;
+}
+
 @media (hover: hover) {
   .file-item .dropdown-dots {
     opacity: 0;
