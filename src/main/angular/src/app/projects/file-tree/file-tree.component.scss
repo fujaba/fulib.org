@@ -5,3 +5,13 @@
     background: rgba(0, 0, 0, 0.25);
   }
 }
+
+@media (hover: hover) {
+  .file-item .dropdown-dots {
+    opacity: 0;
+  }
+
+  .file-item:hover .dropdown-dots {
+    opacity: unset;
+  }
+}
