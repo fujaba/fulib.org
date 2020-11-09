@@ -10,12 +10,18 @@ import {ProjectsService} from '../projects.service';
 export class ProjectListComponent implements OnInit {
   projects: Project[] = [];
 
-  name = '';
-  description = '';
+  newProject: Project = this.createProject();
 
   constructor(
     private projectsService: ProjectsService,
   ) {
+  }
+
+  createProject(): Project {
+    return {
+      name: '',
+      description: '',
+    };
   }
 
   ngOnInit(): void {
@@ -23,11 +29,7 @@ export class ProjectListComponent implements OnInit {
   }
 
   create(): void {
-    this.projectsService.create({
-      name: this.name,
-      description: this.description,
-    }).subscribe(project => this.projects.push(project));
-    this.name = '';
-    this.description = '';
+    this.projectsService.create(this.newProject).subscribe(project => this.projects.push(project));
+    this.newProject = this.createProject();
   }
 }

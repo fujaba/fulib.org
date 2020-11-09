@@ -21,20 +21,8 @@
   <hr/>
 
   <h2>New Project</h2>
-
-  <div class="form">
-    <div class="form-group">
-      <label for="nameInput">Name</label>
-      <input type="text" class="form-control" id="nameInput" [(ngModel)]="name">
-    </div>
-
-    <div class="form-group">
-      <label for="nameInput">Description</label>
-      <textarea class="form-control" [(ngModel)]="description"></textarea>
-    </div>
-  </div>
-
-  <button type="button" class="btn btn-success" [disabled]="!name" (click)="create()">
+  <app-project-form [project]="newProject"></app-project-form>
+  <button type="button" class="btn btn-success" [disabled]="!newProject.name" (click)="create()">
     Create
   </button>
 </div>

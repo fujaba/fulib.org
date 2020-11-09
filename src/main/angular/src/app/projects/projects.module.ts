@@ -15,6 +15,7 @@ import { FileIconComponent } from './file-icon/file-icon.component';
 import { FileTabsComponent } from './file-tabs/file-tabs.component';
 import { ProjectTreeComponent } from './project-tree/project-tree.component';
 import { SettingsComponent } from './settings/settings.component';
+import { ProjectFormComponent } from './project-form/project-form.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { SettingsComponent } from './settings/settings.component';
     FileTabsComponent,
     ProjectTreeComponent,
     SettingsComponent,
+    ProjectFormComponent,
   ],
   imports: [
     CommonModule,
