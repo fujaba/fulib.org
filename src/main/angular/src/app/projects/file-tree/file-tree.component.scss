@@ -6,6 +6,17 @@
   }
 }
 
+.file-item-indent {
+  display: flex;
+  align-items: center;
+  padding-left: 0.5em;
+  border-left: 1px solid transparent;
+}
+
+:host[data-expanded=true]:hover .file-item-indent {
+  border-left-color: rgba(127, 127, 127, 0.5);
+}
+
 .name-input {
   background-color: transparent;
   color: inherit;

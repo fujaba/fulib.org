@@ -5,6 +5,9 @@ import {FileHandler} from './file-handler.interface';
 
 @Component({
   selector: 'app-file-tree',
+  host: {
+    '[attr.data-expanded]': 'expanded',
+  },
   templateUrl: './file-tree.component.html',
   styleUrls: ['./file-tree.component.scss'],
 })
