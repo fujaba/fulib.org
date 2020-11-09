@@ -38,6 +38,7 @@ public class WebServiceTest
 		when(projects.get(any(), any())).thenReturn("");
 		when(projects.getAll(any(), any())).thenReturn("");
 		when(projects.create(any(), any())).thenReturn("");
+		when(projects.update(any(), any())).thenReturn("");
 
 		when(courses.get(any(), any())).thenReturn("");
 		when(courses.getAll(any(), any())).thenReturn("");
@@ -78,6 +79,7 @@ public class WebServiceTest
 			checkRoute("POST", "/projects");
 			checkRoute("GET", "/projects");
 			checkRoute("GET", "/projects/1");
+			checkRoute("PUT", "/projects/1");
 
 			// courses
 			checkRoute("POST", "/courses");
