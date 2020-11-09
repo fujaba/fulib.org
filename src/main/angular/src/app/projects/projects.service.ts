@@ -6,7 +6,7 @@ import {switchMap} from 'rxjs/operators';
 
 import {environment} from '../../environments/environment';
 import {UserService} from '../user/user.service';
-import {Project} from './model/project.interface';
+import {Project} from './model/project';
 
 @Injectable({
   providedIn: 'root',

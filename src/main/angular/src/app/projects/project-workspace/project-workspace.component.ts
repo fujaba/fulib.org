@@ -4,7 +4,7 @@ import {switchMap} from 'rxjs/operators';
 import {FileTabsComponent} from '../file-tabs/file-tabs.component';
 import {FileHandler} from '../file-tree/file-handler.interface';
 import {File} from '../model/file.interface';
-import {Project} from '../model/project.interface';
+import {Project} from '../model/project';
 import {ProjectsService} from '../projects.service';
 
 function setParents(file: File): File {
