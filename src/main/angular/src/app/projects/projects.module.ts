@@ -12,6 +12,7 @@ import {ProjectListComponent} from './project-list/project-list.component';
 import {ProjectWorkspaceComponent} from './project-workspace/project-workspace.component';
 import {FileTreeComponent} from './file-tree/file-tree.component';
 import { FileIconComponent } from './file-icon/file-icon.component';
+import { FileTabsComponent } from './file-tabs/file-tabs.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { FileIconComponent } from './file-icon/file-icon.component';
     ProjectWorkspaceComponent,
     FileTreeComponent,
     FileIconComponent,
+    FileTabsComponent,
   ],
   imports: [
     CommonModule,

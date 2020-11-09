@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {switchMap} from 'rxjs/operators';
+import {FileTabsComponent} from '../file-tabs/file-tabs.component';
 import {FileHandler} from '../file-tree/file-handler.interface';
 import {File} from '../model/file.interface';
 import {Project} from '../model/project.interface';
@@ -59,13 +60,12 @@ export class ProjectWorkspaceComponent implements OnInit {
   });
 
   fileHandler: FileHandler = {
-    open: (file: File) => this.open(file),
+    open: (file: File) => this.fileTabs.open(file),
     rename: (file: File) => {},
-    delete: (file: File) => this.close(file),
+    delete: (file: File) => this.fileTabs.close(file),
   };
 
-  currentFile?: File;
-  openFiles: File[] = [];
+  @ViewChild('fileTabs') fileTabs: FileTabsComponent;
 
   constructor(
     private route: ActivatedRoute,
@@ -77,23 +77,5 @@ export class ProjectWorkspaceComponent implements OnInit {
       this.project = project;
       this.exampleRoot.name = project.name;
     });
-  }
-
-  open(file: File) {
-    if (!this.openFiles.includes(file)) {
-      this.openFiles.push(file);
-    }
-    this.currentFile = file;
-  }
-
-  close(file: File) {
-    const index = this.openFiles.indexOf(file);
-    if (index >= 0) {
-      this.openFiles.splice(index, 1);
-      this.currentFile = this.openFiles[index] || this.openFiles[index - 1];
-    }
-    if (file === this.currentFile) {
-      this.currentFile = undefined;
-    }
   }
 }
