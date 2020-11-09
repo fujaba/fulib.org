@@ -8,10 +8,11 @@ import {File} from '../model/file.interface';
 })
 export class FileIconComponent {
   @Input() file: File;
+  @Input() open?: boolean;
 
   get icon(): string {
     if (this.file.children) {
-      return 'file-directory';
+      return this.open ? 'file-directory-open' : 'file-directory';
     }
 
     switch (this.file.type) {

@@ -1,8 +1,6 @@
 <div class="file-item" (click)="open()" (contextmenu)="openContextMenu($event, dropdown)">
   <div class="file-item-indent" [style.margin-left.em]="level - 0.5">
-    <img *ngIf="root.children && expanded" class="icon" src="assets/octicons/chevron-down-16.svg" alt="Expanded">
-    <img *ngIf="root.children && !expanded" class="icon" src="assets/octicons/chevron-right-16.svg" alt="Collapsed">
-    <app-file-icon class="mr-2" [file]="root"></app-file-icon>
+    <app-file-icon class="mr-2" [file]="root" [open]="expanded"></app-file-icon>
     <input *ngIf="newName"
            type="text" class="name-input flex-grow-1" aria-label="New Name"
            (click)="$event.stopImmediatePropagation()"
