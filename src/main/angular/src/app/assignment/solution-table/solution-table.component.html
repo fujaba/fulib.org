@@ -86,7 +86,11 @@
         </span></td>
       <td><input class="form-control" #assigneeInput
                  [ngModel]="solution.assignee" (change)="setAssignee(solution, assigneeInput)"></td>
-      <td><a class="btn btn-primary" routerLink="/assignments/{{assignmentID}}/solutions/{{solution.id}}">View</a></td>
+      <td>
+        <a class="btn btn-primary" routerLink="/assignments/{{assignment?.id}}/solutions/{{solution.id}}">
+          View
+        </a>
+      </td>
     </tr>
     </tbody>
   </table>

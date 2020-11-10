@@ -19,7 +19,6 @@ export class SolutionTableComponent implements OnInit {
 
   readonly searchableProperties: (keyof Solution)[] = ['name', 'studentID', 'email', 'assignee'];
 
-  assignmentID: string;
   assignment?: Assignment;
   totalPoints?: number;
   solutions?: Solution[];
