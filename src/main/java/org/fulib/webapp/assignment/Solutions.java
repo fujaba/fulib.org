@@ -159,13 +159,12 @@ public class Solutions
 
 	public Object get(Request request, Response response)
 	{
-		final String solutionID = request.params(SOLUTION_ID_QUERY_PARAM);
-
-		if (request.contentType() == null || !request.contentType().startsWith("application/json"))
+		if (WebService.shouldServiceIndex(request))
 		{
 			return WebService.serveIndex(request, response);
 		}
 
+		final String solutionID = request.params(SOLUTION_ID_QUERY_PARAM);
 		final Solution solution = getSolutionOr404(this.mongo, solutionID);
 		checkAssignmentID(request, solution);
 		final boolean privileged = checkPrivilege(request, solution);
@@ -176,13 +175,12 @@ public class Solutions
 
 	public Object getByAssignment(Request request, Response response)
 	{
-		final String assignmentID = request.params(ASSIGNMENT_ID_QUERY_PARAM);
-
-		if (request.contentType() == null || !request.contentType().startsWith("application/json"))
+		if (WebService.shouldServiceIndex(request))
 		{
 			return WebService.serveIndex(request, response);
 		}
 
+		final String assignmentID = request.params(ASSIGNMENT_ID_QUERY_PARAM);
 		final Assignment assignment = Assignments.getAssignmentOr404(this.mongo, assignmentID);
 		Assignments.checkPrivilege(request, assignment);
 
@@ -206,7 +204,7 @@ public class Solutions
 
 	public Object getAll(Request request, Response response)
 	{
-		if (request.contentType() == null || !request.contentType().startsWith("application/json"))
+		if (WebService.shouldServiceIndex(request))
 		{
 			return WebService.serveIndex(request, response);
 		}

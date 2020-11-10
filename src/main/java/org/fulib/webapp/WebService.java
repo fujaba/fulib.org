@@ -275,6 +275,11 @@ public class WebService
 		});
 	}
 
+	public static boolean shouldServiceIndex(Request request)
+	{
+		return request.contentType() == null || !request.contentType().startsWith("application/json");
+	}
+
 	public static Object serveIndex(Request req, Response res)
 	{
 		return WebService.class.getResourceAsStream("static/index.html");
