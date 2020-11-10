@@ -197,9 +197,7 @@ export class SolutionService {
 
   get(assignment: Assignment | string, id: string): Observable<Solution> {
     const assignmentID = asID(assignment);
-    const headers = {
-      'Content-Type': 'application/json',
-    };
+    const headers = {};
     const token = this.addSolutionToken(headers, assignmentID, id);
     this.addAssignmentToken(headers, assignmentID);
     return this.http.get<Solution>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${id}`, {headers}).pipe(
@@ -213,9 +211,7 @@ export class SolutionService {
 
   getAll(assignment: Assignment | string): Observable<Solution[]> {
     const assignmentID = asID(assignment);
-    const headers = {
-      'Content-Type': 'application/json',
-    };
+    const headers = {};
     this.addAssignmentToken(headers, assignmentID);
     return this.http.get<{ solutions: Solution[] }>(`${environment.apiURL}/assignments/${assignmentID}/solutions`, {headers}).pipe(
       map(result => {
@@ -228,10 +224,7 @@ export class SolutionService {
   }
 
   getByUserId(userId: string): Observable<Solution[]> {
-    const headers = {
-      'Content-Type': 'application/json',
-    };
-    return this.http.get<Solution[]>(`${environment.apiURL}/solutions`, {params: {userId}, headers}).pipe(
+    return this.http.get<Solution[]>(`${environment.apiURL}/solutions`, {params: {userId}}).pipe(
       map(solutions => {
         for (let solution of solutions) {
           // solution.token = this.getToken(solution.assignment.id, solution.id);
@@ -243,9 +236,7 @@ export class SolutionService {
 
   getComments(assignment: Assignment | string, id: string): Observable<Comment[]> {
     const assignmentID = asID(assignment);
-    const headers = {
-      'Content-Type': 'application/json',
-    };
+    const headers = {};
     this.addSolutionToken(headers, assignmentID, id);
     this.addAssignmentToken(headers, assignmentID);
 
@@ -262,9 +253,7 @@ export class SolutionService {
 
   postComment(solution: Solution, comment: Comment): Observable<Comment> {
     const assignmentID = solution.assignment;
-    const headers = {
-      'Content-Type': 'application/json',
-    };
+    const headers = {};
     this.addSolutionToken(headers, assignmentID, solution.id!);
     this.addAssignmentToken(headers, assignmentID);
 
@@ -289,9 +278,7 @@ export class SolutionService {
 
   getGradings(assignment: Assignment | string, id: string): Observable<TaskGrading[]> {
     const assignmentID = asID(assignment);
-    const headers = {
-      'Content-Type': 'application/json',
-    };
+    const headers = {};
     this.addSolutionToken(headers, assignmentID, id);
     this.addAssignmentToken(headers, assignmentID);
 
@@ -304,9 +291,7 @@ export class SolutionService {
   postGrading(grading: TaskGrading): Observable<TaskGrading> {
     const solutionID = grading.solution.id;
     const assignmentID = grading.solution.assignment;
-    const headers = {
-      'Content-Type': 'application/json',
-    };
+    const headers = {};
     this.addAssignmentToken(headers, assignmentID);
 
     const url = `${environment.apiURL}/assignments/${assignmentID}/solutions/${solutionID}/gradings`;
