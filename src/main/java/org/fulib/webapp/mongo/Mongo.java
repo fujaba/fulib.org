@@ -6,10 +6,8 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Indexes;
-import com.mongodb.client.model.ReplaceOptions;
-import com.mongodb.client.model.Sorts;
+import com.mongodb.client.gridfs.GridFSBucket;
+import com.mongodb.client.model.*;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -18,6 +16,7 @@ import org.bson.codecs.pojo.Conventions;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.fulib.webapp.WebService;
 import org.fulib.webapp.assignment.model.*;
+import org.fulib.webapp.projects.model.File;
 import org.fulib.webapp.projects.model.Project;
 
 import java.util.ArrayList;
@@ -35,6 +34,7 @@ public class Mongo
 
 	public static final String LOG_COLLECTION_NAME = "request-log";
 	public static final String PROJECT_COLLECTION_NAME = "projects";
+	public static final String PROJECT_FILES_COLLECTION_NAME = "projectFiles";
 	public static final String ASSIGNMENT_COLLECTION_NAME = "assignments";
 	public static final String COURSE_COLLECTION_NAME = "courses";
 	public static final String SOLUTION_COLLECTION_NAME = "solutions";
@@ -49,6 +49,8 @@ public class Mongo
 
 	MongoCollection<Document> requestLog;
 	private MongoCollection<Project> projects;
+	private MongoCollection<File> projectFiles;
+	private GridFSBucket projectFilesFS;
 	private MongoCollection<Assignment> assignments;
 	private MongoCollection<Course> courses;
 	private MongoCollection<Solution> solutions;
@@ -96,6 +98,14 @@ public class Mongo
 		this.projects.createIndex(Indexes.ascending(Project.PROPERTY_ID));
 		this.projects.createIndex(Indexes.ascending(Project.PROPERTY_USER_ID));
 		this.projects.createIndex(Indexes.ascending(Project.PROPERTY_NAME));
+
+		this.projectFiles = this.database
+			.getCollection(PROJECT_FILES_COLLECTION_NAME, File.class)
+			.withCodecRegistry(this.pojoCodecRegistry);
+		this.projectFiles.createIndex(Indexes.ascending(File.PROPERTY_ID));
+		this.projectFiles.createIndex(Indexes.ascending(File.PROPERTY_PROJECT_ID));
+		this.projectFiles.createIndex(Indexes.ascending(File.PROPERTY_USER_ID));
+		this.projectFiles.createIndex(Indexes.ascending(File.PROPERTY_PARENT_ID));
 
 		this.assignments = this.database.getCollection(ASSIGNMENT_COLLECTION_NAME, Assignment.class)
 		                                .withCodecRegistry(this.pojoCodecRegistry);
@@ -181,6 +191,29 @@ public class Mongo
 	public void deleteProject(String id)
 	{
 		this.projects.deleteOne(Filters.eq(Project.PROPERTY_ID, id));
+		this.projectFiles.deleteMany(Filters.eq(File.PROPERTY_PROJECT_ID, id));
+	}
+
+	// --------------- Files ---------------
+
+	public File getFile(String id)
+	{
+		return this.projectFiles.find(Filters.eq(File.PROPERTY_ID, id)).first();
+	}
+
+	public List<File> getFilesByParent(String parent)
+	{
+		return this.projectFiles.find(Filters.eq(File.PROPERTY_PARENT_ID, parent)).into(new ArrayList<>());
+	}
+
+	public void saveFile(File file)
+	{
+		upsert(this.projectFiles, file, File.PROPERTY_ID, file.getId());
+	}
+
+	public void deleteFile(String id)
+	{
+		this.projectFiles.deleteOne(Filters.eq(File.PROPERTY_ID, id));
 	}
 
 	// --------------- Assignments ---------------

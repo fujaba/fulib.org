@@ -4,6 +4,7 @@ import org.fulib.webapp.assignment.Assignments;
 import org.fulib.webapp.assignment.Comments;
 import org.fulib.webapp.assignment.Courses;
 import org.fulib.webapp.assignment.Solutions;
+import org.fulib.webapp.projects.Files;
 import org.fulib.webapp.projects.Projects;
 import org.fulib.webapp.projectzip.ProjectZip;
 import org.fulib.webapp.tool.RunCodeGen;
@@ -25,12 +26,13 @@ public class WebServiceTest
 	private static final RunCodeGen runCodeGen = mock(RunCodeGen.class);
 	private static final ProjectZip projectZip = mock(ProjectZip.class);
 	private static final Projects projects = mock(Projects.class);
+	private static final Files files = mock(Files.class);
 	private static final Assignments assignments = mock(Assignments.class);
 	private static final Comments comments = mock(Comments.class);
 	private static final Solutions solutions = mock(Solutions.class);
 	private static final Courses courses = mock(Courses.class);
-	private static final WebService service = new WebService(runCodeGen, projectZip, projects, assignments, comments,
-	                                                         solutions, courses);
+	private static final WebService service = new WebService(runCodeGen, projectZip, projects, files, assignments,
+	                                                         comments, solutions, courses);
 
 	@BeforeClass
 	public static void setup()
@@ -105,6 +107,28 @@ public class WebServiceTest
 		verify(projects).create(any(), any());
 		verify(projects).update(any(), any());
 		verify(projects).delete(any(), any());
+	}
+
+	@Test
+	public void files() throws Exception
+	{
+		when(files.get(any(), any())).thenReturn("");
+		when(files.getChildren(any(), any())).thenReturn("");
+		when(files.create(any(), any())).thenReturn("");
+		when(files.update(any(), any())).thenReturn("");
+		when(files.delete(any(), any())).thenReturn("");
+
+		checkRoute("POST", "/projects/p1/files");
+		checkRoute("GET", "/projects/p1/files");
+		checkRoute("GET", "/projects/p1/files/f1");
+		checkRoute("PUT", "/projects/p1/files/f1");
+		checkRoute("DELETE", "/projects/p1/files/f1");
+
+		verify(files).get(any(), any());
+		verify(files).getChildren(any(), any());
+		verify(files).create(any(), any());
+		verify(files).update(any(), any());
+		verify(files).delete(any(), any());
 	}
 
 	@Test

@@ -5,6 +5,7 @@ import org.fulib.webapp.assignment.Comments;
 import org.fulib.webapp.assignment.Courses;
 import org.fulib.webapp.assignment.Solutions;
 import org.fulib.webapp.mongo.Mongo;
+import org.fulib.webapp.projects.Files;
 import org.fulib.webapp.projects.Projects;
 import org.fulib.webapp.projectzip.ProjectZip;
 import org.fulib.webapp.tool.MarkdownUtil;
@@ -54,6 +55,7 @@ public class WebService
 	private final RunCodeGen runCodeGen;
 	private final ProjectZip projectZip;
 	private final Projects projects;
+	private final Files files;
 	private final Assignments assignments;
 	private final Comments comments;
 	private final Solutions solutions;
@@ -73,16 +75,17 @@ public class WebService
 
 	WebService(Mongo db, MarkdownUtil markdownUtil, RunCodeGen runCodeGen)
 	{
-		this(runCodeGen, new ProjectZip(db), new Projects(db), new Assignments(markdownUtil, db),
+		this(runCodeGen, new ProjectZip(db), new Projects(db), new Files(db), new Assignments(markdownUtil, db),
 		     new Comments(markdownUtil, db), new Solutions(runCodeGen, db), new Courses(markdownUtil, db));
 	}
 
-	WebService(RunCodeGen runCodeGen, ProjectZip projectZip, Projects projects, Assignments assignments,
+	WebService(RunCodeGen runCodeGen, ProjectZip projectZip, Projects projects, Files files, Assignments assignments,
 		Comments comments, Solutions solutions, Courses courses)
 	{
 		this.runCodeGen = runCodeGen;
 		this.projectZip = projectZip;
 		this.projects = projects;
+		this.files = files;
 		this.assignments = assignments;
 		this.comments = comments;
 		this.solutions = solutions;
@@ -192,10 +195,32 @@ public class WebService
 		service.path("/projects", () -> {
 			service.post("", projects::create);
 			service.get("", projects::getAll);
-			service.get("/:projectId", projects::get);
-			service.put("/:projectId", projects::update);
-			service.delete("/:projectId", projects::delete);
+
+			service.path("/:projectId", this::addProjectRoutes);
 		});
+	}
+
+	private void addProjectRoutes()
+	{
+		service.get("", projects::get);
+		service.put("", projects::update);
+		service.delete("", projects::delete);
+
+		service.path("/files", this::addFilesRoutes);
+	}
+
+	private void addFilesRoutes()
+	{
+		service.get("", files::getChildren);
+		service.post("", files::create);
+		service.path("/:fileId", this::addFileRoutes);
+	}
+
+	private void addFileRoutes()
+	{
+		service.get("", files::get);
+		service.put("", files::update);
+		service.delete("", files::delete);
 	}
 
 	private void addUtilRoutes()
