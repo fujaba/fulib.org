@@ -82,7 +82,7 @@ export class FourPaneEditorComponent implements OnInit {
       this.submitting = false;
       this.response = response;
       this.javaCode = this.renderJavaCode();
-      this.markdownHtml = response.html.replace(new RegExp(`/runcodegen/${response.id}`, 'g'), match => environment.apiURL + match);
+      this.markdownHtml = response.html.replace(new RegExp(`/api/runcodegen/${response.id}`, 'g'), match => environment.apiURL + match.substring(4));
       this.outputText = this.scenarioEditorService.foldInternalCalls(this.response.output.split('\n')).join('\n');
       this.markers = this.scenarioEditorService.lint(response);
     });

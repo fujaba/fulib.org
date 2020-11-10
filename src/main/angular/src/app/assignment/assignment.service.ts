@@ -131,10 +131,7 @@ export class AssignmentService {
   }
 
   getByUserId(userId: string): Observable<Assignment[]> {
-    const headers = {
-      'Content-Type': 'application/json',
-    };
-    return this.http.get<Assignment[]>(`${environment.apiURL}/assignments`, {params: {userId}, headers}).pipe(
+    return this.http.get<Assignment[]>(`${environment.apiURL}/assignments`, {params: {userId}}).pipe(
       map(results => {
         for (let result of results) {
           result.token = this.getToken(result.id!) ?? undefined;
@@ -207,9 +204,7 @@ export class AssignmentService {
       return of(cached);
     }
 
-    const headers = {
-      'Content-Type': 'application/json',
-    };
+    const headers = {};
     const token = this.getToken(id);
     if (token) {
       headers['Assignment-Token'] = token;

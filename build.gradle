@@ -186,7 +186,7 @@ processResources.filesMatching('fulib.org/**') {
 
 // --------------- Test Scenarios ---------------
 
-def testScenariosDir = file 'src/main/resources/org/fulib/webapp/static/examples'
+def testScenariosDir = file 'src/main/angular/src/assets/examples'
 def testOutputDir = file "$buildDir/generated/sources/scenarios/java/test"
 
 sourceSets.test.scenarios.srcDir testScenariosDir

@@ -53,6 +53,8 @@ public class AssignmentsTest
 		this.assignments = new Assignments(markdownUtil, db);
 		this.request = mock(Request.class);
 		this.response = mock(Response.class);
+
+		when(request.matchedPath()).thenReturn("/api");
 	}
 
 	@Test
@@ -123,7 +125,6 @@ public class AssignmentsTest
 	public void get404() throws Exception
 	{
 		when(request.params("assignmentID")).thenReturn("-1");
-		when(request.contentType()).thenReturn("application/json");
 		when(db.getAssignment("-1")).thenReturn(null);
 
 		TestHelper.expectHalt(404, "assignment with id '-1'' not found", () -> assignments.get(request, response));
@@ -161,7 +162,6 @@ public class AssignmentsTest
 	public void getWithoutToken()
 	{
 		when(request.params("assignmentID")).thenReturn(ID);
-		when(request.contentType()).thenReturn("application/json");
 		when(request.headers("Assignment-Token")).thenReturn(null);
 		when(db.getAssignment(ID)).thenReturn(createExampleAssignment());
 
@@ -177,7 +177,6 @@ public class AssignmentsTest
 	public void getWithWrongToken()
 	{
 		when(request.params("assignmentID")).thenReturn(ID);
-		when(request.contentType()).thenReturn("application/json");
 		when(request.headers("Assignment-Token")).thenReturn("a456");
 		when(db.getAssignment(ID)).thenReturn(createExampleAssignment());
 
@@ -193,7 +192,6 @@ public class AssignmentsTest
 	public void getWithToken()
 	{
 		when(request.params("assignmentID")).thenReturn(ID);
-		when(request.contentType()).thenReturn("application/json");
 		when(request.headers("Assignment-Token")).thenReturn(TOKEN);
 		when(db.getAssignment(ID)).thenReturn(createExampleAssignment());
 

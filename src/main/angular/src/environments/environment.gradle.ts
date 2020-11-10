@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiURL: '',
+  apiURL: '/api',
   authURL: 'https://avocado.uniks.de/auth',
   authClientId: 'localhost',
   versions: {

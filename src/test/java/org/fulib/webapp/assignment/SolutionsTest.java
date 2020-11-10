@@ -52,6 +52,8 @@ public class SolutionsTest
 		this.solutions = new Solutions(runCodeGen, db);
 		this.request = mock(Request.class);
 		this.response = mock(Response.class);
+
+		when(request.matchedPath()).thenReturn("/api");
 	}
 
 	@Test
@@ -143,7 +145,6 @@ public class SolutionsTest
 	@Test
 	public void get404() throws Exception
 	{
-		when(request.contentType()).thenReturn("application/json");
 		when(request.params("solutionID")).thenReturn("-1");
 
 		expectHalt(404, "solution with id '-1'' not found", () -> solutions.get(request, response));
@@ -157,7 +158,6 @@ public class SolutionsTest
 
 		when(db.getSolution(ID)).thenReturn(solution);
 		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
-		when(request.contentType()).thenReturn("application/json");
 		when(request.params("solutionID")).thenReturn(ID);
 		when(request.params("assignmentID")).thenReturn("a2");
 
@@ -173,7 +173,6 @@ public class SolutionsTest
 
 		when(db.getSolution(ID)).thenReturn(solution);
 		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
-		when(request.contentType()).thenReturn("application/json");
 		when(request.params("solutionID")).thenReturn(ID);
 		when(request.params("assignmentID")).thenReturn(assignment.getID());
 
@@ -188,7 +187,6 @@ public class SolutionsTest
 
 		when(db.getSolution(ID)).thenReturn(solution);
 		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
-		when(request.contentType()).thenReturn("application/json");
 		when(request.params("solutionID")).thenReturn(ID);
 		when(request.params("assignmentID")).thenReturn(assignment.getID());
 		when(request.headers("Assignment-Token")).thenReturn("a456");
@@ -204,7 +202,6 @@ public class SolutionsTest
 
 		when(db.getSolution(ID)).thenReturn(solution);
 		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
-		when(request.contentType()).thenReturn("application/json");
 		when(request.params("solutionID")).thenReturn(ID);
 		when(request.params("assignmentID")).thenReturn(assignment.getID());
 		when(request.headers("Solution-Token")).thenReturn("s456");
@@ -220,7 +217,6 @@ public class SolutionsTest
 
 		when(db.getSolution(ID)).thenReturn(solution);
 		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
-		when(request.contentType()).thenReturn("application/json");
 		when(request.params("solutionID")).thenReturn(ID);
 		when(request.params("assignmentID")).thenReturn(assignment.getID());
 		when(request.headers("Solution-Token")).thenReturn(TOKEN);
@@ -239,7 +235,6 @@ public class SolutionsTest
 
 		when(db.getSolution(ID)).thenReturn(solution);
 		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
-		when(request.contentType()).thenReturn("application/json");
 		when(request.params("solutionID")).thenReturn(ID);
 		when(request.params("assignmentID")).thenReturn(assignment.getID());
 		when(request.headers("Assignment-Token")).thenReturn(assignment.getToken());
@@ -309,7 +304,6 @@ public class SolutionsTest
 	@Test
 	public void getByAssignment404() throws Exception
 	{
-		when(request.contentType()).thenReturn("application/json");
 		when(request.params("assignmentID")).thenReturn("-1");
 
 		expectHalt(404, "assignment with id '-1'' not found", () -> solutions.getByAssignment(request, response));
@@ -323,7 +317,6 @@ public class SolutionsTest
 
 		when(db.getSolution(ID)).thenReturn(solution);
 		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
-		when(request.contentType()).thenReturn("application/json");
 		when(request.params("assignmentID")).thenReturn(assignment.getID());
 
 		expectHalt(401, "invalid Assignment-Token", () -> solutions.getByAssignment(request, response));
@@ -337,7 +330,6 @@ public class SolutionsTest
 
 		when(db.getSolution(ID)).thenReturn(solution);
 		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
-		when(request.contentType()).thenReturn("application/json");
 		when(request.params("assignmentID")).thenReturn(assignment.getID());
 		when(request.headers("Assignment-Token")).thenReturn("a456");
 
@@ -352,7 +344,6 @@ public class SolutionsTest
 
 		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
 		when(db.getSolutions(assignment.getID())).thenReturn(Collections.singletonList(solution));
-		when(request.contentType()).thenReturn("application/json");
 		when(request.params("assignmentID")).thenReturn(assignment.getID());
 		when(request.headers("Assignment-Token")).thenReturn(assignment.getToken());
 
@@ -399,7 +390,6 @@ public class SolutionsTest
 
 		when(db.getSolution(ID)).thenReturn(solution);
 		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
-		when(request.contentType()).thenReturn("application/json");
 		when(request.params("solutionID")).thenReturn(ID);
 		when(request.params("assignmentID")).thenReturn(assignment.getID());
 
@@ -414,7 +404,6 @@ public class SolutionsTest
 
 		when(db.getSolution(ID)).thenReturn(solution);
 		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
-		when(request.contentType()).thenReturn("application/json");
 		when(request.params("solutionID")).thenReturn(ID);
 		when(request.params("assignmentID")).thenReturn(assignment.getID());
 		when(request.headers("Assignment-Token")).thenReturn("a456");
@@ -430,7 +419,6 @@ public class SolutionsTest
 
 		when(db.getSolution(ID)).thenReturn(solution);
 		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
-		when(request.contentType()).thenReturn("application/json");
 		when(request.params("solutionID")).thenReturn(ID);
 		when(request.params("assignmentID")).thenReturn(assignment.getID());
 		when(request.headers("Assignment-Token")).thenReturn(assignment.getToken());
@@ -473,7 +461,6 @@ public class SolutionsTest
 
 		when(db.getSolution(ID)).thenReturn(solution);
 		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
-		when(request.contentType()).thenReturn("application/json");
 		when(request.params("solutionID")).thenReturn(ID);
 		when(request.params("assignmentID")).thenReturn(assignment.getID());
 
@@ -488,7 +475,6 @@ public class SolutionsTest
 
 		when(db.getSolution(ID)).thenReturn(solution);
 		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
-		when(request.contentType()).thenReturn("application/json");
 		when(request.params("solutionID")).thenReturn(ID);
 		when(request.params("assignmentID")).thenReturn(assignment.getID());
 		when(request.headers("Assignment-Token")).thenReturn("a456");
@@ -508,7 +494,6 @@ public class SolutionsTest
 
 		when(db.getSolution(ID)).thenReturn(solution);
 		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
-		when(request.contentType()).thenReturn("application/json");
 		when(request.params("solutionID")).thenReturn(ID);
 		when(request.params("assignmentID")).thenReturn(assignment.getID());
 		when(request.headers("Assignment-Token")).thenReturn(assignment.getToken());
@@ -554,7 +539,6 @@ public class SolutionsTest
 
 		when(db.getSolution(ID)).thenReturn(solution);
 		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
-		when(request.contentType()).thenReturn("application/json");
 		when(request.params("solutionID")).thenReturn(ID);
 		when(request.params("assignmentID")).thenReturn(assignment.getID());
 
@@ -569,7 +553,6 @@ public class SolutionsTest
 
 		when(db.getSolution(ID)).thenReturn(solution);
 		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
-		when(request.contentType()).thenReturn("application/json");
 		when(request.params("solutionID")).thenReturn(ID);
 		when(request.params("assignmentID")).thenReturn(assignment.getID());
 		when(request.headers("Assignment-Token")).thenReturn("a456");
@@ -585,7 +568,6 @@ public class SolutionsTest
 
 		when(db.getSolution(ID)).thenReturn(solution);
 		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
-		when(request.contentType()).thenReturn("application/json");
 		when(request.params("solutionID")).thenReturn(ID);
 		when(request.params("assignmentID")).thenReturn(assignment.getID());
 		when(request.headers("Solution-Token")).thenReturn("s456");
@@ -603,7 +585,6 @@ public class SolutionsTest
 		when(db.getSolution(ID)).thenReturn(solution);
 		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
 		when(db.getGradingHistory(ID)).thenReturn(gradings);
-		when(request.contentType()).thenReturn("application/json");
 		when(request.params("solutionID")).thenReturn(ID);
 		when(request.params("assignmentID")).thenReturn(assignment.getID());
 		when(request.headers("Solution-Token")).thenReturn(TOKEN);
@@ -624,7 +605,6 @@ public class SolutionsTest
 		when(db.getSolution(ID)).thenReturn(solution);
 		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
 		when(db.getGradingHistory(ID)).thenReturn(gradings);
-		when(request.contentType()).thenReturn("application/json");
 		when(request.params("solutionID")).thenReturn(ID);
 		when(request.params("assignmentID")).thenReturn(assignment.getID());
 		when(request.headers("Assignment-Token")).thenReturn(assignment.getToken());
@@ -709,7 +689,6 @@ public class SolutionsTest
 
 		when(db.getSolution(ID)).thenReturn(solution);
 		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
-		when(request.contentType()).thenReturn("application/json");
 		when(request.params("solutionID")).thenReturn(ID);
 		when(request.params("assignmentID")).thenReturn(assignment.getID());
 
@@ -724,7 +703,6 @@ public class SolutionsTest
 
 		when(db.getSolution(ID)).thenReturn(solution);
 		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
-		when(request.contentType()).thenReturn("application/json");
 		when(request.params("solutionID")).thenReturn(ID);
 		when(request.params("assignmentID")).thenReturn(assignment.getID());
 		when(request.headers("Assignment-Token")).thenReturn("a456");
@@ -747,7 +725,6 @@ public class SolutionsTest
 
 		when(db.getSolution(ID)).thenReturn(solution);
 		when(db.getAssignment(assignment.getID())).thenReturn(assignment);
-		when(request.contentType()).thenReturn("application/json");
 		when(request.params("solutionID")).thenReturn(ID);
 		when(request.params("assignmentID")).thenReturn(assignment.getID());
 		when(request.headers("Assignment-Token")).thenReturn(assignment.getToken());
