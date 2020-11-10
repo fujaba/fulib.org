@@ -111,17 +111,25 @@ public class WebService
 
 		setupRedirects();
 
-		addMainRoutes();
-		this.service.get("/solutions", this.solutions::getAll);
-		addAssignmentsRoutes();
-		addCoursesRoutes();
-		addUtilRoutes();
+		// all endpoints available with and without /api for backward compatibility
+		// TODO remove endpoints without /api in v2
+		addApiRoutes();
+		service.path("/api", this::addApiRoutes);
 
 		service.notFound(WebService::serveIndex);
 
 		setupExceptionHandler();
 
 		Logger.getGlobal().info("scenario server started on http://localhost:4567");
+	}
+
+	private void addApiRoutes()
+	{
+		addMainRoutes();
+		this.service.get("/solutions", this.solutions::getAll);
+		addAssignmentsRoutes();
+		addCoursesRoutes();
+		addUtilRoutes();
 	}
 
 	void awaitStart()
@@ -273,6 +281,16 @@ public class WebService
 
 			return "OK";
 		});
+	}
+
+	public static boolean shouldServiceIndex(Request request)
+	{
+		if (request.matchedPath().startsWith("/api"))
+		{
+			return false;
+		}
+		final String contentType = request.contentType();
+		return contentType == null || !contentType.startsWith("application/json");
 	}
 
 	public static Object serveIndex(Request req, Response res)

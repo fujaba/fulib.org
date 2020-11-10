@@ -138,7 +138,7 @@ public class RunCodeGen
 	{
 		final String id = UUID.randomUUID().toString();
 		final Path tempDir = Paths.get(this.getTempDir());
-		final Path projectDir = tempDir.resolve("runcodegen").resolve(id);
+		final Path projectDir = tempDir.resolve("api").resolve("runcodegen").resolve(id);
 		final Path srcDir = projectDir.resolve("src");
 		final Path modelSrcDir = projectDir.resolve("model_src");
 		final Path testSrcDir = projectDir.resolve("test_src");

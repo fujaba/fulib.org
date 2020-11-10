@@ -140,13 +140,12 @@ public class Assignments
 
 	public Object get(Request request, Response response)
 	{
-		final String id = request.params("assignmentID");
-
-		if (request.contentType() == null || !request.contentType().startsWith("application/json"))
+		if (WebService.shouldServiceIndex(request))
 		{
 			return WebService.serveIndex(request, response);
 		}
 
+		final String id = request.params("assignmentID");
 		Assignment assignment = getAssignmentOr404(this.mongo, id);
 		final boolean privileged = isAuthorized(request, assignment);
 		final JSONObject obj = toJson(assignment, privileged);
@@ -155,7 +154,7 @@ public class Assignments
 
 	public Object getAll(Request request, Response response)
 	{
-		if (request.contentType() == null || !request.contentType().startsWith("application/json"))
+		if (WebService.shouldServiceIndex(request))
 		{
 			return WebService.serveIndex(request, response);
 		}
