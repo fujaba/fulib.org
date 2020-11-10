@@ -90,7 +90,8 @@ public class Projects
 	public Object create(Request request, Response response)
 	{
 		final String id = IDGenerator.generateID();
-		final Project project = this.fromJson(id, new JSONObject(request.body()));
+		final Project project = new Project(id);
+		this.readJson(new JSONObject(request.body()), project);
 
 		project.setCreated(Instant.now());
 
@@ -104,12 +105,10 @@ public class Projects
 		return responseJson.toString(2);
 	}
 
-	private Project fromJson(String id, JSONObject obj)
+	private void readJson(JSONObject obj, Project project)
 	{
-		final Project project = new Project(id);
 		project.setName(obj.getString(Project.PROPERTY_NAME));
 		project.setDescription(obj.getString(Project.PROPERTY_DESCRIPTION));
-		return project;
 	}
 
 	public Object update(Request request, Response response)
@@ -118,10 +117,7 @@ public class Projects
 		final Project project = getOr404(this.mongo, id);
 		checkAuth(request, project);
 
-		final Project newData = this.fromJson(id, new JSONObject(request.body()));
-
-		project.setName(newData.getName());
-		project.setDescription(newData.getDescription());
+		this.readJson(new JSONObject(request.body()), project);
 
 		this.mongo.saveProject(project);
 
