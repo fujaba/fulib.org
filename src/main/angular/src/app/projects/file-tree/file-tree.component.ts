@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
-import {File} from '../model/file.interface';
 import {FileHandler} from '../file-handler';
+import {File} from '../model/file.interface';
 
 @Component({
   selector: 'app-file-tree',
@@ -78,5 +78,23 @@ export class FileTreeComponent implements OnInit {
 
     dropdown.open();
     event.preventDefault();
+  }
+
+  createFile() {
+    this.addChild({
+      name: 'untitled.txt',
+    });
+  }
+
+  createDir() {
+    this.addChild({
+      name: 'untitled',
+      children: [],
+    });
+  }
+
+  private addChild(file: File) {
+    file.parent = this.root;
+    this.root.children?.push(file);
   }
 }
