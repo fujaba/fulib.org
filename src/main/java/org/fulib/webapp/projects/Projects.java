@@ -32,14 +32,14 @@ public class Projects
 
 		final String id = request.params("projectId");
 
-		final Project project = this.getOr404(id);
-		this.checkAuth(request, project);
+		final Project project = getOr404(this.mongo, id);
+		checkAuth(request, project);
 
 		final JSONObject json = this.toJson(project);
 		return json.toString(2);
 	}
 
-	private void checkAuth(Request request, Project project)
+	static void checkAuth(Request request, Project project)
 	{
 		final String userId = Authenticator.getUserIdOr401(request);
 		if (!userId.equals(project.getUserId()))
@@ -48,9 +48,9 @@ public class Projects
 		}
 	}
 
-	private Project getOr404(String id)
+	static Project getOr404(Mongo mongo, String id)
 	{
-		final Project project = this.mongo.getProject(id);
+		final Project project = mongo.getProject(id);
 		if (project == null)
 		{
 			throw Spark.halt(404, String.format("{\n  \"error\": \"project with id '%s' not found\"\n}\n", id));
@@ -115,8 +115,8 @@ public class Projects
 	public Object update(Request request, Response response)
 	{
 		final String id = request.params("projectId");
-		final Project project = this.getOr404(id);
-		this.checkAuth(request, project);
+		final Project project = getOr404(this.mongo, id);
+		checkAuth(request, project);
 
 		final Project newData = this.fromJson(id, new JSONObject(request.body()));
 
@@ -132,8 +132,8 @@ public class Projects
 	public Object delete(Request request, Response response)
 	{
 		final String id = request.params("projectId");
-		final Project project = this.getOr404(id);
-		this.checkAuth(request, project);
+		final Project project = getOr404(this.mongo, id);
+		checkAuth(request, project);
 
 		this.mongo.deleteProject(id);
 
