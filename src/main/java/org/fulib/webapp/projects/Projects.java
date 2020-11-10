@@ -30,7 +30,7 @@ public class Projects
 			return WebService.serveIndex(request, response);
 		}
 
-		final String id = request.params("id");
+		final String id = request.params("projectId");
 
 		final Project project = this.getOr404(id);
 		this.checkAuth(request, project);
@@ -114,7 +114,7 @@ public class Projects
 
 	public Object update(Request request, Response response)
 	{
-		final String id = request.params("id");
+		final String id = request.params("projectId");
 		final Project project = this.getOr404(id);
 		this.checkAuth(request, project);
 
@@ -131,7 +131,7 @@ public class Projects
 
 	public Object delete(Request request, Response response)
 	{
-		final String id = request.params("id");
+		final String id = request.params("projectId");
 		final Project project = this.getOr404(id);
 		this.checkAuth(request, project);
 

@@ -192,9 +192,9 @@ public class WebService
 		service.path("/projects", () -> {
 			service.post("", projects::create);
 			service.get("", projects::getAll);
-			service.get("/:id", projects::get);
-			service.put("/:id", projects::update);
-			service.delete("/:id", projects::delete);
+			service.get("/:projectId", projects::get);
+			service.put("/:projectId", projects::update);
+			service.delete("/:projectId", projects::delete);
 		});
 	}
 
