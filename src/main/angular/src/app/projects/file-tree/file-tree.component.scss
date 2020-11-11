@@ -26,11 +26,11 @@
 }
 
 @media (hover: hover) {
-  .file-item .dropdown-dots {
+  .file-item .hover-only {
     opacity: 0;
   }
 
-  .file-item:hover .dropdown-dots {
-    opacity: unset;
+  .file-item:hover .hover-only {
+    opacity: 1;
   }
 }
