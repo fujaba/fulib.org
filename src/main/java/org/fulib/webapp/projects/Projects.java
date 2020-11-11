@@ -1,6 +1,5 @@
 package org.fulib.webapp.projects;
 
-import org.fulib.webapp.WebService;
 import org.fulib.webapp.mongo.Mongo;
 import org.fulib.webapp.projects.model.File;
 import org.fulib.webapp.projects.model.Project;
@@ -26,11 +25,6 @@ public class Projects
 
 	public Object get(Request request, Response response)
 	{
-		if (request.contentType() == null || !request.contentType().startsWith("application/json"))
-		{
-			return WebService.serveIndex(request, response);
-		}
-
 		final String id = request.params("projectId");
 
 		final Project project = getOr404(this.mongo, id);
@@ -61,11 +55,6 @@ public class Projects
 
 	public Object getAll(Request request, Response response)
 	{
-		if (request.contentType() == null || !request.contentType().startsWith("application/json"))
-		{
-			return WebService.serveIndex(request, response);
-		}
-
 		final String userId = Authenticator.getAndCheckUserIdQueryParam(request);
 
 		final List<Project> projects = this.mongo.getProjectsByUser(userId);

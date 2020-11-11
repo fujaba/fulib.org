@@ -22,6 +22,7 @@ import org.fulib.webapp.projects.model.Project;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
@@ -41,6 +42,22 @@ public class Mongo
 	public static final String COMMENT_COLLECTION_NAME = "comments";
 	public static final String ASSIGNEE_COLLECTION_NAME = "assignee";
 	public static final String GRADING_COLLECTION_NAME = "gradings";
+
+	private static final Document VERSIONS = new Document();
+
+	static
+	{
+		for (final Map.Entry<Object, Object> entry : WebService.VERSIONS.entrySet())
+		{
+			String key = entry.getKey().toString();
+			if ("fulib.org".equals(key))
+			{
+				// for legacy reasons and also because "fulib.org" is not a valid Bson key
+				key = "webapp";
+			}
+			VERSIONS.put(key, entry.getValue().toString());
+		}
+	}
 
 	// =============== Fields ===============
 
@@ -155,15 +172,7 @@ public class Mongo
 		document.put("timestamp", new Date());
 		document.put("ip", ip);
 		document.put("userAgent", userAgent);
-
-		if (WebService.VERSION != null)
-		{
-			final Document versions = new Document();
-			versions.put("webapp", WebService.VERSION);
-			versions.put("fulibScenarios", WebService.FULIB_SCENARIOS_VERSION);
-			versions.put("fulibMockups", WebService.FULIB_MOCKUPS_VERSION);
-			document.put("versions", versions);
-		}
+		document.put("versions", VERSIONS);
 
 		document.put("request", Document.parse(request));
 		document.put("response", Document.parse(response));

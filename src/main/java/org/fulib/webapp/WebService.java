@@ -10,8 +10,7 @@ import org.fulib.webapp.projects.Projects;
 import org.fulib.webapp.projectzip.ProjectZip;
 import org.fulib.webapp.tool.MarkdownUtil;
 import org.fulib.webapp.tool.RunCodeGen;
-import spark.Request;
-import spark.Response;
+import org.json.JSONObject;
 import spark.Service;
 
 import java.io.File;
@@ -23,25 +22,18 @@ public class WebService
 {
 	// =============== Static Fields ===============
 
-	public static final String VERSION;
-	public static final String FULIB_SCENARIOS_VERSION;
-	public static final String FULIB_MOCKUPS_VERSION;
+	public static final Properties VERSIONS = new Properties();
 
 	static
 	{
-		final Properties props = new Properties();
 		try
 		{
-			props.load(WebService.class.getResourceAsStream("version.properties"));
+			VERSIONS.load(WebService.class.getResourceAsStream("version.properties"));
 		}
 		catch (Exception e)
 		{
 			Logger.getGlobal().throwing("WebService", "static init", e);
 		}
-
-		VERSION = props.getProperty("webapp.version");
-		FULIB_SCENARIOS_VERSION = props.getProperty("fulibScenarios.version");
-		FULIB_MOCKUPS_VERSION = props.getProperty("fulibMockups.version");
 	}
 
 	public static final String PASSWORD_ENV_KEY = "FULIB_ORG_MONGODB_PASSWORD";
@@ -107,7 +99,6 @@ public class WebService
 		service.port(4567);
 
 		service.staticFiles.externalLocation(this.runCodeGen.getTempDir());
-		service.staticFiles.location("/org/fulib/webapp/static");
 		service.staticFiles.expireTime(60 * 60);
 
 		if (isDevEnv())
@@ -115,14 +106,10 @@ public class WebService
 			enableCORS();
 		}
 
-		setupRedirects();
-
 		// all endpoints available with and without /api for backward compatibility
 		// TODO remove endpoints without /api in v2
 		addApiRoutes();
 		service.path("/api", this::addApiRoutes);
-
-		service.notFound(WebService::serveIndex);
 
 		setupExceptionHandler();
 
@@ -179,15 +166,11 @@ public class WebService
 		return new File("build.gradle").exists();
 	}
 
-	private void setupRedirects()
-	{
-		service.redirect.get("/github", "https://github.com/fujaba/fulib.org");
-	}
-
 	private void addMainRoutes()
 	{
 		service.post("/runcodegen", runCodeGen::handle);
 		service.post("/projectzip", projectZip::handle);
+		service.get("/versions", (req, res) -> new JSONObject(VERSIONS).toString(2));
 	}
 
 	private void addProjectsRoutes()
@@ -321,20 +304,5 @@ public class WebService
 
 			return "OK";
 		});
-	}
-
-	public static boolean shouldServiceIndex(Request request)
-	{
-		if (request.matchedPath().startsWith("/api"))
-		{
-			return false;
-		}
-		final String contentType = request.contentType();
-		return contentType == null || !contentType.startsWith("application/json");
-	}
-
-	public static Object serveIndex(Request req, Response res)
-	{
-		return WebService.class.getResourceAsStream("static/index.html");
 	}
 }

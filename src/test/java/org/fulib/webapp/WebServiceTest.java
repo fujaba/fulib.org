@@ -50,18 +50,6 @@ public class WebServiceTest
 	}
 
 	@Test
-	public void index() throws IOException
-	{
-		checkRoute("GET", "/index.html");
-	}
-
-	@Test
-	public void github() throws IOException
-	{
-		checkRoute("GET", "/github", 302);
-	}
-
-	@Test
 	public void runCodeGen() throws Exception
 	{
 		when(runCodeGen.handle(any(), any())).thenReturn("");
@@ -85,6 +73,12 @@ public class WebServiceTest
 	public void markdown() throws IOException
 	{
 		checkRoute("POST", "/rendermarkdown");
+	}
+
+	@Test
+	public void versions() throws IOException
+	{
+		checkRoute("GET", "/versions");
 	}
 
 	@Test

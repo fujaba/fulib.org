@@ -11,8 +11,3 @@
 hs_err_pid*
 
 *.iml
-src/main/angular/src/assets/examples/**/*.html
-src/main/angular/src/assets/examples/**/*.png
-src/main/angular/src/assets/examples/**/*.svg
-src/main/angular/src/assets/examples/**/*.txt
-src/main/angular/src/assets/examples/**/*.yaml

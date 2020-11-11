@@ -1,6 +1,5 @@
 package org.fulib.webapp.assignment;
 
-import org.fulib.webapp.WebService;
 import org.fulib.webapp.assignment.model.*;
 import org.fulib.webapp.mongo.Mongo;
 import org.fulib.webapp.tool.Authenticator;
@@ -159,11 +158,6 @@ public class Solutions
 
 	public Object get(Request request, Response response)
 	{
-		if (WebService.shouldServiceIndex(request))
-		{
-			return WebService.serveIndex(request, response);
-		}
-
 		final String solutionID = request.params(SOLUTION_ID_QUERY_PARAM);
 		final Solution solution = getSolutionOr404(this.mongo, solutionID);
 		checkAssignmentID(request, solution);
@@ -175,11 +169,6 @@ public class Solutions
 
 	public Object getByAssignment(Request request, Response response)
 	{
-		if (WebService.shouldServiceIndex(request))
-		{
-			return WebService.serveIndex(request, response);
-		}
-
 		final String assignmentID = request.params(ASSIGNMENT_ID_QUERY_PARAM);
 		final Assignment assignment = Assignments.getAssignmentOr404(this.mongo, assignmentID);
 		Assignments.checkPrivilege(request, assignment);
@@ -204,11 +193,6 @@ public class Solutions
 
 	public Object getAll(Request request, Response response)
 	{
-		if (WebService.shouldServiceIndex(request))
-		{
-			return WebService.serveIndex(request, response);
-		}
-
 		final String userId = Authenticator.getAndCheckUserIdQueryParam(request);
 
 		final List<Solution> solutions = this.mongo.getSolutionsByUser(userId);
