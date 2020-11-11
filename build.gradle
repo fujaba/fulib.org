@@ -8,8 +8,6 @@ plugins {
 	id 'org.fulib.fulibGradle' version '0.4.0'
 	// https://plugins.gradle.org/plugin/de.clashsoft.simple-publish
 	id 'de.clashsoft.simple-publish' version '0.6.0'
-	// https://plugins.gradle.org/plugin/de.clashsoft.angular-gradle
-	id 'de.clashsoft.angular-gradle' version '0.1.6'
 	// https://plugins.gradle.org/plugin/com.github.johnrengelman.shadow
 	id 'com.github.johnrengelman.shadow' version '5.2.0'
 	// https://plugins.gradle.org/plugin/com.jfrog.bintray
@@ -167,19 +165,6 @@ String getDependencyVersion(Configuration config, String group, String name) {
 		def id = it.moduleVersion.id
 		id.group == group && id.name == name ? id.version : null
 	}
-}
-
-// --------------- Angular ---------------
-
-angular {
-	appDir = 'src/main/angular'
-	outputDir = 'src/main/angular/dist'
-	packageManager = 'pnpm'
-	packageManagerArgs = [ 'install', '--shamefully-hoist' ]
-}
-
-processResources.filesMatching('fulib.org/**') {
-	it.path = it.path.replace('fulib.org', 'org/fulib/webapp/static')
 }
 
 // --------------- Test Scenarios ---------------
