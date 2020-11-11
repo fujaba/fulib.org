@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import {EMPTY, Observable, of} from 'rxjs';
 import {tap} from 'rxjs/operators';
 import {FileService} from './file.service';
@@ -9,9 +9,17 @@ import {File, FileStub} from './model/file';
   providedIn: 'root',
 })
 export class FileManager {
+  openRequests = new EventEmitter<File>();
+  updates = new EventEmitter<File>();
+  deletions = new EventEmitter<File>();
+
   constructor(
     private fileService: FileService,
   ) {
+  }
+
+  open(file: File): void {
+    this.openRequests.next(file);
   }
 
   getChildren(parent: File): Observable<File[]> {
@@ -54,7 +62,7 @@ export class FileManager {
   }
 
   update(file: File): Observable<File> {
-    return this.fileService.update(file);
+    return this.fileService.update(file).pipe(tap(() => this.updates.next(file)));
   }
 
   delete(file: File): Observable<void> {
@@ -81,6 +89,7 @@ export class FileManager {
     return this.fileService.delete(file.projectId, file.id).pipe(tap(() => {
       children.splice(index, 1);
       data.parent = undefined;
+      this.deletions.next(file);
     }));
   }
 }
