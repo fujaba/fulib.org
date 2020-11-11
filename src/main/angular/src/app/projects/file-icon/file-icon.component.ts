@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {File} from '../model/file.interface';
+import {File} from '../model/file';
 
 @Component({
   selector: 'app-file-icon',
@@ -11,19 +11,26 @@ export class FileIconComponent {
   @Input() open?: boolean;
 
   get icon(): string {
-    if (this.file.children) {
+    if (this.file.name.endsWith('/')) {
       return this.open ? 'file-directory-open' : 'file-directory';
     }
 
-    switch (this.file.type) {
-      case 'text/x-markdown':
+    const dotIndex = this.file.name.lastIndexOf('.');
+    if (dotIndex < 0) {
+      return 'file';
+    }
+
+    const ext = this.file.name.substring(dotIndex);
+
+    switch (ext) {
+      case '.md':
         return 'markdown';
-      case 'image/svg+xml':
-      case 'image/png':
+      case '.svg':
+      case '.png':
         return 'image';
-      case 'text/x-groovy':
+      case '.gradle':
         return 'gear';
-      case 'text/x-java':
+      case '.java':
         return 'file-code';
       default:
         return 'file';

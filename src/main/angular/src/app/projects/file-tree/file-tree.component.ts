@@ -1,7 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
 import {FileHandler} from '../file-handler';
-import {File} from '../model/file.interface';
+import {FileService} from '../file.service';
+import {File, FileStub} from '../model/file';
 
 @Component({
   selector: 'app-file-tree',
@@ -19,19 +20,32 @@ export class FileTreeComponent implements OnInit {
   expanded = false;
   newName?: string;
 
-  constructor() {
+  constructor(
+    private fileService: FileService,
+  ) {
   }
 
   ngOnInit(): void {
   }
 
   open() {
-    if (this.root.children) {
-      this.expanded = !this.expanded;
+    if (!this.root.name.endsWith('/')) {
+      this.handler?.open(this.root);
       return;
     }
 
-    this.handler?.open(this.root);
+    this.expanded = !this.expanded;
+
+    if (this.root.data?.children) {
+      return;
+    }
+
+    this.fileService.getChildren(this.root.projectId, this.root.id).subscribe(children => {
+      if (!this.root.data) {
+        this.root.data = {};
+      }
+      this.root.data.children = children;
+    });
   }
 
   startRenaming() {
@@ -40,8 +54,10 @@ export class FileTreeComponent implements OnInit {
 
   finishRenaming() {
     this.root.name = this.newName!;
-    this.newName = undefined;
-    this.handler.rename(this.root);
+    this.fileService.update(this.root).subscribe(_ => {
+      this.newName = undefined;
+      this.handler.rename(this.root);
+    });
   }
 
   cancelRenaming() {
@@ -49,12 +65,17 @@ export class FileTreeComponent implements OnInit {
   }
 
   delete() {
-    const parent = this.root.parent;
+    const data = this.root.data;
+    if (!data) {
+      return;
+    }
+
+    const parent = data.parent;
     if (!parent) {
       return;
     }
 
-    const children = parent.children;
+    const children = parent.data?.children;
     if (!children) {
       return;
     }
@@ -66,7 +87,8 @@ export class FileTreeComponent implements OnInit {
 
     if (confirm(`Delete ${this.root.name}?`)) {
       children.splice(index, 1);
-      this.root.parent = undefined;
+      data.parent = undefined;
+      this.fileService.delete(this.root.projectId, this.root.id);
       this.handler?.delete(this.root);
     }
   }
@@ -81,20 +103,31 @@ export class FileTreeComponent implements OnInit {
   }
 
   createFile() {
-    this.addChild({
-      name: 'untitled.txt',
-    });
+    this.addChild('untitled.txt');
   }
 
   createDir() {
-    this.addChild({
-      name: 'untitled',
-      children: [],
-    });
+    this.addChild('untitled/');
   }
 
-  private addChild(file: File) {
-    file.parent = this.root;
-    this.root.children?.push(file);
+  private addChild(name: string) {
+    const file: FileStub = {
+      projectId: this.root.projectId,
+      parentId: this.root.id,
+      name,
+    }
+    this.fileService.create(file).subscribe(file => {
+      if (!file.data) {
+        file.data = {};
+      }
+      file.data.parent = this.root;
+      if (!this.root.data) {
+        this.root.data = {};
+      }
+      if (!this.root.data.children) {
+        this.root.data.children = [];
+      }
+      this.root.data.children.push(file);
+    });
   }
 }

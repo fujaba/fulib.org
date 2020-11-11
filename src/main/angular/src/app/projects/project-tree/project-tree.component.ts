@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 
 import {FileHandler} from '../file-handler';
-import {File} from '../model/file.interface';
+import {File} from '../model/file';
 import {FILE_ROOT} from '../injection-tokens';
 import {Project} from '../model/project';
 

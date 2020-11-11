@@ -1,4 +1,4 @@
-import {File} from './model/file.interface';
+import {File} from './model/file';
 
 export class FileHandler {
   open(file: File): void {

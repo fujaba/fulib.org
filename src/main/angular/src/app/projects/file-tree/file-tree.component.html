@@ -10,8 +10,8 @@
     >
     <div *ngIf="!newName" class="flex-grow-1">
       {{root.name}}
-      <span class="text-muted" *ngIf="root.info">
-        {{root.info}}
+      <span class="text-muted" *ngIf="root.data?.info">
+        {{root.data?.info}}
       </span>
     </div>
     <img class="icon hover-only px-1" src="/assets/octicons/pencil-16.svg" alt="Rename" (click)="startRenaming(); $event.stopImmediatePropagation()">
@@ -23,7 +23,7 @@
       <div ngbDropdownMenu>
         <button ngbDropdownItem (click)="open()">Open</button>
         <button ngbDropdownItem (click)="startRenaming()">Rename</button>
-        <ng-container *ngIf="root.children">
+        <ng-container *ngIf="root.name.endsWith('/')">
           <div class="dropdown-divider"></div>
           <button ngbDropdownItem (click)="createFile()">New File</button>
           <button ngbDropdownItem (click)="createDir()">New Folder</button>
@@ -35,5 +35,5 @@
   </div>
 </div>
 <ng-container *ngIf="expanded">
-  <app-file-tree *ngFor="let child of root.children || []" [root]="child" [level]="level + 1" [handler]="handler"></app-file-tree>
+  <app-file-tree *ngFor="let child of root.data?.children || []" [root]="child" [level]="level + 1" [handler]="handler"></app-file-tree>
 </ng-container>

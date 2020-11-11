@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {File} from '../model/file.interface';
+import {File} from '../model/file';
 
 @Component({
   selector: 'app-file-tabs',

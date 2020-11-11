@@ -7,4 +7,5 @@ export class Project extends ProjectStub {
   id: string;
   user: string;
   created: Date;
+  rootFileId: string;
 }
