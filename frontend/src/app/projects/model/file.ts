@@ -19,4 +19,20 @@ export class File extends FileStub {
     parent?: File;
     children?: File[];
   }
+
+  static compare(a: File, b: File): number {
+    if (a.directory && !b.directory) {
+      return -1;
+    }
+    if (!a.directory && b.directory) {
+      return 1;
+    }
+    if (a.name < b.name) {
+      return -1;
+    }
+    if (a.name > b.name) {
+      return 1;
+    }
+    return 0;
+  }
 }
