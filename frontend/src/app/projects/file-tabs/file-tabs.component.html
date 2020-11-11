@@ -9,11 +9,15 @@
       </span>
     </a>
     <ng-template ngbNavContent>
-      <app-autotheme-codemirror class="cm-h-100" [options]="{
-        mode: file.type,
+      <app-autotheme-codemirror class="cm-h-100" [(content)]="file.data.content" [options]="{
+        mode: 'java',
         lineNumbers: true,
         lineWrapping: true,
         styleActiveLine: true,
+        extraKeys: {
+          'Ctrl-S': save.bind(this, file),
+          'Cmd-S': save.bind(this, file)
+        },
         autoRefresh: true
       }"></app-autotheme-codemirror>
     </ng-template>

@@ -13,6 +13,7 @@ export class File extends FileStub {
   modified: Date;
 
   data?: {
+    content?: string;
     info?: string;
     parent?: File;
     children?: File[];

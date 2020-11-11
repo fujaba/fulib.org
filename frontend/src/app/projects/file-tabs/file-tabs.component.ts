@@ -33,6 +33,8 @@ export class FileTabsComponent implements OnInit, OnDestroy {
       this.openFiles.push(file);
     }
     this.currentFile = file;
+    this.fileManager.getContent(file).subscribe(() => {
+    });
   }
 
   close(file: File) {
@@ -44,5 +46,9 @@ export class FileTabsComponent implements OnInit, OnDestroy {
     if (file === this.currentFile) {
       this.currentFile = undefined;
     }
+  }
+
+  save(file: File) {
+    this.fileManager.saveContent(file).subscribe(() => {});
   }
 }

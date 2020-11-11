@@ -34,4 +34,12 @@ export class FileService {
   delete(projectId: string, id: string): Observable<void> {
     return this.http.delete<void>(`${environment.apiURL}/projects/${projectId}/files/${id}`);
   }
+
+  download(projectId: string, id: string): Observable<string> {
+    return this.http.get(`${environment.apiURL}/projects/${projectId}/files/${id}/content`, {responseType: 'text'});
+  }
+
+  upload(projectId: string, id: string, content: string): Observable<void> {
+    return this.http.put<void>(`${environment.apiURL}/projects/${projectId}/files/${id}/content`, content);
+  }
 }

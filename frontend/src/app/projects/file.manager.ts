@@ -22,6 +22,25 @@ export class FileManager {
     this.openRequests.next(file);
   }
 
+  getContent(file: File): Observable<string> {
+    if (file.data?.content) {
+      return of(file.data.content);
+    }
+    return this.fileService.download(file.projectId, file.id).pipe(tap(content => {
+      if (!file.data) {
+        file.data = {};
+      }
+      file.data.content = content;
+    }));
+  }
+
+  saveContent(file: File): Observable<void> {
+    if (!file.data?.content) {
+      return EMPTY;
+    }
+    return this.fileService.upload(file.projectId, file.id, file.data.content);
+  }
+
   getChildren(parent: File): Observable<File[]> {
     if (parent.data?.children) {
       return of(parent.data.children);
