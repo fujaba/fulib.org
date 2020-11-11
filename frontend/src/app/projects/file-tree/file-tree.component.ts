@@ -1,8 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
+import {filter} from 'rxjs/operators';
 import {FileHandler} from '../file-handler';
-import {FileService} from '../file.service';
-import {File, FileStub} from '../model/file';
+import {FileManager} from '../file.manager';
+import {File} from '../model/file';
 
 @Component({
   selector: 'app-file-tree',
@@ -21,7 +22,7 @@ export class FileTreeComponent implements OnInit {
   oldName?: string;
 
   constructor(
-    private fileService: FileService,
+    private fileManager: FileManager,
   ) {
   }
 
@@ -36,16 +37,7 @@ export class FileTreeComponent implements OnInit {
 
     this.expanded = !this.expanded;
 
-    if (this.root.data?.children) {
-      return;
-    }
-
-    this.fileService.getChildren(this.root.projectId, this.root.id).subscribe(children => {
-      if (!this.root.data) {
-        this.root.data = {};
-      }
-      this.root.data.children = children;
-    });
+    this.fileManager.getChildren(this.root).subscribe(() => {});
   }
 
   startRenaming() {
@@ -53,7 +45,7 @@ export class FileTreeComponent implements OnInit {
   }
 
   finishRenaming() {
-    this.fileService.update(this.root).subscribe(_ => {
+    this.fileManager.update(this.root).subscribe(_ => {
       this.oldName = undefined;
       this.handler.rename(this.root);
     });
@@ -65,31 +57,10 @@ export class FileTreeComponent implements OnInit {
   }
 
   delete() {
-    const data = this.root.data;
-    if (!data) {
-      return;
-    }
-
-    const parent = data.parent;
-    if (!parent) {
-      return;
-    }
-
-    const children = parent.data?.children;
-    if (!children) {
-      return;
-    }
-
-    const index = children.indexOf(this.root);
-    if (index < 0) {
-      return;
-    }
-
     if (confirm(`Delete ${this.root.name}?`)) {
-      children.splice(index, 1);
-      data.parent = undefined;
-      this.fileService.delete(this.root.projectId, this.root.id);
-      this.handler?.delete(this.root);
+      this.fileManager.delete(this.root).subscribe(() => {
+        this.handler?.delete(this.root);
+      });
     }
   }
 
@@ -111,23 +82,7 @@ export class FileTreeComponent implements OnInit {
   }
 
   private addChild(name: string) {
-    const file: FileStub = {
-      projectId: this.root.projectId,
-      parentId: this.root.id,
-      name,
-    }
-    this.fileService.create(file).subscribe(file => {
-      if (!file.data) {
-        file.data = {};
-      }
-      file.data.parent = this.root;
-      if (!this.root.data) {
-        this.root.data = {};
-      }
-      if (!this.root.data.children) {
-        this.root.data.children = [];
-      }
-      this.root.data.children.push(file);
+    this.fileManager.createChild(this.root, name).subscribe(() => {
     });
   }
 }
