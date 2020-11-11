@@ -51,10 +51,8 @@ export class ChangelogService {
     ];
   }
 
-  public get currentVersions(): Versions {
-    return {
-      ...environment.versions,
-    };
+  getCurrentVersions(): Observable<Versions> {
+    return this.http.get<Versions>(environment.apiURL + '/versions');
   }
 
   public get lastUsedVersions(): Versions | null {
@@ -70,14 +68,7 @@ export class ChangelogService {
     }
   }
 
-  get newVersions(): Versions {
-    const lastUsedVersions = this.lastUsedVersions;
-    if (!lastUsedVersions) {
-      return {};
-    }
-
-    const currentVersions = this.currentVersions;
-
+  getVersionDiff(lastUsedVersions: Versions, currentVersions: Versions) {
     const result: Versions = {};
     for (const repo of this.repos) {
       const lastUsedVersion = lastUsedVersions[repo];

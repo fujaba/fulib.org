@@ -145,8 +145,6 @@ processResources {
 	}
 
 	filesMatching([
-			'**/index.html',
-			'**/*.js',
 			'org/fulib/webapp/projectzip/build.gradle',
 			'org/fulib/webapp/version.properties',
 	]) {

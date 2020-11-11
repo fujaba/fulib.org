@@ -84,6 +84,12 @@ public class WebServiceTest
 	}
 
 	@Test
+	public void versions() throws IOException
+	{
+		checkRoute("GET", "/versions");
+	}
+
+	@Test
 	public void courses() throws IOException
 	{
 		when(courses.get(any(), any())).thenReturn("");
