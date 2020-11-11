@@ -37,6 +37,12 @@ export class FileTypeService {
       icon: 'file-code',
       mode: 'text/x-properties',
     },
+    archive: {
+      name: 'Archive',
+      extensions: ['.zip', '.jar'],
+      icon: 'file-zip',
+      mode: 'archive',
+    },
   };
 
   readonly default: FileType = {
