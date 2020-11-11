@@ -35,5 +35,5 @@
   </div>
 </div>
 <ng-container *ngIf="expanded">
-  <app-file-tree *ngFor="let child of root.data?.children || []" [root]="child" [level]="level + 1" [handler]="handler"></app-file-tree>
+  <app-file-tree *ngFor="let child of root.data?.children || []" [root]="child" [level]="level + 1"></app-file-tree>
 </ng-container>

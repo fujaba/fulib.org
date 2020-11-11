@@ -1,7 +1,7 @@
 import {Component, Injector, OnInit, Type, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {switchMap, tap} from 'rxjs/operators';
-import {FileHandler} from '../file-handler';
+
 import {FileTabsComponent} from '../file-tabs/file-tabs.component';
 import {FileService} from '../file.service';
 import {FILE_ROOT} from '../injection-tokens';
@@ -26,12 +26,6 @@ export class ProjectWorkspaceComponent implements OnInit {
   project: Project;
   fileRoot: File;
 
-  fileHandler: FileHandler = {
-    open: (file: File) => this.fileTabs.open(file),
-    rename: (file: File) => {},
-    delete: (file: File) => this.fileTabs.close(file),
-  };
-
   @ViewChild('fileTabs') fileTabs: FileTabsComponent;
 
   sidebarItems: Record<string, SidebarItem> = {};
@@ -51,7 +45,6 @@ export class ProjectWorkspaceComponent implements OnInit {
       parent: parentInjector,
       providers: [
         {provide: FILE_ROOT, useFactory: () => this.fileRoot},
-        {provide: FileHandler, useValue: this.fileHandler},
         {provide: Project, useFactory: () => this.project},
       ],
     });

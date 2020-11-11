@@ -1,7 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
-import {filter} from 'rxjs/operators';
-import {FileHandler} from '../file-handler';
 import {FileManager} from '../file.manager';
 import {File} from '../model/file';
 
@@ -16,7 +14,6 @@ import {File} from '../model/file';
 export class FileTreeComponent implements OnInit {
   @Input() root: File;
   @Input() level = 0;
-  @Input() handler: FileHandler;
 
   expanded = false;
   oldName?: string;
@@ -31,7 +28,7 @@ export class FileTreeComponent implements OnInit {
 
   open() {
     if (!this.root.name.endsWith('/')) {
-      this.handler?.open(this.root);
+      this.fileManager.open(this.root);
       return;
     }
 
@@ -47,7 +44,6 @@ export class FileTreeComponent implements OnInit {
   finishRenaming() {
     this.fileManager.update(this.root).subscribe(_ => {
       this.oldName = undefined;
-      this.handler.rename(this.root);
     });
   }
 
@@ -59,7 +55,6 @@ export class FileTreeComponent implements OnInit {
   delete() {
     if (confirm(`Delete ${this.root.name}?`)) {
       this.fileManager.delete(this.root).subscribe(() => {
-        this.handler?.delete(this.root);
       });
     }
   }
