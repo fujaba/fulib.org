@@ -15,6 +15,7 @@ public class File
 	public static final String PROPERTY_PARENT_ID = "parentId";
 
 	public static final String PROPERTY_NAME = "name";
+	public static final String PROPERTY_DIRECTORY = "directory";
 
 	public static final String PROPERTY_CREATED = "created";
 	public static final String PROPERTY_MODIFIED = "modified";
@@ -27,6 +28,8 @@ public class File
 	private String parentId;
 
 	private String name;
+
+	private boolean directory;
 
 	private Instant created;
 	private Instant modified;
@@ -85,6 +88,16 @@ public class File
 	public void setName(String name)
 	{
 		this.name = name;
+	}
+
+	public boolean isDirectory()
+	{
+		return directory;
+	}
+
+	public void setDirectory(boolean directory)
+	{
+		this.directory = directory;
 	}
 
 	public Instant getCreated()

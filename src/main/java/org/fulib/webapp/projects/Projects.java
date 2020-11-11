@@ -95,12 +95,13 @@ public class Projects
 
 		this.mongo.saveProject(project);
 
-		final File rootFile = new File(rootFileId);
-		rootFile.setName("./");
-		rootFile.setUserId(userId);
-		rootFile.setProjectId(id);
-		rootFile.setCreated(now);
-		this.mongo.saveFile(rootFile);
+		final File rootDir = new File(rootFileId);
+		rootDir.setName(".");
+		rootDir.setDirectory(true);
+		rootDir.setUserId(userId);
+		rootDir.setProjectId(id);
+		rootDir.setCreated(now);
+		this.mongo.saveFile(rootDir);
 
 		JSONObject responseJson = toJson(project);
 

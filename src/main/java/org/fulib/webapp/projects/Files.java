@@ -59,6 +59,7 @@ public class Files
 		obj.put(File.PROPERTY_PROJECT_ID, file.getProjectId());
 		obj.put(File.PROPERTY_PARENT_ID, file.getParentId());
 		obj.put(File.PROPERTY_NAME, file.getName());
+		obj.put(File.PROPERTY_DIRECTORY, file.isDirectory());
 		obj.put(File.PROPERTY_CREATED, file.getCreated());
 		obj.put(File.PROPERTY_MODIFIED, file.getModified());
 		return obj;
@@ -87,8 +88,12 @@ public class Files
 
 		final String id = IDGenerator.generateID();
 		final File file = new File(id);
-		readJson(new JSONObject(request.body()), file);
+		final JSONObject requestJson = new JSONObject(request.body());
+		readJson(requestJson, file);
 
+		// this happens here instead of in readJson because file vs directory can only be decided in POST,
+		// not changed in PUT
+		file.setDirectory(requestJson.getBoolean(File.PROPERTY_DIRECTORY));
 		file.setCreated(Instant.now());
 		file.setProjectId(projectId);
 		file.setUserId(project.getUserId());
