@@ -32,7 +32,7 @@ export class ProjectWorkspaceComponent implements OnInit {
 
   injector: Injector;
 
-  active: string = 'project';
+  active?: string = 'project';
 
   constructor(
     parentInjector: Injector,
