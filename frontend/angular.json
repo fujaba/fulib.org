@@ -25,7 +25,8 @@
             "aot": true,
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              "src/LICENSE.md"
             ],
             "styles": [
               "src/styles.scss"
