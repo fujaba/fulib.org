@@ -101,10 +101,10 @@ public class Projects
 		final String userId = Authenticator.getUserIdOr401(request);
 		project.setUserId(userId);
 
-		this.mongo.saveProject(project);
-
 		final String rootFileId = IDGenerator.generateID();
 		project.setRootFileId(rootFileId);
+
+		this.mongo.saveProject(project);
 
 		final File rootFile = new File(rootFileId);
 		rootFile.setName("./");
