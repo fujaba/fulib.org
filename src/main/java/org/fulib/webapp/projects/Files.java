@@ -93,6 +93,8 @@ public class Files
 		file.setProjectId(projectId);
 		file.setUserId(project.getUserId());
 
+		this.mongo.saveFile(file);
+
 		final JSONObject json = this.toJson(file);
 		return json.toString(2);
 	}
