@@ -78,10 +78,17 @@ export class FileManager {
       if (!parent.data) {
         parent.data = {};
       }
-      if (!parent.data.children) {
-        parent.data.children = [];
+      const parentChildren = parent.data.children;
+      if (!parentChildren) {
+        parent.data.children = [file];
+      } else {
+        const index = parentChildren.findIndex(f => File.compare(f, file) > 0);
+        if (index >= 0) {
+          parentChildren.splice(index, 0, file);
+        } else {
+          parentChildren.push(file);
+        }
       }
-      parent.data.children.push(file);
     }));
   }
 
