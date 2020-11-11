@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Project} from '../model/project';
+import {Project, ProjectStub} from '../model/project';
 import {ProjectsService} from '../projects.service';
 
 @Component({
@@ -10,14 +10,14 @@ import {ProjectsService} from '../projects.service';
 export class ProjectListComponent implements OnInit {
   projects: Project[] = [];
 
-  newProject: Project = this.createProject();
+  newProject: ProjectStub = this.createProject();
 
   constructor(
     private projectsService: ProjectsService,
   ) {
   }
 
-  createProject(): Project {
+  createProject(): ProjectStub {
     return {
       name: '',
       description: '',

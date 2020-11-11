@@ -1,7 +1,10 @@
-export class Project {
-  id?: string;
-  user?: string;
+export class ProjectStub {
   name: string;
   description: string;
-  created?: Date;
+}
+
+export class Project extends ProjectStub {
+  id: string;
+  user: string;
+  created: Date;
 }

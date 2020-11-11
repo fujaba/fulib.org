@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {Project} from '../model/project';
+import {ProjectStub} from '../model/project';
 
 @Component({
   selector: 'app-project-form',
@@ -7,5 +7,5 @@ import {Project} from '../model/project';
   styleUrls: ['./project-form.component.scss'],
 })
 export class ProjectFormComponent {
-  @Input() project: Project;
+  @Input() project: ProjectStub;
 }

@@ -6,7 +6,7 @@ import {switchMap} from 'rxjs/operators';
 
 import {environment} from '../../environments/environment';
 import {UserService} from '../user/user.service';
-import {Project} from './model/project';
+import {Project, ProjectStub} from './model/project';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +19,7 @@ export class ProjectsService {
   ) {
   }
 
-  create(project: Project): Observable<Project> {
+  create(project: ProjectStub): Observable<Project> {
     return this.http.post<Project>(`${environment.apiURL}/projects`, project);
   }
 
