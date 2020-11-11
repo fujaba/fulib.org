@@ -93,6 +93,7 @@ export class FileManager {
   }
 
   update(file: File): Observable<File> {
+    file.data?.parent?.data?.children?.sort(File.compare);
     return this.fileService.update(file).pipe(tap(() => this.updates.next(file)));
   }
 
