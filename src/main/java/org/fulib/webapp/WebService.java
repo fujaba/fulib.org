@@ -8,6 +8,7 @@ import org.fulib.webapp.mongo.Mongo;
 import org.fulib.webapp.projectzip.ProjectZip;
 import org.fulib.webapp.tool.MarkdownUtil;
 import org.fulib.webapp.tool.RunCodeGen;
+import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
 import spark.Service;
@@ -21,25 +22,18 @@ public class WebService
 {
 	// =============== Static Fields ===============
 
-	public static final String VERSION;
-	public static final String FULIB_SCENARIOS_VERSION;
-	public static final String FULIB_MOCKUPS_VERSION;
+	public static final Properties VERSIONS = new Properties();
 
 	static
 	{
-		final Properties props = new Properties();
 		try
 		{
-			props.load(WebService.class.getResourceAsStream("version.properties"));
+			VERSIONS.load(WebService.class.getResourceAsStream("version.properties"));
 		}
 		catch (Exception e)
 		{
 			Logger.getGlobal().throwing("WebService", "static init", e);
 		}
-
-		VERSION = props.getProperty("webapp.version");
-		FULIB_SCENARIOS_VERSION = props.getProperty("fulibScenarios.version");
-		FULIB_MOCKUPS_VERSION = props.getProperty("fulibMockups.version");
 	}
 
 	public static final String PASSWORD_ENV_KEY = "FULIB_ORG_MONGODB_PASSWORD";
@@ -181,6 +175,7 @@ public class WebService
 	{
 		service.post("/runcodegen", runCodeGen::handle);
 		service.post("/projectzip", projectZip::handle);
+		service.get("/versions", (req, res) -> new JSONObject(VERSIONS).toString(2));
 	}
 
 	private void addUtilRoutes()
