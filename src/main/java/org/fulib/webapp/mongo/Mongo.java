@@ -2,11 +2,14 @@ package org.fulib.webapp.mongo;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
+import com.mongodb.MongoGridFSException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.gridfs.GridFSBucket;
+import com.mongodb.client.gridfs.GridFSBuckets;
+import com.mongodb.client.gridfs.model.GridFSFile;
 import com.mongodb.client.model.*;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecProvider;
@@ -19,6 +22,8 @@ import org.fulib.webapp.assignment.model.*;
 import org.fulib.webapp.projects.model.File;
 import org.fulib.webapp.projects.model.Project;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -124,6 +129,8 @@ public class Mongo
 		this.projectFiles.createIndex(Indexes.ascending(File.PROPERTY_USER_ID));
 		this.projectFiles.createIndex(Indexes.ascending(File.PROPERTY_PARENT_ID));
 
+		this.projectFilesFS = GridFSBuckets.create(this.database, PROJECT_FILES_COLLECTION_NAME);
+
 		this.assignments = this.database.getCollection(ASSIGNMENT_COLLECTION_NAME, Assignment.class)
 		                                .withCodecRegistry(this.pojoCodecRegistry);
 		this.assignments.createIndex(Indexes.ascending(Assignment.PROPERTY_id));
@@ -223,6 +230,22 @@ public class Mongo
 	public void deleteFile(String id)
 	{
 		this.projectFiles.deleteOne(Filters.eq(File.PROPERTY_ID, id));
+	}
+
+	public void uploadFile(String id, InputStream input)
+	{
+		this.projectFilesFS.uploadFromStream(id, input);
+	}
+
+	public void downloadFile(String id, OutputStream output)
+	{
+		try
+		{
+			this.projectFilesFS.downloadToStream(id, output);
+		}
+		catch (MongoGridFSException ignored)
+		{
+		}
 	}
 
 	// --------------- Assignments ---------------

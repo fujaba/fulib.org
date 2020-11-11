@@ -11,6 +11,7 @@ import spark.Request;
 import spark.Response;
 import spark.Spark;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
 
@@ -134,5 +135,27 @@ public class Files
 		this.mongo.deleteFile(id);
 
 		return "{}";
+	}
+
+	public Object upload(Request request, Response response) throws IOException
+	{
+		final String id = request.params("fileId");
+		final File file = getOr404(this.mongo, id);
+		checkAuth(request, file);
+
+		this.mongo.uploadFile(file.getId(), request.raw().getInputStream());
+
+		return "";
+	}
+
+	public Object download(Request request, Response response) throws IOException
+	{
+		final String id = request.params("fileId");
+		final File file = getOr404(this.mongo, id);
+		checkAuth(request, file);
+
+		this.mongo.downloadFile(file.getId(), response.raw().getOutputStream());
+
+		return "";
 	}
 }

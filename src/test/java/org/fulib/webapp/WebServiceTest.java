@@ -111,18 +111,24 @@ public class WebServiceTest
 		when(files.create(any(), any())).thenReturn("");
 		when(files.update(any(), any())).thenReturn("");
 		when(files.delete(any(), any())).thenReturn("");
+		when(files.download(any(), any())).thenReturn("");
+		when(files.upload(any(), any())).thenReturn("");
 
 		checkRoute("POST", "/projects/p1/files");
 		checkRoute("GET", "/projects/p1/files");
 		checkRoute("GET", "/projects/p1/files/f1");
 		checkRoute("PUT", "/projects/p1/files/f1");
 		checkRoute("DELETE", "/projects/p1/files/f1");
+		checkRoute("GET", "/projects/p1/files/f1/content");
+		checkRoute("PUT", "/projects/p1/files/f1/content");
 
 		verify(files).get(any(), any());
 		verify(files).getChildren(any(), any());
 		verify(files).create(any(), any());
 		verify(files).update(any(), any());
 		verify(files).delete(any(), any());
+		verify(files).download(any(), any());
+		verify(files).upload(any(), any());
 	}
 
 	@Test

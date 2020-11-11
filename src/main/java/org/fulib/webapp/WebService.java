@@ -204,6 +204,9 @@ public class WebService
 		service.get("", files::get);
 		service.put("", files::update);
 		service.delete("", files::delete);
+
+		service.get("/content", files::download);
+		service.put("/content", files::upload);
 	}
 
 	private void addUtilRoutes()
