@@ -52,8 +52,7 @@ export class ChangelogService {
   }
 
   getCurrentVersions(): Observable<Versions> {
-    // return this.http.get<Versions>(environment.apiURL + '/version');
-    return of(environment.versions);
+    return this.http.get<Versions>(environment.apiURL + '/versions');
   }
 
   public get lastUsedVersions(): Versions | null {
