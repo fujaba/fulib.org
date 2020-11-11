@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {EMPTY, Observable, of} from 'rxjs';
-import {flatMap, map} from 'rxjs/operators';
+import {EMPTY, Observable} from 'rxjs';
+import {flatMap} from 'rxjs/operators';
 import {MarkdownService} from './markdown.service';
 
 import {PrivacyService} from './privacy.service';
