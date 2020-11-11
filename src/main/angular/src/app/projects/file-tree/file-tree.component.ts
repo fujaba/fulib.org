@@ -18,7 +18,7 @@ export class FileTreeComponent implements OnInit {
   @Input() handler: FileHandler;
 
   expanded = false;
-  newName?: string;
+  oldName?: string;
 
   constructor(
     private fileService: FileService,
@@ -49,19 +49,19 @@ export class FileTreeComponent implements OnInit {
   }
 
   startRenaming() {
-    this.newName = this.root.name;
+    this.oldName = this.root.name;
   }
 
   finishRenaming() {
-    this.root.name = this.newName!;
     this.fileService.update(this.root).subscribe(_ => {
-      this.newName = undefined;
+      this.oldName = undefined;
       this.handler.rename(this.root);
     });
   }
 
   cancelRenaming() {
-    this.newName = undefined;
+    this.root.name = this.oldName!;
+    this.oldName = undefined;
   }
 
   delete() {

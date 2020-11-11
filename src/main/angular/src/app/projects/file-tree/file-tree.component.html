@@ -1,14 +1,14 @@
 <div class="file-item" (click)="open()" (contextmenu)="openContextMenu($event, dropdown)">
   <div class="file-item-indent" [style.margin-left.em]="level - 0.5">
     <app-file-icon class="mr-2" [file]="root" [open]="expanded"></app-file-icon>
-    <input *ngIf="newName"
+    <input *ngIf="oldName"
            type="text" class="name-input flex-grow-1" aria-label="New Name"
            (click)="$event.stopImmediatePropagation()"
            (change)="finishRenaming()"
            (keyup.escape)="cancelRenaming()"
-           [(ngModel)]="newName"
+           [(ngModel)]="root.name"
     >
-    <div *ngIf="!newName" class="flex-grow-1">
+    <div *ngIf="!oldName" class="flex-grow-1">
       {{root.name}}
       <span class="text-muted" *ngIf="root.data?.info">
         {{root.data?.info}}
