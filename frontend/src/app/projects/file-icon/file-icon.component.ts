@@ -11,7 +11,7 @@ export class FileIconComponent {
   @Input() open?: boolean;
 
   get icon(): string {
-    if (this.file.name.endsWith('/')) {
+    if (this.file.directory) {
       return this.open ? 'file-directory-open' : 'file-directory';
     }
 

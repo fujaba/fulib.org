@@ -40,11 +40,12 @@ export class FileManager {
     }));
   }
 
-  createChild(parent: File, name: string): Observable<File> {
+  createChild(parent: File, name: string, directory: boolean): Observable<File> {
     const file: FileStub = {
       projectId: parent.projectId,
       parentId: parent.id,
       name,
+      directory,
     };
     return this.fileService.create(file).pipe(tap(file => {
       if (!file.data) {

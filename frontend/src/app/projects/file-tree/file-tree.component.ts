@@ -27,7 +27,7 @@ export class FileTreeComponent implements OnInit {
   }
 
   open() {
-    if (!this.root.name.endsWith('/')) {
+    if (!this.root.directory) {
       this.fileManager.open(this.root);
       return;
     }
@@ -69,15 +69,15 @@ export class FileTreeComponent implements OnInit {
   }
 
   createFile() {
-    this.addChild('untitled.txt');
+    this.addChild('untitled.txt', false);
   }
 
   createDir() {
-    this.addChild('untitled/');
+    this.addChild('untitled', true);
   }
 
-  private addChild(name: string) {
-    this.fileManager.createChild(this.root, name).subscribe(() => {
+  private addChild(name: string, directory: boolean) {
+    this.fileManager.createChild(this.root, name, directory).subscribe(() => {
     });
   }
 }

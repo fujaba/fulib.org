@@ -2,6 +2,7 @@ export class FileStub {
   projectId: string;
   parentId: string;
   name: string;
+  directory: boolean;
 }
 
 export class File extends FileStub {
