@@ -46,18 +46,6 @@ public class WebServiceTest
 	}
 
 	@Test
-	public void index() throws IOException
-	{
-		checkRoute("GET", "/index.html");
-	}
-
-	@Test
-	public void github() throws IOException
-	{
-		checkRoute("GET", "/github", 302);
-	}
-
-	@Test
 	public void runCodeGen() throws Exception
 	{
 		when(runCodeGen.handle(any(), any())).thenReturn("");

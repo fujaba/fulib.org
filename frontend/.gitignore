@@ -44,3 +44,10 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# Generated Diagrams
+src/assets/examples/**/*.html
+src/assets/examples/**/*.png
+src/assets/examples/**/*.svg
+src/assets/examples/**/*.txt
+src/assets/examples/**/*.yaml

@@ -31,4 +31,4 @@ cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
-    - src/main/angular/node_modules
+    - frontend/node_modules

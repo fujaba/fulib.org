@@ -1,0 +1,136 @@
+name: CI/CD
+
+on:
+  - push
+
+jobs:
+  frontend:
+    name: Node ${{ matrix.node }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+      matrix:
+        node:
+          - '12'
+          - '14'
+        os:
+          - ubuntu
+          - windows
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Set up Node ${{ matrix.node }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Install PNPM
+        run: npm install -g pnpm
+      - name: Cache PNPM Store
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.pnpm-store
+            /.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm
+      - name: Install Angular CLI
+        run: pnpm install -g @angular/cli
+      - name: Setup Angular CLI to use PNPM
+        run: ng config -g cli.packageManager pnpm
+      - name: Install packages
+        run: pnpm install --shamefully-hoist
+      - name: Build Angular
+        run: ng build --prod
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF##*/})"
+        id: extract_branch
+      - name: Extract service name
+        id: extract_service
+        if: matrix.os == 'ubuntu' && matrix.node == 14 && (steps.extract_branch.outputs.branch == 'develop' || startsWith(github.ref, 'refs/tags/v'))
+        shell: bash
+        run: |
+          case "${GITHUB_REF##*/}" in
+             develop) echo "##[set-output name=suffix;]$(echo develop)" ;;
+             *)       echo "##[set-output name=suffix;]$(echo deploy)" ;;
+          esac
+      - name: Build and Release the Docker image
+        if: matrix.os == 'ubuntu' && matrix.node == 14 && (steps.extract_branch.outputs.branch == 'develop' || startsWith(github.ref, 'refs/tags/v'))
+        run: |
+          docker login ${{ secrets.DOCKER_REGISTRY }} -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -t ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-frontend:${{ steps.extract_branch.outputs.branch }} .
+          docker push ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-frontend:${{ steps.extract_branch.outputs.branch }}
+      - name: Deploy the Docker image to rancher
+        if: matrix.os == 'ubuntu' && matrix.node == 14 && (steps.extract_branch.outputs.branch == 'develop' || startsWith(github.ref, 'refs/tags/v'))
+        uses: sekassel-research/actions-rancher-update@1.1.1
+        with:
+          rancher_url: ${{ secrets.RANCHER_URL }}
+          rancher_access: ${{ secrets.RANCHER_ACCESS }}
+          rancher_key: ${{ secrets.RANCHER_KEY }}
+          project_id: ${{ secrets.RANCHER_PROJECT }}
+          stack_name: ${{ secrets.RANCHER_STACK }}
+          service_name: ${{ secrets.RANCHER_SERVICE }}-frontend-${{ steps.extract_service.outputs.suffix }}
+          docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-frontend:${{ steps.extract_branch.outputs.branch }}
+  backend:
+    name: Java ${{ matrix.java }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+      matrix:
+        java:
+          - 8
+          - 11
+        os:
+          - ubuntu
+          - windows
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java }}
+          java-package: jdk
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle
+      - name: Build with Gradle
+        run: ./gradlew build && ./gradlew --stop
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF##*/})"
+        id: extract_branch
+      - name: Extract service name
+        id: extract_service
+        if: matrix.os == 'ubuntu' && matrix.java == 8 && (steps.extract_branch.outputs.branch == 'develop' || startsWith(github.ref, 'refs/tags/v'))
+        shell: bash
+        run: |
+          case "${GITHUB_REF##*/}" in
+             develop) echo "##[set-output name=suffix;]$(echo develop)" ;;
+             *)       echo "##[set-output name=suffix;]$(echo deploy)" ;;
+          esac
+      - name: Build and Release the Docker image
+        if: matrix.os == 'ubuntu' && matrix.java == 8 && (steps.extract_branch.outputs.branch == 'develop' || startsWith(github.ref, 'refs/tags/v'))
+        run: |
+          docker login ${{ secrets.DOCKER_REGISTRY }} -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -t ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-backend:${{ steps.extract_branch.outputs.branch }} .
+          docker push ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-backend:${{ steps.extract_branch.outputs.branch }}
+      - name: Deploy the Docker image to rancher
+        if: matrix.os == 'ubuntu' && matrix.java == 8 && (steps.extract_branch.outputs.branch == 'develop' || startsWith(github.ref, 'refs/tags/v'))
+        uses: sekassel-research/actions-rancher-update@1.1.1
+        with:
+          rancher_url: ${{ secrets.RANCHER_URL }}
+          rancher_access: ${{ secrets.RANCHER_ACCESS }}
+          rancher_key: ${{ secrets.RANCHER_KEY }}
+          project_id: ${{ secrets.RANCHER_PROJECT }}
+          stack_name: ${{ secrets.RANCHER_STACK }}
+          service_name: ${{ secrets.RANCHER_SERVICE }}-backend-${{ steps.extract_service.outputs.suffix }}
+          docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-backend:${{ steps.extract_branch.outputs.branch }}
