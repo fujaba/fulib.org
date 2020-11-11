@@ -169,7 +169,7 @@ String getDependencyVersion(Configuration config, String group, String name) {
 
 // --------------- Test Scenarios ---------------
 
-def testScenariosDir = file 'src/main/angular/src/assets/examples'
+def testScenariosDir = file 'frontend/src/assets/examples'
 def testOutputDir = file "$buildDir/generated/sources/scenarios/java/test"
 
 sourceSets.test.scenarios.srcDir testScenariosDir
