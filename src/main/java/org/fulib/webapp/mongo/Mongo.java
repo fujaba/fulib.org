@@ -9,8 +9,10 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSBuckets;
-import com.mongodb.client.gridfs.model.GridFSFile;
-import com.mongodb.client.model.*;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Indexes;
+import com.mongodb.client.model.ReplaceOptions;
+import com.mongodb.client.model.Sorts;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -219,7 +221,11 @@ public class Mongo
 
 	public List<File> getFilesByParent(String parent)
 	{
-		return this.projectFiles.find(Filters.eq(File.PROPERTY_PARENT_ID, parent)).into(new ArrayList<>());
+		// sort directories first, then by name
+		return this.projectFiles
+			.find(Filters.eq(File.PROPERTY_PARENT_ID, parent))
+			.sort(Sorts.orderBy(Sorts.descending(File.PROPERTY_DIRECTORY), Sorts.ascending(File.PROPERTY_NAME)))
+			.into(new ArrayList<>());
 	}
 
 	public void saveFile(File file)
