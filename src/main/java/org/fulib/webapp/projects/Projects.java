@@ -2,6 +2,7 @@ package org.fulib.webapp.projects;
 
 import org.fulib.webapp.WebService;
 import org.fulib.webapp.mongo.Mongo;
+import org.fulib.webapp.projects.model.File;
 import org.fulib.webapp.projects.model.Project;
 import org.fulib.webapp.tool.Authenticator;
 import org.fulib.webapp.tool.IDGenerator;
@@ -84,6 +85,7 @@ public class Projects
 		obj.put(Project.PROPERTY_NAME, project.getName());
 		obj.put(Project.PROPERTY_DESCRIPTION, project.getDescription());
 		obj.put(Project.PROPERTY_CREATED, project.getCreated().toString());
+		obj.put(Project.PROPERTY_ROOT_FILE_ID, project.getRootFileId());
 		return obj;
 	}
 
@@ -93,12 +95,23 @@ public class Projects
 		final Project project = new Project(id);
 		this.readJson(new JSONObject(request.body()), project);
 
-		project.setCreated(Instant.now());
+		final Instant now = Instant.now();
+		project.setCreated(now);
 
 		final String userId = Authenticator.getUserIdOr401(request);
 		project.setUserId(userId);
 
 		this.mongo.saveProject(project);
+
+		final String rootFileId = IDGenerator.generateID();
+		project.setRootFileId(rootFileId);
+
+		final File rootFile = new File(rootFileId);
+		rootFile.setName("./");
+		rootFile.setUserId(userId);
+		rootFile.setProjectId(id);
+		rootFile.setCreated(now);
+		this.mongo.saveFile(rootFile);
 
 		JSONObject responseJson = toJson(project);
 
