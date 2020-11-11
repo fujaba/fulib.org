@@ -24,6 +24,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
   repos?: (keyof Versions)[];
   versions?: Versions;
+  showChangelog = false;
 
   username?: string;
 
@@ -35,13 +36,24 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     });
 
     this.repos = this.changelogService.repos;
-    this.versions = this.changelogService.currentVersions;
+    this.changelogService.getCurrentVersions().subscribe(currentVersions => {
+      this.versions = currentVersions;
+      if (this.changelogService.autoShow) {
+        const lastUsedVersions = this.changelogService.lastUsedVersions;
+        if (lastUsedVersions) {
+          const newVersions = this.changelogService.getVersionDiff(lastUsedVersions, currentVersions);
+          if (Object.keys(newVersions).length) {
+            this.showChangelog = true;
+          }
+        }
+      }
+    });
   }
 
   ngAfterViewInit(): void {
     if (this.privacyService.privacy === null) {
       this.router.navigate([{outlets: {modal: 'privacy'}}], {relativeTo: this.route});
-    } else if (this.changelogService.autoShow && Object.keys(this.changelogService.newVersions).length) {
+    } else if (this.showChangelog) {
       this.router.navigate([{outlets: {modal: 'changelog'}}], {relativeTo: this.route});
     }
   }

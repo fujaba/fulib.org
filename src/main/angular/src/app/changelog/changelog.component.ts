@@ -33,30 +33,45 @@ export class ChangelogComponent implements OnInit {
   ngOnInit(): void {
     this.repos = this.changelogService.repos;
     this.lastUsedVersions = this.changelogService.lastUsedVersions;
-    this.currentVersions = this.changelogService.currentVersions;
     this.changelogs = new Versions();
 
-    const newVersions = this.changelogService.newVersions;
-    const newRepos = Object.keys(newVersions) as (keyof Versions)[];
-    if (newRepos.length === 0) {
-      // show all
-      this.activeRepo = this.repos[0];
-      for (const repo of this.repos) {
-        this.changelogs[repo] = 'Loading...';
-        this.changelogService.getChangelog(repo).subscribe(changelog => {
-          this.changelogs[repo] = changelog;
-        });
+    this.changelogService.getCurrentVersions().subscribe(currentVersions => {
+      this.currentVersions = currentVersions;
+      if (!this.lastUsedVersions) {
+        this.showAll();
+        this.changelogService.lastUsedVersions = this.currentVersions;
+        return;
       }
-    } else {
-      // show only new
-      this.activeRepo = newRepos[0];
-      for (const repo of newRepos) {
-        this.changelogs[repo] = 'Loading...';
-        this.changelogService.getChangelog(repo, this.lastUsedVersions![repo], this.currentVersions[repo]).subscribe(changelog => {
-          this.changelogs[repo] = changelog;
-        });
+
+      const newVersions = this.changelogService.getVersionDiff(this.lastUsedVersions, currentVersions);
+      const newRepos = Object.keys(newVersions) as (keyof Versions)[];
+      if (newRepos.length === 0) {
+        this.showAll();
+      } else {
+        this.showNewVersions(newRepos);
+        this.changelogService.lastUsedVersions = this.currentVersions;
       }
-      this.changelogService.lastUsedVersions = this.currentVersions;
+    })
+
+  }
+
+  private showAll() {
+    this.activeRepo = this.repos[0];
+    for (const repo of this.repos) {
+      this.changelogs[repo] = 'Loading...';
+      this.changelogService.getChangelog(repo).subscribe(changelog => {
+        this.changelogs[repo] = changelog;
+      });
+    }
+  }
+
+  private showNewVersions(newRepos: (keyof Versions)[]) {
+    this.activeRepo = newRepos[0];
+    for (const repo of newRepos) {
+      this.changelogs[repo] = 'Loading...';
+      this.changelogService.getChangelog(repo, this.lastUsedVersions![repo], this.currentVersions[repo]).subscribe(changelog => {
+        this.changelogs[repo] = changelog;
+      });
     }
   }
 }
