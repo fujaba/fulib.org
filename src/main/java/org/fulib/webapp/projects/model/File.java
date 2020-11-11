@@ -1,5 +1,8 @@
 package org.fulib.webapp.projects.model;
 
+import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
+
 import java.time.Instant;
 
 public class File
@@ -30,13 +33,15 @@ public class File
 
 	// =============== Constructors ===============
 
-	public File(String id)
+	@BsonCreator
+	public File(@BsonProperty(PROPERTY_ID) String id)
 	{
 		this.id = id;
 	}
 
 	// =============== Properties ===============
 
+	@BsonProperty(PROPERTY_ID)
 	public String getId()
 	{
 		return this.id;
