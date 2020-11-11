@@ -12,21 +12,7 @@
       </span>
     </a>
     <ng-template ngbNavContent>
-      <app-autotheme-codemirror
-        class="cm-h-100"
-        [(content)]="file.data.content"
-        (contentChange)="setDirty(file)"
-        [options]="{
-        mode: 'java',
-        lineNumbers: true,
-        lineWrapping: true,
-        styleActiveLine: true,
-        extraKeys: {
-          'Ctrl-S': save.bind(this, file),
-          'Cmd-S': save.bind(this, file)
-        },
-        autoRefresh: true
-      }"></app-autotheme-codemirror>
+      <app-file-code-editor [file]="file"></app-file-code-editor>
     </ng-template>
   </li>
 </ul>

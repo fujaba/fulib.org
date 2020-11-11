@@ -1,0 +1,15 @@
+<app-autotheme-codemirror
+  class="cm-h-100"
+  [content]="file.data?.content"
+  (contentChange)="setContent($event)"
+  [options]="{
+  mode: 'java',
+  lineNumbers: true,
+  lineWrapping: true,
+  styleActiveLine: true,
+  extraKeys: {
+    'Ctrl-S': save.bind(this),
+    'Cmd-S': save.bind(this)
+  },
+  autoRefresh: true
+}"></app-autotheme-codemirror>
