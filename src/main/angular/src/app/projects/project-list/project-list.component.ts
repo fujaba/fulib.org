@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Project, ProjectStub} from '../model/project';
-import {ProjectsService} from '../projects.service';
+import {ProjectService} from '../project.service';
 
 @Component({
   selector: 'app-project-list',
@@ -13,7 +13,7 @@ export class ProjectListComponent implements OnInit {
   newProject: ProjectStub = this.createProject();
 
   constructor(
-    private projectsService: ProjectsService,
+    private projectService: ProjectService,
   ) {
   }
 
@@ -25,11 +25,11 @@ export class ProjectListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.projectsService.getOwn().subscribe(projects => this.projects = projects);
+    this.projectService.getOwn().subscribe(projects => this.projects = projects);
   }
 
   create(): void {
-    this.projectsService.create(this.newProject).subscribe(project => this.projects.push(project));
+    this.projectService.create(this.newProject).subscribe(project => this.projects.push(project));
     this.newProject = this.createProject();
   }
 }

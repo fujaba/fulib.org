@@ -11,7 +11,7 @@ import {Project, ProjectStub} from './model/project';
 @Injectable({
   providedIn: 'root',
 })
-export class ProjectsService {
+export class ProjectService {
 
   constructor(
     private users: UserService,

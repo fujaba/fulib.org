@@ -7,7 +7,7 @@ import {FILE_ROOT} from '../injection-tokens';
 import {File} from '../model/file.interface';
 import {Project} from '../model/project';
 import {ProjectTreeComponent} from '../project-tree/project-tree.component';
-import {ProjectsService} from '../projects.service';
+import {ProjectService} from '../project.service';
 import {SettingsComponent} from '../settings/settings.component';
 
 function setParents(file: File): File {
@@ -85,7 +85,7 @@ export class ProjectWorkspaceComponent implements OnInit {
   constructor(
     parentInjector: Injector,
     private route: ActivatedRoute,
-    private projectsService: ProjectsService,
+    private projectService: ProjectService,
   ) {
     Object.defineProperty(this.exampleRoot, 'name', {
       get: () => this.project?.name,
@@ -108,7 +108,7 @@ export class ProjectWorkspaceComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.params.pipe(switchMap(params => this.projectsService.get(params.id))).subscribe(project => {
+    this.route.params.pipe(switchMap(params => this.projectService.get(params.id))).subscribe(project => {
       this.project = project;
       this.initSidebar();
     });

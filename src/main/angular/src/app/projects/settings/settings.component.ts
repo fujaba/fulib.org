@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {Project} from '../model/project';
-import {ProjectsService} from '../projects.service';
+import {ProjectService} from '../project.service';
 
 @Component({
   selector: 'app-settings',
@@ -11,7 +11,7 @@ import {ProjectsService} from '../projects.service';
 export class SettingsComponent implements OnInit {
   constructor(
     public project: Project,
-    private projectsService: ProjectsService,
+    private projectService: ProjectService,
     private router: Router,
   ) {
   }
@@ -20,7 +20,7 @@ export class SettingsComponent implements OnInit {
   }
 
   save(): void {
-    this.projectsService.update(this.project).subscribe(result => Object.assign(this.project, result));
+    this.projectService.update(this.project).subscribe(result => Object.assign(this.project, result));
   }
 
   delete(): void {
@@ -28,7 +28,7 @@ export class SettingsComponent implements OnInit {
       return;
     }
 
-    this.projectsService.delete(this.project.id!).subscribe(() => {
+    this.projectService.delete(this.project.id!).subscribe(() => {
       this.router.navigate(['/projects']);
     });
   }
