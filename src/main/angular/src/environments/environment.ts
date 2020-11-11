@@ -7,17 +7,6 @@ export const environment = {
   apiURL: 'http://localhost:4567/api',
   authURL: 'https://avocado.uniks.de/auth',
   authClientId: 'localhost',
-  versions: {
-    // replace undefined with a version string for debugging the changelog view.
-    'fulib.org': undefined,
-    fulib: undefined,
-    fulibTools: undefined,
-    fulibYaml: undefined,
-    fulibTables: undefined,
-    fulibScenarios: undefined,
-    fulibMockups: undefined,
-    fulibGradle: undefined,
-  },
 };
 
 /*
