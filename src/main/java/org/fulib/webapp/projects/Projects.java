@@ -3,6 +3,8 @@ package org.fulib.webapp.projects;
 import org.fulib.webapp.mongo.Mongo;
 import org.fulib.webapp.projects.model.File;
 import org.fulib.webapp.projects.model.Project;
+import org.fulib.webapp.projectzip.ProjectData;
+import org.fulib.webapp.projectzip.ProjectGenerator;
 import org.fulib.webapp.tool.Authenticator;
 import org.fulib.webapp.tool.IDGenerator;
 import org.json.JSONArray;
@@ -11,8 +13,13 @@ import spark.Request;
 import spark.Response;
 import spark.Spark;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class Projects
 {
@@ -78,7 +85,7 @@ public class Projects
 		return obj;
 	}
 
-	public Object create(Request request, Response response)
+	public Object create(Request request, Response response) throws IOException
 	{
 		final String id = IDGenerator.generateID();
 		final Project project = new Project(id);
@@ -90,18 +97,10 @@ public class Projects
 		final String userId = Authenticator.getUserIdOr401(request);
 		project.setUserId(userId);
 
-		final String rootFileId = IDGenerator.generateID();
+		final String rootFileId = this.generateProjectFiles(project);
 		project.setRootFileId(rootFileId);
 
 		this.mongo.saveProject(project);
-
-		final File rootDir = new File(rootFileId);
-		rootDir.setName(".");
-		rootDir.setDirectory(true);
-		rootDir.setUserId(userId);
-		rootDir.setProjectId(id);
-		rootDir.setCreated(now);
-		this.mongo.saveFile(rootDir);
 
 		JSONObject responseJson = toJson(project);
 
@@ -112,6 +111,71 @@ public class Projects
 	{
 		project.setName(obj.getString(Project.PROPERTY_NAME));
 		project.setDescription(obj.getString(Project.PROPERTY_DESCRIPTION));
+	}
+
+	private String generateProjectFiles(Project project) throws IOException
+	{
+		final File rootDir = createFile(project, null, ".", true);
+
+		final Map<String, File> newFiles = new TreeMap<>();
+		newFiles.put(".", rootDir);
+
+		final ProjectData projectData = getProjectData(project);
+		new ProjectGenerator().generate(projectData, (name, output) -> {
+			File parent = rootDir;
+			int index;
+			int prevIndex = 0;
+			while ((index = name.indexOf('/', prevIndex)) >= 0)
+			{
+				final String simpleName = name.substring(prevIndex, index);
+				final File finalParent = parent;
+				parent = newFiles.computeIfAbsent(name.substring(0, index),
+				                                  s -> this.createFile(project, finalParent, simpleName, true));
+				prevIndex = index + 1;
+			}
+
+			final String simpleName = name.substring(prevIndex);
+			final File finalParent = parent;
+			final File file = newFiles.computeIfAbsent(name,
+			                                           s -> this.createFile(project, finalParent, simpleName, false));
+
+			try (OutputStream upload = this.mongo.uploadFile(file.getId()))
+			{
+				output.accept(upload);
+			}
+		});
+
+		this.mongo.createManyFiles(new ArrayList<>(newFiles.values()));
+
+		return rootDir.getId();
+	}
+
+	private ProjectData getProjectData(Project project)
+	{
+		final ProjectData projectData = new ProjectData();
+		projectData.setPackageName("org.example");
+		projectData.setScenarioFileName("Example.md");
+		projectData.setScenarioText("# My First Project\n\nThere is an Example with text Hello World.\n");
+		projectData.setProjectName(project.getName().replaceAll("\\W+", "-"));
+		projectData.setProjectVersion("0.1.0");
+		projectData.setDecoratorClassName("GenModel");
+		return projectData;
+	}
+
+	private File createFile(Project project, File parent, String name, boolean directory)
+	{
+		final String id = IDGenerator.generateID();
+		final File file = new File(id);
+		file.setName(name);
+		file.setDirectory(directory);
+		if (parent != null)
+		{
+			file.setParentId(parent.getId());
+		}
+		file.setUserId(project.getUserId());
+		file.setProjectId(project.getId());
+		file.setCreated(project.getCreated());
+		return file;
 	}
 
 	public Object update(Request request, Response response)

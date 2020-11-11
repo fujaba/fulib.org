@@ -227,9 +227,19 @@ public class Mongo
 		upsert(this.projectFiles, file, File.PROPERTY_ID, file.getId());
 	}
 
+	public void createManyFiles(List<File> files)
+	{
+		this.projectFiles.insertMany(files);
+	}
+
 	public void deleteFile(String id)
 	{
 		this.projectFiles.deleteOne(Filters.eq(File.PROPERTY_ID, id));
+	}
+
+	public OutputStream uploadFile(String id)
+	{
+		return this.projectFilesFS.openUploadStream(id);
 	}
 
 	public void uploadFile(String id, InputStream input)

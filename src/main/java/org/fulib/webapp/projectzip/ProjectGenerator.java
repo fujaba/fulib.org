@@ -9,12 +9,12 @@ import java.nio.charset.StandardCharsets;
 
 public class ProjectGenerator
 {
-	interface FileGenerator
+	public interface FileGenerator
 	{
 		void generate(String name, OutputStreamConsumer output) throws IOException;
 	}
 
-	interface OutputStreamConsumer
+	public interface OutputStreamConsumer
 	{
 		void accept(OutputStream output) throws IOException;
 	}
