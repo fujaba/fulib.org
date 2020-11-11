@@ -43,6 +43,12 @@ export class FileTypeService {
       icon: 'file-zip',
       mode: 'archive',
     },
+    script: {
+      name: 'Script',
+      extensions: ['gradlew', 'gradlew.bat'],
+      icon: 'terminal',
+      mode: 'text/x-sh',
+    },
   };
 
   readonly default: FileType = {
