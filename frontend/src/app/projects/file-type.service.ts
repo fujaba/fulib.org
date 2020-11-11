@@ -31,6 +31,12 @@ export class FileTypeService {
       icon: 'file-code',
       mode: 'text/x-java',
     },
+    properties: {
+      name: 'Properties',
+      extensions: ['.properties'],
+      icon: 'file-code',
+      mode: 'text/x-properties',
+    },
   };
 
   readonly default: FileType = {
