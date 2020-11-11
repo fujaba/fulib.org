@@ -58,6 +58,15 @@ export class ProjectWorkspaceComponent implements OnInit {
       tap(rootFile => this.fileRoot = rootFile),
     ).subscribe(_ => {
       this.initSidebar();
+
+      if (!this.fileRoot.data) {
+        this.fileRoot.data = {};
+      }
+      this.fileRoot.data.info = 'project root';
+      Object.defineProperty(this.fileRoot, 'name', {
+        get: () => this.project.name,
+        set: () => {},
+      });
     });
   }
 
