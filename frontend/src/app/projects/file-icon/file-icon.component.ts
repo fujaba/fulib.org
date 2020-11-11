@@ -1,4 +1,5 @@
 import {Component, Input} from '@angular/core';
+import {FileTypeService} from '../file-type.service';
 import {File} from '../model/file';
 
 @Component({
@@ -10,30 +11,16 @@ export class FileIconComponent {
   @Input() file: File;
   @Input() open?: boolean;
 
+  constructor(
+    private fileTypeService: FileTypeService,
+  ) {
+  }
+
   get icon(): string {
     if (this.file.directory) {
       return this.open ? 'file-directory-open' : 'file-directory';
     }
 
-    const dotIndex = this.file.name.lastIndexOf('.');
-    if (dotIndex < 0) {
-      return 'file';
-    }
-
-    const ext = this.file.name.substring(dotIndex);
-
-    switch (ext) {
-      case '.md':
-        return 'markdown';
-      case '.svg':
-      case '.png':
-        return 'image';
-      case '.gradle':
-        return 'gear';
-      case '.java':
-        return 'file-code';
-      default:
-        return 'file';
-    }
+    return this.fileTypeService.getFileType(this.file).icon;
   }
 }
