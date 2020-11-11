@@ -24,7 +24,6 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
   repos?: (keyof Versions)[];
   versions?: Versions;
-  showChangelog = false;
 
   username?: string;
 
@@ -43,7 +42,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
         if (lastUsedVersions) {
           const newVersions = this.changelogService.getVersionDiff(lastUsedVersions, currentVersions);
           if (Object.keys(newVersions).length) {
-            this.showChangelog = true;
+            this.router.navigate([{outlets: {modal: 'changelog'}}], {relativeTo: this.route});
           }
         }
       }
@@ -53,8 +52,6 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     if (this.privacyService.privacy === null) {
       this.router.navigate([{outlets: {modal: 'privacy'}}], {relativeTo: this.route});
-    } else if (this.showChangelog) {
-      this.router.navigate([{outlets: {modal: 'changelog'}}], {relativeTo: this.route});
     }
   }
 
