@@ -9,8 +9,6 @@ import org.fulib.webapp.projectzip.ProjectZip;
 import org.fulib.webapp.tool.MarkdownUtil;
 import org.fulib.webapp.tool.RunCodeGen;
 import org.json.JSONObject;
-import spark.Request;
-import spark.Response;
 import spark.Service;
 
 import java.io.File;
@@ -95,7 +93,6 @@ public class WebService
 		service.port(4567);
 
 		service.staticFiles.externalLocation(this.runCodeGen.getTempDir());
-		service.staticFiles.location("/org/fulib/webapp/static");
 		service.staticFiles.expireTime(60 * 60);
 
 		if (isDevEnv())
@@ -103,14 +100,10 @@ public class WebService
 			enableCORS();
 		}
 
-		setupRedirects();
-
 		// all endpoints available with and without /api for backward compatibility
 		// TODO remove endpoints without /api in v2
 		addApiRoutes();
 		service.path("/api", this::addApiRoutes);
-
-		service.notFound(WebService::serveIndex);
 
 		setupExceptionHandler();
 
@@ -164,11 +157,6 @@ public class WebService
 	private boolean isDevEnv()
 	{
 		return new File("build.gradle").exists();
-	}
-
-	private void setupRedirects()
-	{
-		service.redirect.get("/github", "https://github.com/fujaba/fulib.org");
 	}
 
 	private void addMainRoutes()
@@ -276,20 +264,5 @@ public class WebService
 
 			return "OK";
 		});
-	}
-
-	public static boolean shouldServiceIndex(Request request)
-	{
-		if (request.matchedPath().startsWith("/api"))
-		{
-			return false;
-		}
-		final String contentType = request.contentType();
-		return contentType == null || !contentType.startsWith("application/json");
-	}
-
-	public static Object serveIndex(Request req, Response res)
-	{
-		return WebService.class.getResourceAsStream("static/index.html");
 	}
 }

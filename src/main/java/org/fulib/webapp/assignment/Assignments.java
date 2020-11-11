@@ -1,6 +1,5 @@
 package org.fulib.webapp.assignment;
 
-import org.fulib.webapp.WebService;
 import org.fulib.webapp.assignment.model.Assignment;
 import org.fulib.webapp.assignment.model.Task;
 import org.fulib.webapp.mongo.Mongo;
@@ -140,11 +139,6 @@ public class Assignments
 
 	public Object get(Request request, Response response)
 	{
-		if (WebService.shouldServiceIndex(request))
-		{
-			return WebService.serveIndex(request, response);
-		}
-
 		final String id = request.params("assignmentID");
 		Assignment assignment = getAssignmentOr404(this.mongo, id);
 		final boolean privileged = isAuthorized(request, assignment);
@@ -154,11 +148,6 @@ public class Assignments
 
 	public Object getAll(Request request, Response response)
 	{
-		if (WebService.shouldServiceIndex(request))
-		{
-			return WebService.serveIndex(request, response);
-		}
-
 		final String userId = Authenticator.getAndCheckUserIdQueryParam(request);
 
 		final List<Assignment> assignments = this.mongo.getAssignmentsByUser(userId);
