@@ -51,4 +51,10 @@ export class FileTabsComponent implements OnInit, OnDestroy {
   save(file: File) {
     this.fileManager.saveContent(file).subscribe(() => {});
   }
+
+  setDirty(file: File) {
+    if (file.data) {
+      file.data.dirty = true;
+    }
+  }
 }

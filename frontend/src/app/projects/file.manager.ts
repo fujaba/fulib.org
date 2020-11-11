@@ -38,7 +38,11 @@ export class FileManager {
     if (!file.data?.content) {
       return EMPTY;
     }
-    return this.fileService.upload(file.projectId, file.id, file.data.content);
+    return this.fileService.upload(file.projectId, file.id, file.data.content).pipe(tap(() => {
+      if (file.data) {
+        file.data.dirty = false;
+      }
+    }));
   }
 
   getChildren(parent: File): Observable<File[]> {

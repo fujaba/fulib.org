@@ -14,6 +14,7 @@ export class File extends FileStub {
 
   data?: {
     content?: string;
+    dirty?: boolean;
     info?: string;
     parent?: File;
     children?: File[];
