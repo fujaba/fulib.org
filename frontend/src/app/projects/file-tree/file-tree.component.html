@@ -16,8 +16,8 @@
     </div>
     <img class="icon hover-only px-1" src="/assets/octicons/pencil-16.svg" alt="Rename" (click)="startRenaming(); $event.stopImmediatePropagation()">
     <img class="icon hover-only px-1" src="/assets/octicons/trashcan-16.svg" alt="Delete" (click)="delete(); $event.stopImmediatePropagation()">
-    <div ngbDropdown #dropdown="ngbDropdown" (click)="$event.stopImmediatePropagation()">
-      <span class="hover-only font-weight-bolder px-1" (click)="dropdown.toggle()">
+    <div ngbDropdown #dropdown="ngbDropdown" container="body" (click)="$event.stopImmediatePropagation()">
+      <span class="hover-only font-weight-bolder px-1" ngbDropdownToggle>
         &#8942;
       </span>
       <div ngbDropdownMenu>

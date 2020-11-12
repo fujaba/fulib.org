@@ -25,6 +25,10 @@
   border: 1px solid #007bff;
 }
 
+.dropdown-toggle::after {
+  display: none;
+}
+
 @media (hover: hover) {
   .file-item .hover-only {
     opacity: 0;
