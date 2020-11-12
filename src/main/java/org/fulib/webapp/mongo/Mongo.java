@@ -9,6 +9,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSBuckets;
+import com.mongodb.client.gridfs.model.GridFSDownloadOptions;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Indexes;
@@ -285,11 +286,11 @@ public class Mongo
 		this.projectFilesFS.uploadFromStream(id, input);
 	}
 
-	public void downloadFile(String id, OutputStream output)
+	public void downloadFile(String id, int revisionNumber, OutputStream output)
 	{
 		try
 		{
-			this.projectFilesFS.downloadToStream(id, output);
+			this.projectFilesFS.downloadToStream(id, output, new GridFSDownloadOptions().revision(revisionNumber));
 		}
 		catch (MongoGridFSException ignored)
 		{

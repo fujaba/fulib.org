@@ -151,10 +151,25 @@ public class Files
 	public Object download(Request request, Response response) throws IOException
 	{
 		final String id = request.params("fileId");
+		final String revision = request.queryParams("revision");
 		final File file = getOr404(this.mongo, id);
 		checkAuth(request, file);
 
-		this.mongo.downloadFile(file.getId(), response.raw().getOutputStream());
+		int revisionNumber = -1;
+		if (revision != null)
+		{
+			try
+			{
+				revisionNumber = Integer.parseInt(revision);
+			}
+			catch (NumberFormatException ex)
+			{
+				// language=JSON
+				throw Spark.halt(401, "{\n" + "  \"error\": \"invalid revision '" + revision + "'\"\n" + "}");
+			}
+		}
+
+		this.mongo.downloadFile(file.getId(), revisionNumber, response.raw().getOutputStream());
 
 		return "";
 	}
