@@ -10,7 +10,7 @@ export class File extends FileStub {
   userId: string;
 
   created: Date;
-  modified: Date;
+  revisions: Date[];
 
   data?: {
     content?: string;

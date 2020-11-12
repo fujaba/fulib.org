@@ -1,0 +1,14 @@
+<table>
+  <tr>
+    <th>#</th>
+    <th>Timestamp</th>
+  </tr>
+  <tr *ngFor="let revision of file.revisions; let index = index">
+    <td>
+      {{index}}
+    </td>
+    <td>
+      {{revision | date:'medium'}}
+    </td>
+  </tr>
+</table>

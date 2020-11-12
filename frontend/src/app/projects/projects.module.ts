@@ -17,6 +17,7 @@ import { ProjectTreeComponent } from './project-tree/project-tree.component';
 import { SettingsComponent } from './settings/settings.component';
 import { ProjectFormComponent } from './project-form/project-form.component';
 import { FileCodeEditorComponent } from './file-code-editor/file-code-editor.component';
+import { FileRevisionsComponent } from './file-revisions/file-revisions.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { FileCodeEditorComponent } from './file-code-editor/file-code-editor.com
     SettingsComponent,
     ProjectFormComponent,
     FileCodeEditorComponent,
+    FileRevisionsComponent,
   ],
   imports: [
     CommonModule,
