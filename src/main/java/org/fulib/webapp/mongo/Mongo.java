@@ -14,6 +14,7 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.ReplaceOptions;
 import com.mongodb.client.model.Sorts;
+import org.bson.BsonValue;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -259,6 +260,19 @@ public class Mongo
 	public void deleteFile(String id)
 	{
 		this.projectFiles.deleteOne(Filters.eq(File.PROPERTY_ID, id));
+		this.deleteRevisions(id);
+	}
+
+	private void deleteRevisions(String id)
+	{
+		final List<BsonValue> fileIds = this.projectFilesFS
+			.find(Filters.eq("filename", id))
+			.map(GridFSFile::getId)
+			.into(new ArrayList<>());
+		for (final BsonValue fileId : fileIds)
+		{
+			this.projectFilesFS.delete(fileId);
+		}
 	}
 
 	public OutputStream uploadFile(String id)
