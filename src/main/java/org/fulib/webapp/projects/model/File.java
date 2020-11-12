@@ -1,9 +1,12 @@
 package org.fulib.webapp.projects.model;
 
 import org.bson.codecs.pojo.annotations.BsonCreator;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 public class File
 {
@@ -18,7 +21,7 @@ public class File
 	public static final String PROPERTY_DIRECTORY = "directory";
 
 	public static final String PROPERTY_CREATED = "created";
-	public static final String PROPERTY_MODIFIED = "modified";
+	public static final String PROPERTY_REVISIONS = "revisions";
 
 	// =============== Fields ===============
 
@@ -32,7 +35,7 @@ public class File
 	private boolean directory;
 
 	private Instant created;
-	private Instant modified;
+	private final List<Instant> revisions = new ArrayList<>();
 
 	// =============== Constructors ===============
 
@@ -110,13 +113,9 @@ public class File
 		this.created = created;
 	}
 
-	public Instant getModified()
+	@BsonIgnore
+	public List<Instant> getRevisions()
 	{
-		return modified;
-	}
-
-	public void setModified(Instant modified)
-	{
-		this.modified = modified;
+		return revisions;
 	}
 }

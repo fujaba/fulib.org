@@ -62,7 +62,7 @@ public class Files
 		obj.put(File.PROPERTY_NAME, file.getName());
 		obj.put(File.PROPERTY_DIRECTORY, file.isDirectory());
 		obj.put(File.PROPERTY_CREATED, file.getCreated());
-		obj.put(File.PROPERTY_MODIFIED, file.getModified());
+		obj.put(File.PROPERTY_REVISIONS, file.getRevisions());
 		return obj;
 	}
 

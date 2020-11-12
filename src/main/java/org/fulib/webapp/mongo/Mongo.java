@@ -9,6 +9,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSBuckets;
+import com.mongodb.client.gridfs.model.GridFSFile;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.ReplaceOptions;
@@ -216,7 +217,12 @@ public class Mongo
 
 	public File getFile(String id)
 	{
-		return this.projectFiles.find(Filters.eq(File.PROPERTY_ID, id)).first();
+		final File file = this.projectFiles.find(Filters.eq(File.PROPERTY_ID, id)).first();
+		if (file != null)
+		{
+			this.withRevisions(file);
+		}
+		return file;
 	}
 
 	public List<File> getFilesByParent(String parent)
@@ -225,7 +231,19 @@ public class Mongo
 		return this.projectFiles
 			.find(Filters.eq(File.PROPERTY_PARENT_ID, parent))
 			.sort(Sorts.orderBy(Sorts.descending(File.PROPERTY_DIRECTORY), Sorts.ascending(File.PROPERTY_NAME)))
+			.map(this::withRevisions)
 			.into(new ArrayList<>());
+	}
+
+	private File withRevisions(File file)
+	{
+		this.projectFilesFS
+			.find(Filters.eq("filename", file.getId()))
+			.sort(Sorts.ascending("uploadData"))
+			.map(GridFSFile::getUploadDate)
+			.map(Date::toInstant)
+			.into(file.getRevisions());
+		return file;
 	}
 
 	public void saveFile(File file)
