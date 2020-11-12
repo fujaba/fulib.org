@@ -1,4 +1,5 @@
-<div class="file-item" (click)="open()" (contextmenu)="openContextMenu($event, dropdown)">
+<div class="file-item" [class.bg-primary]="root === (currentFile | async)"
+     (click)="open()" (contextmenu)="openContextMenu($event, dropdown)">
   <div class="file-item-indent" [style.margin-left.em]="level - 0.5">
     <app-file-icon class="mr-2" [file]="root" [open]="expanded"></app-file-icon>
     <input *ngIf="oldName"

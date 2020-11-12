@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
+import {Observable} from 'rxjs';
 import {FileManager} from '../file.manager';
 import {File} from '../model/file';
 
@@ -17,6 +18,7 @@ export class FileTreeComponent implements OnInit {
 
   expanded = false;
   oldName?: string;
+  currentFile: Observable<File | undefined>;
 
   constructor(
     private fileManager: FileManager,
@@ -24,9 +26,12 @@ export class FileTreeComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.currentFile = this.fileManager.currentFile;
   }
 
   open() {
+    this.fileManager.currentFile.next(this.root);
+
     if (!this.root.directory) {
       this.fileManager.open(this.root);
       return;

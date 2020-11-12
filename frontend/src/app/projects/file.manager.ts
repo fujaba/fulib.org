@@ -1,5 +1,5 @@
 import {EventEmitter, Injectable} from '@angular/core';
-import {EMPTY, Observable, of} from 'rxjs';
+import {BehaviorSubject, EMPTY, Observable, of} from 'rxjs';
 import {tap} from 'rxjs/operators';
 import {FileService} from './file.service';
 import {File, FileStub} from './model/file';
@@ -12,6 +12,8 @@ export class FileManager {
   openRequests = new EventEmitter<File>();
   updates = new EventEmitter<File>();
   deletions = new EventEmitter<File>();
+
+  currentFile = new BehaviorSubject<File | undefined>(undefined);
 
   constructor(
     private fileService: FileService,
