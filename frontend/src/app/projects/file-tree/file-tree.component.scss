@@ -1,9 +1,20 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+
 .file-item {
   cursor: pointer;
 
   &:hover {
     background: rgba(0, 0, 0, 0.25);
   }
+
+  &.active {
+    background: $primary;
+  }
+}
+
+.file-item:not(.active) .dirty {
+  color: $primary;
 }
 
 .file-item-indent {
@@ -22,7 +33,7 @@
   color: inherit;
   width: 100%;
   font-size: 1em;
-  border: 1px solid #007bff;
+  border: 1px solid $primary;
 }
 
 .dropdown-toggle::after {

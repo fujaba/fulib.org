@@ -1,4 +1,4 @@
-<div class="file-item" [class.bg-primary]="root === (currentFile | async)"
+<div class="file-item" [class.active]="root === (currentFile | async)"
      (click)="open()" (contextmenu)="openContextMenu($event, dropdown)">
   <div class="file-item-indent" [style.margin-left.em]="level - 0.5">
     <app-file-icon class="mr-2" [file]="root" [open]="expanded"></app-file-icon>
@@ -9,7 +9,7 @@
            (keyup.escape)="cancelRenaming()"
            [(ngModel)]="root.name"
     >
-    <div *ngIf="!oldName" class="flex-grow-1" [class.text-primary]="root.data?.dirty">
+    <div *ngIf="!oldName" class="flex-grow-1" [class.dirty]="root.data?.dirty">
       {{root.name}}
       <span class="text-muted" *ngIf="root.data?.info">
         {{root.data?.info}}
