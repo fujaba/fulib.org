@@ -25,7 +25,7 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
 
   constructor(
     private fileManager: FileManager,
-    @Inject(FILE_ROOT) private root: File,
+    @Inject(FILE_ROOT) public root: File,
   ) {
   }
 

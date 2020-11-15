@@ -16,22 +16,26 @@
         {{file.data?.info}}
       </span>
     </div>
-    <img class="icon hover-only px-1" src="/assets/octicons/pencil-16.svg" alt="Rename" (click)="startRenaming(); $event.stopImmediatePropagation()">
-    <img class="icon hover-only px-1" src="/assets/octicons/trashcan-16.svg" alt="Delete" (click)="delete(); $event.stopImmediatePropagation()">
+    <ng-container *ngIf="file !== root">
+      <img class="icon hover-only px-1" src="/assets/octicons/pencil-16.svg" alt="Rename" (click)="startRenaming(); $event.stopImmediatePropagation()">
+      <img class="icon hover-only px-1" src="/assets/octicons/trashcan-16.svg" alt="Delete" (click)="delete(); $event.stopImmediatePropagation()">
+    </ng-container>
     <div ngbDropdown #dropdown="ngbDropdown" container="body" (click)="$event.stopImmediatePropagation()">
       <span class="hover-only font-weight-bolder px-1" ngbDropdownToggle>
         &#8942;
       </span>
       <div ngbDropdownMenu>
         <button ngbDropdownItem (click)="open()">Open</button>
-        <button ngbDropdownItem (click)="startRenaming()">Rename</button>
+        <button ngbDropdownItem *ngIf="file !== root" (click)="startRenaming()">Rename</button>
         <ng-container *ngIf="file.directory">
           <div class="dropdown-divider"></div>
           <button ngbDropdownItem (click)="createFile()">New File</button>
           <button ngbDropdownItem (click)="createDir()">New Folder</button>
         </ng-container>
-        <div class="dropdown-divider"></div>
-        <button ngbDropdownItem class="text-danger" (click)="delete()">Delete</button>
+        <ng-container *ngIf="file !== root">
+          <div class="dropdown-divider"></div>
+          <button ngbDropdownItem class="text-danger" (click)="delete()">Delete</button>
+        </ng-container>
       </div>
     </div>
   </div>
