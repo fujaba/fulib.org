@@ -3,6 +3,7 @@
   <div class="file-item-indent" [style.margin-left.em]="level - 0.5">
     <app-file-icon class="mr-2" [file]="root" [open]="expanded"></app-file-icon>
     <input *ngIf="oldName"
+           #nameInput
            type="text" class="name-input flex-grow-1" aria-label="New Name"
            (click)="$event.stopImmediatePropagation()"
            (change)="finishRenaming()"
