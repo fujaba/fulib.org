@@ -21,9 +21,7 @@
       <img class="icon hover-only px-1" src="/assets/octicons/trashcan-16.svg" alt="Delete" (click)="delete(); $event.stopImmediatePropagation()">
     </ng-container>
     <div ngbDropdown #dropdown="ngbDropdown" container="body" (click)="$event.stopImmediatePropagation()">
-      <span class="hover-only font-weight-bolder px-1" ngbDropdownToggle>
-        &#8942;
-      </span>
+      <img class="icon hover-only px-1" ngbDropdownToggle src="/assets/octicons/kebab-horizontal-16.svg" alt="Options">
       <div ngbDropdownMenu>
         <button ngbDropdownItem (click)="open()">Open</button>
         <button ngbDropdownItem *ngIf="file !== root" (click)="startRenaming()">Rename</button>
