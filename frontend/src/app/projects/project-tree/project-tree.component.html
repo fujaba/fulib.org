@@ -6,13 +6,13 @@
     </div>
   </div>
   <div class="flex-grow-1 overflow-auto d-flex flex-column">
-    <div class="bg-dark">
+    <div class="bg-light bg-darkmode-dark">
       PROJECT FILES
     </div>
     <app-file-tree [root]="fileRoot"></app-file-tree>
     <div class="flex-grow-1"></div>
     <ng-container *ngIf="currentFile | async as file">
-      <div class="bg-dark">
+      <div class="bg-light bg-darkmode-dark">
         REVISIONS
       </div>
       <app-file-revisions [file]="file"></app-file-revisions>
