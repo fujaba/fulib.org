@@ -1,4 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
+import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
 import {Subscription} from 'rxjs';
 import {FileManager} from '../file.manager';
 import {File} from '../model/file';
@@ -46,5 +47,23 @@ export class FileTabsComponent implements OnInit, OnDestroy {
     if (file === this.currentFile) {
       this.currentFile = undefined;
     }
+  }
+
+  auxClick(event: MouseEvent, file: File) {
+    if (event.button != 1) {
+      return;
+    }
+    this.close(file);
+    event.preventDefault();
+  }
+
+  openContextMenu(event: MouseEvent, file: File, dropdown: NgbDropdown) {
+    if (event.button != 2 || event.shiftKey || dropdown.isOpen()) {
+      return;
+    }
+
+    dropdown.open();
+    event.preventDefault();
+    event.stopImmediatePropagation();
   }
 }
