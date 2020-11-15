@@ -12,6 +12,10 @@
         </span>
         <div ngbDropdownMenu>
           <button ngbDropdownItem (click)="close(file)">Close</button>
+          <button ngbDropdownItem (click)="closeOthers(file)">Close Others</button>
+          <button ngbDropdownItem (click)="closeAll()">Close All</button>
+          <button ngbDropdownItem (click)="closeLeftOf(file)">Close All to the Left</button>
+          <button ngbDropdownItem (click)="closeRightOf(file)">Close All to the Right</button>
         </div>
       </div>
       <span class="close position-relative pl-2 font-weight-light"

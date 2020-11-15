@@ -49,6 +49,34 @@ export class FileTabsComponent implements OnInit, OnDestroy {
     }
   }
 
+  closeOthers(file: File) {
+    this.currentFile = file;
+    this.openFiles = [file];
+  }
+
+  closeAll() {
+    this.currentFile = undefined;
+    this.openFiles.length = 0;
+  }
+
+  closeLeftOf(file: File) {
+    const index = this.openFiles.indexOf(file);
+    this.openFiles.splice(0, index);
+    this.replaceOpenFileIfNecessary(file);
+  }
+
+  closeRightOf(file: File) {
+    const index = this.openFiles.indexOf(file);
+    this.openFiles.splice(index + 1);
+    this.replaceOpenFileIfNecessary(file);
+  }
+
+  private replaceOpenFileIfNecessary(file: File) {
+    if (this.currentFile && !this.openFiles.includes(this.currentFile)) {
+      this.currentFile = file;
+    }
+  }
+
   auxClick(event: MouseEvent, file: File) {
     if (event.button != 1) {
       return;
