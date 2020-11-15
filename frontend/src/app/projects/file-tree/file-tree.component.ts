@@ -1,7 +1,8 @@
-import {AfterViewInit, Component, ElementRef, Input, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Inject, Input, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
 import {Observable} from 'rxjs';
 import {FileManager} from '../file.manager';
+import {FILE_ROOT} from '../injection-tokens';
 import {File} from '../model/file';
 
 @Component({
@@ -24,11 +25,15 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
 
   constructor(
     private fileManager: FileManager,
+    @Inject(FILE_ROOT) private root: File,
   ) {
   }
 
   ngOnInit(): void {
     this.currentFile = this.fileManager.currentFile;
+    if (!this.file) {
+      this.file = this.root;
+    }
   }
 
   ngAfterViewInit(): void {
