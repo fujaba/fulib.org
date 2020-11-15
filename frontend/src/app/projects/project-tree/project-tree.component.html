@@ -9,7 +9,7 @@
     <div class="bg-light bg-darkmode-dark">
       PROJECT FILES
     </div>
-    <app-file-tree [root]="fileRoot"></app-file-tree>
+    <app-file-tree [file]="fileRoot"></app-file-tree>
     <div class="flex-grow-1"></div>
     <ng-container *ngIf="currentFile | async as file">
       <div class="bg-light bg-darkmode-dark">

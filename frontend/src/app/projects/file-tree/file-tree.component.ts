@@ -13,7 +13,7 @@ import {File} from '../model/file';
   styleUrls: ['./file-tree.component.scss'],
 })
 export class FileTreeComponent implements OnInit, AfterViewInit {
-  @Input() root: File;
+  @Input() file: File;
   @Input() level = 0;
 
   @ViewChildren('nameInput') nameInput: QueryList<ElementRef>
@@ -38,36 +38,36 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
   }
 
   open() {
-    this.fileManager.currentFile.next(this.root);
+    this.fileManager.currentFile.next(this.file);
 
-    if (!this.root.directory) {
-      this.fileManager.open(this.root);
+    if (!this.file.directory) {
+      this.fileManager.open(this.file);
       return;
     }
 
     this.expanded = !this.expanded;
 
-    this.fileManager.getChildren(this.root).subscribe(() => {});
+    this.fileManager.getChildren(this.file).subscribe(() => {});
   }
 
   startRenaming() {
-    this.oldName = this.root.name;
+    this.oldName = this.file.name;
   }
 
   finishRenaming() {
-    this.fileManager.update(this.root).subscribe(_ => {
+    this.fileManager.update(this.file).subscribe(_ => {
       this.oldName = undefined;
     });
   }
 
   cancelRenaming() {
-    this.root.name = this.oldName!;
+    this.file.name = this.oldName!;
     this.oldName = undefined;
   }
 
   delete() {
-    if (confirm(`Delete ${this.root.name}?`)) {
-      this.fileManager.delete(this.root).subscribe(() => {
+    if (confirm(`Delete ${this.file.name}?`)) {
+      this.fileManager.delete(this.file).subscribe(() => {
       });
     }
   }
@@ -90,7 +90,7 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
   }
 
   private addChild(name: string, directory: boolean) {
-    this.fileManager.createChild(this.root, name, directory).subscribe(() => {
+    this.fileManager.createChild(this.file, name, directory).subscribe(() => {
     });
   }
 }
