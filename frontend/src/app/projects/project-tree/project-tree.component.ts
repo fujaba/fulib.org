@@ -15,9 +15,11 @@ import {Project} from '../model/project';
 })
 export class ProjectTreeComponent implements OnInit {
   panels = [
-    {name: 'Project Files', component: FileTreeComponent, grow: true},
-    {name: 'Revisions', component: FileRevisionsComponent},
+    {id: 'projectFiles', name: 'Project Files', component: FileTreeComponent, grow: true},
+    {id: 'revisions', name: 'Revisions', component: FileRevisionsComponent},
   ];
+
+  panelState: Record<string, { expanded: boolean; }> = {};
 
   currentFile: Observable<File | undefined>;
 
@@ -26,6 +28,11 @@ export class ProjectTreeComponent implements OnInit {
     public project: Project,
     private fileManager: FileManager,
   ) {
+    for (const panel of this.panels) {
+      this.panelState[panel.id] = {
+        expanded: true,
+      };
+    }
   }
 
   ngOnInit(): void {

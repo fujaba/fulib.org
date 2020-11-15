@@ -6,11 +6,14 @@
     </div>
   </div>
   <div class="flex-grow-1 overflow-auto d-flex flex-column">
-    <div *ngFor="let panel of panels">
-      <div class="bg-light bg-darkmode-dark">
+    <ng-container *ngFor="let panel of panels">
+      <div class="panel-header bg-light bg-darkmode-dark" (click)="panelState[panel.id].expanded = !panelState[panel.id].expanded">
+        <img class="icon" src="assets/octicons/chevron-{{panelState[panel.id].expanded ? 'down' : 'right'}}-16.svg" [alt]="panelState[panel.id].expanded ? 'Expanded' : 'Collapsed'">
         {{panel.name | uppercase}}
       </div>
-      <ng-container *ngComponentOutlet="panel.component"></ng-container>
-    </div>
+      <div *ngIf="panelState[panel.id].expanded" class="flex-grow-1">
+        <ng-container [ngComponentOutlet]="panel.component"></ng-container>
+      </div>
+    </ng-container>
   </div>
 </div>
