@@ -16,6 +16,10 @@
         {{file.data?.info}}
       </span>
     </div>
+    <ng-container *ngIf="file.directory">
+      <img class="icon hover-only px-1" src="/assets/octicons/file-16.svg" alt="New File" (click)="createFile(); $event.stopImmediatePropagation()">
+      <img class="icon hover-only px-1" src="/assets/octicons/file-directory-16.svg" alt="New Folder" (click)="createDir(); $event.stopImmediatePropagation()">
+    </ng-container>
     <ng-container *ngIf="file !== root">
       <img class="icon hover-only px-1" src="/assets/octicons/pencil-16.svg" alt="Rename" (click)="startRenaming(); $event.stopImmediatePropagation()">
       <img class="icon hover-only px-1" src="/assets/octicons/trashcan-16.svg" alt="Delete" (click)="delete(); $event.stopImmediatePropagation()">
