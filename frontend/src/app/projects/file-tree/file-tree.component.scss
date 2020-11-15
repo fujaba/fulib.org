@@ -49,4 +49,12 @@
   .file-item:hover .hover-only {
     opacity: 1;
   }
+
+  .file-item:hover .icon.hover-only {
+    opacity: 0.5;
+  }
+
+  .file-item:hover .icon.hover-only:hover {
+    opacity: 1;
+  }
 }
