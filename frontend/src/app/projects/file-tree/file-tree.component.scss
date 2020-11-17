@@ -25,7 +25,7 @@
   border-left: 1px solid transparent;
 }
 
-:host[data-expanded=true]:hover > app-file-tree > .file-item > .file-item-indent {
+:host[data-expanded=true]:hover > .file-tree-children > app-file-tree > .file-item > .file-item-indent {
   border-left-color: rgba(127, 127, 127, 0.5);
 }
 
