@@ -98,4 +98,15 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
     this.fileManager.createChild(this.file, name, directory).subscribe(() => {
     });
   }
+
+  setChildren(children: File[]) {
+    if (!this.file) {
+      return;
+    }
+    for (const child of children) {
+      if (child.parentId !== this.file.id) {
+        this.fileManager.move(child, this.file).subscribe();
+      }
+    }
+  }
 }

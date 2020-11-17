@@ -42,6 +42,9 @@
     </div>
   </div>
 </div>
-<ng-container *ngIf="expanded">
+<div *ngIf="expanded"
+     class="file-tree-children"
+     dragula="FILE_TREE"
+     [dragulaModel]="file.data?.children || []" (dragulaModelChange)="setChildren($event)">
   <app-file-tree *ngFor="let child of file.data?.children || []" [file]="child" [level]="level + 1"></app-file-tree>
-</ng-container>
+</div>

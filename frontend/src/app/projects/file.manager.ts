@@ -1,6 +1,6 @@
 import {EventEmitter, Injectable} from '@angular/core';
 import {BehaviorSubject, EMPTY, Observable, of} from 'rxjs';
-import {tap} from 'rxjs/operators';
+import {map, tap} from 'rxjs/operators';
 import {FileService} from './file.service';
 import {File, FileStub} from './model/file';
 
@@ -84,19 +84,40 @@ export class FileManager {
       if (!parentChildren) {
         parent.data.children = [file];
       } else {
-        const index = parentChildren.findIndex(f => File.compare(f, file) > 0);
-        if (index >= 0) {
-          parentChildren.splice(index, 0, file);
-        } else {
-          parentChildren.push(file);
-        }
+        this.insertSorted(parentChildren, file);
       }
     }));
+  }
+
+  private insertSorted(parentChildren: File[], file: File) {
+    const index = parentChildren.findIndex(f => File.compare(f, file) > 0);
+    if (index >= 0) {
+      parentChildren.splice(index, 0, file);
+    } else {
+      parentChildren.push(file);
+    }
   }
 
   update(file: File): Observable<File> {
     file.data?.parent?.data?.children?.sort(File.compare);
     return this.fileService.update(file).pipe(tap(() => this.updates.next(file)));
+  }
+
+  move(child: File, parent: File): Observable<void> {
+    child.parentId = parent.id;
+    return this.fileService.update(child).pipe(map(() => {
+      if (child.data) {
+        const oldParentChildren = child.data.parent?.data?.children;
+        if (oldParentChildren) {
+          const index = oldParentChildren.indexOf(child);
+          oldParentChildren.splice(index, 1);
+        }
+        child.data.parent = parent;
+      }
+      if (parent.data && parent.data.children) {
+        this.insertSorted(parent.data.children, child);
+      }
+    }));
   }
 
   delete(file: File): Observable<void> {

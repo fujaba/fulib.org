@@ -41,6 +41,10 @@
   display: none;
 }
 
+.file-tree-children:empty {
+  padding-top: 1em;
+}
+
 @media (hover: hover) {
   .file-item .hover-only {
     opacity: 0;
