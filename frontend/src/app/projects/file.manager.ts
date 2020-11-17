@@ -77,14 +77,8 @@ export class FileManager {
         file.data = {};
       }
       file.data.parent = parent;
-      if (!parent.data) {
-        parent.data = {};
-      }
-      const parentChildren = parent.data.children;
-      if (!parentChildren) {
-        parent.data.children = [file];
-      } else {
-        this.insertSorted(parentChildren, file);
+      if (parent.data && parent.data.children) {
+        this.insertSorted(parent.data.children, file);
       }
     }));
   }
@@ -121,29 +115,16 @@ export class FileManager {
   }
 
   delete(file: File): Observable<void> {
-    const data = file.data;
-    if (!data) {
-      return EMPTY;
-    }
-
-    const parent = data.parent;
-    if (!parent) {
-      return EMPTY;
-    }
-
-    const children = parent.data?.children;
-    if (!children) {
-      return EMPTY;
-    }
-
-    const index = children.indexOf(file);
-    if (index < 0) {
-      return EMPTY;
-    }
-
     return this.fileService.delete(file.projectId, file.id).pipe(tap(() => {
-      children.splice(index, 1);
-      data.parent = undefined;
+      const data = file.data;
+      if (data) {
+        const parentChildren = data.parent?.data?.children;
+        if (parentChildren) {
+          const index = parentChildren.indexOf(file);
+          parentChildren.splice(index, 1);
+        }
+        data.parent = undefined;
+      }
       this.deletions.next(file);
     }));
   }
