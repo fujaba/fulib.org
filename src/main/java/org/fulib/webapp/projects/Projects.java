@@ -115,37 +115,30 @@ public class Projects
 
 	private String generateProjectFiles(Project project) throws IOException
 	{
-		final File rootDir = createFile(project, null, ".", true);
+		final File rootDir = new File(IDGenerator.generateID());
+		rootDir.setName(".");
+		rootDir.setDirectory(true);
+		rootDir.setCreated(project.getCreated());
+		rootDir.setProjectId(project.getId());
+		rootDir.setUserId(project.getUserId());
 
-		final Map<String, File> newFiles = new TreeMap<>();
-		newFiles.put(".", rootDir);
+		final FileResolver resolver = new FileResolver(rootDir);
+
+		final List<File> newFiles = new ArrayList<>();
+		newFiles.add(rootDir);
 
 		final ProjectData projectData = getProjectData(project);
 		new ProjectGenerator().generate(projectData, (name, output) -> {
-			File parent = rootDir;
-			int index;
-			int prevIndex = 0;
-			while ((index = name.indexOf('/', prevIndex)) >= 0)
-			{
-				final String simpleName = name.substring(prevIndex, index);
-				final File finalParent = parent;
-				parent = newFiles.computeIfAbsent(name.substring(0, index),
-				                                  s -> this.createFile(project, finalParent, simpleName, true));
-				prevIndex = index + 1;
-			}
-
-			final String simpleName = name.substring(prevIndex);
-			final File finalParent = parent;
-			final File file = newFiles.computeIfAbsent(name,
-			                                           s -> this.createFile(project, finalParent, simpleName, false));
-
+			final File file = resolver.getOrCreate(name);
 			try (OutputStream upload = this.mongo.uploadFile(file.getId()))
 			{
 				output.accept(upload);
 			}
 		});
 
-		this.mongo.createManyFiles(new ArrayList<>(newFiles.values()));
+		newFiles.addAll(resolver.getFiles());
+
+		this.mongo.createManyFiles(newFiles);
 
 		return rootDir.getId();
 	}
@@ -160,22 +153,6 @@ public class Projects
 		projectData.setProjectVersion("0.1.0");
 		projectData.setDecoratorClassName("GenModel");
 		return projectData;
-	}
-
-	private File createFile(Project project, File parent, String name, boolean directory)
-	{
-		final String id = IDGenerator.generateID();
-		final File file = new File(id);
-		file.setName(name);
-		file.setDirectory(directory);
-		if (parent != null)
-		{
-			file.setParentId(parent.getId());
-		}
-		file.setUserId(project.getUserId());
-		file.setProjectId(project.getId());
-		file.setCreated(project.getCreated());
-		return file;
 	}
 
 	public Object update(Request request, Response response)
