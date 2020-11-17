@@ -7,6 +7,7 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {GridsterModule} from 'angular-gridster2';
 import {KeycloakAngularModule, KeycloakService} from 'keycloak-angular';
 import {NgBootstrapDarkmodeModule, THEME_LOADER, THEME_SAVER, ThemeLoader, ThemeSaver} from 'ng-bootstrap-darkmode';
+import {DragulaModule} from 'ng2-dragula';
 
 import {environment} from '../environments/environment';
 
@@ -47,6 +48,7 @@ const keycloakService = new KeycloakService();
     NgbModule,
     NgBootstrapDarkmodeModule,
     GridsterModule,
+    DragulaModule.forRoot(),
     KeycloakAngularModule,
     SharedModule,
     AppRoutingModule,

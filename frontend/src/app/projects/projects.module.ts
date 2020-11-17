@@ -5,6 +5,7 @@ import {FormsModule} from '@angular/forms';
 
 import {NgxResizableModule} from '@3dgenomes/ngx-resizable';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {DragulaModule} from 'ng2-dragula';
 import {SharedModule} from '../shared/shared.module';
 
 import {ProjectsRoutingModule} from './projects-routing.module';
@@ -40,6 +41,7 @@ import { FileRevisionsComponent } from './file-revisions/file-revisions.componen
     FormsModule,
     NgbModule,
     SharedModule,
+    DragulaModule,
   ],
 })
 export class ProjectsModule {

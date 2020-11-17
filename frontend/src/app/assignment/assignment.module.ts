@@ -52,7 +52,7 @@ import {ImportExportComponent} from './import-export/import-export.component';
     HttpClientModule,
     NgbModule,
     ClipboardModule,
-    DragulaModule.forRoot(),
+    DragulaModule,
     AssignmentRoutingModule,
   ],
 })
