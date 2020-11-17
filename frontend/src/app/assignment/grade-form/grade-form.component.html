@@ -1,0 +1,37 @@
+<div class="form">
+  <div class="form-group">
+    <label for="pointsInput">Points</label>
+    <input type="number" class="form-control" id="pointsInput" min="0" step="1" [(ngModel)]="points">
+  </div>
+  <div class="form-group">
+    <label for="noteInput">Note</label>
+    <input type="text" class="form-control" id="noteInput" [(ngModel)]="note">
+  </div>
+  <div class="form-group">
+    <label for="nameInput">Name</label>
+    <input type="text" class="form-control" id="nameInput" [(ngModel)]="name" (change)="saveDraft()"
+           [disabled]="loggedIn">
+  </div>
+</div>
+
+<button type="button" class="btn btn-primary" (click)="doSubmit()">
+  Submit
+</button>
+
+<h4>History</h4>
+<ul *ngIf="gradings">
+  <li *ngFor="let grading of filteredGradings">
+    <span class="badge badge-secondary">{{grading.points}}</span>
+    {{grading.note}}
+    &#8226;
+    {{grading.author}}
+    <span *ngIf="grading.userId" class="badge badge-pill badge-primary" ngbTooltip="Registered">
+      &#10003;
+    </span>
+    &#8226;
+    <span class="text-muted">{{grading.timeStamp | date:'medium'}}</span>
+  </li>
+</ul>
+<p *ngIf="!gradings">
+  Loading...
+</p>

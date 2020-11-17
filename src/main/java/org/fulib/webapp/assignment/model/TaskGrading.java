@@ -13,6 +13,7 @@ public class TaskGrading
 	public static final String PROPERTY_taskID = "taskID";
 
 	public static final String PROPERTY_timeStamp = "timeStamp";
+	public static final String PROPERTY_userId = "userId";
 	public static final String PROPERTY_author = "author";
 	public static final String PROPERTY_note = "note";
 	public static final String PROPERTY_points = "points";
@@ -23,6 +24,7 @@ public class TaskGrading
 	private final int taskID;
 
 	private Instant timeStamp;
+	private String userId;
 	private String author;
 	private String note;
 	private int points;
@@ -56,6 +58,16 @@ public class TaskGrading
 	public void setTimeStamp(Instant timeStamp)
 	{
 		this.timeStamp = timeStamp;
+	}
+
+	public String getUserId()
+	{
+		return userId;
+	}
+
+	public void setUserId(String userId)
+	{
+		this.userId = userId;
 	}
 
 	public String getAuthor()

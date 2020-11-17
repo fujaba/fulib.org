@@ -1,0 +1,213 @@
+<ng-template #scenario>
+  <app-scenario-codemirror
+    class="cm-h-100"
+    [(content)]="scenarioText"
+    [autoSubmit]="autoSubmit"
+    [autoRefresh]="true"
+    [markers]="markers"
+    (save)="submit()"
+  ></app-scenario-codemirror>
+</ng-template>
+
+<ng-template #output>
+  <div style="height: 2rem">
+    <div class="progress">
+      <div class="progress-bar status-item" role="progressbar"
+           [class.bg-success]="response && toolSuccess(0)"
+           [class.bg-danger]="response && !toolSuccess(0)"
+      >
+        Scenario
+      </div>
+      <div class="progress-bar bg-light bg-darkmode-dark status-separator" role="progressbar"></div>
+      <div class="progress-bar status-item" role="progressbar"
+           [class.bg-success]="response && toolSuccess(1)"
+           [class.bg-danger]="response && !toolSuccess(1)"
+      >
+        Model Code
+      </div>
+      <div class="progress-bar bg-light bg-darkmode-dark status-separator" role="progressbar"></div>
+      <div class="progress-bar status-item" role="progressbar"
+           [class.bg-success]="response && toolSuccess(2)"
+           [class.bg-danger]="response && !toolSuccess(2)"
+      >
+        Test Code
+      </div>
+      <div class="progress-bar bg-light bg-darkmode-dark status-separator" role="progressbar"></div>
+      <div class="progress-bar status-item" role="progressbar"
+           [class.bg-success]="response && toolSuccess(3)"
+           [class.bg-danger]="response && !toolSuccess(3)"
+      >
+        Test Run
+      </div>
+    </div>
+  </div>
+  <div style="height: calc(100% - 4rem)">
+    <app-autotheme-codemirror class="cm-h-100" [content]="outputText" [options]="{
+      autoRefresh: true,
+      lineNumbers: true,
+      readOnly: true
+    }"></app-autotheme-codemirror>
+  </div>
+  <div *ngIf="response && (response | exception:scenarioText) as exception" style="height: 2rem">
+    It looks like an exception occurred. <a target="_blank" [href]="exception">Report an Issue</a>
+  </div>
+</ng-template>
+
+<ng-template #java>
+  <app-autotheme-codemirror class="cm-h-100" [content]="javaCode" [options]="{
+    autoRefresh: true,
+    lineNumbers: true,
+    matchBrackets: true,
+    readOnly: true,
+    mode: 'text/x-java'
+  }"></app-autotheme-codemirror>
+</ng-template>
+
+<ng-template #markdown>
+  <ng-container *ngIf="markdownHtml else loading">
+    <div class="h-100 overflow-auto markdown" [innerHTML]="markdownHtml | safeHtml"></div>
+  </ng-container>
+</ng-template>
+
+<ng-template #classDiagram>
+  <ng-container *ngIf="response else loading">
+    <div *ngIf="response.classDiagram else emptyClassDiagram"
+         class="diagram"
+         [innerHTML]="response.classDiagram | safeHtml"
+    ></div>
+    <ng-template #emptyClassDiagram>
+      No model classes to display.
+    </ng-template>
+  </ng-container>
+</ng-template>
+
+<ng-template #objectDiagrams>
+  <ng-container *ngIf="response else loading">
+    <ng-container *ngIf="response.objectDiagrams?.length else emptyObjectDiagrams">
+      <ul ngbNav #objectDiagramTabs="ngbNav" [(activeId)]="activeObjectDiagramTab" class="nav-tabs">
+        <li *ngFor="let diagram of response.objectDiagrams; index as diagramIndex"
+            [ngbNavItem]="diagramIndex + 1">
+          <a ngbNavLink>{{diagram.name}}</a>
+          <ng-template ngbNavContent>
+            <img *ngIf="diagram.name.endsWith('.png')"
+                 class="diagram" src="data:image/png;base64,{{diagram.content}}"
+                 alt="{{diagram.name}}">
+            <div *ngIf="diagram.name.endsWith('.svg')"
+                 [innerHTML]="diagram.content | safeHtml"
+                 class="diagram"
+            ></div>
+            <pre
+              *ngIf="diagram.name.endsWith('.yaml') || diagram.name.endsWith('.txt')">{{diagram.content}}</pre>
+            <iframe *ngIf="diagram.name.endsWith('.html')"
+                    width="100%" height="500px"
+                    [src]="(basePath + '/' + response.id + '/' + diagram.path) | safeResourceUrl"
+            ></iframe>
+          </ng-template>
+        </li>
+      </ul>
+
+      <div [ngbNavOutlet]="objectDiagramTabs" class="mt-2"></div>
+    </ng-container>
+    <ng-template #emptyObjectDiagrams>
+      No object diagrams to display.
+    </ng-template>
+  </ng-container>
+</ng-template>
+
+<div class="h-100 d-flex flex-column" *ngIf="[
+  {id: 'scenario', title: 'Scenario', template: scenario},
+  {id: 'output', title: 'Output', template: output},
+  {id: 'java', title: 'Java Test Code', template: java},
+  {id: 'markdown', title: 'Markdown', template: markdown},
+  {id: 'classDiagram', title: 'Class Diagram', template: classDiagram},
+  {id: 'objectDiagrams', title: 'Object Diagrams', template: objectDiagrams}
+] as items">
+  <div class="btn-toolbar mb-3 mx-2" role="toolbar" aria-label="Toolbar">
+    <div class="input-group mx-1">
+      <div class="input-group-prepend">
+        <div class="input-group-text">
+          Load Example:
+        </div>
+      </div>
+      <select class="custom-select" aria-label="Selected Example"
+              [ngModel]="selectedExample" (ngModelChange)="selectExample($event)">
+        <option [ngValue]="null">-</option>
+        <optgroup *ngFor="let category of exampleCategories; index as categoryIndex"
+                  label="{{categoryIndex + 1}}. {{category.name}}">
+          <option *ngFor="let example of category.examples; index as exampleIndex"
+                  label="{{categoryIndex + 1}}.{{exampleIndex + 1}}. {{example.name}}"
+                  [ngValue]="example"></option>
+        </optgroup>
+      </select>
+      <div class="input-group-append" *ngIf="selectedExample">
+        <div class="input-group-text text-warning" ngbTooltip="Changes to the example will not be saved!">
+          &#9888;
+        </div>
+      </div>
+    </div>
+    <div class="ml-auto" role="group">
+      <a role="button" class="btn btn-outline-secondary mx-1" [routerLink]="[{outlets: {modal: 'config'}}]">
+        Configure Project
+      </a>
+      <div class="btn-group mx-1" role="group">
+        <button type="button" class="btn btn-outline-primary"
+                ngbTooltip="Keyboard Shortcuts: Ctrl-&#9166;, &#8984;&#9166;, Ctrl-S, &#8984;S"
+                (click)="submit()" [disabled]="submitting">
+          Compile and Run
+        </button>
+        <div class="btn-group" ngbDropdown role="group" aria-label="Compile and Run Options">
+          <button class="btn btn-outline-primary dropdown-toggle-split" ngbDropdownToggle></button>
+          <div class="dropdown-menu" ngbDropdownMenu>
+            <button ngbDropdownItem (click)="autoSubmit = !autoSubmit" [class.dropdown-item-checked]="autoSubmit">
+              Automatically Compile and Run
+              <br/>
+              when the scenario changes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="flex-grow-1">
+    <gridster [options]="{
+      draggable: {enabled: true},
+      resizable: {enabled: true},
+      itemChangeCallback: savePanels,
+      minRows: 12,
+      maxRows: 12,
+      minCols: 12,
+      maxCols: 12,
+      margin: 0,
+      outerMargin: false,
+      swap: true,
+      displayGrid: 'onDrag&Resize'
+    }">
+      <ng-container *ngFor="let item of items; trackBy: itemId">
+        <gridster-item *ngIf="!panels[item.id].closed" [item]="panels[item.id]" class="p-3">
+          <h2>
+            {{item.title}}
+            <button type="button" class="close text-right" aria-label="Close" (click)="setPanelClosed(item.id, true)">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </h2>
+          <hr class="m-2"/>
+          <div class="gridster-item-content">
+            <ng-container [ngTemplateOutlet]="item.template"></ng-container>
+          </div>
+        </gridster-item>
+      </ng-container>
+    </gridster>
+  </div>
+  <div class="bg-secondary">
+    <ng-container *ngFor="let item of items; trackBy: itemId">
+      <button *ngIf="panels[item.id].closed" type="button" class="btn btn-sm btn-secondary mr-1"
+              (click)="setPanelClosed(item.id, false)">
+        {{item.title}}
+      </button>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #loading>
+  Loading...
+</ng-template>

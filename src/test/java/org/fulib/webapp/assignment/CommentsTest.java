@@ -4,8 +4,10 @@ import org.fulib.webapp.assignment.model.Assignment;
 import org.fulib.webapp.assignment.model.Comment;
 import org.fulib.webapp.assignment.model.Solution;
 import org.fulib.webapp.mongo.Mongo;
+import org.fulib.webapp.tool.MarkdownUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import spark.Request;
@@ -35,14 +37,24 @@ public class CommentsTest
 	private static final String TIMESTAMP = "2020-01-01T12:00:00Z";
 	private static final boolean DISTINGUISHED = false;
 
+	private Mongo db;
+	private Comments comments;
+	private Request request;
+	private Response response;
+
+	@Before
+	public void setup()
+	{
+		this.db = mock(Mongo.class);
+		final MarkdownUtil markdownUtil = new MarkdownUtil();
+		this.comments = new Comments(markdownUtil, db);
+		this.request = mock(Request.class);
+		this.response = mock(Response.class);
+	}
+
 	@Test
 	public void post404() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Comments comments = new Comments(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		when(request.params("solutionID")).thenReturn("-1");
 		when(db.getSolution("-1")).thenReturn(null);
 
@@ -52,11 +64,6 @@ public class CommentsTest
 	@Test
 	public void postWithoutToken() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Comments comments = new Comments(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createExampleSolution();
 
 		when(request.params("solutionID")).thenReturn(SOLUTION_ID);
@@ -68,11 +75,6 @@ public class CommentsTest
 	@Test
 	public void postWithWrongSolutionToken() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Comments comments = new Comments(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createExampleSolution();
 
 		when(request.params("solutionID")).thenReturn(SOLUTION_ID);
@@ -85,11 +87,6 @@ public class CommentsTest
 	@Test
 	public void postWithWrongAssignmentToken() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Comments comments = new Comments(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createExampleSolution();
 
 		when(request.params("solutionID")).thenReturn(SOLUTION_ID);
@@ -118,11 +115,6 @@ public class CommentsTest
 	@Test
 	public void postWithSolutionToken()
 	{
-		final Mongo db = mock(Mongo.class);
-		final Comments comments = new Comments(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createExampleSolution();
 		final String requestBody = createPostRequestBody();
 
@@ -140,11 +132,6 @@ public class CommentsTest
 	@Test
 	public void postWithAssignmentToken()
 	{
-		final Mongo db = mock(Mongo.class);
-		final Comments comments = new Comments(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createExampleSolution();
 		final String requestBody = createPostRequestBody();
 
@@ -196,11 +183,6 @@ public class CommentsTest
 	@Test
 	public void getChildren404() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Comments comments = new Comments(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		when(request.params("solutionID")).thenReturn("-1");
 		when(db.getSolution("-1")).thenReturn(null);
 
@@ -210,11 +192,6 @@ public class CommentsTest
 	@Test
 	public void getChildrenWithoutToken() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Comments comments = new Comments(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createExampleSolution();
 
 		when(request.params("solutionID")).thenReturn(SOLUTION_ID);
@@ -226,11 +203,6 @@ public class CommentsTest
 	@Test
 	public void getChildrenWithWrongSolutionToken() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Comments comments = new Comments(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createExampleSolution();
 
 		when(request.params("solutionID")).thenReturn(SOLUTION_ID);
@@ -243,11 +215,6 @@ public class CommentsTest
 	@Test
 	public void getChildrenWithWrongAssignmentToken() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Comments comments = new Comments(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createExampleSolution();
 
 		when(request.params("solutionID")).thenReturn(SOLUTION_ID);
@@ -260,11 +227,6 @@ public class CommentsTest
 	@Test
 	public void getChildren()
 	{
-		final Mongo db = mock(Mongo.class);
-		final Comments comments = new Comments(db);
-		final Request request = mock(Request.class);
-		final Response response = mock(Response.class);
-
 		final Solution solution = createExampleSolution();
 		final Comment comment = createExampleComment();
 

@@ -3,12 +3,12 @@ package org.fulib.webapp.assignment;
 import org.fulib.webapp.assignment.model.Assignment;
 import org.fulib.webapp.assignment.model.Task;
 import org.fulib.webapp.mongo.Mongo;
+import org.fulib.webapp.tool.MarkdownUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import spark.HaltException;
 import spark.Request;
 import spark.Response;
 
@@ -40,14 +40,26 @@ public class AssignmentsTest
 	private static final int TASK1_POINTS = 10;
 	private static final String TASK1_VERIFICATION = "We match some Student s1 with name Alice.";
 
+	private Mongo db;
+	private Assignments assignments;
+	private Request request;
+	private Response response;
+
+	@Before
+	public void setup()
+	{
+		this.db = mock(Mongo.class);
+		final MarkdownUtil markdownUtil = new MarkdownUtil();
+		this.assignments = new Assignments(markdownUtil, db);
+		this.request = mock(Request.class);
+		this.response = mock(Response.class);
+
+		when(request.matchedPath()).thenReturn("/api");
+	}
+
 	@Test
 	public void create()
 	{
-		final Mongo db = mock(Mongo.class);
-		final Assignments assignments = new Assignments(db);
-
-		final Request request = mock(Request.class);
-
 		final JSONObject requestObj = new JSONObject();
 		requestObj.put("title", TITLE);
 		requestObj.put("description", DESCRIPTION);
@@ -60,8 +72,6 @@ public class AssignmentsTest
 
 		final String requestBody = requestObj.toString();
 		when(request.body()).thenReturn(requestBody);
-
-		final Response response = mock(Response.class);
 
 		final String responseBody = (String) assignments.create(request, response);
 		final ArgumentCaptor<Assignment> assignmentCaptor = ArgumentCaptor.forClass(Assignment.class);
@@ -114,16 +124,8 @@ public class AssignmentsTest
 	@Test
 	public void get404() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final Assignments assignments = new Assignments(db);
-
-		final Request request = mock(Request.class);
-
 		when(request.params("assignmentID")).thenReturn("-1");
-		when(request.contentType()).thenReturn("application/json");
 		when(db.getAssignment("-1")).thenReturn(null);
-
-		final Response response = mock(Response.class);
 
 		TestHelper.expectHalt(404, "assignment with id '-1'' not found", () -> assignments.get(request, response));
 	}
@@ -159,17 +161,9 @@ public class AssignmentsTest
 	@Test
 	public void getWithoutToken()
 	{
-		final Mongo db = mock(Mongo.class);
-		final Assignments assignments = new Assignments(db);
-
-		final Request request = mock(Request.class);
-
 		when(request.params("assignmentID")).thenReturn(ID);
-		when(request.contentType()).thenReturn("application/json");
 		when(request.headers("Assignment-Token")).thenReturn(null);
 		when(db.getAssignment(ID)).thenReturn(createExampleAssignment());
-
-		final Response response = mock(Response.class);
 
 		final String responseBody = (String) assignments.get(request, response);
 		final JSONObject responseObj = new JSONObject(responseBody);
@@ -182,17 +176,9 @@ public class AssignmentsTest
 	@Test
 	public void getWithWrongToken()
 	{
-		final Mongo db = mock(Mongo.class);
-		final Assignments assignments = new Assignments(db);
-
-		final Request request = mock(Request.class);
-
 		when(request.params("assignmentID")).thenReturn(ID);
-		when(request.contentType()).thenReturn("application/json");
 		when(request.headers("Assignment-Token")).thenReturn("a456");
 		when(db.getAssignment(ID)).thenReturn(createExampleAssignment());
-
-		final Response response = mock(Response.class);
 
 		final String responseBody = (String) assignments.get(request, response);
 		final JSONObject responseObj = new JSONObject(responseBody);
@@ -205,17 +191,9 @@ public class AssignmentsTest
 	@Test
 	public void getWithToken()
 	{
-		final Mongo db = mock(Mongo.class);
-		final Assignments assignments = new Assignments(db);
-
-		final Request request = mock(Request.class);
-
 		when(request.params("assignmentID")).thenReturn(ID);
-		when(request.contentType()).thenReturn("application/json");
 		when(request.headers("Assignment-Token")).thenReturn(TOKEN);
 		when(db.getAssignment(ID)).thenReturn(createExampleAssignment());
-
-		final Response response = mock(Response.class);
 
 		final String responseBody = (String) assignments.get(request, response);
 		final JSONObject responseObj = new JSONObject(responseBody);
@@ -227,7 +205,7 @@ public class AssignmentsTest
 
 	private void checkGetResponse(JSONObject responseObj)
 	{
-		assertThat(responseObj.has("id"), equalTo(false));
+		assertThat(responseObj.has("id"), equalTo(true));
 		assertThat(responseObj.has("token"), equalTo(false));
 		assertThat(responseObj.getString("title"), equalTo(TITLE));
 		assertThat(responseObj.getString("description"), equalTo(DESCRIPTION));

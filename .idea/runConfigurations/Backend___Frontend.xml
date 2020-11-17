@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Backend + Frontend" type="CompoundRunConfigurationType">
+    <toRun name="Backend" type="GradleRunConfiguration" />
+    <toRun name="Frontend" type="js.build_tools.npm" />
+    <method v="2" />
+  </configuration>
+</component>

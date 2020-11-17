@@ -22,6 +22,7 @@ import org.fulib.webapp.assignment.model.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
@@ -39,6 +40,22 @@ public class Mongo
 	public static final String COMMENT_COLLECTION_NAME = "comments";
 	public static final String ASSIGNEE_COLLECTION_NAME = "assignee";
 	public static final String GRADING_COLLECTION_NAME = "gradings";
+
+	private static final Document VERSIONS = new Document();
+
+	static
+	{
+		for (final Map.Entry<Object, Object> entry : WebService.VERSIONS.entrySet())
+		{
+			String key = entry.getKey().toString();
+			if ("fulib.org".equals(key))
+			{
+				// for legacy reasons and also because "fulib.org" is not a valid Bson key
+				key = "webapp";
+			}
+			VERSIONS.put(key, entry.getValue().toString());
+		}
+	}
 
 	// =============== Fields ===============
 
@@ -89,6 +106,7 @@ public class Mongo
 		this.assignments = this.database.getCollection(ASSIGNMENT_COLLECTION_NAME, Assignment.class)
 		                                .withCodecRegistry(this.pojoCodecRegistry);
 		this.assignments.createIndex(Indexes.ascending(Assignment.PROPERTY_id));
+		this.assignments.createIndex(Indexes.ascending(Assignment.PROPERTY_userId));
 
 		this.courses = this.database.getCollection(COURSE_COLLECTION_NAME, Course.class)
 		                            .withCodecRegistry(this.pojoCodecRegistry);
@@ -97,6 +115,7 @@ public class Mongo
 		this.solutions = this.database.getCollection(SOLUTION_COLLECTION_NAME, Solution.class)
 		                              .withCodecRegistry(this.pojoCodecRegistry);
 		this.solutions.createIndex(Indexes.ascending(Solution.PROPERTY_id));
+		this.solutions.createIndex(Indexes.ascending(Solution.PROPERTY_userId));
 		this.solutions.createIndex(Indexes.ascending(Solution.PROPERTY_assignment));
 		this.solutions.createIndex(Indexes.ascending(Solution.PROPERTY_timeStamp));
 
@@ -132,15 +151,7 @@ public class Mongo
 		document.put("timestamp", new Date());
 		document.put("ip", ip);
 		document.put("userAgent", userAgent);
-
-		if (WebService.VERSION != null)
-		{
-			final Document versions = new Document();
-			versions.put("webapp", WebService.VERSION);
-			versions.put("fulibScenarios", WebService.FULIB_SCENARIOS_VERSION);
-			versions.put("fulibMockups", WebService.FULIB_MOCKUPS_VERSION);
-			document.put("versions", versions);
-		}
+		document.put("versions", VERSIONS);
 
 		document.put("request", Document.parse(request));
 		document.put("response", Document.parse(response));
@@ -155,6 +166,11 @@ public class Mongo
 		return this.assignments.find(Filters.eq(Assignment.PROPERTY_id, id)).first();
 	}
 
+	public List<Assignment> getAssignmentsByUser(String userId)
+	{
+		return this.assignments.find(Filters.eq(Assignment.PROPERTY_userId, userId)).into(new ArrayList<>());
+	}
+
 	public void saveAssignment(Assignment assignment)
 	{
 		upsert(this.assignments, assignment, Assignment.PROPERTY_id, assignment.getID());
@@ -165,6 +181,11 @@ public class Mongo
 	public Course getCourse(String id)
 	{
 		return this.courses.find(Filters.eq(Course.PROPERTY_id, id)).first();
+	}
+
+	public List<Course> getCoursesByUser(String userId)
+	{
+		return this.courses.find(Filters.eq(Course.PROPERTY_userId, userId)).into(new ArrayList<>());
 	}
 
 	public void saveCourse(Course course)
@@ -191,6 +212,15 @@ public class Mongo
 		                     .sort(Sorts.ascending(Solution.PROPERTY_timeStamp))
 		                     .map(this::resolve)
 		                     .into(new ArrayList<>());
+	}
+
+	public List<Solution> getSolutionsByUser(String userId)
+	{
+		return this.solutions
+			.find(Filters.eq(Solution.PROPERTY_userId, userId))
+			.sort(Sorts.ascending(Solution.PROPERTY_assignment, Solution.PROPERTY_timeStamp))
+			.map(this::resolve)
+			.into(new ArrayList<>());
 	}
 
 	private Solution resolve(Solution solution)

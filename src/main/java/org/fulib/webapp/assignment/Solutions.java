@@ -1,8 +1,9 @@
 package org.fulib.webapp.assignment;
 
-import org.fulib.webapp.WebService;
 import org.fulib.webapp.assignment.model.*;
 import org.fulib.webapp.mongo.Mongo;
+import org.fulib.webapp.tool.Authenticator;
+import org.fulib.webapp.tool.IDGenerator;
 import org.fulib.webapp.tool.RunCodeGen;
 import org.fulib.webapp.tool.model.CodeGenData;
 import org.fulib.webapp.tool.model.Result;
@@ -16,6 +17,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.fulib.webapp.tool.Authenticator.getUserId;
+
 public class Solutions
 {
 	private static final String SOLUTION_ID_QUERY_PARAM = "solutionID";
@@ -27,10 +30,12 @@ public class Solutions
 	private static final String INVALID_TOKEN_RESPONSE = "{\n" + "  \"error\": \"invalid Assignment-Token or Solution-Token\"\n" + "}\n";
 	private static final String UNKNOWN_SOLUTION_RESPONSE = "{\n  \"error\": \"solution with id '%s'' not found\"\n}";
 
+	private final RunCodeGen runCodeGen;
 	private final Mongo mongo;
 
-	public Solutions(Mongo mongo)
+	public Solutions(RunCodeGen runCodeGen, Mongo mongo)
 	{
+		this.runCodeGen = runCodeGen;
 		this.mongo = mongo;
 	}
 
@@ -68,6 +73,12 @@ public class Solutions
 
 	private static boolean isAuthorized(Request request, Solution solution)
 	{
+		final String userId = getUserId(request);
+		if (userId != null && userId.equals(solution.getUserId()))
+		{
+			return true;
+		}
+
 		final String solutionToken = solution.getToken();
 		final String solutionTokenHeader = request.headers(SOLUTION_TOKEN_HEADER);
 		return solutionToken.equals(solutionTokenHeader);
@@ -102,6 +113,12 @@ public class Solutions
 		solution.setToken(token);
 		solution.setTimeStamp(timeStamp);
 
+		final String userId = getUserId(request);
+		if (userId != null)
+		{
+			solution.setUserId(userId);
+		}
+
 		final List<TaskResult> results = runTasks(solution.getSolution(), assignment.getTasks());
 		solution.getResults().addAll(results);
 
@@ -109,6 +126,7 @@ public class Solutions
 
 		final JSONObject resultObj = new JSONObject();
 		resultObj.put(Solution.PROPERTY_id, solutionID);
+		resultObj.put(Solution.PROPERTY_userId, userId);
 		resultObj.put(Solution.PROPERTY_token, token);
 		resultObj.put(Solution.PROPERTY_timeStamp, timeStamp.toString());
 
@@ -141,12 +159,6 @@ public class Solutions
 	public Object get(Request request, Response response)
 	{
 		final String solutionID = request.params(SOLUTION_ID_QUERY_PARAM);
-
-		if (request.contentType() == null || !request.contentType().startsWith("application/json"))
-		{
-			return WebService.serveIndex(request, response);
-		}
-
 		final Solution solution = getSolutionOr404(this.mongo, solutionID);
 		checkAssignmentID(request, solution);
 		final boolean privileged = checkPrivilege(request, solution);
@@ -155,15 +167,9 @@ public class Solutions
 		return obj.toString(2);
 	}
 
-	public Object getAll(Request request, Response response)
+	public Object getByAssignment(Request request, Response response)
 	{
 		final String assignmentID = request.params(ASSIGNMENT_ID_QUERY_PARAM);
-
-		if (request.contentType() == null || !request.contentType().startsWith("application/json"))
-		{
-			return WebService.serveIndex(request, response);
-		}
-
 		final Assignment assignment = Assignments.getAssignmentOr404(this.mongo, assignmentID);
 		Assignments.checkPrivilege(request, assignment);
 
@@ -185,12 +191,26 @@ public class Solutions
 		return result.toString(2);
 	}
 
+	public Object getAll(Request request, Response response)
+	{
+		final String userId = Authenticator.getAndCheckUserIdQueryParam(request);
+
+		final List<Solution> solutions = this.mongo.getSolutionsByUser(userId);
+		final JSONArray array = new JSONArray();
+		for (final Solution solution : solutions)
+		{
+			array.put(toJson(solution, true));
+		}
+		return array.toString(2);
+	}
+
 	private static JSONObject toJson(Solution solution, boolean privileged)
 	{
 		final JSONObject obj = new JSONObject();
 
 		obj.put(Solution.PROPERTY_id, solution.getID());
 		obj.put(Solution.PROPERTY_assignment, solution.getAssignment().getID());
+		obj.put(Solution.PROPERTY_userId, solution.getUserId());
 		obj.put(Solution.PROPERTY_name, solution.getName());
 		obj.put(Solution.PROPERTY_studentID, solution.getStudentID());
 		obj.put(Solution.PROPERTY_email, solution.getEmail());
@@ -279,10 +299,17 @@ public class Solutions
 		final TaskGrading grading = json2Grading(solutionID, new JSONObject(request.body()));
 		grading.setTimeStamp(timeStamp);
 
+		final String userId = Authenticator.getUserId(request);
+		if (userId != null)
+		{
+			grading.setUserId(userId);
+		}
+
 		this.mongo.addGrading(grading);
 
 		final JSONObject result = new JSONObject();
 		result.put(TaskGrading.PROPERTY_timeStamp, timeStamp.toString());
+		result.put(TaskGrading.PROPERTY_userId, userId);
 		return result.toString(2);
 	}
 
@@ -292,6 +319,7 @@ public class Solutions
 		obj.put(TaskGrading.PROPERTY_solutionID, grading.getSolutionID());
 		obj.put(TaskGrading.PROPERTY_taskID, grading.getTaskID());
 		obj.put(TaskGrading.PROPERTY_timeStamp, grading.getTimeStamp());
+		obj.put(TaskGrading.PROPERTY_userId, grading.getUserId());
 		obj.put(TaskGrading.PROPERTY_author, grading.getAuthor());
 		obj.put(TaskGrading.PROPERTY_points, grading.getPoints());
 		obj.put(TaskGrading.PROPERTY_note, grading.getNote());
@@ -334,7 +362,7 @@ public class Solutions
 			tasks = assignment.getTasks();
 		}
 
-		final List<TaskResult> results = runTasks(solution, tasks);
+		final List<TaskResult> results = this.runTasks(solution, tasks);
 
 		final JSONObject resultObj = new JSONObject();
 		final JSONArray resultsArray = new JSONArray();
@@ -350,18 +378,18 @@ public class Solutions
 		return resultObj.toString(2);
 	}
 
-	private static List<TaskResult> runTasks(String solution, List<Task> tasks) throws Exception
+	private List<TaskResult> runTasks(String solution, List<Task> tasks) throws Exception
 	{
 		final List<TaskResult> results = new ArrayList<>(tasks.size());
 		for (final Task task : tasks)
 		{
-			final TaskResult result = runTask(solution, task);
+			final TaskResult result = this.runTask(solution, task);
 			results.add(result);
 		}
 		return results;
 	}
 
-	private static TaskResult runTask(String solution, Task task) throws Exception
+	private TaskResult runTask(String solution, Task task) throws Exception
 	{
 		final String scenario =
 			"# Solution\n\n" + solution + "\n\n## Verification\n\n" + task.getVerification() + "\n\n";
@@ -372,7 +400,7 @@ public class Solutions
 		input.setScenarioFileName("solution.md");
 
 		// TODO make it ignore diagrams and methods
-		final Result result = RunCodeGen.run(input);
+		final Result result = this.runCodeGen.run(input);
 
 		final int points = result.getExitCode() == 0 ? task.getPoints() : 0;
 		final TaskResult taskResult = new TaskResult();

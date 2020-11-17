@@ -15,6 +15,7 @@ public class Solution
 	public static final String PROPERTY_id = "id";
 	public static final String PROPERTY_token = "token";
 	public static final String PROPERTY_assignment = "assignment";
+	public static final String PROPERTY_userId = "userId";
 	public static final String PROPERTY_name = "name";
 	public static final String PROPERTY_studentID = "studentID";
 	public static final String PROPERTY_email = "email";
@@ -30,6 +31,7 @@ public class Solution
 
 	private Assignment assignment;
 
+	private String userId;
 	private String name;
 	private String studentID;
 	private String email;
@@ -89,6 +91,16 @@ public class Solution
 	{
 		this.assignment = new Assignment(assignmentID);
 		// replaced in Mongo.getAssignment
+	}
+
+	public String getUserId()
+	{
+		return userId;
+	}
+
+	public void setUserId(String userId)
+	{
+		this.userId = userId;
 	}
 
 	public String getName()

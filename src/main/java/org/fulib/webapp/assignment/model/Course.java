@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 public class Course
 {
 	public static final String PROPERTY_id = "id";
+	public static final String PROPERTY_userId = "userId";
 	public static final String PROPERTY_title = "title";
 	public static final String PROPERTY_description = "description";
 	public static final String PROPERTY_descriptionHtml = "descriptionHtml";
@@ -19,6 +20,7 @@ public class Course
 	// =============== Fields ===============
 
 	private final String id;
+	private String userId;
 	private String title;
 	private String description;
 	private String descriptionHtml;
@@ -38,6 +40,16 @@ public class Course
 	public String getId()
 	{
 		return this.id;
+	}
+
+	public String getUserId()
+	{
+		return this.userId;
+	}
+
+	public void setUserId(String userId)
+	{
+		this.userId = userId;
 	}
 
 	public String getTitle()

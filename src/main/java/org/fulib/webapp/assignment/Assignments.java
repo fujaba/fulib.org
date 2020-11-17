@@ -1,9 +1,10 @@
 package org.fulib.webapp.assignment;
 
-import org.fulib.webapp.WebService;
 import org.fulib.webapp.assignment.model.Assignment;
 import org.fulib.webapp.assignment.model.Task;
 import org.fulib.webapp.mongo.Mongo;
+import org.fulib.webapp.tool.Authenticator;
+import org.fulib.webapp.tool.IDGenerator;
 import org.fulib.webapp.tool.MarkdownUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -12,6 +13,7 @@ import spark.Response;
 import spark.Spark;
 
 import java.time.Instant;
+import java.util.List;
 
 public class Assignments
 {
@@ -26,12 +28,14 @@ public class Assignments
 
 	// =============== Fields ===============
 
+	private final MarkdownUtil markdownUtil;
 	private final Mongo mongo;
 
 	// =============== Constructors ===============
 
-	public Assignments(Mongo mongo)
+	public Assignments(MarkdownUtil markdownUtil, Mongo mongo)
 	{
+		this.markdownUtil = markdownUtil;
 		this.mongo = mongo;
 	}
 
@@ -57,6 +61,12 @@ public class Assignments
 
 	static boolean isAuthorized(Request request, Assignment assignment)
 	{
+		final String userId = Authenticator.getUserId(request);
+		if (userId != null && userId.equals(assignment.getUserId()))
+		{
+			return true;
+		}
+
 		final String assignmentToken = assignment.getToken();
 		final String assignmentTokenHeader = request.headers(ASSIGNMENT_TOKEN_HEADER);
 		return assignmentToken.equals(assignmentTokenHeader);
@@ -69,7 +79,13 @@ public class Assignments
 		final Assignment assignment = fromJson(id, new JSONObject(request.body()));
 		assignment.setToken(token);
 
-		final String descriptionHtml = MarkdownUtil.renderHtml(assignment.getDescription());
+		final String userId = Authenticator.getUserId(request);
+		if (userId != null)
+		{
+			assignment.setUserId(userId);
+		}
+
+		final String descriptionHtml = this.markdownUtil.renderHtml(assignment.getDescription());
 		assignment.setDescriptionHtml(descriptionHtml);
 
 		this.mongo.saveAssignment(assignment);
@@ -78,6 +94,7 @@ public class Assignments
 
 		responseJson.put(Assignment.PROPERTY_id, id);
 		responseJson.put(Assignment.PROPERTY_token, token);
+		responseJson.put(Assignment.PROPERTY_userId, userId);
 		responseJson.put(Assignment.PROPERTY_descriptionHtml, descriptionHtml);
 
 		return responseJson.toString(2);
@@ -123,24 +140,33 @@ public class Assignments
 	public Object get(Request request, Response response)
 	{
 		final String id = request.params("assignmentID");
-
-		if (request.contentType() == null || !request.contentType().startsWith("application/json"))
-		{
-			return WebService.serveIndex(request, response);
-		}
-
 		Assignment assignment = getAssignmentOr404(this.mongo, id);
 		final boolean privileged = isAuthorized(request, assignment);
 		final JSONObject obj = toJson(assignment, privileged);
 		return obj.toString(2);
 	}
 
+	public Object getAll(Request request, Response response)
+	{
+		final String userId = Authenticator.getAndCheckUserIdQueryParam(request);
+
+		final List<Assignment> assignments = this.mongo.getAssignmentsByUser(userId);
+		final JSONArray array = new JSONArray();
+		for (final Assignment assignment : assignments)
+		{
+			array.put(toJson(assignment, true));
+		}
+		return array.toString(2);
+	}
+
 	private static JSONObject toJson(Assignment assignment, boolean privileged)
 	{
 		final JSONObject obj = new JSONObject();
+		obj.put(Assignment.PROPERTY_id, assignment.getID());
 		obj.put(Assignment.PROPERTY_title, assignment.getTitle());
 		obj.put(Assignment.PROPERTY_description, assignment.getDescription());
 		obj.put(Assignment.PROPERTY_descriptionHtml, assignment.getDescriptionHtml());
+		obj.put(Assignment.PROPERTY_userId, assignment.getUserId());
 		obj.put(Assignment.PROPERTY_author, assignment.getAuthor());
 		obj.put(Assignment.PROPERTY_email, assignment.getEmail());
 		final Instant deadline = assignment.getDeadline();

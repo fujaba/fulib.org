@@ -1,0 +1,23 @@
+<div class="container">
+  <h1>My Courses</h1>
+
+  <p>
+    <a class="btn btn-success" routerLink="/assignments/courses/create">
+      Create New Course
+    </a>
+  </p>
+
+  <div class="list-group">
+    <a *ngFor="let course of courses"
+       class="list-group-item list-group-item-action"
+       routerLink="/assignments/courses/{{course.id}}"
+    >
+      <h3>
+        {{course.title}}
+      </h3>
+      <div class="text-muted text-truncate">
+        {{course.description}}
+      </div>
+    </a>
+  </div>
+</div>

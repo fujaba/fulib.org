@@ -8,8 +8,7 @@ import org.fulib.webapp.mongo.Mongo;
 import org.fulib.webapp.projectzip.ProjectZip;
 import org.fulib.webapp.tool.MarkdownUtil;
 import org.fulib.webapp.tool.RunCodeGen;
-import spark.Request;
-import spark.Response;
+import org.json.JSONObject;
 import spark.Service;
 
 import java.io.File;
@@ -21,25 +20,18 @@ public class WebService
 {
 	// =============== Static Fields ===============
 
-	public static final String VERSION;
-	public static final String FULIB_SCENARIOS_VERSION;
-	public static final String FULIB_MOCKUPS_VERSION;
+	public static final Properties VERSIONS = new Properties();
 
 	static
 	{
-		final Properties props = new Properties();
 		try
 		{
-			props.load(WebService.class.getResourceAsStream("version.properties"));
+			VERSIONS.load(WebService.class.getResourceAsStream("version.properties"));
 		}
 		catch (Exception e)
 		{
 			Logger.getGlobal().throwing("WebService", "static init", e);
 		}
-
-		VERSION = props.getProperty("webapp.version");
-		FULIB_SCENARIOS_VERSION = props.getProperty("fulibScenarios.version");
-		FULIB_MOCKUPS_VERSION = props.getProperty("fulibMockups.version");
 	}
 
 	public static final String PASSWORD_ENV_KEY = "FULIB_ORG_MONGODB_PASSWORD";
@@ -49,6 +41,7 @@ public class WebService
 	// =============== Fields ===============
 
 	private Service service;
+	private final MarkdownUtil markdownUtil = new MarkdownUtil();
 	private final RunCodeGen runCodeGen;
 	private final ProjectZip projectZip;
 	private final Assignments assignments;
@@ -65,8 +58,13 @@ public class WebService
 
 	WebService(Mongo db)
 	{
-		this(new RunCodeGen(db), new ProjectZip(db), new Assignments(db), new Comments(db), new Solutions(db),
-		     new Courses(db));
+		this(db, new MarkdownUtil(), new RunCodeGen(db));
+	}
+
+	WebService(Mongo db, MarkdownUtil markdownUtil, RunCodeGen runCodeGen)
+	{
+		this(runCodeGen, new ProjectZip(db), new Assignments(markdownUtil, db), new Comments(markdownUtil, db),
+		     new Solutions(runCodeGen, db), new Courses(markdownUtil, db));
 	}
 
 	WebService(RunCodeGen runCodeGen, ProjectZip projectZip, Assignments assignments, Comments comments,
@@ -94,25 +92,31 @@ public class WebService
 		service = Service.ignite();
 		service.port(4567);
 
-		service.staticFiles.location("/org/fulib/webapp/static");
+		service.staticFiles.externalLocation(this.runCodeGen.getTempDir());
+		service.staticFiles.expireTime(60 * 60);
 
 		if (isDevEnv())
 		{
 			enableCORS();
 		}
 
-		setupRedirects();
-
-		addMainRoutes();
-		addAssignmentsRoutes();
-		addCoursesRoutes();
-		addUtilRoutes();
-
-		service.notFound(WebService::serveIndex);
+		// all endpoints available with and without /api for backward compatibility
+		// TODO remove endpoints without /api in v2
+		addApiRoutes();
+		service.path("/api", this::addApiRoutes);
 
 		setupExceptionHandler();
 
 		Logger.getGlobal().info("scenario server started on http://localhost:4567");
+	}
+
+	private void addApiRoutes()
+	{
+		addMainRoutes();
+		this.service.get("/solutions", this.solutions::getAll);
+		addAssignmentsRoutes();
+		addCoursesRoutes();
+		addUtilRoutes();
 	}
 
 	void awaitStart()
@@ -155,22 +159,18 @@ public class WebService
 		return new File("build.gradle").exists();
 	}
 
-	private void setupRedirects()
-	{
-		service.redirect.get("/github", "https://github.com/fujaba/fulib.org");
-	}
-
 	private void addMainRoutes()
 	{
 		service.post("/runcodegen", runCodeGen::handle);
 		service.post("/projectzip", projectZip::handle);
+		service.get("/versions", (req, res) -> new JSONObject(VERSIONS).toString(2));
 	}
 
 	private void addUtilRoutes()
 	{
 		service.post("/rendermarkdown", (request, response) -> {
 			response.type("text/html");
-			return MarkdownUtil.renderHtml(request.body());
+			return this.markdownUtil.renderHtml(request.body());
 		});
 	}
 
@@ -178,6 +178,7 @@ public class WebService
 	{
 		service.path("/courses", () -> {
 			service.post("", courses::create);
+			service.get("", courses::getAll);
 			service.get("/:courseID", courses::get);
 		});
 	}
@@ -192,6 +193,7 @@ public class WebService
 	private void addAssignmentsRoutes()
 	{
 		service.path("/assignments", () -> {
+			service.get("", assignments::getAll);
 			service.post("", assignments::create);
 
 			service.post("/create/check", solutions::check);
@@ -213,7 +215,7 @@ public class WebService
 	{
 		service.path("/solutions", () -> {
 			service.post("", solutions::create);
-			service.get("", solutions::getAll);
+			service.get("", solutions::getByAssignment);
 
 			service.path("/:solutionID", this::addSolutionRoutes);
 		});
@@ -236,6 +238,8 @@ public class WebService
 		service.path("/comments", () -> {
 			service.post("", comments::post);
 			service.get("", comments::getChildren);
+
+			service.delete("/:commentID", comments::delete);
 		});
 	}
 
@@ -260,10 +264,5 @@ public class WebService
 
 			return "OK";
 		});
-	}
-
-	public static Object serveIndex(Request req, Response res)
-	{
-		return WebService.class.getResourceAsStream("static/index.html");
 	}
 }

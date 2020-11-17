@@ -1,0 +1,102 @@
+<div class="container">
+  <app-assignment-info [assignment]="assignment"></app-assignment-info>
+
+  <app-task-list [assignment]="assignment"></app-task-list>
+
+  <h2>
+    Sample Solution
+    <app-collapse-button [(collapsed)]="solutionCollapsed"></app-collapse-button>
+  </h2>
+  <p [ngbCollapse]="solutionCollapsed">
+    <app-scenario-codemirror
+      [content]="assignment ? assignment.solution : 'Loading...'"
+      [readOnly]="true"
+      [autoRefresh]="true"
+    ></app-scenario-codemirror>
+  </p>
+
+  <h2>
+    Solutions
+    <span class="text-muted" *ngIf="solutions">
+      (<span *ngIf="filteredSolutions && solutions.length != filteredSolutions.length">{{filteredSolutions.length}}
+      of </span>{{solutions.length}})
+    </span>
+  </h2>
+  <div class="form-inline mb-3 d-flex">
+    <label for="searchInput" class="mr-sm-2">Search:</label>
+    <input type="text" class="form-control mr-sm-2 flex-grow-1" id="searchInput"
+           placeholder="Name, Student ID, E-Mail, Assignee"
+           [(ngModel)]="searchText" (change)="updateSearch()"
+           [ngbTypeahead]="typeahead" [resultFormatter]="formatTypeahead">
+    <button type="button" class="btn btn-outline-secondary" ngbTooltip="View Search Help"
+            [ngbPopover]="searchHelp" popoverTitle="Search Help">
+      ?
+    </button>
+    <ng-template #searchHelp>
+      <ul>
+        <li>Search terms are separated by spaces and case sensitive</li>
+        <li>Each search term has to match for a result to be shown</li>
+        <li>To search for terms including spaces, use <code>+</code> in their place<br/>
+            E.g. <code>John+Doe</code>
+        </li>
+        <li>To search for specific attributes, enter <code>attribute:value</code><br/>
+            E.g. <code>studentID:1234</code>, <code>email:@example.org</code>, or <code>assignee:John+Doe</code><br/>
+            Supported attribute names (case sensitive):
+          <ul>
+            <li *ngFor="let propertyName of searchableProperties">
+              <code>{{propertyName}}</code>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </ng-template>
+  </div>
+  <table class="table table-bordered table-hover" *ngIf="solutions">
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Student ID</th>
+      <th>E-Mail</th>
+      <th>Submitted</th>
+      <th>Points</th>
+      <th>Assignee</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let solution of filteredSolutions">
+      <td>{{solution.name}}</td>
+      <td>{{solution.studentID}}</td>
+      <td><a href="mailto:{{solution.email}}">{{solution.email}}</a></td>
+      <td>
+        <ng-container
+          *ngIf="assignment?.deadline && assignment?.deadline < solution.timeStamp; then thenBlock else elseBlock">
+        </ng-container>
+        <ng-template #thenBlock>
+            <span class="text-danger" ngbTooltip="Submitted after Deadline">
+              {{solution.timeStamp | date:'medium'}}
+            </span>
+        </ng-template>
+        <ng-template #elseBlock>
+          {{solution.timeStamp | date:'medium'}}
+        </ng-template>
+      </td>
+      <td><span class="badge badge-primary badge-pill">
+          {{totalResultPoints(solution)}} / {{totalPoints}}
+        </span></td>
+      <td><input class="form-control" #assigneeInput
+                 [ngModel]="solution.assignee" (change)="setAssignee(solution, assigneeInput)"></td>
+      <td>
+        <a class="btn btn-primary" routerLink="/assignments/{{assignment?.id}}/solutions/{{solution.id}}">
+          View
+        </a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <p *ngIf="!solutions">
+    Loading Solutions...
+  </p>
+</div>
+
+<app-token-modal #tokenModal [solution]="false" (submitTokens)="setToken($event.assignmentToken)"></app-token-modal>
