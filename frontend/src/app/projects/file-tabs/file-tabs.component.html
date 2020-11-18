@@ -1,30 +1,30 @@
-<ul ngbNav #nav="ngbNav" [(activeId)]="currentFile" class="nav-tabs">
-  <li *ngFor="let file of openFiles" [ngbNavItem]="file">
+<ul ngbNav #nav="ngbNav" [(activeId)]="currentEditor" class="nav-tabs">
+  <li *ngFor="let editor of openEditors" [ngbNavItem]="editor">
     <a ngbNavLink
-       [class.text-reset]="!file.data?.dirty"
-       [class.text-primary]="file.data?.dirty"
-       (contextmenu)="openContextMenu($event, file, dropdown)"
-       (auxclick)="auxClick($event, file)">
-      <app-file-icon [file]="file"></app-file-icon>
-      {{ file.name }}
+       [class.text-reset]="!editor.file.data?.dirty"
+       [class.text-primary]="editor.file.data?.dirty"
+       (contextmenu)="openContextMenu($event, editor, dropdown)"
+       (auxclick)="auxClick($event, editor)">
+      <app-file-icon [file]="editor.file"></app-file-icon>
+      {{ editor.file.name }}
       <div class="d-inline" ngbDropdown #dropdown="ngbDropdown" container="body">
         <span ngbDropdownToggle>
         </span>
         <div ngbDropdownMenu>
-          <button ngbDropdownItem (click)="close(file)">Close</button>
-          <button ngbDropdownItem (click)="closeOthers(file)">Close Others</button>
+          <button ngbDropdownItem (click)="close(editor)">Close</button>
+          <button ngbDropdownItem (click)="closeOthers(editor)">Close Others</button>
           <button ngbDropdownItem (click)="closeAll()">Close All</button>
-          <button ngbDropdownItem (click)="closeLeftOf(file)">Close All to the Left</button>
-          <button ngbDropdownItem (click)="closeRightOf(file)">Close All to the Right</button>
+          <button ngbDropdownItem (click)="closeLeftOf(editor)">Close All to the Left</button>
+          <button ngbDropdownItem (click)="closeRightOf(editor)">Close All to the Right</button>
         </div>
       </div>
       <span class="close position-relative pl-2 font-weight-light"
-            (click)="close(file); $event.preventDefault(); $event.stopImmediatePropagation()">
+            (click)="close(editor); $event.preventDefault(); $event.stopImmediatePropagation()">
         ×
       </span>
     </a>
     <ng-template ngbNavContent>
-      <app-file-code-editor [file]="file"></app-file-code-editor>
+      <app-file-code-editor [file]="editor.file"></app-file-code-editor>
     </ng-template>
   </li>
 </ul>

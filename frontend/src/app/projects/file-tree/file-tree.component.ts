@@ -46,7 +46,7 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
     this.fileManager.currentFile.next(this.file);
 
     if (!this.file.directory) {
-      this.fileManager.open(this.file);
+      this.fileManager.open({file: this.file});
       return;
     }
 

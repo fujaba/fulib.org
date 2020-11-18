@@ -3,13 +3,14 @@ import {BehaviorSubject, EMPTY, Observable, of} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 import {FileService} from './file.service';
 import {File, FileStub} from './model/file';
+import {FileEditor} from './model/file-editor';
 
 
 @Injectable({
   providedIn: 'root',
 })
 export class FileManager {
-  openRequests = new EventEmitter<File>();
+  openRequests = new EventEmitter<FileEditor>();
   updates = new EventEmitter<File>();
   deletions = new EventEmitter<File>();
 
@@ -20,8 +21,8 @@ export class FileManager {
   ) {
   }
 
-  open(file: File): void {
-    this.openRequests.next(file);
+  open(editor: FileEditor): void {
+    this.openRequests.next(editor);
   }
 
   getContent(file: File): Observable<string> {

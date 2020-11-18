@@ -3,6 +3,7 @@ import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
 import {Subscription} from 'rxjs';
 import {FileManager} from '../file.manager';
 import {File} from '../model/file';
+import {FileEditor} from '../model/file-editor';
 
 @Component({
   selector: 'app-file-tabs',
@@ -10,8 +11,8 @@ import {File} from '../model/file';
   styleUrls: ['./file-tabs.component.scss'],
 })
 export class FileTabsComponent implements OnInit, OnDestroy {
-  currentFile?: File;
-  openFiles: File[] = [];
+  currentEditor?: FileEditor;
+  openEditors: FileEditor[] = [];
 
   subscription = new Subscription();
 
@@ -21,71 +22,83 @@ export class FileTabsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subscription.add(this.fileManager.openRequests.subscribe(file => this.open(file)));
-    this.subscription.add(this.fileManager.deletions.subscribe(file => this.close(file)));
+    this.subscription.add(this.fileManager.openRequests.subscribe((editor: FileEditor) => {
+      const existing = this.openEditors.find(ed => ed.file === editor.file);
+      if (existing) {
+        this.open(existing);
+      } else {
+        this.open(editor);
+      }
+    }));
+    this.subscription.add(this.fileManager.deletions.subscribe((file: File) => {
+      const editor = this.openEditors.find(ed => ed.file === file);
+      if (editor) {
+        this.close(editor);
+      }
+    }));
   }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
 
-  open(file: File) {
-    if (!this.openFiles.includes(file)) {
-      this.openFiles.push(file);
+  open(editor: FileEditor) {
+    if (!this.openEditors.includes(editor)) {
+      this.openEditors.push(editor);
     }
-    this.currentFile = file;
-    this.fileManager.getContent(file).subscribe(() => {
+    this.currentEditor = editor;
+    this.fileManager.getContent(editor.file).subscribe(() => {
     });
   }
 
-  close(file: File) {
-    const index = this.openFiles.indexOf(file);
+  close(editor: FileEditor) {
+    const index = this.openEditors.indexOf(editor);
     if (index >= 0) {
-      this.openFiles.splice(index, 1);
-      this.currentFile = this.openFiles[index] || this.openFiles[index - 1];
+      this.openEditors.splice(index, 1);
+      this.currentEditor = this.openEditors[index] || this.openEditors[index - 1];
     }
-    if (file === this.currentFile) {
-      this.currentFile = undefined;
+    if (editor === this.currentEditor) {
+      this.currentEditor = undefined;
     }
   }
 
-  closeOthers(file: File) {
-    this.currentFile = file;
-    this.openFiles = [file];
+  closeOthers(editor: FileEditor) {
+    this.currentEditor = editor;
+    this.openEditors = [editor];
   }
 
   closeAll() {
-    this.currentFile = undefined;
-    this.openFiles.length = 0;
+    this.currentEditor = undefined;
+    this.openEditors.length = 0;
   }
 
-  closeLeftOf(file: File) {
-    const index = this.openFiles.indexOf(file);
-    this.openFiles.splice(0, index);
-    this.replaceOpenFileIfNecessary(file);
+  closeLeftOf(editor: FileEditor) {
+    const index = this.openEditors.indexOf(editor);
+    this.openEditors.splice(0, index);
+    this.replaceOpenFileIfNecessary(editor);
   }
 
-  closeRightOf(file: File) {
-    const index = this.openFiles.indexOf(file);
-    this.openFiles.splice(index + 1);
-    this.replaceOpenFileIfNecessary(file);
+  closeRightOf(editor: FileEditor) {
+    const index = this.openEditors.indexOf(editor);
+    this.openEditors.splice(index + 1);
+    this.replaceOpenFileIfNecessary(editor);
   }
 
-  private replaceOpenFileIfNecessary(file: File) {
-    if (this.currentFile && !this.openFiles.includes(this.currentFile)) {
-      this.currentFile = file;
+  private replaceOpenFileIfNecessary(editor: FileEditor) {
+    if (this.currentEditor && !this.openEditors.includes(this.currentEditor)) {
+      this.currentEditor = editor;
     }
   }
 
-  auxClick(event: MouseEvent, file: File) {
+  auxClick(event: MouseEvent, editor: FileEditor) {
     if (event.button != 1) {
       return;
     }
-    this.close(file);
+    this.close(editor);
     event.preventDefault();
   }
 
-  openContextMenu(event: MouseEvent, file: File, dropdown: NgbDropdown) {
+  openContextMenu(event: MouseEvent, editor: FileEditor, dropdown: NgbDropdown) {
     if (event.button != 2 || event.shiftKey || dropdown.isOpen()) {
       return;
     }
