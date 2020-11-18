@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {filter} from 'rxjs/operators';
 import {FileTypeService} from '../file-type.service';
@@ -10,7 +10,7 @@ import {File} from '../model/file';
   templateUrl: './file-code-editor.component.html',
   styleUrls: ['./file-code-editor.component.scss'],
 })
-export class FileCodeEditorComponent implements OnInit {
+export class FileCodeEditorComponent implements OnInit, OnDestroy {
   @Input() file: File;
 
   subscription: Subscription;
@@ -38,6 +38,10 @@ export class FileCodeEditorComponent implements OnInit {
     this.subscription = this.fileManager.updates.pipe(filter(file => file === this.file)).subscribe(() => {
       this.updateFileType();
     });
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   private updateFileType() {
