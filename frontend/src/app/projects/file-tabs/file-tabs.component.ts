@@ -41,7 +41,7 @@ export class FileTabsComponent implements OnInit, OnDestroy {
     this.fileManager.getContent(editor.file).subscribe(() => {
     });
 
-    const existing = this.openEditors.find(existing => editor.file === existing.file);
+    const existing = this.openEditors.find(existing => editor.file === existing.file && !!editor.preview === !!existing.preview);
     if (existing) {
       existing.temporary = existing.temporary && editor.temporary;
       this.currentEditor = existing;
@@ -52,6 +52,7 @@ export class FileTabsComponent implements OnInit, OnDestroy {
       const temporary = this.openEditors.find(existing => existing.temporary);
       if (temporary) {
         temporary.file = editor.file;
+        temporary.preview = editor.preview;
         this.currentEditor = temporary;
         return;
       }

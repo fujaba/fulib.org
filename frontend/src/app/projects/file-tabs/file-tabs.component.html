@@ -8,6 +8,9 @@
             [class.font-italic]="editor.temporary">
         {{ editor.file.name }}
       </span>
+      <span *ngIf="editor.preview">
+        (Preview)
+      </span>
       <div class="d-inline" ngbDropdown #dropdown="ngbDropdown" container="body">
         <span ngbDropdownToggle>
         </span>

@@ -55,6 +55,10 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
     this.fileManager.getChildren(this.file).subscribe(() => {});
   }
 
+  openPreview() {
+    this.fileManager.open({file: this.file, temporary: false, preview: true});
+  }
+
   startRenaming() {
     this.oldName = this.file.name;
   }

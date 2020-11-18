@@ -32,6 +32,7 @@
       <img class="icon hover-only px-1" ngbDropdownToggle src="/assets/octicons/kebab-horizontal-16.svg" alt="Options">
       <div ngbDropdownMenu>
         <button ngbDropdownItem (click)="open(false)">Open</button>
+        <button ngbDropdownItem *ngIf="!file.directory" (click)="openPreview()">Preview</button>
         <button ngbDropdownItem *ngIf="file !== root" (click)="startRenaming()">Rename</button>
         <ng-container *ngIf="file.directory">
           <div class="dropdown-divider"></div>
