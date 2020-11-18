@@ -42,11 +42,11 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
     });
   }
 
-  open() {
+  open(temporary: boolean) {
     this.fileManager.currentFile.next(this.file);
 
     if (!this.file.directory) {
-      this.fileManager.open({file: this.file});
+      this.fileManager.open({file: this.file, temporary});
       return;
     }
 

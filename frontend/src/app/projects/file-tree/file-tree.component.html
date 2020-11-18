@@ -1,5 +1,9 @@
-<div class="file-item" [class.active]="file === (currentFile | async)"
-     (click)="open()" (contextmenu)="openContextMenu($event, dropdown)">
+<div class="file-item"
+     [class.active]="file === (currentFile | async)"
+     (click)="open(true)"
+     (dblclick)="open(false)"
+     (contextmenu)="openContextMenu($event, dropdown)"
+>
   <div class="file-item-indent" [style.margin-left.em]="level - 0.5">
     <app-file-icon class="mr-2" [file]="file" [open]="expanded"></app-file-icon>
     <input *ngIf="oldName"
@@ -27,7 +31,7 @@
     <div ngbDropdown #dropdown="ngbDropdown" container="body" (click)="$event.stopImmediatePropagation()">
       <img class="icon hover-only px-1" ngbDropdownToggle src="/assets/octicons/kebab-horizontal-16.svg" alt="Options">
       <div ngbDropdownMenu>
-        <button ngbDropdownItem (click)="open()">Open</button>
+        <button ngbDropdownItem (click)="open(false)">Open</button>
         <button ngbDropdownItem *ngIf="file !== root" (click)="startRenaming()">Rename</button>
         <ng-container *ngIf="file.directory">
           <div class="dropdown-divider"></div>

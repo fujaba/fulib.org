@@ -23,12 +23,7 @@ export class FileTabsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscription.add(this.fileManager.openRequests.subscribe((editor: FileEditor) => {
-      const existing = this.openEditors.find(ed => ed.file === editor.file);
-      if (existing) {
-        this.open(existing);
-      } else {
-        this.open(editor);
-      }
+      this.open(editor);
     }));
     this.subscription.add(this.fileManager.deletions.subscribe((file: File) => {
       const editor = this.openEditors.find(ed => ed.file === file);
@@ -43,12 +38,27 @@ export class FileTabsComponent implements OnInit, OnDestroy {
   }
 
   open(editor: FileEditor) {
-    if (!this.openEditors.includes(editor)) {
-      this.openEditors.push(editor);
-    }
-    this.currentEditor = editor;
     this.fileManager.getContent(editor.file).subscribe(() => {
     });
+
+    const existing = this.openEditors.find(existing => editor.file === existing.file);
+    if (existing) {
+      existing.temporary = existing.temporary && editor.temporary;
+      this.currentEditor = existing;
+      return;
+    }
+
+    if (editor.temporary) {
+      const temporary = this.openEditors.find(existing => existing.temporary);
+      if (temporary) {
+        temporary.file = editor.file;
+        this.currentEditor = temporary;
+        return;
+      }
+    }
+
+    this.openEditors.push(editor);
+    this.currentEditor = editor;
   }
 
   close(editor: FileEditor) {

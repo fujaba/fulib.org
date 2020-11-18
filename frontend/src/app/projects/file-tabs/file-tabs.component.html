@@ -1,12 +1,13 @@
 <ul ngbNav #nav="ngbNav" [(activeId)]="currentEditor" class="nav-tabs">
   <li *ngFor="let editor of openEditors" [ngbNavItem]="editor">
-    <a ngbNavLink
-       [class.text-reset]="!editor.file.data?.dirty"
-       [class.text-primary]="editor.file.data?.dirty"
+    <a ngbNavLink class="text-reset"
        (contextmenu)="openContextMenu($event, editor, dropdown)"
        (auxclick)="auxClick($event, editor)">
       <app-file-icon [file]="editor.file"></app-file-icon>
-      {{ editor.file.name }}
+      <span [class.text-primary]="editor.file.data?.dirty"
+            [class.font-italic]="editor.temporary">
+        {{ editor.file.name }}
+      </span>
       <div class="d-inline" ngbDropdown #dropdown="ngbDropdown" container="body">
         <span ngbDropdownToggle>
         </span>
