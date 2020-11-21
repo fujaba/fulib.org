@@ -11,6 +11,7 @@ import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSBuckets;
 import com.mongodb.client.gridfs.model.GridFSDownloadOptions;
 import com.mongodb.client.gridfs.model.GridFSFile;
+import com.mongodb.client.gridfs.model.GridFSUploadOptions;
 import com.mongodb.client.model.*;
 import org.bson.BsonValue;
 import org.bson.Document;
@@ -209,6 +210,15 @@ public class Mongo
 	public void deleteProject(String id)
 	{
 		this.projects.deleteOne(Filters.eq(Project.PROPERTY_ID, id));
+		final List<String> fileIds = this.projectFiles
+			.find(Filters.eq(File.PROPERTY_PROJECT_ID, id))
+			.projection(Projections.include(File.PROPERTY_ID))
+			.map(File::getId)
+			.into(new ArrayList<>());
+		for (final String fileId : fileIds)
+		{
+			this.deleteRevisions(fileId);
+		}
 		this.projectFiles.deleteMany(Filters.eq(File.PROPERTY_PROJECT_ID, id));
 	}
 
