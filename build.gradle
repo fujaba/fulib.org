@@ -101,6 +101,14 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.mockito/mockito-core
 	testCompile group: 'org.mockito', name: 'mockito-core', version: '3.5.13'
 
+	// --------------- Docker (Projects) ---------------
+
+	// https://mvnrepository.com/artifact/com.github.docker-java/docker-java-core
+	compile group: 'com.github.docker-java', name: 'docker-java-core', version: '3.2.6'
+
+	// https://mvnrepository.com/artifact/com.github.docker-java/docker-java-transport-httpclient5
+	compile group: 'com.github.docker-java', name: 'docker-java-transport-httpclient5', version: '3.2.6'
+
 	// --------------- CommonMark ---------------
 
 	// https://mvnrepository.com/artifact/com.atlassian.commonmark/commonmark
