@@ -11,10 +11,7 @@ import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSBuckets;
 import com.mongodb.client.gridfs.model.GridFSDownloadOptions;
 import com.mongodb.client.gridfs.model.GridFSFile;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Indexes;
-import com.mongodb.client.model.ReplaceOptions;
-import com.mongodb.client.model.Sorts;
+import com.mongodb.client.model.*;
 import org.bson.BsonValue;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecProvider;
@@ -260,8 +257,28 @@ public class Mongo
 
 	public void deleteFile(String id)
 	{
-		this.projectFiles.deleteOne(Filters.eq(File.PROPERTY_ID, id));
+		final File file = this.projectFiles.findOneAndDelete(Filters.eq(File.PROPERTY_ID, id));
+		if (file == null)
+		{
+			return;
+		}
+
 		this.deleteRevisions(id);
+
+		if (!file.isDirectory())
+		{
+			return;
+		}
+
+		final List<String> children = this.projectFiles
+			.find(Filters.eq(File.PROPERTY_PARENT_ID, id))
+			.projection(Projections.include(File.PROPERTY_ID))
+			.map(File::getId)
+			.into(new ArrayList<>());
+		for (String child : children)
+		{
+			this.deleteFile(child);
+		}
 	}
 
 	private void deleteRevisions(String id)
