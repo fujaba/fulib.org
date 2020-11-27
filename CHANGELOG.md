@@ -329,3 +329,23 @@
 * Blockquotes, fenced code blocks and tables are now properly rendered and styled in Markdown views. #113
 * The View button in the solutions table now correctly links to the solution again. #118
 * Example scenarios now use blockquote comments. #121
+
+# fulib.org v1.6.1
+
+## General
+
+* Updated to fulibScenarios v1.6.2. #124
+* Updated to fulibTools v1.4.1. #124
+
+## New Features
+
++ Added the View menu for showing and hiding editor panels and removed the bottom bar. #123
++ Added the Reset Editor Layout button in the View menu. #123
+
+## Improvements
+
+* Expanded the Placeholders example with inheritance and more objects. #124
+
+## Bugfixes
+
+* Class and object diagrams can now be scrolled if they are too large for the panel. #122
