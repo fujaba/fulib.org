@@ -156,6 +156,10 @@
         >
           {{panel.title}}
         </button>
+        <div class="dropdown-divider"></div>
+        <button ngbDropdownItem (click)="resetPanels()" class="text-danger">
+          Reset Editor Layout
+        </button>
       </div>
     </div>
     <div class="ml-auto" role="group">
