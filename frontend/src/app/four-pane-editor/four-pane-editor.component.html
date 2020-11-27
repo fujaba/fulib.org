@@ -145,6 +145,19 @@
         </div>
       </div>
     </div>
+    <div ngbDropdown class="d-inline-block mx-1" autoClose="outside">
+      <button class="btn btn-outline-secondary" id="panelsDropdown" ngbDropdownToggle>View</button>
+      <div ngbDropdownMenu aria-labelledby="panelsDropdown">
+        <h6 class="dropdown-header">Editor Panels</h6>
+        <button *ngFor="let panel of items"
+                ngbDropdownItem
+                (click)="setPanelClosed(panel.id, !panels[panel.id].closed)"
+                [class.dropdown-item-checked]="!panels[panel.id].closed"
+        >
+          {{panel.title}}
+        </button>
+      </div>
+    </div>
     <div class="ml-auto" role="group">
       <a role="button" class="btn btn-outline-secondary mx-1" [routerLink]="[{outlets: {modal: 'config'}}]">
         Configure Project
@@ -197,14 +210,6 @@
         </gridster-item>
       </ng-container>
     </gridster>
-  </div>
-  <div class="bg-secondary">
-    <ng-container *ngFor="let item of items; trackBy: itemId">
-      <button *ngIf="panels[item.id].closed" type="button" class="btn btn-sm btn-secondary mr-1"
-              (click)="setPanelClosed(item.id, false)">
-        {{item.title}}
-      </button>
-    </ng-container>
   </div>
 </div>
 
