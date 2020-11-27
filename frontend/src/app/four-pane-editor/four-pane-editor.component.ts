@@ -152,6 +152,11 @@ export class FourPaneEditorComponent implements OnInit {
     this.scenarioEditorService.autoSubmit = value;
   }
 
+  resetPanels() {
+    this.scenarioEditorService.panels = {};
+    this.panels = this.scenarioEditorService.panels;
+  }
+
   setPanelClosed(id: string, hidden: boolean): void {
     this.panels[id].closed = hidden;
     this.savePanels();
