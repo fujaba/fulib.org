@@ -72,7 +72,7 @@
 <ng-template #classDiagram>
   <ng-container *ngIf="response else loading">
     <div *ngIf="response.classDiagram else emptyClassDiagram"
-         class="diagram"
+         class="h-100 overflow-auto diagram"
          [innerHTML]="response.classDiagram | safeHtml"
     ></div>
     <ng-template #emptyClassDiagram>
@@ -83,7 +83,7 @@
 
 <ng-template #objectDiagrams>
   <ng-container *ngIf="response else loading">
-    <ng-container *ngIf="response.objectDiagrams?.length else emptyObjectDiagrams">
+    <div *ngIf="response.objectDiagrams?.length else emptyObjectDiagrams" class="d-flex flex-column h-100">
       <ul ngbNav #objectDiagramTabs="ngbNav" [(activeId)]="activeObjectDiagramTab" class="nav-tabs">
         <li *ngFor="let diagram of response.objectDiagrams; index as diagramIndex"
             [ngbNavItem]="diagramIndex + 1">
@@ -106,8 +106,8 @@
         </li>
       </ul>
 
-      <div [ngbNavOutlet]="objectDiagramTabs" class="mt-2"></div>
-    </ng-container>
+      <div [ngbNavOutlet]="objectDiagramTabs" class="mt-2 overflow-auto"></div>
+    </div>
     <ng-template #emptyObjectDiagrams>
       No object diagrams to display.
     </ng-template>
