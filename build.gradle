@@ -59,7 +59,7 @@ repositories {
 
 dependencies {
 	// https://mvnrepository.com/artifact/org.fulib/fulibScenarios
-	def fulibScenariosDep = [ group: 'org.fulib', name: 'fulibScenarios', version: '1.6.1' ]
+	def fulibScenariosDep = [ group: 'org.fulib', name: 'fulibScenarios', version: '1.6.2' ]
 
 	fulibScenarios fulibScenariosDep
 
@@ -67,9 +67,6 @@ dependencies {
 
 	// https://mvnrepository.com/artifact/org.fulib/fulibScenarios
 	compile fulibScenariosDep
-
-	// https://mvnrepository.com/artifact/org.fulib/fulibTools
-	compile group: 'org.fulib', name: 'fulibTools', version: '1.4.1'
 
 	// https://mvnrepository.com/artifact/org.fulib/fulibMockups
 	compile group: 'org.fulib', name: 'fulibMockups', version: '0.2.0'
