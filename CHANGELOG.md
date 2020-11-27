@@ -295,3 +295,57 @@
 ## Removals
 
 - Removed the contact email from the Feedback modal. #108
+
+# fulib.org v1.6.0
+
+## General
+
+* Updated to fulib v1.4.1.
+* Updated to fulibTools v1.4.0.
+* Updated to fulibScenarios v1.6.1.
+
+## New Features
+
++ Added a user account system which can be accessed via the user icon in the navigation bar. #60 #84
+  + Registered users can access their assignments, solutions and courses from any device.
+  + Name and Email fields in assignments and solutions are automatically filled from the account.
+  > Creating an assignment as a guest/without being logged in currently displays a warning, but may be disabled in the future. In addition, assignments created by registered users display a verification badge.
++ Added "My Courses" to the Assignments menu. #84
+  > This feature can only be used by registered users.
++ Comments can now be deleted. #59 #84
+  > This is only possible if the comment was posted as a registered user. The same user needs to be logged in to delete the comment.
++ Panels in the main editor can now be rearranged and hidden. #109 #112
++ Added the Markdown panel to the main editor. #110 #112
++ Added the Output panel to the main editor. #111 #112
++ The output panel now detects exceptions and displays a link for reporting them. #114
++ Diagrams and files generated as part of scenario compilation are now available as URLs for up to an hour. #115
++ All API endpoints are now also available with an `/api` path prefix. #117
++ Added the `GET /api/versions` endpoint for retrieving the versions of different fulib components. #119
+
+## Improvements
+
+* Moved the "Edit Privacy Preferences" menu item to the user menu. #84
+* Moved the theme switch to the user menu. #84
+* Blockquotes, fenced code blocks and tables are now properly rendered and styled in Markdown views. #113
+* The View button in the solutions table now correctly links to the solution again. #118
+* Example scenarios now use blockquote comments. #121
+
+# fulib.org v1.6.1
+
+## General
+
+* Updated to fulibScenarios v1.6.2. #124
+* Updated to fulibTools v1.4.1. #124
+
+## New Features
+
++ Added the View menu for showing and hiding editor panels and removed the bottom bar. #123
++ Added the Reset Editor Layout button in the View menu. #123
+
+## Improvements
+
+* Expanded the Placeholders example with inheritance and more objects. #124
+
+## Bugfixes
+
+* Class and object diagrams can now be scrolled if they are too large for the panel. #122
