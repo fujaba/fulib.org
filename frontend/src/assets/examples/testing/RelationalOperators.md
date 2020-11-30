@@ -1,7 +1,7 @@
 # Relational Operators
 
-// There are many relational operators in the scenario language.
-// They are shown in the examples below.
+> There are many relational operators in the scenario language.
+> They are shown in the examples below.
 
 There are Students with name Alice and Bob and with credits 20 and 30.
 
@@ -27,5 +27,5 @@ We expect that 20 is not greater than 30.
 
 # More Info
 
-// View more info about conditional operators in the documentation:
-// https://fujaba.gitbook.io/fulib-scenarios/language/expressions/conditionals
+> View more info about conditional operators in the documentation:
+> https://fujaba.gitbook.io/fulib-scenarios/language/expressions/conditionals

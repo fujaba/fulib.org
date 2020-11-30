@@ -59,12 +59,14 @@ repositories {
 
 dependencies {
 	// https://mvnrepository.com/artifact/org.fulib/fulibScenarios
-	fulibScenarios group: 'org.fulib', name: 'fulibScenarios', version: '1.5.0'
+	def fulibScenariosDep = [ group: 'org.fulib', name: 'fulibScenarios', version: '1.6.2' ]
+
+	fulibScenarios fulibScenariosDep
 
 	// --------------- Fulib Libraries ---------------
 
 	// https://mvnrepository.com/artifact/org.fulib/fulibScenarios
-	compile group: 'org.fulib', name: 'fulibScenarios', version: '1.5.1'
+	compile fulibScenariosDep
 
 	// https://mvnrepository.com/artifact/org.fulib/fulibMockups
 	compile group: 'org.fulib', name: 'fulibMockups', version: '0.2.0'
@@ -128,10 +130,6 @@ processResources {
 	def fulibScenariosVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulibScenarios')
 	def fulibGradleVersion = getDependencyVersion(buildscript.configurations.classpath, 'org.fulib', 'fulibGradle')
 	def fulibMockupsVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulibMockups')
-
-	from('LICENSE.md') {
-		into 'org/fulib/webapp/static/'
-	}
 
 	from('.') {
 		include 'gradle/wrapper/**', 'gradlew', 'gradlew.bat'

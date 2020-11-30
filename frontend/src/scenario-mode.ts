@@ -134,6 +134,8 @@ export const ScenarioMode: SimpleMode = {
   start: [
     {regex: /(\s*)(##)(.*)$/, token: [null, 'header', 'comment'], sol: true},
     {regex: /(\s*)(#)(.*)$/, token: [null, 'header', 'def'], sol: true},
+    {regex: /(\s*)(>)(.*)$/, token: [null, 'header', 'comment'], sol: true},
+    {regex: /(\s*)(```)(.*)$/, token: [null, 'string', 'meta'], sol: true, next: 'codeBlock'},
     {regex: /\/\/.*/, token: 'comment'},
     {regex: /\s*[+*-]/, token: 'operator', sol: true},
     {regex: /\s*[0-9]\./, token: 'number', sol: true},
@@ -172,6 +174,10 @@ export const ScenarioMode: SimpleMode = {
   fileName: [
     {regex: /\)/, token: 'image', next: 'start'},
     {regex: /[^)]*/, token: 'string'},
+  ],
+  codeBlock: [
+    {regex: /\s*```$/, token: 'string', sol: true, next: 'start'},
+    {regex: /.*$/, token: 'string', sol: true},
   ],
   meta: {
     lineComment: '//',

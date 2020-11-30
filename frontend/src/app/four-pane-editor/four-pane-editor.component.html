@@ -72,7 +72,7 @@
 <ng-template #classDiagram>
   <ng-container *ngIf="response else loading">
     <div *ngIf="response.classDiagram else emptyClassDiagram"
-         class="diagram"
+         class="h-100 overflow-auto diagram"
          [innerHTML]="response.classDiagram | safeHtml"
     ></div>
     <ng-template #emptyClassDiagram>
@@ -83,7 +83,7 @@
 
 <ng-template #objectDiagrams>
   <ng-container *ngIf="response else loading">
-    <ng-container *ngIf="response.objectDiagrams?.length else emptyObjectDiagrams">
+    <div *ngIf="response.objectDiagrams?.length else emptyObjectDiagrams" class="d-flex flex-column h-100">
       <ul ngbNav #objectDiagramTabs="ngbNav" [(activeId)]="activeObjectDiagramTab" class="nav-tabs">
         <li *ngFor="let diagram of response.objectDiagrams; index as diagramIndex"
             [ngbNavItem]="diagramIndex + 1">
@@ -106,8 +106,8 @@
         </li>
       </ul>
 
-      <div [ngbNavOutlet]="objectDiagramTabs" class="mt-2"></div>
-    </ng-container>
+      <div [ngbNavOutlet]="objectDiagramTabs" class="mt-2 overflow-auto"></div>
+    </div>
     <ng-template #emptyObjectDiagrams>
       No object diagrams to display.
     </ng-template>
@@ -143,6 +143,23 @@
         <div class="input-group-text text-warning" ngbTooltip="Changes to the example will not be saved!">
           &#9888;
         </div>
+      </div>
+    </div>
+    <div ngbDropdown class="d-inline-block mx-1" autoClose="outside">
+      <button class="btn btn-outline-secondary" id="panelsDropdown" ngbDropdownToggle>View</button>
+      <div ngbDropdownMenu aria-labelledby="panelsDropdown">
+        <h6 class="dropdown-header">Editor Panels</h6>
+        <button *ngFor="let panel of items"
+                ngbDropdownItem
+                (click)="setPanelClosed(panel.id, !panels[panel.id].closed)"
+                [class.dropdown-item-checked]="!panels[panel.id].closed"
+        >
+          {{panel.title}}
+        </button>
+        <div class="dropdown-divider"></div>
+        <button ngbDropdownItem (click)="resetPanels()" class="text-danger">
+          Reset Editor Layout
+        </button>
       </div>
     </div>
     <div class="ml-auto" role="group">
@@ -197,14 +214,6 @@
         </gridster-item>
       </ng-container>
     </gridster>
-  </div>
-  <div class="bg-secondary">
-    <ng-container *ngFor="let item of items; trackBy: itemId">
-      <button *ngIf="panels[item.id].closed" type="button" class="btn btn-sm btn-secondary mr-1"
-              (click)="setPanelClosed(item.id, false)">
-        {{item.title}}
-      </button>
-    </ng-container>
   </div>
 </div>
 
