@@ -319,8 +319,9 @@ public class Mongo
 		{
 			this.projectFilesFS.downloadToStream(id, output, new GridFSDownloadOptions().revision(revisionNumber));
 		}
-		catch (MongoGridFSException ignored)
+		catch (MongoGridFSException e)
 		{
+			e.printStackTrace();
 		}
 	}
 

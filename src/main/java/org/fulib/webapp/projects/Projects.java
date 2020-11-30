@@ -14,12 +14,11 @@ import spark.Response;
 import spark.Spark;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 public class Projects
 {
@@ -178,5 +177,20 @@ public class Projects
 		this.mongo.deleteProject(id);
 
 		return "{}";
+	}
+
+	public Object exec(Request request, Response response) throws IOException
+	{
+		final String id = request.params("projectId");
+		final Project project = getOr404(this.mongo, id);
+		checkAuth(request, project);
+
+		final String[] command = request.queryParams("cmd").split(" ");
+
+		final InputStream input = request.raw().getInputStream();
+		final OutputStream output = response.raw().getOutputStream();
+		new Executor(this.mongo).execute(project, command, input, output);
+
+		return "";
 	}
 }

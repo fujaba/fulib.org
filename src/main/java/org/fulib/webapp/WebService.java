@@ -188,6 +188,7 @@ public class WebService
 		service.get("", projects::get);
 		service.put("", projects::update);
 		service.delete("", projects::delete);
+		service.post("/exec", projects::exec);
 
 		service.path("/files", this::addFilesRoutes);
 	}
