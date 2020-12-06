@@ -9,6 +9,8 @@ import org.fulib.webapp.tool.model.Result;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import spark.Request;
 import spark.Response;
 
@@ -23,13 +25,14 @@ import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RunCodeGen
 {
 	// =============== Constants ===============
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(RunCodeGen.class);
 
 	private static final Pattern PROPERTY_CONSTANT_PATTERN = Pattern.compile("^\\s*public static final String PROPERTY_\\w+ = \"(\\w+)\";$");
 
@@ -177,7 +180,7 @@ public class RunCodeGen
 
 			if (exitCode < 0) // exception occurred
 			{
-				Logger.getGlobal().severe(output);
+				LOGGER.error(output);
 			}
 
 			if (exitCode == 0 || (exitCode & 4) != 0) // scenarioc did not fail
