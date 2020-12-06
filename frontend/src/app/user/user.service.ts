@@ -1,7 +1,7 @@
-import {Injectable, OnInit} from '@angular/core';
-import {BehaviorSubject, Observable} from "rxjs";
-import {User} from "./user";
-import {KeycloakService} from "keycloak-angular";
+import {Injectable} from '@angular/core';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {User} from './user';
+import {KeycloakService} from 'keycloak-angular';
 
 @Injectable({
   providedIn: 'root'

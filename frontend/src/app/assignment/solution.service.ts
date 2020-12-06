@@ -11,7 +11,7 @@ import Comment from './model/comment';
 import {StorageService} from '../storage.service';
 import TaskGrading from './model/task-grading';
 import {CheckResult, CheckSolution} from './model/check';
-import {UserService} from "../user/user.service";
+import {UserService} from '../user/user.service';
 
 function asID(id: { id?: string } | string): string {
   return typeof id === 'string' ? id : id.id!;
@@ -226,7 +226,7 @@ export class SolutionService {
   getByUserId(userId: string): Observable<Solution[]> {
     return this.http.get<Solution[]>(`${environment.apiURL}/solutions`, {params: {userId}}).pipe(
       map(solutions => {
-        for (let solution of solutions) {
+        for (const solution of solutions) {
           // solution.token = this.getToken(solution.assignment.id, solution.id);
         }
         return solutions;

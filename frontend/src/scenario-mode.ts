@@ -1,6 +1,6 @@
 interface Meta {
   dontIndentStates?: string[];
-  lineComment?: string
+  lineComment?: string;
 }
 
 // https://codemirror.net/demo/simplemode.html
@@ -24,7 +24,7 @@ interface SimpleMode {
 }
 
 // keywords for fulibScenarios v1.5.1
-export const Keywords = [
+export const KEYWORDS = [
   'a',
   'add',
   'adds',
@@ -97,7 +97,7 @@ export const Keywords = [
   'writes',
 ];
 
-export const Types = [
+export const TYPES = [
   'void',
   'boolean',
   // numeric types
@@ -130,7 +130,7 @@ export const Types = [
   'integer',
 ];
 
-export const ScenarioMode: SimpleMode = {
+export const SCENARIO_MODE: SimpleMode = {
   start: [
     {regex: /(\s*)(##)(.*)$/, token: [null, 'header', 'comment'], sol: true},
     {regex: /(\s*)(#)(.*)$/, token: [null, 'header', 'def'], sol: true},
@@ -147,8 +147,8 @@ export const ScenarioMode: SimpleMode = {
     {regex: /<!--/, token: 'comment', next: 'htmlComment'},
     {regex: /!\[/, token: 'image'},
     {regex: /]\(/, token: 'image', next: 'fileName'},
-    {regex: new RegExp(`(?:${Types.join('|')})(?![a-zA-Z0-9'_-])`), token: 'type'},
-    {regex: new RegExp(`(?:${Keywords.join('|')})(?![a-zA-Z0-9'_-])`), token: 'keyword'},
+    {regex: new RegExp(`(?:${TYPES.join('|')})(?![a-zA-Z0-9'_-])`), token: 'type'},
+    {regex: new RegExp(`(?:${KEYWORDS.join('|')})(?![a-zA-Z0-9'_-])`), token: 'keyword'},
     {regex: /[a-zA-Z_][a-zA-Z0-9'_-]*/, token: 'variable'},
   ],
   parenComment: [
