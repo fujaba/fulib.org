@@ -1,25 +1,14 @@
+import {Rule} from 'codemirror';
+
 interface Meta {
   dontIndentStates?: string[];
   lineComment?: string;
 }
 
-// https://codemirror.net/demo/simplemode.html
-interface State {
-  regex?: string | RegExp;
-  token?: string | (string | null)[] | null;
-  sol?: boolean;
-  next?: string;
-  push?: string;
-  pop?: boolean;
-  mode?: { spec: string, end: string, persistent?: boolean };
-  indent?: boolean;
-  dedent?: boolean;
-  dedentIfLineStart?: boolean;
-}
-
 interface SimpleMode {
-  [id: string]: State[] | Meta;
+  [id: string]: Rule[] | Meta;
 
+  start: Rule[];
   meta: Meta;
 }
 
@@ -132,10 +121,10 @@ export const TYPES = [
 
 export const SCENARIO_MODE: SimpleMode = {
   start: [
-    {regex: /(\s*)(##)(.*)$/, token: [null, 'header', 'comment'], sol: true},
-    {regex: /(\s*)(#)(.*)$/, token: [null, 'header', 'def'], sol: true},
-    {regex: /(\s*)(>)(.*)$/, token: [null, 'header', 'comment'], sol: true},
-    {regex: /(\s*)(```)(.*)$/, token: [null, 'string', 'meta'], sol: true, next: 'codeBlock'},
+    {regex: /(\s*)(##)(.*)$/, token: [null!, 'header', 'comment'], sol: true},
+    {regex: /(\s*)(#)(.*)$/, token: [null!, 'header', 'def'], sol: true},
+    {regex: /(\s*)(>)(.*)$/, token: [null!, 'header', 'comment'], sol: true},
+    {regex: /(\s*)(```)(.*)$/, token: [null!, 'string', 'meta'], sol: true, next: 'codeBlock'},
     {regex: /\/\/.*/, token: 'comment'},
     {regex: /\s*[+*-]/, token: 'operator', sol: true},
     {regex: /\s*[0-9]\./, token: 'number', sol: true},

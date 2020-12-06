@@ -12,7 +12,7 @@ import {AppModule} from './app/app.module';
 import {environment} from './environments/environment';
 import {SCENARIO_MODE} from './scenario-mode';
 
-(CodeMirror as any).defineSimpleMode('scenario', SCENARIO_MODE);
+CodeMirror.defineSimpleMode('scenario', SCENARIO_MODE);
 
 if (environment.production) {
   enableProdMode();
