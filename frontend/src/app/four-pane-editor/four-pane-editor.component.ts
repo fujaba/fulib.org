@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {Observable, of} from 'rxjs';
+import {switchMap, tap} from 'rxjs/operators';
 
 import {environment} from '../../environments/environment';
 import {ExamplesService} from '../examples.service';
@@ -20,7 +22,7 @@ import {Panels, ScenarioEditorService} from '../scenario-editor.service';
 export class FourPaneEditorComponent implements OnInit {
   panels: Panels;
 
-  _selectedExample: Example | null;
+  selectedExample: Example | null;
   scenarioText: string;
   response: Response | null;
   markers: Marker[] = [];
@@ -55,14 +57,20 @@ export class FourPaneEditorComponent implements OnInit {
 
     this.exampleCategories = this.examplesService.getCategories();
 
-    this.activatedRoute.queryParams.subscribe(queryParams => {
-      const exampleName = queryParams.example;
-      if (exampleName) {
-        this.selectedExample = this.examplesService.getExampleByName(exampleName);
-      } else {
-        this.selectedExample = this.scenarioEditorService.selectedExample;
-      }
-    });
+    this.activatedRoute.queryParams.pipe(
+      switchMap(queryParams => {
+        const exampleName: string | undefined = queryParams.example;
+        this.selectedExample = exampleName ? this.examplesService.getExampleByName(exampleName) : null;
+        if (this.selectedExample) {
+          this.scenarioText = '// Loading Example...';
+          return this.examplesService.getScenario(this.selectedExample);
+        } else {
+          return of(this.scenarioEditorService.storedScenario);
+        }
+      }),
+      tap(scenario => this.scenarioText = scenario),
+      switchMap(() => this.submit$()),
+    ).subscribe();
   }
 
   submit(): void {
@@ -70,22 +78,29 @@ export class FourPaneEditorComponent implements OnInit {
       this.scenarioEditorService.storedScenario = this.scenarioText;
     }
 
-    this.submitting = true;
-    const request: Request = {
+    this.submit$().subscribe();
+  }
+
+  private submit$(): Observable<Response> {
+    return of<Request>({
       privacy: this.privacyService.privacy ?? 'none',
       packageName: this.scenarioEditorService.packageName,
       scenarioFileName: this.scenarioEditorService.scenarioFileName,
       scenarioText: this.scenarioText,
       selectedExample: this.selectedExample?.name,
-    };
-    this.scenarioEditorService.submit(request).subscribe(response => {
-      this.submitting = false;
-      this.response = response;
-      this.javaCode = this.renderJavaCode();
-      this.markdownHtml = response.html.replace(new RegExp(`/api/runcodegen/${response.id}`, 'g'), match => environment.apiURL + match.substring(4));
-      this.outputText = this.scenarioEditorService.foldInternalCalls(this.response.output.split('\n')).join('\n');
-      this.markers = this.scenarioEditorService.lint(response);
-    });
+    }).pipe(
+      tap(() => this.submitting = true),
+      switchMap(request => this.scenarioEditorService.submit(request)),
+      tap(response => {
+        this.submitting = false;
+        this.response = response;
+        this.javaCode = this.renderJavaCode();
+        this.markdownHtml = response.html.replace(new RegExp(`/api/runcodegen/${response.id}`, 'g'),
+          match => environment.apiURL + match.substring(4));
+        this.outputText = this.scenarioEditorService.foldInternalCalls(this.response.output.split('\n')).join('\n');
+        this.markers = this.scenarioEditorService.lint(response);
+      }),
+    );
   }
 
   private renderJavaCode(): string {
@@ -116,32 +131,8 @@ export class FourPaneEditorComponent implements OnInit {
     this._activeObjectDiagramTab = value;
   }
 
-  get selectedExample() {
-    return this._selectedExample;
-  }
-
-  set selectedExample(value: Example | null) {
-    this._selectedExample = value;
-    this.loadExample(value);
-  }
-
   selectExample(value: Example | null): void {
-    this.scenarioEditorService.selectedExample = value;
     this.router.navigate([], {queryParams: {example: value?.name}});
-  }
-
-  private loadExample(value: Example | null): void {
-    if (value) {
-      this.response = null;
-      this.scenarioText = '// Loading Example...';
-      this.examplesService.getScenario(value).subscribe(scenario => {
-        this.scenarioText = scenario;
-        this.submit();
-      });
-    } else {
-      this.scenarioText = this.scenarioEditorService.storedScenario;
-      this.submit();
-    }
   }
 
   get autoSubmit(): boolean {
