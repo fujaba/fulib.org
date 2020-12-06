@@ -94,6 +94,8 @@ public class WebService
 		service = Service.ignite();
 		service.port(4567);
 
+		new File(this.runCodeGen.getTempDir()).mkdirs();
+
 		service.staticFiles.externalLocation(this.runCodeGen.getTempDir());
 		service.staticFiles.expireTime(60 * 60);
 
