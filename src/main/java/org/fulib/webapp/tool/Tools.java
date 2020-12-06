@@ -76,7 +76,7 @@ public class Tools
 	{
 		final List<String> finalArgs = new ArrayList<>(5 + args.length);
 		finalArgs.add("--classpath");
-		finalArgs.add(FulibMockups.class.getProtectionDomain().getCodeSource().getLocation().toString());
+		finalArgs.add(FulibMockups.class.getProtectionDomain().getCodeSource().getLocation().getPath());
 		finalArgs.add("-m");
 		finalArgs.add(modelSrcDir.toString());
 		finalArgs.add("-t");
