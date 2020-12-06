@@ -101,22 +101,6 @@ There is a Car with name Herbie.
     }
   }
 
-  get selectedExample(): Example | null {
-    if (this._selectedExample) {
-      return this._selectedExample;
-    }
-    const storedName = this.privacyService.getStorage('selectedExample');
-    if (!storedName) {
-      return null;
-    }
-    return this.examplesService.getExampleByName(storedName);
-  }
-
-  set selectedExample(example: Example | null) {
-    this._selectedExample = example;
-    this.privacyService.setStorage('selectedExample', example ? example.name : null);
-  }
-
   get autoSubmit(): boolean {
     if (typeof this._autoSubmit === 'undefined') {
       this._autoSubmit = this.privacyService.getStorage('autoSubmit') !== 'false';
