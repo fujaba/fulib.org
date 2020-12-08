@@ -31,8 +31,6 @@ export class FourPaneEditorComponent implements OnInit {
   markdownHtml?: string;
   submitting: boolean;
 
-  basePath = environment.apiURL + '/runcodegen';
-
   exampleCategories: ExampleCategory[];
   _activeObjectDiagramTab = 1;
 

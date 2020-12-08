@@ -24,6 +24,7 @@ import {PrivacyService} from './privacy.service';
 import {PrivacyComponent} from './privacy/privacy.component';
 import {SharedModule} from './shared/shared.module';
 import {UserModule} from './user/user.module';
+import { DiagramViewComponent } from './diagram-view/diagram-view.component';
 
 const keycloakService = new KeycloakService();
 
@@ -39,6 +40,7 @@ const keycloakService = new KeycloakService();
     FeedbackComponent,
     PrivacyComponent,
     AboutComponent,
+    DiagramViewComponent,
   ],
   imports: [
     BrowserModule,
