@@ -89,13 +89,11 @@
             [ngbNavItem]="diagramIndex + 1">
           <a ngbNavLink>{{diagram.name}}</a>
           <ng-template ngbNavContent>
-            <img *ngIf="diagram.name.endsWith('.png')"
-                 class="diagram" src="data:image/png;base64,{{diagram.content}}"
-                 alt="{{diagram.name}}">
-            <div *ngIf="diagram.name.endsWith('.svg')"
-                 [innerHTML]="diagram.content | safeHtml"
+            <img *ngIf="diagram.name.endsWith('.png') || diagram.name.endsWith('.svg')"
                  class="diagram"
-            ></div>
+                 [src]="(basePath + '/' + response.id + '/' + diagram.path) | safeResourceUrl"
+                 [alt]="diagram.name"
+            >
             <pre
               *ngIf="diagram.name.endsWith('.yaml') || diagram.name.endsWith('.txt')">{{diagram.content}}</pre>
             <iframe *ngIf="diagram.name.endsWith('.html')"
