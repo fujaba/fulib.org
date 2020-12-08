@@ -11,7 +11,7 @@ import {File} from '../model/file';
   styleUrls: ['./file-code-editor.component.scss'],
 })
 export class FileCodeEditorComponent implements OnInit, OnDestroy {
-  @Input() file: File;
+  private _file: File;
 
   subscription: Subscription;
 
@@ -33,8 +33,17 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
   ) {
   }
 
-  ngOnInit(): void {
+  get file(): File {
+    return this._file;
+  }
+
+  @Input()
+  set file(value: File) {
+    this._file = value;
     this.updateFileType();
+  }
+
+  ngOnInit(): void {
     this.subscription = this.fileManager.updates.pipe(filter(file => file === this.file)).subscribe(() => {
       this.updateFileType();
     });
