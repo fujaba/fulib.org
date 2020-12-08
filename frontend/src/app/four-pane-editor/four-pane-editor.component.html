@@ -71,10 +71,12 @@
 
 <ng-template #classDiagram>
   <ng-container *ngIf="response else loading">
-    <div *ngIf="response.classDiagram else emptyClassDiagram"
-         class="h-100 overflow-auto diagram"
-         [innerHTML]="response.classDiagram | safeHtml"
-    ></div>
+    <div *ngIf="response.classDiagram else emptyClassDiagram" class="h-100 overflow-auto">
+     <app-preview title="Class Diagram">
+       <img preview class="diagram w-100 h-100" [src]="classDiagramUrl" alt="Class Diagram">
+       <img full class="diagram w-100 h-100" [src]="classDiagramUrl" alt="Class Diagram">
+     </app-preview>
+    </div>
     <ng-template #emptyClassDiagram>
       No model classes to display.
     </ng-template>
@@ -89,19 +91,10 @@
             [ngbNavItem]="diagramIndex + 1">
           <a ngbNavLink>{{diagram.name}}</a>
           <ng-template ngbNavContent>
-            <img *ngIf="diagram.name.endsWith('.png')"
-                 class="diagram" src="data:image/png;base64,{{diagram.content}}"
-                 alt="{{diagram.name}}">
-            <div *ngIf="diagram.name.endsWith('.svg')"
-                 [innerHTML]="diagram.content | safeHtml"
-                 class="diagram"
-            ></div>
-            <pre
-              *ngIf="diagram.name.endsWith('.yaml') || diagram.name.endsWith('.txt')">{{diagram.content}}</pre>
-            <iframe *ngIf="diagram.name.endsWith('.html')"
-                    width="100%" height="500px"
-                    [src]="(basePath + '/' + response.id + '/' + diagram.path) | safeResourceUrl"
-            ></iframe>
+            <app-preview [title]="diagram.name">
+              <app-diagram-view preview [response]="response" [diagram]="diagram"></app-diagram-view>
+              <app-diagram-view full [response]="response" [diagram]="diagram"></app-diagram-view>
+            </app-preview>
           </ng-template>
         </li>
       </ul>

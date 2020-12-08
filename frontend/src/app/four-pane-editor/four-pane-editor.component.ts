@@ -29,9 +29,8 @@ export class FourPaneEditorComponent implements OnInit {
   javaCode = '// Loading...';
   outputText = 'Loading...';
   markdownHtml?: string;
+  classDiagramUrl?: string;
   submitting: boolean;
-
-  basePath = environment.apiURL + '/runcodegen';
 
   exampleCategories: ExampleCategory[];
   _activeObjectDiagramTab = 1;
@@ -82,9 +81,10 @@ export class FourPaneEditorComponent implements OnInit {
   }
 
   private submit$(): Observable<Response> {
+    const packageName = this.scenarioEditorService.packageName;
     return of<Request>({
       privacy: this.privacyService.privacy ?? 'none',
-      packageName: this.scenarioEditorService.packageName,
+      packageName,
       scenarioFileName: this.scenarioEditorService.scenarioFileName,
       scenarioText: this.scenarioText,
       selectedExample: this.selectedExample?.name,
@@ -97,6 +97,7 @@ export class FourPaneEditorComponent implements OnInit {
         this.javaCode = this.renderJavaCode();
         this.markdownHtml = response.html.replace(new RegExp(`/api/runcodegen/${response.id}`, 'g'),
           match => environment.apiURL + match.substring(4));
+        this.classDiagramUrl = `${environment.apiURL}/runcodegen/${response.id}/model_src/${packageName.replace(/\./g, '/')}/classDiagram.svg`;
         this.outputText = this.scenarioEditorService.foldInternalCalls(this.response.output.split('\n')).join('\n');
         this.markers = this.scenarioEditorService.lint(response);
       }),
