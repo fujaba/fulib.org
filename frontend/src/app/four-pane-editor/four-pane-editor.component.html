@@ -89,7 +89,10 @@
             [ngbNavItem]="diagramIndex + 1">
           <a ngbNavLink>{{diagram.name}}</a>
           <ng-template ngbNavContent>
-            <app-diagram-view [response]="response" [diagram]="diagram"></app-diagram-view>
+            <app-preview [title]="diagram.name">
+              <app-diagram-view preview [response]="response" [diagram]="diagram"></app-diagram-view>
+              <app-diagram-view full [response]="response" [diagram]="diagram"></app-diagram-view>
+            </app-preview>
           </ng-template>
         </li>
       </ul>
