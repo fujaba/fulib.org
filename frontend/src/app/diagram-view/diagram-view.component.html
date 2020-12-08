@@ -1,5 +1,5 @@
 <img *ngIf="diagram.name.endsWith('.png') || diagram.name.endsWith('.svg')"
-     class="diagram"
+     class="diagram w-100 h-100"
      [src]="url | safeResourceUrl"
      [alt]="diagram.name"
 >
