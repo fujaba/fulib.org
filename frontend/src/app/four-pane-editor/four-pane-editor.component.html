@@ -71,10 +71,12 @@
 
 <ng-template #classDiagram>
   <ng-container *ngIf="response else loading">
-    <div *ngIf="response.classDiagram else emptyClassDiagram"
-         class="h-100 overflow-auto diagram"
-         [innerHTML]="response.classDiagram | safeHtml"
-    ></div>
+    <div *ngIf="response.classDiagram else emptyClassDiagram" class="h-100 overflow-auto">
+     <app-preview title="Class Diagram">
+       <img preview class="diagram w-100 h-100" [src]="classDiagramUrl" alt="Class Diagram">
+       <img full class="diagram w-100 h-100" [src]="classDiagramUrl" alt="Class Diagram">
+     </app-preview>
+    </div>
     <ng-template #emptyClassDiagram>
       No model classes to display.
     </ng-template>
