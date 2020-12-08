@@ -18,6 +18,6 @@ export class PreviewComponent implements OnInit {
   }
 
   open(content: TemplateRef<any>): void {
-    this.modal.open(content, {ariaLabelledBy: 'modal-basic-title', size: 'xl'});
+    this.modal.open(content, {ariaLabelledBy: 'diagram-modal-title', size: 'xl', scrollable: true});
   }
 }
