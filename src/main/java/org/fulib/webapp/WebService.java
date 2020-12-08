@@ -11,16 +11,18 @@ import org.fulib.webapp.projectzip.ProjectZip;
 import org.fulib.webapp.tool.MarkdownUtil;
 import org.fulib.webapp.tool.RunCodeGen;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import spark.Service;
 
 import java.io.File;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class WebService
 {
 	// =============== Static Fields ===============
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(WebService.class);
 
 	public static final Properties VERSIONS = new Properties();
 
@@ -32,7 +34,7 @@ public class WebService
 		}
 		catch (Exception e)
 		{
-			Logger.getGlobal().throwing("WebService", "static init", e);
+			LOGGER.error("failed to load version.properties", e);
 		}
 	}
 
@@ -98,6 +100,8 @@ public class WebService
 		service = Service.ignite();
 		service.port(4567);
 
+		new File(this.runCodeGen.getTempDir()).mkdirs();
+
 		service.staticFiles.externalLocation(this.runCodeGen.getTempDir());
 		service.staticFiles.expireTime(60 * 60);
 
@@ -113,7 +117,7 @@ public class WebService
 
 		setupExceptionHandler();
 
-		Logger.getGlobal().info("scenario server started on http://localhost:4567");
+		LOGGER.info("fulib.org service started on http://localhost:4567");
 	}
 
 	private void addApiRoutes()
@@ -230,7 +234,7 @@ public class WebService
 	private void setupExceptionHandler()
 	{
 		service.exception(Exception.class, (exception, request, response) -> {
-			Logger.getGlobal().log(Level.SEVERE, "unhandled exception processing request", exception);
+			LOGGER.error("unhandled exception processing request", exception);
 		});
 	}
 

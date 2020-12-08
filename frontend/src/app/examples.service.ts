@@ -48,9 +48,7 @@ export class ExamplesService {
     },
     {
       name: 'Prototyping', examples: [
-        {name: 'Data Model'},
-        {name: 'Web Gui'},
-        {name: 'Prototype'},
+        {name: 'UIs'},
       ],
     },
   ];

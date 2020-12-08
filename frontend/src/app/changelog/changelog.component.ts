@@ -51,7 +51,7 @@ export class ChangelogComponent implements OnInit {
         this.showNewVersions(newRepos);
         this.changelogService.lastUsedVersions = this.currentVersions;
       }
-    })
+    });
 
   }
 

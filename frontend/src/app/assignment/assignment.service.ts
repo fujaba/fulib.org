@@ -133,7 +133,7 @@ export class AssignmentService {
   getByUserId(userId: string): Observable<Assignment[]> {
     return this.http.get<Assignment[]>(`${environment.apiURL}/assignments`, {params: {userId}}).pipe(
       map(results => {
-        for (let result of results) {
+        for (const result of results) {
           result.token = this.getToken(result.id!) ?? undefined;
           this._cache.set(result.id!, result);
         }
@@ -177,7 +177,7 @@ export class AssignmentService {
     const markers: Marker[] = [];
 
     for (const {marker, tasks} of grouped.values()) {
-      marker.message = `[${tasks.length == 1 ? 'task' : 'tasks'} ${tasks.join(', ')}] ${marker.message}`;
+      marker.message = `[${tasks.length === 1 ? 'task' : 'tasks'} ${tasks.join(', ')}] ${marker.message}`;
       markers.push(marker);
     }
 

@@ -3,7 +3,7 @@ import {Subscription} from 'rxjs';
 import Solution from '../model/solution';
 import {SolutionService} from '../solution.service';
 import TaskGrading from '../model/task-grading';
-import {UserService} from "../../user/user.service";
+import {UserService} from '../../user/user.service';
 
 @Component({
   selector: 'app-grade-form',
