@@ -131,7 +131,7 @@ processResources {
 	def fulibGradleVersion = getDependencyVersion(buildscript.configurations.classpath, 'org.fulib', 'fulibGradle')
 	def fulibMockupsVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulibMockups')
 
-	from('.') {
+	from(rootProject.rootDir) {
 		include 'gradle/wrapper/**', 'gradlew', 'gradlew.bat'
 		into 'org/fulib/webapp/projectzip'
 
