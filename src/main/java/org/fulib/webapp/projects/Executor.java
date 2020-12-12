@@ -98,7 +98,16 @@ public class Executor
 			.withCmd("mkdir", "-p", projectDir)
 			.exec()
 			.getId();
-		dockerClient.execStartCmd(mkdirExecId).exec(new ResultCallback.Adapter<>());
+
+		try
+		{
+			dockerClient.execStartCmd(mkdirExecId).exec(new ResultCallback.Adapter<>()).awaitCompletion();
+		}
+		catch (InterruptedException e)
+		{
+			// TODO
+			e.printStackTrace();
+		}
 	}
 
 	private void copyFiles(Project project, String projectDir, DockerClient dockerClient, String containerId)
