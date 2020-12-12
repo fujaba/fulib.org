@@ -1,3 +1,5 @@
+import {Revision} from './revision';
+
 export class FileStub {
   projectId: string;
   parentId: string;
@@ -10,7 +12,7 @@ export class File extends FileStub {
   userId: string;
 
   created: Date;
-  revisions: Date[];
+  revisions: Revision[];
 
   data?: {
     content?: string;

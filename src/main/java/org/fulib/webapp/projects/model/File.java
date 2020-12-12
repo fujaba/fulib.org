@@ -35,7 +35,7 @@ public class File
 	private boolean directory;
 
 	private Instant created;
-	private final List<Instant> revisions = new ArrayList<>();
+	private final List<Revision> revisions = new ArrayList<>();
 
 	// =============== Constructors ===============
 
@@ -114,7 +114,7 @@ public class File
 	}
 
 	@BsonIgnore
-	public List<Instant> getRevisions()
+	public List<Revision> getRevisions()
 	{
 		return revisions;
 	}

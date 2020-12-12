@@ -14,6 +14,7 @@ import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.fulib.webapp.mongo.Mongo;
 import org.fulib.webapp.projects.model.File;
 import org.fulib.webapp.projects.model.Project;
+import org.fulib.webapp.projects.model.Revision;
 
 import java.io.*;
 import java.time.Instant;
@@ -145,15 +146,16 @@ public class Executor
 
 	private void copyFile(File file, String path, ArchiveOutputStream output)
 	{
-		final List<Instant> revisions = file.getRevisions();
-		final long modTime = revisions.get(revisions.size() - 1).toEpochMilli();
+		final List<Revision> revisions = file.getRevisions();
+		final Revision newestRevision = revisions.get(revisions.size() - 1);
 
 		try
 		{
 			final TarArchiveEntry entry = new TarArchiveEntry(path);
-			entry.setModTime(modTime);
+			entry.setModTime(newestRevision.getTimestamp().toEpochMilli());
+			entry.setSize(newestRevision.getSize());
 			output.putArchiveEntry(entry);
-			// this.mongo.downloadFile(file.getId(), -1, output);
+			this.mongo.downloadFile(file.getId(), -1, output);
 			output.closeArchiveEntry();
 		}
 		catch (IOException e)

@@ -3,6 +3,7 @@ package org.fulib.webapp.projects;
 import org.fulib.webapp.mongo.Mongo;
 import org.fulib.webapp.projects.model.File;
 import org.fulib.webapp.projects.model.Project;
+import org.fulib.webapp.projects.model.Revision;
 import org.fulib.webapp.tool.Authenticator;
 import org.fulib.webapp.tool.IDGenerator;
 import org.json.JSONArray;
@@ -62,7 +63,23 @@ public class Files
 		obj.put(File.PROPERTY_NAME, file.getName());
 		obj.put(File.PROPERTY_DIRECTORY, file.isDirectory());
 		obj.put(File.PROPERTY_CREATED, file.getCreated());
-		obj.put(File.PROPERTY_REVISIONS, file.getRevisions());
+
+		final JSONArray revisions = new JSONArray();
+		for (final Revision revision : file.getRevisions())
+		{
+			revisions.put(toJson(revision));
+		}
+		obj.put(File.PROPERTY_REVISIONS, revisions);
+
+		return obj;
+	}
+
+	private JSONObject toJson(Revision revision)
+	{
+		final JSONObject obj = new JSONObject();
+		obj.put(Revision.PROPERTY_ID, revision.getId());
+		obj.put(Revision.PROPERTY_TIMESTAMP, revision.getTimestamp().toString());
+		obj.put(Revision.PROPERTY_SIZE, revision.getSize());
 		return obj;
 	}
 

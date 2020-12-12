@@ -11,7 +11,6 @@ import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSBuckets;
 import com.mongodb.client.gridfs.model.GridFSDownloadOptions;
 import com.mongodb.client.gridfs.model.GridFSFile;
-import com.mongodb.client.gridfs.model.GridFSUploadOptions;
 import com.mongodb.client.model.*;
 import org.bson.BsonValue;
 import org.bson.Document;
@@ -24,6 +23,7 @@ import org.fulib.webapp.WebService;
 import org.fulib.webapp.assignment.model.*;
 import org.fulib.webapp.projects.model.File;
 import org.fulib.webapp.projects.model.Project;
+import org.fulib.webapp.projects.model.Revision;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -249,8 +249,12 @@ public class Mongo
 		this.projectFilesFS
 			.find(Filters.eq("filename", file.getId()))
 			.sort(Sorts.ascending("uploadData"))
-			.map(GridFSFile::getUploadDate)
-			.map(Date::toInstant)
+			.map(gridFSFile -> {
+				final Revision revision = new Revision(gridFSFile.getObjectId().toHexString());
+				revision.setSize(gridFSFile.getLength());
+				revision.setTimestamp(gridFSFile.getUploadDate().toInstant());
+				return revision;
+			})
 			.into(file.getRevisions());
 		return file;
 	}

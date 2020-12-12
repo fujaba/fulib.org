@@ -4,13 +4,17 @@
     <tr>
       <th>#</th>
       <th>Timestamp</th>
+      <th>Size</th>
     </tr>
     <tr *ngFor="let revision of file!.revisions; let index = index">
       <td>
         {{index}}
       </td>
       <td>
-        {{revision | date:'medium'}}
+        {{revision.timestamp | date:'medium'}}
+      </td>
+      <td>
+        {{revision.size}}
       </td>
     </tr>
   </table>
