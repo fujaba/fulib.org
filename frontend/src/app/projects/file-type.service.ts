@@ -28,13 +28,13 @@ export class FileTypeService {
     java: {
       name: 'Java',
       extensions: ['.java'],
-      icon: 'file-code',
+      icon: 'file-earmark-code',
       mode: 'text/x-java',
     },
     properties: {
       name: 'Properties',
       extensions: ['.properties'],
-      icon: 'file-code',
+      icon: 'file-earmark-code',
       mode: 'text/x-properties',
     },
     archive: {
@@ -54,7 +54,7 @@ export class FileTypeService {
   readonly default: FileType = {
     name: 'File',
     extensions: [],
-    icon: 'file',
+    icon: 'file-earmark',
     mode: 'null',
   }
 

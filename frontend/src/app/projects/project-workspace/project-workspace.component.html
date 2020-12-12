@@ -6,7 +6,7 @@
          [class.active]="active == entry.key"
          (click)="active = active == entry.key ? undefined : entry.key"
     >
-      <img class="icon" src="assets/octicons/{{entry.value.icon}}-24.svg" [alt]="entry.value.name">
+      <img class="icon" src="assets/icons/{{entry.value.icon}}.svg" width="24" [alt]="entry.value.name">
     </div>
   </div>
   <div class="flex-grow-1 content cols h-100">

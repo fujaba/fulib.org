@@ -18,7 +18,7 @@ export class FileIconComponent {
 
   get icon(): string {
     if (this.file.directory) {
-      return this.open ? 'file-directory-open' : 'file-directory';
+      return this.open ? 'folder2-open' : 'folder2';
     }
 
     return this.fileTypeService.getFileType(this.file).icon;

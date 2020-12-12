@@ -72,7 +72,7 @@ export class ProjectWorkspaceComponent implements OnInit {
 
   private initSidebar() {
     this.sidebarItems = {
-      project: {name: 'Project', icon: 'file-code', component: ProjectTreeComponent},
+      project: {name: 'Project', icon: 'code-square', component: ProjectTreeComponent},
       settings: {name: 'Settings', icon: 'gear', component: SettingsComponent},
     };
   }
