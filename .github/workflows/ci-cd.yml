@@ -119,6 +119,7 @@ jobs:
           esac
       - name: Build and Release the Docker image
         if: matrix.os == 'ubuntu' && matrix.java == 8 && (steps.extract_branch.outputs.branch == 'develop' || startsWith(github.ref, 'refs/tags/v'))
+        working-directory: backend
         run: |
           docker login ${{ secrets.DOCKER_REGISTRY }} -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -t ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-backend:${{ steps.extract_branch.outputs.branch }} .

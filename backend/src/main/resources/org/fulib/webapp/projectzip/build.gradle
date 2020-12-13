@@ -1,3 +1,5 @@
+package org.fulib.webapp.projectzip
+
 plugins {
 	id 'java'
 	// https://plugins.gradle.org/plugin/org.fulib.fulibGradle

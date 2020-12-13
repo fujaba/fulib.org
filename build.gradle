@@ -2,52 +2,30 @@
 
 plugins {
 	id 'java'
-	id 'application'
-	id 'maven-publish'
 	// https://plugins.gradle.org/plugin/org.fulib.fulibGradle
-	id 'org.fulib.fulibGradle' version '0.5.0'
-	// https://plugins.gradle.org/plugin/de.clashsoft.simple-publish
-	id 'de.clashsoft.simple-publish' version '0.6.0'
-	// https://plugins.gradle.org/plugin/com.github.johnrengelman.shadow
-	id 'com.github.johnrengelman.shadow' version '5.2.0'
-	// https://plugins.gradle.org/plugin/com.jfrog.bintray
-	id 'com.jfrog.bintray' version '1.8.5'
+	id 'org.fulib.fulibGradle' version '0.5.0' apply false
 }
 
-// --------------- Publication Info ---------------
+apply plugin: 'org.fulib.fulibGradle'
 
-group = 'org.fulib'
-version = "git describe --tags".execute().text[1..-2] // strip v and \n
-description = 'The fulib.org website and fulibScenarios Web App'
+// --------------- Shared Properties ---------------
 
-publishInfo {
-	websiteUrl = 'https://www.fulib.org/'
-	githubRepo = 'fujaba/fulib.org'
-	labels = [ 'fulib', 'scenarios', 'webapp', 'website' ]
+ext {
+	// https://mvnrepository.com/artifact/org.fulib/fulibScenarios
+	fulibScenariosDependency = [ group: 'org.fulib', name: 'fulibScenarios', version: '1.6.2' ]
 
-	license {
-		name = 'BSD 3-Clause'
-		url = 'https://opensource.org/licenses/BSD-3-Clause'
-	}
+	// https://mvnrepository.com/artifact/org.fulib/fulibTools
+	fulibToolsDependency = [ group: 'org.fulib', name: 'fulibTools', version: '1.4.1' ]
 
-	developer {
-		id = 'clashsoft'
-		name = 'Adrian Kunz'
-		email = 'clashsoft@hotmail.com'
-	}
+	// https://mvnrepository.com/artifact/org.fulib/fulibMockups
+	fulibMockupsDependency = [ group: 'org.fulib', name: 'fulibMockups', version: '0.3.1' ]
 
-	developer {
-		id = 'azuendorf'
-		name = 'Albert Zündorf'
-		email = 'zuendorf@uni-kassel.de'
-	}
+	// https://mvnrepository.com/artifact/org.fulib/fulibTables
+	fulibTablesDependency = [ group: 'org.fulib', name: 'fulibTables', version: '1.4.0' ]
+
+	// https://mvnrepository.com/artifact/junit/junit
+	junitDependency = [ group: 'junit', name: 'junit', version: '4.13' ]
 }
-
-// --------------- General Settings ---------------
-
-mainClassName = 'org.fulib.webapp.WebService'
-
-shadowJar.archiveClassifier = 'all'
 
 // --------------- Dependencies ---------------
 
@@ -58,119 +36,15 @@ repositories {
 }
 
 dependencies {
-	// https://mvnrepository.com/artifact/org.fulib/fulibScenarios
-	def fulibScenariosDep = [ group: 'org.fulib', name: 'fulibScenarios', version: '1.6.2' ]
+	fulibScenarios fulibScenariosDependency
 
-	fulibScenarios fulibScenariosDep
+	testImplementation fulibToolsDependency
+	testImplementation fulibTablesDependency
+	testImplementation fulibMockupsDependency
+	testImplementation junitDependency
 
-	// --------------- Fulib Libraries ---------------
-
-	// https://mvnrepository.com/artifact/org.fulib/fulibScenarios
-	compile fulibScenariosDep
-
-	// https://mvnrepository.com/artifact/org.fulib/fulibMockups
-	compile group: 'org.fulib', name: 'fulibMockups', version: '0.3.1'
-
-	// https://mvnrepository.com/artifact/org.fulib/fulibTables
-	compile group: 'org.fulib', name: 'fulibTables', version: '1.4.0'
-
-	// --------------- Other Libraries ---------------
-
-	// https://mvnrepository.com/artifact/commons-io/commons-io
-	compile group: 'commons-io', name: 'commons-io', version: '2.8.0'
-
-	// https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
-	compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
-
-	// https://mvnrepository.com/artifact/com.sparkjava/spark-core
-	compile group: 'com.sparkjava', name: 'spark-core', version: '2.9.2'
-
-	// https://mvnrepository.com/artifact/org.json/json
-	compile group: 'org.json', name: 'json', version: '20200518'
-
-	// https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync
-	compile group: 'org.mongodb', name: 'mongodb-driver-sync', version: '3.12.7'
-
-	// https://mvnrepository.com/artifact/com.auth0/java-jwt
-	compile group: 'com.auth0', name: 'java-jwt', version: '3.10.3'
-
-	// compile instead of testCompile because the web service uses it
-	// https://mvnrepository.com/artifact/junit/junit
-	compile group: 'junit', name: 'junit', version: '4.13'
-
-	// https://mvnrepository.com/artifact/org.mockito/mockito-core
-	testCompile group: 'org.mockito', name: 'mockito-core', version: '3.5.13'
-
-	// --------------- Docker (Projects) ---------------
-
-	// https://mvnrepository.com/artifact/com.github.docker-java/docker-java-core
-	compile group: 'com.github.docker-java', name: 'docker-java-core', version: '3.2.6'
-
-	// https://mvnrepository.com/artifact/com.github.docker-java/docker-java-transport-httpclient5
-	compile group: 'com.github.docker-java', name: 'docker-java-transport-httpclient5', version: '3.2.6'
-
-	// --------------- CommonMark ---------------
-
-	// https://mvnrepository.com/artifact/com.atlassian.commonmark/commonmark
-	compile group: 'com.atlassian.commonmark', name: 'commonmark', version: '0.15.2'
-
-	// https://mvnrepository.com/artifact/com.atlassian.commonmark/commonmark-ext-gfm-tables
-	compile group: 'com.atlassian.commonmark', name: 'commonmark-ext-gfm-tables', version: '0.15.2'
-
-	// https://mvnrepository.com/artifact/com.atlassian.commonmark/commonmark-ext-autolink
-	compile group: 'com.atlassian.commonmark', name: 'commonmark-ext-autolink', version: '0.15.2'
-
-	// https://mvnrepository.com/artifact/com.atlassian.commonmark/commonmark-ext-gfm-strikethrough
-	compile group: 'com.atlassian.commonmark', name: 'commonmark-ext-gfm-strikethrough', version: '0.15.2'
-
-	// https://mvnrepository.com/artifact/com.atlassian.commonmark/commonmark-ext-task-list-items
-	compile group: 'com.atlassian.commonmark', name: 'commonmark-ext-task-list-items', version: '0.15.2'
-}
-
-// --------------- Version Injection ---------------
-
-processResources {
-	def version = project.version.toString()
-	def fulibVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulib')
-	def fulibToolsVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulibTools')
-	def fulibYamlVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulibYaml')
-	def fulibTablesVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulibTables')
-	def fulibScenariosVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulibScenarios')
-	def fulibGradleVersion = getDependencyVersion(buildscript.configurations.classpath, 'org.fulib', 'fulibGradle')
-	def fulibMockupsVersion = getDependencyVersion(configurations.compile, 'org.fulib', 'fulibMockups')
-
-	from('.') {
-		include 'gradle/wrapper/**', 'gradlew', 'gradlew.bat'
-		into 'org/fulib/webapp/projectzip'
-
-		// we have to save the wrapper jar as a zip, see
-		// https://imperceptiblethoughts.com/shadow/configuration/dependencies/#embedding-jar-files-inside-your-shadow-jar
-		rename 'gradle-wrapper.jar', 'gradle-wrapper.jar.zip'
-	}
-
-	filesMatching([
-			'org/fulib/webapp/projectzip/build.gradle',
-			'org/fulib/webapp/version.properties',
-	]) {
-		filter {
-			it = it.replace('$$version$$', version)
-			it = it.replace('$$fulibVersion$$', fulibVersion)
-			it = it.replace('$$fulibToolsVersion$$', fulibToolsVersion)
-			it = it.replace('$$fulibYamlVersion$$', fulibYamlVersion)
-			it = it.replace('$$fulibTablesVersion$$', fulibTablesVersion)
-			it = it.replace('$$fulibScenariosVersion$$', fulibScenariosVersion)
-			it = it.replace('$$fulibMockupsVersion$$', fulibMockupsVersion)
-			it = it.replace('$$fulibGradleVersion$$', fulibGradleVersion)
-			it
-		}
-	}
-}
-
-String getDependencyVersion(Configuration config, String group, String name) {
-	config.resolvedConfiguration.resolvedArtifacts.findResult {
-		def id = it.moduleVersion.id
-		id.group == group && id.name == name ? id.version : null
-	}
+	// https://mvnrepository.com/artifact/org.slf4j/slf4j-nop
+	testImplementation group: 'org.slf4j', name: 'slf4j-nop', version: '1.7.30'
 }
 
 // --------------- Test Scenarios ---------------
@@ -181,7 +55,7 @@ def testOutputDir = file "$buildDir/generated/sources/scenarios/java/test"
 sourceSets.test.scenarios.srcDir testScenariosDir
 sourceSets.test.java.srcDir testOutputDir
 
-tasks.named("generateTestScenarioSource") {
+tasks.named('generateTestScenarioSource') {
 	inputDirectory = testScenariosDir
 	modelDirectory = testOutputDir
 	testDirectory = testOutputDir
