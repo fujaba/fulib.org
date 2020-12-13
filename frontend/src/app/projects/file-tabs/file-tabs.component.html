@@ -27,9 +27,8 @@
         ×
       </span>
     </a>
-    <ng-template ngbNavContent>
-      <app-file-code-editor [file]="editor.file"></app-file-code-editor>
-    </ng-template>
   </li>
 </ul>
-<div [ngbNavOutlet]="nav" style="height: calc(100% - 40px)"></div>
+<div style="height: calc(100% - 40px)">
+  <app-file-code-editor *ngIf="currentEditor" [file]="currentEditor.file"></app-file-code-editor>
+</div>
