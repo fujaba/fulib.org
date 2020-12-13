@@ -210,8 +210,8 @@ public class WebService
 		service.put("", files::update);
 		service.delete("", files::delete);
 
-		service.get("/content", files::download);
-		service.put("/content", files::upload);
+		service.get("/revisions/:revisionId", files::download);
+		service.post("/revisions", files::upload);
 	}
 
 	private void addUtilRoutes()

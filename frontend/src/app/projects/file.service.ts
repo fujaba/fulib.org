@@ -1,9 +1,9 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import {tap} from 'rxjs/operators';
 import {environment} from '../../environments/environment';
 import {File, FileStub} from './model/file';
+import {Revision} from './model/revision';
 
 @Injectable({
   providedIn: 'root',
@@ -35,11 +35,11 @@ export class FileService {
     return this.http.delete<void>(`${environment.apiURL}/projects/${projectId}/files/${id}`);
   }
 
-  download(projectId: string, id: string): Observable<string> {
-    return this.http.get(`${environment.apiURL}/projects/${projectId}/files/${id}/content`, {responseType: 'text'});
+  download(file: File, revision: Revision): Observable<string> {
+    return this.http.get(`${environment.apiURL}/projects/${file.projectId}/files/${file.id}/revisions/${revision.id}`, {responseType: 'text'});
   }
 
-  upload(projectId: string, id: string, content: string): Observable<void> {
-    return this.http.put<void>(`${environment.apiURL}/projects/${projectId}/files/${id}/content`, content);
+  upload(file: File, content: string): Observable<Revision> {
+    return this.http.post<Revision>(`${environment.apiURL}/projects/${file.projectId}/files/${file.id}/revisions`, content);
   }
 }

@@ -164,7 +164,7 @@ public class Executor
 			entry.setModTime(newestRevision.getTimestamp().toEpochMilli());
 			entry.setSize(newestRevision.getSize());
 			output.putArchiveEntry(entry);
-			this.mongo.downloadFile(file.getId(), -1, output);
+			this.mongo.downloadRevision(newestRevision.getId(), output);
 			output.closeArchiveEntry();
 		}
 		catch (IOException e)

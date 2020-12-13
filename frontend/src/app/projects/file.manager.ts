@@ -4,6 +4,7 @@ import {map, tap} from 'rxjs/operators';
 import {FileService} from './file.service';
 import {File, FileStub} from './model/file';
 import {FileEditor} from './model/file-editor';
+import {Revision} from './model/revision';
 
 
 @Injectable({
@@ -29,7 +30,12 @@ export class FileManager {
     if (file.data?.content) {
       return of(file.data.content);
     }
-    return this.fileService.download(file.projectId, file.id).pipe(tap(content => {
+    const revision = file.revisions[file.revisions.length - 1];
+    if (!revision) {
+      return of('');
+    }
+
+    return this.fileService.download(file, revision).pipe(tap(content => {
       if (!file.data) {
         file.data = {};
       }
@@ -37,11 +43,12 @@ export class FileManager {
     }));
   }
 
-  saveContent(file: File): Observable<void> {
+  saveContent(file: File): Observable<Revision> {
     if (!file.data?.content) {
       return EMPTY;
     }
-    return this.fileService.upload(file.projectId, file.id, file.data.content).pipe(tap(() => {
+    return this.fileService.upload(file, file.data.content).pipe(tap(revision => {
+      file.revisions.push(revision);
       if (file.data) {
         file.data.dirty = false;
       }

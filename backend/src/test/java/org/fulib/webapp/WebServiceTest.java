@@ -122,8 +122,8 @@ public class WebServiceTest
 		checkRoute("GET", "/projects/p1/files/f1");
 		checkRoute("PUT", "/projects/p1/files/f1");
 		checkRoute("DELETE", "/projects/p1/files/f1");
-		checkRoute("GET", "/projects/p1/files/f1/content");
-		checkRoute("PUT", "/projects/p1/files/f1/content");
+		checkRoute("GET", "/projects/p1/files/f1/revisions/r1");
+		checkRoute("POST", "/projects/p1/files/f1/revisions");
 
 		verify(files).get(any(), any());
 		verify(files).getChildren(any(), any());

@@ -19,12 +19,14 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.Convention;
 import org.bson.codecs.pojo.Conventions;
 import org.bson.codecs.pojo.PojoCodecProvider;
+import org.bson.types.ObjectId;
 import org.fulib.webapp.WebService;
 import org.fulib.webapp.assignment.model.*;
 import org.fulib.webapp.projects.model.File;
 import org.fulib.webapp.projects.model.Project;
 import org.fulib.webapp.projects.model.Revision;
 
+import javax.servlet.ServletOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -249,14 +251,17 @@ public class Mongo
 		this.projectFilesFS
 			.find(Filters.eq("filename", file.getId()))
 			.sort(Sorts.ascending("uploadData"))
-			.map(gridFSFile -> {
-				final Revision revision = new Revision(gridFSFile.getObjectId().toHexString());
-				revision.setSize(gridFSFile.getLength());
-				revision.setTimestamp(gridFSFile.getUploadDate().toInstant());
-				return revision;
-			})
+			.map(this::toRevision)
 			.into(file.getRevisions());
 		return file;
+	}
+
+	private Revision toRevision(GridFSFile gridFSFile)
+	{
+		final Revision revision = new Revision(gridFSFile.getObjectId().toHexString());
+		revision.setSize(gridFSFile.getLength());
+		revision.setTimestamp(gridFSFile.getUploadDate().toInstant());
+		return revision;
 	}
 
 	public void saveFile(File file)
@@ -307,26 +312,26 @@ public class Mongo
 		}
 	}
 
-	public OutputStream uploadFile(String id)
+	private Revision getRevision(ObjectId id)
 	{
-		return this.projectFilesFS.openUploadStream(id);
+		final GridFSFile gridFSFile = this.projectFilesFS.find(Filters.eq("_id", id)).first();
+		return gridFSFile != null ? this.toRevision(gridFSFile) : null;
 	}
 
-	public void uploadFile(String id, InputStream input)
+	public OutputStream uploadRevision(String fileId)
 	{
-		this.projectFilesFS.uploadFromStream(id, input);
+		return this.projectFilesFS.openUploadStream(fileId);
 	}
 
-	public void downloadFile(String id, int revisionNumber, OutputStream output)
+	public Revision uploadRevision(String fileId, InputStream input)
 	{
-		try
-		{
-			this.projectFilesFS.downloadToStream(id, output, new GridFSDownloadOptions().revision(revisionNumber));
-		}
-		catch (MongoGridFSException e)
-		{
-			e.printStackTrace();
-		}
+		final ObjectId id = this.projectFilesFS.uploadFromStream(fileId, input);
+		return this.getRevision(id);
+	}
+
+	public void downloadRevision(String id, OutputStream output)
+	{
+		this.projectFilesFS.downloadToStream(new ObjectId(id), output);
 	}
 
 	// --------------- Assignments ---------------

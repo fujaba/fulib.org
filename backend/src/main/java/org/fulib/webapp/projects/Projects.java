@@ -129,7 +129,7 @@ public class Projects
 		final ProjectData projectData = getProjectData(project);
 		new ProjectGenerator().generate(projectData, (name, output) -> {
 			final File file = resolver.getOrCreate(name);
-			try (OutputStream upload = this.mongo.uploadFile(file.getId()))
+			try (OutputStream upload = this.mongo.uploadRevision(file.getId()))
 			{
 				output.accept(upload);
 			}

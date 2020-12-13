@@ -160,33 +160,19 @@ public class Files
 		final File file = getOr404(this.mongo, id);
 		checkAuth(request, file);
 
-		this.mongo.uploadFile(file.getId(), request.raw().getInputStream());
+		final Revision revision = this.mongo.uploadRevision(file.getId(), request.raw().getInputStream());
 
-		return "";
+		return toJson(revision).toString(2);
 	}
 
 	public Object download(Request request, Response response) throws IOException
 	{
-		final String id = request.params("fileId");
-		final String revision = request.queryParams("revision");
-		final File file = getOr404(this.mongo, id);
+		final String fileId = request.params("fileId");
+		final String revisionId = request.params("revisionId");
+		final File file = getOr404(this.mongo, fileId);
 		checkAuth(request, file);
 
-		int revisionNumber = -1;
-		if (revision != null)
-		{
-			try
-			{
-				revisionNumber = Integer.parseInt(revision);
-			}
-			catch (NumberFormatException ex)
-			{
-				// language=JSON
-				throw Spark.halt(401, "{\n" + "  \"error\": \"invalid revision '" + revision + "'\"\n" + "}");
-			}
-		}
-
-		this.mongo.downloadFile(file.getId(), revisionNumber, response.raw().getOutputStream());
+		this.mongo.downloadRevision(revisionId, response.raw().getOutputStream());
 
 		return "";
 	}
