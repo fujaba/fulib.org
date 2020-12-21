@@ -89,7 +89,6 @@ public class WebServiceTest
 		when(projects.create(any(), any())).thenReturn("");
 		when(projects.update(any(), any())).thenReturn("");
 		when(projects.delete(any(), any())).thenReturn("");
-		when(projects.exec(any(), any())).thenReturn("");
 
 		checkRoute("POST", "/projects");
 		checkRoute("GET", "/projects");
@@ -103,7 +102,6 @@ public class WebServiceTest
 		verify(projects).create(any(), any());
 		verify(projects).update(any(), any());
 		verify(projects).delete(any(), any());
-		verify(projects).exec(any(), any());
 	}
 
 	@Test

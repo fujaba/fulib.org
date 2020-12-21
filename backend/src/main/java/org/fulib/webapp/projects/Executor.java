@@ -24,13 +24,15 @@ import java.util.concurrent.ForkJoinPool;
 public class Executor
 {
 	private final Mongo mongo;
+	private final Project project;
 
-	public Executor(Mongo mongo)
+	public Executor(Mongo mongo, Project project)
 	{
 		this.mongo = mongo;
+		this.project = project;
 	}
 
-	public void execute(Project project, String[] command, InputStream input, OutputStream output)
+	public void execute(String[] command, InputStream input, OutputStream output)
 	{
 		final String projectDir = "/projects/" + project.getId() + "/";
 

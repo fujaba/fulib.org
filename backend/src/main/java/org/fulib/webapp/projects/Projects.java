@@ -1,5 +1,13 @@
 package org.fulib.webapp.projects;
 
+import org.apache.commons.io.input.NullInputStream;
+import org.apache.commons.io.output.WriterOutputStream;
+import org.eclipse.jetty.websocket.api.Session;
+import org.eclipse.jetty.websocket.api.UpgradeRequest;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
+import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.fulib.webapp.mongo.Mongo;
 import org.fulib.webapp.projects.model.File;
 import org.fulib.webapp.projects.model.Project;
@@ -14,14 +22,20 @@ import spark.Response;
 import spark.Spark;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+@WebSocket
 public class Projects
 {
+	private static final String AUTH_MESSAGE = "{\n  \"error\": \"token user ID does not match ID of project\"\n}\n";
+
 	private final Mongo mongo;
 
 	public Projects(Mongo mongo)
@@ -45,7 +59,7 @@ public class Projects
 		final String userId = Authenticator.getUserIdOr401(request);
 		if (!userId.equals(project.getUserId()))
 		{
-			throw Spark.halt(401, "{\n  \"error\": \"token user ID does not match ID of project\"\n}\n");
+			throw Spark.halt(401, AUTH_MESSAGE);
 		}
 	}
 
@@ -54,9 +68,14 @@ public class Projects
 		final Project project = mongo.getProject(id);
 		if (project == null)
 		{
-			throw Spark.halt(404, String.format("{\n  \"error\": \"project with id '%s' not found\"\n}\n", id));
+			throw Spark.halt(404, notFoundMessage(id));
 		}
 		return project;
+	}
+
+	private static String notFoundMessage(String id)
+	{
+		return String.format("{\n  \"error\": \"project with id '%s' not found\"\n}\n", id);
 	}
 
 	public Object getAll(Request request, Response response)
@@ -179,18 +198,78 @@ public class Projects
 		return "{}";
 	}
 
-	public Object exec(Request request, Response response) throws IOException
+	private Map<Session, Executor> executors = new ConcurrentHashMap<>();
+
+	@OnWebSocketConnect
+	public void connected(Session session)
 	{
-		final String id = request.params("projectId");
-		final Project project = getOr404(this.mongo, id);
-		checkAuth(request, project);
+		final UpgradeRequest request = session.getUpgradeRequest();
+		final String requestPath = request.getRequestURI().getPath();
+		if (!requestPath.startsWith("/ws/projects/"))
+		{
+			session.close(400, "{\"error\": \"URL path must have the format '/ws/projects/:id'\"}");
+			return;
+		}
 
-		final String[] command = request.queryParams("cmd").split(" ");
+		final String projectId = requestPath.substring("/ws/projects/".length());
+		final Project project = this.mongo.getProject(projectId);
+		if (project == null)
+		{
+			session.close(404, notFoundMessage(projectId));
+			return;
+		}
 
-		final InputStream input = request.raw().getInputStream();
-		final OutputStream output = response.raw().getOutputStream();
-		new Executor(this.mongo).execute(project, command, input, output);
+		final List<String> token = request.getParameterMap().get("token");
+		if (token == null || token.isEmpty())
+		{
+			session.close(400, "{\"error\": \"missing token query parameter\"}");
+			return;
+		}
 
-		return "";
+		final String authHeader = "bearer " + token.get(0);
+		final String userId = Authenticator.getUserId(authHeader);
+		if (!project.getUserId().equals(userId))
+		{
+			session.close(401, AUTH_MESSAGE);
+			return;
+		}
+
+		this.executors.put(session, new Executor(this.mongo, project));
+	}
+
+	@OnWebSocketMessage
+	public void message(Session session, String message)
+	{
+		final Executor executor = this.executors.get(session);
+
+		final JSONObject messageObj = new JSONObject(message);
+		final String cmd = messageObj.getString("exec");
+
+		executor.execute(cmd.split(" "), new NullInputStream(), new WriterOutputStream(new Writer()
+		{
+			@Override
+			public void write(char[] cbuf, int off, int len) throws IOException
+			{
+				final JSONObject message = new JSONObject();
+				message.put("output", new String(cbuf, off, len));
+				session.getRemote().sendString(message.toString());
+			}
+
+			@Override
+			public void flush()
+			{
+			}
+
+			@Override
+			public void close()
+			{
+			}
+		}, StandardCharsets.UTF_8, 1024, true));
+	}
+
+	@OnWebSocketClose
+	public void closed(Session session, int statusCode, String reason)
+	{
+		this.executors.remove(session);
 	}
 }

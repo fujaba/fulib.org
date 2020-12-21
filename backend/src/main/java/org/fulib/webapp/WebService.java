@@ -102,6 +102,8 @@ public class WebService
 
 		new File(this.runCodeGen.getTempDir()).mkdirs();
 
+		service.webSocket("/ws/projects/*", this.projects);
+
 		service.staticFiles.externalLocation(this.runCodeGen.getTempDir());
 		service.staticFiles.expireTime(60 * 60);
 
@@ -192,7 +194,6 @@ public class WebService
 		service.get("", projects::get);
 		service.put("", projects::update);
 		service.delete("", projects::delete);
-		service.post("/exec", projects::exec);
 
 		service.path("/files", this::addFilesRoutes);
 	}

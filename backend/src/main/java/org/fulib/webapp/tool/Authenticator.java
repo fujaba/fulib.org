@@ -67,9 +67,14 @@ public class Authenticator
 
 	public static String getUserId(Request request)
 	{
+		return getUserId(request.headers("Authorization"));
+	}
+
+	public static String getUserId(String authHeader)
+	{
 		try
 		{
-			final DecodedJWT jwt = getJWT(request.headers("Authorization"));
+			final DecodedJWT jwt = getJWT(authHeader);
 			return jwt.getSubject();
 		}
 		catch (IllegalArgumentException ignored)
