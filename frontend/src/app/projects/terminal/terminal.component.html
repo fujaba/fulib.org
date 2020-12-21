@@ -1,0 +1,6 @@
+<div class="d-flex flex-column h-100">
+  <pre class="flex-grow-1 overflow-auto"><span *ngFor="let line of output">{{line}}</span></pre>
+  <div>
+    <input type="text" class="form-control" [(ngModel)]="command" (keyup.enter)="execCommand()">
+  </div>
+</div>

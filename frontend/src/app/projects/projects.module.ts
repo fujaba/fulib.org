@@ -19,6 +19,7 @@ import { SettingsComponent } from './settings/settings.component';
 import { ProjectFormComponent } from './project-form/project-form.component';
 import { FileCodeEditorComponent } from './file-code-editor/file-code-editor.component';
 import { FileRevisionsComponent } from './file-revisions/file-revisions.component';
+import { TerminalComponent } from './terminal/terminal.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { FileRevisionsComponent } from './file-revisions/file-revisions.componen
     ProjectFormComponent,
     FileCodeEditorComponent,
     FileRevisionsComponent,
+    TerminalComponent,
   ],
   imports: [
     CommonModule,
