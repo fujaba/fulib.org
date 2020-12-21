@@ -270,6 +270,10 @@ public class Projects
 	@OnWebSocketClose
 	public void closed(Session session, int statusCode, String reason)
 	{
-		this.executors.remove(session);
+		final Executor executor = this.executors.remove(session);
+		if (executor != null)
+		{
+			executor.stop();
+		}
 	}
 }

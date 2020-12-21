@@ -25,28 +25,33 @@ public class Executor
 {
 	private final Mongo mongo;
 	private final Project project;
+	private final DockerClient dockerClient;
+	private final String containerId;
 
 	public Executor(Mongo mongo, Project project)
 	{
 		this.mongo = mongo;
 		this.project = project;
-	}
-
-	public void execute(String[] command, InputStream input, OutputStream output)
-	{
-		final String projectDir = "/projects/" + project.getId() + "/";
 
 		final DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder().build();
 		final DockerHttpClient httpClient = new ApacheDockerHttpClient.Builder()
 			.dockerHost(config.getDockerHost())
 			.sslConfig(config.getSSLConfig())
 			.build();
-		final DockerClient dockerClient = DockerClientImpl.getInstance(config, httpClient);
+		dockerClient = DockerClientImpl.getInstance(config, httpClient);
 
-		final String containerId = this.runContainer(dockerClient);
+		containerId = this.runContainer(dockerClient);
 
-		this.copyFiles(project, projectDir, dockerClient, containerId);
+		this.copyFiles(project, getProjectDir(), dockerClient, containerId);
+	}
 
+	private String getProjectDir()
+	{
+		return "/projects/" + project.getId() + "/";
+	}
+
+	public void execute(String[] command, InputStream input, OutputStream output)
+	{
 		final ResultCallback.Adapter<Frame> outputAdapter = new ResultCallback.Adapter<Frame>()
 		{
 			@Override
@@ -70,7 +75,7 @@ public class Executor
 			.withAttachStdout(true)
 			.withAttachStderr(true)
 			.withAttachStdin(true)
-			.withWorkingDir(projectDir)
+			.withWorkingDir(this.getProjectDir())
 			.withCmd(command)
 			.exec()
 			.getId();
@@ -173,6 +178,21 @@ public class Executor
 		{
 			// TODO
 			e.printStackTrace();
+		}
+	}
+
+	public void stop()
+	{
+		this.dockerClient.stopContainerCmd(this.containerId).exec();
+		this.dockerClient.removeContainerCmd(this.containerId).exec();
+		try
+		{
+			this.dockerClient.close();
+		}
+		catch (IOException ex)
+		{
+			// TODO
+			ex.printStackTrace();
 		}
 	}
 }
