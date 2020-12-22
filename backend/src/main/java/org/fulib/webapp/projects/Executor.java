@@ -56,14 +56,19 @@ public class Executor extends Thread
 
 		containerId = this.runContainer(dockerClient);
 
-		this.copyFiles(project, getProjectDir(), dockerClient, containerId);
-
-		this.execute(new String[]{"/bin/bash"});
+		try
+		{
+			this.copyFiles(project, getProjectDir(), dockerClient, containerId);
+			this.execute(new String[] { "/bin/bash" });
+		}
+		catch (InterruptedException ignored)
+		{
+		}
 
 		this.teardown();
 	}
 
-	private void execute(String[] command)
+	private void execute(String[] command) throws InterruptedException
 	{
 		final ResultCallback.Adapter<Frame> outputAdapter = new ResultCallback.Adapter<Frame>()
 		{
@@ -93,14 +98,7 @@ public class Executor extends Thread
 			.exec()
 			.getId();
 
-		try
-		{
-			dockerClient.execStartCmd(execId).withTty(true).withStdIn(input).exec(outputAdapter).awaitCompletion();
-		}
-		catch (InterruptedException e)
-		{
-			e.printStackTrace();
-		}
+		dockerClient.execStartCmd(execId).withTty(true).withStdIn(input).exec(outputAdapter).awaitCompletion();
 	}
 
 	private String runContainer(DockerClient dockerClient)
@@ -112,6 +110,7 @@ public class Executor extends Thread
 	}
 
 	private void createProjectDir(DockerClient dockerClient, String containerId, String projectDir)
+		throws InterruptedException
 	{
 		final String mkdirExecId = dockerClient
 			.execCreateCmd(containerId)
@@ -119,18 +118,11 @@ public class Executor extends Thread
 			.exec()
 			.getId();
 
-		try
-		{
-			dockerClient.execStartCmd(mkdirExecId).exec(new ResultCallback.Adapter<>()).awaitCompletion();
-		}
-		catch (InterruptedException e)
-		{
-			// TODO
-			e.printStackTrace();
-		}
+		dockerClient.execStartCmd(mkdirExecId).exec(new ResultCallback.Adapter<>()).awaitCompletion();
 	}
 
 	private void copyFiles(Project project, String projectDir, DockerClient dockerClient, String containerId)
+		throws InterruptedException
 	{
 		this.createProjectDir(dockerClient, containerId, projectDir);
 
