@@ -20,6 +20,7 @@ dependencies:
   keycloak-angular: 7.3.1_1857f5b26f17402454f662c92bed301c
   keycloak-js: 7.0.1
   ng-bootstrap-darkmode: 0.4.0_7d7d588af8afd9ab0a7f7d60c18e1228
+  ng-terminal: 3.0.1_4f3ff29399d5dd0cb3a09414e78c53ca
   ng2-dragula: 2.1.1_@angular+core@11.0.3+rxjs@6.5.5
   ngx-clipboard: 14.0.1_794750ec7097dfee4813d32989b0f0e1
   rxjs: 6.5.5
@@ -2019,6 +2020,15 @@ packages:
       '@angular/core': ^11.0.0
     resolution:
       integrity: sha512-cTMpf1foSGfQ5QQa7d4jqyW1zPE9t5HmtlLDNYq4GgNqwUDAq04Fjs7/bhVE/Fb7LC+1REwy4eue7is4WP3kIg==
+  /angular-resizable-element/3.3.4_@angular+core@11.0.3:
+    dependencies:
+      '@angular/core': 11.0.3_rxjs@6.5.5+zone.js@0.10.3
+      tslib: 1.14.1
+    dev: false
+    peerDependencies:
+      '@angular/core': '>=6.0.0'
+    resolution:
+      integrity: sha512-jA3j8qcWXKR+rdXxerAjpKhUsoUlEBQP3CmutHcHRAKTkQjZTd1LcZOZOnfIdOToyXsIKXYscbHpbPoCeew2Yw==
   /ansi-colors/3.2.4:
     dev: true
     engines:
@@ -6406,6 +6416,22 @@ packages:
       bootstrap-darkmode: ^0.7.0
     resolution:
       integrity: sha512-LoA3nzq0ZUZXszm5bFRm3NRiSepC9D8AyntGLWttWpUi56xn/tMIpVzHUeoSHFYkXUrFQpvUBJGBbGHm+hnAjQ==
+  /ng-terminal/3.0.1_4f3ff29399d5dd0cb3a09414e78c53ca:
+    dependencies:
+      '@angular/common': 11.0.3_@angular+core@11.0.3+rxjs@6.5.5
+      '@angular/core': 11.0.3_rxjs@6.5.5+zone.js@0.10.3
+      angular-resizable-element: 3.3.4_@angular+core@11.0.3
+      rxjs: 6.5.5
+      tslib: 1.14.1
+      xterm: 4.9.0
+      xterm-addon-fit: 0.4.0_xterm@4.9.0
+    dev: false
+    peerDependencies:
+      '@angular/common': '>=8.2.0 <10.0.0'
+      '@angular/core': '>=8.2.0 <10.0.0'
+      rxjs: '>=6.5.0'
+    resolution:
+      integrity: sha512-3Z5YC3OJCW6GBDhe2DpPloNGLobgr9eSiFLZTa9sAv+jwFRiNwMCk4sU/dmGH3XhkTYAM/rRrv+rdZ4dTpCyVw==
   /ng2-dragula/2.1.1_@angular+core@11.0.3+rxjs@6.5.5:
     dependencies:
       '@angular/core': 11.0.3_rxjs@6.5.5+zone.js@0.10.3
@@ -9889,6 +9915,18 @@ packages:
       node: '>=0.4'
     resolution:
       integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==
+  /xterm-addon-fit/0.4.0_xterm@4.9.0:
+    dependencies:
+      xterm: 4.9.0
+    dev: false
+    peerDependencies:
+      xterm: ^4.0.0
+    resolution:
+      integrity: sha512-p4BESuV/g2L6pZzFHpeNLLnep9mp/DkF3qrPglMiucSFtD8iJxtMufEoEJbN8LZwB4i+8PFpFvVuFrGOSpW05w==
+  /xterm/4.9.0:
+    dev: false
+    resolution:
+      integrity: sha512-wGfqufmioctKr8VkbRuZbVDfjlXWGZZ1PWHy1yqqpGT3Nm6yaJx8lxDbSEBANtgaiVPTcKSp97sxOy5IlpqYfw==
   /y18n/4.0.0:
     dev: true
     resolution:
@@ -10037,6 +10075,7 @@ specifiers:
   keycloak-angular: ^7.3.1
   keycloak-js: 7.0.1
   ng-bootstrap-darkmode: ^0.4.0
+  ng-terminal: ^3.0.1
   ng2-dragula: ^2.1.1
   ngx-clipboard: ^14.0.1
   protractor: ~7.0.0

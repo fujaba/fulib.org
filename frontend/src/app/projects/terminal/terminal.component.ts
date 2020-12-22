@@ -1,8 +1,9 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {KeycloakService} from 'keycloak-angular';
-import {BehaviorSubject, EMPTY} from 'rxjs';
+import {NgTerminal} from 'ng-terminal';
+import {BehaviorSubject, EMPTY, Observable} from 'rxjs';
 import {fromPromise} from 'rxjs/internal-compatibility';
-import {switchMap, withLatestFrom} from 'rxjs/operators';
+import {filter, map, switchMap, withLatestFrom} from 'rxjs/operators';
 import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
 import {Project} from '../model/project';
 
@@ -12,7 +13,10 @@ import {Project} from '../model/project';
   styleUrls: ['./terminal.component.scss'],
 })
 export class TerminalComponent implements OnInit, OnDestroy {
+  @ViewChild('term', { static: true }) terminal: NgTerminal;
+
   project$ = new BehaviorSubject<Project | undefined>(undefined);
+  output$: Observable<string>;
 
   command = '';
   output: string[] = [];
@@ -34,7 +38,7 @@ export class TerminalComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.project$.pipe(
+    this.output$ = this.project$.pipe(
       withLatestFrom(fromPromise(this.keycloakService.getToken())),
       switchMap(([project, token]) => {
         if (project) {
@@ -43,17 +47,9 @@ export class TerminalComponent implements OnInit, OnDestroy {
           return EMPTY;
         }
       }),
-    ).subscribe({
-      next: message => {
-        if (message.output) {
-          this.output.push(message.output);
-        }
-      },
-      error: err => {
-        console.log(err);
-      },
-      complete: () => {},
-    });
+      filter(message => message.output),
+      map(message => message.output),
+    );
   }
 
   ngOnDestroy(): void {

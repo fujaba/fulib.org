@@ -32,6 +32,7 @@
     "keycloak-angular": "^7.3.1",
     "keycloak-js": "7.0.1",
     "ng-bootstrap-darkmode": "^0.4.0",
+    "ng-terminal": "^3.0.1",
     "ng2-dragula": "^2.1.1",
     "ngx-clipboard": "^14.0.1",
     "rxjs": "~6.5.5",
