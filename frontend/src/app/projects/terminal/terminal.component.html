@@ -1,8 +1,1 @@
-<div class="d-flex flex-column h-100">
-  <div class="flex-grow-1">
-    <ng-terminal #term [dataSource]="output$"></ng-terminal>
-  </div>
-  <div>
-    <input type="text" class="form-control" [(ngModel)]="command" (keyup.enter)="execCommand()">
-  </div>
-</div>
+<ng-terminal #term [dataSource]="output$"></ng-terminal>

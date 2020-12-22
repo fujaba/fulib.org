@@ -13,7 +13,7 @@ import {Project} from '../model/project';
   styleUrls: ['./terminal.component.scss'],
 })
 export class TerminalComponent implements OnInit, OnDestroy {
-  @ViewChild('term', { static: true }) terminal: NgTerminal;
+  @ViewChild('term', {static: true}) terminal: NgTerminal;
 
   project$ = new BehaviorSubject<Project | undefined>(undefined);
   output$: Observable<string>;
@@ -42,7 +42,8 @@ export class TerminalComponent implements OnInit, OnDestroy {
       withLatestFrom(fromPromise(this.keycloakService.getToken())),
       switchMap(([project, token]) => {
         if (project) {
-          return (this.wss = webSocket<any>(`ws://localhost:4567/ws/projects/${project.id}?token=${token}`)).asObservable();
+          this.wss = webSocket<any>(`ws://localhost:4567/ws/projects/${project.id}?token=${token}`);
+          return this.wss.asObservable();
         } else {
           return EMPTY;
         }
@@ -50,15 +51,44 @@ export class TerminalComponent implements OnInit, OnDestroy {
       filter(message => message.output),
       map(message => message.output),
     );
+
+    this.terminal.keyEventInput.subscribe(e => {
+      const ev = e.domEvent;
+      const input = this.getInput(ev);
+      if (input) {
+        this.wss.next({input});
+      }
+    });
+  }
+
+  getInput(ev: KeyboardEvent): string | undefined {
+    switch (ev.code) {
+      case 'Enter':
+        return '\n';
+      case 'Backspace':
+        return '\b';
+      case 'Tab':
+        return '\t';
+      case 'Delete':
+        return '\x1b[3~';
+      case 'ArrowUp':
+        return '\x1b[A';
+      case 'ArrowDown':
+        return '\x1b[B';
+      case 'ArrowRight':
+        return '\x1b[C';
+      case 'ArrowLeft':
+        return '\x1b[D';
+      default:
+        if (!ev.altKey && !ev.ctrlKey && !ev.metaKey && ev.key.length === 1) {
+          return ev.key;
+        }
+    }
+    return undefined;
   }
 
   ngOnDestroy(): void {
     this.project = undefined;
     this.project$.unsubscribe();
-  }
-
-  execCommand() {
-    this.wss.next({exec: this.command});
-    this.command = '';
   }
 }

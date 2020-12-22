@@ -21,18 +21,32 @@ import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 
-public class Executor
+public class Executor extends Thread
 {
 	private final Mongo mongo;
 	private final Project project;
-	private final DockerClient dockerClient;
-	private final String containerId;
+	private final InputStream input;
+	private final OutputStream output;
 
-	public Executor(Mongo mongo, Project project)
+	private DockerClient dockerClient;
+	private String containerId;
+
+	public Executor(Mongo mongo, Project project, InputStream input, OutputStream output)
 	{
 		this.mongo = mongo;
 		this.project = project;
+		this.input = input;
+		this.output = output;
+	}
 
+	private String getProjectDir()
+	{
+		return "/projects/" + project.getId() + "/";
+	}
+
+	@Override
+	public void run()
+	{
 		final DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder().build();
 		final DockerHttpClient httpClient = new ApacheDockerHttpClient.Builder()
 			.dockerHost(config.getDockerHost())
@@ -43,14 +57,13 @@ public class Executor
 		containerId = this.runContainer(dockerClient);
 
 		this.copyFiles(project, getProjectDir(), dockerClient, containerId);
+
+		this.execute(new String[]{"/bin/bash"});
+
+		this.teardown();
 	}
 
-	private String getProjectDir()
-	{
-		return "/projects/" + project.getId() + "/";
-	}
-
-	public void execute(String[] command, InputStream input, OutputStream output)
+	private void execute(String[] command)
 	{
 		final ResultCallback.Adapter<Frame> outputAdapter = new ResultCallback.Adapter<Frame>()
 		{
@@ -181,7 +194,7 @@ public class Executor
 		}
 	}
 
-	public void stop()
+	private void teardown()
 	{
 		this.dockerClient.stopContainerCmd(this.containerId).exec();
 		this.dockerClient.removeContainerCmd(this.containerId).exec();

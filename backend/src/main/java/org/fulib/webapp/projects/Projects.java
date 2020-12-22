@@ -1,6 +1,5 @@
 package org.fulib.webapp.projects;
 
-import org.apache.commons.io.input.NullInputStream;
 import org.apache.commons.io.output.WriterOutputStream;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.UpgradeRequest;
@@ -21,9 +20,7 @@ import spark.Request;
 import spark.Response;
 import spark.Spark;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Writer;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -199,9 +196,10 @@ public class Projects
 	}
 
 	private Map<Session, Executor> executors = new ConcurrentHashMap<>();
+	private Map<Session, PipedOutputStream> inputPipes = new ConcurrentHashMap<>();
 
 	@OnWebSocketConnect
-	public void connected(Session session)
+	public void connected(Session session) throws IOException
 	{
 		final UpgradeRequest request = session.getUpgradeRequest();
 		final String requestPath = request.getRequestURI().getPath();
@@ -234,18 +232,9 @@ public class Projects
 			return;
 		}
 
-		this.executors.put(session, new Executor(this.mongo, project));
-	}
-
-	@OnWebSocketMessage
-	public void message(Session session, String message)
-	{
-		final Executor executor = this.executors.get(session);
-
-		final JSONObject messageObj = new JSONObject(message);
-		final String cmd = messageObj.getString("exec");
-
-		executor.execute(cmd.split(" "), new NullInputStream(), new WriterOutputStream(new Writer()
+		final PipedOutputStream inputPipe = new PipedOutputStream();
+		final InputStream input = new PipedInputStream(inputPipe);
+		final OutputStream output = new WriterOutputStream(new Writer()
 		{
 			@Override
 			public void write(char[] cbuf, int off, int len) throws IOException
@@ -264,16 +253,38 @@ public class Projects
 			public void close()
 			{
 			}
-		}, StandardCharsets.UTF_8, 1024, true));
+		}, StandardCharsets.UTF_8, 1024, true);
+
+		final Executor executor = new Executor(this.mongo, project, input, output);
+
+		this.inputPipes.put(session, inputPipe);
+		this.executors.put(session, executor);
+
+		executor.start();
+	}
+
+	@OnWebSocketMessage
+	public void message(Session session, String message) throws IOException
+	{
+		final OutputStream pipedOutputStream = this.inputPipes.get(session);
+		if (pipedOutputStream == null)
+		{
+			return;
+		}
+
+		final JSONObject json = new JSONObject(message);
+		final String input = json.getString("input");
+		pipedOutputStream.write(input.getBytes(StandardCharsets.UTF_8));
 	}
 
 	@OnWebSocketClose
 	public void closed(Session session, int statusCode, String reason)
 	{
+		this.inputPipes.remove(session);
 		final Executor executor = this.executors.remove(session);
 		if (executor != null)
 		{
-			executor.stop();
+			executor.interrupt();
 		}
 	}
 }
