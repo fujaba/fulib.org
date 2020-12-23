@@ -3,6 +3,7 @@ package org.fulib.webapp.projects;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.model.Frame;
+import org.fulib.webapp.projects.docker.OutputStreamResultCallbackAdapter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -68,23 +69,6 @@ public class ContainerProcess
 
 	private void run(String execId)
 	{
-		final ResultCallback.Adapter<Frame> outputAdapter = new ResultCallback.Adapter<Frame>()
-		{
-			@Override
-			public void onNext(Frame object)
-			{
-				try
-				{
-					output.write(object.getPayload());
-				}
-				catch (IOException e)
-				{
-					// TODO
-					e.printStackTrace();
-				}
-			}
-		};
-
 		try
 		{
 			manager
@@ -92,7 +76,7 @@ public class ContainerProcess
 				.execStartCmd(execId)
 				.withTty(true)
 				.withStdIn(input)
-				.exec(outputAdapter)
+				.exec(new OutputStreamResultCallbackAdapter(output))
 				.awaitCompletion();
 		}
 		catch (InterruptedException ignored)
