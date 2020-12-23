@@ -3,7 +3,7 @@ import {KeycloakService} from 'keycloak-angular';
 import {NgTerminal} from 'ng-terminal';
 import {BehaviorSubject, EMPTY, Observable} from 'rxjs';
 import {fromPromise} from 'rxjs/internal-compatibility';
-import {filter, map, switchMap, withLatestFrom} from 'rxjs/operators';
+import {filter, map, switchMap, tap, withLatestFrom} from 'rxjs/operators';
 import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
 import {Project} from '../model/project';
 
@@ -18,8 +18,7 @@ export class TerminalComponent implements OnInit, OnDestroy {
   project$ = new BehaviorSubject<Project | undefined>(undefined);
   output$: Observable<string>;
 
-  command = '';
-  output: string[] = [];
+  process?: string;
 
   wss: WebSocketSubject<any>;
 
@@ -43,9 +42,15 @@ export class TerminalComponent implements OnInit, OnDestroy {
       switchMap(([project, token]) => {
         if (project) {
           this.wss = webSocket<any>(`ws://localhost:4567/ws/projects/${project.id}?token=${token}`);
+          this.wss.next({exec: ['/bin/bash']});
           return this.wss.asObservable();
         } else {
           return EMPTY;
+        }
+      }),
+      tap(message => {
+        if (message.process) {
+          this.process = message.process;
         }
       }),
       filter(message => message.output),
@@ -56,7 +61,7 @@ export class TerminalComponent implements OnInit, OnDestroy {
       const ev = e.domEvent;
       const input = this.getInput(ev);
       if (input) {
-        this.wss.next({input});
+        this.wss.next({input, process: this.process});
       }
     });
   }

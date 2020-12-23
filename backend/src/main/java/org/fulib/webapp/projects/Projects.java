@@ -195,11 +195,11 @@ public class Projects
 		return "{}";
 	}
 
-	private Map<Session, Executor> executors = new ConcurrentHashMap<>();
-	private Map<Session, PipedOutputStream> inputPipes = new ConcurrentHashMap<>();
+	private final Map<Session, ContainerManager> managers = new ConcurrentHashMap<>();
+	private final Map<Session, Map<String, PipedOutputStream>> inputPipes = new ConcurrentHashMap<>();
 
 	@OnWebSocketConnect
-	public void connected(Session session) throws IOException
+	public void connected(Session session)
 	{
 		final UpgradeRequest request = session.getUpgradeRequest();
 		final String requestPath = request.getRequestURI().getPath();
@@ -232,59 +232,60 @@ public class Projects
 			return;
 		}
 
-		final PipedOutputStream inputPipe = new PipedOutputStream();
-		final InputStream input = new PipedInputStream(inputPipe);
-		final OutputStream output = new WriterOutputStream(new Writer()
-		{
-			@Override
-			public void write(char[] cbuf, int off, int len) throws IOException
-			{
-				final JSONObject message = new JSONObject();
-				message.put("output", new String(cbuf, off, len));
-				session.getRemote().sendString(message.toString());
-			}
-
-			@Override
-			public void flush()
-			{
-			}
-
-			@Override
-			public void close()
-			{
-			}
-		}, StandardCharsets.UTF_8, 1024, true);
-
-		final Executor executor = new Executor(this.mongo, project, input, output);
-
-		this.inputPipes.put(session, inputPipe);
-		this.executors.put(session, executor);
-
-		executor.start();
+		final ContainerManager manager = new ContainerManager(this.mongo, project);
+		this.managers.put(session, manager);
+		manager.start();
 	}
 
 	@OnWebSocketMessage
 	public void message(Session session, String message) throws IOException
 	{
-		final OutputStream pipedOutputStream = this.inputPipes.get(session);
-		if (pipedOutputStream == null)
+		final JSONObject json = new JSONObject(message);
+
+		final JSONArray execArray = json.optJSONArray("exec");
+		if (execArray != null)
 		{
-			return;
+			final String[] cmd = execArray.toList().toArray(new String[0]);
+			final ContainerManager manager = this.managers.get(session);
+
+			final PipedOutputStream inputPipe = new PipedOutputStream();
+			final InputStream input = new PipedInputStream(inputPipe);
+			final SessionOutputWriter writer = new SessionOutputWriter(session);
+			final OutputStream output = new WriterOutputStream(writer, StandardCharsets.UTF_8, 1024, true);
+
+			final String execId = manager.exec(cmd, input, output);
+			writer.execId = execId;
+			this.inputPipes.computeIfAbsent(session, s -> new ConcurrentHashMap<>()).put(execId, inputPipe);
+
+			final JSONObject processObj = new JSONObject();
+			processObj.put("process", execId);
+			session.getRemote().sendString(processObj.toString());
 		}
 
-		final JSONObject json = new JSONObject(message);
-		final String input = json.getString("input");
-		pipedOutputStream.write(input.getBytes(StandardCharsets.UTF_8));
+		final String input = json.optString("input", null);
+		if (input != null)
+		{
+			final String execId = json.getString("process");
+			final Map<String, PipedOutputStream> map = this.inputPipes.get(session);
+			if (map != null)
+			{
+				final OutputStream pipedOutputStream = map.get(execId);
+				if (pipedOutputStream != null)
+				{
+					pipedOutputStream.write(input.getBytes(StandardCharsets.UTF_8));
+				}
+			}
+		}
 	}
 
 	@OnWebSocketClose
 	public void closed(Session session, int statusCode, String reason)
 	{
 		this.inputPipes.remove(session);
-		final Executor executor = this.executors.remove(session);
+		final ContainerManager executor = this.managers.remove(session);
 		if (executor != null)
 		{
-			executor.interrupt();
+			executor.stop();
 		}
 	}
 }

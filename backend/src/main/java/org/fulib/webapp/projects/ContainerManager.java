@@ -2,7 +2,6 @@ package org.fulib.webapp.projects;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.async.ResultCallback;
-import com.github.dockerjava.api.model.Frame;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
@@ -17,35 +16,47 @@ import org.fulib.webapp.projects.model.Project;
 import org.fulib.webapp.projects.model.Revision;
 
 import java.io.*;
-import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 
-public class Executor extends Thread
+public class ContainerManager
 {
 	private final Mongo mongo;
 	private final Project project;
-	private final InputStream input;
-	private final OutputStream output;
 
 	private DockerClient dockerClient;
 	private String containerId;
 
-	public Executor(Mongo mongo, Project project, InputStream input, OutputStream output)
+	private List<ContainerProcess> processes = new ArrayList<>();
+
+	public ContainerManager(Mongo mongo, Project project)
 	{
 		this.mongo = mongo;
 		this.project = project;
-		this.input = input;
-		this.output = output;
 	}
 
-	private String getProjectDir()
+	public Project getProject()
+	{
+		return project;
+	}
+
+	public DockerClient getDockerClient()
+	{
+		return dockerClient;
+	}
+
+	public String getContainerId()
+	{
+		return containerId;
+	}
+
+	public String getProjectDir()
 	{
 		return "/projects/" + project.getId() + "/";
 	}
 
-	@Override
-	public void run()
+	public void start()
 	{
 		final DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder().build();
 		final DockerHttpClient httpClient = new ApacheDockerHttpClient.Builder()
@@ -59,46 +70,10 @@ public class Executor extends Thread
 		try
 		{
 			this.copyFiles(project, getProjectDir(), dockerClient, containerId);
-			this.execute(new String[] { "/bin/bash" });
 		}
 		catch (InterruptedException ignored)
 		{
 		}
-
-		this.teardown();
-	}
-
-	private void execute(String[] command) throws InterruptedException
-	{
-		final ResultCallback.Adapter<Frame> outputAdapter = new ResultCallback.Adapter<Frame>()
-		{
-			@Override
-			public void onNext(Frame object)
-			{
-				try
-				{
-					output.write(object.getPayload());
-				}
-				catch (IOException e)
-				{
-					// TODO
-					e.printStackTrace();
-				}
-			}
-		};
-
-		final String execId = dockerClient
-			.execCreateCmd(containerId)
-			.withTty(true)
-			.withAttachStdout(true)
-			.withAttachStderr(true)
-			.withAttachStdin(true)
-			.withWorkingDir(this.getProjectDir())
-			.withCmd(command)
-			.exec()
-			.getId();
-
-		dockerClient.execStartCmd(execId).withTty(true).withStdIn(input).exec(outputAdapter).awaitCompletion();
 	}
 
 	private String runContainer(DockerClient dockerClient)
@@ -186,8 +161,17 @@ public class Executor extends Thread
 		}
 	}
 
-	private void teardown()
+	public String exec(String[] cmd, InputStream input, OutputStream output)
 	{
+		final ContainerProcess containerProcess = new ContainerProcess(this, cmd, input, output);
+		this.processes.add(containerProcess);
+		return containerProcess.start();
+	}
+
+	public void stop()
+	{
+		this.processes.forEach(ContainerProcess::stop);
+
 		this.dockerClient.stopContainerCmd(this.containerId).exec();
 		this.dockerClient.removeContainerCmd(this.containerId).exec();
 		try
