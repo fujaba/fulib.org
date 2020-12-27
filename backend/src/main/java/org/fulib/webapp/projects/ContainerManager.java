@@ -11,6 +11,8 @@ import org.apache.commons.compress.archivers.ArchiveOutputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.fulib.webapp.mongo.Mongo;
+import org.fulib.webapp.projects.docker.FileEventManager;
+import org.fulib.webapp.projects.docker.FileWatcherProcess;
 import org.fulib.webapp.projects.model.File;
 import org.fulib.webapp.projects.model.Project;
 import org.fulib.webapp.projects.model.Revision;
@@ -74,12 +76,13 @@ public class ContainerManager
 		catch (InterruptedException ignored)
 		{
 		}
+
+		this.exec(new FileWatcherProcess(this, new FileEventManager()));
 	}
 
 	private String runContainer(DockerClient dockerClient)
 	{
-		// TODO custom image
-		final String id = dockerClient.createContainerCmd("openjdk:8-jdk-slim").withTty(true).exec().getId();
+		final String id = dockerClient.createContainerCmd("fulib/projects").withTty(true).exec().getId();
 		dockerClient.startContainerCmd(id).exec();
 		return id;
 	}
@@ -163,9 +166,13 @@ public class ContainerManager
 
 	public String exec(String[] cmd, InputStream input, OutputStream output)
 	{
-		final ContainerProcess containerProcess = new ContainerProcess(this, cmd, input, output);
-		this.processes.add(containerProcess);
-		return containerProcess.start();
+		return this.exec(new ContainerProcess(this, cmd, input, output));
+	}
+
+	public String exec(ContainerProcess process)
+	{
+		this.processes.add(process);
+		return process.start();
 	}
 
 	public void stop()
