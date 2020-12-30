@@ -42,7 +42,7 @@ export class TerminalComponent implements OnInit, OnDestroy {
       switchMap(([project, token]) => {
         if (project) {
           this.wss = webSocket<any>(`ws://localhost:4567/ws/projects/${project.id}?token=${token}`);
-          this.wss.next({exec: ['/bin/bash']});
+          this.wss.next({command: 'exec', cmd: ['/bin/bash']});
           return this.wss.asObservable();
         } else {
           return EMPTY;
@@ -59,9 +59,9 @@ export class TerminalComponent implements OnInit, OnDestroy {
 
     this.terminal.keyEventInput.subscribe(e => {
       const ev = e.domEvent;
-      const input = this.getInput(ev);
-      if (input) {
-        this.wss.next({input, process: this.process});
+      const text = this.getInput(ev);
+      if (text) {
+        this.wss.next({command: 'input', text, process: this.process});
       }
     });
   }

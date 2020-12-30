@@ -246,11 +246,13 @@ public class Projects
 	public void message(Session session, String message) throws IOException
 	{
 		final JSONObject json = new JSONObject(message);
+		final String command = json.getString("command");
 
-		final JSONArray execArray = json.optJSONArray("exec");
-		if (execArray != null)
+		switch (command)
 		{
-			final String[] cmd = execArray.toList().toArray(new String[0]);
+		case "exec":
+		{
+			final String[] cmd = json.getJSONArray("cmd").toList().toArray(new String[0]);
 			final ContainerManager manager = this.managers.get(session);
 
 			final PipedOutputStream inputPipe = new PipedOutputStream();
@@ -266,11 +268,11 @@ public class Projects
 			processObj.put("event", "started");
 			processObj.put("process", execId);
 			session.getRemote().sendString(processObj.toString());
+			return;
 		}
-
-		final String input = json.optString("input", null);
-		if (input != null)
+		case "input":
 		{
+			final String input = json.getString("text");
 			final String execId = json.getString("process");
 			final Map<String, PipedOutputStream> map = this.inputPipes.get(session);
 			if (map != null)
@@ -281,6 +283,11 @@ public class Projects
 					pipedOutputStream.write(input.getBytes(StandardCharsets.UTF_8));
 				}
 			}
+			return;
+		}
+		default:
+			session.getRemote().sendString(new JSONObject().put("error", "invalid command: " + command).toString());
+			return;
 		}
 	}
 
