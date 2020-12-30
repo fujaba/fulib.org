@@ -15,31 +15,31 @@ public class FileEventManager implements FileEventHandler
 	@Override
 	public void modify(String path)
 	{
-		send(new JSONObject().put("modified", path));
+		send(new JSONObject().put("event", "modified").put("path", path));
 	}
 
 	@Override
 	public void createFile(String path)
 	{
-		send(new JSONObject().put("created", path));
+		send(new JSONObject().put("event", "created").put("path", path));
 	}
 
 	@Override
 	public void createDirectory(String path)
 	{
-		send(new JSONObject().put("created", path).put("directory", true));
+		send(new JSONObject().put("event", "created").put("path", path).put("directory", true));
 	}
 
 	@Override
 	public void delete(String path)
 	{
-		send(new JSONObject().put("deleted", path));
+		send(new JSONObject().put("event", "deleted").put("path", path));
 	}
 
 	@Override
 	public void move(String oldPath, String newPath)
 	{
-		send(new JSONObject().put("movedFrom", oldPath).put("movedTo", newPath));
+		send(new JSONObject().put("event", "moved").put("from", oldPath).put("to", newPath));
 	}
 
 	private void send(JSONObject message)
