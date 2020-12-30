@@ -263,6 +263,7 @@ public class Projects
 			this.inputPipes.computeIfAbsent(session, s -> new ConcurrentHashMap<>()).put(execId, inputPipe);
 
 			final JSONObject processObj = new JSONObject();
+			processObj.put("event", "started");
 			processObj.put("process", execId);
 			session.getRemote().sendString(processObj.toString());
 		}

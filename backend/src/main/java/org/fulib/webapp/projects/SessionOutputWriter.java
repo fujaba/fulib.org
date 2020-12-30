@@ -20,8 +20,9 @@ public class SessionOutputWriter extends Writer
 	public void write(char[] cbuf, int off, int len) throws IOException
 	{
 		final JSONObject message = new JSONObject();
-		message.put("output", new String(cbuf, off, len));
+		message.put("event", "output");
 		message.put("process", execId);
+		message.put("text", new String(cbuf, off, len));
 		session.getRemote().sendString(message.toString());
 	}
 

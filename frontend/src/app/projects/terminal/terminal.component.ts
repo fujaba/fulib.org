@@ -53,8 +53,8 @@ export class TerminalComponent implements OnInit, OnDestroy {
           this.process = message.process;
         }
       }),
-      filter(message => message.output),
-      map(message => message.output),
+      filter(message => message.event === 'output'),
+      map(message => message.text),
     );
 
     this.terminal.keyEventInput.subscribe(e => {
