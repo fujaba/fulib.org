@@ -85,9 +85,14 @@ export class TerminalComponent implements OnInit, OnDestroy {
       case 'ArrowLeft':
         return '\x1b[D';
       default:
-        if (!ev.altKey && !ev.ctrlKey && !ev.metaKey && ev.key.length === 1) {
-          return ev.key;
+        if (ev.altKey || ev.metaKey || ev.key.length !== 1) {
+          return undefined;
         }
+        if (ev.ctrlKey) {
+          const code = ev.key.charCodeAt(0) - (ev.shiftKey ? 65 /* A */ : 97 /* a */) + 1;
+          return String.fromCharCode(code);
+        }
+        return ev.key;
     }
     return undefined;
   }
