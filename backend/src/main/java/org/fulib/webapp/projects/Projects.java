@@ -9,6 +9,8 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.fulib.webapp.mongo.Mongo;
 import org.fulib.webapp.projects.docker.ContainerManager;
+import org.fulib.webapp.projects.docker.FileEventManager;
+import org.fulib.webapp.projects.docker.FileWatcherProcess;
 import org.fulib.webapp.projects.model.File;
 import org.fulib.webapp.projects.model.Project;
 import org.fulib.webapp.projectzip.ProjectData;
@@ -236,6 +238,8 @@ public class Projects
 		final ContainerManager manager = new ContainerManager(this.mongo, project);
 		this.managers.put(session, manager);
 		manager.start();
+
+		manager.exec(new FileWatcherProcess(manager, new FileEventManager(session)));
 	}
 
 	@OnWebSocketMessage

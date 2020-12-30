@@ -75,8 +75,6 @@ public class ContainerManager
 		catch (InterruptedException ignored)
 		{
 		}
-
-		this.exec(new FileWatcherProcess(this, new FileEventManager()));
 	}
 
 	private String runContainer(DockerClient dockerClient)
