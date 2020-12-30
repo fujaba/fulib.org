@@ -1,11 +1,7 @@
-package org.fulib.webapp.projects;
+package org.fulib.webapp.projects.docker;
 
 import com.github.dockerjava.api.DockerClient;
-import com.github.dockerjava.api.async.ResultCallback;
-import com.github.dockerjava.api.model.Frame;
-import org.fulib.webapp.projects.docker.OutputStreamResultCallbackAdapter;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 

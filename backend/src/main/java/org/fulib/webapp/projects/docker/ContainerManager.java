@@ -1,4 +1,4 @@
-package org.fulib.webapp.projects;
+package org.fulib.webapp.projects.docker;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.async.ResultCallback;
@@ -11,8 +11,7 @@ import org.apache.commons.compress.archivers.ArchiveOutputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.fulib.webapp.mongo.Mongo;
-import org.fulib.webapp.projects.docker.FileEventManager;
-import org.fulib.webapp.projects.docker.FileWatcherProcess;
+import org.fulib.webapp.projects.FileWalker;
 import org.fulib.webapp.projects.model.File;
 import org.fulib.webapp.projects.model.Project;
 import org.fulib.webapp.projects.model.Revision;
