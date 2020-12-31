@@ -2,14 +2,12 @@ package org.fulib.webapp.mongo;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
-import com.mongodb.MongoGridFSException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSBuckets;
-import com.mongodb.client.gridfs.model.GridFSDownloadOptions;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.mongodb.client.model.*;
 import org.bson.BsonValue;
@@ -26,7 +24,6 @@ import org.fulib.webapp.projects.model.File;
 import org.fulib.webapp.projects.model.Project;
 import org.fulib.webapp.projects.model.Revision;
 
-import javax.servlet.ServletOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -332,6 +329,16 @@ public class Mongo
 	public void downloadRevision(String id, OutputStream output)
 	{
 		this.projectFilesFS.downloadToStream(new ObjectId(id), output);
+	}
+
+	public InputStream downloadFile(String name)
+	{
+		return this.projectFilesFS.openDownloadStream(name);
+	}
+
+	public OutputStream uploadFile(String name)
+	{
+		return this.projectFilesFS.openUploadStream(name);
 	}
 
 	// --------------- Assignments ---------------

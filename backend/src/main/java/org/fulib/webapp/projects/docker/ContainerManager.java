@@ -7,22 +7,23 @@ import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
 import com.github.dockerjava.transport.DockerHttpClient;
-import org.apache.commons.compress.archivers.ArchiveOutputStream;
-import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
-import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
+import com.mongodb.MongoGridFSException;
+import org.apache.commons.io.IOUtils;
 import org.fulib.webapp.mongo.Mongo;
-import org.fulib.webapp.projects.FileWalker;
-import org.fulib.webapp.projects.model.File;
 import org.fulib.webapp.projects.model.Project;
-import org.fulib.webapp.projects.model.Revision;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ForkJoinPool;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 public class ContainerManager
 {
+	private static final String PROJECTS_DIR = "/projects/";
+
 	private final Mongo mongo;
 	private final Project project;
 
@@ -54,7 +55,7 @@ public class ContainerManager
 
 	public String getProjectDir()
 	{
-		return "/projects/" + project.getId() + "/";
+		return PROJECTS_DIR + project.getId() + "/";
 	}
 
 	public void start()
@@ -68,13 +69,7 @@ public class ContainerManager
 
 		containerId = this.runContainer(dockerClient);
 
-		try
-		{
-			this.copyFiles(project, getProjectDir(), dockerClient, containerId);
-		}
-		catch (InterruptedException ignored)
-		{
-		}
+		this.downloadFilesToContainer();
 	}
 
 	private String runContainer(DockerClient dockerClient)
@@ -84,77 +79,41 @@ public class ContainerManager
 		return id;
 	}
 
-	private void createProjectDir(DockerClient dockerClient, String containerId, String projectDir)
-		throws InterruptedException
+	private void createProjectDir()
 	{
 		final String mkdirExecId = dockerClient
 			.execCreateCmd(containerId)
-			.withCmd("mkdir", "-p", projectDir)
+			.withCmd("mkdir", "-p", getProjectDir())
 			.exec()
 			.getId();
 
-		dockerClient.execStartCmd(mkdirExecId).exec(new ResultCallback.Adapter<>()).awaitCompletion();
-	}
-
-	private void copyFiles(Project project, String projectDir, DockerClient dockerClient, String containerId)
-		throws InterruptedException
-	{
-		this.createProjectDir(dockerClient, containerId, projectDir);
-
-		try (final PipedInputStream pipeInput = new PipedInputStream();
-		     final PipedOutputStream pipeOutput = new PipedOutputStream(pipeInput))
-		{
-			ForkJoinPool.commonPool().execute(() -> {
-				try (final TarArchiveOutputStream output = new TarArchiveOutputStream(pipeOutput))
-				{
-					this.copyFiles(project, output);
-				}
-				catch (IOException e)
-				{
-					// TODO
-					e.printStackTrace();
-				}
-			});
-			dockerClient
-				.copyArchiveToContainerCmd(containerId)
-				.withRemotePath(projectDir)
-				.withTarInputStream(pipeInput)
-				.exec();
-		}
-		catch (IOException e)
-		{
-			// TODO
-			e.printStackTrace();
-		}
-	}
-
-	private void copyFiles(Project project, ArchiveOutputStream output)
-	{
-		new FileWalker(this.mongo).walk(project.getRootFileId(), (file, path) -> {
-			if (file.isDirectory())
-			{
-				return;
-			}
-
-			this.copyFile(file, path, output);
-		});
-	}
-
-	private void copyFile(File file, String path, ArchiveOutputStream output)
-	{
-		final List<Revision> revisions = file.getRevisions();
-		final Revision newestRevision = revisions.get(revisions.size() - 1);
-
 		try
 		{
-			final TarArchiveEntry entry = new TarArchiveEntry(path);
-			entry.setModTime(newestRevision.getTimestamp().toEpochMilli());
-			entry.setSize(newestRevision.getSize());
-			output.putArchiveEntry(entry);
-			this.mongo.downloadRevision(newestRevision.getId(), output);
-			output.closeArchiveEntry();
+			dockerClient.execStartCmd(mkdirExecId).exec(new ResultCallback.Adapter<>()).awaitCompletion();
 		}
-		catch (IOException e)
+		catch (InterruptedException ex)
+		{
+			// TODO
+			ex.printStackTrace();
+		}
+	}
+
+	private void downloadFilesToContainer()
+	{
+		this.createProjectDir();
+
+		try (
+			final InputStream downloadStream = this.mongo.downloadFile(project.getId());
+			final GZIPInputStream gzipInputStream = new GZIPInputStream(downloadStream)
+		)
+		{
+			dockerClient
+				.copyArchiveToContainerCmd(containerId)
+				.withRemotePath(getProjectDir())
+				.withTarInputStream(gzipInputStream)
+				.exec();
+		}
+		catch (MongoGridFSException | IOException e)
 		{
 			// TODO
 			e.printStackTrace();
@@ -176,6 +135,8 @@ public class ContainerManager
 	{
 		this.processes.forEach(ContainerProcess::stop);
 
+		this.uploadFilesFromContainer();
+
 		this.dockerClient.stopContainerCmd(this.containerId).exec();
 		this.dockerClient.removeContainerCmd(this.containerId).exec();
 		try
@@ -186,6 +147,25 @@ public class ContainerManager
 		{
 			// TODO
 			ex.printStackTrace();
+		}
+	}
+
+	private void uploadFilesFromContainer()
+	{
+		try (
+			final InputStream tarInputStream = dockerClient
+				.copyArchiveFromContainerCmd(containerId, getProjectDir() + ".")
+				.exec();
+			final OutputStream uploadStream = this.mongo.uploadFile(project.getId());
+			final GZIPOutputStream gzipOutputStream = new GZIPOutputStream(uploadStream)
+		)
+		{
+			IOUtils.copy(tarInputStream, gzipOutputStream);
+		}
+		catch (IOException e)
+		{
+			// TODO
+			e.printStackTrace();
 		}
 	}
 }
