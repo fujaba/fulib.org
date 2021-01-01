@@ -1,5 +1,7 @@
 package org.fulib.webapp.projects;
 
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.io.output.WriterOutputStream;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.UpgradeRequest;
@@ -11,7 +13,6 @@ import org.fulib.webapp.mongo.Mongo;
 import org.fulib.webapp.projects.docker.ContainerManager;
 import org.fulib.webapp.projects.docker.FileEventManager;
 import org.fulib.webapp.projects.docker.FileWatcherProcess;
-import org.fulib.webapp.projects.model.File;
 import org.fulib.webapp.projects.model.Project;
 import org.fulib.webapp.projectzip.ProjectData;
 import org.fulib.webapp.projectzip.ProjectGenerator;
@@ -26,10 +27,10 @@ import spark.Spark;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.zip.GZIPOutputStream;
 
 @WebSocket
 public class Projects
@@ -115,8 +116,7 @@ public class Projects
 		final String userId = Authenticator.getUserIdOr401(request);
 		project.setUserId(userId);
 
-		final String rootFileId = this.generateProjectFiles(project);
-		project.setRootFileId(rootFileId);
+		this.generateProjectFiles(project);
 
 		this.mongo.saveProject(project);
 
@@ -131,34 +131,33 @@ public class Projects
 		project.setDescription(obj.getString(Project.PROPERTY_DESCRIPTION));
 	}
 
-	private String generateProjectFiles(Project project) throws IOException
+	private void generateProjectFiles(Project project) throws IOException
 	{
-		final File rootDir = new File(IDGenerator.generateID());
-		rootDir.setName(".");
-		rootDir.setDirectory(true);
-		rootDir.setCreated(project.getCreated());
-		rootDir.setProjectId(project.getId());
-		rootDir.setUserId(project.getUserId());
-
-		final FileResolver resolver = new FileResolver(rootDir);
-
-		final List<File> newFiles = new ArrayList<>();
-		newFiles.add(rootDir);
-
 		final ProjectData projectData = getProjectData(project);
-		new ProjectGenerator().generate(projectData, (name, output) -> {
-			final File file = resolver.getOrCreate(name);
-			try (OutputStream upload = this.mongo.uploadRevision(file.getId()))
-			{
-				output.accept(upload);
-			}
-		});
 
-		newFiles.addAll(resolver.getFiles());
+		try (
+			final OutputStream uploadStream = this.mongo.uploadFile(project.getId());
+			final GZIPOutputStream gzipOutputStream = new GZIPOutputStream(uploadStream);
+			final TarArchiveOutputStream tarOutputStream = new TarArchiveOutputStream(gzipOutputStream, "UTF-8")
+		)
+		{
+			final ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
-		this.mongo.createManyFiles(newFiles);
+			new ProjectGenerator().generate(projectData, (name, output) -> {
+				output.accept(bos);
+				final byte[] fileData = bos.toByteArray();
 
-		return rootDir.getId();
+				final TarArchiveEntry entry = new TarArchiveEntry(name);
+				entry.setSize(fileData.length);
+				entry.setModTime(project.getCreated().toEpochMilli());
+
+				tarOutputStream.putArchiveEntry(entry);
+				output.accept(tarOutputStream);
+				tarOutputStream.closeArchiveEntry();
+
+				bos.reset();
+			});
+		}
 	}
 
 	private ProjectData getProjectData(Project project)
