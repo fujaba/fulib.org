@@ -95,7 +95,6 @@ public class WebServiceTest
 		checkRoute("GET", "/projects/1");
 		checkRoute("PUT", "/projects/1");
 		checkRoute("DELETE", "/projects/1");
-		checkRoute("POST", "/projects/1/exec");
 
 		verify(projects).get(any(), any());
 		verify(projects).getAll(any(), any());
