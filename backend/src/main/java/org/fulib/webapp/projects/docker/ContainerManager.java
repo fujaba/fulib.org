@@ -2,6 +2,11 @@ package org.fulib.webapp.projects.docker;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.async.ResultCallback;
+import com.github.dockerjava.api.command.CreateContainerCmd;
+import com.github.dockerjava.api.command.InspectContainerResponse;
+import com.github.dockerjava.api.model.ExposedPort;
+import com.github.dockerjava.api.model.NetworkSettings;
+import com.github.dockerjava.api.model.Ports;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
@@ -17,6 +22,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -29,6 +35,7 @@ public class ContainerManager
 
 	private DockerClient dockerClient;
 	private String containerId;
+	private String containerAddress;
 
 	private List<ContainerProcess> processes = new ArrayList<>();
 
@@ -53,6 +60,11 @@ public class ContainerManager
 		return containerId;
 	}
 
+	public String getContainerAddress()
+	{
+		return containerAddress;
+	}
+
 	public String getProjectDir()
 	{
 		return PROJECTS_DIR + project.getId() + "/";
@@ -67,16 +79,47 @@ public class ContainerManager
 			.build();
 		dockerClient = DockerClientImpl.getInstance(config, httpClient);
 
-		containerId = this.runContainer(dockerClient);
+		this.runContainer();
 
 		this.downloadFilesToContainer();
 	}
 
-	private String runContainer(DockerClient dockerClient)
+	private void runContainer()
 	{
-		final String id = dockerClient.createContainerCmd("fulib/projects").withTty(true).exec().getId();
-		dockerClient.startContainerCmd(id).exec();
-		return id;
+		final CreateContainerCmd cmd = dockerClient
+			.createContainerCmd("fulib/projects")
+			.withTty(true);
+
+		final boolean linux = System.getProperty("os.name", "generic").toUpperCase(Locale.ROOT).contains("NUX");
+		if (!linux)
+		{
+			cmd.withPublishAllPorts(true);
+		}
+
+		containerId = cmd
+			.exec()
+			.getId();
+		dockerClient.startContainerCmd(containerId).exec();
+
+		final InspectContainerResponse inspectResponse = dockerClient.inspectContainerCmd(containerId).exec();
+		final NetworkSettings networkSettings = inspectResponse.getNetworkSettings();
+		if (linux)
+		{
+			containerAddress = networkSettings.getIpAddress();
+		}
+		else
+		{
+			final Ports.Binding[] bindings = networkSettings.getPorts().getBindings().get(ExposedPort.tcp(80));
+			if (bindings != null && bindings.length > 0)
+			{
+				final Ports.Binding binding = bindings[0];
+				containerAddress = binding.getHostIp() + ":" + binding.getHostPortSpec();
+			}
+			else
+			{
+				containerAddress = null;
+			}
+		}
 	}
 
 	private void createProjectDir()
