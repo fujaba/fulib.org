@@ -202,7 +202,7 @@ public class Projects
 	private final Map<Session, Map<String, PipedOutputStream>> inputPipes = new ConcurrentHashMap<>();
 
 	@OnWebSocketConnect
-	public void connected(Session session)
+	public void connected(Session session) throws IOException
 	{
 		final UpgradeRequest request = session.getUpgradeRequest();
 		final String requestPath = request.getRequestURI().getPath();
@@ -238,6 +238,12 @@ public class Projects
 		final ContainerManager manager = new ContainerManager(this.mongo, project);
 		this.managers.put(session, manager);
 		manager.start();
+
+		final JSONObject event = new JSONObject();
+		event.put("event", "containerStarted");
+		event.put("id", manager.getContainerId());
+		event.put("address", manager.getContainerAddress());
+		session.getRemote().sendString(event.toString());
 
 		manager.exec(new FileWatcherProcess(manager, new FileEventManager(session)));
 	}
