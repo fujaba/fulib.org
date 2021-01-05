@@ -8,21 +8,19 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSBuckets;
-import com.mongodb.client.gridfs.model.GridFSFile;
-import com.mongodb.client.model.*;
-import org.bson.BsonValue;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Indexes;
+import com.mongodb.client.model.ReplaceOptions;
+import com.mongodb.client.model.Sorts;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.Convention;
 import org.bson.codecs.pojo.Conventions;
 import org.bson.codecs.pojo.PojoCodecProvider;
-import org.bson.types.ObjectId;
 import org.fulib.webapp.WebService;
 import org.fulib.webapp.assignment.model.*;
-import org.fulib.webapp.projects.model.File;
 import org.fulib.webapp.projects.model.Project;
-import org.fulib.webapp.projects.model.Revision;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -73,7 +71,6 @@ public class Mongo
 
 	MongoCollection<Document> requestLog;
 	private MongoCollection<Project> projects;
-	private MongoCollection<File> projectFiles;
 	private GridFSBucket projectFilesFS;
 	private MongoCollection<Assignment> assignments;
 	private MongoCollection<Course> courses;
@@ -122,14 +119,6 @@ public class Mongo
 		this.projects.createIndex(Indexes.ascending(Project.PROPERTY_ID));
 		this.projects.createIndex(Indexes.ascending(Project.PROPERTY_USER_ID));
 		this.projects.createIndex(Indexes.ascending(Project.PROPERTY_NAME));
-
-		this.projectFiles = this.database
-			.getCollection(PROJECT_FILES_COLLECTION_NAME, File.class)
-			.withCodecRegistry(this.pojoCodecRegistry);
-		this.projectFiles.createIndex(Indexes.ascending(File.PROPERTY_ID));
-		this.projectFiles.createIndex(Indexes.ascending(File.PROPERTY_PROJECT_ID));
-		this.projectFiles.createIndex(Indexes.ascending(File.PROPERTY_USER_ID));
-		this.projectFiles.createIndex(Indexes.ascending(File.PROPERTY_PARENT_ID));
 
 		this.projectFilesFS = GridFSBuckets.create(this.database, PROJECT_FILES_COLLECTION_NAME);
 
@@ -209,127 +198,9 @@ public class Mongo
 	public void deleteProject(String id)
 	{
 		this.projects.deleteOne(Filters.eq(Project.PROPERTY_ID, id));
-		final List<String> fileIds = this.projectFiles
-			.find(Filters.eq(File.PROPERTY_PROJECT_ID, id))
-			.projection(Projections.include(File.PROPERTY_ID))
-			.map(File::getId)
-			.into(new ArrayList<>());
-		for (final String fileId : fileIds)
-		{
-			this.deleteRevisions(fileId);
-		}
-		this.projectFiles.deleteMany(Filters.eq(File.PROPERTY_PROJECT_ID, id));
 	}
 
 	// --------------- Files ---------------
-
-	public File getFile(String id)
-	{
-		final File file = this.projectFiles.find(Filters.eq(File.PROPERTY_ID, id)).first();
-		if (file != null)
-		{
-			this.withRevisions(file);
-		}
-		return file;
-	}
-
-	public List<File> getFilesByParent(String parent)
-	{
-		// sort directories first, then by name
-		return this.projectFiles
-			.find(Filters.eq(File.PROPERTY_PARENT_ID, parent))
-			.sort(Sorts.orderBy(Sorts.descending(File.PROPERTY_DIRECTORY), Sorts.ascending(File.PROPERTY_NAME)))
-			.map(this::withRevisions)
-			.into(new ArrayList<>());
-	}
-
-	private File withRevisions(File file)
-	{
-		this.projectFilesFS
-			.find(Filters.eq("filename", file.getId()))
-			.sort(Sorts.ascending("uploadData"))
-			.map(this::toRevision)
-			.into(file.getRevisions());
-		return file;
-	}
-
-	private Revision toRevision(GridFSFile gridFSFile)
-	{
-		final Revision revision = new Revision(gridFSFile.getObjectId().toHexString());
-		revision.setSize(gridFSFile.getLength());
-		revision.setTimestamp(gridFSFile.getUploadDate().toInstant());
-		return revision;
-	}
-
-	public void saveFile(File file)
-	{
-		upsert(this.projectFiles, file, File.PROPERTY_ID, file.getId());
-	}
-
-	public void createManyFiles(List<File> files)
-	{
-		this.projectFiles.insertMany(files);
-	}
-
-	public void deleteFile(String id)
-	{
-		final File file = this.projectFiles.findOneAndDelete(Filters.eq(File.PROPERTY_ID, id));
-		if (file == null)
-		{
-			return;
-		}
-
-		this.deleteRevisions(id);
-
-		if (!file.isDirectory())
-		{
-			return;
-		}
-
-		final List<String> children = this.projectFiles
-			.find(Filters.eq(File.PROPERTY_PARENT_ID, id))
-			.projection(Projections.include(File.PROPERTY_ID))
-			.map(File::getId)
-			.into(new ArrayList<>());
-		for (String child : children)
-		{
-			this.deleteFile(child);
-		}
-	}
-
-	private void deleteRevisions(String id)
-	{
-		final List<BsonValue> fileIds = this.projectFilesFS
-			.find(Filters.eq("filename", id))
-			.map(GridFSFile::getId)
-			.into(new ArrayList<>());
-		for (final BsonValue fileId : fileIds)
-		{
-			this.projectFilesFS.delete(fileId);
-		}
-	}
-
-	private Revision getRevision(ObjectId id)
-	{
-		final GridFSFile gridFSFile = this.projectFilesFS.find(Filters.eq("_id", id)).first();
-		return gridFSFile != null ? this.toRevision(gridFSFile) : null;
-	}
-
-	public OutputStream uploadRevision(String fileId)
-	{
-		return this.projectFilesFS.openUploadStream(fileId);
-	}
-
-	public Revision uploadRevision(String fileId, InputStream input)
-	{
-		final ObjectId id = this.projectFilesFS.uploadFromStream(fileId, input);
-		return this.getRevision(id);
-	}
-
-	public void downloadRevision(String id, OutputStream output)
-	{
-		this.projectFilesFS.downloadToStream(new ObjectId(id), output);
-	}
 
 	public InputStream downloadFile(String name)
 	{
