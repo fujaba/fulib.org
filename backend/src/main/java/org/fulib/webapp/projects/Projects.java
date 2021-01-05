@@ -193,6 +193,7 @@ public class Projects
 		checkAuth(request, project);
 
 		this.mongo.deleteProject(id);
+		this.mongo.deleteFile(project.getId());
 
 		return "{}";
 	}

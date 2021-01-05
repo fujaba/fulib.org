@@ -8,10 +8,12 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSBuckets;
+import com.mongodb.client.gridfs.model.GridFSFile;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.ReplaceOptions;
 import com.mongodb.client.model.Sorts;
+import org.bson.BsonValue;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -210,6 +212,18 @@ public class Mongo
 	public OutputStream uploadFile(String name)
 	{
 		return this.projectFilesFS.openUploadStream(name);
+	}
+
+	public void deleteFile(String name)
+	{
+		final List<BsonValue> fileIds = this.projectFilesFS
+			.find(Filters.eq("filename", name))
+			.map(GridFSFile::getId)
+			.into(new ArrayList<>());
+		for (final BsonValue fileId : fileIds)
+		{
+			this.projectFilesFS.delete(fileId);
+		}
 	}
 
 	// --------------- Assignments ---------------
