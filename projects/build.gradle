@@ -1,0 +1,41 @@
+// --------------- Plugins ---------------
+
+plugins {
+	id 'java'
+	id 'application'
+	// https://plugins.gradle.org/plugin/com.github.johnrengelman.shadow
+	id 'com.github.johnrengelman.shadow' version '5.2.0'
+}
+
+// --------------- Publication Info ---------------
+
+group = 'org.fulib'
+version = "git describe --tags".execute().text[1..-2] // strip v and \n
+description = 'fulib.org projects helper service'
+
+// --------------- General Settings ---------------
+
+mainClassName = 'org.fulib.projects.Service'
+
+shadowJar.archiveClassifier = 'all'
+
+// --------------- Dependencies ---------------
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+	jcenter()
+}
+
+dependencies {
+	// --------------- Other Libraries ---------------
+
+	// https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
+	compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
+
+	// https://mvnrepository.com/artifact/com.sparkjava/spark-core
+	compile group: 'com.sparkjava', name: 'spark-core', version: '2.9.3'
+
+	// https://mvnrepository.com/artifact/org.json/json
+	compile group: 'org.json', name: 'json', version: '20201115'
+}
