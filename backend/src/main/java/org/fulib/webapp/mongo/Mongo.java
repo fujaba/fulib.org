@@ -22,6 +22,7 @@ import org.bson.codecs.pojo.Conventions;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.fulib.webapp.WebService;
 import org.fulib.webapp.assignment.model.*;
+import org.fulib.webapp.projects.model.Container;
 import org.fulib.webapp.projects.model.Project;
 
 import java.io.InputStream;
@@ -42,6 +43,7 @@ public class Mongo
 
 	public static final String LOG_COLLECTION_NAME = "request-log";
 	public static final String PROJECT_COLLECTION_NAME = "projects";
+	public static final String CONTAINER_COLLECTION_NAME = "projectContainers";
 	public static final String PROJECT_FILES_COLLECTION_NAME = "projectFiles";
 	public static final String ASSIGNMENT_COLLECTION_NAME = "assignments";
 	public static final String COURSE_COLLECTION_NAME = "courses";
@@ -73,6 +75,7 @@ public class Mongo
 
 	MongoCollection<Document> requestLog;
 	private MongoCollection<Project> projects;
+	private MongoCollection<Container> containers;
 	private GridFSBucket projectFilesFS;
 	private MongoCollection<Assignment> assignments;
 	private MongoCollection<Course> courses;
@@ -121,6 +124,12 @@ public class Mongo
 		this.projects.createIndex(Indexes.ascending(Project.PROPERTY_ID));
 		this.projects.createIndex(Indexes.ascending(Project.PROPERTY_USER_ID));
 		this.projects.createIndex(Indexes.ascending(Project.PROPERTY_NAME));
+
+		this.containers = this.database
+			.getCollection(CONTAINER_COLLECTION_NAME, Container.class)
+			.withCodecRegistry(this.pojoCodecRegistry);
+		this.containers.createIndex(Indexes.ascending(Container.PROPERTY_ID));
+		this.containers.createIndex(Indexes.ascending(Container.PROPERTY_PROJECT_ID));
 
 		this.projectFilesFS = GridFSBuckets.create(this.database, PROJECT_FILES_COLLECTION_NAME);
 
@@ -200,6 +209,18 @@ public class Mongo
 	public void deleteProject(String id)
 	{
 		this.projects.deleteOne(Filters.eq(Project.PROPERTY_ID, id));
+	}
+
+	// --------------- Containers ---------------
+
+	public Container getContainerForProject(String projectId)
+	{
+		return this.containers.find(Filters.eq(Container.PROPERTY_PROJECT_ID, projectId)).first();
+	}
+
+	public void saveContainer(Container container)
+	{
+		upsert(this.containers, container, Container.PROPERTY_ID, container.getId());
 	}
 
 	// --------------- Files ---------------

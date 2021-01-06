@@ -4,6 +4,8 @@ import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.fulib.webapp.mongo.Mongo;
+import org.fulib.webapp.projects.docker.ContainerManager;
+import org.fulib.webapp.projects.model.Container;
 import org.fulib.webapp.projects.model.Project;
 import org.fulib.webapp.projectzip.ProjectData;
 import org.fulib.webapp.projectzip.ProjectGenerator;
@@ -28,10 +30,12 @@ public class Projects
 	private static final String AUTH_MESSAGE = "{\n  \"error\": \"token user ID does not match ID of project\"\n}\n";
 
 	private final Mongo mongo;
+	private final ContainerManager containerManager;
 
 	public Projects(Mongo mongo)
 	{
 		this.mongo = mongo;
+		this.containerManager = new ContainerManager(mongo);
 	}
 
 	public Object get(Request request, Response response)
@@ -186,5 +190,31 @@ public class Projects
 		this.mongo.deleteFile(project.getId());
 
 		return "{}";
+	}
+
+	public Object getContainer(Request request, Response response)
+	{
+		final String id = request.params("projectId");
+		final Project project = getOr404(this.mongo, id);
+		checkAuth(request, project);
+
+		Container container = this.mongo.getContainerForProject(id);
+		if (container == null)
+		{
+			container = this.containerManager.start(project);
+			this.mongo.saveContainer(container);
+		}
+
+		final JSONObject json = toJson(container);
+		return json.toString(2);
+	}
+
+	private JSONObject toJson(Container container)
+	{
+		final JSONObject json = new JSONObject();
+		json.put(Container.PROPERTY_ID, container.getId());
+		json.put(Container.PROPERTY_URL, container.getUrl());
+		json.put(Container.PROPERTY_PROJECT_ID, container.getProjectId());
+		return json;
 	}
 }

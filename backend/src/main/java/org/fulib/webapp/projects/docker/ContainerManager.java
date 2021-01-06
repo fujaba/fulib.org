@@ -15,6 +15,7 @@ import com.github.dockerjava.transport.DockerHttpClient;
 import com.mongodb.MongoGridFSException;
 import org.apache.commons.io.IOUtils;
 import org.fulib.webapp.mongo.Mongo;
+import org.fulib.webapp.projects.model.Container;
 import org.fulib.webapp.projects.model.Project;
 
 import java.io.IOException;
@@ -29,62 +30,31 @@ public class ContainerManager
 	private static final String PROJECTS_DIR = "/projects/";
 
 	private final Mongo mongo;
-	private final Project project;
 
-	private DockerClient dockerClient;
-	private String containerId;
-	private String containerAddress;
+	private final DockerClient dockerClient;
 
-	public ContainerManager(Mongo mongo, Project project)
+	public ContainerManager(Mongo mongo)
 	{
 		this.mongo = mongo;
-		this.project = project;
-	}
 
-	public Project getProject()
-	{
-		return project;
-	}
-
-	public DockerClient getDockerClient()
-	{
-		return dockerClient;
-	}
-
-	public String getContainerId()
-	{
-		return containerId;
-	}
-
-	public String getContainerAddress()
-	{
-		return containerAddress;
-	}
-
-	public String getProjectDir()
-	{
-		return PROJECTS_DIR + project.getId() + "/";
-	}
-
-	public void start()
-	{
 		final DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder().build();
 		final DockerHttpClient httpClient = new ApacheDockerHttpClient.Builder()
 			.dockerHost(config.getDockerHost())
 			.sslConfig(config.getSSLConfig())
 			.build();
 		dockerClient = DockerClientImpl.getInstance(config, httpClient);
-
-		this.runContainer();
-
-		this.downloadFilesToContainer();
 	}
 
-	private void runContainer()
+	public Container start(Project project)
 	{
-		final CreateContainerCmd cmd = dockerClient
-			.createContainerCmd("fulib/projects")
-			.withTty(true);
+		final Container container = this.runContainer(project);
+		this.downloadFilesToContainer(container);
+		return container;
+	}
+
+	private Container runContainer(Project project)
+	{
+		final CreateContainerCmd cmd = dockerClient.createContainerCmd("fulib/projects").withTty(true);
 
 		final boolean linux = System.getProperty("os.name", "generic").toUpperCase(Locale.ROOT).contains("NUX");
 		if (!linux)
@@ -92,16 +62,15 @@ public class ContainerManager
 			cmd.withPublishAllPorts(true);
 		}
 
-		containerId = cmd
-			.exec()
-			.getId();
+		final String containerId = cmd.exec().getId();
 		dockerClient.startContainerCmd(containerId).exec();
 
+		final String containerAddress;
 		final InspectContainerResponse inspectResponse = dockerClient.inspectContainerCmd(containerId).exec();
 		final NetworkSettings networkSettings = inspectResponse.getNetworkSettings();
 		if (linux)
 		{
-			containerAddress = networkSettings.getIpAddress();
+			containerAddress = "http://" + networkSettings.getIpAddress();
 		}
 		else
 		{
@@ -109,20 +78,26 @@ public class ContainerManager
 			if (bindings != null && bindings.length > 0)
 			{
 				final Ports.Binding binding = bindings[0];
-				containerAddress = binding.getHostIp() + ":" + binding.getHostPortSpec();
+				containerAddress = "http://" + binding.getHostIp() + ":" + binding.getHostPortSpec();
 			}
 			else
 			{
 				containerAddress = null;
 			}
 		}
+
+		final Container container = new Container();
+		container.setId(containerId);
+		container.setProjectId(project.getId());
+		container.setUrl(containerAddress);
+		return container;
 	}
 
-	private void createProjectDir()
+	private void createProjectDir(Container container)
 	{
 		final String mkdirExecId = dockerClient
-			.execCreateCmd(containerId)
-			.withCmd("mkdir", "-p", getProjectDir())
+			.execCreateCmd(container.getId())
+			.withCmd("mkdir", "-p", PROJECTS_DIR + container.getProjectId())
 			.exec()
 			.getId();
 
@@ -137,18 +112,18 @@ public class ContainerManager
 		}
 	}
 
-	private void downloadFilesToContainer()
+	private void downloadFilesToContainer(Container container)
 	{
-		this.createProjectDir();
+		this.createProjectDir(container);
 
 		try (
-			final InputStream downloadStream = this.mongo.downloadFile(project.getId());
+			final InputStream downloadStream = this.mongo.downloadFile(container.getProjectId());
 			final GZIPInputStream gzipInputStream = new GZIPInputStream(downloadStream)
 		)
 		{
 			dockerClient
-				.copyArchiveToContainerCmd(containerId)
-				.withRemotePath(getProjectDir())
+				.copyArchiveToContainerCmd(container.getId())
+				.withRemotePath(PROJECTS_DIR + container.getProjectId() + "/")
 				.withTarInputStream(gzipInputStream)
 				.exec();
 		}
@@ -159,12 +134,12 @@ public class ContainerManager
 		}
 	}
 
-	public void stop()
+	public void stop(Container container)
 	{
-		this.uploadFilesFromContainer();
+		this.uploadFilesFromContainer(container);
 
-		this.dockerClient.stopContainerCmd(this.containerId).exec();
-		this.dockerClient.removeContainerCmd(this.containerId).exec();
+		this.dockerClient.stopContainerCmd(container.getId()).exec();
+		this.dockerClient.removeContainerCmd(container.getId()).exec();
 		try
 		{
 			this.dockerClient.close();
@@ -176,13 +151,14 @@ public class ContainerManager
 		}
 	}
 
-	private void uploadFilesFromContainer()
+	private void uploadFilesFromContainer(Container container)
 	{
+		final String projectId = container.getProjectId();
 		try (
 			final InputStream tarInputStream = dockerClient
-				.copyArchiveFromContainerCmd(containerId, getProjectDir() + ".")
+				.copyArchiveFromContainerCmd(container.getId(), PROJECTS_DIR + projectId + "/.")
 				.exec();
-			final OutputStream uploadStream = this.mongo.uploadFile(project.getId());
+			final OutputStream uploadStream = this.mongo.uploadFile(projectId);
 			final GZIPOutputStream gzipOutputStream = new GZIPOutputStream(uploadStream)
 		)
 		{
