@@ -24,9 +24,7 @@ export class ProjectService {
   }
 
   get(id: string): Observable<Project> {
-    return this.http.get<Project>(`${environment.apiURL}/projects/${id}`, {
-      headers: {'Content-Type': 'application/json'},
-    });
+    return this.http.get<Project>(`${environment.apiURL}/projects/${id}`);
   }
 
   update(project: Project): Observable<Project> {
@@ -43,7 +41,6 @@ export class ProjectService {
         return of([]);
       }
       return this.http.get<Project[]>(`${environment.apiURL}/projects`, {
-        headers: {'Content-Type': 'application/json'},
         params: {userId: user.id},
       });
     }));
