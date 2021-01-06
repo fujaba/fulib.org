@@ -10,8 +10,10 @@ import {Container} from '../model/container';
 import {File} from '../model/file';
 import {Project} from '../model/project';
 import {ProjectTreeComponent} from '../project-tree/project-tree.component';
+import {ProjectManager} from '../project.manager';
 import {ProjectService} from '../project.service';
 import {SettingsComponent} from '../settings/settings.component';
+import {TerminalComponent} from '../terminal/terminal.component';
 
 interface SidebarItem {
   component: Type<any>;
@@ -27,6 +29,7 @@ interface SidebarItem {
 export class ProjectWorkspaceComponent implements OnInit {
   project: Project;
   container: Container;
+  projectManager: ProjectManager;
   fileRoot: File;
 
   @ViewChild('fileTabs') fileTabs: FileTabsComponent;
@@ -36,6 +39,8 @@ export class ProjectWorkspaceComponent implements OnInit {
   injector: Injector;
 
   active?: string = 'project';
+
+  terminalComponent?: typeof TerminalComponent;
 
   constructor(
     parentInjector: Injector,
@@ -50,6 +55,7 @@ export class ProjectWorkspaceComponent implements OnInit {
         {provide: FILE_ROOT, useFactory: () => this.fileRoot},
         {provide: Project, useFactory: () => this.project},
         {provide: Container, useFactory: () => this.container},
+        {provide: ProjectManager, useFactory: () => this.projectManager},
       ],
     });
   }
@@ -60,10 +66,17 @@ export class ProjectWorkspaceComponent implements OnInit {
         this.projectService.get(params.id).pipe(tap(project => this.project = project)),
         this.projectService.getContainer(params.id).pipe(tap(container => this.container = container)),
       ])),
+      tap(([project, container]) => {
+        this.projectManager?.destroy();
+        this.projectManager = new ProjectManager(project, container);
+
+        this.sidebarItems.settings = {name: 'Settings', icon: 'gear', component: SettingsComponent};
+        this.terminalComponent = TerminalComponent;
+      }),
       switchMap(([project]) => this.fileService.get(project.id, project.rootFileId)),
       tap(rootFile => this.fileRoot = rootFile),
     ).subscribe(_ => {
-      this.initSidebar();
+      this.sidebarItems.project = {name: 'Project', icon: 'code-square', component: ProjectTreeComponent};
 
       if (!this.fileRoot.data) {
         this.fileRoot.data = {};
@@ -75,12 +88,5 @@ export class ProjectWorkspaceComponent implements OnInit {
         },
       });
     });
-  }
-
-  private initSidebar() {
-    this.sidebarItems = {
-      project: {name: 'Project', icon: 'code-square', component: ProjectTreeComponent},
-      settings: {name: 'Settings', icon: 'gear', component: SettingsComponent},
-    };
   }
 }

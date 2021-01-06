@@ -1,9 +1,8 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NgTerminal} from 'ng-terminal';
-import {BehaviorSubject, EMPTY, Observable} from 'rxjs';
-import {filter, map, switchMap, tap} from 'rxjs/operators';
-import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
-import {Container} from '../model/container';
+import {Observable} from 'rxjs';
+import {filter, map, tap} from 'rxjs/operators';
+import {ProjectManager} from '../project.manager';
 
 @Component({
   selector: 'app-terminal',
@@ -13,38 +12,17 @@ import {Container} from '../model/container';
 export class TerminalComponent implements OnInit, OnDestroy {
   @ViewChild('term', {static: true}) terminal: NgTerminal;
 
-  container$ = new BehaviorSubject<Container | undefined>(undefined);
   output$: Observable<string>;
 
   process?: string;
 
-  wss: WebSocketSubject<any>;
-
   constructor(
+    private projectManager: ProjectManager,
   ) {
   }
 
-  get container(): Container | undefined {
-    return this.container$.getValue();
-  }
-
-  @Input()
-  set container(container: Container | undefined) {
-    this.container$.next(container);
-  }
-
   ngOnInit(): void {
-    this.output$ = this.container$.pipe(
-      switchMap(container => {
-        if (container) {
-          const url = container.url.startsWith('http') ? `ws${container.url.substring(4)}/ws` : `${container.url}/ws`;
-          this.wss = webSocket<any>(url);
-          this.wss.next({command: 'exec', cmd: ['/bin/bash']});
-          return this.wss.asObservable();
-        } else {
-          return EMPTY;
-        }
-      }),
+    this.output$ = this.projectManager.exec(['/bin/bash']).pipe(
       tap(message => {
         if (message.process) {
           this.process = message.process;
@@ -55,14 +33,12 @@ export class TerminalComponent implements OnInit, OnDestroy {
     );
 
     this.terminal.keyEventInput.subscribe(e => {
-      if (e.key) {
-        this.wss.next({command: 'input', text: e.key, process: this.process});
+      if (e.key && this.process) {
+        this.projectManager.input(e.key, this.process);
       }
     });
   }
 
   ngOnDestroy(): void {
-    this.container = undefined;
-    this.container$.unsubscribe();
   }
 }
