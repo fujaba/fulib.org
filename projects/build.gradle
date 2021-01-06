@@ -36,6 +36,9 @@ dependencies {
 	// https://mvnrepository.com/artifact/com.sparkjava/spark-core
 	compile group: 'com.sparkjava', name: 'spark-core', version: '2.9.3'
 
+	// https://mvnrepository.com/artifact/org.jetbrains.pty4j/pty4j
+	compile group: 'org.jetbrains.pty4j', name: 'pty4j', version: '0.11.3'
+
 	// https://mvnrepository.com/artifact/org.json/json
 	compile group: 'org.json', name: 'json', version: '20201115'
 }

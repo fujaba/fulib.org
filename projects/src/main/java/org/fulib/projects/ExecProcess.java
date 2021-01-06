@@ -38,8 +38,8 @@ public class ExecProcess extends Thread
 	{
 		try
 		{
-			final ProcessBuilder processBuilder = new ProcessBuilder(cmd);
-			processBuilder.redirectErrorStream(true);
+			final PtyProcessBuilder processBuilder = new PtyProcessBuilder(cmd);
+			processBuilder.setRedirectErrorStream(true);
 			process = processBuilder.start();
 
 			final JSONObject startedEvent = new JSONObject();
