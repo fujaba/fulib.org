@@ -1,11 +1,9 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {KeycloakService} from 'keycloak-angular';
 import {NgTerminal} from 'ng-terminal';
 import {BehaviorSubject, EMPTY, Observable} from 'rxjs';
-import {fromPromise} from 'rxjs/internal-compatibility';
-import {filter, map, switchMap, tap, withLatestFrom} from 'rxjs/operators';
+import {filter, map, switchMap, tap} from 'rxjs/operators';
 import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
-import {Project} from '../model/project';
+import {Container} from '../model/container';
 
 @Component({
   selector: 'app-terminal',
@@ -15,7 +13,7 @@ import {Project} from '../model/project';
 export class TerminalComponent implements OnInit, OnDestroy {
   @ViewChild('term', {static: true}) terminal: NgTerminal;
 
-  project$ = new BehaviorSubject<Project | undefined>(undefined);
+  container$ = new BehaviorSubject<Container | undefined>(undefined);
   output$: Observable<string>;
 
   process?: string;
@@ -23,25 +21,24 @@ export class TerminalComponent implements OnInit, OnDestroy {
   wss: WebSocketSubject<any>;
 
   constructor(
-    private keycloakService: KeycloakService,
   ) {
   }
 
-  get project(): Project | undefined {
-    return this.project$.getValue();
+  get container(): Container | undefined {
+    return this.container$.getValue();
   }
 
   @Input()
-  set project(project: Project | undefined) {
-    this.project$.next(project);
+  set container(container: Container | undefined) {
+    this.container$.next(container);
   }
 
   ngOnInit(): void {
-    this.output$ = this.project$.pipe(
-      withLatestFrom(fromPromise(this.keycloakService.getToken())),
-      switchMap(([project, token]) => {
-        if (project) {
-          this.wss = webSocket<any>(`ws://localhost:4567/ws/projects/${project.id}?token=${token}`);
+    this.output$ = this.container$.pipe(
+      switchMap(container => {
+        if (container) {
+          const url = container.url.startsWith('http') ? `ws${container.url.substring(4)}/ws` : `${container.url}/ws`;
+          this.wss = webSocket<any>(url);
           this.wss.next({command: 'exec', cmd: ['/bin/bash']});
           return this.wss.asObservable();
         } else {
@@ -98,7 +95,7 @@ export class TerminalComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.project = undefined;
-    this.project$.unsubscribe();
+    this.container = undefined;
+    this.container$.unsubscribe();
   }
 }

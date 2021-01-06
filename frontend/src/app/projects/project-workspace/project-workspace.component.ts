@@ -1,10 +1,12 @@
 import {Component, Injector, OnInit, Type, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import {forkJoin} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
 
 import {FileTabsComponent} from '../file-tabs/file-tabs.component';
 import {FileService} from '../file.service';
 import {FILE_ROOT} from '../injection-tokens';
+import {Container} from '../model/container';
 import {File} from '../model/file';
 import {Project} from '../model/project';
 import {ProjectTreeComponent} from '../project-tree/project-tree.component';
@@ -24,6 +26,7 @@ interface SidebarItem {
 })
 export class ProjectWorkspaceComponent implements OnInit {
   project: Project;
+  container: Container;
   fileRoot: File;
 
   @ViewChild('fileTabs') fileTabs: FileTabsComponent;
@@ -46,15 +49,18 @@ export class ProjectWorkspaceComponent implements OnInit {
       providers: [
         {provide: FILE_ROOT, useFactory: () => this.fileRoot},
         {provide: Project, useFactory: () => this.project},
+        {provide: Container, useFactory: () => this.container},
       ],
     });
   }
 
   ngOnInit(): void {
     this.route.params.pipe(
-      switchMap(params => this.projectService.get(params.id)),
-      tap(project => this.project = project),
-      switchMap(project => this.fileService.get(project.id, project.rootFileId)),
+      switchMap(params => forkJoin([
+        this.projectService.get(params.id).pipe(tap(project => this.project = project)),
+        this.projectService.getContainer(params.id).pipe(tap(container => this.container = container)),
+      ])),
+      switchMap(([project]) => this.fileService.get(project.id, project.rootFileId)),
       tap(rootFile => this.fileRoot = rootFile),
     ).subscribe(_ => {
       this.initSidebar();
@@ -65,7 +71,8 @@ export class ProjectWorkspaceComponent implements OnInit {
       this.fileRoot.data.info = 'project root';
       Object.defineProperty(this.fileRoot, 'name', {
         get: () => this.project.name,
-        set: () => {},
+        set: () => {
+        },
       });
     });
   }

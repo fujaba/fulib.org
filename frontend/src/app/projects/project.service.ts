@@ -6,6 +6,7 @@ import {switchMap} from 'rxjs/operators';
 
 import {environment} from '../../environments/environment';
 import {UserService} from '../user/user.service';
+import {Container} from './model/container';
 import {Project, ProjectStub} from './model/project';
 
 @Injectable({
@@ -33,6 +34,10 @@ export class ProjectService {
 
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${environment.apiURL}/projects/${id}`);
+  }
+
+  getContainer(projectId: string): Observable<Container> {
+    return this.http.get<Container>(`${environment.apiURL}/projects/${projectId}/container`);
   }
 
   getOwn(): Observable<Project[]> {
