@@ -55,43 +55,10 @@ export class TerminalComponent implements OnInit, OnDestroy {
     );
 
     this.terminal.keyEventInput.subscribe(e => {
-      const ev = e.domEvent;
-      const text = this.getInput(ev);
-      if (text) {
-        this.wss.next({command: 'input', text, process: this.process});
+      if (e.key) {
+        this.wss.next({command: 'input', text: e.key, process: this.process});
       }
     });
-  }
-
-  getInput(ev: KeyboardEvent): string | undefined {
-    switch (ev.code) {
-      case 'Enter':
-        return '\n';
-      case 'Backspace':
-        return '\b';
-      case 'Tab':
-        return '\t';
-      case 'Delete':
-        return '\x1b[3~';
-      case 'ArrowUp':
-        return '\x1b[A';
-      case 'ArrowDown':
-        return '\x1b[B';
-      case 'ArrowRight':
-        return '\x1b[C';
-      case 'ArrowLeft':
-        return '\x1b[D';
-      default:
-        if (ev.altKey || ev.metaKey || ev.key.length !== 1) {
-          return undefined;
-        }
-        if (ev.ctrlKey) {
-          const code = ev.key.charCodeAt(0) - (ev.shiftKey ? 65 /* A */ : 97 /* a */) + 1;
-          return String.fromCharCode(code);
-        }
-        return ev.key;
-    }
-    return undefined;
   }
 
   ngOnDestroy(): void {
