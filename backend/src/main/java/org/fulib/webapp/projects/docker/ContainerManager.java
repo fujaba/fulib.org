@@ -20,8 +20,6 @@ import org.fulib.webapp.projects.model.Project;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -36,8 +34,6 @@ public class ContainerManager
 	private DockerClient dockerClient;
 	private String containerId;
 	private String containerAddress;
-
-	private List<ContainerProcess> processes = new ArrayList<>();
 
 	public ContainerManager(Mongo mongo, Project project)
 	{
@@ -163,21 +159,8 @@ public class ContainerManager
 		}
 	}
 
-	public String exec(String[] cmd, InputStream input, OutputStream output)
-	{
-		return this.exec(new ContainerProcess(this, cmd, input, output));
-	}
-
-	public String exec(ContainerProcess process)
-	{
-		this.processes.add(process);
-		return process.start();
-	}
-
 	public void stop()
 	{
-		this.processes.forEach(ContainerProcess::stop);
-
 		this.uploadFilesFromContainer();
 
 		this.dockerClient.stopContainerCmd(this.containerId).exec();

@@ -2,17 +2,8 @@ package org.fulib.webapp.projects;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
-import org.apache.commons.io.output.WriterOutputStream;
-import org.eclipse.jetty.websocket.api.Session;
-import org.eclipse.jetty.websocket.api.UpgradeRequest;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.fulib.webapp.mongo.Mongo;
-import org.fulib.webapp.projects.docker.ContainerManager;
-import org.fulib.webapp.projects.docker.FileEventManager;
-import org.fulib.webapp.projects.docker.FileWatcherProcess;
 import org.fulib.webapp.projects.model.Project;
 import org.fulib.webapp.projectzip.ProjectData;
 import org.fulib.webapp.projectzip.ProjectGenerator;
@@ -24,12 +15,11 @@ import spark.Request;
 import spark.Response;
 import spark.Spark;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.time.Instant;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.GZIPOutputStream;
 
 @WebSocket
@@ -196,115 +186,5 @@ public class Projects
 		this.mongo.deleteFile(project.getId());
 
 		return "{}";
-	}
-
-	private final Map<Session, ContainerManager> managers = new ConcurrentHashMap<>();
-	private final Map<Session, Map<String, PipedOutputStream>> inputPipes = new ConcurrentHashMap<>();
-
-	@OnWebSocketConnect
-	public void connected(Session session) throws IOException
-	{
-		final UpgradeRequest request = session.getUpgradeRequest();
-		final String requestPath = request.getRequestURI().getPath();
-		if (!requestPath.startsWith("/ws/projects/"))
-		{
-			session.close(400, "{\"error\": \"URL path must have the format '/ws/projects/:id'\"}");
-			return;
-		}
-
-		final String projectId = requestPath.substring("/ws/projects/".length());
-		final Project project = this.mongo.getProject(projectId);
-		if (project == null)
-		{
-			session.close(404, notFoundMessage(projectId));
-			return;
-		}
-
-		final List<String> token = request.getParameterMap().get("token");
-		if (token == null || token.isEmpty())
-		{
-			session.close(400, "{\"error\": \"missing token query parameter\"}");
-			return;
-		}
-
-		final String authHeader = "bearer " + token.get(0);
-		final String userId = Authenticator.getUserId(authHeader);
-		if (!project.getUserId().equals(userId))
-		{
-			session.close(401, AUTH_MESSAGE);
-			return;
-		}
-
-		final ContainerManager manager = new ContainerManager(this.mongo, project);
-		this.managers.put(session, manager);
-		manager.start();
-
-		final JSONObject event = new JSONObject();
-		event.put("event", "containerStarted");
-		event.put("id", manager.getContainerId());
-		event.put("address", manager.getContainerAddress());
-		session.getRemote().sendString(event.toString());
-
-		manager.exec(new FileWatcherProcess(manager, new FileEventManager(session)));
-	}
-
-	@OnWebSocketMessage
-	public void message(Session session, String message) throws IOException
-	{
-		final JSONObject json = new JSONObject(message);
-		final String command = json.getString("command");
-
-		switch (command)
-		{
-		case "exec":
-		{
-			final String[] cmd = json.getJSONArray("cmd").toList().toArray(new String[0]);
-			final ContainerManager manager = this.managers.get(session);
-
-			final PipedOutputStream inputPipe = new PipedOutputStream();
-			final InputStream input = new PipedInputStream(inputPipe);
-			final SessionOutputWriter writer = new SessionOutputWriter(session);
-			final OutputStream output = new WriterOutputStream(writer, StandardCharsets.UTF_8, 1024, true);
-
-			final String execId = manager.exec(cmd, input, output);
-			writer.execId = execId;
-			this.inputPipes.computeIfAbsent(session, s -> new ConcurrentHashMap<>()).put(execId, inputPipe);
-
-			final JSONObject processObj = new JSONObject();
-			processObj.put("event", "started");
-			processObj.put("process", execId);
-			session.getRemote().sendString(processObj.toString());
-			return;
-		}
-		case "input":
-		{
-			final String input = json.getString("text");
-			final String execId = json.getString("process");
-			final Map<String, PipedOutputStream> map = this.inputPipes.get(session);
-			if (map != null)
-			{
-				final OutputStream pipedOutputStream = map.get(execId);
-				if (pipedOutputStream != null)
-				{
-					pipedOutputStream.write(input.getBytes(StandardCharsets.UTF_8));
-				}
-			}
-			return;
-		}
-		default:
-			session.getRemote().sendString(new JSONObject().put("error", "invalid command: " + command).toString());
-			return;
-		}
-	}
-
-	@OnWebSocketClose
-	public void closed(Session session, int statusCode, String reason)
-	{
-		this.inputPipes.remove(session);
-		final ContainerManager executor = this.managers.remove(session);
-		if (executor != null)
-		{
-			executor.stop();
-		}
 	}
 }

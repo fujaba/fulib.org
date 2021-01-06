@@ -99,8 +99,6 @@ public class WebService
 
 		new File(this.runCodeGen.getTempDir()).mkdirs();
 
-		service.webSocket("/ws/projects/*", this.projects);
-
 		service.staticFiles.externalLocation(this.runCodeGen.getTempDir());
 		service.staticFiles.expireTime(60 * 60);
 
