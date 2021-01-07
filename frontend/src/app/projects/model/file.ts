@@ -1,18 +1,7 @@
-import {Revision} from './revision';
+export class File {
+  path: string;
 
-export class FileStub {
-  projectId: string;
-  parentId: string;
-  name: string;
-  directory: boolean;
-}
-
-export class File extends FileStub {
-  id: string;
-  userId: string;
-
-  created: Date;
-  revisions: Revision[];
+  modified: Date;
 
   data?: {
     content?: string;
@@ -21,6 +10,26 @@ export class File extends FileStub {
     parent?: File;
     children?: File[];
   };
+
+  get _namePos(): [number, number] {
+    const end = this.path.length - (this.directory ? 1 : 0);
+    const start = this.path.lastIndexOf('/', end - 1) + 1;
+    return [start, end];
+  }
+
+  get parentPath(): string {
+    const [start] = this._namePos;
+    return this.path.substring(0, start);
+  }
+
+  get name(): string {
+    const [start, end] = this._namePos;
+    return this.path.substring(start, end);
+  }
+
+  get directory(): boolean {
+    return this.path.endsWith('/');
+  }
 
   static compare(a: File, b: File): number {
     if (a.directory && !b.directory) {

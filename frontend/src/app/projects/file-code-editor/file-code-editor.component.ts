@@ -3,6 +3,7 @@ import {Subscription} from 'rxjs';
 import {filter} from 'rxjs/operators';
 import {FileTypeService} from '../file-type.service';
 import {FileManager} from '../file.manager';
+import {Container} from '../model/container';
 import {File} from '../model/file';
 
 @Component({
@@ -28,6 +29,7 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
   };
 
   constructor(
+    private container: Container,
     private fileManager: FileManager,
     private fileTypeService: FileTypeService,
   ) {
@@ -58,8 +60,7 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
   }
 
   save() {
-    this.fileManager.saveContent(this.file).subscribe(() => {
-    });
+    this.fileManager.saveContent(this.container, this.file).subscribe();
   }
 
   setContent(content: string) {

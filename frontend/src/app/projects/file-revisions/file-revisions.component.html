@@ -1,4 +1,4 @@
-<ng-container [ngTemplateOutlet]="file ? (file.revisions.length > 0 ? table : noRevisions) : noFile"></ng-container>
+<ng-container [ngTemplateOutlet]="file ? (false ? table : noRevisions) : noFile"></ng-container>
 <ng-template #table>
   <table>
     <tr>
@@ -6,7 +6,7 @@
       <th>Timestamp</th>
       <th>Size</th>
     </tr>
-    <tr *ngFor="let revision of file!.revisions; let index = index">
+    <tr *ngFor="let revision of []; let index = index">
       <td>
         {{index}}
       </td>

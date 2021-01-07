@@ -32,8 +32,6 @@ export class ProjectWorkspaceComponent implements OnInit {
   projectManager: ProjectManager;
   fileRoot: File;
 
-  @ViewChild('fileTabs') fileTabs: FileTabsComponent;
-
   sidebarItems: Record<string, SidebarItem> = {};
 
   injector: Injector;
@@ -41,6 +39,7 @@ export class ProjectWorkspaceComponent implements OnInit {
   active ? = 'project';
 
   terminalComponent?: typeof TerminalComponent;
+  fileTabsComponent?: typeof FileTabsComponent;
 
   constructor(
     parentInjector: Injector,
@@ -72,8 +71,9 @@ export class ProjectWorkspaceComponent implements OnInit {
 
         this.sidebarItems.settings = {name: 'Settings', icon: 'gear', component: SettingsComponent};
         this.terminalComponent = TerminalComponent;
+        this.fileTabsComponent = FileTabsComponent;
       }),
-      switchMap(([project]) => this.fileService.get(project.id, project.rootFileId)),
+      switchMap(([project, container]) => this.fileService.get(container, `/projects/${project.id}/`)),
       tap(rootFile => this.fileRoot = rootFile),
     ).subscribe(_ => {
       this.sidebarItems.project = {name: 'Project', icon: 'code-square', component: ProjectTreeComponent};

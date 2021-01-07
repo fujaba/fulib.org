@@ -6,15 +6,15 @@
 >
   <div class="file-item-indent" [style.margin-left.em]="level - 0.5">
     <app-file-icon class="mr-2" [file]="file" [open]="expanded"></app-file-icon>
-    <input *ngIf="oldName"
+    <input *ngIf="newName !== undefined"
            #nameInput
            type="text" class="name-input flex-grow-1" aria-label="New Name"
            (click)="$event.stopImmediatePropagation()"
            (change)="finishRenaming()"
            (keyup.escape)="cancelRenaming()"
-           [(ngModel)]="file.name"
+           [(ngModel)]="newName"
     >
-    <div *ngIf="!oldName" class="flex-grow-1" [class.dirty]="file.data?.dirty">
+    <div *ngIf="newName === undefined" class="flex-grow-1" [class.dirty]="file.data?.dirty">
       {{file.name}}
       <span class="text-muted" *ngIf="file.data?.info">
         {{file.data?.info}}

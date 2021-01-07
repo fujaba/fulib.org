@@ -2,6 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
 import {Subscription} from 'rxjs';
 import {FileManager} from '../file.manager';
+import {Container} from '../model/container';
 import {File} from '../model/file';
 import {FileEditor} from '../model/file-editor';
 
@@ -17,6 +18,7 @@ export class FileTabsComponent implements OnInit, OnDestroy {
   subscription = new Subscription();
 
   constructor(
+    private container: Container,
     private fileManager: FileManager,
   ) {
   }
@@ -38,7 +40,7 @@ export class FileTabsComponent implements OnInit, OnDestroy {
   }
 
   open(editor: FileEditor) {
-    this.fileManager.getContent(editor.file).subscribe(() => {
+    this.fileManager.getContent(this.container, editor.file).subscribe(() => {
     });
 
     const existing = this.openEditors.find(e => editor.file === e.file && !!editor.preview === !!e.preview);

@@ -1,9 +1,9 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import {environment} from '../../environments/environment';
-import {File, FileStub} from './model/file';
-import {Revision} from './model/revision';
+import {map} from 'rxjs/operators';
+import {Container} from './model/container';
+import {File} from './model/file';
 
 @Injectable({
   providedIn: 'root',
@@ -15,31 +15,77 @@ export class FileService {
   ) {
   }
 
-  create(file: FileStub): Observable<File> {
-    return this.http.post<File>(`${environment.apiURL}/projects/${file.projectId}/files`, file);
+  private toFile(doc: Document): File {
+    const file = new File();
+    const responseNode = doc.createExpression('/D:multistatus/D:response[1]', () => 'DAV:')
+      .evaluate(doc, XPathResult.FIRST_ORDERED_NODE_TYPE).singleNodeValue;
+    if (responseNode) {
+      this.copyToFile(doc, responseNode, file);
+    }
+    return file;
   }
 
-  get(projectId: string, id: string): Observable<File> {
-    return this.http.get<File>(`${environment.apiURL}/projects/${projectId}/files/${id}`);
+  private toChildFiles(doc: Document): File[] {
+    const responseNodes = doc.createExpression('/D:multistatus/D:response', () => 'DAV:')
+      .evaluate(doc, XPathResult.ORDERED_NODE_ITERATOR_TYPE);
+
+    const children: File[] = [];
+    responseNodes.iterateNext();
+    let responseNode = responseNodes.iterateNext();
+    while (responseNode) {
+      const file = new File();
+      this.copyToFile(doc, responseNode, file);
+      children.push(file);
+      responseNode = responseNodes.iterateNext();
+    }
+
+    return children;
   }
 
-  getChildren(projectId: string, parentId: string): Observable<File[]> {
-    return this.http.get<File[]>(`${environment.apiURL}/projects/${projectId}/files`, {params: {parentId}});
+  private copyToFile(doc: Document, responseNode: Node, file: File): void {
+    const href = doc.evaluate('./D:href/text()', responseNode, () => 'DAV:', XPathResult.STRING_TYPE).stringValue;
+    file.path = href.substring('/dav'.length);
+    const modified = doc.createExpression('./D:propstat/D:prop/D:getlastmodified/text()', () => 'DAV:')
+      .evaluate(responseNode, XPathResult.STRING_TYPE).stringValue;
+    file.modified = new Date(modified);
   }
 
-  update(file: File): Observable<File> {
-    return this.http.put<File>(`${environment.apiURL}/projects/${file.projectId}/files/${file.id}`, {...file, data: undefined});
+  createDirectory(container: Container, path: string): Observable<void> {
+    return this.http.request<void>('MKCOL', `${container.url}/dav/${path}`);
   }
 
-  delete(projectId: string, id: string): Observable<void> {
-    return this.http.delete<void>(`${environment.apiURL}/projects/${projectId}/files/${id}`);
+  get(container: Container, path: string): Observable<File> {
+    return this.http.request('PROPFIND', `${container.url}/dav/${path}`, {responseType: 'text'}).pipe(
+      map(text => new DOMParser().parseFromString(text, 'text/xml')),
+      map(document => this.toFile(document)),
+    );
   }
 
-  download(file: File, revision: Revision): Observable<string> {
-    return this.http.get(`${environment.apiURL}/projects/${file.projectId}/files/${file.id}/revisions/${revision.id}`, {responseType: 'text'});
+  getChildren(container: Container, path: string): Observable<File[]> {
+    return this.http.request('PROPFIND', `${container.url}/dav/${path}`, {
+      responseType: 'text',
+      headers: {Depth: '1'},
+    }).pipe(
+      map(text => new DOMParser().parseFromString(text, 'text/xml')),
+      map(doc => this.toChildFiles(doc)),
+    );
   }
 
-  upload(file: File, content: string): Observable<Revision> {
-    return this.http.post<Revision>(`${environment.apiURL}/projects/${file.projectId}/files/${file.id}/revisions`, content);
+  delete(container: Container, path: string): Observable<void> {
+    return this.http.delete<void>(`${container.url}/dav/${path}`);
+  }
+
+  move(container: Container, from: string, to: string): Observable<void> {
+    return this.http.request<void>('MOVE', `${container.url}/dav/${from}`, {
+      headers: {Destination: `${container.url}/dav/${to}`},
+    });
+  }
+
+  download(container: Container, path: string): Observable<string> {
+    return this.http.get(`${container.url}/dav/${path}`, {responseType: 'text'});
+  }
+
+  upload(container: Container, path: string, content: string): Observable<void> {
+    return this.http.put<void>(`${container.url}/dav/${path}`, content);
   }
 }
