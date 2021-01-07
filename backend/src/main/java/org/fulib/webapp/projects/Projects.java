@@ -94,7 +94,6 @@ public class Projects
 		obj.put(Project.PROPERTY_NAME, project.getName());
 		obj.put(Project.PROPERTY_DESCRIPTION, project.getDescription());
 		obj.put(Project.PROPERTY_CREATED, project.getCreated().toString());
-		obj.put(Project.PROPERTY_ROOT_FILE_ID, project.getRootFileId());
 		return obj;
 	}
 

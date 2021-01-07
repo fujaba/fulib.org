@@ -16,8 +16,6 @@ public class Project
 	public static final String PROPERTY_DESCRIPTION = "description";
 	public static final String PROPERTY_CREATED = "created";
 
-	public static final String PROPERTY_ROOT_FILE_ID = "rootFileId";
-
 	// =============== Fields ===============
 
 	private final String id;
@@ -26,8 +24,6 @@ public class Project
 	private String name;
 	private String description;
 	private Instant created;
-
-	private String rootFileId;
 
 	// =============== Constructors ===============
 
@@ -83,15 +79,5 @@ public class Project
 	public void setCreated(Instant created)
 	{
 		this.created = created;
-	}
-
-	public String getRootFileId()
-	{
-		return rootFileId;
-	}
-
-	public void setRootFileId(String rootFileId)
-	{
-		this.rootFileId = rootFileId;
 	}
 }
