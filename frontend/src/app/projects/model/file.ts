@@ -20,7 +20,7 @@ export class File extends FileStub {
     info?: string;
     parent?: File;
     children?: File[];
-  }
+  };
 
   static compare(a: File, b: File): number {
     if (a.directory && !b.directory) {

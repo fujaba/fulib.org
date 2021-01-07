@@ -60,7 +60,7 @@ export class FileManager {
       return of(parent.data.children);
     }
     return this.fileService.getChildren(parent.projectId, parent.id).pipe(tap(children => {
-      for (let child of children) {
+      for (const child of children) {
         if (!child.data) {
           child.data = {};
         }
@@ -74,13 +74,13 @@ export class FileManager {
   }
 
   createChild(parent: File, name: string, directory: boolean): Observable<File> {
-    const file: FileStub = {
+    const stub: FileStub = {
       projectId: parent.projectId,
       parentId: parent.id,
       name,
       directory,
     };
-    return this.fileService.create(file).pipe(tap(file => {
+    return this.fileService.create(stub).pipe(tap(file => {
       if (!file.data) {
         file.data = {};
       }

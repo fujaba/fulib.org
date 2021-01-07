@@ -56,11 +56,11 @@ export class FileTypeService {
     extensions: [],
     icon: 'file-earmark',
     mode: 'null',
-  }
+  };
 
   getFileType(file: File): FileType {
-    for (let fileType of Object.values(this.fileTypes)) {
-      for (let extension of fileType.extensions) {
+    for (const fileType of Object.values(this.fileTypes)) {
+      for (const extension of fileType.extensions) {
         if (file.name.endsWith(extension)) {
           return fileType;
         }

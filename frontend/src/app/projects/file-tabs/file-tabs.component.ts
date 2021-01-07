@@ -41,7 +41,7 @@ export class FileTabsComponent implements OnInit, OnDestroy {
     this.fileManager.getContent(editor.file).subscribe(() => {
     });
 
-    const existing = this.openEditors.find(existing => editor.file === existing.file && !!editor.preview === !!existing.preview);
+    const existing = this.openEditors.find(e => editor.file === e.file && !!editor.preview === !!e.preview);
     if (existing) {
       existing.temporary = existing.temporary && editor.temporary;
       this.currentEditor = existing;
@@ -49,7 +49,7 @@ export class FileTabsComponent implements OnInit, OnDestroy {
     }
 
     if (editor.temporary) {
-      const temporary = this.openEditors.find(existing => existing.temporary);
+      const temporary = this.openEditors.find(e => e.temporary);
       if (temporary) {
         temporary.file = editor.file;
         temporary.preview = editor.preview;
@@ -102,7 +102,7 @@ export class FileTabsComponent implements OnInit, OnDestroy {
   }
 
   auxClick(event: MouseEvent, editor: FileEditor) {
-    if (event.button != 1) {
+    if (event.button !== 1) {
       return;
     }
     this.close(editor);
@@ -110,7 +110,7 @@ export class FileTabsComponent implements OnInit, OnDestroy {
   }
 
   openContextMenu(event: MouseEvent, editor: FileEditor, dropdown: NgbDropdown) {
-    if (event.button != 2 || event.shiftKey || dropdown.isOpen()) {
+    if (event.button !== 2 || event.shiftKey || dropdown.isOpen()) {
       return;
     }
 

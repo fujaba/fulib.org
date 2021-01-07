@@ -18,7 +18,7 @@ import {TerminalComponent} from '../terminal/terminal.component';
 interface SidebarItem {
   component: Type<any>;
   name: string;
-  icon: string
+  icon: string;
 }
 
 @Component({
@@ -38,7 +38,7 @@ export class ProjectWorkspaceComponent implements OnInit {
 
   injector: Injector;
 
-  active?: string = 'project';
+  active ? = 'project';
 
   terminalComponent?: typeof TerminalComponent;
 

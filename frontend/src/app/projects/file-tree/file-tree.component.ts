@@ -1,4 +1,15 @@
-import {AfterViewInit, Component, ElementRef, Inject, Input, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostBinding,
+  HostListener,
+  Inject,
+  Input,
+  OnInit,
+  QueryList,
+  ViewChildren,
+} from '@angular/core';
 import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
 import {Observable} from 'rxjs';
 import {FileManager} from '../file.manager';
@@ -7,9 +18,6 @@ import {File} from '../model/file';
 
 @Component({
   selector: 'app-file-tree',
-  host: {
-    '[attr.data-expanded]': 'expanded',
-  },
   templateUrl: './file-tree.component.html',
   styleUrls: ['./file-tree.component.scss'],
 })
@@ -17,9 +25,9 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
   @Input() file: File;
   @Input() level = 0;
 
-  @ViewChildren('nameInput') nameInput: QueryList<ElementRef>
+  @ViewChildren('nameInput') nameInput: QueryList<ElementRef>;
 
-  expanded = false;
+  @HostBinding('attr.data-expanded') expanded = false;
   oldName?: string;
   currentFile: Observable<File | undefined>;
 
