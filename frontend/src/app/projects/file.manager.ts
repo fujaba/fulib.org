@@ -3,6 +3,7 @@ import {BehaviorSubject, EMPTY, Observable, of} from 'rxjs';
 import {flatMap, map, tap} from 'rxjs/operators';
 import {FileService} from './file.service';
 import {Container} from './model/container';
+import {DavResource} from './model/dav-resource';
 import {File} from './model/file';
 import {FileEditor} from './model/file-editor';
 
@@ -50,11 +51,17 @@ export class FileManager {
     }));
   }
 
+  get(container: Container, path: string): Observable<File> {
+    return this.fileService.get(container, path).pipe(map(resource => this.toFile(resource)));
+  }
+
   getChildren(container: Container, parent: File): Observable<File[]> {
     if (parent.data?.children) {
       return of(parent.data.children);
     }
-    return this.fileService.getChildren(container, parent.path).pipe(tap(children => {
+    return this.fileService.getChildren(container, parent.path).pipe(map(childResources => {
+      const children = childResources.map(resource => this.toFile(resource));
+
       children.sort(File.compare);
 
       for (const child of children) {
@@ -67,6 +74,8 @@ export class FileManager {
         parent.data = {};
       }
       parent.data.children = children;
+
+      return children;
     }));
   }
 
@@ -74,7 +83,11 @@ export class FileManager {
     const path = parent.path + name;
     return (directory ? this.fileService.createDirectory(container, path) : this.fileService.upload(container, path, '')).pipe(
       flatMap(() => this.fileService.get(container, path)),
-      tap(file => this.setParent(file, parent)),
+      map(resource => {
+        const file = this.toFile(resource);
+        this.setParent(file, parent);
+        return file;
+      }),
     );
   }
 
@@ -102,6 +115,13 @@ export class FileManager {
       this.removeFromParent(file);
       this.deletions.next(file);
     }));
+  }
+
+  private toFile(resource: DavResource): File {
+    const file = new File();
+    file.path = resource.href.substring('/dav'.length);
+    file.modified = resource.modified;
+    return file;
   }
 
   private recurse(file: File, callback: (file: File) => void) {

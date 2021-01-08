@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {Container} from './model/container';
-import {File} from './model/file';
+import {DavResource} from './model/dav-resource';
 
 @Injectable({
   providedIn: 'root',
@@ -15,59 +15,57 @@ export class FileService {
   ) {
   }
 
-  private toFile(doc: Document): File {
-    const file = new File();
+  private toResource(doc: Document): DavResource {
+    const file = new DavResource();
     const responseNode = doc.createExpression('/D:multistatus/D:response[1]', () => 'DAV:')
       .evaluate(doc, XPathResult.FIRST_ORDERED_NODE_TYPE).singleNodeValue;
     if (responseNode) {
-      this.copyToFile(doc, responseNode, file);
+      this.copyToResource(doc, responseNode, file);
     }
     return file;
   }
 
-  private toChildFiles(doc: Document): File[] {
+  private toChildResources(doc: Document): DavResource[] {
     const responseNodes = doc.createExpression('/D:multistatus/D:response', () => 'DAV:')
       .evaluate(doc, XPathResult.ORDERED_NODE_ITERATOR_TYPE);
 
-    const children: File[] = [];
+    const children: DavResource[] = [];
     responseNodes.iterateNext();
     let responseNode = responseNodes.iterateNext();
     while (responseNode) {
-      const file = new File();
-      this.copyToFile(doc, responseNode, file);
-      children.push(file);
+      const resource = new DavResource();
+      this.copyToResource(doc, responseNode, resource);
+      children.push(resource);
       responseNode = responseNodes.iterateNext();
     }
 
     return children;
   }
 
-  private copyToFile(doc: Document, responseNode: Node, file: File): void {
-    const href = doc.evaluate('./D:href/text()', responseNode, () => 'DAV:', XPathResult.STRING_TYPE).stringValue;
-    file.path = href.substring('/dav'.length);
-    const modified = doc.createExpression('./D:propstat/D:prop/D:getlastmodified/text()', () => 'DAV:')
-      .evaluate(responseNode, XPathResult.STRING_TYPE).stringValue;
-    file.modified = new Date(modified);
+  private copyToResource(doc: Document, responseNode: Node, resource: DavResource): void {
+    resource.href = doc.evaluate('./D:href/text()', responseNode, () => 'DAV:', XPathResult.STRING_TYPE).stringValue;
+    resource.modified = new Date(doc.evaluate('./D:propstat/D:prop/D:getlastmodified/text()', responseNode, () => 'DAV:',
+      XPathResult.STRING_TYPE).stringValue);
   }
 
   createDirectory(container: Container, path: string): Observable<void> {
     return this.http.request<void>('MKCOL', `${container.url}/dav/${path}`);
   }
 
-  get(container: Container, path: string): Observable<File> {
+  get(container: Container, path: string): Observable<DavResource> {
     return this.http.request('PROPFIND', `${container.url}/dav/${path}`, {responseType: 'text'}).pipe(
       map(text => new DOMParser().parseFromString(text, 'text/xml')),
-      map(document => this.toFile(document)),
+      map(document => this.toResource(document)),
     );
   }
 
-  getChildren(container: Container, path: string): Observable<File[]> {
+  getChildren(container: Container, path: string): Observable<DavResource[]> {
     return this.http.request('PROPFIND', `${container.url}/dav/${path}`, {
       responseType: 'text',
       headers: {Depth: '1'},
     }).pipe(
       map(text => new DOMParser().parseFromString(text, 'text/xml')),
-      map(doc => this.toChildFiles(doc)),
+      map(doc => this.toChildResources(doc)),
     );
   }
 

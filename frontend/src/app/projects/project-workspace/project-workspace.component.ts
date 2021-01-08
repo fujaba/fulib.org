@@ -4,6 +4,7 @@ import {forkJoin} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
 
 import {FileTabsComponent} from '../file-tabs/file-tabs.component';
+import {FileManager} from '../file.manager';
 import {FileService} from '../file.service';
 import {FILE_ROOT} from '../injection-tokens';
 import {Container} from '../model/container';
@@ -45,7 +46,7 @@ export class ProjectWorkspaceComponent implements OnInit {
     parentInjector: Injector,
     private route: ActivatedRoute,
     private projectService: ProjectService,
-    private fileService: FileService,
+    private fileManager: FileManager,
   ) {
     this.injector = Injector.create({
       name: 'ProjectWorkspace',
@@ -73,7 +74,7 @@ export class ProjectWorkspaceComponent implements OnInit {
         this.terminalComponent = TerminalComponent;
         this.fileTabsComponent = FileTabsComponent;
       }),
-      switchMap(([project, container]) => this.fileService.get(container, `/projects/${project.id}/`)),
+      switchMap(([project, container]) => this.fileManager.get(container, `/projects/${project.id}/`)),
       tap(rootFile => this.fileRoot = rootFile),
     ).subscribe(_ => {
       this.sidebarItems.project = {name: 'Project', icon: 'code-square', component: ProjectTreeComponent};
