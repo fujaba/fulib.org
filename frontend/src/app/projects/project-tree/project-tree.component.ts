@@ -2,7 +2,7 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
 import {FileRevisionsComponent} from '../file-revisions/file-revisions.component';
 import {FileTreeComponent} from '../file-tree/file-tree.component';
-import {FileManager} from '../file.manager';
+import {FileService} from '../file.service';
 
 import {File} from '../model/file';
 import {FILE_ROOT} from '../injection-tokens';
@@ -26,7 +26,7 @@ export class ProjectTreeComponent implements OnInit {
   constructor(
     @Inject(FILE_ROOT) public fileRoot: File,
     public project: Project,
-    private fileManager: FileManager,
+    private fileManager: FileService,
   ) {
     for (const panel of this.panels) {
       this.panelState[panel.id] = {

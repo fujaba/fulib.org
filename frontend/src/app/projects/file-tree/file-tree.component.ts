@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
 import {Observable} from 'rxjs';
-import {FileManager} from '../file.manager';
+import {FileService} from '../file.service';
 import {FILE_ROOT} from '../injection-tokens';
 import {Container} from '../model/container';
 import {File} from '../model/file';
@@ -34,7 +34,7 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
 
   constructor(
     private container: Container,
-    private fileManager: FileManager,
+    private fileManager: FileService,
     @Inject(FILE_ROOT) public root: File,
   ) {
   }

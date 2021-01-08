@@ -11,7 +11,7 @@ import {FileEditor} from './model/file-editor';
 @Injectable({
   providedIn: 'root',
 })
-export class FileManager {
+export class FileService {
   openRequests = new EventEmitter<FileEditor>();
   updates = new EventEmitter<File>();
   deletions = new EventEmitter<File>();

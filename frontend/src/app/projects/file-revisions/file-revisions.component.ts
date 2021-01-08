@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {FileManager} from '../file.manager';
+import {FileService} from '../file.service';
 import {File} from '../model/file';
 
 @Component({
@@ -11,7 +11,7 @@ export class FileRevisionsComponent implements OnInit {
   @Input() file?: File;
 
   constructor(
-    private fileManager: FileManager,
+    private fileManager: FileService,
   ) {
   }
 

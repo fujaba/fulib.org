@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
 import {Subscription} from 'rxjs';
-import {FileManager} from '../file.manager';
+import {FileService} from '../file.service';
 import {Container} from '../model/container';
 import {File} from '../model/file';
 import {FileEditor} from '../model/file-editor';
@@ -19,7 +19,7 @@ export class FileTabsComponent implements OnInit, OnDestroy {
 
   constructor(
     private container: Container,
-    private fileManager: FileManager,
+    private fileManager: FileService,
   ) {
   }
 

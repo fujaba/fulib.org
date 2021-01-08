@@ -2,7 +2,7 @@ import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {filter} from 'rxjs/operators';
 import {FileTypeService} from '../file-type.service';
-import {FileManager} from '../file.manager';
+import {FileService} from '../file.service';
 import {Container} from '../model/container';
 import {File} from '../model/file';
 
@@ -30,7 +30,7 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
 
   constructor(
     private container: Container,
-    private fileManager: FileManager,
+    private fileManager: FileService,
     private fileTypeService: FileTypeService,
   ) {
   }
