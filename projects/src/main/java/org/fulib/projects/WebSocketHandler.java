@@ -17,9 +17,16 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @WebSocket
 public class WebSocketHandler implements FileEventHandler
 {
+	private final Runnable resetShutdownTimer;
+
 	private final Queue<Session> sessions = new ConcurrentLinkedQueue<>();
 
 	private final Map<Session, Map<String, ExecProcess>> processes = new ConcurrentHashMap<>();
+
+	public WebSocketHandler(Runnable resetShutdownTimer)
+	{
+		this.resetShutdownTimer = resetShutdownTimer;
+	}
 
 	@OnWebSocketConnect
 	public void connected(Session session)
@@ -55,6 +62,9 @@ public class WebSocketHandler implements FileEventHandler
 			exec.getOutputStream().flush();
 			return;
 		}
+		case "keepAlive":
+			this.resetShutdownTimer.run();
+			return;
 		default:
 			session.getRemote().sendString(new JSONObject().put("error", "invalid command: " + command).toString());
 			return;
