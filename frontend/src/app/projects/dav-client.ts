@@ -7,7 +7,7 @@ import {DavResource} from './model/dav-resource';
 @Injectable({
   providedIn: 'root',
 })
-export class FileService {
+export class DavClient {
 
   constructor(
     private http: HttpClient,

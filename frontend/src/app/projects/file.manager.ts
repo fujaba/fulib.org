@@ -1,7 +1,7 @@
 import {EventEmitter, Injectable} from '@angular/core';
 import {BehaviorSubject, EMPTY, Observable, of} from 'rxjs';
 import {flatMap, map, tap} from 'rxjs/operators';
-import {FileService} from './file.service';
+import {DavClient} from './dav-client';
 import {Container} from './model/container';
 import {DavResource} from './model/dav-resource';
 import {File} from './model/file';
@@ -19,7 +19,7 @@ export class FileManager {
   currentFile = new BehaviorSubject<File | undefined>(undefined);
 
   constructor(
-    private fileService: FileService,
+    private fileService: DavClient,
   ) {
   }
 

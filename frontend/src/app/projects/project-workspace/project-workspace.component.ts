@@ -5,7 +5,6 @@ import {switchMap, tap} from 'rxjs/operators';
 
 import {FileTabsComponent} from '../file-tabs/file-tabs.component';
 import {FileManager} from '../file.manager';
-import {FileService} from '../file.service';
 import {FILE_ROOT} from '../injection-tokens';
 import {Container} from '../model/container';
 import {File} from '../model/file';
