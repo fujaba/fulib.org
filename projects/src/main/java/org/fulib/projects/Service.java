@@ -59,7 +59,7 @@ public class Service
 			final URL url = new URL(STOP_URL);
 			final HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
 			httpCon.setRequestMethod("DELETE");
-			httpCon.connect();
+			httpCon.getResponseCode();
 			httpCon.disconnect();
 		}
 		catch (IOException exception)
