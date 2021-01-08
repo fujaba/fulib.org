@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -54,7 +55,14 @@ public class ContainerManager
 
 	private Container runContainer(Project project)
 	{
-		final CreateContainerCmd cmd = dockerClient.createContainerCmd("fulib/projects").withTty(true);
+		final String stopToken = UUID.randomUUID().toString();
+		final String stopUrl =
+			"http://localhost:4567/api/projects/" + project.getId() + "/container?stopToken=" + stopToken;
+
+		final CreateContainerCmd cmd = dockerClient
+			.createContainerCmd("fulib/projects")
+			.withTty(true)
+			.withEnv("STOP_URL=" + stopUrl);
 
 		final boolean linux = System.getProperty("os.name", "generic").toUpperCase(Locale.ROOT).contains("NUX");
 		if (!linux)
@@ -90,6 +98,7 @@ public class ContainerManager
 		container.setId(containerId);
 		container.setProjectId(project.getId());
 		container.setUrl(containerAddress);
+		container.setStopToken(stopToken);
 		return container;
 	}
 

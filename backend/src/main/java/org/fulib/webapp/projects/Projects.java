@@ -221,13 +221,21 @@ public class Projects
 	{
 		final String id = request.params("projectId");
 		final Project project = getOr404(this.mongo, id);
-		checkAuth(request, project);
-
 		final Container container = this.mongo.getContainerForProject(id);
 
 		if (container == null)
 		{
 			throw Spark.halt(404, String.format("{\"error\": \"container for project with id '%s' not found\"}\n", id));
+		}
+
+		final String stopToken = request.queryParams("stopToken");
+		if (stopToken == null)
+		{
+			checkAuth(request, project);
+		}
+		else if (!stopToken.equals(container.getStopToken()))
+		{
+			throw Spark.halt(401, "{\"error\": \"invalid stopToken\"}\n");
 		}
 
 		this.containerManager.stop(container);
