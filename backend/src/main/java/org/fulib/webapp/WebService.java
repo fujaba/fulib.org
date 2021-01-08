@@ -190,6 +190,7 @@ public class WebService
 		service.put("", projects::update);
 		service.delete("", projects::delete);
 		service.get("/container", projects::getContainer);
+		service.delete("/container", projects::deleteContainer);
 	}
 
 	private void addUtilRoutes()

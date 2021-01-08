@@ -223,6 +223,11 @@ public class Mongo
 		upsert(this.containers, container, Container.PROPERTY_ID, container.getId());
 	}
 
+	public void deleteContainer(String id)
+	{
+		this.containers.deleteOne(Filters.eq(Container.PROPERTY_ID, id));
+	}
+
 	// --------------- Files ---------------
 
 	public InputStream downloadFile(String name)

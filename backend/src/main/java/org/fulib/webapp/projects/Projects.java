@@ -216,4 +216,23 @@ public class Projects
 		json.put(Container.PROPERTY_PROJECT_ID, container.getProjectId());
 		return json;
 	}
+
+	public Object deleteContainer(Request request, Response response)
+	{
+		final String id = request.params("projectId");
+		final Project project = getOr404(this.mongo, id);
+		checkAuth(request, project);
+
+		final Container container = this.mongo.getContainerForProject(id);
+
+		if (container == null)
+		{
+			throw Spark.halt(404, String.format("{\"error\": \"container for project with id '%s' not found\"}\n", id));
+		}
+
+		this.containerManager.stop(container);
+		this.mongo.deleteContainer(container.getId());
+
+		return "{}";
+	}
 }

@@ -1,5 +1,7 @@
 package org.fulib.webapp.projects.model;
 
+import org.bson.codecs.pojo.annotations.BsonProperty;
+
 public class Container
 {
 	public static final String PROPERTY_ID = "id";
@@ -10,11 +12,13 @@ public class Container
 	private String url;
 	private String projectId;
 
+	@BsonProperty
 	public String getId()
 	{
 		return id;
 	}
 
+	@BsonProperty
 	public void setId(String id)
 	{
 		this.id = id;
