@@ -47,18 +47,18 @@ export class FileService {
       XPathResult.STRING_TYPE).stringValue);
   }
 
-  createDirectory(url: string): Observable<void> {
+  mkcol(url: string): Observable<void> {
     return this.http.request<void>('MKCOL', url);
   }
 
-  get(url: string): Observable<DavResource> {
+  propFind(url: string): Observable<DavResource> {
     return this.http.request('PROPFIND', url, {responseType: 'text'}).pipe(
       map(text => new DOMParser().parseFromString(text, 'text/xml')),
       map(document => this.toResource(document)),
     );
   }
 
-  getChildren(url: string): Observable<DavResource[]> {
+  propFindChildren(url: string): Observable<DavResource[]> {
     return this.http.request('PROPFIND', url, {
       responseType: 'text',
       headers: {Depth: '1'},
@@ -78,11 +78,11 @@ export class FileService {
     });
   }
 
-  download(url: string): Observable<string> {
+  get(url: string): Observable<string> {
     return this.http.get(url, {responseType: 'text'});
   }
 
-  upload(url: string, content: string): Observable<void> {
+  put(url: string, content: string): Observable<void> {
     return this.http.put<void>(url, content);
   }
 }

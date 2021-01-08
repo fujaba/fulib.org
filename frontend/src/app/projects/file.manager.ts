@@ -32,7 +32,7 @@ export class FileManager {
       return of(file.data.content);
     }
 
-    return this.fileService.download(`${container.url}/dav/${file.path}`).pipe(tap(content => {
+    return this.fileService.get(`${container.url}/dav/${file.path}`).pipe(tap(content => {
       if (!file.data) {
         file.data = {};
       }
@@ -44,7 +44,7 @@ export class FileManager {
     if (!file.data?.content) {
       return EMPTY;
     }
-    return this.fileService.upload(`${container.url}/dav/${file.path}`, file.data.content).pipe(tap(() => {
+    return this.fileService.put(`${container.url}/dav/${file.path}`, file.data.content).pipe(tap(() => {
       if (file.data) {
         file.data.dirty = false;
       }
@@ -52,14 +52,14 @@ export class FileManager {
   }
 
   get(container: Container, path: string): Observable<File> {
-    return this.fileService.get(`${container.url}/dav/${path}`).pipe(map(resource => this.toFile(resource)));
+    return this.fileService.propFind(`${container.url}/dav/${path}`).pipe(map(resource => this.toFile(resource)));
   }
 
   getChildren(container: Container, parent: File): Observable<File[]> {
     if (parent.data?.children) {
       return of(parent.data.children);
     }
-    return this.fileService.getChildren(`${container.url}/dav/${parent.path}`).pipe(map(childResources => {
+    return this.fileService.propFindChildren(`${container.url}/dav/${parent.path}`).pipe(map(childResources => {
       const children = childResources.map(resource => this.toFile(resource));
 
       children.sort(File.compare);
@@ -82,8 +82,8 @@ export class FileManager {
   createChild(container: Container, parent: File, name: string, directory: boolean): Observable<File> {
     const path = parent.path + name;
     const url = `${container.url}/dav/${path}`;
-    return (directory ? this.fileService.createDirectory(url) : this.fileService.upload(url, '')).pipe(
-      flatMap(() => this.fileService.get(url)),
+    return (directory ? this.fileService.mkcol(url) : this.fileService.put(url, '')).pipe(
+      flatMap(() => this.fileService.propFind(url)),
       map(resource => {
         const file = this.toFile(resource);
         this.setParent(file, parent);
