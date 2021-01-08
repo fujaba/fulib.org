@@ -57,7 +57,7 @@ public class ContainerManager
 	{
 		final String stopToken = UUID.randomUUID().toString();
 		final String stopUrl =
-			"http://localhost:4567/api/projects/" + project.getId() + "/container?stopToken=" + stopToken;
+			"http://host.docker.internal:4567/api/projects/" + project.getId() + "/container?stopToken=" + stopToken;
 
 		final CreateContainerCmd cmd = dockerClient
 			.createContainerCmd("fulib/projects")
@@ -149,15 +149,6 @@ public class ContainerManager
 
 		this.dockerClient.stopContainerCmd(container.getId()).exec();
 		this.dockerClient.removeContainerCmd(container.getId()).exec();
-		try
-		{
-			this.dockerClient.close();
-		}
-		catch (IOException ex)
-		{
-			// TODO
-			ex.printStackTrace();
-		}
 	}
 
 	private void uploadFilesFromContainer(Container container)
