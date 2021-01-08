@@ -2,7 +2,6 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {Container} from './model/container';
 import {DavResource} from './model/dav-resource';
 
 @Injectable({
@@ -48,19 +47,19 @@ export class FileService {
       XPathResult.STRING_TYPE).stringValue);
   }
 
-  createDirectory(container: Container, path: string): Observable<void> {
-    return this.http.request<void>('MKCOL', `${container.url}/dav/${path}`);
+  createDirectory(url: string): Observable<void> {
+    return this.http.request<void>('MKCOL', url);
   }
 
-  get(container: Container, path: string): Observable<DavResource> {
-    return this.http.request('PROPFIND', `${container.url}/dav/${path}`, {responseType: 'text'}).pipe(
+  get(url: string): Observable<DavResource> {
+    return this.http.request('PROPFIND', url, {responseType: 'text'}).pipe(
       map(text => new DOMParser().parseFromString(text, 'text/xml')),
       map(document => this.toResource(document)),
     );
   }
 
-  getChildren(container: Container, path: string): Observable<DavResource[]> {
-    return this.http.request('PROPFIND', `${container.url}/dav/${path}`, {
+  getChildren(url: string): Observable<DavResource[]> {
+    return this.http.request('PROPFIND', url, {
       responseType: 'text',
       headers: {Depth: '1'},
     }).pipe(
@@ -69,21 +68,21 @@ export class FileService {
     );
   }
 
-  delete(container: Container, path: string): Observable<void> {
-    return this.http.delete<void>(`${container.url}/dav/${path}`);
+  delete(url: string): Observable<void> {
+    return this.http.delete<void>(url);
   }
 
-  move(container: Container, from: string, to: string): Observable<void> {
-    return this.http.request<void>('MOVE', `${container.url}/dav/${from}`, {
-      headers: {Destination: `${container.url}/dav/${to}`},
+  move(from: string, to: string): Observable<void> {
+    return this.http.request<void>('MOVE', from, {
+      headers: {Destination: to},
     });
   }
 
-  download(container: Container, path: string): Observable<string> {
-    return this.http.get(`${container.url}/dav/${path}`, {responseType: 'text'});
+  download(url: string): Observable<string> {
+    return this.http.get(url, {responseType: 'text'});
   }
 
-  upload(container: Container, path: string, content: string): Observable<void> {
-    return this.http.put<void>(`${container.url}/dav/${path}`, content);
+  upload(url: string, content: string): Observable<void> {
+    return this.http.put<void>(url, content);
   }
 }

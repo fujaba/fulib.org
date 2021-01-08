@@ -32,7 +32,7 @@ export class FileManager {
       return of(file.data.content);
     }
 
-    return this.fileService.download(container, file.path).pipe(tap(content => {
+    return this.fileService.download(`${container.url}/dav/${file.path}`).pipe(tap(content => {
       if (!file.data) {
         file.data = {};
       }
@@ -44,7 +44,7 @@ export class FileManager {
     if (!file.data?.content) {
       return EMPTY;
     }
-    return this.fileService.upload(container, file.path, file.data.content).pipe(tap(() => {
+    return this.fileService.upload(`${container.url}/dav/${file.path}`, file.data.content).pipe(tap(() => {
       if (file.data) {
         file.data.dirty = false;
       }
@@ -52,14 +52,14 @@ export class FileManager {
   }
 
   get(container: Container, path: string): Observable<File> {
-    return this.fileService.get(container, path).pipe(map(resource => this.toFile(resource)));
+    return this.fileService.get(`${container.url}/dav/${path}`).pipe(map(resource => this.toFile(resource)));
   }
 
   getChildren(container: Container, parent: File): Observable<File[]> {
     if (parent.data?.children) {
       return of(parent.data.children);
     }
-    return this.fileService.getChildren(container, parent.path).pipe(map(childResources => {
+    return this.fileService.getChildren(`${container.url}/dav/${parent.path}`).pipe(map(childResources => {
       const children = childResources.map(resource => this.toFile(resource));
 
       children.sort(File.compare);
@@ -81,8 +81,9 @@ export class FileManager {
 
   createChild(container: Container, parent: File, name: string, directory: boolean): Observable<File> {
     const path = parent.path + name;
-    return (directory ? this.fileService.createDirectory(container, path) : this.fileService.upload(container, path, '')).pipe(
-      flatMap(() => this.fileService.get(container, path)),
+    const url = `${container.url}/dav/${path}`;
+    return (directory ? this.fileService.createDirectory(url) : this.fileService.upload(url, '')).pipe(
+      flatMap(() => this.fileService.get(url)),
       map(resource => {
         const file = this.toFile(resource);
         this.setParent(file, parent);
@@ -93,7 +94,9 @@ export class FileManager {
 
   rename(container: Container, file: File, newName: string): Observable<void> {
     const [start, end] = file._namePos;
-    return this.fileService.move(container, file.path, file.path.substring(0, start) + newName + file.path.substring(end)).pipe(tap(_ => {
+    const from = `${container.url}/dav/${file.path}`;
+    const to = `${container.url}/dav/${file.path.substring(0, start)}${newName}${file.path.substring(end)}`;
+    return this.fileService.move(from, to).pipe(tap(_ => {
       this.recurse(file, f => {
         f.path = f.path.substring(0, start) + newName + f.path.substring(end);
       });
@@ -102,7 +105,9 @@ export class FileManager {
 
   move(container: Container, file: File, directory: File) {
     const [start] = file._namePos;
-    return this.fileService.move(container, file.path, directory.path + file.path.substring(start)).pipe(tap(_ => {
+    const from = `${container.url}/dav/${file.path}`;
+    const to = `${container.url}/dav/${directory.path}${file.path.substring(start)}`;
+    return this.fileService.move(from, to).pipe(tap(_ => {
       this.recurse(file, f => {
         f.path = directory.path + f.path.substring(start);
       });
@@ -111,7 +116,7 @@ export class FileManager {
   }
 
   delete(container: Container, file: File): Observable<void> {
-    return this.fileService.delete(container, file.path).pipe(tap(() => {
+    return this.fileService.delete(`${container.url}/dav/${file.path}`).pipe(tap(() => {
       this.removeFromParent(file);
       this.deletions.next(file);
     }));
