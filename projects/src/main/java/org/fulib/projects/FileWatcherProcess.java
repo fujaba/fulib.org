@@ -63,25 +63,32 @@ public class FileWatcherProcess extends Thread
 		switch (command)
 		{
 		case "CREATE":
-			this.handler.createFile(fileName);
+			this.handler.create(fileName);
 			return;
 		case "CREATE,ISDIR":
-			this.handler.createDirectory(fileName);
+			this.handler.create(fileName + "/");
 			return;
 		case "MODIFY":
 			this.handler.modify(fileName);
 			return;
 		case "DELETE":
-		case "DELETE,ISDIR":
 			this.handler.delete(fileName);
 			return;
+		case "DELETE,ISDIR":
+			this.handler.delete(fileName + "/");
+			return;
 		case "MOVED_FROM":
-		case "MOVED_FROM,ISDIR":
 			this.source = fileName;
 			return;
+		case "MOVED_FROM,ISDIR":
+			this.source = fileName + "/";
+			return;
 		case "MOVED_TO":
-		case "MOVED_TO,ISDIR":
 			this.handler.move(this.source, fileName);
+			this.source = null;
+			return;
+		case "MOVED_TO,ISDIR":
+			this.handler.move(this.source, fileName + "/");
 			this.source = null;
 			return;
 		}

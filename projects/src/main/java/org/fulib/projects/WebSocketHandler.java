@@ -83,15 +83,9 @@ public class WebSocketHandler implements FileEventHandler
 	}
 
 	@Override
-	public void createFile(String path)
+	public void create(String path)
 	{
 		broadcast(new JSONObject().put("event", "created").put("path", path));
-	}
-
-	@Override
-	public void createDirectory(String path)
-	{
-		broadcast(new JSONObject().put("event", "created").put("path", path).put("directory", true));
 	}
 
 	@Override

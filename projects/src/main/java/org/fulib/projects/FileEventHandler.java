@@ -4,9 +4,7 @@ public interface FileEventHandler
 {
 	void modify(String path);
 
-	void createFile(String path);
-
-	void createDirectory(String path);
+	void create(String path);
 
 	void delete(String path);
 
