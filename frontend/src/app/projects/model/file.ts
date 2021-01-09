@@ -44,4 +44,31 @@ export class File {
     }
     return 0;
   }
+
+  setParent(parent: File): void {
+    this.removeFromParent();
+
+    this.parent = parent;
+    if (parent.children) {
+      this.insertSorted(parent.children, this);
+    }
+  }
+
+  private insertSorted(parentChildren: File[], file: File) {
+    const index = parentChildren.findIndex(f => File.compare(f, file) > 0);
+    if (index >= 0) {
+      parentChildren.splice(index, 0, file);
+    } else {
+      parentChildren.push(file);
+    }
+  }
+
+  removeFromParent(): void {
+    const parentChildren = this.parent?.children;
+    if (parentChildren) {
+      const index = parentChildren.indexOf(this);
+      parentChildren.splice(index, 1);
+    }
+    this.parent = undefined;
+  }
 }

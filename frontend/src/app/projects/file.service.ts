@@ -75,7 +75,7 @@ export class FileService {
       flatMap(() => this.fileService.propFind(url)),
       map(resource => {
         const file = this.toFile(resource);
-        this.setParent(file, parent);
+        file.setParent(parent);
         return file;
       }),
     );
@@ -100,13 +100,13 @@ export class FileService {
       this.recurse(file, f => {
         f.path = directory.path + f.path.substring(start);
       });
-      this.setParent(file, directory);
+      file.setParent(directory);
     }));
   }
 
   delete(container: Container, file: File): Observable<void> {
     return this.fileService.delete(`${container.url}/dav/${file.path}`).pipe(tap(() => {
-      this.removeFromParent(file);
+      file.removeFromParent();
       this.deletions.next(file);
     }));
   }
@@ -125,32 +125,5 @@ export class FileService {
         this.recurse(child, callback);
       }
     }
-  }
-
-  private setParent(file: File, parent: File) {
-    this.removeFromParent(file);
-
-    file.parent = parent;
-    if (parent.children) {
-      this.insertSorted(parent.children, file);
-    }
-  }
-
-  private insertSorted(parentChildren: File[], file: File) {
-    const index = parentChildren.findIndex(f => File.compare(f, file) > 0);
-    if (index >= 0) {
-      parentChildren.splice(index, 0, file);
-    } else {
-      parentChildren.push(file);
-    }
-  }
-
-  private removeFromParent(file: File) {
-    const parentChildren = file.parent?.children;
-    if (parentChildren) {
-      const index = parentChildren.indexOf(file);
-      parentChildren.splice(index, 1);
-    }
-    file.parent = undefined;
   }
 }
