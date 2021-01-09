@@ -29,11 +29,12 @@ export class ProjectManager {
 
     switch (message.event) {
       case 'created': {
-        const parentPath = message.path.substring(0, message.path.lastIndexOf('/'));
+        const path: string = message.path;
+        const parentPath = path.substring(0, path.lastIndexOf('/', path.length - 2) + 1);
         const parent = this.resolve(this.fileRoot, parentPath);
         if (parent) {
           const child = new File();
-          child.path = message.directory ? message.path + '/' : message.path;
+          child.path = path;
           child.setParent(parent);
         }
         return;
@@ -45,15 +46,15 @@ export class ProjectManager {
           return;
         }
 
-        const newParentPath = message.to.substring(0, message.to.lastIndexOf('/'));
+        const to: string = message.to;
+        const newParentPath = to.substring(0, to.lastIndexOf('/', to.length - 2) + 1);
         const newParent = this.resolve(this.fileRoot, newParentPath);
         if (!newParent || !newParent.children) {
           oldFile.removeFromParent();
           return;
         }
 
-        const directory = oldFile.directory;
-        oldFile.path = directory ? message.to + '/' : message.to;
+        oldFile.path = message.to;
         oldFile.setParent(newParent);
         return;
       }
@@ -68,7 +69,7 @@ export class ProjectManager {
   }
 
   private resolve(file: File, path: string): File | undefined {
-    if (file.path === (file.directory ? path + '/' : path)) {
+    if (file.path === path) {
       return file;
     }
     if (!file.children) {
