@@ -38,6 +38,25 @@ export class ProjectManager {
         }
         return;
       }
+      case 'moved': {
+        const oldFile = this.resolve(this.fileRoot, message.from);
+        if (!oldFile) {
+          // TODO if newParent exists and has children, we need to create and add a new File
+          return;
+        }
+
+        const newParentPath = message.to.substring(0, message.to.lastIndexOf('/'));
+        const newParent = this.resolve(this.fileRoot, newParentPath);
+        if (!newParent || !newParent.children) {
+          oldFile.removeFromParent();
+          return;
+        }
+
+        const directory = oldFile.directory;
+        oldFile.path = directory ? message.to + '/' : message.to;
+        oldFile.setParent(newParent);
+        return;
+      }
       case 'deleted': {
         const file = this.resolve(this.fileRoot, message.path);
         if (file) {
