@@ -28,26 +28,21 @@ export class FileService {
   }
 
   getContent(container: Container, file: File): Observable<string> {
-    if (file.data?.content) {
-      return of(file.data.content);
+    if (file.content) {
+      return of(file.content);
     }
 
     return this.fileService.get(`${container.url}/dav/${file.path}`).pipe(tap(content => {
-      if (!file.data) {
-        file.data = {};
-      }
-      file.data.content = content;
+      file.content = content;
     }));
   }
 
   saveContent(container: Container, file: File): Observable<void> {
-    if (!file.data?.content) {
+    if (!file.content) {
       return EMPTY;
     }
-    return this.fileService.put(`${container.url}/dav/${file.path}`, file.data.content).pipe(tap(() => {
-      if (file.data) {
-        file.data.dirty = false;
-      }
+    return this.fileService.put(`${container.url}/dav/${file.path}`, file.content).pipe(tap(() => {
+      file.dirty = false;
     }));
   }
 
@@ -56,8 +51,8 @@ export class FileService {
   }
 
   getChildren(container: Container, parent: File): Observable<File[]> {
-    if (parent.data?.children) {
-      return of(parent.data.children);
+    if (parent.children) {
+      return of(parent.children);
     }
     return this.fileService.propFindChildren(`${container.url}/dav/${parent.path}`).pipe(map(childResources => {
       const children = childResources.map(resource => this.toFile(resource));
@@ -65,15 +60,9 @@ export class FileService {
       children.sort(File.compare);
 
       for (const child of children) {
-        if (!child.data) {
-          child.data = {};
-        }
-        child.data.parent = parent;
+        child.parent = parent;
       }
-      if (!parent.data) {
-        parent.data = {};
-      }
-      parent.data.children = children;
+      parent.children = children;
 
       return children;
     }));
@@ -131,8 +120,8 @@ export class FileService {
 
   private recurse(file: File, callback: (file: File) => void) {
     callback(file);
-    if (file?.data?.children) {
-      for (const child of file.data.children) {
+    if (file.children) {
+      for (const child of file.children) {
         this.recurse(child, callback);
       }
     }
@@ -141,12 +130,9 @@ export class FileService {
   private setParent(file: File, parent: File) {
     this.removeFromParent(file);
 
-    if (!file.data) {
-      file.data = {};
-    }
-    file.data.parent = parent;
-    if (parent.data && parent.data.children) {
-      this.insertSorted(parent.data.children, file);
+    file.parent = parent;
+    if (parent.children) {
+      this.insertSorted(parent.children, file);
     }
   }
 
@@ -160,16 +146,11 @@ export class FileService {
   }
 
   private removeFromParent(file: File) {
-    const data = file.data;
-    if (!data) {
-      return;
-    }
-
-    const parentChildren = data.parent?.data?.children;
+    const parentChildren = file.parent?.children;
     if (parentChildren) {
       const index = parentChildren.indexOf(file);
       parentChildren.splice(index, 1);
     }
-    data.parent = undefined;
+    file.parent = undefined;
   }
 }

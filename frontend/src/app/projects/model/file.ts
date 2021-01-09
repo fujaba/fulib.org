@@ -3,13 +3,11 @@ export class File {
 
   modified: Date;
 
-  data?: {
-    content?: string;
-    dirty?: boolean;
-    info?: string;
-    parent?: File;
-    children?: File[];
-  };
+  content?: string;
+  dirty?: boolean;
+  info?: string;
+  parent?: File;
+  children?: File[];
 
   get _namePos(): [number, number] {
     const end = this.path.length - (this.directory ? 1 : 0);

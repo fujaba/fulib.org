@@ -64,10 +64,7 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
   }
 
   setContent(content: string) {
-    const data = this.file.data;
-    if (data) {
-      data.content = content;
-      data.dirty = true;
-    }
+    this.file.content = content;
+    this.file.dirty = true;
   }
 }

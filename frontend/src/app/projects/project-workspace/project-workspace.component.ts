@@ -77,11 +77,7 @@ export class ProjectWorkspaceComponent implements OnInit {
       tap(rootFile => this.fileRoot = rootFile),
     ).subscribe(_ => {
       this.sidebarItems.project = {name: 'Project', icon: 'code-square', component: ProjectTreeComponent};
-
-      if (!this.fileRoot.data) {
-        this.fileRoot.data = {};
-      }
-      this.fileRoot.data.info = 'project root';
+      this.fileRoot.info = 'project root';
       Object.defineProperty(this.fileRoot, 'name', {
         get: () => this.project.name,
         set: () => {

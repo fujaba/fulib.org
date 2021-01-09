@@ -14,10 +14,10 @@
            (keyup.escape)="cancelRenaming()"
            [(ngModel)]="newName"
     >
-    <div *ngIf="newName === undefined" class="flex-grow-1" [class.dirty]="file.data?.dirty">
+    <div *ngIf="newName === undefined" class="flex-grow-1" [class.dirty]="file.dirty">
       {{file.name}}
-      <span class="text-muted" *ngIf="file.data?.info">
-        {{file.data?.info}}
+      <span class="text-muted" *ngIf="file.info">
+        {{file.info}}
       </span>
     </div>
     <ng-container *ngIf="file.directory">
@@ -50,6 +50,6 @@
 <div *ngIf="expanded"
      class="file-tree-children"
      dragula="FILE_TREE"
-     [dragulaModel]="file.data?.children || []" (dragulaModelChange)="setChildren($event)">
-  <app-file-tree *ngFor="let child of file.data?.children || []" [file]="child" [level]="level + 1"></app-file-tree>
+     [dragulaModel]="file.children || []" (dragulaModelChange)="setChildren($event)">
+  <app-file-tree *ngFor="let child of file.children || []" [file]="child" [level]="level + 1"></app-file-tree>
 </div>
