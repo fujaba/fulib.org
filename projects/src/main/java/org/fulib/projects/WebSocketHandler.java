@@ -75,7 +75,12 @@ public class WebSocketHandler implements FileEventHandler
 	public void disconnected(Session session, int status, String reason)
 	{
 		sessions.remove(session);
-		processes.remove(session);
+
+		final Map<String, ExecProcess> execMap = processes.remove(session);
+		for (final ExecProcess value : execMap.values())
+		{
+			value.interrupt();
+		}
 	}
 
 	@Override

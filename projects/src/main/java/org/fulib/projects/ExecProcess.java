@@ -75,9 +75,13 @@ public class ExecProcess extends Thread
 			exitedEvent.put("exitCode", returnCode);
 			session.getRemote().sendString(exitedEvent.toString());
 		}
-		catch (IOException | InterruptedException exception)
+		catch (IOException exception)
 		{
 			exception.printStackTrace();
+		}
+		catch (InterruptedException ignored)
+		{
+			process.destroyForcibly();
 		}
 	}
 }
