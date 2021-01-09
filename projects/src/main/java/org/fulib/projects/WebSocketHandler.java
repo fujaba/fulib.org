@@ -10,16 +10,12 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
-import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 @WebSocket
 public class WebSocketHandler implements FileEventHandler
 {
 	private final Runnable resetShutdownTimer;
-
-	private final Queue<Session> sessions = new ConcurrentLinkedQueue<>();
 
 	private final Map<Session, Map<String, ExecProcess>> processes = new ConcurrentHashMap<>();
 
@@ -31,7 +27,6 @@ public class WebSocketHandler implements FileEventHandler
 	@OnWebSocketConnect
 	public void connected(Session session)
 	{
-		sessions.add(session);
 		processes.put(session, new ConcurrentHashMap<>());
 	}
 
@@ -74,8 +69,6 @@ public class WebSocketHandler implements FileEventHandler
 	@OnWebSocketClose
 	public void disconnected(Session session, int status, String reason)
 	{
-		sessions.remove(session);
-
 		final Map<String, ExecProcess> execMap = processes.remove(session);
 		for (final ExecProcess value : execMap.values())
 		{
@@ -116,7 +109,7 @@ public class WebSocketHandler implements FileEventHandler
 	private void broadcast(JSONObject obj)
 	{
 		final String message = obj.toString();
-		for (final Session session : this.sessions)
+		for (final Session session : this.processes.keySet())
 		{
 			session.getRemote().sendString(message, null);
 		}
