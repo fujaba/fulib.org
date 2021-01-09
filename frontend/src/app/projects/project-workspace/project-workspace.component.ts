@@ -74,7 +74,10 @@ export class ProjectWorkspaceComponent implements OnInit {
         this.fileTabsComponent = FileTabsComponent;
       }),
       switchMap(([project, container]) => this.fileManager.get(container, `/projects/${project.id}/`)),
-      tap(rootFile => this.fileRoot = rootFile),
+      tap(fileRoot => {
+        this.projectManager.fileRoot = fileRoot;
+        this.fileRoot = fileRoot;
+      }),
     ).subscribe(_ => {
       this.sidebarItems.project = {name: 'Project', icon: 'code-square', component: ProjectTreeComponent};
       this.fileRoot.info = 'project root';
