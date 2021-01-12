@@ -40,22 +40,26 @@ export class ProjectManager {
         return;
       }
       case 'moved': {
-        const oldFile = this.resolve(this.fileRoot, message.from);
-        if (!oldFile) {
-          // TODO if newParent exists and has children, we need to create and add a new File
-          return;
-        }
-
         const to: string = message.to;
         const newParentPath = to.substring(0, to.lastIndexOf('/', to.length - 2) + 1);
         const newParent = this.resolve(this.fileRoot, newParentPath);
-        if (!newParent || !newParent.children) {
-          oldFile.removeFromParent();
-          return;
+        const oldFile = this.resolve(this.fileRoot, message.from);
+
+        if (oldFile) {
+          if (newParent && newParent.children) {
+            oldFile.path = message.to;
+            oldFile.setParent(newParent);
+          } else {
+            oldFile.removeFromParent();
+          }
+        } else {
+          if (newParent && newParent.children && !this.resolve(newParent, to)) {
+            const newFile = new File();
+            newFile.path = to;
+            newFile.setParent(newParent);
+          }
         }
 
-        oldFile.path = message.to;
-        oldFile.setParent(newParent);
         return;
       }
       case 'deleted': {
