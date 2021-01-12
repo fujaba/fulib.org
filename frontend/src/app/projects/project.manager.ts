@@ -32,7 +32,7 @@ export class ProjectManager {
         const path: string = message.path;
         const parentPath = path.substring(0, path.lastIndexOf('/', path.length - 2) + 1);
         const parent = this.resolve(this.fileRoot, parentPath);
-        if (parent) {
+        if (parent && !this.resolve(parent, path)) {
           const child = new File();
           child.path = path;
           child.setParent(parent);
