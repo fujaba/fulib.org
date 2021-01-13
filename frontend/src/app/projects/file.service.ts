@@ -68,47 +68,28 @@ export class FileService {
     }));
   }
 
-  createChild(container: Container, parent: File, name: string, directory: boolean): Observable<File> {
+  createChild(container: Container, parent: File, name: string, directory: boolean): Observable<void> {
     const path = parent.path + name;
     const url = `${container.url}/dav/${path}`;
-    return (directory ? this.dav.mkcol(url) : this.dav.put(url, '')).pipe(
-      flatMap(() => this.dav.propFind(url)),
-      map(resource => {
-        const file = this.toFile(resource);
-        file.setParent(parent);
-        return file;
-      }),
-    );
+    return (directory ? this.dav.mkcol(url) : this.dav.put(url, ''));
   }
 
   rename(container: Container, file: File, newName: string): Observable<void> {
     const [start, end] = file._namePos;
     const from = `${container.url}/dav/${file.path}`;
     const to = `${container.url}/dav/${file.path.substring(0, start)}${newName}${file.path.substring(end)}`;
-    return this.dav.move(from, to).pipe(tap(_ => {
-      this.recurse(file, f => {
-        f.path = f.path.substring(0, start) + newName + f.path.substring(end);
-      });
-    }));
+    return this.dav.move(from, to);
   }
 
-  move(container: Container, file: File, directory: File) {
+  move(container: Container, file: File, directory: File): Observable<void> {
     const [start] = file._namePos;
     const from = `${container.url}/dav/${file.path}`;
     const to = `${container.url}/dav/${directory.path}${file.path.substring(start)}`;
-    return this.dav.move(from, to).pipe(tap(_ => {
-      this.recurse(file, f => {
-        f.path = directory.path + f.path.substring(start);
-      });
-      file.setParent(directory);
-    }));
+    return this.dav.move(from, to);
   }
 
   delete(container: Container, file: File): Observable<void> {
-    return this.dav.delete(`${container.url}/dav/${file.path}`).pipe(tap(() => {
-      file.removeFromParent();
-      this.deletions.next(file);
-    }));
+    return this.dav.delete(`${container.url}/dav/${file.path}`);
   }
 
   resolve(file: File, path: string): File | undefined {
@@ -132,14 +113,5 @@ export class FileService {
     file.path = resource.href.substring('/dav'.length);
     file.modified = resource.modified;
     return file;
-  }
-
-  private recurse(file: File, callback: (file: File) => void) {
-    callback(file);
-    if (file.children) {
-      for (const child of file.children) {
-        this.recurse(child, callback);
-      }
-    }
   }
 }
