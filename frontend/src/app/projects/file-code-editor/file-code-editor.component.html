@@ -1,4 +1,4 @@
-<ng-container [ngSwitch]="fileType.mode">
+<ng-container [ngSwitch]="editor.preview && fileType.previewMode || fileType.mode">
   <img *ngSwitchCase="'img'"
     [src]="container.url + '/dav/' + file.path" [alt]="file.name">
   <app-autotheme-codemirror

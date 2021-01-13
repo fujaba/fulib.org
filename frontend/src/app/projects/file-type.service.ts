@@ -13,11 +13,18 @@ export class FileTypeService {
       icon: 'markdown',
       mode: 'text/x-markdown',
     },
-    image: {
-      name: 'Image',
-      extensions: ['.png', '.svg'],
+    png: {
+      name: 'PNG Image',
+      extensions: ['.png'],
       icon: 'image',
       mode: 'img',
+    },
+    svg: {
+      name: 'SVG Image',
+      extensions: ['.svg'],
+      icon: 'image',
+      mode: 'text/xml',
+      previewMode: 'img',
     },
     gradle: {
       name: 'Gradle',

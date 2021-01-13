@@ -5,6 +5,7 @@ import {FileTypeService} from '../file-type.service';
 import {FileService} from '../file.service';
 import {Container} from '../model/container';
 import {File} from '../model/file';
+import {FileEditor} from '../model/file-editor';
 import {FileType} from '../model/file-type';
 import {ProjectManager} from '../project.manager';
 
@@ -14,6 +15,8 @@ import {ProjectManager} from '../project.manager';
   styleUrls: ['./file-code-editor.component.scss'],
 })
 export class FileCodeEditorComponent implements OnInit, OnDestroy {
+  @Input() editor: FileEditor;
+
   private _file: File;
   fileType: FileType;
 

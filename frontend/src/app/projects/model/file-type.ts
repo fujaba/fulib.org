@@ -3,4 +3,5 @@ export class FileType {
   extensions: string[];
   icon: string;
   mode: string;
+  previewMode?: string;
 }
