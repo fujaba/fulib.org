@@ -19,7 +19,7 @@ export class FileService {
   currentFile = new BehaviorSubject<File | undefined>(undefined);
 
   constructor(
-    private fileService: DavClient,
+    private dav: DavClient,
   ) {
   }
 
@@ -32,7 +32,7 @@ export class FileService {
       return of(file.content);
     }
 
-    return this.fileService.get(`${container.url}/dav/${file.path}`).pipe(tap(content => {
+    return this.dav.get(`${container.url}/dav/${file.path}`).pipe(tap(content => {
       file.content = content;
     }));
   }
@@ -41,20 +41,20 @@ export class FileService {
     if (!file.content) {
       return EMPTY;
     }
-    return this.fileService.put(`${container.url}/dav/${file.path}`, file.content).pipe(tap(() => {
+    return this.dav.put(`${container.url}/dav/${file.path}`, file.content).pipe(tap(() => {
       file.dirty = false;
     }));
   }
 
   get(container: Container, path: string): Observable<File> {
-    return this.fileService.propFind(`${container.url}/dav/${path}`).pipe(map(resource => this.toFile(resource)));
+    return this.dav.propFind(`${container.url}/dav/${path}`).pipe(map(resource => this.toFile(resource)));
   }
 
   getChildren(container: Container, parent: File): Observable<File[]> {
     if (parent.children) {
       return of(parent.children);
     }
-    return this.fileService.propFindChildren(`${container.url}/dav/${parent.path}`).pipe(map(childResources => {
+    return this.dav.propFindChildren(`${container.url}/dav/${parent.path}`).pipe(map(childResources => {
       const children = childResources.map(resource => this.toFile(resource));
 
       children.sort(File.compare);
@@ -71,8 +71,8 @@ export class FileService {
   createChild(container: Container, parent: File, name: string, directory: boolean): Observable<File> {
     const path = parent.path + name;
     const url = `${container.url}/dav/${path}`;
-    return (directory ? this.fileService.mkcol(url) : this.fileService.put(url, '')).pipe(
-      flatMap(() => this.fileService.propFind(url)),
+    return (directory ? this.dav.mkcol(url) : this.dav.put(url, '')).pipe(
+      flatMap(() => this.dav.propFind(url)),
       map(resource => {
         const file = this.toFile(resource);
         file.setParent(parent);
@@ -85,7 +85,7 @@ export class FileService {
     const [start, end] = file._namePos;
     const from = `${container.url}/dav/${file.path}`;
     const to = `${container.url}/dav/${file.path.substring(0, start)}${newName}${file.path.substring(end)}`;
-    return this.fileService.move(from, to).pipe(tap(_ => {
+    return this.dav.move(from, to).pipe(tap(_ => {
       this.recurse(file, f => {
         f.path = f.path.substring(0, start) + newName + f.path.substring(end);
       });
@@ -96,7 +96,7 @@ export class FileService {
     const [start] = file._namePos;
     const from = `${container.url}/dav/${file.path}`;
     const to = `${container.url}/dav/${directory.path}${file.path.substring(start)}`;
-    return this.fileService.move(from, to).pipe(tap(_ => {
+    return this.dav.move(from, to).pipe(tap(_ => {
       this.recurse(file, f => {
         f.path = directory.path + f.path.substring(start);
       });
@@ -105,7 +105,7 @@ export class FileService {
   }
 
   delete(container: Container, file: File): Observable<void> {
-    return this.fileService.delete(`${container.url}/dav/${file.path}`).pipe(tap(() => {
+    return this.dav.delete(`${container.url}/dav/${file.path}`).pipe(tap(() => {
       file.removeFromParent();
       this.deletions.next(file);
     }));
