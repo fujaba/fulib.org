@@ -65,9 +65,17 @@ export class ProjectManager {
     }
   }
 
+  private parentPath(path: string) {
+    return path.substring(0, path.lastIndexOf('/', path.length - 2) + 1);
+  }
+
   private create(path: string): void {
-    const parentPath = path.substring(0, path.lastIndexOf('/', path.length - 2) + 1);
+    const parentPath = this.parentPath(path);
     const parent = this.fileService.resolve(this.fileRoot, parentPath);
+    this.maybeCreate(parent, path);
+  }
+
+  private maybeCreate(parent: File | undefined, path: string) {
     if (parent && parent.children && !this.fileService.resolve(parent, path)) {
       const child = new File();
       child.path = path;
@@ -76,7 +84,7 @@ export class ProjectManager {
   }
 
   private move(from: string, to: string): void {
-    const newParentPath = to.substring(0, to.lastIndexOf('/', to.length - 2) + 1);
+    const newParentPath = this.parentPath(to);
     const newParent = this.fileService.resolve(this.fileRoot, newParentPath);
     const oldFile = this.fileService.resolve(this.fileRoot, from);
 
@@ -86,24 +94,23 @@ export class ProjectManager {
         oldFile.setParent(newParent);
         this.renames.next(oldFile);
       } else {
-        oldFile.removeFromParent();
-        this.deletions.next(oldFile);
+        this.doDelete(oldFile);
       }
     } else {
-      if (newParent && newParent.children && !this.fileService.resolve(newParent, to)) {
-        const newFile = new File();
-        newFile.path = to;
-        newFile.setParent(newParent);
-      }
+      this.maybeCreate(newParent, to);
     }
   }
 
   private delete(path: string): void {
     const file = this.fileService.resolve(this.fileRoot, path);
     if (file) {
-      file.removeFromParent();
-      this.deletions.next(file);
+      this.doDelete(file);
     }
+  }
+
+  private doDelete(file: File) {
+    file.removeFromParent();
+    this.deletions.next(file);
   }
 
   open(editor: FileEditor): void {
