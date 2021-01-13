@@ -44,10 +44,10 @@ export class TerminalComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const xterm = this.terminal.underlying;
     this.projectManager.resize(xterm.cols, xterm.rows);
-    // this.resize = xterm.onResize(({cols, rows}) => this.projectManager.resize(cols, rows));
+    this.resize = xterm.onResize(({cols, rows}) => this.projectManager.resize(cols, rows));
   }
 
   ngOnDestroy(): void {
-    this.resize.dispose();
+    this.resize?.dispose();
   }
 }

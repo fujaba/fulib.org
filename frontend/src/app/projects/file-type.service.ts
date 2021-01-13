@@ -37,6 +37,12 @@ export class FileTypeService {
       icon: 'file-earmark-code',
       mode: 'text/x-properties',
     },
+    yaml: {
+      name: 'YAML',
+      extensions: ['.yaml', '.yml'],
+      icon: 'file-earmark-code',
+      mode: 'text/x-yaml',
+    },
     archive: {
       name: 'Archive',
       extensions: ['.zip', '.jar'],
