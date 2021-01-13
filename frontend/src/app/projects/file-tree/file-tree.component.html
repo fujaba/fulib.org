@@ -3,6 +3,10 @@
      (click)="open(true)"
      (dblclick)="open(false)"
      (contextmenu)="openContextMenu($event, dropdown)"
+     [dndDraggable]="file.path"
+     [dndDropzone]=""
+     [dndDisableDropIf]="!file.directory"
+     (dndDrop)="onDrop($event)"
 >
   <div class="file-item-indent" [style.margin-left.em]="level - 0.5">
     <app-file-icon class="mr-2" [file]="file" [open]="expanded"></app-file-icon>
@@ -47,9 +51,6 @@
     </div>
   </div>
 </div>
-<div *ngIf="expanded"
-     class="file-tree-children"
-     dragula="FILE_TREE"
-     [dragulaModel]="file.children || []" (dragulaModelChange)="setChildren($event)">
+<div *ngIf="expanded" class="file-tree-children">
   <app-file-tree *ngFor="let child of file.children || []" [file]="child" [level]="level + 1"></app-file-tree>
 </div>

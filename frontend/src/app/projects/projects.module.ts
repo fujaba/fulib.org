@@ -6,7 +6,7 @@ import {FormsModule} from '@angular/forms';
 import {NgxResizableModule} from '@3dgenomes/ngx-resizable';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {NgTerminalModule} from 'ng-terminal';
-import {DragulaModule} from 'ng2-dragula';
+import {DndModule} from 'ngx-drag-drop';
 import {SharedModule} from '../shared/shared.module';
 
 import {ProjectsRoutingModule} from './projects-routing.module';
@@ -44,8 +44,8 @@ import { TerminalComponent } from './terminal/terminal.component';
     FormsModule,
     NgbModule,
     SharedModule,
-    DragulaModule,
     NgTerminalModule,
+    DndModule,
   ],
 })
 export class ProjectsModule {

@@ -1,16 +1,6 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  HostBinding,
-  HostListener,
-  Inject,
-  Input,
-  OnInit,
-  QueryList,
-  ViewChildren,
-} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostBinding, Inject, Input, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
+import {DndDropEvent} from 'ngx-drag-drop';
 import {Observable} from 'rxjs';
 import {FileService} from '../file.service';
 import {FILE_ROOT} from '../injection-tokens';
@@ -114,14 +104,11 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
     this.fileManager.createChild(this.container, this.file, name, directory).subscribe();
   }
 
-  setChildren(children: File[]) {
-    if (!this.file) {
-      return;
-    }
-    for (const child of children) {
-      if (child.parentPath !== this.file.path) {
-        this.fileManager.move(this.container, child, this.file).subscribe();
-      }
+  onDrop(event: DndDropEvent): void {
+    const path: string = event.data;
+    const file = this.fileManager.resolve(this.root, path);
+    if (file) {
+      this.fileManager.move(this.container, file, this.file).subscribe();
     }
   }
 }

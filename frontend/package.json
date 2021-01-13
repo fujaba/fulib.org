@@ -35,6 +35,7 @@
     "ng-terminal": "^3.0.1",
     "ng2-dragula": "^2.1.1",
     "ngx-clipboard": "^14.0.1",
+    "ngx-drag-drop": "^2.0.0",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"

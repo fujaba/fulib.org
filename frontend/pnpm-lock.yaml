@@ -23,6 +23,7 @@ dependencies:
   ng-terminal: 3.0.1_4f3ff29399d5dd0cb3a09414e78c53ca
   ng2-dragula: 2.1.1_@angular+core@11.0.3+rxjs@6.5.5
   ngx-clipboard: 14.0.1_794750ec7097dfee4813d32989b0f0e1
+  ngx-drag-drop: 2.0.0
   rxjs: 6.5.5
   tslib: 2.0.3
   zone.js: 0.10.3
@@ -6456,6 +6457,14 @@ packages:
       '@angular/core': '>=10.0.0'
     resolution:
       integrity: sha512-y6fDrvAso1cbM+VvHgB2kJ3dcQ/EBPol33nLaqqKB1jNO/Kd3l17EHdXNW/oKY0wUKCHk7ZCuiinREgUHEYfXg==
+  /ngx-drag-drop/2.0.0:
+    dependencies:
+      tslib: 1.14.1
+    dev: false
+    engines:
+      node: '>=8.9.0'
+    resolution:
+      integrity: sha512-t+4/eiC8zaXKqU1ruNfFEfGs1GpMNwpffD0baopvZFKjQHCb5rhNqFilJ54wO4T0OwGp4/RnsVhlcxe1mX6UJg==
   /ngx-window-token/4.0.0_794750ec7097dfee4813d32989b0f0e1:
     dependencies:
       '@angular/common': 11.0.3_@angular+core@11.0.3+rxjs@6.5.5
@@ -10078,6 +10087,7 @@ specifiers:
   ng-terminal: ^3.0.1
   ng2-dragula: ^2.1.1
   ngx-clipboard: ^14.0.1
+  ngx-drag-drop: ^2.0.0
   protractor: ~7.0.0
   rxjs: ~6.5.5
   ts-node: ~7.0.1
