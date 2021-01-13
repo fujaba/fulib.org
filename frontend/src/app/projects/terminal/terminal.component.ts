@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NgTerminal} from 'ng-terminal';
 import {Observable} from 'rxjs';
 import {filter, map, tap} from 'rxjs/operators';
@@ -9,12 +9,14 @@ import {ProjectManager} from '../project.manager';
   templateUrl: './terminal.component.html',
   styleUrls: ['./terminal.component.scss'],
 })
-export class TerminalComponent implements OnInit, OnDestroy {
+export class TerminalComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('term', {static: true}) terminal: NgTerminal;
 
   output$: Observable<string>;
 
   process?: string;
+
+  private resize;
 
   constructor(
     private projectManager: ProjectManager,
@@ -31,14 +33,21 @@ export class TerminalComponent implements OnInit, OnDestroy {
       filter(message => message.event === 'output'),
       map(message => message.text),
     );
+  }
 
+  ngAfterViewInit(): void {
     this.terminal.keyEventInput.subscribe(e => {
       if (e.key && this.process) {
         this.projectManager.input(e.key, this.process);
       }
     });
+
+    const xterm = this.terminal.underlying;
+    this.projectManager.resize(xterm.cols, xterm.rows);
+    // this.resize = xterm.onResize(({cols, rows}) => this.projectManager.resize(cols, rows));
   }
 
   ngOnDestroy(): void {
+    this.resize.dispose();
   }
 }

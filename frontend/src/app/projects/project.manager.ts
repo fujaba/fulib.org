@@ -111,4 +111,8 @@ export class ProjectManager {
     this.wss.complete();
     this.wss.unsubscribe();
   }
+
+  resize(columns: number, rows: number) {
+    this.wss.next({command: 'resize', columns, rows});
+  }
 }
