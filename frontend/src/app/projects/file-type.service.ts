@@ -26,6 +26,13 @@ export class FileTypeService {
       mode: 'text/xml',
       previewMode: 'img',
     },
+    html: {
+      name: 'HTML',
+      extensions: ['.htm', '.html'],
+      icon: 'file-earmark-richtext',
+      mode: 'text/html',
+      previewMode: 'iframe',
+    },
     gradle: {
       name: 'Gradle',
       extensions: ['.gradle'],
