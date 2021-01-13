@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {FileService} from '../file.service';
 import {File} from '../model/file';
+import {ProjectManager} from '../project.manager';
 
 @Component({
   selector: 'app-file-revisions',
@@ -11,12 +12,12 @@ export class FileRevisionsComponent implements OnInit {
   @Input() file?: File;
 
   constructor(
-    private fileManager: FileService,
+    private projectManager: ProjectManager,
   ) {
   }
 
   ngOnInit(): void {
-    this.fileManager.currentFile.subscribe(file => this.file = file);
+    this.projectManager.currentFile.subscribe(file => this.file = file);
   }
 
 }

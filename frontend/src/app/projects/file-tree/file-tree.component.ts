@@ -6,6 +6,7 @@ import {FileService} from '../file.service';
 import {FILE_ROOT} from '../injection-tokens';
 import {Container} from '../model/container';
 import {File} from '../model/file';
+import {ProjectManager} from '../project.manager';
 
 @Component({
   selector: 'app-file-tree',
@@ -25,12 +26,13 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
   constructor(
     private container: Container,
     private fileManager: FileService,
+    private projectManager: ProjectManager,
     @Inject(FILE_ROOT) public root: File,
   ) {
   }
 
   ngOnInit(): void {
-    this.currentFile = this.fileManager.currentFile;
+    this.currentFile = this.projectManager.currentFile;
     if (!this.file) {
       this.file = this.root;
     }
@@ -43,10 +45,10 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
   }
 
   open(temporary: boolean) {
-    this.fileManager.currentFile.next(this.file);
+    this.projectManager.currentFile.next(this.file);
 
     if (!this.file.directory) {
-      this.fileManager.open({file: this.file, temporary});
+      this.projectManager.open({file: this.file, temporary});
       return;
     }
 
@@ -56,7 +58,7 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
   }
 
   openPreview() {
-    this.fileManager.open({file: this.file, temporary: false, preview: true});
+    this.projectManager.open({file: this.file, temporary: false, preview: true});
   }
 
   startRenaming() {

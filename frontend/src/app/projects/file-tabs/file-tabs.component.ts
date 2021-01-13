@@ -5,6 +5,7 @@ import {FileService} from '../file.service';
 import {Container} from '../model/container';
 import {File} from '../model/file';
 import {FileEditor} from '../model/file-editor';
+import {ProjectManager} from '../project.manager';
 
 @Component({
   selector: 'app-file-tabs',
@@ -20,14 +21,15 @@ export class FileTabsComponent implements OnInit, OnDestroy {
   constructor(
     private container: Container,
     private fileManager: FileService,
+    private projectManager: ProjectManager,
   ) {
   }
 
   ngOnInit(): void {
-    this.subscription.add(this.fileManager.openRequests.subscribe((editor: FileEditor) => {
+    this.subscription.add(this.projectManager.openRequests.subscribe((editor: FileEditor) => {
       this.open(editor);
     }));
-    this.subscription.add(this.fileManager.deletions.subscribe((file: File) => {
+    this.subscription.add(this.projectManager.deletions.subscribe((file: File) => {
       const editor = this.openEditors.find(ed => ed.file === file);
       if (editor) {
         this.close(editor);

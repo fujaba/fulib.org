@@ -7,6 +7,7 @@ import {FileService} from '../file.service';
 import {File} from '../model/file';
 import {FILE_ROOT} from '../injection-tokens';
 import {Project} from '../model/project';
+import {ProjectManager} from '../project.manager';
 
 @Component({
   selector: 'app-project-tree',
@@ -26,7 +27,7 @@ export class ProjectTreeComponent implements OnInit {
   constructor(
     @Inject(FILE_ROOT) public fileRoot: File,
     public project: Project,
-    private fileManager: FileService,
+    private projectManager: ProjectManager,
   ) {
     for (const panel of this.panels) {
       this.panelState[panel.id] = {
@@ -36,6 +37,6 @@ export class ProjectTreeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.currentFile = this.fileManager.currentFile;
+    this.currentFile = this.projectManager.currentFile;
   }
 }

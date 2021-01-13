@@ -1,30 +1,18 @@
-import {EventEmitter, Injectable} from '@angular/core';
-import {BehaviorSubject, EMPTY, Observable, of} from 'rxjs';
-import {flatMap, map, tap} from 'rxjs/operators';
+import {Injectable} from '@angular/core';
+import {EMPTY, Observable, of} from 'rxjs';
+import {map, tap} from 'rxjs/operators';
 import {DavClient} from './dav-client';
 import {Container} from './model/container';
 import {DavResource} from './model/dav-resource';
 import {File} from './model/file';
-import {FileEditor} from './model/file-editor';
-
 
 @Injectable({
   providedIn: 'root',
 })
 export class FileService {
-  openRequests = new EventEmitter<FileEditor>();
-  updates = new EventEmitter<File>();
-  deletions = new EventEmitter<File>();
-
-  currentFile = new BehaviorSubject<File | undefined>(undefined);
-
   constructor(
     private dav: DavClient,
   ) {
-  }
-
-  open(editor: FileEditor): void {
-    this.openRequests.next(editor);
   }
 
   getContent(container: Container, file: File): Observable<string> {

@@ -1,8 +1,10 @@
-import {interval, Observable, Subscription} from 'rxjs';
+import {EventEmitter} from '@angular/core';
+import {BehaviorSubject, interval, Observable, Subscription} from 'rxjs';
 import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
 import {FileService} from './file.service';
 import {Container} from './model/container';
 import {File} from './model/file';
+import {FileEditor} from './model/file-editor';
 import {Project} from './model/project';
 
 export class ProjectManager {
@@ -10,6 +12,12 @@ export class ProjectManager {
   private keepAliveTimer: Subscription;
 
   fileRoot: File;
+
+  openRequests = new EventEmitter<FileEditor>();
+  updates = new EventEmitter<File>();
+  deletions = new EventEmitter<File>();
+
+  currentFile = new BehaviorSubject<File | undefined>(undefined);
 
   constructor(
     public readonly project: Project,
@@ -72,6 +80,10 @@ export class ProjectManager {
         return;
       }
     }
+  }
+
+  open(editor: FileEditor): void {
+    this.openRequests.next(editor);
   }
 
   exec(cmd: string[]): Observable<any> {

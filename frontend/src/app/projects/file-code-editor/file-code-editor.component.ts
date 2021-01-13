@@ -5,6 +5,7 @@ import {FileTypeService} from '../file-type.service';
 import {FileService} from '../file.service';
 import {Container} from '../model/container';
 import {File} from '../model/file';
+import {ProjectManager} from '../project.manager';
 
 @Component({
   selector: 'app-file-code-editor',
@@ -31,6 +32,7 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
   constructor(
     private container: Container,
     private fileManager: FileService,
+    private projectManager: ProjectManager,
     private fileTypeService: FileTypeService,
   ) {
   }
@@ -46,7 +48,7 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subscription = this.fileManager.updates.pipe(filter(file => file === this.file)).subscribe(() => {
+    this.subscription = this.projectManager.updates.pipe(filter(file => file === this.file)).subscribe(() => {
       this.updateFileType();
     });
   }
