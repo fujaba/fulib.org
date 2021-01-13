@@ -36,7 +36,10 @@
       <img class="icon hover-only px-1" ngbDropdownToggle src="/assets/icons/three-dots.svg" alt="Options">
       <div ngbDropdownMenu>
         <button ngbDropdownItem (click)="open(false)">Open</button>
-        <button ngbDropdownItem *ngIf="!file.directory" (click)="openPreview()">Preview</button>
+        <ng-container *ngIf="!file.directory">
+          <button ngbDropdownItem (click)="openPreview()">Preview</button>
+          <a ngbDropdownItem [href]="container.url + '/dav/' + file.path" [download]="file.name" target="_blank">Download</a>
+        </ng-container>
         <button ngbDropdownItem *ngIf="file !== root" (click)="startRenaming()">Rename</button>
         <ng-container *ngIf="file.directory">
           <div class="dropdown-divider"></div>

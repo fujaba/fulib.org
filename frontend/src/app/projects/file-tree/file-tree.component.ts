@@ -24,7 +24,7 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
   currentFile: Observable<File | undefined>;
 
   constructor(
-    private container: Container,
+    public container: Container,
     private fileManager: FileService,
     private projectManager: ProjectManager,
     @Inject(FILE_ROOT) public root: File,
