@@ -5,6 +5,7 @@ import {FileTypeService} from '../file-type.service';
 import {FileService} from '../file.service';
 import {Container} from '../model/container';
 import {File} from '../model/file';
+import {FileType} from '../model/file-type';
 import {ProjectManager} from '../project.manager';
 
 @Component({
@@ -14,6 +15,7 @@ import {ProjectManager} from '../project.manager';
 })
 export class FileCodeEditorComponent implements OnInit, OnDestroy {
   private _file: File;
+  fileType: FileType;
 
   subscription: Subscription;
 
@@ -30,7 +32,7 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
   };
 
   constructor(
-    private container: Container,
+    public container: Container,
     private fileManager: FileService,
     private projectManager: ProjectManager,
     private fileTypeService: FileTypeService,
@@ -59,7 +61,8 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
   }
 
   private updateFileType() {
-    this.options.mode = this.fileTypeService.getFileType(this.file).mode;
+    this.fileType = this.fileTypeService.getFileType(this.file);
+    this.options.mode = this.fileType.mode;
   }
 
   private onExternalChange() {

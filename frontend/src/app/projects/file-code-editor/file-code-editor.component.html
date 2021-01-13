@@ -1,6 +1,11 @@
-<app-autotheme-codemirror
-  class="cm-h-100"
-  [content]="file.content"
-  (contentChange)="setContent($event)"
-  [options]="options"
-></app-autotheme-codemirror>
+<ng-container [ngSwitch]="fileType.mode">
+  <img *ngSwitchCase="'img'"
+    [src]="container.url + '/dav/' + file.path" [alt]="file.name">
+  <app-autotheme-codemirror
+    *ngSwitchDefault
+    class="cm-h-100"
+    [content]="file.content"
+    (contentChange)="setContent($event)"
+    [options]="options"
+  ></app-autotheme-codemirror>
+</ng-container>
