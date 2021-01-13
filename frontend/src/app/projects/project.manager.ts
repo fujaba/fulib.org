@@ -16,6 +16,7 @@ export class ProjectManager {
   openRequests = new EventEmitter<FileEditor>();
   renames = new EventEmitter<File>();
   deletions = new EventEmitter<File>();
+  changes = new EventEmitter<File>();
 
   currentFile = new BehaviorSubject<File | undefined>(undefined);
 
@@ -38,6 +39,10 @@ export class ProjectManager {
     }
 
     switch (message.event) {
+      case 'modified': {
+        this.change(message.path);
+        return;
+      }
       case 'created': {
         this.create(message.path);
         return;
@@ -50,6 +55,13 @@ export class ProjectManager {
         this.delete(message.path);
         return;
       }
+    }
+  }
+
+  private change(path: string): void {
+    const file = this.fileService.resolve(this.fileRoot, path);
+    if (file) {
+      this.changes.next(file);
     }
   }
 

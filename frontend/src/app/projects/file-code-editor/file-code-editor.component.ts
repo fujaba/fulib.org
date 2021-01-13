@@ -48,9 +48,10 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subscription = this.projectManager.renames.pipe(filter(file => file === this.file)).subscribe(() => {
-      this.updateFileType();
-    });
+    const sameFile = filter(file => file === this.file);
+    this.subscription = new Subscription();
+    this.subscription.add(this.projectManager.renames.pipe(sameFile).subscribe(() => this.updateFileType()));
+    this.subscription.add(this.projectManager.changes.pipe(sameFile).subscribe(() => this.onExternalChange()));
   }
 
   ngOnDestroy() {
@@ -59,6 +60,16 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
 
   private updateFileType() {
     this.options.mode = this.fileTypeService.getFileType(this.file).mode;
+  }
+
+  private onExternalChange() {
+    if (this.file.dirty && !confirm(this.file.name + ' was changed externally. Reload and discard changes?')) {
+      return;
+    }
+
+    this.file.dirty = false;
+    this.file.content = undefined;
+    this.fileManager.getContent(this.container, this.file).subscribe();
   }
 
   save() {
