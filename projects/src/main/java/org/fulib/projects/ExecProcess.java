@@ -1,6 +1,8 @@
 package org.fulib.projects;
 
+import com.pty4j.PtyProcess;
 import com.pty4j.PtyProcessBuilder;
+import com.pty4j.WinSize;
 import org.eclipse.jetty.websocket.api.Session;
 import org.json.JSONObject;
 
@@ -15,7 +17,10 @@ public class ExecProcess extends Thread
 	private final Session session;
 	private final String execId;
 
-	private Process process;
+	private int columns;
+	private int rows;
+
+	private PtyProcess process;
 
 	public ExecProcess(String[] cmd, Session session)
 	{
@@ -34,6 +39,16 @@ public class ExecProcess extends Thread
 		return this.process.getOutputStream();
 	}
 
+	public void resize(int columns, int rows)
+	{
+		this.rows = rows;
+		this.columns = columns;
+		if (process != null)
+		{
+			process.setWinSize(new WinSize(columns, rows));
+		}
+	}
+
 	@Override
 	public void run()
 	{
@@ -41,6 +56,14 @@ public class ExecProcess extends Thread
 		{
 			final PtyProcessBuilder processBuilder = new PtyProcessBuilder(cmd);
 			processBuilder.setRedirectErrorStream(true);
+			if (columns != 0)
+			{
+				processBuilder.setInitialColumns(columns);
+			}
+			if (rows != 0)
+			{
+				processBuilder.setInitialRows(rows);
+			}
 			process = processBuilder.start();
 
 			final JSONObject startedEvent = new JSONObject();

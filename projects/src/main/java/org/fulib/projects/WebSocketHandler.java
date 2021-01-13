@@ -60,6 +60,14 @@ public class WebSocketHandler implements FileEventHandler
 		case "keepAlive":
 			this.resetShutdownTimer.run();
 			return;
+		case "resize":
+			final int columns = json.getInt("columns");
+			final int rows = json.getInt("rows");
+			for (final ExecProcess value : this.processes.get(session).values())
+			{
+				value.resize(columns, rows);
+			}
+			return;
 		default:
 			session.getRemote().sendString(new JSONObject().put("error", "invalid command: " + command).toString());
 			return;
