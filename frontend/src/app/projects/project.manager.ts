@@ -14,7 +14,7 @@ export class ProjectManager {
   fileRoot: File;
 
   openRequests = new EventEmitter<FileEditor>();
-  updates = new EventEmitter<File>();
+  renames = new EventEmitter<File>();
   deletions = new EventEmitter<File>();
 
   currentFile = new BehaviorSubject<File | undefined>(undefined);
@@ -72,7 +72,7 @@ export class ProjectManager {
       if (newParent && newParent.children) {
         oldFile.path = to;
         oldFile.setParent(newParent);
-        this.updates.next(oldFile);
+        this.renames.next(oldFile);
       } else {
         oldFile.removeFromParent();
         this.deletions.next(oldFile);

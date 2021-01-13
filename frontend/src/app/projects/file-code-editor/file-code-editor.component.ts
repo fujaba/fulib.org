@@ -48,7 +48,7 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subscription = this.projectManager.updates.pipe(filter(file => file === this.file)).subscribe(() => {
+    this.subscription = this.projectManager.renames.pipe(filter(file => file === this.file)).subscribe(() => {
       this.updateFileType();
     });
   }
