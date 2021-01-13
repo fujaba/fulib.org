@@ -59,8 +59,10 @@ export class ProjectManager {
           if (newParent && newParent.children) {
             oldFile.path = message.to;
             oldFile.setParent(newParent);
+            this.updates.next(oldFile);
           } else {
             oldFile.removeFromParent();
+            this.deletions.next(oldFile);
           }
         } else {
           if (newParent && newParent.children && !this.fileService.resolve(newParent, to)) {
@@ -76,6 +78,7 @@ export class ProjectManager {
         const file = this.fileService.resolve(this.fileRoot, message.path);
         if (file) {
           file.removeFromParent();
+          this.deletions.next(file);
         }
         return;
       }
