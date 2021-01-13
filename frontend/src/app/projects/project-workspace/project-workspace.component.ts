@@ -67,7 +67,7 @@ export class ProjectWorkspaceComponent implements OnInit {
       ])),
       tap(([project, container]) => {
         this.projectManager?.destroy();
-        this.projectManager = new ProjectManager(project, container);
+        this.projectManager = new ProjectManager(project, container, this.fileManager);
 
         this.sidebarItems.settings = {name: 'Settings', icon: 'gear', component: SettingsComponent};
         this.terminalComponent = TerminalComponent;
