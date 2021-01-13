@@ -1,5 +1,6 @@
 import {interval, Observable, Subscription} from 'rxjs';
 import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
+import {FileService} from './file.service';
 import {Container} from './model/container';
 import {File} from './model/file';
 import {Project} from './model/project';
@@ -13,6 +14,7 @@ export class ProjectManager {
   constructor(
     public readonly project: Project,
     container: Container,
+    private fileService: FileService,
   ) {
     const url = container.url.startsWith('http') ? `ws${container.url.substring(4)}/ws` : `${container.url}/ws`;
     this.wss = webSocket<any>(url);
@@ -31,8 +33,8 @@ export class ProjectManager {
       case 'created': {
         const path: string = message.path;
         const parentPath = path.substring(0, path.lastIndexOf('/', path.length - 2) + 1);
-        const parent = this.resolve(this.fileRoot, parentPath);
-        if (parent && !this.resolve(parent, path)) {
+        const parent = this.fileService.resolve(this.fileRoot, parentPath);
+        if (parent && !this.fileService.resolve(parent, path)) {
           const child = new File();
           child.path = path;
           child.setParent(parent);
@@ -42,8 +44,8 @@ export class ProjectManager {
       case 'moved': {
         const to: string = message.to;
         const newParentPath = to.substring(0, to.lastIndexOf('/', to.length - 2) + 1);
-        const newParent = this.resolve(this.fileRoot, newParentPath);
-        const oldFile = this.resolve(this.fileRoot, message.from);
+        const newParent = this.fileService.resolve(this.fileRoot, newParentPath);
+        const oldFile = this.fileService.resolve(this.fileRoot, message.from);
 
         if (oldFile) {
           if (newParent && newParent.children) {
@@ -53,7 +55,7 @@ export class ProjectManager {
             oldFile.removeFromParent();
           }
         } else {
-          if (newParent && newParent.children && !this.resolve(newParent, to)) {
+          if (newParent && newParent.children && !this.fileService.resolve(newParent, to)) {
             const newFile = new File();
             newFile.path = to;
             newFile.setParent(newParent);
@@ -63,29 +65,13 @@ export class ProjectManager {
         return;
       }
       case 'deleted': {
-        const file = this.resolve(this.fileRoot, message.path);
+        const file = this.fileService.resolve(this.fileRoot, message.path);
         if (file) {
           file.removeFromParent();
         }
         return;
       }
     }
-  }
-
-  private resolve(file: File, path: string): File | undefined {
-    if (file.path === path) {
-      return file;
-    }
-    if (!file.children) {
-      return undefined;
-    }
-    for (const child of file.children) {
-      const childResult = this.resolve(child, path);
-      if (childResult) {
-        return childResult;
-      }
-    }
-    return undefined;
   }
 
   exec(cmd: string[]): Observable<any> {

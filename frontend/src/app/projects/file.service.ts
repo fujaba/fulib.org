@@ -111,6 +111,22 @@ export class FileService {
     }));
   }
 
+  resolve(file: File, path: string): File | undefined {
+    if (file.path === path) {
+      return file;
+    }
+    if (!file.children) {
+      return undefined;
+    }
+    for (const child of file.children) {
+      const childResult = this.resolve(child, path);
+      if (childResult) {
+        return childResult;
+      }
+    }
+    return undefined;
+  }
+
   private toFile(resource: DavResource): File {
     const file = new File();
     file.path = resource.href.substring('/dav'.length);
