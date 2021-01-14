@@ -20,6 +20,7 @@ import { ProjectFormComponent } from './project-form/project-form.component';
 import { FileCodeEditorComponent } from './file-code-editor/file-code-editor.component';
 import { FileRevisionsComponent } from './file-revisions/file-revisions.component';
 import { TerminalComponent } from './terminal/terminal.component';
+import { FileEditorComponent } from './file-editor/file-editor.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { TerminalComponent } from './terminal/terminal.component';
     FileCodeEditorComponent,
     FileRevisionsComponent,
     TerminalComponent,
+    FileEditorComponent,
   ],
   imports: [
     CommonModule,

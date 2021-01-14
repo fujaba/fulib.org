@@ -1,0 +1,9 @@
+<ng-container [ngSwitch]="editor.preview && editor.file.type.previewMode || editor.file.type.mode">
+  <img *ngSwitchCase="'img'"
+       [src]="container.url + '/dav/' + editor.file.path" [alt]="editor.file.name">
+  <iframe *ngSwitchCase="'iframe'"
+          class="w-100 h-100"
+          [src]="(container.url + '/dav/' + editor.file.path) | safeResourceUrl"
+  ></iframe>
+  <app-file-code-editor *ngSwitchDefault [file]="editor.file"></app-file-code-editor>
+</ng-container>
