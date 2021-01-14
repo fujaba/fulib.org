@@ -125,8 +125,12 @@ export class ProjectManager {
   exec(cmd: string[]): Observable<any> {
     let process = '';
     return this.wss.multiplex(() => ({
-      command: 'exec', cmd,
-    }), () => undefined, msg => {
+      command: 'exec',
+      cmd,
+    }), () => ({
+      command: 'kill',
+      process,
+    }), msg => {
       if (msg.event === 'started') {
         process = msg.process;
         return true;
