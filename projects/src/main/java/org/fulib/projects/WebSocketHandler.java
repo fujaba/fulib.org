@@ -49,12 +49,12 @@ public class WebSocketHandler implements FileEventHandler
 		case "input":
 		{
 			final String input = json.getString("text");
-			final String execId = json.getString("process");
-			final Map<String, ExecProcess> map = this.processes.get(session);
-			final ExecProcess exec = map.get(execId);
-
-			exec.getOutputStream().write(input.getBytes(StandardCharsets.UTF_8));
-			exec.getOutputStream().flush();
+			final String processId = json.getString("process");
+			final ExecProcess process = this.processes.get(session).get(processId);
+			if (process != null)
+			{
+				process.input(input);
+			}
 			return;
 		}
 		case "kill":

@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 public class ExecProcess extends Thread
@@ -34,9 +35,14 @@ public class ExecProcess extends Thread
 		return execId;
 	}
 
-	public OutputStream getOutputStream()
+	public void input(String text) throws IOException
 	{
-		return this.process.getOutputStream();
+		if (process != null && process.isRunning())
+		{
+			final OutputStream outputStream = process.getOutputStream();
+			outputStream.write(text.getBytes(StandardCharsets.UTF_8));
+			outputStream.flush();
+		}
 	}
 
 	public void resize(int columns, int rows)
