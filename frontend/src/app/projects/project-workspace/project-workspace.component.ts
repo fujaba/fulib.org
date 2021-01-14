@@ -46,7 +46,7 @@ export class ProjectWorkspaceComponent implements OnInit {
     parentInjector: Injector,
     private route: ActivatedRoute,
     private projectService: ProjectService,
-    private fileManager: FileService,
+    private fileService: FileService,
     private fileTypeService: FileTypeService,
   ) {
     this.injector = Injector.create({
@@ -69,13 +69,13 @@ export class ProjectWorkspaceComponent implements OnInit {
       ])),
       tap(([project, container]) => {
         this.projectManager?.destroy();
-        this.projectManager = new ProjectManager(project, container, this.fileManager, this.fileTypeService);
+        this.projectManager = new ProjectManager(project, container, this.fileService, this.fileTypeService);
 
         this.sidebarItems.settings = {name: 'Settings', icon: 'gear', component: SettingsComponent};
         this.terminalComponent = TerminalComponent;
         this.fileTabsComponent = FileTabsComponent;
       }),
-      switchMap(([project, container]) => this.fileManager.get(container, `/projects/${project.id}/`)),
+      switchMap(([project, container]) => this.fileService.get(container, `/projects/${project.id}/`)),
       tap(fileRoot => {
         this.projectManager.fileRoot = fileRoot;
         this.fileRoot = fileRoot;

@@ -25,7 +25,7 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
 
   constructor(
     public container: Container,
-    private fileManager: FileService,
+    private fileService: FileService,
     private projectManager: ProjectManager,
     @Inject(FILE_ROOT) public root: File,
   ) {
@@ -54,7 +54,7 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
 
     this.expanded = !this.expanded;
 
-    this.fileManager.getChildren(this.container, this.file).subscribe();
+    this.fileService.getChildren(this.container, this.file).subscribe();
   }
 
   openPreview() {
@@ -70,7 +70,7 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    this.fileManager.rename(this.container, this.file, this.newName).subscribe(() => {
+    this.fileService.rename(this.container, this.file, this.newName).subscribe(() => {
       this.newName = undefined;
     });
   }
@@ -81,7 +81,7 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
 
   delete() {
     if (confirm(`Delete ${this.file.name}?`)) {
-      this.fileManager.delete(this.container, this.file).subscribe();
+      this.fileService.delete(this.container, this.file).subscribe();
     }
   }
 
@@ -103,14 +103,14 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
   }
 
   private addChild(name: string, directory: boolean) {
-    this.fileManager.createChild(this.container, this.file, name, directory).subscribe();
+    this.fileService.createChild(this.container, this.file, name, directory).subscribe();
   }
 
   onDrop(event: DndDropEvent): void {
     const path: string = event.data;
-    const file = this.fileManager.resolve(this.root, path);
+    const file = this.fileService.resolve(this.root, path);
     if (file) {
-      this.fileManager.move(this.container, file, this.file).subscribe();
+      this.fileService.move(this.container, file, this.file).subscribe();
     }
   }
 }
