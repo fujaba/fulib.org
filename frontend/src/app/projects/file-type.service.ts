@@ -79,9 +79,10 @@ export class FileTypeService {
   };
 
   getFileType(file: File): FileType {
+    const name = file.name;
     for (const fileType of Object.values(this.fileTypes)) {
       for (const extension of fileType.extensions) {
-        if (file.name.endsWith(extension)) {
+        if (name.endsWith(extension)) {
           return fileType;
         }
       }
