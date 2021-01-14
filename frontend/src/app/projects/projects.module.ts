@@ -20,6 +20,7 @@ import {ProjectWorkspaceComponent} from './project-workspace/project-workspace.c
 import {ProjectsRoutingModule} from './projects-routing.module';
 import {SettingsComponent} from './settings/settings.component';
 import {TerminalComponent} from './terminal/terminal.component';
+import { TabsComponent } from './tabs/tabs.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import {TerminalComponent} from './terminal/terminal.component';
     ProjectWorkspaceComponent,
     SettingsComponent,
     TerminalComponent,
+    TabsComponent,
   ],
   imports: [
     // Angular

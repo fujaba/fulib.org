@@ -1,33 +1,13 @@
-<ul ngbNav #nav="ngbNav" [(activeId)]="currentEditor" class="nav-tabs">
-  <li *ngFor="let editor of openEditors" [ngbNavItem]="editor">
-    <a ngbNavLink class="text-reset"
-       (contextmenu)="openContextMenu($event, editor, dropdown)"
-       (auxclick)="auxClick($event, editor)">
-      <img class="icon" [src]="'/assets/icons/' + editor.file.type.icon + '.svg'" [alt]="editor.file.type.name">
-      <span [class.text-primary]="editor.file.dirty" [class.font-italic]="editor.temporary">
-        {{ editor.file.name }}
-      </span>
-      <span *ngIf="editor.preview">
-        (Preview)
-      </span>
-      <div class="d-inline" ngbDropdown #dropdown="ngbDropdown" container="body">
-        <span ngbDropdownToggle>
-        </span>
-        <div ngbDropdownMenu>
-          <button ngbDropdownItem (click)="close(editor)">Close</button>
-          <button ngbDropdownItem (click)="closeOthers(editor)">Close Others</button>
-          <button ngbDropdownItem (click)="closeAll()">Close All</button>
-          <button ngbDropdownItem (click)="closeLeftOf(editor)">Close All to the Left</button>
-          <button ngbDropdownItem (click)="closeRightOf(editor)">Close All to the Right</button>
-        </div>
-      </div>
-      <span class="close position-relative pl-2 font-weight-light"
-            (click)="close(editor); $event.preventDefault(); $event.stopImmediatePropagation()">
-        ×
-      </span>
-    </a>
-  </li>
-</ul>
-<div style="height: calc(100% - 40px)">
-  <app-file-editor *ngIf="currentEditor" [editor]="currentEditor"></app-file-editor>
-</div>
+<ng-template #header let-editor>
+  <img class="icon" [src]="'/assets/icons/' + editor.file.type.icon + '.svg'" [alt]="editor.file.type.name">
+  <span [class.text-primary]="editor.file.dirty" [class.font-italic]="editor.temporary">
+    {{ editor.file.name }}
+  </span>
+  <span *ngIf="editor.preview">
+    (Preview)
+  </span>
+</ng-template>
+<ng-template #content let-current>
+  <app-file-editor *ngIf="current" [editor]="current"></app-file-editor>
+</ng-template>
+<app-tabs #tabs [tabs]="openEditors" [content]="content" [header]="header"></app-tabs>

@@ -1,0 +1,27 @@
+<ul ngbNav [(activeId)]="current" class="nav-tabs">
+  <li *ngFor="let editor of tabs" [ngbNavItem]="editor">
+    <a ngbNavLink class="text-reset"
+       (contextmenu)="openContextMenu($event, editor, dropdown)"
+       (auxclick)="auxClick($event, editor)">
+      <ng-container [ngTemplateOutlet]="header" [ngTemplateOutletContext]="{$implicit: editor}"></ng-container>
+      <div class="d-inline" ngbDropdown #dropdown="ngbDropdown" container="body">
+        <span ngbDropdownToggle>
+        </span>
+        <div ngbDropdownMenu>
+          <button ngbDropdownItem (click)="close(editor)">Close</button>
+          <button ngbDropdownItem (click)="closeOthers(editor)">Close Others</button>
+          <button ngbDropdownItem (click)="closeAll()">Close All</button>
+          <button ngbDropdownItem (click)="closeLeftOf(editor)">Close All to the Left</button>
+          <button ngbDropdownItem (click)="closeRightOf(editor)">Close All to the Right</button>
+        </div>
+      </div>
+      <span class="close position-relative pl-2 font-weight-light"
+            (click)="close(editor); $event.preventDefault(); $event.stopImmediatePropagation()">
+        ×
+      </span>
+    </a>
+  </li>
+</ul>
+<div style="height: calc(100% - 40px)">
+  <ng-container [ngTemplateOutlet]="content" [ngTemplateOutletContext]="{$implicit: current}"></ng-container>
+</div>

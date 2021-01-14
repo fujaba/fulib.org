@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
 import {Subscription} from 'rxjs';
 import {FileService} from '../file.service';
@@ -6,6 +6,7 @@ import {Container} from '../model/container';
 import {File} from '../model/file';
 import {FileEditor} from '../model/file-editor';
 import {ProjectManager} from '../project.manager';
+import {TabsComponent} from '../tabs/tabs.component';
 
 @Component({
   selector: 'app-file-tabs',
@@ -13,7 +14,8 @@ import {ProjectManager} from '../project.manager';
   styleUrls: ['./file-tabs.component.scss'],
 })
 export class FileTabsComponent implements OnInit, OnDestroy {
-  currentEditor?: FileEditor;
+  @ViewChild('tabs') tabs: TabsComponent<FileEditor>;
+
   openEditors: FileEditor[] = [];
 
   subscription = new Subscription();
@@ -32,7 +34,7 @@ export class FileTabsComponent implements OnInit, OnDestroy {
     this.subscription.add(this.projectManager.deletions.subscribe((file: File) => {
       const editor = this.openEditors.find(ed => ed.file === file);
       if (editor) {
-        this.close(editor);
+        this.tabs.close(editor);
       }
     }));
   }
@@ -48,7 +50,7 @@ export class FileTabsComponent implements OnInit, OnDestroy {
     const existing = this.openEditors.find(e => editor.file === e.file && !!editor.preview === !!e.preview);
     if (existing) {
       existing.temporary = existing.temporary && editor.temporary;
-      this.currentEditor = existing;
+      this.tabs.open(existing);
       return;
     }
 
@@ -57,69 +59,12 @@ export class FileTabsComponent implements OnInit, OnDestroy {
       if (temporary) {
         temporary.file = editor.file;
         temporary.preview = editor.preview;
-        this.currentEditor = temporary;
+        this.tabs.open(temporary);
         return;
       }
     }
 
     this.openEditors.push(editor);
-    this.currentEditor = editor;
-  }
-
-  close(editor: FileEditor) {
-    const index = this.openEditors.indexOf(editor);
-    if (index >= 0) {
-      this.openEditors.splice(index, 1);
-      this.currentEditor = this.openEditors[index] || this.openEditors[index - 1];
-    }
-    if (editor === this.currentEditor) {
-      this.currentEditor = undefined;
-    }
-  }
-
-  closeOthers(editor: FileEditor) {
-    this.currentEditor = editor;
-    this.openEditors = [editor];
-  }
-
-  closeAll() {
-    this.currentEditor = undefined;
-    this.openEditors.length = 0;
-  }
-
-  closeLeftOf(editor: FileEditor) {
-    const index = this.openEditors.indexOf(editor);
-    this.openEditors.splice(0, index);
-    this.replaceOpenFileIfNecessary(editor);
-  }
-
-  closeRightOf(editor: FileEditor) {
-    const index = this.openEditors.indexOf(editor);
-    this.openEditors.splice(index + 1);
-    this.replaceOpenFileIfNecessary(editor);
-  }
-
-  private replaceOpenFileIfNecessary(editor: FileEditor) {
-    if (this.currentEditor && !this.openEditors.includes(this.currentEditor)) {
-      this.currentEditor = editor;
-    }
-  }
-
-  auxClick(event: MouseEvent, editor: FileEditor) {
-    if (event.button !== 1) {
-      return;
-    }
-    this.close(editor);
-    event.preventDefault();
-  }
-
-  openContextMenu(event: MouseEvent, editor: FileEditor, dropdown: NgbDropdown) {
-    if (event.button !== 2 || event.shiftKey || dropdown.isOpen()) {
-      return;
-    }
-
-    dropdown.open();
-    event.preventDefault();
-    event.stopImmediatePropagation();
+    this.tabs.open(editor);
   }
 }
