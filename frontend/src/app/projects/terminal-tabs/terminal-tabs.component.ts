@@ -7,12 +7,16 @@ import {Terminal} from '../model/terminal';
   styleUrls: ['./terminal-tabs.component.scss'],
 })
 export class TerminalTabsComponent implements OnInit {
-  tabs: Terminal[] = [{cmd: ['/bin/bash']}];
+  tabs: Terminal[] = [];
 
   constructor() {
   }
 
   ngOnInit(): void {
+    this.addTab();
   }
 
+  addTab() {
+    this.tabs.push({cmd: ['/bin/bash']});
+  }
 }

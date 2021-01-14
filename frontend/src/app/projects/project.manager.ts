@@ -150,7 +150,7 @@ export class ProjectManager {
     this.wss.unsubscribe();
   }
 
-  resize(columns: number, rows: number) {
-    this.wss.next({command: 'resize', columns, rows});
+  resize(process: string, columns: number, rows: number) {
+    this.wss.next({command: 'resize', process, columns, rows});
   }
 }

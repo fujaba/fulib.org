@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, TemplateRef} from '@angular/core';
+import {Component, Input, OnInit, TemplateRef, EventEmitter, Output} from '@angular/core';
 import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -9,6 +9,7 @@ import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
 export class TabsComponent<E> implements OnInit {
   @Input() header: TemplateRef<any>;
   @Input() content: TemplateRef<any>;
+  @Output() create = new EventEmitter<void>();
 
   @Input() tabs: E[] = [];
 

@@ -24,6 +24,11 @@
       <ng-container [ngTemplateOutlet]="content" [ngTemplateOutletContext]="{$implicit: current}"></ng-container>
     </ng-template>
   </li>
+  <li class="nav-item">
+    <a class="nav-link close" href (click)="create.next(); $event.preventDefault()">
+      +
+    </a>
+  </li>
 </ul>
 <div style="height: calc(100% - 40px)" [ngbNavOutlet]="nav">
 </div>
