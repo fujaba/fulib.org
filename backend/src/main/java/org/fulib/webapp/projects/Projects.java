@@ -185,6 +185,13 @@ public class Projects
 		final Project project = getOr404(this.mongo, id);
 		checkAuth(request, project);
 
+		final Container container = this.mongo.getContainerForProject(id);
+		if (container != null)
+		{
+			this.containerManager.stop(container);
+			this.mongo.deleteContainer(container.getId());
+		}
+
 		this.mongo.deleteProject(id);
 		this.mongo.deleteFile(project.getId());
 
@@ -238,6 +245,7 @@ public class Projects
 			throw Spark.halt(401, "{\"error\": \"invalid stopToken\"}\n");
 		}
 
+		this.containerManager.uploadFilesFromContainer(container);
 		this.containerManager.stop(container);
 		this.mongo.deleteContainer(container.getId());
 

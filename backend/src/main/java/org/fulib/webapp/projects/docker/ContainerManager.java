@@ -145,13 +145,11 @@ public class ContainerManager
 
 	public void stop(Container container)
 	{
-		this.uploadFilesFromContainer(container);
-
 		this.dockerClient.stopContainerCmd(container.getId()).exec();
 		this.dockerClient.removeContainerCmd(container.getId()).exec();
 	}
 
-	private void uploadFilesFromContainer(Container container)
+	public void uploadFilesFromContainer(Container container)
 	{
 		final String projectId = container.getProjectId();
 		try (
