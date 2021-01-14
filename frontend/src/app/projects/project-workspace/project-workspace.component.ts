@@ -1,4 +1,4 @@
-import {Component, Injector, OnInit, Type, ViewChild} from '@angular/core';
+import {Component, Injector, OnDestroy, OnInit, Type, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {forkJoin} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
@@ -27,7 +27,7 @@ interface SidebarItem {
   templateUrl: './project-workspace.component.html',
   styleUrls: ['./project-workspace.component.scss'],
 })
-export class ProjectWorkspaceComponent implements OnInit {
+export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
   project: Project;
   container: Container;
   projectManager: ProjectManager;
@@ -89,5 +89,9 @@ export class ProjectWorkspaceComponent implements OnInit {
         },
       });
     });
+  }
+
+  ngOnDestroy() {
+    this.projectManager?.destroy();
   }
 }
