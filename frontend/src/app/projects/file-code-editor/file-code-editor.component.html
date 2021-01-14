@@ -1,4 +1,4 @@
-<ng-container [ngSwitch]="editor.preview && fileType.previewMode || fileType.mode">
+<ng-container [ngSwitch]="editor.preview && file.type.previewMode || file.type.mode">
   <img *ngSwitchCase="'img'"
     [src]="container.url + '/dav/' + file.path" [alt]="file.name">
   <iframe *ngSwitchCase="'iframe'"

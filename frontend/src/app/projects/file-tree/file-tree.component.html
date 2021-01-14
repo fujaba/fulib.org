@@ -9,7 +9,9 @@
      (dndDrop)="onDrop($event)"
 >
   <div class="file-item-indent" [style.margin-left.em]="level - 0.5">
-    <app-file-icon class="mr-2" [file]="file" [open]="expanded"></app-file-icon>
+    <img class="icon"
+         [src]="'/assets/icons/' + (file.directory ? (expanded ? 'folder2-open' : 'folder2') : file.type.icon) + '.svg'"
+         [alt]="file.name">
     <input *ngIf="newName !== undefined"
            #nameInput
            type="text" class="name-input flex-grow-1" aria-label="New Name"

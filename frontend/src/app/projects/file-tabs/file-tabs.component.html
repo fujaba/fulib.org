@@ -3,7 +3,7 @@
     <a ngbNavLink class="text-reset"
        (contextmenu)="openContextMenu($event, editor, dropdown)"
        (auxclick)="auxClick($event, editor)">
-      <app-file-icon [file]="editor.file"></app-file-icon>
+      <img class="icon" [src]="'/assets/icons/' + editor.file.type.icon + '.svg'" [alt]="editor.file.type.name">
       <span [class.text-primary]="editor.file.data?.dirty"
             [class.font-italic]="editor.temporary">
         {{ editor.file.name }}
