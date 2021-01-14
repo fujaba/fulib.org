@@ -57,6 +57,16 @@ public class WebSocketHandler implements FileEventHandler
 			exec.getOutputStream().flush();
 			return;
 		}
+		case "kill":
+		{
+			final String processId = json.getString("process");
+			final ExecProcess process = this.processes.get(session).remove(processId);
+			if (process != null)
+			{
+				process.interrupt();
+			}
+			return;
+		}
 		case "keepAlive":
 			this.resetShutdownTimer.run();
 			return;
