@@ -1,4 +1,4 @@
-<ul ngbNav [(activeId)]="current" class="nav-tabs">
+<ul class="nav-tabs" ngbNav #nav="ngbNav" [(activeId)]="current" [animation]="false" [destroyOnHide]="false">
   <li *ngFor="let editor of tabs" [ngbNavItem]="editor">
     <a ngbNavLink class="text-reset"
        (contextmenu)="openContextMenu($event, editor, dropdown)"
@@ -20,8 +20,10 @@
         ×
       </span>
     </a>
+    <ng-template ngbNavContent>
+      <ng-container [ngTemplateOutlet]="content" [ngTemplateOutletContext]="{$implicit: current}"></ng-container>
+    </ng-template>
   </li>
 </ul>
-<div style="height: calc(100% - 40px)">
-  <ng-container [ngTemplateOutlet]="content" [ngTemplateOutletContext]="{$implicit: current}"></ng-container>
+<div style="height: calc(100% - 40px)" [ngbNavOutlet]="nav">
 </div>
