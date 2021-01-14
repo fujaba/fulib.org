@@ -19,7 +19,6 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
 
   @ViewChildren('nameInput') nameInput: QueryList<ElementRef>;
 
-  @HostBinding('attr.data-expanded') expanded = false;
   newName?: string;
   currentFile: Observable<File | undefined>;
 
@@ -29,6 +28,11 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
     private projectManager: ProjectManager,
     @Inject(FILE_ROOT) public root: File,
   ) {
+  }
+
+  @HostBinding('attr.data-expanded')
+  get expanded(): boolean {
+    return this.file.children !== undefined;
   }
 
   ngOnInit(): void {
@@ -52,9 +56,11 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    this.expanded = !this.expanded;
-
-    this.fileService.getChildren(this.container, this.file).subscribe();
+    if (this.file.children) {
+      this.file.children = undefined;
+    } else {
+      this.fileService.getChildren(this.container, this.file).subscribe();
+    }
   }
 
   openPreview() {
