@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {EMPTY, Observable, of} from 'rxjs';
 import {map, tap} from 'rxjs/operators';
 import {DavClient} from './dav-client';
+import {FileTypeService} from './file-type.service';
 import {Container} from './model/container';
 import {DavResource} from './model/dav-resource';
 import {File} from './model/file';
@@ -12,6 +13,7 @@ import {File} from './model/file';
 export class FileService {
   constructor(
     private dav: DavClient,
+    private fileTypeService: FileTypeService,
   ) {
   }
 
@@ -99,6 +101,7 @@ export class FileService {
   private toFile(resource: DavResource): File {
     const file = new File();
     file.path = resource.href.substring('/dav'.length);
+    file.type = this.fileTypeService.getFileType(file);
     file.modified = resource.modified;
     return file;
   }

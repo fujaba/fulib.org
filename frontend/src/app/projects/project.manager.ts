@@ -1,6 +1,7 @@
 import {EventEmitter} from '@angular/core';
 import {BehaviorSubject, interval, Observable, Subscription} from 'rxjs';
 import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
+import {FileTypeService} from './file-type.service';
 import {FileService} from './file.service';
 import {Container} from './model/container';
 import {File} from './model/file';
@@ -24,6 +25,7 @@ export class ProjectManager {
     public readonly project: Project,
     container: Container,
     private fileService: FileService,
+    private fileTypeService: FileTypeService,
   ) {
     const url = container.url.startsWith('http') ? `ws${container.url.substring(4)}/ws` : `${container.url}/ws`;
     this.wss = webSocket<any>(url);
@@ -79,6 +81,7 @@ export class ProjectManager {
     if (parent && parent.children && !this.fileService.resolve(parent, path)) {
       const child = new File();
       child.path = path;
+      child.type = this.fileTypeService.getFileType(child);
       child.setParent(parent);
     }
   }
@@ -91,6 +94,7 @@ export class ProjectManager {
     if (oldFile) {
       if (newParent && newParent.children) {
         oldFile.path = to;
+        oldFile.type = this.fileTypeService.getFileType(oldFile);
         oldFile.setParent(newParent);
         this.renames.next(oldFile);
       } else {

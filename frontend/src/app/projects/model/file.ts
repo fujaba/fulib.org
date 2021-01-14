@@ -1,7 +1,10 @@
+import {FileType} from './file-type';
+
 export class File {
   path: string;
 
   modified: Date;
+  type: FileType;
 
   content?: string;
   dirty?: boolean;
