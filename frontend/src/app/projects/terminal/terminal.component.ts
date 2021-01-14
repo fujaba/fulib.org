@@ -1,7 +1,8 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NgTerminal} from 'ng-terminal';
 import {Observable} from 'rxjs';
 import {filter, map, tap} from 'rxjs/operators';
+import {Terminal} from '../model/terminal';
 import {ProjectManager} from '../project.manager';
 
 @Component({
@@ -10,11 +11,11 @@ import {ProjectManager} from '../project.manager';
   styleUrls: ['./terminal.component.scss'],
 })
 export class TerminalComponent implements OnInit, OnDestroy, AfterViewInit {
+  @Input() model: Terminal;
+
   @ViewChild('term', {static: true}) terminal: NgTerminal;
 
   output$: Observable<string>;
-
-  process?: string;
 
   private resize;
 
@@ -24,10 +25,10 @@ export class TerminalComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.output$ = this.projectManager.exec(['/bin/bash']).pipe(
+    this.output$ = this.projectManager.exec(this.model.cmd).pipe(
       tap(message => {
         if (message.process) {
-          this.process = message.process;
+          this.model.process = message.process;
         }
       }),
       filter(message => message.event === 'output'),
@@ -37,8 +38,8 @@ export class TerminalComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.terminal.keyEventInput.subscribe(e => {
-      if (e.key && this.process) {
-        this.projectManager.input(e.key, this.process);
+      if (e.key && this.model.process) {
+        this.projectManager.input(e.key, this.model.process);
       }
     });
 

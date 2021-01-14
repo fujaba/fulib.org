@@ -1,0 +1,7 @@
+<app-tabs [tabs]="tabs" [header]="header" [content]="content"></app-tabs>
+<ng-template #header let-terminal>
+  {{terminal.cmd[0]}}
+</ng-template>
+<ng-template #content let-terminal>
+  <app-terminal [model]="terminal"></app-terminal>
+</ng-template>

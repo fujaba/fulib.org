@@ -21,6 +21,7 @@ import {ProjectsRoutingModule} from './projects-routing.module';
 import {SettingsComponent} from './settings/settings.component';
 import {TerminalComponent} from './terminal/terminal.component';
 import { TabsComponent } from './tabs/tabs.component';
+import { TerminalTabsComponent } from './terminal-tabs/terminal-tabs.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { TabsComponent } from './tabs/tabs.component';
     SettingsComponent,
     TerminalComponent,
     TabsComponent,
+    TerminalTabsComponent,
   ],
   imports: [
     // Angular

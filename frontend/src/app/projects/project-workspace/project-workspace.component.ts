@@ -14,7 +14,7 @@ import {ProjectTreeComponent} from '../project-tree/project-tree.component';
 import {ProjectManager} from '../project.manager';
 import {ProjectService} from '../project.service';
 import {SettingsComponent} from '../settings/settings.component';
-import {TerminalComponent} from '../terminal/terminal.component';
+import {TerminalTabsComponent} from '../terminal-tabs/terminal-tabs.component';
 
 interface SidebarItem {
   component: Type<any>;
@@ -39,7 +39,7 @@ export class ProjectWorkspaceComponent implements OnInit {
 
   active ? = 'project';
 
-  terminalComponent?: typeof TerminalComponent;
+  terminalComponent?: typeof TerminalTabsComponent;
   fileTabsComponent?: typeof FileTabsComponent;
 
   constructor(
@@ -72,7 +72,7 @@ export class ProjectWorkspaceComponent implements OnInit {
         this.projectManager = new ProjectManager(project, container, this.fileService, this.fileTypeService);
 
         this.sidebarItems.settings = {name: 'Settings', icon: 'gear', component: SettingsComponent};
-        this.terminalComponent = TerminalComponent;
+        this.terminalComponent = TerminalTabsComponent;
         this.fileTabsComponent = FileTabsComponent;
       }),
       switchMap(([project, container]) => this.fileService.get(container, `/projects/${project.id}/`)),
