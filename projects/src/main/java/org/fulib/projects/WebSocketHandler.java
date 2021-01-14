@@ -71,13 +71,17 @@ public class WebSocketHandler implements FileEventHandler
 			this.resetShutdownTimer.run();
 			return;
 		case "resize":
+		{
+			final String processId = json.getString("process");
 			final int columns = json.getInt("columns");
 			final int rows = json.getInt("rows");
-			for (final ExecProcess value : this.processes.get(session).values())
+			final ExecProcess process = this.processes.get(session).get(processId);
+			if (process != null)
 			{
-				value.resize(columns, rows);
+				process.resize(columns, rows);
 			}
 			return;
+		}
 		default:
 			session.getRemote().sendString(new JSONObject().put("error", "invalid command: " + command).toString());
 			return;
