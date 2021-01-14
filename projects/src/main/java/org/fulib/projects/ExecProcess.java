@@ -43,7 +43,7 @@ public class ExecProcess extends Thread
 	{
 		this.rows = rows;
 		this.columns = columns;
-		if (process != null)
+		if (process != null && process.isRunning())
 		{
 			process.setWinSize(new WinSize(columns, rows));
 		}
