@@ -29,6 +29,7 @@ export class File {
   }
 
   get directory(): boolean {
+    // TODO this method is called VERY often, figure out a way to make it faster
     return this.path.endsWith('/');
   }
 
@@ -58,6 +59,7 @@ export class File {
   }
 
   private insertSorted(parentChildren: File[], file: File) {
+    // TODO binary search
     const index = parentChildren.findIndex(f => File.compare(f, file) > 0);
     if (index >= 0) {
       parentChildren.splice(index, 0, file);

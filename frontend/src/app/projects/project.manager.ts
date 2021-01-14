@@ -94,6 +94,7 @@ export class ProjectManager {
     if (oldFile) {
       if (newParent && newParent.children) {
         oldFile.path = to;
+        // TODO child paths need to be updated too
         oldFile.type = this.fileTypeService.getFileType(oldFile);
         oldFile.setParent(newParent);
         this.renames.next(oldFile);
