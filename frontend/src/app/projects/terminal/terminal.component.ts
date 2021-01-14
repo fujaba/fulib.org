@@ -26,12 +26,17 @@ export class TerminalComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit(): void {
     this.output$ = this.projectManager.exec(this.model.cmd).pipe(
-      tap(message => {
-        if (message.process) {
-          this.model.process = message.process;
+      filter(message => {
+        switch (message.event) {
+          case 'started':
+            this.model.process = message.process;
+            return false;
+          case 'output':
+            return true;
+          default:
+            return false;
         }
       }),
-      filter(message => message.event === 'output'),
       map(message => message.text),
     );
   }

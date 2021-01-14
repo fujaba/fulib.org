@@ -131,11 +131,17 @@ export class ProjectManager {
       command: 'kill',
       process,
     }), msg => {
-      if (msg.event === 'started') {
-        process = msg.process;
-        return true;
-      } else {
-        return msg.event === 'output' && msg.process === process;
+      switch (msg.event) {
+        case 'started':
+          if (process) {
+            return false;
+          }
+          process = msg.process;
+          return true;
+        case 'output':
+          return msg.process === process;
+        default:
+          return false;
       }
     });
   }
