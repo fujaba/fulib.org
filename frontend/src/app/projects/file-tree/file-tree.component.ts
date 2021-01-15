@@ -115,7 +115,7 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
   onDrop(event: DndDropEvent): void {
     const path: string = event.data;
     const file = this.fileService.resolve(this.root, path);
-    if (file && file !== this.file) {
+    if (file) {
       this.fileService.move(this.container, file, this.file).subscribe();
     }
   }

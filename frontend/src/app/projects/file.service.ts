@@ -72,6 +72,10 @@ export class FileService {
   }
 
   move(container: Container, file: File, directory: File): Observable<void> {
+    if (directory.path.startsWith(file.path)) {
+      return EMPTY;
+    }
+
     const [start] = file._namePos;
     const from = `${container.url}/dav/${file.path}`;
     const to = `${container.url}/dav/${directory.path}${file.path.substring(start)}`;
