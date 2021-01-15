@@ -10,4 +10,4 @@
 <ng-template #content let-current>
   <app-file-editor *ngIf="current" [editor]="current"></app-file-editor>
 </ng-template>
-<app-tabs #tabs [tabs]="openEditors" [content]="content" [header]="header"></app-tabs>
+<app-tabs #tabs [tabs]="openEditors" [content]="content" [header]="header" (create)="newScratchFile()"></app-tabs>

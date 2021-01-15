@@ -1,10 +1,13 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
 import {Subscription} from 'rxjs';
+import {map} from 'rxjs/operators';
+import {FileTypeService} from '../file-type.service';
 import {FileService} from '../file.service';
 import {Container} from '../model/container';
 import {File} from '../model/file';
 import {FileEditor} from '../model/file-editor';
+import {FileType} from '../model/file-type';
 import {ProjectManager} from '../project.manager';
 import {TabsComponent} from '../tabs/tabs.component';
 
@@ -24,6 +27,7 @@ export class FileTabsComponent implements OnInit, OnDestroy {
     private container: Container,
     private fileService: FileService,
     private projectManager: ProjectManager,
+    private fileTypeService: FileTypeService,
   ) {
   }
 
@@ -66,5 +70,25 @@ export class FileTabsComponent implements OnInit, OnDestroy {
 
     this.openEditors.push(editor);
     this.tabs.open(editor);
+  }
+
+  newScratchFile() {
+    const root = this.projectManager.fileRoot;
+    this.fileService.getChildren(this.container, root).subscribe(children => {
+      let i = 1;
+      let path: string;
+      do {
+        path = `${root.path}scratch-${i++}.txt`;
+      } while (children.find(child => child.path === path));
+
+      const file = new File();
+      file.path = path;
+      file.type = this.fileTypeService.default;
+      file.content = '';
+      file.dirty = true;
+      file.setParent(root);
+
+      this.open({file, temporary: false});
+    });
   }
 }
