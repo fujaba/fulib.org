@@ -91,4 +91,11 @@ export class FileTabsComponent implements OnInit, OnDestroy {
       this.open({file, temporary: false});
     });
   }
+
+  openPath(data: string) {
+    const file = this.fileService.resolve(this.projectManager.fileRoot, data);
+    if (file) {
+      this.open({file, temporary: false});
+    }
+  }
 }
