@@ -139,6 +139,7 @@ export class ProjectManager {
           process = msg.process;
           return true;
         case 'output':
+        case 'exited':
           return msg.process === process;
         default:
           return false;
