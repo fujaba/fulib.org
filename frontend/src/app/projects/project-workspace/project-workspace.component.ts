@@ -1,4 +1,4 @@
-import {Component, Injector, OnDestroy, OnInit, Type, ViewChild} from '@angular/core';
+import {Component, Injector, OnDestroy, OnInit, Type} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {forkJoin} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
@@ -6,7 +6,6 @@ import {switchMap, tap} from 'rxjs/operators';
 import {FileTabsComponent} from '../file-tabs/file-tabs.component';
 import {FileTypeService} from '../file-type.service';
 import {FileService} from '../file.service';
-import {FILE_ROOT} from '../injection-tokens';
 import {Container} from '../model/container';
 import {File} from '../model/file';
 import {Project} from '../model/project';
@@ -31,7 +30,6 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
   project: Project;
   container: Container;
   projectManager: ProjectManager;
-  fileRoot: File;
 
   sidebarItems: Record<string, SidebarItem> = {};
 
@@ -53,7 +51,6 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
       name: 'ProjectWorkspace',
       parent: parentInjector,
       providers: [
-        {provide: FILE_ROOT, useFactory: () => this.fileRoot},
         {provide: Project, useFactory: () => this.project},
         {provide: Container, useFactory: () => this.container},
         {provide: ProjectManager, useFactory: () => this.projectManager},
@@ -78,16 +75,15 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
       switchMap(([project, container]) => this.fileService.get(container, `/projects/${project.id}/`)),
       tap(fileRoot => {
         this.projectManager.fileRoot = fileRoot;
-        this.fileRoot = fileRoot;
+        fileRoot.info = 'project root';
+        Object.defineProperty(fileRoot, 'name', {
+          get: () => this.project.name,
+          set: () => {
+          },
+        });
       }),
     ).subscribe(_ => {
       this.sidebarItems.project = {name: 'Project', icon: 'code-square', component: ProjectTreeComponent};
-      this.fileRoot.info = 'project root';
-      Object.defineProperty(this.fileRoot, 'name', {
-        get: () => this.project.name,
-        set: () => {
-        },
-      });
     });
   }
 

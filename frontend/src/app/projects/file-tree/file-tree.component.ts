@@ -1,9 +1,8 @@
-import {AfterViewInit, Component, ElementRef, HostBinding, Inject, Input, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostBinding, Input, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
 import {DndDropEvent} from 'ngx-drag-drop';
 import {Observable} from 'rxjs';
 import {FileService} from '../file.service';
-import {FILE_ROOT} from '../injection-tokens';
 import {Container} from '../model/container';
 import {File} from '../model/file';
 import {ProjectManager} from '../project.manager';
@@ -21,12 +20,12 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
 
   newName?: string;
   currentFile: Observable<File | undefined>;
+  root: File;
 
   constructor(
     public container: Container,
     private fileService: FileService,
     private projectManager: ProjectManager,
-    @Inject(FILE_ROOT) public root: File,
   ) {
   }
 
@@ -37,6 +36,7 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.currentFile = this.projectManager.currentFile;
+    this.root = this.projectManager.fileRoot;
     if (!this.file) {
       this.file = this.root;
     }
@@ -114,7 +114,7 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
 
   onDrop(event: DndDropEvent): void {
     const path: string = event.data;
-    const file = this.fileService.resolve(this.root, path);
+    const file = this.fileService.resolve(this.projectManager.fileRoot, path);
     if (file) {
       this.fileService.move(this.container, file, this.file).subscribe();
     }
