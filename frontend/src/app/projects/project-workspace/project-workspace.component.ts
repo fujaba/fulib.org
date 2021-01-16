@@ -7,7 +7,6 @@ import {FileTabsComponent} from '../file-tabs/file-tabs.component';
 import {FileTypeService} from '../file-type.service';
 import {FileService} from '../file.service';
 import {Container} from '../model/container';
-import {File} from '../model/file';
 import {Project} from '../model/project';
 import {ProjectTreeComponent} from '../project-tree/project-tree.component';
 import {ProjectManager} from '../project.manager';

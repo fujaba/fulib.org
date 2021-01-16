@@ -1,13 +1,9 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
 import {Subscription} from 'rxjs';
-import {map} from 'rxjs/operators';
 import {FileTypeService} from '../file-type.service';
 import {FileService} from '../file.service';
-import {Container} from '../model/container';
 import {File} from '../model/file';
 import {FileEditor} from '../model/file-editor';
-import {FileType} from '../model/file-type';
 import {ProjectManager} from '../project.manager';
 import {TabsComponent} from '../tabs/tabs.component';
 

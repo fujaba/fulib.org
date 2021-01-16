@@ -27,12 +27,16 @@
       </span>
     </div>
     <ng-container *ngIf="file.directory">
-      <img class="icon hover-only px-1" src="/assets/icons/file-earmark-plus.svg" alt="New File" (click)="createFile(); $event.stopImmediatePropagation()">
-      <img class="icon hover-only px-1" src="/assets/icons/folder-plus.svg" alt="New Folder" (click)="createDir(); $event.stopImmediatePropagation()">
+      <img class="icon hover-only px-1" src="/assets/icons/file-earmark-plus.svg" alt="New File"
+           (click)="createFile(); $event.stopImmediatePropagation()">
+      <img class="icon hover-only px-1" src="/assets/icons/folder-plus.svg" alt="New Folder"
+           (click)="createDir(); $event.stopImmediatePropagation()">
     </ng-container>
     <ng-container *ngIf="file !== root">
-      <img class="icon hover-only px-1" src="/assets/icons/pencil.svg" alt="Rename" (click)="startRenaming(); $event.stopImmediatePropagation()">
-      <img class="icon hover-only px-1" src="/assets/icons/trash.svg" alt="Delete" (click)="delete(); $event.stopImmediatePropagation()">
+      <img class="icon hover-only px-1" src="/assets/icons/pencil.svg" alt="Rename"
+           (click)="startRenaming(); $event.stopImmediatePropagation()">
+      <img class="icon hover-only px-1" src="/assets/icons/trash.svg" alt="Delete"
+           (click)="delete(); $event.stopImmediatePropagation()">
     </ng-container>
     <div ngbDropdown #dropdown="ngbDropdown" container="body" (click)="$event.stopImmediatePropagation()">
       <img class="icon hover-only px-1" ngbDropdownToggle src="/assets/icons/three-dots.svg" alt="Options">

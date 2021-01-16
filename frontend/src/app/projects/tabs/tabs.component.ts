@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, TemplateRef, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, TemplateRef} from '@angular/core';
 import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({

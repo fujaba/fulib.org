@@ -7,8 +7,10 @@
   </div>
   <div class="flex-grow-1 overflow-auto d-flex flex-column">
     <ng-container *ngFor="let panel of panels">
-      <div class="panel-header bg-light bg-darkmode-dark" (click)="panelState[panel.id].expanded = !panelState[panel.id].expanded">
-        <img class="icon" src="assets/icons/chevron-{{panelState[panel.id].expanded ? 'down' : 'right'}}.svg" [alt]="panelState[panel.id].expanded ? 'Expanded' : 'Collapsed'">
+      <div class="panel-header bg-light bg-darkmode-dark"
+           (click)="panelState[panel.id].expanded = !panelState[panel.id].expanded">
+        <img class="icon" src="assets/icons/chevron-{{panelState[panel.id].expanded ? 'down' : 'right'}}.svg"
+             [alt]="panelState[panel.id].expanded ? 'Expanded' : 'Collapsed'">
         {{panel.name | uppercase}}
       </div>
       <div *ngIf="panelState[panel.id].expanded" class="flex-grow-1">

@@ -2,7 +2,6 @@ import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {filter} from 'rxjs/operators';
 import {FileService} from '../file.service';
-import {Container} from '../model/container';
 import {File} from '../model/file';
 import {ProjectManager} from '../project.manager';
 

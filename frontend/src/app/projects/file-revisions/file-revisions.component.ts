@@ -1,5 +1,4 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {FileService} from '../file.service';
 import {File} from '../model/file';
 import {ProjectManager} from '../project.manager';
 

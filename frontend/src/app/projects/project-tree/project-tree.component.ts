@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
 import {FileRevisionsComponent} from '../file-revisions/file-revisions.component';
 import {FileTreeComponent} from '../file-tree/file-tree.component';
