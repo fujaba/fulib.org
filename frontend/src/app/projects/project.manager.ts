@@ -23,7 +23,7 @@ export class ProjectManager {
 
   constructor(
     public readonly project: Project,
-    container: Container,
+    public readonly container: Container,
     private fileService: FileService,
     private fileTypeService: FileTypeService,
   ) {

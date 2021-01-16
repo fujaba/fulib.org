@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Container} from '../model/container';
 import {FileEditor} from '../model/file-editor';
+import {ProjectManager} from '../project.manager';
 
 @Component({
   selector: 'app-file-editor',
@@ -10,12 +11,15 @@ import {FileEditor} from '../model/file-editor';
 export class FileEditorComponent implements OnInit {
   @Input() editor: FileEditor;
 
+  container: Container;
+
   constructor(
-    public container: Container,
+    private projectManager: ProjectManager,
   ) {
   }
 
   ngOnInit(): void {
+    this.container = this.projectManager.container;
   }
 
 }

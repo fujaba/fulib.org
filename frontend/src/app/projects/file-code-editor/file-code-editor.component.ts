@@ -28,7 +28,6 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
   };
 
   constructor(
-    private container: Container,
     private fileService: FileService,
     private projectManager: ProjectManager,
   ) {
@@ -58,11 +57,11 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
 
     this.file.dirty = false;
     this.file.content = undefined;
-    this.fileService.getContent(this.container, this.file).subscribe();
+    this.fileService.getContent(this.projectManager.container, this.file).subscribe();
   }
 
   save() {
-    this.fileService.saveContent(this.container, this.file).subscribe();
+    this.fileService.saveContent(this.projectManager.container, this.file).subscribe();
   }
 
   setContent(content: string) {

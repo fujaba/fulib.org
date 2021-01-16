@@ -21,9 +21,9 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
   newName?: string;
   currentFile: Observable<File | undefined>;
   root: File;
+  container: Container;
 
   constructor(
-    public container: Container,
     private fileService: FileService,
     private projectManager: ProjectManager,
   ) {
@@ -37,6 +37,7 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.currentFile = this.projectManager.currentFile;
     this.root = this.projectManager.fileRoot;
+    this.container = this.projectManager.container;
     if (!this.file) {
       this.file = this.root;
     }

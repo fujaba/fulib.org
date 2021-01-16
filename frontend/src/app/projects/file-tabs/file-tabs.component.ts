@@ -24,7 +24,6 @@ export class FileTabsComponent implements OnInit, OnDestroy {
   subscription = new Subscription();
 
   constructor(
-    private container: Container,
     private fileService: FileService,
     private projectManager: ProjectManager,
     private fileTypeService: FileTypeService,
@@ -48,7 +47,7 @@ export class FileTabsComponent implements OnInit, OnDestroy {
   }
 
   open(editor: FileEditor) {
-    this.fileService.getContent(this.container, editor.file).subscribe(() => {
+    this.fileService.getContent(this.projectManager.container, editor.file).subscribe(() => {
     });
 
     const existing = this.openEditors.find(e => editor.file === e.file && !!editor.preview === !!e.preview);
@@ -74,7 +73,7 @@ export class FileTabsComponent implements OnInit, OnDestroy {
 
   newScratchFile() {
     const root = this.projectManager.fileRoot;
-    this.fileService.getChildren(this.container, root).subscribe(children => {
+    this.fileService.getChildren(this.projectManager.container, root).subscribe(children => {
       let i = 1;
       let path: string;
       do {
