@@ -13,6 +13,8 @@ import {ProjectManager} from '../project.manager';
   styleUrls: ['./project-tree.component.scss'],
 })
 export class ProjectTreeComponent implements OnInit {
+  project: Project;
+
   panels = [
     {id: 'projectFiles', name: 'Project Files', component: FileTreeComponent, grow: true},
     {id: 'revisions', name: 'Revisions', component: FileRevisionsComponent},
@@ -23,7 +25,6 @@ export class ProjectTreeComponent implements OnInit {
   currentFile: Observable<File | undefined>;
 
   constructor(
-    public project: Project,
     private projectManager: ProjectManager,
   ) {
     for (const panel of this.panels) {
@@ -34,6 +35,7 @@ export class ProjectTreeComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.project = this.projectManager.project;
     this.currentFile = this.projectManager.currentFile;
   }
 }

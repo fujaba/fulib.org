@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {Project} from '../model/project';
+import {ProjectManager} from '../project.manager';
 import {ProjectService} from '../project.service';
 
 @Component({
@@ -9,14 +10,17 @@ import {ProjectService} from '../project.service';
   styleUrls: ['./settings.component.scss'],
 })
 export class SettingsComponent implements OnInit {
+  project: Project;
+
   constructor(
-    public project: Project,
+    private projectManager: ProjectManager,
     private projectService: ProjectService,
     private router: Router,
   ) {
   }
 
   ngOnInit(): void {
+    this.project = this.projectManager.project;
   }
 
   save(): void {

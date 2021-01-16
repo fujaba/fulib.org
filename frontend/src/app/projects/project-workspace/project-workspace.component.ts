@@ -51,7 +51,6 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
       name: 'ProjectWorkspace',
       parent: parentInjector,
       providers: [
-        {provide: Project, useFactory: () => this.project},
         {provide: Container, useFactory: () => this.container},
         {provide: ProjectManager, useFactory: () => this.projectManager},
       ],
