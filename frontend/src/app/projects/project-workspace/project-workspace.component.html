@@ -9,19 +9,19 @@
       <img class="icon" src="assets/icons/{{entry.value.icon}}.svg" width="24" [alt]="entry.value.name">
     </div>
   </div>
-  <div class="flex-grow-1 content cols h-100">
-    <rsz-layout *ngIf="active" class="row no-gutters" [directions]="['right']" [rFlex]="true">
-      <rsz-layout class="cell" [directions]="['none']" [rFlex]="false">
-        <ng-container *ngComponentOutlet="sidebarItems[active]?.component; injector: injector"></ng-container>
-      </rsz-layout>
-    </rsz-layout>
-    <rsz-layout class="row no-gutters" [directions]="['none']" [rFlex]="false">
-      <rsz-layout class="cell" [directions]="['bottom']" [rFlex]="true">
-        <ng-container *ngComponentOutlet="fileTabsComponent; injector: injector"></ng-container>
-      </rsz-layout>
-      <rsz-layout class="cell" [directions]="['none']" [rFlex]="false">
-        <ng-container *ngComponentOutlet="terminalComponent; injector: injector"></ng-container>
-      </rsz-layout>
-    </rsz-layout>
-  </div>
+  <as-split class="flex-grow-1 h-100" direction="horizontal">
+    <as-split-area>
+      <ng-container *ngComponentOutlet="sidebarItems[active || '']?.component; injector: injector"></ng-container>
+    </as-split-area>
+    <as-split-area>
+      <as-split direction="vertical">
+        <as-split-area>
+          <ng-container *ngComponentOutlet="fileTabsComponent; injector: injector"></ng-container>
+        </as-split-area>
+        <as-split-area>
+          <ng-container *ngComponentOutlet="terminalComponent; injector: injector"></ng-container>
+        </as-split-area>
+      </as-split>
+    </as-split-area>
+  </as-split>
 </div>
