@@ -12,6 +12,7 @@ import {ProjectTreeComponent} from '../project-tree/project-tree.component';
 import {ProjectManager} from '../project.manager';
 import {ProjectService} from '../project.service';
 import {SettingsComponent} from '../settings/settings.component';
+import {SplitPanelComponent} from '../split-panel/split-panel.component';
 import {TerminalTabsComponent} from '../terminal-tabs/terminal-tabs.component';
 
 interface SidebarItem {
@@ -37,7 +38,7 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
   active ? = 'project';
 
   terminalComponent?: typeof TerminalTabsComponent;
-  fileTabsComponent?: typeof FileTabsComponent;
+  fileTabsComponent?: typeof SplitPanelComponent;
 
   constructor(
     parentInjector: Injector,
@@ -67,7 +68,7 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
 
         this.sidebarItems.settings = {name: 'Settings', icon: 'gear', component: SettingsComponent};
         this.terminalComponent = TerminalTabsComponent;
-        this.fileTabsComponent = FileTabsComponent;
+        this.fileTabsComponent = SplitPanelComponent;
       }),
       switchMap(([project, container]) => this.fileService.get(container, `/projects/${project.id}/`)),
       tap(fileRoot => {
