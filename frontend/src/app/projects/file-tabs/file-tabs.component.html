@@ -1,11 +1,13 @@
 <ng-template #header let-editor>
-  <img class="icon" [src]="'/assets/icons/' + editor.file.type.icon + '.svg'" [alt]="editor.file.type.name">
-  <span [class.text-primary]="editor.file.dirty" [class.font-italic]="editor.temporary">
-    {{ editor.file.name }}
-  </span>
-  <span *ngIf="editor.preview">
-    (Preview)
-  </span>
+  <div class="d-inline-block" [dndDraggable]="editor" [dndType]="'editor'" (dndDrag)="close(editor)">
+    <img class="icon" [src]="'/assets/icons/' + editor.file.type.icon + '.svg'" [alt]="editor.file.type.name">
+    <span [class.text-primary]="editor.file.dirty" [class.font-italic]="editor.temporary">
+      {{ editor.file.name }}
+    </span>
+    <span *ngIf="editor.preview">
+      (Preview)
+    </span>
+  </div>
 </ng-template>
 <ng-template #content let-current>
   <app-file-editor *ngIf="current" [editor]="current"></app-file-editor>
@@ -14,6 +16,7 @@
   #tabs
   [tabs]="openEditors" [content]="content" [header]="header"
   (create)="newScratchFile()"
-  [dndDropzone]=""
-  (dndDrop)="openPath($event.data)"
+  [dndDropzone]="['file', 'editor']"
+  [dndAllowExternal]="true"
+  (dndDrop)="openDrop($event.data)"
 ></app-tabs>

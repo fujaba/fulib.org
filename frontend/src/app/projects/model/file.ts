@@ -76,4 +76,8 @@ export class File {
     }
     this.parent = undefined;
   }
+
+  toJSON() {
+    return this.path;
+  }
 }
