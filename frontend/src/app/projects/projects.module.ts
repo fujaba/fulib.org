@@ -23,6 +23,7 @@ import {SplitPanelComponent} from './split-panel/split-panel.component';
 import {TabsComponent} from './tabs/tabs.component';
 import {TerminalTabsComponent} from './terminal-tabs/terminal-tabs.component';
 import {TerminalComponent} from './terminal/terminal.component';
+import { FileImageViewerComponent } from './file-image-viewer/file-image-viewer.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import {TerminalComponent} from './terminal/terminal.component';
     TabsComponent,
     TerminalComponent,
     TerminalTabsComponent,
+    FileImageViewerComponent,
   ],
   imports: [
     // Angular

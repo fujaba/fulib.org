@@ -1,6 +1,5 @@
 <ng-container [ngSwitch]="editor.preview && editor.file.type.previewMode || editor.file.type.mode">
-  <img *ngSwitchCase="'img'"
-       [src]="container.url + '/dav/' + editor.file.path" [alt]="editor.file.name">
+  <app-file-image-viewer *ngSwitchCase="'img'" [file]="editor.file"></app-file-image-viewer>
   <iframe *ngSwitchCase="'iframe'"
           class="w-100 h-100"
           [src]="(container.url + '/dav/' + editor.file.path) | safeResourceUrl"
