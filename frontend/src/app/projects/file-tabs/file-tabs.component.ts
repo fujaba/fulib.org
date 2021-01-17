@@ -1,7 +1,8 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+
 import {Subscription} from 'rxjs';
 import {map, mapTo, switchMap} from 'rxjs/operators';
-import {FileTypeService} from '../file-type.service';
+
 import {FileService} from '../file.service';
 import {File} from '../model/file';
 import {FileEditor} from '../model/file-editor';
@@ -23,7 +24,6 @@ export class FileTabsComponent implements OnInit, OnDestroy {
   constructor(
     private fileService: FileService,
     private projectManager: ProjectManager,
-    private fileTypeService: FileTypeService,
   ) {
   }
 
