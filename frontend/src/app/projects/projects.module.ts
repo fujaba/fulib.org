@@ -4,6 +4,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {AngularSplitModule} from 'angular-split';
 import {NgTerminalModule} from 'ng-terminal';
 import {DndModule} from 'ngx-drag-drop';
 
@@ -51,6 +52,7 @@ import {TerminalComponent} from './terminal/terminal.component';
     NgbModule,
     NgTerminalModule,
     NgxResizableModule,
+    AngularSplitModule,
     // Shared
     SharedModule,
     // Routing

@@ -77,6 +77,10 @@
     border: 4px solid $default-border;
     background: $default-bg;
   }
+
+  .as-split-gutter {
+    background-color: $default-dark-bg !important;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
