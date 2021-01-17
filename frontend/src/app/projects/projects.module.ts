@@ -1,4 +1,3 @@
-import {NgxResizableModule} from '@3dgenomes/ngx-resizable';
 import {CommonModule} from '@angular/common';
 import {HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
@@ -51,7 +50,6 @@ import {TerminalComponent} from './terminal/terminal.component';
     DndModule,
     NgbModule,
     NgTerminalModule,
-    NgxResizableModule,
     AngularSplitModule,
     // Shared
     SharedModule,
