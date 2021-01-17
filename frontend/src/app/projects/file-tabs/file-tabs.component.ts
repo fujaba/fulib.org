@@ -1,5 +1,6 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs';
+import {map, mapTo, switchMap} from 'rxjs/operators';
 import {FileTypeService} from '../file-type.service';
 import {FileService} from '../file.service';
 import {File} from '../model/file';
@@ -69,21 +70,23 @@ export class FileTabsComponent implements OnInit, OnDestroy {
 
   newScratchFile() {
     const root = this.projectManager.fileRoot;
-    this.fileService.getChildren(this.projectManager.container, root).subscribe(children => {
-      let i = 1;
-      let path: string;
-      do {
-        path = `${root.path}scratch-${i++}.txt`;
-      } while (children.find(child => child.path === path));
-
-      const file = new File();
-      file.path = path;
-      file.type = this.fileTypeService.default;
-      file.content = '';
-      file.dirty = true;
-      file.setParent(root);
-
-      this.open({file, temporary: false});
+    this.fileService.getChildren(this.projectManager.container, root).pipe(
+      map(children => {
+        let i = 1;
+        let name: string;
+        let path: string;
+        do {
+          name = `scratch-${i++}.txt`;
+          path = root.path + name;
+        } while (children.find(child => child.path === path));
+        return name;
+      }),
+      switchMap(name => this.fileService.createChild(this.projectManager.container, root, name, false).pipe(mapTo(name))),
+    ).subscribe(name => {
+      const file = this.fileService.resolve(root, root.path + name);
+      if (file) {
+        this.open({file, temporary: false});
+      }
     });
   }
 
