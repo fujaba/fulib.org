@@ -1,0 +1,4 @@
+<div class="d-flex flex-column h-100">
+  <input type="text" class="form-control rounded-pill" readonly [ngModel]="src">
+  <iframe class="flex-grow-1" [src]="src | safeResourceUrl" ></iframe>
+</div>

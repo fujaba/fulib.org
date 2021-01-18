@@ -24,6 +24,8 @@ import {TabsComponent} from './tabs/tabs.component';
 import {TerminalTabsComponent} from './terminal-tabs/terminal-tabs.component';
 import {TerminalComponent} from './terminal/terminal.component';
 import { FileImageViewerComponent } from './file-image-viewer/file-image-viewer.component';
+import { IframeViewerComponent } from './iframe-viewer/iframe-viewer.component';
+import { FileIframeViewerComponent } from './file-iframe-viewer/file-iframe-viewer.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +44,8 @@ import { FileImageViewerComponent } from './file-image-viewer/file-image-viewer.
     TerminalComponent,
     TerminalTabsComponent,
     FileImageViewerComponent,
+    IframeViewerComponent,
+    FileIframeViewerComponent,
   ],
   imports: [
     // Angular
