@@ -4,6 +4,9 @@ FROM debian:latest
 RUN apt-get update -y
 RUN apt-get install -y chromium chromium-driver
 RUN apt-get install -y openjdk-11-jdk-headless
+RUN apt-get install -y curl
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
+RUN apt-get install -y nodejs
 RUN apt-get install -y nginx-full
 RUN apt-get install -y graphviz
 RUN apt-get install -y inotify-tools
