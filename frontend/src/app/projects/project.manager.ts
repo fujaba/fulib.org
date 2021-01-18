@@ -78,12 +78,20 @@ export class ProjectManager {
   }
 
   private maybeCreate(parent: File | undefined, path: string) {
-    if (parent && parent.children && !this.fileService.resolve(parent, path)) {
-      const child = new File();
-      child.path = path;
-      child.type = this.fileTypeService.getFileType(child);
-      child.setParent(parent);
+    if (!parent || !parent.children) {
+      return;
     }
+
+    const existing = this.fileService.resolve(parent, path);
+    if (existing) {
+      this.changes.next(existing);
+      return;
+    }
+
+    const child = new File();
+    child.path = path;
+    child.type = this.fileTypeService.getFileType(child);
+    child.setParent(parent);
   }
 
   private move(from: string, to: string): void {
