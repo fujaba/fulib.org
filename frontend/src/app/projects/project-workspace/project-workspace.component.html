@@ -11,15 +11,15 @@
   </div>
   <as-split class="flex-grow-1 h-100" direction="horizontal">
     <as-split-area [size]="20">
-      <ng-container *ngComponentOutlet="sidebarItems[active || '']?.component; injector: injector"></ng-container>
+      <ng-container [ngComponentOutlet]="sidebarItems[active || '']?.component"></ng-container>
     </as-split-area>
     <as-split-area [size]="80">
       <as-split direction="vertical">
         <as-split-area [size]="70">
-          <ng-container *ngComponentOutlet="fileTabsComponent; injector: injector"></ng-container>
+          <ng-container [ngComponentOutlet]="fileTabsComponent"></ng-container>
         </as-split-area>
         <as-split-area [size]="30">
-          <ng-container *ngComponentOutlet="terminalComponent; injector: injector"></ng-container>
+          <ng-container [ngComponentOutlet]="terminalComponent"></ng-container>
         </as-split-area>
       </as-split>
     </as-split-area>

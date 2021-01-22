@@ -1,4 +1,4 @@
-import {EventEmitter} from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import {BehaviorSubject, interval, Observable, Subscription} from 'rxjs';
 import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
 import {FileTypeService} from './file-type.service';
@@ -8,10 +8,13 @@ import {File} from './model/file';
 import {FileEditor} from './model/file-editor';
 import {Project} from './model/project';
 
+@Injectable()
 export class ProjectManager {
   private wss: WebSocketSubject<any>;
   private keepAliveTimer: Subscription;
 
+  project: Project;
+  container: Container;
   fileRoot: File;
 
   openRequests = new EventEmitter<FileEditor>();
@@ -22,11 +25,15 @@ export class ProjectManager {
   currentFile = new BehaviorSubject<File | undefined>(undefined);
 
   constructor(
-    public readonly project: Project,
-    public readonly container: Container,
     private fileService: FileService,
     private fileTypeService: FileTypeService,
   ) {
+  }
+
+  init(project: Project, container: Container) {
+    this.project = project;
+    this.container = container;
+
     const url = container.url.startsWith('http') ? `ws${container.url.substring(4)}/ws` : `${container.url}/ws`;
     this.wss = webSocket<any>(url);
     this.wss.subscribe(event => this.handleMessage(event));
@@ -160,9 +167,9 @@ export class ProjectManager {
   }
 
   destroy() {
-    this.keepAliveTimer.unsubscribe();
-    this.wss.complete();
-    this.wss.unsubscribe();
+    this.keepAliveTimer?.unsubscribe();
+    this.wss?.complete();
+    this.wss?.unsubscribe();
   }
 
   resize(process: string, columns: number, rows: number) {

@@ -25,15 +25,13 @@ interface SidebarItem {
   selector: 'app-project-workspace',
   templateUrl: './project-workspace.component.html',
   styleUrls: ['./project-workspace.component.scss'],
+  providers: [ProjectManager],
 })
 export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
   project: Project;
   container: Container;
-  projectManager: ProjectManager;
 
   sidebarItems: Record<string, SidebarItem> = {};
-
-  injector: Injector;
 
   active ? = 'project';
 
@@ -46,14 +44,8 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
     private projectService: ProjectService,
     private fileService: FileService,
     private fileTypeService: FileTypeService,
+    private projectManager: ProjectManager,
   ) {
-    this.injector = Injector.create({
-      name: 'ProjectWorkspace',
-      parent: parentInjector,
-      providers: [
-        {provide: ProjectManager, useFactory: () => this.projectManager},
-      ],
-    });
   }
 
   ngOnInit(): void {
@@ -63,8 +55,8 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
         this.projectService.getContainer(params.id).pipe(tap(container => this.container = container)),
       ])),
       tap(([project, container]) => {
-        this.projectManager?.destroy();
-        this.projectManager = new ProjectManager(project, container, this.fileService, this.fileTypeService);
+        this.projectManager.destroy();
+        this.projectManager.init(project, container);
 
         this.sidebarItems.settings = {name: 'Settings', icon: 'gear', component: SettingsComponent};
         this.terminalComponent = TerminalTabsComponent;
@@ -86,6 +78,6 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.projectManager?.destroy();
+    this.projectManager.destroy();
   }
 }
