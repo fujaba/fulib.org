@@ -10,7 +10,7 @@ import {Project} from './model/project';
 
 @Injectable()
 export class ProjectManager {
-  private wss: WebSocketSubject<any>;
+  webSocket: WebSocketSubject<any>;
   private keepAliveTimer: Subscription;
 
   project: Project;
@@ -35,10 +35,10 @@ export class ProjectManager {
     this.container = container;
 
     const url = container.url.startsWith('http') ? `ws${container.url.substring(4)}/ws` : `${container.url}/ws`;
-    this.wss = webSocket<any>(url);
-    this.wss.subscribe(event => this.handleMessage(event));
+    this.webSocket = webSocket<any>(url);
+    this.webSocket.subscribe(event => this.handleMessage(event));
     this.keepAliveTimer = interval(20000).subscribe(() => {
-      this.wss.next({command: 'keepAlive'});
+      this.webSocket.next({command: 'keepAlive'});
     });
   }
 
@@ -137,42 +137,9 @@ export class ProjectManager {
     this.openRequests.next(editor);
   }
 
-  exec(cmd: string[]): Observable<any> {
-    let process = '';
-    return this.wss.multiplex(() => ({
-      command: 'exec',
-      cmd,
-    }), () => ({
-      command: 'kill',
-      process,
-    }), msg => {
-      switch (msg.event) {
-        case 'started':
-          if (process) {
-            return false;
-          }
-          process = msg.process;
-          return true;
-        case 'output':
-        case 'exited':
-          return msg.process === process;
-        default:
-          return false;
-      }
-    });
-  }
-
-  input(text: string, process: string): void {
-    this.wss.next({command: 'input', text, process});
-  }
-
   destroy() {
     this.keepAliveTimer?.unsubscribe();
-    this.wss?.complete();
-    this.wss?.unsubscribe();
-  }
-
-  resize(process: string, columns: number, rows: number) {
-    this.wss.next({command: 'resize', process, columns, rows});
+    this.webSocket?.complete();
+    this.webSocket?.unsubscribe();
   }
 }

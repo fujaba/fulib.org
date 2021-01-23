@@ -3,12 +3,13 @@ import {NgTerminal} from 'ng-terminal';
 import {Observable} from 'rxjs';
 import {filter, map} from 'rxjs/operators';
 import {Terminal} from '../model/terminal';
-import {ProjectManager} from '../project.manager';
+import {TerminalService} from './terminal.service';
 
 @Component({
   selector: 'app-terminal',
   templateUrl: './terminal.component.html',
   styleUrls: ['./terminal.component.scss'],
+  providers: [TerminalService],
 })
 export class TerminalComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() model: Terminal;
@@ -20,12 +21,12 @@ export class TerminalComponent implements OnInit, OnDestroy, AfterViewInit {
   private resize;
 
   constructor(
-    private projectManager: ProjectManager,
+    private terminalService: TerminalService,
   ) {
   }
 
   ngOnInit(): void {
-    this.output$ = this.projectManager.exec(this.model.cmd).pipe(
+    this.output$ = this.terminalService.exec(this.model.cmd).pipe(
       filter(message => {
         switch (message.event) {
           case 'started':
@@ -47,7 +48,7 @@ export class TerminalComponent implements OnInit, OnDestroy, AfterViewInit {
   ngAfterViewInit(): void {
     this.terminal.keyEventInput.subscribe(e => {
       if (e.key && this.model.process) {
-        this.projectManager.input(e.key, this.model.process);
+        this.terminalService.input(e.key, this.model.process);
       }
     });
 
@@ -58,7 +59,7 @@ export class TerminalComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private doResize(cols: number, rows: number) {
     if (this.model.process) {
-      this.projectManager.resize(this.model.process, cols, rows);
+      this.terminalService.resize(this.model.process, cols, rows);
     }
   }
 
