@@ -44,9 +44,6 @@ export class FileTabsComponent implements OnInit, OnDestroy {
   }
 
   open(editor: FileEditor) {
-    this.fileService.getContent(this.projectManager.container, editor.file).subscribe(() => {
-    });
-
     const existing = this.openEditors.find(e => editor.file === e.file && !!editor.preview === !!e.preview);
     if (existing) {
       existing.temporary = existing.temporary && editor.temporary;

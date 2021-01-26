@@ -18,22 +18,14 @@ export class FileService {
   }
 
   getContent(container: Container, file: File): Observable<string> {
-    if (file.content !== undefined) {
-      return of(file.content);
-    }
-
-    return this.dav.get(`${container.url}/dav/${file.path}`).pipe(tap(content => {
-      file.content = content;
-    }));
+    return this.dav.get(`${container.url}/dav/${file.path}`);
   }
 
   saveContent(container: Container, file: File): Observable<void> {
     if (file.content === undefined) {
       return EMPTY;
     }
-    return this.dav.put(`${container.url}/dav/${file.path}`, file.content).pipe(tap(() => {
-      file.dirty = false;
-    }));
+    return this.dav.put(`${container.url}/dav/${file.path}`, file.content);
   }
 
   get(container: Container, path: string): Observable<File> {

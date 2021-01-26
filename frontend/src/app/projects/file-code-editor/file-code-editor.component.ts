@@ -1,6 +1,6 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {filter} from 'rxjs/operators';
+import {filter, startWith, switchMap} from 'rxjs/operators';
 import {FileService} from '../file.service';
 import {File} from '../model/file';
 import {ProjectManager} from '../project.manager';
@@ -42,25 +42,33 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
     });
 
     const sameFile = filter(file => file === this.file);
-    this.subscription = this.projectManager.changes.pipe(sameFile).subscribe(() => this.onExternalChange());
+    this.subscription = this.projectManager.changes.pipe(
+      sameFile,
+      startWith(this.file),
+      switchMap(() => this.fileService.getContent(this.projectManager.container, this.file)),
+    ).subscribe(content => {
+      this.onExternalChange(content);
+    });
   }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
 
-  private onExternalChange() {
-    if (this.file.dirty && !confirm(this.file.name + ' was changed externally. Reload and discard changes?')) {
+  private onExternalChange(content: string) {
+    const cached = this.file.content;
+    if (cached !== undefined && cached !== content && !confirm(this.file.name + ' was changed externally. Reload and discard changes?')) {
       return;
     }
 
     this.file.dirty = false;
-    this.file.content = undefined;
-    this.fileService.getContent(this.projectManager.container, this.file).subscribe();
+    this.file.content = content;
   }
 
   save() {
-    this.fileService.saveContent(this.projectManager.container, this.file).subscribe();
+    this.fileService.saveContent(this.projectManager.container, this.file).subscribe(() => {
+      this.file.dirty = false;
+    });
   }
 
   setContent(content: string) {
