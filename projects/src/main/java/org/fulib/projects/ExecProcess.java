@@ -10,29 +10,28 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.UUID;
 
 public class ExecProcess extends Thread
 {
 	private final String[] cmd;
 	private final Session session;
-	private final String execId;
+	private final String id;
 
 	private int columns;
 	private int rows;
 
 	private PtyProcess process;
 
-	public ExecProcess(String[] cmd, Session session)
+	public ExecProcess(String id, String[] cmd, Session session)
 	{
 		this.cmd = cmd;
 		this.session = session;
-		this.execId = UUID.randomUUID().toString();
+		this.id = id;
 	}
 
 	public String getExecId()
 	{
-		return execId;
+		return id;
 	}
 
 	public void input(String text) throws IOException
@@ -74,7 +73,7 @@ public class ExecProcess extends Thread
 
 			final JSONObject startedEvent = new JSONObject();
 			startedEvent.put("event", "started");
-			startedEvent.put("process", execId);
+			startedEvent.put("process", id);
 			session.getRemote().sendString(startedEvent.toString());
 
 			try (final InputStream input = process.getInputStream())
@@ -90,7 +89,7 @@ public class ExecProcess extends Thread
 
 					final JSONObject outputEvent = new JSONObject();
 					outputEvent.put("event", "output");
-					outputEvent.put("process", execId);
+					outputEvent.put("process", id);
 					outputEvent.put("text", new String(buf, 0, read));
 					session.getRemote().sendString(outputEvent.toString());
 				}
@@ -100,7 +99,7 @@ public class ExecProcess extends Thread
 
 			final JSONObject exitedEvent = new JSONObject();
 			exitedEvent.put("event", "exited");
-			exitedEvent.put("process", execId);
+			exitedEvent.put("process", id);
 			exitedEvent.put("exitCode", returnCode);
 			session.getRemote().sendString(exitedEvent.toString());
 		}

@@ -40,8 +40,9 @@ public class WebSocketHandler implements FileEventHandler
 		{
 		case "exec":
 		{
+			final String id = json.getString("process");
 			final String[] cmd = json.getJSONArray("cmd").toList().toArray(new String[0]);
-			final ExecProcess process = new ExecProcess(cmd, session);
+			final ExecProcess process = new ExecProcess(id, cmd, session);
 			this.processes.get(session).put(process.getExecId(), process);
 			process.start();
 			return;

@@ -26,12 +26,9 @@ export class TerminalComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.output$ = this.terminalService.exec(this.model.cmd).pipe(
+    this.output$ = this.terminalService.exec(this.model.id, this.model.cmd).pipe(
       filter(message => {
         switch (message.event) {
-          case 'started':
-            this.model.process = message.process;
-            return false;
           case 'output':
             return true;
           case 'exited':
@@ -47,8 +44,8 @@ export class TerminalComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.terminal.keyEventInput.subscribe(e => {
-      if (e.key && this.model.process) {
-        this.terminalService.input(e.key, this.model.process);
+      if (e.key) {
+        this.terminalService.input(e.key, this.model.id);
       }
     });
 
@@ -58,9 +55,7 @@ export class TerminalComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private doResize(cols: number, rows: number) {
-    if (this.model.process) {
-      this.terminalService.resize(this.model.process, cols, rows);
-    }
+    this.terminalService.resize(this.model.id, cols, rows);
   }
 
   ngOnDestroy(): void {

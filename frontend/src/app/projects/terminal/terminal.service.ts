@@ -13,25 +13,20 @@ export class TerminalService {
     this.webSocket = projectManager.webSocket;
   }
 
-  exec(cmd: string[]): Observable<any> {
-    let process = '';
+  exec(id: string, cmd: string[]): Observable<any> {
     return this.webSocket.multiplex(() => ({
       command: 'exec',
+      process: id,
       cmd,
     }), () => ({
       command: 'kill',
-      process,
+      process: id,
     }), msg => {
       switch (msg.event) {
         case 'started':
-          if (process) {
-            return false;
-          }
-          process = msg.process;
-          return true;
         case 'output':
         case 'exited':
-          return msg.process === process;
+          return msg.process === id;
         default:
           return false;
       }

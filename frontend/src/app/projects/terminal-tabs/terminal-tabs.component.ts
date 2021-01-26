@@ -9,6 +9,8 @@ import {Terminal} from '../model/terminal';
 export class TerminalTabsComponent implements OnInit {
   tabs: Terminal[] = [];
 
+  nextId = 0;
+
   constructor() {
   }
 
@@ -17,6 +19,7 @@ export class TerminalTabsComponent implements OnInit {
   }
 
   addTab() {
-    this.tabs.push({cmd: ['/bin/bash']});
+    const id = (this.nextId++).toString(36);
+    this.tabs.push({cmd: ['/bin/bash'], id});
   }
 }
