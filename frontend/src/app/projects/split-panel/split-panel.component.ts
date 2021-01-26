@@ -9,6 +9,8 @@ export class SplitPanelComponent {
   panels: number[] = [];
   nextId = 0;
 
+  active = 0;
+
   constructor() {
     this.addTab();
   }

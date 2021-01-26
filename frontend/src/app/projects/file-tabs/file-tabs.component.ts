@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 
 import {Subscription} from 'rxjs';
 import {map, mapTo, switchMap} from 'rxjs/operators';
@@ -15,6 +15,8 @@ import {TabsComponent} from '../tabs/tabs.component';
   styleUrls: ['./file-tabs.component.scss'],
 })
 export class FileTabsComponent implements OnInit, OnDestroy {
+  @Input() active = false;
+
   @ViewChild('tabs') tabs: TabsComponent<FileEditor>;
 
   openEditors: FileEditor[] = [];
@@ -29,7 +31,9 @@ export class FileTabsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscription.add(this.projectManager.openRequests.subscribe((editor: FileEditor) => {
-      this.open(editor);
+      if (this.active) {
+        this.open(editor);
+      }
     }));
     this.subscription.add(this.projectManager.deletions.subscribe((file: File) => {
       const editor = this.openEditors.find(ed => ed.file === file);
