@@ -40,7 +40,7 @@ public class Service
 		service = spark.Service.ignite();
 		service.port(4567);
 		service.webSocket("/ws", webSocketHandler);
-		service.init();
+		service.get("/zip/*", new ZipHandler()::handle);
 		service.awaitStop();
 	}
 
