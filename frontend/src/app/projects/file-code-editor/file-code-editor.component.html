@@ -1,6 +1,6 @@
 <app-autotheme-codemirror
   class="cm-h-100"
-  [content]="file.content"
+  [content]="file$.value?.content || ''"
   (contentChange)="setContent($event)"
   [options]="options"
 ></app-autotheme-codemirror>
