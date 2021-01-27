@@ -82,7 +82,7 @@ export class DavClient {
     return this.http.get(url, {responseType: 'text'});
   }
 
-  put(url: string, content: string): Observable<void> {
+  put(url: string, content: string | File): Observable<void> {
     return this.http.put<void>(url, content);
   }
 }

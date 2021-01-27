@@ -104,14 +104,25 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
   }
 
   private addChild(name: string, directory: boolean) {
-    this.fileService.createChild(this.container, this.file, name, directory).subscribe();
+    this.fileService.createChild(this.container, this.file, name, directory ? true : '').subscribe();
   }
 
   onDrop(event: DndDropEvent): void {
-    const path: string = event.data;
-    const file = this.fileService.resolve(this.projectManager.fileRoot, path);
-    if (file) {
-      this.fileService.move(this.container, file, this.file).subscribe();
+    const files = event.event.dataTransfer?.files;
+    if (files) {
+      for (let i = 0; i < files.length; i++) {
+        const file = files.item(i);
+        if (file) {
+          this.fileService.createChild(this.projectManager.container, this.file, file.name, file).subscribe();
+        }
+      }
+    }
+    const data = event.data;
+    if (typeof data === 'string') {
+      const file = this.fileService.resolve(this.projectManager.fileRoot, data);
+      if (file) {
+        this.fileService.move(this.container, file, this.file).subscribe();
+      }
     }
   }
 }

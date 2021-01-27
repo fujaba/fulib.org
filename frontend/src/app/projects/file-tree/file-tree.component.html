@@ -6,6 +6,7 @@
      [dndDraggable]="file.path"
      [dndDropzone]=""
      [dndDisableDropIf]="!file.directory"
+     [dndAllowExternal]="true"
      (dndDrop)="onDrop($event)"
 >
   <div class="file-item-indent" [style.margin-left.em]="level - 0.5">

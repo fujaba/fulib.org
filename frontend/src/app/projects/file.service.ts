@@ -50,10 +50,10 @@ export class FileService {
     }));
   }
 
-  createChild(container: Container, parent: File, name: string, directory: boolean): Observable<void> {
+  createChild(container: Container, parent: File, name: string, directoryOrContent: true | string | globalThis.File): Observable<void> {
     const path = parent.path + name;
     const url = `${container.url}/dav/${path}`;
-    return (directory ? this.dav.mkcol(url) : this.dav.put(url, ''));
+    return (directoryOrContent === true ? this.dav.mkcol(url) : this.dav.put(url, directoryOrContent));
   }
 
   rename(container: Container, file: File, newName: string): Observable<void> {
