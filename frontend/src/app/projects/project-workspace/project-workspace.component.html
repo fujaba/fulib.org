@@ -1,5 +1,5 @@
 <div class="d-flex h-100">
-  <div class="sidebar">
+  <div class="bg-light bg-darkmode-dark">
     <div *ngFor="let entry of sidebarItems | keyvalue"
          class="sidebar-item"
          [ngbTooltip]="entry.value.name" placement="right"
@@ -10,10 +10,10 @@
     </div>
   </div>
   <as-split class="flex-grow-1 h-100" direction="horizontal">
-    <as-split-area [size]="20">
+    <as-split-area [size]="20" [visible]="!!active" [order]="0">
       <ng-container [ngComponentOutlet]="sidebarItems[active || '']?.component"></ng-container>
     </as-split-area>
-    <as-split-area [size]="80">
+    <as-split-area [size]="80" [order]="1">
       <as-split direction="vertical">
         <as-split-area [size]="70">
           <ng-container [ngComponentOutlet]="fileTabsComponent"></ng-container>
