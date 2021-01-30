@@ -9,10 +9,11 @@ dependencies:
   '@angular/platform-browser-dynamic': 11.0.3_1f5068fc5b8741d351801633315da731
   '@angular/router': 11.0.3_47f3b99041e141517eba501e9e4cb9d5
   '@ctrl/ngx-codemirror': 4.1.0_87256cbcd8a3fda26f1d378d25ed09fb
-  '@ng-bootstrap/ng-bootstrap': 8.0.0_9eaaf24eb0ae8717637c0327b0d66b66
+  '@ng-bootstrap/ng-bootstrap': 9.0.2_9eaaf24eb0ae8717637c0327b0d66b66
   angular-gridster2: 11.0.0_794750ec7097dfee4813d32989b0f0e1
   bootstrap: 4.5.3
   bootstrap-darkmode: 0.7.0
+  bootstrap-icons: 1.3.0
   codemirror: 5.58.3
   file-saver: 2.0.5
   keycloak-angular: 7.3.1_1857f5b26f17402454f662c92bed301c
@@ -1550,7 +1551,7 @@ packages:
     dev: true
     resolution:
       integrity: sha512-EUCPEkaRPvmHjWAAZkWMT7JDzpw7FKB00WTISaiXsbNOd5hCHg77XLA8sLYLFDo1zepYLo2w7GstN8YBqRXZfA==
-  /@ng-bootstrap/ng-bootstrap/8.0.0_9eaaf24eb0ae8717637c0327b0d66b66:
+  /@ng-bootstrap/ng-bootstrap/9.0.2_9eaaf24eb0ae8717637c0327b0d66b66:
     dependencies:
       '@angular/common': 11.0.3_@angular+core@11.0.3+rxjs@6.5.5
       '@angular/core': 11.0.3_rxjs@6.5.5+zone.js@0.10.3
@@ -1560,13 +1561,13 @@ packages:
       tslib: 2.0.3
     dev: false
     peerDependencies:
-      '@angular/common': ^10.0.0
-      '@angular/core': ^10.0.0
-      '@angular/forms': ^10.0.0
-      '@angular/localize': ^10.0.0
+      '@angular/common': ^11.0.0
+      '@angular/core': ^11.0.0
+      '@angular/forms': ^11.0.0
+      '@angular/localize': ^11.0.0
       rxjs: ^6.5.5
     resolution:
-      integrity: sha512-v77Gfd8xHH+exq0WqIqVRlxbUEHdA/2+RUJenUP2IDTQN9E1rWl7O461/kosr+0XPuxPArHQJxhh/WsCYckcNg==
+      integrity: sha512-MFtpBFKOtLZWFE8JnJWOnYLxXK3GVmVP16vhJsikdxiDVl7CtrnO+YmCYqK30WdS5eIvYKRBJF/hwOH8WvwYFQ==
   /@ngtools/webpack/11.0.3_4c24c4e460f601106ae9d1a6f6ba1d48:
     dependencies:
       '@angular-devkit/core': 11.0.3
@@ -2435,6 +2436,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-T9rTUFGirkTeGelUDJvWSjvUu11gQ4BE3g8s1dtHxEatz3u2XN5q8Oe2mQ5oKGR8IIi7i28Xrh/DVpEouUqBBA==
+  /bootstrap-icons/1.3.0:
+    dev: false
+    engines:
+      node: '>=10'
+    resolution:
+      integrity: sha512-w6zQ93p626zmPDqDtET7VdB9EkoDtfmCBV53hunjntoCke6X5LafXf6TxPAP+ImjRAhhxAyA/sjzQnHBY0uoiQ==
   /bootstrap/4.5.3:
     dev: false
     peerDependencies:
@@ -3549,21 +3556,21 @@ packages:
   /debug/3.2.6:
     dependencies:
       ms: 2.1.2
-    deprecated: 'Debug versions >=3.2.0 <3.2.7 || >=4 <4.3.1 have a low-severity ReDos regression when used in a Node.js environment. It is recommended you upgrade to 3.2.7 or 4.3.1. (https://github.com/visionmedia/debug/issues/797)'
+    deprecated: Debug versions >=3.2.0 <3.2.7 || >=4 <4.3.1 have a low-severity ReDos regression when used in a Node.js environment. It is recommended you upgrade to 3.2.7 or 4.3.1. (https://github.com/visionmedia/debug/issues/797)
     dev: true
     resolution:
       integrity: sha512-mel+jf7nrtEl5Pn1Qx46zARXKDpBbvzezse7p7LqINmdoIk8PYP5SySaxEmYv6TZ0JyEKA1hsCId6DIhgITtWQ==
   /debug/4.1.1:
     dependencies:
       ms: 2.1.2
-    deprecated: 'Debug versions >=3.2.0 <3.2.7 || >=4 <4.3.1 have a low-severity ReDos regression when used in a Node.js environment. It is recommended you upgrade to 3.2.7 or 4.3.1. (https://github.com/visionmedia/debug/issues/797)'
+    deprecated: Debug versions >=3.2.0 <3.2.7 || >=4 <4.3.1 have a low-severity ReDos regression when used in a Node.js environment. It is recommended you upgrade to 3.2.7 or 4.3.1. (https://github.com/visionmedia/debug/issues/797)
     dev: true
     resolution:
       integrity: sha512-pYAIzeRo8J6KPEaJ0VWOh5Pzkbw/RetuzehGM7QRRX5he4fPHx2rdKMB256ehJCkX+XRQm16eZLqLNS8RSZXZw==
   /debug/4.2.0:
     dependencies:
       ms: 2.1.2
-    deprecated: 'Debug versions >=3.2.0 <3.2.7 || >=4 <4.3.1 have a low-severity ReDos regression when used in a Node.js environment. It is recommended you upgrade to 3.2.7 or 4.3.1. (https://github.com/visionmedia/debug/issues/797)'
+    deprecated: Debug versions >=3.2.0 <3.2.7 || >=4 <4.3.1 have a low-severity ReDos regression when used in a Node.js environment. It is recommended you upgrade to 3.2.7 or 4.3.1. (https://github.com/visionmedia/debug/issues/797)
     engines:
       node: '>=6.0'
     peerDependencies:
@@ -3577,7 +3584,7 @@ packages:
     dependencies:
       ms: 2.1.2
       supports-color: 6.1.0
-    deprecated: 'Debug versions >=3.2.0 <3.2.7 || >=4 <4.3.1 have a low-severity ReDos regression when used in a Node.js environment. It is recommended you upgrade to 3.2.7 or 4.3.1. (https://github.com/visionmedia/debug/issues/797)'
+    deprecated: Debug versions >=3.2.0 <3.2.7 || >=4 <4.3.1 have a low-severity ReDos regression when used in a Node.js environment. It is recommended you upgrade to 3.2.7 or 4.3.1. (https://github.com/visionmedia/debug/issues/797)
     dev: true
     engines:
       node: '>=6.0'
@@ -7915,7 +7922,7 @@ packages:
       tough-cookie: 2.5.0
       tunnel-agent: 0.6.0
       uuid: 3.4.0
-    deprecated: 'request has been deprecated, see https://github.com/request/request/issues/3142'
+    deprecated: request has been deprecated, see https://github.com/request/request/issues/3142
     dev: true
     engines:
       node: '>= 6'
@@ -7972,7 +7979,7 @@ packages:
     resolution:
       integrity: sha512-QEb4A76c8Mi7I3xNKXlRKQSlLBwjUV/ULFMP+G7n3/7tJZ8MG5wsZ3ucxP1Jz8Vevn6fnJsxDx9cIls+utGzPQ==
   /resolve-url/0.2.1:
-    deprecated: 'https://github.com/lydell/resolve-url#deprecated'
+    deprecated: https://github.com/lydell/resolve-url#deprecated
     dev: true
     resolution:
       integrity: sha1-LGN/53yJOv0qZj/iGqkIAGjiBSo=
@@ -9243,7 +9250,7 @@ packages:
       tslib: 1.14.1
       tsutils: 2.29.0_typescript@4.0.5
       typescript: 4.0.5
-    deprecated: 'TSLint has been deprecated in favor of ESLint. Please see https://github.com/palantir/tslint/issues/4534 for more information.'
+    deprecated: TSLint has been deprecated in favor of ESLint. Please see https://github.com/palantir/tslint/issues/4534 for more information.
     dev: true
     engines:
       node: '>=4.8.0'
@@ -9417,7 +9424,7 @@ packages:
     resolution:
       integrity: sha512-KY9Frmirql91X2Qgjry0Wd4Y+YTdrdZheS8TFwvkbLWf/G5KNJDCh6pKL5OZctEW4+0Baa5idK2ZQuELRwPznQ==
   /urix/0.1.0:
-    deprecated: 'Please see https://github.com/lydell/urix#deprecated'
+    deprecated: Please see https://github.com/lydell/urix#deprecated
     dev: true
     resolution:
       integrity: sha1-2pN/emLiH+wf0Y1Js1wpNQZ6bHI=
@@ -10000,7 +10007,7 @@ specifiers:
   '@angular/platform-browser-dynamic': ~11.0.3
   '@angular/router': ~11.0.3
   '@ctrl/ngx-codemirror': ^4.1.0
-  '@ng-bootstrap/ng-bootstrap': ^8.0.0
+  '@ng-bootstrap/ng-bootstrap': ^9.0.2
   '@types/codemirror': ^0.0.102
   '@types/file-saver': ^2.0.1
   '@types/jasmine': ~3.6.0
@@ -10009,6 +10016,7 @@ specifiers:
   angular-gridster2: ^11.0.0
   bootstrap: ~4.5.3
   bootstrap-darkmode: ^0.7.0
+  bootstrap-icons: ^1.3.0
   codelyzer: ^6.0.0
   codemirror: ^5.58.3
   file-saver: ^2.0.5
