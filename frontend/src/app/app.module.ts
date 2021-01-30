@@ -19,7 +19,6 @@ import {ConfigComponent} from './config/config.component';
 import {FeedbackComponent} from './feedback/feedback.component';
 import {FourPaneEditorComponent} from './four-pane-editor/four-pane-editor.component';
 import {HeaderComponent} from './header/header.component';
-import {ModalComponent} from './modal/modal.component';
 import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
 import {PrivacyService} from './privacy.service';
 import {PrivacyComponent} from './privacy/privacy.component';
@@ -37,7 +36,6 @@ const keycloakService = new KeycloakService();
     HeaderComponent,
     PageNotFoundComponent,
     ChangelogComponent,
-    ModalComponent,
     FeedbackComponent,
     PrivacyComponent,
     AboutComponent,
