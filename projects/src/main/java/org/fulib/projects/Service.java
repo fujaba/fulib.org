@@ -46,14 +46,20 @@ public class Service
 
 	private void stop()
 	{
-		sendStopRequest();
-
-		service.stop();
-		scheduler.shutdown();
+		if (sendStopRequest())
+		{
+			service.stop();
+			scheduler.shutdown();
+		}
 	}
 
-	private void sendStopRequest()
+	private boolean sendStopRequest()
 	{
+		if (STOP_URL == null)
+		{
+			return false;
+		}
+
 		try
 		{
 			final URL url = new URL(STOP_URL);
@@ -61,10 +67,12 @@ public class Service
 			httpCon.setRequestMethod("DELETE");
 			httpCon.getResponseCode();
 			httpCon.disconnect();
+			return true;
 		}
 		catch (IOException exception)
 		{
 			exception.printStackTrace();
+			return false;
 		}
 	}
 }
