@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {EMPTY, Observable} from 'rxjs';
-import {flatMap} from 'rxjs/operators';
+import {switchMap} from 'rxjs/operators';
 import {MarkdownService} from './markdown.service';
 
 import {PrivacyService} from './privacy.service';
@@ -126,7 +126,7 @@ export class ChangelogService {
 
   getChangelog(repo: keyof Versions, lastUsedVersion?: string, currentVersion?: string): Observable<string> {
     return this.loadRawChangelog('fujaba/' + repo).pipe(
-      flatMap(fullChangelog => {
+      switchMap(fullChangelog => {
         const changelog = lastUsedVersion ? this.partialChangelog(fullChangelog, lastUsedVersion, currentVersion) : fullChangelog;
         if (!changelog) { // already newest version
           return EMPTY;
