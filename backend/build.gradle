@@ -24,7 +24,6 @@ shadowJar.archiveClassifier = 'all'
 repositories {
 	mavenLocal()
 	mavenCentral()
-	jcenter()
 }
 
 dependencies {
