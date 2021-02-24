@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 
 import {saveAs} from 'file-saver';
 import {forkJoin, Observable, of} from 'rxjs';
-import {flatMap, map} from 'rxjs/operators';
+import {map, switchMap} from 'rxjs/operators';
 
 import {environment} from '../../environments/environment';
 import {Marker} from '../model/codegen/marker';
@@ -120,7 +120,7 @@ export class AssignmentService {
 
   getOwn(): Observable<Assignment[]> {
     return this.users.current$.pipe(
-      flatMap(user => {
+      switchMap(user => {
         if (user && user.id) {
           return this.getByUserId(user.id);
         } else {
