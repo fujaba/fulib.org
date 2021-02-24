@@ -12,7 +12,7 @@ interface SimpleMode {
   meta: Meta;
 }
 
-// keywords for fulibScenarios v1.5.1
+// keywords for fulibScenarios v1.7.0
 export const KEYWORDS = [
   'a',
   'add',
@@ -41,6 +41,7 @@ export const KEYWORDS = [
   'equal',
   'Every',
   'expect',
+  'false',
   'from',
   'greater',
   'has',
@@ -75,6 +76,7 @@ export const KEYWORDS = [
   'then',
   'There', 'there',
   'through',
+  'true',
   'type',
   'to',
   'We', 'we',

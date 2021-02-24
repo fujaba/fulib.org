@@ -352,11 +352,11 @@ public class RunCodeGen
 	}
 
 	static final Set<String> DEFAULT_METHODS = Collections.unmodifiableSet(new HashSet<>(
-		Arrays.asList("firePropertyChange", "addPropertyChangeListener", "removePropertyChangeListener", "removeYou",
+		Arrays.asList("firePropertyChange", "addPropertyChangeListener", "removePropertyChangeListener", "listeners", "removeYou",
 		              "toString")));
 
 	// must be sorted by longest first
-	static final String[] DEFAULT_PROPERTY_METHODS = { "without", "with", "get", "set" };
+	static final String[] DEFAULT_PROPERTY_METHODS = { "without", "with", "get", "set", "is" };
 
 	static boolean shouldSkip(String decl, Set<String> properties)
 	{
