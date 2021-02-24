@@ -12,13 +12,13 @@ apply plugin: 'org.fulib.fulibGradle'
 
 ext {
 	// https://mvnrepository.com/artifact/org.fulib/fulibScenarios
-	fulibScenariosDependency = [ group: 'org.fulib', name: 'fulibScenarios', version: '1.6.2' ]
+	fulibScenariosDependency = [ group: 'org.fulib', name: 'fulibScenarios', version: '1.7.0' ]
 
 	// https://mvnrepository.com/artifact/org.fulib/fulibTools
-	fulibToolsDependency = [ group: 'org.fulib', name: 'fulibTools', version: '1.4.1' ]
+	fulibToolsDependency = [ group: 'org.fulib', name: 'fulibTools', version: '1.5.1' ]
 
 	// https://mvnrepository.com/artifact/org.fulib/fulibMockups
-	fulibMockupsDependency = [ group: 'org.fulib', name: 'fulibMockups', version: '0.3.1' ]
+	fulibMockupsDependency = [ group: 'org.fulib', name: 'fulibMockups', version: '0.4.0' ]
 
 	// https://mvnrepository.com/artifact/org.fulib/fulibTables
 	fulibTablesDependency = [ group: 'org.fulib', name: 'fulibTables', version: '1.4.0' ]
