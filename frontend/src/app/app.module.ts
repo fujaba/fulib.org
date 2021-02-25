@@ -29,9 +29,9 @@ import {UserModule} from './user/user.module';
 function initializeKeycloak(keycloak: KeycloakService) {
   return () => keycloak.init({
     config: {
-      clientId: environment.authClientId,
-      realm: 'fulib.org',
-      url: environment.authURL,
+      clientId: environment.auth.clientId,
+      realm: environment.auth.realm,
+      url: environment.auth.url,
     },
     initOptions: {
       onLoad: 'check-sso',
