@@ -349,3 +349,38 @@
 ## Bugfixes
 
 * Class and object diagrams can now be scrolled if they are too large for the panel. #122
+
+# fulib.org v1.7.0
+
+## General
+
+* Updated to fulib v1.5.1. #142
+* Updated to fulibTools v1.5.1. #142
+* Updated to fulibYaml v1.5.0. #142
+* Updated to fulibScenarios v1.7.0. #142
+* Updated to fulibMockups v0.4.0. #127 #142
+* Updated to fulibGradle v0.5.0. #127
+* Updated to Gradle v6.8.2. #142
+* Updated to Angular 11. #131
+* Updated various frontend dependencies. #131 #143
+* Updated to Keycloak 12 and switched to the new auth service. #141
+
+## New Features
+
++ Scenarios are now compiled with fulibMockups on the classpath. #127
++ Added an example for the new fulibMockups UIs. #127
++ Clicking class and object diagrams now opens them in a model. #130
+
+## Improvements
+
+* Modals are now animated. #67 #131
+* Increased the size of class and object diagrams. #130
+* Removed `jcenter` repository from generated `build.gradle` files. #142
+
+## Bugfixes
+
+* The selected example is no longed saved in local storage. #126
+
+## Removals
+
+- Removed the old fulibMockups examples. #127
