@@ -1,6 +1,7 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {KeycloakService} from 'keycloak-angular';
+import {environment} from '../../environments/environment';
 import {ChangelogService, Versions} from '../changelog.service';
 
 import {PrivacyService} from '../privacy.service';
@@ -26,6 +27,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   versions?: Versions;
 
   username?: string;
+  accountUrl: string = environment.auth.url + '/realms/' + environment.auth.realm + '/account';
 
   ngOnInit(): void {
     this.keycloak.isLoggedIn().then(loggedIn => {

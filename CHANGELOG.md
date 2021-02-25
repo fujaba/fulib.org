@@ -384,3 +384,14 @@
 ## Removals
 
 - Removed the old fulibMockups examples. #127
+
+# fulib.org v1.7.1
+
+## Improvements
+
+* Edit Account under the user icon now opens in a new tab. #144
+
+## Bugfixes
+
+* Fixed incorrect auth settings in backend leading to unverified assignments. #144
+* Fixed incorrect Edit Account URL under the user icon. #144
