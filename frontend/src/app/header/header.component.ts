@@ -29,9 +29,13 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.keycloak.isLoggedIn().then(loggedIn => {
-      if (loggedIn) {
-        this.username = this.keycloak.getUsername();
+      if (!loggedIn) {
+        return;
       }
+
+      this.keycloak.loadUserProfile().then(profile => {
+        this.username = profile.username;
+      });
     });
 
     this.repos = this.changelogService.repos;

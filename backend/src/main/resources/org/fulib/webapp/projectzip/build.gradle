@@ -10,7 +10,6 @@ version = '$$projectVersion$$'
 repositories {
 	mavenLocal()
 	mavenCentral()
-	jcenter()
 }
 
 dependencies {

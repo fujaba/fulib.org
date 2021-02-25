@@ -3,13 +3,8 @@
 plugins {
 	id 'java'
 	id 'application'
-	id 'maven-publish'
-	// https://plugins.gradle.org/plugin/de.clashsoft.simple-publish
-	id 'de.clashsoft.simple-publish' version '0.6.0'
 	// https://plugins.gradle.org/plugin/com.github.johnrengelman.shadow
 	id 'com.github.johnrengelman.shadow' version '5.2.0'
-	// https://plugins.gradle.org/plugin/com.jfrog.bintray
-	id 'com.jfrog.bintray' version '1.8.5'
 }
 
 // --------------- Publication Info ---------------
@@ -17,29 +12,6 @@ plugins {
 group = 'org.fulib'
 version = "git describe --tags".execute().text[1..-2] // strip v and \n
 description = 'The fulib.org website and fulibScenarios Web App'
-
-publishInfo {
-	websiteUrl = 'https://www.fulib.org/'
-	githubRepo = 'fujaba/fulib.org'
-	labels = [ 'fulib', 'scenarios', 'webapp', 'website' ]
-
-	license {
-		name = 'BSD 3-Clause'
-		url = 'https://opensource.org/licenses/BSD-3-Clause'
-	}
-
-	developer {
-		id = 'clashsoft'
-		name = 'Adrian Kunz'
-		email = 'clashsoft@hotmail.com'
-	}
-
-	developer {
-		id = 'azuendorf'
-		name = 'Albert Zündorf'
-		email = 'zuendorf@uni-kassel.de'
-	}
-}
 
 // --------------- General Settings ---------------
 
@@ -52,7 +24,6 @@ shadowJar.archiveClassifier = 'all'
 repositories {
 	mavenLocal()
 	mavenCentral()
-	jcenter()
 }
 
 dependencies {
@@ -71,22 +42,22 @@ dependencies {
 	compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
 
 	// https://mvnrepository.com/artifact/com.sparkjava/spark-core
-	compile group: 'com.sparkjava', name: 'spark-core', version: '2.9.2'
+	compile group: 'com.sparkjava', name: 'spark-core', version: '2.9.3'
 
 	// https://mvnrepository.com/artifact/org.json/json
-	compile group: 'org.json', name: 'json', version: '20200518'
+	compile group: 'org.json', name: 'json', version: '20201115'
 
 	// https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync
-	compile group: 'org.mongodb', name: 'mongodb-driver-sync', version: '3.12.7'
+	compile group: 'org.mongodb', name: 'mongodb-driver-sync', version: '3.12.8'
 
 	// https://mvnrepository.com/artifact/com.auth0/java-jwt
-	compile group: 'com.auth0', name: 'java-jwt', version: '3.10.3'
+	compile group: 'com.auth0', name: 'java-jwt', version: '3.13.0'
 
 	// compile instead of testCompile because the web service uses it
 	compile junitDependency
 
 	// https://mvnrepository.com/artifact/org.mockito/mockito-core
-	testCompile group: 'org.mockito', name: 'mockito-core', version: '3.5.13'
+	testCompile group: 'org.mockito', name: 'mockito-core', version: '3.8.0'
 
 	// --------------- Docker (Projects) ---------------
 
@@ -98,20 +69,20 @@ dependencies {
 
 	// --------------- CommonMark ---------------
 
-	// https://mvnrepository.com/artifact/com.atlassian.commonmark/commonmark
-	compile group: 'com.atlassian.commonmark', name: 'commonmark', version: '0.15.2'
+	// https://mvnrepository.com/artifact/org.commonmark/commonmark
+	compile group: 'org.commonmark', name: 'commonmark', version: '0.17.1'
 
-	// https://mvnrepository.com/artifact/com.atlassian.commonmark/commonmark-ext-gfm-tables
-	compile group: 'com.atlassian.commonmark', name: 'commonmark-ext-gfm-tables', version: '0.15.2'
+	// https://mvnrepository.com/artifact/org.commonmark/commonmark-ext-gfm-tables
+	compile group: 'org.commonmark', name: 'commonmark-ext-gfm-tables', version: '0.17.1'
 
-	// https://mvnrepository.com/artifact/com.atlassian.commonmark/commonmark-ext-autolink
-	compile group: 'com.atlassian.commonmark', name: 'commonmark-ext-autolink', version: '0.15.2'
+	// https://mvnrepository.com/artifact/org.commonmark/commonmark-ext-autolink
+	compile group: 'org.commonmark', name: 'commonmark-ext-autolink', version: '0.17.1'
 
-	// https://mvnrepository.com/artifact/com.atlassian.commonmark/commonmark-ext-gfm-strikethrough
-	compile group: 'com.atlassian.commonmark', name: 'commonmark-ext-gfm-strikethrough', version: '0.15.2'
+	// https://mvnrepository.com/artifact/org.commonmark/commonmark-ext-gfm-strikethrough
+	compile group: 'org.commonmark', name: 'commonmark-ext-gfm-strikethrough', version: '0.17.1'
 
-	// https://mvnrepository.com/artifact/com.atlassian.commonmark/commonmark-ext-task-list-items
-	compile group: 'com.atlassian.commonmark', name: 'commonmark-ext-task-list-items', version: '0.15.2'
+	// https://mvnrepository.com/artifact/org.commonmark/commonmark-ext-task-list-items
+	compile group: 'org.commonmark', name: 'commonmark-ext-task-list-items', version: '0.17.1'
 }
 
 // --------------- Version Injection ---------------

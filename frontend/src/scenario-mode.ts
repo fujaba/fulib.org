@@ -1,18 +1,6 @@
 import {Rule} from 'codemirror';
 
-interface Meta {
-  dontIndentStates?: string[];
-  lineComment?: string;
-}
-
-interface SimpleMode {
-  [id: string]: Rule[] | Meta;
-
-  start: Rule[];
-  meta: Meta;
-}
-
-// keywords for fulibScenarios v1.5.1
+// keywords for fulibScenarios v1.7.0
 export const KEYWORDS = [
   'a',
   'add',
@@ -41,6 +29,7 @@ export const KEYWORDS = [
   'equal',
   'Every',
   'expect',
+  'false',
   'from',
   'greater',
   'has',
@@ -75,6 +64,7 @@ export const KEYWORDS = [
   'then',
   'There', 'there',
   'through',
+  'true',
   'type',
   'to',
   'We', 'we',
@@ -119,7 +109,7 @@ export const TYPES = [
   'integer',
 ];
 
-export const SCENARIO_MODE: SimpleMode = {
+export const SCENARIO_MODE: Record<string, Rule[]> & { start: Rule[] } = {
   start: [
     {regex: /(\s*)(##)(.*)$/, token: [null!, 'header', 'comment'], sol: true},
     {regex: /(\s*)(#)(.*)$/, token: [null!, 'header', 'def'], sol: true},
@@ -170,5 +160,5 @@ export const SCENARIO_MODE: SimpleMode = {
   ],
   meta: {
     lineComment: '//',
-  },
+  } as any,
 };

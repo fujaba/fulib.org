@@ -1,5 +1,5 @@
 import {HttpClientModule} from '@angular/common/http';
-import {ApplicationRef, DoBootstrap, NgModule} from '@angular/core';
+import {APP_INITIALIZER, NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
 
@@ -16,6 +16,7 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {ChangelogComponent} from './changelog/changelog.component';
 import {ConfigComponent} from './config/config.component';
+import {DiagramViewComponent} from './diagram-view/diagram-view.component';
 import {FeedbackComponent} from './feedback/feedback.component';
 import {FourPaneEditorComponent} from './four-pane-editor/four-pane-editor.component';
 import {HeaderComponent} from './header/header.component';
@@ -24,9 +25,20 @@ import {PrivacyService} from './privacy.service';
 import {PrivacyComponent} from './privacy/privacy.component';
 import {SharedModule} from './shared/shared.module';
 import {UserModule} from './user/user.module';
-import { DiagramViewComponent } from './diagram-view/diagram-view.component';
 
-const keycloakService = new KeycloakService();
+function initializeKeycloak(keycloak: KeycloakService) {
+  return () => keycloak.init({
+    config: {
+      clientId: environment.authClientId,
+      realm: 'fulib.org',
+      url: environment.authURL,
+    },
+    initOptions: {
+      onLoad: 'check-sso',
+      silentCheckSsoRedirectUri: window.location.origin + '/assets/silent-check-sso.html',
+    },
+  });
+}
 
 @NgModule({
   declarations: [
@@ -56,6 +68,12 @@ const keycloakService = new KeycloakService();
   ],
   providers: [
     {
+      provide: APP_INITIALIZER,
+      useFactory: initializeKeycloak,
+      multi: true,
+      deps: [KeycloakService],
+    },
+    {
       provide: THEME_LOADER,
       deps: [PrivacyService],
       useFactory(privacyService: PrivacyService): ThemeLoader {
@@ -69,30 +87,8 @@ const keycloakService = new KeycloakService();
         return (theme) => privacyService.setStorage('theme', theme);
       },
     },
-    {
-      provide: KeycloakService,
-      useValue: keycloakService,
-    },
   ],
-  entryComponents: [AppComponent],
+  bootstrap: [AppComponent],
 })
-export class AppModule implements DoBootstrap {
-  ngDoBootstrap(appRef: ApplicationRef): void {
-    keycloakService.init({
-      config: {
-        clientId: environment.authClientId,
-        realm: 'fulib.org',
-        url: environment.authURL,
-      },
-      initOptions: {
-        onLoad: 'check-sso',
-        // fixes an issue where keycloak-js would send refresh_token=undefined
-        checkLoginIframe: false,
-      },
-    }).then(() => {
-      appRef.bootstrap(AppComponent);
-    }).catch(error => {
-      console.log('failed to init keycloak', error);
-    });
-  }
+export class AppModule {
 }

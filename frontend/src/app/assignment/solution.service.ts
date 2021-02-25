@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {forkJoin, Observable, of} from 'rxjs';
-import {flatMap, map, mapTo} from 'rxjs/operators';
+import {map, mapTo, switchMap} from 'rxjs/operators';
 
 import Solution from './model/solution';
 import {environment} from '../../environments/environment';
@@ -154,9 +154,9 @@ export class SolutionService {
 
   getOwn(): Observable<[Assignment[], Solution[]]> {
     return this.users.current$.pipe(
-      flatMap(user => {
+      switchMap(user => {
         if (user && user.id) {
-          return this.getByUserId(user.id).pipe(flatMap(solutions => {
+          return this.getByUserId(user.id).pipe(switchMap(solutions => {
             const assignmentIds = [...new Set<string>(solutions.map(s => s.assignment))];
             const assignments = forkJoin(assignmentIds.map(aid => this.assignmentService.get(aid)));
 
