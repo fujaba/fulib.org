@@ -17,9 +17,13 @@ import java.util.Base64;
 
 public class Authenticator
 {
-	private static final String PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqXRqDqazjttiWl5vPQkmNK9hb7I9e6mzJ9CFHpvzODdbSON11ldlZjVAq0lDgUZOfzl9c9jcdZeUyEAhU2gL6T2+hxYrRguImOFVy/r2bCt7yieVH7GZ3HdEeDz+ucCleAkf7YzmZQKGNVcVpJQyIWUgWanPBvTkM2N0R9s2m82BIVagkJcAuFtpR+aDMpKQGdAkUBJK57hSgZTn08+YM0pLvoiN8I+afsD4gECoKTbOZ7YMk8dXUSycZ0nqFZSArZ02LBXZ1DV8Iy67Ds45cnXSubop42G0fWYonOrpr9a7kYTUnSNj0DcsFjYY9d7CovWxldM1FGmN12eiIipYdwIDAQAB";
+	private static final String DEFAULT_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjSudUTRH8wtEeIQdKh4Yv97HcFGjLzl9+yBm+SO2lf2r/jvpbSRPWqMDbrgQ0BGDwMQLweUoPUzOhZbrScs5edhRxtn3nPKUTiBtOoFiYupTTicdIKY1FAlagSM4/7WBbj0CT14cXQoyZK2VbfYXsu19tdJ/oFPBAGwrsj/ugiGE6c8H6wu4yHPsJFDR8sN524NN4diXOKyZ731IP5lqfN4+bP17/b1KaDG8swsRNW93dfEz0nfcJu+wutI3dLc98/cekOpHUZRzndsshifjuM39RF6oyI89tcuwrrKqrz5HV9CsPBUB2hakGBhg71svZyq304ikQFYej/ydZd0biwIDAQAB";
+	private static final String PUBLIC_KEY = System.getenv().getOrDefault("AUTH_PUBLIC_KEY", DEFAULT_PUBLIC_KEY);
+
+	private static final String DEFAULT_ISSUER = "https://se.uniks.de/auth/realms/fulib.org";
+	private static final String[] ISSUERS = { System.getenv().getOrDefault("AUTH_ISSUER", DEFAULT_ISSUER) };
+
 	private static final Algorithm ALGORITHM;
-	private static final String[] ISSUERS = { "https://avocado.uniks.de/auth/realms/fulib.org" };
 
 	static
 	{
