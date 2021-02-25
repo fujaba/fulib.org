@@ -5,8 +5,11 @@
 export const environment = {
   production: false,
   apiURL: 'http://localhost:4567/api',
-  authURL: 'https://se.uniks.de/auth',
-  authClientId: 'localhost',
+  auth: {
+    url: 'https://se.uniks.de/auth',
+    realm: 'fulib.org',
+    clientId: 'fulib.org',
+  },
 };
 
 /*
