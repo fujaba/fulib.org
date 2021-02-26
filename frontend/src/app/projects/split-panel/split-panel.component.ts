@@ -1,26 +1,37 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {EditorService} from '../editor.service';
+import {FileEditor} from '../model/file-editor';
 
 @Component({
   selector: 'app-split-panel',
   templateUrl: './split-panel.component.html',
   styleUrls: ['./split-panel.component.scss'],
 })
-export class SplitPanelComponent {
-  panels: number[] = [];
-  nextId = 0;
+export class SplitPanelComponent implements OnInit {
 
+  editors: FileEditor[][];
   active = 0;
 
-  constructor() {
-    this.addTab();
+  constructor(
+    private editorService: EditorService,
+  ) {
+  }
+
+  ngOnInit() {
+    this.editorService.loadEditors();
+    this.editors = this.editorService.editors;
+    if (this.editors.length === 0) {
+      this.addTab();
+    }
   }
 
   addTab() {
-    this.panels.push(this.nextId++);
+    this.editors.push([]);
+    this.editorService.saveEditors();
   }
 
-  closeTab(panel: number) {
-    const index = this.panels.indexOf(panel);
-    this.panels.splice(index, 1);
+  closeTab(index: number) {
+    this.editors.splice(index, 1);
+    this.editorService.saveEditors();
   }
 }

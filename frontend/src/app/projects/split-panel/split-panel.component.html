@@ -1,8 +1,8 @@
 <as-split class="h-100" direction="horizontal">
-  <as-split-area *ngFor="let panel of panels; let last=last; let first=first" class="position-relative">
-    <app-file-tabs [active]="panel === active" (focusin)="active = panel"></app-file-tabs>
+  <as-split-area *ngFor="let row of editors; let index=index; let last=last; let first=first" class="position-relative">
+    <app-file-tabs [editors]="row" [active]="index === active" (focusin)="active = index"></app-file-tabs>
     <div class="position-absolute" style="top: 0; right: 0">
-      <button *ngIf="!first" type="button" class="btn btn-outline-secondary" (click)="closeTab(panel)">
+      <button *ngIf="!first" type="button" class="btn btn-outline-secondary" (click)="closeTab(index)">
         &times;
       </button>
       <button *ngIf="last" type="button" class="btn btn-outline-secondary" (click)="addTab()">

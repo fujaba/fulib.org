@@ -19,7 +19,7 @@ export class FileTabsComponent implements OnInit, OnDestroy {
 
   @ViewChild('tabs') tabs: TabsComponent<FileEditor>;
 
-  openEditors: FileEditor[] = [];
+  @Input('editors') openEditors: FileEditor[] = [];
 
   subscription = new Subscription();
 
@@ -65,7 +65,6 @@ export class FileTabsComponent implements OnInit, OnDestroy {
       }
     }
 
-    this.openEditors.push(editor);
     this.tabs.open(editor);
   }
 

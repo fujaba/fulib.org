@@ -3,7 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {forkJoin} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
 
-import {FileTabsComponent} from '../file-tabs/file-tabs.component';
+import {EditorService} from '../editor.service';
 import {FileTypeService} from '../file-type.service';
 import {FileService} from '../file.service';
 import {Container} from '../model/container';
@@ -25,7 +25,10 @@ interface SidebarItem {
   selector: 'app-project-workspace',
   templateUrl: './project-workspace.component.html',
   styleUrls: ['./project-workspace.component.scss'],
-  providers: [ProjectManager],
+  providers: [
+    ProjectManager,
+    EditorService,
+  ],
 })
 export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
   project: Project;
@@ -60,11 +63,11 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
 
         this.sidebarItems.settings = {name: 'Settings', icon: 'gear', component: SettingsComponent};
         this.terminalComponent = TerminalTabsComponent;
-        this.fileTabsComponent = SplitPanelComponent;
       }),
       switchMap(([project, container]) => this.fileService.get(container, `/projects/${project.id}/`)),
       tap(fileRoot => {
         this.projectManager.fileRoot = fileRoot;
+        this.fileTabsComponent = SplitPanelComponent;
         fileRoot.info = 'project root';
         Object.defineProperty(fileRoot, 'name', {
           get: () => this.project.name,

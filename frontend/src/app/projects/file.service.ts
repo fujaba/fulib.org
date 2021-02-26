@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
-import {EMPTY, Observable, of} from 'rxjs';
-import {map, tap} from 'rxjs/operators';
+import {EMPTY, forkJoin, Observable, of} from 'rxjs';
+import {map, switchMap} from 'rxjs/operators';
 import {DavClient} from './dav-client';
 import {FileTypeService} from './file-type.service';
 import {Container} from './model/container';
@@ -92,6 +92,19 @@ export class FileService {
       }
     }
     return undefined;
+  }
+
+  resolveAsync(container: Container, file: File, path: string): Observable<File | undefined> {
+    if (file.path === path) {
+      return of(file);
+    }
+    if (!path.startsWith(file.path)) {
+      return of(undefined);
+    }
+    return this.getChildren(container, file).pipe(
+      switchMap(children => forkJoin(children.map(child => this.resolveAsync(container, child, path)))),
+      map(resolved => resolved.find(r => r)),
+    );
   }
 
   private toFile(resource: DavResource): File {

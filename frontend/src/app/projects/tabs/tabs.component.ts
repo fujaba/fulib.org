@@ -22,6 +22,9 @@ export class TabsComponent<E> implements OnInit {
   }
 
   open(editor: E) {
+    if (this.tabs.indexOf(editor) < 0) {
+      this.tabs.push(editor);
+    }
     this.current = editor;
   }
 

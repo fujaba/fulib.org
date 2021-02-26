@@ -1,9 +1,7 @@
 import {EventEmitter, Injectable} from '@angular/core';
-import {BehaviorSubject, interval, Observable, Subscription} from 'rxjs';
+import {BehaviorSubject, interval, Subscription} from 'rxjs';
 import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
 import {FileChangeService} from './file-change.service';
-import {FileTypeService} from './file-type.service';
-import {FileService} from './file.service';
 import {Container} from './model/container';
 import {File} from './model/file';
 import {FileEditor} from './model/file-editor';
