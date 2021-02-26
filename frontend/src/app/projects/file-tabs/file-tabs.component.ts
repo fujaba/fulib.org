@@ -2,6 +2,7 @@ import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 
 import {Subscription} from 'rxjs';
 import {map, mapTo, switchMap} from 'rxjs/operators';
+import {EditorService} from '../editor.service';
 
 import {FileService} from '../file.service';
 import {File} from '../model/file';
@@ -26,6 +27,7 @@ export class FileTabsComponent implements OnInit, OnDestroy {
   constructor(
     private fileService: FileService,
     private projectManager: ProjectManager,
+    private editorService: EditorService,
   ) {
   }
 
@@ -47,10 +49,15 @@ export class FileTabsComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
+  saveEditors(): void {
+    this.editorService.saveEditors();
+  }
+
   open(editor: FileEditor) {
     const existing = this.editors.find(e => editor.file === e.file && !!editor.preview === !!e.preview);
     if (existing) {
       existing.temporary = existing.temporary && editor.temporary;
+      this.saveEditors();
       this.tabs.open(existing);
       return;
     }
@@ -60,6 +67,7 @@ export class FileTabsComponent implements OnInit, OnDestroy {
       if (temporary) {
         temporary.file = editor.file;
         temporary.preview = editor.preview;
+        this.saveEditors();
         this.tabs.open(temporary);
         return;
       }
