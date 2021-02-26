@@ -44,14 +44,8 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscription = this.file$.pipe(
-      switchMap(file => this.projectManager.changes.pipe(filter(f => f === file), startWith(file))),
-      switchMap(file => {
-        if (file) {
-          return this.fileService.getContent(this.projectManager.container, file).pipe(map(content => ({file, content})));
-        } else {
-          return EMPTY;
-        }
-      })
+      switchMap(file => file ? this.projectManager.changes.pipe(filter(f => f === file), startWith(file)) : EMPTY),
+      switchMap(file => this.fileService.getContent(this.projectManager.container, file).pipe(map(content => ({file, content})))),
     ).subscribe(({file, content}) => {
       this.options.mode = file.type.mode;
       this.onExternalChange(file, content);
