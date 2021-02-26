@@ -19,7 +19,7 @@ export class FileTabsComponent implements OnInit, OnDestroy {
 
   @ViewChild('tabs') tabs: TabsComponent<FileEditor>;
 
-  @Input('editors') openEditors: FileEditor[] = [];
+  @Input() editors: FileEditor[] = [];
 
   subscription = new Subscription();
 
@@ -36,7 +36,7 @@ export class FileTabsComponent implements OnInit, OnDestroy {
       }
     }));
     this.subscription.add(this.projectManager.deletions.subscribe((file: File) => {
-      const editor = this.openEditors.find(ed => ed.file === file);
+      const editor = this.editors.find(ed => ed.file === file);
       if (editor) {
         this.tabs.close(editor);
       }
@@ -48,7 +48,7 @@ export class FileTabsComponent implements OnInit, OnDestroy {
   }
 
   open(editor: FileEditor) {
-    const existing = this.openEditors.find(e => editor.file === e.file && !!editor.preview === !!e.preview);
+    const existing = this.editors.find(e => editor.file === e.file && !!editor.preview === !!e.preview);
     if (existing) {
       existing.temporary = existing.temporary && editor.temporary;
       this.tabs.open(existing);
@@ -56,7 +56,7 @@ export class FileTabsComponent implements OnInit, OnDestroy {
     }
 
     if (editor.temporary) {
-      const temporary = this.openEditors.find(e => e.temporary);
+      const temporary = this.editors.find(e => e.temporary);
       if (temporary) {
         temporary.file = editor.file;
         temporary.preview = editor.preview;

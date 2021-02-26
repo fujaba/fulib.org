@@ -14,7 +14,7 @@
 </ng-template>
 <app-tabs
   #tabs
-  [tabs]="openEditors" [content]="content" [header]="header"
+  [tabs]="editors" [content]="content" [header]="header"
   (create)="newScratchFile()"
   [dndDropzone]="['file', 'editor']"
   [dndAllowExternal]="true"
