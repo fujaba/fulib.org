@@ -1,5 +1,6 @@
-import {Component, Injector, OnDestroy, OnInit, Type} from '@angular/core';
+import {Component, Injector, OnDestroy, OnInit, TemplateRef, Type, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {forkJoin} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
 
@@ -31,6 +32,9 @@ interface SidebarItem {
   ],
 })
 export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
+  @ViewChild('loadingModal', {static: true}) loadingModal: TemplateRef<any>;
+  openModal: NgbModalRef;
+
   project: Project;
   container: Container;
 
@@ -48,11 +52,16 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
     private fileService: FileService,
     private fileTypeService: FileTypeService,
     private projectManager: ProjectManager,
+    private ngbModal: NgbModal,
   ) {
   }
 
   ngOnInit(): void {
     this.route.params.pipe(
+      tap(() => this.openModal = this.ngbModal.open(this.loadingModal, {
+        ariaLabelledBy: 'loading-modal-title',
+        centered: true,
+      })),
       switchMap(params => forkJoin([
         this.projectService.get(params.id).pipe(tap(project => this.project = project)),
         this.projectService.getContainer(params.id).pipe(tap(container => this.container = container)),
@@ -77,6 +86,7 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
       }),
     ).subscribe(_ => {
       this.sidebarItems.project = {name: 'Project', icon: 'code-square', component: ProjectTreeComponent};
+      this.openModal.close();
     });
   }
 
