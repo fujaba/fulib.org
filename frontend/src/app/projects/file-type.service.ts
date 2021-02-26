@@ -12,6 +12,7 @@ export class FileTypeService {
       extensions: ['.md'],
       icon: 'markdown',
       mode: 'text/x-markdown',
+      previewMode: 'markdown',
     },
     png: {
       name: 'PNG Image',

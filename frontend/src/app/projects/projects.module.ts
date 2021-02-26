@@ -26,6 +26,7 @@ import {TerminalComponent} from './terminal/terminal.component';
 import { FileImageViewerComponent } from './file-image-viewer/file-image-viewer.component';
 import { IframeViewerComponent } from './iframe-viewer/iframe-viewer.component';
 import { FileIframeViewerComponent } from './file-iframe-viewer/file-iframe-viewer.component';
+import { FileMarkdownViewerComponent } from './file-markdown-viewer/file-markdown-viewer.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import { FileIframeViewerComponent } from './file-iframe-viewer/file-iframe-view
     FileImageViewerComponent,
     IframeViewerComponent,
     FileIframeViewerComponent,
+    FileMarkdownViewerComponent,
   ],
   imports: [
     // Angular
