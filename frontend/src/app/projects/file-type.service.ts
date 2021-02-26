@@ -7,6 +7,14 @@ import {FileType} from './model/file-type';
 })
 export class FileTypeService {
   readonly fileTypes: Record<string, FileType> = {
+    scenario: {
+      name: 'Scenario',
+      extensions: ['.md'],
+      pathPattern: /scenarios\/.*\.md/,
+      icon: 'markdown',
+      mode: 'scenario',
+      previewMode: 'markdown',
+    },
     markdown: {
       name: 'Markdown',
       extensions: ['.md'],
@@ -83,7 +91,7 @@ export class FileTypeService {
     const name = file.name;
     for (const fileType of Object.values(this.fileTypes)) {
       for (const extension of fileType.extensions) {
-        if (name.endsWith(extension)) {
+        if (name.endsWith(extension) && (!fileType.pathPattern || fileType.pathPattern.test(file.path))) {
           return fileType;
         }
       }
