@@ -4,6 +4,7 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.github.dockerjava.api.command.InspectContainerResponse;
+import com.github.dockerjava.api.exception.NotFoundException;
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.NetworkSettings;
 import com.github.dockerjava.api.model.Ports;
@@ -145,8 +146,14 @@ public class ContainerManager
 
 	public void stop(Container container)
 	{
-		this.dockerClient.stopContainerCmd(container.getId()).exec();
-		this.dockerClient.removeContainerCmd(container.getId()).exec();
+		try
+		{
+			this.dockerClient.stopContainerCmd(container.getId()).exec();
+			this.dockerClient.removeContainerCmd(container.getId()).exec();
+		}
+		catch (NotFoundException ignored)
+		{
+		}
 	}
 
 	public void uploadFilesFromContainer(Container container)
