@@ -41,4 +41,7 @@ dependencies {
 
 	// https://mvnrepository.com/artifact/org.json/json
 	compile group: 'org.json', name: 'json', version: '20201115'
+
+	// https://mvnrepository.com/artifact/net.sf.jpathwatch/jpathwatch
+	implementation group: 'net.sf.jpathwatch', name: 'jpathwatch', version: '0.95'
 }

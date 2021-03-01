@@ -37,6 +37,8 @@ public class Service
 		fileWatcher.setDaemon(true);
 		fileWatcher.start();
 
+		webSocketHandler.setFileWatcher(fileWatcher);
+
 		service = spark.Service.ignite();
 		service.port(4567);
 		service.webSocket("/ws", webSocketHandler);

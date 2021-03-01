@@ -8,13 +8,13 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @WebSocket
 public class WebSocketHandler implements FileEventHandler
 {
+	private FileWatcherProcess fileWatcher;
 	private final Runnable resetShutdownTimer;
 
 	private final Map<Session, Map<String, ExecProcess>> processes = new ConcurrentHashMap<>();
@@ -22,6 +22,11 @@ public class WebSocketHandler implements FileEventHandler
 	public WebSocketHandler(Runnable resetShutdownTimer)
 	{
 		this.resetShutdownTimer = resetShutdownTimer;
+	}
+
+	public void setFileWatcher(FileWatcherProcess fileWatcher)
+	{
+		this.fileWatcher = fileWatcher;
 	}
 
 	@OnWebSocketConnect
@@ -38,6 +43,19 @@ public class WebSocketHandler implements FileEventHandler
 
 		switch (command)
 		{
+		case "watch":
+		{
+			final String id = json.getString("id");
+			final String path = json.getString("path");
+			this.fileWatcher.watch(id, path);
+			return;
+		}
+		case "unwatch":
+		{
+			final String id = json.getString("id");
+			this.fileWatcher.unwatch(id);
+			return;
+		}
 		case "exec":
 		{
 			final String id = json.getString("process");
