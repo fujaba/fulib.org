@@ -17,14 +17,10 @@ export class ProjectManager {
   fileRoot: File;
 
   openRequests = new EventEmitter<FileEditor>();
-  renames = new EventEmitter<File>();
-  deletions = new EventEmitter<File>();
-  changes = new EventEmitter<File>();
 
   currentFile = new BehaviorSubject<File | undefined>(undefined);
 
   constructor(
-    private fileChangeService: FileChangeService,
   ) {
   }
 
@@ -34,8 +30,7 @@ export class ProjectManager {
 
     const url = container.url.startsWith('http') ? `ws${container.url.substring(4)}/ws` : `${container.url}/ws`;
     this.webSocket = webSocket<any>(url);
-    this.fileChangeService.start(this).subscribe();
-    this.keepAliveTimer = interval(20000).subscribe(() => {
+    this.keepAliveTimer = interval(10000).subscribe(() => {
       this.webSocket.next({command: 'keepAlive'});
     });
   }

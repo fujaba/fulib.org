@@ -1,6 +1,6 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {filter} from 'rxjs/operators';
+import {FileChangeService} from '../file-change.service';
 import {Container} from '../model/container';
 import {File} from '../model/file';
 import {ProjectManager} from '../project.manager';
@@ -21,12 +21,13 @@ export class FileIframeViewerComponent implements OnInit, OnDestroy {
 
   constructor(
     private projectManager: ProjectManager,
+    private fileChangeService: FileChangeService,
   ) {
   }
 
   ngOnInit(): void {
     this.container = this.projectManager.container;
-    this.subscription = this.projectManager.changes.pipe(filter(f => f === this.file)).subscribe(() => {
+    this.subscription = this.fileChangeService.watch(this.projectManager, this.file).subscribe(() => {
       this.version++;
     });
   }

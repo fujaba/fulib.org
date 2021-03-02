@@ -5,7 +5,6 @@ import {map, mapTo, switchMap} from 'rxjs/operators';
 import {EditorService} from '../editor.service';
 
 import {FileService} from '../file.service';
-import {File} from '../model/file';
 import {FileEditor} from '../model/file-editor';
 import {ProjectManager} from '../project.manager';
 import {TabsComponent} from '../tabs/tabs.component';
@@ -37,12 +36,7 @@ export class FileTabsComponent implements OnInit, OnDestroy {
         this.open(editor);
       }
     }));
-    this.subscription.add(this.projectManager.deletions.subscribe((file: File) => {
-      const editor = this.editors.find(ed => ed.file === file);
-      if (editor) {
-        this.tabs.close(editor);
-      }
-    }));
+    // TODO close tabs on deletion
   }
 
   ngOnDestroy() {

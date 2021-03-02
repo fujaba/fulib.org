@@ -1,6 +1,7 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {BehaviorSubject, combineLatest, EMPTY, Subscription} from 'rxjs';
-import {filter, map, startWith, switchMap, withLatestFrom} from 'rxjs/operators';
+import {BehaviorSubject, EMPTY, Subscription} from 'rxjs';
+import {map, mapTo, startWith, switchMap} from 'rxjs/operators';
+import {FileChangeService} from '../file-change.service';
 import {FileService} from '../file.service';
 import {File} from '../model/file';
 import {ProjectManager} from '../project.manager';
@@ -30,6 +31,7 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
   constructor(
     private fileService: FileService,
     private projectManager: ProjectManager,
+    private fileChangeService: FileChangeService,
   ) {
   }
 
@@ -44,7 +46,7 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscription = this.file$.pipe(
-      switchMap(file => file ? this.projectManager.changes.pipe(filter(f => f === file), startWith(file)) : EMPTY),
+      switchMap(file => file ? this.fileChangeService.watch(this.projectManager, file).pipe(mapTo(file), startWith(file)) : EMPTY),
       switchMap(file => this.fileService.getContent(this.projectManager.container, file).pipe(map(content => ({file, content})))),
     ).subscribe(({file, content}) => {
       this.options.mode = file.type.mode;
