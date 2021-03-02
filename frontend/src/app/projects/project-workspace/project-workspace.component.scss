@@ -17,3 +17,14 @@
     opacity: 1;
   }
 }
+
+ul {
+  list-style: none;
+}
+
+li.text-success::before {
+  position: absolute;
+  left: 2rem;
+  content: '✓';
+  font-weight: 600;
+}

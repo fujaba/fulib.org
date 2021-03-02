@@ -36,5 +36,19 @@
   </div>
   <div class="modal-body">
     Please hang tight while we set things up for you...
+    <ul>
+      <li [class.text-success]="project">
+        Loading Project Metadata
+      </li>
+      <li [class.text-success]="container">
+        Launching Container
+      </li>
+      <li [class.text-success]="terminalComponent">
+        Connecting to Container
+      </li>
+      <li [class.text-success]="fileTabsComponent">
+        Loading Project Root
+      </li>
+    </ul>
   </div>
 </ng-template>
