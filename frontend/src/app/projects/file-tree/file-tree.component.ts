@@ -1,7 +1,20 @@
-import {AfterViewInit, Component, ElementRef, HostBinding, Input, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  HostBinding,
+  Input,
+  OnInit,
+  Output,
+  QueryList,
+  ViewChildren,
+} from '@angular/core';
 import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
 import {DndDropEvent} from 'ngx-drag-drop';
-import {Observable} from 'rxjs';
+import {EMPTY, Observable} from 'rxjs';
+import {switchMap} from 'rxjs/operators';
+import {FileChangeService} from '../file-change.service';
 import {FileService} from '../file.service';
 import {Container} from '../model/container';
 import {File} from '../model/file';
@@ -19,6 +32,8 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
   @ViewChildren('nameInput') nameInput: QueryList<ElementRef>;
 
   @HostBinding('attr.data-expanded') expanded = false;
+  @Output() expandedChanged = new EventEmitter<boolean>();
+
   newName?: string;
   currentFile: Observable<File | undefined>;
   root: File;
@@ -27,6 +42,7 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
   constructor(
     private fileService: FileService,
     private projectManager: ProjectManager,
+    private fileChangeService: FileChangeService,
   ) {
   }
 
@@ -37,6 +53,10 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
     if (!this.file) {
       this.file = this.root;
     }
+
+    this.expandedChanged.pipe(
+      switchMap(expanded => expanded ? this.fileChangeService.watch(this.projectManager, this.file) : EMPTY),
+    ).subscribe();
   }
 
   ngAfterViewInit(): void {
@@ -54,6 +74,7 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
     }
 
     this.expanded = !this.expanded;
+    this.expandedChanged.next(this.expanded);
 
     this.fileService.getChildren(this.container, this.file).subscribe();
   }
