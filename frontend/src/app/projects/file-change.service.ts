@@ -29,9 +29,9 @@ export class FileChangeService {
           case 'modified':
           case 'created':
           case 'deleted':
-            return message.path.startsWith(path);
+            return message.path && message.path.startsWith(path);
           case 'moved':
-            return message.from.startsWith(path) || message.to.startsWith(path);
+            return (message.from && message.from.startsWith(path)) || (message.to && message.to.startsWith(path));
           default:
             return false;
         }
