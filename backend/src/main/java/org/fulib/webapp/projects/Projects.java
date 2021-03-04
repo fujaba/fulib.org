@@ -20,6 +20,9 @@ import spark.Spark;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.ConnectException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.time.Instant;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
@@ -209,6 +212,32 @@ public class Projects
 		{
 			container = this.containerManager.start(project);
 			this.mongo.saveContainer(container);
+		}
+
+		for (int retry = 0; retry < 10; retry++)
+		{
+			try
+			{
+				final URL url = new URL(container.getUrl() + "/health");
+				final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+				final int responseCode = connection.getResponseCode();
+				if (responseCode == 200)
+				{
+					break;
+				}
+
+				Thread.sleep(500);
+			}
+			catch (ConnectException connectException)
+			{
+				// container is down, restart
+				container = this.containerManager.start(project);
+				this.mongo.saveContainer(container);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 
 		final JSONObject json = toJson(container);
