@@ -69,7 +69,6 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
         })),
         this.projectService.getContainer(params.id).pipe(tap(container => this.container = container)),
       ])),
-      delay(2000),
       tap(([project, container]) => {
         this.projectManager.destroy();
         this.projectManager.init(project, container);
