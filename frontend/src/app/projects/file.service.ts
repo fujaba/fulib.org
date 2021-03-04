@@ -33,21 +33,54 @@ export class FileService {
   }
 
   getChildren(container: Container, parent: File): Observable<File[]> {
-    if (parent.children) {
-      return of(parent.children);
-    }
     return this.dav.propFindChildren(`${container.url}/dav/${parent.path}`).pipe(map(childResources => {
       const children = childResources.map(resource => this.toFile(resource));
 
-      children.sort(File.compare);
-
-      for (const child of children) {
-        child.parent = parent;
+      if (parent.children) {
+        this.mergeChildren(parent, children);
+      } else {
+        children.sort(File.compare);
+        for (const child of children) {
+          child.parent = parent;
+        }
+        parent.children = children;
       }
-      parent.children = children;
 
       return children;
     }));
+  }
+
+  private mergeChildren(parent: File, children: File[]) {
+    if (!parent.children) {
+      return;
+    }
+
+    const mergedChildren: File[] = [];
+    const newPaths = new Map(children.map(child => [child.path, child]));
+    const oldPaths = new Set(parent.children.map(child => child.path));
+
+    for (const newChild of children) {
+      if (!oldPaths.has(newChild.path)) {
+        // file was created
+        newChild.parent = parent;
+        mergedChildren.push(newChild);
+      }
+    }
+
+    for (const oldChild of parent.children) {
+      const newChild = newPaths.get(oldChild.path);
+      if (newChild) {
+        // file was modified
+        oldChild.modified = newChild.modified;
+        mergedChildren.push(oldChild);
+      } else {
+        // file was deleted
+        oldChild.parent = undefined;
+      }
+    }
+
+    mergedChildren.sort(File.compare);
+    parent.children = mergedChildren;
   }
 
   createChild(container: Container, parent: File, name: string, directoryOrContent: true | string | globalThis.File): Observable<void> {
