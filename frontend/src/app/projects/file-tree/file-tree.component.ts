@@ -57,6 +57,10 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
     this.expandedChanged.pipe(
       switchMap(expanded => expanded ? this.fileChangeService.watch(this.projectManager, this.file) : EMPTY),
     ).subscribe();
+
+    this.expandedChanged.pipe(
+      switchMap(expanded => expanded ? this.fileService.getChildren(this.container, this.file) : EMPTY),
+    ).subscribe();
   }
 
   ngAfterViewInit(): void {
@@ -75,8 +79,6 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
 
     this.expanded = !this.expanded;
     this.expandedChanged.next(this.expanded);
-
-    this.fileService.getChildren(this.container, this.file).subscribe();
   }
 
   openPreview() {
