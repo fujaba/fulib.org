@@ -1,18 +1,7 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  EventEmitter,
-  HostBinding,
-  Input,
-  OnInit,
-  Output,
-  QueryList,
-  ViewChildren,
-} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostBinding, Input, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
 import {DndDropEvent} from 'ngx-drag-drop';
-import {EMPTY, Observable} from 'rxjs';
+import {EMPTY, Observable, Subject, Subscription} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import {FileChangeService} from '../file-change.service';
 import {FileService} from '../file.service';
@@ -25,19 +14,21 @@ import {ProjectManager} from '../project.manager';
   templateUrl: './file-tree.component.html',
   styleUrls: ['./file-tree.component.scss'],
 })
-export class FileTreeComponent implements OnInit, AfterViewInit {
+export class FileTreeComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() file: File;
   @Input() level = 0;
 
   @ViewChildren('nameInput') nameInput: QueryList<ElementRef>;
 
   @HostBinding('attr.data-expanded') expanded = false;
-  @Output() expandedChanged = new EventEmitter<boolean>();
+  private expanded$ = new Subject<boolean>();
 
   newName?: string;
   currentFile: Observable<File | undefined>;
   root: File;
   container: Container;
+
+  private subscription = new Subscription();
 
   constructor(
     private fileService: FileService,
@@ -54,19 +45,23 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
       this.file = this.root;
     }
 
-    this.expandedChanged.pipe(
+    this.subscription.add(this.expanded$.pipe(
       switchMap(expanded => expanded ? this.fileChangeService.watch(this.projectManager, this.file) : EMPTY),
-    ).subscribe();
+    ).subscribe());
 
-    this.expandedChanged.pipe(
+    this.subscription.add(this.expanded$.pipe(
       switchMap(expanded => expanded ? this.fileService.getChildren(this.container, this.file) : EMPTY),
-    ).subscribe();
+    ).subscribe());
   }
 
   ngAfterViewInit(): void {
-    this.nameInput.changes.subscribe(() => {
+    this.subscription.add(this.nameInput.changes.subscribe(() => {
       this.nameInput.first?.nativeElement.focus();
-    });
+    }));
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   open(temporary: boolean) {
@@ -78,7 +73,7 @@ export class FileTreeComponent implements OnInit, AfterViewInit {
     }
 
     this.expanded = !this.expanded;
-    this.expandedChanged.next(this.expanded);
+    this.expanded$.next(this.expanded);
   }
 
   openPreview() {
