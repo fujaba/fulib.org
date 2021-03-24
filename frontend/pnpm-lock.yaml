@@ -8,13 +8,13 @@ dependencies:
   '@angular/platform-browser': 11.2.6_e55852a61278bb526b507ea446211084
   '@angular/platform-browser-dynamic': 11.2.6_941ec7a7534b17adeee8c756ef490549
   '@angular/router': 11.2.6_daf588f56cfc04c5b8a889bb8cd1a624
-  '@ctrl/ngx-codemirror': 4.1.0_d6f59cb80b5ae11c544cc0f7467b2e3f
+  '@ctrl/ngx-codemirror': 4.1.0_eecc303a9cbf0cea36383372df58b288
   '@ng-bootstrap/ng-bootstrap': 9.0.2_b3baf67cad1cd4bfd5469d1d13d0823c
-  angular-gridster2: 11.1.3_b0550eba7aa0167d56798f794764a5df
+  angular-gridster2: 11.1.4_b0550eba7aa0167d56798f794764a5df
   bootstrap: 4.5.3
   bootstrap-darkmode: 0.7.0
   bootstrap-icons: 1.4.0
-  codemirror: 5.59.4
+  codemirror: 5.60.0
   file-saver: 2.0.5
   keycloak-angular: 8.1.0_cb8a433e7a077c1596419f4fd4ca8071
   keycloak-js: 12.0.3
@@ -31,9 +31,9 @@ devDependencies:
   '@angular/language-service': 11.2.6
   '@types/codemirror': 0.0.108
   '@types/file-saver': 2.0.1
-  '@types/jasmine': 3.6.4
+  '@types/jasmine': 3.6.7
   '@types/jasminewd2': 2.0.8
-  '@types/node': 14.14.31
+  '@types/node': 14.14.35
   codelyzer: 6.0.1_tslint@6.1.3
   jasmine-core: 3.6.0
   jasmine-spec-reporter: 5.0.2
@@ -1405,12 +1405,12 @@ packages:
       to-fast-properties: 2.0.0
     resolution:
       integrity: sha512-hE+HE8rnG1Z6Wzo+MhaKE5lM5eMx71T4EHJgku2E3xIfaULhDcxiiRxUYgwX8qwP1BBSlag+TdGOt6JAidIZTA==
-  /@ctrl/ngx-codemirror/4.1.0_d6f59cb80b5ae11c544cc0f7467b2e3f:
+  /@ctrl/ngx-codemirror/4.1.0_eecc303a9cbf0cea36383372df58b288:
     dependencies:
       '@angular/core': 11.2.6_rxjs@6.6.6+zone.js@0.10.3
       '@angular/forms': 11.2.6_daf588f56cfc04c5b8a889bb8cd1a624
       '@types/codemirror': 0.0.99
-      codemirror: 5.59.4
+      codemirror: 5.60.0
       tslib: 2.1.0
     dev: false
     peerDependencies:
@@ -1632,17 +1632,17 @@ packages:
   /@types/glob/7.1.3:
     dependencies:
       '@types/minimatch': 3.0.3
-      '@types/node': 14.14.31
+      '@types/node': 14.14.35
     dev: true
     resolution:
       integrity: sha512-SEYeGAIQIQX8NN6LDKprLjbrd5dARM5EXsd8GI/A5l0apYI1fGMWgPHSe4ZKL4eozlAyI+doUE9XbYS4xCkQ1w==
-  /@types/jasmine/3.6.4:
+  /@types/jasmine/3.6.7:
     dev: true
     resolution:
-      integrity: sha512-CTdMERA4iGNcxeqzD7pavb4WLIFq6bGnx6nIJD+1D4Knx24GE6QBPrWVhO8UlIy7gf7rbIt3ZD7iIzryRD2TgA==
+      integrity: sha512-8dtfiykrpe4Ysn6ONj0tOjmpDIh1vWxPk80eutSeWmyaJvAZXZ84219fS4gLrvz05eidhp7BP17WVQBaXHSyXQ==
   /@types/jasminewd2/2.0.8:
     dependencies:
-      '@types/jasmine': 3.6.4
+      '@types/jasmine': 3.6.7
     dev: true
     resolution:
       integrity: sha512-d9p31r7Nxk0ZH0U39PTH0hiDlJ+qNVGjlt1ucOoTUptxb2v+Y5VMnsxfwN+i3hK4yQnqBi3FMmoMFcd1JHDxdg==
@@ -1654,10 +1654,10 @@ packages:
     dev: true
     resolution:
       integrity: sha512-tHq6qdbT9U1IRSGf14CL0pUlULksvY9OZ+5eEgl1N7t+OA3tGvNpxJCzuKQlsNgCVwbAs670L1vcVQi8j9HjnA==
-  /@types/node/14.14.31:
+  /@types/node/14.14.35:
     dev: true
     resolution:
-      integrity: sha512-vFHy/ezP5qI0rFgJ7aQnjDXwAMrG0KqqIH7tQG5PPv3BWBayOPIQNBjVc/P6hhdZfMx51REc6tfDNXHUio893g==
+      integrity: sha512-Lt+wj8NVPx0zUmUwumiVXapmaLUcAk3yPuHCFVXras9k5VT9TdhJqKqGVUQCD60OTMCl0qxJ57OiTL0Mic3Iag==
   /@types/parse-json/4.0.0:
     dev: true
     resolution:
@@ -1685,7 +1685,7 @@ packages:
       integrity: sha512-imDtS4TAoTcXk0g7u4kkWqedB3E4qpjXzCpD2LU5M5NAXHzCDsypyvXSaG7mM8DKYkCRa7tFp4tS/lp/Wo7Q3w==
   /@types/webpack-sources/0.1.8:
     dependencies:
-      '@types/node': 14.14.31
+      '@types/node': 14.14.35
       '@types/source-list-map': 0.1.2
       source-map: 0.6.1
     dev: true
@@ -1933,7 +1933,7 @@ packages:
     dev: true
     resolution:
       integrity: sha1-l6ERlkmyEa0zaR2fn0hqjsn74KM=
-  /angular-gridster2/11.1.3_b0550eba7aa0167d56798f794764a5df:
+  /angular-gridster2/11.1.4_b0550eba7aa0167d56798f794764a5df:
     dependencies:
       '@angular/common': 11.2.6_@angular+core@11.2.6+rxjs@6.6.6
       '@angular/core': 11.2.6_rxjs@6.6.6+zone.js@0.10.3
@@ -1943,7 +1943,7 @@ packages:
       '@angular/common': ^11.0.0
       '@angular/core': ^11.0.0
     resolution:
-      integrity: sha512-r53LBvQmz7Vzax7jumV2mmoob9hRQFaJdrcNIclm7ENC2yl67rwJ9jl13g6zm82IL6UUICPC1kvOtrXGzT80VA==
+      integrity: sha512-rlvxTQRWoOZCXWk/nU2x+53v9FPNddKT9xjp47JqqlqgJr66E23YrVy8gN6LASMZRdPrc0aVrfTXK4ku0fEIoQ==
   /ansi-colors/3.2.4:
     dev: true
     engines:
@@ -2892,10 +2892,10 @@ packages:
       tslint: ^5.0.0 || ^6.0.0
     resolution:
       integrity: sha512-cOyGQgMdhnRYtW2xrJUNrNYDjEgwQ+BrE2y93Bwz3h4DJ6vJRLfupemU5N3pbYsUlBHJf0u1j1UGk+NLW4d97g==
-  /codemirror/5.59.4:
+  /codemirror/5.60.0:
     dev: false
     resolution:
-      integrity: sha512-achw5JBgx8QPcACDDn+EUUXmCYzx/zxEtOGXyjvLEvYY8GleUrnfm5D+Zb+UjShHggXKDT9AXrbkBZX6a0YSQg==
+      integrity: sha512-AEL7LhFOlxPlCL8IdTcJDblJm8yrAGib7I+DErJPdZd4l6imx8IMgKK3RblVgBQqz3TZJR4oknQ03bz+uNjBYA==
   /collection-visit/1.0.0:
     dependencies:
       map-visit: 1.0.0
@@ -5570,7 +5570,7 @@ packages:
       integrity: sha1-43zwsX8ZnM4jvqcbIDk5Uka07E4=
   /jest-worker/26.6.2:
     dependencies:
-      '@types/node': 14.14.31
+      '@types/node': 14.14.35
       merge-stream: 2.0.0
       supports-color: 7.2.0
     dev: true
@@ -8471,7 +8471,7 @@ packages:
     dependencies:
       '@types/cookie': 0.4.0
       '@types/cors': 2.8.10
-      '@types/node': 14.14.31
+      '@types/node': 14.14.35
       accepts: 1.3.7
       base64id: 2.0.0
       debug: 4.3.1
@@ -9943,15 +9943,15 @@ specifiers:
   '@ng-bootstrap/ng-bootstrap': ^9.0.2
   '@types/codemirror': ^0.0.108
   '@types/file-saver': ^2.0.1
-  '@types/jasmine': ~3.6.4
+  '@types/jasmine': ~3.6.7
   '@types/jasminewd2': ~2.0.8
-  '@types/node': ~14.14.31
-  angular-gridster2: ^11.1.3
+  '@types/node': ~14.14.35
+  angular-gridster2: ^11.1.4
   bootstrap: ~4.5.3
   bootstrap-darkmode: ^0.7.0
   bootstrap-icons: ^1.4.0
   codelyzer: ^6.0.1
-  codemirror: ^5.59.4
+  codemirror: ^5.60.0
   file-saver: ^2.0.5
   jasmine-core: ~3.6.0
   jasmine-spec-reporter: ~5.0.2
