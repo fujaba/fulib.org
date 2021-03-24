@@ -14,6 +14,13 @@ import {SCENARIO_MODE} from './scenario-mode';
 
 CodeMirror.defineSimpleMode('scenario', SCENARIO_MODE);
 
+import hljs from 'highlight.js/lib/core';
+import java from 'highlight.js/lib/languages/java';
+import groovy from 'highlight.js/lib/languages/groovy';
+
+hljs.registerLanguage('java', java);
+hljs.registerLanguage('groovy', groovy);
+
 if (environment.production) {
   enableProdMode();
 }
