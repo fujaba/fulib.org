@@ -28,13 +28,13 @@ export class DocsService {
     if (!page.endsWith('.md')) {
       page += '.md';
     }
+    const parent = page.substring(0, page.lastIndexOf('/') + 1);
     return this.http.get(`https://raw.githubusercontent.com/fujaba/${repo}/master/${page}`, {responseType: 'text'}).pipe(
       switchMap(text => this.http.post(environment.apiURL + '/rendermarkdown', text, {
         responseType: 'text',
         params: {
-          image_base_url: `https://github.com/fujaba/${repo}/raw/master/`,
-          // link_base_url: `https://github.com/fujaba/${repo}/tree/master/`,
-          link_base_url: '/docs/' + repo + '/',
+          image_base_url: `https://github.com/fujaba/${repo}/raw/master/${parent}`,
+          link_base_url: `/docs/${repo}/${parent}`,
         },
       })),
     );
