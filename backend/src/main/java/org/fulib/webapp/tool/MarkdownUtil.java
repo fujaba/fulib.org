@@ -10,6 +10,9 @@ import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.AttributeProvider;
 import org.commonmark.renderer.html.HtmlRenderer;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,9 +45,16 @@ public class MarkdownUtil
 			return;
 		case "img":
 			final String src;
-			if (this.imageBaseUrl != null && (src = attributes.get("src")) != null)
+			if (this.imageBaseUrl != null && (src = attributes.get("src")) != null && isRelative(src))
 			{
 				attributes.put("src", this.imageBaseUrl + src);
+			}
+			return;
+		case "a":
+			final String href;
+			if (this.linkBaseUrl != null && (href = attributes.get("href")) != null && isRelative(href))
+			{
+				attributes.put("href", this.linkBaseUrl + href);
 			}
 			return;
 		}
@@ -57,6 +67,7 @@ public class MarkdownUtil
 		.build();
 
 	private String imageBaseUrl;
+	private String linkBaseUrl;
 
 	// =============== Properties ===============
 
@@ -70,11 +81,32 @@ public class MarkdownUtil
 		this.imageBaseUrl = imageBaseUrl;
 	}
 
+	public String getLinkBaseUrl()
+	{
+		return linkBaseUrl;
+	}
+
+	public void setLinkBaseUrl(String linkBaseUrl)
+	{
+		this.linkBaseUrl = linkBaseUrl;
+	}
+
 	// =============== Methods ===============
 
 	public String renderHtml(String markdown)
 	{
 		final Node document = PARSER.parse(markdown);
 		return this.renderer.render(document);
+	}
+
+	private static boolean isRelative(String url) {
+		try
+		{
+			return !new URI(url).isAbsolute();
+		}
+		catch (URISyntaxException e)
+		{
+			return false;
+		}
 	}
 }
