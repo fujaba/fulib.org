@@ -1,0 +1,19 @@
+<div class="container text-center">
+  <h1>Welcome to the Fulib Documentation!</h1>
+  <h4>
+    Select a topic to get started:
+  </h4>
+  <div class="card-deck">
+    <div *ngFor="let repo of repos" class="card">
+      <div class="card-body">
+        <h5 class="card-title">{{ repo.name }}</h5>
+        <p class="card-text">{{ repo.description }}</p>
+      </div>
+      <div class="card-footer">
+        <a [routerLink]="repo.name" class="btn btn-primary">
+          View Docs
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
