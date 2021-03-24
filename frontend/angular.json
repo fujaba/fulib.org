@@ -26,11 +26,6 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              {
-                "glob": "*.svg",
-                "input": "./node_modules/bootstrap-icons/icons/",
-                "output": "/assets/icons/"
-              },
               "src/LICENSE.md"
             ],
             "styles": [
