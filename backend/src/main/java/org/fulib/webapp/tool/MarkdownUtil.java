@@ -62,7 +62,6 @@ public class MarkdownUtil
 	private final HtmlRenderer renderer = HtmlRenderer
 		.builder()
 		.extensions(EXTENSIONS)
-		.escapeHtml(true)
 		.attributeProviderFactory(context -> attributeProvider)
 		.build();
 
