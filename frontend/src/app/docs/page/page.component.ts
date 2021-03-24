@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {Component, HostListener, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 import {switchMap} from 'rxjs/operators';
 import {DocsService} from '../docs.service';
 
@@ -14,6 +14,7 @@ export class PageComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private docsService: DocsService,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
@@ -24,4 +25,18 @@ export class PageComponent implements OnInit {
     });
   }
 
+  onClick($event: MouseEvent) {
+    if (!($event.target instanceof HTMLAnchorElement)) {
+      return;
+    }
+
+    const target = $event.target as HTMLAnchorElement;
+    const pathname = target.pathname;
+    if (!pathname.startsWith('/docs/')) {
+      return;
+    }
+
+    this.router.navigate([pathname]);
+    $event.preventDefault();
+  }
 }
