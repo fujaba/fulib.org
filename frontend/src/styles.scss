@@ -75,10 +75,6 @@
   gridster-item {
     background-color: $default-bg;
   }
-
-  .markdown pre {
-    background-color: #2b2b2b;
-  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -119,31 +115,6 @@ a[href^="http"]::after {
 
 .dropdown-toggle.nav-link {
   cursor: pointer;
-}
-
-/* --------------- Markdown --------------- */
-
-.markdown {
-  blockquote {
-    color: $text-muted;
-    padding-left: 10px;
-    border-left: 2px solid $text-muted;
-  }
-
-  pre {
-    @extend .card;
-    padding: 10px;
-    border-radius: 5px;
-  }
-
-  pre > code[data-language]::before {
-    content: attr(data-language);
-    display: block;
-    color: $text-muted;
-    position: absolute;
-    right: 10px;
-    top: 10px;
-  }
 }
 
 /* --------------- Timelines --------------- */
