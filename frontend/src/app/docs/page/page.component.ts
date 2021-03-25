@@ -2,6 +2,7 @@ import {AfterViewChecked, Component, ElementRef, OnInit, ViewChild} from '@angul
 import {ActivatedRoute, Router} from '@angular/router';
 import hljs from 'highlight.js/lib/core';
 import {switchMap} from 'rxjs/operators';
+import {PageInfo} from '../docs.interface';
 import {DocsService} from '../docs.service';
 
 @Component({
@@ -13,6 +14,7 @@ export class PageComponent implements OnInit, AfterViewChecked {
   @ViewChild('content') content: ElementRef<HTMLElement>;
 
   html = 'Loading...';
+  subPages?: PageInfo[];
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -24,8 +26,9 @@ export class PageComponent implements OnInit, AfterViewChecked {
   ngOnInit(): void {
     this.activatedRoute.params.pipe(
       switchMap(({repo, page}) => this.docsService.getPage(repo, page)),
-    ).subscribe(content => {
-      this.html = content;
+    ).subscribe(({html, subPages}) => {
+      this.html = html;
+      this.subPages = subPages;
     });
   }
 

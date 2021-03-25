@@ -1,2 +1,9 @@
-<div #content class="container" [innerHTML]="html | safeHtml" (click)="onClick($event)">
+<div class="container">
+  <div #content [innerHTML]="html | safeHtml" (click)="onClick($event)"></div>
+  <div class="list-group">
+    <a *ngFor="let subPage of subPages" class="list-group-item list-group-item-action" [routerLink]="'../' + subPage.url">
+      {{ subPage.title }}
+      <span *ngIf="subPage.wip" class="badge badge-secondary">WIP</span>
+    </a>
+  </div>
 </div>
