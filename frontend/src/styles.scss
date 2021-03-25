@@ -7,7 +7,7 @@
 @import "~codemirror/theme/darcula";
 @import '~codemirror/addon/lint/lint';
 
-@import "~highlight.js/scss/vs";
+@import "~highlight.js/scss/idea";
 
 /* --------------- CodeMirror --------------- */
 
@@ -75,6 +75,10 @@
   gridster-item {
     background-color: $default-bg;
   }
+
+  .markdown pre {
+    background-color: #2b2b2b;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -128,8 +132,6 @@ a[href^="http"]::after {
 
   pre {
     @extend .card;
-    @extend .bg-light;
-    @extend .bg-darkmode-dark;
     padding: 10px;
     border-radius: 5px;
   }
