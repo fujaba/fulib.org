@@ -15,7 +15,7 @@ const repoPathMatcher: UrlMatcher = (segments: UrlSegment[]): UrlMatchResult | n
 
 const routes: Routes = [
   {matcher: repoPathMatcher, component: PageComponent},
-  {path: ':repo', redirectTo: ':repo/README'},
+  {path: ':repo', redirectTo: ':repo/README.md'},
   {path: '', component: OverviewComponent},
 ];
 
