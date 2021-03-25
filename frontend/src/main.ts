@@ -17,9 +17,13 @@ CodeMirror.defineSimpleMode('scenario', SCENARIO_MODE);
 import hljs from 'highlight.js/lib/core';
 import java from 'highlight.js/lib/languages/java';
 import groovy from 'highlight.js/lib/languages/groovy';
+import yaml from 'highlight.js/lib/languages/yaml';
+import bnf from 'highlight.js/lib/languages/bnf';
 
 hljs.registerLanguage('java', java);
 hljs.registerLanguage('groovy', groovy);
+hljs.registerLanguage('yaml', yaml);
+hljs.registerLanguage('bnf', bnf);
 
 if (environment.production) {
   enableProdMode();
