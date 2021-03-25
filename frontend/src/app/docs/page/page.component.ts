@@ -1,6 +1,5 @@
-import {AfterViewChecked, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import hljs from 'highlight.js/lib/core';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 import {switchMap} from 'rxjs/operators';
 import {PageInfo} from '../docs.interface';
 import {DocsService} from '../docs.service';
@@ -10,16 +9,13 @@ import {DocsService} from '../docs.service';
   templateUrl: './page.component.html',
   styleUrls: ['./page.component.scss'],
 })
-export class PageComponent implements OnInit, AfterViewChecked {
-  @ViewChild('content') content: ElementRef<HTMLElement>;
-
+export class PageComponent implements OnInit {
   html = 'Loading...';
   subPages?: PageInfo[];
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private docsService: DocsService,
-    private router: Router,
   ) {
   }
 
@@ -30,28 +26,5 @@ export class PageComponent implements OnInit, AfterViewChecked {
       this.html = html;
       this.subPages = subPages;
     });
-  }
-
-  ngAfterViewChecked() {
-    this.content.nativeElement.querySelectorAll('pre code').forEach(codeBlock => {
-      if (!codeBlock.classList.contains('hljs')) {
-        hljs.highlightElement(codeBlock);
-      }
-    });
-  }
-
-  onClick($event: MouseEvent) {
-    if (!($event.target instanceof HTMLAnchorElement)) {
-      return;
-    }
-
-    const target = $event.target as HTMLAnchorElement;
-    const pathname = target.pathname;
-    if (!pathname.startsWith('/docs/')) {
-      return;
-    }
-
-    this.router.navigate([pathname]);
-    $event.preventDefault();
   }
 }

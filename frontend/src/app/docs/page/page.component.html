@@ -3,7 +3,7 @@
     &larr;
     Back
   </a>
-  <div class="markdown" #content [innerHTML]="html | safeHtml" (click)="onClick($event)"></div>
+  <app-markdown [html]="html"></app-markdown>
   <div class="list-group">
     <a *ngFor="let subPage of subPages" class="list-group-item list-group-item-action" [routerLink]="'../' + subPage.url">
       {{ subPage.title }}

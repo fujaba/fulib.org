@@ -1,2 +1,2 @@
-<div class="markdown" [innerHTML]="html | safeHtml">
+<div #content class="markdown" [innerHTML]="html | safeHtml" (click)="onClick($event)">
 </div>
