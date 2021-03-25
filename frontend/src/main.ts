@@ -10,9 +10,9 @@ import * as CodeMirror from 'codemirror';
 
 import {AppModule} from './app/app.module';
 import {environment} from './environments/environment';
-import {SCENARIO_MODE} from './scenario-mode';
+import {SCENARIO_CODEMIRROR_MODE} from './modes/scenario-codemirror-mode';
 
-CodeMirror.defineSimpleMode('scenario', SCENARIO_MODE);
+CodeMirror.defineSimpleMode('scenario', SCENARIO_CODEMIRROR_MODE);
 
 import hljs from 'highlight.js/lib/core';
 import java from 'highlight.js/lib/languages/java';
