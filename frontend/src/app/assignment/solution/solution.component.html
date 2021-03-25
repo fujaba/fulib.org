@@ -68,7 +68,9 @@
             </ng-container>
           </div>
           <div class="card-body">
-            <div class="card-text markdown" *ngIf="comment.html !== undefined" [innerHTML]="comment.html | safeHtml"></div>
+            <div class="card-text" *ngIf="comment.html !== undefined">
+              <app-markdown [html]="comment.html"></app-markdown>
+            </div>
             <div class="card-text text-muted" *ngIf="comment.html === undefined">
               <i>Deleted by user.</i>
             </div>

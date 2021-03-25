@@ -64,9 +64,9 @@
 </ng-template>
 
 <ng-template #markdown>
-  <ng-container *ngIf="markdownHtml else loading">
-    <div class="h-100 overflow-auto markdown" [innerHTML]="markdownHtml | safeHtml"></div>
-  </ng-container>
+  <div *ngIf="markdownHtml else loading" class="h-100 overflow-auto">
+    <app-markdown [html]="markdownHtml"></app-markdown>
+  </div>
 </ng-template>
 
 <ng-template #classDiagram>

@@ -15,10 +15,6 @@
     Loading...
   </ng-container>
 </p>
-
-<p *ngIf="assignment" class="markdown" [innerHTML]="assignment.descriptionHtml! | safeHtml">
+<p>
+  <app-markdown [html]="assignment ? assignment.descriptionHtml : 'Loading Description...'"></app-markdown>
 </p>
-<p *ngIf="!assignment">
-  Loading Description...
-</p>
-
