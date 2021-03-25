@@ -30,8 +30,9 @@ public class MarkdownUtilTest
 			"<ul>\n" + "<li><input type=\"checkbox\" disabled=\"\"> first</li>\n"
 			+ "<li><input type=\"checkbox\" disabled=\"\" checked=\"\"> second</li>\n" + "</ul>\n"));
 		// html escaping
-		assertThat(md.renderHtml("<script>alert('XSS')</script>"),
-		           equalTo("<p>&lt;script&gt;alert('XSS')&lt;/script&gt;</p>\n"));
+		assertThat(md.renderHtml("<script>alert('XSS')</script>"), equalTo(""));
+		assertThat(md.renderHtml("<style>body { background-color: red; }</style>"), equalTo(""));
+		assertThat(md.renderHtml("<!-- hello world -->"), equalTo(""));
 		// fenced code blocks with language
 		assertThat(md.renderHtml("```java\nSystem.out.println();\n```"), equalTo(
 			"<pre><code class=\"language-java\" data-language=\"java\">System.out.println();\n" + "</code></pre>\n"));

@@ -5,14 +5,16 @@ import org.commonmark.ext.autolink.AutolinkExtension;
 import org.commonmark.ext.gfm.strikethrough.StrikethroughExtension;
 import org.commonmark.ext.gfm.tables.TablesExtension;
 import org.commonmark.ext.task.list.items.TaskListItemsExtension;
+import org.commonmark.node.AbstractVisitor;
+import org.commonmark.node.HtmlBlock;
 import org.commonmark.node.Node;
+import org.commonmark.node.Visitor;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.AttributeProvider;
 import org.commonmark.renderer.html.HtmlRenderer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,7 +30,23 @@ public class MarkdownUtil
 	};
 	private static final List<Extension> EXTENSIONS = Arrays.asList(_EXTENSIONS);
 
-	private static final Parser PARSER = Parser.builder().extensions(EXTENSIONS).build();
+	private static final Visitor VISITOR = new AbstractVisitor()
+	{
+		@Override
+		public void visit(HtmlBlock htmlBlock)
+		{
+			final String literal = htmlBlock.getLiteral();
+			if (literal.startsWith("<!--") || literal.startsWith("<script") || literal.startsWith("<style"))
+			{
+				htmlBlock.setLiteral("");
+			}
+		}
+	};
+
+	private static final Parser PARSER = Parser.builder().extensions(EXTENSIONS).postProcessor(node -> {
+		node.accept(VISITOR);
+		return node;
+	}).build();
 
 	private final AttributeProvider attributeProvider = (node, tagName, attributes) -> {
 		switch (tagName)
@@ -98,7 +116,8 @@ public class MarkdownUtil
 		return this.renderer.render(document);
 	}
 
-	private static boolean isRelative(String url) {
+	private static boolean isRelative(String url)
+	{
 		try
 		{
 			return !new URI(url).isAbsolute();
