@@ -1,8 +1,5 @@
-{{ page.title }}
-<span *ngIf="page.wip" class="badge badge-secondary">WIP</span>
-<div class="list-group">
-  <a *ngFor="let subPage of page.children" class="list-group-item list-group-item-action"
-     [routerLink]="'/docs/' + subPage.repo + '/' + subPage.url" routerLinkActive="active" (click)="$event.stopPropagation()">
-    <app-page-navigation [page]="subPage"></app-page-navigation>
-  </a>
-</div>
+<a class="list-group-item list-group-item-action" [routerLink]="'/docs/' + page.repo + '/' + page.url" routerLinkActive="active">
+  {{ page.title }}
+  <span *ngIf="page.wip" class="badge badge-secondary">WIP</span>
+</a>
+<app-page-navigation *ngFor="let subPage of page.children" [page]="subPage"></app-page-navigation>

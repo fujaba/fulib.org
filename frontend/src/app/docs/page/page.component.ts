@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {forkJoin} from 'rxjs';
-import {switchMap} from 'rxjs/operators';
+import {switchMap, tap} from 'rxjs/operators';
 import {Page} from '../docs.interface';
 import {DocsService} from '../docs.service';
 
@@ -11,6 +11,7 @@ import {DocsService} from '../docs.service';
   styleUrls: ['./page.component.scss'],
 })
 export class PageComponent implements OnInit {
+  repo;
   html = 'Loading...';
   rootPage?: Page;
 
@@ -22,6 +23,7 @@ export class PageComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.params.pipe(
+      tap(({repo}) => this.repo = this.docsService.repos.find(r => r.name === repo)),
       switchMap(({repo, page}) => {
         const mainPage = page;
         const parentPages: string[] = [];
