@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, TrackByFunction} from '@angular/core';
 import {Page} from '../docs.interface';
 
 @Component({
@@ -6,12 +6,8 @@ import {Page} from '../docs.interface';
   templateUrl: './page-navigation.component.html',
   styleUrls: ['./page-navigation.component.scss'],
 })
-export class PageNavigationComponent implements OnInit {
+export class PageNavigationComponent {
   @Input() page: Page;
 
-  constructor() {
-  }
-
-  ngOnInit(): void {
-  }
+  pageUrl: TrackByFunction<Page> = (_, p) => p.url;
 }
