@@ -35,9 +35,21 @@
 @media (prefers-color-scheme: dark) {
   ::ng-deep [data-theme="auto"] {
     @include markdown-dark;
+    @import "~highlight.js/scss/darcula";
+  }
+}
+
+@media (prefers-color-scheme: light), (prefers-color-scheme: no-preference) {
+  ::ng-deep [data-theme="auto"] {
+    @import "~highlight.js/scss/idea";
   }
 }
 
 ::ng-deep [data-theme="dark"] {
   @include markdown-dark;
+  @import "~highlight.js/scss/darcula";
+}
+
+::ng-deep [data-theme="light"] {
+  @import "~highlight.js/scss/idea";
 }

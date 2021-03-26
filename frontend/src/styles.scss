@@ -7,8 +7,6 @@
 @import "~codemirror/theme/darcula";
 @import '~codemirror/addon/lint/lint';
 
-@import "~highlight.js/scss/idea";
-
 /* --------------- CodeMirror --------------- */
 
 .CodeMirror {
@@ -79,13 +77,11 @@
 
 @media (prefers-color-scheme: dark) {
   [data-theme="auto"] {
-    @import "~highlight.js/scss/darcula";
     @include darkmode-ext;
   }
 }
 
 [data-theme="dark"] {
-  @import "~highlight.js/scss/darcula";
   @include darkmode-ext;
 }
 
