@@ -1,5 +1,5 @@
 <div class="row h-100 mx-3">
-  <div class="col-3 h-100 overflow-auto">
+  <div class="col-3 h-100 overflow-auto d-print-none">
     <h1>{{ repo.name }}</h1>
     <p class="text-muted">
       {{ repo.description }}
@@ -10,11 +10,11 @@
   </div>
   <div class="col-9 h-100 overflow-auto" *ngIf="page">
     <app-markdown [html]="page.html"></app-markdown>
-    <hr/>
-    <p class="text-center">
+    <div class="d-print-none text-center mb-3">
+      <hr/>
       <a class="btn btn-primary" href="https://github.com/fujaba/{{page.repo}}/blob/master/docs/{{page.url}}">
         Edit on GitHub
       </a>
-    </p>
+    </div>
   </div>
 </div>
