@@ -4,7 +4,7 @@ import {OverviewComponent} from './overview/overview.component';
 import {PageComponent} from './page/page.component';
 
 const repoPathMatcher: UrlMatcher = (segments: UrlSegment[]): UrlMatchResult | null => {
-  if (segments.length < 2) {
+  if (segments.length < 1) {
     return null;
   }
   const mergedPath = segments.slice(1).map(segment => segment.path).join('/');
@@ -15,7 +15,6 @@ const repoPathMatcher: UrlMatcher = (segments: UrlSegment[]): UrlMatchResult | n
 
 const routes: Routes = [
   {matcher: repoPathMatcher, component: PageComponent},
-  {path: ':repo', redirectTo: ':repo/README.md'},
   {path: '', component: OverviewComponent},
 ];
 

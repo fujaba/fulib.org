@@ -55,10 +55,8 @@ export class DocsService {
   }
 
   private getRawPage(repo: string, page: string) {
-    if (page.endsWith('/')) {
-      page += 'README.md';
-    } else if (!page.endsWith('.md')) {
-      page += '.md';
+    if (!page.endsWith('.md')) {
+      page += '/README.md';
     }
     return this.http.get(`https://raw.githubusercontent.com/fujaba/${repo}/master/docs/${page}`, {responseType: 'text'});
   }
