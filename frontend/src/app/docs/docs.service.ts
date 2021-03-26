@@ -29,7 +29,7 @@ export class DocsService {
     const parent = url.substring(0, url.lastIndexOf('/') + 1);
     return this.getRawPage(repo, url).pipe(
       switchMap(source => {
-        const page = this.parsePage(url, source);
+        const page = this.parsePage(repo, url, source);
         return this.render(repo, parent, page.html!).pipe(map(html => {
           page.html = html;
           return page;
@@ -39,7 +39,7 @@ export class DocsService {
   }
 
   getPageInfo(repo: string, url: string): Observable<Page> {
-    return this.getRawPage(repo, url).pipe(map(source => this.parsePage(url, source)));
+    return this.getRawPage(repo, url).pipe(map(source => this.parsePage(repo, url, source)));
   }
 
   private render(repo: string, parent: string, text: string) {
@@ -52,22 +52,20 @@ export class DocsService {
     });
   }
 
-  private parsePage(url: string, source: string): Page {
+  private parsePage(repo: string, url: string, source: string): Page {
     const children: Page[] = [];
     const titleMatch = source.match(/^#\s*(.*)(\s+\[WIP])?$/m);
     const title = titleMatch?.[1] ?? '';
     const wip = !!titleMatch?.[2];
+    const parentUrl = url.substring(0, url.lastIndexOf('/') + 1);
     const html = source.replace(/^\* \[(.*?)(\s+\\\[WIP\\])?]\((.*)\)$/gm, (s, childTitle, childWip, childUrl) => {
-      children.push({title: childTitle, wip: !!childWip, url: childUrl});
+      children.push({title: childTitle, repo, wip: !!childWip, url: parentUrl + childUrl});
       return '';
     });
-    return {title, url, wip, html, children};
+    return {title, repo, url, wip, html, children};
   }
 
   private getRawPage(repo: string, page: string) {
-    if (!page.endsWith('.md')) {
-      page += '/README.md';
-    }
     return this.http.get(`https://raw.githubusercontent.com/fujaba/${repo}/master/docs/${page}`, {responseType: 'text'});
   }
 }

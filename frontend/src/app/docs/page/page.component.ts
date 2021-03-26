@@ -26,7 +26,7 @@ export class PageComponent implements OnInit {
         const mainPage = page;
         const parentPages: string[] = [];
         for (let index = 0; 0 <= index && index < page.length; index = page.indexOf('/', index + 1)) {
-          parentPages.push(page.substring(0, index));
+          parentPages.push(index === 0 ? 'README.md' : page.substring(0, index + 1) + 'README.md');
         }
         return forkJoin([
           ...parentPages.map(parentPage => this.docsService.getPageInfo(repo, parentPage)),
