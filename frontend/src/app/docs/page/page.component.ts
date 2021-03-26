@@ -45,7 +45,7 @@ export class PageComponent implements OnInit {
         const parent = pages[i - 1];
         const child = pages[i];
         if (parent.children) {
-          const index = parent.children.findIndex(c => c.title === child.title);
+          const index = parent.children.findIndex(c => c.url === child.url);
           if (index >= 0) {
             parent.children[index] = child;
           }
