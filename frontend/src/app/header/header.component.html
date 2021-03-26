@@ -50,25 +50,6 @@
         </div>
       </li>
       <li class="nav-item" ngbDropdown>
-        <a tabindex="0" class="nav-link" ngbDropdownToggle id="helpDropdown" role="button">
-          Help
-        </a>
-        <div ngbDropdownMenu aria-labelledby="helpDropdown">
-          <a ngbDropdownItem href="https://fujaba.gitbook.io/fulib-scenarios/web-app/getting-started">
-            Getting Started
-          </a>
-          <a ngbDropdownItem href="https://fujaba.gitbook.io/fulib-scenarios/">
-            fulibScenarios Documentation
-          </a>
-          <a ngbDropdownItem href="https://stackoverflow.com/questions/tagged/fulibScenarios">
-            fulibScenarios on StackOverflow
-          </a>
-          <a ngbDropdownItem [routerLink]="[{outlets: {modal: 'feedback'}}]">
-            Feedback
-          </a>
-        </div>
-      </li>
-      <li class="nav-item" ngbDropdown>
         <a tabindex="0" class="nav-link" ngbDropdownToggle id="legalDropdown" role="button">
           Legal
         </a>
@@ -83,6 +64,11 @@
             Privacy Policy
           </a>
         </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="[{outlets: {modal: 'feedback'}}]">
+          Feedback
+        </a>
       </li>
       <li class="nav-item">
         <a class="nav-link" [routerLink]="[{outlets: {modal: 'changelog'}}]">
