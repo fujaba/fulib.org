@@ -4,10 +4,5 @@
     Back
   </a>
   <app-markdown [html]="html"></app-markdown>
-  <div class="list-group">
-    <a *ngFor="let subPage of subPages" class="list-group-item list-group-item-action" [routerLink]="subPage.url">
-      {{ subPage.title }}
-      <span *ngIf="subPage.wip" class="badge badge-secondary">WIP</span>
-    </a>
-  </div>
+  <app-page-navigation *ngIf="rootPage" [page]="rootPage"></app-page-navigation>
 </div>

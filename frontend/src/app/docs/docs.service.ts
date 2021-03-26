@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
 import {environment} from '../../environments/environment';
-import {PageInfo} from './docs.interface';
+import {Page} from './docs.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -25,14 +25,21 @@ export class DocsService {
   ) {
   }
 
-  getPage(repo: string, page: string): Observable<{ html: string, subPages: PageInfo[] }> {
-    const parent = page.substring(0, page.lastIndexOf('/') + 1);
-    return this.getRawPage(repo, page).pipe(
+  getPage(repo: string, url: string): Observable<Page> {
+    const parent = url.substring(0, url.lastIndexOf('/') + 1);
+    return this.getRawPage(repo, url).pipe(
       switchMap(source => {
-        const {text, subPages} = this.getSubPages(source);
-        return this.render(repo, parent, text).pipe(map(html => ({html, subPages})));
+        const page = this.parsePage(url, source);
+        return this.render(repo, parent, page.html!).pipe(map(html => {
+          page.html = html;
+          return page;
+        }));
       }),
     );
+  }
+
+  getPageInfo(repo: string, url: string): Observable<Page> {
+    return this.getRawPage(repo, url).pipe(map(source => this.parsePage(url, source)));
   }
 
   private render(repo: string, parent: string, text: string) {
@@ -45,13 +52,16 @@ export class DocsService {
     });
   }
 
-  private getSubPages(source: string): { text: string, subPages: PageInfo[] } {
-    const subPages: PageInfo[] = [];
-    const text = source.replace(/^\* \[(.*?)(\s+\\\[WIP\\])?]\((.*)\)$/gm, (s, title, wip, url) => {
-      subPages.push({title, wip: !!wip, url});
+  private parsePage(url: string, source: string): Page {
+    const children: Page[] = [];
+    const titleMatch = source.match(/^#\s*(.*)(\s+\[WIP])?$/m);
+    const title = titleMatch?.[1] ?? '';
+    const wip = !!titleMatch?.[2];
+    const html = source.replace(/^\* \[(.*?)(\s+\\\[WIP\\])?]\((.*)\)$/gm, (s, childTitle, childWip, childUrl) => {
+      children.push({title: childTitle, wip: !!childWip, url: childUrl});
       return '';
     });
-    return {text, subPages};
+    return {title, url, wip, html, children};
   }
 
   private getRawPage(repo: string, page: string) {

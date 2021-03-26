@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import {forkJoin} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
-import {PageInfo} from '../docs.interface';
+import {Page} from '../docs.interface';
 import {DocsService} from '../docs.service';
 
 @Component({
@@ -11,7 +12,7 @@ import {DocsService} from '../docs.service';
 })
 export class PageComponent implements OnInit {
   html = 'Loading...';
-  subPages?: PageInfo[];
+  rootPage?: Page;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -21,10 +22,30 @@ export class PageComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.params.pipe(
-      switchMap(({repo, page}) => this.docsService.getPage(repo, page)),
-    ).subscribe(({html, subPages}) => {
-      this.html = html;
-      this.subPages = subPages;
+      switchMap(({repo, page}) => {
+        const mainPage = page;
+        const parentPages: string[] = [];
+        for (let index = 0; 0 <= index && index < page.length; index = page.indexOf('/', index + 1)) {
+          parentPages.push(page.substring(0, index));
+        }
+        return forkJoin([
+          ...parentPages.map(parentPage => this.docsService.getPageInfo(repo, parentPage)),
+          this.docsService.getPage(repo, mainPage),
+        ]);
+      }),
+    ).subscribe(pages => {
+      this.html = (pages[pages.length - 1] as Page).html!;
+      this.rootPage = pages[0];
+      for (let i = 1; i < pages.length; i++) {
+        const parent = pages[i - 1];
+        const child = pages[i];
+        if (parent.children) {
+          const index = parent.children.findIndex(c => c.title === child.title);
+          if (index >= 0) {
+            parent.children[index] = child;
+          }
+        }
+      }
     });
   }
 }

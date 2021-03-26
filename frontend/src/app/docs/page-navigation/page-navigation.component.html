@@ -1,0 +1,7 @@
+{{ page.title }}
+<span *ngIf="page.wip" class="badge badge-secondary">WIP</span>
+<div class="list-group">
+  <a *ngFor="let subPage of page.children" class="list-group-item list-group-item-action" [routerLink]="subPage.url">
+    <app-page-navigation [page]="subPage"></app-page-navigation>
+  </a>
+</div>
