@@ -12,7 +12,7 @@ import {DocsService} from '../docs.service';
 })
 export class PageComponent implements OnInit {
   repo;
-  html = 'Loading...';
+  page?: Page;
   rootPage?: Page;
 
   constructor(
@@ -36,7 +36,7 @@ export class PageComponent implements OnInit {
         ]);
       }),
     ).subscribe(pages => {
-      this.html = (pages[pages.length - 1] as Page).html!;
+      this.page = pages[pages.length - 1];
       this.rootPage = pages[0];
       for (let i = 1; i < pages.length; i++) {
         const parent = pages[i - 1];

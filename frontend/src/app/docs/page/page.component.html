@@ -8,7 +8,13 @@
       <app-page-navigation *ngIf="rootPage" [page]="rootPage"></app-page-navigation>
     </div>
   </div>
-  <div class="col-9 h-100 overflow-auto">
-    <app-markdown [html]="html"></app-markdown>
+  <div class="col-9 h-100 overflow-auto" *ngIf="page">
+    <app-markdown [html]="page.html"></app-markdown>
+    <hr/>
+    <p class="text-center">
+      <a class="btn btn-primary" href="https://github.com/fujaba/{{page.repo}}/blob/master/docs/{{page.url}}">
+        Edit on GitHub
+      </a>
+    </p>
   </div>
 </div>
