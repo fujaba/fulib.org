@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {forkJoin} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
-import {Page} from '../docs.interface';
+import {ParsedPage, RenderedPage} from '../docs.interface';
 import {DocsService} from '../docs.service';
 
 @Component({
@@ -12,8 +12,8 @@ import {DocsService} from '../docs.service';
 })
 export class PageComponent implements OnInit {
   repo;
-  page?: Page;
-  rootPage?: Page;
+  page?: RenderedPage;
+  rootPage?: ParsedPage;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -39,7 +39,7 @@ export class PageComponent implements OnInit {
         ]);
       }),
     ).subscribe(pages => {
-      this.page = pages[pages.length - 1];
+      this.page = pages[pages.length - 1] as RenderedPage;
       this.rootPage = pages[0];
       for (let i = 1; i < pages.length; i++) {
         const parent = pages[i - 1];

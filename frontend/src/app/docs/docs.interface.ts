@@ -3,6 +3,13 @@ export interface Page {
   repo: string;
   url: string;
   wip: boolean;
-  html?: string;
-  children?: Page[];
+}
+
+export interface ParsedPage extends Page {
+  markdown: string;
+  children: Page[];
+}
+
+export interface RenderedPage extends ParsedPage {
+  html: string;
 }
