@@ -26,30 +26,22 @@ export class DocsService {
   }
 
   getPage(repo: string, url: string): Observable<RenderedPage> {
-    const parent = url.substring(0, url.lastIndexOf('/') + 1);
-    return this.getRawPage(repo, url).pipe(
-      switchMap(source => {
-        const page = this.parsePage(repo, url, source);
-        return this.render(repo, parent, page.markdown!).pipe(map(html => {
-          const rendered: RenderedPage = {...page, html};
-          return rendered;
-        }));
-      }),
-    );
+    return this.getPageInfo(repo, url).pipe(switchMap(page => this.render(page)));
   }
 
   getPageInfo(repo: string, url: string): Observable<ParsedPage> {
     return this.getRawPage(repo, url).pipe(map(source => this.parsePage(repo, url, source)));
   }
 
-  private render(repo: string, parent: string, text: string): Observable<string> {
-    return this.http.post(environment.apiURL + '/rendermarkdown', text, {
+  private render(page: ParsedPage): Observable<RenderedPage> {
+    const parent = page.url.substring(0, page.url.lastIndexOf('/') + 1);
+    return this.http.post(environment.apiURL + '/rendermarkdown', page.markdown, {
       responseType: 'text',
       params: {
-        image_base_url: `https://github.com/fujaba/${repo}/raw/master/docs/${parent}`,
-        link_base_url: `/docs/${repo}/${parent}`,
+        image_base_url: `https://github.com/fujaba/${page.repo}/raw/master/docs/${parent}`,
+        link_base_url: `/docs/${page.repo}/${parent}`,
       },
-    });
+    }).pipe(map(html => ({...page, html})));
   }
 
   private parsePage(repo: string, url: string, source: string): ParsedPage {
