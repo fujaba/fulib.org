@@ -13,3 +13,8 @@ export interface ParsedPage extends Page {
 export interface RenderedPage extends ParsedPage {
   html: string;
 }
+
+export interface Repository {
+  name: string;
+  description: string;
+}

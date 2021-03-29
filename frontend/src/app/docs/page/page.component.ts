@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {forkJoin} from 'rxjs';
-import {switchMap, tap} from 'rxjs/operators';
-import {ParsedPage, RenderedPage} from '../docs.interface';
+import {switchMap} from 'rxjs/operators';
+import {ParsedPage, RenderedPage, Repository} from '../docs.interface';
 import {DocsService} from '../docs.service';
 
 @Component({
@@ -11,7 +11,7 @@ import {DocsService} from '../docs.service';
   styleUrls: ['./page.component.scss'],
 })
 export class PageComponent implements OnInit {
-  repo;
+  repo?: Repository;
   page?: RenderedPage;
   rootPage?: ParsedPage;
 
@@ -23,7 +23,6 @@ export class PageComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.params.pipe(
-      tap(({repo}) => this.repo = this.docsService.repos.find(r => r.name === repo)),
       switchMap(({repo, page}) => {
         const mainPage = page;
         const parentPages: string[] = [];
@@ -33,12 +32,16 @@ export class PageComponent implements OnInit {
         if (parentPages[parentPages.length - 1] === mainPage) {
           parentPages.pop();
         }
-        return forkJoin([
-          ...parentPages.map(parentPage => this.docsService.getPageInfo(repo, parentPage)),
-          this.docsService.getPage(repo, mainPage),
-        ]);
+        return forkJoin({
+          repo: this.docsService.getRepo(repo),
+          pages: forkJoin([
+            ...parentPages.map(parentPage => this.docsService.getPageInfo(repo, parentPage)),
+            this.docsService.getPage(repo, mainPage),
+          ]),
+        });
       }),
-    ).subscribe(pages => {
+    ).subscribe(({repo, pages}) => {
+      this.repo = repo;
       this.page = pages[pages.length - 1] as RenderedPage;
       this.rootPage = pages[0];
       for (let i = 1; i < pages.length; i++) {

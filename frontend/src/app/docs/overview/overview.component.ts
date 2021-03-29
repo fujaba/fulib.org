@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {Repository} from '../docs.interface';
 import {DocsService} from '../docs.service';
 
 @Component({
@@ -7,7 +8,7 @@ import {DocsService} from '../docs.service';
   styleUrls: ['./overview.component.scss'],
 })
 export class OverviewComponent implements OnInit {
-  repos = this.docsService.repos;
+  repos?: Repository[];
 
   constructor(
     private docsService: DocsService,
@@ -15,6 +16,9 @@ export class OverviewComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.docsService.getRepos().subscribe(repos => {
+      this.repos = repos;
+    });
   }
 
 }

@@ -3,26 +3,35 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
 import {environment} from '../../environments/environment';
-import {Page, ParsedPage, RenderedPage} from './docs.interface';
+import {Page, ParsedPage, RenderedPage, Repository} from './docs.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DocsService {
-  readonly repos = [
-    {
-      name: 'fulib',
-      description: 'A library that provides code generation for UML like models and some model management functionalities.',
-    },
-    {
-      name: 'fulibScenarios',
-      description: 'A language and compiler for textual example scenarios.',
-    },
-  ];
-
   constructor(
     private http: HttpClient,
   ) {
+  }
+
+  getRepos(): Observable<Repository[]> {
+    return this.http.get<any[]>('https://api.github.com/orgs/fujaba/repos', {
+      params: {
+        type: 'public',
+        sort: 'full_name',
+      },
+    }).pipe(map(repos => repos.filter(r => r.has_pages && r.name.startsWith('fulib') && r.description).map(r => this.toRepository(r))));
+  }
+
+  getRepo(name: string): Observable<Repository> {
+    return this.http.get<any>(`https://api.github.com/repos/fujaba/${name}`).pipe(map(r => this.toRepository(r)));
+  }
+
+  private toRepository(r: any): Repository {
+    return {
+      name: r.name,
+      description: r.description,
+    };
   }
 
   getPage(repo: string, url: string): Observable<RenderedPage> {
