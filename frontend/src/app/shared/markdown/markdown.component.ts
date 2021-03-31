@@ -1,4 +1,4 @@
-import {AfterViewChecked, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
 import hljs from 'highlight.js/lib/core';
 
@@ -7,7 +7,7 @@ import hljs from 'highlight.js/lib/core';
   templateUrl: './markdown.component.html',
   styleUrls: ['./markdown.component.scss'],
 })
-export class MarkdownComponent implements OnInit, AfterViewChecked {
+export class MarkdownComponent implements OnInit, OnChanges {
   @ViewChild('content') content: ElementRef<HTMLElement>;
 
   @Input() html: string;
@@ -20,12 +20,19 @@ export class MarkdownComponent implements OnInit, AfterViewChecked {
   ngOnInit(): void {
   }
 
-  ngAfterViewChecked(): void {
-    this.content.nativeElement.querySelectorAll('pre code').forEach(codeBlock => {
-      if (!codeBlock.classList.contains('hljs')) {
-        hljs.highlightElement(codeBlock);
-      }
-    });
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!changes.html) {
+      return;
+    }
+    // setTimeout is needed because ngOnChanges is called before the view is updated.
+    // Unfortunately there is no lifecycle hook that triggers after view update and also lets us check if the html actually changed.
+    setTimeout(() => {
+      this.content.nativeElement.querySelectorAll('pre code').forEach(codeBlock => {
+        if (!codeBlock.classList.contains('hljs')) {
+          hljs.highlightElement(codeBlock);
+        }
+      });
+    }, 0);
   }
 
   onClick($event: MouseEvent) {
