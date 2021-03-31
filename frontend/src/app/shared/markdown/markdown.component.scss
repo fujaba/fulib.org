@@ -16,6 +16,12 @@
     padding: 0.5em;
   }
 
+  pre > code {
+    padding: 0.5em;
+    display: block;
+    overflow-x: auto;
+  }
+
   pre > code[data-language]::before {
     content: attr(data-language);
     display: block;
