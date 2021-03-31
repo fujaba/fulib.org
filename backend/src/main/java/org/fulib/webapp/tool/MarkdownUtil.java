@@ -30,23 +30,7 @@ public class MarkdownUtil
 	};
 	private static final List<Extension> EXTENSIONS = Arrays.asList(_EXTENSIONS);
 
-	private static final Visitor VISITOR = new AbstractVisitor()
-	{
-		@Override
-		public void visit(HtmlBlock htmlBlock)
-		{
-			final String literal = htmlBlock.getLiteral();
-			if (literal.startsWith("<!--") || literal.startsWith("<script") || literal.startsWith("<style"))
-			{
-				htmlBlock.setLiteral("");
-			}
-		}
-	};
-
-	private static final Parser PARSER = Parser.builder().extensions(EXTENSIONS).postProcessor(node -> {
-		node.accept(VISITOR);
-		return node;
-	}).build();
+	private static final Parser PARSER = Parser.builder().extensions(EXTENSIONS).build();
 
 	private final AttributeProvider attributeProvider = (node, tagName, attributes) -> {
 		switch (tagName)
