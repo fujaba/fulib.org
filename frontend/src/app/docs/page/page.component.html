@@ -1,8 +1,8 @@
 <div class="row h-100 mx-3">
   <div class="col-3 h-100 overflow-auto d-print-none">
-    <h1>{{ repo?.name }}</h1>
+    <h1>{{ repo ? repo.name : 'Loading...' }}</h1>
     <p class="text-muted">
-      {{ repo?.description }}
+      {{ repo ? repo.description : 'Loading...' }}
     </p>
     <div class="list-group">
       <app-page-navigation *ngIf="rootPage" [page]="rootPage"></app-page-navigation>
