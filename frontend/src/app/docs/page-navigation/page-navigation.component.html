@@ -1,0 +1,5 @@
+<a class="list-group-item list-group-item-action" [routerLink]="'/docs/' + page.repo + '/' + page.url" routerLinkActive="active">
+  {{ page.title }}
+  <span *ngIf="page.wip" class="badge badge-secondary">WIP</span>
+</a>
+<app-page-navigation *ngFor="let subPage of page.children; trackBy: pageUrl" [page]="subPage"></app-page-navigation>

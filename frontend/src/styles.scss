@@ -113,33 +113,6 @@ a[href^="http"]::after {
   cursor: pointer;
 }
 
-/* --------------- Markdown --------------- */
-
-.markdown {
-  blockquote {
-    color: $text-muted;
-    padding-left: 10px;
-    border-left: 2px solid $text-muted;
-  }
-
-  pre {
-    @extend .card;
-    @extend .bg-light;
-    @extend .bg-darkmode-dark;
-    padding: 10px;
-    border-radius: 5px;
-  }
-
-  pre > code[data-language]::before {
-    content: attr(data-language);
-    display: block;
-    color: $text-muted;
-    position: absolute;
-    right: 10px;
-    top: 10px;
-  }
-}
-
 /* --------------- Timelines --------------- */
 
 $outline-color: #777;

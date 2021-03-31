@@ -173,8 +173,21 @@ public class WebService
 	private void addUtilRoutes()
 	{
 		service.post("/rendermarkdown", (request, response) -> {
+			final String imageBaseUrl = request.queryParams("image_base_url");
+			final String linkBaseUrl = request.queryParams("link_base_url");
+			final MarkdownUtil util;
+			if (imageBaseUrl != null || linkBaseUrl != null)
+			{
+				util = new MarkdownUtil();
+				util.setImageBaseUrl(imageBaseUrl);
+				util.setLinkBaseUrl(linkBaseUrl);
+			}
+			else
+			{
+				util = this.markdownUtil;
+			}
 			response.type("text/html");
-			return this.markdownUtil.renderHtml(request.body());
+			return util.renderHtml(request.body());
 		});
 	}
 

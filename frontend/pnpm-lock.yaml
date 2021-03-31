@@ -16,6 +16,7 @@ dependencies:
   bootstrap-icons: 1.4.0
   codemirror: 5.60.0
   file-saver: 2.0.5
+  highlight.js: 10.7.1
   keycloak-angular: 8.1.0_cb8a433e7a077c1596419f4fd4ca8071
   keycloak-js: 12.0.3
   ng-bootstrap-darkmode: 0.4.0_0b93bb0e3607710a79b6d369bde9cccb
@@ -4752,6 +4753,10 @@ packages:
     dev: true
     resolution:
       integrity: sha512-l9sfDFsuqtOqKDsQdqrMRk0U85RZc0RtOR9yPI7mRVOa4FsR/BVnZ0shmQRM96Ji99kYZP/7hn1cedc1+ApsTQ==
+  /highlight.js/10.7.1:
+    dev: false
+    resolution:
+      integrity: sha512-S6G97tHGqJ/U8DsXcEdnACbirtbx58Bx9CzIVeYli8OuswCfYI/LsXH2EiGcoGio1KAC3x4mmUwulOllJ2ZyRA==
   /hmac-drbg/1.0.1:
     dependencies:
       hash.js: 1.1.7
@@ -9953,6 +9958,7 @@ specifiers:
   codelyzer: ^6.0.1
   codemirror: ^5.60.0
   file-saver: ^2.0.5
+  highlight.js: ^10.7.1
   jasmine-core: ~3.6.0
   jasmine-spec-reporter: ~5.0.2
   karma: ~6.1.1

@@ -7,6 +7,7 @@ import {NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
 
 import {AutothemeCodemirrorComponent} from './autotheme-codemirror/autotheme-codemirror.component';
 import {CollapseButtonComponent} from './collapse-button/collapse-button.component';
+import {MarkdownComponent} from './markdown/markdown.component';
 import {ExceptionPipe} from './pipes/exception.pipe';
 import {SafeHtmlPipe} from './pipes/safe-html.pipe';
 import {SafeResourceUrlPipe} from './pipes/safe-resource-url.pipe';
@@ -24,6 +25,7 @@ import {ScenarioCodemirrorComponent} from './scenario-codemirror/scenario-codemi
     CollapseButtonComponent,
     ScenarioCodemirrorComponent,
     PreviewComponent,
+    MarkdownComponent,
   ],
   imports: [
     FormsModule,
@@ -40,6 +42,7 @@ import {ScenarioCodemirrorComponent} from './scenario-codemirror/scenario-codemi
     CollapseButtonComponent,
     ScenarioCodemirrorComponent,
     PreviewComponent,
+    MarkdownComponent,
   ],
 })
 export class SharedModule {

@@ -10,9 +10,22 @@ import * as CodeMirror from 'codemirror';
 
 import {AppModule} from './app/app.module';
 import {environment} from './environments/environment';
-import {SCENARIO_MODE} from './scenario-mode';
+import {SCENARIO_CODEMIRROR_MODE} from './modes/scenario-codemirror-mode';
 
-CodeMirror.defineSimpleMode('scenario', SCENARIO_MODE);
+CodeMirror.defineSimpleMode('scenario', SCENARIO_CODEMIRROR_MODE);
+
+import hljs from 'highlight.js/lib/core';
+import java from 'highlight.js/lib/languages/java';
+import groovy from 'highlight.js/lib/languages/groovy';
+import yaml from 'highlight.js/lib/languages/yaml';
+import bnf from 'highlight.js/lib/languages/bnf';
+import {scenario} from './modes/scenario-highlightjs-mode';
+
+hljs.registerLanguage('java', java);
+hljs.registerLanguage('groovy', groovy);
+hljs.registerLanguage('yaml', yaml);
+hljs.registerLanguage('bnf', bnf);
+hljs.registerLanguage('scenario', scenario);
 
 if (environment.production) {
   enableProdMode();

@@ -10,6 +10,11 @@
       <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
         <a class="nav-link" routerLink="/">Home <span class="sr-only">(current)</span></a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLinkActive="active" routerLink="/docs">
+          Docs
+        </a>
+      </li>
       <li class="nav-item" routerLinkActive="active" ngbDropdown>
         <a tabindex="0" class="nav-link" ngbDropdownToggle id="assignmentsDropdown" role="button">
           Assignments
@@ -45,25 +50,6 @@
         </div>
       </li>
       <li class="nav-item" ngbDropdown>
-        <a tabindex="0" class="nav-link" ngbDropdownToggle id="helpDropdown" role="button">
-          Help
-        </a>
-        <div ngbDropdownMenu aria-labelledby="helpDropdown">
-          <a ngbDropdownItem href="https://fujaba.gitbook.io/fulib-scenarios/web-app/getting-started">
-            Getting Started
-          </a>
-          <a ngbDropdownItem href="https://fujaba.gitbook.io/fulib-scenarios/">
-            fulibScenarios Documentation
-          </a>
-          <a ngbDropdownItem href="https://stackoverflow.com/questions/tagged/fulibScenarios">
-            fulibScenarios on StackOverflow
-          </a>
-          <a ngbDropdownItem [routerLink]="[{outlets: {modal: 'feedback'}}]">
-            Feedback
-          </a>
-        </div>
-      </li>
-      <li class="nav-item" ngbDropdown>
         <a tabindex="0" class="nav-link" ngbDropdownToggle id="legalDropdown" role="button">
           Legal
         </a>
@@ -71,13 +57,18 @@
           <a ngbDropdownItem [routerLink]="[{outlets: {modal: 'about'}}]">
             About
           </a>
-          <a ngbDropdownItem href="http://www.uni-kassel.de/uni/impressum.html">
+          <a ngbDropdownItem href="https://www.uni-kassel.de/uni/impressum">
             Imprint
           </a>
-          <a ngbDropdownItem href="https://www.uni-kassel.de/uni/footer-2/datenschutz/">
+          <a ngbDropdownItem href="https://www.uni-kassel.de/uni/datenschutz">
             Privacy Policy
           </a>
         </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="[{outlets: {modal: 'feedback'}}]">
+          Feedback
+        </a>
       </li>
       <li class="nav-item">
         <a class="nav-link" [routerLink]="[{outlets: {modal: 'changelog'}}]">
