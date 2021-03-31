@@ -67,6 +67,11 @@ export class DocsService {
   }
 
   private getRawPage(repo: string, page: string): Observable<string> {
-    return this.http.get(`https://raw.githubusercontent.com/fujaba/${repo}/master/docs/${page}`, {responseType: 'text'});
+    return this.http.get(`https://api.github.com/repos/fujaba/${repo}/contents/docs/${page}`, {
+      responseType: 'text',
+      headers: {
+        Accept: 'application/vnd.github.raw',
+      },
+    });
   }
 }
