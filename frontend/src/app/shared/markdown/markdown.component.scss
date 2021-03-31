@@ -22,8 +22,8 @@
     overflow-x: auto;
   }
 
-  pre > code[data-language]::before {
-    content: attr(data-language);
+  pre > code[lang]::before {
+    content: attr(lang);
     display: block;
     color: $text-muted;
     position: absolute;

@@ -42,7 +42,7 @@ public class MarkdownUtil
 			final String className = attributes.get("class");
 			if (className != null && className.startsWith("language-"))
 			{
-				attributes.put("data-language", className.substring("language-".length()));
+				attributes.put("lang", className.substring("language-".length()));
 			}
 			return;
 		case "img":

@@ -35,6 +35,6 @@ public class MarkdownUtilTest
 		assertThat(md.renderHtml("<!-- hello world -->"), equalTo("<!-- hello world -->\n"));
 		// fenced code blocks with language
 		assertThat(md.renderHtml("```java\nSystem.out.println();\n```"), equalTo(
-			"<pre><code class=\"language-java\" data-language=\"java\">System.out.println();\n" + "</code></pre>\n"));
+			"<pre><code class=\"language-java\" lang=\"java\">System.out.println();\n" + "</code></pre>\n"));
 	}
 }
