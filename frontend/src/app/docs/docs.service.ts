@@ -59,7 +59,7 @@ export class DocsService {
     const title = titleMatch?.[1] ?? '';
     const wip = !!titleMatch?.[2];
     const parentUrl = url.substring(0, url.lastIndexOf('/') + 1);
-    const markdown = source.replace(/^\* \[(.*?)(\s+\\\[WIP\\])?]\((.*)\)$/gm, (s, childTitle, childWip, childUrl) => {
+    const markdown = source.replace(/^(?:\d+\.|[+*-]) \[(.*?)(\s+\\\[WIP\\])?]\((.*)\)$/gm, (s, childTitle, childWip, childUrl) => {
       children.push({title: childTitle, repo, wip: !!childWip, url: parentUrl + childUrl});
       return '';
     });
