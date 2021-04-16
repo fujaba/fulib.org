@@ -82,7 +82,12 @@ export class ChangelogService {
   }
 
   private loadRawChangelog(repo: string): Observable<string> {
-    return this.http.get(`https://raw.githubusercontent.com/${repo}/master/CHANGELOG.md`, {responseType: 'text'});
+    return this.http.get(`https://api.github.com/repos/fujaba/${repo}/contents/CHANGELOG.md`, {
+      responseType: 'text',
+      headers: {
+        Accept: 'application/vnd.github.raw',
+      },
+    });
   }
 
   private partialChangelog(fullChangelog: string, lastUsedVersion: string, currentVersion?: string): string {
@@ -125,7 +130,7 @@ export class ChangelogService {
   }
 
   getChangelog(repo: keyof Versions, lastUsedVersion?: string, currentVersion?: string): Observable<string> {
-    return this.loadRawChangelog('fujaba/' + repo).pipe(
+    return this.loadRawChangelog(repo).pipe(
       switchMap(fullChangelog => {
         const changelog = lastUsedVersion ? this.partialChangelog(fullChangelog, lastUsedVersion, currentVersion) : fullChangelog;
         if (!changelog) { // already newest version
