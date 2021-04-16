@@ -39,6 +39,8 @@ function initializeKeycloak(keycloak: KeycloakService) {
     },
     bearerExcludedUrls: [
       'https://raw.githubusercontent.com/',
+      'https://api.github.com',
+      'https://github.com',
     ],
   });
 }
