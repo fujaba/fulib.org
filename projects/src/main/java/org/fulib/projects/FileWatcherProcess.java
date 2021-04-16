@@ -56,7 +56,10 @@ public class FileWatcherProcess extends Thread
 		if (watchKey != null)
 		{
 			this.watchPaths.remove(watchKey);
-			watchKey.cancel();
+			if (watchKey.isValid())
+			{
+				watchKey.cancel();
+			}
 		}
 	}
 

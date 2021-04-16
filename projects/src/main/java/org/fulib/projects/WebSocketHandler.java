@@ -1,10 +1,7 @@
 package org.fulib.projects;
 
 import org.eclipse.jetty.websocket.api.Session;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
-import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import org.eclipse.jetty.websocket.api.annotations.*;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -105,6 +102,14 @@ public class WebSocketHandler implements FileEventHandler
 			session.getRemote().sendString(new JSONObject().put("error", "invalid command: " + command).toString());
 			return;
 		}
+	}
+
+	@OnWebSocketError
+	public void error(Session session, Throwable error)
+	{
+		error.printStackTrace();
+		final String text = new JSONObject().put("event", "error").put("message", error.getMessage()).toString();
+		session.getRemote().sendString(text, null);
 	}
 
 	@OnWebSocketClose
