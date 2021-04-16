@@ -9,8 +9,8 @@
     <ng-container *ngFor="let panel of panels">
       <div class="panel-header bg-light bg-darkmode-dark"
            (click)="panelState[panel.id].expanded = !panelState[panel.id].expanded">
-        <img class="icon" src="assets/icons/chevron-{{panelState[panel.id].expanded ? 'down' : 'right'}}.svg"
-             [alt]="panelState[panel.id].expanded ? 'Expanded' : 'Collapsed'">
+        <i class="bi-chevron-{{panelState[panel.id].expanded ? 'down' : 'right'}}" role="checkbox"
+           [attr.aria-label]="panelState[panel.id].expanded ? 'Expanded' : 'Collapsed'"></i>
         {{panel.name | uppercase}}
       </div>
       <div *ngIf="panelState[panel.id].expanded" class="flex-grow-1">

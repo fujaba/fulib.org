@@ -1,6 +1,6 @@
 <ng-template #header let-editor>
   <div class="d-inline-block" [dndDraggable]="editor" [dndType]="'editor'" (dndDrag)="close(editor)">
-    <img class="icon" [src]="'/assets/icons/' + editor.file.type.icon + '.svg'" [alt]="editor.file.type.name">
+    <i class="bi-{{ editor.file.type.icon }}" [attr.aria-label]="editor.file.type.name"></i>
     <span [class.text-primary]="editor.file.dirty" [class.font-italic]="editor.temporary">
       {{ editor.file.name }}
     </span>

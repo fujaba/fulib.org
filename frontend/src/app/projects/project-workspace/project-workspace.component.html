@@ -6,7 +6,7 @@
          [class.active]="active == entry.key"
          (click)="active = active == entry.key ? undefined : entry.key"
     >
-      <img class="icon" src="assets/icons/{{entry.value.icon}}.svg" width="24" [alt]="entry.value.name">
+      <i class="bi-{{entry.value.icon}}" role="navigation" [attr.aria-label]="entry.value.name"></i>
     </div>
   </div>
   <as-split class="flex-grow-1 h-100" direction="horizontal">

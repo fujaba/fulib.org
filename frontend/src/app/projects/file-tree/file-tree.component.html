@@ -10,9 +10,7 @@
      (dndDrop)="onDrop($event)"
 >
   <div class="file-item-indent" [style.margin-left.em]="level - 0.5">
-    <img class="icon"
-         [src]="'/assets/icons/' + (file.directory ? (expanded ? 'folder2-open' : 'folder2') : file.type.icon) + '.svg'"
-         [alt]="file.name">
+    <i class="bi-{{ (file.directory ? (expanded ? 'folder2-open' : 'folder2') : file.type.icon) }}"></i>
     <input *ngIf="newName !== undefined"
            #nameInput
            type="text" class="name-input flex-grow-1" aria-label="New Name"
@@ -28,19 +26,19 @@
       </span>
     </div>
     <ng-container *ngIf="file.directory">
-      <img class="icon hover-only px-1" src="/assets/icons/file-earmark-plus.svg" alt="New File"
-           (click)="createFile(); $event.stopImmediatePropagation()">
-      <img class="icon hover-only px-1" src="/assets/icons/folder-plus.svg" alt="New Folder"
-           (click)="createDir(); $event.stopImmediatePropagation()">
+      <i class="bi-file-earmark-plus hover-only px-1" role="button" aria-label="New File"
+         (click)="createFile(); $event.stopImmediatePropagation()"></i>
+      <i class="bi-folder-plus hover-only px-1" role="button" aria-label="New Folder"
+         (click)="createDir(); $event.stopImmediatePropagation()"></i>
     </ng-container>
     <ng-container *ngIf="file !== root">
-      <img class="icon hover-only px-1" src="/assets/icons/pencil.svg" alt="Rename"
-           (click)="startRenaming(); $event.stopImmediatePropagation()">
-      <img class="icon hover-only px-1" src="/assets/icons/trash.svg" alt="Delete"
-           (click)="delete(); $event.stopImmediatePropagation()">
+      <i class="bi-pencil hover-only px-1" role="button" aria-label="Rename"
+         (click)="startRenaming(); $event.stopImmediatePropagation()"></i>
+      <i class="bi-trash hover-only px-1" role="button" aria-label="Delete"
+         (click)="delete(); $event.stopImmediatePropagation()"></i>
     </ng-container>
     <div ngbDropdown #dropdown="ngbDropdown" container="body" (click)="$event.stopImmediatePropagation()">
-      <img class="icon hover-only px-1" ngbDropdownToggle src="/assets/icons/three-dots.svg" alt="Options">
+      <i class="bi-three-dots hover-only px-1" role="button" aria-label="Options" ngbDropdownToggle></i>
       <div ngbDropdownMenu>
         <ng-container *ngIf="file.directory; then: dirOptions; else: fileOptions"></ng-container>
         <ng-template #fileOptions>
