@@ -10,7 +10,7 @@ plugins {
 // --------------- Publication Info ---------------
 
 group = 'org.fulib'
-version = "git describe --tags".execute().text[1..-2] // strip v and \n
+version = "git describe --tags".execute([], rootDir).text[1..-2] // strip v and \n
 description = 'The fulib.org website and fulibScenarios Web App'
 
 // --------------- General Settings ---------------

@@ -7,6 +7,7 @@ import {NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
 
 import {AutothemeCodemirrorComponent} from './autotheme-codemirror/autotheme-codemirror.component';
 import {CollapseButtonComponent} from './collapse-button/collapse-button.component';
+import {MarkdownComponent} from './markdown/markdown.component';
 import {ModalComponent} from './modal/modal.component';
 import {ExceptionPipe} from './pipes/exception.pipe';
 import {SafeHtmlPipe} from './pipes/safe-html.pipe';
@@ -25,6 +26,7 @@ import {ScenarioCodemirrorComponent} from './scenario-codemirror/scenario-codemi
     CollapseButtonComponent,
     ScenarioCodemirrorComponent,
     PreviewComponent,
+    MarkdownComponent,
     ModalComponent,
   ],
   imports: [
@@ -42,6 +44,7 @@ import {ScenarioCodemirrorComponent} from './scenario-codemirror/scenario-codemi
     CollapseButtonComponent,
     ScenarioCodemirrorComponent,
     PreviewComponent,
+    MarkdownComponent,
     ModalComponent,
   ],
 })

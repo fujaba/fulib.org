@@ -16,7 +16,7 @@
             </span>
           </a>
           <ng-template ngbNavContent>
-            <div class="markdown" [innerHTML]="changelogs[repo] | safeHtml"></div>
+            <app-markdown [html]="changelogs[repo]"></app-markdown>
           </ng-template>
         </li>
       </ng-container>
