@@ -8,10 +8,32 @@
     <div class="card-body text-danger">
       <h5 class="card-title">Danger Zone</h5>
       <p class="card-text">
-        <button type="button" class="btn btn-danger" (click)="delete()">
+        <button type="button" class="btn btn-danger" (click)="openModal(deleteModal, 'delete-modal-title')">
           Delete
         </button>
       </p>
     </div>
   </div>
 </div>
+
+<ng-template #deleteModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="delete-modal-title">Delete Project</h4>
+    <button *ngIf="!deleting" type="button" class="close" aria-label="Close" (click)="modal.close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    Are you sure you want to <span class="text-danger">delete</span> '{{ project.name }}'?
+    This action cannot be undone.
+  </div>
+  <div class="modal-footer">
+    <button *ngIf="!deleting" type="button" class="btn btn-secondary" (click)="modal.close()">
+      Cancel
+    </button>
+    <button type="button" class="btn btn-danger" (click)="delete()" [disabled]="deleting">
+      <span *ngIf="deleting" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      {{deleting ? 'Deleting...' : 'Delete'}}
+    </button>
+  </div>
+</ng-template>

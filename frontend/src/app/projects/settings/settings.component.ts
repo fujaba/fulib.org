@@ -1,5 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, TemplateRef} from '@angular/core';
 import {Router} from '@angular/router';
+import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {Project} from '../model/project';
 import {ProjectManager} from '../project.manager';
 import {ProjectService} from '../project.service';
@@ -12,10 +13,15 @@ import {ProjectService} from '../project.service';
 export class SettingsComponent implements OnInit {
   project: Project;
 
+  deleting = false;
+
+  private deletingModal?: NgbModalRef;
+
   constructor(
     private projectManager: ProjectManager,
     private projectService: ProjectService,
     private router: Router,
+    private modalService: NgbModal,
   ) {
   }
 
@@ -27,13 +33,19 @@ export class SettingsComponent implements OnInit {
     this.projectService.update(this.project).subscribe(result => Object.assign(this.project, result));
   }
 
-  delete(): void {
-    if (!confirm(`Delete '${this.project.name}'? This action cannot be undone!`)) {
-      return;
-    }
+  openModal(modal: TemplateRef<any>, label: string) {
+    this.deletingModal = this.modalService.open(modal, {
+      ariaLabelledBy: label,
+      beforeDismiss: async () => !this.deleting,
+    });
+  }
 
+  delete(): void {
+    this.deleting = true;
     this.projectService.delete(this.project.id!).subscribe(() => {
+      this.deleting = false;
       this.router.navigate(['/projects']);
+      this.deletingModal?.close();
     });
   }
 }
