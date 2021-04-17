@@ -1,6 +1,6 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {BehaviorSubject, EMPTY, Subscription} from 'rxjs';
-import {map, mapTo, startWith, switchMap} from 'rxjs/operators';
+import {startWith, switchMap, tap} from 'rxjs/operators';
 import {FileChangeService} from '../file-change.service';
 import {FileService} from '../file.service';
 import {File} from '../model/file';
@@ -46,12 +46,31 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscription = this.file$.pipe(
-      switchMap(file => file ? this.fileChangeService.watch(this.projectManager, file).pipe(mapTo(file), startWith(file)) : EMPTY),
-      switchMap(file => this.fileService.getContent(this.projectManager.container, file).pipe(map(content => ({file, content})))),
-    ).subscribe(({file, content}) => {
-      this.options.mode = file.type.mode;
-      this.onExternalChange(file, content);
-    });
+      switchMap(file => {
+        if (!file) {
+          return EMPTY;
+        }
+        const initialEvent = {
+          file,
+          event: 'modified' as const,
+        };
+        return this.fileChangeService.watch(this.projectManager, file).pipe(startWith(initialEvent));
+      }),
+      switchMap(event => {
+        switch (event.event) {
+          case 'modified':
+            this.options.mode = event.file.type.mode;
+            return this.fileService.getContent(this.projectManager.container, event.file).pipe(tap(content => {
+              this.onExternalChange(event.file, content);
+            }));
+          case 'moved':
+            this.options.mode = event.to.type.mode;
+            return EMPTY;
+          default:
+            return EMPTY;
+        }
+      }),
+    ).subscribe();
   }
 
   ngOnDestroy() {
