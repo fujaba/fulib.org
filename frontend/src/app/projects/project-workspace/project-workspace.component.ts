@@ -61,6 +61,7 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
       tap(() => this.openModal = this.ngbModal.open(this.loadingModal, {
         ariaLabelledBy: 'loading-modal-title',
         centered: true,
+        backdrop: 'static',
       })),
       switchMap(params => forkJoin([
         this.projectService.get(params.id).pipe(tap(project => {
