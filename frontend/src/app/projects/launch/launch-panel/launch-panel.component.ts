@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {Container} from '../../model/container';
+import {Component, OnInit, TemplateRef} from '@angular/core';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ProjectManager} from '../../project.manager';
 import {LaunchService} from '../launch.service';
 import {LaunchConfig} from '../model/launch-config';
@@ -7,15 +7,19 @@ import {LaunchConfig} from '../model/launch-config';
 @Component({
   selector: 'app-launch-panel',
   templateUrl: './launch-panel.component.html',
-  styleUrls: ['./launch-panel.component.scss']
+  styleUrls: ['./launch-panel.component.scss'],
 })
 export class LaunchPanelComponent implements OnInit {
   configs: LaunchConfig[] = [];
 
+  editing?: LaunchConfig;
+
   constructor(
     private launchService: LaunchService,
     private projectManager: ProjectManager,
-  ) { }
+    private ngbModal: NgbModal,
+  ) {
+  }
 
   ngOnInit(): void {
     this.launchService.getLaunchConfigs(this.projectManager.container).subscribe(configs => {
@@ -23,10 +27,31 @@ export class LaunchPanelComponent implements OnInit {
     });
   }
 
+  open(content: TemplateRef<any>, ariaLabelledBy: string): void {
+    this.ngbModal.open(content, {ariaLabelledBy});
+  }
+
   create(): void {
-    const config: LaunchConfig = {id: Math.random().toString(36), name: 'New Launch Config'};
+    this.editing = {
+      type: 'command',
+      id: Math.random().toString(36),
+      executable: '/bin/bash',
+      name: 'New Command',
+    };
+  }
+
+  save(): void {
+    const config = this.editing;
+    if (!config) {
+      return;
+    }
     this.launchService.saveLaunchConfig(this.projectManager.container, config).subscribe(() => {
-      this.configs.push(config);
+      const index = this.configs.findIndex(existing => existing.id === config.id);
+      if (index >= 0) {
+        this.configs[index] = config;
+      } else {
+        this.configs.push(config);
+      }
     });
   }
 }

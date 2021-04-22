@@ -5,7 +5,23 @@
       {{config.name}}
     </li>
   </ul>
-  <button type="button" class="btn btn-primary" (click)="create()">
+  <button type="button" class="btn btn-primary" (click)="create(); open(editModal, 'launch-config-modal-title')">
     Create
   </button>
 </div>
+
+<ng-template #editModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="launch-config-modal-title">Edit Launch Config</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-command-form [config]="editing"></app-command-form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.close()">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="save(); modal.close()">Save</button>
+  </div>
+</ng-template>
