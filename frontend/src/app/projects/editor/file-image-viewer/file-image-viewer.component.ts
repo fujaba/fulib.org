@@ -1,21 +1,20 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {FileChangeService} from '../file-change.service';
-import {Container} from '../model/container';
-import {File} from '../model/file';
-import {ProjectManager} from '../project.manager';
+import {FileChangeService} from '../../file-change.service';
+import {Container} from '../../model/container';
+import {File} from '../../model/file';
+import {ProjectManager} from '../../project.manager';
 
 @Component({
-  selector: 'app-file-iframe-viewer',
-  templateUrl: './file-iframe-viewer.component.html',
-  styleUrls: ['./file-iframe-viewer.component.scss'],
+  selector: 'app-file-image-viewer',
+  templateUrl: './file-image-viewer.component.html',
+  styleUrls: ['./file-image-viewer.component.scss'],
 })
-export class FileIframeViewerComponent implements OnInit, OnDestroy {
+export class FileImageViewerComponent implements OnInit, OnDestroy {
   @Input() file: File;
+  version = 0;
 
   container: Container;
-
-  version = 0;
 
   subscription: Subscription;
 

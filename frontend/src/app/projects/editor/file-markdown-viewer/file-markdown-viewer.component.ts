@@ -1,11 +1,11 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {BehaviorSubject, EMPTY} from 'rxjs';
 import {mapTo, startWith, switchMap} from 'rxjs/operators';
-import {MarkdownService} from '../../markdown.service';
-import {FileChangeService} from '../file-change.service';
-import {FileService} from '../file.service';
-import {File} from '../model/file';
-import {ProjectManager} from '../project.manager';
+import {MarkdownService} from '../../../markdown.service';
+import {FileChangeService} from '../../file-change.service';
+import {FileService} from '../../file.service';
+import {File} from '../../model/file';
+import {ProjectManager} from '../../project.manager';
 
 @Component({
   selector: 'app-file-markdown-viewer',

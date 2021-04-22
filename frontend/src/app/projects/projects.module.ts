@@ -8,8 +8,7 @@ import {NgTerminalModule} from 'ng-terminal';
 import {DndModule} from 'ngx-drag-drop';
 
 import {SharedModule} from '../shared/shared.module';
-import {FileCodeEditorComponent} from './file-code-editor/file-code-editor.component';
-import {FileEditorComponent} from './file-editor/file-editor.component';
+import {EditorModule} from './editor/editor.module';
 import {FileRevisionsComponent} from './file-revisions/file-revisions.component';
 import {FileTabsComponent} from './file-tabs/file-tabs.component';
 import {FileTreeComponent} from './file-tree/file-tree.component';
@@ -23,15 +22,9 @@ import {SplitPanelComponent} from './split-panel/split-panel.component';
 import {TabsComponent} from './tabs/tabs.component';
 import {TerminalTabsComponent} from './terminal-tabs/terminal-tabs.component';
 import {TerminalComponent} from './terminal/terminal.component';
-import { FileImageViewerComponent } from './file-image-viewer/file-image-viewer.component';
-import { IframeViewerComponent } from './iframe-viewer/iframe-viewer.component';
-import { FileIframeViewerComponent } from './file-iframe-viewer/file-iframe-viewer.component';
-import { FileMarkdownViewerComponent } from './file-markdown-viewer/file-markdown-viewer.component';
 
 @NgModule({
   declarations: [
-    FileCodeEditorComponent,
-    FileEditorComponent,
     FileRevisionsComponent,
     FileTabsComponent,
     FileTreeComponent,
@@ -44,10 +37,6 @@ import { FileMarkdownViewerComponent } from './file-markdown-viewer/file-markdow
     TabsComponent,
     TerminalComponent,
     TerminalTabsComponent,
-    FileImageViewerComponent,
-    IframeViewerComponent,
-    FileIframeViewerComponent,
-    FileMarkdownViewerComponent,
   ],
   imports: [
     // Angular
@@ -63,6 +52,8 @@ import { FileMarkdownViewerComponent } from './file-markdown-viewer/file-markdow
     SharedModule,
     // Routing
     ProjectsRoutingModule,
+    // Submodules
+    EditorModule,
   ],
 })
 export class ProjectsModule {

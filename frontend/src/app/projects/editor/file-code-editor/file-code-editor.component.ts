@@ -1,10 +1,10 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {BehaviorSubject, EMPTY, Subscription} from 'rxjs';
 import {startWith, switchMap, tap} from 'rxjs/operators';
-import {FileChangeService} from '../file-change.service';
-import {FileService} from '../file.service';
-import {File} from '../model/file';
-import {ProjectManager} from '../project.manager';
+import {FileChangeService} from '../../file-change.service';
+import {FileService} from '../../file.service';
+import {File} from '../../model/file';
+import {ProjectManager} from '../../project.manager';
 
 @Component({
   selector: 'app-file-code-editor',
