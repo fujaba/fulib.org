@@ -7,6 +7,7 @@ import {switchMap, tap} from 'rxjs/operators';
 import {EditorService} from '../editor.service';
 import {FileTypeService} from '../file-type.service';
 import {FileService} from '../file.service';
+import {LaunchPanelComponent} from '../launch/launch-panel/launch-panel.component';
 import {Container} from '../model/container';
 import {Project} from '../model/project';
 import {ProjectTreeComponent} from '../project-tree/project-tree.component';
@@ -41,6 +42,7 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
 
   sidebarItems: SidebarItem[] = [
     {id: 'project', name: 'Project', icon: 'code-square', component: ProjectTreeComponent},
+    {id: 'launch', name: 'Launch', icon: 'play', component: LaunchPanelComponent},
     {id: 'settings', name: 'Settings', icon: 'gear', component: SettingsComponent},
   ];
 
