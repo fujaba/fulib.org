@@ -1,17 +1,17 @@
 <div class="d-flex h-100">
   <div class="bg-light bg-darkmode-dark">
-    <div *ngFor="let entry of sidebarItems | keyvalue"
+    <div *ngFor="let entry of sidebarItems"
          class="sidebar-item"
-         [ngbTooltip]="entry.value.name" placement="right"
-         [class.active]="active == entry.key"
-         (click)="active = active == entry.key ? undefined : entry.key"
+         [ngbTooltip]="entry.name" placement="right"
+         [class.active]="active === entry"
+         (click)="active = active === entry ? undefined : entry"
     >
-      <i class="bi-{{entry.value.icon}}" role="navigation" [attr.aria-label]="entry.value.name"></i>
+      <i class="bi-{{entry.icon}}" role="navigation" [attr.aria-label]="entry.name"></i>
     </div>
   </div>
   <as-split class="flex-grow-1 h-100" direction="horizontal">
     <as-split-area [size]="20" [visible]="!!active" [order]="0">
-      <ng-container [ngComponentOutlet]="sidebarItems[active || '']?.component"></ng-container>
+      <ng-container [ngComponentOutlet]="active?.component"></ng-container>
     </as-split-area>
     <as-split-area [size]="80" [order]="1">
       <as-split direction="vertical">

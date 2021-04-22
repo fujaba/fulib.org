@@ -2,7 +2,7 @@ import {Component, Injector, OnDestroy, OnInit, TemplateRef, Type, ViewChild} fr
 import {ActivatedRoute} from '@angular/router';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {forkJoin} from 'rxjs';
-import {delay, switchMap, tap} from 'rxjs/operators';
+import {switchMap, tap} from 'rxjs/operators';
 
 import {EditorService} from '../editor.service';
 import {FileTypeService} from '../file-type.service';
@@ -17,6 +17,7 @@ import {SplitPanelComponent} from '../split-panel/split-panel.component';
 import {TerminalTabsComponent} from '../terminal-tabs/terminal-tabs.component';
 
 interface SidebarItem {
+  id: string;
   component: Type<any>;
   name: string;
   icon: string;
@@ -38,9 +39,12 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
   project: Project;
   container: Container;
 
-  sidebarItems: Record<string, SidebarItem> = {};
+  sidebarItems: SidebarItem[] = [
+    {id: 'project', name: 'Project', icon: 'code-square', component: ProjectTreeComponent},
+    {id: 'settings', name: 'Settings', icon: 'gear', component: SettingsComponent},
+  ];
 
-  active ? = 'project';
+  active?: SidebarItem;
 
   terminalComponent?: typeof TerminalTabsComponent;
   fileTabsComponent?: typeof SplitPanelComponent;
@@ -58,16 +62,16 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.route.params.pipe(
-      tap(() => this.openModal = this.ngbModal.open(this.loadingModal, {
-        ariaLabelledBy: 'loading-modal-title',
-        centered: true,
-        backdrop: 'static',
-      })),
+      tap(() => {
+        this.active = undefined;
+        this.openModal = this.ngbModal.open(this.loadingModal, {
+          ariaLabelledBy: 'loading-modal-title',
+          centered: true,
+          backdrop: 'static',
+        });
+      }),
       switchMap(params => forkJoin([
-        this.projectService.get(params.id).pipe(tap(project => {
-          this.project = project;
-          this.sidebarItems.settings = {name: 'Settings', icon: 'gear', component: SettingsComponent};
-        })),
+        this.projectService.get(params.id).pipe(tap(project => this.project = project)),
         this.projectService.getContainer(params.id).pipe(tap(container => this.container = container)),
       ])),
       tap(([project, container]) => {
@@ -79,7 +83,6 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
       tap(fileRoot => {
         this.projectManager.fileRoot = fileRoot;
         this.fileTabsComponent = SplitPanelComponent;
-        this.sidebarItems.project = {name: 'Project', icon: 'code-square', component: ProjectTreeComponent};
         fileRoot.info = 'project root';
         Object.defineProperty(fileRoot, 'name', {
           get: () => this.project.name,
@@ -88,6 +91,7 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
         });
       }),
     ).subscribe(_ => {
+      this.active = this.sidebarItems[0];
       this.openModal.close();
     });
   }
