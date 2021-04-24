@@ -6,6 +6,8 @@
           <entry key="FULIB_ORG_MONGODB_HOST" value="localhost" />
           <entry key="FULIB_ORG_MONGODB_PASSWORD" value="fulibDotOrg" />
           <entry key="FULIB_ORG_MONGODB_USER" value="fulibDotOrg" />
+          <entry key="FULIB_PROJECTS_PROXY_URL" value="http://localhost:8080" />
+          <entry key="FULIB_PROJECTS_URL" value="http://host.docker.internal:4567" />
         </map>
       </option>
       <option name="executionName" />
@@ -22,7 +24,9 @@
       </option>
       <option name="vmOptions" value="" />
     </ExternalSystemSettings>
-    <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+    <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+    <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+    <DebugAllEnabled>false</DebugAllEnabled>
     <method v="2" />
   </configuration>
 </component>

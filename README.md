@@ -11,6 +11,15 @@ Available at https://www.fulib.org.
 
 You can simply set up this project after cloning using the Gradle import feature of your IDE.
 
+To run the backend with Projects, you need to set the following environment variables:
+
+```
+FULIB_PROJECTS_URL=http://host.docker.internal:4567
+FULIB_PROJECTS_PROXY_URL=http://localhost:8080
+```
+
+You can start the Project Proxy by running `docker compose up` in the `projects-proxy` directory.
+
 ### MongoDB
 
 Note that in order to run the server locally, you need to install MongoDB (server).
