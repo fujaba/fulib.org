@@ -2,6 +2,7 @@ package org.fulib.webapp.projects;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
+import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.fulib.webapp.mongo.Mongo;
 import org.fulib.webapp.projects.docker.ContainerManager;
@@ -20,12 +21,12 @@ import spark.Spark;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.ConnectException;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.*;
 import java.time.Instant;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
+
+import static spark.Spark.halt;
 
 @WebSocket
 public class Projects
@@ -57,7 +58,7 @@ public class Projects
 		final String userId = Authenticator.getUserIdOr401(request);
 		if (!userId.equals(project.getUserId()))
 		{
-			throw Spark.halt(401, AUTH_MESSAGE);
+			throw halt(401, AUTH_MESSAGE);
 		}
 	}
 
@@ -66,7 +67,7 @@ public class Projects
 		final Project project = mongo.getProject(id);
 		if (project == null)
 		{
-			throw Spark.halt(404, notFoundMessage(id));
+			throw halt(404, notFoundMessage(id));
 		}
 		return project;
 	}
@@ -220,17 +221,27 @@ public class Projects
 			{
 				final URL url = new URL(container.getUrl() + "/health");
 				final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+				connection.setConnectTimeout(500);
+				connection.setReadTimeout(500);
 				final int responseCode = connection.getResponseCode();
 				if (responseCode == 200)
 				{
-					break;
+					final JSONObject json = toJson(container);
+					return json.toString(2);
 				}
 
+				// nginx is up, but project server is not ready
 				Thread.sleep(500);
 			}
-			catch (ConnectException connectException)
+			catch (SocketTimeoutException timeoutException)
+			{
+				// retry
+			}
+			catch (SocketException socketException)
 			{
 				// container is down, restart
+				this.containerManager.stop(container);
+				this.mongo.deleteContainer(container.getId());
 				container = this.containerManager.start(project);
 				this.mongo.saveContainer(container);
 			}
@@ -240,8 +251,7 @@ public class Projects
 			}
 		}
 
-		final JSONObject json = toJson(container);
-		return json.toString(2);
+		throw halt(503, "{\"error\": \"Failed to launch healthy container.\"}");
 	}
 
 	private JSONObject toJson(Container container)
@@ -261,7 +271,7 @@ public class Projects
 
 		if (container == null)
 		{
-			throw Spark.halt(404, String.format("{\"error\": \"container for project with id '%s' not found\"}\n", id));
+			throw halt(404, String.format("{\"error\": \"container for project with id '%s' not found\"}\n", id));
 		}
 
 		final String stopToken = request.queryParams("stopToken");
@@ -271,7 +281,7 @@ public class Projects
 		}
 		else if (!stopToken.equals(container.getStopToken()))
 		{
-			throw Spark.halt(401, "{\"error\": \"invalid stopToken\"}\n");
+			throw halt(401, "{\"error\": \"invalid stopToken\"}\n");
 		}
 
 		this.containerManager.uploadFilesFromContainer(container);
