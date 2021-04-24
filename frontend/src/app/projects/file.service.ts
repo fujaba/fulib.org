@@ -92,7 +92,7 @@ export class FileService {
   rename(container: Container, file: File, newName: string): Observable<void> {
     const [start, end] = file._namePos;
     const from = `${container.url}/dav/${file.path}`;
-    const to = `${container.url}/dav/${file.path.substring(0, start)}${newName}${file.path.substring(end)}`;
+    const to = `/dav/${file.path.substring(0, start)}${newName}${file.path.substring(end)}`;
     return this.dav.move(from, to);
   }
 
@@ -103,7 +103,7 @@ export class FileService {
 
     const [start] = file._namePos;
     const from = `${container.url}/dav/${file.path}`;
-    const to = `${container.url}/dav/${directory.path}${file.path.substring(start)}`;
+    const to = `/dav/${directory.path}${file.path.substring(start)}`;
     return this.dav.move(from, to);
   }
 
