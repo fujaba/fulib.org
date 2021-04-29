@@ -1,6 +1,5 @@
 package org.fulib.webapp.projects.zip;
 
-import org.fulib.webapp.projects.mongo.Mongo;
 import org.fulib.webapp.projects.util.DelegatingServletOutputStream;
 import org.junit.Test;
 import spark.Request;

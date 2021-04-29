@@ -34,9 +34,6 @@ public class Mongo
 	public static final String DATABASE_NAME = "fulib-org";
 
 	public static final String LOG_COLLECTION_NAME = "request-log";
-	public static final String PROJECT_COLLECTION_NAME = "projects";
-	public static final String CONTAINER_COLLECTION_NAME = "projectContainers";
-	public static final String PROJECT_FILES_COLLECTION_NAME = "projectFiles";
 	public static final String ASSIGNMENT_COLLECTION_NAME = "assignments";
 	public static final String COURSE_COLLECTION_NAME = "courses";
 	public static final String SOLUTION_COLLECTION_NAME = "solutions";
