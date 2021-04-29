@@ -70,6 +70,7 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
           ariaLabelledBy: 'loading-modal-title',
           centered: true,
           backdrop: 'static',
+          keyboard: false,
         });
       }),
       switchMap(params => forkJoin([

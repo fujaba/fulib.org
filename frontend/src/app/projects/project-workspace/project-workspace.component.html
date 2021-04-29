@@ -25,14 +25,14 @@
     </as-split-area>
   </as-split>
 </div>
-<ng-template #loadingModal>
+<ng-template #loadingModal let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="loading-modal-title">
       Loading Project...
     </h4>
-    <div class="spinner-border" role="status">
-      <span class="sr-only">Loading...</span>
-    </div>
+    <a class="close" aria-label="Close" (click)="modal.close()" routerLink="/projects">
+      <span aria-hidden="true">&times;</span>
+    </a>
   </div>
   <div class="modal-body">
     Please hang tight while we set things up for you...
@@ -50,5 +50,10 @@
         Loading Project Root
       </li>
     </ul>
+  </div>
+  <div class="modal-footer">
+    <a class="btn btn-secondary" (click)="modal.close()" routerLink="/projects">
+      Cancel
+    </a>
   </div>
 </ng-template>
