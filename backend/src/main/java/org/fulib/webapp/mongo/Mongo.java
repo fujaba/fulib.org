@@ -6,14 +6,10 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.gridfs.GridFSBucket;
-import com.mongodb.client.gridfs.GridFSBuckets;
-import com.mongodb.client.gridfs.model.GridFSFile;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.ReplaceOptions;
 import com.mongodb.client.model.Sorts;
-import org.bson.BsonValue;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -22,11 +18,7 @@ import org.bson.codecs.pojo.Conventions;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.fulib.webapp.WebService;
 import org.fulib.webapp.assignment.model.*;
-import org.fulib.webapp.projects.model.Container;
-import org.fulib.webapp.projects.model.Project;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -74,9 +66,6 @@ public class Mongo
 	private MongoDatabase database;
 
 	MongoCollection<Document> requestLog;
-	private MongoCollection<Project> projects;
-	private MongoCollection<Container> containers;
-	private GridFSBucket projectFilesFS;
 	private MongoCollection<Assignment> assignments;
 	private MongoCollection<Course> courses;
 	private MongoCollection<Solution> solutions;
@@ -93,7 +82,7 @@ public class Mongo
 
 	private final CodecProvider pojoCodecProvider = PojoCodecProvider
 		.builder()
-		.register(Assignment.class.getPackage().getName(), Project.class.getPackage().getName())
+		.register(Assignment.class.getPackage().getName())
 		.conventions(this.conventions)
 		.build();
 
@@ -117,21 +106,6 @@ public class Mongo
 		this.mongoClient = MongoClients.create(settings);
 		this.database = this.mongoClient.getDatabase(DATABASE_NAME);
 		this.requestLog = this.database.getCollection(LOG_COLLECTION_NAME);
-
-		this.projects = this.database
-			.getCollection(PROJECT_COLLECTION_NAME, Project.class)
-			.withCodecRegistry(this.pojoCodecRegistry);
-		this.projects.createIndex(Indexes.ascending(Project.PROPERTY_ID));
-		this.projects.createIndex(Indexes.ascending(Project.PROPERTY_USER_ID));
-		this.projects.createIndex(Indexes.ascending(Project.PROPERTY_NAME));
-
-		this.containers = this.database
-			.getCollection(CONTAINER_COLLECTION_NAME, Container.class)
-			.withCodecRegistry(this.pojoCodecRegistry);
-		this.containers.createIndex(Indexes.ascending(Container.PROPERTY_ID));
-		this.containers.createIndex(Indexes.ascending(Container.PROPERTY_PROJECT_ID));
-
-		this.projectFilesFS = GridFSBuckets.create(this.database, PROJECT_FILES_COLLECTION_NAME);
 
 		this.assignments = this.database.getCollection(ASSIGNMENT_COLLECTION_NAME, Assignment.class)
 		                                .withCodecRegistry(this.pojoCodecRegistry);
@@ -187,69 +161,6 @@ public class Mongo
 		document.put("response", Document.parse(response));
 
 		this.requestLog.insertOne(document);
-	}
-
-	// --------------- Projects ---------------
-
-	public Project getProject(String id)
-	{
-		return this.projects.find(Filters.eq(Project.PROPERTY_ID, id)).first();
-	}
-
-	public List<Project> getProjectsByUser(String user)
-	{
-		return this.projects.find(Filters.eq(Project.PROPERTY_USER_ID, user)).into(new ArrayList<>());
-	}
-
-	public void saveProject(Project project)
-	{
-		upsert(this.projects, project, Project.PROPERTY_ID, project.getId());
-	}
-
-	public void deleteProject(String id)
-	{
-		this.projects.deleteOne(Filters.eq(Project.PROPERTY_ID, id));
-	}
-
-	// --------------- Containers ---------------
-
-	public Container getContainerForProject(String projectId)
-	{
-		return this.containers.find(Filters.eq(Container.PROPERTY_PROJECT_ID, projectId)).first();
-	}
-
-	public void saveContainer(Container container)
-	{
-		upsert(this.containers, container, Container.PROPERTY_ID, container.getId());
-	}
-
-	public void deleteContainer(String id)
-	{
-		this.containers.deleteOne(Filters.eq(Container.PROPERTY_ID, id));
-	}
-
-	// --------------- Files ---------------
-
-	public InputStream downloadFile(String name)
-	{
-		return this.projectFilesFS.openDownloadStream(name);
-	}
-
-	public OutputStream uploadFile(String name)
-	{
-		return this.projectFilesFS.openUploadStream(name);
-	}
-
-	public void deleteFile(String name)
-	{
-		final List<BsonValue> fileIds = this.projectFilesFS
-			.find(Filters.eq("filename", name))
-			.map(GridFSFile::getId)
-			.into(new ArrayList<>());
-		for (final BsonValue fileId : fileIds)
-		{
-			this.projectFilesFS.delete(fileId);
-		}
 	}
 
 	// --------------- Assignments ---------------

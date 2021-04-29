@@ -1,6 +1,5 @@
-package org.fulib.webapp.projectzip;
+package org.fulib.webapp.projects.zip;
 
-import org.fulib.webapp.mongo.Mongo;
 import org.json.JSONException;
 import org.json.JSONObject;
 import spark.Request;
@@ -12,13 +11,6 @@ import java.util.zip.ZipOutputStream;
 
 public class ProjectZip
 {
-	private final Mongo mongo;
-
-	public ProjectZip(Mongo mongo)
-	{
-		this.mongo = mongo;
-	}
-
 	public Object handle(Request request, Response response) throws IOException, JSONException
 	{
 		final String body = request.body();
@@ -32,11 +24,6 @@ public class ProjectZip
 				zip.putNextEntry(new ZipEntry(name));
 				output.accept(zip);
 			});
-		}
-
-		if (jsonObject.has("privacy") && "all".equals(jsonObject.get("privacy")))
-		{
-			this.mongo.log(request.ip(), request.userAgent(), body, "{}");
 		}
 
 		return response.raw();

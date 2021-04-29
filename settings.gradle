@@ -1,2 +1,2 @@
 rootProject.name = 'fulibDotOrg'
-include ':backend', ':projects'
+include ':backend', ':projects', ':projects-backend'

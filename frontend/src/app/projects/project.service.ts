@@ -21,23 +21,23 @@ export class ProjectService {
   }
 
   create(project: ProjectStub): Observable<Project> {
-    return this.http.post<Project>(`${environment.apiURL}/projects`, project);
+    return this.http.post<Project>(`${environment.projectsApiUrl}/projects`, project);
   }
 
   get(id: string): Observable<Project> {
-    return this.http.get<Project>(`${environment.apiURL}/projects/${id}`);
+    return this.http.get<Project>(`${environment.projectsApiUrl}/projects/${id}`);
   }
 
   update(project: Project): Observable<Project> {
-    return this.http.put<Project>(`${environment.apiURL}/projects/${project.id}`, project);
+    return this.http.put<Project>(`${environment.projectsApiUrl}/projects/${project.id}`, project);
   }
 
   delete(id: string): Observable<void> {
-    return this.http.delete<void>(`${environment.apiURL}/projects/${id}`);
+    return this.http.delete<void>(`${environment.projectsApiUrl}/projects/${id}`);
   }
 
   getContainer(projectId: string): Observable<Container> {
-    return this.http.get<Container>(`${environment.apiURL}/projects/${projectId}/container`);
+    return this.http.get<Container>(`${environment.projectsApiUrl}/projects/${projectId}/container`);
   }
 
   getOwn(): Observable<Project[]> {
@@ -45,7 +45,7 @@ export class ProjectService {
       if (!user || !user.id) {
         return of([]);
       }
-      return this.http.get<Project[]>(`${environment.apiURL}/projects`, {
+      return this.http.get<Project[]>(`${environment.projectsApiUrl}/projects`, {
         params: {userId: user.id},
       });
     }));

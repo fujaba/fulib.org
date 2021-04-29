@@ -1,7 +1,7 @@
-package org.fulib.webapp.projectzip;
+package org.fulib.webapp.projects.zip;
 
-import org.fulib.webapp.mongo.Mongo;
-import org.fulib.webapp.util.DelegatingServletOutputStream;
+import org.fulib.webapp.projects.mongo.Mongo;
+import org.fulib.webapp.projects.util.DelegatingServletOutputStream;
 import org.junit.Test;
 import spark.Request;
 import spark.Response;
@@ -24,8 +24,7 @@ public class ProjectZipTest
 	@Test
 	public void handle() throws IOException
 	{
-		final Mongo db = mock(Mongo.class);
-		final ProjectZip projectZip = new ProjectZip(db);
+		final ProjectZip projectZip = new ProjectZip();
 
 		final Request request = mock(Request.class);
 		final String ip = "0.0.0.0";
@@ -50,7 +49,6 @@ public class ProjectZipTest
 		projectZip.handle(request, response);
 
 		verify(response).type("application/zip");
-		verify(db).log(ip, userAgent, requestBody, "{}");
 
 		final Set<String> files = new HashSet<>();
 

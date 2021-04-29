@@ -5,8 +5,6 @@ import org.fulib.webapp.assignment.Comments;
 import org.fulib.webapp.assignment.Courses;
 import org.fulib.webapp.assignment.Solutions;
 import org.fulib.webapp.mongo.Mongo;
-import org.fulib.webapp.projects.Projects;
-import org.fulib.webapp.projectzip.ProjectZip;
 import org.fulib.webapp.tool.MarkdownUtil;
 import org.fulib.webapp.tool.RunCodeGen;
 import org.json.JSONObject;
@@ -46,8 +44,6 @@ public class WebService
 	private Service service;
 	private final MarkdownUtil markdownUtil = new MarkdownUtil();
 	private final RunCodeGen runCodeGen;
-	private final ProjectZip projectZip;
-	private final Projects projects;
 	private final Assignments assignments;
 	private final Comments comments;
 	private final Solutions solutions;
@@ -67,16 +63,13 @@ public class WebService
 
 	WebService(Mongo db, MarkdownUtil markdownUtil, RunCodeGen runCodeGen)
 	{
-		this(runCodeGen, new ProjectZip(db), new Projects(db), new Assignments(markdownUtil, db),
-		     new Comments(markdownUtil, db), new Solutions(runCodeGen, db), new Courses(markdownUtil, db));
+		this(runCodeGen, new Assignments(markdownUtil, db), new Comments(markdownUtil, db),
+		     new Solutions(runCodeGen, db), new Courses(markdownUtil, db));
 	}
 
-	WebService(RunCodeGen runCodeGen, ProjectZip projectZip, Projects projects, Assignments assignments,
-		Comments comments, Solutions solutions, Courses courses)
+	WebService(RunCodeGen runCodeGen, Assignments assignments, Comments comments, Solutions solutions, Courses courses)
 	{
 		this.runCodeGen = runCodeGen;
-		this.projectZip = projectZip;
-		this.projects = projects;
 		this.assignments = assignments;
 		this.comments = comments;
 		this.solutions = solutions;
@@ -120,7 +113,6 @@ public class WebService
 	private void addApiRoutes()
 	{
 		addMainRoutes();
-		addProjectsRoutes();
 		this.service.get("/solutions", this.solutions::getAll);
 		addAssignmentsRoutes();
 		addCoursesRoutes();
@@ -170,27 +162,7 @@ public class WebService
 	private void addMainRoutes()
 	{
 		service.post("/runcodegen", runCodeGen::handle);
-		service.post("/projectzip", projectZip::handle);
 		service.get("/versions", (req, res) -> new JSONObject(VERSIONS).toString(2));
-	}
-
-	private void addProjectsRoutes()
-	{
-		service.path("/projects", () -> {
-			service.post("", projects::create);
-			service.get("", projects::getAll);
-
-			service.path("/:projectId", this::addProjectRoutes);
-		});
-	}
-
-	private void addProjectRoutes()
-	{
-		service.get("", projects::get);
-		service.put("", projects::update);
-		service.delete("", projects::delete);
-		service.get("/container", projects::getContainer);
-		service.delete("/container", projects::deleteContainer);
 	}
 
 	private void addUtilRoutes()

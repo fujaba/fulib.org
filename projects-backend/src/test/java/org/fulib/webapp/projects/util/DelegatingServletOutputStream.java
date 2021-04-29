@@ -1,8 +1,7 @@
-package org.fulib.webapp.util;
+package org.fulib.webapp.projects.util;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.WriteListener;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
