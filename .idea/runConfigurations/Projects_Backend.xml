@@ -1,15 +1,15 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Backend" type="GradleRunConfiguration" factoryName="Gradle">
+  <configuration default="false" name="Projects Backend" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
       <option name="env">
         <map>
-          <entry key="FULIB_ORG_MONGODB_HOST" value="localhost" />
-          <entry key="FULIB_ORG_MONGODB_PASSWORD" value="fulibDotOrg" />
-          <entry key="FULIB_ORG_MONGODB_USER" value="fulibDotOrg" />
+          <entry key="FULIB_MONGO_URL" value="mongodb://fulibDotOrg:fulibDotOrg@localhost" />
+          <entry key="FULIB_PROJECTS_PROXY_URL" value="http://localhost:8080" />
+          <entry key="FULIB_PROJECTS_URL" value="http://host.docker.internal:4567" />
         </map>
       </option>
       <option name="executionName" />
-      <option name="externalProjectPath" value="$PROJECT_DIR$" />
+      <option name="externalProjectPath" value="$PROJECT_DIR$/projects-backend" />
       <option name="externalSystemIdString" value="GRADLE" />
       <option name="scriptParameters" value="" />
       <option name="taskDescriptions">
