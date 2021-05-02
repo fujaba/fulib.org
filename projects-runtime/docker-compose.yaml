@@ -1,0 +1,8 @@
+version: "3.9"
+services:
+  projects-runtime:
+    build: .
+    privileged: true
+    ports:
+      - "2376:2376"
+      - "8080:8080"
