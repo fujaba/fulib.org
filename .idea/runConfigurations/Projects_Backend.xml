@@ -5,7 +5,7 @@
         <map>
           <entry key="FULIB_MONGO_URL" value="mongodb://fulibDotOrg:fulibDotOrg@localhost" />
           <entry key="FULIB_PROJECTS_PROXY_URL" value="http://localhost:8080" />
-          <entry key="FULIB_PROJECTS_URL" value="http://host.docker.internal:4567" />
+          <entry key="FULIB_PROJECTS_URL" value="http://host.docker.internal:4568" />
         </map>
       </option>
       <option name="executionName" />
