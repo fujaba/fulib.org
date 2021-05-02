@@ -1,6 +1,7 @@
 #!/bin/sh
-dockerd --host tcp://0.0.0.0:2376 --host unix:///var/run/docker.sock --tls=false & sleep 20
+dockerd --host tcp://0.0.0.0:2376 --tls=false & sleep 20
 
+export DOCKER_HOST=localhost:2376
 docker network create fulib-projects
 
 docker pull clashsoft/fulib-projects:latest &
