@@ -26,6 +26,10 @@ import java.util.zip.GZIPOutputStream;
 public class ContainerManager
 {
 	private static final String PROJECTS_DIR = "/projects/";
+	private static final String CONTAINER_IMAGE = "clashsoft/fulib-projects";
+	private static final String API_HOST = System.getenv("FULIB_PROJECTS_URL");
+	private static final String PROXY_HOST = System.getenv("FULIB_PROJECTS_PROXY_URL");
+	private static final String NETWORK_NAME = "fulib-projects";
 
 	private final Mongo mongo;
 
@@ -53,21 +57,19 @@ public class ContainerManager
 	private Container runContainer(Project project)
 	{
 		final String stopToken = UUID.randomUUID().toString();
-		final String apiHost = System.getenv("FULIB_PROJECTS_URL");
 		final String stopUrl =
-			apiHost + "/api/projects/" + project.getId() + "/container?stopToken=" + stopToken;
+			API_HOST + "/api/projects/" + project.getId() + "/container?stopToken=" + stopToken;
 
 		final CreateContainerCmd cmd = dockerClient
-			.createContainerCmd("fulib/projects")
+			.createContainerCmd(CONTAINER_IMAGE)
 			.withTty(true)
-			.withNetworkMode("fulib-projects")
+			.withNetworkMode(NETWORK_NAME)
 			.withEnv("STOP_URL=" + stopUrl);
 
 		final String containerId = cmd.exec().getId();
 		dockerClient.startContainerCmd(containerId).exec();
 
-		final String proxyHost = System.getenv("FULIB_PROJECTS_PROXY_URL");
-		final String containerAddress = proxyHost + "/containers/" + containerId.substring(0, 12);
+		final String containerAddress = PROXY_HOST + "/containers/" + containerId.substring(0, 12);
 
 		final Container container = new Container();
 		container.setId(containerId);
