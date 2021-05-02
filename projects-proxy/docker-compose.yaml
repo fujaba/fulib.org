@@ -2,6 +2,7 @@ version: "3.9"
 services:
   proxy:
     build: .
+    image: clashsoft/fulib-projects-proxy
     ports:
       - "8080:80"
 networks:

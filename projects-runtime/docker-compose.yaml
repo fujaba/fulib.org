@@ -3,6 +3,7 @@ services:
   projects-runtime:
     build: .
     privileged: true
+    image: clashsoft/fulib-projects-runtime
     ports:
       - "2376:2376"
       - "8080:8080"
