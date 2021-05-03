@@ -190,11 +190,10 @@ public class Projects
 		final Project project = getOr404(this.mongo, id);
 		checkAuth(request, project);
 
-		final Container container = this.mongo.getContainerForProject(id);
+		final Container container = this.containerManager.getContainer(project);
 		if (container != null)
 		{
 			this.containerManager.stop(container);
-			this.mongo.deleteContainer(container.getId());
 		}
 
 		this.mongo.deleteProject(id);
@@ -209,11 +208,10 @@ public class Projects
 		final Project project = getOr404(this.mongo, id);
 		checkAuth(request, project);
 
-		Container container = this.mongo.getContainerForProject(id);
+		Container container = this.containerManager.getContainer(project);
 		if (container == null)
 		{
 			container = this.containerManager.start(project);
-			this.mongo.saveContainer(container);
 		}
 
 		for (int retry = 0; retry < 10; retry++)
@@ -242,9 +240,7 @@ public class Projects
 			{
 				// container is down, restart
 				this.containerManager.stop(container);
-				this.mongo.deleteContainer(container.getId());
 				container = this.containerManager.start(project);
-				this.mongo.saveContainer(container);
 			}
 			catch (Exception e)
 			{
@@ -268,7 +264,7 @@ public class Projects
 	{
 		final String id = request.params("projectId");
 		final Project project = getOr404(this.mongo, id);
-		final Container container = this.mongo.getContainerForProject(id);
+		final Container container = this.containerManager.getContainer(project);
 
 		if (container == null)
 		{
@@ -287,7 +283,6 @@ public class Projects
 
 		this.containerManager.uploadFilesFromContainer(container);
 		this.containerManager.stop(container);
-		this.mongo.deleteContainer(container.getId());
 
 		return "{}";
 	}

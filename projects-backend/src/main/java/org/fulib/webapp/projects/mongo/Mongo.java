@@ -36,7 +36,6 @@ public class Mongo
 	public static final String DATABASE_NAME = "fulib-org";
 
 	public static final String PROJECT_COLLECTION_NAME = "projects";
-	public static final String CONTAINER_COLLECTION_NAME = "projectContainers";
 	public static final String FILES_COLLECTION_NAME = "projectFiles";
 
 	// =============== Fields ===============
@@ -87,12 +86,6 @@ public class Mongo
 		this.projects.createIndex(Indexes.ascending(Project.PROPERTY_USER_ID));
 		this.projects.createIndex(Indexes.ascending(Project.PROPERTY_NAME));
 
-		this.containers = database
-			.getCollection(CONTAINER_COLLECTION_NAME, Container.class)
-			.withCodecRegistry(pojoCodecRegistry);
-		this.containers.createIndex(Indexes.ascending(Container.PROPERTY_ID));
-		this.containers.createIndex(Indexes.ascending(Container.PROPERTY_PROJECT_ID));
-
 		this.projectFilesFS = GridFSBuckets.create(database, FILES_COLLECTION_NAME);
 	}
 
@@ -118,23 +111,6 @@ public class Mongo
 	public void deleteProject(String id)
 	{
 		this.projects.deleteOne(Filters.eq(Project.PROPERTY_ID, id));
-	}
-
-	// --------------- Containers ---------------
-
-	public Container getContainerForProject(String projectId)
-	{
-		return this.containers.find(Filters.eq(Container.PROPERTY_PROJECT_ID, projectId)).first();
-	}
-
-	public void saveContainer(Container container)
-	{
-		upsert(this.containers, container, Container.PROPERTY_ID, container.getId());
-	}
-
-	public void deleteContainer(String id)
-	{
-		this.containers.deleteOne(Filters.eq(Container.PROPERTY_ID, id));
 	}
 
 	// --------------- Files ---------------

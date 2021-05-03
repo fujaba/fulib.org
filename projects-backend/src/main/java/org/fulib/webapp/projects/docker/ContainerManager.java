@@ -12,13 +12,15 @@ import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
 import com.github.dockerjava.transport.DockerHttpClient;
 import com.mongodb.MongoGridFSException;
 import org.apache.commons.io.IOUtils;
-import org.fulib.webapp.projects.mongo.Mongo;
 import org.fulib.webapp.projects.model.Container;
 import org.fulib.webapp.projects.model.Project;
+import org.fulib.webapp.projects.mongo.Mongo;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -54,6 +56,28 @@ public class ContainerManager
 		return container;
 	}
 
+	public Container getContainer(Project project)
+	{
+		final String projectId = project.getId();
+		final List<com.github.dockerjava.api.model.Container> containers = dockerClient
+			.listContainersCmd()
+			.withLabelFilter(Collections.singletonMap("org.fulib.project", projectId))
+			.exec();
+		if (containers.isEmpty())
+		{
+			return null;
+		}
+
+		final com.github.dockerjava.api.model.Container dockerContainer = containers.get(0);
+		final String containerId = dockerContainer.getId();
+
+		final Container result = new Container();
+		result.setId(containerId);
+		result.setProjectId(projectId);
+		result.setUrl(getContainerUrl(containerId));
+		return result;
+	}
+
 	private Container runContainer(Project project)
 	{
 		final String stopToken = UUID.randomUUID().toString();
@@ -64,19 +88,23 @@ public class ContainerManager
 			.createContainerCmd(CONTAINER_IMAGE)
 			.withTty(true)
 			.withNetworkMode(NETWORK_NAME)
+			.withLabels(Collections.singletonMap("org.fulib.project", project.getId()))
 			.withEnv("STOP_URL=" + stopUrl);
 
 		final String containerId = cmd.exec().getId();
 		dockerClient.startContainerCmd(containerId).exec();
 
-		final String containerAddress = PROXY_HOST + "/containers/" + containerId.substring(0, 12);
-
 		final Container container = new Container();
 		container.setId(containerId);
 		container.setProjectId(project.getId());
-		container.setUrl(containerAddress);
+		container.setUrl(getContainerUrl(containerId));
 		container.setStopToken(stopToken);
 		return container;
+	}
+
+	private String getContainerUrl(String containerId)
+	{
+		return PROXY_HOST + "/containers/" + containerId.substring(0, 12);
 	}
 
 	private void createProjectDir(Container container)
