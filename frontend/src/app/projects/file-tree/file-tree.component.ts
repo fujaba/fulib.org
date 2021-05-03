@@ -122,11 +122,20 @@ export class FileTreeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   createFile() {
-    this.addChild('untitled.txt', false);
+    const fileName = prompt('New File', 'untitled.txt');
+    if (fileName) {
+      this.addChild(fileName, false);
+    }
   }
 
   createDir() {
-    this.addChild('untitled/', true);
+    let dirName = prompt('New Directory', 'untitled');
+    if (dirName) {
+      if (!dirName.endsWith('/')) {
+        dirName += '/';
+      }
+      this.addChild(dirName, true);
+    }
   }
 
   private addChild(name: string, directory: boolean) {
