@@ -80,6 +80,14 @@ export class FileTreeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.projectManager.open({file: this.file, temporary: false, preview: true});
   }
 
+  toggleRenaming() {
+    if (this.newName) {
+      this.finishRenaming();
+    } else {
+      this.startRenaming();
+    }
+  }
+
   startRenaming() {
     this.newName = this.file.name;
   }
