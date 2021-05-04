@@ -19,9 +19,7 @@ import org.fulib.webapp.projects.mongo.Mongo;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -75,6 +73,7 @@ public class ContainerManager
 		result.setId(containerId);
 		result.setProjectId(projectId);
 		result.setUrl(getContainerUrl(containerId));
+		result.setStopToken(dockerContainer.getLabels().get("org.fulib.stopToken"));
 		return result;
 	}
 
@@ -84,11 +83,15 @@ public class ContainerManager
 		final String stopUrl =
 			API_HOST + "/api/projects/" + project.getId() + "/container?stopToken=" + stopToken;
 
+		final Map<String, String> labels = new HashMap<>();
+		labels.put("org.fulib.project", project.getId());
+		labels.put("org.fulib.stopToken", stopToken);
+
 		final CreateContainerCmd cmd = dockerClient
 			.createContainerCmd(CONTAINER_IMAGE)
 			.withTty(true)
 			.withNetworkMode(NETWORK_NAME)
-			.withLabels(Collections.singletonMap("org.fulib.project", project.getId()))
+			.withLabels(labels)
 			.withEnv("STOP_URL=" + stopUrl);
 
 		final String containerId = cmd.exec().getId();
