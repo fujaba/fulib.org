@@ -19,5 +19,5 @@ COPY nginx.conf /etc/nginx/sites-available/default
 RUN sed -i 's/^user.*;$/user root;/' /etc/nginx/nginx.conf
 
 # Command
-CMD java -jar /opt/projects/projects-*-all.jar & nginx -g 'daemon off;' & wait
-EXPOSE 80
+CMD nginx -g 'daemon off;' & java -jar /opt/projects/projects-*-all.jar
+EXPOSE 80 4567
