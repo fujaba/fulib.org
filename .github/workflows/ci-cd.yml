@@ -12,9 +12,10 @@ jobs:
         id: deployment
         run: |
           VERSION="${GITHUB_REF##*/}"
-          case "$VERSION" in
-            develop) NAMESPACE=dev ;;
-            *) NAMESPACE=prod ;;
+          case "$GITHUB_REF" in
+            refs/heads/develop) NAMESPACE=dev ;;
+            refs/heads/feat/projects) NAMESPACE=fulib-projects ;;
+            refs/tags/v*) NAMESPACE=prod ;;
           esac
           echo "::set-output name=version::$VERSION"
           echo "::set-output name=namespace::$NAMESPACE"
@@ -64,7 +65,7 @@ jobs:
         run: ng build --prod
       - name: Determine Deployment Readiness
         id: deployment
-        if: matrix.os == 'ubuntu' && matrix.node == 14 && (github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/v'))
+        if: matrix.os == 'ubuntu' && matrix.node == 14 && needs.deployment.outputs.namespace
         run: echo "::set-output name=ready::true"
       - name: Build the Docker Image
         if: steps.deployment.outputs.ready
@@ -119,7 +120,7 @@ jobs:
         run: ./gradlew build && ./gradlew --stop
       - name: Determine Deployment Readiness
         id: deployment
-        if: matrix.os == 'ubuntu' && matrix.java == 8 && (github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/v'))
+        if: matrix.os == 'ubuntu' && matrix.java == 8 && needs.deployment.outputs.namespace
         run: echo "::set-output name=ready::true"
       - name: Build the Docker Image
         if: steps.deployment.outputs.ready
