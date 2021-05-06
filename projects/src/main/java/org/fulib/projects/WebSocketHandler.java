@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @WebSocket
 public class WebSocketHandler implements FileEventHandler
 {
-	private FileWatcherProcess fileWatcher;
+	private FileWatcherRegistry fileWatcher;
 	private final Runnable resetShutdownTimer;
 
 	private final Map<Session, Map<String, ExecProcess>> processes = new ConcurrentHashMap<>();
@@ -21,7 +21,7 @@ public class WebSocketHandler implements FileEventHandler
 		this.resetShutdownTimer = resetShutdownTimer;
 	}
 
-	public void setFileWatcher(FileWatcherProcess fileWatcher)
+	public void setFileWatcher(FileWatcherRegistry fileWatcher)
 	{
 		this.fileWatcher = fileWatcher;
 	}

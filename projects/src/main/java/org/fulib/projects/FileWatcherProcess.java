@@ -7,8 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static name.pachler.nio.file.StandardWatchEventKind.*;
-import static name.pachler.nio.file.ext.ExtendedWatchEventKind.ENTRY_RENAME_FROM;
-import static name.pachler.nio.file.ext.ExtendedWatchEventKind.ENTRY_RENAME_TO;
+import static name.pachler.nio.file.ext.ExtendedWatchEventKind.*;
 import static name.pachler.nio.file.ext.ExtendedWatchEventModifier.ACCURATE;
 
 public class FileWatcherProcess extends Thread
@@ -34,12 +33,12 @@ public class FileWatcherProcess extends Thread
 		this.watchService = FileSystems.getDefault().newWatchService();
 	}
 
-	public void watch(String id, String path)
+	public void watch(String path)
 	{
-		final WatchKey key = this.watchKeys.computeIfAbsent(id, _id -> {
+		final WatchKey key = this.watchKeys.computeIfAbsent(path, _path -> {
 			try
 			{
-				return Paths.get(path).register(this.watchService, EVENT_KINDS, EVENT_MODIFIERS);
+				return Paths.get(_path).register(this.watchService, EVENT_KINDS, EVENT_MODIFIERS);
 			}
 			catch (IOException exception)
 			{
@@ -50,9 +49,9 @@ public class FileWatcherProcess extends Thread
 		this.watchPaths.put(key, path);
 	}
 
-	public void unwatch(String id)
+	public void unwatch(String path)
 	{
-		final WatchKey watchKey = this.watchKeys.remove(id);
+		final WatchKey watchKey = this.watchKeys.remove(path);
 		if (watchKey != null)
 		{
 			this.watchPaths.remove(watchKey);
@@ -74,8 +73,7 @@ public class FileWatcherProcess extends Thread
 
 				for (WatchEvent<?> event : key.pollEvents())
 				{
-					final WatchEvent<Path> ev = (WatchEvent<Path>) event;
-					handleEvent(key, ev);
+					handleEvent(key, event);
 				}
 
 				key.reset();
@@ -90,11 +88,22 @@ public class FileWatcherProcess extends Thread
 		}
 	}
 
-	private void handleEvent(WatchKey key, WatchEvent<Path> ev)
+	private void handleEvent(WatchKey key, WatchEvent<?> ev)
 	{
 		final String dir = this.watchPaths.get(key);
-		final WatchEvent.Kind<Path> kind = ev.kind();
-		final String filename = dir + ev.context().toString();
+		final WatchEvent.Kind<?> kind = ev.kind();
+		if (kind == KEY_INVALID)
+		{
+			return;
+		}
+
+		final Object context = ev.context();
+		if (context == null)
+		{
+			return;
+		}
+
+		final String filename = dir + context;
 
 		if (kind == ENTRY_CREATE)
 		{
