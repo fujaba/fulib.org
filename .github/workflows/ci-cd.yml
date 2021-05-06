@@ -4,6 +4,23 @@ on:
   - push
 
 jobs:
+  deployment:
+    name: Deployment Setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Deployment Options
+        id: deployment
+        run: |
+          VERSION="${GITHUB_REF##*/}"
+          case "$VERSION" in
+            develop) NAMESPACE=dev ;;
+            *) NAMESPACE=prod ;;
+          esac
+          echo "::set-output name=version::$VERSION"
+          echo "::set-output name=namespace::$NAMESPACE"
+    outputs:
+      version: ${{ steps.deployment.outputs.version }}
+      namespace: ${{ steps.deployment.outputs.namespace }}
   frontend:
     name: Node ${{ matrix.node }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}-latest
@@ -14,6 +31,7 @@ jobs:
         os:
           - ubuntu
           - windows
+    needs: [deployment]
     defaults:
       run:
         working-directory: frontend
@@ -44,31 +62,31 @@ jobs:
         run: pnpm install --shamefully-hoist
       - name: Build Angular
         run: ng build --prod
-      - name: Deploy to Rancher
+      - name: Determine Deployment Readiness
+        id: deployment
         if: matrix.os == 'ubuntu' && matrix.node == 14 && (github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/v'))
-        run: |
-          VERSION="${GITHUB_REF##*/}"
-          TAG="${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-frontend:$VERSION"
-          DEPLOYMENT=fulib-frontend
-          if [[ "$VERSION" == "develop" ]]
-          then
-            NAMESPACE=dev
-          else
-            NAMESPACE=prod
-          fi
-          docker login "${{ secrets.DOCKER_REGISTRY }}" -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}"
-          docker build -t "$TAG" .
-          docker push "$TAG"
-          curl -X PATCH \
-            -u "${{ secrets.RANCHER_USERNAME }}:${{ secrets.RANCHER_PASSWORD }}" \
-            -H 'Content-Type: application/json-patch+json' \
-            "${{ secrets.RANCHER_SERVER }}/k8s/clusters/${{ secrets.RANCHER_CLUSTER }}/apis/apps/v1/namespaces/$NAMESPACE/deployments/$DEPLOYMENT" \
-            -d '[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value": "'"$TAG"'"}]'
-          curl -X POST \
-            -u "${{ secrets.RANCHER_USERNAME }}:${{ secrets.RANCHER_PASSWORD }}" \
-            -H 'Accept: application/json' \
-            -H 'Content-Type: application/json' \
-            "${{ secrets.RANCHER_SERVER }}/v3/project/${{ secrets.RANCHER_CLUSTER }}:${{ secrets.RANCHER_PROJECT }}/workloads/deployment:$NAMESPACE:$DEPLOYMENT?action=redeploy"
+        run: echo "::set-output name=ready::true"
+      - name: Build the Docker Image
+        if: steps.deployment.outputs.ready
+        uses: whoan/docker-build-with-cache-action@v5
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: ${{ secrets.DOCKER_REGISTRY }}
+          image_name: fulib/fulib.org-frontend
+          image_tag: ${{ needs.deployment.outputs.version }}
+          context: frontend/
+      - name: Deploy to Rancher
+        if: steps.deployment.outputs.ready
+        uses: sekassel-research/actions-rancher-update@2.0.2
+        with:
+          rancher_url: ${{ secrets.RANCHER_URL }}
+          rancher_token: ${{ secrets.RANCHER_TOKEN }}
+          cluster_id: ${{ secrets.RANCHER_CLUSTER }}
+          project_id: ${{ secrets.RANCHER_PROJECT }}
+          namespace: ${{ needs.deployment.outputs.namespace }}
+          deployment: fulib-frontend
+          docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-frontend:${{ needs.deployment.outputs.version }}
   backend:
     name: Java ${{ matrix.java }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}-latest
@@ -80,6 +98,7 @@ jobs:
         os:
           - ubuntu
           - windows
+    needs: [deployment]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -98,29 +117,28 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle
       - name: Build with Gradle
         run: ./gradlew build && ./gradlew --stop
-      - name: Deploy to Rancher
+      - name: Determine Deployment Readiness
+        id: deployment
         if: matrix.os == 'ubuntu' && matrix.java == 8 && (github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/v'))
-        working-directory: backend
-        run: |
-          VERSION="${GITHUB_REF##*/}"
-          TAG="${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-backend:$VERSION"
-          DEPLOYMENT=fulib-backend
-          if [[ "$VERSION" == "develop" ]]
-          then
-            NAMESPACE=dev
-          else
-            NAMESPACE=prod
-          fi
-          docker login "${{ secrets.DOCKER_REGISTRY }}" -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}"
-          docker build -t "$TAG" .
-          docker push "$TAG"
-          curl -X PATCH \
-            -u "${{ secrets.RANCHER_USERNAME }}:${{ secrets.RANCHER_PASSWORD }}" \
-            -H 'Content-Type: application/json-patch+json' \
-            "${{ secrets.RANCHER_SERVER }}/k8s/clusters/${{ secrets.RANCHER_CLUSTER }}/apis/apps/v1/namespaces/$NAMESPACE/deployments/$DEPLOYMENT" \
-            -d '[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value": "'"$TAG"'"}]'
-          curl -X POST \
-            -u "${{ secrets.RANCHER_USERNAME }}:${{ secrets.RANCHER_PASSWORD }}" \
-            -H 'Accept: application/json' \
-            -H 'Content-Type: application/json' \
-            "${{ secrets.RANCHER_SERVER }}/v3/project/${{ secrets.RANCHER_CLUSTER }}:${{ secrets.RANCHER_PROJECT }}/workloads/deployment:$NAMESPACE:$DEPLOYMENT?action=redeploy"
+        run: echo "::set-output name=ready::true"
+      - name: Build the Docker Image
+        if: steps.deployment.outputs.ready
+        uses: whoan/docker-build-with-cache-action@v5
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: ${{ secrets.DOCKER_REGISTRY }}
+          image_name: fulib/fulib.org-backend
+          image_tag: ${{ needs.deployment.outputs.version }}
+          context: backend/
+      - name: Deploy to Rancher
+        if: steps.deployment.outputs.ready
+        uses: sekassel-research/actions-rancher-update@2.0.2
+        with:
+          rancher_url: ${{ secrets.RANCHER_URL }}
+          rancher_token: ${{ secrets.RANCHER_TOKEN }}
+          cluster_id: ${{ secrets.RANCHER_CLUSTER }}
+          project_id: ${{ secrets.RANCHER_PROJECT }}
+          namespace: ${{ needs.deployment.outputs.namespace }}
+          deployment: fulib-backend
+          docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-backend:${{ needs.deployment.outputs.version }}
