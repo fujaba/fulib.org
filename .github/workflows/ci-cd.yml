@@ -122,7 +122,7 @@ jobs:
         id: deployment
         if: matrix.os == 'ubuntu' && matrix.java == 8 && needs.deployment.outputs.namespace
         run: echo "::set-output name=ready::true"
-      - name: Build the Docker Image
+      - name: Build the Backend Docker Image
         if: steps.deployment.outputs.ready
         uses: whoan/docker-build-with-cache-action@v5
         with:
@@ -132,7 +132,7 @@ jobs:
           image_name: fulib/fulib.org-backend
           image_tag: ${{ needs.deployment.outputs.version }}
           context: backend/
-      - name: Deploy to Rancher
+      - name: Deploy the Backend to Rancher
         if: steps.deployment.outputs.ready
         uses: sekassel-research/actions-rancher-update@2.0.2
         with:
@@ -143,3 +143,24 @@ jobs:
           namespace: ${{ needs.deployment.outputs.namespace }}
           deployment: fulib-backend
           docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-backend:${{ needs.deployment.outputs.version }}
+      - name: Build the Projects Backend Docker Image
+        if: steps.deployment.outputs.ready
+        uses: whoan/docker-build-with-cache-action@v5
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: ${{ secrets.DOCKER_REGISTRY }}
+          image_name: fulib/fulib.org-projects-backend
+          image_tag: ${{ needs.deployment.outputs.version }}
+          context: projects-backend/
+      - name: Deploy the Projects Backend to Rancher
+        if: steps.deployment.outputs.ready
+        uses: sekassel-research/actions-rancher-update@2.0.2
+        with:
+          rancher_url: ${{ secrets.RANCHER_URL }}
+          rancher_token: ${{ secrets.RANCHER_TOKEN }}
+          cluster_id: ${{ secrets.RANCHER_CLUSTER }}
+          project_id: ${{ secrets.RANCHER_PROJECT }}
+          namespace: ${{ needs.deployment.outputs.namespace }}
+          deployment: fulib-projects-backend
+          docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-projects-backend:${{ needs.deployment.outputs.version }}
