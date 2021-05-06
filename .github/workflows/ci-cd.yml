@@ -53,7 +53,7 @@ jobs:
           path: |
             ~/.pnpm-store
             /.pnpm-store
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('frontend/pnpm-lock.yaml') }}
           restore-keys: ${{ runner.os }}-pnpm
       - name: Install Angular CLI
         run: pnpm install -g @angular/cli
@@ -114,7 +114,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          key: ${{ runner.os }}-gradle-${{ hashFiles('backend/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
       - name: Build with Gradle
         run: ./gradlew :backend:build && ./gradlew --stop
@@ -169,7 +169,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          key: ${{ runner.os }}-gradle-${{ hashFiles('projects-backend/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
       - name: Build with Gradle
         run: ./gradlew :projects-backend:build && ./gradlew --stop
@@ -216,7 +216,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          key: ${{ runner.os }}-gradle-${{ hashFiles('projects/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
       - name: Build with Gradle
         run: ./gradlew :projects:build && ./gradlew --stop
