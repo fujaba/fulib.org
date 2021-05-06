@@ -26,7 +26,7 @@ import java.util.zip.GZIPOutputStream;
 public class ContainerManager
 {
 	private static final String PROJECTS_DIR = "/projects/";
-	private static final String CONTAINER_IMAGE = "clashsoft/fulib-projects";
+	private static final String CONTAINER_IMAGE = System.getenv("FULIB_PROJECTS_CONTAINER_IMAGE");
 	private static final String API_HOST = System.getenv("FULIB_PROJECTS_URL");
 	private static final String PROXY_HOST = System.getenv("FULIB_PROJECTS_PROXY_URL");
 	private static final String NETWORK_NAME = "fulib-projects";

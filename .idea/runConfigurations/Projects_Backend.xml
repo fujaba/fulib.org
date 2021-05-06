@@ -4,6 +4,7 @@
       <option name="env">
         <map>
           <entry key="FULIB_MONGO_URL" value="mongodb://fulibDotOrg:fulibDotOrg@localhost" />
+          <entry key="FULIB_PROJECTS_CONTAINER_IMAGE" value="fulib/fulib.org-projects" />
           <entry key="FULIB_PROJECTS_PROXY_URL" value="http://localhost:8080" />
           <entry key="FULIB_PROJECTS_URL" value="http://host.docker.internal:4568" />
         </map>
