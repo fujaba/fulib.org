@@ -9,7 +9,6 @@ then
 	docker login "$DOCKER_REGISTRY" -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
 fi
 
-docker pull "$FULIB_PROJECTS_CONTAINER_IMAGE":latest &
+docker pull "$FULIB_PROJECTS_CONTAINER_IMAGE" &
 docker run -p 8080:80 --network=fulib-projects "$FULIB_PROJECTS_PROXY_IMAGE" &
-nginx -g 'daemon off;' &
 wait
