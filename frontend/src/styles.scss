@@ -117,6 +117,10 @@ a[href^="http"]::after {
   cursor: pointer;
 }
 
+.backdrop-blur {
+  backdrop-filter: blur(10px);
+}
+
 /* --------------- Timelines --------------- */
 
 $outline-color: #777;
