@@ -115,7 +115,7 @@ export class FileService {
     if (file.path === path || file.path === path + '/') {
       return file;
     }
-    if (!file.children) {
+    if (!file.children || !path.startsWith(file.path)) {
       return undefined;
     }
     for (const child of file.children) {
