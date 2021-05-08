@@ -38,6 +38,7 @@ export class LaunchPanelComponent implements OnInit {
       id: Math.random().toString(36),
       terminal: {
         executable: '/bin/bash',
+        workingDirectory: this.projectManager.fileRoot.path,
       },
     };
   }
