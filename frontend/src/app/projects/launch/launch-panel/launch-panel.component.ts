@@ -33,10 +33,12 @@ export class LaunchPanelComponent implements OnInit {
 
   create(): void {
     this.editing = {
-      type: 'command',
+      type: 'terminal',
+      name: 'New Terminal',
       id: Math.random().toString(36),
-      executable: '/bin/bash',
-      name: 'New Command',
+      terminal: {
+        executable: '/bin/bash',
+      },
     };
   }
 

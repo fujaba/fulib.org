@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Observable} from 'rxjs';
 import {WebSocketSubject} from 'rxjs/webSocket';
+import {Terminal} from '../model/terminal';
 import {ProjectManager} from '../project.manager';
 
 @Injectable()
@@ -13,20 +14,20 @@ export class TerminalService {
     this.webSocket = projectManager.webSocket;
   }
 
-  exec(id: string, cmd: string[]): Observable<any> {
+  exec(terminal: Terminal): Observable<any> {
     return this.webSocket.multiplex(() => ({
       command: 'exec',
-      process: id,
-      cmd,
+      process: terminal.id,
+      cmd: [terminal.executable, ...(terminal.arguments || [])],
     }), () => ({
       command: 'kill',
-      process: id,
+      process: terminal.id,
     }), msg => {
       switch (msg.event) {
         case 'started':
         case 'output':
         case 'exited':
-          return msg.process === id;
+          return msg.process === terminal.id;
         default:
           return false;
       }

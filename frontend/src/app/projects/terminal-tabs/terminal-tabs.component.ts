@@ -20,6 +20,9 @@ export class TerminalTabsComponent implements OnInit {
 
   addTab() {
     const id = (this.nextId++).toString(36);
-    this.tabs.push({cmd: ['/bin/bash'], id});
+    this.tabs.push({
+      id,
+      executable: '/bin/bash',
+    });
   }
 }

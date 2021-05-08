@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {CommandLaunchConfig} from '../model/launch-config';
+import {TerminalLaunchConfig} from '../model/launch-config';
 
 @Component({
   selector: 'app-command-form',
@@ -7,7 +7,7 @@ import {CommandLaunchConfig} from '../model/launch-config';
   styleUrls: ['./command-form.component.scss'],
 })
 export class CommandFormComponent implements OnInit {
-  @Input() config: CommandLaunchConfig;
+  @Input() config: TerminalLaunchConfig;
 
   constructor() {
   }
@@ -16,22 +16,24 @@ export class CommandFormComponent implements OnInit {
   }
 
   get arguments(): string {
-    return this.config.arguments?.join('\n') ?? '';
+    return this.config.terminal.arguments?.join('\n') ?? '';
   }
 
   set arguments(value: string) {
-    this.config.arguments = value.split('\n');
+    this.config.terminal.arguments = value.split('\n');
   }
 
   get environment(): string {
-    return this.config.environment ? Object.entries(this.config.environment).map(([k, v]) => `${k}=${v}`).join('\n') : '';
+    const environment = this.config.terminal.environment;
+    return environment ? Object.entries(environment).map(([k, v]) => `${k}=${v}`).join('\n') : '';
   }
 
   set environment(value: string) {
-    this.config.environment = {};
+    const environment: Record<string, string> = {};
     for (const line of value.split('\n')) {
       const [k, v] = line.split('=', 2);
-      this.config.environment[k] = v;
+      environment[k] = v;
     }
+    this.config.terminal.environment = environment;
   }
 }

@@ -1,5 +1,7 @@
+import {Terminal} from '../../model/terminal';
+
 export type LaunchConfig =
-  | CommandLaunchConfig
+  | TerminalLaunchConfig
 ;
 
 export interface BaseLaunchConfig {
@@ -7,10 +9,7 @@ export interface BaseLaunchConfig {
   name: string;
 }
 
-export interface CommandLaunchConfig extends BaseLaunchConfig {
-  type: 'command';
-  executable: string;
-  arguments?: string[];
-  environment?: Record<string, string>;
-  workingDirectory?: string;
+export interface TerminalLaunchConfig extends BaseLaunchConfig {
+  type: 'terminal';
+  terminal: Omit<Terminal, 'id'>;
 }
