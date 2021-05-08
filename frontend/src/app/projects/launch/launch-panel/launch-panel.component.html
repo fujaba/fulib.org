@@ -1,5 +1,10 @@
 <div class="p-3">
-  <h4>Launch</h4>
+  <h4>
+    Launch
+    <button type="button" class="btn btn-success" (click)="create()">
+      + New
+    </button>
+  </h4>
   <ul class="list-group">
     <li *ngFor="let config of configs" class="list-group-item d-flex">
       {{config.name}}
@@ -13,9 +18,6 @@
       </div>
     </li>
   </ul>
-  <button type="button" class="btn btn-primary" (click)="create()">
-    Create
-  </button>
 </div>
 
 <ng-template #editModal let-modal>
