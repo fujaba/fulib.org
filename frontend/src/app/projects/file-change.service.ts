@@ -102,10 +102,10 @@ export class FileChangeService {
     };
   }
 
-  private move(projectManager: ProjectManager, from: string, to: string): FileChanged | undefined {
+  private move(projectManager: ProjectManager, from: string | undefined, to: string): FileChanged | undefined {
     const newParentPath = this.parentPath(to);
     const newParent = this.fileService.resolve(projectManager.fileRoot, newParentPath);
-    const oldFile = this.fileService.resolve(projectManager.fileRoot, from);
+    const oldFile = from ? this.fileService.resolve(projectManager.fileRoot, from) : undefined;
 
     if (oldFile) {
       if (newParent && newParent.children) {
