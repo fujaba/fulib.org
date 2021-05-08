@@ -13,13 +13,17 @@ export class ConfigService {
   ) {
   }
 
-  private getUrl(container: Container, namespace: string, id: string) {
-    return `${container.url}/dav/projects/${container.projectId}/.fulib/${namespace}/${id}`;
+  private getUrl(container: Container, namespace: string, id?: string) {
+    return `${container.url}/dav/projects/${container.projectId}/.fulib/${namespace}/${id ? id + '.json' : ''}`;
   }
 
   getObjects<T>(container: Container, namespace: string): Observable<T[]> {
-    return this.dav.propFindChildren(this.getUrl(container, namespace, '')).pipe(
-      map(resources => resources.map(resource => resource.href.substring(resource.href.lastIndexOf('/') + 1))),
+    return this.dav.propFindChildren(this.getUrl(container, namespace)).pipe(
+      map(resources => resources.map(({href}) => {
+        const start = href.lastIndexOf('/') + 1;
+        const end = href.length - (href.endsWith('.json') ? 5 : 0);
+        return href.substring(start, end);
+      })),
       switchMap(ids => forkJoin(ids.map(id => this.getObject<T>(container, namespace, id)))),
     );
   }
