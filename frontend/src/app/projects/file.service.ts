@@ -112,7 +112,7 @@ export class FileService {
   }
 
   resolve(file: File, path: string): File | undefined {
-    if (file.path === path) {
+    if (file.path === path || file.path === path + '/') {
       return file;
     }
     if (!file.children) {
@@ -128,7 +128,7 @@ export class FileService {
   }
 
   resolveAsync(container: Container, file: File, path: string): Observable<File | undefined> {
-    if (file.path === path) {
+    if (file.path === path || file.path === path + '/') {
       return of(file);
     }
     if (!path.startsWith(file.path)) {
