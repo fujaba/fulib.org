@@ -51,6 +51,22 @@ export class LaunchPanelComponent implements OnInit {
     this.open();
   }
 
+  delete(config: LaunchConfig) {
+    if (!confirm(`Are you sure you want to delete '${config.name}?`)) {
+      return;
+    }
+
+    this.launchService.deleteLaunchConfig(this.projectManager.container, config).subscribe(() => {
+      const index = this.configs.indexOf(config);
+      if (index >= 0) {
+        this.configs.splice(index, 1);
+      }
+      if (config === this.editing) {
+        this.editing = undefined;
+      }
+    });
+  }
+
   save(): void {
     const config = this.editing;
     if (!config) {

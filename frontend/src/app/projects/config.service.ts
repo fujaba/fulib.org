@@ -35,4 +35,8 @@ export class ConfigService {
   putObject<T extends { id: string }>(container: Container, namespace: string, obj: T): Observable<void> {
     return this.http.put<void>(this.getUrl(container, namespace, obj.id), obj);
   }
+
+  deleteObject<T extends { id: string }>(container: Container, namespace: string, obj: T): Observable<void> {
+    return this.http.delete<void>(this.getUrl(container, namespace, obj.id));
+  }
 }

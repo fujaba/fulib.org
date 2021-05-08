@@ -24,4 +24,8 @@ export class LaunchService {
   saveLaunchConfig(container: Container, config: LaunchConfig): Observable<void> {
     return this.configService.putObject<LaunchConfig>(container, 'launch', config);
   }
+
+  deleteLaunchConfig(container: Container, config: LaunchConfig): Observable<void> {
+    return this.configService.deleteObject<LaunchConfig>(container, 'launch', config);
+  }
 }
