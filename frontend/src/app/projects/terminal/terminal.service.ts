@@ -19,6 +19,8 @@ export class TerminalService {
       command: 'exec',
       process: terminal.id,
       cmd: [terminal.executable, ...(terminal.arguments || [])],
+      environment: terminal.environment,
+      workingDirectory: terminal.workingDirectory,
     }), () => ({
       command: 'kill',
       process: terminal.id,

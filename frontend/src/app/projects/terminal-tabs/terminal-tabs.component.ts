@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Terminal} from '../model/terminal';
+import {ProjectManager} from '../project.manager';
 
 @Component({
   selector: 'app-terminal-tabs',
@@ -11,7 +12,9 @@ export class TerminalTabsComponent implements OnInit {
 
   nextId = 0;
 
-  constructor() {
+  constructor(
+    private projectManager: ProjectManager,
+  ) {
   }
 
   ngOnInit(): void {
@@ -23,6 +26,7 @@ export class TerminalTabsComponent implements OnInit {
     this.tabs.push({
       id,
       executable: '/bin/bash',
+      workingDirectory: this.projectManager.fileRoot.path,
     });
   }
 }

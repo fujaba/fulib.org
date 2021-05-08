@@ -65,6 +65,7 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.route.params.pipe(
       tap(() => {
+        this.projectManager.destroy();
         this.active = undefined;
         this.openModal = this.ngbModal.open(this.loadingModal, {
           ariaLabelledBy: 'loading-modal-title',
@@ -79,14 +80,13 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
         this.projectService.getContainer(params.id).pipe(tap(container => this.container = container)),
       ])),
       tap(([project, container]) => {
-        this.projectManager.destroy();
         this.projectManager.init(project, container);
-        this.terminalComponent = TerminalTabsComponent;
       }),
       switchMap(([project, container]) => this.fileService.get(container, `/projects/${project.id}/`)),
       tap(fileRoot => {
         this.projectManager.fileRoot = fileRoot;
         this.fileTabsComponent = SplitPanelComponent;
+        this.terminalComponent = TerminalTabsComponent;
         fileRoot.info = 'project root';
         Object.defineProperty(fileRoot, 'name', {
           get: () => this.project.name,
