@@ -1,8 +1,8 @@
-import {Component, OnInit, TemplateRef} from '@angular/core';
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ProjectManager} from '../../project.manager';
 import {LaunchService} from '../launch.service';
-import {LaunchConfig} from '../model/launch-config';
+import {BaseLaunchConfig, LaunchConfig} from '../model/launch-config';
 
 @Component({
   selector: 'app-launch-panel',
@@ -10,6 +10,8 @@ import {LaunchConfig} from '../model/launch-config';
   styleUrls: ['./launch-panel.component.scss'],
 })
 export class LaunchPanelComponent implements OnInit {
+  @ViewChild('editModal', {static: true}) editModal: TemplateRef<any>;
+
   configs: LaunchConfig[] = [];
 
   editing?: LaunchConfig;
@@ -27,8 +29,8 @@ export class LaunchPanelComponent implements OnInit {
     });
   }
 
-  open(content: TemplateRef<any>, ariaLabelledBy: string): void {
-    this.ngbModal.open(content, {ariaLabelledBy});
+  open(): void {
+    this.ngbModal.open(this.editModal, {ariaLabelledBy: 'launch-config-modal-title'});
   }
 
   create(): void {
@@ -41,6 +43,12 @@ export class LaunchPanelComponent implements OnInit {
         workingDirectory: this.projectManager.fileRoot.path,
       },
     };
+    this.open();
+  }
+
+  edit(config: LaunchConfig) {
+    this.editing = config;
+    this.open();
   }
 
   save(): void {

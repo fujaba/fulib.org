@@ -1,11 +1,16 @@
 <div class="p-3">
   <h4>Launch</h4>
   <ul class="list-group">
-    <li *ngFor="let config of configs" class="list-group-item">
+    <li *ngFor="let config of configs" class="list-group-item d-flex">
       {{config.name}}
+      <div class="btn-group btn-group-sm ml-auto">
+        <button type="button" class="btn btn-secondary" ngbTooltip="Edit" (click)="edit(config)">
+          <i class="bi-pencil"></i>
+        </button>
+      </div>
     </li>
   </ul>
-  <button type="button" class="btn btn-primary" (click)="create(); open(editModal, 'launch-config-modal-title')">
+  <button type="button" class="btn btn-primary" (click)="create()">
     Create
   </button>
 </div>
