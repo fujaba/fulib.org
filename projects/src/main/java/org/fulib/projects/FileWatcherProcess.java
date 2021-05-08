@@ -2,6 +2,7 @@ package org.fulib.projects;
 
 import name.pachler.nio.file.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -103,7 +104,8 @@ public class FileWatcherProcess extends Thread
 			return;
 		}
 
-		final String filename = dir + context;
+		final File file = new File(dir, context.toString());
+		final String filename = file.isDirectory() ? file.getPath() + '/' : file.getPath();
 
 		if (kind == ENTRY_CREATE)
 		{
