@@ -9,7 +9,7 @@
   </div>
   <div class="form-group">
     <label for="argumentsInput">Arguments</label>
-    <textarea class="form-control" id="argumentsInput" [(ngModel)]="arguments"></textarea>
+    <textarea class="form-control" id="argumentsInput" [ngModel]="arguments" (change)="arguments = $any($event.target).value"></textarea>
   </div>
   <div class="form-group">
     <label for="workingDirectoryInput">Working Directory</label>
@@ -17,6 +17,6 @@
   </div>
   <div class="form-group">
     <label for="environmentInput">Environment Variables</label>
-    <textarea class="form-control" id="environmentInput" [(ngModel)]="environment"></textarea>
+    <textarea class="form-control" id="environmentInput" [ngModel]="environment" (change)="environment = $any($event.target).value"></textarea>
   </div>
 </div>
