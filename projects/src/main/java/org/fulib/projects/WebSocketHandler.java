@@ -5,6 +5,7 @@ import org.eclipse.jetty.websocket.api.annotations.*;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -54,14 +55,8 @@ public class WebSocketHandler implements FileEventHandler
 			return;
 		}
 		case "exec":
-		{
-			final String id = json.getString("process");
-			final String[] cmd = json.getJSONArray("cmd").toList().toArray(new String[0]);
-			final ExecProcess process = new ExecProcess(id, cmd, session);
-			this.processes.get(session).put(process.getExecId(), process);
-			process.start();
+			exec(session, json);
 			return;
-		}
 		case "input":
 		{
 			final String input = json.getString("text");
@@ -102,6 +97,28 @@ public class WebSocketHandler implements FileEventHandler
 			session.getRemote().sendString(new JSONObject().put("error", "invalid command: " + command).toString());
 			return;
 		}
+	}
+
+	private void exec(Session session, JSONObject json)
+	{
+		final String id = json.getString("process");
+		final String[] cmd = json.getJSONArray("cmd").toList().toArray(new String[0]);
+		final String workingDirectory = json.optString("workingDirectory");
+
+		final JSONObject environmentObj = json.optJSONObject("environment");
+		Map<String, String> environment = null;
+		if (environmentObj != null)
+		{
+			environment = new HashMap<>();
+			for (final String key : environmentObj.keySet())
+			{
+				environment.put(key, environmentObj.get(key).toString());
+			}
+		}
+
+		final ExecProcess process = new ExecProcess(id, session, cmd, workingDirectory, environment);
+		this.processes.get(session).put(process.getExecId(), process);
+		process.start();
 	}
 
 	@OnWebSocketError

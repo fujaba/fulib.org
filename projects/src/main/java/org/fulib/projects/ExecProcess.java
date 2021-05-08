@@ -10,23 +10,28 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 public class ExecProcess extends Thread
 {
-	private final String[] cmd;
-	private final Session session;
 	private final String id;
+	private final Session session;
+	private final String[] cmd;
+	private final String workingDirectory;
+	private final Map<String, String> environment;
 
 	private int columns;
 	private int rows;
 
 	private PtyProcess process;
 
-	public ExecProcess(String id, String[] cmd, Session session)
+	public ExecProcess(String id, Session session, String[] cmd, String workingDirectory, Map<String, String> environment)
 	{
-		this.cmd = cmd;
-		this.session = session;
 		this.id = id;
+		this.session = session;
+		this.cmd = cmd;
+		this.workingDirectory = workingDirectory;
+		this.environment = environment;
 	}
 
 	public String getExecId()
@@ -61,6 +66,8 @@ public class ExecProcess extends Thread
 		{
 			final PtyProcessBuilder processBuilder = new PtyProcessBuilder(cmd);
 			processBuilder.setRedirectErrorStream(true);
+			processBuilder.setEnvironment(this.environment);
+			processBuilder.setDirectory(this.workingDirectory);
 			if (columns != 0)
 			{
 				processBuilder.setInitialColumns(columns);
