@@ -1,8 +1,8 @@
 package org.fulib.webapp.projects.service;
 
 import org.apache.commons.io.IOUtils;
+import org.fulib.webapp.projects.Main;
 import org.fulib.webapp.projects.model.ProjectData;
-import org.fulib.webapp.projects.controller.ProjectZipController;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,7 +52,7 @@ public class ProjectGenerator
 
 	private String getSettingsGradle(ProjectData data) throws IOException
 	{
-		try (final InputStream input = ProjectZipController.class.getResourceAsStream("settings.gradle"))
+		try (final InputStream input = Main.class.getResourceAsStream("zip/settings.gradle"))
 		{
 			final String content = IOUtils.toString(input, StandardCharsets.UTF_8);
 			return content.replace("$$projectName$$", data.getProjectName());
@@ -61,7 +61,7 @@ public class ProjectGenerator
 
 	private String getBuildGradle(ProjectData data) throws IOException
 	{
-		try (final InputStream input = ProjectZipController.class.getResourceAsStream("build.gradle"))
+		try (final InputStream input = Main.class.getResourceAsStream("zip/build.gradle"))
 		{
 			final String content = IOUtils.toString(input, StandardCharsets.UTF_8);
 			return content
@@ -72,7 +72,7 @@ public class ProjectGenerator
 
 	private String getDecoratorJava(ProjectData data) throws IOException
 	{
-		try (final InputStream input = ProjectZipController.class.getResourceAsStream("Decorator.java.txt"))
+		try (final InputStream input = Main.class.getResourceAsStream("zip/Decorator.java.txt"))
 		{
 			final String content = IOUtils.toString(input, StandardCharsets.UTF_8);
 			return content
@@ -84,7 +84,7 @@ public class ProjectGenerator
 	private void copy(FileGenerator generator, String resourceName, String file) throws IOException
 	{
 		generator.generate(file, output -> {
-			try (final InputStream fileInput = ProjectZipController.class.getResourceAsStream(resourceName))
+			try (final InputStream fileInput = Main.class.getResourceAsStream("zip/" + resourceName))
 			{
 				IOUtils.copyLarge(fileInput, output, buffer);
 			}
