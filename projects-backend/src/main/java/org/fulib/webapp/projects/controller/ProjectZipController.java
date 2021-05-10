@@ -1,5 +1,7 @@
-package org.fulib.webapp.projects.zip;
+package org.fulib.webapp.projects.controller;
 
+import org.fulib.webapp.projects.model.ProjectData;
+import org.fulib.webapp.projects.service.ProjectGenerator;
 import org.json.JSONException;
 import org.json.JSONObject;
 import spark.Request;
@@ -9,8 +11,15 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-public class ProjectZip
+public class ProjectZipController
 {
+	private final ProjectGenerator projectGenerator;
+
+	public ProjectZipController(ProjectGenerator projectGenerator)
+	{
+		this.projectGenerator = projectGenerator;
+	}
+
 	public Object handle(Request request, Response response) throws IOException, JSONException
 	{
 		final String body = request.body();
@@ -20,7 +29,7 @@ public class ProjectZip
 		response.type("application/zip");
 		try (final ZipOutputStream zip = new ZipOutputStream(response.raw().getOutputStream()))
 		{
-			new ProjectGenerator().generate(projectData, (name, output) -> {
+			this.projectGenerator.generate(projectData, (name, output) -> {
 				zip.putNextEntry(new ZipEntry(name));
 				output.accept(zip);
 			});

@@ -2,13 +2,14 @@ package org.fulib.webapp.projects;
 
 import org.fulib.webapp.projects.controller.ContainerController;
 import org.fulib.webapp.projects.controller.ProjectController;
+import org.fulib.webapp.projects.controller.ProjectZipController;
 import org.fulib.webapp.projects.db.FileRepository;
 import org.fulib.webapp.projects.db.Mongo;
 import org.fulib.webapp.projects.db.ProjectRepository;
 import org.fulib.webapp.projects.docker.ContainerManager;
 import org.fulib.webapp.projects.service.ContainerService;
+import org.fulib.webapp.projects.service.ProjectGenerator;
 import org.fulib.webapp.projects.service.ProjectService;
-import org.fulib.webapp.projects.zip.ProjectZip;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Service;
@@ -26,15 +27,16 @@ public class Main
 	// =============== Fields ===============
 
 	private Service service;
-	private final ProjectZip projectZip;
+	private final ProjectZipController projectZipController;
 	private final ProjectController projectController;
 	private final ContainerController containerController;
 
 	// =============== Constructors ===============
 
-	public Main(ProjectZip projectZip, ProjectController projectController, ContainerController containerController)
+	public Main(ProjectZipController projectZipController, ProjectController projectController,
+		ContainerController containerController)
 	{
-		this.projectZip = projectZip;
+		this.projectZipController = projectZipController;
 		this.projectController = projectController;
 		this.containerController = containerController;
 	}
@@ -48,11 +50,13 @@ public class Main
 		final ProjectRepository projectRepository = new ProjectRepository(mongo);
 		final ContainerManager containerManager = new ContainerManager(fileRepository);
 		final ContainerService containerService = new ContainerService(containerManager);
-		final ProjectService projectService = new ProjectService(projectRepository, fileRepository, containerManager);
+		final ProjectGenerator projectGenerator = new ProjectGenerator();
+		final ProjectService projectService = new ProjectService(projectRepository, fileRepository, containerManager,
+		                                                         projectGenerator);
 		final ContainerController containerController = new ContainerController(projectService, containerService);
 		final ProjectController projectController = new ProjectController(projectService);
-		final ProjectZip projectZip = new ProjectZip();
-		final Main service = new Main(projectZip, projectController, containerController);
+		final ProjectZipController projectZipController = new ProjectZipController(projectGenerator);
+		final Main service = new Main(projectZipController, projectController, containerController);
 		service.start();
 	}
 
@@ -100,7 +104,7 @@ public class Main
 
 	private void addMainRoutes()
 	{
-		service.post("/projectzip", projectZip::handle);
+		service.post("/projectzip", projectZipController::handle);
 	}
 
 	private void addProjectsRoutes()

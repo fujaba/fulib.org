@@ -7,8 +7,7 @@ import org.fulib.webapp.projects.db.ProjectRepository;
 import org.fulib.webapp.projects.docker.ContainerManager;
 import org.fulib.webapp.projects.model.Container;
 import org.fulib.webapp.projects.model.Project;
-import org.fulib.webapp.projects.zip.ProjectData;
-import org.fulib.webapp.projects.zip.ProjectGenerator;
+import org.fulib.webapp.projects.model.ProjectData;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -21,13 +20,15 @@ public class ProjectService
 	private final ProjectRepository projectRepository;
 	private final FileRepository fileRepository;
 	private final ContainerManager containerManager;
+	private final ProjectGenerator projectGenerator;
 
 	public ProjectService(ProjectRepository projectRepository, FileRepository fileRepository,
-		ContainerManager containerManager)
+		ContainerManager containerManager, ProjectGenerator projectGenerator)
 	{
 		this.projectRepository = projectRepository;
 		this.fileRepository = fileRepository;
 		this.containerManager = containerManager;
+		this.projectGenerator = projectGenerator;
 	}
 
 	public Project find(String id)
@@ -57,7 +58,7 @@ public class ProjectService
 		{
 			final ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
-			new ProjectGenerator().generate(projectData, (name, output) -> {
+			this.projectGenerator.generate(projectData, (name, output) -> {
 				output.accept(bos);
 				final byte[] fileData = bos.toByteArray();
 

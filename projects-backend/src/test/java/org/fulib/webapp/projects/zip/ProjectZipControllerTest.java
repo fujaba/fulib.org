@@ -1,5 +1,7 @@
 package org.fulib.webapp.projects.zip;
 
+import org.fulib.webapp.projects.controller.ProjectZipController;
+import org.fulib.webapp.projects.service.ProjectGenerator;
 import org.fulib.webapp.projects.util.DelegatingServletOutputStream;
 import org.junit.Test;
 import spark.Request;
@@ -18,12 +20,13 @@ import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
 
-public class ProjectZipTest
+public class ProjectZipControllerTest
 {
 	@Test
 	public void handle() throws IOException
 	{
-		final ProjectZip projectZip = new ProjectZip();
+		final ProjectGenerator projectGenerator = new ProjectGenerator();
+		final ProjectZipController projectZipController = new ProjectZipController(projectGenerator);
 
 		final Request request = mock(Request.class);
 		final String ip = "0.0.0.0";
@@ -45,7 +48,7 @@ public class ProjectZipTest
 		when(response.raw()).thenReturn(servletResponse);
 		when(servletResponse.getOutputStream()).thenReturn(new DelegatingServletOutputStream(outputStream));
 
-		projectZip.handle(request, response);
+		projectZipController.handle(request, response);
 
 		verify(response).type("application/zip");
 

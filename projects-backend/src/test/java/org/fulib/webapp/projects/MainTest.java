@@ -2,7 +2,7 @@ package org.fulib.webapp.projects;
 
 import org.fulib.webapp.projects.controller.ContainerController;
 import org.fulib.webapp.projects.controller.ProjectController;
-import org.fulib.webapp.projects.zip.ProjectZip;
+import org.fulib.webapp.projects.controller.ProjectZipController;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -18,10 +18,10 @@ import static org.mockito.Mockito.*;
 
 public class MainTest
 {
-	private static final ProjectZip projectZip = mock(ProjectZip.class);
+	private static final ProjectZipController projectZipController = mock(ProjectZipController.class);
 	private static final ProjectController projectController = mock(ProjectController.class);
 	private static final ContainerController containerController = mock(ContainerController.class);
-	private static final Main main = new Main(projectZip, projectController, containerController);
+	private static final Main main = new Main(projectZipController, projectController, containerController);
 
 	@BeforeClass
 	public static void setup()
@@ -39,11 +39,11 @@ public class MainTest
 	@Test
 	public void projectZip() throws IOException
 	{
-		when(projectZip.handle(any(), any())).thenReturn("");
+		when(projectZipController.handle(any(), any())).thenReturn("");
 
 		checkRoute("POST", "/api/projectzip");
 
-		verify(projectZip).handle(any(), any());
+		verify(projectZipController).handle(any(), any());
 	}
 
 	@Test
