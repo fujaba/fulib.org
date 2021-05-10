@@ -1,48 +1,37 @@
 package org.fulib.webapp.projects;
 
-import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
-import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
-import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.fulib.webapp.projects.db.FileRepository;
-import org.fulib.webapp.projects.db.ProjectRepository;
 import org.fulib.webapp.projects.docker.ContainerManager;
 import org.fulib.webapp.projects.model.Container;
 import org.fulib.webapp.projects.model.Project;
+import org.fulib.webapp.projects.service.ProjectService;
 import org.fulib.webapp.projects.tool.Authenticator;
 import org.fulib.webapp.projects.tool.IDGenerator;
-import org.fulib.webapp.projects.zip.ProjectData;
-import org.fulib.webapp.projects.zip.ProjectGenerator;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.time.Instant;
 import java.util.List;
-import java.util.zip.GZIPOutputStream;
 
 import static spark.Spark.halt;
 
-@WebSocket
 public class Projects
 {
 	private static final String AUTH_MESSAGE = "{\n  \"error\": \"token user ID does not match ID of project\"\n}\n";
 
-	private final ProjectRepository projectRepository;
-	private final FileRepository fileRepository;
+	private final ProjectService projectService;
 	private final ContainerManager containerManager;
 
-	public Projects(ProjectRepository projectRepository, FileRepository fileRepository, ContainerManager containerManager)
+	public Projects(ProjectService projectService, FileRepository fileRepository, ContainerManager containerManager)
 	{
-		this.projectRepository = projectRepository;
-		this.fileRepository = fileRepository;
+		this.projectService = projectService;
 		this.containerManager = containerManager;
 	}
 
@@ -68,7 +57,7 @@ public class Projects
 
 	private Project getOr404(String id)
 	{
-		final Project project = this.projectRepository.find(id);
+		final Project project = this.projectService.find(id);
 		if (project == null)
 		{
 			throw halt(404, notFoundMessage(id));
@@ -85,7 +74,7 @@ public class Projects
 	{
 		final String userId = Authenticator.getAndCheckUserIdQueryParam(request);
 
-		final List<Project> projects = this.projectRepository.findByUser(userId);
+		final List<Project> projects = this.projectService.findByUser(userId);
 		final JSONArray array = new JSONArray();
 		for (final Project project : projects)
 		{
@@ -117,9 +106,7 @@ public class Projects
 		final String userId = Authenticator.getUserIdOr401(request);
 		project.setUserId(userId);
 
-		this.generateProjectFiles(project);
-
-		this.projectRepository.save(project);
+		this.projectService.create(project);
 
 		JSONObject responseJson = toJson(project);
 
@@ -132,47 +119,6 @@ public class Projects
 		project.setDescription(obj.getString(Project.PROPERTY_DESCRIPTION));
 	}
 
-	private void generateProjectFiles(Project project) throws IOException
-	{
-		final ProjectData projectData = getProjectData(project);
-
-		try (
-			final OutputStream uploadStream = this.fileRepository.upload(project.getId());
-			final GZIPOutputStream gzipOutputStream = new GZIPOutputStream(uploadStream);
-			final TarArchiveOutputStream tarOutputStream = new TarArchiveOutputStream(gzipOutputStream, "UTF-8")
-		)
-		{
-			final ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
-			new ProjectGenerator().generate(projectData, (name, output) -> {
-				output.accept(bos);
-				final byte[] fileData = bos.toByteArray();
-
-				final TarArchiveEntry entry = new TarArchiveEntry(name);
-				entry.setSize(fileData.length);
-				entry.setModTime(project.getCreated().toEpochMilli());
-
-				tarOutputStream.putArchiveEntry(entry);
-				output.accept(tarOutputStream);
-				tarOutputStream.closeArchiveEntry();
-
-				bos.reset();
-			});
-		}
-	}
-
-	private ProjectData getProjectData(Project project)
-	{
-		final ProjectData projectData = new ProjectData();
-		projectData.setPackageName("org.example");
-		projectData.setScenarioFileName("Example.md");
-		projectData.setScenarioText("# My First Project\n\nThere is an Example with text Hello World.\n");
-		projectData.setProjectName(project.getName().replaceAll("\\W+", "-"));
-		projectData.setProjectVersion("0.1.0");
-		projectData.setDecoratorClassName("GenModel");
-		return projectData;
-	}
-
 	public Object update(Request request, Response response)
 	{
 		final String id = request.params("projectId");
@@ -181,7 +127,7 @@ public class Projects
 
 		this.readJson(new JSONObject(request.body()), project);
 
-		this.projectRepository.save(project);
+		this.projectService.update(project);
 
 		final JSONObject json = this.toJson(project);
 		return json.toString(2);
@@ -193,14 +139,7 @@ public class Projects
 		final Project project = getOr404(id);
 		checkAuth(request, project);
 
-		final Container container = this.containerManager.getContainer(project);
-		if (container != null)
-		{
-			this.containerManager.stop(container);
-		}
-
-		this.projectRepository.delete(id);
-		this.fileRepository.delete(project.getId());
+		this.projectService.delete(project);
 
 		return "{}";
 	}

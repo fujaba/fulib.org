@@ -14,23 +14,23 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class ProjectServiceTest
+public class MainTest
 {
 	private static final ProjectZip projectZip = mock(ProjectZip.class);
 	private static final Projects projects = mock(Projects.class);
-	private static final ProjectService service = new ProjectService(projectZip, projects);
+	private static final Main main = new Main(projectZip, projects);
 
 	@BeforeClass
 	public static void setup()
 	{
-		service.start();
-		service.awaitStart();
+		main.start();
+		main.awaitStart();
 	}
 
 	@AfterClass
 	public static void teardown()
 	{
-		service.awaitStop();
+		main.awaitStop();
 	}
 
 	@Test
@@ -72,7 +72,7 @@ public class ProjectServiceTest
 
 	private void checkRoute(String method, String path, int status) throws IOException
 	{
-		final URL url = new URL("http", "localhost", ProjectService.PORT, path);
+		final URL url = new URL("http", "localhost", Main.PORT, path);
 
 		final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setRequestMethod(method);

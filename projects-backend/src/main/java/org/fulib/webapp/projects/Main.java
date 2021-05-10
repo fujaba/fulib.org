@@ -4,6 +4,7 @@ import org.fulib.webapp.projects.db.FileRepository;
 import org.fulib.webapp.projects.db.Mongo;
 import org.fulib.webapp.projects.db.ProjectRepository;
 import org.fulib.webapp.projects.docker.ContainerManager;
+import org.fulib.webapp.projects.service.ProjectService;
 import org.fulib.webapp.projects.zip.ProjectZip;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,11 +12,11 @@ import spark.Service;
 
 import java.io.File;
 
-public class ProjectService
+public class Main
 {
 	// =============== Static Fields ===============
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ProjectService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
 	public static final int PORT = 4568;
 
@@ -27,7 +28,7 @@ public class ProjectService
 
 	// =============== Constructors ===============
 
-	public ProjectService(ProjectZip projectZip, Projects projects)
+	public Main(ProjectZip projectZip, Projects projects)
 	{
 		this.projectZip = projectZip;
 		this.projects = projects;
@@ -41,9 +42,10 @@ public class ProjectService
 		final FileRepository fileRepository = new FileRepository(mongo);
 		final ProjectRepository projectRepository = new ProjectRepository(mongo);
 		final ContainerManager containerManager = new ContainerManager(fileRepository);
-		final Projects projects = new Projects(projectRepository, fileRepository, containerManager);
+		final ProjectService projectService = new ProjectService(projectRepository, fileRepository, containerManager);
+		final Projects projects = new Projects(projectService, fileRepository, containerManager);
 		final ProjectZip projectZip = new ProjectZip();
-		final ProjectService service = new ProjectService(projectZip, projects);
+		final Main service = new Main(projectZip, projects);
 		service.start();
 	}
 
