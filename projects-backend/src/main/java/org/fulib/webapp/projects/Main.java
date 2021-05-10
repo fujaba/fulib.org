@@ -1,5 +1,7 @@
 package org.fulib.webapp.projects;
 
+import org.fulib.webapp.projects.controller.ContainerController;
+import org.fulib.webapp.projects.controller.ProjectController;
 import org.fulib.webapp.projects.db.FileRepository;
 import org.fulib.webapp.projects.db.Mongo;
 import org.fulib.webapp.projects.db.ProjectRepository;
@@ -25,14 +27,16 @@ public class Main
 
 	private Service service;
 	private final ProjectZip projectZip;
-	private final Projects projects;
+	private final ProjectController projectController;
+	private final ContainerController containerController;
 
 	// =============== Constructors ===============
 
-	public Main(ProjectZip projectZip, Projects projects)
+	public Main(ProjectZip projectZip, ProjectController projectController, ContainerController containerController)
 	{
 		this.projectZip = projectZip;
-		this.projects = projects;
+		this.projectController = projectController;
+		this.containerController = containerController;
 	}
 
 	// =============== Static Methods ===============
@@ -45,9 +49,10 @@ public class Main
 		final ContainerManager containerManager = new ContainerManager(fileRepository);
 		final ContainerService containerService = new ContainerService(containerManager);
 		final ProjectService projectService = new ProjectService(projectRepository, fileRepository, containerManager);
-		final Projects projects = new Projects(projectService, containerService);
+		final ContainerController containerController = new ContainerController(projectService, containerService);
+		final ProjectController projectController = new ProjectController(projectService);
 		final ProjectZip projectZip = new ProjectZip();
-		final Main service = new Main(projectZip, projects);
+		final Main service = new Main(projectZip, projectController, containerController);
 		service.start();
 	}
 
@@ -101,8 +106,8 @@ public class Main
 	private void addProjectsRoutes()
 	{
 		service.path("/projects", () -> {
-			service.post("", projects::create);
-			service.get("", projects::getAll);
+			service.post("", projectController::create);
+			service.get("", projectController::getAll);
 
 			service.path("/:projectId", this::addProjectRoutes);
 		});
@@ -110,11 +115,11 @@ public class Main
 
 	private void addProjectRoutes()
 	{
-		service.get("", projects::get);
-		service.put("", projects::update);
-		service.delete("", projects::delete);
-		service.get("/container", projects::getContainer);
-		service.delete("/container", projects::deleteContainer);
+		service.get("", projectController::get);
+		service.put("", projectController::update);
+		service.delete("", projectController::delete);
+		service.get("/container", containerController::get);
+		service.delete("/container", containerController::delete);
 	}
 
 	private void setupExceptionHandler()
