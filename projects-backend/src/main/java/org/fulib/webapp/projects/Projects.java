@@ -3,10 +3,11 @@ package org.fulib.webapp.projects;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import org.fulib.webapp.projects.db.FileRepository;
+import org.fulib.webapp.projects.db.ProjectRepository;
 import org.fulib.webapp.projects.docker.ContainerManager;
 import org.fulib.webapp.projects.model.Container;
 import org.fulib.webapp.projects.model.Project;
-import org.fulib.webapp.projects.mongo.Mongo;
 import org.fulib.webapp.projects.tool.Authenticator;
 import org.fulib.webapp.projects.tool.IDGenerator;
 import org.fulib.webapp.projects.zip.ProjectData;
@@ -34,20 +35,22 @@ public class Projects
 {
 	private static final String AUTH_MESSAGE = "{\n  \"error\": \"token user ID does not match ID of project\"\n}\n";
 
-	private final Mongo mongo;
+	private final ProjectRepository projectRepository;
+	private final FileRepository fileRepository;
 	private final ContainerManager containerManager;
 
-	public Projects(Mongo mongo)
+	public Projects(ProjectRepository projectRepository, FileRepository fileRepository, ContainerManager containerManager)
 	{
-		this.mongo = mongo;
-		this.containerManager = new ContainerManager(mongo);
+		this.projectRepository = projectRepository;
+		this.fileRepository = fileRepository;
+		this.containerManager = containerManager;
 	}
 
 	public Object get(Request request, Response response)
 	{
 		final String id = request.params("projectId");
 
-		final Project project = getOr404(this.mongo, id);
+		final Project project = getOr404(id);
 		checkAuth(request, project);
 
 		final JSONObject json = this.toJson(project);
@@ -63,9 +66,9 @@ public class Projects
 		}
 	}
 
-	static Project getOr404(Mongo mongo, String id)
+	private Project getOr404(String id)
 	{
-		final Project project = mongo.getProject(id);
+		final Project project = this.projectRepository.find(id);
 		if (project == null)
 		{
 			throw halt(404, notFoundMessage(id));
@@ -82,7 +85,7 @@ public class Projects
 	{
 		final String userId = Authenticator.getAndCheckUserIdQueryParam(request);
 
-		final List<Project> projects = this.mongo.getProjectsByUser(userId);
+		final List<Project> projects = this.projectRepository.findByUser(userId);
 		final JSONArray array = new JSONArray();
 		for (final Project project : projects)
 		{
@@ -116,7 +119,7 @@ public class Projects
 
 		this.generateProjectFiles(project);
 
-		this.mongo.saveProject(project);
+		this.projectRepository.save(project);
 
 		JSONObject responseJson = toJson(project);
 
@@ -134,7 +137,7 @@ public class Projects
 		final ProjectData projectData = getProjectData(project);
 
 		try (
-			final OutputStream uploadStream = this.mongo.uploadFile(project.getId());
+			final OutputStream uploadStream = this.fileRepository.upload(project.getId());
 			final GZIPOutputStream gzipOutputStream = new GZIPOutputStream(uploadStream);
 			final TarArchiveOutputStream tarOutputStream = new TarArchiveOutputStream(gzipOutputStream, "UTF-8")
 		)
@@ -173,12 +176,12 @@ public class Projects
 	public Object update(Request request, Response response)
 	{
 		final String id = request.params("projectId");
-		final Project project = getOr404(this.mongo, id);
+		final Project project = getOr404(id);
 		checkAuth(request, project);
 
 		this.readJson(new JSONObject(request.body()), project);
 
-		this.mongo.saveProject(project);
+		this.projectRepository.save(project);
 
 		final JSONObject json = this.toJson(project);
 		return json.toString(2);
@@ -187,7 +190,7 @@ public class Projects
 	public Object delete(Request request, Response response)
 	{
 		final String id = request.params("projectId");
-		final Project project = getOr404(this.mongo, id);
+		final Project project = getOr404(id);
 		checkAuth(request, project);
 
 		final Container container = this.containerManager.getContainer(project);
@@ -196,8 +199,8 @@ public class Projects
 			this.containerManager.stop(container);
 		}
 
-		this.mongo.deleteProject(id);
-		this.mongo.deleteFile(project.getId());
+		this.projectRepository.delete(id);
+		this.fileRepository.delete(project.getId());
 
 		return "{}";
 	}
@@ -205,7 +208,7 @@ public class Projects
 	public Object getContainer(Request request, Response response)
 	{
 		final String id = request.params("projectId");
-		final Project project = getOr404(this.mongo, id);
+		final Project project = getOr404(id);
 		checkAuth(request, project);
 
 		Container container = this.containerManager.getContainer(project);
@@ -263,7 +266,7 @@ public class Projects
 	public Object deleteContainer(Request request, Response response)
 	{
 		final String id = request.params("projectId");
-		final Project project = getOr404(this.mongo, id);
+		final Project project = getOr404(id);
 		final Container container = this.containerManager.getContainer(project);
 
 		if (container == null)

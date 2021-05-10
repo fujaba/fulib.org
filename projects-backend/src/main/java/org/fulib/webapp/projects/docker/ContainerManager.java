@@ -12,9 +12,9 @@ import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
 import com.github.dockerjava.transport.DockerHttpClient;
 import com.mongodb.MongoGridFSException;
 import org.apache.commons.io.IOUtils;
+import org.fulib.webapp.projects.db.FileRepository;
 import org.fulib.webapp.projects.model.Container;
 import org.fulib.webapp.projects.model.Project;
-import org.fulib.webapp.projects.mongo.Mongo;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,13 +31,13 @@ public class ContainerManager
 	private static final String PROXY_HOST = System.getenv("FULIB_PROJECTS_PROXY_URL");
 	private static final String NETWORK_NAME = "fulib-projects";
 
-	private final Mongo mongo;
+	private final FileRepository fileRepository;
 
 	private final DockerClient dockerClient;
 
-	public ContainerManager(Mongo mongo)
+	public ContainerManager(FileRepository fileRepository)
 	{
-		this.mongo = mongo;
+		this.fileRepository = fileRepository;
 
 		final DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder().build();
 		final DockerHttpClient httpClient = new ApacheDockerHttpClient.Builder()
@@ -134,7 +134,7 @@ public class ContainerManager
 		this.createProjectDir(container);
 
 		try (
-			final InputStream downloadStream = this.mongo.downloadFile(container.getProjectId());
+			final InputStream downloadStream = this.fileRepository.download(container.getProjectId());
 			final GZIPInputStream gzipInputStream = new GZIPInputStream(downloadStream)
 		)
 		{
@@ -181,7 +181,7 @@ public class ContainerManager
 			final InputStream tarInputStream = dockerClient
 				.copyArchiveFromContainerCmd(container.getId(), PROJECTS_DIR + projectId + "/.")
 				.exec();
-			final OutputStream uploadStream = this.mongo.uploadFile(projectId);
+			final OutputStream uploadStream = this.fileRepository.upload(projectId);
 			final GZIPOutputStream gzipOutputStream = new GZIPOutputStream(uploadStream)
 		)
 		{

@@ -1,6 +1,9 @@
 package org.fulib.webapp.projects;
 
-import org.fulib.webapp.projects.mongo.Mongo;
+import org.fulib.webapp.projects.db.FileRepository;
+import org.fulib.webapp.projects.db.Mongo;
+import org.fulib.webapp.projects.db.ProjectRepository;
+import org.fulib.webapp.projects.docker.ContainerManager;
 import org.fulib.webapp.projects.zip.ProjectZip;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,17 +27,7 @@ public class ProjectService
 
 	// =============== Constructors ===============
 
-	public ProjectService()
-	{
-		this(new Mongo(System.getenv("FULIB_MONGO_URL")));
-	}
-
-	ProjectService(Mongo db)
-	{
-		this(new ProjectZip(), new Projects(db));
-	}
-
-	ProjectService(ProjectZip projectZip, Projects projects)
+	public ProjectService(ProjectZip projectZip, Projects projects)
 	{
 		this.projectZip = projectZip;
 		this.projects = projects;
@@ -44,7 +37,14 @@ public class ProjectService
 
 	public static void main(String[] args)
 	{
-		new ProjectService().start();
+		final Mongo mongo = new Mongo(System.getenv("FULIB_MONGO_URL"));
+		final FileRepository fileRepository = new FileRepository(mongo);
+		final ProjectRepository projectRepository = new ProjectRepository(mongo);
+		final ContainerManager containerManager = new ContainerManager(fileRepository);
+		final Projects projects = new Projects(projectRepository, fileRepository, containerManager);
+		final ProjectZip projectZip = new ProjectZip();
+		final ProjectService service = new ProjectService(projectZip, projects);
+		service.start();
 	}
 
 	// =============== Methods ===============
