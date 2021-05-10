@@ -15,7 +15,7 @@ description = 'fulib.org Projects backend'
 
 // --------------- General Settings ---------------
 
-mainClassName = 'org.fulib.webapp.projects.ProjectService'
+mainClassName = 'org.fulib.webapp.projects.Main'
 
 shadowJar.archiveClassifier = 'all'
 
