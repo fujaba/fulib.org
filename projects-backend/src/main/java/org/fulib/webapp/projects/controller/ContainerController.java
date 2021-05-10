@@ -43,15 +43,6 @@ public class ContainerController
 		}
 	}
 
-	private JSONObject toJson(Container container)
-	{
-		final JSONObject json = new JSONObject();
-		json.put(Container.PROPERTY_ID, container.getId());
-		json.put(Container.PROPERTY_URL, container.getUrl());
-		json.put(Container.PROPERTY_PROJECT_ID, container.getProjectId());
-		return json;
-	}
-
 	public Object delete(Request request, Response response)
 	{
 		final String id = request.params("projectId");
@@ -76,5 +67,14 @@ public class ContainerController
 		this.containerService.stop(container);
 
 		return "{}";
+	}
+
+	private JSONObject toJson(Container container)
+	{
+		final JSONObject json = new JSONObject();
+		json.put(Container.PROPERTY_ID, container.getId());
+		json.put(Container.PROPERTY_URL, container.getUrl());
+		json.put(Container.PROPERTY_PROJECT_ID, container.getProjectId());
+		return json;
 	}
 }
