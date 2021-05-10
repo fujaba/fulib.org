@@ -1,6 +1,6 @@
 package org.fulib.webapp.projects.service;
 
-import org.fulib.webapp.projects.docker.ContainerManager;
+import org.fulib.webapp.projects.container.DockerContainerProvider;
 import org.fulib.webapp.projects.model.Container;
 import org.fulib.webapp.projects.model.Project;
 
@@ -12,24 +12,24 @@ import java.util.concurrent.TimeoutException;
 
 public class ContainerService
 {
-	private final ContainerManager containerManager;
+	private final DockerContainerProvider dockerContainerProvider;
 
-	public ContainerService(ContainerManager containerManager)
+	public ContainerService(DockerContainerProvider dockerContainerProvider)
 	{
-		this.containerManager = containerManager;
+		this.dockerContainerProvider = dockerContainerProvider;
 	}
 
 	public Container find(Project project)
 	{
-		return this.containerManager.getContainer(project);
+		return this.dockerContainerProvider.find(project);
 	}
 
 	public Container create(Project project) throws TimeoutException
 	{
-		Container container = this.containerManager.getContainer(project);
+		Container container = this.dockerContainerProvider.find(project);
 		if (container == null)
 		{
-			container = this.containerManager.start(project);
+			container = this.dockerContainerProvider.start(project);
 		}
 
 		for (int retry = 0; retry < 10; retry++)
@@ -56,8 +56,8 @@ public class ContainerService
 			catch (SocketException socketException)
 			{
 				// container is down, restart
-				this.containerManager.stop(container);
-				container = this.containerManager.start(project);
+				this.dockerContainerProvider.stop(container);
+				container = this.dockerContainerProvider.start(project);
 			}
 			catch (Exception e)
 			{
@@ -70,7 +70,6 @@ public class ContainerService
 
 	public void stop(Container container)
 	{
-		this.containerManager.uploadFilesFromContainer(container);
-		this.containerManager.stop(container);
+		this.dockerContainerProvider.stop(container);
 	}
 }

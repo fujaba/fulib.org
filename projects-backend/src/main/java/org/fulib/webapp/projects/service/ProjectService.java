@@ -4,7 +4,7 @@ import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.fulib.webapp.projects.db.FileRepository;
 import org.fulib.webapp.projects.db.ProjectRepository;
-import org.fulib.webapp.projects.docker.ContainerManager;
+import org.fulib.webapp.projects.container.DockerContainerProvider;
 import org.fulib.webapp.projects.model.Container;
 import org.fulib.webapp.projects.model.Project;
 import org.fulib.webapp.projects.model.ProjectData;
@@ -19,15 +19,15 @@ public class ProjectService
 {
 	private final ProjectRepository projectRepository;
 	private final FileRepository fileRepository;
-	private final ContainerManager containerManager;
+	private final DockerContainerProvider dockerContainerProvider;
 	private final ProjectGenerator projectGenerator;
 
 	public ProjectService(ProjectRepository projectRepository, FileRepository fileRepository,
-		ContainerManager containerManager, ProjectGenerator projectGenerator)
+		DockerContainerProvider dockerContainerProvider, ProjectGenerator projectGenerator)
 	{
 		this.projectRepository = projectRepository;
 		this.fileRepository = fileRepository;
-		this.containerManager = containerManager;
+		this.dockerContainerProvider = dockerContainerProvider;
 		this.projectGenerator = projectGenerator;
 	}
 
@@ -94,10 +94,10 @@ public class ProjectService
 
 	public void delete(Project project)
 	{
-		final Container container = this.containerManager.getContainer(project);
+		final Container container = this.dockerContainerProvider.find(project);
 		if (container != null)
 		{
-			this.containerManager.stop(container);
+			this.dockerContainerProvider.kill(container);
 		}
 
 		this.projectRepository.delete(project.getId());

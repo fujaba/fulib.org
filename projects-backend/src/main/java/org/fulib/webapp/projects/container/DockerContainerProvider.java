@@ -1,4 +1,4 @@
-package org.fulib.webapp.projects.docker;
+package org.fulib.webapp.projects.container;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.async.ResultCallback;
@@ -23,7 +23,7 @@ import java.util.*;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-public class ContainerManager
+public class DockerContainerProvider
 {
 	private static final String PROJECTS_DIR = "/projects/";
 	private static final String CONTAINER_IMAGE = System.getenv("FULIB_PROJECTS_CONTAINER_IMAGE");
@@ -35,7 +35,7 @@ public class ContainerManager
 
 	private final DockerClient dockerClient;
 
-	public ContainerManager(FileRepository fileRepository)
+	public DockerContainerProvider(FileRepository fileRepository)
 	{
 		this.fileRepository = fileRepository;
 
@@ -47,14 +47,7 @@ public class ContainerManager
 		dockerClient = DockerClientImpl.getInstance(config, httpClient);
 	}
 
-	public Container start(Project project)
-	{
-		final Container container = this.runContainer(project);
-		this.downloadFilesToContainer(container);
-		return container;
-	}
-
-	public Container getContainer(Project project)
+	public Container find(Project project)
 	{
 		final String projectId = project.getId();
 		final List<com.github.dockerjava.api.model.Container> containers = dockerClient
@@ -75,6 +68,13 @@ public class ContainerManager
 		result.setUrl(getContainerUrl(containerId));
 		result.setStopToken(dockerContainer.getLabels().get("org.fulib.stopToken"));
 		return result;
+	}
+
+	public Container start(Project project)
+	{
+		final Container container = this.runContainer(project);
+		this.downloadFilesToContainer(container);
+		return container;
 	}
 
 	private Container runContainer(Project project)
@@ -153,6 +153,12 @@ public class ContainerManager
 
 	public void stop(Container container)
 	{
+		this.uploadFilesFromContainer(container);
+		this.kill(container);
+	}
+
+	public void kill(Container container)
+	{
 		try
 		{
 			this.dockerClient.stopContainerCmd(container.getId()).exec();
@@ -174,7 +180,7 @@ public class ContainerManager
 		}
 	}
 
-	public void uploadFilesFromContainer(Container container)
+	private void uploadFilesFromContainer(Container container)
 	{
 		final String projectId = container.getProjectId();
 		try (

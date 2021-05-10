@@ -6,7 +6,7 @@ import org.fulib.webapp.projects.controller.ProjectZipController;
 import org.fulib.webapp.projects.db.FileRepository;
 import org.fulib.webapp.projects.db.Mongo;
 import org.fulib.webapp.projects.db.ProjectRepository;
-import org.fulib.webapp.projects.docker.ContainerManager;
+import org.fulib.webapp.projects.container.DockerContainerProvider;
 import org.fulib.webapp.projects.service.ContainerService;
 import org.fulib.webapp.projects.service.ProjectGenerator;
 import org.fulib.webapp.projects.service.ProjectService;
@@ -48,10 +48,11 @@ public class Main
 		final Mongo mongo = new Mongo(System.getenv("FULIB_MONGO_URL"));
 		final FileRepository fileRepository = new FileRepository(mongo);
 		final ProjectRepository projectRepository = new ProjectRepository(mongo);
-		final ContainerManager containerManager = new ContainerManager(fileRepository);
-		final ContainerService containerService = new ContainerService(containerManager);
+		final DockerContainerProvider dockerContainerProvider = new DockerContainerProvider(fileRepository);
+		final ContainerService containerService = new ContainerService(dockerContainerProvider);
 		final ProjectGenerator projectGenerator = new ProjectGenerator();
-		final ProjectService projectService = new ProjectService(projectRepository, fileRepository, containerManager,
+		final ProjectService projectService = new ProjectService(projectRepository, fileRepository,
+		                                                         dockerContainerProvider,
 		                                                         projectGenerator);
 		final ContainerController containerController = new ContainerController(projectService, containerService);
 		final ProjectController projectController = new ProjectController(projectService);
