@@ -4,6 +4,7 @@ import org.fulib.webapp.projects.db.FileRepository;
 import org.fulib.webapp.projects.db.Mongo;
 import org.fulib.webapp.projects.db.ProjectRepository;
 import org.fulib.webapp.projects.docker.ContainerManager;
+import org.fulib.webapp.projects.service.ContainerService;
 import org.fulib.webapp.projects.service.ProjectService;
 import org.fulib.webapp.projects.zip.ProjectZip;
 import org.slf4j.Logger;
@@ -42,8 +43,9 @@ public class Main
 		final FileRepository fileRepository = new FileRepository(mongo);
 		final ProjectRepository projectRepository = new ProjectRepository(mongo);
 		final ContainerManager containerManager = new ContainerManager(fileRepository);
+		final ContainerService containerService = new ContainerService(containerManager);
 		final ProjectService projectService = new ProjectService(projectRepository, fileRepository, containerManager);
-		final Projects projects = new Projects(projectService, fileRepository, containerManager);
+		final Projects projects = new Projects(projectService, containerService);
 		final ProjectZip projectZip = new ProjectZip();
 		final Main service = new Main(projectZip, projects);
 		service.start();

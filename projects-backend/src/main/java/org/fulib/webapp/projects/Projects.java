@@ -1,9 +1,8 @@
 package org.fulib.webapp.projects;
 
-import org.fulib.webapp.projects.db.FileRepository;
-import org.fulib.webapp.projects.docker.ContainerManager;
 import org.fulib.webapp.projects.model.Container;
 import org.fulib.webapp.projects.model.Project;
+import org.fulib.webapp.projects.service.ContainerService;
 import org.fulib.webapp.projects.service.ProjectService;
 import org.fulib.webapp.projects.tool.Authenticator;
 import org.fulib.webapp.projects.tool.IDGenerator;
@@ -13,12 +12,9 @@ import spark.Request;
 import spark.Response;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.net.URL;
 import java.time.Instant;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import static spark.Spark.halt;
 
@@ -27,12 +23,12 @@ public class Projects
 	private static final String AUTH_MESSAGE = "{\n  \"error\": \"token user ID does not match ID of project\"\n}\n";
 
 	private final ProjectService projectService;
-	private final ContainerManager containerManager;
+	private final ContainerService containerService;
 
-	public Projects(ProjectService projectService, FileRepository fileRepository, ContainerManager containerManager)
+	public Projects(ProjectService projectService, ContainerService containerService)
 	{
 		this.projectService = projectService;
-		this.containerManager = containerManager;
+		this.containerService = containerService;
 	}
 
 	public Object get(Request request, Response response)
@@ -150,47 +146,16 @@ public class Projects
 		final Project project = getOr404(id);
 		checkAuth(request, project);
 
-		Container container = this.containerManager.getContainer(project);
-		if (container == null)
+		try
 		{
-			container = this.containerManager.start(project);
+			final Container container = this.containerService.create(project);
+			final JSONObject containerJson = toJson(container);
+			return containerJson.toString();
 		}
-
-		for (int retry = 0; retry < 10; retry++)
+		catch (TimeoutException e)
 		{
-			try
-			{
-				final URL url = new URL(container.getUrl() + "/health");
-				final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-				connection.setConnectTimeout(500);
-				connection.setReadTimeout(500);
-				final int responseCode = connection.getResponseCode();
-				if (responseCode == 200)
-				{
-					final JSONObject json = toJson(container);
-					return json.toString(2);
-				}
-
-				// nginx is up, but project server is not ready
-				Thread.sleep(500);
-			}
-			catch (SocketTimeoutException timeoutException)
-			{
-				// retry
-			}
-			catch (SocketException socketException)
-			{
-				// container is down, restart
-				this.containerManager.stop(container);
-				container = this.containerManager.start(project);
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
+			throw halt(503, new JSONObject().put("error", e.getMessage()).toString());
 		}
-
-		throw halt(503, "{\"error\": \"Failed to launch healthy container.\"}");
 	}
 
 	private JSONObject toJson(Container container)
@@ -206,7 +171,7 @@ public class Projects
 	{
 		final String id = request.params("projectId");
 		final Project project = getOr404(id);
-		final Container container = this.containerManager.getContainer(project);
+		final Container container = this.containerService.find(project);
 
 		if (container == null)
 		{
@@ -223,8 +188,7 @@ public class Projects
 			throw halt(401, "{\"error\": \"invalid stopToken\"}\n");
 		}
 
-		this.containerManager.uploadFilesFromContainer(container);
-		this.containerManager.stop(container);
+		this.containerService.stop(container);
 
 		return "{}";
 	}
