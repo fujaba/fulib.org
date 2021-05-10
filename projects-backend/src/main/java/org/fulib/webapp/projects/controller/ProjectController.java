@@ -3,7 +3,6 @@ package org.fulib.webapp.projects.controller;
 import org.fulib.webapp.projects.model.Project;
 import org.fulib.webapp.projects.service.ProjectService;
 import org.fulib.webapp.projects.tool.Authenticator;
-import org.fulib.webapp.projects.tool.IDGenerator;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import spark.Request;
@@ -76,8 +75,7 @@ public class ProjectController
 
 	public Object create(Request request, Response response) throws IOException
 	{
-		final String id = IDGenerator.generateID();
-		final Project project = new Project(id);
+		final Project project = new Project();
 		this.readJson(new JSONObject(request.body()), project);
 
 		final Instant now = Instant.now();

@@ -4,10 +4,7 @@ import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.ReplaceOptions;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.Convention;
@@ -62,10 +59,5 @@ public class Mongo
 	public CodecRegistry getCodecRegistry()
 	{
 		return codecRegistry;
-	}
-
-	public static <T> void upsert(MongoCollection<T> collection, T doc, String idPropertyName, Object idPropertyValue)
-	{
-		collection.replaceOne(Filters.eq(idPropertyName, idPropertyValue), doc, new ReplaceOptions().upsert(true));
 	}
 }

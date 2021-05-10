@@ -1,7 +1,7 @@
 package org.fulib.webapp.projects.model;
 
-import org.bson.codecs.pojo.annotations.BsonCreator;
-import org.bson.codecs.pojo.annotations.BsonProperty;
+import org.bson.BsonType;
+import org.bson.codecs.pojo.annotations.BsonRepresentation;
 
 import java.time.Instant;
 
@@ -18,27 +18,24 @@ public class Project
 
 	// =============== Fields ===============
 
-	private final String id;
+	private String id;
 	private String userId;
 
 	private String name;
 	private String description;
 	private Instant created;
 
-	// =============== Constructors ===============
-
-	@BsonCreator
-	public Project(@BsonProperty(PROPERTY_ID) String id)
-	{
-		this.id = id;
-	}
-
 	// =============== Properties ===============
 
-	@BsonProperty
+	@BsonRepresentation(BsonType.OBJECT_ID)
 	public String getId()
 	{
 		return id;
+	}
+
+	public void setId(String id)
+	{
+		this.id = id;
 	}
 
 	public String getUserId()

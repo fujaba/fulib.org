@@ -3,6 +3,9 @@ package org.fulib.webapp.projects.db;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Indexes;
+import org.bson.BsonValue;
+import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 import org.fulib.webapp.projects.model.Project;
 
 import java.util.ArrayList;
@@ -20,14 +23,13 @@ public class ProjectRepository
 			.getDatabase()
 			.getCollection(PROJECT_COLLECTION_NAME, Project.class)
 			.withCodecRegistry(mongo.getCodecRegistry());
-		this.projects.createIndex(Indexes.ascending(Project.PROPERTY_ID));
 		this.projects.createIndex(Indexes.ascending(Project.PROPERTY_USER_ID));
 		this.projects.createIndex(Indexes.ascending(Project.PROPERTY_NAME));
 	}
 
 	public Project find(String id)
 	{
-		return this.projects.find(Filters.eq(Project.PROPERTY_ID, id)).first();
+		return this.projects.find(buildIdFilter(id)).first();
 	}
 
 	public List<Project> findByUser(String user)
@@ -35,13 +37,26 @@ public class ProjectRepository
 		return this.projects.find(Filters.eq(Project.PROPERTY_USER_ID, user)).into(new ArrayList<>());
 	}
 
-	public void save(Project project)
+	public void create(Project project)
 	{
-		Mongo.upsert(this.projects, project, Project.PROPERTY_ID, project.getId());
+		final BsonValue insertedId = this.projects.insertOne(project).getInsertedId();
+		assert insertedId != null;
+		final String id = insertedId.asObjectId().getValue().toHexString();
+		project.setId(id);
+	}
+
+	public void update(Project project)
+	{
+		this.projects.replaceOne(buildIdFilter(project.getId()), project);
 	}
 
 	public void delete(String id)
 	{
-		this.projects.deleteOne(Filters.eq(Project.PROPERTY_ID, id));
+		this.projects.deleteOne(buildIdFilter(id));
+	}
+
+	private Bson buildIdFilter(String id)
+	{
+		return Filters.eq("_id", new ObjectId(id));
 	}
 }

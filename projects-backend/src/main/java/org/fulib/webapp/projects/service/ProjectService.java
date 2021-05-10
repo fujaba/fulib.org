@@ -41,9 +41,10 @@ public class ProjectService
 		return this.projectRepository.findByUser(user);
 	}
 
-	public void create(Project project) throws IOException {
+	public void create(Project project) throws IOException
+	{
+		this.projectRepository.create(project);
 		this.generateProjectFiles(project);
-		this.projectRepository.save(project);
 	}
 
 	private void generateProjectFiles(Project project) throws IOException
@@ -89,7 +90,7 @@ public class ProjectService
 
 	public void update(Project project)
 	{
-		this.projectRepository.save(project);
+		this.projectRepository.update(project);
 	}
 
 	public void delete(Project project)
