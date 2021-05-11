@@ -77,7 +77,7 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
       }),
       switchMap(params => forkJoin([
         this.projectService.get(params.id).pipe(tap(project => this.project = project)),
-        this.projectService.getContainer(params.id).pipe(tap(container => this.container = container)),
+        this.projectService.createContainer(params.id).pipe(tap(container => this.container = container)),
       ])),
       tap(([project, container]) => {
         this.projectManager.init(project, container);

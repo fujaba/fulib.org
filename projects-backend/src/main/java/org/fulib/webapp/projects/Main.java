@@ -124,6 +124,7 @@ public class Main
 		service.put("", projectController::update);
 		service.delete("", projectController::delete);
 		service.get("/container", containerController::get);
+		service.post("/container", containerController::create);
 		service.delete("/container", containerController::delete);
 	}
 

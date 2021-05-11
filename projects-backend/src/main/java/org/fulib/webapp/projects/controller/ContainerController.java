@@ -31,6 +31,24 @@ public class ContainerController
 		final Project project = getOr404(projectService, id);
 		checkAuth(request, project);
 
+		final Container container = this.containerService.find(project);
+		if (container == null)
+		{
+			throw halt(404, new JSONObject()
+				.put("error", "no container for project with id '" + id + "' + is active")
+				.toString());
+		}
+
+		final JSONObject containerJson = toJson(container);
+		return containerJson.toString();
+	}
+
+	public Object create(Request request, Response response)
+	{
+		final String id = request.params("projectId");
+		final Project project = getOr404(projectService, id);
+		checkAuth(request, project);
+
 		try
 		{
 			final Container container = this.containerService.create(project);

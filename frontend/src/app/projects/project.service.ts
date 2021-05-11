@@ -40,6 +40,10 @@ export class ProjectService {
     return this.http.get<Container>(`${environment.projectsApiUrl}/projects/${projectId}/container`);
   }
 
+  createContainer(projectId: string): Observable<Container> {
+    return this.http.post<Container>(`${environment.projectsApiUrl}/projects/${projectId}/container`, {});
+  }
+
   getOwn(): Observable<Project[]> {
     return this.users.current$.pipe(switchMap(user => {
       if (!user || !user.id) {
