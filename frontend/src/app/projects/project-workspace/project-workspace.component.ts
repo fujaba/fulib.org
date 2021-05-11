@@ -101,6 +101,7 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.openModal?.close();
     this.projectManager.destroy();
   }
 }
