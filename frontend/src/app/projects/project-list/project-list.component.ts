@@ -54,4 +54,17 @@ export class ProjectListComponent implements OnInit {
     this.projectService.create(this.newProject).subscribe(project => this.projects.push(project));
     this.newProject = this.createProject();
   }
+
+  delete(project: Project) {
+    if (!confirm(`Are you sure you want to delete '${project.name}'? This action cannot be undone.`)) {
+      return;
+    }
+
+    this.projectService.delete(project.id).subscribe(() => {
+      const index = this.projects.indexOf(project);
+      if (index >= 0) {
+        this.projects.splice(index, 1);
+      }
+    });
+  }
 }
