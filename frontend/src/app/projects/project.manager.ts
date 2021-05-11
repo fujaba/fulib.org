@@ -1,10 +1,10 @@
-import {EventEmitter, Injectable} from '@angular/core';
-import {BehaviorSubject, interval, Subscription} from 'rxjs';
+import {Injectable} from '@angular/core';
+import {BehaviorSubject, interval, Subject, Subscription} from 'rxjs';
 import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
-import {FileChangeService} from './file-change.service';
 import {Container} from './model/container';
 import {File} from './model/file';
 import {FileEditor} from './model/file-editor';
+import {OpenRequest} from './model/open-request';
 import {Project} from './model/project';
 
 @Injectable()
@@ -16,13 +16,9 @@ export class ProjectManager {
   container: Container;
   fileRoot: File;
 
-  openRequests = new EventEmitter<FileEditor>();
+  openRequests = new Subject<OpenRequest>();
 
   currentFile = new BehaviorSubject<File | undefined>(undefined);
-
-  constructor(
-  ) {
-  }
 
   init(project: Project, container: Container) {
     this.project = project;
@@ -35,8 +31,11 @@ export class ProjectManager {
     });
   }
 
-  open(editor: FileEditor): void {
-    this.openRequests.next(editor);
+  openEditor(editor: FileEditor): void {
+    this.openRequests.next({
+      type: 'file-editor',
+      editor,
+    });
   }
 
   destroy() {

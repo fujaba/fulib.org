@@ -68,7 +68,7 @@ export class FileTreeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.projectManager.currentFile.next(this.file);
 
     if (!this.file.directory) {
-      this.projectManager.open({file: this.file, temporary});
+      this.projectManager.openEditor({file: this.file, temporary});
       return;
     }
 
@@ -77,7 +77,7 @@ export class FileTreeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   openPreview() {
-    this.projectManager.open({file: this.file, temporary: false, preview: true});
+    this.projectManager.openEditor({file: this.file, temporary: false, preview: true});
   }
 
   toggleRenaming() {

@@ -31,9 +31,9 @@ export class FileTabsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subscription.add(this.projectManager.openRequests.subscribe((editor: FileEditor) => {
-      if (this.active) {
-        this.open(editor);
+    this.subscription.add(this.projectManager.openRequests.subscribe(request => {
+      if (this.active && request.type === 'file-editor') {
+        this.open(request.editor);
       }
     }));
     // TODO close tabs on deletion
