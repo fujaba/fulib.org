@@ -3,17 +3,11 @@ package org.fulib.webapp.projects;
 import org.fulib.webapp.projects.controller.ContainerController;
 import org.fulib.webapp.projects.controller.ProjectController;
 import org.fulib.webapp.projects.controller.ProjectZipController;
-import org.fulib.webapp.projects.db.FileRepository;
-import org.fulib.webapp.projects.db.Mongo;
-import org.fulib.webapp.projects.db.ProjectRepository;
-import org.fulib.webapp.projects.container.DockerContainerProvider;
-import org.fulib.webapp.projects.service.ContainerService;
-import org.fulib.webapp.projects.service.ProjectGenerator;
-import org.fulib.webapp.projects.service.ProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Service;
 
+import javax.inject.Inject;
 import java.io.File;
 
 public class Main
@@ -26,13 +20,15 @@ public class Main
 
 	// =============== Fields ===============
 
-	private Service service;
 	private final ProjectZipController projectZipController;
 	private final ProjectController projectController;
 	private final ContainerController containerController;
 
+	private Service service;
+
 	// =============== Constructors ===============
 
+	@Inject
 	public Main(ProjectZipController projectZipController, ProjectController projectController,
 		ContainerController containerController)
 	{
@@ -45,20 +41,8 @@ public class Main
 
 	public static void main(String[] args)
 	{
-		final Mongo mongo = new Mongo(System.getenv("FULIB_MONGO_URL"));
-		final FileRepository fileRepository = new FileRepository(mongo);
-		final ProjectRepository projectRepository = new ProjectRepository(mongo);
-		final DockerContainerProvider dockerContainerProvider = new DockerContainerProvider(fileRepository);
-		final ContainerService containerService = new ContainerService(dockerContainerProvider);
-		final ProjectGenerator projectGenerator = new ProjectGenerator();
-		final ProjectService projectService = new ProjectService(projectRepository, fileRepository,
-		                                                         dockerContainerProvider,
-		                                                         projectGenerator);
-		final ContainerController containerController = new ContainerController(projectService, containerService);
-		final ProjectController projectController = new ProjectController(projectService);
-		final ProjectZipController projectZipController = new ProjectZipController(projectGenerator);
-		final Main service = new Main(projectZipController, projectController, containerController);
-		service.start();
+		final Main main = DaggerMainFactory.create().main();
+		main.start();
 	}
 
 	// =============== Methods ===============

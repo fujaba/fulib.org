@@ -9,6 +9,7 @@ import org.fulib.webapp.projects.model.Container;
 import org.fulib.webapp.projects.model.Project;
 import org.fulib.webapp.projects.model.ProjectData;
 
+import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -17,18 +18,18 @@ import java.util.zip.GZIPOutputStream;
 
 public class ProjectService
 {
-	private final ProjectRepository projectRepository;
-	private final FileRepository fileRepository;
-	private final DockerContainerProvider dockerContainerProvider;
-	private final ProjectGenerator projectGenerator;
+	@Inject
+	ProjectRepository projectRepository;
+	@Inject
+	FileRepository fileRepository;
+	@Inject
+	DockerContainerProvider dockerContainerProvider;
+	@Inject
+	ProjectGenerator projectGenerator;
 
-	public ProjectService(ProjectRepository projectRepository, FileRepository fileRepository,
-		DockerContainerProvider dockerContainerProvider, ProjectGenerator projectGenerator)
+	@Inject
+	public ProjectService()
 	{
-		this.projectRepository = projectRepository;
-		this.fileRepository = fileRepository;
-		this.dockerContainerProvider = dockerContainerProvider;
-		this.projectGenerator = projectGenerator;
 	}
 
 	public Project find(String id)

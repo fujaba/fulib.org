@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
@@ -18,11 +19,12 @@ public class ProjectController
 {
 	private static final String AUTH_MESSAGE = "{\n  \"error\": \"token user ID does not match ID of project\"\n}\n";
 
-	private final ProjectService projectService;
+	@Inject
+	ProjectService projectService;
 
-	public ProjectController(ProjectService projectService)
+	@Inject
+	public ProjectController()
 	{
-		this.projectService = projectService;
 	}
 
 	static void checkAuth(Request request, Project project)

@@ -4,6 +4,7 @@ import org.fulib.webapp.projects.container.DockerContainerProvider;
 import org.fulib.webapp.projects.model.Container;
 import org.fulib.webapp.projects.model.Project;
 
+import javax.inject.Inject;
 import java.net.HttpURLConnection;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
@@ -12,11 +13,12 @@ import java.util.concurrent.TimeoutException;
 
 public class ContainerService
 {
-	private final DockerContainerProvider dockerContainerProvider;
+	@Inject
+	DockerContainerProvider dockerContainerProvider;
 
-	public ContainerService(DockerContainerProvider dockerContainerProvider)
+	@Inject
+	public ContainerService()
 	{
-		this.dockerContainerProvider = dockerContainerProvider;
 	}
 
 	public Container find(Project project)

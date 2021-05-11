@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
 
+import javax.inject.Inject;
 import java.util.concurrent.TimeoutException;
 
 import static org.fulib.webapp.projects.controller.ProjectController.checkAuth;
@@ -16,13 +17,14 @@ import static spark.Spark.halt;
 
 public class ContainerController
 {
-	private final ProjectService projectService;
-	private final ContainerService containerService;
+	@Inject
+	ProjectService projectService;
+	@Inject
+	ContainerService containerService;
 
-	public ContainerController(ProjectService projectService, ContainerService containerService)
+	@Inject
+	public ContainerController()
 	{
-		this.projectService = projectService;
-		this.containerService = containerService;
 	}
 
 	public Object get(Request request, Response response)

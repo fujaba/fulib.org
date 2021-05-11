@@ -16,6 +16,7 @@ import org.fulib.webapp.projects.db.FileRepository;
 import org.fulib.webapp.projects.model.Container;
 import org.fulib.webapp.projects.model.Project;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -35,6 +36,7 @@ public class DockerContainerProvider
 
 	private final DockerClient dockerClient;
 
+	@Inject
 	public DockerContainerProvider(FileRepository fileRepository)
 	{
 		this.fileRepository = fileRepository;

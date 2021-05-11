@@ -4,6 +4,7 @@ import org.apache.commons.io.IOUtils;
 import org.fulib.webapp.projects.Main;
 import org.fulib.webapp.projects.model.ProjectData;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -22,6 +23,11 @@ public class ProjectGenerator
 	}
 
 	private final byte[] buffer = new byte[8192];
+
+	@Inject
+	public ProjectGenerator()
+	{
+	}
 
 	public void generate(ProjectData data, FileGenerator generator) throws IOException
 	{

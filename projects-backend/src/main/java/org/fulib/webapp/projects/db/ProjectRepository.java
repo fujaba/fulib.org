@@ -8,6 +8,7 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.fulib.webapp.projects.model.Project;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ public class ProjectRepository
 
 	private final MongoCollection<Project> projects;
 
+	@Inject
 	public ProjectRepository(Mongo mongo)
 	{
 		this.projects = mongo

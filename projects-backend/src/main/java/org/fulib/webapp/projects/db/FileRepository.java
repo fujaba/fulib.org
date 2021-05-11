@@ -6,6 +6,7 @@ import com.mongodb.client.gridfs.model.GridFSFile;
 import com.mongodb.client.model.Filters;
 import org.bson.BsonValue;
 
+import javax.inject.Inject;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class FileRepository
 
 	private final GridFSBucket projectFilesFS;
 
+	@Inject
 	public FileRepository(Mongo mongo)
 	{
 		this.projectFilesFS = GridFSBuckets.create(mongo.getDatabase(), FILES_COLLECTION_NAME);

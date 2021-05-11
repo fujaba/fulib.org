@@ -12,6 +12,7 @@ import org.bson.codecs.pojo.Conventions;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.fulib.webapp.projects.model.Project;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,11 +26,12 @@ public class Mongo
 	private final MongoDatabase database;
 	private final CodecRegistry codecRegistry;
 
-	public Mongo(String url)
+	@Inject
+	public Mongo()
 	{
 		// Basic DB Settings
 
-		final ConnectionString connString = new ConnectionString(url);
+		final ConnectionString connString = new ConnectionString(System.getenv("FULIB_MONGO_URL"));
 		final MongoClientSettings settings = MongoClientSettings
 			.builder()
 			.applyConnectionString(connString)

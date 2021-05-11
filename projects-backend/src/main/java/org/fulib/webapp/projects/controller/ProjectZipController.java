@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -15,6 +16,7 @@ public class ProjectZipController
 {
 	private final ProjectGenerator projectGenerator;
 
+	@Inject
 	public ProjectZipController(ProjectGenerator projectGenerator)
 	{
 		this.projectGenerator = projectGenerator;
