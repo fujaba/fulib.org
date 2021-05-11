@@ -14,7 +14,7 @@
 </ng-template>
 <app-tabs
   #tabs
-  [tabs]="editors" (tabsChanged)="editors = $event; saveEditors()"
+  [tabs]="editors" (tabsChange)="editors = $event; saveEditors()"
   [content]="content" [header]="header"
   (create)="newScratchFile()"
   [dndDropzone]="['file', 'editor']"

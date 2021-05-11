@@ -12,9 +12,10 @@ export class TabsComponent<E> implements OnInit {
   @Output() create = new EventEmitter<void>();
 
   @Input() tabs: E[] = [];
-  @Output() tabsChanged = new EventEmitter<E[]>();
+  @Output() tabsChange = new EventEmitter<E[]>();
 
-  current?: E;
+  @Input() current?: E;
+  @Output() currentChange = new EventEmitter<E | undefined>();
 
   constructor() {
   }
@@ -22,8 +23,13 @@ export class TabsComponent<E> implements OnInit {
   ngOnInit() {
   }
 
+  private setCurrent(current: E | undefined) {
+    this.current = current;
+    this.currentChange.next(current);
+  }
+
   private emitChange(): void {
-    this.tabsChanged.next(this.tabs);
+    this.tabsChange.next(this.tabs);
   }
 
   open(editor: E) {
@@ -31,7 +37,7 @@ export class TabsComponent<E> implements OnInit {
       this.tabs.push(editor);
       this.emitChange();
     }
-    this.current = editor;
+    this.setCurrent(editor);
   }
 
   close(editor: E) {
@@ -42,18 +48,18 @@ export class TabsComponent<E> implements OnInit {
       this.current = this.tabs[index] || this.tabs[index - 1];
     }
     if (editor === this.current) {
-      this.current = undefined;
+      this.setCurrent(undefined);
     }
   }
 
   closeOthers(editor: E) {
-    this.current = editor;
+    this.setCurrent(editor);
     this.tabs = [editor];
     this.emitChange();
   }
 
   closeAll() {
-    this.current = undefined;
+    this.setCurrent(undefined);
     this.tabs.length = 0;
     this.emitChange();
   }
@@ -74,7 +80,7 @@ export class TabsComponent<E> implements OnInit {
 
   private replaceOpenEditorIfNecessary(editor: E) {
     if (this.current && !this.tabs.includes(this.current)) {
-      this.current = editor;
+      this.setCurrent(editor);
     }
   }
 
