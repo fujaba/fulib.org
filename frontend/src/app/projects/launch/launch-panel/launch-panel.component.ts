@@ -90,6 +90,7 @@ export class LaunchPanelComponent implements OnInit {
     if (config.type === 'terminal') {
       const terminal: TerminalStub = {
         ...config.terminal,
+        title: config.name,
         id: config.allowParallel ? undefined : config.id,
       };
       this.projectManager.openTerminal(terminal);
