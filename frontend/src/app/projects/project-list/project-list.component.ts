@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {KeycloakService} from 'keycloak-angular';
 import {combineLatest} from 'rxjs';
@@ -23,6 +23,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   editing?: Project | ProjectStub;
 
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
     private projectService: ProjectService,
     private keycloak: KeycloakService,
@@ -82,6 +83,10 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     this.editing = project;
     this.openModal = this.ngbModal.open(this.editModal, {
       ariaLabelledBy: 'edit-modal-title',
+      beforeDismiss: async () => {
+        await this.router.navigate([], {queryParams: {edit: undefined}});
+        return true;
+      }
     });
   }
 
