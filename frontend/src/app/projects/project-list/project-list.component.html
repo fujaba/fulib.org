@@ -27,9 +27,9 @@
         <div class="btn-group" ngbDropdown role="group" aria-label="Actions">
           <button class="btn btn-primary dropdown-toggle-split" ngbDropdownToggle></button>
           <div class="dropdown-menu" ngbDropdownMenu>
-            <button ngbDropdownItem (click)="edit(project)">
+            <a ngbDropdownItem routerLink="." [queryParams]="{edit: project.id}">
               Edit
-            </button>
+            </a>
             <div class="dropdown-divider"></div>
             <button ngbDropdownItem class="text-danger" (click)="delete(project)">
               Delete
@@ -89,24 +89,24 @@
   </div>
 </ng-template>
 
-<ng-template #editModal let-modal>
+<ng-template #editModal>
   <div class="modal-header">
     <h4 class="modal-title" id="edit-modal-title">
       {{ editing!['id'] ? 'Edit' : 'New' }} Project
     </h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.close()">
+    <a class="close" aria-label="Close" routerLink="." [queryParams]="{edit: undefined}">
       <span aria-hidden="true">&times;</span>
-    </button>
+    </a>
   </div>
   <div class="modal-body">
     <app-project-form [project]="editing"></app-project-form>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="modal.close()">
+    <a class="btn btn-secondary" routerLink="." [queryParams]="{edit: undefined}">
       Cancel
-    </button>
-    <button type="button" class="btn btn-primary" (click)="save(); modal.close()">
+    </a>
+    <a class="btn btn-primary" (click)="save()" routerLink="." [queryParams]="{edit: undefined}">
       Save
-    </button>
+    </a>
   </div>
 </ng-template>

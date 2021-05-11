@@ -1,6 +1,9 @@
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {ActivatedRoute} from '@angular/router';
+import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {KeycloakService} from 'keycloak-angular';
+import {combineLatest} from 'rxjs';
+import {map} from 'rxjs/operators';
 import {Project, ProjectStub} from '../model/project';
 import {ProjectService} from '../project.service';
 
@@ -13,11 +16,14 @@ export class ProjectListComponent implements OnInit {
   @ViewChild('loginModal', {static: true}) loginModal: TemplateRef<any>;
   @ViewChild('editModal', {static: true}) editModal: TemplateRef<any>;
 
+  openModal?: NgbModalRef;
+
   projects: Project[] = [];
 
   editing?: Project | ProjectStub;
 
   constructor(
+    private route: ActivatedRoute,
     private projectService: ProjectService,
     private keycloak: KeycloakService,
     private ngbModal: NgbModal,
@@ -36,7 +42,21 @@ export class ProjectListComponent implements OnInit {
         });
       }
 
-      this.projectService.getOwn().subscribe(projects => this.projects = projects);
+      combineLatest([
+        this.projectService.getOwn(),
+        this.route.queryParams.pipe(map(({edit}) => edit)),
+      ]).subscribe(([projects, edit]) => {
+        this.projects = projects;
+        if (edit) {
+          const project = projects.find(p => p.id === edit);
+          if (project) {
+            this.edit(project);
+          }
+        } else {
+          this.editing = undefined;
+          this.openModal?.close();
+        }
+      });
     });
   }
 
@@ -53,7 +73,7 @@ export class ProjectListComponent implements OnInit {
 
   edit(project: Project | ProjectStub): void {
     this.editing = project;
-    this.ngbModal.open(this.editModal, {
+    this.openModal = this.ngbModal.open(this.editModal, {
       ariaLabelledBy: 'edit-modal-title',
     });
   }
