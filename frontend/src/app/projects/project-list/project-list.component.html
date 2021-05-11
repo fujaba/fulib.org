@@ -1,10 +1,10 @@
 <div class="container">
   <h1>
     My Projects
-    <button class="btn btn-success" (click)="create()">
+    <a class="btn btn-success" routerLink="." [queryParams]="{edit: 'new'}">
       <i class="bi-folder-plus"></i>
       New
-    </button>
+    </a>
   </h1>
 
   <ul class="list-group">

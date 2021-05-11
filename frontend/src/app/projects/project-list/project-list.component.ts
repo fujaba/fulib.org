@@ -48,7 +48,9 @@ export class ProjectListComponent implements OnInit, OnDestroy {
         this.route.queryParams.pipe(map(({edit}) => edit)),
       ]).subscribe(([projects, edit]) => {
         this.projects = projects;
-        if (edit) {
+        if (edit === 'new') {
+          this.create();
+        } else if (edit) {
           const project = projects.find(p => p.id === edit);
           if (project) {
             this.edit(project);
