@@ -1,8 +1,8 @@
-import {Component, Injector, OnDestroy, OnInit, TemplateRef, Type, ViewChild} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {Component, OnDestroy, OnInit, TemplateRef, Type, ViewChild} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {forkJoin} from 'rxjs';
-import {switchMap, tap} from 'rxjs/operators';
+import {map, switchMap, tap} from 'rxjs/operators';
 
 import {EditorService} from '../editor.service';
 import {FileTypeService} from '../file-type.service';
@@ -52,7 +52,7 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
   fileTabsComponent?: typeof SplitPanelComponent;
 
   constructor(
-    parentInjector: Injector,
+    private router: Router,
     private route: ActivatedRoute,
     private projectService: ProjectService,
     private fileService: FileService,
@@ -63,8 +63,15 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.route.queryParams.pipe(
+      map(({panel}) => panel),
+    ).subscribe(panel => {
+      this.active = this.sidebarItems.find(i => i.id === panel);
+    });
+
     this.route.params.pipe(
       tap(() => {
+        this.router.navigate([], {queryParams: {panel: undefined}, skipLocationChange: true});
         this.projectManager.destroy();
         this.active = undefined;
         this.openModal = this.ngbModal.open(this.loadingModal, {
@@ -95,7 +102,7 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
         });
       }),
     ).subscribe(_ => {
-      this.active = this.sidebarItems[0];
+      this.router.navigate([], {queryParams: {panel: 'project'}, skipLocationChange: true});
       this.openModal.close();
     });
   }

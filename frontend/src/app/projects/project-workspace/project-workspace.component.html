@@ -3,8 +3,9 @@
     <div *ngFor="let entry of sidebarItems"
          class="sidebar-item"
          [ngbTooltip]="entry.name" placement="right"
-         [class.active]="active === entry"
-         (click)="active = active === entry ? undefined : entry"
+         routerLink="."
+         routerLinkActive="active"
+         [queryParams]="{panel: active === entry ? undefined : entry.id}"
     >
       <i class="bi-{{entry.icon}}" role="navigation" [attr.aria-label]="entry.name"></i>
     </div>
