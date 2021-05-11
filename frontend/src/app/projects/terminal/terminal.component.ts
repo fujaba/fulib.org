@@ -32,7 +32,7 @@ export class TerminalComponent implements OnInit, OnDestroy, AfterViewInit {
           case 'output':
             return true;
           case 'exited':
-            this.terminal.write(`\nProcess finished with exit code ${message.exitCode}.\r\n`);
+            this.terminal.write(`\r\nProcess finished with exit code ${message.exitCode}.\r\n`);
             return false;
           default:
             return false;
