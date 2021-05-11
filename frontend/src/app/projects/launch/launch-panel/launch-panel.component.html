@@ -1,8 +1,9 @@
 <div class="p-3">
   <h4>
     Launch
-    <button type="button" class="btn btn-success" (click)="create()">
-      + New
+    <button type="button" class="btn btn-success btn-sm" (click)="create()">
+      <i class="bi-plus-circle"></i>
+      New
     </button>
   </h4>
   <ul class="list-group">
@@ -22,7 +23,9 @@
 
 <ng-template #editModal let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="launch-config-modal-title">Edit Launch Config</h4>
+    <h4 class="modal-title" id="launch-config-modal-title">
+      {{ editing!.id ? 'Edit' : 'New' }} Launch Config
+    </h4>
     <button type="button" class="close" aria-label="Close" (click)="modal.close()">
       <span aria-hidden="true">&times;</span>
     </button>

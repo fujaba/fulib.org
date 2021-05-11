@@ -37,7 +37,7 @@ export class LaunchPanelComponent implements OnInit {
     this.editing = {
       type: 'terminal',
       name: 'New Terminal',
-      id: Math.random().toString(36),
+      id: '',
       terminal: {
         executable: '/bin/bash',
         workingDirectory: this.projectManager.fileRoot.path,
@@ -71,6 +71,9 @@ export class LaunchPanelComponent implements OnInit {
     const config = this.editing;
     if (!config) {
       return;
+    }
+    if (!config.id) {
+      config.id = Math.random().toString(36);
     }
     this.launchService.saveLaunchConfig(this.projectManager.container, config).subscribe(() => {
       const index = this.configs.findIndex(existing => existing.id === config.id);
