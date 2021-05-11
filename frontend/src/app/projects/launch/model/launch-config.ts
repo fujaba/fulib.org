@@ -11,5 +11,6 @@ export interface BaseLaunchConfig {
 
 export interface TerminalLaunchConfig extends BaseLaunchConfig {
   type: 'terminal';
+  allowParallel?: boolean;
   terminal: TerminalStub;
 }

@@ -1,8 +1,9 @@
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {TerminalStub} from '../../model/terminal';
 import {ProjectManager} from '../../project.manager';
 import {LaunchService} from '../launch.service';
-import {BaseLaunchConfig, LaunchConfig, TerminalLaunchConfig} from '../model/launch-config';
+import {LaunchConfig} from '../model/launch-config';
 
 @Component({
   selector: 'app-launch-panel',
@@ -87,7 +88,11 @@ export class LaunchPanelComponent implements OnInit {
 
   launch(config: LaunchConfig) {
     if (config.type === 'terminal') {
-      this.projectManager.openTerminal(config.terminal);
+      const terminal: TerminalStub = {
+        ...config.terminal,
+        id: config.allowParallel ? undefined : config.id,
+      };
+      this.projectManager.openTerminal(terminal);
     }
   }
 }

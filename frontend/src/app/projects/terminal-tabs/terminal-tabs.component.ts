@@ -25,10 +25,21 @@ export class TerminalTabsComponent implements OnInit, OnDestroy {
     this.addTab();
 
     this.subscription = this.projectManager.openRequests.subscribe(request => {
-      if (request.type === 'terminal') {
-        const terminal = {...request.terminal, id: this.generateId()};
-        this.tabs.push(terminal);
-        this.current = terminal;
+      if (request.type !== 'terminal') {
+        return;
+      }
+
+      const terminal = request.terminal;
+      if (terminal.id) {
+        const existing = this.tabs.find(t => t.id === terminal.id);
+        if (existing) {
+          this.current = existing;
+        } else {
+          this.openNew(terminal as Terminal);
+        }
+      } else {
+        terminal.id = this.generateId();
+        this.openNew(terminal as Terminal);
       }
     });
   }
@@ -38,11 +49,14 @@ export class TerminalTabsComponent implements OnInit, OnDestroy {
   }
 
   addTab() {
-    const terminal = {
+    this.openNew({
       id: this.generateId(),
       executable: '/bin/bash',
       workingDirectory: this.projectManager.fileRoot.path,
-    };
+    });
+  }
+
+  private openNew(terminal: Terminal) {
     this.tabs.push(terminal);
     this.current = terminal;
   }
