@@ -10,6 +10,7 @@ import {ProjectManager} from '../project.manager';
 })
 export class TerminalTabsComponent implements OnInit, OnDestroy {
   tabs: Terminal[] = [];
+  current?: Terminal;
 
   nextId = 0;
 
@@ -25,7 +26,9 @@ export class TerminalTabsComponent implements OnInit, OnDestroy {
 
     this.subscription = this.projectManager.openRequests.subscribe(request => {
       if (request.type === 'terminal') {
-        this.tabs.push({...request.terminal, id: this.generateId()});
+        const terminal = {...request.terminal, id: this.generateId()};
+        this.tabs.push(terminal);
+        this.current = terminal;
       }
     });
   }
@@ -35,12 +38,13 @@ export class TerminalTabsComponent implements OnInit, OnDestroy {
   }
 
   addTab() {
-    const id = this.generateId();
-    this.tabs.push({
-      id,
+    const terminal = {
+      id: this.generateId(),
       executable: '/bin/bash',
       workingDirectory: this.projectManager.fileRoot.path,
-    });
+    };
+    this.tabs.push(terminal);
+    this.current = terminal;
   }
 
   private generateId(): string {

@@ -1,4 +1,4 @@
-<app-tabs [tabs]="tabs" [header]="header" [content]="content" (create)="addTab()"></app-tabs>
+<app-tabs [(tabs)]="tabs" [(current)]="current" [header]="header" [content]="content" (create)="addTab()"></app-tabs>
 <ng-template #header let-terminal>
   {{terminal.executable}}
 </ng-template>
