@@ -1,5 +1,11 @@
 <div class="container">
-  <h1>My Projects</h1>
+  <h1>
+    My Projects
+    <button class="btn btn-success" (click)="create()">
+      <i class="bi-folder-plus"></i>
+      New
+    </button>
+  </h1>
 
   <ul class="list-group">
     <li *ngFor="let project of projects" class="list-group-item d-flex">
@@ -21,6 +27,10 @@
         <div class="btn-group" ngbDropdown role="group" aria-label="Actions">
           <button class="btn btn-primary dropdown-toggle-split" ngbDropdownToggle></button>
           <div class="dropdown-menu" ngbDropdownMenu>
+            <button ngbDropdownItem (click)="edit(project)">
+              Edit
+            </button>
+            <div class="dropdown-divider"></div>
             <button ngbDropdownItem class="text-danger" (click)="delete(project)">
               Delete
             </button>
@@ -29,14 +39,6 @@
       </div>
     </li>
   </ul>
-
-  <hr/>
-
-  <h2>New Project</h2>
-  <app-project-form [project]="newProject"></app-project-form>
-  <button type="button" class="btn btn-success" [disabled]="!newProject.name" (click)="create()">
-    Create
-  </button>
 </div>
 
 <ng-template #loginModal>
@@ -83,6 +85,28 @@
   <div class="modal-footer">
     <button type="button" class="btn btn-primary" (click)="login()">
       Login
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #editModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="edit-modal-title">
+      {{ editing!['id'] ? 'Edit' : 'New' }} Project
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-project-form [project]="editing"></app-project-form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.close()">
+      Cancel
+    </button>
+    <button type="button" class="btn btn-primary" (click)="save(); modal.close()">
+      Save
     </button>
   </div>
 </ng-template>

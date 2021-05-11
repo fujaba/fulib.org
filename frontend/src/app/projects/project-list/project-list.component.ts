@@ -11,23 +11,17 @@ import {ProjectService} from '../project.service';
 })
 export class ProjectListComponent implements OnInit {
   @ViewChild('loginModal', {static: true}) loginModal: TemplateRef<any>;
+  @ViewChild('editModal', {static: true}) editModal: TemplateRef<any>;
 
   projects: Project[] = [];
 
-  newProject: ProjectStub = this.createProject();
+  editing?: Project | ProjectStub;
 
   constructor(
     private projectService: ProjectService,
     private keycloak: KeycloakService,
     private ngbModal: NgbModal,
   ) {
-  }
-
-  createProject(): ProjectStub {
-    return {
-      name: '',
-      description: '',
-    };
   }
 
   ngOnInit(): void {
@@ -51,8 +45,28 @@ export class ProjectListComponent implements OnInit {
   }
 
   create(): void {
-    this.projectService.create(this.newProject).subscribe(project => this.projects.push(project));
-    this.newProject = this.createProject();
+    this.edit({
+      name: '',
+      description: '',
+    });
+  }
+
+  edit(project: Project | ProjectStub): void {
+    this.editing = project;
+    this.ngbModal.open(this.editModal, {
+      ariaLabelledBy: 'edit-modal-title',
+    });
+  }
+
+  save(): void {
+    if (!this.editing) {
+      return;
+    }
+    if ('id' in this.editing) {
+      this.projectService.update(this.editing).subscribe();
+    } else {
+      this.projectService.create(this.editing).subscribe(project => this.projects.push(project));
+    }
   }
 
   delete(project: Project) {
