@@ -1,4 +1,4 @@
-import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {KeycloakService} from 'keycloak-angular';
@@ -12,7 +12,7 @@ import {ProjectService} from '../project.service';
   templateUrl: './project-list.component.html',
   styleUrls: ['./project-list.component.scss'],
 })
-export class ProjectListComponent implements OnInit {
+export class ProjectListComponent implements OnInit, OnDestroy {
   @ViewChild('loginModal', {static: true}) loginModal: TemplateRef<any>;
   @ViewChild('editModal', {static: true}) editModal: TemplateRef<any>;
 
@@ -33,13 +33,14 @@ export class ProjectListComponent implements OnInit {
   ngOnInit(): void {
     this.keycloak.isLoggedIn().then(loggedIn => {
       if (!loggedIn) {
-        this.ngbModal.open(this.loginModal, {
+        this.openModal = this.ngbModal.open(this.loginModal, {
           ariaLabelledBy: 'login-modal-title',
           centered: true,
           keyboard: false,
           backdrop: 'static',
           backdropClass: 'backdrop-blur',
         });
+        return;
       }
 
       combineLatest([
@@ -58,6 +59,10 @@ export class ProjectListComponent implements OnInit {
         }
       });
     });
+  }
+
+  ngOnDestroy(): void {
+    this.openModal?.close();
   }
 
   login(): void {
