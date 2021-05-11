@@ -1,7 +1,7 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
+import {NgbDropdownModule, NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
 import {LaunchPanelComponent} from './launch-panel/launch-panel.component';
 import { CommandFormComponent } from './command-form/command-form.component';
 
@@ -15,6 +15,7 @@ import { CommandFormComponent } from './command-form/command-form.component';
         CommonModule,
         FormsModule,
         NgbTooltipModule,
+        NgbDropdownModule,
     ],
   exports: [
     LaunchPanelComponent,
