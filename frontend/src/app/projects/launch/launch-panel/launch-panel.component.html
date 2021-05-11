@@ -10,7 +10,7 @@
     <li *ngFor="let config of configs" class="list-group-item d-flex">
       {{config.name}}
       <div class="btn-group btn-group-sm ml-auto align-self-center">
-        <button type="button" class="btn btn-success">
+        <button type="button" class="btn btn-success" (click)="launch(config)">
           <i class="bi-play"></i>
           Launch
         </button>

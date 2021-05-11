@@ -6,6 +6,7 @@ import {File} from './model/file';
 import {FileEditor} from './model/file-editor';
 import {OpenRequest} from './model/open-request';
 import {Project} from './model/project';
+import {Terminal, TerminalStub} from './model/terminal';
 
 @Injectable()
 export class ProjectManager {
@@ -35,6 +36,13 @@ export class ProjectManager {
     this.openRequests.next({
       type: 'file-editor',
       editor,
+    });
+  }
+
+  openTerminal(terminal: TerminalStub): void {
+    this.openRequests.next({
+      type: 'terminal',
+      terminal,
     });
   }
 

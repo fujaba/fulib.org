@@ -1,4 +1,4 @@
-import {Terminal} from '../../model/terminal';
+import {TerminalStub} from '../../model/terminal';
 
 export type LaunchConfig =
   | TerminalLaunchConfig
@@ -11,5 +11,5 @@ export interface BaseLaunchConfig {
 
 export interface TerminalLaunchConfig extends BaseLaunchConfig {
   type: 'terminal';
-  terminal: Omit<Terminal, 'id'>;
+  terminal: TerminalStub;
 }

@@ -2,7 +2,7 @@ import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ProjectManager} from '../../project.manager';
 import {LaunchService} from '../launch.service';
-import {BaseLaunchConfig, LaunchConfig} from '../model/launch-config';
+import {BaseLaunchConfig, LaunchConfig, TerminalLaunchConfig} from '../model/launch-config';
 
 @Component({
   selector: 'app-launch-panel',
@@ -83,5 +83,11 @@ export class LaunchPanelComponent implements OnInit {
         this.configs.push(config);
       }
     });
+  }
+
+  launch(config: LaunchConfig) {
+    if (config.type === 'terminal') {
+      this.projectManager.openTerminal(config.terminal);
+    }
   }
 }
