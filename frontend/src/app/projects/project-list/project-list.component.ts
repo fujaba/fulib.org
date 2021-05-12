@@ -58,14 +58,14 @@ export class ProjectListComponent implements OnInit, OnDestroy {
           }
         } else {
           this.editing = undefined;
-          this.openModal?.close();
+          this.openModal?.dismiss();
         }
       });
     });
   }
 
   ngOnDestroy(): void {
-    this.openModal?.close();
+    this.openModal?.dismiss();
   }
 
   login(): void {
@@ -83,10 +83,9 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     this.editing = project;
     this.openModal = this.ngbModal.open(this.editModal, {
       ariaLabelledBy: 'edit-modal-title',
-      beforeDismiss: async () => {
-        await this.router.navigate([], {queryParams: {edit: undefined}});
-        return true;
-      }
+    });
+    this.openModal.hidden.subscribe(() => {
+      this.router.navigate([], {queryParams: {edit: undefined}});
     });
   }
 

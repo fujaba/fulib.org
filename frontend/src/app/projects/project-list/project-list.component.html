@@ -92,24 +92,24 @@
   </div>
 </ng-template>
 
-<ng-template #editModal>
+<ng-template #editModal let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="edit-modal-title">
       {{ editing!['id'] ? 'Edit' : 'New' }} Project
     </h4>
-    <a class="close" aria-label="Close" routerLink="." [queryParams]="{edit: undefined}">
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
       <span aria-hidden="true">&times;</span>
-    </a>
+    </button>
   </div>
   <div class="modal-body">
     <app-project-form [project]="editing"></app-project-form>
   </div>
   <div class="modal-footer">
-    <a class="btn btn-secondary" routerLink="." [queryParams]="{edit: undefined}">
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">
       Cancel
-    </a>
-    <a class="btn btn-primary" (click)="save()" routerLink="." [queryParams]="{edit: undefined}">
+    </button>
+    <button class="btn btn-primary" (click)="save(); modal.close()">
       Save
-    </a>
+    </button>
   </div>
 </ng-template>
