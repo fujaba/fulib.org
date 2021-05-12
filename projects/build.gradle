@@ -31,16 +31,16 @@ dependencies {
 	// --------------- Other Libraries ---------------
 
 	// https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
-	compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
+	implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
 
 	// https://mvnrepository.com/artifact/com.sparkjava/spark-core
-	compile group: 'com.sparkjava', name: 'spark-core', version: '2.9.3'
+	implementation group: 'com.sparkjava', name: 'spark-core', version: '2.9.3'
 
 	// https://mvnrepository.com/artifact/org.jetbrains.pty4j/pty4j
-	compile group: 'org.jetbrains.pty4j', name: 'pty4j', version: '0.11.3'
+	implementation group: 'org.jetbrains.pty4j', name: 'pty4j', version: '0.11.3'
 
 	// https://mvnrepository.com/artifact/org.json/json
-	compile group: 'org.json', name: 'json', version: '20201115'
+	implementation group: 'org.json', name: 'json', version: '20201115'
 
 	// https://mvnrepository.com/artifact/net.sf.jpathwatch/jpathwatch
 	implementation group: 'net.sf.jpathwatch', name: 'jpathwatch', version: '0.95'
