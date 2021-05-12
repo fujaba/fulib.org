@@ -1,3 +1,9 @@
+FROM gradle as preload
+WORKDIR /opt/preload
+COPY preload.build.gradle build.gradle
+RUN gradle --no-daemon wrapper
+RUN ./gradlew --no-daemon downloadDependencies
+
 FROM debian:latest
 
 # Basic Dependencies
@@ -24,6 +30,9 @@ COPY ./build/libs/projects-*-all.jar /opt/projects/
 # nginx
 COPY nginx.conf /etc/nginx/sites-available/default
 RUN sed -i 's/^user.*;$/user root;/' /etc/nginx/nginx.conf
+
+# Preload
+COPY --from=preload /root/.gradle /root/.gradle
 
 # Command
 CMD nginx -g 'daemon off;' & java -jar /opt/projects/projects-*-all.jar

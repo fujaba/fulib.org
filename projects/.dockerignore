@@ -1,3 +1,4 @@
 **
 !/build/libs/projects-*-all.jar
 !/nginx.conf
+!preload.build.gradle
