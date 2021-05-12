@@ -1,5 +1,8 @@
-import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
+import {combineLatest, of} from 'rxjs';
+import {catchError, map} from 'rxjs/operators';
 import {TerminalStub} from '../../model/terminal';
 import {ProjectManager} from '../../project.manager';
 import {LaunchService} from '../launch.service';
@@ -10,14 +13,18 @@ import {LaunchConfig} from '../model/launch-config';
   templateUrl: './launch-panel.component.html',
   styleUrls: ['./launch-panel.component.scss'],
 })
-export class LaunchPanelComponent implements OnInit {
+export class LaunchPanelComponent implements OnInit, OnDestroy {
   @ViewChild('editModal', {static: true}) editModal: TemplateRef<any>;
+
+  openModal?: NgbModalRef;
 
   configs: LaunchConfig[] = [];
 
   editing?: LaunchConfig;
 
   constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
     private launchService: LaunchService,
     private projectManager: ProjectManager,
     private ngbModal: NgbModal,
@@ -25,17 +32,31 @@ export class LaunchPanelComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.launchService.getLaunchConfigs(this.projectManager.container).subscribe(configs => {
+    combineLatest([
+      this.launchService.getLaunchConfigs(this.projectManager.container).pipe(catchError(() => of([]))),
+      this.activatedRoute.queryParams.pipe(map(({launchConfig}) => launchConfig)),
+    ]).subscribe(([configs, launchConfigId]) => {
       this.configs = configs;
+      if (launchConfigId === 'new') {
+        this.create();
+      } else if (launchConfigId) {
+        const launchConfig = configs.find(l => l.id === launchConfigId);
+        if (launchConfig) {
+          this.edit(launchConfig);
+        }
+      } else {
+        this.editing = undefined;
+        this.openModal?.dismiss();
+      }
     });
   }
 
-  open(): void {
-    this.ngbModal.open(this.editModal, {ariaLabelledBy: 'launch-config-modal-title'});
+  ngOnDestroy(): void {
+    this.openModal?.dismiss();
   }
 
   create(): void {
-    this.editing = {
+    this.edit({
       type: 'terminal',
       name: 'New Terminal',
       id: '',
@@ -43,13 +64,17 @@ export class LaunchPanelComponent implements OnInit {
         executable: '/bin/bash',
         workingDirectory: this.projectManager.fileRoot.path,
       },
-    };
-    this.open();
+    });
   }
 
   edit(config: LaunchConfig) {
     this.editing = config;
-    this.open();
+    this.openModal = this.ngbModal.open(this.editModal, {
+      ariaLabelledBy: 'launch-config-modal-title',
+    });
+    this.openModal.hidden.subscribe(() => {
+      this.router.navigate([], {queryParams: {launchConfig: null}, queryParamsHandling: 'merge'});
+    });
   }
 
   delete(config: LaunchConfig) {

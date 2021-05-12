@@ -1,10 +1,10 @@
 <div class="p-3">
   <h4>
     Launch
-    <button type="button" class="btn btn-success btn-sm" (click)="create()">
+    <a class="btn btn-success btn-sm" routerLink="." [queryParams]="{ launchConfig: 'new' }" queryParamsHandling="merge">
       <i class="bi-plus-circle"></i>
       New
-    </button>
+    </a>
   </h4>
   <ul class="list-group">
     <li *ngFor="let config of configs" class="list-group-item d-flex">
@@ -17,9 +17,9 @@
         <div class="btn-group btn-group-sm" ngbDropdown role="group" aria-label="Actions" container="body">
           <button class="btn btn-success dropdown-toggle-split" ngbDropdownToggle></button>
           <div class="dropdown-menu" ngbDropdownMenu>
-            <button ngbDropdownItem (click)="edit(config)">
+            <a ngbDropdownItem routerLink="." [queryParams]="{ launchConfig: config.id }" queryParamsHandling="merge">
               Edit
-            </button>
+            </a>
             <div class="dropdown-divider"></div>
             <button ngbDropdownItem class="text-danger" (click)="delete(config)">
               Delete
@@ -36,7 +36,7 @@
     <h4 class="modal-title" id="launch-config-modal-title">
       {{ editing!.id ? 'Edit' : 'New' }} Launch Config
     </h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.close()">
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -44,7 +44,7 @@
     <app-command-form [config]="editing"></app-command-form>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="modal.close()">Cancel</button>
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Cancel</button>
     <button type="button" class="btn btn-primary" (click)="save(); modal.close()">Save</button>
   </div>
 </ng-template>
