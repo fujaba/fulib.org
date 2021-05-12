@@ -1,8 +1,9 @@
-FROM gradle as preload
+FROM gradle:jre11 as preload
 WORKDIR /opt/preload
 COPY preload.build.gradle build.gradle
-RUN gradle --no-daemon wrapper
-RUN ./gradlew --no-daemon downloadDependencies
+RUN gradle wrapper
+RUN ./gradlew downloadDependencies
+RUN ./gradlew --stop
 
 FROM debian:latest
 

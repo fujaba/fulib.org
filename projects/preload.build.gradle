@@ -9,9 +9,20 @@ repositories {
 }
 
 dependencies {
+	// https://mvnrepository.com/artifact/org.fulib/fulibScenarios
 	implementation group: 'org.fulib', name: 'fulibScenarios', version: '1.7.0'
+
+	// https://mvnrepository.com/artifact/org.fulib/fulibTools
+	testImplementation group: 'org.fulib', name: 'fulibTools', version: '1.5.1'
+
+	// https://mvnrepository.com/artifact/org.fulib/fulibMockups
+	testImplementation group: 'org.fulib', name: 'fulibMockups', version: '0.4.0'
+
+	// https://mvnrepository.com/artifact/org.fulib/fulibTables
+	testImplementation group: 'org.fulib', name: 'fulibTables', version: '1.4.0'
 }
 
 task 'downloadDependencies' {
 	configurations.runtimeClasspath.files
+	configurations.testRuntimeClasspath.files
 }
