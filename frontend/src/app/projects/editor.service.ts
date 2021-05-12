@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {fromArray} from 'rxjs/internal/observable/fromArray';
+import {from} from 'rxjs';
 import {concatMap, filter, map} from 'rxjs/operators';
 import {PrivacyService} from '../privacy.service';
 import {FileTypeService} from './file-type.service';
@@ -38,8 +38,8 @@ export class EditorService {
       }
     });
 
-    fromArray(this.editors).pipe(
-      concatMap(row => fromArray(row)),
+    from(this.editors).pipe(
+      concatMap(row => from(row)),
       concatMap(editor => this.fileService.resolveAsync(this.projectManager.container, this.projectManager.fileRoot, editor.file.path).pipe(
         filter((file): file is File => file !== undefined),
         map(file => ({editor, file})),
