@@ -40,7 +40,7 @@ export class LaunchPanelComponent implements OnInit, OnDestroy {
       if (launchConfigId === 'new') {
         this.create();
       } else if (launchConfigId) {
-        const launchConfig = configs.find(l => l.id === launchConfigId);
+        const launchConfig = this.configs.find(l => l.id === launchConfigId);
         if (launchConfig) {
           this.edit(launchConfig);
         }
