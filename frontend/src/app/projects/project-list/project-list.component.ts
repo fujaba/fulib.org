@@ -46,11 +46,11 @@ export class ProjectListComponent implements OnInit, OnDestroy {
 
       combineLatest([
         this.projectService.getOwn(),
-        this.route.queryParams.pipe(map(({edit}) => edit)),
-      ]).subscribe(([projects, edit]) => {
+        this.route.queryParams,
+      ]).subscribe(([projects, {edit, local}]) => {
         this.projects = projects;
         if (edit === 'new') {
-          this.create();
+          this.create(!!local);
         } else if (edit) {
           const project = projects.find(p => p.id === edit);
           if (project) {
@@ -59,6 +59,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
         } else {
           this.editing = undefined;
           this.openModal?.dismiss();
+          this.openModal = undefined;
         }
       });
     });
@@ -72,15 +73,20 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     this.keycloak.login().then();
   }
 
-  create(): void {
+  create(local?: boolean): void {
     this.edit({
       name: '',
       description: '',
+      local,
     });
   }
 
   edit(project: Project | ProjectStub): void {
     this.editing = project;
+
+    if (this.openModal) {
+      return;
+    }
     this.openModal = this.ngbModal.open(this.editModal, {
       ariaLabelledBy: 'edit-modal-title',
     });

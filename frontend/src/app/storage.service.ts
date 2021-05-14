@@ -9,6 +9,22 @@ export class StorageService {
   constructor() {
   }
 
+  getAllKeys(prefix: RegExp): string[] {
+    const result: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (!key) {
+        continue;
+      }
+      const match = prefix.exec(key);
+      if (match) {
+        result.push(match[1]);
+      }
+    }
+    console.log(result);
+    return result;
+  }
+
   get(key: string): string | null {
     let value: string | null | undefined = this.properties.get(key);
     if (value === undefined) {

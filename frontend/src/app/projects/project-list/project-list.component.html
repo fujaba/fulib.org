@@ -1,39 +1,52 @@
 <div class="container">
   <h1>
     My Projects
-    <a class="btn btn-success" routerLink="." [queryParams]="{edit: 'new'}">
-      <i class="bi-folder-plus"></i>
-      New
-    </a>
+    <div class="btn-group">
+      <a class="btn btn-success" routerLink="." [queryParams]="{edit: 'new'}">
+        <i class="bi-folder-plus"></i>
+        New
+      </a>
+      <div class="btn-group" ngbDropdown role="group" aria-label="Actions">
+        <button class="btn btn-success dropdown-toggle-split" ngbDropdownToggle></button>
+        <div class="dropdown-menu" ngbDropdownMenu>
+          <a ngbDropdownItem routerLink="." [queryParams]="{edit: 'new', local: true}">
+            New Local Project
+          </a>
+        </div>
+      </div>
+    </div>
   </h1>
 
   <ul class="list-group">
-    <li *ngFor="let project of projects" class="list-group-item d-flex">
-      <div>
-        <h3>
-          {{project.name}}
-        </h3>
-        <div class="text-muted">
-          {{project.description}}
+    <li *ngFor="let project of projects" class="list-group-item">
+      <div class="media">
+        <i class="h1 mr-3 {{ project.local ? 'bi-hdd' : 'bi-server' }}" [ngbTooltip]="project.local ? 'Local' : 'Persistent'"></i>
+        <div class="media-body">
+          <h3>
+            {{project.name}}
+          </h3>
+          <div class="text-muted">
+            {{project.description}}
+          </div>
+          <small class="text-muted">
+            Created {{project.created | date:'medium'}}
+          </small>
         </div>
-        <small class="text-muted">
-          Created {{project.created | date:'medium'}}
-        </small>
-      </div>
-      <div class="btn-group ml-auto align-self-center">
-        <a class="btn btn-primary" routerLink="/projects/{{project.id}}">
-          Open
-        </a>
-        <div class="btn-group" ngbDropdown role="group" aria-label="Actions">
-          <button class="btn btn-primary dropdown-toggle-split" ngbDropdownToggle></button>
-          <div class="dropdown-menu" ngbDropdownMenu>
-            <a ngbDropdownItem routerLink="." [queryParams]="{edit: project.id}">
-              Edit
-            </a>
-            <div class="dropdown-divider"></div>
-            <button ngbDropdownItem class="text-danger" (click)="delete(project)">
-              Delete
-            </button>
+        <div class="btn-group ml-auto align-self-center">
+          <a class="btn btn-primary" routerLink="/projects/{{project.id}}">
+            Open
+          </a>
+          <div class="btn-group" ngbDropdown role="group" aria-label="Actions">
+            <button class="btn btn-primary dropdown-toggle-split" ngbDropdownToggle></button>
+            <div class="dropdown-menu" ngbDropdownMenu>
+              <a ngbDropdownItem routerLink="." [queryParams]="{edit: project.id}">
+                Edit
+              </a>
+              <div class="dropdown-divider"></div>
+              <button ngbDropdownItem class="text-danger" (click)="delete(project)">
+                Delete
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -95,7 +108,7 @@
 <ng-template #editModal let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="edit-modal-title">
-      {{ editing!['id'] ? 'Edit' : 'New' }} Project
+      {{ editing!['id'] ? 'Edit' : 'New' }} {{editing!.local ? 'Local' : '' }} Project
     </h4>
     <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
       <span aria-hidden="true">&times;</span>
@@ -103,6 +116,10 @@
   </div>
   <div class="modal-body">
     <app-project-form [project]="editing"></app-project-form>
+    <p *ngIf="editing?.local">
+      {{ editing!['id'] ? 'This is' : 'You are creating' }} a <b>local</b> project.
+      This means the project and its scenario files are stored in your browser.
+    </p>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">

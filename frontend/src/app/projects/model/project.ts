@@ -1,10 +1,21 @@
-export class ProjectStub {
+export type Project = UserProject | LocalProject;
+
+export interface ProjectStub {
   name: string;
   description: string;
+  local?: boolean;
 }
 
-export class Project extends ProjectStub {
+export interface BaseProject extends ProjectStub {
   id: string;
-  user: string;
   created: Date;
+}
+
+export interface UserProject extends BaseProject {
+  user: string;
+  local?: false;
+}
+
+export interface LocalProject extends BaseProject {
+  local: true;
 }
