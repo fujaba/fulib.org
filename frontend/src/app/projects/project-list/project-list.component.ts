@@ -3,8 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {KeycloakService} from 'keycloak-angular';
 import {combineLatest} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {Project, ProjectStub} from '../model/project';
+import {LocalProject, Project, ProjectStub} from '../model/project';
 import {ProjectService} from '../project.service';
 
 @Component({
@@ -94,6 +93,19 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     } else {
       this.projectService.create(this.editing).subscribe(project => this.projects.push(project));
     }
+  }
+
+  convert(localProject: LocalProject) {
+    this.projectService.delete(localProject);
+    this.projectService.create({...localProject, local: false}).subscribe(persistentProject => {
+      const index = this.projects.indexOf(localProject);
+      if (index >= 0) {
+        this.projects[index] = persistentProject;
+      }
+      if (localProject === this.editing) {
+        this.editing = persistentProject;
+      }
+    });
   }
 
   delete(project: Project) {

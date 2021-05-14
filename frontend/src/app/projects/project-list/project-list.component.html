@@ -42,6 +42,9 @@
               <a ngbDropdownItem routerLink="." [queryParams]="{edit: project.id}">
                 Edit
               </a>
+              <button *ngIf="loggedIn && project.local" ngbDropdownItem (click)="convert(project)">
+                Convert to Persistent
+              </button>
               <div class="dropdown-divider"></div>
               <button ngbDropdownItem class="text-danger" (click)="delete(project)">
                 Delete
