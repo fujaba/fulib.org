@@ -13,8 +13,9 @@ import {ProjectService} from '../project.service';
   styleUrls: ['./project-list.component.scss'],
 })
 export class ProjectListComponent implements OnInit, OnDestroy {
-  @ViewChild('loginModal', {static: true}) loginModal: TemplateRef<any>;
   @ViewChild('editModal', {static: true}) editModal: TemplateRef<any>;
+
+  loggedIn = false;
 
   openModal?: NgbModalRef;
 
@@ -32,36 +33,25 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.keycloak.isLoggedIn().then(loggedIn => {
-      if (!loggedIn) {
-        this.openModal = this.ngbModal.open(this.loginModal, {
-          ariaLabelledBy: 'login-modal-title',
-          centered: true,
-          keyboard: false,
-          backdrop: 'static',
-          backdropClass: 'backdrop-blur',
-        });
-        return;
-      }
+    this.keycloak.isLoggedIn().then(loggedIn => this.loggedIn = loggedIn);
 
-      combineLatest([
-        this.projectService.getOwn(),
-        this.route.queryParams,
-      ]).subscribe(([projects, {edit, local}]) => {
-        this.projects = projects;
-        if (edit === 'new') {
-          this.create(!!local);
-        } else if (edit) {
-          const project = projects.find(p => p.id === edit);
-          if (project) {
-            this.edit(project);
-          }
-        } else {
-          this.editing = undefined;
-          this.openModal?.dismiss();
-          this.openModal = undefined;
+    combineLatest([
+      this.projectService.getOwn(),
+      this.route.queryParams,
+    ]).subscribe(([projects, {edit, local}]) => {
+      this.projects = projects;
+      if (edit === 'new') {
+        this.create(!!local);
+      } else if (edit) {
+        const project = projects.find(p => p.id === edit);
+        if (project) {
+          this.edit(project);
         }
-      });
+      } else {
+        this.editing = undefined;
+        this.openModal?.dismiss();
+        this.openModal = undefined;
+      }
     });
   }
 

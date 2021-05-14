@@ -2,11 +2,11 @@
   <h1>
     My Projects
     <div class="btn-group">
-      <a class="btn btn-success" routerLink="." [queryParams]="{edit: 'new'}">
+      <a class="btn btn-success" routerLink="." [queryParams]="{edit: 'new', local: loggedIn ? null : true}">
         <i class="bi-folder-plus"></i>
         New
       </a>
-      <div class="btn-group" ngbDropdown role="group" aria-label="Actions">
+      <div *ngIf="loggedIn" class="btn-group" ngbDropdown role="group" aria-label="Actions">
         <button class="btn btn-success dropdown-toggle-split" ngbDropdownToggle></button>
         <div class="dropdown-menu" ngbDropdownMenu>
           <a ngbDropdownItem routerLink="." [queryParams]="{edit: 'new', local: true}">
@@ -54,57 +54,6 @@
   </ul>
 </div>
 
-<ng-template #loginModal>
-  <div class="modal-header">
-    <h4 class="modal-title" id="login-modal-title">
-      Login Required
-    </h4>
-  </div>
-  <div class="modal-body">
-    <p>
-      Please log in to view or create Projects.
-    </p>
-    <p>
-      Projects allow you to:
-    </p>
-    <div class="media">
-      <i class="bi-window-sidebar h1 mr-3"></i>
-      <div class="media-body">
-        Use a feature-rich online IDE for fulibScenarios, fulib and Java code
-      </div>
-    </div>
-    <div class="media">
-      <i class="bi-segmented-nav h1 mr-3"></i>
-      <div class="media-body">
-        View and edit multiple files at once
-      </div>
-    </div>
-    <div class="media">
-      <i class="bi-terminal h1 mr-3"></i>
-      <div class="media-body">
-        Work within a powerful and secure container context
-      </div>
-    </div>
-    <div class="media">
-      <i class="bi-file-earmark-zip h1 mr-3"></i>
-      <div class="media-body">
-        Create complex projects ready for download and use in desktop environments
-      </div>
-    </div>
-    <p>
-      By logging in, we can identify which Projects belong to you, so you never lose your code or work.
-    </p>
-  </div>
-  <div class="modal-footer">
-    <a class="btn btn-secondary" routerLink="..">
-      Cancel
-    </a>
-    <button type="button" class="btn btn-primary" (click)="login()">
-      Login
-    </button>
-  </div>
-</ng-template>
-
 <ng-template #editModal let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="edit-modal-title">
@@ -119,6 +68,10 @@
     <p *ngIf="editing?.local">
       {{ editing!['id'] ? 'This is' : 'You are creating' }} a <b>local</b> project.
       This means the project and its scenario files are stored in your browser.
+      <ng-container *ngIf="!loggedIn">
+        To create a persistent project bound to your user account, you need to
+        <a routerLink="." (click)="login()">log in</a>.
+      </ng-container>
     </p>
   </div>
   <div class="modal-footer">
