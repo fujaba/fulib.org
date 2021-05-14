@@ -42,7 +42,7 @@ export class SettingsComponent implements OnInit {
 
   delete(): void {
     this.deleting = true;
-    this.projectService.delete(this.project.id!).subscribe(() => {
+    this.projectService.delete(this.project).subscribe(() => {
       this.deleting = false;
       this.router.navigate(['/projects']);
       this.deletingModal?.close();

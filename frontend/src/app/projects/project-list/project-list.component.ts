@@ -101,7 +101,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.projectService.delete(project.id).subscribe(() => {
+    this.projectService.delete(project).subscribe(() => {
       const index = this.projects.indexOf(project);
       if (index >= 0) {
         this.projects.splice(index, 1);

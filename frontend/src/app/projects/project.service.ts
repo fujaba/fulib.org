@@ -46,9 +46,9 @@ export class ProjectService {
     return this.http.put<Project>(`${environment.projectsApiUrl}/projects/${project.id}`, project);
   }
 
-  delete(id: string): Observable<void> {
+  delete({id, local}: {id: string, local?: boolean}): Observable<void> {
     this.localProjectService.delete(id);
-    return this.http.delete<void>(`${environment.projectsApiUrl}/projects/${id}`);
+    return local ? of(undefined) : this.http.delete<void>(`${environment.projectsApiUrl}/projects/${id}`);
   }
 
   getContainer(projectId: string): Observable<Container> {
