@@ -1,4 +1,5 @@
 import {Injectable} from '@angular/core';
+import ObjectID from 'bson-objectid';
 import {StorageService} from '../storage.service';
 import {ProjectStub, LocalProject} from './model/project';
 
@@ -18,7 +19,7 @@ export class LocalProjectService {
       ...stub,
       local: true,
       created: new Date(),
-      id: Math.random().toString(36).substring(2),
+      id: new ObjectID().toHexString(),
     };
     this.update(project);
     return project;

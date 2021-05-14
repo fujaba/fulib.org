@@ -27,6 +27,7 @@
     "bootstrap": "~4.5.3",
     "bootstrap-darkmode": "^0.7.0",
     "bootstrap-icons": "^1.4.0",
+    "bson-objectid": "^2.0.1",
     "codemirror": "^5.60.0",
     "file-saver": "^2.0.5",
     "highlight.js": "^10.7.1",

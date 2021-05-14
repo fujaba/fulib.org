@@ -26,6 +26,7 @@ specifiers:
   bootstrap: ~4.5.3
   bootstrap-darkmode: ^0.7.0
   bootstrap-icons: ^1.4.0
+  bson-objectid: ^2.0.1
   codelyzer: ^6.0.1
   codemirror: ^5.60.0
   file-saver: ^2.0.5
@@ -69,6 +70,7 @@ dependencies:
   bootstrap: 4.5.3
   bootstrap-darkmode: 0.7.0
   bootstrap-icons: 1.4.0
+  bson-objectid: 2.0.1
   codemirror: 5.60.0
   file-saver: 2.0.5
   highlight.js: 10.7.1
@@ -2550,6 +2552,10 @@ packages:
     dependencies:
       https-proxy-agent: 2.2.4
     dev: true
+
+  /bson-objectid/2.0.1:
+    resolution: {integrity: sha512-b4D1/G4uP9Yks4rv+nDVsZ4ybT1W5nQYw4lfpfaRP2Q18azlR6Oe2BAuirG1lzrwQFtHnJ0nrK5kWKKZVEMUng==}
+    dev: false
 
   /buffer-from/1.1.1:
     resolution: {integrity: sha512-MQcXEUbCKtEo7bhqEs6560Hyd4XaovZlO/k9V3hjVUF/zwW7KBVdSK4gIt/bzwS9MbR5qob+F5jusZsb0YQK2A==}

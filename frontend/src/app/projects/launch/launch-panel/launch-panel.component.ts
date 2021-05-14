@@ -1,6 +1,7 @@
 import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
+import ObjectID from 'bson-objectid';
 import {combineLatest, of} from 'rxjs';
 import {catchError, map} from 'rxjs/operators';
 import {TerminalStub} from '../../model/terminal';
@@ -99,7 +100,7 @@ export class LaunchPanelComponent implements OnInit, OnDestroy {
       return;
     }
     if (!config.id) {
-      config.id = Math.random().toString(36);
+      config.id = new ObjectID().toHexString();
     }
     this.launchService.saveLaunchConfig(this.projectManager.container, config).subscribe(() => {
       const index = this.configs.findIndex(existing => existing.id === config.id);
