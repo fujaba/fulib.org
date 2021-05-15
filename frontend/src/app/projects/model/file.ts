@@ -77,6 +77,44 @@ export class File {
     this.parent = undefined;
   }
 
+  setChildren(children: File[]) {
+    if (!this.children) {
+      children.sort(File.compare);
+      for (const child of children) {
+        child.parent = this;
+      }
+      this.children = children;
+      return;
+    }
+
+    const mergedChildren: File[] = [];
+    const newPaths = new Map(children.map(child => [child.path, child]));
+    const oldPaths = new Set(this.children.map(child => child.path));
+
+    for (const newChild of children) {
+      if (!oldPaths.has(newChild.path)) {
+        // file was created
+        newChild.parent = this;
+        mergedChildren.push(newChild);
+      }
+    }
+
+    for (const oldChild of this.children) {
+      const newChild = newPaths.get(oldChild.path);
+      if (newChild) {
+        // file was modified
+        oldChild.modified = newChild.modified;
+        mergedChildren.push(oldChild);
+      } else {
+        // file was deleted
+        oldChild.parent = undefined;
+      }
+    }
+
+    mergedChildren.sort(File.compare);
+    this.children = mergedChildren;
+  }
+
   toJSON() {
     return this.path;
   }
