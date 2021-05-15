@@ -3,6 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {forkJoin} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
+import {ContainerService} from '../container.service';
 
 import {EditorService} from '../editor.service';
 import {FileTypeService} from '../file-type.service';
@@ -55,6 +56,7 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private projectService: ProjectService,
+    private containerService: ContainerService,
     private fileService: FileService,
     private fileTypeService: FileTypeService,
     private projectManager: ProjectManager,
@@ -84,7 +86,7 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
       }),
       switchMap(params => forkJoin([
         this.projectService.get(params.id).pipe(tap(project => this.project = project)),
-        this.projectService.createContainer(params.id).pipe(tap(container => this.container = container)),
+        this.containerService.create(params.id).pipe(tap(container => this.container = container)),
       ])),
       tap(([project, container]) => {
         this.projectManager.init(project, container);
@@ -113,6 +115,6 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
   }
 
   exit() {
-    this.projectService.deleteContainer(this.project.id).subscribe();
+    this.containerService.delete(this.project.id).subscribe();
   }
 }

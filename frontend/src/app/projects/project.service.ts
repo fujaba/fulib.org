@@ -6,7 +6,6 @@ import {map, switchMap} from 'rxjs/operators';
 
 import {environment} from '../../environments/environment';
 import {UserService} from '../user/user.service';
-import {Container} from './model/container';
 import {Project, ProjectStub} from './model/project';
 import {LocalProjectService} from './local-project.service';
 
@@ -49,18 +48,6 @@ export class ProjectService {
   delete({id, local}: {id: string, local?: boolean}): Observable<void> {
     this.localProjectService.delete(id);
     return local ? of(undefined) : this.http.delete<void>(`${environment.projectsApiUrl}/projects/${id}`);
-  }
-
-  getContainer(projectId: string): Observable<Container> {
-    return this.http.get<Container>(`${environment.projectsApiUrl}/projects/${projectId}/container`);
-  }
-
-  createContainer(projectId: string): Observable<Container> {
-    return this.http.post<Container>(`${environment.projectsApiUrl}/projects/${projectId}/container`, {});
-  }
-
-  deleteContainer(projectId: string): Observable<void> {
-    return this.http.delete<void>(`${environment.projectsApiUrl}/projects/${projectId}/container`);
   }
 
   getOwn(): Observable<Project[]> {
