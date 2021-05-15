@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {EMPTY, forkJoin, Observable, of} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
+import {map, switchMap, tap} from 'rxjs/operators';
 import {DavClient} from './dav-client';
 import {FileTypeService} from './file-type.service';
 import {Container} from './model/container';
@@ -83,17 +83,29 @@ export class FileService {
     parent.children = mergedChildren;
   }
 
-  createChild(container: Container, parent: File, name: string, directoryOrContent: true | string | globalThis.File): Observable<void> {
+  createChild(container: Container, parent: File, name: string, directoryOrContent: true | string | globalThis.File): Observable<File> {
     const path = parent.path + name;
     const url = `${container.url}/dav/${path}`;
-    return (directoryOrContent === true ? this.dav.mkcol(url) : this.dav.put(url, directoryOrContent));
+    return (directoryOrContent === true ? this.dav.mkcol(url) : this.dav.put(url, directoryOrContent)).pipe(
+      switchMap(() => {
+        const resolved = this.resolve(parent, path);
+        if (resolved) {
+          return of(resolved);
+        } else {
+          return this.get(container, path).pipe(tap(child => child.setParent(parent)));
+        }
+      }),
+    );
   }
 
   rename(container: Container, file: File, newName: string): Observable<void> {
     const [start, end] = file._namePos;
+    const newPath = `${file.path.substring(0, start)}${newName}${file.path.substring(end)}`;
     const from = `${container.url}/dav/${file.path}`;
-    const to = `/dav/${file.path.substring(0, start)}${newName}${file.path.substring(end)}`;
-    return this.dav.move(from, to);
+    const to = `/dav/${newPath}`;
+    return this.dav.move(from, to).pipe(
+      tap(() => file.path = newPath),
+    );
   }
 
   move(container: Container, file: File, directory: File): Observable<void> {
@@ -104,11 +116,15 @@ export class FileService {
     const [start] = file._namePos;
     const from = `${container.url}/dav/${file.path}`;
     const to = `/dav/${directory.path}${file.path.substring(start)}`;
-    return this.dav.move(from, to);
+    return this.dav.move(from, to).pipe(
+      tap(() => file.setParent(directory)),
+    );
   }
 
   delete(container: Container, file: File): Observable<void> {
-    return this.dav.delete(`${container.url}/dav/${file.path}`);
+    return this.dav.delete(`${container.url}/dav/${file.path}`).pipe(
+      tap(() => file.removeFromParent()),
+    );
   }
 
   resolve(file: File, path: string): File | undefined {
