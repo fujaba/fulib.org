@@ -21,7 +21,7 @@ export class FileTabsComponent implements OnInit, OnDestroy {
 
   @Input() editors: FileEditor[] = [];
 
-  subscription = new Subscription();
+  subscription: Subscription;
 
   constructor(
     private fileService: FileService,
@@ -31,11 +31,11 @@ export class FileTabsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subscription.add(this.projectManager.openRequests.subscribe(request => {
+    this.subscription = this.projectManager.openRequests.subscribe(request => {
       if (this.active && request.type === 'file-editor') {
         this.open(request.editor);
       }
-    }));
+    });
   }
 
   ngOnDestroy() {
