@@ -10,7 +10,7 @@
   </div>
 </ng-template>
 <ng-template #content let-current>
-  <app-file-editor *ngIf="current" [editor]="current"></app-file-editor>
+  <app-file-editor *ngIf="current" [editor]="current" (dismiss)="this.close(current)"></app-file-editor>
 </ng-template>
 <app-tabs
   #tabs

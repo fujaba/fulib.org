@@ -1,7 +1,7 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 
 import {Subscription} from 'rxjs';
-import {map, mapTo, switchMap} from 'rxjs/operators';
+import {map, switchMap} from 'rxjs/operators';
 import {EditorService} from '../editor.service';
 
 import {FileService} from '../file.service';
@@ -36,7 +36,6 @@ export class FileTabsComponent implements OnInit, OnDestroy {
         this.open(request.editor);
       }
     }));
-    // TODO close tabs on deletion
   }
 
   ngOnDestroy() {

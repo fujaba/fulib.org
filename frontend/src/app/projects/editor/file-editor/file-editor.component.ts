@@ -1,5 +1,6 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Container} from '../../model/container';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Subscription} from 'rxjs';
+import {FileChangeService} from '../../file-change.service';
 import {FileEditor} from '../../model/file-editor';
 import {ProjectManager} from '../../project.manager';
 
@@ -8,18 +9,28 @@ import {ProjectManager} from '../../project.manager';
   templateUrl: './file-editor.component.html',
   styleUrls: ['./file-editor.component.scss'],
 })
-export class FileEditorComponent implements OnInit {
+export class FileEditorComponent implements OnInit, OnDestroy {
   @Input() editor: FileEditor;
+  @Output() dismiss = new EventEmitter<void>();
 
-  container: Container;
+  subscription: Subscription;
 
   constructor(
     private projectManager: ProjectManager,
+    private fileChangeService: FileChangeService,
   ) {
   }
 
   ngOnInit(): void {
-    this.container = this.projectManager.container;
+    const file = this.editor.file;
+    this.subscription = this.fileChangeService.watch(this.projectManager, file).subscribe(event => {
+      if (event.event === 'deleted') {
+        this.dismiss.emit();
+      }
+    });
   }
 
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
 }
