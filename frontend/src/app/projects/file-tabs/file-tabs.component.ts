@@ -83,12 +83,9 @@ export class FileTabsComponent implements OnInit, OnDestroy {
         } while (children.find(child => child.path === path));
         return name;
       }),
-      switchMap(name => this.fileService.createChild(this.projectManager.container, root, name, '').pipe(mapTo(name))),
-    ).subscribe(name => {
-      const file = this.fileService.resolve(root, root.path + name);
-      if (file) {
-        this.open({file, temporary: false});
-      }
+      switchMap(name => this.fileService.createChild(this.projectManager.container, root, name, '')),
+    ).subscribe(file => {
+      this.open({file, temporary: false});
     });
   }
 
