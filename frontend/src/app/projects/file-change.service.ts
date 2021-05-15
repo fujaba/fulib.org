@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
-import {EMPTY, Observable, of} from 'rxjs';
-import {mergeMap} from 'rxjs/operators';
+import {EMPTY, merge, Observable, of, Subject} from 'rxjs';
+import {filter, mergeMap} from 'rxjs/operators';
 import {FileTypeService} from './file-type.service';
 import {File} from './model/file';
 import {FileChanged, FileDeleted, FileModified} from './model/file-change';
@@ -10,16 +10,22 @@ import {ProjectManager} from './project.manager';
 export class FileChangeService {
   nextId = 0;
 
+  private _eventBus = new Subject<FileChanged>();
+
   constructor(
     private fileTypeService: FileTypeService,
   ) {
+  }
+
+  emit(event: FileChanged) {
+    this._eventBus.next(event);
   }
 
   watch(projectManager: ProjectManager, file: File): Observable<FileChanged> {
     const path = file.path;
     const dirPath = file.directory ? path : file.parentPath;
     const id = (this.nextId++).toString(36);
-    return projectManager.webSocket.multiplex(
+    const webSocketEvents = projectManager.webSocket.multiplex(
       () => ({command: 'watch', id, path: dirPath}),
       () => ({command: 'unwatch', id}),
       message => {
@@ -38,6 +44,21 @@ export class FileChangeService {
       const message = this.handleMessage(projectManager, event);
       return message ? of(message) : EMPTY;
     }));
+    return merge(
+      this._eventBus.pipe(filter(event => {
+        switch (event.event) {
+          case 'modified':
+          case 'created':
+          case 'deleted':
+            return event.file === file;
+          case 'moved':
+            return event.to === file;
+          default:
+            return false;
+        }
+      })),
+      webSocketEvents,
+    );
   }
 
   private handleMessage(projectManager: ProjectManager, message: any): FileChanged | undefined {

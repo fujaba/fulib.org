@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {EMPTY, forkJoin, Observable, of} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
 import {DavClient} from './dav-client';
+import {FileChangeService} from './file-change.service';
 import {FileTypeService} from './file-type.service';
 import {Container} from './model/container';
 import {DavResource} from './model/dav-resource';
@@ -14,6 +15,7 @@ export class FileService {
   constructor(
     private dav: DavClient,
     private fileTypeService: FileTypeService,
+    private fileChangeService: FileChangeService,
   ) {
   }
 
@@ -58,6 +60,7 @@ export class FileService {
               return resolved2;
             }
             child.setParent(parent);
+            this.fileChangeService.emit({event: 'created', file: child});
             return child;
           }),
         );
@@ -71,7 +74,10 @@ export class FileService {
     const from = `${container.url}/dav/${file.path}`;
     const to = `/dav/${newPath}`;
     return this.dav.move(from, to).pipe(
-      tap(() => file.path = newPath),
+      tap(() => {
+        file.path = newPath;
+        this.fileChangeService.emit({event: 'moved', to: file});
+      }),
     );
   }
 
@@ -84,13 +90,19 @@ export class FileService {
     const from = `${container.url}/dav/${file.path}`;
     const to = `/dav/${directory.path}${file.path.substring(start)}`;
     return this.dav.move(from, to).pipe(
-      tap(() => file.setParent(directory)),
+      tap(() => {
+        file.setParent(directory);
+        this.fileChangeService.emit({event: 'moved', to: file});
+      }),
     );
   }
 
   delete(container: Container, file: File): Observable<void> {
     return this.dav.delete(`${container.url}/dav/${file.path}`).pipe(
-      tap(() => file.removeFromParent()),
+      tap(() => {
+        file.removeFromParent();
+        this.fileChangeService.emit({event: 'deleted', file});
+      }),
     );
   }
 
