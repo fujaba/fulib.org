@@ -59,6 +59,10 @@ export class ProjectService {
     return this.http.post<Container>(`${environment.projectsApiUrl}/projects/${projectId}/container`, {});
   }
 
+  deleteContainer(projectId: string): Observable<void> {
+    return this.http.delete<void>(`${environment.projectsApiUrl}/projects/${projectId}/container`);
+  }
+
   getOwn(): Observable<Project[]> {
     return this.users.current$.pipe(
       switchMap(user => {

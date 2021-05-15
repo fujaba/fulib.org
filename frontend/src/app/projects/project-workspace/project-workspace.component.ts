@@ -111,4 +111,8 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
     this.openModal?.close();
     this.projectManager.destroy();
   }
+
+  exit() {
+    this.projectService.deleteContainer(this.project.id).subscribe();
+  }
 }
