@@ -91,9 +91,19 @@ export class FileService {
         const resolved = this.resolve(parent, path);
         if (resolved) {
           return of(resolved);
-        } else {
-          return this.get(container, path).pipe(tap(child => child.setParent(parent)));
         }
+        return this.get(container, path).pipe(
+          map(child => {
+            // It is possible that the file change handler already created the file during the GET request.
+            // Thus, we need to resolve it again and discard the GET result if necessary.
+            const resolved2 = this.resolve(parent, path);
+            if (resolved2) {
+              return resolved2;
+            }
+            child.setParent(parent);
+            return child;
+          }),
+        );
       }),
     );
   }
