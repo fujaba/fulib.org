@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {EMPTY, Observable, of} from 'rxjs';
 import {mergeMap} from 'rxjs/operators';
 import {FileTypeService} from './file-type.service';
-import {FileService} from './file.service';
 import {File} from './model/file';
 import {FileChanged, FileDeleted, FileModified} from './model/file-change';
 import {ProjectManager} from './project.manager';
@@ -12,7 +11,6 @@ export class FileChangeService {
   nextId = 0;
 
   constructor(
-    private fileService: FileService,
     private fileTypeService: FileTypeService,
   ) {
   }
@@ -60,7 +58,7 @@ export class FileChangeService {
   }
 
   private change(projectManager: ProjectManager, path: string): FileModified | undefined {
-    const file = this.fileService.resolve(projectManager.fileRoot, path);
+    const file = projectManager.fileRoot.resolve(path);
     if (file) {
       return {
         event: 'modified',
@@ -75,7 +73,7 @@ export class FileChangeService {
 
   private create(projectManager: ProjectManager, path: string): FileChanged | undefined {
     const parentPath = this.parentPath(path);
-    const parent = this.fileService.resolve(projectManager.fileRoot, parentPath);
+    const parent = projectManager.fileRoot.resolve(parentPath);
     return this.maybeCreate(parent, path);
   }
 
@@ -84,7 +82,7 @@ export class FileChangeService {
       return;
     }
 
-    const existing = this.fileService.resolve(parent, path);
+    const existing = parent.resolve(path);
     if (existing) {
       return {
         event: 'modified',
@@ -104,8 +102,8 @@ export class FileChangeService {
 
   private move(projectManager: ProjectManager, from: string | undefined, to: string): FileChanged | undefined {
     const newParentPath = this.parentPath(to);
-    const newParent = this.fileService.resolve(projectManager.fileRoot, newParentPath);
-    const oldFile = from ? this.fileService.resolve(projectManager.fileRoot, from) : undefined;
+    const newParent = projectManager.fileRoot.resolve(newParentPath);
+    const oldFile = from ? projectManager.fileRoot.resolve(from) : undefined;
 
     if (oldFile) {
       if (newParent && newParent.children) {
@@ -126,7 +124,7 @@ export class FileChangeService {
   }
 
   private delete(projectManager: ProjectManager, path: string): FileDeleted | undefined {
-    const file = this.fileService.resolve(projectManager.fileRoot, path);
+    const file = projectManager.fileRoot.resolve(path);
     return file ? this.doDelete(file) : undefined;
   }
 

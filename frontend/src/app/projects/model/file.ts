@@ -115,6 +115,22 @@ export class File {
     this.children = mergedChildren;
   }
 
+  resolve(path: string): File | undefined {
+    if (this.path === path || this.path === path + '/') {
+      return this;
+    }
+    if (!this.children || !path.startsWith(this.path)) {
+      return undefined;
+    }
+    for (const child of this.children) {
+      const childResult = child.resolve(path);
+      if (childResult) {
+        return childResult;
+      }
+    }
+    return undefined;
+  }
+
   toJSON() {
     return this.path;
   }

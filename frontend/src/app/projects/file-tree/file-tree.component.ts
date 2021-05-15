@@ -1,4 +1,14 @@
-import {AfterViewInit, Component, ElementRef, HostBinding, Input, OnDestroy, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostBinding,
+  Input,
+  OnDestroy,
+  OnInit,
+  QueryList,
+  ViewChildren,
+} from '@angular/core';
 import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
 import {DndDropEvent} from 'ngx-drag-drop';
 import {EMPTY, Observable, Subject, Subscription} from 'rxjs';
@@ -154,7 +164,7 @@ export class FileTreeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     const data = event.data;
     if (typeof data === 'string') {
-      const file = this.fileService.resolve(this.projectManager.fileRoot, data);
+      const file = this.projectManager.fileRoot.resolve(data);
       if (file) {
         this.fileService.move(this.container, file, this.file).subscribe();
       }

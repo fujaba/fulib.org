@@ -45,7 +45,7 @@ export class FileService {
     const url = `${container.url}/dav/${path}`;
     return (directoryOrContent === true ? this.dav.mkcol(url) : this.dav.put(url, directoryOrContent)).pipe(
       switchMap(() => {
-        const resolved = this.resolve(parent, path);
+        const resolved = parent.resolve(path);
         if (resolved) {
           return of(resolved);
         }
@@ -53,7 +53,7 @@ export class FileService {
           map(child => {
             // It is possible that the file change handler already created the file during the GET request.
             // Thus, we need to resolve it again and discard the GET result if necessary.
-            const resolved2 = this.resolve(parent, path);
+            const resolved2 = parent.resolve(path);
             if (resolved2) {
               return resolved2;
             }
@@ -92,22 +92,6 @@ export class FileService {
     return this.dav.delete(`${container.url}/dav/${file.path}`).pipe(
       tap(() => file.removeFromParent()),
     );
-  }
-
-  resolve(file: File, path: string): File | undefined {
-    if (file.path === path || file.path === path + '/') {
-      return file;
-    }
-    if (!file.children || !path.startsWith(file.path)) {
-      return undefined;
-    }
-    for (const child of file.children) {
-      const childResult = this.resolve(child, path);
-      if (childResult) {
-        return childResult;
-      }
-    }
-    return undefined;
   }
 
   resolveAsync(container: Container, file: File, path: string): Observable<File | undefined> {
