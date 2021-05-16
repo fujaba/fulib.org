@@ -11,21 +11,44 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileAttribute;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 public class ZipHandler
 {
-	public Object handle(Request request, Response response) throws IOException
+	public Object unpack(Request request, Response response) throws IOException
 	{
-		final String pathInfo = request.pathInfo();
-		final String path = pathInfo.substring("/zip".length());
-		final Path root = Paths.get(path);
-
-		if (!Files.isDirectory(root))
+		final Path root = getPath(request);
+		try (final ZipInputStream zipInput = new ZipInputStream(request.raw().getInputStream()))
 		{
-			throw Spark.halt(HttpStatus.BAD_REQUEST_400, "{\"error\": \"path be a directory\"}\n");
+			ZipEntry entry;
+			while ((entry = zipInput.getNextEntry()) != null)
+			{
+				create(root, entry, zipInput);
+			}
 		}
+		return "";
+	}
+
+	private void create(Path root, ZipEntry entry, InputStream content) throws IOException
+	{
+		final Path subPath = root.resolve(entry.getName());
+		if (entry.isDirectory())
+		{
+			Files.createDirectories(subPath);
+			return;
+		}
+
+		Files.createDirectories(subPath.getParent());
+		Files.copy(content, subPath);
+		Files.setLastModifiedTime(subPath, entry.getLastModifiedTime());
+	}
+
+	public Object pack(Request request, Response response) throws IOException
+	{
+		final Path root = getPath(request);
 
 		try (
 			final ZipOutputStream zipOutput = new ZipOutputStream(response.raw().getOutputStream(),
@@ -73,5 +96,18 @@ public class ZipHandler
 		}
 
 		return "";
+	}
+
+	private Path getPath(Request request)
+	{
+		final String pathInfo = request.pathInfo();
+		final String path = pathInfo.substring("/zip".length());
+		final Path root = Paths.get(path);
+
+		if (!Files.isDirectory(root))
+		{
+			throw Spark.halt(HttpStatus.BAD_REQUEST_400, "{\"error\": \"path be a directory\"}\n");
+		}
+		return root;
 	}
 }

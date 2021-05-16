@@ -40,11 +40,14 @@ public class Service
 		final FileWatcherRegistry registry = new FileWatcherRegistry(fileWatcher);
 		webSocketHandler.setFileWatcher(registry);
 
+		final ZipHandler zipHandler = new ZipHandler();
+
 		service = spark.Service.ignite();
 		service.port(4567);
 		service.webSocket("/ws", webSocketHandler);
 		service.get("/health", (req, res) -> "OK");
-		service.get("/zip/*", new ZipHandler()::handle);
+		service.get("/zip/*", zipHandler::pack);
+		service.post("/zip/*", zipHandler::unpack);
 		service.awaitStop();
 	}
 
