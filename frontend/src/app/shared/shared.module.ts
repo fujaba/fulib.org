@@ -15,6 +15,7 @@ import {SafeResourceUrlPipe} from './pipes/safe-resource-url.pipe';
 import {SafeUrlPipe} from './pipes/safe-url.pipe';
 import {PreviewComponent} from './preview/preview.component';
 import {ScenarioCodemirrorComponent} from './scenario-codemirror/scenario-codemirror.component';
+import { ProjectConfigFormComponent } from './project-config-form/project-config-form.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import {ScenarioCodemirrorComponent} from './scenario-codemirror/scenario-codemi
     PreviewComponent,
     MarkdownComponent,
     ModalComponent,
+    ProjectConfigFormComponent,
   ],
   imports: [
     FormsModule,
@@ -35,18 +37,19 @@ import {ScenarioCodemirrorComponent} from './scenario-codemirror/scenario-codemi
     CodemirrorModule,
     NgbTooltipModule,
   ],
-  exports: [
-    SafeHtmlPipe,
-    SafeUrlPipe,
-    SafeResourceUrlPipe,
-    ExceptionPipe,
-    AutothemeCodemirrorComponent,
-    CollapseButtonComponent,
-    ScenarioCodemirrorComponent,
-    PreviewComponent,
-    MarkdownComponent,
-    ModalComponent,
-  ],
+    exports: [
+        SafeHtmlPipe,
+        SafeUrlPipe,
+        SafeResourceUrlPipe,
+        ExceptionPipe,
+        AutothemeCodemirrorComponent,
+        CollapseButtonComponent,
+        ScenarioCodemirrorComponent,
+        PreviewComponent,
+        MarkdownComponent,
+        ModalComponent,
+        ProjectConfigFormComponent,
+    ],
 })
 export class SharedModule {
 }
