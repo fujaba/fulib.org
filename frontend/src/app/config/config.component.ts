@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 
 import {saveAs} from 'file-saver';
+import {ProjectConfig} from '../model/project-config';
 
 import ProjectZipRequest from '../model/project-zip-request';
 import {PrivacyService} from '../privacy.service';
@@ -13,11 +14,7 @@ import {ScenarioEditorService} from '../scenario-editor.service';
   styleUrls: ['./config.component.scss'],
 })
 export class ConfigComponent implements OnInit {
-  packageName: string;
-  projectName: string;
-  projectVersion: string;
-  scenarioFileName: string;
-  decoratorClassName: string;
+  config: ProjectConfig;
 
   constructor(
     private scenarioEditorService: ScenarioEditorService,
@@ -26,33 +23,31 @@ export class ConfigComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.packageName = this.scenarioEditorService.packageName;
-    this.projectName = this.scenarioEditorService.projectName;
-    this.projectVersion = this.scenarioEditorService.projectVersion;
-    this.scenarioFileName = this.scenarioEditorService.scenarioFileName;
-    this.decoratorClassName = this.scenarioEditorService.decoratorClassName;
+    this.config = {
+      packageName: this.scenarioEditorService.packageName,
+      projectName: this.scenarioEditorService.projectName,
+      projectVersion: this.scenarioEditorService.projectVersion,
+      scenarioFileName: this.scenarioEditorService.scenarioFileName,
+      decoratorClassName: this.scenarioEditorService.decoratorClassName,
+    };
   }
 
   save(): void {
-    this.scenarioEditorService.packageName = this.packageName;
-    this.scenarioEditorService.projectName = this.projectName;
-    this.scenarioEditorService.projectVersion = this.projectVersion;
-    this.scenarioEditorService.scenarioFileName = this.scenarioFileName;
-    this.scenarioEditorService.decoratorClassName = this.decoratorClassName;
+    this.scenarioEditorService.packageName = this.config.packageName;
+    this.scenarioEditorService.projectName = this.config.projectName;
+    this.scenarioEditorService.projectVersion = this.config.projectVersion;
+    this.scenarioEditorService.scenarioFileName = this.config.scenarioFileName;
+    this.scenarioEditorService.decoratorClassName = this.config.decoratorClassName || '';
   }
 
   downloadProjectZip(): void {
     const request: ProjectZipRequest = {
+      ...this.config,
       privacy: this.privacyService.privacy || 'none',
-      packageName: this.packageName,
-      projectName: this.projectName,
-      projectVersion: this.projectVersion,
-      scenarioFileName: this.scenarioFileName,
       scenarioText: this.scenarioEditorService.storedScenario,
-      decoratorClassName: this.decoratorClassName,
     };
     this.scenarioEditorService.downloadZip(request).subscribe(blob => {
-      saveAs(blob, `${this.projectName}.zip`);
+      saveAs(blob, `${this.config.projectName}.zip`);
     });
   }
 }

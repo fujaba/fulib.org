@@ -1,9 +1,6 @@
-export default class ProjectZipRequest {
+import {ProjectConfig} from './project-config';
+
+export default class ProjectZipRequest extends ProjectConfig {
   privacy: string;
-  packageName: string;
-  projectName: string;
-  projectVersion: string;
-  scenarioFileName: string;
   scenarioText: string;
-  decoratorClassName?: string;
 }
