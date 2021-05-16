@@ -133,6 +133,12 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
   }
 
   exit() {
+    if (this.project.local && !confirm(`'${this.project.name}' is a local project. `
+      + 'Exiting will stop the current container and any changes will be discarded. '
+      + 'Are you sure you want to exit?')) {
+      return;
+    }
+    this.router.navigate(['/projects']);
     this.containerService.delete(this.project.id).subscribe();
   }
 }
