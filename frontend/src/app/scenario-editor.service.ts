@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 
-import {ExamplesService} from './examples.service';
 import {Marker} from './model/codegen/marker';
 import Request from './model/codegen/request';
 import Response from './model/codegen/response';
@@ -16,7 +15,6 @@ import {environment} from '../environments/environment';
 })
 export class ScenarioEditorService {
   constructor(
-    private examplesService: ExamplesService,
     private privacyService: PrivacyService,
     private http: HttpClient,
   ) {
