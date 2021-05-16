@@ -1,31 +1,22 @@
 package org.fulib.webapp.projects.container;
 
 import com.github.dockerjava.api.DockerClient;
-import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.github.dockerjava.api.exception.NotFoundException;
 import com.github.dockerjava.api.exception.NotModifiedException;
 import com.github.dockerjava.api.model.Bind;
-import com.github.dockerjava.api.model.Volume;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
 import com.github.dockerjava.transport.DockerHttpClient;
-import com.mongodb.MongoGridFSException;
-import org.apache.commons.io.IOUtils;
-import org.fulib.webapp.projects.db.FileRepository;
 import org.fulib.webapp.projects.model.Container;
 import org.fulib.webapp.projects.model.Project;
 
 import javax.inject.Inject;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.*;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
 public class DockerContainerProvider
 {
@@ -36,15 +27,11 @@ public class DockerContainerProvider
 	private static final String PROXY_HOST = System.getenv("FULIB_PROJECTS_PROXY_URL");
 	private static final String NETWORK_NAME = "fulib-projects";
 
-	private final FileRepository fileRepository;
-
 	private final DockerClient dockerClient;
 
 	@Inject
-	public DockerContainerProvider(FileRepository fileRepository)
+	public DockerContainerProvider()
 	{
-		this.fileRepository = fileRepository;
-
 		final DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder().build();
 		final DockerHttpClient httpClient = new ApacheDockerHttpClient.Builder()
 			.dockerHost(config.getDockerHost())
@@ -78,17 +65,9 @@ public class DockerContainerProvider
 
 	public Container start(Project project)
 	{
-		final Container container = this.runContainer(project);
-		this.downloadFilesToContainer(container);
-		return container;
-	}
-
-	private Container runContainer(Project project)
-	{
 		final String stopToken = UUID.randomUUID().toString();
 		final String id = project.getId();
-		final String stopUrl =
-			API_HOST + "/api/projects/" + id + "/container?stopToken=" + stopToken;
+		final String stopUrl = API_HOST + "/api/projects/" + id + "/container?stopToken=" + stopToken;
 
 		final Map<String, String> labels = new HashMap<>();
 		labels.put("org.fulib.project", id);
@@ -118,50 +97,17 @@ public class DockerContainerProvider
 		return PROXY_HOST + "/containers/" + containerId.substring(0, 12);
 	}
 
-	private void createProjectDir(Container container)
+	public void copyFilesToContainer(Container container, InputStream tarInputStream)
 	{
-		final String mkdirExecId = dockerClient
-			.execCreateCmd(container.getId())
-			.withCmd("mkdir", "-p", PROJECTS_DIR + container.getProjectId())
-			.exec()
-			.getId();
-
-		try
-		{
-			dockerClient.execStartCmd(mkdirExecId).exec(new ResultCallback.Adapter<>()).awaitCompletion();
-		}
-		catch (InterruptedException ex)
-		{
-			// TODO
-			ex.printStackTrace();
-		}
-	}
-
-	private void downloadFilesToContainer(Container container)
-	{
-		this.createProjectDir(container);
-
-		try (
-			final InputStream downloadStream = this.fileRepository.download(container.getProjectId());
-			final GZIPInputStream gzipInputStream = new GZIPInputStream(downloadStream)
-		)
-		{
-			dockerClient
-				.copyArchiveToContainerCmd(container.getId())
-				.withRemotePath(PROJECTS_DIR + container.getProjectId() + "/")
-				.withTarInputStream(gzipInputStream)
-				.exec();
-		}
-		catch (MongoGridFSException | IOException e)
-		{
-			// TODO
-			e.printStackTrace();
-		}
+		dockerClient
+			.copyArchiveToContainerCmd(container.getId())
+			.withRemotePath(PROJECTS_DIR + container.getProjectId() + "/")
+			.withTarInputStream(tarInputStream)
+			.exec();
 	}
 
 	public void stop(Container container)
 	{
-		this.uploadFilesFromContainer(container);
 		this.kill(container);
 	}
 
@@ -185,26 +131,6 @@ public class DockerContainerProvider
 		}
 		catch (NotFoundException ignored)
 		{
-		}
-	}
-
-	private void uploadFilesFromContainer(Container container)
-	{
-		final String projectId = container.getProjectId();
-		try (
-			final InputStream tarInputStream = dockerClient
-				.copyArchiveFromContainerCmd(container.getId(), PROJECTS_DIR + projectId + "/.")
-				.exec();
-			final OutputStream uploadStream = this.fileRepository.upload(projectId);
-			final GZIPOutputStream gzipOutputStream = new GZIPOutputStream(uploadStream)
-		)
-		{
-			IOUtils.copy(tarInputStream, gzipOutputStream);
-		}
-		catch (IOException e)
-		{
-			// TODO
-			e.printStackTrace();
 		}
 	}
 }
