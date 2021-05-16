@@ -1,11 +1,10 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-
 import {Observable, of} from 'rxjs';
 import {tap} from 'rxjs/operators';
-import Example from '../model/example';
 
-import ExampleCategory from '../model/example-category';
+import {Example} from './model/example';
+import {ExampleCategory} from './model/example-category';
 
 @Injectable({providedIn: 'root'})
 export class ExamplesService {
