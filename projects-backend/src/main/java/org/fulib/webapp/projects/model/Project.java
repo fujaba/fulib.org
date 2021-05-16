@@ -1,6 +1,7 @@
 package org.fulib.webapp.projects.model;
 
 import org.bson.BsonType;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
 import org.bson.codecs.pojo.annotations.BsonRepresentation;
 
 import java.time.Instant;
@@ -24,6 +25,8 @@ public class Project
 	private String name;
 	private String description;
 	private Instant created;
+
+	private boolean local;
 
 	// =============== Properties ===============
 
@@ -76,5 +79,17 @@ public class Project
 	public void setCreated(Instant created)
 	{
 		this.created = created;
+	}
+
+	@BsonIgnore
+	public boolean isLocal()
+	{
+		return local;
+	}
+
+	@BsonIgnore
+	public void setLocal(boolean local)
+	{
+		this.local = local;
 	}
 }

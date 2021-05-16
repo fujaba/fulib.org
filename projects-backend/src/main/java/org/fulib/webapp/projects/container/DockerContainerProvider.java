@@ -16,7 +16,10 @@ import org.fulib.webapp.projects.model.Project;
 import javax.inject.Inject;
 import java.io.File;
 import java.io.InputStream;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DockerContainerProvider
 {
@@ -73,8 +76,13 @@ public class DockerContainerProvider
 			.createContainerCmd(CONTAINER_IMAGE)
 			.withTty(true)
 			.withNetworkMode(NETWORK_NAME)
-			.withLabels(labels)
-			.withBinds(Bind.parse(BIND_PREFIX + PROJECTS_DIR + id + ':' + PROJECTS_DIR + id));
+			.withEnv("PROJECT_ID=" + id)
+			.withLabels(labels);
+
+		if (!project.isLocal())
+		{
+			cmd.withBinds(Bind.parse(BIND_PREFIX + PROJECTS_DIR + id + ':' + PROJECTS_DIR + id));
+		}
 
 		final String containerId = cmd.exec().getId();
 		dockerClient.startContainerCmd(containerId).exec();

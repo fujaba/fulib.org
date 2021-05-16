@@ -9,6 +9,7 @@ import spark.Request;
 import spark.Response;
 
 import javax.inject.Inject;
+import java.time.Instant;
 import java.util.concurrent.TimeoutException;
 
 import static org.fulib.webapp.projects.controller.ProjectController.checkAuth;
@@ -48,8 +49,16 @@ public class ContainerController
 	public Object create(Request request, Response response)
 	{
 		final String id = request.params("projectId");
-		final Project project = getOr404(projectService, id);
-		checkAuth(request, project);
+		final Project project;
+		if (id == null)
+		{
+			project = parseLocalProject(new JSONObject(request.body()));
+		}
+		else
+		{
+			project = getOr404(projectService, id);
+			checkAuth(request, project);
+		}
 
 		try
 		{
@@ -61,6 +70,17 @@ public class ContainerController
 		{
 			throw halt(503, new JSONObject().put("error", e.getMessage()).toString());
 		}
+	}
+
+	private Project parseLocalProject(JSONObject jsonObject)
+	{
+		final Project project = new Project();
+		project.setLocal(true);
+		project.setId(jsonObject.getString(Project.PROPERTY_ID));
+		project.setName(jsonObject.getString(Project.PROPERTY_NAME));
+		project.setDescription(jsonObject.getString(Project.PROPERTY_DESCRIPTION));
+		project.setCreated(Instant.parse(jsonObject.getString(Project.PROPERTY_CREATED)));
+		return project;
 	}
 
 	public Object delete(Request request, Response response)

@@ -97,6 +97,7 @@ public class Main
 		service.path("/projects", () -> {
 			service.post("", projectController::create);
 			service.get("", projectController::getAll);
+			service.post("/container", containerController::create);
 
 			service.path("/:projectId", this::addProjectRoutes);
 		});
