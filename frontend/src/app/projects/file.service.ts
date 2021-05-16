@@ -34,9 +34,18 @@ export class FileService {
     return this.dav.propFind(`${container.url}/dav/${path}`).pipe(map(resource => this.toFile(resource)));
   }
 
+  getWithChildren(container: Container, path: string): Observable<File> {
+    return this.dav.propFindAll(`${container.url}/dav/${path}`).pipe(map(resources => {
+      const parent = this.toFile(resources[0]);
+      const children = resources.slice(1).map(resource => this.toFile(resource));
+      parent.setChildren(children);
+      return parent;
+    }));
+  }
+
   getChildren(container: Container, parent: File): Observable<File[]> {
-    return this.dav.propFindChildren(`${container.url}/dav/${parent.path}`).pipe(map(childResources => {
-      const children = childResources.map(resource => this.toFile(resource));
+    return this.dav.propFindAll(`${container.url}/dav/${parent.path}`).pipe(map(resources => {
+      const children = resources.slice(1).map(resource => this.toFile(resource));
       parent.setChildren(children);
       return children;
     }));

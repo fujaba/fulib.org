@@ -18,8 +18,8 @@ export class ConfigService {
   }
 
   getObjects<T>(container: Container, namespace: string): Observable<T[]> {
-    return this.dav.propFindChildren(this.getUrl(container, namespace)).pipe(
-      map(resources => resources.map(({href}) => {
+    return this.dav.propFindAll(this.getUrl(container, namespace)).pipe(
+      map(resources => resources.slice(1).map(({href}) => {
         const start = href.lastIndexOf('/') + 1;
         const end = href.length - (href.endsWith('.json') ? 5 : 0);
         return href.substring(start, end);

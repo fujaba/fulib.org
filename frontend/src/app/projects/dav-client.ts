@@ -24,18 +24,15 @@ export class DavClient {
     return file;
   }
 
-  private toChildResources(doc: Document): DavResource[] {
+  private toResources(doc: Document): DavResource[] {
     const responseNodes = doc.createExpression('/D:multistatus/D:response', () => 'DAV:')
       .evaluate(doc, XPathResult.ORDERED_NODE_ITERATOR_TYPE);
 
     const children: DavResource[] = [];
-    responseNodes.iterateNext();
-    let responseNode = responseNodes.iterateNext();
-    while (responseNode) {
+    for (let responseNode = responseNodes.iterateNext(); responseNode; responseNode = responseNodes.iterateNext()) {
       const resource = new DavResource();
       this.copyToResource(doc, responseNode, resource);
       children.push(resource);
-      responseNode = responseNodes.iterateNext();
     }
 
     return children;
@@ -58,13 +55,13 @@ export class DavClient {
     );
   }
 
-  propFindChildren(url: string): Observable<DavResource[]> {
+  propFindAll(url: string): Observable<DavResource[]> {
     return this.http.request('PROPFIND', url, {
       responseType: 'text',
       headers: {Depth: '1'},
     }).pipe(
       map(text => new DOMParser().parseFromString(text, 'text/xml')),
-      map(doc => this.toChildResources(doc)),
+      map(doc => this.toResources(doc)),
     );
   }
 
