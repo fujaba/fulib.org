@@ -57,6 +57,7 @@ export class FileTreeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.container = this.projectManager.container;
     if (!this.file) {
       this.file = this.root;
+      this.expanded$.next(true);
     }
 
     this.subscription.add(this.expanded$.pipe(

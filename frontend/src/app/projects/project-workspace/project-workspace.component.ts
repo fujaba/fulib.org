@@ -91,7 +91,7 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
       tap(([project, container]) => {
         this.projectManager.init(project, container);
       }),
-      switchMap(([project, container]) => this.fileService.get(container, `/projects/${project.id}/`)),
+      switchMap(([project, container]) => this.fileService.getWithChildren(container, `/projects/${project.id}/`)),
       tap(fileRoot => {
         this.projectManager.fileRoot = fileRoot;
         this.fileTabsComponent = SplitPanelComponent;
