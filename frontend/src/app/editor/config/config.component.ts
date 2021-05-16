@@ -3,13 +3,13 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 
 import {saveAs} from 'file-saver';
-import {map} from 'rxjs/operators';
 import {ProjectConfig} from '../../model/project-config';
 
 import ProjectZipRequest from '../../model/project-zip-request';
 import {PrivacyService} from '../../privacy.service';
 
 import {ScenarioEditorService} from '../../scenario-editor.service';
+import {EditorService} from '../editor.service';
 
 @Component({
   selector: 'app-config',
@@ -27,6 +27,7 @@ export class ConfigComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private ngbModal: NgbModal,
     private router: Router,
+    private editorService: EditorService,
     private scenarioEditorService: ScenarioEditorService,
     private privacyService: PrivacyService,
   ) {
@@ -68,7 +69,7 @@ export class ConfigComponent implements OnInit {
     const request: ProjectZipRequest = {
       ...this.config,
       privacy: this.privacyService.privacy || 'none',
-      scenarioText: this.scenarioEditorService.storedScenario,
+      scenarioText: this.editorService.storedScenario,
     };
     this.scenarioEditorService.downloadZip(request).subscribe(blob => {
       saveAs(blob, `${this.config.projectName}.zip`);
