@@ -34,8 +34,13 @@ public class ProjectGenerator
 		final String packageDir = data.getPackageName().replace('.', '/');
 		final String fileName = data.getScenarioFileName();
 
-		generator.generate("src/main/scenarios/" + packageDir + "/" + fileName,
-		                   output -> output.write(data.getScenarioText().getBytes(StandardCharsets.UTF_8)));
+		generator.generate("src/main/scenarios/" + packageDir + "/" + fileName, output -> {
+			final String scenarioText = data.getScenarioText();
+			if (scenarioText != null)
+			{
+				output.write(scenarioText.getBytes(StandardCharsets.UTF_8));
+			}
+		});
 
 		copy(generator, "default.gitignore", ".gitignore");
 		copy(generator, "gradlew", "gradlew");

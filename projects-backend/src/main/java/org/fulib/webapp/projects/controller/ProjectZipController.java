@@ -47,7 +47,7 @@ public class ProjectZipController
 		projectData.setScenarioFileName(json.getString(ProjectData.PROPERTY_SCENARIO_FILE_NAME));
 		projectData.setProjectName(json.getString(ProjectData.PROPERTY_PROJECT_NAME));
 		projectData.setProjectVersion(json.getString(ProjectData.PROPERTY_PROJECT_VERSION));
-		projectData.setScenarioText(json.getString(ProjectData.PROPERTY_SCENARIO_TEXT));
+		projectData.setScenarioText(json.optString(ProjectData.PROPERTY_SCENARIO_TEXT));
 		projectData.setDecoratorClassName(json.optString(ProjectData.PROPERTY_DECORATOR_CLASS_NAME, null));
 		return projectData;
 	}
