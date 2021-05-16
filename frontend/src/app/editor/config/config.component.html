@@ -1,8 +1,13 @@
-<app-modal #modal>
-  <ng-container modal-header>
-    Configure Project
-  </ng-container>
-  <ng-container modal-body>
+<ng-template #configModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="config-modal-title">
+      Configure Project
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
     <app-project-config-form [config]="config"></app-project-config-form>
     <hr/>
     <h4>Download as Gradle Project</h4>
@@ -15,10 +20,13 @@
     <button type="button" class="btn btn-success" (click)="downloadProjectZip()">
       Download
     </button>
-  </ng-container>
-  <ng-container modal-footer>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.close()">
+      Cancel
+    </button>
     <button type="button" class="btn btn-primary" (click)="save(); modal.close()">
       Save & Close
     </button>
-  </ng-container>
-</app-modal>
+  </div>
+</ng-template>

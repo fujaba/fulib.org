@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Observable, of} from 'rxjs';
-import {switchMap, tap} from 'rxjs/operators';
+import {distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 
 import {environment} from '../../../environments/environment';
 import {ExamplesService} from '../../examples.service';
@@ -57,9 +57,10 @@ export class FourPaneEditorComponent implements OnInit {
     this.exampleCategories = this.examplesService.getCategories();
 
     this.activatedRoute.queryParams.pipe(
-      switchMap(queryParams => {
-        const exampleName: string | undefined = queryParams.example;
-        this.selectedExample = exampleName ? this.examplesService.getExampleByName(exampleName) : null;
+      map(({example}) => example),
+      distinctUntilChanged(),
+      switchMap(example => {
+        this.selectedExample = example ? this.examplesService.getExampleByName(example) : null;
         if (this.selectedExample) {
           this.scenarioText = '// Loading Example...';
           return this.examplesService.getScenario(this.selectedExample);
