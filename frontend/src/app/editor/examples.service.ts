@@ -1,18 +1,13 @@
-import {Injectable} from '@angular/core';
-
 import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
 
 import {Observable, of} from 'rxjs';
 import {tap} from 'rxjs/operators';
+import Example from '../model/example';
 
-import ExampleCategory from './model/example-category';
-import Example from './model/example';
+import ExampleCategory from '../model/example-category';
 
-import {environment} from '../environments/environment';
-
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({providedIn: 'root'})
 export class ExamplesService {
   private readonly categories: ExampleCategory[] = [
     {

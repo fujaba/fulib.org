@@ -4,7 +4,7 @@ import {Observable, of} from 'rxjs';
 import {distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 
 import {environment} from '../../../environments/environment';
-import {ExamplesService} from '../../examples.service';
+import {ExamplesService} from '../examples.service';
 import {MarkdownService} from '../../markdown.service';
 import {Marker} from '../../model/codegen/marker';
 import Request from '../../model/codegen/request';
