@@ -7,7 +7,7 @@ import {EditorService} from '../editor.service';
 import {FileService} from '../file.service';
 import {FileEditor} from '../model/file-editor';
 import {ProjectManager} from '../project.manager';
-import {TabsComponent} from '../tabs/tabs.component';
+import {TabsComponent} from '../../shared/tabs/tabs.component';
 
 @Component({
   selector: 'app-file-tabs',
