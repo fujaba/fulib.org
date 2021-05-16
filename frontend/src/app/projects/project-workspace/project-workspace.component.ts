@@ -17,7 +17,7 @@ import {ProjectManager} from '../project.manager';
 import {ProjectService} from '../project.service';
 import {SettingsComponent} from '../settings/settings.component';
 import {SplitPanelComponent} from '../split-panel/split-panel.component';
-import {TerminalTabsComponent} from '../terminal-tabs/terminal-tabs.component';
+import {TerminalTabsComponent} from '../terminal/terminal-tabs/terminal-tabs.component';
 
 interface SidebarItem {
   id: string;

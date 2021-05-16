@@ -21,8 +21,7 @@ import {ProjectsRoutingModule} from './projects-routing.module';
 import {SettingsComponent} from './settings/settings.component';
 import {SetupModule} from './setup/setup.module';
 import {SplitPanelComponent} from './split-panel/split-panel.component';
-import {TerminalTabsComponent} from './terminal-tabs/terminal-tabs.component';
-import {TerminalComponent} from './terminal/terminal.component';
+import {TerminalModule} from './terminal/terminal.module';
 
 @NgModule({
   declarations: [
@@ -35,8 +34,6 @@ import {TerminalComponent} from './terminal/terminal.component';
     ProjectWorkspaceComponent,
     SettingsComponent,
     SplitPanelComponent,
-    TerminalComponent,
-    TerminalTabsComponent,
   ],
   imports: [
     // Angular
@@ -46,7 +43,6 @@ import {TerminalComponent} from './terminal/terminal.component';
     // 3rd Party
     DndModule,
     NgbModule,
-    NgTerminalModule,
     AngularSplitModule,
     // Shared
     SharedModule,
@@ -56,6 +52,7 @@ import {TerminalComponent} from './terminal/terminal.component';
     EditorModule,
     LaunchModule,
     SetupModule,
+    TerminalModule,
   ],
 })
 export class ProjectsModule {

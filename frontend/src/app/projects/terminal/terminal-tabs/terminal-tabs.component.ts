@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {Terminal} from '../model/terminal';
-import {ProjectManager} from '../project.manager';
+import {Terminal} from '../../model/terminal';
+import {ProjectManager} from '../../project.manager';
 
 @Component({
   selector: 'app-terminal-tabs',

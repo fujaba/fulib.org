@@ -2,8 +2,8 @@ import {AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild} from '@an
 import {NgTerminal} from 'ng-terminal';
 import {Observable} from 'rxjs';
 import {filter, map} from 'rxjs/operators';
-import {Terminal} from '../model/terminal';
-import {TerminalService} from './terminal.service';
+import {Terminal} from '../../model/terminal';
+import {TerminalService} from '../terminal.service';
 
 @Component({
   selector: 'app-terminal',
