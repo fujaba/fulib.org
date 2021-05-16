@@ -36,6 +36,8 @@ interface SidebarItem {
 })
 export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
   @ViewChild('loadingModal', {static: true}) loadingModal: TemplateRef<any>;
+  @ViewChild('setupModal', {static: true}) setupModal: TemplateRef<any>;
+
   openModal: NgbModalRef;
 
   project: Project;
@@ -103,9 +105,12 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
           },
         });
       }),
-    ).subscribe(_ => {
+    ).subscribe(fileRoot => {
       this.router.navigate([], {queryParams: {panel: 'project'}, skipLocationChange: true});
       this.openModal.close();
+      if (fileRoot.children && fileRoot.children.length === 0) {
+        this.openModal = this.ngbModal.open(this.setupModal, {ariaLabelledBy: 'setup-modal-title'});
+      }
     });
   }
 

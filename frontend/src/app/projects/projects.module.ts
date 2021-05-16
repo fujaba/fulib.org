@@ -19,6 +19,7 @@ import {ProjectTreeComponent} from './project-tree/project-tree.component';
 import {ProjectWorkspaceComponent} from './project-workspace/project-workspace.component';
 import {ProjectsRoutingModule} from './projects-routing.module';
 import {SettingsComponent} from './settings/settings.component';
+import {SetupModule} from './setup/setup.module';
 import {SplitPanelComponent} from './split-panel/split-panel.component';
 import {TabsComponent} from './tabs/tabs.component';
 import {TerminalTabsComponent} from './terminal-tabs/terminal-tabs.component';
@@ -56,6 +57,7 @@ import {TerminalComponent} from './terminal/terminal.component';
     // Submodules
     EditorModule,
     LaunchModule,
+    SetupModule,
   ],
 })
 export class ProjectsModule {
