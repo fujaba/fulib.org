@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
 import {DndDropEvent} from 'ngx-drag-drop';
-import {EMPTY, Observable, Subject, Subscription} from 'rxjs';
+import {BehaviorSubject, EMPTY, Observable, Subscription} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import {FileChangeService} from '../file-change.service';
 import {FileService} from '../file.service';
@@ -30,8 +30,7 @@ export class FileTreeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChildren('nameInput') nameInput: QueryList<ElementRef>;
 
-  @HostBinding('attr.data-expanded') expanded = false;
-  private expanded$ = new Subject<boolean>();
+  expanded$ = new BehaviorSubject<boolean>(false);
 
   newName?: string;
   currentFile: Observable<File | undefined>;
@@ -45,6 +44,11 @@ export class FileTreeComponent implements OnInit, AfterViewInit, OnDestroy {
     private projectManager: ProjectManager,
     private fileChangeService: FileChangeService,
   ) {
+  }
+
+  @HostBinding('attr.data-expanded')
+  get expanded(): boolean {
+    return this.expanded$.value;
   }
 
   ngOnInit(): void {
@@ -82,8 +86,7 @@ export class FileTreeComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
-    this.expanded = !this.expanded;
-    this.expanded$.next(this.expanded);
+    this.expanded$.next(!this.expanded);
   }
 
   openPreview() {
