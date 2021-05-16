@@ -13,6 +13,7 @@ import Example from '../../model/example';
 import ExampleCategory from '../../model/example-category';
 import {PrivacyService} from '../../privacy.service';
 import {ScenarioEditorService} from '../../scenario-editor.service';
+import {ConfigService} from '../config.service';
 import {EditorService} from '../editor.service';
 import {Panel} from '../model/panel';
 
@@ -46,6 +47,7 @@ export class FourPaneEditorComponent implements OnInit {
   constructor(
     private examplesService: ExamplesService,
     private editorService: EditorService,
+    private configService: ConfigService,
     private scenarioEditorService: ScenarioEditorService,
     private markdownService: MarkdownService,
     private privacyService: PrivacyService,
@@ -85,11 +87,11 @@ export class FourPaneEditorComponent implements OnInit {
   }
 
   private submit$(): Observable<Response> {
-    const packageName = this.scenarioEditorService.packageName;
+    const packageName = this.configService.packageName;
     return of<Request>({
       privacy: this.privacyService.privacy ?? 'none',
       packageName,
-      scenarioFileName: this.scenarioEditorService.scenarioFileName,
+      scenarioFileName: this.configService.scenarioFileName,
       scenarioText: this.scenarioText,
       selectedExample: this.selectedExample?.name,
     }).pipe(
@@ -102,7 +104,11 @@ export class FourPaneEditorComponent implements OnInit {
         this.markdownHtml = response.html.replace(new RegExp(`/api/runcodegen/${response.id}`, 'g'),
           match => environment.apiURL + match.substring(4));
         this.classDiagramUrl = `${environment.apiURL}/runcodegen/${response.id}/model_src/${packageName.replace(/\./g, '/')}/classDiagram.svg`;
-        this.outputText = this.scenarioEditorService.foldInternalCalls(this.response.output.split('\n')).join('\n');
+
+        const outputLines = this.response.output.split('\n');
+        const foldedLines = this.scenarioEditorService.foldInternalCalls(this.configService.packageName, outputLines);
+        this.outputText = foldedLines.join('\n');
+
         this.markers = this.scenarioEditorService.lint(response);
       }),
     );

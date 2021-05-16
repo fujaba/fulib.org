@@ -2,12 +2,10 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 
-import Example from './model/example';
 import {ExamplesService} from './examples.service';
 import {Marker} from './model/codegen/marker';
 import Request from './model/codegen/request';
 import Response from './model/codegen/response';
-import ProjectZipRequest from './model/project-zip-request';
 import {PrivacyService} from './privacy.service';
 
 import {environment} from '../environments/environment';
@@ -17,18 +15,6 @@ import {environment} from '../environments/environment';
   providedIn: 'root',
 })
 export class ScenarioEditorService {
-  public readonly defaultPackageName = 'org.example';
-  public readonly defaultProjectName = 'scenario';
-  public readonly defaultProjectVersion = '0.1.0';
-  public readonly defaultScenarioFileName = 'Scenario.md';
-  public readonly defaultDecoratorClassName = 'GenModel';
-
-  private _packageName: string | null;
-  private _projectName: string | null;
-  private _projectVersion: string | null;
-  private _scenarioFileName: string | null;
-  private _decoratorClassName: string | null;
-
   constructor(
     private examplesService: ExamplesService,
     private privacyService: PrivacyService,
@@ -36,67 +22,8 @@ export class ScenarioEditorService {
   ) {
   }
 
-  get packageName(): string {
-    return this._packageName ?? this.privacyService.getStorage('packageName') ?? this.defaultPackageName;
-  }
-
-  set packageName(value: string) {
-    if (this._packageName !== value) {
-      this._packageName = value;
-      this.privacyService.setStorage('packageName', value);
-    }
-  }
-
-  get projectName(): string {
-    return this._projectName ?? this.privacyService.getStorage('projectName') ?? this.defaultProjectName;
-  }
-
-  set projectName(value: string) {
-    if (this._projectName !== value) {
-      this._projectName = value;
-      this.privacyService.setStorage('projectName', value);
-    }
-  }
-
-  get projectVersion(): string {
-    return this._projectVersion ?? this.privacyService.getStorage('projectVersion') ?? this.defaultProjectVersion;
-  }
-
-  set projectVersion(value: string) {
-    if (this._projectVersion !== value) {
-      this._projectVersion = value;
-      this.privacyService.setStorage('projectVersion', value);
-    }
-  }
-
-  get scenarioFileName(): string {
-    return this._scenarioFileName ?? this.privacyService.getStorage('scenarioFileName') ?? this.defaultScenarioFileName;
-  }
-
-  set scenarioFileName(value: string) {
-    if (this._scenarioFileName !== value) {
-      this._scenarioFileName = value;
-      this.privacyService.setStorage('scenarioFileName', value);
-    }
-  }
-
-  get decoratorClassName(): string {
-    return this._decoratorClassName ?? this.privacyService.getStorage('decoratorClassName') ?? this.defaultDecoratorClassName;
-  }
-
-  set decoratorClassName(value: string) {
-    if (this._decoratorClassName !== value) {
-      this._decoratorClassName = value;
-      this.privacyService.setStorage('decoratorClassName', value);
-    }
-  }
-
   submit(codeGenRequest: Request): Observable<Response> {
     return this.http.post<Response>(environment.apiURL + '/runcodegen', codeGenRequest);
-  }
-
-  downloadZip(projectZipRequest: ProjectZipRequest): Observable<Blob> {
-    return this.http.post(environment.apiURL + '/projectzip', projectZipRequest, {responseType: 'blob'});
   }
 
   lint(response: Response): Marker[] {
@@ -125,8 +52,8 @@ export class ScenarioEditorService {
     return result;
   }
 
-  foldInternalCalls(outputLines: string[]): string[] {
-    const packageName = this.packageName.replace('/', '.');
+  foldInternalCalls(packageName: string, outputLines: string[]): string[] {
+    packageName = packageName.replace('/', '.');
     const packageNamePrefix = `\tat ${packageName}.`;
     const result: string[] = [];
     let counter = 0;
