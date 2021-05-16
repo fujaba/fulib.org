@@ -3,6 +3,7 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
 import {Container} from './model/container';
+import {LocalProject} from './model/project';
 
 @Injectable({providedIn: 'root'})
 export class ContainerService {
@@ -17,6 +18,10 @@ export class ContainerService {
 
   create(projectId: string): Observable<Container> {
     return this.http.post<Container>(`${environment.projectsApiUrl}/projects/${projectId}/container`, {});
+  }
+
+  createLocal(localProject: LocalProject): Observable<Container> {
+    return this.http.post<Container>(`${environment.projectsApiUrl}/projects/container`, localProject);
   }
 
   delete(projectId: string): Observable<void> {

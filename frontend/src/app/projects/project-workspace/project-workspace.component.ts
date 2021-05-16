@@ -9,6 +9,7 @@ import {EditorService} from '../editor.service';
 import {FileTypeService} from '../file-type.service';
 import {FileService} from '../file.service';
 import {LaunchPanelComponent} from '../launch/launch-panel/launch-panel.component';
+import {LocalProjectService} from '../local-project.service';
 import {Container} from '../model/container';
 import {Project} from '../model/project';
 import {ProjectTreeComponent} from '../project-tree/project-tree.component';
@@ -57,6 +58,7 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
+    private localProjectService: LocalProjectService,
     private projectService: ProjectService,
     private containerService: ContainerService,
     private fileService: FileService,
@@ -86,10 +88,21 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
           keyboard: false,
         });
       }),
-      switchMap(params => forkJoin([
-        this.projectService.get(params.id).pipe(tap(project => this.project = project)),
-        this.containerService.create(params.id).pipe(tap(container => this.container = container)),
-      ])),
+      switchMap(({id}) => {
+        const localProject = this.localProjectService.get(id);
+        if (localProject) {
+          this.project = localProject;
+          return this.containerService.createLocal(localProject).pipe(map(container => {
+            this.container = container;
+            return [localProject, container] as const;
+          }));
+        } else {
+          return forkJoin([
+            this.projectService.get(id).pipe(tap(project => this.project = project)),
+            this.containerService.create(id).pipe(tap(container => this.container = container)),
+          ]);
+        }
+      }),
       tap(([project, container]) => {
         this.projectManager.init(project, container);
       }),
