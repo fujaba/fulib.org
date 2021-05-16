@@ -1,4 +1,5 @@
 import {CommonModule} from '@angular/common';
+import {HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgbDropdownModule, NgbNavModule, NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
@@ -19,6 +20,7 @@ import {FourPaneEditorComponent} from './four-pane-editor/four-pane-editor.compo
   ],
   imports: [
     CommonModule,
+    HttpClientModule,
     FormsModule,
     NgbNavModule,
     NgbDropdownModule,

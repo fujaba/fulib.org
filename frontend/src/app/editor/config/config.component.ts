@@ -7,8 +7,8 @@ import {ProjectConfig} from '../../model/project-config';
 
 import ProjectZipRequest from '../../model/project-zip-request';
 import {PrivacyService} from '../../privacy.service';
+import {ConfigService} from '../config.service';
 
-import {ScenarioEditorService} from '../../scenario-editor.service';
 import {EditorService} from '../editor.service';
 
 @Component({
@@ -28,7 +28,7 @@ export class ConfigComponent implements OnInit {
     private ngbModal: NgbModal,
     private router: Router,
     private editorService: EditorService,
-    private scenarioEditorService: ScenarioEditorService,
+    private configService: ConfigService,
     private privacyService: PrivacyService,
   ) {
   }
@@ -37,11 +37,11 @@ export class ConfigComponent implements OnInit {
     this.activatedRoute.queryParams.subscribe(({config}) => {
       if (config) {
         this.config = {
-          packageName: this.scenarioEditorService.packageName,
-          projectName: this.scenarioEditorService.projectName,
-          projectVersion: this.scenarioEditorService.projectVersion,
-          scenarioFileName: this.scenarioEditorService.scenarioFileName,
-          decoratorClassName: this.scenarioEditorService.decoratorClassName,
+          packageName: this.configService.packageName,
+          projectName: this.configService.projectName,
+          projectVersion: this.configService.projectVersion,
+          scenarioFileName: this.configService.scenarioFileName,
+          decoratorClassName: this.configService.decoratorClassName,
         };
         this.open();
       } else {
@@ -58,11 +58,11 @@ export class ConfigComponent implements OnInit {
   }
 
   save(): void {
-    this.scenarioEditorService.packageName = this.config.packageName;
-    this.scenarioEditorService.projectName = this.config.projectName;
-    this.scenarioEditorService.projectVersion = this.config.projectVersion;
-    this.scenarioEditorService.scenarioFileName = this.config.scenarioFileName;
-    this.scenarioEditorService.decoratorClassName = this.config.decoratorClassName || '';
+    this.configService.packageName = this.config.packageName;
+    this.configService.projectName = this.config.projectName;
+    this.configService.projectVersion = this.config.projectVersion;
+    this.configService.scenarioFileName = this.config.scenarioFileName;
+    this.configService.decoratorClassName = this.config.decoratorClassName || '';
   }
 
   downloadProjectZip(): void {
@@ -71,7 +71,7 @@ export class ConfigComponent implements OnInit {
       privacy: this.privacyService.privacy || 'none',
       scenarioText: this.editorService.storedScenario,
     };
-    this.scenarioEditorService.downloadZip(request).subscribe(blob => {
+    this.configService.downloadZip(request).subscribe(blob => {
       saveAs(blob, `${this.config.projectName}.zip`);
     });
   }
