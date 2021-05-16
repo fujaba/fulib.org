@@ -67,21 +67,13 @@ public class ContainerController
 	{
 		final String id = request.params("projectId");
 		final Project project = getOr404(projectService, id);
+		checkAuth(request, project);
+
 		final Container container = this.containerService.find(project);
 
 		if (container == null)
 		{
 			throw halt(404, String.format("{\"error\": \"container for project with id '%s' not found\"}\n", id));
-		}
-
-		final String stopToken = request.queryParams("stopToken");
-		if (stopToken == null)
-		{
-			checkAuth(request, project);
-		}
-		else if (!stopToken.equals(container.getStopToken()))
-		{
-			throw halt(401, "{\"error\": \"invalid stopToken\"}\n");
 		}
 
 		this.containerService.stop(container);

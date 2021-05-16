@@ -1,8 +1,5 @@
 package org.fulib.projects;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -10,8 +7,6 @@ import java.util.concurrent.TimeUnit;
 
 public class Service
 {
-	private static final String STOP_URL = System.getenv("STOP_URL");
-
 	private ScheduledExecutorService scheduler;
 
 	private spark.Service service;
@@ -53,33 +48,7 @@ public class Service
 
 	private void stop()
 	{
-		if (sendStopRequest())
-		{
-			service.stop();
-			scheduler.shutdown();
-		}
-	}
-
-	private boolean sendStopRequest()
-	{
-		if (STOP_URL == null)
-		{
-			return false;
-		}
-
-		try
-		{
-			final URL url = new URL(STOP_URL);
-			final HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
-			httpCon.setRequestMethod("DELETE");
-			httpCon.getResponseCode();
-			httpCon.disconnect();
-			return true;
-		}
-		catch (IOException exception)
-		{
-			exception.printStackTrace();
-			return false;
-		}
+		service.stop();
+		scheduler.shutdown();
 	}
 }

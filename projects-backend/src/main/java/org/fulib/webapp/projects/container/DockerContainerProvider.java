@@ -59,27 +59,22 @@ public class DockerContainerProvider
 		result.setId(containerId);
 		result.setProjectId(projectId);
 		result.setUrl(getContainerUrl(containerId));
-		result.setStopToken(dockerContainer.getLabels().get("org.fulib.stopToken"));
 		return result;
 	}
 
 	public Container start(Project project)
 	{
-		final String stopToken = UUID.randomUUID().toString();
 		final String id = project.getId();
-		final String stopUrl = API_HOST + "/api/projects/" + id + "/container?stopToken=" + stopToken;
 
 		final Map<String, String> labels = new HashMap<>();
 		labels.put("org.fulib.project", id);
-		labels.put("org.fulib.stopToken", stopToken);
 
 		final CreateContainerCmd cmd = dockerClient
 			.createContainerCmd(CONTAINER_IMAGE)
 			.withTty(true)
 			.withNetworkMode(NETWORK_NAME)
 			.withLabels(labels)
-			.withBinds(Bind.parse(BIND_PREFIX + PROJECTS_DIR + id + ':' + PROJECTS_DIR + id))
-			.withEnv("STOP_URL=" + stopUrl);
+			.withBinds(Bind.parse(BIND_PREFIX + PROJECTS_DIR + id + ':' + PROJECTS_DIR + id));
 
 		final String containerId = cmd.exec().getId();
 		dockerClient.startContainerCmd(containerId).exec();
@@ -88,7 +83,6 @@ public class DockerContainerProvider
 		container.setId(containerId);
 		container.setProjectId(id);
 		container.setUrl(getContainerUrl(containerId));
-		container.setStopToken(stopToken);
 		return container;
 	}
 
