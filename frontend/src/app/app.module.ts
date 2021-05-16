@@ -15,10 +15,10 @@ import {AboutComponent} from './about/about.component';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {ChangelogComponent} from './changelog/changelog.component';
-import {ConfigComponent} from './config/config.component';
-import {DiagramViewComponent} from './diagram-view/diagram-view.component';
+import {ConfigComponent} from './editor/config/config.component';
+import {DiagramViewComponent} from './editor/diagram-view/diagram-view.component';
 import {FeedbackComponent} from './feedback/feedback.component';
-import {FourPaneEditorComponent} from './four-pane-editor/four-pane-editor.component';
+import {FourPaneEditorComponent} from './editor/four-pane-editor/four-pane-editor.component';
 import {HeaderComponent} from './header/header.component';
 import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
 import {PrivacyService} from './privacy.service';
@@ -48,15 +48,12 @@ function initializeKeycloak(keycloak: KeycloakService) {
 @NgModule({
   declarations: [
     AppComponent,
-    FourPaneEditorComponent,
-    ConfigComponent,
     HeaderComponent,
     PageNotFoundComponent,
     ChangelogComponent,
     FeedbackComponent,
     PrivacyComponent,
     AboutComponent,
-    DiagramViewComponent,
   ],
   imports: [
     BrowserModule,
@@ -64,7 +61,6 @@ function initializeKeycloak(keycloak: KeycloakService) {
     HttpClientModule,
     NgbModule,
     NgBootstrapDarkmodeModule,
-    GridsterModule,
     DragulaModule.forRoot(),
     KeycloakAngularModule,
     SharedModule,

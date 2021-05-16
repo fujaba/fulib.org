@@ -1,7 +1,7 @@
 import {Component, Input} from '@angular/core';
-import {environment} from '../../environments/environment';
-import Diagram from '../model/codegen/diagram';
-import Response from '../model/codegen/response';
+import {environment} from '../../../environments/environment';
+import Diagram from '../../model/codegen/diagram';
+import Response from '../../model/codegen/response';
 
 @Component({
   selector: 'app-diagram-view',
