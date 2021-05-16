@@ -12,38 +12,16 @@ import {PrivacyService} from './privacy.service';
 
 import {environment} from '../environments/environment';
 
-export interface Panels {
-  [id: string]: Panel;
-}
-
-export interface Panel {
-  closed?: boolean;
-  x: number;
-  y: number;
-  rows: number;
-  cols: number;
-}
 
 @Injectable({
   providedIn: 'root',
 })
 export class ScenarioEditorService {
-  private defaultScenario = `# My First Scenario
-
-// start typing your scenario or select an example using the dropdown above.
-
-There is a Car with name Herbie.
-`;
-
   public readonly defaultPackageName = 'org.example';
   public readonly defaultProjectName = 'scenario';
   public readonly defaultProjectVersion = '0.1.0';
   public readonly defaultScenarioFileName = 'Scenario.md';
   public readonly defaultDecoratorClassName = 'GenModel';
-
-  private _panels?: Panels;
-
-  private _storedScenario?: string;
 
   private _packageName: string | null;
   private _projectName: string | null;
@@ -51,66 +29,11 @@ There is a Car with name Herbie.
   private _scenarioFileName: string | null;
   private _decoratorClassName: string | null;
 
-  private _selectedExample: Example | null;
-
-  private _autoSubmit?: boolean;
-
   constructor(
     private examplesService: ExamplesService,
     private privacyService: PrivacyService,
     private http: HttpClient,
   ) {
-  }
-
-  get panels(): Panels {
-    const panels = this._panels ?? JSON.parse(this.privacyService.getStorage('panels') ?? '{}') as Panels;
-    if (!panels.scenario) {
-      panels.scenario = {x: 0, y: 0, rows: 6, cols: 4};
-    }
-    if (!panels.output) {
-      panels.output = {x: 4, y: 0, rows: 6, cols: 4};
-    }
-    if (!panels.java) {
-      panels.java = {x: 8, y: 0, rows: 6, cols: 4};
-    }
-    if (!panels.markdown) {
-      panels.markdown = {x: 0, y: 6, rows: 6, cols: 4};
-    }
-    if (!panels.classDiagram) {
-      panels.classDiagram = {x: 4, y: 6, rows: 6, cols: 4};
-    }
-    if (!panels.objectDiagrams) {
-      panels.objectDiagrams = {x: 8, y: 6, rows: 6, cols: 4};
-    }
-    return panels;
-  }
-
-  set panels(value: Panels) {
-    this._panels = value;
-    this.privacyService.setStorage('panels', JSON.stringify(value));
-  }
-
-  get storedScenario(): string {
-    return this._storedScenario ?? this.privacyService.getStorage('storedScenario') ?? this.defaultScenario;
-  }
-
-  set storedScenario(value: string) {
-    if (this._storedScenario !== value) {
-      this._storedScenario = value;
-      this.privacyService.setStorage('storedScenario', value);
-    }
-  }
-
-  get autoSubmit(): boolean {
-    if (typeof this._autoSubmit === 'undefined') {
-      this._autoSubmit = this.privacyService.getStorage('autoSubmit') !== 'false';
-    }
-    return this._autoSubmit;
-  }
-
-  set autoSubmit(value: boolean) {
-    this._autoSubmit = value;
-    this.privacyService.setStorage('autoSubmit', '' + value);
   }
 
   get packageName(): string {

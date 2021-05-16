@@ -12,7 +12,9 @@ import Response from '../../model/codegen/response';
 import Example from '../../model/example';
 import ExampleCategory from '../../model/example-category';
 import {PrivacyService} from '../../privacy.service';
-import {Panels, ScenarioEditorService} from '../../scenario-editor.service';
+import {ScenarioEditorService} from '../../scenario-editor.service';
+import {EditorService} from '../editor.service';
+import {Panel} from '../model/panel';
 
 @Component({
   selector: 'app-four-pane-editor',
@@ -20,7 +22,7 @@ import {Panels, ScenarioEditorService} from '../../scenario-editor.service';
   styleUrls: ['./four-pane-editor.component.scss'],
 })
 export class FourPaneEditorComponent implements OnInit {
-  panels: Panels;
+  panels: Record<string, Panel>;
 
   selectedExample: Example | null;
   scenarioText: string;
@@ -36,13 +38,14 @@ export class FourPaneEditorComponent implements OnInit {
   _activeObjectDiagramTab = 1;
 
   savePanels = () => {
-    this.scenarioEditorService.panels = this.panels;
+    this.editorService.panels = this.panels;
   };
 
   itemId = item => item.id;
 
   constructor(
     private examplesService: ExamplesService,
+    private editorService: EditorService,
     private scenarioEditorService: ScenarioEditorService,
     private markdownService: MarkdownService,
     private privacyService: PrivacyService,
@@ -52,7 +55,7 @@ export class FourPaneEditorComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.panels = this.scenarioEditorService.panels;
+    this.panels = this.editorService.panels;
 
     this.exampleCategories = this.examplesService.getCategories();
 
@@ -65,7 +68,7 @@ export class FourPaneEditorComponent implements OnInit {
           this.scenarioText = '// Loading Example...';
           return this.examplesService.getScenario(this.selectedExample);
         } else {
-          return of(this.scenarioEditorService.storedScenario);
+          return of(this.editorService.storedScenario);
         }
       }),
       tap(scenario => this.scenarioText = scenario),
@@ -75,7 +78,7 @@ export class FourPaneEditorComponent implements OnInit {
 
   submit(): void {
     if (!this.selectedExample) {
-      this.scenarioEditorService.storedScenario = this.scenarioText;
+      this.editorService.storedScenario = this.scenarioText;
     }
 
     this.submit$().subscribe();
@@ -138,16 +141,16 @@ export class FourPaneEditorComponent implements OnInit {
   }
 
   get autoSubmit(): boolean {
-    return this.scenarioEditorService.autoSubmit;
+    return this.editorService.autoSubmit;
   }
 
   set autoSubmit(value: boolean) {
-    this.scenarioEditorService.autoSubmit = value;
+    this.editorService.autoSubmit = value;
   }
 
   resetPanels() {
-    this.scenarioEditorService.panels = {};
-    this.panels = this.scenarioEditorService.panels;
+    this.editorService.panels = {};
+    this.panels = this.editorService.panels;
   }
 
   setPanelClosed(id: string, hidden: boolean): void {
