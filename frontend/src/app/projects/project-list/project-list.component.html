@@ -54,8 +54,8 @@
 
   <ul class="list-group">
     <li *ngFor="let project of projects" class="list-group-item">
-      <div class="media">
-        <i class="h1 mr-3 {{ project.local ? 'bi-hdd' : 'bi-server' }}" [ngbTooltip]="project.local ? 'Local' : 'Persistent'"></i>
+      <div class="media align-items-center">
+        <i class="{{ project.local ? 'bi-hdd' : 'bi-server' }} feature-icon" [ngbTooltip]="project.local ? 'Local' : 'Persistent'"></i>
         <div class="media-body">
           <h3>
             {{project.name}}
@@ -67,7 +67,7 @@
             Created {{project.created | date:'medium'}}
           </small>
         </div>
-        <div class="btn-group ml-auto align-self-center">
+        <div class="btn-group ml-auto">
           <a class="btn btn-primary" routerLink="/projects/{{project.id}}">
             Open
           </a>
