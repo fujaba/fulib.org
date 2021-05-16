@@ -5,6 +5,8 @@ import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.github.dockerjava.api.exception.NotFoundException;
 import com.github.dockerjava.api.exception.NotModifiedException;
+import com.github.dockerjava.api.model.Bind;
+import com.github.dockerjava.api.model.Volume;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
@@ -17,6 +19,7 @@ import org.fulib.webapp.projects.model.Container;
 import org.fulib.webapp.projects.model.Project;
 
 import javax.inject.Inject;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -26,6 +29,7 @@ import java.util.zip.GZIPOutputStream;
 
 public class DockerContainerProvider
 {
+	private static final String BIND_PREFIX = new File("data").getAbsolutePath();
 	private static final String PROJECTS_DIR = "/projects/";
 	private static final String CONTAINER_IMAGE = System.getenv("FULIB_PROJECTS_CONTAINER_IMAGE");
 	private static final String API_HOST = System.getenv("FULIB_PROJECTS_URL");
@@ -82,11 +86,12 @@ public class DockerContainerProvider
 	private Container runContainer(Project project)
 	{
 		final String stopToken = UUID.randomUUID().toString();
+		final String id = project.getId();
 		final String stopUrl =
-			API_HOST + "/api/projects/" + project.getId() + "/container?stopToken=" + stopToken;
+			API_HOST + "/api/projects/" + id + "/container?stopToken=" + stopToken;
 
 		final Map<String, String> labels = new HashMap<>();
-		labels.put("org.fulib.project", project.getId());
+		labels.put("org.fulib.project", id);
 		labels.put("org.fulib.stopToken", stopToken);
 
 		final CreateContainerCmd cmd = dockerClient
@@ -94,6 +99,7 @@ public class DockerContainerProvider
 			.withTty(true)
 			.withNetworkMode(NETWORK_NAME)
 			.withLabels(labels)
+			.withBinds(Bind.parse(BIND_PREFIX + PROJECTS_DIR + id + ':' + PROJECTS_DIR + id))
 			.withEnv("STOP_URL=" + stopUrl);
 
 		final String containerId = cmd.exec().getId();
@@ -101,7 +107,7 @@ public class DockerContainerProvider
 
 		final Container container = new Container();
 		container.setId(containerId);
-		container.setProjectId(project.getId());
+		container.setProjectId(id);
 		container.setUrl(getContainerUrl(containerId));
 		container.setStopToken(stopToken);
 		return container;
