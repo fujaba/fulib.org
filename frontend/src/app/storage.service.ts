@@ -21,7 +21,6 @@ export class StorageService {
         result.push(match[1]);
       }
     }
-    console.log(result);
     return result;
   }
 
