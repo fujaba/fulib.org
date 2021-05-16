@@ -17,6 +17,41 @@
     </div>
   </h1>
 
+  <div *ngIf="projects.length === 0" class="card">
+    <div class="card-body">
+      <h5 class="card-title">
+        Welcome to Projects!
+      </h5>
+      <p class="card-text">
+        Projects allow you to:
+      </p>
+      <div class="media align-items-center">
+        <i class="bi-window-sidebar feature-icon"></i>
+        <div class="media-body">
+          Use a feature-rich online IDE for fulibScenarios, fulib and Java code
+        </div>
+      </div>
+      <div class="media align-items-center">
+        <i class="bi-segmented-nav feature-icon"></i>
+        <div class="media-body">
+          View and edit multiple files at once
+        </div>
+      </div>
+      <div class="media align-items-center">
+        <i class="bi-terminal feature-icon"></i>
+        <div class="media-body">
+          Work within a powerful and secure container context
+        </div>
+      </div>
+      <div class="media align-items-center">
+        <i class="bi-file-earmark-zip feature-icon"></i>
+        <div class="media-body">
+          Create complex applications ready for download and use in desktop environments
+        </div>
+      </div>
+    </div>
+  </div>
+
   <ul class="list-group">
     <li *ngFor="let project of projects" class="list-group-item">
       <div class="media">
