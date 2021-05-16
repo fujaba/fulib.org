@@ -36,5 +36,5 @@ RUN sed -i 's/^user.*;$/user root;/' /etc/nginx/nginx.conf
 COPY --from=preload /root/.gradle /root/.gradle
 
 # Command
-CMD nginx -g 'daemon off;' & java -jar /opt/projects/projects-*-all.jar
+CMD mkdir -p "/projects/$PROJECT_ID" ; nginx -g 'daemon off;' & java -jar /opt/projects/projects-*-all.jar
 EXPOSE 80 4567
