@@ -9,8 +9,8 @@ export class StorageService {
   constructor() {
   }
 
-  getAllKeys(prefix: RegExp): string[] {
-    const result: string[] = [];
+  getAllKeys(prefix: RegExp): RegExpExecArray[] {
+    const result: RegExpExecArray[] = [];
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
       if (!key) {
@@ -18,7 +18,7 @@ export class StorageService {
       }
       const match = prefix.exec(key);
       if (match) {
-        result.push(match[1]);
+        result.push(match);
       }
     }
     return result;

@@ -32,9 +32,8 @@ export class LocalProjectService {
   }
 
   getAll(): LocalProject[] {
-    return this.storageService.getAllKeys(/^projects\/(\w+)$/)
-      .map(key => this.get(key))
-      .filter((t): t is LocalProject => !!t);
+    return this.storageService.getAllKeys(/^projects\/\w+$/)
+      .map(([key]) => JSON.parse(this.storageService.get(key)!));
   }
 
   update(project: LocalProject): void {
@@ -42,7 +41,9 @@ export class LocalProjectService {
   }
 
   delete(id: string): void {
-    this.storageService.set(this.getKey(id), null);
+    for (const [key] of this.storageService.getAllKeys(new RegExp(`^projects/${id}(?:$|/.*)`))) {
+      this.storageService.set(key, null);
+    }
   }
 
   getConfig(id: string): ProjectConfig | undefined {
