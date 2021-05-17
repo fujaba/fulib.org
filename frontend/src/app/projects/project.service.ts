@@ -5,9 +5,12 @@ import {Observable, of} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
 
 import {environment} from '../../environments/environment';
+import {ProjectConfig} from '../model/project-config';
 import {UserService} from '../user/user.service';
+import {Container} from './model/container';
 import {Project, ProjectStub} from './model/project';
 import {LocalProjectService} from './local-project.service';
+import {SetupService} from './setup/setup.service';
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +21,7 @@ export class ProjectService {
     private users: UserService,
     private http: HttpClient,
     private localProjectService: LocalProjectService,
+    private setupService: SetupService,
   ) {
   }
 
@@ -62,5 +66,22 @@ export class ProjectService {
       }),
       map(projects => [...this.localProjectService.getAll(), ...projects]),
     );
+  }
+
+  saveConfig(project: Project, config: ProjectConfig): void {
+    if (project.local) {
+      this.localProjectService.saveConfig(project.id, config);
+    }
+  }
+
+  restoreFiles(container: Container, project: Project): Observable<void> {
+    if (project.local) {
+      const config = this.localProjectService.getConfig(project.id);
+      if (config) {
+        return this.setupService.generateFiles(container, config);
+      }
+    }
+
+    return of(undefined);
   }
 }

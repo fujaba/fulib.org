@@ -1,7 +1,8 @@
 import {Injectable} from '@angular/core';
 import ObjectID from 'bson-objectid';
+import {ProjectConfig} from '../model/project-config';
 import {StorageService} from '../storage.service';
-import {ProjectStub, LocalProject} from './model/project';
+import {LocalProject, ProjectStub} from './model/project';
 
 @Injectable({providedIn: 'root'})
 export class LocalProjectService {
@@ -42,5 +43,14 @@ export class LocalProjectService {
 
   delete(id: string): void {
     this.storageService.set(this.getKey(id), null);
+  }
+
+  getConfig(id: string): ProjectConfig | undefined {
+    const storage = this.storageService.get(this.getKey(id) + '/config');
+    return storage ? JSON.parse(storage) : undefined;
+  }
+
+  saveConfig(id: string, config: ProjectConfig) {
+    this.storageService.set(this.getKey(id) + '/config', JSON.stringify(config));
   }
 }

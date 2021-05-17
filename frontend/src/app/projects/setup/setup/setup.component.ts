@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {ProjectConfig} from '../../../model/project-config';
 import {ProjectManager} from '../../project.manager';
+import {ProjectService} from '../../project.service';
 import {SetupService} from '../setup.service';
 
 @Component({
@@ -17,6 +18,7 @@ export class SetupComponent implements OnInit {
   config: ProjectConfig;
 
   constructor(
+    private projectService: ProjectService,
     private projectManager: ProjectManager,
     private setupService: SetupService,
   ) {
@@ -28,6 +30,7 @@ export class SetupComponent implements OnInit {
 
   save(): void {
     this.saving = true;
+    this.projectService.saveConfig(this.projectManager.project, this.config);
     this.setupService.generateFiles(this.projectManager.container, this.config).subscribe(() => {
       this.saving = false;
       this.modal.close();

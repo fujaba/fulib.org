@@ -16,9 +16,6 @@ import {SetupComponent} from './setup/setup.component';
   exports: [
     SetupComponent,
   ],
-  providers: [
-    SetupService,
-  ],
 })
 export class SetupModule {
 }

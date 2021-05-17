@@ -7,7 +7,7 @@ import {ProjectConfig} from '../../model/project-config';
 import {Container} from '../model/container';
 import {Project} from '../model/project';
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class SetupService {
   constructor(
     private http: HttpClient,

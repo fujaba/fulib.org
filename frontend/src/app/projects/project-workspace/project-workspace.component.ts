@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit, TemplateRef, Type, ViewChild} from '@angul
 import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {forkJoin} from 'rxjs';
-import {map, switchMap, tap} from 'rxjs/operators';
+import {map, mapTo, switchMap, tap} from 'rxjs/operators';
 import {ContainerService} from '../container.service';
 
 import {EditorService} from '../editor.service';
@@ -106,6 +106,7 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
       tap(([project, container]) => {
         this.projectManager.init(project, container);
       }),
+      switchMap(([project, container]) => this.projectService.restoreFiles(container, project).pipe(mapTo([project, container] as const))),
       switchMap(([project, container]) => this.fileService.getWithChildren(container, `/projects/${project.id}/`)),
       tap(fileRoot => {
         this.projectManager.fileRoot = fileRoot;
