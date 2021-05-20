@@ -4,7 +4,6 @@ import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
 
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {GridsterModule} from 'angular-gridster2';
 import {KeycloakAngularModule, KeycloakService} from 'keycloak-angular';
 import {NgBootstrapDarkmodeModule, THEME_LOADER, THEME_SAVER, ThemeLoader, ThemeSaver} from 'ng-bootstrap-darkmode';
 
@@ -14,10 +13,7 @@ import {AboutComponent} from './about/about.component';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {ChangelogComponent} from './changelog/changelog.component';
-import {ConfigComponent} from './config/config.component';
-import {DiagramViewComponent} from './diagram-view/diagram-view.component';
 import {FeedbackComponent} from './feedback/feedback.component';
-import {FourPaneEditorComponent} from './four-pane-editor/four-pane-editor.component';
 import {HeaderComponent} from './header/header.component';
 import {ModalComponent} from './modal/modal.component';
 import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
@@ -48,8 +44,6 @@ function initializeKeycloak(keycloak: KeycloakService) {
 @NgModule({
   declarations: [
     AppComponent,
-    FourPaneEditorComponent,
-    ConfigComponent,
     HeaderComponent,
     PageNotFoundComponent,
     ChangelogComponent,
@@ -57,7 +51,6 @@ function initializeKeycloak(keycloak: KeycloakService) {
     FeedbackComponent,
     PrivacyComponent,
     AboutComponent,
-    DiagramViewComponent,
   ],
   imports: [
     BrowserModule,
@@ -65,7 +58,6 @@ function initializeKeycloak(keycloak: KeycloakService) {
     HttpClientModule,
     NgbModule,
     NgBootstrapDarkmodeModule,
-    GridsterModule,
     KeycloakAngularModule,
     SharedModule,
     AppRoutingModule,

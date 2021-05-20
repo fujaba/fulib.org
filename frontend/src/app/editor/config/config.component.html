@@ -1,0 +1,32 @@
+<ng-template #configModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="config-modal-title">
+      Configure Project
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <app-project-config-form [config]="config"></app-project-config-form>
+    <hr/>
+    <h4>Download as Gradle Project</h4>
+    <p>
+      You can download your scenario prepared as a Gradle project.
+      Just extract the downloaded Zip file to a folder and open it with your favorite IDE.
+      Make sure to run the <code>check</code> task afterwards to generate Java classes and execute the
+      tests.
+    </p>
+    <button type="button" class="btn btn-success" (click)="downloadProjectZip()">
+      Download
+    </button>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.close()">
+      Cancel
+    </button>
+    <button type="button" class="btn btn-primary" (click)="save(); modal.close()">
+      Save & Close
+    </button>
+  </div>
+</ng-template>

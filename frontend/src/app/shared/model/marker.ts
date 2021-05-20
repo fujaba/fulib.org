@@ -1,4 +1,7 @@
-import {Position} from './position';
+export interface Position {
+  line: number;
+  ch: number;
+}
 
 export interface Marker {
   severity: string;

@@ -6,9 +6,8 @@ import {forkJoin, Observable, of} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
 
 import {environment} from '../../environments/environment';
-import {Marker} from '../model/codegen/marker';
-import Response from '../model/codegen/response';
-import {ScenarioEditorService} from '../scenario-editor.service';
+import {LintService} from '../shared/lint.service';
+import {Marker} from '../shared/model/marker';
 import {StorageService} from '../storage.service';
 import {UserService} from '../user/user.service';
 import Assignment from './model/assignment';
@@ -30,7 +29,7 @@ export class AssignmentService {
   constructor(
     private http: HttpClient,
     private storage: StorageService,
-    private scenarioEditorService: ScenarioEditorService,
+    private lintService: LintService,
     private users: UserService,
   ) {
   }
@@ -152,14 +151,7 @@ export class AssignmentService {
     for (let i = 0; i < result.results.length; i++) {
       const taskNum = i + 1;
       const taskResult = result.results[i];
-      const response: Response = {
-        id: '',
-        exitCode: 0,
-        output: taskResult.output,
-        html: '',
-      };
-
-      for (const marker of this.scenarioEditorService.lint(response)) {
+      for (const marker of this.lintService.lint(taskResult.output)) {
         marker.from.line -= 2;
         marker.to.line -= 2;
 

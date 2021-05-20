@@ -1,18 +1,21 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Observable, of} from 'rxjs';
-import {switchMap, tap} from 'rxjs/operators';
+import {distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 
-import {environment} from '../../environments/environment';
+import {environment} from '../../../environments/environment';
+import {MarkdownService} from '../../markdown.service';
+import {PrivacyService} from '../../privacy.service';
+import {LintService} from '../../shared/lint.service';
+import {Marker} from '../../shared/model/marker';
+import {ConfigService} from '../config.service';
+import {EditorService} from '../editor.service';
 import {ExamplesService} from '../examples.service';
-import {MarkdownService} from '../markdown.service';
-import {Marker} from '../model/codegen/marker';
-import Request from '../model/codegen/request';
-import Response from '../model/codegen/response';
-import Example from '../model/example';
-import ExampleCategory from '../model/example-category';
-import {PrivacyService} from '../privacy.service';
-import {Panels, ScenarioEditorService} from '../scenario-editor.service';
+import {Example} from '../model/example';
+import {ExampleCategory} from '../model/example-category';
+import {Panel} from '../model/panel';
+import {Request} from '../model/request';
+import {Response} from '../model/response';
 
 @Component({
   selector: 'app-four-pane-editor',
@@ -20,7 +23,7 @@ import {Panels, ScenarioEditorService} from '../scenario-editor.service';
   styleUrls: ['./four-pane-editor.component.scss'],
 })
 export class FourPaneEditorComponent implements OnInit {
-  panels: Panels;
+  panels: Record<string, Panel>;
 
   selectedExample: Example | null;
   scenarioText: string;
@@ -36,14 +39,16 @@ export class FourPaneEditorComponent implements OnInit {
   _activeObjectDiagramTab = 1;
 
   savePanels = () => {
-    this.scenarioEditorService.panels = this.panels;
+    this.editorService.panels = this.panels;
   };
 
   itemId = item => item.id;
 
   constructor(
     private examplesService: ExamplesService,
-    private scenarioEditorService: ScenarioEditorService,
+    private editorService: EditorService,
+    private configService: ConfigService,
+    private lintService: LintService,
     private markdownService: MarkdownService,
     private privacyService: PrivacyService,
     private router: Router,
@@ -52,19 +57,20 @@ export class FourPaneEditorComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.panels = this.scenarioEditorService.panels;
+    this.panels = this.editorService.panels;
 
     this.exampleCategories = this.examplesService.getCategories();
 
     this.activatedRoute.queryParams.pipe(
-      switchMap(queryParams => {
-        const exampleName: string | undefined = queryParams.example;
-        this.selectedExample = exampleName ? this.examplesService.getExampleByName(exampleName) : null;
+      map(({example}) => example),
+      distinctUntilChanged(),
+      switchMap(example => {
+        this.selectedExample = example ? this.examplesService.getExampleByName(example) : null;
         if (this.selectedExample) {
           this.scenarioText = '// Loading Example...';
           return this.examplesService.getScenario(this.selectedExample);
         } else {
-          return of(this.scenarioEditorService.storedScenario);
+          return of(this.editorService.storedScenario);
         }
       }),
       tap(scenario => this.scenarioText = scenario),
@@ -74,23 +80,23 @@ export class FourPaneEditorComponent implements OnInit {
 
   submit(): void {
     if (!this.selectedExample) {
-      this.scenarioEditorService.storedScenario = this.scenarioText;
+      this.editorService.storedScenario = this.scenarioText;
     }
 
     this.submit$().subscribe();
   }
 
   private submit$(): Observable<Response> {
-    const packageName = this.scenarioEditorService.packageName;
+    const packageName = this.configService.packageName;
     return of<Request>({
       privacy: this.privacyService.privacy ?? 'none',
       packageName,
-      scenarioFileName: this.scenarioEditorService.scenarioFileName,
+      scenarioFileName: this.configService.scenarioFileName,
       scenarioText: this.scenarioText,
       selectedExample: this.selectedExample?.name,
     }).pipe(
       tap(() => this.submitting = true),
-      switchMap(request => this.scenarioEditorService.submit(request)),
+      switchMap(request => this.editorService.submit(request)),
       tap(response => {
         this.submitting = false;
         this.response = response;
@@ -98,8 +104,12 @@ export class FourPaneEditorComponent implements OnInit {
         this.markdownHtml = response.html.replace(new RegExp(`/api/runcodegen/${response.id}`, 'g'),
           match => environment.apiURL + match.substring(4));
         this.classDiagramUrl = `${environment.apiURL}/runcodegen/${response.id}/model_src/${packageName.replace(/\./g, '/')}/classDiagram.svg`;
-        this.outputText = this.scenarioEditorService.foldInternalCalls(this.response.output.split('\n')).join('\n');
-        this.markers = this.scenarioEditorService.lint(response);
+
+        const outputLines = this.response.output.split('\n');
+        const foldedLines = this.lintService.foldInternalCalls(this.configService.packageName, outputLines);
+        this.outputText = foldedLines.join('\n');
+
+        this.markers = this.lintService.lint(response.output);
       }),
     );
   }
@@ -137,16 +147,16 @@ export class FourPaneEditorComponent implements OnInit {
   }
 
   get autoSubmit(): boolean {
-    return this.scenarioEditorService.autoSubmit;
+    return this.editorService.autoSubmit;
   }
 
   set autoSubmit(value: boolean) {
-    this.scenarioEditorService.autoSubmit = value;
+    this.editorService.autoSubmit = value;
   }
 
   resetPanels() {
-    this.scenarioEditorService.panels = {};
-    this.panels = this.scenarioEditorService.panels;
+    this.editorService.panels = {};
+    this.panels = this.editorService.panels;
   }
 
   setPanelClosed(id: string, hidden: boolean): void {
