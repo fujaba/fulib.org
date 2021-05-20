@@ -1,11 +1,11 @@
 <div class="container">
-  <h1>My Assignments</h1>
-
-  <p>
-    <a class="btn btn-success" routerLink="/assignments/create">
-      Create New Assignment
+  <h1 class="d-flex align-items-center">
+    My Assignments
+    <a class="btn btn-success ml-auto" routerLink="/assignments/create">
+      <i class="bi-clipboard-check"></i>
+      New Assignment
     </a>
-  </p>
+  </h1>
 
   <div class="list-group">
     <a *ngFor="let assignment of assignments || []"
