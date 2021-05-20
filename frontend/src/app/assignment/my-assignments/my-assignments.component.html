@@ -7,8 +7,8 @@
     </a>
   </h1>
 
-  <div class="list-group">
-    <a *ngFor="let assignment of assignments || []"
+  <div class="list-group" *ngIf="assignments">
+    <a *ngFor="let assignment of assignments"
        class="list-group-item list-group-item-action"
        routerLink="/assignments/{{assignment.id}}/solutions"
     >
@@ -24,5 +24,34 @@
         </ng-container>
       </p>
     </a>
+  </div>
+
+  <div class="card" *ngIf="!assignments || assignments.length === 0">
+    <div class="card-body">
+      <h5 class="card-title">
+        Welcome to Assignments!
+      </h5>
+      <p class="card-text">
+        Assignments allow you to:
+      </p>
+      <div class="media align-items-center">
+        <i class="bi-clipboard-check feature-icon"></i>
+        <div class="media-body">
+          Create interactive exercises for your students.
+        </div>
+      </div>
+      <div class="media align-items-center">
+        <i class="bi-list-check feature-icon"></i>
+        <div class="media-body">
+          Automatically and manually grade submissions.
+        </div>
+      </div>
+      <div class="media align-items-center">
+        <i class="bi-chat-left-text feature-icon"></i>
+        <div class="media-body">
+          Discuss submissions and grades.
+        </div>
+      </div>
+    </div>
   </div>
 </div>
