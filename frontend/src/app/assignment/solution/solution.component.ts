@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {combineLatest, forkJoin, Subscription} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
 
-import {Marker} from '../../model/codegen/marker';
+import {Marker} from '../../shared/model/marker';
 import {UserService} from '../../user/user.service';
 import {AssignmentService} from '../assignment.service';
 import Assignment from '../model/assignment';

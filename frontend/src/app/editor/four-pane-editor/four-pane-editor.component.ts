@@ -4,9 +4,10 @@ import {Observable, of} from 'rxjs';
 import {distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 
 import {environment} from '../../../environments/environment';
+import {LintService} from '../../shared/lint.service';
 import {ExamplesService} from '../examples.service';
 import {MarkdownService} from '../../markdown.service';
-import {Marker} from '../../model/codegen/marker';
+import {Marker} from '../../shared/model/marker';
 import Request from '../../model/codegen/request';
 import Response from '../../model/codegen/response';
 import {Example} from '../model/example';
@@ -48,6 +49,7 @@ export class FourPaneEditorComponent implements OnInit {
     private examplesService: ExamplesService,
     private editorService: EditorService,
     private configService: ConfigService,
+    private lintService: LintService,
     private scenarioEditorService: ScenarioEditorService,
     private markdownService: MarkdownService,
     private privacyService: PrivacyService,
@@ -109,7 +111,7 @@ export class FourPaneEditorComponent implements OnInit {
         const foldedLines = this.scenarioEditorService.foldInternalCalls(this.configService.packageName, outputLines);
         this.outputText = foldedLines.join('\n');
 
-        this.markers = this.scenarioEditorService.lint(response);
+        this.markers = this.lintService.lint(response.output);
       }),
     );
   }

@@ -6,7 +6,7 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {forkJoin, of, Subscription} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
 
-import {Marker} from '../../model/codegen/marker';
+import {Marker} from '../../shared/model/marker';
 import {ScenarioEditorService} from '../../scenario-editor.service';
 import {UserService} from '../../user/user.service';
 import {AssignmentService} from '../assignment.service';
