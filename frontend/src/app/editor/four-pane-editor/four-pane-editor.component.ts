@@ -4,19 +4,19 @@ import {Observable, of} from 'rxjs';
 import {distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 
 import {environment} from '../../../environments/environment';
-import {LintService} from '../../shared/lint.service';
-import {ExamplesService} from '../examples.service';
 import {MarkdownService} from '../../markdown.service';
-import {Marker} from '../../shared/model/marker';
-import Request from '../../model/codegen/request';
-import Response from '../../model/codegen/response';
-import {Example} from '../model/example';
-import {ExampleCategory} from '../model/example-category';
 import {PrivacyService} from '../../privacy.service';
 import {ScenarioEditorService} from '../../scenario-editor.service';
+import {LintService} from '../../shared/lint.service';
+import {Marker} from '../../shared/model/marker';
 import {ConfigService} from '../config.service';
 import {EditorService} from '../editor.service';
+import {ExamplesService} from '../examples.service';
+import {Example} from '../model/example';
+import {ExampleCategory} from '../model/example-category';
 import {Panel} from '../model/panel';
+import {Request} from '../model/request';
+import {Response} from '../model/response';
 
 @Component({
   selector: 'app-four-pane-editor',
@@ -98,7 +98,7 @@ export class FourPaneEditorComponent implements OnInit {
       selectedExample: this.selectedExample?.name,
     }).pipe(
       tap(() => this.submitting = true),
-      switchMap(request => this.scenarioEditorService.submit(request)),
+      switchMap(request => this.editorService.submit(request)),
       tap(response => {
         this.submitting = false;
         this.response = response;

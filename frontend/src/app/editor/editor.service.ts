@@ -1,6 +1,11 @@
+import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {environment} from '../../environments/environment';
 import {PrivacyService} from '../privacy.service';
 import {Panel} from './model/panel';
+import {Request} from './model/request';
+import {Response} from './model/response';
 
 @Injectable({providedIn: 'root'})
 export class EditorService {
@@ -17,6 +22,7 @@ There is a Car with name Herbie.
 
   constructor(
     private privacyService: PrivacyService,
+    private http: HttpClient,
   ) {
   }
 
@@ -69,5 +75,9 @@ There is a Car with name Herbie.
   set autoSubmit(value: boolean) {
     this._autoSubmit = value;
     this.privacyService.setStorage('autoSubmit', '' + value);
+  }
+
+  submit(codeGenRequest: Request): Observable<Response> {
+    return this.http.post<Response>(environment.apiURL + '/runcodegen', codeGenRequest);
   }
 }
