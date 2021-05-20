@@ -20,4 +20,33 @@
       </div>
     </a>
   </div>
+
+  <div class="card" *ngIf="courses.length === 0">
+    <div class="card-body">
+      <h5 class="card-title">
+        Welcome to Courses!
+      </h5>
+      <p class="card-text">
+        Courses allow you to:
+      </p>
+      <div class="media align-items-center">
+        <i class="bi-clipboard-check feature-icon"></i>
+        <div class="media-body">
+          Create an interactive series of assignments for your students.
+        </div>
+      </div>
+      <div class="media align-items-center">
+        <i class="bi-list-ol feature-icon"></i>
+        <div class="media-body">
+          Define a logical order and progression for assignments.
+        </div>
+      </div>
+      <div class="media align-items-center">
+        <i class="bi-lightbulb feature-icon"></i>
+        <div class="media-body">
+          Teach a complex topic separated into smaller chunks.
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
