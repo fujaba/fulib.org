@@ -9,6 +9,7 @@ import {SharedModule} from '../shared/shared.module';
 import {ConfigComponent} from './config/config.component';
 import {DiagramViewComponent} from './diagram-view/diagram-view.component';
 import {EditorRoutingModule} from './editor-routing.module';
+import {ExceptionPipe} from './exception.pipe';
 import {FourPaneEditorComponent} from './four-pane-editor/four-pane-editor.component';
 
 
@@ -17,6 +18,7 @@ import {FourPaneEditorComponent} from './four-pane-editor/four-pane-editor.compo
     FourPaneEditorComponent,
     DiagramViewComponent,
     ConfigComponent,
+    ExceptionPipe,
   ],
   imports: [
     CommonModule,

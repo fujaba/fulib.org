@@ -8,7 +8,6 @@ import {NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
 import {AutothemeCodemirrorComponent} from './autotheme-codemirror/autotheme-codemirror.component';
 import {CollapseButtonComponent} from './collapse-button/collapse-button.component';
 import {MarkdownComponent} from './markdown/markdown.component';
-import {ExceptionPipe} from './pipes/exception.pipe';
 import {SafeHtmlPipe} from './pipes/safe-html.pipe';
 import {SafeResourceUrlPipe} from './pipes/safe-resource-url.pipe';
 import {SafeUrlPipe} from './pipes/safe-url.pipe';
@@ -21,7 +20,6 @@ import { ProjectConfigFormComponent } from './project-config-form/project-config
     SafeHtmlPipe,
     SafeUrlPipe,
     SafeResourceUrlPipe,
-    ExceptionPipe,
     AutothemeCodemirrorComponent,
     CollapseButtonComponent,
     ScenarioCodemirrorComponent,
@@ -39,7 +37,6 @@ import { ProjectConfigFormComponent } from './project-config-form/project-config
     SafeHtmlPipe,
     SafeUrlPipe,
     SafeResourceUrlPipe,
-    ExceptionPipe,
     AutothemeCodemirrorComponent,
     CollapseButtonComponent,
     ScenarioCodemirrorComponent,
