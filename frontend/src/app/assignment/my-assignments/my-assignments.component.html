@@ -7,7 +7,7 @@
     </a>
   </h1>
 
-  <div class="list-group" *ngIf="assignments">
+  <div class="list-group" *ngIf="assignments?.length">
     <a *ngFor="let assignment of assignments"
        class="list-group-item list-group-item-action"
        routerLink="/assignments/{{assignment.id}}/solutions"
@@ -26,7 +26,7 @@
     </a>
   </div>
 
-  <div class="card" *ngIf="!assignments || assignments.length === 0">
+  <div class="card" *ngIf="!assignments?.length">
     <div class="card-body">
       <h5 class="card-title">
         Welcome to Assignments!

@@ -7,7 +7,7 @@
     </a>
   </h1>
 
-  <div class="list-group">
+  <div class="list-group" *ngIf="courses?.length">
     <a *ngFor="let course of courses"
        class="list-group-item list-group-item-action"
        routerLink="/assignments/courses/{{course.id}}"
@@ -21,7 +21,7 @@
     </a>
   </div>
 
-  <div class="card" *ngIf="courses.length === 0">
+  <div class="card" *ngIf="!courses?.length">
     <div class="card-body">
       <h5 class="card-title">
         Welcome to Courses!
