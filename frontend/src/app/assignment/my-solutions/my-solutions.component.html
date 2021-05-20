@@ -42,4 +42,15 @@
       </div>
     </li>
   </ul>
+
+  <div class="card" *ngIf="!assignments?.length">
+    <div class="card-body">
+      <h5 class="card-title">
+        No Solutions yet!
+      </h5>
+      <p class="card-text">
+        Solutions will appear here once you accept an assignment via a link.
+      </p>
+    </div>
+  </div>
 </div>
