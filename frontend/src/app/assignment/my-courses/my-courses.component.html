@@ -1,11 +1,11 @@
 <div class="container">
-  <h1>My Courses</h1>
-
-  <p>
-    <a class="btn btn-success" routerLink="/assignments/courses/create">
-      Create New Course
+  <h1 class="d-flex align-items-center">
+    My Courses
+    <a class="btn btn-success ml-auto" routerLink="/assignments/courses/create">
+      <i class="bi-list-ol"></i>
+      New Course
     </a>
-  </p>
+  </h1>
 
   <div class="list-group">
     <a *ngFor="let course of courses"
