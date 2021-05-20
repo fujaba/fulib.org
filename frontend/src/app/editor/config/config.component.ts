@@ -1,14 +1,12 @@
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
-
 import {saveAs} from 'file-saver';
-import {ProjectConfig} from '../../model/project-config';
 
-import ProjectZipRequest from '../../model/project-zip-request';
 import {PrivacyService} from '../../privacy.service';
+import {ProjectConfig} from '../../shared/model/project-config';
+import {ProjectZipRequest} from '../../shared/model/project-zip-request';
 import {ConfigService} from '../config.service';
-
 import {EditorService} from '../editor.service';
 
 @Component({
