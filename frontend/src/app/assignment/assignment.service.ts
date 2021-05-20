@@ -6,7 +6,6 @@ import {forkJoin, Observable, of} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
 
 import {environment} from '../../environments/environment';
-import {ScenarioEditorService} from '../scenario-editor.service';
 import {LintService} from '../shared/lint.service';
 import {Marker} from '../shared/model/marker';
 import {StorageService} from '../storage.service';
@@ -31,7 +30,6 @@ export class AssignmentService {
     private http: HttpClient,
     private storage: StorageService,
     private lintService: LintService,
-    private scenarioEditorService: ScenarioEditorService,
     private users: UserService,
   ) {
   }

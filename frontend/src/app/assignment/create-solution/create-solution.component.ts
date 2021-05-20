@@ -7,7 +7,6 @@ import {forkJoin, of, Subscription} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
 
 import {Marker} from '../../shared/model/marker';
-import {ScenarioEditorService} from '../../scenario-editor.service';
 import {UserService} from '../../user/user.service';
 import {AssignmentService} from '../assignment.service';
 import {CourseService} from '../course.service';
@@ -50,7 +49,6 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
   private userSubscription: Subscription;
 
   constructor(
-    private scenarioEditorService: ScenarioEditorService,
     private courseService: CourseService,
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,

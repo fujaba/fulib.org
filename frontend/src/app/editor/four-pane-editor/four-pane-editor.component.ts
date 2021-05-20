@@ -6,7 +6,6 @@ import {distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 import {environment} from '../../../environments/environment';
 import {MarkdownService} from '../../markdown.service';
 import {PrivacyService} from '../../privacy.service';
-import {ScenarioEditorService} from '../../scenario-editor.service';
 import {LintService} from '../../shared/lint.service';
 import {Marker} from '../../shared/model/marker';
 import {ConfigService} from '../config.service';
@@ -50,7 +49,6 @@ export class FourPaneEditorComponent implements OnInit {
     private editorService: EditorService,
     private configService: ConfigService,
     private lintService: LintService,
-    private scenarioEditorService: ScenarioEditorService,
     private markdownService: MarkdownService,
     private privacyService: PrivacyService,
     private router: Router,
@@ -108,7 +106,7 @@ export class FourPaneEditorComponent implements OnInit {
         this.classDiagramUrl = `${environment.apiURL}/runcodegen/${response.id}/model_src/${packageName.replace(/\./g, '/')}/classDiagram.svg`;
 
         const outputLines = this.response.output.split('\n');
-        const foldedLines = this.scenarioEditorService.foldInternalCalls(this.configService.packageName, outputLines);
+        const foldedLines = this.lintService.foldInternalCalls(this.configService.packageName, outputLines);
         this.outputText = foldedLines.join('\n');
 
         this.markers = this.lintService.lint(response.output);
