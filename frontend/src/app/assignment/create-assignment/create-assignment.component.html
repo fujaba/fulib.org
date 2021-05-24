@@ -54,7 +54,12 @@
     </small>
   </p>
 
-  <h2>Tasks</h2>
+  <h2 class="d-flex align-items-center">
+    Tasks
+    <button type="button" class="btn btn-success ml-auto" (click)="addTask()">
+      Add Task
+    </button>
+  </h2>
   <ol dragula="TASKS" [(dragulaModel)]="assignment.tasks" (dragulaModelChange)="saveDraft()">
     <li *ngFor="let task of assignment.tasks; let id = index" class="text-{{task.deleted ? 'muted' : getColorClass(id)}}">
       <div class="d-flex align-items-center mb-2">
@@ -72,17 +77,17 @@
         <app-collapse-button class="ml-auto" [(collapsed)]="task.collapsed" (collapsedChange)="saveDraft()">
         </app-collapse-button>
         <div class="btn btn-secondary ml-2 handle" aria-label="Reorder" ngbTooltip="Drag to Reorder">
-          <span class="handle" aria-hidden="true">&equiv;</span>
+          <i class="bi-grip-horizontal handle"></i>
         </div>
         <button *ngIf="!task.deleted"
-                type="button" class="btn btn-danger ml-2" aria-label="Remove" ngbTooltip="Remove"
+                type="button" class="btn btn-danger ml-2" aria-label="Delete" ngbTooltip="Delete"
                 (click)="removeTask(id)">
-          <span aria-hidden="true">&times;</span>
+          <i class="bi-trash"></i>
         </button>
         <button *ngIf="task.deleted"
                 type="button" class="btn btn-success ml-2" aria-label="Restore" ngbTooltip="Restore"
                 (click)="restoreTask(id)">
-          <span aria-hidden="true">&#8634;</span>
+          <i class="bi-arrow-repeat"></i>
         </button>
       </div>
       <div class="form mb-3" [ngbCollapse]="task.collapsed">
@@ -125,9 +130,6 @@
       </div>
     </li>
   </ol>
-  <p>
-    <button type="button" class="btn btn-success" (click)="addTask()">Add Task</button>
-  </p>
 
   <h2>
     <label for="templateSolutionInput">Template Solution</label>
