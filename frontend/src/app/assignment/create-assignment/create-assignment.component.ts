@@ -1,7 +1,5 @@
-import {DOCUMENT} from '@angular/common';
-import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
-
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Router} from '@angular/router';
 import {KeycloakService} from 'keycloak-angular';
 import {DragulaService} from 'ng2-dragula';
 import {Subscription} from 'rxjs';
@@ -43,22 +41,16 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   markers: Marker[] = [];
 
   submitting = false;
-  id?: string;
-  token?: string;
-
-  private readonly origin: string;
 
   private userSubscription: Subscription;
 
   constructor(
     private assignmentService: AssignmentService,
-    private modalService: NgbModal,
     private dragulaService: DragulaService,
     private users: UserService,
     private keycloakService: KeycloakService,
-    @Inject(DOCUMENT) document: Document,
+    private router: Router,
   ) {
-    this.origin = document.location.origin;
   }
 
   ngOnInit(): void {
@@ -194,10 +186,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   submit(): void {
     this.submitting = true;
     this.assignmentService.submit(this.getAssignment()).subscribe(result => {
-      this.submitting = false;
-      this.id = result.id;
-      this.token = result.token;
-      this.modalService.open(this.successModal, {ariaLabelledBy: 'successModalLabel', size: 'xl'});
+      this.router.navigate(['/assignments', result.id, 'solutions'], {queryParams: {share: true}});
     });
   }
 
@@ -212,13 +201,5 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
 
     const points = result.points;
     return points === 0 ? 'danger' : 'success';
-  }
-
-  getSolveLink(origin: boolean): string {
-    return `${origin ? this.origin : ''}/assignments/${this.id}`;
-  }
-
-  getSolutionsLink(origin: boolean): string {
-    return `${origin ? this.origin : ''}/assignments/${this.id}/solutions`;
   }
 }

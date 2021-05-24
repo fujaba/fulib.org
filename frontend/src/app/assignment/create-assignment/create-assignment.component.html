@@ -202,66 +202,8 @@
   </div>
 
   <div class="text-center">
-    <button type="button" class="btn btn-primary btn-lg" id="submitButton" (click)="submit()"
-            [disabled]="submitting">
+    <button type="button" class="btn btn-primary btn-lg" (click)="submit()" [disabled]="submitting">
       {{submitting ? 'Submitting...' : 'Submit'}}
     </button>
   </div>
 </div>
-
-<!-- Modal -->
-<ng-template #successModal let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title" id="successModalLabel">Assignment Created</h5>
-    <button type="button" class="close" aria-label="Close" (click)="modal.close()">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <p>
-      Congratulations! Your assignment titled <b>{{title}}</b> has been created!
-    </p>
-    <p>
-      You can now give your students the following link:
-    </p>
-    <p>
-      <a class="text-monospace" [routerLink]="getSolveLink(false)" (click)="modal.close()">
-        {{getSolveLink(true)}}
-      </a>
-      <button type="button" class="btn btn-sm btn-outline-primary"
-              ngxClipboard *ngxClipboardIfSupported [cbContent]="getSolveLink(true)">
-        Copy
-      </button>
-    </p>
-    <p>
-      Use this link to view submitted solutions:
-    </p>
-    <p>
-      <a class="text-monospace" [routerLink]="getSolutionsLink(false)" (click)="modal.close()">
-        {{getSolutionsLink(true)}}
-      </a>
-      <button type="button" class="btn btn-sm btn-outline-primary"
-              ngxClipboard *ngxClipboardIfSupported [cbContent]="getSolutionsLink(true)">
-        Copy
-      </button>
-    </p>
-    <p>
-      To view submissions, you may be asked for the following token.
-      Please save it or write it down somewhere.
-    </p>
-    <p class="text-center">
-      <span class="h4 text-monospace">{{token}}</span>
-      <button type="button" class="btn btn-sm btn-outline-secondary"
-              ngxClipboard *ngxClipboardIfSupported [cbContent]="token">
-        Copy
-      </button>
-    </p>
-    <p>
-      Note that this assignment can no longer be edited.
-      If you want to make changes, submit a new assignment and give your students the new link.
-    </p>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="modal.close()">Close</button>
-  </div>
-</ng-template>
