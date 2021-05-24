@@ -8,7 +8,6 @@ import {Marker} from '../../shared/model/marker';
 import {UserService} from '../../user/user.service';
 import {AssignmentService} from '../assignment.service';
 import Assignment from '../model/assignment';
-import Task from '../model/task';
 import TaskResult from '../model/task-result';
 
 @Component({
@@ -23,18 +22,20 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     solution: false,
     templateSolution: false,
   };
-
-  title = '';
   loggedIn = false;
-  author = '';
-  email = '';
-  deadlineDate: string | null;
-  deadlineTime: string | null;
-  description = '';
-  solution = '';
-  templateSolution = '';
 
-  tasks: Task[] = [];
+  assignment: Assignment = {
+    title: '',
+    author: '',
+    email: '',
+    deadline: new Date(),
+    description: '',
+    tasks: [],
+    solution: '',
+    templateSolution: '',
+  };
+  deadlineDate?: string;
+  deadlineTime?: string;
 
   checking = false;
   results?: TaskResult[];
@@ -72,10 +73,10 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
 
       this.loggedIn = true;
       if (user.firstName && user.lastName) {
-        this.author = `${user.firstName} ${user.lastName}`;
+        this.assignment.author = `${user.firstName} ${user.lastName}`;
       }
       if (user.email) {
-        this.email = user.email;
+        this.assignment.email = user.email;
       }
     });
   }
@@ -91,25 +92,14 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
 
   getAssignment(): Assignment {
     return {
-      id: undefined,
-      token: undefined,
-      title: this.title,
-      description: this.description,
-      descriptionHtml: undefined,
-      author: this.author,
-      email: this.email,
+      ...this.assignment,
       deadline: this.getDeadline(),
-      solution: this.solution,
-      templateSolution: this.templateSolution,
-      tasks: this.tasks.filter(t => !t.deleted),
-    } as Assignment;
+      tasks: this.assignment.tasks.filter(t => !t.deleted),
+    };
   }
 
   setAssignment(a: Assignment): void {
-    this.title = a.title;
-    this.description = a.description;
-    this.author = a.author;
-    this.email = a.email;
+    this.assignment = a;
     const deadline = a.deadline;
     if (deadline) {
       const year = deadline.getFullYear();
@@ -122,12 +112,9 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
       const second = String(deadline.getSeconds()).padStart(2, '0');
       this.deadlineTime = `${hour}:${minute}:${second}`;
     } else {
-      this.deadlineDate = null;
-      this.deadlineTime = null;
+      this.deadlineDate = undefined;
+      this.deadlineTime = undefined;
     }
-    this.tasks = a.tasks.map(t => ({...t})); // deep copy
-    this.solution = a.solution;
-    this.templateSolution = a.templateSolution;
 
     this.collapse.solution = !a.solution;
     this.collapse.templateSolution = !a.templateSolution;
@@ -136,7 +123,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   check(): void {
     this.saveDraft();
     this.checking = true;
-    this.assignmentService.check({solution: this.solution, tasks: this.tasks}).subscribe(response => {
+    this.assignmentService.check(this.assignment).subscribe(response => {
       this.checking = false;
       this.results = response.results;
       this.markers = this.assignmentService.lint(response);
@@ -162,7 +149,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   }
 
   addTask(): void {
-    this.tasks.push({description: '', points: 0, verification: '', collapsed: false, deleted: false});
+    this.assignment.tasks.push({description: '', points: 0, verification: '', collapsed: false, deleted: false});
     if (this.results) {
       this.results.push({output: '', points: 0});
     }
@@ -170,12 +157,12 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   }
 
   removeTask(id: number): void {
-    this.tasks[id].deleted = true;
+    this.assignment.tasks[id].deleted = true;
     this.saveDraft();
   }
 
   restoreTask(id: number): void {
-    this.tasks[id].deleted = false;
+    this.assignment.tasks[id].deleted = false;
     this.saveDraft();
   }
 
