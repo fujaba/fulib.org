@@ -2,6 +2,7 @@ import {DOCUMENT} from '@angular/common';
 import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {KeycloakService} from 'keycloak-angular';
 import {DragulaService} from 'ng2-dragula';
 import {Subscription} from 'rxjs';
 
@@ -54,6 +55,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     private modalService: NgbModal,
     private dragulaService: DragulaService,
     private users: UserService,
+    private keycloakService: KeycloakService,
     @Inject(DOCUMENT) document: Document,
   ) {
     this.origin = document.location.origin;
@@ -183,6 +185,10 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   restoreTask(id: number): void {
     this.tasks[id].deleted = false;
     this.saveDraft();
+  }
+
+  login(): void {
+    this.keycloakService.login().then();
   }
 
   submit(): void {
