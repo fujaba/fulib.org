@@ -42,7 +42,7 @@ public class ZipHandler
 		}
 
 		Files.createDirectories(subPath.getParent());
-		Files.copy(content, subPath);
+		Files.copy(content, subPath, StandardCopyOption.REPLACE_EXISTING);
 		Files.setLastModifiedTime(subPath, entry.getLastModifiedTime());
 	}
 
