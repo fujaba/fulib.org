@@ -54,4 +54,25 @@ export class LocalProjectService {
   saveConfig(id: string, config: ProjectConfig) {
     this.storageService.set(this.getKey(id) + '/config', JSON.stringify(config));
   }
+
+  private getFileKey(id: string, path: string) {
+    return this.getKey(id) + '/files/' + path;
+  }
+
+  getFiles(id: string): string[] {
+    const pattern = new RegExp(`^${this.getFileKey(id, '')}(.*)`);
+    return this.storageService.getAllKeys(pattern).map(([, path]) => path);
+  }
+
+  getFile(id: string, path: string): string | null {
+    return this.storageService.get(this.getFileKey(id, path));
+  }
+
+  saveFile(id: string, path: string, content: string): void {
+    this.storageService.set(this.getFileKey(id, path), content);
+  }
+
+  deleteFile(id: string, path: string): void {
+    this.storageService.set(this.getFileKey(id, path), null);
+  }
 }

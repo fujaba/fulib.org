@@ -3,6 +3,7 @@ import {BehaviorSubject, EMPTY, Subscription} from 'rxjs';
 import {startWith, switchMap, tap} from 'rxjs/operators';
 import {FileChangeService} from '../../file-change.service';
 import {FileService} from '../../file.service';
+import {LocalProjectService} from '../../local-project.service';
 import {File} from '../../model/file';
 import {ProjectManager} from '../../project.manager';
 
@@ -32,6 +33,7 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
     private fileService: FileService,
     private projectManager: ProjectManager,
     private fileChangeService: FileChangeService,
+    private localProjectService: LocalProjectService,
   ) {
   }
 
@@ -91,6 +93,10 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
     const file = this.file;
     if (!file) {
       return;
+    }
+    const project = this.projectManager.project;
+    if (project.local) {
+      this.localProjectService.saveFile(project.id, file.path, file.content ?? '');
     }
     this.fileService.saveContent(this.projectManager.container, file).subscribe(() => {
       file.dirty = false;

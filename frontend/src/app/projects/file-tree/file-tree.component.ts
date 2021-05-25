@@ -15,6 +15,7 @@ import {BehaviorSubject, EMPTY, Observable, Subscription} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import {FileChangeService} from '../file-change.service';
 import {FileService} from '../file.service';
+import {LocalProjectService} from '../local-project.service';
 import {Container} from '../model/container';
 import {File} from '../model/file';
 import {ProjectManager} from '../project.manager';
@@ -42,6 +43,7 @@ export class FileTreeComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private fileService: FileService,
     private projectManager: ProjectManager,
+    private localProjectService: LocalProjectService,
     private fileChangeService: FileChangeService,
   ) {
   }
@@ -121,9 +123,12 @@ export class FileTreeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   delete() {
-    if (confirm(`Delete ${this.file.name}?`)) {
-      this.fileService.delete(this.container, this.file).subscribe();
+    if (!confirm(`Delete ${this.file.name}?`)) {
+      return;
     }
+
+    this.localProjectService.deleteFile(this.container.projectId, this.file.path);
+    this.fileService.delete(this.container, this.file).subscribe();
   }
 
   openContextMenu(event: MouseEvent, dropdown: NgbDropdown) {

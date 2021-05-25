@@ -1,15 +1,16 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 
-import {Observable, of} from 'rxjs';
+import {forkJoin, Observable, of} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
 
 import {environment} from '../../environments/environment';
 import {ProjectConfig} from '../model/project-config';
 import {UserService} from '../user/user.service';
-import {Container} from './model/container';
-import {Project, ProjectStub} from './model/project';
+import {DavClient} from './dav-client';
 import {LocalProjectService} from './local-project.service';
+import {Container} from './model/container';
+import {LocalProject, Project, ProjectStub} from './model/project';
 import {SetupService} from './setup/setup.service';
 
 @Injectable({
@@ -22,6 +23,7 @@ export class ProjectService {
     private http: HttpClient,
     private localProjectService: LocalProjectService,
     private setupService: SetupService,
+    private davClient: DavClient,
   ) {
   }
 
@@ -49,7 +51,7 @@ export class ProjectService {
     return this.http.put<Project>(`${environment.projectsApiUrl}/projects/${project.id}`, project);
   }
 
-  delete({id, local}: {id: string, local?: boolean}): Observable<void> {
+  delete({id, local}: { id: string, local?: boolean }): Observable<void> {
     this.localProjectService.delete(id);
     return local ? of(undefined) : this.http.delete<void>(`${environment.projectsApiUrl}/projects/${id}`);
   }
@@ -74,14 +76,33 @@ export class ProjectService {
     }
   }
 
-  restoreFiles(container: Container, project: Project): Observable<void> {
-    if (project.local) {
-      const config = this.localProjectService.getConfig(project.id);
-      if (config) {
-        return this.setupService.generateFiles(container, config);
-      }
+  restoreSetupAndFiles(container: Container, project: Project): Observable<any> {
+    if (!project.local) {
+      return of(undefined);
     }
 
-    return of(undefined);
+    const config = this.localProjectService.getConfig(project.id);
+    if (config) {
+      return this.setupService.generateFiles(container, config).pipe(
+        switchMap(() => this.restoreFiles(project, container)),
+      );
+    }
+    return this.restoreFiles(project, container);
+  }
+
+  private restoreFiles(project: LocalProject, container: Container): Observable<any> {
+    const files = this.localProjectService.getFiles(project.id);
+    if (files.length === 0) {
+      return of(undefined);
+    }
+    return forkJoin(files.map(path => this.restoreFile(project, container, path)));
+  }
+
+  private restoreFile(project: LocalProject, container: Container, path: string): Observable<any> {
+    const content = this.localProjectService.getFile(project.id, path);
+    if (content === null) {
+      return of(undefined);
+    }
+    return this.davClient.put(`${container.url}/dav/${path}`, content);
   }
 }

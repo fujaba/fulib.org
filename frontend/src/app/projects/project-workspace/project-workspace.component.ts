@@ -106,7 +106,7 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
       tap(([project, container]) => {
         this.projectManager.init(project, container);
       }),
-      switchMap(([project, container]) => this.projectService.restoreFiles(container, project).pipe(mapTo([project, container] as const))),
+      switchMap(([project, container]) => this.projectService.restoreSetupAndFiles(container, project).pipe(mapTo([project, container] as const))),
       switchMap(([project, container]) => this.fileService.getWithChildren(container, `/projects/${project.id}/`)),
       tap(fileRoot => {
         this.projectManager.fileRoot = fileRoot;
