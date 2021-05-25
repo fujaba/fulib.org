@@ -10,21 +10,21 @@
       <label for="titleInput" class="col-sm-2 col-form-label">Title</label>
       <div class="col-sm-10">
         <input type="text" class="form-control" id="titleInput" placeholder="Assignment X"
-               [(ngModel)]="title" (change)="saveDraft()">
+               [(ngModel)]="assignment.title" (change)="saveDraft()">
       </div>
     </div>
     <div class="form-group row">
       <label for="authorInput" class="col-sm-2 col-form-label">Your Name</label>
       <div class="col-sm-10">
         <input type="text" class="form-control" id="authorInput" placeholder="John Doe"
-               [(ngModel)]="author" (change)="saveDraft()" [disabled]="loggedIn">
+               [(ngModel)]="assignment.author" (change)="saveDraft()" [disabled]="loggedIn">
       </div>
     </div>
     <div class="form-group row">
       <label for="emailInput" class="col-sm-2 col-form-label">Your E-Mail</label>
       <div class="col-sm-10">
         <input type="text" class="form-control" id="emailInput" placeholder="jdoe@example.com"
-               [(ngModel)]="email" (change)="saveDraft()" [disabled]="loggedIn">
+               [(ngModel)]="assignment.email" (change)="saveDraft()" [disabled]="loggedIn">
       </div>
     </div>
     <div class="form-group row">
@@ -47,16 +47,21 @@
   <h2><label for="descriptionInput">Description</label></h2>
 
   <p>
-    <textarea id="descriptionInput" class="form-control" rows="6" [(ngModel)]="description"
+    <textarea id="descriptionInput" class="form-control" rows="6" [(ngModel)]="assignment.description"
               (change)="saveDraft()"></textarea>
     <small class="text-muted">
       <a href="https://commonmark.org/help/">Markdown syntax</a> is supported.
     </small>
   </p>
 
-  <h2>Tasks</h2>
-  <ol dragula="TASKS" [(dragulaModel)]="tasks" (dragulaModelChange)="saveDraft()">
-    <li *ngFor="let task of tasks; let id = index" class="text-{{task.deleted ? 'muted' : getColorClass(id)}}">
+  <h2 class="d-flex align-items-center">
+    Tasks
+    <button type="button" class="btn btn-success ml-auto" (click)="addTask()">
+      Add Task
+    </button>
+  </h2>
+  <ol dragula="TASKS" [(dragulaModel)]="assignment.tasks" (dragulaModelChange)="saveDraft()">
+    <li *ngFor="let task of assignment.tasks; let id = index" class="text-{{task.deleted ? 'muted' : getColorClass(id)}}">
       <div class="d-flex align-items-center mb-2">
         <div class="mr-2">
           <del *ngIf="task.deleted; else taskDesc">
@@ -72,17 +77,17 @@
         <app-collapse-button class="ml-auto" [(collapsed)]="task.collapsed" (collapsedChange)="saveDraft()">
         </app-collapse-button>
         <div class="btn btn-secondary ml-2 handle" aria-label="Reorder" ngbTooltip="Drag to Reorder">
-          <span class="handle" aria-hidden="true">&equiv;</span>
+          <i class="bi-grip-horizontal handle"></i>
         </div>
         <button *ngIf="!task.deleted"
-                type="button" class="btn btn-danger ml-2" aria-label="Remove" ngbTooltip="Remove"
+                type="button" class="btn btn-danger ml-2" aria-label="Delete" ngbTooltip="Delete"
                 (click)="removeTask(id)">
-          <span aria-hidden="true">&times;</span>
+          <i class="bi-trash"></i>
         </button>
         <button *ngIf="task.deleted"
                 type="button" class="btn btn-success ml-2" aria-label="Restore" ngbTooltip="Restore"
                 (click)="restoreTask(id)">
-          <span aria-hidden="true">&#8634;</span>
+          <i class="bi-arrow-repeat"></i>
         </button>
       </div>
       <div class="form mb-3" [ngbCollapse]="task.collapsed">
@@ -125,9 +130,6 @@
       </div>
     </li>
   </ol>
-  <p>
-    <button type="button" class="btn btn-success" (click)="addTask()">Add Task</button>
-  </p>
 
   <h2>
     <label for="templateSolutionInput">Template Solution</label>
@@ -136,7 +138,7 @@
   <p [ngbCollapse]="collapse.templateSolution">
     <app-scenario-codemirror
       id="templateSolutionInput"
-      [content]="templateSolution"
+      [(content)]="assignment.templateSolution"
       [autoRefresh]="true"
       [autoSubmit]="true"
       (save)="saveDraft()"
@@ -154,7 +156,7 @@
   <p [ngbCollapse]="collapse.solution">
     <app-scenario-codemirror
       id="solutionInput"
-      [(content)]="solution"
+      [(content)]="assignment.solution"
       [autoRefresh]="true"
       [autoSubmit]="true"
       [markers]="markers"
@@ -182,7 +184,10 @@
       You are currently not logged in, therefore submitting this assignment as a guest.
     </p>
     <p>
-      Logging in has the following advantages:
+      <a routerLink="." (click)="login()">
+        Logging in
+      </a>
+      has the following advantages:
     </p>
     <ul>
       <li>
@@ -196,72 +201,11 @@
         You will have access to future features like notifications and improved access control.
       </li>
     </ul>
-    <p>
-      You can login or register using the link in the bottom right corner of the page.
-    </p>
   </div>
 
   <div class="text-center">
-    <button type="button" class="btn btn-primary btn-lg" id="submitButton" (click)="submit()"
-            [disabled]="submitting">
+    <button type="button" class="btn btn-primary btn-lg" (click)="submit()" [disabled]="submitting">
       {{submitting ? 'Submitting...' : 'Submit'}}
     </button>
   </div>
 </div>
-
-<!-- Modal -->
-<ng-template #successModal let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title" id="successModalLabel">Assignment Created</h5>
-    <button type="button" class="close" aria-label="Close" (click)="modal.close()">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <p>
-      Congratulations! Your assignment titled <b>{{title}}</b> has been created!
-    </p>
-    <p>
-      You can now give your students the following link:
-    </p>
-    <p>
-      <a class="text-monospace" [routerLink]="getSolveLink(false)" (click)="modal.close()">
-        {{getSolveLink(true)}}
-      </a>
-      <button type="button" class="btn btn-sm btn-outline-primary"
-              ngxClipboard *ngxClipboardIfSupported [cbContent]="getSolveLink(true)">
-        Copy
-      </button>
-    </p>
-    <p>
-      Use this link to view submitted solutions:
-    </p>
-    <p>
-      <a class="text-monospace" [routerLink]="getSolutionsLink(false)" (click)="modal.close()">
-        {{getSolutionsLink(true)}}
-      </a>
-      <button type="button" class="btn btn-sm btn-outline-primary"
-              ngxClipboard *ngxClipboardIfSupported [cbContent]="getSolutionsLink(true)">
-        Copy
-      </button>
-    </p>
-    <p>
-      To view submissions, you may be asked for the following token.
-      Please save it or write it down somewhere.
-    </p>
-    <p class="text-center">
-      <span class="h4 text-monospace">{{token}}</span>
-      <button type="button" class="btn btn-sm btn-outline-secondary"
-              ngxClipboard *ngxClipboardIfSupported [cbContent]="token">
-        Copy
-      </button>
-    </p>
-    <p>
-      Note that this assignment can no longer be edited.
-      If you want to make changes, submit a new assignment and give your students the new link.
-    </p>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="modal.close()">Close</button>
-  </div>
-</ng-template>

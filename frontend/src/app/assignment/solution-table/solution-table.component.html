@@ -16,6 +16,65 @@
   </p>
 
   <h2>
+    Sharing Options
+    <app-collapse-button [collapsed]="!sharing" (collapsedChange)="setSharing(!$event)"></app-collapse-button>
+  </h2>
+  <div [ngbCollapse]="!sharing" class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title">
+        Student Link
+      </h5>
+      <p>
+        You can now give your students the following link:
+      </p>
+      <p *ngIf="('/assignments/' + assignment?.id) as link">
+        <a class="text-monospace" [routerLink]="link">
+          {{origin + link}}
+        </a>
+        <button type="button" class="btn btn-sm btn-outline-primary"
+                ngxClipboard *ngxClipboardIfSupported [cbContent]="origin + link">
+          Copy
+        </button>
+      </p>
+      <ng-container *ngIf="assignment && assignment.token">
+        <hr/>
+        <h5 class="card-title">
+          Access Token
+        </h5>
+        <p>
+          To view submissions on other devices, you may be asked for the following token.
+          Please save it or write it down somewhere.
+          <b>Keep this token secret, do not share it with students!</b>
+        </p>
+        <p>
+          <span class="text-monospace">{{assignment?.token}}</span>
+          <button type="button" class="btn btn-sm btn-outline-secondary"
+                  ngxClipboard *ngxClipboardIfSupported [cbContent]="assignment?.token">
+            Copy
+          </button>
+        </p>
+        <hr/>
+        <h5 class="card-title">
+          Teaching Assistant Invitation
+        </h5>
+        <p>
+          You can invite Teaching Assistants by giving them the following link.
+          <b>It includes the Access Token, so keep the link secret and do not share it with students!</b>
+        </p>
+        <p *ngIf="('/assignments/' + assignment.id + '/solutions') as link">
+          <a class="text-monospace" [routerLink]="link" [queryParams]="{atok: assignment.token}">
+            {{origin + link + '?atok=' + assignment.token}}
+          </a>
+          <button type="button" class="btn btn-sm btn-outline-primary"
+                  ngxClipboard *ngxClipboardIfSupported [cbContent]="origin + link + '?atok=' + assignment.token">
+            Copy
+          </button>
+        </p>
+      </ng-container>
+    </div>
+  </div>
+
+  <h2>
     Solutions
     <span class="text-muted" *ngIf="solutions">
       (<span *ngIf="filteredSolutions && solutions.length != filteredSolutions.length">{{filteredSolutions.length}}
