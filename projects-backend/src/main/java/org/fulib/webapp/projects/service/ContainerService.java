@@ -34,40 +34,55 @@ public class ContainerService
 			container = this.dockerContainerProvider.start(project);
 		}
 
-		for (int retry = 0; retry < 10; retry++)
+		final int retries = 10;
+		final int restartEvery = 5;
+		for (int retry = 0; retry < retries; retry++)
 		{
-			try
+			final int responseCode = healthCheck(container);
+			if (responseCode == 200)
 			{
-				final URL url = new URL(container.getUrl() + "/health");
-				final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-				connection.setConnectTimeout(500);
-				connection.setReadTimeout(500);
-				final int responseCode = connection.getResponseCode();
-				if (responseCode == 200)
-				{
-					return container;
-				}
-
-				// nginx is up, but project server is not ready
-				Thread.sleep(500);
+				return container;
 			}
-			catch (SocketTimeoutException timeoutException)
-			{
-				// retry
-			}
-			catch (SocketException socketException)
+			else if (responseCode == 502 && (retry + 1) % restartEvery == 0)
 			{
 				// container is down, restart
 				this.dockerContainerProvider.stop(container);
 				container = this.dockerContainerProvider.start(project);
 			}
-			catch (Exception e)
+			else
 			{
-				e.printStackTrace();
+				try
+				{
+					Thread.sleep(500);
+				}
+				catch (InterruptedException ignored)
+				{
+				}
 			}
 		}
 
-		throw new TimeoutException("failed to launch healthy container after 10 tries");
+		throw new TimeoutException("failed to launch healthy container after " + retries + " tries");
+	}
+
+	private int healthCheck(Container container)
+	{
+		try
+		{
+			final URL url = new URL(container.getUrl() + "/health");
+			final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setConnectTimeout(500);
+			connection.setReadTimeout(500);
+			return connection.getResponseCode();
+		}
+		catch (SocketTimeoutException | SocketException timeoutException)
+		{
+			return 0;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return 0;
+		}
 	}
 
 	public void stop(Container container)
