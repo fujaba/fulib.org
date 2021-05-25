@@ -1,4 +1,4 @@
-export default class Request {
+export class Request {
   privacy: string;
   packageName: string;
   scenarioFileName: string;

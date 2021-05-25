@@ -1,33 +1,13 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {Marker} from './model/marker';
 
-import {Marker} from './model/codegen/marker';
-import Request from './model/codegen/request';
-import Response from './model/codegen/response';
-import {PrivacyService} from './privacy.service';
+@Injectable({providedIn: 'root'})
+export class LintService {
 
-import {environment} from '../environments/environment';
-
-
-@Injectable({
-  providedIn: 'root',
-})
-export class ScenarioEditorService {
-  constructor(
-    private privacyService: PrivacyService,
-    private http: HttpClient,
-  ) {
-  }
-
-  submit(codeGenRequest: Request): Observable<Response> {
-    return this.http.post<Response>(environment.apiURL + '/runcodegen', codeGenRequest);
-  }
-
-  lint(response: Response): Marker[] {
+  lint(output: string): Marker[] {
     const result: Marker[] = [];
 
-    for (const line of response.output.split('\n')) {
+    for (const line of output.split('\n')) {
       const match = /^.*\.md:(\d+):(\d+)(?:-(\d+))?: (error|syntax|warning|note): (.*)$/.exec(line);
       if (!match) {
         continue;

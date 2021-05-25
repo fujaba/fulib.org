@@ -4,7 +4,6 @@ import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
 
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {GridsterModule} from 'angular-gridster2';
 import {KeycloakAngularModule, KeycloakService} from 'keycloak-angular';
 import {NgBootstrapDarkmodeModule, THEME_LOADER, THEME_SAVER, ThemeLoader, ThemeSaver} from 'ng-bootstrap-darkmode';
 import {DragulaModule} from 'ng2-dragula';
@@ -15,10 +14,7 @@ import {AboutComponent} from './about/about.component';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {ChangelogComponent} from './changelog/changelog.component';
-import {ConfigComponent} from './editor/config/config.component';
-import {DiagramViewComponent} from './editor/diagram-view/diagram-view.component';
 import {FeedbackComponent} from './feedback/feedback.component';
-import {FourPaneEditorComponent} from './editor/four-pane-editor/four-pane-editor.component';
 import {HeaderComponent} from './header/header.component';
 import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
 import {PrivacyService} from './privacy.service';

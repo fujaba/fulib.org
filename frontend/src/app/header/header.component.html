@@ -7,8 +7,10 @@
   </button>
   <div [ngbCollapse]="menuCollapsed" class="collapse navbar-collapse">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-        <a class="nav-link" routerLink="/">Home <span class="sr-only">(current)</span></a>
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link" routerLink="/editor">
+          Editor
+        </a>
       </li>
       <li class="nav-item">
         <a class="nav-link" routerLinkActive="active" routerLink="/docs">
@@ -37,6 +39,7 @@
           <a ngbDropdownItem routerLink="/assignments/courses">
             My Courses
           </a>
+          <div class="dropdown-divider"></div>
           <a ngbDropdownItem routerLink="/assignments/create">
             Create Assignment
           </a>

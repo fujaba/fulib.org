@@ -117,6 +117,11 @@ a[href^="http"]::after {
   cursor: pointer;
 }
 
+.feature-icon {
+  margin-right: 1rem;
+  font-size: xxx-large;
+}
+
 .backdrop-blur {
   backdrop-filter: blur(10px);
 }

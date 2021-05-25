@@ -1,4 +1,5 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {DOCUMENT} from '@angular/common';
+import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {combineLatest, forkJoin, Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
@@ -26,13 +27,18 @@ export class SolutionTableComponent implements OnInit {
   filteredSolutions?: Solution[];
 
   solutionCollapsed = true;
+  sharing = false;
+
+  readonly origin: string;
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
+    @Inject(DOCUMENT) document: Document,
   ) {
+    this.origin = document.location.origin;
   }
 
   ngOnInit(): void {
@@ -42,8 +48,10 @@ export class SolutionTableComponent implements OnInit {
         if (query.atok) {
           this.assignmentService.setToken(assignmentId, query.atok);
         }
+        this.sharing = !!query.share;
         return assignmentId;
       }),
+      distinctUntilChanged(),
       switchMap(assignmentId => forkJoin([
         this.assignmentService.get(assignmentId).pipe(tap(assignment => {
           this.assignment = assignment;
@@ -60,6 +68,10 @@ export class SolutionTableComponent implements OnInit {
         this.tokenModal.open();
       }
     });
+  }
+
+  setSharing(sharing: boolean): void {
+    this.router.navigate([], {queryParams: {share: sharing ? true : undefined}}).then();
   }
 
   totalResultPoints(solution: Solution): number {

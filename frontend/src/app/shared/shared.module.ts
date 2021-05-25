@@ -9,7 +9,6 @@ import {AutothemeCodemirrorComponent} from './autotheme-codemirror/autotheme-cod
 import {CollapseButtonComponent} from './collapse-button/collapse-button.component';
 import {MarkdownComponent} from './markdown/markdown.component';
 import {ModalComponent} from './modal/modal.component';
-import {ExceptionPipe} from './pipes/exception.pipe';
 import {SafeHtmlPipe} from './pipes/safe-html.pipe';
 import {SafeResourceUrlPipe} from './pipes/safe-resource-url.pipe';
 import {SafeUrlPipe} from './pipes/safe-url.pipe';
@@ -23,12 +22,12 @@ import {TabsComponent} from './tabs/tabs.component';
     SafeHtmlPipe,
     SafeUrlPipe,
     SafeResourceUrlPipe,
-    ExceptionPipe,
     AutothemeCodemirrorComponent,
     CollapseButtonComponent,
     ScenarioCodemirrorComponent,
     PreviewComponent,
     MarkdownComponent,
+    ProjectConfigFormComponent,
     ModalComponent,
     ProjectConfigFormComponent,
     TabsComponent,
@@ -45,12 +44,12 @@ import {TabsComponent} from './tabs/tabs.component';
     SafeHtmlPipe,
     SafeUrlPipe,
     SafeResourceUrlPipe,
-    ExceptionPipe,
     AutothemeCodemirrorComponent,
     CollapseButtonComponent,
     ScenarioCodemirrorComponent,
     PreviewComponent,
     MarkdownComponent,
+    ProjectConfigFormComponent,
     ModalComponent,
     ProjectConfigFormComponent,
     TabsComponent,

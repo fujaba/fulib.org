@@ -9,7 +9,7 @@ import Course from '../model/course';
   styleUrls: ['./my-courses.component.scss'],
 })
 export class MyCoursesComponent implements OnInit {
-  courses: Course[] = [];
+  courses?: Course[];
 
   constructor(
     private courseService: CourseService,

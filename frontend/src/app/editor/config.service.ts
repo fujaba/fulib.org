@@ -2,8 +2,8 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
-import ProjectZipRequest from '../model/project-zip-request';
 import {PrivacyService} from '../privacy.service';
+import {ProjectZipRequest} from '../shared/model/project-zip-request';
 
 @Injectable({providedIn: 'root'})
 export class ConfigService {

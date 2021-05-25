@@ -1,15 +1,13 @@
-import {DOCUMENT} from '@angular/common';
-import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
-
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Router} from '@angular/router';
+import {KeycloakService} from 'keycloak-angular';
 import {DragulaService} from 'ng2-dragula';
 import {Subscription} from 'rxjs';
 
-import {Marker} from '../../model/codegen/marker';
+import {Marker} from '../../shared/model/marker';
 import {UserService} from '../../user/user.service';
 import {AssignmentService} from '../assignment.service';
 import Assignment from '../model/assignment';
-import Task from '../model/task';
 import TaskResult from '../model/task-result';
 
 @Component({
@@ -24,39 +22,36 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     solution: false,
     templateSolution: false,
   };
-
-  title = '';
   loggedIn = false;
-  author = '';
-  email = '';
-  deadlineDate: string | null;
-  deadlineTime: string | null;
-  description = '';
-  solution = '';
-  templateSolution = '';
 
-  tasks: Task[] = [];
+  assignment: Assignment = {
+    title: '',
+    author: '',
+    email: '',
+    deadline: new Date(),
+    description: '',
+    tasks: [],
+    solution: '',
+    templateSolution: '',
+  };
+  deadlineDate?: string;
+  deadlineTime?: string;
 
   checking = false;
   results?: TaskResult[];
   markers: Marker[] = [];
 
   submitting = false;
-  id?: string;
-  token?: string;
-
-  private readonly origin: string;
 
   private userSubscription: Subscription;
 
   constructor(
     private assignmentService: AssignmentService,
-    private modalService: NgbModal,
     private dragulaService: DragulaService,
     private users: UserService,
-    @Inject(DOCUMENT) document: Document,
+    private keycloakService: KeycloakService,
+    private router: Router,
   ) {
-    this.origin = document.location.origin;
   }
 
   ngOnInit(): void {
@@ -78,10 +73,10 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
 
       this.loggedIn = true;
       if (user.firstName && user.lastName) {
-        this.author = `${user.firstName} ${user.lastName}`;
+        this.assignment.author = `${user.firstName} ${user.lastName}`;
       }
       if (user.email) {
-        this.email = user.email;
+        this.assignment.email = user.email;
       }
     });
   }
@@ -97,25 +92,14 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
 
   getAssignment(): Assignment {
     return {
-      id: undefined,
-      token: undefined,
-      title: this.title,
-      description: this.description,
-      descriptionHtml: undefined,
-      author: this.author,
-      email: this.email,
+      ...this.assignment,
       deadline: this.getDeadline(),
-      solution: this.solution,
-      templateSolution: this.templateSolution,
-      tasks: this.tasks.filter(t => !t.deleted),
-    } as Assignment;
+      tasks: this.assignment.tasks.filter(t => !t.deleted),
+    };
   }
 
   setAssignment(a: Assignment): void {
-    this.title = a.title;
-    this.description = a.description;
-    this.author = a.author;
-    this.email = a.email;
+    this.assignment = a;
     const deadline = a.deadline;
     if (deadline) {
       const year = deadline.getFullYear();
@@ -128,12 +112,9 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
       const second = String(deadline.getSeconds()).padStart(2, '0');
       this.deadlineTime = `${hour}:${minute}:${second}`;
     } else {
-      this.deadlineDate = null;
-      this.deadlineTime = null;
+      this.deadlineDate = undefined;
+      this.deadlineTime = undefined;
     }
-    this.tasks = a.tasks.map(t => ({...t})); // deep copy
-    this.solution = a.solution;
-    this.templateSolution = a.templateSolution;
 
     this.collapse.solution = !a.solution;
     this.collapse.templateSolution = !a.templateSolution;
@@ -142,7 +123,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   check(): void {
     this.saveDraft();
     this.checking = true;
-    this.assignmentService.check({solution: this.solution, tasks: this.tasks}).subscribe(response => {
+    this.assignmentService.check(this.assignment).subscribe(response => {
       this.checking = false;
       this.results = response.results;
       this.markers = this.assignmentService.lint(response);
@@ -168,7 +149,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   }
 
   addTask(): void {
-    this.tasks.push({description: '', points: 0, verification: '', collapsed: false, deleted: false});
+    this.assignment.tasks.push({description: '', points: 0, verification: '', collapsed: false, deleted: false});
     if (this.results) {
       this.results.push({output: '', points: 0});
     }
@@ -176,22 +157,23 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   }
 
   removeTask(id: number): void {
-    this.tasks[id].deleted = true;
+    this.assignment.tasks[id].deleted = true;
     this.saveDraft();
   }
 
   restoreTask(id: number): void {
-    this.tasks[id].deleted = false;
+    this.assignment.tasks[id].deleted = false;
     this.saveDraft();
+  }
+
+  login(): void {
+    this.keycloakService.login().then();
   }
 
   submit(): void {
     this.submitting = true;
     this.assignmentService.submit(this.getAssignment()).subscribe(result => {
-      this.submitting = false;
-      this.id = result.id;
-      this.token = result.token;
-      this.modalService.open(this.successModal, {ariaLabelledBy: 'successModalLabel', size: 'xl'});
+      this.router.navigate(['/assignments', result.id, 'solutions'], {queryParams: {share: true}});
     });
   }
 
@@ -206,13 +188,5 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
 
     const points = result.points;
     return points === 0 ? 'danger' : 'success';
-  }
-
-  getSolveLink(origin: boolean): string {
-    return `${origin ? this.origin : ''}/assignments/${this.id}`;
-  }
-
-  getSolutionsLink(origin: boolean): string {
-    return `${origin ? this.origin : ''}/assignments/${this.id}/solutions`;
   }
 }

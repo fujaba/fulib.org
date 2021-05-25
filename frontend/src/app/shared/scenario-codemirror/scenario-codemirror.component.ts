@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewC
 
 import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 
-import {Marker} from '../../model/codegen/marker';
+import {Marker} from '../model/marker';
 import {AutothemeCodemirrorComponent} from '../autotheme-codemirror/autotheme-codemirror.component';
 
 @Component({
