@@ -21,14 +21,14 @@ public class ContainerService
 	{
 	}
 
-	public Container find(Project project)
+	public Container find(String projectId)
 	{
-		return this.dockerContainerProvider.find(project);
+		return this.dockerContainerProvider.find(projectId);
 	}
 
 	public Container create(Project project) throws TimeoutException
 	{
-		Container container = this.dockerContainerProvider.find(project);
+		Container container = this.dockerContainerProvider.find(project.getId());
 		if (container == null)
 		{
 			container = this.dockerContainerProvider.start(project);

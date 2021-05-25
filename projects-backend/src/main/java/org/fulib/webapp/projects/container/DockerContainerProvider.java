@@ -43,9 +43,8 @@ public class DockerContainerProvider
 		dockerClient = DockerClientImpl.getInstance(config, httpClient);
 	}
 
-	public Container find(Project project)
+	public Container find(String projectId)
 	{
-		final String projectId = project.getId();
 		final List<com.github.dockerjava.api.model.Container> containers = dockerClient
 			.listContainersCmd()
 			.withLabelFilter(Collections.singletonMap("org.fulib.project", projectId))

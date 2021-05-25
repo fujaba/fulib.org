@@ -34,7 +34,7 @@ public class ContainerController
 		final Project project = getOr404(projectService, id);
 		checkAuth(request, project);
 
-		final Container container = this.containerService.find(project);
+		final Container container = this.containerService.find(id);
 		if (container == null)
 		{
 			throw halt(404, new JSONObject()
@@ -86,14 +86,18 @@ public class ContainerController
 	public Object delete(Request request, Response response)
 	{
 		final String id = request.params("projectId");
-		final Project project = getOr404(projectService, id);
-		checkAuth(request, project);
+		// could be null in case of a local project
+		final Project project = projectService.find(id);
+		if (project != null)
+		{
+			checkAuth(request, project);
+		}
 
-		final Container container = this.containerService.find(project);
+		final Container container = this.containerService.find(id);
 
 		if (container == null)
 		{
-			throw halt(404, String.format("{\"error\": \"container for project with id '%s' not found\"}\n", id));
+			throw halt(404, String.format("{\"error\": \"container or project with id '%s' not found\"}\n", id));
 		}
 
 		this.containerService.stop(container);

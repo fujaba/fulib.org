@@ -45,7 +45,7 @@ public class ProjectService
 
 	public void delete(Project project)
 	{
-		final Container container = this.dockerContainerProvider.find(project);
+		final Container container = this.dockerContainerProvider.find(project.getId());
 		if (container != null)
 		{
 			this.dockerContainerProvider.kill(container);
