@@ -3,6 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {KeycloakService} from 'keycloak-angular';
 import {combineLatest} from 'rxjs';
+import {tap} from 'rxjs/operators';
 import {LocalProject, Project, ProjectStub} from '../model/project';
 import {ProjectService} from '../project.service';
 
@@ -15,6 +16,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   @ViewChild('editModal', {static: true}) editModal: TemplateRef<any>;
 
   loggedIn = false;
+  creatingFromEditor = false;
 
   openModal?: NgbModalRef;
 
@@ -37,7 +39,8 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     combineLatest([
       this.projectService.getOwn(),
       this.route.queryParams,
-    ]).subscribe(([projects, {edit, local}]) => {
+    ]).subscribe(([projects, {edit, local, editor}]) => {
+      this.creatingFromEditor = !!editor;
       this.projects = projects;
       if (edit === 'new') {
         this.create(!!local);
@@ -90,9 +93,14 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     }
     if ('id' in this.editing) {
       this.projectService.update(this.editing).subscribe();
-    } else {
-      this.projectService.create(this.editing).subscribe(project => this.projects.push(project));
+      return;
     }
+
+    let pipeline = this.projectService.create(this.editing);
+    if (this.creatingFromEditor) {
+      pipeline = pipeline.pipe(tap(created => this.projectService.setupFromEditor(created.id)));
+    }
+    pipeline.subscribe(project => this.projects.push(project));
   }
 
   convert(localProject: LocalProject) {

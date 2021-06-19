@@ -111,6 +111,9 @@
         <a routerLink="." (click)="login()">log in</a>.
       </ng-container>
     </p>
+    <div class="alert alert-success" *ngIf="creatingFromEditor">
+      This Project will be created with the configuration and scenario from the Editor.
+    </div>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">

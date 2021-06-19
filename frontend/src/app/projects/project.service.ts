@@ -5,6 +5,7 @@ import {forkJoin, Observable, of} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
 
 import {environment} from '../../environments/environment';
+import {ConfigService as EditorConfigService} from '../editor/config.service';
 import {ProjectConfig} from '../model/project-config';
 import {UserService} from '../user/user.service';
 import {DavClient} from './dav-client';
@@ -24,6 +25,7 @@ export class ProjectService {
     private localProjectService: LocalProjectService,
     private setupService: SetupService,
     private davClient: DavClient,
+    private configService: EditorConfigService,
   ) {
   }
 
@@ -37,6 +39,20 @@ export class ProjectService {
 
   private createPersistent(stub: ProjectStub): Observable<UserProject> {
     return this.http.post<UserProject>(`${environment.projectsApiUrl}/projects`, stub);
+  }
+
+  setupFromEditor(id: string) {
+    const { packageName, projectName, projectVersion, scenarioFileName, decoratorClassName, storedScenario } = this.configService;
+    this.localProjectService.saveConfig(id, {
+      packageName,
+      projectName,
+      projectVersion,
+      scenarioFileName,
+      decoratorClassName,
+    });
+    const packagePath = packageName.replace(/\./g, '/');
+    const scenarioFilePath = `/projects/${id}/src/main/scenarios/${packagePath}/${scenarioFileName}`;
+    this.localProjectService.saveFile(id, scenarioFilePath, storedScenario);
   }
 
   get(id: string): Observable<Project> {
