@@ -10,7 +10,7 @@ import {UserService} from '../user/user.service';
 import {DavClient} from './dav-client';
 import {LocalProjectService} from './local-project.service';
 import {Container} from './model/container';
-import {LocalProject, Project, ProjectStub} from './model/project';
+import {LocalProject, Project, ProjectStub, UserProject} from './model/project';
 import {SetupService} from './setup/setup.service';
 
 @Injectable({
@@ -32,7 +32,11 @@ export class ProjectService {
     if (stub.local) {
       return of(this.localProjectService.create(stub));
     }
-    return this.http.post<Project>(`${environment.projectsApiUrl}/projects`, stub);
+    return this.createPersistent(stub);
+  }
+
+  private createPersistent(stub: ProjectStub): Observable<UserProject> {
+    return this.http.post<UserProject>(`${environment.projectsApiUrl}/projects`, stub);
   }
 
   get(id: string): Observable<Project> {
@@ -74,6 +78,11 @@ export class ProjectService {
     if (project.local) {
       this.localProjectService.saveConfig(project.id, config);
     }
+  }
+
+  convert(localProject: LocalProject): Observable<UserProject> {
+    this.delete(localProject);
+    return this.createPersistent({...localProject, local: false});
   }
 
   restoreSetupAndFiles(container: Container, project: Project): Observable<any> {

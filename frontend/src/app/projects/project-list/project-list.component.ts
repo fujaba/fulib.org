@@ -96,8 +96,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   }
 
   convert(localProject: LocalProject) {
-    this.projectService.delete(localProject);
-    this.projectService.create({...localProject, local: false}).subscribe(persistentProject => {
+    this.projectService.convert(localProject).subscribe(persistentProject => {
       const index = this.projects.indexOf(localProject);
       if (index >= 0) {
         this.projects[index] = persistentProject;
