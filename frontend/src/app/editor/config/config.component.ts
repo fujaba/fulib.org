@@ -9,6 +9,8 @@ import {ProjectZipRequest} from '../../shared/model/project-zip-request';
 import {ConfigService} from '../config.service';
 import {EditorService} from '../editor.service';
 
+type Format = 'gradle' | 'local' | 'persistent';
+
 @Component({
   selector: 'app-config',
   templateUrl: './config.component.html',
@@ -20,6 +22,35 @@ export class ConfigComponent implements OnInit {
   openModal?: NgbModalRef;
 
   config: ProjectConfig;
+
+  formats = [
+    {
+      id: 'gradle',
+      name: 'Gradle Project',
+      description: 'You can download your scenario prepared as a Gradle project. ' +
+        'Just extract the downloaded Zip file to a folder and open it with your favorite IDE. ' +
+        'Make sure to run the <code>check</code> task afterwards to generate Java classes and execute the tests. ',
+    },
+    {
+      id: 'local',
+      name: 'Local Project',
+      description: 'Create a new local Project from the scenario and config. ' +
+        'The Project will appear in the Projects tab and is stored in your browser. ' +
+        '<span class="badge badge-primary">New</span>',
+    },
+    {
+      id: 'persistent',
+      name: 'Persistent Project',
+      description: 'Create a new persistent Project from the scenario and config. ' +
+        'The Project will appear in the Projects tab and is bound to your user account. ' +
+        'You will be able to access it from anywhere just by logging in. ' +
+        '<span class="badge badge-primary">New</span>',
+    },
+  ];
+
+  format?: Format;
+
+  formatMatcher = ({id}) => id === this.format;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -63,6 +94,17 @@ export class ConfigComponent implements OnInit {
     this.configService.decoratorClassName = this.config.decoratorClassName || '';
   }
 
+  export(): void {
+    switch (this.format) {
+      case 'gradle':
+        return this.downloadProjectZip();
+      case 'local':
+        return this.createProject(true);
+      case 'persistent':
+        return this.createProject(false);
+    }
+  }
+
   downloadProjectZip(): void {
     const request: ProjectZipRequest = {
       ...this.config,
@@ -71,6 +113,17 @@ export class ConfigComponent implements OnInit {
     };
     this.configService.downloadZip(request).subscribe(blob => {
       saveAs(blob, `${this.config.projectName}.zip`);
+    });
+  }
+
+  private createProject(local: boolean) {
+    this.save();
+    this.router.navigate(['/projects'], {
+      queryParams: {
+        edit: 'new',
+        local: local ? true : undefined,
+        editor: true,
+      },
     });
   }
 }
