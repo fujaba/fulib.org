@@ -10,15 +10,7 @@ import {Response} from './model/response';
 
 @Injectable({providedIn: 'root'})
 export class EditorService {
-  private readonly defaultScenario = `# My First Scenario
-
-// start typing your scenario or select an example using the dropdown above.
-
-There is a Car with name Herbie.
-`;
-
   private _panels?: Record<string, Panel>;
-  private _storedScenario?: string;
   private _autoSubmit?: boolean;
 
   constructor(
@@ -53,17 +45,6 @@ There is a Car with name Herbie.
   set panels(value: Record<string, Panel>) {
     this._panels = value;
     this.privacyService.setStorage('panels', JSON.stringify(value));
-  }
-
-  get storedScenario(): string {
-    return this._storedScenario ?? this.privacyService.getStorage('storedScenario') ?? this.defaultScenario;
-  }
-
-  set storedScenario(value: string) {
-    if (this._storedScenario !== value) {
-      this._storedScenario = value;
-      this.privacyService.setStorage('storedScenario', value);
-    }
   }
 
   get autoSubmit(): boolean {

@@ -7,7 +7,6 @@ import {PrivacyService} from '../../privacy.service';
 import {ProjectConfig} from '../../shared/model/project-config';
 import {ProjectZipRequest} from '../../shared/model/project-zip-request';
 import {ConfigService} from '../config.service';
-import {EditorService} from '../editor.service';
 
 type Format = 'gradle' | 'local' | 'persistent';
 
@@ -56,7 +55,6 @@ export class ConfigComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private ngbModal: NgbModal,
     private router: Router,
-    private editorService: EditorService,
     private configService: ConfigService,
     private privacyService: PrivacyService,
   ) {
@@ -109,7 +107,7 @@ export class ConfigComponent implements OnInit {
     const request: ProjectZipRequest = {
       ...this.config,
       privacy: this.privacyService.privacy || 'none',
-      scenarioText: this.editorService.storedScenario,
+      scenarioText: this.configService.storedScenario,
     };
     this.configService.downloadZip(request).subscribe(blob => {
       saveAs(blob, `${this.config.projectName}.zip`);
