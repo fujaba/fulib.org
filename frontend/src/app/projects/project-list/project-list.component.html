@@ -103,14 +103,14 @@
   </div>
   <div class="modal-body">
     <app-project-form [project]="editing"></app-project-form>
-    <p *ngIf="editing?.local">
+    <div class="alert alert-info" *ngIf="editing?.local">
       {{ editing!['id'] ? 'This is' : 'You are creating' }} a <b>local</b> project.
       This means the project and its scenario files are stored in your browser.
       <ng-container *ngIf="!loggedIn">
         To create a persistent project bound to your user account, you need to
         <a routerLink="." (click)="login()">log in</a>.
       </ng-container>
-    </p>
+    </div>
     <div class="alert alert-success" *ngIf="creatingFromEditor">
       This Project will be created with the configuration and scenario from the Editor.
     </div>
