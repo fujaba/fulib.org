@@ -21,6 +21,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   openModal?: NgbModalRef;
 
   projects: Project[] = [];
+  deleting = new Set<string>();
 
   editing?: Project | ProjectStub;
 
@@ -120,7 +121,9 @@ export class ProjectListComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.deleting.add(project.id);
     this.projectService.delete(project).subscribe(() => {
+      this.deleting.delete(project.id);
       const index = this.projects.indexOf(project);
       if (index >= 0) {
         this.projects.splice(index, 1);
