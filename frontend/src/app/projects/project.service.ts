@@ -2,7 +2,7 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 
 import {forkJoin, Observable, of} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
+import {map, switchMap, tap} from 'rxjs/operators';
 
 import {environment} from '../../environments/environment';
 import {ProjectConfig} from '../model/project-config';
@@ -81,25 +81,27 @@ export class ProjectService {
   }
 
   convert(localProject: LocalProject): Observable<UserProject> {
-    this.delete(localProject);
-    return this.createPersistent({...localProject, local: false});
+    return this.createPersistent({...localProject, local: false}).pipe(
+      tap(persistent => this.localProjectService.deleteAndChangeId(localProject.id, persistent.id)),
+    );
   }
 
   restoreSetupAndFiles(container: Container, project: Project): Observable<any> {
-    if (!project.local) {
-      return of(undefined);
-    }
-
     const config = this.localProjectService.getConfig(project.id);
     if (config) {
       return this.setupService.generateFiles(container, config).pipe(
+        tap(() => {
+          if (!project.local) {
+            this.localProjectService.deleteConfig(project.id);
+          }
+        }),
         switchMap(() => this.restoreFiles(project, container)),
       );
     }
     return this.restoreFiles(project, container);
   }
 
-  private restoreFiles(project: LocalProject, container: Container): Observable<any> {
+  private restoreFiles(project: Project, container: Container): Observable<any> {
     const files = this.localProjectService.getFiles(project.id);
     if (files.length === 0) {
       return of(undefined);
@@ -107,11 +109,17 @@ export class ProjectService {
     return forkJoin(files.map(path => this.restoreFile(project, container, path)));
   }
 
-  private restoreFile(project: LocalProject, container: Container, path: string): Observable<any> {
+  private restoreFile(project: Project, container: Container, path: string): Observable<any> {
     const content = this.localProjectService.getFile(project.id, path);
     if (content === null) {
       return of(undefined);
     }
-    return this.davClient.put(`${container.url}/dav/${path}`, content);
+    return this.davClient.put(`${container.url}/dav/${path}`, content).pipe(
+      tap(() => {
+        if (!project.local) {
+          this.localProjectService.deleteFile(project.id, path);
+        }
+      }),
+    );
   }
 }

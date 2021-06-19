@@ -46,6 +46,29 @@ export class LocalProjectService {
     }
   }
 
+  /**
+   * Deletes the local project metadata from local storage, but renames all other keys to use the new ID.
+   * @param source the source ID
+   * @param target the target ID
+   */
+  deleteAndChangeId(source: string, target: string): void {
+    this.storageService.set(`projects/${source}`, null);
+    for (const [oldKey] of this.storageService.getAllKeys(new RegExp(`^projects/${source}/.*$`))) {
+      const oldValue = this.storageService.get(oldKey)!;
+      // NB: This is ok because both source and target are ObjectIDs,
+      //     which should not occur in normal text.
+      //     It is actually beneficial because
+      //     a) Replacing in the value ensures open files are still open in the new project.
+      //     b) Replacing in the key ensures files are actually copied
+      //        (the key contains the absolute path, including the project ID).
+      const sourcePattern = new RegExp(source, 'g');
+      const newValue = oldValue.replace(sourcePattern, target);
+      const newKey = oldKey.replace(sourcePattern, target);
+      this.storageService.set(newKey, newValue);
+      this.storageService.set(oldKey, null);
+    }
+  }
+
   getConfig(id: string): ProjectConfig | undefined {
     const storage = this.storageService.get(this.getKey(id) + '/config');
     return storage ? JSON.parse(storage) : undefined;
@@ -53,6 +76,10 @@ export class LocalProjectService {
 
   saveConfig(id: string, config: ProjectConfig) {
     this.storageService.set(this.getKey(id) + '/config', JSON.stringify(config));
+  }
+
+  deleteConfig(id: string) {
+    this.storageService.set(this.getKey(id) + '/config', null);
   }
 
   private getFileKey(id: string, path: string) {
