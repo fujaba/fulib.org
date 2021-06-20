@@ -15,7 +15,7 @@ import java.util.Map;
 public class ExecProcess extends Thread
 {
 	private final String id;
-	private final Session session;
+	private volatile Session session;
 	private final String[] cmd;
 	private final String workingDirectory;
 	private final Map<String, String> environment;
@@ -37,6 +37,11 @@ public class ExecProcess extends Thread
 	public String getExecId()
 	{
 		return id;
+	}
+
+	public void setSession(Session session)
+	{
+		this.session = session;
 	}
 
 	public void input(String text) throws IOException

@@ -5,9 +5,12 @@ import org.eclipse.jetty.websocket.api.annotations.*;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 @WebSocket
 public class WebSocketHandler implements FileEventHandler
@@ -15,7 +18,8 @@ public class WebSocketHandler implements FileEventHandler
 	private FileWatcherRegistry fileWatcher;
 	private final Runnable resetShutdownTimer;
 
-	private final Map<Session, Map<String, ExecProcess>> processes = new ConcurrentHashMap<>();
+	private final Map<String, ExecProcess> processes = new ConcurrentHashMap<>();
+	private final Collection<Session> sessions = new ConcurrentLinkedQueue<>();
 
 	public WebSocketHandler(Runnable resetShutdownTimer)
 	{
@@ -30,7 +34,7 @@ public class WebSocketHandler implements FileEventHandler
 	@OnWebSocketConnect
 	public void connected(Session session)
 	{
-		processes.put(session, new ConcurrentHashMap<>());
+		this.sessions.add(session);
 	}
 
 	@OnWebSocketMessage
@@ -61,7 +65,7 @@ public class WebSocketHandler implements FileEventHandler
 		{
 			final String input = json.getString("text");
 			final String processId = json.getString("process");
-			final ExecProcess process = this.processes.get(session).get(processId);
+			final ExecProcess process = this.processes.get(processId);
 			if (process != null)
 			{
 				process.input(input);
@@ -71,7 +75,7 @@ public class WebSocketHandler implements FileEventHandler
 		case "kill":
 		{
 			final String processId = json.getString("process");
-			final ExecProcess process = this.processes.get(session).remove(processId);
+			final ExecProcess process = this.processes.remove(processId);
 			if (process != null)
 			{
 				process.interrupt();
@@ -86,7 +90,7 @@ public class WebSocketHandler implements FileEventHandler
 			final String processId = json.getString("process");
 			final int columns = json.getInt("columns");
 			final int rows = json.getInt("rows");
-			final ExecProcess process = this.processes.get(session).get(processId);
+			final ExecProcess process = this.processes.get(processId);
 			if (process != null)
 			{
 				process.resize(columns, rows);
@@ -102,6 +106,12 @@ public class WebSocketHandler implements FileEventHandler
 	private void exec(Session session, JSONObject json)
 	{
 		final String id = json.getString("process");
+		final ExecProcess process = this.processes.computeIfAbsent(id, id1 -> createProcess(session, id1, json));
+		process.setSession(session);
+	}
+
+	private ExecProcess createProcess(Session session, String id, JSONObject json)
+	{
 		final String[] cmd = json.getJSONArray("cmd").toList().toArray(new String[0]);
 		final String workingDirectory = json.optString("workingDirectory");
 
@@ -116,9 +126,9 @@ public class WebSocketHandler implements FileEventHandler
 			}
 		}
 
-		final ExecProcess process = new ExecProcess(id, session, cmd, workingDirectory, environment);
-		this.processes.get(session).put(process.getExecId(), process);
-		process.start();
+		final ExecProcess newProcess = new ExecProcess(id, session, cmd, workingDirectory, environment);
+		newProcess.start();
+		return newProcess;
 	}
 
 	@OnWebSocketError
@@ -132,10 +142,14 @@ public class WebSocketHandler implements FileEventHandler
 	@OnWebSocketClose
 	public void disconnected(Session session, int status, String reason)
 	{
-		final Map<String, ExecProcess> execMap = processes.remove(session);
-		for (final ExecProcess value : execMap.values())
+		this.sessions.remove(session);
+	}
+
+	public void stop()
+	{
+		for (final ExecProcess process : this.processes.values())
 		{
-			value.interrupt();
+			process.interrupt();
 		}
 	}
 
@@ -166,7 +180,7 @@ public class WebSocketHandler implements FileEventHandler
 	private void broadcast(JSONObject obj)
 	{
 		final String message = obj.toString();
-		for (final Session session : this.processes.keySet())
+		for (final Session session : this.sessions)
 		{
 			session.getRemote().sendString(message, null);
 		}

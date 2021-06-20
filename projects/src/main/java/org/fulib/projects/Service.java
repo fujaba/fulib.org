@@ -12,6 +12,7 @@ public class Service
 	private spark.Service service;
 
 	private volatile ScheduledFuture<?> scheduledStop;
+	private WebSocketHandler webSocketHandler;
 
 	public static void main(String[] args)
 	{
@@ -23,7 +24,7 @@ public class Service
 		scheduler = Executors.newSingleThreadScheduledExecutor();
 		scheduledStop = scheduler.schedule(this::stop, 120, TimeUnit.SECONDS);
 
-		final WebSocketHandler webSocketHandler = new WebSocketHandler(() -> {
+		webSocketHandler = new WebSocketHandler(() -> {
 			scheduledStop.cancel(false);
 			scheduledStop = scheduler.schedule(this::stop, 60, TimeUnit.SECONDS);
 		});
@@ -50,5 +51,6 @@ public class Service
 	{
 		service.stop();
 		scheduler.shutdown();
+		webSocketHandler.stop();
 	}
 }
