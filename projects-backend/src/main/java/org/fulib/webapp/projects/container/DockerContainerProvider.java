@@ -1,10 +1,12 @@
 package org.fulib.webapp.projects.container;
 
 import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.github.dockerjava.api.exception.NotFoundException;
 import com.github.dockerjava.api.exception.NotModifiedException;
 import com.github.dockerjava.api.model.Bind;
+import com.github.dockerjava.api.model.WaitResponse;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
@@ -133,5 +135,27 @@ public class DockerContainerProvider
 		catch (NotFoundException ignored)
 		{
 		}
+	}
+
+	public void delete(Project project)
+	{
+		if (project.isLocal())
+		{
+			return;
+		}
+
+		final CreateContainerCmd cmd = dockerClient
+			.createContainerCmd(CONTAINER_IMAGE)
+			.withBinds(Bind.parse(BIND_PREFIX + PROJECTS_DIR + ':' + PROJECTS_DIR))
+			.withCmd("rm", "-rf", PROJECTS_DIR + project.getId());
+		final String id = cmd.exec().getId();
+		dockerClient.startContainerCmd(id).exec();
+		dockerClient.waitContainerCmd(id).exec(new ResultCallback.Adapter<WaitResponse>() {
+			@Override
+			public void onComplete()
+			{
+				dockerClient.removeContainerCmd(id).exec();
+			}
+		});
 	}
 }

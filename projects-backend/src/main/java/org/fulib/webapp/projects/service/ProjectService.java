@@ -51,7 +51,7 @@ public class ProjectService
 			this.dockerContainerProvider.kill(container);
 		}
 
+		this.dockerContainerProvider.delete(project);
 		this.projectRepository.delete(project.getId());
-		// TODO delete project files
 	}
 }
