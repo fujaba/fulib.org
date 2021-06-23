@@ -111,11 +111,6 @@ public class DockerContainerProvider
 
 	public void stop(Container container)
 	{
-		this.kill(container);
-	}
-
-	public void kill(Container container)
-	{
 		try
 		{
 			this.dockerClient.stopContainerCmd(container.getId()).exec();
@@ -130,7 +125,18 @@ public class DockerContainerProvider
 
 		try
 		{
-			this.dockerClient.removeContainerCmd(container.getId()).exec();
+			this.dockerClient.removeContainerCmd(container.getId()).withRemoveVolumes(true).exec();
+		}
+		catch (NotFoundException ignored)
+		{
+		}
+	}
+
+	public void kill(Container container)
+	{
+		try
+		{
+			this.dockerClient.removeContainerCmd(container.getId()).withForce(true).withRemoveVolumes(true).exec();
 		}
 		catch (NotFoundException ignored)
 		{
@@ -150,7 +156,8 @@ public class DockerContainerProvider
 			.withCmd("rm", "-rf", PROJECTS_DIR + project.getId());
 		final String id = cmd.exec().getId();
 		dockerClient.startContainerCmd(id).exec();
-		dockerClient.waitContainerCmd(id).exec(new ResultCallback.Adapter<WaitResponse>() {
+		dockerClient.waitContainerCmd(id).exec(new ResultCallback.Adapter<WaitResponse>()
+		{
 			@Override
 			public void onComplete()
 			{
