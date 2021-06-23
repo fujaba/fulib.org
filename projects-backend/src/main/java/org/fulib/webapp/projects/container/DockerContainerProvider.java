@@ -81,7 +81,8 @@ public class DockerContainerProvider
 
 		if (!project.isLocal())
 		{
-			cmd.withBinds(Bind.parse(BIND_PREFIX + PROJECTS_DIR + id + ':' + PROJECTS_DIR + id));
+			final String bindDir = BIND_PREFIX + PROJECTS_DIR + getIdBin(project) + '/' + id;
+			cmd.withBinds(Bind.parse(bindDir + ':' + PROJECTS_DIR + id));
 		}
 
 		final String containerId = cmd.exec().getId();
@@ -151,7 +152,7 @@ public class DockerContainerProvider
 
 		final CreateContainerCmd cmd = dockerClient
 			.createContainerCmd(CONTAINER_IMAGE)
-			.withBinds(Bind.parse(BIND_PREFIX + PROJECTS_DIR + ':' + PROJECTS_DIR))
+			.withBinds(Bind.parse(BIND_PREFIX + PROJECTS_DIR + getIdBin(project) + ':' + PROJECTS_DIR))
 			.withCmd("rm", "-rf", PROJECTS_DIR + project.getId());
 		final String id = cmd.exec().getId();
 		dockerClient.startContainerCmd(id).exec();
@@ -163,5 +164,10 @@ public class DockerContainerProvider
 				dockerClient.removeContainerCmd(id).exec();
 			}
 		});
+	}
+
+	private String getIdBin(Project project)
+	{
+		return project.getId().substring(project.getId().length() - 2);
 	}
 }
