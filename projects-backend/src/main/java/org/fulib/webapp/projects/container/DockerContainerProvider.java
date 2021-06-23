@@ -25,10 +25,9 @@ import java.util.Map;
 
 public class DockerContainerProvider
 {
-	private static final String BIND_PREFIX = new File("data").getAbsolutePath();
+	private static final String BIND_PREFIX = new File(System.getenv("FULIB_PROJECTS_DATA_DIR")).getAbsolutePath();
 	private static final String PROJECTS_DIR = "/projects/";
 	private static final String CONTAINER_IMAGE = System.getenv("FULIB_PROJECTS_CONTAINER_IMAGE");
-	private static final String API_HOST = System.getenv("FULIB_PROJECTS_URL");
 	private static final String PROXY_HOST = System.getenv("FULIB_PROJECTS_PROXY_URL");
 	private static final String NETWORK_NAME = "fulib-projects";
 
