@@ -8,17 +8,15 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @WebSocket
 public class WebSocketHandler implements FileEventHandler
 {
 	private FileWatcherRegistry fileWatcher;
+	private ProcessService processService;
 	private final Runnable resetShutdownTimer;
 
-	private final Map<String, ExecProcess> processes = new ConcurrentHashMap<>();
 	private final Collection<Session> sessions = new ConcurrentLinkedQueue<>();
 
 	public WebSocketHandler(Runnable resetShutdownTimer)
@@ -29,6 +27,11 @@ public class WebSocketHandler implements FileEventHandler
 	public void setFileWatcher(FileWatcherRegistry fileWatcher)
 	{
 		this.fileWatcher = fileWatcher;
+	}
+
+	public void setProcessService(ProcessService processService)
+	{
+		this.processService = processService;
 	}
 
 	@OnWebSocketConnect
@@ -65,7 +68,7 @@ public class WebSocketHandler implements FileEventHandler
 		{
 			final String input = json.getString("text");
 			final String processId = json.getString("process");
-			final ExecProcess process = this.processes.get(processId);
+			final ExecProcess process = this.processService.get(processId);
 			if (process != null)
 			{
 				process.input(input);
@@ -75,11 +78,7 @@ public class WebSocketHandler implements FileEventHandler
 		case "kill":
 		{
 			final String processId = json.getString("process");
-			final ExecProcess process = this.processes.remove(processId);
-			if (process != null)
-			{
-				process.interrupt();
-			}
+			this.processService.kill(processId);
 			return;
 		}
 		case "keepAlive":
@@ -90,7 +89,7 @@ public class WebSocketHandler implements FileEventHandler
 			final String processId = json.getString("process");
 			final int columns = json.getInt("columns");
 			final int rows = json.getInt("rows");
-			final ExecProcess process = this.processes.get(processId);
+			final ExecProcess process = this.processService.get(processId);
 			if (process != null)
 			{
 				process.resize(columns, rows);
@@ -106,7 +105,7 @@ public class WebSocketHandler implements FileEventHandler
 	private void exec(Session session, JSONObject json)
 	{
 		final String id = json.getString("process");
-		final ExecProcess process = this.processes.computeIfAbsent(id, id1 -> createProcess(session, id1, json));
+		final ExecProcess process = this.processService.getOrCreate(id, id1 -> createProcess(session, id1, json));
 		process.setSession(session);
 	}
 
@@ -143,14 +142,6 @@ public class WebSocketHandler implements FileEventHandler
 	public void disconnected(Session session, int status, String reason)
 	{
 		this.sessions.remove(session);
-	}
-
-	public void stop()
-	{
-		for (final ExecProcess process : this.processes.values())
-		{
-			process.interrupt();
-		}
 	}
 
 	@Override

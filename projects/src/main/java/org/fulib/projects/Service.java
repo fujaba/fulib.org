@@ -13,6 +13,7 @@ public class Service
 
 	private volatile ScheduledFuture<?> scheduledStop;
 	private WebSocketHandler webSocketHandler;
+	private ProcessService processService;
 
 	public static void main(String[] args)
 	{
@@ -24,10 +25,13 @@ public class Service
 		scheduler = Executors.newSingleThreadScheduledExecutor();
 		scheduledStop = scheduler.schedule(this::stop, 120, TimeUnit.SECONDS);
 
+		processService = new ProcessService();
+
 		webSocketHandler = new WebSocketHandler(() -> {
 			scheduledStop.cancel(false);
 			scheduledStop = scheduler.schedule(this::stop, 60, TimeUnit.SECONDS);
 		});
+		webSocketHandler.setProcessService(processService);
 
 		final FileWatcherProcess fileWatcher = new FileWatcherProcess(webSocketHandler);
 		fileWatcher.setDaemon(true);
@@ -51,6 +55,6 @@ public class Service
 	{
 		service.stop();
 		scheduler.shutdown();
-		webSocketHandler.stop();
+		processService.stop();
 	}
 }
