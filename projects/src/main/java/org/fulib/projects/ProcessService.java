@@ -1,5 +1,6 @@
 package org.fulib.projects;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -11,6 +12,11 @@ public class ProcessService
 	public ExecProcess get(String id)
 	{
 		return processes.get(id);
+	}
+
+	public Collection<ExecProcess> getAll()
+	{
+		return processes.values();
 	}
 
 	public ExecProcess getOrCreate(String id, Function<? super String, ? extends ExecProcess> creator)

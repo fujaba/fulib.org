@@ -42,10 +42,13 @@ public class Service
 
 		final ZipHandler zipHandler = new ZipHandler();
 
+		final ProcessController processController = new ProcessController(processService);
+
 		service = spark.Service.ignite();
 		service.port(4567);
 		service.webSocket("/ws", webSocketHandler);
 		service.get("/health", (req, res) -> "OK");
+		service.get("/processes", processController::getAll);
 		service.get("/zip/*", zipHandler::pack);
 		service.post("/zip/*", zipHandler::unpack);
 		service.awaitStop();

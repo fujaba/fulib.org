@@ -39,6 +39,21 @@ public class ExecProcess extends Thread
 		return id;
 	}
 
+	public String[] getCmd()
+	{
+		return cmd;
+	}
+
+	public String getWorkingDirectory()
+	{
+		return workingDirectory;
+	}
+
+	public Map<String, String> getEnvironment()
+	{
+		return environment;
+	}
+
 	public void setSession(Session session)
 	{
 		this.session = session;
