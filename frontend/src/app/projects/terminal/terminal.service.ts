@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {WebSocketSubject} from 'rxjs/webSocket';
-import {Terminal} from '../model/terminal';
+import {Process, Terminal} from '../model/terminal';
 import {ProjectManager} from '../project.manager';
 
 @Injectable()
@@ -9,18 +10,26 @@ export class TerminalService {
   private readonly webSocket: WebSocketSubject<any>;
 
   constructor(
-    projectManager: ProjectManager,
+    private projectManager: ProjectManager,
+    private http: HttpClient,
   ) {
     this.webSocket = projectManager.webSocket;
   }
 
+  getProcesses(): Observable<Process[]> {
+    return this.http.get<Process[]>(this.projectManager.container.url + '/processes');
+  }
+
   exec(terminal: Terminal): Observable<any> {
-    return this.webSocket.multiplex(() => ({
-      command: 'exec',
+    const process: Process = {
       process: terminal.id,
       cmd: [terminal.executable, ...(terminal.arguments || [])],
       environment: terminal.environment,
       workingDirectory: terminal.workingDirectory,
+    };
+    return this.webSocket.multiplex(() => ({
+      command: 'exec',
+      ...process,
     }), () => ({
       command: 'kill',
       process: terminal.id,
@@ -34,6 +43,10 @@ export class TerminalService {
           return false;
       }
     });
+  }
+
+  kill(process: string): void {
+    this.webSocket.next({command: 'kill', process});
   }
 
   input(text: string, process: string): void {
