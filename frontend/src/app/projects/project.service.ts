@@ -71,6 +71,10 @@ export class ProjectService {
     return this.http.put<Project>(`${environment.projectsApiUrl}/projects/${project.id}`, project);
   }
 
+  transfer(id: string, userId: string): Observable<void> {
+    return this.http.put<void>(`${environment.projectsApiUrl}/projects/${id}`, {userId});
+  }
+
   delete({id, local}: { id: string, local?: boolean }): Observable<void> {
     this.localProjectService.delete(id);
     return local ? of(undefined) : this.http.delete<void>(`${environment.projectsApiUrl}/projects/${id}`);

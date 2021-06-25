@@ -4,7 +4,6 @@ import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {AngularSplitModule} from 'angular-split';
-import {NgTerminalModule} from 'ng-terminal';
 import {DndModule} from 'ngx-drag-drop';
 
 import {SharedModule} from '../shared/shared.module';
@@ -22,6 +21,7 @@ import {SettingsComponent} from './settings/settings.component';
 import {SetupModule} from './setup/setup.module';
 import {SplitPanelComponent} from './split-panel/split-panel.component';
 import {TerminalModule} from './terminal/terminal.module';
+import {TransferComponent} from './transfer/transfer.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +34,7 @@ import {TerminalModule} from './terminal/terminal.module';
     ProjectWorkspaceComponent,
     SettingsComponent,
     SplitPanelComponent,
+    TransferComponent,
   ],
   imports: [
     // Angular

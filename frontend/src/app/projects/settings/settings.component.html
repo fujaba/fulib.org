@@ -7,6 +7,17 @@
   <hr/>
   <h4>Danger Zone</h4>
   <div class="list-group">
+    <div class="list-group-item border-danger d-flex align-items-center" *ngIf="!project.local">
+      <div class="flex-grow-1">
+        <h6>
+          Transfer Ownership
+        </h6>
+        This can only be undone by the new owner.
+      </div>
+      <a role="button" class="btn btn-danger" routerLink="." [queryParams]="{transfer: true}" queryParamsHandling="merge">
+        Transfer
+      </a>
+    </div>
     <div class="list-group-item border-danger d-flex align-items-center">
       <div class="flex-grow-1">
         <h6>
@@ -42,3 +53,5 @@
     </button>
   </div>
 </ng-template>
+
+<app-transfer></app-transfer>
