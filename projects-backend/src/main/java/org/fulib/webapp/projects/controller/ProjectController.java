@@ -131,7 +131,17 @@ public class ProjectController
 
 	private void readJson(JSONObject obj, Project project)
 	{
-		project.setName(obj.getString(Project.PROPERTY_NAME));
-		project.setDescription(obj.getString(Project.PROPERTY_DESCRIPTION));
+		if (obj.has(Project.PROPERTY_NAME))
+		{
+			project.setName(obj.getString(Project.PROPERTY_NAME));
+		}
+		if (obj.has(Project.PROPERTY_DESCRIPTION))
+		{
+			project.setDescription(obj.getString(Project.PROPERTY_DESCRIPTION));
+		}
+		if (obj.has(Project.PROPERTY_USER_ID))
+		{
+			project.setUserId(obj.getString(Project.PROPERTY_USER_ID));
+		}
 	}
 }
