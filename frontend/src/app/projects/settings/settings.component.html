@@ -1,17 +1,22 @@
-<div class="p-3">
+<div class="container">
   <h4>Basic Settings</h4>
   <app-project-form [project]="project"></app-project-form>
   <button type="button" class="btn btn-primary" (click)="save()">
     Save
   </button>
-  <div class="card border-danger mt-3">
-    <div class="card-body text-danger">
-      <h5 class="card-title">Danger Zone</h5>
-      <p class="card-text">
-        <button type="button" class="btn btn-danger" (click)="openModal(deleteModal, 'delete-modal-title')">
-          Delete
-        </button>
-      </p>
+  <hr/>
+  <h4>Danger Zone</h4>
+  <div class="list-group">
+    <div class="list-group-item border-danger d-flex align-items-center">
+      <div class="flex-grow-1">
+        <h6>
+          Delete Project
+        </h6>
+        This cannot be undone.
+      </div>
+      <button type="button" class="btn btn-danger" (click)="openModal(deleteModal, 'delete-modal-title')">
+        Delete
+      </button>
     </div>
   </div>
 </div>
