@@ -16,10 +16,6 @@ type Format = 'gradle' | 'local' | 'persistent';
   styleUrls: ['./config.component.scss'],
 })
 export class ConfigComponent implements OnInit {
-  @ViewChild('configModal', {static: true}) configModal: TemplateRef<any>;
-
-  openModal?: NgbModalRef;
-
   config: ProjectConfig;
 
   formats = [
@@ -52,7 +48,6 @@ export class ConfigComponent implements OnInit {
   formatMatcher = ({id}) => id === this.format;
 
   constructor(
-    private activatedRoute: ActivatedRoute,
     private ngbModal: NgbModal,
     private router: Router,
     private configService: ConfigService,
@@ -61,27 +56,13 @@ export class ConfigComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.activatedRoute.queryParams.subscribe(({config}) => {
-      if (config) {
-        this.config = {
-          packageName: this.configService.packageName,
-          projectName: this.configService.projectName,
-          projectVersion: this.configService.projectVersion,
-          scenarioFileName: this.configService.scenarioFileName,
-          decoratorClassName: this.configService.decoratorClassName,
-        };
-        this.open();
-      } else {
-        this.openModal?.dismiss();
-      }
-    });
-  }
-
-  private open() {
-    this.openModal = this.ngbModal.open(this.configModal, {ariaLabelledBy: 'config-modal-title'});
-    this.openModal.hidden.subscribe(() => {
-      this.router.navigate([], {queryParams: {config: null}, queryParamsHandling: 'merge'});
-    });
+    this.config = {
+      packageName: this.configService.packageName,
+      projectName: this.configService.projectName,
+      projectVersion: this.configService.projectVersion,
+      scenarioFileName: this.configService.scenarioFileName,
+      decoratorClassName: this.configService.decoratorClassName,
+    };
   }
 
   save(): void {
