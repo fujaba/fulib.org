@@ -1,27 +1,24 @@
-<div class="modal-header">
-  <h4 class="modal-title" id="setup-modal-title">
+<app-modal #modal [locked]="saving" [back]="['..']" [backOptions]="{relativeTo: activatedRoute}">
+  <ng-container modal-header>
     Setup Project
-  </h4>
-  <button type="button" class="close" aria-label="Close" (click)="modal.close()" [disabled]="saving">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-<div class="modal-body">
-  <p>
-    It looks like your project is currently empty.
-    This setup will help you get started.
-  </p>
-  <p>
-    Fill out the form below to generate a Gradle project.
-  </p>
-  <hr/>
-  <app-project-config-form [config]="config"></app-project-config-form>
-</div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-secondary" (click)="modal.close()" [disabled]="saving">
-    Cancel
-  </button>
-  <button type="button" class="btn btn-primary" (click)="save()" [disabled]="saving">
-    Generate
-  </button>
-</div>
+  </ng-container>
+  <ng-container modal-body>
+    <p>
+      It looks like your project is currently empty.
+      This setup will help you get started.
+    </p>
+    <p>
+      Fill out the form below to generate a Gradle project.
+    </p>
+    <hr/>
+    <app-project-config-form [config]="config"></app-project-config-form>
+  </ng-container>
+  <ng-container modal-footer>
+    <button type="button" class="btn btn-secondary" (click)="modal.close()" [disabled]="saving">
+      Cancel
+    </button>
+    <button type="button" class="btn btn-primary" (click)="save()" [disabled]="saving">
+      Generate
+    </button>
+  </ng-container>
+</app-modal>

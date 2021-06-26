@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {ProjectConfig} from '../../../model/project-config';
 import {ProjectManager} from '../../project.manager';
@@ -11,13 +12,13 @@ import {SetupService} from '../setup.service';
   styleUrls: ['./setup.component.scss'],
 })
 export class SetupComponent implements OnInit {
-  @Input() modal: NgbModalRef;
-
   saving = false;
 
   config: ProjectConfig;
 
   constructor(
+    public activatedRoute: ActivatedRoute,
+    private router: Router,
     private projectService: ProjectService,
     private projectManager: ProjectManager,
     private setupService: SetupService,
@@ -33,7 +34,7 @@ export class SetupComponent implements OnInit {
     this.projectService.saveConfig(this.projectManager.project, this.config);
     this.setupService.generateFiles(this.projectManager.container, this.config).subscribe(() => {
       this.saving = false;
-      this.modal.close();
+      this.router.navigate(['..'], {relativeTo: this.activatedRoute, queryParams: {panel: 'project'}});
     });
   }
 }
