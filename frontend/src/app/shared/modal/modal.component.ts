@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
-import {Router} from '@angular/router';
+import {NavigationExtras, Router} from '@angular/router';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -11,6 +11,10 @@ import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 export class ModalComponent implements OnInit, OnDestroy {
   @Input() size?: 'sm' | 'lg' | 'xl' | string;
   @Input() scrollable?: boolean;
+  @Input() locked?: boolean;
+
+  @Input() back: any[] = [{outlets: {modal: null}}];
+  @Input() backOptions?: NavigationExtras;
 
   @ViewChild('modal', {static: true}) modal;
   openModal?: NgbModalRef;
@@ -28,10 +32,11 @@ export class ModalComponent implements OnInit, OnDestroy {
       ariaLabelledBy: 'title',
       size: this.size,
       scrollable: this.scrollable,
+      beforeDismiss: () => !this.locked,
     });
 
     const handler = result => {
-      this.router.navigate([{outlets: {modal: null}}]);
+      this.router.navigate(this.back, this.backOptions);
       this.modalClose.next(result);
     };
     this.openModal.result.then(handler, handler);

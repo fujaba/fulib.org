@@ -1,11 +1,8 @@
-<ng-template #transferModal let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" id="transfer-modal-title">Transfer Project Ownership</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.close()">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
+<app-modal #modal="modal" [locked]="transfering" [back]="[back]" [backOptions]="{relativeTo: activatedRoute, queryParamsHandling: 'preserve'}">
+  <ng-container modal-header>
+    Transfer Project Ownership
+  </ng-container>
+  <ng-container modal-body>
     <p>
       Are you sure you want to <span class="text-danger">transfer</span> this project to a new owner?
       This action can only be undone by the new owner.
@@ -21,13 +18,13 @@
                [editable]='false' />
       </div>
     </div>
-  </div>
-  <div class="modal-footer">
+  </ng-container>
+  <ng-container modal-footer>
     <button type="button" class="btn btn-secondary" (click)="modal.close()">
       Cancel
     </button>
     <button type="button" class="btn btn-danger" (click)="transfer()" [disabled]="!transferOwner">
       Transfer
     </button>
-  </div>
-</ng-template>
+  </ng-container>
+</app-modal>

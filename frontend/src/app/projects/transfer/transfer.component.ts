@@ -1,8 +1,7 @@
-import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
-import {combineLatest, Observable, OperatorFunction} from 'rxjs';
-import {debounceTime, distinctUntilChanged, filter, map, switchMap} from 'rxjs/operators';
+import {Observable, OperatorFunction} from 'rxjs';
+import {debounceTime, distinctUntilChanged, filter, switchMap} from 'rxjs/operators';
 import {User} from '../../user/user';
 import {UserService} from '../../user/user.service';
 import {ProjectService} from '../project.service';
@@ -12,15 +11,12 @@ import {ProjectService} from '../project.service';
   templateUrl: './transfer.component.html',
   styleUrls: ['./transfer.component.scss'],
 })
-export class TransferComponent implements OnInit, OnDestroy {
-  @ViewChild('transferModal', {static: true}) transferModal: TemplateRef<any>;
-
+export class TransferComponent implements OnInit {
   projectId: string;
   back: string;
 
   transferOwner?: User;
   transfering = false;
-  transferModalRef?: NgbModalRef;
 
   search: OperatorFunction<string, User[]> = (text$: Observable<string>) => text$.pipe(
     debounceTime(200),
@@ -35,8 +31,7 @@ export class TransferComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private projectService: ProjectService,
     private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private ngbModal: NgbModal,
+    public activatedRoute: ActivatedRoute,
   ) {
   }
 
@@ -46,25 +41,6 @@ export class TransferComponent implements OnInit, OnDestroy {
     });
     this.activatedRoute.data.subscribe(({back}) => {
       this.back = back;
-    });
-    this.open();
-  }
-
-  ngOnDestroy() {
-    this.transferModalRef?.dismiss();
-    this.transferModalRef = undefined;
-  }
-
-  open(): void {
-    if (this.transferModalRef) {
-      return;
-    }
-    this.transferModalRef = this.ngbModal.open(this.transferModal, {
-      ariaLabelledBy: 'transfer-modal-title',
-      beforeDismiss: () => !this.transfering,
-    });
-    this.transferModalRef.hidden.subscribe(() => {
-      this.router.navigate([this.back], {relativeTo: this.activatedRoute, queryParamsHandling: 'preserve'});
     });
   }
 
@@ -76,8 +52,6 @@ export class TransferComponent implements OnInit, OnDestroy {
     this.projectService.transfer(this.projectId, this.transferOwner.id).subscribe(() => {
       this.transfering = false;
       this.router.navigate(['/projects']);
-      this.transferModalRef?.close();
-      this.transferModalRef = undefined;
     });
   }
 }
