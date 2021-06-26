@@ -14,7 +14,7 @@
         </h6>
         This can only be undone by the new owner.
       </div>
-      <a role="button" class="btn btn-danger" routerLink="." [queryParams]="{transfer: true}" queryParamsHandling="merge">
+      <a role="button" class="btn btn-danger" routerLink="transfer" queryParamsHandling="preserve">
         Transfer
       </a>
     </div>
@@ -53,5 +53,3 @@
     </button>
   </div>
 </ng-template>
-
-<app-transfer></app-transfer>

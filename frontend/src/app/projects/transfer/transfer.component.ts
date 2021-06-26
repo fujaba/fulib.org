@@ -1,4 +1,4 @@
-import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {combineLatest, Observable, OperatorFunction} from 'rxjs';
@@ -12,10 +12,11 @@ import {ProjectService} from '../project.service';
   templateUrl: './transfer.component.html',
   styleUrls: ['./transfer.component.scss'],
 })
-export class TransferComponent implements OnInit {
+export class TransferComponent implements OnInit, OnDestroy {
   @ViewChild('transferModal', {static: true}) transferModal: TemplateRef<any>;
 
   projectId: string;
+  back: string;
 
   transferOwner?: User;
   transfering = false;
@@ -40,26 +41,18 @@ export class TransferComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    combineLatest([
-      this.activatedRoute.params,
-      this.activatedRoute.queryParams,
-    ]).pipe(
-      map(([params, queryParams]) => {
-        let projectId: string | undefined = queryParams.transfer;
-        if (projectId === 'true') {
-          projectId = params.id;
-        }
-        return projectId;
-      }),
-    ).subscribe(projectId => {
-      if (projectId) {
-        this.projectId = projectId;
-        this.open();
-      } else {
-        this.transferModalRef?.dismiss();
-        this.transferModalRef = undefined;
-      }
+    this.activatedRoute.params.subscribe(({id}) => {
+      this.projectId = id;
     });
+    this.activatedRoute.data.subscribe(({back}) => {
+      this.back = back;
+    });
+    this.open();
+  }
+
+  ngOnDestroy() {
+    this.transferModalRef?.dismiss();
+    this.transferModalRef = undefined;
   }
 
   open(): void {
@@ -71,7 +64,7 @@ export class TransferComponent implements OnInit {
       beforeDismiss: () => !this.transfering,
     });
     this.transferModalRef.hidden.subscribe(() => {
-      this.router.navigate([], {queryParams: {transfer: null}, queryParamsHandling: 'merge'});
+      this.router.navigate([this.back], {relativeTo: this.activatedRoute, queryParamsHandling: 'preserve'});
     });
   }
 

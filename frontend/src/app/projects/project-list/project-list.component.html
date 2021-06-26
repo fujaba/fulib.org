@@ -86,7 +86,7 @@
                 Convert to Persistent
               </button>
               <div class="dropdown-divider"></div>
-              <a *ngIf="!project.local" class="text-danger" ngbDropdownItem routerLink="." [queryParams]="{transfer: project.id}">
+              <a *ngIf="!project.local" class="text-danger" ngbDropdownItem [routerLink]="['transfer', project.id]">
                 Transfer
               </a>
               <button ngbDropdownItem class="text-danger" (click)="delete(project)">
@@ -133,4 +133,4 @@
   </div>
 </ng-template>
 
-<app-transfer></app-transfer>
+<router-outlet></router-outlet>
