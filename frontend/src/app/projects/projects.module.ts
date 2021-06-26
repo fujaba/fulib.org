@@ -23,6 +23,7 @@ import {SplitPanelComponent} from './split-panel/split-panel.component';
 import {TerminalModule} from './terminal/terminal.module';
 import {TransferComponent} from './transfer/transfer.component';
 import { EditModalComponent } from './edit-modal/edit-modal.component';
+import { DeleteModalComponent } from './delete-modal/delete-modal.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { EditModalComponent } from './edit-modal/edit-modal.component';
     SplitPanelComponent,
     TransferComponent,
     EditModalComponent,
+    DeleteModalComponent,
   ],
   imports: [
     // Angular

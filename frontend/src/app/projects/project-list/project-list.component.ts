@@ -15,7 +15,6 @@ export class ProjectListComponent implements OnInit {
   loggedIn = false;
 
   projects: Project[] = [];
-  deleting = new Set<string>();
 
   constructor(
     private router: Router,
@@ -38,21 +37,6 @@ export class ProjectListComponent implements OnInit {
       const index = this.projects.indexOf(localProject);
       if (index >= 0) {
         this.projects[index] = persistentProject;
-      }
-    });
-  }
-
-  delete(project: Project) {
-    if (!confirm(`Are you sure you want to delete '${project.name}'? This action cannot be undone.`)) {
-      return;
-    }
-
-    this.deleting.add(project.id);
-    this.projectService.delete(project).subscribe(() => {
-      this.deleting.delete(project.id);
-      const index = this.projects.indexOf(project);
-      if (index >= 0) {
-        this.projects.splice(index, 1);
       }
     });
   }
