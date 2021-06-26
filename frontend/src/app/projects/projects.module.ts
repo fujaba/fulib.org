@@ -22,6 +22,7 @@ import {SetupModule} from './setup/setup.module';
 import {SplitPanelComponent} from './split-panel/split-panel.component';
 import {TerminalModule} from './terminal/terminal.module';
 import {TransferComponent} from './transfer/transfer.component';
+import { EditModalComponent } from './edit-modal/edit-modal.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import {TransferComponent} from './transfer/transfer.component';
     SettingsComponent,
     SplitPanelComponent,
     TransferComponent,
+    EditModalComponent,
   ],
   imports: [
     // Angular

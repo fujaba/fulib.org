@@ -2,14 +2,14 @@
   <h1 class="d-flex align-items-center">
     My Projects
     <div class="btn-group ml-auto">
-      <a class="btn btn-success" routerLink="." [queryParams]="{edit: 'new', local: loggedIn ? null : true}">
+      <a class="btn btn-success" routerLink="edit/new" [queryParams]="{local: loggedIn ? null : true}">
         <i class="bi-folder-plus"></i>
         New
       </a>
       <div *ngIf="loggedIn" class="btn-group" ngbDropdown role="group" aria-label="Actions">
         <button class="btn btn-success dropdown-toggle-split" ngbDropdownToggle></button>
         <div class="dropdown-menu" ngbDropdownMenu>
-          <a ngbDropdownItem routerLink="." [queryParams]="{edit: 'new', local: true}">
+          <a ngbDropdownItem routerLink="edit/new" [queryParams]="{local: true}">
             New Local Project
           </a>
         </div>
@@ -79,7 +79,7 @@
             <button class="btn btn-primary dropdown-toggle-split" ngbDropdownToggle [disabled]="deleting.has(project.id)">
             </button>
             <div class="dropdown-menu" ngbDropdownMenu>
-              <a ngbDropdownItem routerLink="." [queryParams]="{edit: project.id}">
+              <a ngbDropdownItem [routerLink]="['edit', project.id]">
                 Edit
               </a>
               <button *ngIf="loggedIn && project.local" ngbDropdownItem (click)="convert(project)">
@@ -99,38 +99,5 @@
     </li>
   </ul>
 </div>
-
-<ng-template #editModal let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" id="edit-modal-title">
-      {{ editing!['id'] ? 'Edit' : 'New' }} {{editing!.local ? 'Local' : '' }} Project
-    </h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <app-project-form [project]="editing"></app-project-form>
-    <div class="alert alert-info" *ngIf="editing?.local">
-      {{ editing!['id'] ? 'This is' : 'You are creating' }} a <b>local</b> project.
-      This means the project and its scenario files are stored in your browser.
-      <ng-container *ngIf="!loggedIn">
-        To create a persistent project bound to your user account, you need to
-        <a routerLink="." (click)="login()">log in</a>.
-      </ng-container>
-    </div>
-    <div class="alert alert-success" *ngIf="creatingFromEditor">
-      This Project will be created with the configuration and scenario from the Editor.
-    </div>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">
-      Cancel
-    </button>
-    <button class="btn btn-primary" (click)="save(); modal.close()">
-      Save
-    </button>
-  </div>
-</ng-template>
 
 <router-outlet></router-outlet>
