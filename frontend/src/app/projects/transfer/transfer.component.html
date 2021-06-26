@@ -20,10 +20,10 @@
     </div>
   </ng-container>
   <ng-container modal-footer>
-    <button type="button" class="btn btn-secondary" (click)="modal.close()">
+    <button type="button" class="btn btn-secondary" (click)="modal.close()" [disabled]="transfering">
       Cancel
     </button>
-    <button type="button" class="btn btn-danger" (click)="transfer()" [disabled]="!transferOwner">
+    <button type="button" class="btn btn-danger" (click)="transfer()" [disabled]="!transferOwner || transfering">
       Transfer
     </button>
   </ng-container>
