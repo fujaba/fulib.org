@@ -1,6 +1,8 @@
-import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {KeycloakService} from 'keycloak-angular';
+import {Subscription} from 'rxjs';
+import {filter, startWith, switchMap} from 'rxjs/operators';
 import {LocalProject, Project} from '../model/project';
 import {ProjectService} from '../project.service';
 
@@ -9,12 +11,14 @@ import {ProjectService} from '../project.service';
   templateUrl: './project-list.component.html',
   styleUrls: ['./project-list.component.scss'],
 })
-export class ProjectListComponent implements OnInit {
+export class ProjectListComponent implements OnInit, OnDestroy {
   @ViewChild('editModal', {static: true}) editModal: TemplateRef<any>;
 
   loggedIn = false;
 
   projects: Project[] = [];
+
+  private subscription: Subscription;
 
   constructor(
     private router: Router,
@@ -27,9 +31,17 @@ export class ProjectListComponent implements OnInit {
   ngOnInit(): void {
     this.keycloak.isLoggedIn().then(loggedIn => this.loggedIn = loggedIn);
 
-    this.projectService.getOwn().subscribe(projects => {
+    this.subscription = this.router.events.pipe(
+      filter(e => e instanceof NavigationEnd && e.urlAfterRedirects === '/projects'),
+      startWith(undefined),
+      switchMap(() => this.projectService.getOwn()),
+    ).subscribe(projects => {
       this.projects = projects;
     });
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   convert(localProject: LocalProject) {
