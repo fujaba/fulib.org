@@ -49,8 +49,6 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
     {id: 'settings', name: 'Settings', icon: 'gear', component: SettingsComponent},
   ];
 
-  active?: SidebarItem;
-
   terminalComponent?: typeof TerminalTabsComponent;
   fileTabsComponent?: typeof SplitPanelComponent;
 
@@ -68,17 +66,10 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.route.queryParams.pipe(
-      map(({panel}) => panel),
-    ).subscribe(panel => {
-      this.active = this.sidebarItems.find(i => i.id === panel);
-    });
-
     this.route.params.pipe(
       tap(() => {
         this.router.navigate([], {queryParams: {panel: undefined}, skipLocationChange: true});
         this.projectManager.destroy();
-        this.active = undefined;
         this.openModal = this.ngbModal.open(this.loadingModal, {
           ariaLabelledBy: 'loading-modal-title',
           centered: true,
@@ -122,8 +113,6 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
       this.openModal.close();
       if (fileRoot.children && fileRoot.children.length === 0) {
         this.router.navigate(['setup'], {relativeTo: this.route});
-      } else {
-        this.router.navigate([], {queryParams: {panel: 'project'}, skipLocationChange: true});
       }
     });
   }

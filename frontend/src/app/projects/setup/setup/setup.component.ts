@@ -34,7 +34,7 @@ export class SetupComponent implements OnInit {
     this.projectService.saveConfig(this.projectManager.project, this.config);
     this.setupService.generateFiles(this.projectManager.container, this.config).subscribe(() => {
       this.saving = false;
-      this.router.navigate(['..'], {relativeTo: this.activatedRoute, queryParams: {panel: 'project'}});
+      this.router.navigate(['..'], {relativeTo: this.activatedRoute});
     });
   }
 }

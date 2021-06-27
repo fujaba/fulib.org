@@ -14,7 +14,7 @@
         </h6>
         This may override any scaffolded project files (<code>build.gradle</code> etc.).
       </div>
-      <a role="button" class="btn btn-danger" routerLink="setup" queryParamsHandling="preserve">
+      <a role="button" class="btn btn-danger" routerLink="setup" [relativeTo]="activatedRoute.parent">
         Setup
       </a>
     </div>
@@ -25,7 +25,7 @@
         </h6>
         This can only be undone by the new owner.
       </div>
-      <a role="button" class="btn btn-danger" routerLink="transfer" queryParamsHandling="preserve">
+      <a role="button" class="btn btn-danger" routerLink="transfer" [relativeTo]="activatedRoute.parent">
         Transfer
       </a>
     </div>
@@ -36,9 +36,10 @@
         </h6>
         This cannot be undone.
       </div>
-      <a role="button" class="btn btn-danger" routerLink="delete" queryParamsHandling="preserve">
+      <a role="button" class="btn btn-danger" routerLink="delete" [relativeTo]="activatedRoute.parent">
         Delete
       </a>
     </div>
   </div>
 </div>
+<router-outlet></router-outlet>

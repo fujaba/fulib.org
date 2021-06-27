@@ -3,9 +3,8 @@
     <div *ngFor="let entry of sidebarItems"
          class="sidebar-item"
          [ngbTooltip]="entry.name" placement="right"
-         routerLink="."
+         [routerLink]="[{outlets: {panel: entry.id}}]"
          routerLinkActive="active"
-         [queryParams]="{panel: active === entry ? undefined : entry.id}"
     >
       <i class="bi-{{entry.icon}}" role="navigation" [attr.aria-label]="entry.name"></i>
     </div>
@@ -14,8 +13,8 @@
     </div>
   </div>
   <as-split class="flex-grow-1 h-100" direction="horizontal">
-    <as-split-area [size]="20" [visible]="!!active" [order]="0">
-      <ng-container [ngComponentOutlet]="active?.component"></ng-container>
+    <as-split-area [size]="20" [visible]="!!fileTabsComponent" [order]="0">
+      <router-outlet *ngIf="fileTabsComponent" name="panel"></router-outlet>
     </as-split-area>
     <as-split-area [size]="80" [order]="1">
       <as-split direction="vertical">

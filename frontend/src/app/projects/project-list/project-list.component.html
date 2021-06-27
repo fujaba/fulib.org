@@ -68,7 +68,7 @@
           </small>
         </div>
         <div class="btn-group ml-auto">
-          <a class="btn btn-primary" routerLink="/projects/{{project.id}}">
+          <a class="btn btn-primary" [routerLink]="['/projects', project.id, {outlets: {panel: 'project'}}]">
             Open
           </a>
           <div class="btn-group" ngbDropdown role="group" aria-label="Actions">
