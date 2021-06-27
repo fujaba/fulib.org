@@ -1,7 +1,7 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {forkJoin, Observable} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
+import {map, mapTo, switchMap} from 'rxjs/operators';
 import {DavClient} from './dav-client';
 import {Container} from './model/container';
 
@@ -33,7 +33,9 @@ export class ConfigService {
   }
 
   putObject<T extends { id: string }>(container: Container, namespace: string, obj: T): Observable<void> {
-    return this.http.put<void>(this.getUrl(container, namespace, obj.id), obj);
+    return this.http.put(this.getUrl(container, namespace, obj.id), obj, {
+      responseType: 'text',
+    }).pipe(mapTo(undefined));
   }
 
   deleteObject<T extends { id: string }>(container: Container, namespace: string, obj: T): Observable<void> {

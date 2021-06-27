@@ -1,7 +1,7 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {map, mapTo} from 'rxjs/operators';
 import {DavResource} from './model/dav-resource';
 
 @Injectable({
@@ -80,6 +80,6 @@ export class DavClient {
   }
 
   put(url: string, content: string | File): Observable<void> {
-    return this.http.put<void>(url, content);
+    return this.http.put(url, content, {responseType: 'text'}).pipe(mapTo(undefined));
   }
 }
