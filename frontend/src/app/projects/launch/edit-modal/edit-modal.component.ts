@@ -14,7 +14,7 @@ import {LaunchConfig, TerminalLaunchConfig} from '../model/launch-config';
 })
 export class EditModalComponent implements OnInit {
 
-  editing?: LaunchConfig;
+  editing: LaunchConfig = this.createNew(false);
 
   constructor(
     public activatedRoute: ActivatedRoute,
@@ -30,19 +30,23 @@ export class EditModalComponent implements OnInit {
         if (launchId !== 'new') {
           return this.launchService.getLaunchConfig(this.projectManager.container, launchId);
         }
-        return of<TerminalLaunchConfig>({
-          type: 'terminal',
-          name: 'New Terminal',
-          id: '',
-          terminal: {
-            executable: '/bin/bash',
-            workingDirectory: this.projectManager.fileRoot.path,
-          },
-        });
+        return of(this.createNew(true));
       }),
     ).subscribe(config => {
       this.editing = config;
     });
+  }
+
+  private createNew(prefilled: boolean): TerminalLaunchConfig {
+    return {
+      type: 'terminal',
+      name: prefilled ? 'New Terminal' : '',
+      id: '',
+      terminal: {
+        executable: prefilled ? '/bin/bash' : '',
+        workingDirectory: prefilled ? this.projectManager.fileRoot.path : '',
+      },
+    };
   }
 
   save(): void {
