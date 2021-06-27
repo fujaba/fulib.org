@@ -1,0 +1,12 @@
+<app-modal #modal [back]="['../..']" [backOptions]="{relativeTo: activatedRoute}">
+  <ng-container modal-header>
+    {{ editing?.id ? 'Edit' : 'New' }} Launch Config
+  </ng-container>
+  <ng-container modal-body>
+    <app-command-form [config]="editing"></app-command-form>
+  </ng-container>
+  <ng-container modal-footer>
+    <button type="button" class="btn btn-secondary" (click)="modal.close()">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="save()">Save</button>
+  </ng-container>
+</app-modal>

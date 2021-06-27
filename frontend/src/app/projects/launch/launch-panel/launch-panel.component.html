@@ -1,7 +1,7 @@
 <div class="p-3">
   <h4 class="d-flex align-items-center">
     Launch
-    <a class="btn btn-success btn-sm ml-auto" routerLink="." [queryParams]="{ launchConfig: 'new' }" queryParamsHandling="merge">
+    <a class="btn btn-success btn-sm ml-auto" routerLink="edit/new">
       <i class="bi-plus-circle"></i>
       New
     </a>
@@ -17,7 +17,7 @@
         <div class="btn-group btn-group-sm" ngbDropdown role="group" aria-label="Actions" container="body">
           <button class="btn btn-success dropdown-toggle-split" ngbDropdownToggle></button>
           <div class="dropdown-menu" ngbDropdownMenu>
-            <a ngbDropdownItem routerLink="." [queryParams]="{ launchConfig: config.id }" queryParamsHandling="merge">
+            <a ngbDropdownItem [routerLink]="['edit', config.id]">
               Edit
             </a>
             <div class="dropdown-divider"></div>
@@ -30,21 +30,4 @@
     </li>
   </ul>
 </div>
-
-<ng-template #editModal let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" id="launch-config-modal-title">
-      {{ editing!.id ? 'Edit' : 'New' }} Launch Config
-    </h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <app-command-form [config]="editing"></app-command-form>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Cancel</button>
-    <button type="button" class="btn btn-primary" (click)="save(); modal.close()">Save</button>
-  </div>
-</ng-template>
+<router-outlet></router-outlet>

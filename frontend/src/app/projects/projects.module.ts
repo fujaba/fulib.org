@@ -11,7 +11,6 @@ import {EditorModule} from './editor/editor.module';
 import {FileRevisionsComponent} from './file-revisions/file-revisions.component';
 import {FileTabsComponent} from './file-tabs/file-tabs.component';
 import {FileTreeComponent} from './file-tree/file-tree.component';
-import {LaunchModule} from './launch/launch.module';
 import {ProjectFormComponent} from './project-form/project-form.component';
 import {ProjectListComponent} from './project-list/project-list.component';
 import {ProjectTreeComponent} from './project-tree/project-tree.component';
@@ -55,7 +54,6 @@ import { DeleteModalComponent } from './delete-modal/delete-modal.component';
     ProjectsRoutingModule,
     // Submodules
     EditorModule,
-    LaunchModule,
     SetupModule,
     TerminalModule,
   ],
