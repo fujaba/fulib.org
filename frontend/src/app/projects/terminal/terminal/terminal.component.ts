@@ -77,7 +77,7 @@ export class TerminalComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private findLinks(line: string, y: number) {
-    const pattern = /(\/projects\/(?:.*))(?::(\d+)(?::(\d+))?)?/g;
+    const pattern = /(\/projects\/[^:]*)(?::(\d+)(?::(\d+))?)?/g;
     const links: ILink[] = [];
     for (let match = pattern.exec(line); match !== null; match = pattern.exec(line)) {
       const [text, path, row, column] = match;
