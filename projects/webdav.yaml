@@ -1,0 +1,6 @@
+address: 0.0.0.0
+port: 36277
+auth: false
+tls: false
+prefix: /dav
+modify: true

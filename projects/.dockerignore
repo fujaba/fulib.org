@@ -1,4 +1,4 @@
 **
 !/build/libs/projects-*-all.jar
-!/nginx.conf
+!/webdav.yaml
 !preload.build.gradle
