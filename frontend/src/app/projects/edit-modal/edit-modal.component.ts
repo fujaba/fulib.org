@@ -12,7 +12,7 @@ import {ProjectService} from '../project.service';
 })
 export class EditModalComponent implements OnInit {
 
-  editing?: Project | ProjectStub;
+  editing: Project | ProjectStub = this.createNew();
   creatingFromEditor = false;
   loggedIn = false;
 
@@ -33,12 +33,20 @@ export class EditModalComponent implements OnInit {
         }
         return this.activatedRoute.queryParams.pipe(map(({editor, local}) => {
           this.creatingFromEditor = !!editor;
-          return {name: '', description: '', local};
+          return this.createNew(!!local);
         }));
       }),
     ).subscribe(project => {
       this.editing = project;
     });
+  }
+
+  private createNew(local?: boolean): ProjectStub {
+    return {
+      name: '',
+      description: '',
+      local,
+    };
   }
 
   login(): void {
