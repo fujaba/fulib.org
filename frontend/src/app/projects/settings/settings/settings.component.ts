@@ -1,7 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit, Optional} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {switchMap} from 'rxjs/operators';
 import {Project} from '../../model/project';
+import {ProjectManager} from '../../project.manager';
 import {ProjectService} from '../../project.service';
 
 @Component({
@@ -14,6 +15,7 @@ export class SettingsComponent implements OnInit {
 
   constructor(
     public activatedRoute: ActivatedRoute,
+    @Optional() public projectManager: ProjectManager | null,
     private projectService: ProjectService,
   ) {
   }
