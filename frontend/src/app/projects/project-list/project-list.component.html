@@ -2,14 +2,14 @@
   <h1 class="d-flex align-items-center">
     My Projects
     <div class="btn-group ml-auto">
-      <a class="btn btn-success" routerLink="edit/new" [queryParams]="{local: loggedIn ? null : true}">
+      <a class="btn btn-success" routerLink="new/edit" [queryParams]="{local: loggedIn ? null : true}">
         <i class="bi-folder-plus"></i>
         New
       </a>
       <div *ngIf="loggedIn" class="btn-group" ngbDropdown role="group" aria-label="Actions">
         <button class="btn btn-success dropdown-toggle-split" ngbDropdownToggle></button>
         <div class="dropdown-menu" ngbDropdownMenu>
-          <a ngbDropdownItem routerLink="edit/new" [queryParams]="{local: true}">
+          <a ngbDropdownItem routerLink="new/edit" [queryParams]="{local: true}">
             New Local Project
           </a>
         </div>
