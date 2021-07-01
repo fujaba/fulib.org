@@ -4,9 +4,7 @@ import {Observable} from 'rxjs';
 import {map, mapTo} from 'rxjs/operators';
 import {DavResource} from './model/dav-resource';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class DavClient {
 
   constructor(

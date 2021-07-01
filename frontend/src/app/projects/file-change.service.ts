@@ -6,7 +6,7 @@ import {File} from './model/file';
 import {FileChanged, FileDeleted, FileModified} from './model/file-change';
 import {ProjectManager} from './project.manager';
 
-@Injectable({providedIn: 'root'})
+@Injectable()
 export class FileChangeService {
   nextId = 0;
 

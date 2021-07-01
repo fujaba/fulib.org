@@ -13,9 +13,7 @@ import {LocalProjectService} from './local-project.service';
 import {Container} from './model/container';
 import {LocalProject, Project, ProjectStub, UserProject} from './model/project';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class ProjectService {
 
   constructor(

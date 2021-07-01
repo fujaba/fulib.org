@@ -2,9 +2,7 @@ import {Injectable} from '@angular/core';
 import {File} from './model/file';
 import {FileType} from './model/file-type';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class FileTypeService {
   readonly fileTypes: Record<string, FileType> = {
     scenario: {

@@ -8,9 +8,7 @@ import {Container} from './model/container';
 import {DavResource} from './model/dav-resource';
 import {File} from './model/file';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class FileService {
   constructor(
     private dav: DavClient,

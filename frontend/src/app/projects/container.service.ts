@@ -5,7 +5,7 @@ import {environment} from '../../environments/environment';
 import {Container} from './model/container';
 import {LocalProject} from './model/project';
 
-@Injectable({providedIn: 'root'})
+@Injectable()
 export class ContainerService {
   constructor(
     private http: HttpClient,

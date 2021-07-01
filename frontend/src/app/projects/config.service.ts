@@ -5,7 +5,7 @@ import {map, mapTo, switchMap} from 'rxjs/operators';
 import {DavClient} from './dav-client';
 import {Container} from './model/container';
 
-@Injectable({providedIn: 'root'})
+@Injectable()
 export class ConfigService {
   constructor(
     private http: HttpClient,

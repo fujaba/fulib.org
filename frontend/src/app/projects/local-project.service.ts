@@ -4,7 +4,7 @@ import {ProjectConfig} from '../model/project-config';
 import {StorageService} from '../storage.service';
 import {LocalProject, ProjectStub} from './model/project';
 
-@Injectable({providedIn: 'root'})
+@Injectable()
 export class LocalProjectService {
   constructor(
     private storageService: StorageService,
