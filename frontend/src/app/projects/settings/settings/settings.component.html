@@ -14,7 +14,7 @@
         </h6>
         This may override any scaffolded project files (<code>build.gradle</code> etc.).
       </div>
-      <a role="button" class="btn btn-danger" routerLink="setup">
+      <a role="button" class="btn btn-danger" routerLink="setup" [relativeTo]="activatedRoute.parent?.parent">
         Setup
       </a>
     </div>

@@ -16,6 +16,7 @@ const routes: Routes = [
     path: ':id',
     component: ProjectWorkspaceComponent,
     children: [
+      {path: 'setup', loadChildren: () => import('./setup/setup.module').then(m => m.SetupModule)},
       {outlet: 'panel', path: 'project', component: ProjectTreeComponent},
       {outlet: 'panel', path: 'launch', loadChildren: () => import('./launch/launch.module').then(m => m.LaunchModule)},
       {

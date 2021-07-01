@@ -1,6 +1,7 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {SharedModule} from '../../shared/shared.module';
+import {SetupRoutingModule} from './setup-routing.module';
 import {SetupService} from './setup.service';
 import {SetupComponent} from './setup/setup.component';
 
@@ -12,6 +13,7 @@ import {SetupComponent} from './setup/setup.component';
   imports: [
     CommonModule,
     SharedModule,
+    SetupRoutingModule,
   ],
   providers: [
     SetupService,
