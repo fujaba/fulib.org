@@ -2,8 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {KeycloakService} from 'keycloak-angular';
 import {map, switchMap} from 'rxjs/operators';
-import {Project, ProjectStub} from '../model/project';
-import {ProjectService} from '../project.service';
+import {Project, ProjectStub} from '../../model/project';
+import {ProjectService} from '../../project.service';
 
 @Component({
   selector: 'app-edit-modal',

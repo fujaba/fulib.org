@@ -2,9 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Observable, OperatorFunction} from 'rxjs';
 import {debounceTime, distinctUntilChanged, filter, switchMap} from 'rxjs/operators';
-import {User} from '../../user/user';
-import {UserService} from '../../user/user.service';
-import {ProjectService} from '../project.service';
+import {User} from '../../../user/user';
+import {UserService} from '../../../user/user.service';
+import {ProjectService} from '../../project.service';
 
 @Component({
   selector: 'app-transfer',

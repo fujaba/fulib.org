@@ -15,7 +15,7 @@ import {Project} from '../model/project';
 import {ProjectTreeComponent} from '../project-tree/project-tree.component';
 import {ProjectManager} from '../project.manager';
 import {ProjectService} from '../project.service';
-import {SettingsComponent} from '../settings/settings.component';
+import {SettingsComponent} from '../settings/settings/settings.component';
 import {SplitPanelComponent} from '../split-panel/split-panel.component';
 import {TerminalTabsComponent} from '../terminal/terminal-tabs/terminal-tabs.component';
 

@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {ProjectStub} from '../model/project';
+import {ProjectStub} from '../../model/project';
 
 @Component({
   selector: 'app-project-form',
