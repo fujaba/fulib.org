@@ -7,22 +7,22 @@ import {AngularSplitModule} from 'angular-split';
 import {DndModule} from 'ngx-drag-drop';
 
 import {SharedModule} from '../shared/shared.module';
-import {ConfigService} from './config.service';
-import {ContainerService} from './container.service';
-import {DavClient} from './dav-client';
-import {EditorModule} from './editor/editor.module';
-import {FileChangeService} from './file-change.service';
-import {FileTabsComponent} from './file-tabs/file-tabs.component';
-import {FileTypeService} from './file-type.service';
-import {FileService} from './file.service';
-import {LocalProjectService} from './local-project.service';
-import {ProjectListComponent} from './project-list/project-list.component';
-import {ProjectWorkspaceComponent} from './project-workspace/project-workspace.component';
-import {ProjectService} from './project.service';
+import {ConfigService} from './services/config.service';
+import {ContainerService} from './services/container.service';
+import {DavClient} from './services/dav-client';
+import {EditorModule} from './modules/editor/editor.module';
+import {FileChangeService} from './services/file-change.service';
+import {FileTabsComponent} from './components/file-tabs/file-tabs.component';
+import {FileTypeService} from './services/file-type.service';
+import {FileService} from './services/file.service';
+import {LocalProjectService} from './services/local-project.service';
+import {ProjectListComponent} from './components/project-list/project-list.component';
+import {ProjectWorkspaceComponent} from './components/project-workspace/project-workspace.component';
+import {ProjectService} from './services/project.service';
 import {ProjectsRoutingModule} from './projects-routing.module';
-import {SetupModule} from './setup/setup.module';
-import {SplitPanelComponent} from './split-panel/split-panel.component';
-import {TerminalModule} from './terminal/terminal.module';
+import {SetupModule} from './modules/setup/setup.module';
+import {SplitPanelComponent} from './components/split-panel/split-panel.component';
+import {TerminalModule} from './modules/terminal/terminal.module';
 
 @NgModule({
   declarations: [
