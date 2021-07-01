@@ -75,17 +75,20 @@
             <button class="btn btn-primary dropdown-toggle-split" ngbDropdownToggle>
             </button>
             <div class="dropdown-menu" ngbDropdownMenu>
-              <a ngbDropdownItem [routerLink]="['edit', project.id]">
+              <a ngbDropdownItem [routerLink]="[project.id, 'edit']">
                 Edit
+              </a>
+              <a ngbDropdownItem [routerLink]="[project.id, 'settings']">
+                Settings
               </a>
               <button *ngIf="loggedIn && project.local" ngbDropdownItem (click)="convert(project)">
                 Convert to Persistent
               </button>
               <div class="dropdown-divider"></div>
-              <a *ngIf="!project.local" class="text-danger" ngbDropdownItem [routerLink]="['transfer', project.id]">
+              <a *ngIf="!project.local" class="text-danger" ngbDropdownItem [routerLink]="[project.id, 'transfer']">
                 Transfer
               </a>
-              <a ngbDropdownItem class="text-danger" [routerLink]="['delete', project.id]">
+              <a ngbDropdownItem class="text-danger" [routerLink]="[project.id, 'delete']">
                 Delete
               </a>
             </div>

@@ -15,9 +15,9 @@ const routes: Routes = [
     path: '',
     component: ProjectListComponent,
     children: [
-      {path: 'edit/:id', component: EditModalComponent},
-      {path: 'transfer/:id', component: TransferComponent, data: {back: '../..'}},
-      {path: 'delete/:id', component: DeleteModalComponent, data: {back: '../..'}},
+      {path: ':id/edit', component: EditModalComponent},
+      {path: ':id/transfer', component: TransferComponent, data: {back: '../..'}},
+      {path: ':id/delete', component: DeleteModalComponent, data: {back: '../..'}},
     ],
   },
   {
@@ -26,11 +26,25 @@ const routes: Routes = [
     children: [
       {outlet: 'panel', path: 'project', component: ProjectTreeComponent},
       {outlet: 'panel', path: 'launch', loadChildren: () => import('./launch/launch.module').then(m => m.LaunchModule)},
-      {outlet: 'panel', path: 'settings', component: SettingsComponent},
-      {path: 'setup', component: SetupComponent},
+      {
+        outlet: 'panel',
+        path: 'settings',
+        component: SettingsComponent,
+        children: [
+          {path: 'setup', component: SetupComponent},
+          {path: 'transfer', component: TransferComponent, data: {back: '..'}},
+          {path: 'delete', component: DeleteModalComponent, data: {back: '..'}},
+        ],
+      },
+    ],
+  },
+  {
+    path: ':id/settings',
+    component: SettingsComponent,
+    children: [
       {path: 'transfer', component: TransferComponent, data: {back: '..'}},
       {path: 'delete', component: DeleteModalComponent, data: {back: '..'}},
-    ],
+    ]
   },
 ];
 

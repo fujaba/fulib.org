@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import {switchMap} from 'rxjs/operators';
 import {Project} from '../model/project';
-import {ProjectManager} from '../project.manager';
 import {ProjectService} from '../project.service';
 
 @Component({
@@ -14,16 +14,19 @@ export class SettingsComponent implements OnInit {
 
   constructor(
     public activatedRoute: ActivatedRoute,
-    private projectManager: ProjectManager,
     private projectService: ProjectService,
   ) {
   }
 
   ngOnInit(): void {
-    this.project = this.projectManager.project;
+    this.activatedRoute.params.pipe(
+      switchMap(({id}) => this.projectService.get(id)),
+    ).subscribe(project => {
+      this.project = project;
+    });
   }
 
   save(): void {
-    this.projectService.update(this.project).subscribe(result => Object.assign(this.project, result));
+    this.projectService.update(this.project).subscribe(result => this.project = result);
   }
 }
