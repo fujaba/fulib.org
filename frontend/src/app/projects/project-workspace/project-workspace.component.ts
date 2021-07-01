@@ -12,7 +12,7 @@ import {LaunchPanelComponent} from '../launch/launch-panel/launch-panel.componen
 import {LocalProjectService} from '../local-project.service';
 import {Container} from '../model/container';
 import {Project} from '../model/project';
-import {ProjectTreeComponent} from '../project-tree/project-tree.component';
+import {ProjectTreeComponent} from '../project-panel/project-tree/project-tree.component';
 import {ProjectManager} from '../project.manager';
 import {ProjectService} from '../project.service';
 import {SettingsComponent} from '../settings/settings/settings.component';

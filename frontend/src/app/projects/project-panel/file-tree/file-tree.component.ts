@@ -13,12 +13,12 @@ import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
 import {DndDropEvent} from 'ngx-drag-drop';
 import {BehaviorSubject, EMPTY, Observable, Subscription} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
-import {FileChangeService} from '../file-change.service';
-import {FileService} from '../file.service';
-import {LocalProjectService} from '../local-project.service';
-import {Container} from '../model/container';
-import {File} from '../model/file';
-import {ProjectManager} from '../project.manager';
+import {FileChangeService} from '../../file-change.service';
+import {FileService} from '../../file.service';
+import {LocalProjectService} from '../../local-project.service';
+import {Container} from '../../model/container';
+import {File} from '../../model/file';
+import {ProjectManager} from '../../project.manager';
 
 @Component({
   selector: 'app-file-tree',

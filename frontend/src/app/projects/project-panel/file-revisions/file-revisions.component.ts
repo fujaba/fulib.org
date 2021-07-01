@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {File} from '../model/file';
-import {ProjectManager} from '../project.manager';
+import {File} from '../../model/file';
+import {ProjectManager} from '../../project.manager';
 
 @Component({
   selector: 'app-file-revisions',

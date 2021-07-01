@@ -12,14 +12,11 @@ import {ContainerService} from './container.service';
 import {DavClient} from './dav-client';
 import {EditorModule} from './editor/editor.module';
 import {FileChangeService} from './file-change.service';
-import {FileRevisionsComponent} from './file-revisions/file-revisions.component';
 import {FileTabsComponent} from './file-tabs/file-tabs.component';
-import {FileTreeComponent} from './file-tree/file-tree.component';
 import {FileTypeService} from './file-type.service';
 import {FileService} from './file.service';
 import {LocalProjectService} from './local-project.service';
 import {ProjectListComponent} from './project-list/project-list.component';
-import {ProjectTreeComponent} from './project-tree/project-tree.component';
 import {ProjectWorkspaceComponent} from './project-workspace/project-workspace.component';
 import {ProjectService} from './project.service';
 import {ProjectsRoutingModule} from './projects-routing.module';
@@ -29,11 +26,8 @@ import {TerminalModule} from './terminal/terminal.module';
 
 @NgModule({
   declarations: [
-    FileRevisionsComponent,
     FileTabsComponent,
-    FileTreeComponent,
     ProjectListComponent,
-    ProjectTreeComponent,
     ProjectWorkspaceComponent,
     SplitPanelComponent,
   ],

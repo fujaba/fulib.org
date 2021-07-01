@@ -3,9 +3,9 @@ import {Observable} from 'rxjs';
 import {FileRevisionsComponent} from '../file-revisions/file-revisions.component';
 import {FileTreeComponent} from '../file-tree/file-tree.component';
 
-import {File} from '../model/file';
-import {Project} from '../model/project';
-import {ProjectManager} from '../project.manager';
+import {File} from '../../model/file';
+import {Project} from '../../model/project';
+import {ProjectManager} from '../../project.manager';
 
 @Component({
   selector: 'app-project-tree',

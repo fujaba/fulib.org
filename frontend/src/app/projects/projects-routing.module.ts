@@ -1,7 +1,6 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {ProjectListComponent} from './project-list/project-list.component';
-import {ProjectTreeComponent} from './project-tree/project-tree.component';
 import {ProjectWorkspaceComponent} from './project-workspace/project-workspace.component';
 
 const routes: Routes = [
@@ -17,7 +16,7 @@ const routes: Routes = [
     component: ProjectWorkspaceComponent,
     children: [
       {path: 'setup', loadChildren: () => import('./setup/setup.module').then(m => m.SetupModule)},
-      {outlet: 'panel', path: 'project', component: ProjectTreeComponent},
+      {outlet: 'panel', path: 'project', loadChildren: () => import('./project-panel/project-panel.module').then(m => m.ProjectPanelModule)},
       {outlet: 'panel', path: 'launch', loadChildren: () => import('./launch/launch.module').then(m => m.LaunchModule)},
       {
         outlet: 'panel',
