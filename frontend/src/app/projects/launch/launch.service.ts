@@ -4,7 +4,7 @@ import {ConfigService} from '../config.service';
 import {Container} from '../model/container';
 import {LaunchConfig} from './model/launch-config';
 
-@Injectable({providedIn: 'root'})
+@Injectable()
 export class LaunchService {
   private readonly namespace = 'launch';
 

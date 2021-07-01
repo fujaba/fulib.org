@@ -13,6 +13,9 @@ import {SetupComponent} from './setup/setup.component';
     CommonModule,
     SharedModule,
   ],
+  providers: [
+    SetupService,
+  ],
   exports: [
     SetupComponent,
   ],

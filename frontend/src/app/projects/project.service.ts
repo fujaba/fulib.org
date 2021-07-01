@@ -12,7 +12,6 @@ import {DavClient} from './dav-client';
 import {LocalProjectService} from './local-project.service';
 import {Container} from './model/container';
 import {LocalProject, Project, ProjectStub, UserProject} from './model/project';
-import {SetupService} from './setup/setup.service';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +22,6 @@ export class ProjectService {
     private users: UserService,
     private http: HttpClient,
     private localProjectService: LocalProjectService,
-    private setupService: SetupService,
     private davClient: DavClient,
     private configService: EditorConfigService,
   ) {
@@ -106,10 +104,16 @@ export class ProjectService {
     );
   }
 
+  generateFiles(container: Container, projectConfig: ProjectConfig): Observable<void> {
+    return this.http.post(`${environment.projectsApiUrl}/projectzip`, projectConfig, {responseType: 'blob'}).pipe(
+      switchMap(zipBlob => this.http.post<void>(`${container.url}/zip//projects/${container.projectId}`, zipBlob)),
+    );
+  }
+
   restoreSetupAndFiles(container: Container, project: Project): Observable<any> {
     const config = this.localProjectService.getConfig(project.id);
     if (config) {
-      return this.setupService.generateFiles(container, config).pipe(
+      return this.generateFiles(container, config).pipe(
         tap(() => {
           if (!project.local) {
             this.localProjectService.deleteConfig(project.id);

@@ -7,6 +7,7 @@ import {CommandFormComponent} from './command-form/command-form.component';
 import {EditModalComponent} from './edit-modal/edit-modal.component';
 import {LaunchPanelComponent} from './launch-panel/launch-panel.component';
 import {LaunchRoutingModule} from './launch-routing.module';
+import {LaunchService} from './launch.service';
 
 
 @NgModule({
@@ -22,6 +23,9 @@ import {LaunchRoutingModule} from './launch-routing.module';
     NgbTooltipModule,
     NgbDropdownModule,
     SharedModule,
+  ],
+  providers: [
+    LaunchService,
   ],
 })
 export class LaunchModule {

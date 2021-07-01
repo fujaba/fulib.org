@@ -32,7 +32,7 @@ export class SetupComponent implements OnInit {
   save(): void {
     this.saving = true;
     this.projectService.saveConfig(this.projectManager.project, this.config);
-    this.setupService.generateFiles(this.projectManager.container, this.config).subscribe(() => {
+    this.projectService.generateFiles(this.projectManager.container, this.config).subscribe(() => {
       this.saving = false;
       this.router.navigate(['..'], {relativeTo: this.activatedRoute});
     });

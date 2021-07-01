@@ -1,17 +1,10 @@
-import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
-import {switchMap} from 'rxjs/operators';
-import {environment} from '../../../environments/environment';
 import {ProjectConfig} from '../../model/project-config';
-import {Container} from '../model/container';
 import {Project} from '../model/project';
 
-@Injectable({providedIn: 'root'})
+@Injectable()
 export class SetupService {
-  constructor(
-    private http: HttpClient,
-  ) {
+  constructor() {
   }
 
   getDefaultConfig(project: Project): ProjectConfig {
@@ -23,11 +16,5 @@ export class SetupService {
       scenarioFileName: 'Scenario.md',
       decoratorClassName: 'GenModel',
     };
-  }
-
-  generateFiles(container: Container, projectConfig: ProjectConfig): Observable<void> {
-    return this.http.post(`${environment.projectsApiUrl}/projectzip`, projectConfig, {responseType: 'blob'}).pipe(
-      switchMap(zipBlob => this.http.post<void>(`${container.url}/zip//projects/${container.projectId}`, zipBlob)),
-    );
   }
 }
