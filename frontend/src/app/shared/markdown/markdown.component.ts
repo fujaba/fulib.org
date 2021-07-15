@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
 import hljs from 'highlight.js/lib/core';
 
@@ -7,7 +7,7 @@ import hljs from 'highlight.js/lib/core';
   templateUrl: './markdown.component.html',
   styleUrls: ['./markdown.component.scss'],
 })
-export class MarkdownComponent implements OnInit, OnChanges {
+export class MarkdownComponent implements OnChanges {
   @ViewChild('content') content: ElementRef<HTMLElement>;
 
   @Input() html: string;
@@ -15,9 +15,6 @@ export class MarkdownComponent implements OnInit, OnChanges {
   constructor(
     private router: Router,
   ) {
-  }
-
-  ngOnInit(): void {
   }
 
   ngOnChanges(changes: SimpleChanges): void {

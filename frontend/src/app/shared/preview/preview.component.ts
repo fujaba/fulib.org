@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, TemplateRef} from '@angular/core';
+import {Component, Input, TemplateRef} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -6,15 +6,12 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
   templateUrl: './preview.component.html',
   styleUrls: ['./preview.component.scss'],
 })
-export class PreviewComponent implements OnInit {
+export class PreviewComponent {
   @Input() title: string;
 
   constructor(
     private modal: NgbModal,
   ) {
-  }
-
-  ngOnInit(): void {
   }
 
   open(content: TemplateRef<any>): void {

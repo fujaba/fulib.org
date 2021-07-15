@@ -1,27 +1,21 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import Assignment from '../model/assignment';
-import TaskResult from '../model/task-result';
 import Solution from '../model/solution';
 import TaskGrading from '../model/task-grading';
+import TaskResult from '../model/task-result';
 
 @Component({
   selector: 'app-task-list',
   templateUrl: './task-list.component.html',
   styleUrls: ['./task-list.component.scss'],
 })
-export class TaskListComponent implements OnInit {
+export class TaskListComponent {
   @Input() assignment?: Assignment;
   @Input() solution?: Solution;
   @Input() results?: TaskResult[];
   @Input() gradings?: TaskGrading[];
 
   outputExpanded: boolean[] = [];
-
-  constructor() {
-  }
-
-  ngOnInit() {
-  }
 
   getTaskPoints(taskID: number) {
     if (this.gradings) {
