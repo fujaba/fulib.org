@@ -59,9 +59,9 @@ jobs:
       - name: Setup Angular CLI to use PNPM
         run: ng config -g cli.packageManager pnpm
       - name: Install packages
-        run: pnpm install --shamefully-hoist
+        run: pnpm install
       - name: Build Angular
-        run: ng build --prod
+        run: ng build --configuration production
       - name: Determine Deployment Readiness
         id: deployment
         if: matrix.os == 'ubuntu' && matrix.node == 14 && (github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/v'))
