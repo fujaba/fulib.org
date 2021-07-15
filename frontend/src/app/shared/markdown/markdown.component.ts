@@ -27,7 +27,7 @@ export class MarkdownComponent implements OnInit, OnChanges {
     // setTimeout is needed because ngOnChanges is called before the view is updated.
     // Unfortunately there is no lifecycle hook that triggers after view update and also lets us check if the html actually changed.
     setTimeout(() => {
-      this.content.nativeElement.querySelectorAll('pre code').forEach(codeBlock => {
+      this.content.nativeElement.querySelectorAll<HTMLElement>('pre code').forEach(codeBlock => {
         if (!codeBlock.classList.contains('hljs')) {
           hljs.highlightElement(codeBlock);
         }
