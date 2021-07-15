@@ -16,19 +16,19 @@ specifiers:
   '@angular/router': ~12.1.2
   '@ctrl/ngx-codemirror': ^5.0.0
   '@ng-bootstrap/ng-bootstrap': ^10.0.0
-  '@types/codemirror': ^0.0.108
+  '@types/codemirror': ^5.60.2
   '@types/file-saver': ^2.0.3
   '@types/jasmine': ~3.6.11
   '@types/jasminewd2': ~2.0.10
-  '@types/node': ~14.14.45
+  '@types/node': ~14.17.5
   angular-gridster2: ^12.1.0
-  bootstrap: ~4.5.3
+  bootstrap: ~4.6.0
   bootstrap-darkmode: ^0.7.0
   bootstrap-icons: ^1.5.0
   codelyzer: ^6.0.2
   codemirror: ^5.62.0
   file-saver: ^2.0.5
-  highlight.js: ^10.7.3
+  highlight.js: ^11.1.0
   jasmine-core: ~3.6.0
   jasmine-spec-reporter: ~5.0.2
   karma: ~6.3.4
@@ -62,12 +62,12 @@ dependencies:
   '@ctrl/ngx-codemirror': 5.0.0_99ec13e4e5b289ebf8e554a4f46595fa
   '@ng-bootstrap/ng-bootstrap': 10.0.0_1c53483087afb609defd97f46f2a09c1
   angular-gridster2: 12.1.0_6efa59bcccafe8909b294d693ddcd62f
-  bootstrap: 4.5.3
+  bootstrap: 4.6.0
   bootstrap-darkmode: 0.7.0
   bootstrap-icons: 1.5.0
   codemirror: 5.62.0
   file-saver: 2.0.5
-  highlight.js: 10.7.3
+  highlight.js: 11.1.0
   keycloak-angular: 8.2.0_efa5d40395cef1ad15545433e5d40738
   keycloak-js: 12.0.3
   ng-bootstrap-darkmode: 0.5.0_c1464b0fdefa53f3e5826a778a8fbd5b
@@ -82,11 +82,11 @@ devDependencies:
   '@angular/cli': 12.1.2
   '@angular/compiler-cli': 12.1.2_2b2ed022143efe4dfaef4bf92ed3fce4
   '@angular/language-service': 12.1.2
-  '@types/codemirror': 0.0.108
+  '@types/codemirror': 5.60.2
   '@types/file-saver': 2.0.3
   '@types/jasmine': 3.6.11
   '@types/jasminewd2': 2.0.10
-  '@types/node': 14.14.45
+  '@types/node': 14.17.5
   codelyzer: 6.0.2_tslint@6.1.3
   jasmine-core: 3.6.0
   jasmine-spec-reporter: 5.0.2
@@ -1772,17 +1772,10 @@ packages:
     engines: {node: '>=10.13.0'}
     dev: true
 
-  /@types/codemirror/0.0.108:
-    resolution: {integrity: sha512-3FGFcus0P7C2UOGCNUVENqObEb4SFk+S8Dnxq7K6aIsLVs/vDtlangl3PEO0ykaKXyK56swVF6Nho7VsA44uhw==}
-    dependencies:
-      '@types/tern': 0.23.4
-    dev: true
-
   /@types/codemirror/5.60.2:
     resolution: {integrity: sha512-tk8YxckrdU49GaJYRKxdzzzXrTlyT2nQGnobb8rAk34jt+kYXOxPKGqNgr7SJpl5r6YGaRD4CDfqiL+6A+/z7w==}
     dependencies:
       '@types/tern': 0.23.4
-    dev: false
 
   /@types/component-emitter/1.2.10:
     resolution: {integrity: sha512-bsjleuRKWmGqajMerkzox19aGbscQX5rmmvvXl3wlIp5gMG1HgkiwPxsN5p070fBDKTNSPgojVbuY1+HWMbFhg==}
@@ -1852,6 +1845,10 @@ packages:
 
   /@types/node/14.14.45:
     resolution: {integrity: sha512-DssMqTV9UnnoxDWu959sDLZzfvqCF0qDNRjaWeYSui9xkFe61kKo4l1TWNTQONpuXEm+gLMRvdlzvNHBamzmEw==}
+    dev: true
+
+  /@types/node/14.17.5:
+    resolution: {integrity: sha512-bjqH2cX/O33jXT/UmReo2pM7DIJREPMnarixbQ57DOOzzFaI6D2+IcwaJQaJpv0M1E9TIhPCYVxrkcityLjlqA==}
     dev: true
 
   /@types/parse-json/4.0.0:
@@ -2530,8 +2527,8 @@ packages:
     engines: {node: '>=10'}
     dev: false
 
-  /bootstrap/4.5.3:
-    resolution: {integrity: sha512-o9ppKQioXGqhw8Z7mah6KdTYpNQY//tipnkxppWhPbiSWdD+1raYsnhwEZjkTHYbGee4cVQ0Rx65EhOY/HNLcQ==}
+  /bootstrap/4.6.0:
+    resolution: {integrity: sha512-Io55IuQY3kydzHtbGvQya3H+KorS/M9rSNyfCGCg9WZ4pyT/lCxIlpJgG1GXW/PswzC84Tr2fBYi+7+jFVQQBw==}
     peerDependencies:
       jquery: 1.9.1 - 3
       popper.js: ^1.16.1
@@ -4345,8 +4342,9 @@ packages:
     resolution: {integrity: sha512-l9sfDFsuqtOqKDsQdqrMRk0U85RZc0RtOR9yPI7mRVOa4FsR/BVnZ0shmQRM96Ji99kYZP/7hn1cedc1+ApsTQ==}
     dev: true
 
-  /highlight.js/10.7.3:
-    resolution: {integrity: sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A==}
+  /highlight.js/11.1.0:
+    resolution: {integrity: sha512-X9VVhYKHQPPuwffO8jk4bP/FVj+ibNCy3HxZZNDXFtJrq4O5FdcdCDRIkDis5MiMnjh7UwEdHgRZJcHFYdzDdA==}
+    engines: {node: '>=12.0.0'}
     dev: false
 
   /hosted-git-info/4.0.2:
