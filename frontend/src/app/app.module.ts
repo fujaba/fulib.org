@@ -6,6 +6,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {KeycloakAngularModule, KeycloakService} from 'keycloak-angular';
 import {NgBootstrapDarkmodeModule, THEME_LOADER, THEME_SAVER, ThemeLoader, ThemeSaver} from 'ng-bootstrap-darkmode';
+import {of} from 'rxjs';
 
 import {environment} from '../environments/environment';
 
@@ -74,7 +75,8 @@ function initializeKeycloak(keycloak: KeycloakService) {
       provide: THEME_LOADER,
       deps: [PrivacyService],
       useFactory(privacyService: PrivacyService): ThemeLoader {
-        return () => privacyService.getStorage('theme');
+        // TODO: Make this an Observable that automatically listens for changes to localStorage
+        return () => of(privacyService.getStorage('theme'));
       },
     },
     {

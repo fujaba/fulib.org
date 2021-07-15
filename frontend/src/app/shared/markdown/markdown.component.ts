@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
 import hljs from 'highlight.js/lib/core';
 
@@ -7,7 +7,7 @@ import hljs from 'highlight.js/lib/core';
   templateUrl: './markdown.component.html',
   styleUrls: ['./markdown.component.scss'],
 })
-export class MarkdownComponent implements OnInit, OnChanges {
+export class MarkdownComponent implements OnChanges {
   @ViewChild('content') content: ElementRef<HTMLElement>;
 
   @Input() html: string;
@@ -17,9 +17,6 @@ export class MarkdownComponent implements OnInit, OnChanges {
   ) {
   }
 
-  ngOnInit(): void {
-  }
-
   ngOnChanges(changes: SimpleChanges): void {
     if (!changes.html) {
       return;
@@ -27,7 +24,7 @@ export class MarkdownComponent implements OnInit, OnChanges {
     // setTimeout is needed because ngOnChanges is called before the view is updated.
     // Unfortunately there is no lifecycle hook that triggers after view update and also lets us check if the html actually changed.
     setTimeout(() => {
-      this.content.nativeElement.querySelectorAll('pre code').forEach(codeBlock => {
+      this.content.nativeElement.querySelectorAll<HTMLElement>('pre code').forEach(codeBlock => {
         if (!codeBlock.classList.contains('hljs')) {
           hljs.highlightElement(codeBlock);
         }

@@ -77,7 +77,7 @@
   <h2>
     Solutions
     <span class="text-muted" *ngIf="solutions">
-      (<span *ngIf="filteredSolutions && solutions.length != filteredSolutions.length">{{filteredSolutions.length}}
+      (<span *ngIf="filteredSolutions && solutions.length !== filteredSolutions.length">{{filteredSolutions.length}}
       of </span>{{solutions.length}})
     </span>
   </h2>

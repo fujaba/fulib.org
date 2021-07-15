@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
@@ -7,7 +7,7 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
   templateUrl: './token-modal.component.html',
   styleUrls: ['./token-modal.component.scss'],
 })
-export class TokenModalComponent implements OnInit {
+export class TokenModalComponent {
   @ViewChild('tokenModal', {static: true}) tokenModal;
 
   @Input() solution: boolean;
@@ -19,9 +19,6 @@ export class TokenModalComponent implements OnInit {
   constructor(
     private modalService: NgbModal,
   ) {
-  }
-
-  ngOnInit() {
   }
 
   open(): void {

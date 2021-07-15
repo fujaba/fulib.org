@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import Assignment from '../model/assignment';
 
 @Component({
@@ -6,12 +6,6 @@ import Assignment from '../model/assignment';
   templateUrl: './assignment-info.component.html',
   styleUrls: ['./assignment-info.component.scss'],
 })
-export class AssignmentInfoComponent implements OnInit {
+export class AssignmentInfoComponent {
   @Input() assignment?: Assignment;
-
-  constructor() {
-  }
-
-  ngOnInit(): void {
-  }
 }
