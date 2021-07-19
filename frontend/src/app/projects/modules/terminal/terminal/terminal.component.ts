@@ -81,6 +81,9 @@ export class TerminalComponent implements OnInit, OnDestroy, AfterViewInit {
     const links: ILink[] = [];
     for (let match = pattern.exec(line); match !== null; match = pattern.exec(line)) {
       const [text, path, row, column] = match;
+      if (!path.startsWith('/') && !row) {
+        continue;
+      }
       links.push({
         text,
         range: {
@@ -97,7 +100,12 @@ export class TerminalComponent implements OnInit, OnDestroy, AfterViewInit {
     return links;
   }
 
+  private toAbsolute(path: string): string {
+    return path.startsWith('/') ? path : `${this.model.workingDirectory}${path}`;
+  }
+
   private openEditor(path: string, row: string, column: string) {
+    path = this.toAbsolute(path);
     this.fileService.resolveAsync(this.projectManager.container, this.projectManager.fileRoot, path).subscribe(file => {
       if (!file) {
         return;
