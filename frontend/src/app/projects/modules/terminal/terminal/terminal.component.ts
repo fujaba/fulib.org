@@ -77,10 +77,10 @@ export class TerminalComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private findLinks(line: string, y: number) {
-    const pattern = /(\/projects\/[^:]*)(?::(\d+)(?::(\d+))?)?/g;
+    const pattern = /([^:]+)(?::(\d+)(?::(\d+))?)?(?:: (\w+): (.*)$)?/g;
     const links: ILink[] = [];
     for (let match = pattern.exec(line); match !== null; match = pattern.exec(line)) {
-      const [text, path, row, column] = match;
+      const [text, path, row, column, severity, message] = match;
       if (!path.startsWith('/') && !row) {
         continue;
       }
@@ -96,6 +96,18 @@ export class TerminalComponent implements OnInit, OnDestroy, AfterViewInit {
         },
         activate: () => this.zone.run(() => this.openEditor(path, row, column)),
       });
+
+      if (severity && message && row) {
+        const ln = +row - 1;
+        const ch = column ? +column : 0;
+        this.projectManager.markers.next({
+          path: this.toAbsolute(path),
+          severity,
+          message,
+          from: {line: ln, ch},
+          to: {line: ln, ch: ch + 1},
+        });
+      }
     }
     return links;
   }

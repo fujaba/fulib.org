@@ -1,6 +1,7 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {BehaviorSubject, EMPTY, Subscription} from 'rxjs';
-import {startWith, switchMap, tap} from 'rxjs/operators';
+import {filter, startWith, switchMap, tap} from 'rxjs/operators';
+import {Marker} from '../../../../shared/model/marker';
 import {FileChangeService} from '../../../services/file-change.service';
 import {FileService} from '../../../services/file.service';
 import {LocalProjectService} from '../../../services/local-project.service';
@@ -28,6 +29,8 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
     },
     autoRefresh: true,
   };
+
+  markers: Marker[] = [];
 
   constructor(
     private fileService: FileService,
@@ -73,6 +76,18 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
         }
       }),
     ).subscribe();
+
+    const markerSub = this.file$.pipe(
+      tap(() => this.markers = []),
+      switchMap(file => file ? this.projectManager.markers.pipe(filter(m => m.path === file.path)) : EMPTY),
+    ).subscribe(marker => {
+      if (marker.severity === 'syntax') {
+        marker.severity = 'error';
+      }
+      // TODO maybe this can be optimized
+      this.markers = [...this.markers, marker];
+    });
+    this.subscription.add(markerSub);
   }
 
   ngOnDestroy() {
@@ -90,6 +105,7 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
   }
 
   save() {
+    this.markers = [];
     const file = this.file;
     if (!file) {
       return;
