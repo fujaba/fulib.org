@@ -78,11 +78,14 @@ export class TerminalComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private extractMarkers(output: string): void {
-    const pattern = /^([^:\r\n\t]+):(\d+):(\d+): (\w+): (.*)$/gm;
+    const pattern = /^([^:\r\n\t]+):(\d+):(?:(\d+):)? (\w+): (.*)(?:\r?\n.*\r?\n( +)\^)?$/gm;
+    //                ~~~~~~~~~~~~~ filename          ~~~~~ severity            ~~~~~~ indent followed by caret
+    //                              ~~~~~ line number        ~~~~ message
+    //                                       ~~~~~ opt. column number    ~~ source code line copied by javac
     for (let match = pattern.exec(output); match !== null; match = pattern.exec(output)) {
-      const [, path, row, column, severity, message] = match;
+      const [, path, row, column, severity, message, indent] = match;
       const ln = +row - 1;
-      const ch = +column;
+      const ch = column ? +column : indent.length;
       this.projectManager.markers.next({
         path: this.toAbsolute(path),
         severity,
