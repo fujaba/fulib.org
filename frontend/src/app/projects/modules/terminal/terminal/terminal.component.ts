@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, Input, NgZone, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NgTerminal} from 'ng-terminal';
 import {Observable} from 'rxjs';
-import {filter, map} from 'rxjs/operators';
+import {filter, map, tap} from 'rxjs/operators';
 import {IDisposable, ILink} from 'xterm';
 import {FileService} from '../../../services/file.service';
 import {Terminal} from '../../../model/terminal';
@@ -46,6 +46,7 @@ export class TerminalComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }),
       map(message => message.text),
+      tap(output => this.extractMarkers(output)),
     );
   }
 
@@ -76,11 +77,27 @@ export class TerminalComponent implements OnInit, OnDestroy, AfterViewInit {
     this.terminalService.resize(this.model.id, cols, rows);
   }
 
+  private extractMarkers(output: string): void {
+    const pattern = /^([^:\r\n\t]+):(\d+):(\d+): (\w+): (.*)$/gm;
+    for (let match = pattern.exec(output); match !== null; match = pattern.exec(output)) {
+      const [, path, row, column, severity, message] = match;
+      const ln = +row - 1;
+      const ch = +column;
+      this.projectManager.markers.next({
+        path: this.toAbsolute(path),
+        severity,
+        message,
+        from: {line: ln, ch},
+        to: {line: ln, ch: ch + 1},
+      });
+    }
+  }
+
   private findLinks(line: string, y: number) {
-    const pattern = /([^:]+)(?::(\d+)(?::(\d+))?)?(?:: (\w+): (.*)$)?/g;
+    const pattern = /([^:]+)(?::(\d+)(?::(\d+))?)?/g;
     const links: ILink[] = [];
     for (let match = pattern.exec(line); match !== null; match = pattern.exec(line)) {
-      const [text, path, row, column, severity, message] = match;
+      const [text, path, row, column] = match;
       if (!path.startsWith('/') && !row) {
         continue;
       }
@@ -96,18 +113,6 @@ export class TerminalComponent implements OnInit, OnDestroy, AfterViewInit {
         },
         activate: () => this.zone.run(() => this.openEditor(path, row, column)),
       });
-
-      if (severity && message && row) {
-        const ln = +row - 1;
-        const ch = column ? +column : 0;
-        this.projectManager.markers.next({
-          path: this.toAbsolute(path),
-          severity,
-          message,
-          from: {line: ln, ch},
-          to: {line: ln, ch: ch + 1},
-        });
-      }
     }
     return links;
   }
