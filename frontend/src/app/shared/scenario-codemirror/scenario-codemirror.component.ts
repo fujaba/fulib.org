@@ -14,13 +14,12 @@ export class ScenarioCodemirrorComponent implements OnInit, OnDestroy {
   @ViewChild('scenarioInput', {static: true}) scenarioInput: AutothemeCodemirrorComponent;
 
   @Input() autoSubmit = false;
+  @Input() markers?: Marker[];
 
   @Input() content: string;
   @Output() contentChange = new EventEmitter<string>();
 
   @Output() save = new EventEmitter<void>();
-
-  private _markers: Marker[] = [];
 
   readonly options: any;
 
@@ -41,21 +40,7 @@ export class ScenarioCodemirrorComponent implements OnInit, OnDestroy {
         'Ctrl-S': submitHandler,
         'Cmd-S': submitHandler,
       },
-      lint: {
-        lintOnChange: false,
-        getAnnotations: () => this._markers,
-      },
     };
-  }
-
-  get markers(): Marker[] {
-    return this._markers;
-  }
-
-  @Input()
-  set markers(value: Marker[]) {
-    this._markers = value;
-    this.performLint();
   }
 
   get readOnly(): boolean {
@@ -85,10 +70,6 @@ export class ScenarioCodemirrorComponent implements OnInit, OnDestroy {
         this.submit();
       }
     });
-  }
-
-  private performLint() {
-    (this.scenarioInput?.ngxCodemirror?.codeMirror as any)?.performLint?.();
   }
 
   ngOnDestroy() {
