@@ -2,6 +2,8 @@ import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} fr
 import {NavigationExtras, Router} from '@angular/router';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 
+const DESTROY = Symbol();
+
 @Component({
   selector: 'app-modal',
   exportAs: 'modal',
@@ -36,14 +38,18 @@ export class ModalComponent implements OnInit, OnDestroy {
     });
 
     const handler = result => {
-      this.router.navigate(this.back, this.backOptions);
-      this.modalClose.next(result);
+      if (result === DESTROY) {
+        this.modalClose.next();
+      } else {
+        this.router.navigate(this.back, this.backOptions);
+        this.modalClose.next(result);
+      }
     };
     this.openModal.result.then(handler, handler);
   }
 
   ngOnDestroy(): void {
-    this.openModal?.close();
+    this.openModal?.dismiss(DESTROY);
   }
 
   close(event?: any): void {
