@@ -148,7 +148,7 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
     const endPosition: Position = {...position, ch: position.ch + 1};
     this.markers = this.markers.filter(m => m.message !== editorId);
     this.markers.push({
-      severity: 'note',
+      severity: 'cursor',
       message: editorId,
       from: position,
       to: endPosition,
