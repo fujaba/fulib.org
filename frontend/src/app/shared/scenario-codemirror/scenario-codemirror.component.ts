@@ -33,7 +33,6 @@ export class ScenarioCodemirrorComponent implements OnInit, OnDestroy {
       lineNumbers: true,
       lineWrapping: true,
       styleActiveLine: true,
-      gutters: ['CodeMirror-lint-markers'],
       extraKeys: {
         'Ctrl-Enter': submitHandler,
         'Cmd-Enter': submitHandler,

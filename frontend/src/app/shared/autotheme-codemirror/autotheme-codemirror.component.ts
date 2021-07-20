@@ -38,6 +38,7 @@ export class AutothemeCodemirrorComponent implements OnInit, OnDestroy {
       lintOnChange: false,
       getAnnotations: () => this._markers,
     };
+    (this.options.gutters ??= []).push('CodeMirror-lint-markers');
     this.performLint();
   }
 
