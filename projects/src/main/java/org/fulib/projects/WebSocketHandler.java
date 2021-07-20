@@ -44,7 +44,11 @@ public class WebSocketHandler implements FileEventHandler
 	public void message(Session session, String message) throws IOException
 	{
 		final JSONObject json = new JSONObject(message);
-		final String command = json.getString("command");
+		final String command = json.optString("command");
+		if (command == null)
+		{
+			return;
+		}
 
 		switch (command)
 		{
