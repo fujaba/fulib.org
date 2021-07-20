@@ -10,6 +10,8 @@ import 'codemirror/mode/yaml/yaml';
 import 'codemirror/addon/mode/simple';
 import 'codemirror/addon/display/autorefresh';
 import 'codemirror/addon/lint/lint';
+import 'codemirror/addon/hint/show-hint';
+import 'codemirror/addon/hint/anyword-hint';
 import * as CodeMirror from 'codemirror';
 
 import {AppModule} from './app/app.module';

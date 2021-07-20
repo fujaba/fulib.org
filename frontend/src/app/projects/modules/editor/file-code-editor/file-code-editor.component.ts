@@ -26,6 +26,7 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
     extraKeys: {
       'Ctrl-S': this.save.bind(this),
       'Cmd-S': this.save.bind(this),
+      'Ctrl-Space': 'autocomplete',
     },
     autoRefresh: true,
   };

@@ -38,6 +38,7 @@ export class ScenarioCodemirrorComponent implements OnInit, OnDestroy {
         'Cmd-Enter': submitHandler,
         'Ctrl-S': submitHandler,
         'Cmd-S': submitHandler,
+        'Ctrl-Space': 'autocomplete',
       },
     };
   }
