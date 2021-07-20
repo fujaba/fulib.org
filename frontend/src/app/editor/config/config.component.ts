@@ -97,7 +97,7 @@ export class ConfigComponent implements OnInit {
 
   private createProject(local: boolean) {
     this.save();
-    this.router.navigate(['/projects/edit/new'], {
+    this.router.navigate(['/projects/new/edit'], {
       queryParams: {
         local: local ? true : undefined,
         editor: true,
