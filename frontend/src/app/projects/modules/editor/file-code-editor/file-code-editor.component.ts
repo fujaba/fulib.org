@@ -1,7 +1,7 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {EditorChange, Position} from 'codemirror';
 import {BehaviorSubject, EMPTY, Subject, Subscription} from 'rxjs';
-import {buffer, debounceTime, filter, map, startWith, switchMap, tap} from 'rxjs/operators';
+import {buffer, debounceTime, filter, map, share, startWith, switchMap, tap} from 'rxjs/operators';
 import {AutothemeCodemirrorComponent} from '../../../../shared/autotheme-codemirror/autotheme-codemirror.component';
 import {Marker} from '../../../../shared/model/marker';
 import {File} from '../../../model/file';
@@ -17,12 +17,12 @@ import {ProjectManager} from '../../../services/project.manager';
 })
 export class FileCodeEditorComponent implements OnInit, OnDestroy {
   editorId = (14 + Math.random()).toString(36);
-  lastTimestamp: Date = new Date(0);
 
   @ViewChild('codeMirror') codeMirror: AutothemeCodemirrorComponent;
 
   file$ = new BehaviorSubject<File | undefined>(undefined);
   cursorEvents$ = new Subject<Position>();
+  changeEvents$ = new Subject<EditorChange>();
 
   subscription: Subscription;
 
@@ -99,13 +99,12 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
       switchMap(file => file ? this.projectManager.webSocket.multiplex(
         () => ({command: 'editor.open', editorId: this.editorId, path: file.path}),
         () => ({command: 'editor.close', editorId: this.editorId, path: file.path}),
-        ({command, path, timestamp}) => {
+        ({command, path}) => {
           if (path !== file.path) {
             return false;
           }
           switch (command) {
             case 'editor.change':
-              return new Date(timestamp) > this.lastTimestamp;
             case 'editor.cursor':
             case 'editor.close':
               return true;
@@ -114,10 +113,10 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
           }
         },
       ) : EMPTY),
-    ).subscribe(({command, change, timestamp, editorId, position}) => {
+    ).subscribe(({command, changes, editorId, position}) => {
       switch (command) {
         case 'editor.change':
-          this.onRemoteChange(new Date(timestamp), change);
+          this.onRemoteChanges(changes);
           return;
         case 'editor.cursor':
           this.onRemoteCursorActivity(editorId, position);
@@ -128,6 +127,23 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
       }
     });
     this.subscription.add(changeSub);
+
+    const changeEvents$ = this.changeEvents$.pipe(
+      filter(e => e.origin !== 'setValue' && e.origin !== 'remote'),
+      share(),
+    );
+    const changeEventsSub = changeEvents$.pipe(
+      buffer(changeEvents$.pipe(debounceTime(200))),
+      map(changes => {
+        return {
+          command: 'editor.change',
+          path: this.file!.path,
+          editorId: this.editorId,
+          changes,
+        };
+      }),
+    ).subscribe(this.projectManager.webSocket);
+    this.subscription.add(changeEventsSub);
 
     const cursorEventsSub = this.cursorEvents$.pipe(
       debounceTime(200),
@@ -155,9 +171,10 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
     file.content = content;
   }
 
-  private onRemoteChange(timestamp: Date, change: EditorChange) {
-    this.lastTimestamp = timestamp;
-    this.codeMirror.signal({...change, origin: 'remote'});
+  private onRemoteChanges(changes: EditorChange[]) {
+    for (const change of changes) {
+      this.codeMirror.signal({...change, origin: 'remote'});
+    }
   }
 
   private removeCursor(editorId: string) {
@@ -199,20 +216,5 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
     }
     file.content = content;
     file.dirty = true;
-  }
-
-  onChange(change: EditorChange) {
-    if (change.origin === 'setValue' || change.origin === 'remote') {
-      return;
-    }
-    const timestamp = new Date();
-    this.lastTimestamp = timestamp;
-    this.projectManager.webSocket.next({
-      command: 'editor.change',
-      path: this.file!.path,
-      editorId: this.editorId,
-      timestamp,
-      change,
-    });
   }
 }

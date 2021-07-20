@@ -2,7 +2,7 @@
   class="cm-h-100"
   [content]="file$.value?.content || ''"
   (contentChange)="setContent($event)"
-  (changes)="onChange($event)"
+  (changes)="changeEvents$.next($event)"
   (cursorActivity)="cursorEvents$.next($event)"
   [options]="options"
   [markers]="markers"
