@@ -1,5 +1,6 @@
 <ngx-codemirror #ngxCodemirror
   [ngModel]="content"
   (ngModelChange)="setContent($event)"
+  (cursorActivity)="onCursorActivity($event)"
   [options]="options"
 ></ngx-codemirror>

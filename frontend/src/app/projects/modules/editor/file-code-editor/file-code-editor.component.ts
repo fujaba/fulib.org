@@ -1,5 +1,5 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {EditorChange} from 'codemirror';
+import {EditorChange, Position} from 'codemirror';
 import {BehaviorSubject, EMPTY, Subscription} from 'rxjs';
 import {buffer, debounceTime, filter, startWith, switchMap, tap} from 'rxjs/operators';
 import {AutothemeCodemirrorComponent} from '../../../../shared/autotheme-codemirror/autotheme-codemirror.component';
@@ -16,6 +16,7 @@ import {ProjectManager} from '../../../services/project.manager';
   styleUrls: ['./file-code-editor.component.scss'],
 })
 export class FileCodeEditorComponent implements OnInit, OnDestroy {
+  editorId = (14 + Math.random()).toString(36);
   lastTimestamp: Date = new Date(0);
 
   @ViewChild('codeMirror') codeMirror: AutothemeCodemirrorComponent;
@@ -97,11 +98,29 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
       switchMap(file => file ? this.projectManager.webSocket.multiplex(
         () => ({command: 'editor.open', path: file.path}),
         () => ({command: 'editor.close', path: file.path}),
-        msg => msg.command === 'editor.change' && msg.path === file.path && new Date(msg.timestamp) > this.lastTimestamp,
+        ({command, path, timestamp}) => {
+          if (path !== file.path) {
+            return false;
+          }
+          switch (command) {
+            case 'editor.change':
+              return new Date(timestamp) > this.lastTimestamp;
+            case 'editor.cursor':
+              return true;
+            default:
+              return false;
+          }
+        },
       ) : EMPTY),
-    ).subscribe(({change, timestamp}) => {
-      this.lastTimestamp = new Date(timestamp);
-      this.codeMirror.signal({...change, origin: 'remote'});
+    ).subscribe(({command, change, timestamp, editorId, position}) => {
+      switch (command) {
+        case 'editor.change':
+          this.onRemoteChange(new Date(timestamp), change);
+          return;
+        case 'editor.cursor':
+          this.onRemoteCursorActivity(editorId, position);
+          return;
+      }
     });
     this.subscription.add(changeSub);
   }
@@ -118,6 +137,22 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
 
     file.dirty = false;
     file.content = content;
+  }
+
+  private onRemoteChange(timestamp: Date, change: EditorChange) {
+    this.lastTimestamp = timestamp;
+    this.codeMirror.signal({...change, origin: 'remote'});
+  }
+
+  private onRemoteCursorActivity(editorId: string, position: Position) {
+    const endPosition: Position = {...position, ch: position.ch + 1};
+    this.markers = this.markers.filter(m => m.message !== editorId);
+    this.markers.push({
+      severity: 'note',
+      message: editorId,
+      from: position,
+      to: endPosition,
+    });
   }
 
   save() {
@@ -156,6 +191,15 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
       path: this.file!.path,
       timestamp,
       change,
+    });
+  }
+
+  onCursorActivity(position: Position) {
+    this.projectManager.webSocket.next({
+      command: 'editor.cursor',
+      path: this.file!.path,
+      editorId: this.editorId,
+      position,
     });
   }
 }

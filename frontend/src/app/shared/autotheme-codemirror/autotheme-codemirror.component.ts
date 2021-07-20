@@ -10,7 +10,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import {CodemirrorComponent} from '@ctrl/ngx-codemirror';
-import {signal, EditorChange} from 'codemirror';
+import {signal, EditorChange, Editor, Position} from 'codemirror';
 import {ThemeService} from 'ng-bootstrap-darkmode';
 import {of, Subscription} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
@@ -25,6 +25,7 @@ export class AutothemeCodemirrorComponent implements OnInit, OnDestroy, AfterVie
   @Input() content: string;
   @Output() contentChange = new EventEmitter<string>();
   @Output() changes = new EventEmitter<EditorChange>();
+  @Output() cursorActivity = new EventEmitter<Position>();
 
   @Input() options: any;
 
@@ -91,5 +92,9 @@ export class AutothemeCodemirrorComponent implements OnInit, OnDestroy, AfterVie
       const codeMirror = this.ngxCodemirror!.codeMirror!;
       codeMirror.replaceRange(change.text, change.from, change.to, change.origin);
     });
+  }
+
+  onCursorActivity(editor: Editor) {
+    this.cursorActivity.next(editor.getCursor());
   }
 }
