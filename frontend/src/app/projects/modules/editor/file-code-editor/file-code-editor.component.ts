@@ -1,7 +1,7 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {EditorChange, Position} from 'codemirror';
-import {BehaviorSubject, EMPTY, Subscription} from 'rxjs';
-import {buffer, debounceTime, filter, startWith, switchMap, tap} from 'rxjs/operators';
+import {BehaviorSubject, EMPTY, Subject, Subscription} from 'rxjs';
+import {buffer, debounceTime, filter, map, startWith, switchMap, tap} from 'rxjs/operators';
 import {AutothemeCodemirrorComponent} from '../../../../shared/autotheme-codemirror/autotheme-codemirror.component';
 import {Marker} from '../../../../shared/model/marker';
 import {File} from '../../../model/file';
@@ -22,6 +22,7 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
   @ViewChild('codeMirror') codeMirror: AutothemeCodemirrorComponent;
 
   file$ = new BehaviorSubject<File | undefined>(undefined);
+  cursorEvents$ = new Subject<Position>();
 
   subscription: Subscription;
 
@@ -127,6 +128,17 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
       }
     });
     this.subscription.add(changeSub);
+
+    const cursorEventsSub = this.cursorEvents$.pipe(
+      debounceTime(200),
+      map(position => ({
+        command: 'editor.cursor',
+        path: this.file!.path,
+        editorId: this.editorId,
+        position,
+      })),
+    ).subscribe(this.projectManager.webSocket);
+    this.subscription.add(cursorEventsSub);
   }
 
   ngOnDestroy() {
@@ -201,15 +213,6 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
       editorId: this.editorId,
       timestamp,
       change,
-    });
-  }
-
-  onCursorActivity(position: Position) {
-    this.projectManager.webSocket.next({
-      command: 'editor.cursor',
-      path: this.file!.path,
-      editorId: this.editorId,
-      position,
     });
   }
 }

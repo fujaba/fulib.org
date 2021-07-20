@@ -3,7 +3,7 @@
   [content]="file$.value?.content || ''"
   (contentChange)="setContent($event)"
   (changes)="onChange($event)"
-  (cursorActivity)="onCursorActivity($event)"
+  (cursorActivity)="cursorEvents$.next($event)"
   [options]="options"
   [markers]="markers"
 ></app-autotheme-codemirror>
