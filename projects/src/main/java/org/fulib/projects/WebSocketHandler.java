@@ -100,6 +100,18 @@ public class WebSocketHandler implements FileEventHandler
 			}
 			return;
 		}
+		case "editor.open":
+		case "editor.close":
+		case "editor.change":
+			// broadcast to all except sender
+			for (final Session peerSession : this.sessions)
+			{
+				if (peerSession != session)
+				{
+					peerSession.getRemote().sendString(message, null);
+				}
+			}
+			return;
 		default:
 			session.getRemote().sendString(new JSONObject().put("error", "invalid command: " + command).toString());
 			return;
