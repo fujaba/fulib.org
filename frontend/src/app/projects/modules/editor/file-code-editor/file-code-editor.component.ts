@@ -96,8 +96,8 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
 
     const changeSub = this.file$.pipe(
       switchMap(file => file ? this.projectManager.webSocket.multiplex(
-        () => ({command: 'editor.open', path: file.path}),
-        () => ({command: 'editor.close', path: file.path}),
+        () => ({command: 'editor.open', editorId: this.editorId, path: file.path}),
+        () => ({command: 'editor.close', editorId: this.editorId, path: file.path}),
         ({command, path, timestamp}) => {
           if (path !== file.path) {
             return false;
@@ -106,6 +106,7 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
             case 'editor.change':
               return new Date(timestamp) > this.lastTimestamp;
             case 'editor.cursor':
+            case 'editor.close':
               return true;
             default:
               return false;
@@ -119,6 +120,9 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
           return;
         case 'editor.cursor':
           this.onRemoteCursorActivity(editorId, position);
+          return;
+        case 'editor.close':
+          this.removeCursor(editorId);
           return;
       }
     });
@@ -144,9 +148,14 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
     this.codeMirror.signal({...change, origin: 'remote'});
   }
 
-  private onRemoteCursorActivity(editorId: string, position: Position) {
-    const endPosition: Position = {...position, ch: position.ch + 1};
+  private removeCursor(editorId: string) {
     this.markers = this.markers.filter(m => m.message !== editorId);
+  }
+
+  private onRemoteCursorActivity(editorId: string, position: Position) {
+    this.removeCursor(editorId);
+
+    const endPosition: Position = {...position, ch: position.ch + 1};
     this.markers.push({
       severity: 'cursor',
       message: editorId,
@@ -189,6 +198,7 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
     this.projectManager.webSocket.next({
       command: 'editor.change',
       path: this.file!.path,
+      editorId: this.editorId,
       timestamp,
       change,
     });

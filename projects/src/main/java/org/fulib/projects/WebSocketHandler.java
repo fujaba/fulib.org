@@ -15,6 +15,7 @@ public class WebSocketHandler implements FileEventHandler
 {
 	private FileWatcherRegistry fileWatcher;
 	private ProcessService processService;
+	private EditorService editorService;
 	private final Runnable resetShutdownTimer;
 
 	private final Collection<Session> sessions = new ConcurrentLinkedQueue<>();
@@ -32,6 +33,11 @@ public class WebSocketHandler implements FileEventHandler
 	public void setProcessService(ProcessService processService)
 	{
 		this.processService = processService;
+	}
+
+	public void setEditorService(EditorService editorService)
+	{
+		this.editorService = editorService;
 	}
 
 	@OnWebSocketConnect
@@ -104,17 +110,26 @@ public class WebSocketHandler implements FileEventHandler
 		case "editor.close":
 		case "editor.change":
 		case "editor.cursor":
-			// broadcast to all except sender
-			for (final Session peerSession : this.sessions)
-			{
-				if (peerSession != session)
-				{
-					peerSession.getRemote().sendString(message, null);
-				}
-			}
+			this.handleEditor(session, command, json, message);
 			return;
 		default:
 			session.getRemote().sendString(new JSONObject().put("error", "invalid command: " + command).toString());
+			return;
+		}
+	}
+
+	private void handleEditor(Session session, String command, JSONObject json, String message)
+	{
+		final String editorId = json.getString("editorId");
+		this.editorService.broadcast(editorId, message);
+
+		switch (command)
+		{
+		case "editor.open":
+			this.editorService.open(json.getString("editorId"), json.getString("path"), session);
+			return;
+		case "editor.close":
+			this.editorService.close(editorId);
 			return;
 		}
 	}

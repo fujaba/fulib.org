@@ -32,6 +32,7 @@ public class Service
 			scheduledStop = scheduler.schedule(this::stop, 60, TimeUnit.SECONDS);
 		});
 		webSocketHandler.setProcessService(processService);
+		webSocketHandler.setEditorService(new EditorService());
 
 		final FileWatcherProcess fileWatcher = new FileWatcherProcess(webSocketHandler);
 		fileWatcher.setDaemon(true);
