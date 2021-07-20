@@ -103,6 +103,7 @@ public class WebSocketHandler implements FileEventHandler
 		case "editor.open":
 		case "editor.close":
 		case "editor.change":
+		case "editor.cursor":
 			// broadcast to all except sender
 			for (final Session peerSession : this.sessions)
 			{
