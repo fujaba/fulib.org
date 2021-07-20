@@ -1,7 +1,8 @@
-<app-autotheme-codemirror
+<app-autotheme-codemirror #codeMirror
   class="cm-h-100"
   [content]="file$.value?.content || ''"
   (contentChange)="setContent($event)"
+  (changes)="onChange($event)"
   [options]="options"
   [markers]="markers"
 ></app-autotheme-codemirror>

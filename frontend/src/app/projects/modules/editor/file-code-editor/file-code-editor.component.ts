@@ -1,6 +1,8 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {EditorChange} from 'codemirror';
 import {BehaviorSubject, EMPTY, Subscription} from 'rxjs';
 import {buffer, debounceTime, filter, startWith, switchMap, tap} from 'rxjs/operators';
+import {AutothemeCodemirrorComponent} from '../../../../shared/autotheme-codemirror/autotheme-codemirror.component';
 import {Marker} from '../../../../shared/model/marker';
 import {File} from '../../../model/file';
 import {FileChangeService} from '../../../services/file-change.service';
@@ -14,6 +16,10 @@ import {ProjectManager} from '../../../services/project.manager';
   styleUrls: ['./file-code-editor.component.scss'],
 })
 export class FileCodeEditorComponent implements OnInit, OnDestroy {
+  lastTimestamp: Date = new Date(0);
+
+  @ViewChild('codeMirror') codeMirror: AutothemeCodemirrorComponent;
+
   file$ = new BehaviorSubject<File | undefined>(undefined);
 
   subscription: Subscription;
@@ -86,6 +92,18 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
       this.markers = [...this.markers, ...markers];
     });
     this.subscription.add(markerSub);
+
+    const changeSub = this.file$.pipe(
+      switchMap(file => file ? this.projectManager.webSocket.multiplex(
+        () => ({command: 'editor.open', path: file.path}),
+        () => ({command: 'editor.close', path: file.path}),
+        msg => msg.command === 'editor.change' && msg.path === file.path && new Date(msg.timestamp) > this.lastTimestamp,
+      ) : EMPTY),
+    ).subscribe(({change, timestamp}) => {
+      this.lastTimestamp = new Date(timestamp);
+      this.codeMirror.signal({...change, origin: 'remote'});
+    });
+    this.subscription.add(changeSub);
   }
 
   ngOnDestroy() {
@@ -125,5 +143,19 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
     }
     file.content = content;
     file.dirty = true;
+  }
+
+  onChange(change: EditorChange) {
+    if (change.origin === 'setValue' || change.origin === 'remote') {
+      return;
+    }
+    const timestamp = new Date();
+    this.lastTimestamp = timestamp;
+    this.projectManager.webSocket.next({
+      command: 'editor.change',
+      path: this.file!.path,
+      timestamp,
+      change,
+    });
   }
 }

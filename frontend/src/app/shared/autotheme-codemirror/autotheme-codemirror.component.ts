@@ -1,5 +1,16 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Input,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import {CodemirrorComponent} from '@ctrl/ngx-codemirror';
+import {signal, EditorChange} from 'codemirror';
 import {ThemeService} from 'ng-bootstrap-darkmode';
 import {of, Subscription} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
@@ -10,9 +21,10 @@ import {Marker} from '../model/marker';
   templateUrl: './autotheme-codemirror.component.html',
   styleUrls: ['./autotheme-codemirror.component.scss'],
 })
-export class AutothemeCodemirrorComponent implements OnInit, OnDestroy {
+export class AutothemeCodemirrorComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() content: string;
   @Output() contentChange = new EventEmitter<string>();
+  @Output() changes = new EventEmitter<EditorChange>();
 
   @Input() options: any;
 
@@ -24,6 +36,7 @@ export class AutothemeCodemirrorComponent implements OnInit, OnDestroy {
 
   constructor(
     private themeService: ThemeService,
+    private zone: NgZone,
   ) {
   }
 
@@ -52,6 +65,14 @@ export class AutothemeCodemirrorComponent implements OnInit, OnDestroy {
     ).subscribe(theme => this.updateEditorThemes(theme));
   }
 
+  ngAfterViewInit() {
+    this.zone.runOutsideAngular(() => {
+      this.ngxCodemirror!.codeMirror!.on('change', (editor, change) => {
+        this.zone.run(() => this.changes.emit(change));
+      });
+    });
+  }
+
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
@@ -63,5 +84,12 @@ export class AutothemeCodemirrorComponent implements OnInit, OnDestroy {
   setContent(value: string) {
     this.content = value;
     this.contentChange.emit(value);
+  }
+
+  signal(change: EditorChange) {
+    this.zone.runOutsideAngular(() => {
+      const codeMirror = this.ngxCodemirror!.codeMirror!;
+      codeMirror.replaceRange(change.text, change.from, change.to, change.origin);
+    });
   }
 }
