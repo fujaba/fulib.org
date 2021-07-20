@@ -97,6 +97,13 @@
       </div>
     </li>
   </ul>
+
+  <p *ngIf="!loggedIn" class="text-center text-muted mt-3">
+    Missing something?
+    Some of your Projects may not be available until you
+    <a routerLink="." (click)="login()">log in</a>
+    to your account.
+  </p>
 </div>
 
 <router-outlet></router-outlet>

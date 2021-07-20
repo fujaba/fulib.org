@@ -44,6 +44,10 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
+  login(): void {
+    this.keycloak.login();
+  }
+
   convert(localProject: LocalProject) {
     this.projectService.convert(localProject).subscribe(persistentProject => {
       const index = this.projects.indexOf(localProject);
