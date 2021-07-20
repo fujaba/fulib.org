@@ -210,7 +210,7 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
   }
 
   save() {
-    this.markers = [];
+    this.markers.filter(m => m.severity !== 'cursor');
     const file = this.file;
     if (!file) {
       return;
