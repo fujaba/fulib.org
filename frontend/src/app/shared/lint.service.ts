@@ -16,7 +16,7 @@ export class LintService {
       const row = +match[1] - 1;
       const col = +match[2];
       const endCol = +(match[3] || col) + 1;
-      const severity = match[4] === 'syntax' ? 'error' : match[4];
+      const severity = match[4];
       const message = match[5];
 
       result.push({
