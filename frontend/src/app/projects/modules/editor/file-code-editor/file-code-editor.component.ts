@@ -81,11 +81,6 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
     const markerSub = this.file$.pipe(
       tap(() => this.markers = []),
       switchMap(file => file ? this.projectManager.markers.pipe(filter(m => m.path === file.path)) : EMPTY),
-      tap(marker => {
-        if (marker.severity === 'syntax') {
-          marker.severity = 'error';
-        }
-      }),
       buffer(this.projectManager.markers.pipe(debounceTime(50))),
     ).subscribe(markers => {
       this.markers = [...this.markers, ...markers];
