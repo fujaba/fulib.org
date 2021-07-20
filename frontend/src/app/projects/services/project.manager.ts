@@ -7,7 +7,7 @@ import {File} from '../model/file';
 import {FileEditor} from '../model/file-editor';
 import {OpenRequest} from '../model/open-request';
 import {Project} from '../model/project';
-import {Terminal, TerminalStub} from '../model/terminal';
+import {TerminalStub} from '../model/terminal';
 
 @Injectable()
 export class ProjectManager {
@@ -46,6 +46,17 @@ export class ProjectManager {
     this.openRequests.next({
       type: 'terminal',
       terminal,
+    });
+  }
+
+  clearMarkers(path: string): void {
+    if (!('_events' in this.markers)) {
+      return;
+    }
+    const events: (Marker | { value: Marker })[] = (this.markers as any)._events;
+    (this.markers as any)._events = events.filter(e => {
+      const marker = 'value' in e ? e.value : e;
+      return marker.path !== path;
     });
   }
 

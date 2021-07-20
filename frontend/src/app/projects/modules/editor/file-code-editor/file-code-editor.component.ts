@@ -108,6 +108,7 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
     if (!file) {
       return;
     }
+    this.projectManager.clearMarkers(file.path);
     const project = this.projectManager.project;
     if (project.local) {
       this.localProjectService.saveFile(project.id, file.path, file.content ?? '');
