@@ -3,6 +3,7 @@
 .CodeMirror-lint-tooltip {
   @extend .tooltip;
   background-color: $tooltip-bg;
+  z-index: $zindex-tooltip;
 }
 
 .CodeMirror-lint-message {
