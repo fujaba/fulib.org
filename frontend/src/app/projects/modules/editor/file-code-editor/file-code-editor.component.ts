@@ -1,11 +1,11 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {BehaviorSubject, EMPTY, Subscription} from 'rxjs';
-import {filter, startWith, switchMap, tap} from 'rxjs/operators';
+import {buffer, debounceTime, filter, startWith, switchMap, tap} from 'rxjs/operators';
 import {Marker} from '../../../../shared/model/marker';
+import {File} from '../../../model/file';
 import {FileChangeService} from '../../../services/file-change.service';
 import {FileService} from '../../../services/file.service';
 import {LocalProjectService} from '../../../services/local-project.service';
-import {File} from '../../../model/file';
 import {ProjectManager} from '../../../services/project.manager';
 
 @Component({
@@ -80,12 +80,14 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
     const markerSub = this.file$.pipe(
       tap(() => this.markers = []),
       switchMap(file => file ? this.projectManager.markers.pipe(filter(m => m.path === file.path)) : EMPTY),
-    ).subscribe(marker => {
-      if (marker.severity === 'syntax') {
-        marker.severity = 'error';
-      }
-      // TODO maybe this can be optimized
-      this.markers = [...this.markers, marker];
+      tap(marker => {
+        if (marker.severity === 'syntax') {
+          marker.severity = 'error';
+        }
+      }),
+      buffer(this.projectManager.markers.pipe(debounceTime(50))),
+    ).subscribe(markers => {
+      this.markers = [...this.markers, ...markers];
     });
     this.subscription.add(markerSub);
   }
