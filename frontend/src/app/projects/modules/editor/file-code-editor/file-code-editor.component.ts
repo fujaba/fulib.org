@@ -24,7 +24,7 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
   cursorEvents$ = new Subject<Position>();
   changeEvents$ = new Subject<EditorChange>();
 
-  subscription: Subscription;
+  subscription = new Subscription();
 
   options = {
     mode: '',
@@ -59,7 +59,19 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subscription = this.file$.pipe(
+    for (const sub of [
+      this.subscribeToFileChanges(),
+      this.subscribeToMarkers(),
+      this.subscribeToChangeEvents(),
+      this.subscribeToCursorEvents(),
+      this.subscribeToRemoteEvents(),
+    ]) {
+      this.subscription.add(sub);
+    }
+  }
+
+  private subscribeToFileChanges(): Subscription {
+    return this.file$.pipe(
       switchMap(file => {
         if (!file) {
           return EMPTY;
@@ -85,17 +97,60 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
         }
       }),
     ).subscribe();
+  }
 
-    const markerSub = this.file$.pipe(
+  private onExternalChange(file: File, content: string) {
+    const cached = file.content;
+    if (cached !== undefined && cached !== content && !confirm(file.name + ' was changed externally. Reload and discard changes?')) {
+      return;
+    }
+
+    file.dirty = false;
+    file.content = content;
+  }
+
+  private subscribeToMarkers(): Subscription {
+    return this.file$.pipe(
       tap(() => this.markers = []),
       switchMap(file => file ? this.projectManager.markers.pipe(filter(m => m.path === file.path)) : EMPTY),
       buffer(this.projectManager.markers.pipe(debounceTime(50))),
     ).subscribe(markers => {
       this.markers = [...this.markers, ...markers];
     });
-    this.subscription.add(markerSub);
+  }
 
-    const changeSub = this.file$.pipe(
+  private subscribeToChangeEvents(): Subscription {
+    const changeEvents$ = this.changeEvents$.pipe(
+      filter(e => e.origin !== 'setValue' && e.origin !== 'remote'),
+      share(),
+    );
+    return changeEvents$.pipe(
+      buffer(changeEvents$.pipe(debounceTime(200))),
+      map(changes => {
+        return {
+          command: 'editor.change',
+          path: this.file!.path,
+          editorId: this.editorId,
+          changes,
+        };
+      }),
+    ).subscribe(this.projectManager.webSocket);
+  }
+
+  private subscribeToCursorEvents(): Subscription {
+    return this.cursorEvents$.pipe(
+      debounceTime(200),
+      map(position => ({
+        command: 'editor.cursor',
+        path: this.file!.path,
+        editorId: this.editorId,
+        position,
+      })),
+    ).subscribe(this.projectManager.webSocket);
+  }
+
+  private subscribeToRemoteEvents(): Subscription {
+    return this.file$.pipe(
       switchMap(file => file ? this.projectManager.webSocket.multiplex(
         () => ({command: 'editor.open', editorId: this.editorId, path: file.path}),
         () => ({command: 'editor.close', editorId: this.editorId, path: file.path}),
@@ -126,55 +181,6 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
           return;
       }
     });
-    this.subscription.add(changeSub);
-
-    const changeEvents$ = this.changeEvents$.pipe(
-      filter(e => e.origin !== 'setValue' && e.origin !== 'remote'),
-      share(),
-    );
-    const changeEventsSub = changeEvents$.pipe(
-      buffer(changeEvents$.pipe(debounceTime(200))),
-      map(changes => {
-        return {
-          command: 'editor.change',
-          path: this.file!.path,
-          editorId: this.editorId,
-          changes,
-        };
-      }),
-    ).subscribe(this.projectManager.webSocket);
-    this.subscription.add(changeEventsSub);
-
-    const cursorEventsSub = this.cursorEvents$.pipe(
-      debounceTime(200),
-      map(position => ({
-        command: 'editor.cursor',
-        path: this.file!.path,
-        editorId: this.editorId,
-        position,
-      })),
-    ).subscribe(this.projectManager.webSocket);
-    this.subscription.add(cursorEventsSub);
-  }
-
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-  }
-
-  private onExternalChange(file: File, content: string) {
-    const cached = file.content;
-    if (cached !== undefined && cached !== content && !confirm(file.name + ' was changed externally. Reload and discard changes?')) {
-      return;
-    }
-
-    file.dirty = false;
-    file.content = content;
-  }
-
-  private onRemoteChanges(changes: EditorChange[]) {
-    for (const change of changes) {
-      this.codeMirror.signal({...change, origin: 'remote'});
-    }
   }
 
   private removeCursor(editorId: string) {
@@ -191,6 +197,16 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
       from: position,
       to: endPosition,
     });
+  }
+
+  private onRemoteChanges(changes: EditorChange[]) {
+    for (const change of changes) {
+      this.codeMirror.signal({...change, origin: 'remote'});
+    }
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   save() {
