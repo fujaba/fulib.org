@@ -1,0 +1,12 @@
+.CodeMirror-hints {
+  @extend .dropdown-menu;
+  @extend .show;
+}
+
+.CodeMirror-hint {
+  @extend .dropdown-item;
+}
+
+.CodeMirror-hint-active {
+  @extend .active;
+}

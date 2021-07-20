@@ -6,7 +6,7 @@
 @import "~codemirror/theme/idea";
 @import "~codemirror/theme/darcula";
 @import '~codemirror/addon/lint/lint';
-@import '~codemirror/addon/hint/show-hint';
+@import "./styles/codemirror/hint";
 
 /* --------------- CodeMirror --------------- */
 
