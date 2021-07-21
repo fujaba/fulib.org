@@ -141,11 +141,11 @@ public class WebSocketHandler implements FileEventHandler
 	private void exec(Session session, JSONObject json)
 	{
 		final String id = json.getString("process");
-		final ExecProcess process = this.processService.getOrCreate(id, id1 -> createProcess(session, id1, json));
-		process.setSession(session);
+		final ExecProcess process = this.processService.getOrCreate(id, id1 -> createProcess(id1, json));
+		process.getSessions().add(session);
 	}
 
-	private ExecProcess createProcess(Session session, String id, JSONObject json)
+	private ExecProcess createProcess(String id, JSONObject json)
 	{
 		final String[] cmd = json.getJSONArray("cmd").toList().toArray(new String[0]);
 		final String workingDirectory = json.optString("workingDirectory");
@@ -161,7 +161,7 @@ public class WebSocketHandler implements FileEventHandler
 			}
 		}
 
-		final ExecProcess newProcess = new ExecProcess(id, session, cmd, workingDirectory, environment);
+		final ExecProcess newProcess = new ExecProcess(id, cmd, workingDirectory, environment);
 		newProcess.start();
 		return newProcess;
 	}

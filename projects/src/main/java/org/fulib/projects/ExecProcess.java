@@ -11,11 +11,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ExecProcess extends Thread
 {
 	private final String id;
-	private volatile Session session;
+	private final Set<Session> sessions = ConcurrentHashMap.newKeySet();
 	private final String[] cmd;
 	private final String workingDirectory;
 	private final Map<String, String> environment;
@@ -25,10 +27,9 @@ public class ExecProcess extends Thread
 
 	private PtyProcess process;
 
-	public ExecProcess(String id, Session session, String[] cmd, String workingDirectory, Map<String, String> environment)
+	public ExecProcess(String id, String[] cmd, String workingDirectory, Map<String, String> environment)
 	{
 		this.id = id;
-		this.session = session;
 		this.cmd = cmd;
 		this.workingDirectory = workingDirectory;
 		this.environment = environment;
@@ -54,9 +55,9 @@ public class ExecProcess extends Thread
 		return environment;
 	}
 
-	public void setSession(Session session)
+	public Set<Session> getSessions()
 	{
-		this.session = session;
+		return sessions;
 	}
 
 	public void input(String text) throws IOException
@@ -101,7 +102,7 @@ public class ExecProcess extends Thread
 			final JSONObject startedEvent = new JSONObject();
 			startedEvent.put("event", "started");
 			startedEvent.put("process", id);
-			session.getRemote().sendString(startedEvent.toString());
+			broadcast(startedEvent.toString());
 
 			try (final InputStream input = process.getInputStream())
 			{
@@ -118,7 +119,7 @@ public class ExecProcess extends Thread
 					outputEvent.put("event", "output");
 					outputEvent.put("process", id);
 					outputEvent.put("text", new String(buf, 0, read));
-					session.getRemote().sendString(outputEvent.toString());
+					broadcast(outputEvent.toString());
 				}
 			}
 
@@ -128,7 +129,7 @@ public class ExecProcess extends Thread
 			exitedEvent.put("event", "exited");
 			exitedEvent.put("process", id);
 			exitedEvent.put("exitCode", returnCode);
-			session.getRemote().sendString(exitedEvent.toString());
+			broadcast(exitedEvent.toString());
 		}
 		catch (IOException exception)
 		{
@@ -137,6 +138,14 @@ public class ExecProcess extends Thread
 		catch (InterruptedException ignored)
 		{
 			process.destroyForcibly();
+		}
+	}
+
+	private void broadcast(String message)
+	{
+		for (final Session session : sessions)
+		{
+			session.getRemote().sendString(message, null);
 		}
 	}
 }
