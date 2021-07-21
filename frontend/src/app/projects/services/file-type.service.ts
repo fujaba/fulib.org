@@ -86,7 +86,7 @@ export class FileTypeService {
       name: 'Archive',
       extensions: ['.zip', '.jar'],
       icon: 'file-zip',
-      mode: 'archive',
+      mode: 'download',
     },
     script: {
       name: 'Script',
@@ -100,7 +100,7 @@ export class FileTypeService {
     name: 'File',
     extensions: [],
     icon: 'file-earmark',
-    mode: 'null',
+    mode: 'download',
   };
 
   getFileType(file: File): FileType {

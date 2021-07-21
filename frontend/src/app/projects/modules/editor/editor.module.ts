@@ -8,6 +8,7 @@ import {FileIframeViewerComponent} from './file-iframe-viewer/file-iframe-viewer
 import {FileImageViewerComponent} from './file-image-viewer/file-image-viewer.component';
 import {FileMarkdownViewerComponent} from './file-markdown-viewer/file-markdown-viewer.component';
 import {IframeViewerComponent} from './iframe-viewer/iframe-viewer.component';
+import { FileDownloadViewerComponent } from './file-download-viewer/file-download-viewer.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import {IframeViewerComponent} from './iframe-viewer/iframe-viewer.component';
     FileIframeViewerComponent,
     FileMarkdownViewerComponent,
     IframeViewerComponent,
+    FileDownloadViewerComponent,
   ],
   imports: [
     CommonModule,
