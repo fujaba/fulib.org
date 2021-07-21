@@ -3,18 +3,17 @@ package org.fulib.projects;
 import org.eclipse.jetty.websocket.api.Session;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class EditorService
 {
 	private final Map<String, Editor> editors = new ConcurrentHashMap<>();
-	private final Map<String, Set<Editor>> subscriptions = new ConcurrentHashMap<>();
+	private final Map<String, PathInfo> paths = new ConcurrentHashMap<>();
 
 	public void open(String editorId, String path, Session session)
 	{
 		final Editor editor = editors.computeIfAbsent(editorId, eid -> new Editor(eid, path, session));
-		subscriptions.computeIfAbsent(path, p -> ConcurrentHashMap.newKeySet()).add(editor);
+		paths.computeIfAbsent(path, PathInfo::new).getEditors().add(editor);
 	}
 
 	public void close(String editorId)
@@ -24,10 +23,10 @@ public class EditorService
 		{
 			return;
 		}
-		final Set<Editor> editors = subscriptions.get(editor.getPath());
-		if (editors != null)
+		final PathInfo pathInfo = paths.get(editor.getPath());
+		if (pathInfo != null)
 		{
-			editors.remove(editor);
+			pathInfo.getEditors().remove(editor);
 		}
 	}
 
@@ -39,13 +38,13 @@ public class EditorService
 			return;
 		}
 
-		final Set<Editor> editors = subscriptions.get(editor.getPath());
-		if (editors == null)
+		final PathInfo pathInfo = paths.get(editor.getPath());
+		if (pathInfo == null)
 		{
 			return;
 		}
 
-		for (final Editor otherEditor : editors)
+		for (final Editor otherEditor : pathInfo.getEditors())
 		{
 			if (otherEditor == editor)
 			{
