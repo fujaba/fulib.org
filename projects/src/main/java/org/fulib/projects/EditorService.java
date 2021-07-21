@@ -13,7 +13,12 @@ public class EditorService
 	public void open(String editorId, String path, Session session)
 	{
 		final Editor editor = editors.computeIfAbsent(editorId, eid -> new Editor(eid, path, session));
-		paths.computeIfAbsent(path, PathInfo::new).getEditors().add(editor);
+		final PathInfo pathInfo = paths.computeIfAbsent(path, PathInfo::new);
+		pathInfo.getEditors().add(editor);
+		for (final String message : pathInfo.getMessages())
+		{
+			session.getRemote().sendString(message, null);
+		}
 	}
 
 	public void close(String editorId)
@@ -44,6 +49,7 @@ public class EditorService
 			return;
 		}
 
+		pathInfo.getMessages().add(message);
 		for (final Editor otherEditor : pathInfo.getEditors())
 		{
 			if (otherEditor == editor)
