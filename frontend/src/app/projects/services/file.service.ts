@@ -21,11 +21,8 @@ export class FileService {
     return this.dav.get(`${container.url}/dav/${file.path}`);
   }
 
-  saveContent(container: Container, file: File): Observable<void> {
-    if (file.content === undefined) {
-      return EMPTY;
-    }
-    return this.dav.put(`${container.url}/dav/${file.path}`, file.content);
+  saveContent(container: Container, file: File, content: string): Observable<void> {
+    return this.dav.put(`${container.url}/dav/${file.path}`, content);
   }
 
   get(container: Container, path: string): Observable<File> {

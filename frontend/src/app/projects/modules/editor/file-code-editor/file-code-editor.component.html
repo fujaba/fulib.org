@@ -1,6 +1,6 @@
 <app-autotheme-codemirror #codeMirror
   class="cm-h-100"
-  [content]="file$.value?.content || ''"
+  [content]="content"
   (contentChange)="setContent($event)"
   (changes)="changeEvents$.next($event)"
   (cursorActivity)="cursorEvents$.next($event)"

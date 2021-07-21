@@ -6,7 +6,6 @@ export class File {
   modified: Date;
   type: FileType;
 
-  content?: string;
   dirty?: boolean;
   info?: string;
   parent?: File;

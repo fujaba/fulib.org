@@ -17,6 +17,7 @@ import {ProjectManager} from '../../../services/project.manager';
 })
 export class FileCodeEditorComponent implements OnInit, OnDestroy {
   editorId = (14 + Math.random()).toString(36);
+  content = '';
 
   @ViewChild('codeMirror') codeMirror: AutothemeCodemirrorComponent;
 
@@ -100,13 +101,12 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
   }
 
   private onExternalChange(file: File, content: string) {
-    const cached = file.content;
-    if (cached !== undefined && cached !== content && !confirm(file.name + ' was changed externally. Reload and discard changes?')) {
+    if (this.content && file.dirty && !confirm(file.name + ' was changed externally. Reload and discard changes?')) {
       return;
     }
 
     file.dirty = false;
-    file.content = content;
+    this.content = content;
   }
 
   private subscribeToMarkers(): Subscription {
@@ -225,9 +225,9 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
 
     const project = this.projectManager.project;
     if (project.local) {
-      this.localProjectService.saveFile(project.id, file.path, file.content ?? '');
+      this.localProjectService.saveFile(project.id, file.path, this.content);
     }
-    this.fileService.saveContent(this.projectManager.container, file).subscribe(() => {
+    this.fileService.saveContent(this.projectManager.container, file, this.content).subscribe(() => {
       file.dirty = false;
     });
   }
@@ -237,7 +237,7 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
     if (!file) {
       return;
     }
-    file.content = content;
+    this.content = content;
     file.dirty = true;
   }
 }
