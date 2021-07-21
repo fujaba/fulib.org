@@ -14,8 +14,6 @@ export class TerminalTabsComponent implements OnInit, OnDestroy {
   tabs: Terminal[] = [];
   current?: Terminal;
 
-  nextId = 0;
-
   private subscription: Subscription;
 
   constructor(
@@ -42,7 +40,6 @@ export class TerminalTabsComponent implements OnInit, OnDestroy {
         };
       });
       this.current = this.tabs[0];
-      this.nextId = this.tabs.map(t => parseInt(t.id, 36)).sort().pop()! + 1;
     });
 
     this.subscription = this.projectManager.openRequests.subscribe(request => {
@@ -83,6 +80,6 @@ export class TerminalTabsComponent implements OnInit, OnDestroy {
   }
 
   private generateId(): string {
-    return (this.nextId++).toString(36);
+    return (29 + Math.random()).toString(36);
   }
 }
