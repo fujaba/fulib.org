@@ -1,7 +1,7 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {EditorChange, Position} from 'codemirror';
 import {BehaviorSubject, EMPTY, Subject, Subscription} from 'rxjs';
-import {buffer, debounceTime, filter, map, share, startWith, switchMap, tap} from 'rxjs/operators';
+import {buffer, debounceTime, delay, filter, map, share, startWith, switchMap, tap} from 'rxjs/operators';
 import {AutothemeCodemirrorComponent} from '../../../../shared/autotheme-codemirror/autotheme-codemirror.component';
 import {Marker} from '../../../../shared/model/marker';
 import {File} from '../../../model/file';
@@ -151,6 +151,7 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
 
   private subscribeToRemoteEvents(): Subscription {
     return this.file$.pipe(
+      delay(100),
       switchMap(file => file ? this.projectManager.webSocket.multiplex(
         () => ({command: 'editor.open', editorId: this.editorId, path: file.path}),
         () => ({command: 'editor.close', editorId: this.editorId, path: file.path}),
@@ -216,6 +217,12 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
       return;
     }
     this.projectManager.clearMarkers(file.path);
+    this.projectManager.webSocket.next({
+      command: 'editor.save',
+      editorId: this.editorId,
+      path: file.path,
+    });
+
     const project = this.projectManager.project;
     if (project.local) {
       this.localProjectService.saveFile(project.id, file.path, file.content ?? '');
