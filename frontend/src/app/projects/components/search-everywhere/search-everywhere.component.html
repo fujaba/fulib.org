@@ -1,0 +1,13 @@
+<app-modal #modal [back]="['..']" [backOptions]="{relativeTo: route}">
+  <ng-container modal-header>
+    Search Everywhere
+  </ng-container>
+  <ng-container modal-body>
+    TBI
+  </ng-container>
+  <ng-container modal-footer>
+    <button class="btn btn-secondary" (click)="modal.close()">
+      Cancel
+    </button>
+  </ng-container>
+</app-modal>

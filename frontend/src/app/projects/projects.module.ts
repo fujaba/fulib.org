@@ -22,6 +22,7 @@ import {FileTypeService} from './services/file-type.service';
 import {FileService} from './services/file.service';
 import {LocalProjectService} from './services/local-project.service';
 import {ProjectService} from './services/project.service';
+import { SearchEverywhereComponent } from './components/search-everywhere/search-everywhere.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import {ProjectService} from './services/project.service';
     ProjectListComponent,
     ProjectWorkspaceComponent,
     SplitPanelComponent,
+    SearchEverywhereComponent,
   ],
   imports: [
     // Angular
