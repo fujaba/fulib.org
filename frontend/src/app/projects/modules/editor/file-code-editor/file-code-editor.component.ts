@@ -155,8 +155,8 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
       switchMap(file => file ? this.projectManager.webSocket.multiplex(
         () => ({command: 'editor.open', editorId: this.editorId, path: file.path}),
         () => ({command: 'editor.close', editorId: this.editorId, path: file.path}),
-        ({command, path}) => {
-          if (path !== file.path) {
+        ({command, path, editorId}) => {
+          if (path !== file.path || editorId === this.editorId) {
             return false;
           }
           switch (command) {
