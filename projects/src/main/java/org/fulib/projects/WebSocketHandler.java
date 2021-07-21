@@ -110,6 +110,7 @@ public class WebSocketHandler implements FileEventHandler
 		case "editor.close":
 		case "editor.change":
 		case "editor.cursor":
+		case "editor.save":
 			this.handleEditor(session, command, json, message);
 			return;
 		default:
@@ -125,6 +126,9 @@ public class WebSocketHandler implements FileEventHandler
 
 		switch (command)
 		{
+		case "editor.save":
+			this.editorService.save(json.getString("path"));
+			return;
 		case "editor.open":
 			this.editorService.open(json.getString("editorId"), json.getString("path"), session);
 			return;

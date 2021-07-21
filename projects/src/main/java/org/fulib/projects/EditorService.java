@@ -35,6 +35,17 @@ public class EditorService
 		}
 	}
 
+	public void save(String path)
+	{
+		final PathInfo pathInfo = paths.get(path);
+		if (pathInfo == null)
+		{
+			return;
+		}
+
+		pathInfo.getMessages().clear();
+	}
+
 	public void broadcast(String editorId, String message)
 	{
 		final Editor editor = editors.get(editorId);
