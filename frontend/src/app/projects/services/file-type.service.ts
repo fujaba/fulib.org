@@ -52,6 +52,18 @@ export class FileTypeService {
       icon: 'file-earmark-code',
       mode: 'text/x-java',
     },
+    javascript: {
+      name: 'JavaScript',
+      extensions: ['.js', '.jsx'],
+      icon: 'file-earmark-code',
+      mode: 'text/javascript',
+    },
+    typescript: {
+      name: 'TypeScript',
+      extensions: ['.ts', '.tsx'],
+      icon: 'file-earmark-code',
+      mode: 'text/typescript',
+    },
     properties: {
       name: 'Properties',
       extensions: ['.properties'],
@@ -63,6 +75,12 @@ export class FileTypeService {
       extensions: ['.yaml', '.yml'],
       icon: 'file-earmark-code',
       mode: 'text/x-yaml',
+    },
+    json: {
+      name: 'JSON',
+      extensions: ['.json'],
+      icon: 'file-earmark-code',
+      mode: 'application/json',
     },
     archive: {
       name: 'Archive',
