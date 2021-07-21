@@ -94,6 +94,12 @@ export class FileTypeService {
       icon: 'terminal',
       mode: 'text/x-sh',
     },
+    ignore: {
+      name: 'Ignore',
+      extensions: ['.gitignore'],
+      icon: 'file-earmark-text',
+      mode: 'text/plain',
+    },
   };
 
   readonly default: FileType = {
