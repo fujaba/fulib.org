@@ -82,7 +82,7 @@ public class TerminalProcess extends Thread
 
 	void toJson(JSONObject json)
 	{
-		json.put("process", process);
+		json.put("process", id);
 		json.put("cmd", cmd);
 		json.put("workingDirectory", workingDirectory);
 		json.put("environment", environment);
