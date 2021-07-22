@@ -11,19 +11,15 @@ FROM debian:latest
 
 # Basic Dependencies
 RUN apt-get update -y
-# Chromium, 675 MB
-RUN apt-get install -y chromium chromium-driver
 # OpenJDK 11, 430 MB
 RUN apt-get install -y openjdk-11-jdk-headless
 # NodeJS 14, 50 MB + 140 MB
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
 RUN apt-get install -y nodejs
-# nginx (full for DAV), 15 MB
-RUN apt-get install -y nginx-full
 # Graphviz, 11 MB
 RUN apt-get install -y graphviz
-# curl, 5 MB
-RUN apt-get install -y curl
+# minor tools
+RUN apt-get install -y curl wget procps htop vim nano
 # Clear Caches
 RUN apt-get clean
 
