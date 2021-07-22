@@ -29,16 +29,7 @@ export class TerminalTabsComponent implements OnInit, OnDestroy {
         return;
       }
 
-      this.tabs = processes.map(({cmd, environment, process, workingDirectory}) => {
-        const [executable, ...args] = cmd;
-        return {
-          id: process,
-          executable,
-          arguments: args,
-          workingDirectory,
-          environment,
-        };
-      });
+      this.tabs = processes.map(process => this.terminalService.fromProcess(process));
       this.current = this.tabs[0];
     });
 

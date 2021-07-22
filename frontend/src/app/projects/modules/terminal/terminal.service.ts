@@ -20,6 +20,17 @@ export class TerminalService {
     return this.http.get<Process[]>(this.projectManager.container.url + '/processes');
   }
 
+  fromProcess({cmd, environment, process, workingDirectory}: Process): Terminal {
+    const [executable, ...args] = cmd;
+    return {
+      id: process,
+      executable,
+      arguments: args,
+      workingDirectory,
+      environment,
+    };
+  }
+
   exec(terminal: Terminal): Observable<any> {
     const process: Process = {
       process: terminal.id,
