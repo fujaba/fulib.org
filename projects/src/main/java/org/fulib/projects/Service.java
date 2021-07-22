@@ -1,5 +1,8 @@
 package org.fulib.projects;
 
+import org.fulib.projects.terminal.TerminalController;
+import org.fulib.projects.terminal.TerminalService;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -13,7 +16,7 @@ public class Service
 
 	private volatile ScheduledFuture<?> scheduledStop;
 	private WebSocketHandler webSocketHandler;
-	private ProcessService processService;
+	private TerminalService terminalService;
 
 	public static void main(String[] args)
 	{
@@ -25,13 +28,13 @@ public class Service
 		scheduler = Executors.newSingleThreadScheduledExecutor();
 		scheduledStop = scheduler.schedule(this::stop, 120, TimeUnit.SECONDS);
 
-		processService = new ProcessService();
+		terminalService = new TerminalService();
 
 		webSocketHandler = new WebSocketHandler(() -> {
 			scheduledStop.cancel(false);
 			scheduledStop = scheduler.schedule(this::stop, 60, TimeUnit.SECONDS);
 		});
-		webSocketHandler.setProcessService(processService);
+		webSocketHandler.setProcessService(terminalService);
 		webSocketHandler.setEditorService(new EditorService());
 
 		final FileWatcherProcess fileWatcher = new FileWatcherProcess(webSocketHandler);
@@ -43,13 +46,13 @@ public class Service
 
 		final ZipHandler zipHandler = new ZipHandler();
 
-		final ProcessController processController = new ProcessController(processService);
+		final TerminalController terminalController = new TerminalController(terminalService);
 
 		service = spark.Service.ignite();
 		service.port(4567);
 		service.webSocket("/ws", webSocketHandler);
 		service.get("/health", (req, res) -> "OK");
-		service.get("/processes", processController::getAll);
+		service.get("/processes", terminalController::getAll);
 		service.get("/zip/*", zipHandler::pack);
 		service.post("/zip/*", zipHandler::unpack);
 		service.awaitStop();
@@ -59,6 +62,6 @@ public class Service
 	{
 		service.stop();
 		scheduler.shutdown();
-		processService.stop();
+		terminalService.stop();
 	}
 }

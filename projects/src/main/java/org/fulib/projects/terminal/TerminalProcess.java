@@ -1,4 +1,4 @@
-package org.fulib.projects;
+package org.fulib.projects.terminal;
 
 import com.pty4j.PtyProcess;
 import com.pty4j.PtyProcessBuilder;
@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ExecProcess extends Thread
+public class TerminalProcess extends Thread
 {
 	private final String id;
 	private final Set<Session> sessions = ConcurrentHashMap.newKeySet();
@@ -27,7 +27,7 @@ public class ExecProcess extends Thread
 
 	private PtyProcess process;
 
-	public ExecProcess(String id, String[] cmd, String workingDirectory, Map<String, String> environment)
+	public TerminalProcess(String id, String[] cmd, String workingDirectory, Map<String, String> environment)
 	{
 		this.id = id;
 		this.cmd = cmd;

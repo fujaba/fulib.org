@@ -1,23 +1,23 @@
-package org.fulib.projects;
+package org.fulib.projects.terminal;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
 
-public class ProcessController
+public class TerminalController
 {
-	private final ProcessService processService;
+	private final TerminalService terminalService;
 
-	public ProcessController(ProcessService processService)
+	public TerminalController(TerminalService terminalService)
 	{
-		this.processService = processService;
+		this.terminalService = terminalService;
 	}
 
 	public Object getAll(Request request, Response response)
 	{
 		final JSONArray array = new JSONArray();
-		for (final ExecProcess process : processService.getAll())
+		for (final TerminalProcess process : terminalService.getAll())
 		{
 			final JSONObject obj = new JSONObject();
 			obj.put("process", process.getExecId());

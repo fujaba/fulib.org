@@ -2,6 +2,8 @@ package org.fulib.projects;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.*;
+import org.fulib.projects.terminal.TerminalProcess;
+import org.fulib.projects.terminal.TerminalService;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -14,7 +16,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class WebSocketHandler implements FileEventHandler
 {
 	private FileWatcherRegistry fileWatcher;
-	private ProcessService processService;
+	private TerminalService terminalService;
 	private EditorService editorService;
 	private final Runnable resetShutdownTimer;
 
@@ -30,9 +32,9 @@ public class WebSocketHandler implements FileEventHandler
 		this.fileWatcher = fileWatcher;
 	}
 
-	public void setProcessService(ProcessService processService)
+	public void setProcessService(TerminalService terminalService)
 	{
-		this.processService = processService;
+		this.terminalService = terminalService;
 	}
 
 	public void setEditorService(EditorService editorService)
@@ -78,7 +80,7 @@ public class WebSocketHandler implements FileEventHandler
 		{
 			final String input = json.getString("text");
 			final String processId = json.getString("process");
-			final ExecProcess process = this.processService.get(processId);
+			final TerminalProcess process = this.terminalService.get(processId);
 			if (process != null)
 			{
 				process.input(input);
@@ -88,7 +90,7 @@ public class WebSocketHandler implements FileEventHandler
 		case "kill":
 		{
 			final String processId = json.getString("process");
-			this.processService.kill(processId);
+			this.terminalService.kill(processId);
 			return;
 		}
 		case "keepAlive":
@@ -99,7 +101,7 @@ public class WebSocketHandler implements FileEventHandler
 			final String processId = json.getString("process");
 			final int columns = json.getInt("columns");
 			final int rows = json.getInt("rows");
-			final ExecProcess process = this.processService.get(processId);
+			final TerminalProcess process = this.terminalService.get(processId);
 			if (process != null)
 			{
 				process.resize(columns, rows);
@@ -141,11 +143,11 @@ public class WebSocketHandler implements FileEventHandler
 	private void exec(Session session, JSONObject json)
 	{
 		final String id = json.getString("process");
-		final ExecProcess process = this.processService.getOrCreate(id, id1 -> createProcess(id1, json));
+		final TerminalProcess process = this.terminalService.getOrCreate(id, id1 -> createProcess(id1, json));
 		process.getSessions().add(session);
 	}
 
-	private ExecProcess createProcess(String id, JSONObject json)
+	private TerminalProcess createProcess(String id, JSONObject json)
 	{
 		final String[] cmd = json.getJSONArray("cmd").toList().toArray(new String[0]);
 		final String workingDirectory = json.optString("workingDirectory");
@@ -161,7 +163,7 @@ public class WebSocketHandler implements FileEventHandler
 			}
 		}
 
-		final ExecProcess newProcess = new ExecProcess(id, cmd, workingDirectory, environment);
+		final TerminalProcess newProcess = new TerminalProcess(id, cmd, workingDirectory, environment);
 		newProcess.start();
 		return newProcess;
 	}
