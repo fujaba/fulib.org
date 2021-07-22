@@ -38,18 +38,29 @@ export class TerminalService {
       environment: terminal.environment,
       workingDirectory: terminal.workingDirectory,
     };
-    return this.webSocket.multiplex(() => ({
-      command: 'exec',
+    return this._attach(terminal.id, {
+      command: 'terminal.exec',
       ...process,
-    }), () => ({
-      command: 'kill',
-      process: terminal.id,
+    });
+  }
+
+  attach(process: string) {
+    return this._attach(process, {
+      command: 'terminal.attach',
+      process,
+    });
+  }
+
+  private _attach(process: string, subMsg: unknown): Observable<any> {
+    return this.webSocket.multiplex(() => subMsg, () => ({
+      command: 'terminal.detach',
+      process,
     }), msg => {
       switch (msg.event) {
-        case 'started':
-        case 'output':
-        case 'exited':
-          return msg.process === terminal.id;
+        case 'terminal.started':
+        case 'terminal.output':
+        case 'terminal.exited':
+          return msg.process === process;
         default:
           return false;
       }
@@ -57,14 +68,14 @@ export class TerminalService {
   }
 
   kill(process: string): void {
-    this.webSocket.next({command: 'kill', process});
+    this.webSocket.next({command: 'terminal.kill', process});
   }
 
   input(text: string, process: string): void {
-    this.webSocket.next({command: 'input', text, process});
+    this.webSocket.next({command: 'terminal.input', text, process});
   }
 
   resize(process: string, columns: number, rows: number) {
-    this.webSocket.next({command: 'resize', process, columns, rows});
+    this.webSocket.next({command: 'terminal.resize', process, columns, rows});
   }
 }

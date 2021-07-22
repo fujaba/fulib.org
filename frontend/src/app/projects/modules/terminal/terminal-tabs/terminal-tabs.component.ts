@@ -61,11 +61,11 @@ export class TerminalTabsComponent implements OnInit, OnDestroy {
     return this.projectManager.webSocket.subscribe(message => {
       const {event, ...data} = message;
       switch (event) {
-        case 'started':
+        case 'terminal.started':
           const process: Process = data;
           this.processes.push(process);
           return;
-        case 'exited':
+        case 'terminal.exited':
           const index = this.processes.findIndex(p => p.process === data.process);
           if (index >= 0) {
             this.processes.splice(index, 1);

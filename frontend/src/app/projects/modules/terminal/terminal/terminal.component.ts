@@ -36,9 +36,9 @@ export class TerminalComponent implements OnInit, OnDestroy, AfterViewInit {
     this.output$ = this.terminalService.exec(this.model).pipe(
       filter(message => {
         switch (message.event) {
-          case 'output':
+          case 'terminal.output':
             return true;
-          case 'exited':
+          case 'terminal.exited':
             this.terminal.write(`\r\nProcess finished with exit code ${message.exitCode}.\r\n`);
             return false;
           default:
