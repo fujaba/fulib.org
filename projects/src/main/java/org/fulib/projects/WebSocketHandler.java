@@ -2,47 +2,28 @@ package org.fulib.projects;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.*;
-import org.fulib.projects.editor.EditorService;
 import org.fulib.projects.fsevents.FileEventHandler;
-import org.fulib.projects.fsevents.FileWatcherRegistry;
-import org.fulib.projects.terminal.TerminalProcess;
-import org.fulib.projects.terminal.TerminalService;
 import org.json.JSONObject;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @WebSocket
 public class WebSocketHandler implements FileEventHandler
 {
-	private FileWatcherRegistry fileWatcher;
-	private TerminalService terminalService;
-	private EditorService editorService;
-	private final Runnable resetShutdownTimer;
+	private final List<CommandHandler> commandHandlers = new ArrayList<>();
 
 	private final Collection<Session> sessions = new ConcurrentLinkedQueue<>();
 
-	public WebSocketHandler(Runnable resetShutdownTimer)
+	public WebSocketHandler()
 	{
-		this.resetShutdownTimer = resetShutdownTimer;
 	}
 
-	public void setFileWatcher(FileWatcherRegistry fileWatcher)
+	public List<CommandHandler> getCommandHandlers()
 	{
-		this.fileWatcher = fileWatcher;
-	}
-
-	public void setProcessService(TerminalService terminalService)
-	{
-		this.terminalService = terminalService;
-	}
-
-	public void setEditorService(EditorService editorService)
-	{
-		this.editorService = editorService;
+		return commandHandlers;
 	}
 
 	@OnWebSocketConnect
@@ -52,7 +33,7 @@ public class WebSocketHandler implements FileEventHandler
 	}
 
 	@OnWebSocketMessage
-	public void message(Session session, String message) throws IOException
+	public void message(Session session, String message) throws Exception
 	{
 		final JSONObject json = new JSONObject(message);
 		final String command = json.optString("command");
@@ -61,114 +42,15 @@ public class WebSocketHandler implements FileEventHandler
 			return;
 		}
 
-		switch (command)
+		for (final CommandHandler handler : this.commandHandlers)
 		{
-		case "watch":
-		{
-			final String id = json.getString("id");
-			final String path = json.getString("path");
-			this.fileWatcher.watch(id, path);
-			return;
-		}
-		case "unwatch":
-		{
-			final String id = json.getString("id");
-			this.fileWatcher.unwatch(id);
-			return;
-		}
-		case "exec":
-			exec(session, json);
-			return;
-		case "input":
-		{
-			final String input = json.getString("text");
-			final String processId = json.getString("process");
-			final TerminalProcess process = this.terminalService.get(processId);
-			if (process != null)
+			if (handler.handle(command, message, json, session))
 			{
-				process.input(input);
-			}
-			return;
-		}
-		case "kill":
-		{
-			final String processId = json.getString("process");
-			this.terminalService.kill(processId);
-			return;
-		}
-		case "keepAlive":
-			this.resetShutdownTimer.run();
-			return;
-		case "resize":
-		{
-			final String processId = json.getString("process");
-			final int columns = json.getInt("columns");
-			final int rows = json.getInt("rows");
-			final TerminalProcess process = this.terminalService.get(processId);
-			if (process != null)
-			{
-				process.resize(columns, rows);
-			}
-			return;
-		}
-		case "editor.open":
-		case "editor.close":
-		case "editor.change":
-		case "editor.cursor":
-		case "editor.save":
-			this.handleEditor(session, command, json, message);
-			return;
-		default:
-			session.getRemote().sendString(new JSONObject().put("error", "invalid command: " + command).toString());
-			return;
-		}
-	}
-
-	private void handleEditor(Session session, String command, JSONObject json, String message)
-	{
-		final String editorId = json.getString("editorId");
-		this.editorService.broadcast(editorId, message);
-
-		switch (command)
-		{
-		case "editor.save":
-			this.editorService.save(json.getString("path"));
-			return;
-		case "editor.open":
-			this.editorService.open(json.getString("editorId"), json.getString("path"), session);
-			return;
-		case "editor.close":
-			this.editorService.close(editorId);
-			return;
-		}
-	}
-
-	private void exec(Session session, JSONObject json)
-	{
-		final String id = json.getString("process");
-		final TerminalProcess process = this.terminalService.getOrCreate(id, id1 -> createProcess(id1, json));
-		process.getSessions().add(session);
-	}
-
-	private TerminalProcess createProcess(String id, JSONObject json)
-	{
-		final String[] cmd = json.getJSONArray("cmd").toList().toArray(new String[0]);
-		final String workingDirectory = json.optString("workingDirectory");
-
-		final JSONObject environmentObj = json.optJSONObject("environment");
-		Map<String, String> environment = null;
-		if (environmentObj != null)
-		{
-			environment = new HashMap<>();
-			for (final String key : environmentObj.keySet())
-			{
-				environment.put(key, environmentObj.get(key).toString());
+				return;
 			}
 		}
 
-		final TerminalProcess newProcess = new TerminalProcess(id, cmd, workingDirectory, environment);
-		newProcess.start();
-		return newProcess;
+		session.getRemote().sendString(new JSONObject().put("error", "invalid command: " + command).toString());
 	}
 
 	@OnWebSocketError
