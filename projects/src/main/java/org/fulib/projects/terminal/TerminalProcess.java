@@ -108,7 +108,7 @@ public class TerminalProcess extends Thread
 			process = processBuilder.start();
 
 			final JSONObject startedEvent = new JSONObject();
-			startedEvent.put("event", "started");
+			startedEvent.put("event", "terminal.started");
 			toJson(startedEvent);
 			broadcast(startedEvent.toString());
 
@@ -124,7 +124,7 @@ public class TerminalProcess extends Thread
 					}
 
 					final JSONObject outputEvent = new JSONObject();
-					outputEvent.put("event", "output");
+					outputEvent.put("event", "terminal.output");
 					outputEvent.put("process", id);
 					outputEvent.put("text", new String(buf, 0, read));
 					broadcast(outputEvent.toString());
@@ -134,7 +134,7 @@ public class TerminalProcess extends Thread
 			final int returnCode = process.waitFor();
 
 			final JSONObject exitedEvent = new JSONObject();
-			exitedEvent.put("event", "exited");
+			exitedEvent.put("event", "terminal.exited");
 			exitedEvent.put("process", id);
 			exitedEvent.put("exitCode", returnCode);
 			broadcast(exitedEvent.toString());
