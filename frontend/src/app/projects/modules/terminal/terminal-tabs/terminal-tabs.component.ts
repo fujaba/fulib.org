@@ -28,10 +28,6 @@ export class TerminalTabsComponent implements OnInit, OnDestroy {
       this.processes = processes;
     });
 
-    if (this.tabs.length === 0) {
-      this.addTab();
-    }
-
     this.subscription.add(this.subscribeToOpenRequests());
     this.subscription.add(this.subscribeToEvents());
   }
