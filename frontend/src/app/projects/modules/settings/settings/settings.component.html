@@ -1,6 +1,6 @@
 <div class="container">
   <h4>Basic Settings</h4>
-  <app-project-form [project]="project"></app-project-form>
+  <app-project-form *ngIf="project" [project]="project"></app-project-form>
   <button type="button" class="btn btn-primary" (click)="save()">
     Save
   </button>
@@ -18,7 +18,7 @@
         Setup
       </a>
     </div>
-    <div class="list-group-item border-danger d-flex align-items-center" *ngIf="!project.local">
+    <div class="list-group-item border-danger d-flex align-items-center" *ngIf="!project?.local">
       <div class="flex-grow-1">
         <h6>
           Transfer Ownership

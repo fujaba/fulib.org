@@ -11,7 +11,7 @@ import {ProjectService} from '../../../services/project.service';
   styleUrls: ['./settings.component.scss'],
 })
 export class SettingsComponent implements OnInit {
-  project: Project;
+  project?: Project;
 
   constructor(
     public activatedRoute: ActivatedRoute,
@@ -29,6 +29,6 @@ export class SettingsComponent implements OnInit {
   }
 
   save(): void {
-    this.projectService.update(this.project).subscribe(result => this.project = result);
+    this.projectService.update(this.project!).subscribe(result => this.project = result);
   }
 }
