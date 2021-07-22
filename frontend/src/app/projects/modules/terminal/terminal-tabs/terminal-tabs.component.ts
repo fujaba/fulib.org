@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
-import {Terminal} from '../../../model/terminal';
+import {Process, Terminal} from '../../../model/terminal';
 import {ProjectManager} from '../../../services/project.manager';
 import {TerminalService} from '../terminal.service';
 
@@ -12,9 +12,10 @@ import {TerminalService} from '../terminal.service';
 })
 export class TerminalTabsComponent implements OnInit, OnDestroy {
   tabs: Terminal[] = [];
+  processes: Process[] = [];
   current?: Terminal;
 
-  private subscription: Subscription;
+  private subscription = new Subscription();
 
   constructor(
     private projectManager: ProjectManager,
@@ -24,16 +25,19 @@ export class TerminalTabsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.terminalService.getProcesses().subscribe(processes => {
-      if (processes.length === 0) {
-        this.addTab();
-        return;
-      }
-
-      this.tabs = processes.map(process => this.terminalService.fromProcess(process));
-      this.current = this.tabs[0];
+      this.processes = processes;
     });
 
-    this.subscription = this.projectManager.openRequests.subscribe(request => {
+    if (this.tabs.length === 0) {
+      this.addTab();
+    }
+
+    this.subscription.add(this.subscribeToOpenRequests());
+    this.subscription.add(this.subscribeToEvents());
+  }
+
+  private subscribeToOpenRequests(): Subscription {
+    return this.projectManager.openRequests.subscribe(request => {
       if (request.type !== 'terminal') {
         return;
       }
@@ -53,6 +57,24 @@ export class TerminalTabsComponent implements OnInit, OnDestroy {
     });
   }
 
+  private subscribeToEvents(): Subscription {
+    return this.projectManager.webSocket.subscribe(message => {
+      const {event, ...data} = message;
+      switch (event) {
+        case 'started':
+          const process: Process = data;
+          this.processes.push(process);
+          return;
+        case 'exited':
+          const index = this.processes.findIndex(p => p.process === data.process);
+          if (index >= 0) {
+            this.processes.splice(index, 1);
+          }
+          return;
+      }
+    });
+  }
+
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
@@ -63,6 +85,17 @@ export class TerminalTabsComponent implements OnInit, OnDestroy {
       executable: '/bin/bash',
       workingDirectory: this.projectManager.fileRoot.path,
     });
+  }
+
+  reopen(process: Process) {
+    const existing = this.tabs.find(t => t.id === process.process);
+    if (existing) {
+      this.current = existing;
+      return;
+    }
+
+    const terminal = this.terminalService.fromProcess(process);
+    this.openNew(terminal);
   }
 
   private openNew(terminal: Terminal) {

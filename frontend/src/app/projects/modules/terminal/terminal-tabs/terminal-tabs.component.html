@@ -1,7 +1,21 @@
-<app-tabs [(tabs)]="tabs" [(current)]="current" [header]="header" [content]="content" (create)="addTab()"></app-tabs>
-<ng-template #header let-terminal>
-  {{ terminal.title || terminal.executable }}
-</ng-template>
-<ng-template #content let-terminal>
-  <app-terminal [model]="terminal"></app-terminal>
-</ng-template>
+<div class="h-100 position-relative">
+  <app-tabs [(tabs)]="tabs" [(current)]="current" [header]="header" [content]="content" (create)="addTab()"></app-tabs>
+  <ng-template #header let-terminal>
+    {{ terminal.title || terminal.executable }}
+  </ng-template>
+  <ng-template #content let-terminal>
+    <app-terminal [model]="terminal"></app-terminal>
+  </ng-template>
+  <div class="position-absolute" style="top: 0.2rem; right: 0.2rem">
+    <div ngbDropdown class="d-inline-block" placement="bottom-right">
+      <button class="btn btn-secondary" id="processDropdown" ngbDropdownToggle>
+        Processes
+      </button>
+      <div ngbDropdownMenu aria-labelledby="processDropdown">
+        <button *ngFor="let process of processes" ngbDropdownItem (click)="reopen(process)">
+          {{ process.cmd[0] }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
