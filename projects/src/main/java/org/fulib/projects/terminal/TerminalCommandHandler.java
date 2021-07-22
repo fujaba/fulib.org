@@ -20,40 +20,28 @@ public class TerminalCommandHandler implements CommandHandler
 	@Override
 	public boolean handle(String command, String message, JSONObject json, Session session) throws IOException
 	{
+		final String processId = json.optString("process");
+
 		switch (command)
 		{
 		case "terminal.exec":
 			exec(session, json);
 			return true;
+		case "terminal.attach":
+			attach(session, processId);
+			return true;
+		case "terminal.detach":
+			detach(session, processId);
+			return true;
 		case "terminal.input":
-		{
-			final String input = json.getString("text");
-			final String processId = json.getString("process");
-			final TerminalProcess process = this.terminalService.get(processId);
-			if (process != null)
-			{
-				process.input(input);
-			}
+			input(processId, json.getString("text"));
 			return true;
-		}
-		case "terminal.kill":
-		{
-			final String processId = json.getString("process");
-			this.terminalService.kill(processId);
-			return true;
-		}
 		case "terminal.resize":
-		{
-			final String processId = json.getString("process");
-			final int columns = json.getInt("columns");
-			final int rows = json.getInt("rows");
-			final TerminalProcess process = this.terminalService.get(processId);
-			if (process != null)
-			{
-				process.resize(columns, rows);
-			}
+			resize(processId, json.getInt("columns"), json.getInt("rows"));
 			return true;
-		}
+		case "terminal.kill":
+			terminalService.kill(processId);
+			return true;
 		}
 		return false;
 	}
@@ -61,7 +49,7 @@ public class TerminalCommandHandler implements CommandHandler
 	private void exec(Session session, JSONObject json)
 	{
 		final String id = json.getString("process");
-		final TerminalProcess process = this.terminalService.getOrCreate(id, id1 -> createProcess(id1, json));
+		final TerminalProcess process = terminalService.getOrCreate(id, id1 -> createProcess(id1, json));
 		process.getSessions().add(session);
 	}
 
@@ -84,5 +72,41 @@ public class TerminalCommandHandler implements CommandHandler
 		final TerminalProcess newProcess = new TerminalProcess(id, cmd, workingDirectory, environment);
 		newProcess.start();
 		return newProcess;
+	}
+
+	private void attach(Session session, String processId)
+	{
+		final TerminalProcess process = terminalService.get(processId);
+		if (process != null)
+		{
+			process.getSessions().add(session);
+		}
+	}
+
+	private void detach(Session session, String processId)
+	{
+		final TerminalProcess process = terminalService.get(processId);
+		if (process != null)
+		{
+			process.getSessions().remove(session);
+		}
+	}
+
+	private void input(String processId, String input) throws IOException
+	{
+		final TerminalProcess process = terminalService.get(processId);
+		if (process != null)
+		{
+			process.input(input);
+		}
+	}
+
+	private void resize(String processId, int columns, int rows)
+	{
+		final TerminalProcess process = terminalService.get(processId);
+		if (process != null)
+		{
+			process.resize(columns, rows);
+		}
 	}
 }
