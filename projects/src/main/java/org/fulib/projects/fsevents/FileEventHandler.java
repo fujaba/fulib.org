@@ -1,4 +1,4 @@
-package org.fulib.projects;
+package org.fulib.projects.fsevents;
 
 public interface FileEventHandler
 {

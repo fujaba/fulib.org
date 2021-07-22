@@ -1,6 +1,8 @@
 package org.fulib.projects;
 
 import org.fulib.projects.editor.EditorService;
+import org.fulib.projects.fsevents.FileWatcherProcess;
+import org.fulib.projects.fsevents.FileWatcherRegistry;
 import org.fulib.projects.terminal.TerminalController;
 import org.fulib.projects.terminal.TerminalService;
 
