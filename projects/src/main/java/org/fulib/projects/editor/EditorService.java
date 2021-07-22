@@ -1,4 +1,4 @@
-package org.fulib.projects;
+package org.fulib.projects.editor;
 
 import org.eclipse.jetty.websocket.api.Session;
 

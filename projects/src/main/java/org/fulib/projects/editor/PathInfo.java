@@ -1,4 +1,4 @@
-package org.fulib.projects;
+package org.fulib.projects.editor;
 
 import java.util.Queue;
 import java.util.Set;

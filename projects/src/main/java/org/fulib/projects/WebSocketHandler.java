@@ -2,6 +2,7 @@ package org.fulib.projects;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.*;
+import org.fulib.projects.editor.EditorService;
 import org.fulib.projects.terminal.TerminalProcess;
 import org.fulib.projects.terminal.TerminalService;
 import org.json.JSONObject;

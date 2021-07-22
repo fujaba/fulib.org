@@ -1,5 +1,6 @@
 package org.fulib.projects;
 
+import org.fulib.projects.editor.EditorService;
 import org.fulib.projects.terminal.TerminalController;
 import org.fulib.projects.terminal.TerminalService;
 
