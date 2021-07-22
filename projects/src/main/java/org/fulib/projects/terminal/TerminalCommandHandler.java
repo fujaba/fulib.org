@@ -22,10 +22,10 @@ public class TerminalCommandHandler implements CommandHandler
 	{
 		switch (command)
 		{
-		case "exec":
+		case "terminal.exec":
 			exec(session, json);
 			return true;
-		case "input":
+		case "terminal.input":
 		{
 			final String input = json.getString("text");
 			final String processId = json.getString("process");
@@ -36,13 +36,13 @@ public class TerminalCommandHandler implements CommandHandler
 			}
 			return true;
 		}
-		case "kill":
+		case "terminal.kill":
 		{
 			final String processId = json.getString("process");
 			this.terminalService.kill(processId);
 			return true;
 		}
-		case "resize":
+		case "terminal.resize":
 		{
 			final String processId = json.getString("process");
 			final int columns = json.getInt("columns");
