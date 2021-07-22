@@ -80,6 +80,14 @@ public class TerminalProcess extends Thread
 		}
 	}
 
+	void toJson(JSONObject json)
+	{
+		json.put("process", process);
+		json.put("cmd", cmd);
+		json.put("workingDirectory", workingDirectory);
+		json.put("environment", environment);
+	}
+
 	@Override
 	public void run()
 	{
@@ -101,7 +109,7 @@ public class TerminalProcess extends Thread
 
 			final JSONObject startedEvent = new JSONObject();
 			startedEvent.put("event", "started");
-			startedEvent.put("process", id);
+			toJson(startedEvent);
 			broadcast(startedEvent.toString());
 
 			try (final InputStream input = process.getInputStream())

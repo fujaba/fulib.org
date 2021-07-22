@@ -20,10 +20,7 @@ public class TerminalController
 		for (final TerminalProcess process : terminalService.getAll())
 		{
 			final JSONObject obj = new JSONObject();
-			obj.put("process", process.getExecId());
-			obj.put("cmd", process.getCmd());
-			obj.put("workingDirectory", process.getWorkingDirectory());
-			obj.put("environment", process.getEnvironment());
+			process.toJson(obj);
 			array.put(obj);
 		}
 		return array.toString();
