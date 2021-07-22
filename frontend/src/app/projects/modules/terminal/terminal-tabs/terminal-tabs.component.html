@@ -8,13 +8,21 @@
   </ng-template>
   <div class="position-absolute" style="top: 0.2rem; right: 0.2rem">
     <div ngbDropdown class="d-inline-block" placement="bottom-right">
-      <button class="btn btn-secondary" id="processDropdown" ngbDropdownToggle>
-        Processes
+      <button class="btn btn-outline-secondary" id="processDropdown" ngbDropdownToggle>
+        Terminals ({{ processes.length }})
       </button>
       <div ngbDropdownMenu aria-labelledby="processDropdown">
         <button *ngFor="let process of processes" ngbDropdownItem (click)="reopen(process)">
           {{ process.cmd[0] }}
         </button>
+        <ng-container *ngIf="processes.length === 0">
+          <div class="dropdown-header">
+            No terminals are active.
+          </div>
+          <button ngbDropdownItem class="text-success" (click)="addTab()">
+            New Terminal
+          </button>
+        </ng-container>
       </div>
     </div>
   </div>
