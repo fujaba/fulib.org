@@ -56,10 +56,6 @@ export class AutothemeCodemirrorComponent implements OnInit, OnDestroy, AfterVie
     this.performLint();
   }
 
-  private performLint() {
-    (this.ngxCodemirror?.codeMirror as any)?.performLint?.();
-  }
-
   ngOnInit() {
     this.subscription = this.themeService.theme$.pipe(
       switchMap(theme => theme === 'auto' ? this.themeService.detectedTheme$ : of(theme)),
@@ -67,6 +63,26 @@ export class AutothemeCodemirrorComponent implements OnInit, OnDestroy, AfterVie
   }
 
   ngAfterViewInit() {
+    this.refreshCodeMirror();
+    if (this.markers) {
+      this.performLint();
+    }
+    this.listenForChanges();
+  }
+
+  private performLint() {
+    this.zone.runOutsideAngular(() => {
+      this.ngxCodemirror?.codeMirror?.performLint();
+    });
+  }
+
+  private refreshCodeMirror() {
+    this.zone.runOutsideAngular(() => {
+      this.ngxCodemirror?.codeMirror?.refresh();
+    });
+  }
+
+  private listenForChanges() {
     this.zone.runOutsideAngular(() => {
       this.ngxCodemirror!.codeMirror!.on('change', (editor, change) => {
         this.zone.run(() => this.changes.emit(change));
