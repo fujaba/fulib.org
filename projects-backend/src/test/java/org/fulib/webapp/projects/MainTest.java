@@ -1,6 +1,7 @@
 package org.fulib.webapp.projects;
 
 import org.fulib.webapp.projects.containers.ContainerController;
+import org.fulib.webapp.projects.members.MemberController;
 import org.fulib.webapp.projects.projects.ProjectController;
 import org.fulib.webapp.projects.projectzip.ProjectZipController;
 import org.junit.AfterClass;
@@ -21,7 +22,9 @@ public class MainTest
 	private static final ProjectZipController projectZipController = mock(ProjectZipController.class);
 	private static final ProjectController projectController = mock(ProjectController.class);
 	private static final ContainerController containerController = mock(ContainerController.class);
-	private static final Main main = new Main(projectZipController, projectController, containerController);
+	private static final MemberController memberController = mock(MemberController.class);
+	private static final Main main = new Main(projectZipController, projectController, containerController,
+	                                          memberController);
 
 	@BeforeClass
 	public static void setup()
@@ -60,6 +63,8 @@ public class MainTest
 		checkRoute("GET", "/api/projects/1");
 		checkRoute("PUT", "/api/projects/1");
 		checkRoute("DELETE", "/api/projects/1");
+
+		// TODO container and member routes
 
 		verify(projectController).get(any(), any());
 		verify(projectController).getAll(any(), any());
