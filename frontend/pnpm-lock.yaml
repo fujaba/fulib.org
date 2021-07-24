@@ -14,9 +14,9 @@ specifiers:
   '@angular/platform-browser': ~11.2.6
   '@angular/platform-browser-dynamic': ~11.2.6
   '@angular/router': ~11.2.6
-  '@ctrl/ngx-codemirror': ^4.1.0
+  '@ctrl/ngx-codemirror': ^4.1.1
   '@ng-bootstrap/ng-bootstrap': ^9.0.2
-  '@types/codemirror': ^0.0.108
+  '@types/codemirror': ^5.60.2
   '@types/file-saver': ^2.0.1
   '@types/jasmine': ~3.6.7
   '@types/jasminewd2': ~2.0.8
@@ -28,7 +28,7 @@ specifiers:
   bootstrap-icons: ^1.4.0
   bson-objectid: ^2.0.1
   codelyzer: ^6.0.1
-  codemirror: ^5.60.0
+  codemirror: ^5.60.2
   file-saver: ^2.0.5
   highlight.js: ^10.7.1
   jasmine-core: ~3.6.0
@@ -63,7 +63,7 @@ dependencies:
   '@angular/platform-browser': 11.2.6_e55852a61278bb526b507ea446211084
   '@angular/platform-browser-dynamic': 11.2.6_941ec7a7534b17adeee8c756ef490549
   '@angular/router': 11.2.6_daf588f56cfc04c5b8a889bb8cd1a624
-  '@ctrl/ngx-codemirror': 4.1.0_eecc303a9cbf0cea36383372df58b288
+  '@ctrl/ngx-codemirror': 4.1.1_f0c809ce72bf38419bedb6c026d664dd
   '@ng-bootstrap/ng-bootstrap': 9.0.2_b3baf67cad1cd4bfd5469d1d13d0823c
   angular-gridster2: 11.1.4_b0550eba7aa0167d56798f794764a5df
   angular-split: 5.0.0_2659a02cbfe2691f14a09a95419ad827
@@ -71,7 +71,7 @@ dependencies:
   bootstrap-darkmode: 0.7.0
   bootstrap-icons: 1.4.0
   bson-objectid: 2.0.1
-  codemirror: 5.60.0
+  codemirror: 5.62.2
   file-saver: 2.0.5
   highlight.js: 10.7.1
   keycloak-angular: 8.1.0_cb8a433e7a077c1596419f4fd4ca8071
@@ -90,7 +90,7 @@ devDependencies:
   '@angular/cli': 11.2.5
   '@angular/compiler-cli': 11.2.6_adaa2d32dec75fda1ace6435e21c50bb
   '@angular/language-service': 11.2.6
-  '@types/codemirror': 0.0.108
+  '@types/codemirror': 5.60.2
   '@types/file-saver': 2.0.1
   '@types/jasmine': 3.6.7
   '@types/jasminewd2': 2.0.8
@@ -1496,8 +1496,8 @@ packages:
       lodash: 4.17.21
       to-fast-properties: 2.0.0
 
-  /@ctrl/ngx-codemirror/4.1.0_eecc303a9cbf0cea36383372df58b288:
-    resolution: {integrity: sha512-dAaXVLK4TbEPt0pkYH7Fobdm3EmY45nsapQcHqL/EP9JaThzSZCN0kvrLw6KdkFHVxFVOOwwLXmnj9RJzz8VWA==}
+  /@ctrl/ngx-codemirror/4.1.1_f0c809ce72bf38419bedb6c026d664dd:
+    resolution: {integrity: sha512-zeJiFrXpuYpZGUsFHyQ6tyiadBBfZHcV/10b0tTxVm9IIYqiOBXvX+LmTyZ9bRuu+Y7txNIwBdTY/ana0UFU9g==}
     peerDependencies:
       '@angular/core': '>=10.0.0-0'
       '@angular/forms': '>=10.0.0-0'
@@ -1506,7 +1506,7 @@ packages:
       '@angular/core': 11.2.6_rxjs@6.6.6+zone.js@0.10.3
       '@angular/forms': 11.2.6_daf588f56cfc04c5b8a889bb8cd1a624
       '@types/codemirror': 0.0.99
-      codemirror: 5.60.0
+      codemirror: 5.62.2
       tslib: 2.1.0
     dev: false
 
@@ -1672,17 +1672,17 @@ packages:
     engines: {node: '>= 6'}
     dev: true
 
-  /@types/codemirror/0.0.108:
-    resolution: {integrity: sha512-3FGFcus0P7C2UOGCNUVENqObEb4SFk+S8Dnxq7K6aIsLVs/vDtlangl3PEO0ykaKXyK56swVF6Nho7VsA44uhw==}
-    dependencies:
-      '@types/tern': 0.23.3
-    dev: true
-
   /@types/codemirror/0.0.99:
     resolution: {integrity: sha512-iSNLwL9ZXUDUhhljqyO9lDpxKOnye9Y2IY0vvoarapI3QLpZsx8RF8Ybic4+gne+DVsnc5ReBOQA3p4FVbsXMw==}
     dependencies:
       '@types/tern': 0.23.3
     dev: false
+
+  /@types/codemirror/5.60.2:
+    resolution: {integrity: sha512-tk8YxckrdU49GaJYRKxdzzzXrTlyT2nQGnobb8rAk34jt+kYXOxPKGqNgr7SJpl5r6YGaRD4CDfqiL+6A+/z7w==}
+    dependencies:
+      '@types/tern': 0.23.3
+    dev: true
 
   /@types/component-emitter/1.2.10:
     resolution: {integrity: sha512-bsjleuRKWmGqajMerkzox19aGbscQX5rmmvvXl3wlIp5gMG1HgkiwPxsN5p070fBDKTNSPgojVbuY1+HWMbFhg==}
@@ -2929,8 +2929,8 @@ packages:
       zone.js: 0.10.3
     dev: true
 
-  /codemirror/5.60.0:
-    resolution: {integrity: sha512-AEL7LhFOlxPlCL8IdTcJDblJm8yrAGib7I+DErJPdZd4l6imx8IMgKK3RblVgBQqz3TZJR4oknQ03bz+uNjBYA==}
+  /codemirror/5.62.2:
+    resolution: {integrity: sha512-tVFMUa4J3Q8JUd1KL9yQzQB0/BJt7ZYZujZmTPgo/54Lpuq3ez4C8x/ATUY/wv7b7X3AUq8o3Xd+2C5ZrCGWHw==}
     dev: false
 
   /collection-visit/1.0.0:

@@ -72,6 +72,7 @@ export class AutothemeCodemirrorComponent implements OnInit, OnDestroy, AfterVie
 
   private performLint() {
     this.zone.runOutsideAngular(() => {
+      // @ts-ignore // TODO remove after Angular update
       this.ngxCodemirror?.codeMirror?.performLint();
     });
   }
