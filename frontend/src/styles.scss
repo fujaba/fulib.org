@@ -1,6 +1,6 @@
 @import "~bootstrap/scss/bootstrap";
 @import "~bootstrap-icons/font/bootstrap-icons";
-@import "~bootstrap-darkmode/darktheme";
+@import "~bootstrap-darkmode/scss/darktheme";
 
 @import "~codemirror/lib/codemirror";
 @import "~codemirror/theme/idea";
@@ -63,7 +63,7 @@
 
 @mixin darkmode-ext {
   .CodeMirror {
-    border-color: $default-border;
+    border-color: $dark-border-color;
   }
 
   img.diagram, .diagram > svg {
@@ -71,7 +71,7 @@
   }
 
   gridster-item {
-    background-color: $default-bg;
+    background-color: $dark-body-bg;
   }
 }
 
