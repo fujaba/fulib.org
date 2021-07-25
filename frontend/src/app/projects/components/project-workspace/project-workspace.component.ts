@@ -1,8 +1,8 @@
-import {Component, OnDestroy, OnInit, TemplateRef, Type, ViewChild} from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit, TemplateRef, Type, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
-import {forkJoin} from 'rxjs';
-import {map, mapTo, switchMap, tap} from 'rxjs/operators';
+import {forkJoin, fromEvent, Subscription} from 'rxjs';
+import {buffer, debounceTime, filter, map, mapTo, share, switchMap, tap} from 'rxjs/operators';
 import {ContainerService} from '../../services/container.service';
 
 import {EditorService} from '../../services/editor.service';
@@ -51,6 +51,8 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
 
   terminalComponent?: typeof TerminalTabsComponent;
   fileTabsComponent?: typeof SplitPanelComponent;
+
+  private subscription: Subscription;
 
   constructor(
     private router: Router,
@@ -115,11 +117,21 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
         this.router.navigate(['setup'], {relativeTo: this.route});
       }
     });
+
+    const doubleShiftDelay = 300;
+    const shiftPressed$ = fromEvent<KeyboardEvent>(document, 'keydown').pipe(filter(e => e.key === 'Shift'), share());
+    this.subscription = shiftPressed$.pipe(
+      buffer(shiftPressed$.pipe(debounceTime(doubleShiftDelay))),
+      filter(l => l.length >= 2),
+    ).subscribe(() => {
+      this.router.navigate(['search'], {relativeTo: this.route});
+    });
   }
 
   ngOnDestroy() {
     this.openModal?.close();
     this.projectManager.destroy();
+    this.subscription.unsubscribe();
   }
 
   exit() {
