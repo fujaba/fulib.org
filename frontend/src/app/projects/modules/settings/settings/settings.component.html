@@ -6,12 +6,13 @@
   </button>
   <hr/>
   <ng-container *ngIf="project && !project.local">
-    <div class="d-flex align-items-center">
-      <h4 class="flex-grow-1">Members</h4>
-      <a class="btn btn-sm btn-success" routerLink="edit-member">
+    <h4 class="d-flex align-items-center">
+      Members
+      <a class="btn btn-sm btn-success ml-auto" routerLink="edit-member">
         <i class="bi-person-plus"></i>
+        Add
       </a>
-    </div>
+    </h4>
     <div class="list-group mb-3">
       <div *ngFor="let member of members" class="list-group-item d-flex align-items-center">
         <div class="flex-grow-1">
