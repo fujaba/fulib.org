@@ -11,6 +11,8 @@ import org.fulib.webapp.projects.db.Mongo;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ProjectRepository
 {
@@ -32,6 +34,12 @@ public class ProjectRepository
 	public Project find(String id)
 	{
 		return this.projects.find(buildIdFilter(id)).first();
+	}
+
+	public List<Project> findByIds(Stream<String> ids)
+	{
+		final List<ObjectId> objectIds = ids.map(ObjectId::new).collect(Collectors.toList());
+		return this.projects.find(Filters.in("_id", objectIds)).into(new ArrayList<>());
 	}
 
 	public List<Project> findByUser(String user)

@@ -32,7 +32,7 @@ public class ProjectService
 
 	public List<Project> findByUser(String user)
 	{
-		return this.projectRepository.findByUser(user);
+		return projectRepository.findByIds(memberRepository.findByUser(user).stream().map(Member::getProjectId));
 	}
 
 	public void create(Project project) throws IOException
