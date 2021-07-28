@@ -8,6 +8,12 @@ export const DEFAULT: FileType = {
 };
 
 export const FILE_TYPES: Record<string, FileType> = {
+  text: {
+    name: 'Plain Text',
+    extensions: ['.txt'],
+    icon: 'file-earmark',
+    mode: 'text/plain',
+  },
   scenario: {
     name: 'Scenario',
     extensions: ['.md'],
