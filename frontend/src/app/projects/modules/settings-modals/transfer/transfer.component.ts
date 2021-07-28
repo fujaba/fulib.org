@@ -18,15 +18,6 @@ export class TransferComponent implements OnInit {
   transferOwner?: User;
   transfering = false;
 
-  search: OperatorFunction<string, User[]> = (text$: Observable<string>) => text$.pipe(
-    debounceTime(200),
-    distinctUntilChanged(),
-    filter(term => term.length >= 2),
-    switchMap(term => this.userService.findAll(term)),
-  );
-
-  formatter = (user: User) => `${user.firstName} ${user.lastName} (${user.username})`;
-
   constructor(
     private userService: UserService,
     private projectService: ProjectService,

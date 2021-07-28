@@ -8,15 +8,7 @@
       This action can only be undone by the new owner.
     </p>
     <div class="form">
-      <div class="form-group">
-        <label for="transfer-owner-input">New Owner</label>
-        <input id="transfer-owner-input"  type="text" class="form-control"
-               [(ngModel)]="transferOwner"
-               [ngbTypeahead]="search"
-               [inputFormatter]="formatter"
-               [resultFormatter]="formatter"
-               [editable]='false' />
-      </div>
+      <app-user-typeahead label="New Owner" [(user)]="transferOwner"></app-user-typeahead>
     </div>
   </ng-container>
   <ng-container modal-footer>

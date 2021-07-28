@@ -3,6 +3,7 @@ import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgbTypeaheadModule} from '@ng-bootstrap/ng-bootstrap';
 import {SharedModule} from '../../../shared/shared.module';
+import {UserModule} from '../../../user/user.module';
 import {ProjectsSharedModule} from '../projects-shared/projects-shared.module';
 import {DeleteModalComponent} from './delete-modal/delete-modal.component';
 import {EditModalComponent} from './edit-modal/edit-modal.component';
@@ -17,14 +18,15 @@ import {TransferComponent} from './transfer/transfer.component';
     EditModalComponent,
     TransferComponent,
   ],
-  imports: [
-    CommonModule,
-    FormsModule,
-    NgbTypeaheadModule,
-    SharedModule,
-    ProjectsSharedModule,
-    SettingsModalsRoutingModule,
-  ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        NgbTypeaheadModule,
+        SharedModule,
+        ProjectsSharedModule,
+        SettingsModalsRoutingModule,
+        UserModule,
+    ],
 })
 export class SettingsModalsModule {
 }
