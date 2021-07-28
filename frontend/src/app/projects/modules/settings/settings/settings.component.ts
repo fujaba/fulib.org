@@ -1,7 +1,8 @@
-import {Component, Inject, OnInit, Optional} from '@angular/core';
+import {Component, OnInit, Optional} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {forkJoin} from 'rxjs';
+import {forkJoin, Observable} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
+import {User} from '../../../../user/user';
 import {UserService} from '../../../../user/user.service';
 import {Member} from '../../../model/member';
 import {Project} from '../../../model/project';
@@ -17,6 +18,8 @@ import {ProjectService} from '../../../services/project.service';
 export class SettingsComponent implements OnInit {
   project?: Project;
   members: Member[] = [];
+
+  newMember?: User;
 
   constructor(
     public activatedRoute: ActivatedRoute,
@@ -45,5 +48,32 @@ export class SettingsComponent implements OnInit {
 
   save(): void {
     this.projectService.update(this.project!).subscribe(result => this.project = result);
+  }
+
+  addMember() {
+    if (!this.newMember) {
+      return;
+    }
+
+    this.updateMember({
+      projectId: this.project!.id,
+      userId: this.newMember.id!,
+      user: this.newMember,
+    }).subscribe(() => {
+      delete this.newMember;
+    });
+  }
+
+  private updateMember(member: Member): Observable<Member> {
+    return this.memberService.update(member).pipe(
+      tap(updated => {
+        const existing = this.members.findIndex(m => m.userId === updated.userId && m.projectId === updated.projectId);
+        if (existing >= 0) {
+          this.members[existing] = updated;
+        } else {
+          this.members.push(updated);
+        }
+      }),
+    );
   }
 }

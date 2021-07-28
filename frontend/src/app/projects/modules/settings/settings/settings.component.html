@@ -7,10 +7,17 @@
   <hr/>
   <ng-container *ngIf="project && !project.local">
     <h4>Members</h4>
-    <div class="list-group">
+    <div class="list-group mb-3">
       <div *ngFor="let member of members" class="list-group-item">
         {{ member.user ? member.user.firstName + ' ' + member.user.lastName + ' (' + member.user.username + ')' : 'Loading...' }}
       </div>
+    </div>
+    <h5>Add Member</h5>
+    <div class="form">
+      <app-user-typeahead label="Username" [(user)]="newMember"></app-user-typeahead>
+      <button type="button" class="btn btn-success" (click)="addMember()">
+        Add
+      </button>
     </div>
     <hr/>
   </ng-container>
