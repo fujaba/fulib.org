@@ -10,6 +10,7 @@ import {EditModalComponent} from './edit-modal/edit-modal.component';
 
 import {SettingsModalsRoutingModule} from './settings-modals-routing.module';
 import {TransferComponent} from './transfer/transfer.component';
+import { EditMemberComponent } from './edit-member/edit-member.component';
 
 
 @NgModule({
@@ -17,6 +18,7 @@ import {TransferComponent} from './transfer/transfer.component';
     DeleteModalComponent,
     EditModalComponent,
     TransferComponent,
+    EditMemberComponent,
   ],
     imports: [
         CommonModule,

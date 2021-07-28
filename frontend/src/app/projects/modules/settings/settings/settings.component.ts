@@ -19,8 +19,6 @@ export class SettingsComponent implements OnInit {
   project?: Project;
   members: Member[] = [];
 
-  newMember?: User;
-
   constructor(
     public activatedRoute: ActivatedRoute,
     @Optional() public projectManager: ProjectManager | null,
@@ -48,33 +46,6 @@ export class SettingsComponent implements OnInit {
 
   save(): void {
     this.projectService.update(this.project!).subscribe(result => this.project = result);
-  }
-
-  addMember() {
-    if (!this.newMember) {
-      return;
-    }
-
-    this.updateMember({
-      projectId: this.project!.id,
-      userId: this.newMember.id!,
-      user: this.newMember,
-    }).subscribe(() => {
-      delete this.newMember;
-    });
-  }
-
-  private updateMember(member: Member): Observable<Member> {
-    return this.memberService.update(member).pipe(
-      tap(updated => {
-        const existing = this.members.findIndex(m => m.userId === updated.userId && m.projectId === updated.projectId);
-        if (existing >= 0) {
-          this.members[existing] = updated;
-        } else {
-          this.members.push(updated);
-        }
-      }),
-    );
   }
 
   delete(member: Member) {
