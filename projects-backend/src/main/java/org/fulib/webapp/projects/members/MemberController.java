@@ -40,7 +40,7 @@ public class MemberController
 		member.setUserId(userId);
 		memberRepository.update(member);
 
-		return new JSONArray(member).toString();
+		return new JSONObject(member).toString();
 	}
 
 	public Object getOne(Request request, Response response)
