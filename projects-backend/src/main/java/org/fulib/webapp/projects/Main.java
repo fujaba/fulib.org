@@ -1,6 +1,7 @@
 package org.fulib.webapp.projects;
 
 import org.fulib.webapp.projects.containers.ContainerController;
+import org.fulib.webapp.projects.members.MemberController;
 import org.fulib.webapp.projects.projects.ProjectController;
 import org.fulib.webapp.projects.projectzip.ProjectZipController;
 import org.slf4j.Logger;
@@ -23,6 +24,7 @@ public class Main
 	private final ProjectZipController projectZipController;
 	private final ProjectController projectController;
 	private final ContainerController containerController;
+	private final MemberController memberController;
 
 	private Service service;
 
@@ -30,11 +32,12 @@ public class Main
 
 	@Inject
 	public Main(ProjectZipController projectZipController, ProjectController projectController,
-		ContainerController containerController)
+		ContainerController containerController, MemberController memberController)
 	{
 		this.projectZipController = projectZipController;
 		this.projectController = projectController;
 		this.containerController = containerController;
+		this.memberController = memberController;
 	}
 
 	// =============== Static Methods ===============
@@ -108,6 +111,12 @@ public class Main
 		service.get("", projectController::get);
 		service.put("", projectController::update);
 		service.delete("", projectController::delete);
+		service.path("/members", () -> {
+			service.get("", memberController::getAll);
+			service.get("/:userId", memberController::getOne);
+			service.put("/:userId", memberController::updateOne);
+			service.delete("/:userId", memberController::deleteOne);
+		});
 		service.get("/container", containerController::get);
 		service.post("/container", containerController::create);
 		service.delete("/container", containerController::delete);
