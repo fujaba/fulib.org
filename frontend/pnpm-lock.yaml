@@ -24,7 +24,7 @@ specifiers:
   angular-gridster2: ^11.1.4
   angular-split: ^5.0.0
   bootstrap: ~4.5.3
-  bootstrap-darkmode: ^0.7.0
+  bootstrap-darkmode: ^0.8.1
   bootstrap-icons: ^1.4.0
   bson-objectid: ^2.0.1
   codelyzer: ^6.0.1
@@ -68,7 +68,7 @@ dependencies:
   angular-gridster2: 11.1.4_b0550eba7aa0167d56798f794764a5df
   angular-split: 5.0.0_2659a02cbfe2691f14a09a95419ad827
   bootstrap: 4.5.3
-  bootstrap-darkmode: 0.7.0
+  bootstrap-darkmode: 0.8.1_bootstrap@4.5.3
   bootstrap-icons: 1.4.0
   bson-objectid: 2.0.1
   codemirror: 5.62.2
@@ -76,7 +76,7 @@ dependencies:
   highlight.js: 10.7.1
   keycloak-angular: 8.1.0_cb8a433e7a077c1596419f4fd4ca8071
   keycloak-js: 12.0.3
-  ng-bootstrap-darkmode: 0.4.0_0b93bb0e3607710a79b6d369bde9cccb
+  ng-bootstrap-darkmode: 0.4.0_c0c2f6ac9e8ca9903fd133107b9fc4f8
   ng-terminal: 3.0.2_2659a02cbfe2691f14a09a95419ad827
   ng2-dragula: 2.1.1_@angular+core@11.2.6+rxjs@6.6.6
   ngx-clipboard: 14.0.1_b0550eba7aa0167d56798f794764a5df
@@ -2431,8 +2431,13 @@ packages:
     resolution: {integrity: sha1-aN/1++YMUes3cl6p4+0xDcwed24=}
     dev: true
 
-  /bootstrap-darkmode/0.7.0:
-    resolution: {integrity: sha512-T9rTUFGirkTeGelUDJvWSjvUu11gQ4BE3g8s1dtHxEatz3u2XN5q8Oe2mQ5oKGR8IIi7i28Xrh/DVpEouUqBBA==}
+  /bootstrap-darkmode/0.8.1_bootstrap@4.5.3:
+    resolution: {integrity: sha512-og3Jm6Hr/CPovn5ylCQCPv16koRc5de2GpFhBTB3UcAwF/wPq/iKosFpXvw8X0mGGU1ekAXSmAyUU/F25Tz3GA==}
+    peerDependencies:
+      bootstrap: '>=4.6'
+    dependencies:
+      bootstrap: 4.5.3
+      tslib: 2.3.0
     dev: false
 
   /bootstrap-icons/1.4.0:
@@ -6218,7 +6223,7 @@ packages:
     resolution: {integrity: sha1-yobR/ogoFpsBICCOPchCS524NCw=}
     dev: true
 
-  /ng-bootstrap-darkmode/0.4.0_0b93bb0e3607710a79b6d369bde9cccb:
+  /ng-bootstrap-darkmode/0.4.0_c0c2f6ac9e8ca9903fd133107b9fc4f8:
     resolution: {integrity: sha512-LoA3nzq0ZUZXszm5bFRm3NRiSepC9D8AyntGLWttWpUi56xn/tMIpVzHUeoSHFYkXUrFQpvUBJGBbGHm+hnAjQ==}
     peerDependencies:
       '@angular/common': ^9.1.9
@@ -6229,7 +6234,7 @@ packages:
       '@angular/common': 11.2.6_@angular+core@11.2.6+rxjs@6.6.6
       '@angular/core': 11.2.6_rxjs@6.6.6+zone.js@0.10.3
       '@angular/forms': 11.2.6_daf588f56cfc04c5b8a889bb8cd1a624
-      bootstrap-darkmode: 0.7.0
+      bootstrap-darkmode: 0.8.1_bootstrap@4.5.3
       tslib: 1.14.1
     dev: false
 
@@ -8805,6 +8810,10 @@ packages:
 
   /tslib/2.1.0:
     resolution: {integrity: sha512-hcVC3wYEziELGGmEEXue7D75zbwIIVUMWAVbHItGPx0ziyXxrOMQx4rQEVEV45Ut/1IotuEvwqPopzIOkDMf0A==}
+
+  /tslib/2.3.0:
+    resolution: {integrity: sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==}
+    dev: false
 
   /tslint/6.1.3_typescript@4.0.7:
     resolution: {integrity: sha512-IbR4nkT96EQOvKE2PW/djGz8iGNeJ4rF2mBfiYaR/nvUWYKJhLwimoJKgjIFEIDibBtOevj7BqCRL4oHeWWUCg==}
