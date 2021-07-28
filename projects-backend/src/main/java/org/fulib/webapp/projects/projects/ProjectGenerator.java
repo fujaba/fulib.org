@@ -1,8 +1,7 @@
-package org.fulib.webapp.projects.service;
+package org.fulib.webapp.projects.projects;
 
 import org.apache.commons.io.IOUtils;
 import org.fulib.webapp.projects.Main;
-import org.fulib.webapp.projects.model.ProjectData;
 
 import javax.inject.Inject;
 import java.io.IOException;

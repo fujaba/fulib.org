@@ -1,4 +1,4 @@
-package org.fulib.webapp.projects.model;
+package org.fulib.webapp.projects.containers;
 
 import org.bson.codecs.pojo.annotations.BsonProperty;
 

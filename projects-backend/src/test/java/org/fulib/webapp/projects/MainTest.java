@@ -1,8 +1,8 @@
 package org.fulib.webapp.projects;
 
-import org.fulib.webapp.projects.controller.ContainerController;
-import org.fulib.webapp.projects.controller.ProjectController;
-import org.fulib.webapp.projects.controller.ProjectZipController;
+import org.fulib.webapp.projects.containers.ContainerController;
+import org.fulib.webapp.projects.projects.ProjectController;
+import org.fulib.webapp.projects.projectzip.ProjectZipController;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

@@ -1,4 +1,4 @@
-package org.fulib.webapp.projects.model;
+package org.fulib.webapp.projects.projects;
 
 public class ProjectData
 {

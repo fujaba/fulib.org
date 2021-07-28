@@ -1,4 +1,4 @@
-package org.fulib.webapp.projects.container;
+package org.fulib.webapp.projects.containers;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.async.ResultCallback;
@@ -12,8 +12,7 @@ import com.github.dockerjava.core.DockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
 import com.github.dockerjava.transport.DockerHttpClient;
-import org.fulib.webapp.projects.model.Container;
-import org.fulib.webapp.projects.model.Project;
+import org.fulib.webapp.projects.projects.Project;
 
 import javax.inject.Inject;
 import java.io.File;

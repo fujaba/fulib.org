@@ -1,8 +1,6 @@
-package org.fulib.webapp.projects.service;
+package org.fulib.webapp.projects.containers;
 
-import org.fulib.webapp.projects.container.DockerContainerProvider;
-import org.fulib.webapp.projects.model.Container;
-import org.fulib.webapp.projects.model.Project;
+import org.fulib.webapp.projects.projects.Project;
 
 import javax.inject.Inject;
 import java.net.HttpURLConnection;

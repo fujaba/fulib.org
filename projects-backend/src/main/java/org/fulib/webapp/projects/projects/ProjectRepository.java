@@ -1,4 +1,4 @@
-package org.fulib.webapp.projects.db;
+package org.fulib.webapp.projects.projects;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
@@ -6,7 +6,7 @@ import com.mongodb.client.model.Indexes;
 import org.bson.BsonValue;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
-import org.fulib.webapp.projects.model.Project;
+import org.fulib.webapp.projects.db.Mongo;
 
 import javax.inject.Inject;
 import java.util.ArrayList;

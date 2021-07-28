@@ -1,9 +1,7 @@
-package org.fulib.webapp.projects.service;
+package org.fulib.webapp.projects.projects;
 
-import org.fulib.webapp.projects.container.DockerContainerProvider;
-import org.fulib.webapp.projects.db.ProjectRepository;
-import org.fulib.webapp.projects.model.Container;
-import org.fulib.webapp.projects.model.Project;
+import org.fulib.webapp.projects.containers.DockerContainerProvider;
+import org.fulib.webapp.projects.containers.Container;
 
 import javax.inject.Inject;
 import java.io.IOException;

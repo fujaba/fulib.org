@@ -1,8 +1,6 @@
-package org.fulib.webapp.projects.controller;
+package org.fulib.webapp.projects.projects;
 
-import org.fulib.webapp.projects.model.Project;
-import org.fulib.webapp.projects.service.ProjectService;
-import org.fulib.webapp.projects.tool.Authenticator;
+import org.fulib.webapp.projects.auth.Authenticator;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import spark.Request;
@@ -27,7 +25,7 @@ public class ProjectController
 	{
 	}
 
-	static void checkAuth(Request request, Project project)
+	public static void checkAuth(Request request, Project project)
 	{
 		final String userId = Authenticator.getUserIdOr401(request);
 		if (!userId.equals(project.getUserId()))
@@ -36,7 +34,7 @@ public class ProjectController
 		}
 	}
 
-	static Project getOr404(ProjectService service, String id)
+	public static Project getOr404(ProjectService service, String id)
 	{
 		final Project project = service.find(id);
 		if (project == null)

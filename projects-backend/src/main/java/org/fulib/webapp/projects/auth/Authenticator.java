@@ -1,4 +1,4 @@
-package org.fulib.webapp.projects.tool;
+package org.fulib.webapp.projects.auth;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

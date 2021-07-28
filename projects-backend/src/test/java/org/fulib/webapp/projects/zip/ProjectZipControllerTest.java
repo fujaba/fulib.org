@@ -1,7 +1,7 @@
 package org.fulib.webapp.projects.zip;
 
-import org.fulib.webapp.projects.controller.ProjectZipController;
-import org.fulib.webapp.projects.service.ProjectGenerator;
+import org.fulib.webapp.projects.projectzip.ProjectZipController;
+import org.fulib.webapp.projects.projects.ProjectGenerator;
 import org.fulib.webapp.projects.util.DelegatingServletOutputStream;
 import org.junit.Test;
 import spark.Request;

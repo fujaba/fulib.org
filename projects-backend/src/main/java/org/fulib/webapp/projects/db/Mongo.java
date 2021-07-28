@@ -10,7 +10,7 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.Convention;
 import org.bson.codecs.pojo.Conventions;
 import org.bson.codecs.pojo.PojoCodecProvider;
-import org.fulib.webapp.projects.model.Project;
+import org.fulib.webapp.projects.projects.Project;
 
 import javax.inject.Inject;
 import java.util.ArrayList;

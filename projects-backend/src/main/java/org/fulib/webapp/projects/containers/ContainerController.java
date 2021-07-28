@@ -1,9 +1,7 @@
-package org.fulib.webapp.projects.controller;
+package org.fulib.webapp.projects.containers;
 
-import org.fulib.webapp.projects.model.Container;
-import org.fulib.webapp.projects.model.Project;
-import org.fulib.webapp.projects.service.ContainerService;
-import org.fulib.webapp.projects.service.ProjectService;
+import org.fulib.webapp.projects.projects.Project;
+import org.fulib.webapp.projects.projects.ProjectService;
 import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
@@ -12,8 +10,8 @@ import javax.inject.Inject;
 import java.time.Instant;
 import java.util.concurrent.TimeoutException;
 
-import static org.fulib.webapp.projects.controller.ProjectController.checkAuth;
-import static org.fulib.webapp.projects.controller.ProjectController.getOr404;
+import static org.fulib.webapp.projects.projects.ProjectController.checkAuth;
+import static org.fulib.webapp.projects.projects.ProjectController.getOr404;
 import static spark.Spark.halt;
 
 public class ContainerController
