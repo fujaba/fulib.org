@@ -83,10 +83,7 @@ export class SettingsComponent implements OnInit {
     }
 
     this.memberService.delete(member).subscribe(() => {
-      const index = this.members.indexOf(member);
-      if (index >= 0) {
-        this.members.splice(index, 1);
-      }
+      this.members.removeFirst(m => m === member);
     });
   }
 }
