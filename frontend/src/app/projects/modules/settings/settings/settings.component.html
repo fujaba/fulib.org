@@ -4,8 +4,8 @@
   <button type="button" class="btn btn-primary" (click)="save()">
     Save
   </button>
-  <hr/>
   <ng-container *ngIf="project && !project.local">
+    <hr/>
     <h4 class="d-flex align-items-center">
       Members
       <a class="btn btn-sm btn-success ml-auto" routerLink="edit-member">
@@ -13,8 +13,8 @@
         Add
       </a>
     </h4>
-    <div class="list-group mb-3">
-      <div *ngFor="let member of members" class="list-group-item d-flex align-items-center">
+    <ul class="list-group">
+      <li *ngFor="let member of members" class="list-group-item d-flex align-items-center">
         <div class="flex-grow-1">
           {{ member.user
           ? member.user.firstName + ' ' + member.user.lastName + ' (' + member.user.username + ')'
@@ -30,9 +30,10 @@
                 (click)="delete(member)">
           <i class="bi-person-x"></i>
         </button>
-      </div>
-    </div>
+      </li>
+    </ul>
   </ng-container>
+  <hr/>
   <h4>Danger Zone</h4>
   <div class="list-group">
     <div class="list-group-item border-danger d-flex align-items-center" *ngIf="projectManager">
