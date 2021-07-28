@@ -10,6 +10,7 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.Convention;
 import org.bson.codecs.pojo.Conventions;
 import org.bson.codecs.pojo.PojoCodecProvider;
+import org.fulib.webapp.projects.members.Member;
 import org.fulib.webapp.projects.projects.Project;
 
 import javax.inject.Inject;
@@ -47,7 +48,7 @@ public class Mongo
 
 		CodecProvider pojoCodecProvider = PojoCodecProvider
 			.builder()
-			.register(Project.class.getPackage().getName())
+			.register(Project.class.getPackage().getName(), Member.class.getPackage().getName())
 			.conventions(conventions)
 			.build();
 		codecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), fromProviders(pojoCodecProvider));
