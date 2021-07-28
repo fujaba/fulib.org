@@ -31,6 +31,10 @@ export class UserService {
     });
   }
 
+  findOne(id: string): Observable<User> {
+    return this.http.get<User>(`${environment.auth.url}/admin/realms/${environment.auth.realm}/users/${id}`);
+  }
+
   private init(): void {
     this.reload();
     this.keycloak.keycloakEvents$.subscribe(event => {

@@ -21,6 +21,7 @@ import {FileChangeService} from './services/file-change.service';
 import {FileTypeService} from './services/file-type.service';
 import {FileService} from './services/file.service';
 import {LocalProjectService} from './services/local-project.service';
+import {MemberService} from './services/member.service';
 import {ProjectService} from './services/project.service';
 import { SearchEverywhereComponent } from './components/search-everywhere/search-everywhere.component';
 
@@ -58,6 +59,7 @@ import { SearchEverywhereComponent } from './components/search-everywhere/search
     FileTypeService,
     LocalProjectService,
     ProjectService,
+    MemberService,
   ],
 })
 export class ProjectsModule {
