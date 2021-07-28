@@ -2,6 +2,8 @@ package org.fulib.webapp.projects.projects;
 
 import org.fulib.webapp.projects.containers.DockerContainerProvider;
 import org.fulib.webapp.projects.containers.Container;
+import org.fulib.webapp.projects.members.Member;
+import org.fulib.webapp.projects.members.MemberRepository;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -15,6 +17,8 @@ public class ProjectService
 	DockerContainerProvider dockerContainerProvider;
 	@Inject
 	ProjectGenerator projectGenerator;
+	@Inject
+	MemberRepository memberRepository;
 
 	@Inject
 	public ProjectService()
@@ -34,6 +38,10 @@ public class ProjectService
 	public void create(Project project) throws IOException
 	{
 		this.projectRepository.create(project);
+		final Member owner = new Member();
+		owner.setProjectId(project.getId());
+		owner.setUserId(project.getUserId());
+		memberRepository.create(owner);
 	}
 
 	public void update(Project project)
@@ -48,6 +56,8 @@ public class ProjectService
 		{
 			this.dockerContainerProvider.kill(container);
 		}
+
+		memberRepository.deleteByProject(project.getId());
 
 		this.dockerContainerProvider.delete(project);
 		this.projectRepository.delete(project.getId());
