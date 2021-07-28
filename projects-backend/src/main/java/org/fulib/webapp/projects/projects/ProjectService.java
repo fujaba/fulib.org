@@ -35,6 +35,11 @@ public class ProjectService
 		return projectRepository.findByIds(memberRepository.findByUser(user).stream().map(Member::getProjectId));
 	}
 
+	public boolean isAuthorized(String projectId, String userId)
+	{
+		return memberRepository.findOne(projectId, userId) != null;
+	}
+
 	public void create(Project project) throws IOException
 	{
 		this.projectRepository.create(project);

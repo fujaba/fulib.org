@@ -2,7 +2,6 @@ package org.fulib.webapp.projects.members;
 
 import org.fulib.webapp.projects.projects.Project;
 import org.fulib.webapp.projects.projects.ProjectController;
-import org.fulib.webapp.projects.projects.ProjectService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import spark.Request;
@@ -14,13 +13,13 @@ import static spark.Spark.halt;
 
 public class MemberController
 {
-	private final ProjectService projectService;
+	private final ProjectController projectController;
 	private final MemberRepository memberRepository;
 
 	@Inject
-	public MemberController(ProjectService projectService, MemberRepository memberRepository)
+	public MemberController(ProjectController projectController, MemberRepository memberRepository)
 	{
-		this.projectService = projectService;
+		this.projectController = projectController;
 		this.memberRepository = memberRepository;
 	}
 
@@ -77,8 +76,8 @@ public class MemberController
 	private String getAndCheckProjectId(Request request)
 	{
 		final String id = request.params("id");
-		final Project project = ProjectController.getOr404(projectService, id);
-		ProjectController.checkAuth(request, project);
+		final Project project = projectController.getOr404(id);
+		projectController.checkAuth(request, project);
 		return id;
 	}
 }

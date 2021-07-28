@@ -1,6 +1,7 @@
 package org.fulib.webapp.projects.containers;
 
 import org.fulib.webapp.projects.projects.Project;
+import org.fulib.webapp.projects.projects.ProjectController;
 import org.fulib.webapp.projects.projects.ProjectService;
 import org.json.JSONObject;
 import spark.Request;
@@ -10,14 +11,14 @@ import javax.inject.Inject;
 import java.time.Instant;
 import java.util.concurrent.TimeoutException;
 
-import static org.fulib.webapp.projects.projects.ProjectController.checkAuth;
-import static org.fulib.webapp.projects.projects.ProjectController.getOr404;
 import static spark.Spark.halt;
 
 public class ContainerController
 {
 	@Inject
 	ProjectService projectService;
+	@Inject
+	ProjectController projectController;
 	@Inject
 	ContainerService containerService;
 
@@ -29,8 +30,8 @@ public class ContainerController
 	public Object get(Request request, Response response)
 	{
 		final String id = request.params("projectId");
-		final Project project = getOr404(projectService, id);
-		checkAuth(request, project);
+		final Project project = projectController.getOr404(id);
+		projectController.checkAuth(request, project);
 
 		final Container container = this.containerService.find(id);
 		if (container == null)
@@ -54,8 +55,8 @@ public class ContainerController
 		}
 		else
 		{
-			project = getOr404(projectService, id);
-			checkAuth(request, project);
+			project = projectController.getOr404(id);
+			projectController.checkAuth(request, project);
 		}
 
 		try
@@ -88,7 +89,7 @@ public class ContainerController
 		final Project project = projectService.find(id);
 		if (project != null)
 		{
-			checkAuth(request, project);
+			projectController.checkAuth(request, project);
 		}
 
 		final Container container = this.containerService.find(id);

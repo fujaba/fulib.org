@@ -25,18 +25,18 @@ public class ProjectController
 	{
 	}
 
-	public static void checkAuth(Request request, Project project)
+	public void checkAuth(Request request, Project project)
 	{
 		final String userId = Authenticator.getUserIdOr401(request);
-		if (!userId.equals(project.getUserId()))
+		if (!projectService.isAuthorized(project.getId(), userId))
 		{
 			throw halt(401, AUTH_MESSAGE);
 		}
 	}
 
-	public static Project getOr404(ProjectService service, String id)
+	public Project getOr404(String id)
 	{
-		final Project project = service.find(id);
+		final Project project = projectService.find(id);
 		if (project == null)
 		{
 			throw halt(404, notFoundMessage(id));
@@ -53,7 +53,7 @@ public class ProjectController
 	{
 		final String id = request.params("projectId");
 
-		final Project project = getOr404(projectService, id);
+		final Project project = getOr404(id);
 		checkAuth(request, project);
 
 		final JSONObject json = this.toJson(project);
@@ -94,7 +94,7 @@ public class ProjectController
 	public Object update(Request request, Response response)
 	{
 		final String id = request.params("projectId");
-		final Project project = getOr404(projectService, id);
+		final Project project = getOr404(id);
 		checkAuth(request, project);
 
 		this.readJson(new JSONObject(request.body()), project);
@@ -108,7 +108,7 @@ public class ProjectController
 	public Object delete(Request request, Response response)
 	{
 		final String id = request.params("projectId");
-		final Project project = getOr404(projectService, id);
+		final Project project = getOr404(id);
 		checkAuth(request, project);
 
 		this.projectService.delete(project);
