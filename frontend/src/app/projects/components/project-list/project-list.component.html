@@ -81,6 +81,9 @@
               <a ngbDropdownItem [routerLink]="[project.id, 'settings']">
                 Settings
               </a>
+              <a *ngIf="!project.local" ngbDropdownItem [routerLink]="[project.id, 'edit-member']">
+                Add Collaborator
+              </a>
               <button *ngIf="loggedIn && project.local" ngbDropdownItem (click)="convert(project)">
                 Convert to Persistent
               </button>
