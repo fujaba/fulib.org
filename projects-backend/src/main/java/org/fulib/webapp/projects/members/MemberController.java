@@ -38,7 +38,7 @@ public class MemberController
 		final Member member = new Member();
 		member.setProjectId(id);
 		member.setUserId(userId);
-		memberRepository.create(member);
+		memberRepository.update(member);
 
 		return new JSONArray(member).toString();
 	}

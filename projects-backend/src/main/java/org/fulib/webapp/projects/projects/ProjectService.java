@@ -42,16 +42,22 @@ public class ProjectService
 
 	public void create(Project project) throws IOException
 	{
-		this.projectRepository.create(project);
-		final Member owner = new Member();
-		owner.setProjectId(project.getId());
-		owner.setUserId(project.getUserId());
-		memberRepository.create(owner);
+		projectRepository.create(project);
+		updateMember(project);
 	}
 
 	public void update(Project project)
 	{
-		this.projectRepository.update(project);
+		projectRepository.update(project);
+		updateMember(project);
+	}
+
+	private void updateMember(Project project)
+	{
+		final Member owner = new Member();
+		owner.setProjectId(project.getId());
+		owner.setUserId(project.getUserId());
+		memberRepository.update(owner);
 	}
 
 	public void delete(Project project)

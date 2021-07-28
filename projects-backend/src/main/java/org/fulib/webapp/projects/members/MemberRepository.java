@@ -3,11 +3,9 @@ package org.fulib.webapp.projects.members;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Indexes;
-import org.bson.BsonValue;
+import com.mongodb.client.model.ReplaceOptions;
 import org.bson.conversions.Bson;
-import org.bson.types.ObjectId;
 import org.fulib.webapp.projects.db.Mongo;
-import org.fulib.webapp.projects.projects.Project;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -45,14 +43,10 @@ public class MemberRepository
 		return this.members.find(buildUserIdFilter(userId)).into(new ArrayList<>());
 	}
 
-	public void create(Member member)
-	{
-		this.members.insertOne(member);
-	}
-
 	public void update(Member member)
 	{
-		this.members.replaceOne(buildIdFilter(member.getProjectId(), member.getUserId()), member);
+		this.members.replaceOne(buildIdFilter(member.getProjectId(), member.getUserId()), member,
+		                        new ReplaceOptions().upsert(true));
 	}
 
 	public Member deleteOne(String projectId, String userId)
