@@ -2,7 +2,7 @@ package org.fulib.webapp.projects.members;
 
 public class Member
 {
-	public static final String PROPERTY_PROJECT_ID = "project";
+	public static final String PROPERTY_PROJECT_ID = "projectId";
 	public static final String PROPERTY_USER_ID = "userId";
 
 	private String projectId;

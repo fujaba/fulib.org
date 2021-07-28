@@ -75,7 +75,7 @@ public class MemberController
 
 	private String getAndCheckProjectId(Request request)
 	{
-		final String id = request.params("id");
+		final String id = request.params("projectId");
 		final Project project = projectController.getOr404(id);
 		projectController.checkAuth(request, project);
 		return id;
