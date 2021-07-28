@@ -12,7 +12,7 @@ export interface BaseProject extends ProjectStub {
 }
 
 export interface UserProject extends BaseProject {
-  user: string;
+  userId: string;
   local?: false;
 }
 

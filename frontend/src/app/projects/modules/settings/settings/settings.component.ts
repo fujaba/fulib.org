@@ -76,4 +76,17 @@ export class SettingsComponent implements OnInit {
       }),
     );
   }
+
+  delete(member: Member) {
+    if (!confirm(`Are you sure you want to revoke Collaborator status from ${member.user?.firstName} ${member.user?.lastName}? They can be added as a collaborator again later.`)) {
+      return;
+    }
+
+    this.memberService.delete(member).subscribe(() => {
+      const index = this.members.indexOf(member);
+      if (index >= 0) {
+        this.members.splice(index, 1);
+      }
+    });
+  }
 }

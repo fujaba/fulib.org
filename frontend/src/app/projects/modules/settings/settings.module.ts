@@ -1,5 +1,6 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
+import {NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
 import {UserModule} from '../../../user/user.module';
 import {ProjectsSharedModule} from '../projects-shared/projects-shared.module';
 
@@ -16,6 +17,7 @@ import {SettingsComponent} from './settings/settings.component';
         ProjectsSharedModule,
         SettingsRoutingModule,
         UserModule,
+        NgbTooltipModule,
     ],
 })
 export class SettingsModule {

@@ -22,4 +22,8 @@ export class MemberService {
       tap(newMember => newMember.user = user),
     );
   }
+
+  delete({projectId, userId}: Member): Observable<Member> {
+    return this.http.delete<Member>(`${environment.projectsApiUrl}/projects/${projectId}/members/${userId}`);
+  }
 }
