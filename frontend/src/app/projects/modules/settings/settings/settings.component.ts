@@ -19,6 +19,8 @@ export class SettingsComponent implements OnInit {
   project?: Project;
   members: Member[] = [];
 
+  currentUser?: User;
+
   constructor(
     public activatedRoute: ActivatedRoute,
     @Optional() public projectManager: ProjectManager | null,
@@ -29,6 +31,12 @@ export class SettingsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.userService.current$.subscribe(user => {
+      if (user) {
+        this.currentUser = user;
+      }
+    });
+
     this.activatedRoute.params.pipe(
       switchMap(({id}) => this.projectService.get(id)),
     ).subscribe(project => {
