@@ -3,6 +3,7 @@ package org.fulib.webapp.projects.projects;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Indexes;
+import com.mongodb.client.model.Sorts;
 import org.bson.BsonValue;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
@@ -38,17 +39,22 @@ public class ProjectRepository
 
 	public List<Project> findByIds(Stream<String> ids)
 	{
-		return projects.find(buildIdsFilter(ids)).into(new ArrayList<>());
+		return find(buildIdsFilter(ids));
 	}
 
 	public List<Project> findByUser(String user)
 	{
-		return projects.find(buildUserFilter(user)).into(new ArrayList<>());
+		return find(buildUserFilter(user));
 	}
 
 	public List<Project> findByIdsOrUser(Stream<String> ids, String user)
 	{
-		return projects.find(Filters.or(buildUserFilter(user), buildIdsFilter(ids))).into(new ArrayList<>());
+		return find(Filters.or(buildUserFilter(user), buildIdsFilter(ids)));
+	}
+
+	private List<Project> find(Bson bson)
+	{
+		return projects.find(bson).sort(Sorts.ascending(Project.PROPERTY_NAME)).into(new ArrayList<>());
 	}
 
 	public void create(Project project)
