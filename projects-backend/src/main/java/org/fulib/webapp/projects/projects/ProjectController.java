@@ -1,5 +1,6 @@
 package org.fulib.webapp.projects.projects;
 
+import org.eclipse.jetty.http.HttpStatus;
 import org.fulib.webapp.projects.auth.Authenticator;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -15,8 +16,6 @@ import static spark.Spark.halt;
 
 public class ProjectController
 {
-	private static final String AUTH_MESSAGE = "{\n  \"error\": \"token user ID does not match ID of project\"\n}\n";
-
 	@Inject
 	ProjectService projectService;
 
@@ -30,7 +29,20 @@ public class ProjectController
 		final String userId = Authenticator.getUserIdOr401(request);
 		if (!projectService.isAuthorized(project.getId(), userId))
 		{
-			throw halt(401, AUTH_MESSAGE);
+			// language=JSON
+			throw halt(HttpStatus.FORBIDDEN_403,
+			           "{\n" + "  \"error\": \"You do not have access to this project\"\n" + "}\n");
+		}
+	}
+
+	public void checkOwner(Request request, Project project)
+	{
+		final String userId = Authenticator.getUserIdOr401(request);
+		if (!userId.equals(project.getUserId()))
+		{
+			// language=JSON
+			throw halt(HttpStatus.FORBIDDEN_403,
+			           "{\n" + "  \"error\": \"You are not the owner of this project\"\n" + "}\n");
 		}
 	}
 
@@ -97,7 +109,13 @@ public class ProjectController
 		final Project project = getOr404(id);
 		checkAuth(request, project);
 
-		this.readJson(new JSONObject(request.body()), project);
+		final JSONObject body = new JSONObject(request.body());
+		if (body.has(Project.PROPERTY_USER_ID))
+		{
+			checkOwner(request, project);
+		}
+
+		this.readJson(body, project);
 
 		this.projectService.update(project);
 
@@ -109,7 +127,7 @@ public class ProjectController
 	{
 		final String id = request.params("projectId");
 		final Project project = getOr404(id);
-		checkAuth(request, project);
+		checkOwner(request, project);
 
 		this.projectService.delete(project);
 
