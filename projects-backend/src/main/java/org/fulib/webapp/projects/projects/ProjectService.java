@@ -8,6 +8,7 @@ import org.fulib.webapp.projects.members.MemberRepository;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class ProjectService
 {
@@ -32,7 +33,8 @@ public class ProjectService
 
 	public List<Project> findByUser(String user)
 	{
-		return projectRepository.findByIds(memberRepository.findByUser(user).stream().map(Member::getProjectId));
+		final Stream<String> ids = memberRepository.findByUser(user).stream().map(Member::getProjectId);
+		return projectRepository.findByIdsOrUser(ids, user);
 	}
 
 	public boolean isAuthorized(String projectId, String userId)

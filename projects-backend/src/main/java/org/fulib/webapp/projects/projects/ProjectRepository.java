@@ -38,13 +38,17 @@ public class ProjectRepository
 
 	public List<Project> findByIds(Stream<String> ids)
 	{
-		final List<ObjectId> objectIds = ids.map(ObjectId::new).collect(Collectors.toList());
-		return this.projects.find(Filters.in("_id", objectIds)).into(new ArrayList<>());
+		return projects.find(buildIdsFilter(ids)).into(new ArrayList<>());
 	}
 
 	public List<Project> findByUser(String user)
 	{
-		return this.projects.find(Filters.eq(Project.PROPERTY_USER_ID, user)).into(new ArrayList<>());
+		return projects.find(buildUserFilter(user)).into(new ArrayList<>());
+	}
+
+	public List<Project> findByIdsOrUser(Stream<String> ids, String user)
+	{
+		return projects.find(Filters.or(buildUserFilter(user), buildIdsFilter(ids))).into(new ArrayList<>());
 	}
 
 	public void create(Project project)
@@ -63,6 +67,17 @@ public class ProjectRepository
 	public void delete(String id)
 	{
 		this.projects.deleteOne(buildIdFilter(id));
+	}
+
+	private Bson buildUserFilter(String user)
+	{
+		return Filters.eq(Project.PROPERTY_USER_ID, user);
+	}
+
+	private Bson buildIdsFilter(Stream<String> ids)
+	{
+		final List<ObjectId> objectIds = ids.map(ObjectId::new).collect(Collectors.toList());
+		return Filters.in("_id", objectIds);
 	}
 
 	private Bson buildIdFilter(String id)
