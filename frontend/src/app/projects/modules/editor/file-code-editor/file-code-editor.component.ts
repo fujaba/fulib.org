@@ -12,6 +12,19 @@ import {FileService} from '../../../services/file.service';
 import {LocalProjectService} from '../../../services/local-project.service';
 import {ProjectManager} from '../../../services/project.manager';
 
+const colors = [
+  'blue',
+  'indigo',
+  'purple',
+  'pink',
+  'red',
+  'orange',
+  'yellow',
+  'green',
+  'teal',
+  'cyan',
+] as const;
+
 @Component({
   selector: 'app-file-code-editor',
   templateUrl: './file-code-editor.component.html',
@@ -201,7 +214,7 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
     const endPosition: Position = {...position, ch: position.ch + 1};
     this.markers.push({
       cursorId: editorId,
-      severity: 'cursor',
+      severity: 'cursor-' + colors[Math.abs(user.hashCode()) % colors.length],
       message: user,
       from: position,
       to: endPosition,

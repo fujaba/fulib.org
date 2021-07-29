@@ -71,6 +71,23 @@ import 'zone.js/dist/zone'; // Included with Angular CLI.
  */
 
 declare global {
+  interface String {
+    hashCode(): number;
+  }
+}
+
+String.prototype.hashCode = function() {
+  if (this.length === 0) { return 0; }
+  let hash = 0;
+  for (let i = 0; i < this.length; i++) {
+    const chr = this.charCodeAt(i);
+    // tslint:disable-next-line:no-bitwise
+    hash = (((hash << 5) - hash) + chr) | 0;
+  }
+  return hash;
+};
+
+declare global {
   interface Array<T> {
     removeFirst(predicate: (value: T, index: number, obj: T[]) => boolean): T | undefined;
 
