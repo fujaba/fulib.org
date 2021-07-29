@@ -4,6 +4,8 @@ import {BehaviorSubject, EMPTY, Subject, Subscription} from 'rxjs';
 import {buffer, debounceTime, delay, filter, map, share, startWith, switchMap, tap} from 'rxjs/operators';
 import {AutothemeCodemirrorComponent} from '../../../../shared/autotheme-codemirror/autotheme-codemirror.component';
 import {Marker} from '../../../../shared/model/marker';
+import {User} from '../../../../user/user';
+import {UserService} from '../../../../user/user.service';
 import {File} from '../../../model/file';
 import {FileChangeService} from '../../../services/file-change.service';
 import {FileService} from '../../../services/file.service';
@@ -40,13 +42,15 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
     autoRefresh: true,
   };
 
-  markers: Marker[] = [];
+  markers: (Marker & {cursorId?: string})[] = [];
+  user?: User;
 
   constructor(
     private fileService: FileService,
     private projectManager: ProjectManager,
     private fileChangeService: FileChangeService,
     private localProjectService: LocalProjectService,
+    private userService: UserService,
   ) {
   }
 
@@ -60,6 +64,8 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.userService.current$.subscribe(user => user && (this.user = user));
+
     for (const sub of [
       this.subscribeToFileChanges(),
       this.subscribeToMarkers(),
@@ -144,6 +150,7 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
         command: 'editor.cursor',
         path: this.file!.path,
         editorId: this.editorId,
+        user: `${this.user?.firstName} ${this.user?.lastName}`,
         position,
       })),
     ).subscribe(this.projectManager.webSocket);
@@ -169,13 +176,13 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
           }
         },
       ) : EMPTY),
-    ).subscribe(({command, changes, editorId, position}) => {
+    ).subscribe(({command, changes, editorId, position, user}) => {
       switch (command) {
         case 'editor.change':
           this.onRemoteChanges(changes);
           return;
         case 'editor.cursor':
-          this.onRemoteCursorActivity(editorId, position);
+          this.onRemoteCursorActivity(user, editorId, position);
           return;
         case 'editor.close':
           this.removeCursor(editorId);
@@ -185,16 +192,17 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
   }
 
   private removeCursor(editorId: string) {
-    this.markers = this.markers.filter(m => m.message !== editorId);
+    this.markers = this.markers.filter(m => m.cursorId !== editorId);
   }
 
-  private onRemoteCursorActivity(editorId: string, position: Position) {
+  private onRemoteCursorActivity(user: string, editorId: string, position: Position) {
     this.removeCursor(editorId);
 
     const endPosition: Position = {...position, ch: position.ch + 1};
     this.markers.push({
+      cursorId: editorId,
       severity: 'cursor',
-      message: editorId,
+      message: user,
       from: position,
       to: endPosition,
     });
