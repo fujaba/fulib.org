@@ -24,6 +24,7 @@ import {LocalProjectService} from './services/local-project.service';
 import {MemberService} from './services/member.service';
 import {ProjectService} from './services/project.service';
 import { SearchEverywhereComponent } from './components/search-everywhere/search-everywhere.component';
+import {SearchService} from './services/search.service';
 
 @NgModule({
   declarations: [
@@ -60,6 +61,7 @@ import { SearchEverywhereComponent } from './components/search-everywhere/search
     LocalProjectService,
     ProjectService,
     MemberService,
+    SearchService,
   ],
 })
 export class ProjectsModule {

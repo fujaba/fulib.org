@@ -3,7 +3,10 @@
     Search Everywhere
   </ng-container>
   <ng-container modal-body>
-    TBI
+    <input type="text" class="form-control"
+           ngbAutofocus
+           [ngbTypeahead]="search" [resultFormatter]="format" [inputFormatter]="format"
+           (selectItem)="open($event.item); modal.close()">
   </ng-container>
   <ng-container modal-footer>
     <button class="btn btn-secondary" (click)="modal.close()">
