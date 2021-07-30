@@ -8,8 +8,12 @@
     >
       <i class="bi-{{entry.icon}}" role="navigation" [attr.aria-label]="entry.name"></i>
     </a>
-    <a class="sidebar-item" routerLink="search" ngbTooltip="Search" placement="right">
+    <div class="border-top m-1"></div>
+    <a class="sidebar-item" routerLink="search" ngbTooltip="Search Everywhere" placement="right">
       <i class="bi-search"></i>
+    </a>
+    <a class="sidebar-item" routerLink="run" ngbTooltip="Run Anything" placement="right">
+      <i class="bi-play"></i>
     </a>
     <a class="sidebar-item mt-auto" href="/projects" ngbTooltip="Exit" placement="right" (click)="exit(); $event.preventDefault()">
       <i class="bi-box-arrow-left"></i>

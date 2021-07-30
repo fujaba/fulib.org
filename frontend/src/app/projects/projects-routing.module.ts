@@ -2,6 +2,7 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {ProjectListComponent} from './components/project-list/project-list.component';
 import {ProjectWorkspaceComponent} from './components/project-workspace/project-workspace.component';
+import {RunAnythingComponent} from './components/run-anything/run-anything.component';
 import {SearchEverywhereComponent} from './components/search-everywhere/search-everywhere.component';
 
 const routes: Routes = [
@@ -18,6 +19,7 @@ const routes: Routes = [
     children: [
       {path: 'setup', loadChildren: () => import('./modules/setup/setup.module').then(m => m.SetupModule)},
       {path: 'search', component: SearchEverywhereComponent},
+      {path: 'run', component: RunAnythingComponent},
       {outlet: 'panel', path: 'project', loadChildren: () => import('./modules/project-panel/project-panel.module').then(m => m.ProjectPanelModule)},
       {outlet: 'panel', path: 'launch', loadChildren: () => import('./modules/launch/launch.module').then(m => m.LaunchModule)},
       {

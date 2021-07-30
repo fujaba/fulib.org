@@ -119,12 +119,24 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
     });
 
     const doubleShiftDelay = 300;
-    const shiftPressed$ = fromEvent<KeyboardEvent>(document, 'keydown').pipe(filter(e => e.key === 'Shift'), share());
-    this.subscription = shiftPressed$.pipe(
-      buffer(shiftPressed$.pipe(debounceTime(doubleShiftDelay))),
+    const keyPressed$ = fromEvent<KeyboardEvent>(document, 'keydown').pipe(share());
+    const keyPressedTwice$ = keyPressed$.pipe(
+      buffer(keyPressed$.pipe(debounceTime(doubleShiftDelay))),
       filter(l => l.length >= 2),
-    ).subscribe(() => {
-      this.router.navigate(['search'], {relativeTo: this.route});
+    );
+
+    this.subscription = keyPressedTwice$.subscribe(([k1, k2]) => {
+      if (k1.key !== k2.key) {
+        return;
+      }
+      switch (k1.key) {
+        case 'Shift':
+          this.router.navigate(['search'], {relativeTo: this.route});
+          break;
+        case 'Control':
+          this.router.navigate(['run'], {relativeTo: this.route});
+          break;
+      }
     });
   }
 

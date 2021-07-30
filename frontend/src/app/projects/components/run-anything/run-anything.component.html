@@ -1,0 +1,13 @@
+<app-modal #modal [back]="['..']" [backOptions]="{relativeTo: route}">
+  <ng-container modal-header>
+    Run Anything
+  </ng-container>
+  <ng-container modal-body>
+    <input type="text" class="form-control text-monospace" ngbAutofocus (keyup.enter)="run($event.target.value); modal.close()">
+  </ng-container>
+  <ng-container modal-footer>
+    <button class="btn btn-secondary" (click)="modal.close()">
+      Cancel
+    </button>
+  </ng-container>
+</app-modal>
