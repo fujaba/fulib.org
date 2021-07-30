@@ -3,7 +3,7 @@
     What's New on fulib.org
   </ng-container>
   <ng-container modal-body>
-    <ul ngbNav #nav="ngbNav" [(activeId)]="activeRepo" class="nav-tabs">
+    <ul ngbNav #nav="ngbNav" [(activeId)]="activeRepo" class="nav-tabs mx-n3 px-3">
       <ng-container *ngFor="let repo of repos">
         <li *ngIf="changelogs[repo]" [ngbNavItem]="repo">
           <a ngbNavLink>
