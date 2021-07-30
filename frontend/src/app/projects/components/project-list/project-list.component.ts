@@ -3,7 +3,10 @@ import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {KeycloakService} from 'keycloak-angular';
 import {Subscription} from 'rxjs';
 import {filter, startWith, switchMap} from 'rxjs/operators';
+import {User} from '../../../user/user';
+import {UserService} from '../../../user/user.service';
 import {LocalProject, Project} from '../../model/project';
+import {MemberService} from '../../services/member.service';
 import {ProjectService} from '../../services/project.service';
 
 @Component({
@@ -14,7 +17,7 @@ import {ProjectService} from '../../services/project.service';
 export class ProjectListComponent implements OnInit, OnDestroy {
   @ViewChild('editModal', {static: true}) editModal: TemplateRef<any>;
 
-  loggedIn = false;
+  currentUser?: User;
 
   projects: Project[] = [];
 
@@ -24,12 +27,14 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private projectService: ProjectService,
+    private userService: UserService,
+    private memberService: MemberService,
     private keycloak: KeycloakService,
   ) {
   }
 
   ngOnInit(): void {
-    this.keycloak.isLoggedIn().then(loggedIn => this.loggedIn = loggedIn);
+    this.userService.current$.subscribe(user => user && (this.currentUser = user));
 
     this.subscription = this.router.events.pipe(
       filter(e => e instanceof NavigationEnd && e.urlAfterRedirects === '/projects'),
@@ -54,6 +59,16 @@ export class ProjectListComponent implements OnInit, OnDestroy {
       if (index >= 0) {
         this.projects[index] = persistentProject;
       }
+    });
+  }
+
+  leave(project: Project) {
+    if (!confirm('Are you sure you want to leave this project as collaborator? This can only be undone by the owner.')) {
+      return;
+    }
+
+    this.memberService.delete({projectId: project.id, userId: this.currentUser!.id!}).subscribe(() => {
+      this.projects.removeFirst(p => p === project);
     });
   }
 }

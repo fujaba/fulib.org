@@ -2,11 +2,11 @@
   <h1 class="d-flex align-items-center">
     My Projects
     <div class="btn-group ml-auto">
-      <a class="btn btn-success" routerLink="new/edit" [queryParams]="{local: loggedIn ? null : true}">
+      <a class="btn btn-success" routerLink="new/edit" [queryParams]="{local: currentUser ? null : true}">
         <i class="bi-folder-plus"></i>
         New
       </a>
-      <div *ngIf="loggedIn" class="btn-group" ngbDropdown role="group" aria-label="Actions">
+      <div *ngIf="currentUser" class="btn-group" ngbDropdown role="group" aria-label="Actions">
         <button class="btn btn-success dropdown-toggle-split" ngbDropdownToggle></button>
         <div class="dropdown-menu" ngbDropdownMenu>
           <a ngbDropdownItem routerLink="new/edit" [queryParams]="{local: true}">
@@ -84,16 +84,23 @@
               <a *ngIf="!project.local" ngbDropdownItem [routerLink]="[project.id, 'edit-member']">
                 Add Collaborator
               </a>
-              <button *ngIf="loggedIn && project.local" ngbDropdownItem (click)="convert(project)">
+              <button *ngIf="currentUser && project.local" ngbDropdownItem (click)="convert(project)">
                 Convert to Persistent
               </button>
               <div class="dropdown-divider"></div>
-              <a *ngIf="!project.local" class="text-danger" ngbDropdownItem [routerLink]="[project.id, 'transfer']">
+              <a *ngIf="!project.local && currentUser && currentUser.id === project.userId"
+                 class="text-danger" ngbDropdownItem [routerLink]="[project.id, 'transfer']">
                 Transfer
               </a>
-              <a ngbDropdownItem class="text-danger" [routerLink]="[project.id, 'delete']">
+              <a *ngIf="project.local || currentUser && currentUser.id === project.userId"
+                ngbDropdownItem class="text-danger" [routerLink]="[project.id, 'delete']">
                 Delete
               </a>
+              <button *ngIf="!project.local && currentUser && currentUser.id !== project.userId"
+                 ngbDropdownItem class="text-danger" (click)="leave(project)"
+              >
+                Leave
+              </button>
             </div>
           </div>
         </div>
@@ -101,7 +108,7 @@
     </li>
   </ul>
 
-  <p *ngIf="!loggedIn" class="text-center text-muted mt-3">
+  <p *ngIf="!currentUser" class="text-center text-muted mt-3">
     Missing something?
     Some of your Projects may not be available until you
     <a routerLink="." (click)="login()">log in</a>
