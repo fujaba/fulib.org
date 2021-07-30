@@ -1,19 +1,19 @@
 <div class="d-flex h-100">
-  <div class="d-flex flex-column bg-light bg-darkmode-dark">
-    <div *ngFor="let entry of sidebarItems"
+  <div class="d-flex flex-column sidebar">
+    <a *ngFor="let entry of sidebarItems"
          class="sidebar-item"
          [ngbTooltip]="entry.name" placement="right"
          [routerLink]="[{outlets: {panel: entry.id}}]"
          routerLinkActive="active"
     >
       <i class="bi-{{entry.icon}}" role="navigation" [attr.aria-label]="entry.name"></i>
-    </div>
-    <div class="sidebar-item" routerLink="search" ngbTooltip="Search" placement="right">
+    </a>
+    <a class="sidebar-item" routerLink="search" ngbTooltip="Search" placement="right">
       <i class="bi-search"></i>
-    </div>
-    <div class="sidebar-item mt-auto" ngbTooltip="Exit" placement="right" (click)="exit()">
+    </a>
+    <a class="sidebar-item mt-auto" href="/projects" ngbTooltip="Exit" placement="right" (click)="exit(); $event.preventDefault()">
       <i class="bi-box-arrow-left"></i>
-    </div>
+    </a>
   </div>
   <as-split class="flex-grow-1 h-100" direction="horizontal">
     <as-split-area [size]="20" [visible]="!!fileTabsComponent" [order]="0">
