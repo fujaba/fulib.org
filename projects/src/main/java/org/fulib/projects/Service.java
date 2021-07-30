@@ -5,6 +5,8 @@ import org.fulib.projects.editor.EditorService;
 import org.fulib.projects.fsevents.FileWatcherCommandHandler;
 import org.fulib.projects.fsevents.FileWatcherProcess;
 import org.fulib.projects.fsevents.FileWatcherRegistry;
+import org.fulib.projects.search.SearchController;
+import org.fulib.projects.search.SearchService;
 import org.fulib.projects.terminal.TerminalCommandHandler;
 import org.fulib.projects.terminal.TerminalController;
 import org.fulib.projects.terminal.TerminalService;
@@ -52,6 +54,10 @@ public class Service
 		final FileWatcherCommandHandler fileWatcherCommandHandler = new FileWatcherCommandHandler(registry);
 		webSocketHandler.getCommandHandlers().add(fileWatcherCommandHandler);
 
+		// search
+		final SearchService searchService = new SearchService();
+		final SearchController searchController = new SearchController(searchService);
+
 		// scheduled stop
 		scheduler = Executors.newSingleThreadScheduledExecutor();
 		scheduledStop = scheduler.schedule(this::stop, 120, TimeUnit.SECONDS);
@@ -72,6 +78,7 @@ public class Service
 		service.webSocket("/ws", webSocketHandler);
 		service.get("/health", (req, res) -> "OK");
 		service.get("/processes", terminalController::getAll);
+		service.get("/search/*", searchController::search);
 		service.get("/zip/*", zipHandler::pack);
 		service.post("/zip/*", zipHandler::unpack);
 		service.awaitStop();
