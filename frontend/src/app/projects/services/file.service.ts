@@ -42,7 +42,7 @@ export class FileService {
     return this.dav.propFindAll(`${container.url}/dav/${parent.path}`).pipe(map(resources => {
       const children = resources.slice(1).map(resource => this.toFile(resource));
       parent.setChildren(children);
-      return children;
+      return parent.children!;
     }));
   }
 
