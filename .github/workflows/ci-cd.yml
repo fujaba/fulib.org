@@ -54,14 +54,10 @@ jobs:
             /.pnpm-store
           key: pnpm-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: pnpm-${{ runner.os }}-
-      - name: Install Angular CLI
-        run: pnpm install -g @angular/cli
-      - name: Setup Angular CLI to use PNPM
-        run: ng config -g cli.packageManager pnpm
       - name: Install packages
         run: pnpm install
       - name: Build Angular
-        run: ng build --configuration production
+        run: pnpm build
       - name: Determine Deployment Readiness
         id: deployment
         if: matrix.os == 'ubuntu' && matrix.node == 14 && (github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/v'))
