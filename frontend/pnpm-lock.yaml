@@ -26,7 +26,7 @@ specifiers:
   '@types/file-saver': ^2.0.3
   '@types/jasmine': ~3.6.11
   '@types/jasminewd2': ~2.0.10
-  '@types/node': ~14.17.6
+  '@types/node': ~16.4.10
   '@typescript-eslint/eslint-plugin': ~4.28.5
   '@typescript-eslint/parser': ~4.28.5
   angular-gridster2: ^12.1.0
@@ -99,7 +99,7 @@ devDependencies:
   '@types/file-saver': 2.0.3
   '@types/jasmine': 3.6.11
   '@types/jasminewd2': 2.0.10
-  '@types/node': 14.17.6
+  '@types/node': 16.4.10
   '@typescript-eslint/eslint-plugin': 4.28.5_a8e83fcad666e1ba86be4b2e27a20aea
   '@typescript-eslint/parser': 4.28.5_eslint@7.32.0+typescript@4.3.5
   eslint: 7.32.0
@@ -2049,6 +2049,10 @@ packages:
 
   /@types/node/14.17.6:
     resolution: {integrity: sha512-iBxsxU7eswQDGhlr3AiamBxOssaYxbM+NKXVil8jg9yFXvrfEFbDumLD/2dMTB+zYyg7w+Xjt8yuxfdbUHAtcQ==}
+    dev: true
+
+  /@types/node/16.4.10:
+    resolution: {integrity: sha512-TmVHsm43br64js9BqHWqiDZA+xMtbUpI1MBIA0EyiBmoV9pcEYFOSdj5fr6enZNfh4fChh+AGOLIzGwJnkshyQ==}
     dev: true
 
   /@types/parse-json/4.0.0:

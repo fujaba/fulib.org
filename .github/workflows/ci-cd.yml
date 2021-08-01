@@ -27,7 +27,7 @@ jobs:
     strategy:
       matrix:
         node:
-          - '14'
+          - '16'
         os:
           - ubuntu
           - windows
