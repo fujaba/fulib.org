@@ -2,7 +2,7 @@
   <div class="col-md-3 bg-light bg-darkmode-dark">
     <div class="container" style="position: sticky; top: 0">
       <h1>{{course?.title || 'Loading Title...'}}</h1>
-      <app-markdown [html]="course ? course.descriptionHtml : 'Loading Description...'"></app-markdown>
+      <app-markdown [html]="course?.descriptionHtml ?? 'Loading Description...'"></app-markdown>
       <ol class="timeline-list">
         <li *ngFor="let assignment of course?.assignments; let i=index" class="timeline-item">
           <div class="timeline-item-badge bg-{{getBadgeColor(i, assignment)}}">

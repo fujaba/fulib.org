@@ -16,5 +16,5 @@
   </ng-container>
 </p>
 <p>
-  <app-markdown [html]="assignment ? assignment.descriptionHtml : 'Loading Description...'"></app-markdown>
+  <app-markdown [html]="assignment?.descriptionHtml ?? 'Loading Description...'"></app-markdown>
 </p>

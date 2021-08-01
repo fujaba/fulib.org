@@ -74,7 +74,7 @@
             {{task.points}}
           </span>
         </div>
-        <app-collapse-button class="ml-auto" [(collapsed)]="task.collapsed" (collapsedChange)="saveDraft()">
+        <app-collapse-button class="ml-auto" [collapsed]="!!task.collapsed" (collapsedChange)="task.collapsed = $event; saveDraft()">
         </app-collapse-button>
         <div class="btn btn-secondary ml-2 handle" aria-label="Reorder" ngbTooltip="Drag to Reorder">
           <i class="bi-grip-horizontal handle"></i>
@@ -90,7 +90,7 @@
           <i class="bi-arrow-repeat"></i>
         </button>
       </div>
-      <div class="form mb-3" [ngbCollapse]="task.collapsed">
+      <div class="form mb-3" [ngbCollapse]="!!task.collapsed">
         <div class="form-group row">
           <label for="task/{{id}}/descriptionInput" class="col-sm-2 col-form-label">Description</label>
           <div class="col-sm-10">

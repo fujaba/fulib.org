@@ -9,7 +9,7 @@
   </h2>
   <p [ngbCollapse]="solutionCollapsed">
     <app-scenario-codemirror
-      [content]="assignment ? assignment.solution : 'Loading...'"
+      [content]="assignment?.solution ?? 'Loading...'"
       [readOnly]="true"
       [autoRefresh]="true"
     ></app-scenario-codemirror>
@@ -128,15 +128,11 @@
       <td>{{solution.studentID}}</td>
       <td><a href="mailto:{{solution.email}}">{{solution.email}}</a></td>
       <td>
-        <ng-container
-          *ngIf="assignment?.deadline && assignment?.deadline < solution.timeStamp; then thenBlock else elseBlock">
-        </ng-container>
-        <ng-template #thenBlock>
-            <span class="text-danger" ngbTooltip="Submitted after Deadline">
-              {{solution.timeStamp | date:'medium'}}
-            </span>
-        </ng-template>
-        <ng-template #elseBlock>
+        <span *ngIf="assignment && assignment.deadline && solution.timeStamp && assignment.deadline < solution.timeStamp else timestamp"
+          class="text-danger" ngbTooltip="Submitted after Deadline">
+          {{solution.timeStamp | date:'medium'}}
+        </span>
+        <ng-template #timestamp>
           {{solution.timeStamp | date:'medium'}}
         </ng-template>
       </td>

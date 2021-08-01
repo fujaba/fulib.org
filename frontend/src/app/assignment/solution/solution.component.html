@@ -10,7 +10,7 @@
       id="solutionInput"
       [content]="solution ? solution.solution : 'Loading...'"
       [markers]="markers"
-      readOnly="true"
+      [readOnly]="true"
     ></app-scenario-codemirror>
   </p>
 
@@ -121,5 +121,5 @@
   </ol>
 </div>
 
-<app-token-modal #tokenModal [solution]="true" (submitTokens)="setTokens($event.solutionToken, $event.assignmentToken)">
+<app-token-modal #tokenModal [solution]="true" (submitTokens)="setTokens($event.assignmentToken, $event.solutionToken)">
 </app-token-modal>

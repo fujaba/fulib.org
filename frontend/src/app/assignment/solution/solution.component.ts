@@ -125,7 +125,7 @@ export class SolutionComponent implements OnInit, OnDestroy {
     });
   }
 
-  setTokens(solutionToken: string, assignmentToken: string): void {
+  setTokens(assignmentToken: string, solutionToken?: string): void {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParamsHandling: 'merge',

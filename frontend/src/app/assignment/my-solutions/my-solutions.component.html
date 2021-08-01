@@ -33,7 +33,7 @@
         <a class="list-group-item list-group-item-action"
            routerLink="/assignments/{{assignment.id}}">
           by
-          <app-author-name [name]="name" [email]="email"></app-author-name>
+          <app-author-name [name]="name || ''" [email]="email || ''"></app-author-name>
           &mdash;
           {{studentID}}
           &mdash;
