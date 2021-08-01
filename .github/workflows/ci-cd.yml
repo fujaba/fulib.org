@@ -60,7 +60,7 @@ jobs:
         run: pnpm build
       - name: Determine Deployment Readiness
         id: deployment
-        if: matrix.os == 'ubuntu' && matrix.node == 14 && (github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/v'))
+        if: matrix.os == 'ubuntu' && matrix.node == 16 && (github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/v'))
         run: echo "::set-output name=ready::true"
       - name: Build the Docker Image
         if: steps.deployment.outputs.ready
