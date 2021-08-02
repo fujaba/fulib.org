@@ -16,7 +16,7 @@
         </select>
       </div>
     </div>
-    <p *ngIf="format" [innerHTML]="formats.find(formatMatcher)?.description | safeHtml">
+    <p *ngIf="format" [innerHTML]="formats.find(formatMatcher)!.description! | safeHtml">
     </p>
   </ng-container>
   <ng-container modal-footer>

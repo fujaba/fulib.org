@@ -25,10 +25,10 @@
     </as-split-area>
     <as-split-area [size]="80" [order]="1">
       <as-split direction="vertical">
-        <as-split-area [size]="70">
+        <as-split-area *ngIf="fileTabsComponent" [size]="70">
           <ng-container [ngComponentOutlet]="fileTabsComponent"></ng-container>
         </as-split-area>
-        <as-split-area [size]="30">
+        <as-split-area *ngIf="terminalComponent" [size]="30">
           <ng-container [ngComponentOutlet]="terminalComponent"></ng-container>
         </as-split-area>
       </as-split>
