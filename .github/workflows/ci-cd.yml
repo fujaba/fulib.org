@@ -62,6 +62,9 @@ jobs:
         id: deployment
         if: matrix.os == 'ubuntu' && matrix.node == 16 && (github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/v'))
         run: echo "::set-output name=ready::true"
+      - name: Build Angular again
+        if: steps.deployment.outputs.ready
+        run: pnpm build
       - name: Build the Docker Image
         if: steps.deployment.outputs.ready
         uses: whoan/docker-build-with-cache-action@v5
