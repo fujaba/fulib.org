@@ -2,11 +2,13 @@ import {HttpClientModule} from '@angular/common/http';
 import {APP_INITIALIZER, NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
+import {ServiceWorkerModule} from '@angular/service-worker';
 
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {KeycloakAngularModule, KeycloakService} from 'keycloak-angular';
 import {NgBootstrapDarkmodeModule, THEME_LOADER, THEME_SAVER, ThemeLoader, ThemeSaver} from 'ng-bootstrap-darkmode';
 import {DragulaModule} from 'ng2-dragula';
+import {of} from 'rxjs';
 
 import {environment} from '../environments/environment';
 
@@ -62,6 +64,12 @@ function initializeKeycloak(keycloak: KeycloakService) {
     SharedModule,
     AppRoutingModule,
     UserModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+      // Register the ServiceWorker as soon as the app is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000',
+    }),
   ],
   providers: [
     {
@@ -74,7 +82,8 @@ function initializeKeycloak(keycloak: KeycloakService) {
       provide: THEME_LOADER,
       deps: [PrivacyService],
       useFactory(privacyService: PrivacyService): ThemeLoader {
-        return () => privacyService.getStorage('theme');
+        // TODO: Make this an Observable that automatically listens for changes to localStorage
+        return () => of(privacyService.getStorage('theme'));
       },
     },
     {

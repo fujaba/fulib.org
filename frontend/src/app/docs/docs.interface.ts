@@ -3,6 +3,7 @@ export interface Page {
   repo: string;
   url: string;
   wip: boolean;
+  children?: Page[];
 }
 
 export interface ParsedPage extends Page {

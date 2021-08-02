@@ -14,7 +14,7 @@ export class ScenarioCodemirrorComponent implements OnInit, OnDestroy {
   @ViewChild('scenarioInput', {static: true}) scenarioInput: AutothemeCodemirrorComponent;
 
   @Input() autoSubmit = false;
-  @Input() markers?: Marker[];
+  @Input() markers: Marker[] = [];
 
   @Input() content: string;
   @Output() contentChange = new EventEmitter<string>();
