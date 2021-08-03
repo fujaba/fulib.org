@@ -29,13 +29,14 @@ repositories {
 dependencies {
 	// --------------- Dagger (Dependency Injection) ---------------
 
-	implementation 'com.google.dagger:dagger:2.35.1'
-	annotationProcessor 'com.google.dagger:dagger-compiler:2.35.1'
+	// https://mvnrepository.com/artifact/com.google.dagger/dagger
+	implementation 'com.google.dagger:dagger:2.37'
+	annotationProcessor 'com.google.dagger:dagger-compiler:2.37'
 
 	// --------------- Other Libraries ---------------
 
 	// https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
-	implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
+	implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.32'
 
 	// https://mvnrepository.com/artifact/com.sparkjava/spark-core
 	implementation group: 'com.sparkjava', name: 'spark-core', version: '2.9.3'
@@ -44,23 +45,23 @@ dependencies {
 	implementation group: 'org.json', name: 'json', version: '20210307'
 
 	// https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync
-	implementation group: 'org.mongodb', name: 'mongodb-driver-sync', version: '4.2.3'
+	implementation group: 'org.mongodb', name: 'mongodb-driver-sync', version: '4.3.0'
 
 	// https://mvnrepository.com/artifact/com.auth0/java-jwt
-	implementation group: 'com.auth0', name: 'java-jwt', version: '3.15.0'
+	implementation group: 'com.auth0', name: 'java-jwt', version: '3.18.1'
 
 	testImplementation junitDependency
 
 	// https://mvnrepository.com/artifact/org.mockito/mockito-core
-	testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.9.0'
+	testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.11.2'
 
 	// --------------- Docker (Projects) ---------------
 
 	// https://mvnrepository.com/artifact/com.github.docker-java/docker-java-core
-	implementation group: 'com.github.docker-java', name: 'docker-java-core', version: '3.2.8'
+	implementation group: 'com.github.docker-java', name: 'docker-java-core', version: '3.2.11'
 
 	// https://mvnrepository.com/artifact/com.github.docker-java/docker-java-transport-httpclient5
-	implementation group: 'com.github.docker-java', name: 'docker-java-transport-httpclient5', version: '3.2.8'
+	implementation group: 'com.github.docker-java', name: 'docker-java-transport-httpclient5', version: '3.2.11'
 }
 
 // --------------- Version Injection ---------------
