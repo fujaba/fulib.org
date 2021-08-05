@@ -51,47 +51,16 @@ public class ProjectGenerator
 		copy(generator, ".fulib/launch/continuous-test.json");
 		copy(generator, ".fulib/launch/continuous-compile.json");
 
-		generator.generate("settings.gradle",
-		                   output -> output.write(getSettingsGradle(data).getBytes(StandardCharsets.UTF_8)));
-		generator.generate("build.gradle",
-		                   output -> output.write(getBuildGradle(data).getBytes(StandardCharsets.UTF_8)));
+		copy(generator, "settings.gradle", "settings.gradle", //
+		     "$$projectName$$", data.getProjectName());
+		copy(generator, "build.gradle", "build.gradle", //
+		     "$$packageName$$", data.getPackageName(), "$$projectVersion$$", data.getProjectVersion());
 
 		final String decorator = data.getDecoratorClassName();
 		if (decorator != null)
 		{
-			generator.generate("src/gen/java/" + packageDir + "/" + decorator + ".java",
-			                   output -> output.write(getDecoratorJava(data).getBytes(StandardCharsets.UTF_8)));
-		}
-	}
-
-	private String getSettingsGradle(ProjectData data) throws IOException
-	{
-		try (final InputStream input = Main.class.getResourceAsStream("zip/settings.gradle"))
-		{
-			final String content = IOUtils.toString(input, StandardCharsets.UTF_8);
-			return content.replace("$$projectName$$", data.getProjectName());
-		}
-	}
-
-	private String getBuildGradle(ProjectData data) throws IOException
-	{
-		try (final InputStream input = Main.class.getResourceAsStream("zip/build.gradle"))
-		{
-			final String content = IOUtils.toString(input, StandardCharsets.UTF_8);
-			return content
-				.replace("$$packageName$$", data.getPackageName())
-				.replace("$$projectVersion$$", data.getProjectVersion());
-		}
-	}
-
-	private String getDecoratorJava(ProjectData data) throws IOException
-	{
-		try (final InputStream input = Main.class.getResourceAsStream("zip/Decorator.java.txt"))
-		{
-			final String content = IOUtils.toString(input, StandardCharsets.UTF_8);
-			return content
-				.replace("$$packageName$$", data.getPackageName())
-				.replace("$$decoratorClassName$$", data.getDecoratorClassName());
+			copy(generator, "Decorator.java.txt", "src/gen/java/" + packageDir + "/" + decorator + ".java", //
+			     "$$packageName$$", data.getPackageName(), "$$decoratorClassName$$", data.getDecoratorClassName());
 		}
 	}
 
@@ -106,6 +75,22 @@ public class ProjectGenerator
 			try (final InputStream fileInput = Main.class.getResourceAsStream("zip/" + resourceName))
 			{
 				IOUtils.copyLarge(fileInput, output, buffer);
+			}
+		});
+	}
+
+	private void copy(FileGenerator generator, String resourceName, String file, String... replacements)
+		throws IOException
+	{
+		generator.generate(file, output -> {
+			try (final InputStream input = Main.class.getResourceAsStream("zip/" + resourceName))
+			{
+				String content = IOUtils.toString(input, StandardCharsets.UTF_8);
+				for (int i = 0; i < replacements.length; i += 2)
+				{
+					content = content.replace(replacements[i], replacements[i + 1]);
+				}
+				output.write(content.getBytes(StandardCharsets.UTF_8));
 			}
 		});
 	}
