@@ -46,6 +46,10 @@ public class ProjectGenerator
 		copy(generator, "gradlew.bat");
 		copy(generator, "gradle/wrapper/gradle-wrapper.jar.zip", "gradle/wrapper/gradle-wrapper.jar");
 		copy(generator, "gradle/wrapper/gradle-wrapper.properties");
+		copy(generator, ".fulib/launch/shell.json");
+		copy(generator, ".fulib/launch/gradle-build.json");
+		copy(generator, ".fulib/launch/continuous-test.json");
+		copy(generator, ".fulib/launch/continuous-compile.json");
 
 		generator.generate("settings.gradle",
 		                   output -> output.write(getSettingsGradle(data).getBytes(StandardCharsets.UTF_8)));

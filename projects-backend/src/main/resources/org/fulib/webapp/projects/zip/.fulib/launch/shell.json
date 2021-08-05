@@ -1,0 +1,9 @@
+{
+  "type": "terminal",
+  "name": "Shell",
+  "id": "shell",
+  "terminal": {
+    "executable": "/bin/bash",
+    "workingDirectory": "${projectRoot}"
+  }
+}

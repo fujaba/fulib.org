@@ -1,0 +1,14 @@
+{
+  "type": "terminal",
+  "name": "Continuous Test",
+  "id": "continuous-test",
+  "terminal": {
+    "executable": "/bin/bash",
+    "workingDirectory": "${projectRoot}",
+    "arguments": [
+      "gradlew",
+      "test",
+      "--continuous"
+    ]
+  }
+}
