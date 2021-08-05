@@ -42,10 +42,10 @@ public class ProjectGenerator
 		});
 
 		copy(generator, "default.gitignore", ".gitignore");
-		copy(generator, "gradlew", "gradlew");
-		copy(generator, "gradlew.bat", "gradlew.bat");
+		copy(generator, "gradlew");
+		copy(generator, "gradlew.bat");
 		copy(generator, "gradle/wrapper/gradle-wrapper.jar.zip", "gradle/wrapper/gradle-wrapper.jar");
-		copy(generator, "gradle/wrapper/gradle-wrapper.properties", "gradle/wrapper/gradle-wrapper.properties");
+		copy(generator, "gradle/wrapper/gradle-wrapper.properties");
 
 		generator.generate("settings.gradle",
 		                   output -> output.write(getSettingsGradle(data).getBytes(StandardCharsets.UTF_8)));
@@ -89,6 +89,11 @@ public class ProjectGenerator
 				.replace("$$packageName$$", data.getPackageName())
 				.replace("$$decoratorClassName$$", data.getDecoratorClassName());
 		}
+	}
+
+	private void copy(FileGenerator generator, String file) throws IOException
+	{
+		copy(generator, file, file);
 	}
 
 	private void copy(FileGenerator generator, String resourceName, String file) throws IOException
