@@ -33,7 +33,11 @@ export class TerminalComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.output$ = this.terminalService.exec(this.model).pipe(
+    const model: Terminal = {
+      ...this.model,
+      workingDirectory: this.model.workingDirectory?.replace('${projectRoot}', this.projectManager.fileRoot.path),
+    };
+    this.output$ = this.terminalService.exec(model).pipe(
       filter(message => {
         switch (message.event) {
           case 'terminal.output':
