@@ -10,7 +10,6 @@ import {ProjectTreeComponent} from '../../modules/project-panel/project-tree/pro
 import {SettingsComponent} from '../../modules/settings/settings/settings.component';
 import {ContainerService} from '../../services/container.service';
 import {EditorService} from '../../services/editor.service';
-import {FileTypeService} from '../../services/file-type.service';
 import {FileService} from '../../services/file.service';
 import {LocalProjectService} from '../../services/local-project.service';
 import {ProjectManager} from '../../services/project.manager';
@@ -74,7 +73,6 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
     private projectService: ProjectService,
     private containerService: ContainerService,
     private fileService: FileService,
-    private fileTypeService: FileTypeService,
     private projectManager: ProjectManager,
     private ngbModal: NgbModal,
   ) {
