@@ -1,4 +1,4 @@
-<app-modal #modal [locked]="saving" [back]="['..']" [backOptions]="{relativeTo: activatedRoute}">
+<app-modal #modal [back]="['..']" [backOptions]="{relativeTo: activatedRoute}">
   <ng-container modal-header>
     Setup Project
   </ng-container>
@@ -14,10 +14,10 @@
     <app-project-config-form [config]="config"></app-project-config-form>
   </ng-container>
   <ng-container modal-footer>
-    <button type="button" class="btn btn-secondary" (click)="modal.close()" [disabled]="saving">
+    <button type="button" class="btn btn-secondary" (click)="modal.close()">
       Cancel
     </button>
-    <button type="button" class="btn btn-primary" (click)="save()" [disabled]="saving">
+    <button type="button" class="btn btn-primary" (click)="save(); modal.close()">
       Generate
     </button>
   </ng-container>
