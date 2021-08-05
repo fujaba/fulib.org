@@ -7,9 +7,14 @@
     </a>
   </h4>
   <ul class="list-group">
-    <li *ngFor="let config of configs" class="list-group-item d-flex">
-      {{config.name}}
-      <div class="btn-group btn-group-sm ml-auto align-self-center">
+    <li *ngFor="let config of configs" class="list-group-item d-flex align-items-center">
+      <div>
+        {{ config.name }}
+        <small class="text-muted">
+          {{ config.type|titlecase }}
+        </small>
+      </div>
+      <div class="btn-group btn-group-sm ml-auto">
         <button type="button" class="btn btn-success" (click)="launch(config)">
           <i class="bi-play"></i>
           Launch
