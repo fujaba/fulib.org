@@ -20,16 +20,16 @@
     </a>
   </div>
   <as-split class="flex-grow-1 h-100" direction="horizontal">
-    <as-split-area [size]="20" [visible]="!!fileTabsComponent" [order]="0">
-      <router-outlet *ngIf="fileTabsComponent" name="panel"></router-outlet>
+    <as-split-area *ngIf="progress.projectRoot" [size]="20" [order]="0">
+      <router-outlet name="panel"></router-outlet>
     </as-split-area>
     <as-split-area [size]="80" [order]="1">
       <as-split direction="vertical">
-        <as-split-area *ngIf="fileTabsComponent" [size]="70">
-          <ng-container [ngComponentOutlet]="fileTabsComponent"></ng-container>
+        <as-split-area *ngIf="progress.projectRoot" [size]="70" [order]="0">
+          <app-file-tabs></app-file-tabs>&
         </as-split-area>
-        <as-split-area *ngIf="terminalComponent" [size]="30">
-          <ng-container [ngComponentOutlet]="terminalComponent"></ng-container>
+        <as-split-area *ngIf="progress.connect" [size]="30" [order]="1">
+          <app-terminal-tabs></app-terminal-tabs>
         </as-split-area>
       </as-split>
     </as-split-area>
@@ -47,17 +47,8 @@
   <div class="modal-body">
     Please hang tight while we set things up for you...
     <ul>
-      <li [class.text-success]="project">
-        Loading Project Metadata
-      </li>
-      <li [class.text-success]="container">
-        Launching Container
-      </li>
-      <li [class.text-success]="terminalComponent">
-        Connecting to Container
-      </li>
-      <li [class.text-success]="fileTabsComponent">
-        Loading Project Root
+      <li *ngFor="let progressItem of progressOrder" [class.text-success]="progress[progressItem]">
+        {{ progressLabels[progressItem] }}
       </li>
     </ul>
   </div>

@@ -1,23 +1,20 @@
-import {Component, HostListener, OnDestroy, OnInit, TemplateRef, Type, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, TemplateRef, Type, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {forkJoin, fromEvent, Subscription} from 'rxjs';
 import {buffer, debounceTime, filter, map, mapTo, share, switchMap, tap} from 'rxjs/operators';
-import {ContainerService} from '../../services/container.service';
 
+import {Project} from '../../model/project';
+import {LaunchPanelComponent} from '../../modules/launch/launch-panel/launch-panel.component';
+import {ProjectTreeComponent} from '../../modules/project-panel/project-tree/project-tree.component';
+import {SettingsComponent} from '../../modules/settings/settings/settings.component';
+import {ContainerService} from '../../services/container.service';
 import {EditorService} from '../../services/editor.service';
 import {FileTypeService} from '../../services/file-type.service';
 import {FileService} from '../../services/file.service';
-import {LaunchPanelComponent} from '../../modules/launch/launch-panel/launch-panel.component';
 import {LocalProjectService} from '../../services/local-project.service';
-import {Container} from '../../model/container';
-import {Project} from '../../model/project';
-import {ProjectTreeComponent} from '../../modules/project-panel/project-tree/project-tree.component';
 import {ProjectManager} from '../../services/project.manager';
 import {ProjectService} from '../../services/project.service';
-import {SettingsComponent} from '../../modules/settings/settings/settings.component';
-import {SplitPanelComponent} from '../split-panel/split-panel.component';
-import {TerminalTabsComponent} from '../../modules/terminal/terminal-tabs/terminal-tabs.component';
 
 interface SidebarItem {
   id: string;
@@ -25,6 +22,22 @@ interface SidebarItem {
   name: string;
   icon: string;
 }
+
+const progressLabels = {
+  metadata: 'Loading Project Metadata',
+  container: 'Launching Container',
+  connect: 'Connecting to Container',
+  restoreFiles: 'Restoring Files',
+  projectRoot: 'Loading Project Root',
+};
+
+const progressOrder: (keyof typeof progressLabels)[] = [
+  'metadata',
+  'container',
+  'connect',
+  'restoreFiles',
+  'projectRoot',
+];
 
 @Component({
   selector: 'app-project-workspace',
@@ -38,19 +51,19 @@ interface SidebarItem {
 export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
   @ViewChild('loadingModal', {static: true}) loadingModal: TemplateRef<any>;
 
+  progressLabels = progressLabels;
+  progressOrder = progressOrder;
+  progress: Partial<Record<keyof typeof progressLabels, true>> = {};
+
   openModal: NgbModalRef;
 
   project: Project;
-  container: Container;
 
   sidebarItems: SidebarItem[] = [
     {id: 'project', name: 'Project', icon: 'code-square', component: ProjectTreeComponent},
     {id: 'launch', name: 'Launch', icon: 'play', component: LaunchPanelComponent},
     {id: 'settings', name: 'Settings', icon: 'gear', component: SettingsComponent},
   ];
-
-  terminalComponent?: typeof TerminalTabsComponent;
-  fileTabsComponent?: typeof SplitPanelComponent;
 
   private subscription: Subscription;
 
@@ -79,31 +92,39 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
           backdropClass: 'backdrop-blur',
           keyboard: false,
         });
+        this.progress = {};
       }),
       switchMap(({id}) => {
         const localProject = this.localProjectService.get(id);
         if (localProject) {
           this.project = localProject;
+          this.progress.metadata = true;
           return this.containerService.createLocal(localProject).pipe(map(container => {
-            this.container = container;
+            this.progress.container = true;
             return [localProject, container] as const;
           }));
         } else {
           return forkJoin([
-            this.projectService.get(id).pipe(tap(project => this.project = project)),
-            this.containerService.create(id).pipe(tap(container => this.container = container)),
+            this.projectService.get(id).pipe(tap(project => {
+              this.project = project;
+              this.progress.metadata = true;
+            })),
+            this.containerService.create(id).pipe(tap(() => this.progress.container = true)),
           ]);
         }
       }),
       tap(([project, container]) => {
         this.projectManager.init(project, container);
+        this.progress.connect = true;
       }),
-      switchMap(([project, container]) => this.projectService.restoreSetupAndFiles(container, project).pipe(mapTo([project, container] as const))),
+      switchMap(([project, container]) => this.projectService.restoreSetupAndFiles(container, project).pipe(
+        tap(() => this.progress.restoreFiles = true),
+        mapTo([project, container] as const),
+      )),
       switchMap(([project, container]) => this.fileService.getWithChildren(container, `/projects/${project.id}/`)),
       tap(fileRoot => {
+        this.progress.projectRoot = true;
         this.projectManager.fileRoot = fileRoot;
-        this.fileTabsComponent = SplitPanelComponent;
-        this.terminalComponent = TerminalTabsComponent;
         fileRoot.info = 'project root';
         Object.defineProperty(fileRoot, 'name', {
           get: () => this.project.name,
