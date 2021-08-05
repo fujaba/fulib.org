@@ -1,7 +1,7 @@
 package org.fulib.webapp.projects.zip;
 
-import org.fulib.webapp.projects.projectzip.ProjectZipController;
 import org.fulib.webapp.projects.projects.ProjectGenerator;
+import org.fulib.webapp.projects.projectzip.ProjectZipController;
 import org.fulib.webapp.projects.util.DelegatingServletOutputStream;
 import org.junit.Test;
 import spark.Request;
@@ -22,6 +22,22 @@ import static org.mockito.Mockito.*;
 
 public class ProjectZipControllerTest
 {
+	private static final String[] EXPECTED_FILES = {
+		".gitignore",
+		"settings.gradle",
+		"build.gradle",
+		"gradlew",
+		"gradlew.bat",
+		"gradle/wrapper/gradle-wrapper.jar",
+		"gradle/wrapper/gradle-wrapper.properties",
+		"src/gen/java/org/example/MyDecorator.java",
+		"src/main/scenarios/org/example/Scenario.md",
+		".fulib/launch/shell.json",
+		".fulib/launch/gradle-build.json",
+		".fulib/launch/continuous-compile.json",
+		".fulib/launch/continuous-test.json",
+	};
+
 	@Test
 	public void handle() throws IOException
 	{
@@ -64,9 +80,7 @@ public class ProjectZipControllerTest
 			}
 		}
 
-		assertThat(files, hasItems("src/main/scenarios/org/example/Scenario.md", ".gitignore", "gradlew", "gradlew.bat",
-		                           "gradle/wrapper/gradle-wrapper.jar", "gradle/wrapper/gradle-wrapper.properties",
-		                           "settings.gradle", "build.gradle", "src/gen/java/org/example/MyDecorator.java"));
+		assertThat(files, hasItems(EXPECTED_FILES));
 		// TODO check contents of Scenario.md (scenarioText), settings.gradle (projectName), build.gradle (packageName,
 		//  projectVersion), and MyDecorator.java (decoratorClassName, packageName)
 	}
