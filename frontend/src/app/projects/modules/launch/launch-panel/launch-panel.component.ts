@@ -1,5 +1,7 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {filter, startWith, switchMap} from 'rxjs/operators';
 import {TerminalStub} from '../../../model/terminal';
 import {ProjectManager} from '../../../services/project.manager';
 import {LaunchService} from '../launch.service';
@@ -10,8 +12,10 @@ import {LaunchConfig} from '../model/launch-config';
   templateUrl: './launch-panel.component.html',
   styleUrls: ['./launch-panel.component.scss'],
 })
-export class LaunchPanelComponent implements OnInit {
+export class LaunchPanelComponent implements OnInit, OnDestroy {
   configs: LaunchConfig[] = [];
+
+  private subscription: Subscription;
 
   constructor(
     private router: Router,
@@ -22,9 +26,17 @@ export class LaunchPanelComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.launchService.getLaunchConfigs(this.projectManager.container).subscribe(configs => {
+    this.subscription = this.router.events.pipe(
+      filter(e => e instanceof NavigationEnd && e.urlAfterRedirects.includes('panel:launch)') && !e.urlAfterRedirects.includes('panel:launch/')),
+      startWith(undefined),
+      switchMap(() => this.launchService.getLaunchConfigs(this.projectManager.container)),
+    ).subscribe(configs => {
       this.configs = configs;
     });
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   delete(config: LaunchConfig) {
