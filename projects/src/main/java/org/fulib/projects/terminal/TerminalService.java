@@ -16,6 +16,7 @@ public class TerminalService
 
 	public Collection<TerminalProcess> getAll()
 	{
+		processes.values().removeIf(p -> !p.isAlive());
 		return processes.values();
 	}
 
@@ -26,10 +27,11 @@ public class TerminalService
 
 	public void stop()
 	{
-		for (final TerminalProcess process : this.processes.values())
+		for (final TerminalProcess process : processes.values())
 		{
 			process.interrupt();
 		}
+		processes.clear();
 	}
 
 	public TerminalProcess kill(String id)
