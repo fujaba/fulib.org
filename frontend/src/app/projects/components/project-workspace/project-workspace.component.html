@@ -26,7 +26,7 @@
     <as-split-area [size]="80" [order]="1">
       <as-split direction="vertical">
         <as-split-area *ngIf="progress.projectRoot" [size]="70" [order]="0">
-          <app-file-tabs></app-file-tabs>
+          <app-split-panel></app-split-panel>
         </as-split-area>
         <as-split-area *ngIf="progress.connect" [size]="30" [order]="1">
           <app-terminal-tabs></app-terminal-tabs>
