@@ -6,6 +6,7 @@ interface Step {
   selector: string;
   title: string;
   description: string;
+  route?: any[];
 }
 
 function findPos(obj: any): [number, number] {
@@ -29,6 +30,7 @@ export class TutorialComponent implements OnInit, AfterViewInit {
 
   steps: Step[] = [
     {
+      route: [{outlets: {panel: 'project'}}],
       selector: 'app-project-tree > div',
       title: 'Project Tree',
       description: `
@@ -55,6 +57,41 @@ export class TutorialComponent implements OnInit, AfterViewInit {
       Use the '+' button to open a new shell, or attach to an existing process using the button in the top left.
       `,
     },
+    {
+      route: [{outlets: {panel: 'launch'}}],
+      selector: 'app-launch-panel > div',
+      title: 'Launch Configurations',
+      description: `
+      This panel allows you to create reusable terminal configurations, e.g. build scripts.
+      Click 'New' to create a new configuration, or view the options for the existing items.
+      `,
+    },
+    {
+      route: [{outlets: {panel: 'settings'}}],
+      selector: 'app-settings > div',
+      title: 'Settings',
+      description: `
+      You can configure other Project-specific settings here.
+      Non-Local Projects can be configured to add contributors.
+      Stay clear of the Danger Zone unless you know what you are doing!
+      `,
+    },
+    {
+      selector: 'a.sidebar-item[routerlink=search]',
+      title: 'Search Everywhere',
+      description: `
+      Press Shift twice to open 'Search Everywhere'.
+      It allows you to find any file in your project just by typing parts of the name.
+      `,
+    },
+    {
+      selector: 'a.sidebar-item[routerlink=run]',
+      title: 'Run Anything',
+      description: `
+      Press Ctrl twice to open 'Run Anything'.
+      It allows you to quickly run a one-off command.
+      `,
+    },
   ];
 
   index = 0;
@@ -75,14 +112,20 @@ export class TutorialComponent implements OnInit, AfterViewInit {
     this.popover.open();
   }
 
-  showStep(index: number) {
+  async showStep(index: number) {
     if (index >= this.steps.length) {
       return;
     }
 
     this.index = index;
+    const step = this.steps[index];
 
-    const element = document.querySelector(this.steps[this.index].selector) as HTMLElement;
+    if (step.route) {
+      await this.router.navigate(step.route, {relativeTo: this.activatedRoute.parent});
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+
+    const element = document.querySelector(step.selector) as HTMLElement;
     if (!element) {
       return;
     }
