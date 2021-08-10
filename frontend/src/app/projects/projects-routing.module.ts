@@ -21,7 +21,8 @@ const routes: Routes = [
       {path: 'setup', loadChildren: () => import('./modules/setup/setup.module').then(m => m.SetupModule)},
       {path: 'search', component: SearchEverywhereComponent},
       {path: 'run', component: RunAnythingComponent},
-      {path: 'tutorial', component: TutorialComponent},
+      {path: 'tutorial/:step', component: TutorialComponent},
+      {path: 'tutorial', redirectTo: 'tutorial/0'},
       {outlet: 'panel', path: 'project', loadChildren: () => import('./modules/project-panel/project-panel.module').then(m => m.ProjectPanelModule)},
       {outlet: 'panel', path: 'launch', loadChildren: () => import('./modules/launch/launch.module').then(m => m.LaunchModule)},
       {

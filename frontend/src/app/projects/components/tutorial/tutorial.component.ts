@@ -1,6 +1,7 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NgbPopover} from '@ng-bootstrap/ng-bootstrap';
+import {map} from 'rxjs/operators';
 
 interface Step {
   selector: string;
@@ -105,7 +106,11 @@ export class TutorialComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.showStep(0);
+    this.activatedRoute.params.pipe(
+      map(({step}) => step),
+    ).subscribe(step => {
+      this.showStep(+step);
+    });
   }
 
   ngAfterViewInit() {
@@ -117,7 +122,6 @@ export class TutorialComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    this.index = index;
     const step = this.steps[index];
 
     if (step.route) {
@@ -137,9 +141,10 @@ export class TutorialComponent implements OnInit, AfterViewInit {
       width: element.offsetWidth,
       height: element.offsetHeight,
     };
+    this.index = index;
   }
 
   leave() {
-    this.router.navigate(['..'], {relativeTo: this.activatedRoute});
+    this.router.navigate(['../..'], {relativeTo: this.activatedRoute});
   }
 }

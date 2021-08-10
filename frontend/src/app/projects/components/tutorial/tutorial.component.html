@@ -21,11 +21,17 @@
     {{ steps[index].description }}
   </p>
   <div class="btn-toolbar">
-    <button class="btn btn-sm btn-primary mr-1" *ngIf="index >= 1" (click)="showStep(index - 1)">
+    <a *ngIf="index >= 1"
+       class="btn btn-sm btn-primary mr-1"
+       [routerLink]="['..', index - 1]"
+    >
       Previous
-    </button>
-    <button class="btn btn-sm btn-primary mr-1" *ngIf="index + 1 < steps.length" (click)="showStep(index + 1)">
+    </a>
+    <a *ngIf="index + 1 < steps.length"
+       class="btn btn-sm btn-primary mr-1"
+       [routerLink]="['..', index + 1]"
+    >
       Next
-    </button>
+    </a>
   </div>
 </ng-template>
