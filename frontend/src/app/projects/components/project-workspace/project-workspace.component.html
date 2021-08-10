@@ -15,7 +15,11 @@
     <a class="sidebar-item" routerLink="run" ngbTooltip="Run Anything" placement="right">
       <i class="bi-play"></i>
     </a>
-    <a class="sidebar-item mt-auto" href="/projects" ngbTooltip="Exit" placement="right" (click)="exit(); $event.preventDefault()">
+    <div class="border-top m-1 mt-auto"></div>
+    <a class="sidebar-item" routerLink="tutorial" ngbTooltip="Tutorial" placement="right">
+      <i class="bi-question-circle"></i>
+    </a>
+    <a class="sidebar-item" href="/projects" ngbTooltip="Exit" placement="right" (click)="exit(); $event.preventDefault()">
       <i class="bi-box-arrow-left"></i>
     </a>
   </div>

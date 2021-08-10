@@ -1,0 +1,31 @@
+<div class="position-absolute" id="tutorial-backdrop"
+     #popover=ngbPopover
+     [ngbPopover]="body"
+     [popoverTitle]="title"
+     triggers="manual"
+     [autoClose]="false"
+     (hidden)="leave()"
+     [style.top.px]="targetPosition.top"
+     [style.left.px]="targetPosition.left"
+     [style.width.px]="targetPosition.width"
+     [style.height.px]="targetPosition.height"
+></div>
+<ng-template #title>
+  {{ steps[index].title }}
+  <button class="close" (click)="leave()">
+    &times;
+  </button>
+</ng-template>
+<ng-template #body>
+  <p>
+    {{ steps[index].description }}
+  </p>
+  <div class="btn-toolbar">
+    <button class="btn btn-sm btn-primary mr-1" *ngIf="index >= 1" (click)="showStep(index - 1)">
+      Previous
+    </button>
+    <button class="btn btn-sm btn-primary mr-1" *ngIf="index + 1 < steps.length" (click)="showStep(index + 1)">
+      Next
+    </button>
+  </div>
+</ng-template>

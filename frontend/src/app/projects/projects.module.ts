@@ -26,6 +26,7 @@ import {ProjectService} from './services/project.service';
 import { SearchEverywhereComponent } from './components/search-everywhere/search-everywhere.component';
 import {SearchService} from './services/search.service';
 import { RunAnythingComponent } from './components/run-anything/run-anything.component';
+import { TutorialComponent } from './components/tutorial/tutorial.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { RunAnythingComponent } from './components/run-anything/run-anything.com
     SplitPanelComponent,
     SearchEverywhereComponent,
     RunAnythingComponent,
+    TutorialComponent,
   ],
   imports: [
     // Angular
