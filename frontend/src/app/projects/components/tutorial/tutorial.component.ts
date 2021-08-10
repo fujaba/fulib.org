@@ -126,7 +126,6 @@ export class TutorialComponent implements OnInit, AfterViewInit {
 
     if (step.route) {
       await this.router.navigate(step.route, {relativeTo: this.activatedRoute.parent});
-      await new Promise(resolve => setTimeout(resolve, 100));
     }
 
     const element = document.querySelector(step.selector) as HTMLElement;
