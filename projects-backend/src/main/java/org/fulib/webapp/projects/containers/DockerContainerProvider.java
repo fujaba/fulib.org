@@ -17,10 +17,7 @@ import org.fulib.webapp.projects.projects.Project;
 import javax.inject.Inject;
 import java.io.File;
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DockerContainerProvider
 {
@@ -48,6 +45,7 @@ public class DockerContainerProvider
 		final List<com.github.dockerjava.api.model.Container> containers = dockerClient
 			.listContainersCmd()
 			.withLabelFilter(Collections.singletonMap("org.fulib.project", projectId))
+			.withStatusFilter(Arrays.asList("created", "running"))
 			.exec();
 		if (containers.isEmpty())
 		{
@@ -77,6 +75,8 @@ public class DockerContainerProvider
 			.withNetworkMode(NETWORK_NAME)
 			.withEnv("PROJECT_ID=" + id)
 			.withLabels(labels);
+
+		cmd.getHostConfig().withAutoRemove(true);
 
 		if (!project.isLocal())
 		{
