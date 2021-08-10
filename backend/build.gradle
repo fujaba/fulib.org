@@ -29,6 +29,7 @@ repositories {
 dependencies {
 	// --------------- Fulib Libraries ---------------
 
+	implementation fulibDependency
 	implementation fulibScenariosDependency
 	implementation fulibMockupsDependency
 	implementation fulibTablesDependency
