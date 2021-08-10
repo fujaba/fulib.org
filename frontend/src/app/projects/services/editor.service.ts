@@ -2,10 +2,10 @@ import {Injectable} from '@angular/core';
 import {from} from 'rxjs';
 import {concatMap, filter, map} from 'rxjs/operators';
 import {PrivacyService} from '../../privacy.service';
-import {FileTypeService} from './file-type.service';
-import {FileService} from './file.service';
 import {File} from '../model/file';
 import {FileEditor} from '../model/file-editor';
+import {DEFAULT} from '../model/file-type.constants';
+import {FileService} from './file.service';
 import {ProjectManager} from './project.manager';
 
 @Injectable()
@@ -17,7 +17,6 @@ export class EditorService {
     private privacyService: PrivacyService,
     private projectManager: ProjectManager,
     private fileService: FileService,
-    private fileTypeService: FileTypeService,
   ) {
   }
 
@@ -31,7 +30,7 @@ export class EditorService {
       if (k === 'file') {
         const file = new File();
         file.path = v;
-        file.type = this.fileTypeService.default;
+        file.type = DEFAULT;
         return file;
       } else {
         return v;

@@ -5,18 +5,24 @@ import {DEFAULT, FILE_TYPES} from '../model/file-type.constants';
 
 @Injectable()
 export class FileTypeService {
-  readonly fileTypes = FILE_TYPES;
-  readonly default = DEFAULT;
-
   getFileType(file: File): FileType {
     const name = file.name;
-    for (const fileType of Object.values(this.fileTypes)) {
+    let matchedLength = 0;
+    let matchedType = DEFAULT;
+    for (const fileType of Object.values(FILE_TYPES)) {
+      const pattern = fileType.pathPattern;
+      if (pattern) {
+        if (pattern.source.length > matchedLength && pattern.test(file.path)) {
+          matchedType = fileType;
+        }
+        continue;
+      }
       for (const extension of fileType.extensions) {
-        if (name.endsWith(extension) && (!fileType.pathPattern || fileType.pathPattern.test(file.path))) {
-          return fileType;
+        if (extension.length > matchedLength && name.endsWith(extension)) {
+          matchedType = fileType;
         }
       }
     }
-    return this.default;
+    return matchedType;
   }
 }
