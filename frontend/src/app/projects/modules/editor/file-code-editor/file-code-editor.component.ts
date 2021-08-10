@@ -10,6 +10,7 @@ import {File} from '../../../model/file';
 import {FileChangeService} from '../../../services/file-change.service';
 import {FileService} from '../../../services/file.service';
 import {LocalProjectService} from '../../../services/local-project.service';
+import {MarkerStoreService} from '../../../services/marker-store.service';
 import {ProjectManager} from '../../../services/project.manager';
 
 const colors = [
@@ -61,6 +62,7 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
   constructor(
     private fileService: FileService,
     private projectManager: ProjectManager,
+    private markerStoreService: MarkerStoreService,
     private fileChangeService: FileChangeService,
     private localProjectService: LocalProjectService,
     private userService: UserService,
@@ -131,10 +133,10 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
   private subscribeToMarkers(): Subscription {
     return this.file$.pipe(
       tap(() => this.markers = []),
-      switchMap(file => file ? this.projectManager.markers.pipe(filter(m => m.path === file.path)) : EMPTY),
-      buffer(this.projectManager.markers.pipe(debounceTime(50))),
+      switchMap(file => file ? this.markerStoreService.subscribe(file.path) : EMPTY),
     ).subscribe(markers => {
-      this.markers = [...this.markers, ...markers];
+      this.markers = this.markers.filter(m => m.cursorId);
+      this.markers.push(...markers);
     });
   }
 
@@ -237,7 +239,7 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
     if (!file) {
       return;
     }
-    this.projectManager.clearMarkers(file.path);
+    this.markerStoreService.clear(file.path);
     this.projectManager.webSocket.next({
       command: 'editor.save',
       editorId: this.editorId,

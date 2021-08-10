@@ -12,6 +12,7 @@ import {ContainerService} from '../../services/container.service';
 import {EditorService} from '../../services/editor.service';
 import {FileService} from '../../services/file.service';
 import {LocalProjectService} from '../../services/local-project.service';
+import {MarkerStoreService} from '../../services/marker-store.service';
 import {ProjectManager} from '../../services/project.manager';
 import {ProjectService} from '../../services/project.service';
 
@@ -45,6 +46,7 @@ const progressOrder: (keyof typeof progressLabels)[] = [
   providers: [
     ProjectManager,
     EditorService,
+    MarkerStoreService,
   ],
 })
 export class ProjectWorkspaceComponent implements OnInit, OnDestroy {

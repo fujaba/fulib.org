@@ -5,6 +5,7 @@ import {filter, map, tap} from 'rxjs/operators';
 import {IDisposable, ILink} from 'xterm';
 import {FileService} from '../../../services/file.service';
 import {Terminal} from '../../../model/terminal';
+import {MarkerStoreService} from '../../../services/marker-store.service';
 import {ProjectManager} from '../../../services/project.manager';
 import {TerminalService} from '../terminal.service';
 
@@ -27,6 +28,7 @@ export class TerminalComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private terminalService: TerminalService,
     private projectManager: ProjectManager,
+    private markerStoreService: MarkerStoreService,
     private fileService: FileService,
     private zone: NgZone,
   ) {
@@ -88,12 +90,13 @@ export class TerminalComponent implements OnInit, OnDestroy, AfterViewInit {
     //                                       ~~~~~ opt. column number               ~~ source code line copied by javac
     //                                                ~~~~~ opt. end column number
     for (let match = pattern.exec(output); match !== null; match = pattern.exec(output)) {
-      const [, path, row, column, endColumn, severity, message, indent] = match;
+      let [, path, row, column, endColumn, severity, message, indent] = match;
       const ln = +row - 1;
       const ch = column ? +column : indent.length;
       const endCh = endColumn ? +endColumn + 1 : ch + 1;
-      this.projectManager.markers.next({
-        path: this.toAbsolute(path),
+      path = this.toAbsolute(path);
+      this.markerStoreService.add(path, {
+        path,
         severity,
         message,
         from: {line: ln, ch},

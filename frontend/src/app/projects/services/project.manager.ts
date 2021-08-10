@@ -22,8 +22,6 @@ export class ProjectManager {
 
   currentFile = new BehaviorSubject<File | undefined>(undefined);
 
-  markers = new ReplaySubject<Marker>(1000);
-
   init(project: Project, container: Container) {
     this.project = project;
     this.container = container;
@@ -46,17 +44,6 @@ export class ProjectManager {
     this.openRequests.next({
       type: 'terminal',
       terminal,
-    });
-  }
-
-  clearMarkers(path: string): void {
-    if (!('_events' in this.markers)) {
-      return;
-    }
-    const events: (Marker | { value: Marker })[] = (this.markers as any)._events;
-    (this.markers as any)._events = events.filter(e => {
-      const marker = 'value' in e ? e.value : e;
-      return marker.path !== path;
     });
   }
 
