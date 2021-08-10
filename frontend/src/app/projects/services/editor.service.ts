@@ -26,12 +26,10 @@ export class EditorService {
       return;
     }
 
+    const date = new Date();
     this.editors = JSON.parse(stored, (k, v) => {
       if (k === 'file') {
-        const file = new File();
-        file.path = v;
-        file.type = DEFAULT;
-        return file;
+        return new File(v, DEFAULT, date);
       } else {
         return v;
       }

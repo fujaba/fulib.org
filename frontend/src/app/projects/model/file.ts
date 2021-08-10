@@ -1,15 +1,17 @@
 import {FileType} from './file-type';
 
 export class File {
-  path: string;
-
-  modified: Date;
-  type: FileType;
-
   dirty?: boolean;
   info?: string;
   parent?: File;
   children?: File[];
+
+  constructor(
+    public path: string,
+    public type: FileType,
+    public modified: Date,
+  ) {
+  }
 
   get _namePos(): [number, number] {
     const end = this.path.length - (this.directory ? 1 : 0);

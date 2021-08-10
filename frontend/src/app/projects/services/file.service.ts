@@ -124,10 +124,9 @@ export class FileService {
   }
 
   private toFile(resource: DavResource): File {
-    const file = new File();
-    file.path = resource.href.substring('/dav'.length);
-    file.type = this.fileTypeService.getFileType(file);
-    file.modified = resource.modified;
-    return file;
+    const path = resource.href.substring('/dav'.length);
+    const type = this.fileTypeService.getFileType(path);
+    const modified = resource.modified;
+    return new File(path, type, modified);
   }
 }

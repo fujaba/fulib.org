@@ -111,9 +111,7 @@ export class FileChangeService {
       };
     }
 
-    const child = new File();
-    child.path = path;
-    child.type = this.fileTypeService.getFileType(child);
+    const child = new File(path, this.fileTypeService.getFileType(path), new Date());
     child.setParent(parent);
     return {
       event: 'created',
