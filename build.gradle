@@ -24,7 +24,7 @@ ext {
 	fulibTablesDependency = [ group: 'org.fulib', name: 'fulibTables', version: '1.4.0' ]
 
 	// https://mvnrepository.com/artifact/junit/junit
-	junitDependency = [ group: 'junit', name: 'junit', version: '4.13' ]
+	junitDependency = [ group: 'junit', name: 'junit', version: '4.13.2' ]
 }
 
 // --------------- Dependencies ---------------
