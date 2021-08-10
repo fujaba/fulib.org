@@ -11,6 +11,9 @@ apply plugin: 'org.fulib.fulibGradle'
 // --------------- Shared Properties ---------------
 
 ext {
+	// https://mvnrepository.com/artifact/org.fulib/fulib
+	fulibDependency = [ group: 'org.fulib', name: 'fulib', version: '1.6.0' ]
+
 	// https://mvnrepository.com/artifact/org.fulib/fulibScenarios
 	fulibScenariosDependency = [ group: 'org.fulib', name: 'fulibScenarios', version: '1.7.0' ]
 
@@ -24,7 +27,7 @@ ext {
 	fulibTablesDependency = [ group: 'org.fulib', name: 'fulibTables', version: '1.4.0' ]
 
 	// https://mvnrepository.com/artifact/junit/junit
-	junitDependency = [ group: 'junit', name: 'junit', version: '4.13' ]
+	junitDependency = [ group: 'junit', name: 'junit', version: '4.13.2' ]
 }
 
 // --------------- Dependencies ---------------
@@ -35,8 +38,10 @@ repositories {
 }
 
 dependencies {
+	fulibScenarios fulibDependency
 	fulibScenarios fulibScenariosDependency
 
+	testImplementation fulibDependency
 	testImplementation fulibToolsDependency
 	testImplementation fulibTablesDependency
 	testImplementation fulibMockupsDependency
