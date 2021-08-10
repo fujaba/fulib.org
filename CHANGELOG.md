@@ -395,3 +395,30 @@
 
 * Fixed incorrect auth settings in backend leading to unverified assignments. #144
 * Fixed incorrect Edit Account URL under the user icon. #144
+
+# fulib.org v1.8.0
+
+## General
+
+* Updated to Angular 12. #155
+* Updated all third-party dependencies. #155 #164
+* Updated to fulib v1.6.0. #164
+
+## New Features
+
++ Added documentation under the new Docs page. #147
++ Added a spotlight of features in place of empty Solution, Assignment and Course lists. #152
++ Added sharing options to the solution table page of an Assignment. #152
++ Added basic autocompletion for previous words in scenario editors. #148 #160
++ Added Progressive Web App support. #163
+
+## Improvements
+
+* Improved the Look and Feel of most Assignment-related pages. #152
+* Improved the warning when creating an Assignment while not logged in. #152
+* Improved Dark Mode using the latest bootstrap-darkmode. #159
+* Slightly improved editor tooltip style. #160
+
+## Bugfixes
+
+* Editor tooltips now display above the navigation bar so they are always readable, even if long. #160
