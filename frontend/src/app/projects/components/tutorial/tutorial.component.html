@@ -12,9 +12,9 @@
 ></div>
 <ng-template #title>
   {{ steps[index].title }}
-  <button class="close" (click)="leave()">
+  <a class="close" routerLink="../..">
     &times;
-  </button>
+  </a>
 </ng-template>
 <ng-template #body>
   <p>
@@ -32,6 +32,12 @@
        [routerLink]="['..', index + 1]"
     >
       Next
+    </a>
+    <a *ngIf="index + 1 === steps.length"
+       class="btn btn-sm btn-secondary mr-1"
+       routerLink="../.."
+    >
+      Finish
     </a>
     <a *ngIf="steps[index].skip"
        class="btn btn-sm btn-secondary mr-1"
