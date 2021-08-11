@@ -86,21 +86,43 @@ export class TutorialComponent implements OnInit, AfterViewInit {
     },
     {
       selector: 'app-split-panel > as-split',
-      title: 'Editor Tabs',
+      skip: 3,
+      title: 'Editor Area',
+      description: 'This is where files appear when you select them in the Project Tree.',
+    },
+    {
+      selector: 'app-file-tabs a.nav-link.close',
+      title: 'New Scratch File',
+      description: 'Use this button to create a new scratch file for writing down ideas or saving code for later.',
+    },
+    {
+      selector: 'app-split-panel button[ngbtooltip=Split]',
+      title: 'Split Panel',
       description: `
-      This is where files appear when you select them in the Project Tree.
-      Use the '+' button to open a new scratch file.
-      You can create multiple sets of tabs to view files side-by-side using the button in the top left.
+      You can create multiple sets of tabs to view files side-by-side.
       Drag and drop to move files between panels.
       `,
     },
     {
       selector: 'app-terminal-tabs > div',
+      skip: 3,
       title: 'Terminals',
-      description: `
-      The Terminal allows you to execute commands on the Project Container.
-      Use the '+' button to open a new shell, or attach to an existing process using the button in the top left.
-      `,
+      description: 'The Terminal allows you to execute commands on the Project Container.',
+    },
+    {
+      selector: 'app-terminal-tabs a.nav-link.close',
+      title: 'New Terminal',
+      description: 'Use this button to open a new shell.',
+    },
+    {
+      selector: 'app-terminal-tabs div.dropdown',
+      title: 'Active Processes',
+      description: 'You can view and attach to running processes using this dropdown.',
+    },
+    {
+      selector: 'a[routerlink=tutorial]',
+      title: 'End of Tutorial',
+      description: "You're all set and done with the tutorial, have fun with Projects!",
     },
   ];
 
