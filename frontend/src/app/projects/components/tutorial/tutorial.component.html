@@ -12,6 +12,7 @@
 ></div>
 <ng-template #title>
   {{ steps[index].title }}
+  ({{ index + 1 }} / {{ steps.length }})
   <a class="close" routerLink="../..">
     &times;
   </a>
