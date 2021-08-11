@@ -8,6 +8,7 @@ interface Step {
   title: string;
   description: string;
   route?: any[];
+  skip?: number;
 }
 
 function findPos(obj: any): [number, number] {
@@ -31,6 +32,14 @@ export class TutorialComponent implements OnInit, AfterViewInit {
 
   steps: Step[] = [
     {
+      selector: 'app-project-workspace .sidebar',
+      skip: 6,
+      title: 'Sidebar',
+      description: `
+      The sidebar allows you manage many project-wide settings and overviews.
+      `,
+    },
+    {
       route: [{outlets: {panel: 'project'}}],
       selector: 'app-project-tree > div',
       title: 'Project Tree',
@@ -38,24 +47,6 @@ export class TutorialComponent implements OnInit, AfterViewInit {
       This panel shows all the files belonging to your project.
       Hover over one of them to show the available actions.
       You can also drag and drop to move files into folders.
-      `,
-    },
-    {
-      selector: 'app-split-panel > as-split',
-      title: 'Editor Tabs',
-      description: `
-      This is where files appear when you select them in the Project Tree.
-      Use the '+' button to open a new scratch file.
-      You can create multiple sets of tabs to view files side-by-side using the button in the top left.
-      Drag and drop to move files between panels.
-      `,
-    },
-    {
-      selector: 'app-terminal-tabs > div',
-      title: 'Terminals',
-      description: `
-      The Terminal allows you to execute commands on the Project Container.
-      Use the '+' button to open a new shell, or attach to an existing process using the button in the top left.
       `,
     },
     {
@@ -91,6 +82,24 @@ export class TutorialComponent implements OnInit, AfterViewInit {
       description: `
       Press Ctrl twice to open 'Run Anything'.
       It allows you to quickly run a one-off command.
+      `,
+    },
+    {
+      selector: 'app-split-panel > as-split',
+      title: 'Editor Tabs',
+      description: `
+      This is where files appear when you select them in the Project Tree.
+      Use the '+' button to open a new scratch file.
+      You can create multiple sets of tabs to view files side-by-side using the button in the top left.
+      Drag and drop to move files between panels.
+      `,
+    },
+    {
+      selector: 'app-terminal-tabs > div',
+      title: 'Terminals',
+      description: `
+      The Terminal allows you to execute commands on the Project Container.
+      Use the '+' button to open a new shell, or attach to an existing process using the button in the top left.
       `,
     },
   ];

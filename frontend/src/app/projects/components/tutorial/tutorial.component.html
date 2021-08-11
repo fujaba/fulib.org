@@ -33,5 +33,11 @@
     >
       Next
     </a>
+    <a *ngIf="steps[index].skip"
+       class="btn btn-sm btn-secondary mr-1"
+       [routerLink]="['..', index + steps[index].skip!]"
+    >
+      Skip ({{ steps[index].skip }} Steps)
+    </a>
   </div>
 </ng-template>
