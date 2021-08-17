@@ -1,0 +1,38 @@
+<div class="container h-100 mt-3">
+  <h4 class="d-flex align-items-center">
+    Launch
+    <a class="btn btn-success btn-sm ml-auto" routerLink="edit/new">
+      <i class="bi-plus-circle"></i>
+      New
+    </a>
+  </h4>
+  <ul class="list-group">
+    <li *ngFor="let config of configs" class="list-group-item d-flex align-items-center">
+      <div>
+        {{ config.name }}
+        <small class="text-muted">
+          {{ config.type|titlecase }}
+        </small>
+      </div>
+      <div class="btn-group btn-group-sm ml-auto">
+        <button type="button" class="btn btn-success" (click)="launch(config)">
+          <i class="bi-play"></i>
+          Launch
+        </button>
+        <div class="btn-group btn-group-sm" ngbDropdown role="group" aria-label="Actions" container="body">
+          <button class="btn btn-success dropdown-toggle-split" ngbDropdownToggle></button>
+          <div class="dropdown-menu" ngbDropdownMenu>
+            <a ngbDropdownItem [routerLink]="['edit', config.id]">
+              Edit
+            </a>
+            <div class="dropdown-divider"></div>
+            <button ngbDropdownItem class="text-danger" (click)="delete(config)">
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>
+<router-outlet></router-outlet>

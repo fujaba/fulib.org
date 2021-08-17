@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   apiURL: 'http://localhost:4567/api',
+  projectsApiUrl: 'http://localhost:4568/api',
   auth: {
     url: 'https://se.uniks.de/auth',
     realm: 'fulib.org',

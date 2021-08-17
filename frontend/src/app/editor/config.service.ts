@@ -12,12 +12,19 @@ export class ConfigService {
   public readonly defaultProjectVersion = '0.1.0';
   public readonly defaultScenarioFileName = 'Scenario.md';
   public readonly defaultDecoratorClassName = 'GenModel';
+  private readonly defaultScenario = `# My First Scenario
+
+// start typing your scenario or select an example using the dropdown above.
+
+There is a Car with name Herbie.
+`;
 
   private _packageName: string | null;
   private _projectName: string | null;
   private _projectVersion: string | null;
   private _scenarioFileName: string | null;
   private _decoratorClassName: string | null;
+  private _storedScenario?: string;
 
   constructor(
     private privacyService: PrivacyService,
@@ -77,6 +84,17 @@ export class ConfigService {
     if (this._decoratorClassName !== value) {
       this._decoratorClassName = value;
       this.privacyService.setStorage('decoratorClassName', value);
+    }
+  }
+
+  get storedScenario(): string {
+    return this._storedScenario ?? this.privacyService.getStorage('storedScenario') ?? this.defaultScenario;
+  }
+
+  set storedScenario(value: string) {
+    if (this._storedScenario !== value) {
+      this._storedScenario = value;
+      this.privacyService.setStorage('storedScenario', value);
     }
   }
 

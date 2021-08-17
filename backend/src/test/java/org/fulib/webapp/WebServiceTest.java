@@ -4,7 +4,6 @@ import org.fulib.webapp.assignment.Assignments;
 import org.fulib.webapp.assignment.Comments;
 import org.fulib.webapp.assignment.Courses;
 import org.fulib.webapp.assignment.Solutions;
-import org.fulib.webapp.projectzip.ProjectZip;
 import org.fulib.webapp.tool.RunCodeGen;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -22,13 +21,11 @@ import static org.mockito.Mockito.*;
 public class WebServiceTest
 {
 	private static final RunCodeGen runCodeGen = mock(RunCodeGen.class);
-	private static final ProjectZip projectZip = mock(ProjectZip.class);
 	private static final Assignments assignments = mock(Assignments.class);
 	private static final Comments comments = mock(Comments.class);
 	private static final Solutions solutions = mock(Solutions.class);
 	private static final Courses courses = mock(Courses.class);
-	private static final WebService service = new WebService(runCodeGen, projectZip, assignments, comments, solutions,
-	                                                         courses);
+	private static final WebService service = new WebService(runCodeGen, assignments, comments, solutions, courses);
 
 	@BeforeClass
 	public static void setup()
@@ -53,16 +50,6 @@ public class WebServiceTest
 		checkRoute("POST", "/runcodegen");
 
 		verify(runCodeGen).handle(any(), any());
-	}
-
-	@Test
-	public void projectZip() throws IOException
-	{
-		when(projectZip.handle(any(), any())).thenReturn("");
-
-		checkRoute("POST", "/projectzip");
-
-		verify(projectZip).handle(any(), any());
 	}
 
 	@Test

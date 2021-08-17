@@ -1,0 +1,27 @@
+<ng-container [ngTemplateOutlet]="file ? (revisions.length >= 0 ? table : noRevisions) : noFile"></ng-container>
+<ng-template #table>
+  <table>
+    <tr>
+      <th>#</th>
+      <th>Timestamp</th>
+      <th>Size</th>
+    </tr>
+    <tr *ngFor="let revision of revisions; let index = index">
+      <td>
+        {{index}}
+      </td>
+      <td>
+        {{revision.timestamp | date:'medium'}}
+      </td>
+      <td>
+        {{revision.size}}
+      </td>
+    </tr>
+  </table>
+</ng-template>
+<ng-template #noRevisions>
+  No revision history for {{file!.name}}.
+</ng-template>
+<ng-template #noFile>
+  No file selected.
+</ng-template>

@@ -2,7 +2,12 @@ import {enableProdMode} from '@angular/core';
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 
 import 'codemirror/mode/markdown/markdown';
+import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/clike/clike';
+import 'codemirror/mode/groovy/groovy';
+import 'codemirror/mode/properties/properties';
+import 'codemirror/mode/shell/shell';
+import 'codemirror/mode/yaml/yaml';
 import 'codemirror/addon/mode/simple';
 import 'codemirror/addon/display/autorefresh';
 import 'codemirror/addon/lint/lint';

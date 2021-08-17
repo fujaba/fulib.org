@@ -1,0 +1,18 @@
+<app-modal #modal="modal" [locked]="deleting" [back]="[back]" [backOptions]="{relativeTo: activatedRoute}">
+  <ng-container modal-header>
+    Delete Project
+  </ng-container>
+  <ng-container modal-body>
+    Are you sure you want to <span class="text-danger">delete</span> '{{ project?.name }}'?
+    This action cannot be undone.
+  </ng-container>
+  <ng-container modal-footer>
+    <button *ngIf="!deleting" type="button" class="btn btn-secondary" (click)="modal.close()">
+      Cancel
+    </button>
+    <button type="button" class="btn btn-danger" (click)="delete()" [disabled]="deleting">
+      <span *ngIf="deleting" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      {{deleting ? 'Deleting...' : 'Delete'}}
+    </button>
+  </ng-container>
+</app-modal>

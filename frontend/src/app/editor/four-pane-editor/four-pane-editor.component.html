@@ -156,9 +156,8 @@
       </div>
     </div>
     <div class="ml-auto" role="group">
-      <a role="button" class="btn btn-outline-secondary mx-1"
-         routerLink="." [queryParams]="{config: true}" queryParamsHandling="merge">
-        Configure Project
+      <a role="button" class="btn btn-outline-secondary mx-1" routerLink="config">
+        Configure or Export
       </a>
       <div class="btn-group mx-1" role="group">
         <button type="button" class="btn btn-outline-primary"
@@ -215,4 +214,4 @@
   Loading...
 </ng-template>
 
-<app-config></app-config>
+<router-outlet></router-outlet>

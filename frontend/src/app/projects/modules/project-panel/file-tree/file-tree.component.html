@@ -1,0 +1,68 @@
+<div class="file-item"
+     [class.active]="file === (currentFile | async)"
+     (click)="open(true)"
+     (dblclick)="open(false)"
+     (contextmenu)="openContextMenu($event, dropdown)"
+     [dndDraggable]="file.path"
+     [dndDropzone]=""
+     [dndDisableDropIf]="!file.directory"
+     [dndAllowExternal]="true"
+     (dndDrop)="onDrop($event)"
+>
+  <div class="file-item-indent" [style.margin-left.em]="level - 0.5">
+    <i class="bi-{{ (file.directory ? (expanded ? 'folder2-open' : 'folder2') : file.type.icon) }}"></i>
+    <input *ngIf="newName !== undefined"
+           #nameInput
+           type="text" class="name-input flex-grow-1" aria-label="New Name"
+           (click)="$event.stopImmediatePropagation()"
+           (change)="finishRenaming()"
+           (keyup.escape)="cancelRenaming()"
+           [(ngModel)]="newName"
+    >
+    <div *ngIf="newName === undefined" class="flex-grow-1" [class.dirty]="file.dirty">
+      {{file.name}}
+      <span class="text-muted" *ngIf="file.info">
+        {{file.info}}
+      </span>
+    </div>
+    <ng-container *ngIf="file.directory">
+      <i class="bi-file-earmark-plus hover-only px-1" role="button" aria-label="New File"
+         (click)="createFile(); $event.stopImmediatePropagation()"></i>
+      <i class="bi-folder-plus hover-only px-1" role="button" aria-label="New Folder"
+         (click)="createDir(); $event.stopImmediatePropagation()"></i>
+    </ng-container>
+    <ng-container *ngIf="file !== root">
+      <i class="bi-pencil hover-only px-1" role="button" aria-label="Rename"
+         (click)="toggleRenaming(); $event.stopImmediatePropagation()"></i>
+      <i class="bi-trash hover-only px-1" role="button" aria-label="Delete"
+         (click)="delete(); $event.stopImmediatePropagation()"></i>
+    </ng-container>
+    <div ngbDropdown #dropdown="ngbDropdown" container="body" (click)="$event.stopImmediatePropagation()">
+      <i class="bi-three-dots hover-only px-1" role="button" aria-label="Options" ngbDropdownToggle></i>
+      <div ngbDropdownMenu>
+        <ng-container *ngIf="file.directory; then: dirOptions; else: fileOptions"></ng-container>
+        <ng-template #fileOptions>
+          <button ngbDropdownItem (click)="open(false)">Open</button>
+          <button ngbDropdownItem (click)="openPreview()">Preview</button>
+          <a ngbDropdownItem [href]="container.url + '/dav/' + file.path" [download]="file.name" target="_blank">Download</a>
+        </ng-template>
+        <ng-template #dirOptions>
+          <button ngbDropdownItem (click)="open(false)">{{expanded ? 'Collapse' : 'Expand'}}</button>
+          <a ngbDropdownItem [href]="container.url + '/zip' + file.path" [download]="file.name + '.zip'" target="_blank">Download</a>
+          <div class="dropdown-divider"></div>
+          <button ngbDropdownItem (click)="createFile()">New File</button>
+          <button ngbDropdownItem (click)="createDir()">New Folder</button>
+        </ng-template>
+        <ng-container *ngIf="file !== root">
+          <div class="dropdown-divider"></div>
+          <button ngbDropdownItem (click)="toggleRenaming()">Rename</button>
+          <div class="dropdown-divider"></div>
+          <button ngbDropdownItem class="text-danger" (click)="delete()">Delete</button>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="expanded" class="file-tree-children">
+  <app-file-tree *ngFor="let child of file.children || []" [file]="child" [level]="level + 1"></app-file-tree>
+</div>

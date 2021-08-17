@@ -28,33 +28,36 @@ import {AuthorNameComponent} from './author-name/author-name.component';
 import {ImportExportComponent} from './import-export/import-export.component';
 
 @NgModule({
-  declarations: [
-    CreateAssignmentComponent,
-    CreateSolutionComponent,
-    SolutionComponent,
-    TokenModalComponent,
-    SolutionTableComponent,
-    AssignmentInfoComponent,
-    TaskListComponent,
-    GradeFormComponent,
-    CourseComponent,
-    CreateCourseComponent,
-    MyAssignmentsComponent,
-    MySolutionsComponent,
-    MyCoursesComponent,
-    AuthorNameComponent,
-    ImportExportComponent,
-  ],
-  imports: [
-    CommonModule,
-    SharedModule,
-    FormsModule,
-    HttpClientModule,
-    NgbModule,
-    ClipboardModule,
-    DragulaModule.forRoot(),
-    AssignmentRoutingModule,
-  ],
+    declarations: [
+        CreateAssignmentComponent,
+        CreateSolutionComponent,
+        SolutionComponent,
+        TokenModalComponent,
+        SolutionTableComponent,
+        AssignmentInfoComponent,
+        TaskListComponent,
+        GradeFormComponent,
+        CourseComponent,
+        CreateCourseComponent,
+        MyAssignmentsComponent,
+        MySolutionsComponent,
+        MyCoursesComponent,
+        AuthorNameComponent,
+        ImportExportComponent,
+    ],
+    imports: [
+        CommonModule,
+        SharedModule,
+        FormsModule,
+        HttpClientModule,
+        NgbModule,
+        ClipboardModule,
+        DragulaModule,
+        AssignmentRoutingModule,
+    ],
+    exports: [
+        AssignmentInfoComponent,
+    ],
 })
 export class AssignmentModule {
 }

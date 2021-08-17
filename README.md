@@ -28,6 +28,8 @@ db.createUser({
 
 > You can also select your own username and password.
 
+### Backend
+
 Make sure you set the following environment variables before running:
 
 ```properties
@@ -40,6 +42,25 @@ FULIB_ORG_MONGODB_PASSWORD=fulibDotOrg
 > use them instead of `fulibDotOrg` in the env variables, too!
 
 IntelliJ users can also use the predefined run configurations with the above environment variables already set.
+
+### Projects Backend
+
+To run the Projects backend, you need to set the following environment variables:
+
+```
+FULIB_MONGO_URL=mongodb://fulibDotOrg:fulibDotOrg@localhost
+FULIB_PROJECTS_URL=http://host.docker.internal:4567
+FULIB_PROJECTS_PROXY_URL=http://localhost:8080
+FULIB_PROJECTS_CONTAINER_IMAGE=fulib/fulib.org-projects
+```
+
+> Replace `fulibDotOrg` in the `FULIB_MONGO_URL` if you set a custom username or password.
+
+IntelliJ users can also use the predefined run configuration with the above environment variables already set.
+
+### Projects Proxy
+
+You can start the Project Proxy by running `docker compose up` in the `projects-proxy` directory.
 
 ## License
 

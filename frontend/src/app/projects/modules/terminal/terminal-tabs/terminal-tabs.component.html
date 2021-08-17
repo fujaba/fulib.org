@@ -1,0 +1,30 @@
+<div class="h-100 position-relative">
+  <app-tabs [(tabs)]="tabs" [(current)]="current" [header]="header" [content]="content" (create)="addTab()"></app-tabs>
+  <ng-template #header let-terminal>
+    {{ terminal.title || terminal.executable }}
+  </ng-template>
+  <ng-template #content let-terminal>
+    <app-terminal [model]="terminal"></app-terminal>
+  </ng-template>
+  <div class="position-absolute" style="top: 0.25rem; right: 0.25rem">
+    <div ngbDropdown class="d-inline-block ml-2" placement="bottom-right">
+      <button class="btn btn-sm btn-outline-secondary" id="processDropdown" ngbDropdownToggle>
+        <i class="bi-terminal"></i>
+        <sub class="text-white">{{ processes.length }}</sub>
+      </button>
+      <div ngbDropdownMenu aria-labelledby="processDropdown">
+        <button *ngFor="let process of processes" ngbDropdownItem (click)="reopen(process)">
+          {{ process.cmd[0] }}
+        </button>
+        <ng-container *ngIf="processes.length === 0">
+          <div class="dropdown-header">
+            No terminals are active.
+          </div>
+          <button ngbDropdownItem class="text-success" (click)="addTab()">
+            New Terminal
+          </button>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

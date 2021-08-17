@@ -12,9 +12,10 @@ jobs:
         id: deployment
         run: |
           VERSION="${GITHUB_REF##*/}"
-          case "$VERSION" in
-            develop) NAMESPACE=dev ;;
-            *) NAMESPACE=prod ;;
+          case "$GITHUB_REF" in
+            refs/heads/develop) NAMESPACE=dev ;;
+            refs/heads/feat/projects) NAMESPACE=fulib-projects ;;
+            refs/tags/v*) NAMESPACE=prod ;;
           esac
           echo "::set-output name=version::$VERSION"
           echo "::set-output name=namespace::$NAMESPACE"
@@ -22,7 +23,7 @@ jobs:
       version: ${{ steps.deployment.outputs.version }}
       namespace: ${{ steps.deployment.outputs.namespace }}
   frontend:
-    name: Node ${{ matrix.node }} on ${{ matrix.os }}
+    name: Frontend (Node ${{ matrix.node }} on ${{ matrix.os }})
     runs-on: ${{ matrix.os }}-latest
     strategy:
       matrix:
@@ -52,7 +53,7 @@ jobs:
           path: |
             ~/.pnpm-store
             /.pnpm-store
-          key: pnpm-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          key: pnpm-${{ runner.os }}-${{ hashFiles('frontend/pnpm-lock.yaml') }}
           restore-keys: pnpm-${{ runner.os }}-
       - name: Install packages
         run: pnpm install
@@ -60,7 +61,7 @@ jobs:
         run: pnpm build
       - name: Determine Deployment Readiness
         id: deployment
-        if: matrix.os == 'ubuntu' && matrix.node == 16 && (github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/v'))
+        if: matrix.os == 'ubuntu' && matrix.node == 16 && needs.deployment.outputs.namespace
         run: echo "::set-output name=ready::true"
       - name: Build Angular again
         if: steps.deployment.outputs.ready
@@ -87,7 +88,7 @@ jobs:
           deployment: fulib-frontend
           docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-frontend:${{ needs.deployment.outputs.version }}
   backend:
-    name: Java ${{ matrix.java }} on ${{ matrix.os }}
+    name: Backend (Java ${{ matrix.java }} on ${{ matrix.os }})
     runs-on: ${{ matrix.os }}-latest
     strategy:
       matrix:
@@ -112,15 +113,15 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.gradle/caches
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle') }}
+          key: gradle-${{ runner.os }}-${{ hashFiles('backend/*.gradle') }}
           restore-keys: gradle-${{ runner.os }}-
       - name: Build with Gradle
-        run: ./gradlew build && ./gradlew --stop
+        run: ./gradlew :backend:build && ./gradlew --stop
       - name: Determine Deployment Readiness
         id: deployment
-        if: matrix.os == 'ubuntu' && matrix.java == 8 && (github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/v'))
+        if: matrix.os == 'ubuntu' && matrix.java == 8 && needs.deployment.outputs.namespace
         run: echo "::set-output name=ready::true"
-      - name: Build the Docker Image
+      - name: Build the Backend Docker Image
         if: steps.deployment.outputs.ready
         uses: whoan/docker-build-with-cache-action@v5
         with:
@@ -130,7 +131,7 @@ jobs:
           image_name: fulib/fulib.org-backend
           image_tag: ${{ needs.deployment.outputs.version }}
           context: backend/
-      - name: Deploy to Rancher
+      - name: Deploy the Backend to Rancher
         if: steps.deployment.outputs.ready
         uses: sekassel-research/actions-rancher-update@2.0.2
         with:
@@ -141,3 +142,128 @@ jobs:
           namespace: ${{ needs.deployment.outputs.namespace }}
           deployment: fulib-backend
           docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-backend:${{ needs.deployment.outputs.version }}
+  projects-backend:
+    name: Projects Backend (Java ${{ matrix.java }} on ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+      matrix:
+        java:
+          - 8
+          - 11
+        os:
+          - ubuntu
+          - windows
+    needs: [deployment]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java }}
+          java-package: jdk
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('projects-backend/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle
+      - name: Build with Gradle
+        run: ./gradlew :projects-backend:build && ./gradlew --stop
+      - name: Determine Deployment Readiness
+        id: deployment
+        if: matrix.os == 'ubuntu' && matrix.java == 8 && needs.deployment.outputs.namespace
+        run: echo "::set-output name=ready::true"
+      - name: Build the Projects Backend Docker Image
+        if: steps.deployment.outputs.ready
+        uses: whoan/docker-build-with-cache-action@v5
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: ${{ secrets.DOCKER_REGISTRY }}
+          image_name: fulib/fulib.org-projects-backend
+          image_tag: ${{ needs.deployment.outputs.version }}
+          context: projects-backend/
+      - name: Deploy the Projects Backend to Rancher
+        if: steps.deployment.outputs.ready
+        uses: sekassel-research/actions-rancher-update@2.0.2
+        with:
+          rancher_url: ${{ secrets.RANCHER_URL }}
+          rancher_token: ${{ secrets.RANCHER_TOKEN }}
+          cluster_id: ${{ secrets.RANCHER_CLUSTER }}
+          project_id: ${{ secrets.RANCHER_PROJECT }}
+          namespace: ${{ needs.deployment.outputs.namespace }}
+          deployment: fulib-projects-backend
+          docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-projects-backend:${{ needs.deployment.outputs.version }}
+  projects-container:
+    name: Projects Container
+    runs-on: ubuntu-latest
+    needs: [deployment]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+          java-package: jdk
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('projects/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle
+      - name: Build with Gradle
+        run: ./gradlew :projects:build && ./gradlew --stop
+      - name: Build the Project Container Docker Image
+        if: needs.deployment.outputs.namespace
+        uses: whoan/docker-build-with-cache-action@v5
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: ${{ secrets.DOCKER_REGISTRY }}
+          image_name: fulib/fulib.org-projects
+          image_tag: ${{ needs.deployment.outputs.version }}
+          context: projects/
+  projects-runtime:
+    name: Projects Runtime
+    runs-on: ubuntu-latest
+    needs: [deployment, projects-container]
+    if: needs.deployment.outputs.namespace
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Build the Projects Proxy Docker Image
+        uses: whoan/docker-build-with-cache-action@v5
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: ${{ secrets.DOCKER_REGISTRY }}
+          image_name: fulib/fulib.org-projects-proxy
+          image_tag: ${{ needs.deployment.outputs.version }}
+          context: projects-proxy/
+      - name: Build the Projects Runtime Docker Image
+        uses: whoan/docker-build-with-cache-action@v5
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: ${{ secrets.DOCKER_REGISTRY }}
+          image_name: fulib/fulib.org-projects-runtime
+          image_tag: ${{ needs.deployment.outputs.version }}
+          context: projects-runtime/
+      - name: Deploy the Projects Runtime to Rancher
+        uses: sekassel-research/actions-rancher-update@2.0.2
+        with:
+          rancher_url: ${{ secrets.RANCHER_URL }}
+          rancher_token: ${{ secrets.RANCHER_TOKEN }}
+          cluster_id: ${{ secrets.RANCHER_CLUSTER }}
+          project_id: ${{ secrets.RANCHER_PROJECT }}
+          namespace: ${{ needs.deployment.outputs.namespace }}
+          deployment: fulib-projects-runtime
+          docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-projects-runtime:${{ needs.deployment.outputs.version }}

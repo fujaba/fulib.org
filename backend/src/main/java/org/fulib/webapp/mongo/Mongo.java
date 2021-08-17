@@ -77,10 +77,11 @@ public class Mongo
 		this.conventions.add(Conventions.USE_GETTERS_FOR_SETTERS); // to use get<List>().add(...) instead of set<List>()
 	}
 
-	private final CodecProvider pojoCodecProvider = PojoCodecProvider.builder()
-	                                                                 .register(Assignment.class.getPackage().getName())
-	                                                                 .conventions(this.conventions)
-	                                                                 .build();
+	private final CodecProvider pojoCodecProvider = PojoCodecProvider
+		.builder()
+		.register(Assignment.class.getPackage().getName())
+		.conventions(this.conventions)
+		.build();
 
 	private final CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
 	                                                               fromProviders(this.pojoCodecProvider));

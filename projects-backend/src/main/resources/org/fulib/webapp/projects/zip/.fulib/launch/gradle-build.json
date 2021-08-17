@@ -1,0 +1,13 @@
+{
+  "type": "terminal",
+  "name": "Gradle Build",
+  "id": "gradle-build",
+  "terminal": {
+    "executable": "/bin/bash",
+    "workingDirectory": "${projectRoot}",
+    "arguments": [
+      "gradlew",
+      "build"
+    ]
+  }
+}

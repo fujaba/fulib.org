@@ -1,0 +1,15 @@
+{
+  "type": "terminal",
+  "name": "Continuous Compile",
+  "id": "continuous-compile",
+  "terminal": {
+    "executable": "/bin/bash",
+    "workingDirectory": "${projectRoot}",
+    "arguments": [
+      "gradlew",
+      "classes",
+      "testClasses",
+      "--continuous"
+    ]
+  }
+}

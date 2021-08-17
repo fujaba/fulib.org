@@ -7,6 +7,7 @@ import {ServiceWorkerModule} from '@angular/service-worker';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {KeycloakAngularModule, KeycloakService} from 'keycloak-angular';
 import {NgBootstrapDarkmodeModule, THEME_LOADER, THEME_SAVER, ThemeLoader, ThemeSaver} from 'ng-bootstrap-darkmode';
+import {DragulaModule} from 'ng2-dragula';
 import {of} from 'rxjs';
 
 import {environment} from '../environments/environment';
@@ -17,7 +18,6 @@ import {AppComponent} from './app.component';
 import {ChangelogComponent} from './changelog/changelog.component';
 import {FeedbackComponent} from './feedback/feedback.component';
 import {HeaderComponent} from './header/header.component';
-import {ModalComponent} from './modal/modal.component';
 import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
 import {PrivacyService} from './privacy.service';
 import {PrivacyComponent} from './privacy/privacy.component';
@@ -49,7 +49,6 @@ function initializeKeycloak(keycloak: KeycloakService) {
     HeaderComponent,
     PageNotFoundComponent,
     ChangelogComponent,
-    ModalComponent,
     FeedbackComponent,
     PrivacyComponent,
     AboutComponent,
@@ -60,6 +59,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
     HttpClientModule,
     NgbModule,
     NgBootstrapDarkmodeModule,
+    DragulaModule.forRoot(),
     KeycloakAngularModule,
     SharedModule,
     AppRoutingModule,

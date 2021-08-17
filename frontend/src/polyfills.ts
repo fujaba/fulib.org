@@ -71,12 +71,40 @@ import 'zone.js'; // Included with Angular CLI.
  */
 
 declare global {
+  interface String {
+    hashCode(): number;
+  }
+}
+
+String.prototype.hashCode = function() {
+  if (this.length === 0) { return 0; }
+  let hash = 0;
+  for (let i = 0; i < this.length; i++) {
+    const chr = this.charCodeAt(i);
+    // tslint:disable-next-line:no-bitwise
+    hash = (((hash << 5) - hash) + chr) | 0;
+  }
+  return hash;
+};
+
+declare global {
   interface Array<T> {
+    removeFirst(predicate: (value: T, index: number, obj: T[]) => boolean): T | undefined;
+
     findLast(predicate: (value: T, index: number, obj: T[]) => boolean): T | undefined;
 
     findLastIndex(predicate: (value: T, index: number, obj: T[]) => boolean): number;
   }
 }
+
+Array.prototype.removeFirst = function removeFirst<T>(predicate: (value: T, index: number, obj: T[]) => boolean): T | undefined {
+  const index = this.findIndex(predicate);
+  if (index < 0) {
+    return undefined;
+  }
+  const [value] = this.splice(index, 1);
+  return value;
+};
 
 Array.prototype.findLast = function findLast<T>(predicate: (value: T, index: number, obj: T[]) => boolean): T | undefined {
   for (let l = this.length - 1; l >= 0; l--) {

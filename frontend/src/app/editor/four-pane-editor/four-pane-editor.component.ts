@@ -70,7 +70,7 @@ export class FourPaneEditorComponent implements OnInit {
           this.scenarioText = '// Loading Example...';
           return this.examplesService.getScenario(this.selectedExample);
         } else {
-          return of(this.editorService.storedScenario);
+          return of(this.configService.storedScenario);
         }
       }),
       tap(scenario => this.scenarioText = scenario),
@@ -80,7 +80,7 @@ export class FourPaneEditorComponent implements OnInit {
 
   submit(): void {
     if (!this.selectedExample) {
-      this.editorService.storedScenario = this.scenarioText;
+      this.configService.storedScenario = this.scenarioText;
     }
 
     this.submit$().subscribe();

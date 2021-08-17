@@ -1,0 +1,7 @@
+<ng-container [ngSwitch]="editor.preview && editor.file.type.previewMode || editor.file.type.mode">
+  <app-file-image-viewer *ngSwitchCase="'img'" [file]="editor.file"></app-file-image-viewer>
+  <app-file-iframe-viewer *ngSwitchCase="'iframe'" [file]="editor.file"></app-file-iframe-viewer>
+  <app-file-markdown-viewer *ngSwitchCase="'markdown'" [file]="editor.file"></app-file-markdown-viewer>
+  <app-file-download-viewer *ngSwitchCase="'download'" [file]="editor.file"></app-file-download-viewer>
+  <app-file-code-editor *ngSwitchDefault [file]="editor.file"></app-file-code-editor>
+</ng-container>

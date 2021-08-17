@@ -1,0 +1,25 @@
+<app-modal #modal [back]="['..']" [backOptions]="{relativeTo: route}">
+  <ng-container modal-header>
+    Add Member
+  </ng-container>
+  <ng-container modal-body>
+    <div class="form">
+      <app-user-typeahead label="Username" [(user)]="user"></app-user-typeahead>
+    </div>
+    <div class="alert alert-info">
+      The new member will be added with <b>Collaborator</b> status.
+      To make them the <b>Owner</b> of this project, you have to
+      <a class="text-danger" routerLink="../transfer">Transfer Ownership</a>.
+    </div>
+  </ng-container>
+  <ng-container modal-footer>
+    <button type="button" class="btn btn-secondary" (click)="modal.close()">
+      Cancel
+    </button>
+    <button type="button" class="btn btn-success"
+            [disabled]="!user"
+            (click)="addMember(); modal.close()">
+      Add
+    </button>
+  </ng-container>
+</app-modal>

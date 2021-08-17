@@ -1,0 +1,22 @@
+<app-modal #modal="modal" [locked]="transfering" [back]="[back]" [backOptions]="{relativeTo: activatedRoute}">
+  <ng-container modal-header>
+    Transfer Project Ownership
+  </ng-container>
+  <ng-container modal-body>
+    <p>
+      Are you sure you want to <span class="text-danger">transfer</span> this project to a new owner?
+      This action can only be undone by the new owner.
+    </p>
+    <div class="form">
+      <app-user-typeahead label="New Owner" [(user)]="transferOwner"></app-user-typeahead>
+    </div>
+  </ng-container>
+  <ng-container modal-footer>
+    <button type="button" class="btn btn-secondary" (click)="modal.close()" [disabled]="transfering">
+      Cancel
+    </button>
+    <button type="button" class="btn btn-danger" (click)="transfer()" [disabled]="!transferOwner || transfering">
+      Transfer
+    </button>
+  </ng-container>
+</app-modal>

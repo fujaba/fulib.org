@@ -91,17 +91,7 @@ processResources {
 	def fulibGradleVersion = getDependencyVersion(rootProject.buildscript.configurations.classpath, 'org.fulib', 'fulibGradle')
 	def fulibMockupsVersion = getDependencyVersion(config, 'org.fulib', 'fulibMockups')
 
-	from(rootProject.rootDir) {
-		include 'gradle/wrapper/**', 'gradlew', 'gradlew.bat'
-		into 'org/fulib/webapp/projectzip'
-
-		// we have to save the wrapper jar as a zip, see
-		// https://imperceptiblethoughts.com/shadow/configuration/dependencies/#embedding-jar-files-inside-your-shadow-jar
-		rename 'gradle-wrapper.jar', 'gradle-wrapper.jar.zip'
-	}
-
 	filesMatching([
-			'org/fulib/webapp/projectzip/build.gradle',
 			'org/fulib/webapp/version.properties',
 	]) {
 		filter {

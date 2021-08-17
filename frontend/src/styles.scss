@@ -56,6 +56,10 @@
   gridster-item {
     background-color: $dark-body-bg;
   }
+
+  .as-split-gutter {
+    background-color: $gray-900 !important;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -75,7 +79,7 @@ html {
 }
 
 body {
-  padding-top: 4.5rem;
+  padding-top: 3.5rem;
   height: 100%;
 }
 
@@ -99,6 +103,10 @@ a[href^="http"]::after {
 .feature-icon {
   margin-right: 1rem;
   font-size: xxx-large;
+}
+
+.backdrop-blur {
+  backdrop-filter: blur(10px);
 }
 
 /* --------------- Timelines --------------- */

@@ -1,0 +1,12 @@
+<div class="form-group">
+  <label for="user-input">
+    {{ label }}
+  </label>
+  <input id="user-input" type="text" class="form-control"
+         [ngModel]="user"
+         (ngModelChange)="user = $event; userChange.next($event)"
+         [ngbTypeahead]="search"
+         [inputFormatter]="formatter"
+         [resultFormatter]="formatter"
+         [editable]='false' />
+</div>

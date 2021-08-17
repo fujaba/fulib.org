@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {ProjectConfig} from '../model/project-config';
+import {ProjectConfig} from '../../model/project-config';
 
 @Component({
   selector: 'app-project-config-form',

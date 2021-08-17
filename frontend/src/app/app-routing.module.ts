@@ -11,6 +11,7 @@ const routes: Routes = [
   {path: 'editor', loadChildren: () => import('./editor/editor.module').then(m => m.EditorModule)},
   {path: 'assignments', loadChildren: () => import('./assignment/assignment.module').then(m => m.AssignmentModule)},
   {path: 'docs', loadChildren: () => import('./docs/docs.module').then(m => m.DocsModule)},
+  {path: 'projects', loadChildren: () => import('./projects/projects.module').then(m => m.ProjectsModule)},
   {path: '', redirectTo: 'editor', pathMatch: 'full'},
   {path: '**', component: PageNotFoundComponent},
   {outlet: 'modal', path: 'feedback', component: FeedbackComponent},
@@ -20,7 +21,10 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, {relativeLinkResolution: 'legacy'})],
+  imports: [RouterModule.forRoot(routes, {
+    relativeLinkResolution: 'legacy',
+    paramsInheritanceStrategy: 'always',
+  })],
   exports: [RouterModule],
 })
 export class AppRoutingModule {

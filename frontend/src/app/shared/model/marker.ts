@@ -4,6 +4,7 @@ export interface Position {
 }
 
 export interface Marker {
+  path?: string;
   severity: string;
   message: string;
   from: Position;

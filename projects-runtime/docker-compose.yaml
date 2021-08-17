@@ -1,0 +1,12 @@
+version: "3.9"
+services:
+  projects-runtime:
+    build: .
+    privileged: true
+    image: fulib/fulib.org-projects-runtime
+    environment:
+      FULIB_PROJECTS_PROXY_IMAGE: fulib/fulib.org-projects-proxy
+      FULIB_PROJECTS_CONTAINER_IMAGE: fulib/fulib.org-projects
+    ports:
+      - "2376:2376"
+      - "8080:8080"
