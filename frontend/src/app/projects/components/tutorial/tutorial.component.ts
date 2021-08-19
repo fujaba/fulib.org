@@ -32,6 +32,15 @@ export class TutorialComponent implements OnInit, AfterViewInit {
 
   steps: Step[] = [
     {
+      selector: 'a[routerlink=tutorial]',
+      title: 'Tutorial',
+      description: `
+      Welcome to Projects!
+      This tutorial walks you through the different controls and views of the Project workspace.
+      Click 'Next' to continue to the next step, or '×' to skip the tutorial.
+      `,
+    },
+    {
       selector: 'app-project-workspace .sidebar',
       skip: 6,
       title: 'Sidebar',
