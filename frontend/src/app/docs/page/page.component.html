@@ -1,6 +1,12 @@
 <div class="row h-100 mx-3">
   <div class="col-3 h-100 overflow-auto d-print-none">
-    <h1>{{ repo ? repo.name : 'Loading...' }}</h1>
+    <a routerLink="." [relativeTo]="activatedRoute.parent">
+      <i class="bi-chevron-left"></i>
+      All Topics
+    </a>
+    <h1>
+      {{ repo ? repo.name : 'Loading...' }}
+    </h1>
     <p class="text-muted">
       {{ repo ? repo.description : 'Loading...' }}
     </p>

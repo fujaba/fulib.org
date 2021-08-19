@@ -16,7 +16,7 @@ export class PageComponent implements OnInit {
   rootPage?: ParsedPage;
 
   constructor(
-    private activatedRoute: ActivatedRoute,
+    public activatedRoute: ActivatedRoute,
     private docsService: DocsService,
   ) {
   }
