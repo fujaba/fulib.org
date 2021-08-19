@@ -129,6 +129,11 @@ export class TutorialComponent implements OnInit, AfterViewInit {
       description: 'You can view and attach to running processes using this dropdown.',
     },
     {
+      selector: 'app-project-workspace > div > as-split > as-split-area:nth-child(3)',
+      title: 'Documentation',
+      description: 'You can always view the documentation without having to open a new tab or window.',
+    },
+    {
       selector: 'a[routerlink=tutorial]',
       title: 'End of Tutorial',
       description: "You're all set and done with the tutorial, have fun with Projects!",
