@@ -27,7 +27,7 @@
     <as-split-area *ngIf="progress.projectRoot" [size]="20" [order]="0">
       <router-outlet name="panel"></router-outlet>
     </as-split-area>
-    <as-split-area [size]="80" [order]="1">
+    <as-split-area [size]="60" [order]="1">
       <as-split direction="vertical">
         <as-split-area *ngIf="progress.projectRoot" [size]="70" [order]="0">
           <app-split-panel></app-split-panel>
@@ -36,6 +36,9 @@
           <app-terminal-tabs></app-terminal-tabs>
         </as-split-area>
       </as-split>
+    </as-split-area>
+    <as-split-area [size]="20" [order]="2">
+      <router-outlet name="docs" routerLink="docs:"></router-outlet>
     </as-split-area>
   </as-split>
 </div>

@@ -83,7 +83,6 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.route.params.pipe(
       tap(() => {
-        this.router.navigate([], {queryParams: {panel: undefined}, skipLocationChange: true});
         this.projectManager.destroy();
         this.openModal = this.ngbModal.open(this.loadingModal, {
           ariaLabelledBy: 'loading-modal-title',
