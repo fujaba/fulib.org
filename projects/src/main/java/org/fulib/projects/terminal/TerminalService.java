@@ -22,7 +22,8 @@ public class TerminalService
 
 	public TerminalProcess getOrCreate(String id, Function<? super String, ? extends TerminalProcess> creator)
 	{
-		return processes.computeIfAbsent(id, creator);
+		return processes.compute(id,
+			(k, existing) -> existing != null && existing.isAlive() ? existing : creator.apply(k));
 	}
 
 	public void stop()
