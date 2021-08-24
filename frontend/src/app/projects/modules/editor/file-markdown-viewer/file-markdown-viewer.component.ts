@@ -1,6 +1,6 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {BehaviorSubject, EMPTY} from 'rxjs';
-import {mapTo, startWith, switchMap} from 'rxjs/operators';
+import {map, mapTo, startWith, switchMap} from 'rxjs/operators';
 import {MarkdownService} from '../../../../markdown.service';
 import {FileChangeService} from '../../../services/file-change.service';
 import {FileService} from '../../../services/file.service';
@@ -32,8 +32,10 @@ export class FileMarkdownViewerComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.file$.pipe(
       switchMap(file => file ? this.fileChangeService.watch(this.projectManager, file).pipe(mapTo(file), startWith(file)) : EMPTY),
-      switchMap(file => this.fileService.getContent(this.projectManager.container, file)),
-      switchMap(content => this.markdownService.renderMarkdown(content)),
+      switchMap(file => this.fileService.getContent(this.projectManager.container, file).pipe(map(content => [file, content] as const))),
+      switchMap(([file, content]) => this.markdownService.renderMarkdown(content, {
+        imageBaseUrl: `${this.projectManager.container.url}/dav/${file.parentPath}`,
+      })),
     ).subscribe(content => {
       this.rendered = content;
     });
