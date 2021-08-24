@@ -43,7 +43,7 @@
         <ng-container *ngIf="file.directory; then: dirOptions; else: fileOptions"></ng-container>
         <ng-template #fileOptions>
           <button ngbDropdownItem (click)="open(false)">Open</button>
-          <button ngbDropdownItem (click)="openPreview()">Preview</button>
+          <button *ngIf="file.type.previewMode" ngbDropdownItem (click)="openPreview()">Preview</button>
           <a ngbDropdownItem [href]="container.url + '/dav/' + file.path" [download]="file.name" target="_blank">Download</a>
         </ng-template>
         <ng-template #dirOptions>
