@@ -1,5 +1,6 @@
 import {Component, Input, TrackByFunction} from '@angular/core';
-import {Page, ParsedPage} from '../docs.interface';
+import {ActivatedRoute} from '@angular/router';
+import {Page} from '../docs.interface';
 
 @Component({
   selector: 'app-page-navigation',
@@ -8,6 +9,11 @@ import {Page, ParsedPage} from '../docs.interface';
 })
 export class PageNavigationComponent {
   @Input() page: Page;
+
+  constructor(
+    public route: ActivatedRoute,
+  ) {
+  }
 
   pageUrl: TrackByFunction<Page> = (_, p) => p.url;
 }
