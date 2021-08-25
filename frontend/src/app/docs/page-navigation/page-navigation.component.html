@@ -1,4 +1,9 @@
-<a class="list-group-item list-group-item-action" [routerLink]="[page.repo, page.url]" [relativeTo]="route.parent" routerLinkActive="active">
+<a class="list-group-item list-group-item-action text-truncate"
+   [title]="page.title"
+   [routerLink]="[page.repo, page.url]"
+   [relativeTo]="route.parent"
+   routerLinkActive="active"
+>
   {{ page.title }}
   <span *ngIf="page.wip" class="badge badge-secondary">WIP</span>
 </a>

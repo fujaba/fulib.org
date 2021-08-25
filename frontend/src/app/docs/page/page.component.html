@@ -7,7 +7,7 @@
     <h1>
       {{ repo ? repo.name : 'Loading...' }}
     </h1>
-    <p class="text-muted">
+    <p class="text-muted overflow-auto" style="max-height: 5rem">
       {{ repo ? repo.description : 'Loading...' }}
     </p>
     <div class="list-group">
