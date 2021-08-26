@@ -56,6 +56,7 @@ export class LaunchPanelComponent implements OnInit, OnDestroy {
     if (config.type === 'terminal') {
       const terminal: TerminalStub = {
         ...config.terminal,
+        workingDirectory: config.terminal.workingDirectory?.replace('${projectRoot}', this.projectManager.fileRoot.path),
         title: config.name,
         id: config.allowParallel ? undefined : config.id,
       };
