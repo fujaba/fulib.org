@@ -10,6 +10,7 @@ import {ProjectManager} from './project.manager';
 
 @Injectable()
 export class EditorService {
+  activeTabsId = 0;
 
   editors: FileEditor[][] = [];
 

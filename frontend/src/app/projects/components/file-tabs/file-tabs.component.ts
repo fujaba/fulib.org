@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, HostListener, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 
 import {Subscription} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
@@ -15,7 +15,7 @@ import {TabsComponent} from '../../../shared/tabs/tabs.component';
   styleUrls: ['./file-tabs.component.scss'],
 })
 export class FileTabsComponent implements OnInit, OnDestroy {
-  @Input() active = false;
+  @Input() tabsId: number;
 
   @ViewChild('tabs') tabs: TabsComponent<FileEditor>;
 
@@ -32,10 +32,15 @@ export class FileTabsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscription = this.projectManager.openRequests.subscribe(request => {
-      if (this.active && request.type === 'file-editor') {
+      if (this.editorService.activeTabsId === this.tabsId && request.type === 'file-editor') {
         this.open(request.editor);
       }
     });
+  }
+
+  @HostListener('focusin')
+  onFocus() {
+    this.editorService.activeTabsId = this.tabsId;
   }
 
   ngOnDestroy() {
