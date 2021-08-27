@@ -165,7 +165,7 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
         command: 'editor.cursor',
         path: this.file!.path,
         editorId: this.editorId,
-        user: `${this.user?.firstName} ${this.user?.lastName}`,
+        user: this.user ? `${this.user.firstName} ${this.user.lastName}` : 'You',
         position,
       })),
     ).subscribe(this.projectManager.webSocket);
