@@ -9,6 +9,7 @@ import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
 export class TabsComponent<E> implements OnInit {
   @Input() header: TemplateRef<any>;
   @Input() content: TemplateRef<any>;
+  @Input() fallback: TemplateRef<any> | null = null;
   @Output() create = new EventEmitter<void>();
 
   @Input() tabs: E[] = [];

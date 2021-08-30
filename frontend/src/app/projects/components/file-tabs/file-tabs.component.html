@@ -12,10 +12,32 @@
 <ng-template #content let-current>
   <app-file-editor *ngIf="current" [editor]="current" (dismiss)="this.close(current)"></app-file-editor>
 </ng-template>
+<ng-template #fallback>
+  <div class="h-100 d-flex justify-content-center align-items-center">
+    <ul class="list-unstyled">
+      <li>
+        Search Everywhere
+        <span class="text-primary">
+          Double
+          <i class="bi-shift" ngbTooltip="Shift"></i>
+        </span>
+      </li>
+      <li>
+        Run Anything
+        <span class="text-primary">
+          Double Ctrl
+        </span>
+      </li>
+      <li>
+        Drop files here to open them
+      </li>
+    </ul>
+  </div>
+</ng-template>
 <app-tabs
   #tabs
   [tabs]="editors" (tabsChange)="editors = $event; saveEditors()"
-  [content]="content" [header]="header"
+  [content]="content" [header]="header" [fallback]="fallback"
   (create)="newScratchFile()"
   [dndDropzone]="['file', 'editor']"
   [dndAllowExternal]="true"
