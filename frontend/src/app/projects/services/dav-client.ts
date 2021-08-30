@@ -43,7 +43,7 @@ export class DavClient {
   }
 
   mkcol(url: string): Observable<void> {
-    return this.http.request<void>('MKCOL', url);
+    return this.http.request('MKCOL', url, {responseType: 'text'}).pipe(mapTo(undefined));
   }
 
   propFind(url: string): Observable<DavResource> {
@@ -68,9 +68,10 @@ export class DavClient {
   }
 
   move(from: string, to: string): Observable<void> {
-    return this.http.request<void>('MOVE', from, {
+    return this.http.request('MOVE', from, {
+      responseType: 'text',
       headers: {Destination: to},
-    });
+    }).pipe(mapTo(undefined));
   }
 
   get(url: string): Observable<string> {
