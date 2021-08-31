@@ -1,7 +1,7 @@
 import {Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Put} from '@nestjs/common';
 import {ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {notFound} from '../utils';
-import {CreateAssignmentDto, UpdateAssignmentDto} from './assignment.dto';
+import {CreateAssignmentDto, FindAllAssignmentDto, UpdateAssignmentDto} from './assignment.dto';
 import {Assignment} from './assignment.schema';
 import {AssignmentService} from './assignment.service';
 
@@ -20,7 +20,7 @@ export class AssignmentController {
   }
 
   @Get()
-  @ApiOkResponse({ type: [Assignment] })
+  @ApiOkResponse({ type: [FindAllAssignmentDto] })
   async findAll() {
     return this.assignmentService.findAll();
   }

@@ -1,7 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {Model} from 'mongoose';
-import {CreateAssignmentDto, UpdateAssignmentDto} from './assignment.dto';
+import {CreateAssignmentDto, FindAllAssignmentDto, UpdateAssignmentDto} from './assignment.dto';
 import {Assignment, AssignmentDocument} from './assignment.schema';
 
 @Injectable()
@@ -15,8 +15,8 @@ export class AssignmentService {
     return this.model.create(dto);
   }
 
-  async findAll(): Promise<AssignmentDocument[]> {
-    return this.model.find().exec();
+  async findAll(): Promise<FindAllAssignmentDto[]> {
+    return this.model.find().select(['-token', '-solution', '-tasks.verification']).exec();
   }
 
   async findOne(id: string): Promise<AssignmentDocument | undefined> {
