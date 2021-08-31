@@ -1,5 +1,5 @@
-import {Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Put} from '@nestjs/common';
-import {ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
+import {Body, Controller, Delete, Get, Headers, Param, Patch, Post} from '@nestjs/common';
+import {ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags, getSchemaPath} from '@nestjs/swagger';
 import {notFound} from '../utils';
 import {CreateAssignmentDto, FindAllAssignmentDto, UpdateAssignmentDto} from './assignment.dto';
 import {Assignment} from './assignment.schema';
@@ -14,33 +14,48 @@ export class AssignmentController {
   }
 
   @Post()
-  @ApiCreatedResponse({ type: Assignment })
+  @ApiCreatedResponse({type: Assignment})
   async create(@Body() dto: CreateAssignmentDto) {
     return this.assignmentService.create(dto);
   }
 
   @Get()
-  @ApiOkResponse({ type: [FindAllAssignmentDto] })
+  @ApiOkResponse({type: [FindAllAssignmentDto]})
   async findAll() {
     return this.assignmentService.findAll();
   }
 
   @Get(':id')
-  @ApiOkResponse({ type: Assignment })
+  @ApiOkResponse({
+    description: 'Result is an Assignment when you are author or the Assignment-Token header matches, otherwise some properties are omitted.',
+    schema: {
+      oneOf: [
+        {$ref: getSchemaPath(Assignment)},
+        {$ref: getSchemaPath(FindAllAssignmentDto)},
+      ],
+    },
+  })
   @ApiNotFoundResponse()
-  async findOne(@Param('id') id: string) {
-    return await this.assignmentService.findOne(id) ?? notFound(id);
+  async findOne(@Param('id') id: string, @Headers('assignment-token') token: string) {
+    const assignment = await this.assignmentService.findOne(id);
+    if (!assignment) {
+      notFound(id);
+    }
+    if (assignment.token === token) {
+      return assignment;
+    }
+    return this.assignmentService.mask(assignment.toObject());
   }
 
   @Patch(':id')
-  @ApiOkResponse({ type: Assignment })
+  @ApiOkResponse({type: Assignment})
   @ApiNotFoundResponse()
   async update(@Param('id') id: string, @Body() dto: UpdateAssignmentDto) {
     return await this.assignmentService.update(id, dto) ?? notFound(id);
   }
 
   @Delete(':id')
-  @ApiOkResponse({ type: Assignment })
+  @ApiOkResponse({type: Assignment})
   @ApiNotFoundResponse()
   async remove(@Param('id') id: string) {
     return await this.assignmentService.remove(id) ?? notFound(id);

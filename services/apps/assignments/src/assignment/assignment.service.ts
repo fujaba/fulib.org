@@ -23,6 +23,14 @@ export class AssignmentService {
     return this.model.findById(id).exec();
   }
 
+  mask(assignment: Assignment): FindAllAssignmentDto {
+    const {token, solution, tasks, ...rest} = assignment;
+    return {
+      ...rest,
+      tasks: assignment.tasks.map(({verification, ...rest}) => rest),
+    } as FindAllAssignmentDto;
+  }
+
   async update(id: string, dto: UpdateAssignmentDto): Promise<Assignment> {
     return this.model.findByIdAndUpdate(id, dto, {new: true}).exec();
   }
