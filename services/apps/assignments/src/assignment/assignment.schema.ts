@@ -1,5 +1,7 @@
 import {Prop, SchemaFactory} from '@nestjs/mongoose';
 import {ApiProperty} from '@nestjs/swagger';
+import {Type} from 'class-transformer';
+import {IsArray, IsDate, IsEmail, IsNumber, Min, ValidateNested} from 'class-validator';
 import {Document} from 'mongoose';
 
 export class Task {
@@ -8,7 +10,9 @@ export class Task {
   description: string;
 
   @Prop()
-  @ApiProperty()
+  @ApiProperty({minimum: 0})
+  @IsNumber()
+  @Min(0)
   points: number;
 
   @Prop()
@@ -39,14 +43,19 @@ export class Assignment {
 
   @Prop()
   @ApiProperty()
+  @IsEmail()
   email: string;
 
   @Prop()
   @ApiProperty()
+  @IsDate()
   deadline: Date;
 
   @Prop()
-  @ApiProperty({ type: [Task] })
+  @ApiProperty({type: [Task]})
+  @IsArray()
+  @ValidateNested({each: true})
+  @Type(() => Task)
   tasks: Task[];
 
   @Prop()
