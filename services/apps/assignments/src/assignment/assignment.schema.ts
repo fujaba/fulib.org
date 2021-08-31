@@ -1,4 +1,4 @@
-import {Prop, SchemaFactory} from '@nestjs/mongoose';
+import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {ApiProperty} from '@nestjs/swagger';
 import {Type} from 'class-transformer';
 import {IsArray, IsDate, IsEmail, IsNumber, Min, ValidateNested} from 'class-validator';
@@ -20,6 +20,7 @@ export class Task {
   verification: string;
 }
 
+@Schema()
 export class Assignment {
   @Prop()
   @ApiProperty()
