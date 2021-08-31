@@ -1,12 +1,24 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {ApiProperty} from '@nestjs/swagger';
 import {Type} from 'class-transformer';
-import {IsArray, IsDate, IsEmail, IsNumber, IsOptional, Min, ValidateNested} from 'class-validator';
+import {
+  IsArray,
+  IsDate,
+  IsEmail,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Min,
+  ValidateNested,
+} from 'class-validator';
 import {Document} from 'mongoose';
 
 export class Task {
   @Prop()
   @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
   description: string;
 
   @Prop()
@@ -17,6 +29,7 @@ export class Task {
 
   @Prop()
   @ApiProperty()
+  @IsString()
   verification: string;
 }
 
@@ -28,10 +41,13 @@ export class Assignment {
 
   @Prop()
   @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
   title: string;
 
   @Prop()
   @ApiProperty()
+  @IsString()
   description: string;
 
   @Prop()
@@ -40,6 +56,8 @@ export class Assignment {
 
   @Prop()
   @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
   author: string;
 
   @Prop()
@@ -62,10 +80,12 @@ export class Assignment {
 
   @Prop()
   @ApiProperty()
+  @IsString()
   solution: string;
 
   @Prop()
   @ApiProperty()
+  @IsString()
   templateSolution: string;
 }
 

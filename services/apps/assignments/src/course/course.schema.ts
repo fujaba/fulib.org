@@ -1,6 +1,6 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {ApiProperty} from '@nestjs/swagger';
-import {IsArray, IsMongoId} from 'class-validator';
+import {IsArray, IsMongoId, IsNotEmpty, IsString} from 'class-validator';
 import {Document} from 'mongoose';
 
 @Schema()
@@ -11,10 +11,13 @@ export class Course {
 
   @Prop()
   @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
   title: string;
 
   @Prop()
   @ApiProperty()
+  @IsString()
   description: string;
 
   @Prop()
