@@ -1,3 +1,4 @@
+import {ValidationPipe} from '@nestjs/common';
 import {NestFactory} from '@nestjs/core';
 import {DocumentBuilder, SwaggerModule} from '@nestjs/swagger';
 import {AssignmentsModule} from './assignments.module';
@@ -7,6 +8,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AssignmentsModule);
   const prefix = `/api/${environment.version}`;
   app.setGlobalPrefix(prefix);
+  app.useGlobalPipes(new ValidationPipe());
 
   const config = new DocumentBuilder()
     .setTitle('Assignments')
