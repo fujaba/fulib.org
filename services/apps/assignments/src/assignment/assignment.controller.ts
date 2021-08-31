@@ -1,7 +1,7 @@
 import {Body, Controller, Delete, Get, Headers, Param, Patch, Post} from '@nestjs/common';
 import {ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags, getSchemaPath} from '@nestjs/swagger';
 import {notFound} from '../utils';
-import {CreateAssignmentDto, FindAllAssignmentDto, UpdateAssignmentDto} from './assignment.dto';
+import {CreateAssignmentDto, ReadAssignmentDto, UpdateAssignmentDto} from './assignment.dto';
 import {Assignment} from './assignment.schema';
 import {AssignmentService} from './assignment.service';
 
@@ -20,7 +20,7 @@ export class AssignmentController {
   }
 
   @Get()
-  @ApiOkResponse({type: [FindAllAssignmentDto]})
+  @ApiOkResponse({type: [ReadAssignmentDto]})
   async findAll() {
     return this.assignmentService.findAll();
   }
@@ -31,7 +31,7 @@ export class AssignmentController {
     schema: {
       oneOf: [
         {$ref: getSchemaPath(Assignment)},
-        {$ref: getSchemaPath(FindAllAssignmentDto)},
+        {$ref: getSchemaPath(ReadAssignmentDto)},
       ],
     },
   })
