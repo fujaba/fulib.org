@@ -63,7 +63,7 @@ export class AssignmentController {
     if (!assignment) {
       notFound(id);
     }
-    if (this.isAuthorized(assignment, token, user)) {
+    if (this.assignmentService.isAuthorized(assignment, token, user)) {
       return assignment;
     }
     return this.assignmentService.mask(assignment.toObject());
@@ -100,16 +100,12 @@ export class AssignmentController {
     return await this.assignmentService.remove(id) ?? notFound(id);
   }
 
-  private isAuthorized(assignment: Assignment, headerToken: string, bearerToken: UserToken) {
-    return assignment.token === headerToken || bearerToken && bearerToken.sub === assignment.userId;
-  }
-
   private async checkAuth(id: string, token: string, user: UserToken) {
     const assignment = await this.assignmentService.findOne(id);
     if (!assignment) {
       notFound(id);
     }
-    if (!this.isAuthorized(assignment, token, user)) {
+    if (!this.assignmentService.isAuthorized(assignment, token, user)) {
       throw new ForbiddenException(forbiddenResponse);
     }
   }

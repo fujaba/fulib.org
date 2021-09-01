@@ -1,3 +1,4 @@
+import {UserToken} from '@app/keycloak-auth';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {Model} from 'mongoose';
@@ -43,5 +44,9 @@ export class AssignmentService {
 
   async remove(id: string): Promise<AssignmentDocument | undefined> {
     return this.model.findByIdAndDelete(id);
+  }
+
+  isAuthorized(assignment: Assignment, headerToken: string, bearerToken: UserToken) {
+    return assignment.token === headerToken || bearerToken && bearerToken.sub === assignment.userId;
   }
 }
