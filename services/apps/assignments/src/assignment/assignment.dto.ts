@@ -1,7 +1,10 @@
 import {ApiProperty, OmitType, PartialType} from '@nestjs/swagger';
 import {Assignment, Task} from './assignment.schema';
 
-export class CreateAssignmentDto extends OmitType(Assignment, [] as const) {
+export class CreateAssignmentDto extends OmitType(Assignment, [
+  'token',
+  'userId',
+] as const) {
 }
 
 export class ReadTaskDto extends OmitType(Task, ['verification'] as const) {
@@ -12,5 +15,8 @@ export class ReadAssignmentDto extends OmitType(Assignment, ['token', 'solution'
   tasks: ReadTaskDto[];
 }
 
-export class UpdateAssignmentDto extends PartialType(OmitType(Assignment, [] as const)) {
+export class UpdateAssignmentDto extends PartialType(OmitType(Assignment, [
+  'token',
+  'userId',
+] as const)) {
 }
