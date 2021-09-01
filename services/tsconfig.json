@@ -17,6 +17,13 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "paths": {}
+    "paths": {
+      "@app/keycloak-auth": [
+        "libs/keycloak-auth/src"
+      ],
+      "@app/keycloak-auth/*": [
+        "libs/keycloak-auth/src/*"
+      ]
+    }
   }
 }

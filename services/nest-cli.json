@@ -13,6 +13,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/assignments/tsconfig.app.json"
       }
+    },
+    "keycloak-auth": {
+      "type": "library",
+      "root": "libs/keycloak-auth",
+      "entryFile": "index",
+      "sourceRoot": "libs/keycloak-auth/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/keycloak-auth/tsconfig.lib.json"
+      }
     }
   }
 }

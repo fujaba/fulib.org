@@ -73,7 +73,11 @@
     "coverageDirectory": "./coverage",
     "testEnvironment": "node",
     "roots": [
-      "<rootDir>/apps/"
-    ]
+      "<rootDir>/apps/",
+      "<rootDir>/libs/"
+    ],
+    "moduleNameMapper": {
+      "^@app/keycloak-auth(|/.*)$": "<rootDir>/libs/keycloak-auth/src/$1"
+    }
   }
 }
