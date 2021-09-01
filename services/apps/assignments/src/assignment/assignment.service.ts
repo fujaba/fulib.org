@@ -1,5 +1,6 @@
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
+import {randomBytes} from 'crypto';
 import {Model} from 'mongoose';
 import {CreateAssignmentDto, ReadAssignmentDto, UpdateAssignmentDto} from './assignment.dto';
 import {Assignment, AssignmentDocument} from './assignment.schema';
@@ -11,8 +12,20 @@ export class AssignmentService {
   ) {
   }
 
-  async create(dto: CreateAssignmentDto): Promise<AssignmentDocument> {
-    return this.model.create(dto);
+  generateToken(): string {
+    const bytes = randomBytes(8);
+    const hex = bytes.toString('hex');
+    const [, a, b, c, d] = /(.{4})(.{4})(.{4})(.{4})/.exec(hex);
+    return `${a}-${b}-${c}-${d}`;
+  }
+
+  async create(dto: CreateAssignmentDto, userId?: string): Promise<AssignmentDocument> {
+    const token = this.generateToken()
+    return this.model.create({
+      ...dto,
+      token,
+      userId,
+    });
   }
 
   async findAll(): Promise<ReadAssignmentDto[]> {

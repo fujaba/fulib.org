@@ -25,9 +25,13 @@ export class AssignmentController {
   }
 
   @Post()
+  @Auth({optional: true})
   @ApiCreatedResponse({type: Assignment})
-  async create(@Body() dto: CreateAssignmentDto) {
-    return this.assignmentService.create(dto);
+  async create(
+    @Body() dto: CreateAssignmentDto,
+    @AuthUser() user?: UserToken,
+  ) {
+    return this.assignmentService.create(dto, user?.sub);
   }
 
   @Get()
