@@ -1,5 +1,13 @@
+import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
 import {Body, Controller, Delete, Get, Headers, Param, Patch, Post} from '@nestjs/common';
-import {ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags, getSchemaPath} from '@nestjs/swagger';
+import {
+  ApiCreatedResponse,
+  ApiHeader,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiTags,
+  getSchemaPath,
+} from '@nestjs/swagger';
 import {notFound} from '../utils';
 import {CreateAssignmentDto, ReadAssignmentDto, UpdateAssignmentDto} from './assignment.dto';
 import {Assignment} from './assignment.schema';
@@ -26,6 +34,7 @@ export class AssignmentController {
   }
 
   @Get(':id')
+  @Auth({optional: true})
   @ApiOkResponse({
     description: 'Result is an Assignment when you are author or the Assignment-Token header matches, otherwise some properties are omitted.',
     schema: {
@@ -36,12 +45,18 @@ export class AssignmentController {
     },
   })
   @ApiNotFoundResponse()
-  async findOne(@Param('id') id: string, @Headers('assignment-token') token: string) {
+  @ApiHeader({ name: 'assignment-token', required: false })
+  async findOne(
+    @Param('id') id: string,
+    @Headers('assignment-token') token?: string,
+    @AuthUser() user?: UserToken,
+  ) {
+    console.log(user);
     const assignment = await this.assignmentService.findOne(id);
     if (!assignment) {
       notFound(id);
     }
-    if (assignment.token === token) {
+    if (assignment.token === token || user && user.sub === assignment.userId) {
       return assignment;
     }
     return this.assignmentService.mask(assignment.toObject());
