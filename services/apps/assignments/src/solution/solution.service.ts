@@ -15,12 +15,14 @@ export class SolutionService {
 
   async create(assignment: string, dto: CreateSolutionDto, userId?: string): Promise<SolutionDocument> {
     const token = generateToken();
+    const timeStamp = new Date();
     return this.model.create({
       ...dto,
       assignment,
       token,
       userId,
-      // TODO timeStamp, results
+      timeStamp,
+      // TODO results
     });
   }
 
