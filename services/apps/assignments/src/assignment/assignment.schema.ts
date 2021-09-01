@@ -3,7 +3,7 @@ import {ApiProperty} from '@nestjs/swagger';
 import {Type} from 'class-transformer';
 import {
   IsArray,
-  IsDate,
+  IsDateString,
   IsEmail,
   IsNotEmpty,
   IsNumber,
@@ -66,9 +66,9 @@ export class Assignment {
   email: string;
 
   @Prop()
-  @ApiProperty({ required: false })
+  @ApiProperty({required: false})
   @IsOptional()
-  @IsDate()
+  @IsDateString()
   deadline?: Date;
 
   @Prop()
