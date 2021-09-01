@@ -11,8 +11,11 @@ export class CourseService {
   ) {
   }
 
-  async create(dto: CreateCourseDto): Promise<CourseDocument> {
-    return this.model.create(dto);
+  async create(dto: CreateCourseDto, userId?: string): Promise<CourseDocument> {
+    return this.model.create({
+      ...dto,
+      userId,
+    });
   }
 
   async findAll(): Promise<CourseDocument[]> {

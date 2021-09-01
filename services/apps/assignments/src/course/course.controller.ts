@@ -1,3 +1,4 @@
+import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
 import {Body, Controller, Delete, Get, Param, Patch, Post} from '@nestjs/common';
 import {ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {notFound} from '../utils';
@@ -14,9 +15,13 @@ export class CourseController {
   }
 
   @Post()
+  @Auth({optional: true})
   @ApiCreatedResponse({type: Course})
-  async create(@Body() dto: CreateCourseDto) {
-    return this.courseService.create(dto);
+  async create(
+    @Body() dto: CreateCourseDto,
+    @AuthUser() user?: UserToken,
+  ) {
+    return this.courseService.create(dto, user?.sub);
   }
 
   @Get()
