@@ -1,10 +1,12 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
-import {Body, Controller, Delete, Get, Param, Patch, Post} from '@nestjs/common';
+import {Body, Controller, Delete, ForbiddenException, Get, Param, Patch, Post} from '@nestjs/common';
 import {ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {notFound} from '../utils';
 import {CreateCourseDto, UpdateCourseDto} from './course.dto';
 import {Course} from './course.schema';
 import {CourseService} from './course.service';
+
+const forbiddenResponse = 'Not owner.';
 
 @Controller('courses')
 @ApiTags('Courses')
@@ -38,16 +40,39 @@ export class CourseController {
   }
 
   @Patch(':id')
+  @Auth()
   @ApiOkResponse({type: Course})
   @ApiNotFoundResponse()
-  async update(@Param('id') id: string, @Body() dto: UpdateCourseDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() dto: UpdateCourseDto,
+    @AuthUser() user: UserToken,
+  ) {
+    await this.checkAuth(id, user);
     return await this.courseService.update(id, dto) ?? notFound(id);
   }
 
   @Delete(':id')
+  @Auth()
   @ApiOkResponse({type: Course})
   @ApiNotFoundResponse()
-  async remove(@Param('id') id: string) {
+  async remove(
+    @Param('id') id: string,
+    @Body() dto: UpdateCourseDto,
+    @AuthUser() user: UserToken,
+  ) {
+    await this.checkAuth(id, user);
     return await this.courseService.remove(id) ?? notFound(id);
+  }
+
+  private async checkAuth(id: string, user: UserToken) {
+    const course = await this.courseService.findOne(id);
+    if (!course) {
+      notFound(id);
+    }
+
+    if (course.userId !== user.sub) {
+      throw new ForbiddenException(forbiddenResponse);
+    }
   }
 }
