@@ -6,14 +6,17 @@ import {ApiBearerAuth, ApiUnauthorizedResponse} from '@nestjs/swagger';
 
 export const DEFAULT_DESCRIPTION = 'Missing or invalid Bearer token.';
 
-export function Auth(options: {optional?: boolean}) {
-  return applyDecorators(
-    UseGuards(options.optional ? JwtAuthGuard : AuthGuard('jwt')),
+export function Auth(options?: {optional?: boolean}) {
+  const decorators = [
+    UseGuards(options?.optional ? JwtAuthGuard : AuthGuard('jwt')),
     ApiBearerAuth(),
-    ApiUnauthorizedResponse({
+  ];
+  if (!options?.optional) {
+    decorators.push(ApiUnauthorizedResponse({
       description: DEFAULT_DESCRIPTION,
-    }),
-  );
+    }));
+  }
+  return applyDecorators(...decorators);
 }
 
 export const AuthUser = createParamDecorator<unknown, unknown, UserToken>(
