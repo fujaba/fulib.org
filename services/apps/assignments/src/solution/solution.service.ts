@@ -27,7 +27,7 @@ export class SolutionService {
   }
 
   async findAll(where?: FilterQuery<Solution>): Promise<ReadSolutionDto[]> {
-    return this.model.find(where).select(['-token']).exec();
+    return this.model.find(where).select(['-token']).sort('+name').exec();
   }
 
   async findOne(id: string): Promise<SolutionDocument | undefined> {

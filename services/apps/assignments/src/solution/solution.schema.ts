@@ -22,7 +22,7 @@ export class Solution {
   @ApiProperty()
   token: string;
 
-  @Prop()
+  @Prop({index: 1})
   @ApiProperty()
   @IsMongoId()
   assignment: string;
@@ -31,7 +31,7 @@ export class Solution {
   @ApiProperty()
   userId: string;
 
-  @Prop()
+  @Prop({index: 1})
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
