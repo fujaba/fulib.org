@@ -4,6 +4,8 @@ import {AssignmentController} from './assignment.controller';
 import {AssignmentSchema} from './assignment.schema';
 import {AssignmentService} from './assignment.service';
 
+// TODO migration: assignments { id -> -, userId -> creator }
+
 @Module({
   imports: [
     MongooseModule.forFeature([
