@@ -38,6 +38,7 @@ IntelliJ users can use the predefined run configurations with the above environm
 Make sure you set the following environment variables before running:
 
 ```properties
+FULIB_CORS=true
 FULIB_MONGO_URL=mongodb://localhost:27017/fulib-org
 ```
 
@@ -53,6 +54,7 @@ IntelliJ users can use the predefined run configuration with the above environme
 To run the Projects backend, you need to set the following environment variables:
 
 ```
+FULIB_CORS=true
 FULIB_MONGO_URL=mongodb://localhost:27017/fulib-org
 FULIB_PROJECTS_DATA_DIR=data
 FULIB_PROJECTS_PROXY_URL=http://localhost:8080

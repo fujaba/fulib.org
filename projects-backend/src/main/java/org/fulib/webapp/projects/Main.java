@@ -55,7 +55,7 @@ public class Main
 		service = Service.ignite();
 		service.port(PORT);
 
-		if (isDevEnv())
+		if (System.getenv("FULIB_CORS") != null)
 		{
 			enableCORS();
 		}
@@ -84,11 +84,6 @@ public class Main
 	}
 
 	// --------------- Helpers ---------------
-
-	private boolean isDevEnv()
-	{
-		return new File("build.gradle").exists();
-	}
 
 	private void addMainRoutes()
 	{

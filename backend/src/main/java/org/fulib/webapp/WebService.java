@@ -91,7 +91,7 @@ public class WebService
 		service.staticFiles.externalLocation(this.runCodeGen.getTempDir());
 		service.staticFiles.expireTime(60 * 60);
 
-		if (isDevEnv())
+		if (System.getenv("FULIB_CORS") != null)
 		{
 			enableCORS();
 		}
@@ -126,11 +126,6 @@ public class WebService
 	}
 
 	// --------------- Helpers ---------------
-
-	private boolean isDevEnv()
-	{
-		return new File("build.gradle").exists();
-	}
 
 	private void addMainRoutes()
 	{

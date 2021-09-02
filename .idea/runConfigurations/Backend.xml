@@ -3,6 +3,7 @@
     <ExternalSystemSettings>
       <option name="env">
         <map>
+          <entry key="FULIB_CORS" value="true" />
           <entry key="FULIB_MONGO_URL" value="mongodb://localhost:27017/fulib-org" />
         </map>
       </option>
