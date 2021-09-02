@@ -29,7 +29,7 @@ export class Solution {
 
   @Prop()
   @ApiProperty()
-  userId: string;
+  creator: string;
 
   @Prop({index: 1})
   @ApiProperty()
@@ -56,7 +56,7 @@ export class Solution {
   @Prop()
   @ApiProperty()
   @IsDateString()
-  timeStamp?: Date;
+  timestamp?: Date;
 
   @Prop()
   @ApiProperty({type: [TaskResult]})

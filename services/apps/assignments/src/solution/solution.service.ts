@@ -13,15 +13,15 @@ export class SolutionService {
   ) {
   }
 
-  async create(assignment: string, dto: CreateSolutionDto, userId?: string): Promise<SolutionDocument> {
+  async create(assignment: string, dto: CreateSolutionDto, creator?: string): Promise<SolutionDocument> {
     const token = generateToken();
-    const timeStamp = new Date();
+    const timestamp = new Date();
     return this.model.create({
       ...dto,
       assignment,
       token,
-      userId,
-      timeStamp,
+      creator,
+      timestamp,
       // TODO results
     });
   }
@@ -48,6 +48,6 @@ export class SolutionService {
   }
 
   isAuthorized(solution: Solution, solutionToken: string, bearerToken: UserToken) {
-    return solution.token === solutionToken || bearerToken && bearerToken.sub === solution.userId;
+    return solution.token === solutionToken || bearerToken && bearerToken.sub === solution.creator;
   }
 }

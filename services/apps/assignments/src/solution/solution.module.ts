@@ -5,6 +5,8 @@ import {SolutionController} from './solution.controller';
 import {SolutionSchema} from './solution.schema';
 import {SolutionService} from './solution.service';
 
+// TODO migration: solutions { id -> _id, userId -> creator, timeStamp -> timestamp }
+
 @Module({
   imports: [
     MongooseModule.forFeature([
