@@ -22,17 +22,19 @@ public class CollectErrors
 	 */
 	public static void main(String[] args)
 	{
+		final String mongoUrl = args[0];
+		final LocalDate start = LocalDate.parse(args[1]);
+		final LocalDateTime end = LocalDateTime.parse(args[2]);
+
 		final Pattern pattern = Pattern.compile("\\[[\\w.]+]");
 		final Map<String, AtomicInteger> counts = new HashMap<>();
 
-		final LocalDate start = LocalDate.of(2019, 10, 1);
-		final LocalDateTime end = LocalDateTime.of(2020, 2, 16, 18, 0, 0);
 		final Bson filter = Filters.and(Filters.gte("timestamp", start), Filters.lt("timestamp", end));
 
 		int totalCount = 0;
 		int totalFound = 0;
 
-		for (final Document document : new Mongo(WebService.getMongoURL()).requestLog
+		for (final Document document : new Mongo(mongoUrl).requestLog
 			.find(filter)
 			.projection(Projections.include("response.output")))
 		{
