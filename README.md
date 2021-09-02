@@ -7,9 +7,8 @@ Available at https://www.fulib.org.
 
 ## Building & Running
 
-### General
-
-You can simply set up this project after cloning using the Gradle import feature of your IDE.
+You can mostly set up this project after cloning using the Gradle import feature of your IDE.
+Some additional steps are required and described below.
 
 ### MongoDB
 
@@ -27,6 +26,20 @@ db.createUser({
 ```
 
 > You can also select your own username and password.
+
+### Frontend
+
+To set up the frontend, cd into the `frontend/` directory and run (you may need to install [pnpm](https://pnpm.io/) first):
+
+```sh
+pnpm install
+```
+
+Then, run the frontend using the launch configuration or `pnpm run start:dev`.
+
+> IMPORTANT: If the frontend errors along the lines of `** is not an NgModule` or similar, just restart the Angular dev server.
+
+The frontend will be available at `http://localhost:11340`.
 
 ### Backend
 
@@ -61,6 +74,17 @@ IntelliJ users can also use the predefined run configuration with the above envi
 ### Projects Proxy
 
 You can start the Project Proxy by running `docker compose up` in the `projects-proxy` directory.
+
+### Projects Runtime Image
+
+You need to prepare the runtime image to run Project containers.
+Run the following commands, or perform the steps manually:
+
+```
+rm projects/build/libs/* # delete existing jar files
+gradle :projects:build   # build new jar files
+docker build -t fulib/fulib.org-projects projects # prepare docker image
+```
 
 ## License
 
