@@ -4,6 +4,8 @@ import {CourseController} from './course.controller';
 import {CourseSchema} from './course.schema';
 import {CourseService} from './course.service';
 
+// TODO migration: courses { assignmentIds -> assignments }
+
 @Module({
   imports: [
     MongooseModule.forFeature([

@@ -24,7 +24,7 @@ export class Course {
   @ApiProperty()
   @IsArray()
   @IsMongoId({each: true})
-  assignmentIds: string[];
+  assignments: string[];
 }
 
 export type CourseDocument = Course & Document;
