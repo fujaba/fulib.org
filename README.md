@@ -24,7 +24,7 @@ pnpm install
 
 Then, run the frontend using the launch configuration or `pnpm run start:dev`.
 
-> ⚠️ If the frontend errors along the lines of `** is not an NgModule` or similar, just restart the Angular dev server.
+> ⚠️ If the frontend errors along the lines of `XY is not an NgModule` or `Uncaught Error: Type XYModule does not have 'ɵmod' property.` similar, just restart the Angular dev server.
 
 The frontend will be available at http://localhost:11340.
 
