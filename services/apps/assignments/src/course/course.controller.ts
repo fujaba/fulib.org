@@ -71,7 +71,7 @@ export class CourseController {
       notFound(id);
     }
 
-    if (course.userId !== user.sub) {
+    if (course.creator !== user.sub) {
       throw new ForbiddenException(forbiddenResponse);
     }
   }

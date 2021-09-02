@@ -7,7 +7,7 @@ import {Document} from 'mongoose';
 export class Course {
   @Prop()
   @ApiProperty()
-  userId: string;
+  creator: string;
 
   @Prop()
   @ApiProperty()
