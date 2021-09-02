@@ -54,6 +54,7 @@ To run the Projects backend, you need to set the following environment variables
 
 ```
 FULIB_MONGO_URL=mongodb://localhost:27017/fulib-org
+FULIB_PROJECTS_DATA_DIR=data
 FULIB_PROJECTS_PROXY_URL=http://localhost:8080
 FULIB_PROJECTS_CONTAINER_IMAGE=fulib/fulib.org-projects
 ```
