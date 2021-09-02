@@ -39,7 +39,7 @@ export class SolutionService {
     return rest;
   }
 
-  async update(id: string, dto: UpdateSolutionDto): Promise<Solution> {
+  async update(id: string, dto: UpdateSolutionDto): Promise<Solution | undefined> {
     return this.model.findByIdAndUpdate(id, dto, {new: true}).exec();
   }
 

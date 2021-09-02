@@ -10,7 +10,9 @@ export class CreateSolutionDto extends OmitType(Solution, [
 ] as const) {
 }
 
-export class UpdateSolutionDto extends PartialType(CreateSolutionDto) {
+export class UpdateSolutionDto extends PartialType(OmitType(CreateSolutionDto, [
+  'solution',
+] as const)) {
 }
 
 export class ReadSolutionDto extends OmitType(Solution, [

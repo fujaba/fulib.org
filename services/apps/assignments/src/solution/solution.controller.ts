@@ -1,5 +1,5 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
-import {Body, Controller, ForbiddenException, Get, Headers, Param, Post} from '@nestjs/common';
+import {Body, Controller, Delete, ForbiddenException, Get, Headers, Param, Patch, Post} from '@nestjs/common';
 import {
   ApiCreatedResponse,
   ApiForbiddenResponse,
@@ -7,12 +7,11 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiTags,
-  getSchemaPath,
 } from '@nestjs/swagger';
 import {AssignmentService} from '../assignment/assignment.service';
 import {notFound} from '../utils';
-import {CreateSolutionDto, ReadSolutionDto} from './solution.dto';
-import {Solution} from './solution.schema';
+import {CreateSolutionDto, ReadSolutionDto, UpdateSolutionDto} from './solution.dto';
+import {Solution, SolutionDocument} from './solution.schema';
 import {SolutionService} from './solution.service';
 
 const forbiddenResponse = 'Not owner of solution or assignment, or invalid Assignment-Token or Solution-Token.';
@@ -41,7 +40,7 @@ export class SolutionController {
   @ApiOkResponse({type: [ReadSolutionDto]})
   async findAll(
     @Param('assignment') assignment: string,
-  ) {
+  ): Promise<ReadSolutionDto[]> {
     return this.solutionService.findAll({assignment});
   }
 
@@ -61,15 +60,65 @@ export class SolutionController {
     @Headers('assignment-token') assignmentToken?: string,
     @Headers('solution-token') solutionToken?: string,
     @AuthUser() user?: UserToken,
-  ) {
+  ): Promise<ReadSolutionDto> {
+    const solution = await this.checkAuth(assignmentId, id, user, assignmentToken, solutionToken);
+    return this.solutionService.mask(solution.toObject());
+  }
+
+  @Patch(':id')
+  @Auth({optional: true})
+  @ApiOkResponse({type: ReadSolutionDto})
+  @ApiNotFoundResponse()
+  @ApiForbiddenResponse({description: forbiddenResponse})
+  @ApiHeader({name: 'assignment-token', required: false})
+  @ApiHeader({name: 'solution-token', required: false})
+  async update(
+    @Param('assignment') assignmentId: string,
+    @Param('id') id: string,
+    @Body() dto: UpdateSolutionDto,
+    @Headers('assignment-token') assignmentToken?: string,
+    @Headers('solution-token') solutionToken?: string,
+    @AuthUser() user?: UserToken,
+  ): Promise<ReadSolutionDto> {
+    await this.checkAuth(assignmentId, id, user, assignmentToken, solutionToken);
+    const solution = await this.solutionService.update(id, dto);
+    if (!solution) {
+      notFound(id);
+    }
+    return this.solutionService.mask(solution);
+  }
+
+  @Delete(':id')
+  @Auth({optional: true})
+  @ApiOkResponse({type: ReadSolutionDto})
+  @ApiNotFoundResponse()
+  @ApiForbiddenResponse({description: forbiddenResponse})
+  @ApiHeader({name: 'assignment-token', required: false})
+  @ApiHeader({name: 'solution-token', required: false})
+  async remove(
+    @Param('assignment') assignmentId: string,
+    @Param('id') id: string,
+    @Headers('assignment-token') assignmentToken?: string,
+    @Headers('solution-token') solutionToken?: string,
+    @AuthUser() user?: UserToken,
+  ): Promise<ReadSolutionDto> {
+    await this.checkAuth(assignmentId, id, user, assignmentToken, solutionToken);
+    const solution = await this.solutionService.remove(id);
+    if (!solution) {
+      notFound(id);
+    }
+    return this.solutionService.mask(solution.toObject());
+  }
+
+  private async checkAuth(assignmentId: string, solutionId: string, user: UserToken, assignmentToken: string, solutionToken: string): Promise<SolutionDocument> {
     const assignment = await this.assignmentService.findOne(assignmentId);
     if (!assignment) {
       notFound(assignmentId);
     }
 
-    const solution = await this.solutionService.findOne(id);
+    const solution = await this.solutionService.findOne(solutionId);
     if (!solution) {
-      notFound(id);
+      notFound(solutionId);
     }
 
     const privileged = this.assignmentService.isAuthorized(assignment, assignmentToken, user);
@@ -77,6 +126,6 @@ export class SolutionController {
     if (!(privileged || authorized)) {
       throw new ForbiddenException(forbiddenResponse);
     }
-    return this.solutionService.mask(solution.toObject());
+    return solution;
   }
 }
