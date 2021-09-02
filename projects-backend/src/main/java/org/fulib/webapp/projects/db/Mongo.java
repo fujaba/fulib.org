@@ -22,8 +22,6 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public class Mongo
 {
-	public static final String DATABASE_NAME = "fulib-org";
-
 	private final MongoDatabase database;
 	private final CodecRegistry codecRegistry;
 
@@ -39,7 +37,7 @@ public class Mongo
 			.retryWrites(true)
 			.build();
 		MongoClient mongoClient = MongoClients.create(settings);
-		database = mongoClient.getDatabase(DATABASE_NAME);
+		database = mongoClient.getDatabase(connString.getDatabase());
 
 		// POJO Codecs
 

@@ -35,10 +35,6 @@ public class WebService
 		}
 	}
 
-	public static final String PASSWORD_ENV_KEY = "FULIB_ORG_MONGODB_PASSWORD";
-	public static final String HOST_ENV_KEY = "FULIB_ORG_MONGODB_HOST";
-	public static final String USER_ENV_KEY = "FULIB_ORG_MONGODB_USER";
-
 	// =============== Fields ===============
 
 	private Service service;
@@ -53,7 +49,7 @@ public class WebService
 
 	public WebService()
 	{
-		this(new Mongo(getMongoURL()));
+		this(new Mongo(System.getenv("FULIB_MONGO_URL")));
 	}
 
 	WebService(Mongo db)
@@ -130,29 +126,6 @@ public class WebService
 	}
 
 	// --------------- Helpers ---------------
-
-	public static String getMongoURL()
-	{
-		final String host = System.getenv(HOST_ENV_KEY);
-		if (host == null || host.isEmpty())
-		{
-			return null;
-		}
-
-		final String user = System.getenv(USER_ENV_KEY);
-		if (user == null || user.isEmpty())
-		{
-			return null;
-		}
-
-		final String password = System.getenv(PASSWORD_ENV_KEY);
-		if (password == null || password.isEmpty())
-		{
-			return null;
-		}
-
-		return "mongodb://" + user + ":" + password + "@" + host;
-	}
 
 	private boolean isDevEnv()
 	{

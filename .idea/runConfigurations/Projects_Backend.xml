@@ -3,7 +3,7 @@
     <ExternalSystemSettings>
       <option name="env">
         <map>
-          <entry key="FULIB_MONGO_URL" value="mongodb://fulibDotOrg:fulibDotOrg@localhost" />
+          <entry key="FULIB_MONGO_URL" value="mongodb://localhost:27017/fulib-org" />
           <entry key="FULIB_PROJECTS_CONTAINER_IMAGE" value="fulib/fulib.org-projects" />
           <entry key="FULIB_PROJECTS_DATA_DIR" value="data" />
           <entry key="FULIB_PROJECTS_PROXY_URL" value="http://localhost:8080" />
@@ -13,16 +13,14 @@
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$/projects-backend" />
       <option name="externalSystemIdString" value="GRADLE" />
-      <option name="scriptParameters" value="" />
+      <option name="scriptParameters" value="run" />
       <option name="taskDescriptions">
         <list />
       </option>
       <option name="taskNames">
-        <list>
-          <option value="run" />
-        </list>
+        <list />
       </option>
-      <option name="vmOptions" value="" />
+      <option name="vmOptions" />
     </ExternalSystemSettings>
     <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
     <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>

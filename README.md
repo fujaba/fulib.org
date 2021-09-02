@@ -12,20 +12,7 @@ Some additional steps are required and described below.
 
 ### MongoDB
 
-Note that in order to run the server locally, you need to install MongoDB (server).
-Then, create a user (with `mongosh`):
-
-```js
-db.createUser({
-  user: "fulibDotOrg",
-  pwd: "fulibDotOrg",
-  roles: [
-    { role: "readWrite", db: "fulib-org" }
-  ]
-})
-```
-
-> You can also select your own username and password, but you'll need to adapt some environment variables described in the `🔬 Advanced` sections below.
+Note that in order to run the server locally, you need to set up a MongoDB to run at `localhost:27017` (regular installation or Docker).
 
 ### Frontend
 
@@ -51,13 +38,8 @@ IntelliJ users can use the predefined run configurations with the above environm
 Make sure you set the following environment variables before running:
 
 ```properties
-FULIB_ORG_MONGODB_USER=fulibDotOrg
-FULIB_ORG_MONGODB_HOST=localhost
-FULIB_ORG_MONGODB_PASSWORD=fulibDotOrg
+FULIB_MONGO_URL=mongodb://localhost:27017/fulib-org
 ```
-
-> If you selected a custom username and password in the step above,
-> use them instead of `fulibDotOrg` in the env variables, too!
 
 </details>
 
@@ -71,12 +53,10 @@ IntelliJ users can use the predefined run configuration with the above environme
 To run the Projects backend, you need to set the following environment variables:
 
 ```
-FULIB_MONGO_URL=mongodb://fulibDotOrg:fulibDotOrg@localhost
+FULIB_MONGO_URL=mongodb://localhost:27017/fulib-org
 FULIB_PROJECTS_PROXY_URL=http://localhost:8080
 FULIB_PROJECTS_CONTAINER_IMAGE=fulib/fulib.org-projects
 ```
-
-> Replace `fulibDotOrg` in the `FULIB_MONGO_URL` if you set a custom username or password.
 
 </details>
 
