@@ -25,7 +25,7 @@ db.createUser({
 })
 ```
 
-> You can also select your own username and password.
+> You can also select your own username and password, but you'll need to adapt some environment variables described in the `🔬 Advanced` sections below.
 
 ### Frontend
 
@@ -37,11 +37,16 @@ pnpm install
 
 Then, run the frontend using the launch configuration or `pnpm run start:dev`.
 
-> IMPORTANT: If the frontend errors along the lines of `** is not an NgModule` or similar, just restart the Angular dev server.
+> ⚠️ If the frontend errors along the lines of `** is not an NgModule` or similar, just restart the Angular dev server.
 
-The frontend will be available at `http://localhost:11340`.
+The frontend will be available at http://localhost:11340.
 
 ### Backend
+
+IntelliJ users can use the predefined run configurations with the above environment variables already set.
+
+<details>
+  <summary>🔬 Advanced</summary>
 
 Make sure you set the following environment variables before running:
 
@@ -54,22 +59,26 @@ FULIB_ORG_MONGODB_PASSWORD=fulibDotOrg
 > If you selected a custom username and password in the step above,
 > use them instead of `fulibDotOrg` in the env variables, too!
 
-IntelliJ users can also use the predefined run configurations with the above environment variables already set.
+</details>
 
 ### Projects Backend
+
+IntelliJ users can use the predefined run configuration with the above environment variables already set.
+
+<details>
+  <summary>🔬 Advanced</summary>
 
 To run the Projects backend, you need to set the following environment variables:
 
 ```
 FULIB_MONGO_URL=mongodb://fulibDotOrg:fulibDotOrg@localhost
-FULIB_PROJECTS_URL=http://host.docker.internal:4567
 FULIB_PROJECTS_PROXY_URL=http://localhost:8080
 FULIB_PROJECTS_CONTAINER_IMAGE=fulib/fulib.org-projects
 ```
 
 > Replace `fulibDotOrg` in the `FULIB_MONGO_URL` if you set a custom username or password.
 
-IntelliJ users can also use the predefined run configuration with the above environment variables already set.
+</details>
 
 ### Projects Proxy
 
