@@ -7,60 +7,76 @@ Available at https://www.fulib.org.
 
 ## Building & Running
 
-### General
-
-You can simply set up this project after cloning using the Gradle import feature of your IDE.
+You can mostly set up this project after cloning using the Gradle import feature of your IDE.
+Some additional steps are required and described below.
 
 ### MongoDB
 
-Note that in order to run the server locally, you need to install MongoDB (server).
-Then, create a user (with `mongosh`):
+Note that in order to run the server locally, you need to set up a MongoDB to run at `localhost:27017` (regular installation or Docker).
 
-```js
-db.createUser({
-  user: "fulibDotOrg",
-  pwd: "fulibDotOrg",
-  roles: [
-    { role: "readWrite", db: "fulib-org" }
-  ]
-})
+### Frontend
+
+To set up the frontend, cd into the `frontend/` directory and run (you may need to install [pnpm](https://pnpm.io/) first):
+
+```sh
+pnpm install
 ```
 
-> You can also select your own username and password.
+Then, run the frontend using the launch configuration or `pnpm run start:dev`.
+
+> ⚠️ If the frontend errors along the lines of `XY is not an NgModule` or `Uncaught Error: Type XYModule does not have 'ɵmod' property.` similar, just restart the Angular dev server.
+
+The frontend will be available at http://localhost:11340.
 
 ### Backend
+
+IntelliJ users can use the predefined run configurations with the above environment variables already set.
+
+<details>
+  <summary>🔬 Advanced</summary>
 
 Make sure you set the following environment variables before running:
 
 ```properties
-FULIB_ORG_MONGODB_USER=fulibDotOrg
-FULIB_ORG_MONGODB_HOST=localhost
-FULIB_ORG_MONGODB_PASSWORD=fulibDotOrg
+FULIB_CORS=true
+FULIB_MONGO_URL=mongodb://localhost:27017/fulib-org
 ```
 
-> If you selected a custom username and password in the step above,
-> use them instead of `fulibDotOrg` in the env variables, too!
-
-IntelliJ users can also use the predefined run configurations with the above environment variables already set.
+</details>
 
 ### Projects Backend
+
+IntelliJ users can use the predefined run configuration with the above environment variables already set.
+
+<details>
+  <summary>🔬 Advanced</summary>
 
 To run the Projects backend, you need to set the following environment variables:
 
 ```
-FULIB_MONGO_URL=mongodb://fulibDotOrg:fulibDotOrg@localhost
-FULIB_PROJECTS_URL=http://host.docker.internal:4567
+FULIB_CORS=true
+FULIB_MONGO_URL=mongodb://localhost:27017/fulib-org
+FULIB_PROJECTS_DATA_DIR=data
 FULIB_PROJECTS_PROXY_URL=http://localhost:8080
 FULIB_PROJECTS_CONTAINER_IMAGE=fulib/fulib.org-projects
 ```
 
-> Replace `fulibDotOrg` in the `FULIB_MONGO_URL` if you set a custom username or password.
-
-IntelliJ users can also use the predefined run configuration with the above environment variables already set.
+</details>
 
 ### Projects Proxy
 
 You can start the Project Proxy by running `docker compose up` in the `projects-proxy` directory.
+
+### Projects Runtime Image
+
+You need to prepare the runtime image to run Project containers.
+Run the following commands, or perform the steps manually:
+
+```
+rm projects/build/libs/* # delete existing jar files
+gradle :projects:build   # build new jar files
+docker build -t fulib/fulib.org-projects projects # prepare docker image
+```
 
 ## License
 

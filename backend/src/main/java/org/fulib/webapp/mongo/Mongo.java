@@ -31,8 +31,6 @@ public class Mongo
 {
 	// =============== Constants ===============
 
-	public static final String DATABASE_NAME = "fulib-org";
-
 	public static final String LOG_COLLECTION_NAME = "request-log";
 	public static final String ASSIGNMENT_COLLECTION_NAME = "assignments";
 	public static final String COURSE_COLLECTION_NAME = "courses";
@@ -101,7 +99,7 @@ public class Mongo
 		                                                        .retryWrites(true)
 		                                                        .build();
 		this.mongoClient = MongoClients.create(settings);
-		this.database = this.mongoClient.getDatabase(DATABASE_NAME);
+		this.database = this.mongoClient.getDatabase(connString.getDatabase());
 		this.requestLog = this.database.getCollection(LOG_COLLECTION_NAME);
 
 		this.assignments = this.database.getCollection(ASSIGNMENT_COLLECTION_NAME, Assignment.class)
