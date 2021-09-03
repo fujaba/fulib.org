@@ -5,6 +5,7 @@ import {AssigneeModule} from './assignee/assignee.module';
 import {AssignmentModule} from './assignment/assignment.module';
 import {CourseModule} from './course/course.module';
 import {environment} from './environment';
+import {GradingModule} from './grading/grading.module';
 import {SolutionModule} from './solution/solution.module';
 
 @Module({
@@ -14,6 +15,7 @@ import {SolutionModule} from './solution/solution.module';
     AssignmentModule,
     SolutionModule,
     AssigneeModule,
+    GradingModule,
     CourseModule,
   ],
   controllers: [],
