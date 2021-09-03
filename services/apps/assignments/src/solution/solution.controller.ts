@@ -73,7 +73,6 @@ export class SolutionController {
   @ApiNotFoundResponse()
   async remove(
     @Param('id') id: string,
-    @AuthUser() user?: UserToken,
   ): Promise<ReadSolutionDto> {
     const solution = await this.solutionService.remove(id) ?? notFound(id);
     return this.solutionService.mask(solution.toObject());

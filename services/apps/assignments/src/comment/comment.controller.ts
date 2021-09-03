@@ -79,7 +79,6 @@ export class CommentController {
     @Param('assignment') assignment: string,
     @Param('solution') solution: string,
     @Param('id') id: string,
-    @AuthUser() user?: UserToken,
   ): Promise<Comment> {
     return await this.commentService.remove(id) ?? notFound(id);
   }
