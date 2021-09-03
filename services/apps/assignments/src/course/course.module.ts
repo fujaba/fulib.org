@@ -4,7 +4,7 @@ import {CourseController} from './course.controller';
 import {CourseSchema} from './course.schema';
 import {CourseService} from './course.service';
 
-// TODO migration: courses { id -> _id, assignmentIds -> assignments, userId -> creator }
+// TODO migration: courses { id -> _id, assignmentIds -> assignments, userId -> createdBy }
 
 @Module({
   imports: [

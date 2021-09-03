@@ -4,7 +4,7 @@ import {Solution} from './solution.schema';
 export class CreateSolutionDto extends OmitType(Solution, [
   'token',
   'assignment',
-  'creator',
+  'createdBy',
   'timestamp',
   'results',
 ] as const) {

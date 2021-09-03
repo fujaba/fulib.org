@@ -6,6 +6,6 @@ export class UpdateGradingDto extends OmitType(Grading, [
   'solution',
   'task',
   'timestamp',
-  'creator',
+  'createdBy',
 ] as const) {
 }

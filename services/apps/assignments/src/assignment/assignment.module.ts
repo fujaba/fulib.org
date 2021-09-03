@@ -5,7 +5,7 @@ import {AssignmentController} from './assignment.controller';
 import {AssignmentSchema} from './assignment.schema';
 import {AssignmentService} from './assignment.service';
 
-// TODO migration: assignments { id -> _id, userId -> creator }
+// TODO migration: assignments { id -> _id, userId -> createdBy }
 
 @Module({
   imports: [

@@ -52,7 +52,7 @@ export class Assignment {
 
   @Prop()
   @ApiProperty()
-  creator: string;
+  createdBy: string;
 
   @Prop()
   @ApiProperty()

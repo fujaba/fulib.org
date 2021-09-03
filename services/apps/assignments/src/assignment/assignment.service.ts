@@ -18,7 +18,7 @@ export class AssignmentService {
     return this.model.create({
       ...dto,
       token,
-      creator: userId,
+      createdBy: userId,
     });
   }
 
@@ -47,6 +47,6 @@ export class AssignmentService {
   }
 
   isAuthorized(assignment: Assignment, headerToken: string, bearerToken: UserToken) {
-    return assignment.token === headerToken || bearerToken && bearerToken.sub === assignment.creator;
+    return assignment.token === headerToken || bearerToken && bearerToken.sub === assignment.createdBy;
   }
 }

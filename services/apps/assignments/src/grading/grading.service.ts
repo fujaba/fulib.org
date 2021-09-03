@@ -19,11 +19,11 @@ export class GradingService {
     return this.model.findOne(where).exec();
   }
 
-  async update(where: Pick<Grading, 'assignment' | 'solution' | 'task'>, dto: UpdateGradingDto, creator?: string): Promise<Grading | undefined> {
+  async update(where: Pick<Grading, 'assignment' | 'solution' | 'task'>, dto: UpdateGradingDto, createdBy?: string): Promise<Grading | undefined> {
     return this.model.findOneAndUpdate(where, {
       ...dto,
       ...where,
-      creator,
+      createdBy,
       timestamp: new Date(),
     } as Grading, {new: true, upsert: true}).exec();
   }

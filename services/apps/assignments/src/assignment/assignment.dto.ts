@@ -3,7 +3,7 @@ import {Assignment, Task} from './assignment.schema';
 
 export class CreateAssignmentDto extends OmitType(Assignment, [
   'token',
-  'creator',
+  'createdBy',
 ] as const) {
 }
 
@@ -17,6 +17,6 @@ export class ReadAssignmentDto extends OmitType(Assignment, ['token', 'solution'
 
 export class UpdateAssignmentDto extends PartialType(OmitType(Assignment, [
   'token',
-  'creator',
+  'createdBy',
 ] as const)) {
 }

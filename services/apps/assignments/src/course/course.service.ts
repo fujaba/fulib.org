@@ -14,7 +14,7 @@ export class CourseService {
   async create(dto: CreateCourseDto, userId?: string): Promise<CourseDocument> {
     return this.model.create({
       ...dto,
-      creator: userId,
+      createdBy: userId,
     });
   }
 

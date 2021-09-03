@@ -30,7 +30,7 @@ export class Grading {
   @ApiProperty()
   @IsOptional()
   @IsString()
-  creator?: string;
+  createdBy?: string;
 
   @Prop()
   @ApiProperty()

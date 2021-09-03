@@ -29,7 +29,7 @@ export class Solution {
 
   @Prop()
   @ApiProperty()
-  creator: string;
+  createdBy: string;
 
   @Prop({index: 1})
   @ApiProperty()
