@@ -1,6 +1,6 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
 import {Body, Controller, Delete, ForbiddenException, Get, Param, Patch, Post} from '@nestjs/common';
-import {ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
+import {ApiCreatedResponse, ApiForbiddenResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {notFound} from '../utils';
 import {CreateCourseDto, UpdateCourseDto} from './course.dto';
 import {Course} from './course.schema';
@@ -43,6 +43,7 @@ export class CourseController {
   @Auth()
   @ApiOkResponse({type: Course})
   @ApiNotFoundResponse()
+  @ApiForbiddenResponse({description: forbiddenResponse})
   async update(
     @Param('id') id: string,
     @Body() dto: UpdateCourseDto,
@@ -56,6 +57,7 @@ export class CourseController {
   @Auth()
   @ApiOkResponse({type: Course})
   @ApiNotFoundResponse()
+  @ApiForbiddenResponse({description: forbiddenResponse})
   async remove(
     @Param('id') id: string,
     @Body() dto: UpdateCourseDto,
