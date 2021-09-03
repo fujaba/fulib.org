@@ -7,6 +7,7 @@ import {environment} from './environment';
 async function bootstrap() {
   const app = await NestFactory.create(AssignmentsModule);
   const prefix = `/api/${environment.version}`;
+  app.enableCors();
   app.setGlobalPrefix(prefix);
   app.useGlobalPipes(new ValidationPipe());
 
