@@ -1,7 +1,7 @@
 import {UserToken} from '@app/keycloak-auth';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
-import {Model} from 'mongoose';
+import {FilterQuery, Model} from 'mongoose';
 import {generateToken} from '../utils';
 import {CreateAssignmentDto, ReadAssignmentDto, UpdateAssignmentDto} from './assignment.dto';
 import {Assignment, AssignmentDocument} from './assignment.schema';
@@ -22,8 +22,8 @@ export class AssignmentService {
     });
   }
 
-  async findAll(): Promise<ReadAssignmentDto[]> {
-    return this.model.find().select(['-token', '-solution', '-tasks.verification']).exec();
+  async findAll(where: FilterQuery<Assignment> = {}): Promise<ReadAssignmentDto[]> {
+    return this.model.find(where).select(['-token', '-solution', '-tasks.verification']).exec();
   }
 
   async findOne(id: string): Promise<AssignmentDocument | null> {

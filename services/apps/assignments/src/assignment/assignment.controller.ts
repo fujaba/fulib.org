@@ -1,5 +1,5 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
-import {Body, Controller, Delete, Get, Headers, Param, Patch, Post} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Headers, Param, Patch, Post, Query} from '@nestjs/common';
 import {
   ApiCreatedResponse,
   ApiHeader,
@@ -36,8 +36,10 @@ export class AssignmentController {
 
   @Get()
   @ApiOkResponse({type: [ReadAssignmentDto]})
-  async findAll() {
-    return this.assignmentService.findAll();
+  async findAll(
+    @Query('createdBy') createdBy?: string,
+  ) {
+    return this.assignmentService.findAll({createdBy});
   }
 
   @Get(':id')
