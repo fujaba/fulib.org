@@ -1,6 +1,7 @@
 import {Module} from '@nestjs/common';
 import {MongooseModule} from '@nestjs/mongoose';
 import {AssignmentModule} from '../assignment/assignment.module';
+import {SolutionAuthGuard} from './solution-auth.guard';
 import {SolutionController} from './solution.controller';
 import {SolutionSchema} from './solution.schema';
 import {SolutionService} from './solution.service';
@@ -18,7 +19,14 @@ import {SolutionService} from './solution.service';
     AssignmentModule,
   ],
   controllers: [SolutionController],
-  providers: [SolutionService],
+  providers: [
+    SolutionService,
+    SolutionAuthGuard,
+  ],
+  exports: [
+    SolutionService,
+    SolutionAuthGuard,
+  ],
 })
 export class SolutionModule {
 }

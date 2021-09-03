@@ -1,8 +1,7 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
-import {Body, Controller, Delete, ForbiddenException, Get, Headers, Param, Patch, Post} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Headers, Param, Patch, Post} from '@nestjs/common';
 import {
   ApiCreatedResponse,
-  ApiForbiddenResponse,
   ApiHeader,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -10,6 +9,7 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 import {notFound} from '../utils';
+import {AssignmentAuth} from './assignment-auth.decorator';
 import {CreateAssignmentDto, ReadAssignmentDto, UpdateAssignmentDto} from './assignment.dto';
 import {Assignment} from './assignment.schema';
 import {AssignmentService} from './assignment.service';
@@ -58,11 +58,7 @@ export class AssignmentController {
     @Headers('assignment-token') token?: string,
     @AuthUser() user?: UserToken,
   ) {
-    console.log(user);
-    const assignment = await this.assignmentService.findOne(id);
-    if (!assignment) {
-      notFound(id);
-    }
+    const assignment = await this.assignmentService.findOne(id) ?? notFound(id);
     if (this.assignmentService.isAuthorized(assignment, token, user)) {
       return assignment;
     }
@@ -70,43 +66,23 @@ export class AssignmentController {
   }
 
   @Patch(':id')
-  @Auth({optional: true})
+  @AssignmentAuth({forbiddenResponse})
   @ApiOkResponse({type: Assignment})
   @ApiNotFoundResponse()
-  @ApiForbiddenResponse({description: forbiddenResponse})
-  @ApiHeader({name: 'assignment-token', required: false})
   async update(
     @Param('id') id: string,
     @Body() dto: UpdateAssignmentDto,
-    @Headers('assignment-token') token?: string,
-    @AuthUser() user?: UserToken,
   ) {
-    await this.checkAuth(id, token, user);
     return await this.assignmentService.update(id, dto) ?? notFound(id);
   }
 
   @Delete(':id')
-  @Auth({optional: true})
+  @AssignmentAuth({forbiddenResponse})
   @ApiOkResponse({type: Assignment})
   @ApiNotFoundResponse()
-  @ApiForbiddenResponse({description: forbiddenResponse})
-  @ApiHeader({name: 'assignment-token', required: false})
   async remove(
     @Param('id') id: string,
-    @Headers('assignment-token') token?: string,
-    @AuthUser() user?: UserToken,
   ) {
-    await this.checkAuth(id, token, user);
     return await this.assignmentService.remove(id) ?? notFound(id);
-  }
-
-  private async checkAuth(id: string, token: string, user: UserToken) {
-    const assignment = await this.assignmentService.findOne(id);
-    if (!assignment) {
-      notFound(id);
-    }
-    if (!this.assignmentService.isAuthorized(assignment, token, user)) {
-      throw new ForbiddenException(forbiddenResponse);
-    }
   }
 }
