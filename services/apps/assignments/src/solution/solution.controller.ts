@@ -1,6 +1,7 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
 import {Body, Controller, Delete, Get, Param, Patch, Post} from '@nestjs/common';
 import {ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
+import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {AssignmentService} from '../assignment/assignment.service';
 import {notFound} from '../utils';
 import {SolutionAuth} from './solution-auth.decorator';
@@ -9,6 +10,7 @@ import {Solution} from './solution.schema';
 import {SolutionService} from './solution.service';
 
 const forbiddenResponse = 'Not owner of solution or assignment, or invalid Assignment-Token or Solution-Token.';
+const forbiddenAssignmentResponse = 'Not owner of assignment, or invalid Assignment-Token.';
 
 @Controller('assignments/:assignment/solutions')
 @ApiTags('Solutions')
@@ -31,6 +33,7 @@ export class SolutionController {
   }
 
   @Get()
+  @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
   @ApiOkResponse({type: [ReadSolutionDto]})
   async findAll(
     @Param('assignment') assignment: string,
