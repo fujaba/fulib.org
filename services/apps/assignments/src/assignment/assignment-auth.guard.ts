@@ -20,8 +20,8 @@ export class AssignmentAuthGuard implements CanActivate {
     return this.checkAuth(id, user, token);
   }
 
-  async checkAuth(id: string, user: UserToken, assignmentToken: string): Promise<boolean> {
+  async checkAuth(id: string, user?: UserToken, token?: string): Promise<boolean> {
     const assignment = await this.assignmentService.findOne(id) ?? notFound(id);
-    return this.assignmentService.isAuthorized(assignment, assignmentToken, user);
+    return this.assignmentService.isAuthorized(assignment, user, token);
   }
 }

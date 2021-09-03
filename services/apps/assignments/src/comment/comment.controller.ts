@@ -32,7 +32,7 @@ export class CommentController {
     @Headers('assignment-token') assignmentToken?: string,
   ) {
     const assignment = await this.assignmentService.findOne(assignmentId) ?? notFound(assignmentId);
-    const distinguished = this.assignmentService.isAuthorized(assignment, assignmentToken, user);
+    const distinguished = this.assignmentService.isAuthorized(assignment, user, assignmentToken);
     return this.commentService.create(assignmentId, solution, dto, distinguished, user?.sub);
   }
 

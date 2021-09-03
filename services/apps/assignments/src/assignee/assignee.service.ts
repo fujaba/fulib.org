@@ -12,15 +12,15 @@ export class AssigneeService {
   ) {
   }
 
-  async findAll(where?: FilterQuery<Assignee>): Promise<AssigneeDocument[]> {
+  async findAll(where: FilterQuery<Assignee> = {}): Promise<AssigneeDocument[]> {
     return this.model.find(where).sort('+assignee').exec();
   }
 
-  async findOne(assignment: string, solution: string): Promise<AssigneeDocument | undefined> {
+  async findOne(assignment: string, solution: string): Promise<AssigneeDocument | null> {
     return this.model.findOne({assignment, solution}).exec();
   }
 
-  async update(assignment: string, solution: string, dto: UpdateAssigneeDto): Promise<Assignee> {
+  async update(assignment: string, solution: string, dto: UpdateAssigneeDto): Promise<AssigneeDocument | null> {
     return this.model.findOneAndReplace({assignment, solution}, {
       ...dto,
       assignment,
@@ -28,7 +28,7 @@ export class AssigneeService {
     }, {new: true, upsert: true}).exec();
   }
 
-  async remove(assignment: string, solution: string): Promise<AssigneeDocument | undefined> {
-    return this.model.findOneAndDelete({assignment, solution});
+  async remove(assignment: string, solution: string): Promise<AssigneeDocument | null> {
+    return this.model.findOneAndDelete({assignment, solution}).exec();
   }
 }

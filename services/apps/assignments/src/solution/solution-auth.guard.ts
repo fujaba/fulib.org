@@ -24,7 +24,7 @@ export class SolutionAuthGuard implements CanActivate {
     return this.checkAuth(assignmentId, solutionId, user, assignmentToken, solutionToken);
   }
 
-  async checkAuth(assignmentId: string, solutionId: string, user: UserToken, assignmentToken: string, solutionToken: string): Promise<boolean> {
+  async checkAuth(assignmentId: string, solutionId: string, user?: UserToken, assignmentToken?: string, solutionToken?: string): Promise<boolean> {
     const assignment = await this.assignmentService.findOne(assignmentId);
     if (!assignment) {
       notFound(assignmentId);
@@ -35,8 +35,8 @@ export class SolutionAuthGuard implements CanActivate {
       notFound(solutionId);
     }
 
-    const privileged = this.assignmentService.isAuthorized(assignment, assignmentToken, user);
-    const authorized = this.solutionService.isAuthorized(solution, solutionToken, user);
+    const privileged = this.assignmentService.isAuthorized(assignment, user, assignmentToken);
+    const authorized = this.solutionService.isAuthorized(solution, user, solutionToken);
     return privileged || authorized;
   }
 }

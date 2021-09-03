@@ -22,15 +22,15 @@ export class CourseService {
     return this.model.find().exec();
   }
 
-  async findOne(id: string): Promise<CourseDocument | undefined> {
+  async findOne(id: string): Promise<CourseDocument | null> {
     return this.model.findById(id).exec();
   }
 
-  async update(id: string, dto: UpdateCourseDto): Promise<Course | undefined> {
+  async update(id: string, dto: UpdateCourseDto): Promise<Course | null> {
     return this.model.findByIdAndUpdate(id, dto, {new: true}).exec();
   }
 
-  async remove(id: string): Promise<Course | undefined> {
+  async remove(id: string): Promise<CourseDocument | null> {
     return this.model.findByIdAndDelete(id).exec();
   }
 }

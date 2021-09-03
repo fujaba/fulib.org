@@ -1,4 +1,3 @@
-import {UserToken} from '@app/keycloak-auth/auth.interface';
 import {JwtAuthGuard} from '@app/keycloak-auth/jwt-auth.guard';
 import {applyDecorators, createParamDecorator, ExecutionContext, UseGuards} from '@nestjs/common';
 import {AuthGuard} from '@nestjs/passport';
@@ -19,7 +18,7 @@ export function Auth(options?: {optional?: boolean}) {
   return applyDecorators(...decorators);
 }
 
-export const AuthUser = createParamDecorator<unknown, unknown, UserToken>(
+export const AuthUser = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
     return request.user;

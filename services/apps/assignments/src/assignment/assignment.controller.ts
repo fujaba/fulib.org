@@ -59,7 +59,7 @@ export class AssignmentController {
     @AuthUser() user?: UserToken,
   ) {
     const assignment = await this.assignmentService.findOne(id) ?? notFound(id);
-    if (this.assignmentService.isAuthorized(assignment, token, user)) {
+    if (this.assignmentService.isAuthorized(assignment, user, token)) {
       return assignment;
     }
     return this.assignmentService.mask(assignment.toObject());

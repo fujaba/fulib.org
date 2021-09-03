@@ -26,11 +26,11 @@ export class SolutionService {
     });
   }
 
-  async findAll(where?: FilterQuery<Solution>): Promise<ReadSolutionDto[]> {
+  async findAll(where: FilterQuery<Solution> = {}): Promise<ReadSolutionDto[]> {
     return this.model.find(where).select(['-token']).sort(['+name', '+timestamp']).exec();
   }
 
-  async findOne(id: string): Promise<SolutionDocument | undefined> {
+  async findOne(id: string): Promise<SolutionDocument | null> {
     return this.model.findById(id).exec();
   }
 
@@ -39,15 +39,15 @@ export class SolutionService {
     return rest;
   }
 
-  async update(id: string, dto: UpdateSolutionDto): Promise<Solution | undefined> {
+  async update(id: string, dto: UpdateSolutionDto): Promise<Solution | null> {
     return this.model.findByIdAndUpdate(id, dto, {new: true}).exec();
   }
 
-  async remove(id: string): Promise<SolutionDocument | undefined> {
-    return this.model.findByIdAndDelete(id);
+  async remove(id: string): Promise<SolutionDocument | null> {
+    return this.model.findByIdAndDelete(id).exec();
   }
 
-  isAuthorized(solution: Solution, solutionToken: string, bearerToken: UserToken) {
-    return solution.token === solutionToken || bearerToken && bearerToken.sub === solution.createdBy;
+  isAuthorized(solution: Solution, user?: UserToken, token?: string): boolean {
+    return solution.token === token || !!user && user.sub === solution.createdBy;
   }
 }

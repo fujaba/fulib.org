@@ -1,5 +1,6 @@
 import {CanActivate, ExecutionContext, Injectable} from '@nestjs/common';
 import {Request} from 'express';
+import {notFound} from '../utils';
 import {CommentService} from './comment.service';
 
 @Injectable()
@@ -13,7 +14,7 @@ export class CommentAuthGuard implements CanActivate {
     const req = context.switchToHttp().getRequest() as Request;
     const commentId = req.params.comment ?? req.params.id;
     const user = (req as any).user;
-    const comment = await this.commentService.findOne(commentId);
+    const comment = await this.commentService.findOne(commentId) ?? notFound(commentId);
     return this.commentService.isAuthorized(comment, user);
   }
 }

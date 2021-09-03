@@ -24,20 +24,20 @@ export class CommentService {
     return this.model.create(comment);
   }
 
-  async findAll(where?: FilterQuery<Comment>): Promise<CommentDocument[]> {
+  async findAll(where: FilterQuery<Comment> = {}): Promise<CommentDocument[]> {
     return this.model.find(where).sort(['+timestamp']).exec();
   }
 
-  async findOne(id: string): Promise<CommentDocument | undefined> {
+  async findOne(id: string): Promise<CommentDocument | null> {
     return this.model.findById(id).exec();
   }
 
-  async update(id: string, dto: UpdateCommentDto): Promise<Comment | undefined> {
+  async update(id: string, dto: UpdateCommentDto): Promise<Comment | null> {
     return this.model.findByIdAndUpdate(id, dto, {new: true}).exec();
   }
 
-  async remove(id: string): Promise<CommentDocument | undefined> {
-    return this.model.findByIdAndDelete(id);
+  async remove(id: string): Promise<CommentDocument | null> {
+    return this.model.findByIdAndDelete(id).exec();
   }
 
   isAuthorized(comment: Comment, bearerToken: UserToken) {

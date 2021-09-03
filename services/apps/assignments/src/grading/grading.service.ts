@@ -11,15 +11,15 @@ export class GradingService {
   ) {
   }
 
-  async findAll(where?: FilterQuery<Grading>): Promise<GradingDocument[]> {
+  async findAll(where: FilterQuery<Grading> = {}): Promise<GradingDocument[]> {
     return this.model.find(where).sort(['+task']).exec();
   }
 
-  async findOne(where: FilterQuery<Grading>): Promise<GradingDocument | undefined> {
+  async findOne(where: FilterQuery<Grading>): Promise<GradingDocument | null> {
     return this.model.findOne(where).exec();
   }
 
-  async update(where: Pick<Grading, 'assignment' | 'solution' | 'task'>, dto: UpdateGradingDto, createdBy?: string): Promise<Grading | undefined> {
+  async update(where: Pick<Grading, 'assignment' | 'solution' | 'task'>, dto: UpdateGradingDto, createdBy?: string): Promise<Grading | null> {
     return this.model.findOneAndUpdate(where, {
       ...dto,
       ...where,
@@ -28,7 +28,7 @@ export class GradingService {
     } as Grading, {new: true, upsert: true}).exec();
   }
 
-  async remove(where: FilterQuery<Grading>): Promise<GradingDocument | undefined> {
-    return this.model.findOneAndDelete(where);
+  async remove(where: FilterQuery<Grading>): Promise<GradingDocument | null> {
+    return this.model.findOneAndDelete(where).exec();
   }
 }

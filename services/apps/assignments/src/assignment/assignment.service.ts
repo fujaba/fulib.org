@@ -26,7 +26,7 @@ export class AssignmentService {
     return this.model.find().select(['-token', '-solution', '-tasks.verification']).exec();
   }
 
-  async findOne(id: string): Promise<AssignmentDocument | undefined> {
+  async findOne(id: string): Promise<AssignmentDocument | null> {
     return this.model.findById(id).exec();
   }
 
@@ -38,15 +38,15 @@ export class AssignmentService {
     } as ReadAssignmentDto;
   }
 
-  async update(id: string, dto: UpdateAssignmentDto): Promise<Assignment> {
+  async update(id: string, dto: UpdateAssignmentDto): Promise<Assignment | null> {
     return this.model.findByIdAndUpdate(id, dto, {new: true}).exec();
   }
 
-  async remove(id: string): Promise<AssignmentDocument | undefined> {
-    return this.model.findByIdAndDelete(id);
+  async remove(id: string): Promise<AssignmentDocument | null> {
+    return this.model.findByIdAndDelete(id).exec();
   }
 
-  isAuthorized(assignment: Assignment, headerToken: string, bearerToken: UserToken) {
-    return assignment.token === headerToken || bearerToken && bearerToken.sub === assignment.createdBy;
+  isAuthorized(assignment: Assignment, user?: UserToken, token?: string): boolean {
+    return assignment.token === token || !!user && user.sub === assignment.createdBy;
   }
 }

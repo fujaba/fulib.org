@@ -17,7 +17,7 @@ export class Comment {
 
   @Prop()
   @ApiProperty()
-  createdBy: string;
+  createdBy?: string;
 
   @Prop({index: 1})
   @ApiProperty()

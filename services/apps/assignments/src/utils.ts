@@ -8,6 +8,6 @@ export function notFound(msg: string): never {
 export function generateToken(): string {
   const bytes = randomBytes(8);
   const hex = bytes.toString('hex');
-  const [, a, b, c, d] = /(.{4})(.{4})(.{4})(.{4})/.exec(hex);
+  const [, a, b, c, d] = /(.{4})(.{4})(.{4})(.{4})/.exec(hex)!;
   return `${a}-${b}-${c}-${d}`;
 }
