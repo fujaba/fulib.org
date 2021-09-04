@@ -1,9 +1,6 @@
 package org.fulib.webapp;
 
-import org.fulib.webapp.assignment.Assignments;
-import org.fulib.webapp.assignment.Comments;
-import org.fulib.webapp.assignment.Courses;
-import org.fulib.webapp.assignment.Solutions;
+import org.fulib.webapp.tool.MarkdownUtil;
 import org.fulib.webapp.tool.RunCodeGen;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -21,11 +18,8 @@ import static org.mockito.Mockito.*;
 public class WebServiceTest
 {
 	private static final RunCodeGen runCodeGen = mock(RunCodeGen.class);
-	private static final Assignments assignments = mock(Assignments.class);
-	private static final Comments comments = mock(Comments.class);
-	private static final Solutions solutions = mock(Solutions.class);
-	private static final Courses courses = mock(Courses.class);
-	private static final WebService service = new WebService(runCodeGen, assignments, comments, solutions, courses);
+	private static final MarkdownUtil markdownUtil = mock(MarkdownUtil.class);
+	private static final WebService service = new WebService(runCodeGen, markdownUtil);
 
 	@BeforeClass
 	public static void setup()
@@ -55,104 +49,17 @@ public class WebServiceTest
 	@Test
 	public void markdown() throws IOException
 	{
+		when(markdownUtil.renderHtml(any())).thenReturn("");
+
 		checkRoute("POST", "/rendermarkdown");
+
+		verify(markdownUtil).renderHtml(any());
 	}
 
 	@Test
 	public void versions() throws IOException
 	{
 		checkRoute("GET", "/versions");
-	}
-
-	@Test
-	public void courses() throws IOException
-	{
-		when(courses.get(any(), any())).thenReturn("");
-		when(courses.getAll(any(), any())).thenReturn("");
-		when(courses.create(any(), any())).thenReturn("");
-
-		checkRoute("POST", "/courses");
-		checkRoute("GET", "/courses?userId=1");
-		checkRoute("GET", "/courses/1");
-
-		verify(courses).get(any(), any());
-		verify(courses).getAll(any(), any());
-		verify(courses).create(any(), any());
-	}
-
-	@Test
-	public void assignments() throws Exception
-	{
-		when(assignments.get(any(), any())).thenReturn("");
-		when(assignments.create(any(), any())).thenReturn("");
-		when(solutions.check(any(), any())).thenReturn("");
-
-		checkRoute("POST", "/assignments");
-		checkRoute("POST", "/assignments/create/check");
-		checkRoute("GET", "/assignments/1");
-		checkRoute("POST", "/assignments/1/check");
-
-		verify(assignments).get(any(), any());
-		verify(assignments).create(any(), any());
-		verify(solutions, times(2)).check(any(), any());
-	}
-
-	@Test
-	public void solutions() throws Exception
-	{
-		when(solutions.get(any(), any())).thenReturn("");
-		when(solutions.getAll(any(), any())).thenReturn("");
-		when(solutions.getByAssignment(any(), any())).thenReturn("");
-		when(solutions.create(any(), any())).thenReturn("");
-
-		checkRoute("GET", "/solutions");
-		checkRoute("POST", "/assignments/1/solutions");
-		checkRoute("GET", "/assignments/1/solutions");
-		checkRoute("GET", "/assignments/1/solutions/2");
-
-		verify(solutions).get(any(), any());
-		verify(solutions).getAll(any(), any());
-		verify(solutions).getByAssignment(any(), any());
-		verify(solutions).create(any(), any());
-	}
-
-	@Test
-	public void gradings() throws IOException
-	{
-		when(solutions.getGradings(any(), any())).thenReturn("");
-		when(solutions.postGrading(any(), any())).thenReturn("");
-
-		checkRoute("GET", "/assignments/1/solutions/2/gradings");
-		checkRoute("POST", "/assignments/1/solutions/2/gradings");
-
-		verify(solutions).getGradings(any(), any());
-		verify(solutions).postGrading(any(), any());
-	}
-
-	@Test
-	public void assignee() throws IOException
-	{
-		when(solutions.getAssignee(any(), any())).thenReturn("");
-		when(solutions.setAssignee(any(), any())).thenReturn("");
-
-		checkRoute("GET", "/assignments/1/solutions/2/assignee");
-		checkRoute("PUT", "/assignments/1/solutions/2/assignee");
-
-		verify(solutions).getAssignee(any(), any());
-		verify(solutions).setAssignee(any(), any());
-	}
-
-	@Test
-	public void comments() throws IOException
-	{
-		when(comments.getChildren(any(), any())).thenReturn("");
-		when(comments.post(any(), any())).thenReturn("");
-
-		checkRoute("GET", "/assignments/1/solutions/2/comments");
-		checkRoute("POST", "/assignments/1/solutions/2/comments");
-
-		verify(comments).getChildren(any(), any());
-		verify(comments).post(any(), any());
 	}
 
 	private void checkRoute(String method, String path) throws IOException

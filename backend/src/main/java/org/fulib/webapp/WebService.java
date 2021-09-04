@@ -1,9 +1,5 @@
 package org.fulib.webapp;
 
-import org.fulib.webapp.assignment.Assignments;
-import org.fulib.webapp.assignment.Comments;
-import org.fulib.webapp.assignment.Courses;
-import org.fulib.webapp.assignment.Solutions;
 import org.fulib.webapp.mongo.Mongo;
 import org.fulib.webapp.tool.MarkdownUtil;
 import org.fulib.webapp.tool.RunCodeGen;
@@ -38,12 +34,8 @@ public class WebService
 	// =============== Fields ===============
 
 	private Service service;
-	private final MarkdownUtil markdownUtil = new MarkdownUtil();
+	private final MarkdownUtil markdownUtil;
 	private final RunCodeGen runCodeGen;
-	private final Assignments assignments;
-	private final Comments comments;
-	private final Solutions solutions;
-	private final Courses courses;
 
 	// =============== Constructors ===============
 
@@ -54,22 +46,13 @@ public class WebService
 
 	WebService(Mongo db)
 	{
-		this(db, new MarkdownUtil(), new RunCodeGen(db));
+		this(new RunCodeGen(db), new MarkdownUtil());
 	}
 
-	WebService(Mongo db, MarkdownUtil markdownUtil, RunCodeGen runCodeGen)
+	WebService(RunCodeGen runCodeGen, MarkdownUtil markdownUtil)
 	{
-		this(runCodeGen, new Assignments(markdownUtil, db), new Comments(markdownUtil, db),
-		     new Solutions(runCodeGen, db), new Courses(markdownUtil, db));
-	}
-
-	WebService(RunCodeGen runCodeGen, Assignments assignments, Comments comments, Solutions solutions, Courses courses)
-	{
+		this.markdownUtil = markdownUtil;
 		this.runCodeGen = runCodeGen;
-		this.assignments = assignments;
-		this.comments = comments;
-		this.solutions = solutions;
-		this.courses = courses;
 	}
 
 	// =============== Static Methods ===============
@@ -109,9 +92,6 @@ public class WebService
 	private void addApiRoutes()
 	{
 		addMainRoutes();
-		this.service.get("/solutions", this.solutions::getAll);
-		addAssignmentsRoutes();
-		addCoursesRoutes();
 		addUtilRoutes();
 	}
 
@@ -154,72 +134,10 @@ public class WebService
 		});
 	}
 
-	private void addCoursesRoutes()
-	{
-		service.path("/courses", () -> {
-			service.post("", courses::create);
-			service.get("", courses::getAll);
-			service.get("/:courseID", courses::get);
-		});
-	}
-
 	private void setupExceptionHandler()
 	{
 		service.exception(Exception.class, (exception, request, response) -> {
 			LOGGER.error("unhandled exception processing request", exception);
-		});
-	}
-
-	private void addAssignmentsRoutes()
-	{
-		service.path("/assignments", () -> {
-			service.get("", assignments::getAll);
-			service.post("", assignments::create);
-
-			service.post("/create/check", solutions::check);
-
-			service.path("/:assignmentID", this::addAssignmentRoutes);
-		});
-	}
-
-	private void addAssignmentRoutes()
-	{
-		service.get("", assignments::get);
-
-		service.post("/check", solutions::check);
-
-		addSolutionsRoutes();
-	}
-
-	private void addSolutionsRoutes()
-	{
-		service.path("/solutions", () -> {
-			service.post("", solutions::create);
-			service.get("", solutions::getByAssignment);
-
-			service.path("/:solutionID", this::addSolutionRoutes);
-		});
-	}
-
-	private void addSolutionRoutes()
-	{
-		service.get("", solutions::get);
-
-		service.path("/assignee", () -> {
-			service.get("", solutions::getAssignee);
-			service.put("", solutions::setAssignee);
-		});
-
-		service.path("/gradings", () -> {
-			service.post("", solutions::postGrading);
-			service.get("", solutions::getGradings);
-		});
-
-		service.path("/comments", () -> {
-			service.post("", comments::post);
-			service.get("", comments::getChildren);
-
-			service.delete("/:commentID", comments::delete);
 		});
 	}
 
