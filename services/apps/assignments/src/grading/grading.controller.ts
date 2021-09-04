@@ -4,7 +4,7 @@ import {ApiNotFoundResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {AssignmentService} from '../assignment/assignment.service';
 import {SolutionAuth} from '../solution/solution-auth.decorator';
-import {notFound} from '../utils';
+import {notFound} from '@app/not-found';
 import {UpdateGradingDto} from './grading.dto';
 import {Grading} from './grading.schema';
 import {GradingService} from './grading.service';

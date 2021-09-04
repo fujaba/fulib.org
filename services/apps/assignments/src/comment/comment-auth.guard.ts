@@ -1,6 +1,6 @@
 import {CanActivate, ExecutionContext, Injectable} from '@nestjs/common';
 import {Request} from 'express';
-import {notFound} from '../utils';
+import {notFound} from '@app/not-found';
 import {CommentService} from './comment.service';
 
 @Injectable()

@@ -3,7 +3,7 @@ import {CanActivate, ExecutionContext, Injectable} from '@nestjs/common';
 import {Request} from 'express';
 import {Observable} from 'rxjs';
 import {AssignmentService} from './assignment.service';
-import {notFound} from '../utils';
+import {notFound} from '@app/not-found';
 
 @Injectable()
 export class AssignmentAuthGuard implements CanActivate {

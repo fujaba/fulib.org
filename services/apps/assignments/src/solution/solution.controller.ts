@@ -3,7 +3,7 @@ import {Body, Controller, Delete, Get, Param, Patch, Post} from '@nestjs/common'
 import {ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {AssignmentService} from '../assignment/assignment.service';
-import {notFound} from '../utils';
+import {notFound} from '@app/not-found';
 import {SolutionAuth} from './solution-auth.decorator';
 import {CreateSolutionDto, ReadSolutionDto, UpdateSolutionDto} from './solution.dto';
 import {Solution} from './solution.schema';

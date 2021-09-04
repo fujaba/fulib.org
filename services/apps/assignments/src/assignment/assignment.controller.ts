@@ -8,7 +8,7 @@ import {
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
-import {notFound} from '../utils';
+import {notFound} from '@app/not-found';
 import {AssignmentAuth} from './assignment-auth.decorator';
 import {CreateAssignmentDto, ReadAssignmentDto, UpdateAssignmentDto} from './assignment.dto';
 import {Assignment} from './assignment.schema';

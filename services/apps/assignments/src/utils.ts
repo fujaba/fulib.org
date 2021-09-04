@@ -1,9 +1,4 @@
-import {NotFoundException} from '@nestjs/common';
 import {randomBytes} from 'crypto';
-
-export function notFound(msg: string): never {
-  throw new NotFoundException(msg);
-}
 
 export function generateToken(): string {
   const bytes = randomBytes(8);

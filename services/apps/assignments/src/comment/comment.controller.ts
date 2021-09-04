@@ -3,7 +3,7 @@ import {Body, Controller, Delete, Get, Headers, Param, Patch, Post} from '@nestj
 import {ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {AssignmentService} from '../assignment/assignment.service';
 import {SolutionAuth} from '../solution/solution-auth.decorator';
-import {notFound} from '../utils';
+import {notFound} from '@app/not-found';
 import {CommentAuth} from './comment-auth.decorator';
 import {CreateCommentDto, UpdateCommentDto} from './comment.dto';
 import {Comment} from './comment.schema';
