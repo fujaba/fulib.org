@@ -12,7 +12,7 @@ export class GradingService {
   }
 
   async findAll(where: FilterQuery<Grading> = {}): Promise<GradingDocument[]> {
-    return this.model.find(where).sort(['+task']).exec();
+    return this.model.find(where).sort('+task').exec();
   }
 
   async findOne(where: FilterQuery<Grading>): Promise<GradingDocument | null> {

@@ -25,7 +25,7 @@ export class CommentService {
   }
 
   async findAll(where: FilterQuery<Comment> = {}): Promise<CommentDocument[]> {
-    return this.model.find(where).sort(['+timestamp']).exec();
+    return this.model.find(where).sort('+timestamp').exec();
   }
 
   async findOne(id: string): Promise<CommentDocument | null> {
