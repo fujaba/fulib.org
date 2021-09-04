@@ -54,8 +54,14 @@ export class ContainerService {
     return this.toContainer(container.Id, projectId);
   }
 
-  async remove(id: string): Promise<Container | null> {
-    throw new Error('Not implemented');
+  async remove(projectId: string): Promise<Container | null> {
+    const existing = await this.findOne(projectId);
+    if (!existing) {
+      return null;
+    }
+    const container = this.docker.getContainer(existing.id);
+    await container.stop();
+    return existing;
   }
 
   private toContainer(id: string, projectId: string) {
