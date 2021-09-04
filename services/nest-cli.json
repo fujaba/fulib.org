@@ -31,6 +31,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/projects/tsconfig.app.json"
       }
+    },
+    "not-found": {
+      "type": "library",
+      "root": "libs/not-found",
+      "entryFile": "index",
+      "sourceRoot": "libs/not-found/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/not-found/tsconfig.lib.json"
+      }
     }
   }
 }

@@ -82,7 +82,8 @@
       "<rootDir>/libs/"
     ],
     "moduleNameMapper": {
-      "^@app/keycloak-auth(|/.*)$": "<rootDir>/libs/keycloak-auth/src/$1"
+      "^@app/keycloak-auth(|/.*)$": "<rootDir>/libs/keycloak-auth/src/$1",
+      "^@app/not-found(|/.*)$": "<rootDir>/libs/not-found/src/$1"
     }
   }
 }
