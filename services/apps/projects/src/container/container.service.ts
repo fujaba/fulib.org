@@ -1,8 +1,8 @@
 import {Injectable} from '@nestjs/common';
 import * as Dockerode from 'dockerode';
 import * as path from 'path';
-import {Container} from '../../../../../frontend/src/app/projects/model/container';
 import {environment} from '../environment';
+import {ContainerDto} from './container.dto';
 
 @Injectable()
 export class ContainerService {
@@ -13,11 +13,11 @@ export class ContainerService {
     version: environment.docker.version,
   });
 
-  async create(projectId: string): Promise<Container> {
+  async create(projectId: string): Promise<ContainerDto> {
     return await this.findOne(projectId) ?? await this.start(projectId);
   }
 
-  async start(projectId: string): Promise<Container> {
+  async start(projectId: string): Promise<ContainerDto> {
     const bindPrefix = path.resolve(environment.docker.bindPrefix);
     const container = await this.docker.createContainer({
       Image: environment.docker.containerImage,
@@ -44,7 +44,7 @@ export class ContainerService {
     return this.toContainer(container.id, projectId);
   }
 
-  async findOne(projectId: string): Promise<Container | null> {
+  async findOne(projectId: string): Promise<ContainerDto | null> {
     // TODO can't we apply filters before listing ALL containers?
     const containers = await this.docker.listContainers({});
     const container = containers.find(c => (c.State === 'created' || c.State === 'running') && c.Labels['org.fulib.project'] === projectId);
@@ -54,7 +54,7 @@ export class ContainerService {
     return this.toContainer(container.Id, projectId);
   }
 
-  async remove(projectId: string): Promise<Container | null> {
+  async remove(projectId: string): Promise<ContainerDto | null> {
     const existing = await this.findOne(projectId);
     if (!existing) {
       return null;
