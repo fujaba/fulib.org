@@ -6,6 +6,16 @@ export const environment = {
     options: {
     },
   },
+  docker: {
+    host: process.env.DOCKER_HOST,
+    port: process.env.DOCKER_PORT,
+    socket: process.env.DOCKER_HOST ? undefined : '/var/run/docker.sock',
+    version: process.env.DOCKER_VERSION || 'v1.41',
+    bindPrefix: process.env.FULIB_PROJECTS_DATA_DIR || 'data',
+    containerImage: process.env.FULIB_PROJECTS_CONTAINER_IMAGE || 'fulib.org/fulib-projects',
+    proxyHost: process.env.FULIB_PROJECT_PROXY_URL || 'http://localhost:8080',
+    network: 'fulib-projects',
+  },
   auth: {
     publicKey: `-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjSudUTRH8wtEeIQdKh4Yv97HcFGjLzl9+yBm+SO2lf2r/jvpbSRPWqMDbrgQ0BGDwMQLweUoPUzOhZbrScs5edhRxtn3nPKUTiBtOoFiYupTTicdIKY1FAlagSM4/7WBbj0CT14cXQoyZK2VbfYXsu19tdJ/oFPBAGwrsj/ugiGE6c8H6wu4yHPsJFDR8sN524NN4diXOKyZ731IP5lqfN4+bP17/b1KaDG8swsRNW93dfEz0nfcJu+wutI3dLc98/cekOpHUZRzndsshifjuM39RF6oyI89tcuwrrKqrz5HV9CsPBUB2hakGBhg71svZyq304ikQFYej/ydZd0biwIDAQAB
