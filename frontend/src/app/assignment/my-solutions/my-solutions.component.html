@@ -20,9 +20,9 @@
 
       </p>
       <div class="list-group">
-        <a *ngFor="let solution of solutions!.get(assignment.id!)"
+        <a *ngFor="let solution of solutions!.get(assignment._id!)"
            class="list-group-item list-group-item-action"
-           routerLink="/assignments/{{assignment.id}}/solutions/{{solution.id}}">
+           routerLink="/assignments/{{assignment._id}}/solutions/{{solution.id}}">
           by
           <app-author-name [name]="solution.name" [email]="solution.email"></app-author-name>
           &mdash;
@@ -31,7 +31,7 @@
           Submitted: {{solution.timeStamp | date:'medium'}}
         </a>
         <a class="list-group-item list-group-item-action"
-           routerLink="/assignments/{{assignment.id}}">
+           routerLink="/assignments/{{assignment._id}}">
           by
           <app-author-name [name]="name || ''" [email]="email || ''"></app-author-name>
           &mdash;

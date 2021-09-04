@@ -95,7 +95,7 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
 
   getSolution(): Solution {
     return {
-      assignment: this.assignment.id!,
+      assignment: this.assignment._id!,
       id: this.id,
       token: this.token,
       name: this.name,
@@ -153,6 +153,6 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
   }
 
   getLink(origin: boolean): string {
-    return `${origin ? this.origin : ''}/assignments/${this.assignment.id}/solutions/${this.id}`;
+    return `${origin ? this.origin : ''}/assignments/${this.assignment._id}/solutions/${this.id}`;
   }
 }

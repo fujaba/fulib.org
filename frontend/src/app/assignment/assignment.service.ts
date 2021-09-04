@@ -14,11 +14,6 @@ import Assignment from './model/assignment';
 import {CheckAssignment, CheckResult} from './model/check';
 import Course from './model/course';
 
-interface AssignmentResponse {
-  id: string;
-  token: string;
-}
-
 @Injectable({
   providedIn: 'root',
 })
@@ -130,11 +125,11 @@ export class AssignmentService {
   }
 
   getByUserId(userId: string): Observable<Assignment[]> {
-    return this.http.get<Assignment[]>(`${environment.apiURL}/assignments`, {params: {userId}}).pipe(
+    return this.http.get<Assignment[]>(`${environment.assignmentsApiUrl}/assignments`, {params: {createdBy: userId}}).pipe(
       map(results => {
         for (const result of results) {
-          result.token = this.getToken(result.id!) ?? undefined;
-          this._cache.set(result.id!, result);
+          result.token = this.getToken(result._id!) ?? undefined;
+          this._cache.set(result._id!, result);
         }
         return results;
       }),
@@ -177,15 +172,11 @@ export class AssignmentService {
   }
 
   submit(assignment: Assignment): Observable<Assignment> {
-    return this.http.post<AssignmentResponse>(environment.apiURL + '/assignments', assignment).pipe(
+    return this.http.post<Assignment>(`${environment.assignmentsApiUrl}/assignments`, assignment).pipe(
       map(response => {
-        this.setToken(response.id, response.token);
-        const result: Assignment = {
-          ...assignment,
-          ...response,
-        };
-        this._cache.set(response.id, result);
-        return result;
+        this.setToken(response._id!, response.token!);
+        this._cache.set(response._id!, response);
+        return response;
       }),
     );
   }
@@ -201,9 +192,9 @@ export class AssignmentService {
     if (token) {
       headers['Assignment-Token'] = token;
     }
-    return this.http.get<Assignment>(`${environment.apiURL}/assignments/${id}`, {headers}).pipe(
+    return this.http.get<Assignment>(`${environment.assignmentsApiUrl}/assignments/${id}`, {headers}).pipe(
       map(a => {
-        a.id = id;
+        a._id = id;
         a.token = this.getToken(id) ?? undefined;
         this._cache.set(id, a);
         return a;
@@ -213,7 +204,7 @@ export class AssignmentService {
 
   getNext(course: Course, assignment: Assignment): Observable<Assignment | undefined> {
     const ids = course.assignmentIds!;
-    const index = ids.indexOf(assignment.id!);
+    const index = ids.indexOf(assignment._id!);
     if (index < 0 || index + 1 >= ids.length) {
       return of(undefined);
     }

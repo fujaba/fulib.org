@@ -27,7 +27,7 @@
       <p>
         You can now give your students the following link:
       </p>
-      <p *ngIf="('/assignments/' + assignment?.id) as link">
+      <p *ngIf="('/assignments/' + assignment?._id) as link">
         <a class="text-monospace" [routerLink]="link">
           {{origin + link}}
         </a>
@@ -61,7 +61,7 @@
           You can invite Teaching Assistants by giving them the following link.
           <b>It includes the Access Token, so keep the link secret and do not share it with students!</b>
         </p>
-        <p *ngIf="('/assignments/' + assignment.id + '/solutions') as link">
+        <p *ngIf="('/assignments/' + assignment._id + '/solutions') as link">
           <a class="text-monospace" [routerLink]="link" [queryParams]="{atok: assignment.token}">
             {{origin + link + '?atok=' + assignment.token}}
           </a>
@@ -142,7 +142,7 @@
       <td><input class="form-control" #assigneeInput
                  [ngModel]="solution.assignee" (change)="setAssignee(solution, assigneeInput)"></td>
       <td>
-        <a class="btn btn-primary" routerLink="/assignments/{{assignment?.id}}/solutions/{{solution.id}}">
+        <a class="btn btn-primary" routerLink="/assignments/{{assignment?._id}}/solutions/{{solution.id}}">
           View
         </a>
       </td>

@@ -9,7 +9,7 @@
             {{i + 1}}
           </div>
           <div class="timeline-item-body">
-            <a routerLink="/assignments/courses/{{courseID}}/assignments/{{assignment?.id}}">
+            <a routerLink="/assignments/courses/{{courseID}}/assignments/{{assignment?._id}}">
               {{assignment?.title || 'Loading...'}}
             </a>
             <ng-container *ngIf="latestSolutionIDs && latestSolutionIDs[i]">

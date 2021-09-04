@@ -68,7 +68,7 @@ export class CourseComponent implements OnInit {
     if (!assignment) {
       return 'secondary';
     }
-    if (assignment.id === this.assignmentID) {
+    if (assignment._id === this.assignmentID) {
       return 'primary';
     }
     if (this.latestSolutionIDs && this.latestSolutionIDs[index]) {

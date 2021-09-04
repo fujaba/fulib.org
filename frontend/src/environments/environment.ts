@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   apiURL: 'http://localhost:4567/api',
+  assignmentsApiUrl: 'http://localhost:21318/api/v1',
   projectsApiUrl: 'http://localhost:4568/api',
   auth: {
     url: 'https://se.uniks.de/auth',

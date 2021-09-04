@@ -86,8 +86,8 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     this.dragulaService.destroy('TASKS');
   }
 
-  getDeadline(): Date | null {
-    return this.deadlineDate ? new Date(this.deadlineDate + ' ' + (this.deadlineTime ?? '00:00')) : null;
+  getDeadline(): Date | undefined {
+    return this.deadlineDate ? new Date(this.deadlineDate + ' ' + (this.deadlineTime ?? '00:00')) : undefined;
   }
 
   getAssignment(): Assignment {
@@ -173,7 +173,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   submit(): void {
     this.submitting = true;
     this.assignmentService.submit(this.getAssignment()).subscribe(result => {
-      this.router.navigate(['/assignments', result.id, 'solutions'], {queryParams: {share: true}});
+      this.router.navigate(['/assignments', result._id, 'solutions'], {queryParams: {share: true}});
     });
   }
 

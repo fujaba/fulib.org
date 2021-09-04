@@ -13,8 +13,8 @@ import TaskGrading from './model/task-grading';
 import {CheckResult, CheckSolution} from './model/check';
 import {UserService} from '../user/user.service';
 
-function asID(id: { id?: string } | string): string {
-  return typeof id === 'string' ? id : id.id!;
+function asID(id: { _id?: string, id?: string } | string): string {
+  return typeof id === 'string' ? id : id._id! || id.id!;
 }
 
 interface AssignmentId {
@@ -81,11 +81,11 @@ export class SolutionService {
   }
 
   getDraft(assignment: Assignment): string | null {
-    return this.storageService.get(`solutionDraft/${assignment.id}`);
+    return this.storageService.get(`solutionDraft/${assignment._id}`);
   }
 
   setDraft(assignment: Assignment, solution: string | null): void {
-    this.storageService.set(`solutionDraft/${assignment.id}`, solution);
+    this.storageService.set(`solutionDraft/${assignment._id}`, solution);
   }
 
   // --------------- Comment Drafts ---------------
@@ -178,7 +178,7 @@ export class SolutionService {
   // --------------- HTTP Methods ---------------
 
   check(solution: CheckSolution): Observable<CheckResult> {
-    return this.http.post<CheckResult>(`${environment.apiURL}/assignments/${solution.assignment.id}/check`, solution);
+    return this.http.post<CheckResult>(`${environment.apiURL}/assignments/${solution.assignment._id}/check`, solution);
   }
 
   submit(solution: Solution): Observable<Solution> {

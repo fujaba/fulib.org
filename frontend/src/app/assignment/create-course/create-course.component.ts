@@ -44,7 +44,7 @@ export class CreateCourseComponent implements OnInit, OnDestroy {
         const lowerTerm = term.toLowerCase();
         return this.ownAssignments
           .filter(a => a.title.toLowerCase().indexOf(lowerTerm) >= 0)
-          .map(a => `${a.title} (${a.id})`);
+          .map(a => `${a.title} (${a._id})`);
       }),
     );
   };
@@ -79,7 +79,7 @@ export class CreateCourseComponent implements OnInit, OnDestroy {
     return {
       title: this.title,
       description: this.description,
-      assignmentIds: this.assignments.map(a => a.id!),
+      assignmentIds: this.assignments.map(a => a._id!),
     };
   }
 
