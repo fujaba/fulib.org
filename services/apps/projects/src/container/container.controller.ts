@@ -1,8 +1,8 @@
 import {NotFound} from '@app/not-found';
-import {Controller, Delete, Get, Param, Post} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Post} from '@nestjs/common';
 import {ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {ProjectAuth} from '../project/project-auth.decorator';
-import {ContainerDto} from './container.dto';
+import {ContainerDto, CreateContainerDto} from './container.dto';
 import {ContainerService} from './container.service';
 
 const forbiddenResponse = 'Not owner of project.';
@@ -11,6 +11,12 @@ const forbiddenResponse = 'Not owner of project.';
 @ApiTags('Containers')
 export class ContainerController {
   constructor(private readonly containerService: ContainerService) {
+  }
+
+  @Post('container')
+  @ApiCreatedResponse({type: ContainerDto})
+  async createTemp(@Body() dto: CreateContainerDto): Promise<ContainerDto> {
+    return this.containerService.create(dto.id);
   }
 
   @Post('projects/:id/container')

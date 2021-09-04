@@ -14,3 +14,9 @@ export class ContainerDto {
   @IsMongoId()
   projectId: string;
 }
+
+export class CreateContainerDto {
+  @ApiProperty()
+  @IsMongoId()
+  id: string;
+}
