@@ -30,7 +30,7 @@ export class ContainerService {
       HostConfig: {
         AutoRemove: true,
         Binds: [
-          `${bindPrefix}:/projects/${projectId}`,
+          `${bindPrefix}/projects/${this.idBin(projectId)}/${projectId}:/projects/${projectId}`,
         ],
       },
       Env: [
@@ -74,5 +74,9 @@ export class ContainerService {
 
   private containerUrl(id: string): string {
     return `${environment.docker.proxyHost}/containers/${id.substring(0, 12)}`;
+  }
+
+  private idBin(projectId: string) {
+    return projectId.slice(-2); // last 2 hex chars
   }
 }
