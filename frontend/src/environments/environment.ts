@@ -6,9 +6,9 @@ export const environment = {
   production: false,
   apiURL: 'http://localhost:4567/api',
   assignmentsApiUrl: 'http://localhost:21318/api/v1',
-  projectsApiUrl: 'http://localhost:4568/api',
+  projectsApiUrl: 'http://localhost:6266/api/v1',
   auth: {
-    url: 'https://se.uniks.de/auth',
+    url: 'http://localhost:24785/auth',
     realm: 'fulib.org',
     clientId: 'fulib.org',
   },
