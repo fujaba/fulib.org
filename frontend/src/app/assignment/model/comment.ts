@@ -1,15 +1,15 @@
 export default class Comment {
-  id?: string;
+  _id?: string;
+  assignment: string;
+  solution: string;
 
-  parent: string;
+  timestamp?: Date;
 
-  timeStamp?: Date;
-
-  userId?: string;
+  createdBy?: string;
   author: string;
   email: string;
 
-  markdown?: string;
+  body?: string;
   html?: string;
 
   distinguished?: boolean;

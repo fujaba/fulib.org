@@ -29,7 +29,7 @@ export class GradeFormComponent implements OnInit, OnDestroy {
   }
 
   get filteredGradings(): TaskGrading[] {
-    return this.gradings.filter(t => this.taskID === t.taskID);
+    return this.gradings.filter(t => this.taskID === t.task);
   }
 
   ngOnInit(): void {
@@ -53,8 +53,9 @@ export class GradeFormComponent implements OnInit, OnDestroy {
 
   doSubmit(): void {
     const grading: TaskGrading = {
-      solution: this.solution,
-      taskID: this.taskID,
+      assignment: this.solution.assignment,
+      solution: this.solution._id!,
+      task: this.taskID,
       note: this.note,
       points: this.points,
       author: this.name,

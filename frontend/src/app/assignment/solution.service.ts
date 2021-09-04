@@ -17,16 +17,6 @@ function asID(id: { _id?: string, id?: string } | string): string {
   return typeof id === 'string' ? id : id._id! || id.id!;
 }
 
-interface CommentResponse {
-  id: string;
-  timeStamp: string;
-  html: string;
-}
-
-interface TaskGradingResponse {
-  timeStamp: string;
-}
-
 @Injectable({
   providedIn: 'root',
 })
@@ -213,15 +203,8 @@ export class SolutionService {
     this.addSolutionToken(headers, assignmentID, id);
     this.addAssignmentToken(headers, assignmentID);
 
-    const url = `${environment.apiURL}/assignments/${assignmentID}/solutions/${id}/comments`;
-    return this.http.get<{ children: Comment[] }>(url, {headers}).pipe(
-      map(result => {
-        for (const comment of result.children) {
-          comment.parent = id;
-        }
-        return result.children;
-      }),
-    );
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignmentID}/solutions/${id}/comments`;
+    return this.http.get<Comment[]>(url, {headers});
   }
 
   postComment(solution: Solution, comment: Comment): Observable<Comment> {
@@ -230,23 +213,13 @@ export class SolutionService {
     this.addSolutionToken(headers, assignmentID, solution._id!);
     this.addAssignmentToken(headers, assignmentID);
 
-    const url = `${environment.apiURL}/assignments/${solution.assignment}/solutions/${solution._id}/comments`;
-    return this.http.post<CommentResponse>(url, comment, {headers}).pipe(
-      map(response => {
-        const result: Comment = {
-          ...comment,
-          parent: solution._id!,
-          ...response,
-          timeStamp: new Date(response.timeStamp),
-        };
-        return result;
-      }),
-    );
+    const url = `${environment.assignmentsApiUrl}/assignments/${solution.assignment}/solutions/${solution._id}/comments`;
+    return this.http.post<Comment>(url, comment, {headers});
   }
 
   deleteComment(solution: Solution, comment: Comment): Observable<Comment> {
-    const url = `${environment.apiURL}/assignments/${solution.assignment}/solutions/${solution._id}/comments/${comment.id}`;
-    return this.http.delete(url).pipe(mapTo({...comment, markdown: undefined, html: undefined}));
+    const url = `${environment.assignmentsApiUrl}/assignments/${solution.assignment}/solutions/${solution._id}/comments/${comment._id}`;
+    return this.http.delete<Comment>(url);
   }
 
   getGradings(assignment: Assignment | string, id: string): Observable<TaskGrading[]> {
@@ -255,29 +228,16 @@ export class SolutionService {
     this.addSolutionToken(headers, assignmentID, id);
     this.addAssignmentToken(headers, assignmentID);
 
-    const url = `${environment.apiURL}/assignments/${assignmentID}/solutions/${id}/gradings`;
-    return this.http.get<{ gradings: TaskGrading[] }>(url, {headers}).pipe(
-      map(response => response.gradings),
-    );
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignmentID}/solutions/${id}/gradings`;
+    return this.http.get<TaskGrading[]>(url, {headers});
   }
 
   postGrading(grading: TaskGrading): Observable<TaskGrading> {
-    const solutionID = grading.solution._id;
-    const assignmentID = grading.solution.assignment;
     const headers = {};
-    this.addAssignmentToken(headers, assignmentID);
+    this.addAssignmentToken(headers, grading.assignment);
 
-    const url = `${environment.apiURL}/assignments/${assignmentID}/solutions/${solutionID}/gradings`;
-    return this.http.post<TaskGradingResponse>(url, grading, {headers}).pipe(
-      map(response => {
-        const result: TaskGrading = {
-          ...grading,
-          ...response,
-          timeStamp: new Date(response.timeStamp),
-        };
-        return result;
-      }),
-    );
+    const url = `${environment.assignmentsApiUrl}/assignments/${grading.assignment}/solutions/${grading.solution}/gradings/${grading.task}`;
+    return this.http.put<TaskGrading>(url, grading, {headers});
   }
 
   setAssignee(solution: Solution, assignee: string): Observable<void> {

@@ -21,7 +21,7 @@ export class TaskListComponent {
     if (this.gradings) {
       for (let i = this.gradings.length - 1; i >= 0; i--) {
         const grading = this.gradings[i];
-        if (grading.taskID === taskID) {
+        if (grading.task === taskID) {
           return grading.points;
         }
       }
