@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {EMPTY, forkJoin} from 'rxjs';
 import Course from '../model/course';
 import {CourseService} from '../course.service';
 import Assignment from '../model/assignment';
@@ -15,8 +16,9 @@ import {switchMap, tap} from 'rxjs/operators';
 export class CourseComponent implements OnInit {
   courseID?: string;
   course?: Course;
+  assignments?: (Assignment | undefined)[];
 
-  latestSolutionIDs?: string[];
+  latestSolutionIDs?: (string | undefined)[];
 
   assignmentID?: string;
 
@@ -36,39 +38,27 @@ export class CourseComponent implements OnInit {
         this.courseID = params.cid;
       }),
       switchMap(params => this.courseService.get(params.cid)),
-    ).subscribe(course => {
-      this.course = course;
-
-      const assignmentIds = course.assignmentIds!;
-      if (!this.assignmentID) {
-        const firstAssignment = assignmentIds[0];
-        this.router.navigate(['assignments', 'courses', course.id, 'assignments', firstAssignment]);
-        return;
-      }
-
-      const solutions = this.solutionService.getOwnIds();
-      this.latestSolutionIDs = new Array<string>(assignmentIds.length);
-
-      course.assignments = new Array<Assignment>(assignmentIds.length);
-      for (let i = 0; i < assignmentIds.length; i++) {
-        const id = assignmentIds[i];
-        this.assignmentService.get(id).subscribe(assignment => {
-          course.assignments![i] = assignment;
-        });
-
-        const lastSolutionID = solutions.find(({assignment}) => id === assignment);
-        if (lastSolutionID) {
-          this.latestSolutionIDs[i] = lastSolutionID.id;
+      switchMap(course => {
+        this.course = course;
+        if (!this.assignmentID) {
+          const firstAssignment = course.assignments[0];
+          this.router.navigate(['assignments', 'courses', course._id, 'assignments', firstAssignment], {skipLocationChange: true});
+          return EMPTY;
         }
-      }
-    });
+
+        const solutions = this.solutionService.getOwnIds();
+        this.latestSolutionIDs = course.assignments.map(a => solutions.find(({assignment}) => a === assignment)?.id);
+        this.assignments = course.assignments.map(() => undefined);
+        return forkJoin(course.assignments.map((id, index) => this.assignmentService.get(id).pipe(tap(a => this.assignments![index] = a))));
+      }),
+    ).subscribe();
   }
 
-  getBadgeColor(index: number, assignment: Assignment) {
+  getBadgeColor(index: number, assignment: string) {
     if (!assignment) {
       return 'secondary';
     }
-    if (assignment._id === this.assignmentID) {
+    if (assignment === this.assignmentID) {
       return 'primary';
     }
     if (this.latestSolutionIDs && this.latestSolutionIDs[index]) {

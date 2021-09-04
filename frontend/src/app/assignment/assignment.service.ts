@@ -203,7 +203,7 @@ export class AssignmentService {
   }
 
   getNext(course: Course, assignment: Assignment): Observable<Assignment | undefined> {
-    const ids = course.assignmentIds!;
+    const ids = course.assignments!;
     const index = ids.indexOf(assignment._id!);
     if (index < 0 || index + 1 >= ids.length) {
       return of(undefined);

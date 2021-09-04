@@ -79,7 +79,7 @@ export class CreateCourseComponent implements OnInit, OnDestroy {
     return {
       title: this.title,
       description: this.description,
-      assignmentIds: this.assignments.map(a => a._id!),
+      assignments: this.assignments.map(a => a._id!),
     };
   }
 
@@ -87,7 +87,7 @@ export class CreateCourseComponent implements OnInit, OnDestroy {
     this.title = course.title;
     this.description = course.description;
 
-    forkJoin(course.assignmentIds!.map(id => this.assignmentService.get(id))).subscribe(assignments => {
+    forkJoin(course.assignments!.map(id => this.assignmentService.get(id))).subscribe(assignments => {
       this.assignments = assignments;
     });
   }
@@ -141,7 +141,7 @@ export class CreateCourseComponent implements OnInit, OnDestroy {
   submit(): void {
     this.submitting = true;
     this.courseService.create(this.getCourse()).subscribe(course => {
-      this.id = course.id;
+      this.id = course._id;
       this.submitting = false;
       this.modalService.open(this.successModal, {ariaLabelledBy: 'successModalLabel', size: 'xl'});
     });

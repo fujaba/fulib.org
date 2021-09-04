@@ -2,16 +2,11 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 
 import {Observable, of} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
+import {switchMap, tap} from 'rxjs/operators';
 
 import {environment} from '../../environments/environment';
 import {UserService} from '../user/user.service';
 import Course from './model/course';
-
-interface CourseResponse {
-  id: string;
-  descriptionHtml: string;
-}
 
 @Injectable({
   providedIn: 'root',
@@ -72,30 +67,20 @@ export class CourseService {
     if (cached) {
       return of(cached);
     }
-    return this.http.get<Course>(`${environment.apiURL}/courses/${id}`).pipe(
-      map(response => {
-        this._cache.set(id, response);
-        return response;
-      }),
+    return this.http.get<Course>(`${environment.assignmentsApiUrl}/courses/${id}`).pipe(
+      tap(response => this._cache.set(id, response)),
     );
   }
 
   public create(course: Course): Observable<Course> {
-    return this.http.post<CourseResponse>(`${environment.apiURL}/courses`, course).pipe(
-      map(response => {
-        const result = {
-          ...course,
-          ...response,
-        } as Course;
-        this._cache.set(response.id, result);
-        return result;
-      }),
+    return this.http.post<Course>(`${environment.assignmentsApiUrl}/courses`, course).pipe(
+      tap(response => this._cache.set(response._id!, response)),
     );
   }
 
   getOwn(): Observable<Course[]> {
     return this.userService.current$.pipe(
-      switchMap(user => user ? this.http.get<Course[]>(`${environment.apiURL}/courses`, {params: {userId: user.id!}}) : of([])),
+      switchMap(user => user ? this.http.get<Course[]>(`${environment.assignmentsApiUrl}/courses`, {params: {createdBy: user.id!}}) : of([])),
     );
   }
 }
