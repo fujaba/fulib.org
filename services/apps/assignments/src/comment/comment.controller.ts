@@ -1,9 +1,9 @@
 import {AuthUser, UserToken} from '@app/keycloak-auth';
+import {NotFound, notFound} from '@app/not-found';
 import {Body, Controller, Delete, Get, Headers, Param, Patch, Post} from '@nestjs/common';
-import {ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
+import {ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {AssignmentService} from '../assignment/assignment.service';
 import {SolutionAuth} from '../solution/solution-auth.decorator';
-import {notFound} from '@app/not-found';
 import {CommentAuth} from './comment-auth.decorator';
 import {CreateCommentDto, UpdateCommentDto} from './comment.dto';
 import {Comment} from './comment.schema';
@@ -30,7 +30,7 @@ export class CommentController {
     @Body() dto: CreateCommentDto,
     @AuthUser() user?: UserToken,
     @Headers('assignment-token') assignmentToken?: string,
-  ) {
+  ): Promise<Comment> {
     const assignment = await this.assignmentService.findOne(assignmentId) ?? notFound(assignmentId);
     const distinguished = this.assignmentService.isAuthorized(assignment, user, assignmentToken);
     return this.commentService.create(assignmentId, solution, dto, distinguished, user?.sub);
@@ -48,38 +48,38 @@ export class CommentController {
 
   @Get(':id')
   @SolutionAuth({forbiddenResponse})
+  @NotFound()
   @ApiOkResponse({type: Comment})
-  @ApiNotFoundResponse()
   async findOne(
     @Param('assignment') assignment: string,
     @Param('solution') solution: string,
     @Param('id') id: string,
-  ): Promise<Comment> {
-    return await this.commentService.findOne(id) ?? notFound(id);
+  ): Promise<Comment | null> {
+    return this.commentService.findOne(id);
   }
 
   @Patch(':id')
   @CommentAuth({forbiddenResponse: forbiddenCommentResponse})
+  @NotFound()
   @ApiOkResponse({type: Comment})
-  @ApiNotFoundResponse()
   async update(
     @Param('assignment') assignment: string,
     @Param('solution') solution: string,
     @Param('id') id: string,
     @Body() dto: UpdateCommentDto,
-  ): Promise<UpdateCommentDto> {
-    return await this.commentService.update(id, dto) ?? notFound(id);
+  ): Promise<Comment | null> {
+    return this.commentService.update(id, dto);
   }
 
   @Delete(':id')
   @CommentAuth({forbiddenResponse: forbiddenCommentResponse})
+  @NotFound()
   @ApiOkResponse({type: Comment})
-  @ApiNotFoundResponse()
   async remove(
     @Param('assignment') assignment: string,
     @Param('solution') solution: string,
     @Param('id') id: string,
-  ): Promise<Comment> {
-    return await this.commentService.remove(id) ?? notFound(id);
+  ): Promise<Comment | null> {
+    return this.commentService.remove(id);
   }
 }

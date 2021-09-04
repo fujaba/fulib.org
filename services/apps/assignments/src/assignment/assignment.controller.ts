@@ -1,14 +1,7 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
+import {NotFound, notFound} from '@app/not-found';
 import {Body, Controller, Delete, Get, Headers, Param, Patch, Post, Query} from '@nestjs/common';
-import {
-  ApiCreatedResponse,
-  ApiHeader,
-  ApiNotFoundResponse,
-  ApiOkResponse,
-  ApiTags,
-  getSchemaPath,
-} from '@nestjs/swagger';
-import {notFound} from '@app/not-found';
+import {ApiCreatedResponse, ApiHeader, ApiOkResponse, ApiTags, getSchemaPath} from '@nestjs/swagger';
 import {AssignmentAuth} from './assignment-auth.decorator';
 import {CreateAssignmentDto, ReadAssignmentDto, UpdateAssignmentDto} from './assignment.dto';
 import {Assignment} from './assignment.schema';
@@ -44,6 +37,7 @@ export class AssignmentController {
 
   @Get(':id')
   @Auth({optional: true})
+  @NotFound()
   @ApiOkResponse({
     description: 'Result is an Assignment when you are author or the Assignment-Token header matches, otherwise some properties are omitted.',
     schema: {
@@ -53,13 +47,12 @@ export class AssignmentController {
       ],
     },
   })
-  @ApiNotFoundResponse()
   @ApiHeader({name: 'assignment-token', required: false})
   async findOne(
     @Param('id') id: string,
     @Headers('assignment-token') token?: string,
     @AuthUser() user?: UserToken,
-  ) {
+  ): Promise<Assignment | ReadAssignmentDto> {
     const assignment = await this.assignmentService.findOne(id) ?? notFound(id);
     if (this.assignmentService.isAuthorized(assignment, user, token)) {
       return assignment;
@@ -68,23 +61,23 @@ export class AssignmentController {
   }
 
   @Patch(':id')
+  @NotFound()
   @AssignmentAuth({forbiddenResponse})
   @ApiOkResponse({type: Assignment})
-  @ApiNotFoundResponse()
   async update(
     @Param('id') id: string,
     @Body() dto: UpdateAssignmentDto,
-  ) {
-    return await this.assignmentService.update(id, dto) ?? notFound(id);
+  ): Promise<Assignment | null> {
+    return this.assignmentService.update(id, dto);
   }
 
   @Delete(':id')
+  @NotFound()
   @AssignmentAuth({forbiddenResponse})
   @ApiOkResponse({type: Assignment})
-  @ApiNotFoundResponse()
   async remove(
     @Param('id') id: string,
-  ) {
-    return await this.assignmentService.remove(id) ?? notFound(id);
+  ): Promise<Assignment | null> {
+    return this.assignmentService.remove(id);
   }
 }

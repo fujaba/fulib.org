@@ -1,8 +1,8 @@
+import {NotFound} from '@app/not-found';
 import {Body, Controller, Delete, Get, Param, Put} from '@nestjs/common';
-import {ApiNotFoundResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
+import {ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {AssignmentService} from '../assignment/assignment.service';
-import {notFound} from '@app/not-found';
 import {UpdateAssigneeDto} from './assignee.dto';
 import {Assignee} from './assignee.schema';
 import {AssigneeService} from './assignee.service';
@@ -19,14 +19,14 @@ export class AssigneeController {
   }
 
   @Get()
+  @NotFound()
   @AssignmentAuth({forbiddenResponse})
   @ApiOkResponse({type: Assignee})
-  @ApiNotFoundResponse()
   async findOne(
     @Param('assignment') assignmentId: string,
     @Param('solution') solutionId: string,
   ) {
-    return await this.assigneeService.findOne(assignmentId, solutionId) ?? notFound(`${assignmentId} ${solutionId}`);
+    return this.assigneeService.findOne(assignmentId, solutionId);
   }
 
   @Put()
@@ -41,6 +41,7 @@ export class AssigneeController {
   }
 
   @Delete()
+  @NotFound()
   @AssignmentAuth({forbiddenResponse})
   @ApiOkResponse({type: Assignee})
   async remove(

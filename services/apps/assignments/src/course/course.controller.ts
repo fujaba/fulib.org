@@ -1,7 +1,7 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
+import {NotFound, notFound} from '@app/not-found';
 import {Body, Controller, Delete, ForbiddenException, Get, Param, Patch, Post} from '@nestjs/common';
-import {ApiCreatedResponse, ApiForbiddenResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
-import {notFound} from '@app/not-found';
+import {ApiCreatedResponse, ApiForbiddenResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {CreateCourseDto, UpdateCourseDto} from './course.dto';
 import {Course} from './course.schema';
 import {CourseService} from './course.service';
@@ -22,57 +22,53 @@ export class CourseController {
   async create(
     @Body() dto: CreateCourseDto,
     @AuthUser() user?: UserToken,
-  ) {
+  ): Promise<Course> {
     return this.courseService.create(dto, user?.sub);
   }
 
   @Get()
   @ApiOkResponse({type: [Course]})
-  async findAll() {
+  async findAll(): Promise<Course[]> {
     return this.courseService.findAll();
   }
 
   @Get(':id')
+  @NotFound()
   @ApiOkResponse({type: Course})
-  @ApiNotFoundResponse()
-  async findOne(@Param('id') id: string) {
-    return await this.courseService.findOne(id) ?? notFound(id);
+  async findOne(@Param('id') id: string): Promise<Course | null> {
+    return this.courseService.findOne(id);
   }
 
   @Patch(':id')
   @Auth()
+  @NotFound()
   @ApiOkResponse({type: Course})
-  @ApiNotFoundResponse()
   @ApiForbiddenResponse({description: forbiddenResponse})
   async update(
     @Param('id') id: string,
     @Body() dto: UpdateCourseDto,
     @AuthUser() user: UserToken,
-  ) {
+  ): Promise<Course | null> {
     await this.checkAuth(id, user);
-    return await this.courseService.update(id, dto) ?? notFound(id);
+    return this.courseService.update(id, dto);
   }
 
   @Delete(':id')
   @Auth()
+  @NotFound()
   @ApiOkResponse({type: Course})
-  @ApiNotFoundResponse()
   @ApiForbiddenResponse({description: forbiddenResponse})
   async remove(
     @Param('id') id: string,
     @Body() dto: UpdateCourseDto,
     @AuthUser() user: UserToken,
-  ) {
+  ): Promise<Course | null> {
     await this.checkAuth(id, user);
-    return await this.courseService.remove(id) ?? notFound(id);
+    return this.courseService.remove(id);
   }
 
   private async checkAuth(id: string, user: UserToken) {
-    const course = await this.courseService.findOne(id);
-    if (!course) {
-      notFound(id);
-    }
-
+    const course = await this.courseService.findOne(id) ?? notFound(id);
     if (course.createdBy !== user.sub) {
       throw new ForbiddenException(forbiddenResponse);
     }

@@ -1,10 +1,10 @@
 import {AuthUser, UserToken} from '@app/keycloak-auth';
+import {NotFound} from '@app/not-found';
 import {Body, Controller, Delete, Get, Param, ParseIntPipe, Put} from '@nestjs/common';
-import {ApiNotFoundResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
+import {ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {AssignmentService} from '../assignment/assignment.service';
 import {SolutionAuth} from '../solution/solution-auth.decorator';
-import {notFound} from '@app/not-found';
 import {UpdateGradingDto} from './grading.dto';
 import {Grading} from './grading.schema';
 import {GradingService} from './grading.service';
@@ -33,51 +33,51 @@ export class GradingController {
 
   @Get(':task')
   @SolutionAuth({forbiddenResponse})
+  @NotFound()
   @ApiOkResponse({type: Grading})
-  @ApiNotFoundResponse()
   async findOne(
     @Param('assignment') assignment: string,
     @Param('solution') solution: string,
     @Param('task', ParseIntPipe) task: number,
-  ): Promise<Grading> {
-    return await this.gradingService.findOne({
+  ): Promise<Grading | null> {
+    return this.gradingService.findOne({
       assignment,
       solution,
       task,
-    }) ?? notFound(`${assignment} ${solution} ${task}`);
+    });
   }
 
   @Put(':task')
   @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
+  @NotFound()
   @ApiOkResponse({type: Grading})
-  @ApiNotFoundResponse()
   async update(
     @Param('assignment') assignment: string,
     @Param('solution') solution: string,
     @Param('task', ParseIntPipe) task: number,
     @Body() dto: UpdateGradingDto,
     @AuthUser() user?: UserToken,
-  ): Promise<Grading> {
-    return await this.gradingService.update({
+  ): Promise<Grading | null> {
+    return this.gradingService.update({
       assignment,
       solution,
       task,
-    }, dto, user?.sub) ?? notFound(`${assignment} ${solution} ${task}`);
+    }, dto, user?.sub);
   }
 
   @Delete(':task')
   @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
+  @NotFound()
   @ApiOkResponse({type: Grading})
-  @ApiNotFoundResponse()
   async remove(
     @Param('assignment') assignment: string,
     @Param('solution') solution: string,
     @Param('task', ParseIntPipe) task: number,
-  ): Promise<Grading> {
-    return await this.gradingService.remove({
+  ): Promise<Grading | null> {
+    return this.gradingService.remove({
       assignment,
       solution,
       task,
-    }) ?? notFound(`${assignment} ${solution} ${task}`);
+    });
   }
 }

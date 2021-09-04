@@ -1,9 +1,9 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
+import {NotFound, notFound} from '@app/not-found';
 import {Body, Controller, Delete, Get, Param, Patch, Post} from '@nestjs/common';
-import {ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
+import {ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {AssignmentService} from '../assignment/assignment.service';
-import {notFound} from '@app/not-found';
 import {SolutionAuth} from './solution-auth.decorator';
 import {CreateSolutionDto, ReadSolutionDto, UpdateSolutionDto} from './solution.dto';
 import {Solution} from './solution.schema';
@@ -28,7 +28,7 @@ export class SolutionController {
     @Param('assignment') assignment: string,
     @Body() dto: CreateSolutionDto,
     @AuthUser() user?: UserToken,
-  ) {
+  ): Promise<Solution> {
     return this.solutionService.create(assignment, dto, user?.sub);
   }
 
@@ -43,11 +43,8 @@ export class SolutionController {
 
   @Get(':id')
   @SolutionAuth({forbiddenResponse})
-  @ApiOkResponse({
-    description: 'The token property is omitted.',
-    type: ReadSolutionDto,
-  })
-  @ApiNotFoundResponse()
+  @NotFound()
+  @ApiOkResponse({type: ReadSolutionDto})
   async findOne(
     @Param('id') id: string,
   ): Promise<ReadSolutionDto> {
@@ -57,8 +54,8 @@ export class SolutionController {
 
   @Patch(':id')
   @SolutionAuth({forbiddenResponse})
+  @NotFound()
   @ApiOkResponse({type: ReadSolutionDto})
-  @ApiNotFoundResponse()
   async update(
     @Param('id') id: string,
     @Body() dto: UpdateSolutionDto,
@@ -69,8 +66,8 @@ export class SolutionController {
 
   @Delete(':id')
   @SolutionAuth({forbiddenResponse})
+  @NotFound()
   @ApiOkResponse({type: ReadSolutionDto})
-  @ApiNotFoundResponse()
   async remove(
     @Param('id') id: string,
   ): Promise<ReadSolutionDto> {
