@@ -87,7 +87,7 @@ export class CreateCourseComponent implements OnInit, OnDestroy {
     this.title = course.title;
     this.description = course.description;
 
-    forkJoin(course.assignments!.map(id => this.assignmentService.get(id))).subscribe(assignments => {
+    forkJoin(course.assignments.map(id => this.assignmentService.get(id))).subscribe(assignments => {
       this.assignments = assignments;
     });
   }
