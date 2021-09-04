@@ -112,7 +112,7 @@ export class SolutionComponent implements OnInit, OnDestroy {
     this.submittingComment = true;
 
     const comment: Comment = {
-      parent: this.solution!.id!,
+      parent: this.solution!._id!,
       author: this.commentName,
       email: this.commentEmail,
       markdown: this.commentBody,

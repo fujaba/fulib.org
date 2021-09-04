@@ -1,17 +1,17 @@
 import TaskResult from './task-result';
 
 export default class Solution {
-  id?: string;
+  _id?: string;
   token?: string;
   assignment: string;
 
-  userId?: string;
+  createdBy?: string;
   name: string;
   studentID: string;
   email: string;
   solution: string;
 
-  timeStamp?: Date;
+  timestamp?: Date;
   results?: TaskResult[];
 
   assignee?: string;

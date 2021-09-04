@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {forkJoin, Observable, of} from 'rxjs';
-import {map, mapTo, switchMap} from 'rxjs/operators';
+import {map, mapTo, switchMap, tap} from 'rxjs/operators';
 
 import Solution from './model/solution';
 import {environment} from '../../environments/environment';
@@ -15,21 +15,6 @@ import {UserService} from '../user/user.service';
 
 function asID(id: { _id?: string, id?: string } | string): string {
   return typeof id === 'string' ? id : id._id! || id.id!;
-}
-
-interface AssignmentId {
-  id: string;
-}
-
-interface SolutionId {
-  id: string;
-  assignment: AssignmentId;
-}
-
-interface SolutionResponse {
-  id: string;
-  timeStamp: string;
-  token: string;
 }
 
 interface CommentResponse {
@@ -182,16 +167,8 @@ export class SolutionService {
   }
 
   submit(solution: Solution): Observable<Solution> {
-    return this.http.post<SolutionResponse>(`${environment.apiURL}/assignments/${solution.assignment}/solutions`, solution).pipe(
-      map(response => {
-        this.setToken(solution.assignment, response.id, response.token);
-        const result: Solution = {
-          ...solution,
-          ...response,
-          timeStamp: new Date(response.timeStamp),
-        };
-        return result;
-      }),
+    return this.http.post<Solution>(`${environment.assignmentsApiUrl}/assignments/${solution.assignment}/solutions`, solution).pipe(
+      tap(response => this.setToken(solution.assignment, response._id!, response.token!)),
     );
   }
 
@@ -200,12 +177,8 @@ export class SolutionService {
     const headers = {};
     const token = this.addSolutionToken(headers, assignmentID, id);
     this.addAssignmentToken(headers, assignmentID);
-    return this.http.get<Solution>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${id}`, {headers}).pipe(
-      map(solution => {
-        solution.id = id;
-        solution.token = token ?? undefined;
-        return solution;
-      }),
+    return this.http.get<Solution>(`${environment.assignmentsApiUrl}/assignments/${assignmentID}/solutions/${id}`, {headers}).pipe(
+      tap(solution => solution.token = token ?? undefined),
     );
   }
 
@@ -213,17 +186,17 @@ export class SolutionService {
     const assignmentID = asID(assignment);
     const headers = {};
     this.addAssignmentToken(headers, assignmentID);
-    return this.http.get<{ solutions: Solution[] }>(`${environment.apiURL}/assignments/${assignmentID}/solutions`, {headers}).pipe(
-      map(result => {
-        for (const solution of result.solutions) {
-          solution.token = this.getToken(assignmentID, solution.id!) ?? undefined;
+    return this.http.get<Solution[]>(`${environment.assignmentsApiUrl}/assignments/${assignmentID}/solutions`, {headers}).pipe(
+      tap(solutions => {
+        for (const solution of solutions) {
+          solution.token = this.getToken(assignmentID, solution._id!) ?? undefined;
         }
-        return result.solutions;
       }),
     );
   }
 
   getByUserId(userId: string): Observable<Solution[]> {
+    // TODO NYI in new backend service
     return this.http.get<Solution[]>(`${environment.apiURL}/solutions`, {params: {userId}}).pipe(
       map(solutions => {
         for (const solution of solutions) {
@@ -254,15 +227,15 @@ export class SolutionService {
   postComment(solution: Solution, comment: Comment): Observable<Comment> {
     const assignmentID = solution.assignment;
     const headers = {};
-    this.addSolutionToken(headers, assignmentID, solution.id!);
+    this.addSolutionToken(headers, assignmentID, solution._id!);
     this.addAssignmentToken(headers, assignmentID);
 
-    const url = `${environment.apiURL}/assignments/${solution.assignment}/solutions/${solution.id}/comments`;
+    const url = `${environment.apiURL}/assignments/${solution.assignment}/solutions/${solution._id}/comments`;
     return this.http.post<CommentResponse>(url, comment, {headers}).pipe(
       map(response => {
         const result: Comment = {
           ...comment,
-          parent: solution.id!,
+          parent: solution._id!,
           ...response,
           timeStamp: new Date(response.timeStamp),
         };
@@ -272,7 +245,7 @@ export class SolutionService {
   }
 
   deleteComment(solution: Solution, comment: Comment): Observable<Comment> {
-    const url = `${environment.apiURL}/assignments/${solution.assignment}/solutions/${solution.id}/comments/${comment.id}`;
+    const url = `${environment.apiURL}/assignments/${solution.assignment}/solutions/${solution._id}/comments/${comment.id}`;
     return this.http.delete(url).pipe(mapTo({...comment, markdown: undefined, html: undefined}));
   }
 
@@ -289,7 +262,7 @@ export class SolutionService {
   }
 
   postGrading(grading: TaskGrading): Observable<TaskGrading> {
-    const solutionID = grading.solution.id;
+    const solutionID = grading.solution._id;
     const assignmentID = grading.solution.assignment;
     const headers = {};
     this.addAssignmentToken(headers, assignmentID);
@@ -314,7 +287,7 @@ export class SolutionService {
     const headers = {};
     const assignmentID = solution.assignment;
     this.addAssignmentToken(headers, assignmentID);
-    return this.http.put<void>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${solution.id}/assignee`, body, {headers});
+    return this.http.put<void>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${solution._id}/assignee`, body, {headers});
   }
 
   private addAssignmentToken(headers: any, assignmentID: string) {

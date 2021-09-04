@@ -128,12 +128,12 @@
       <td>{{solution.studentID}}</td>
       <td><a href="mailto:{{solution.email}}">{{solution.email}}</a></td>
       <td>
-        <span *ngIf="assignment && assignment.deadline && solution.timeStamp && assignment.deadline < solution.timeStamp else timestamp"
+        <span *ngIf="assignment && assignment.deadline && solution.timestamp && assignment.deadline < solution.timestamp else timestamp"
           class="text-danger" ngbTooltip="Submitted after Deadline">
-          {{solution.timeStamp | date:'medium'}}
+          {{solution.timestamp | date:'medium'}}
         </span>
         <ng-template #timestamp>
-          {{solution.timeStamp | date:'medium'}}
+          {{solution.timestamp | date:'medium'}}
         </ng-template>
       </td>
       <td><span class="badge badge-primary badge-pill">
@@ -142,7 +142,7 @@
       <td><input class="form-control" #assigneeInput
                  [ngModel]="solution.assignee" (change)="setAssignee(solution, assigneeInput)"></td>
       <td>
-        <a class="btn btn-primary" routerLink="/assignments/{{assignment?._id}}/solutions/{{solution.id}}">
+        <a class="btn btn-primary" routerLink="/assignments/{{assignment?._id}}/solutions/{{solution._id}}">
           View
         </a>
       </td>
