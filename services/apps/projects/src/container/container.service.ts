@@ -1,6 +1,6 @@
 import {Injectable} from '@nestjs/common';
 import * as Dockerode from 'dockerode';
-import path from 'path';
+import * as path from 'path';
 import {Container} from '../../../../../frontend/src/app/projects/model/container';
 import {environment} from '../environment';
 
