@@ -145,7 +145,7 @@ export class SolutionComponent implements OnInit, OnDestroy {
     this.solutionService.deleteComment(this.solution!, comment).subscribe(result => {
       const index = this.comments.indexOf(comment);
       if (index >= 0) {
-        this.comments[index] = result;
+        this.comments.splice(index, 1);
       }
     });
   }

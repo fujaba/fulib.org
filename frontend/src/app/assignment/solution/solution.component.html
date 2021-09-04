@@ -58,9 +58,11 @@
                   ngbTooltip="Assignment Authority">
               &#10003;
             </span>
-            &#8226;
-            <span class="text-muted">{{comment.timestamp | date:'medium'}}</span>
-            <ng-container *ngIf="userId && comment.createdBy === userId && comment.html !== undefined">
+            <span class="text-muted">
+              &#8226;
+              {{comment.timestamp | date:'medium'}}
+            </span>
+            <ng-container *ngIf="userId && comment.createdBy === userId">
               &#8226;
               <button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(comment)">
                 Delete
@@ -68,11 +70,8 @@
             </ng-container>
           </div>
           <div class="card-body">
-            <div class="card-text" *ngIf="comment.html !== undefined">
-              <app-markdown [html]="comment.html"></app-markdown>
-            </div>
-            <div class="card-text text-muted" *ngIf="comment.html === undefined">
-              <i>Deleted by user.</i>
+            <div class="card-text">
+              <app-markdown [markdown]="comment.body"></app-markdown>
             </div>
           </div>
         </div>

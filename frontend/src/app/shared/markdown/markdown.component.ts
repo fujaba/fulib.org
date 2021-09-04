@@ -1,23 +1,33 @@
-import {Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
 import hljs from 'highlight.js/lib/core';
+import {MarkdownService} from '../../markdown.service';
 
 @Component({
   selector: 'app-markdown',
   templateUrl: './markdown.component.html',
   styleUrls: ['./markdown.component.scss'],
 })
-export class MarkdownComponent implements OnChanges {
+export class MarkdownComponent implements OnInit, OnChanges {
   @ViewChild('content') content: ElementRef<HTMLElement>;
 
-  @Input() html: string;
+  @Input() markdown?: string;
+  @Input() html = 'Loading...';
 
   constructor(
     private router: Router,
+    private markdownService: MarkdownService,
   ) {
   }
 
+  ngOnInit(): void {
+    this.renderMarkdown();
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes.markdown) {
+      this.renderMarkdown();
+    }
     if (!changes.html) {
       return;
     }
@@ -30,6 +40,13 @@ export class MarkdownComponent implements OnChanges {
         }
       });
     }, 0);
+  }
+
+  private renderMarkdown(): void {
+    if (!this.markdown) {
+      return;
+    }
+    this.markdownService.renderMarkdown(this.markdown).subscribe(html => this.html = html);
   }
 
   onClick($event: MouseEvent) {

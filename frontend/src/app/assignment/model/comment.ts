@@ -10,7 +10,6 @@ export default class Comment {
   email: string;
 
   body?: string;
-  html?: string;
 
   distinguished?: boolean;
 }
