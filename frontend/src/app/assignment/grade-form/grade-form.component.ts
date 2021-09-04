@@ -12,8 +12,8 @@ import {UserService} from '../../user/user.service';
 })
 export class GradeFormComponent implements OnInit, OnDestroy {
   @Input() solution: Solution;
-  @Input() taskID: number;
-  @Input() gradings: TaskGrading[];
+  @Input() task: number;
+  @Input() grading?: TaskGrading;
 
   loggedIn = false;
   name: string;
@@ -26,10 +26,6 @@ export class GradeFormComponent implements OnInit, OnDestroy {
     private solutionService: SolutionService,
     private users: UserService,
   ) {
-  }
-
-  get filteredGradings(): TaskGrading[] {
-    return this.gradings.filter(t => this.taskID === t.task);
   }
 
   ngOnInit(): void {
@@ -55,13 +51,13 @@ export class GradeFormComponent implements OnInit, OnDestroy {
     const grading: TaskGrading = {
       assignment: this.solution.assignment,
       solution: this.solution._id!,
-      task: this.taskID,
+      task: this.task,
       note: this.note,
       points: this.points,
       author: this.name,
     };
     this.solutionService.postGrading(grading).subscribe(result => {
-      this.gradings.push(result);
+      this.grading = result;
     });
   }
 }
