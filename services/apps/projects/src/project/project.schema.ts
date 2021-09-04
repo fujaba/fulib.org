@@ -28,4 +28,6 @@ export class Project {
 
 export type ProjectDocument = Project & Document;
 
-export const ProjectSchema = SchemaFactory.createForClass(Project);
+export const ProjectSchema = SchemaFactory.createForClass(Project)
+  .set('toJSON', {virtuals: true})
+;
