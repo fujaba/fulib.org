@@ -64,7 +64,10 @@ export class ProjectController {
     @AuthUser() user: UserToken,
   ): Promise<Project | null> {
     const project = await this.projectService.update(id, dto);
-    project && await this.memberService.update(id, user.sub, {});
+    if (project && dto.userId) {
+      // when changing owner, create a member
+      await this.memberService.update(id, dto.userId, {});
+    }
     return project;
   }
 
