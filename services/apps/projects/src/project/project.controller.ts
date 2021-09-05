@@ -2,18 +2,22 @@ import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound} from '@app/not-found';
 import {Body, Controller, Delete, Get, Param, Patch, Post} from '@nestjs/common';
 import {ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
+import {MemberAuth} from '../member/member-auth.decorator';
+import {MemberService} from '../member/member.service';
 import {ProjectAuth} from './project-auth.decorator';
 import {CreateProjectDto, UpdateProjectDto} from './project.dto';
 import {Project} from './project.schema';
 import {ProjectService} from './project.service';
 
 const forbiddenResponse = 'Not owner.';
+const forbiddenMemberResponse = 'Not member.';
 
 @Controller('projects')
 @ApiTags('Projects')
 export class ProjectController {
   constructor(
     private readonly projectService: ProjectService,
+    private readonly memberService: MemberService,
   ) {
   }
 
@@ -24,7 +28,9 @@ export class ProjectController {
     @Body() dto: CreateProjectDto,
     @AuthUser() user: UserToken,
   ): Promise<Project> {
-    return this.projectService.create(dto, user.sub);
+    const project = await this.projectService.create(dto, user.sub);
+    project && await this.memberService.update(project.id, user.sub, {});
+    return project;
   }
 
   @Get()
@@ -33,11 +39,12 @@ export class ProjectController {
   async findAll(
     @AuthUser() user: UserToken,
   ): Promise<Project[]> {
-    return this.projectService.findAll({userId: user.sub});
+    const members = await this.memberService.findAll({userId: user.sub});
+    return this.projectService.findAll({_id: {$in: members.map(m => m.projectId)}});
   }
 
   @Get(':id')
-  @ProjectAuth({forbiddenResponse})
+  @MemberAuth({forbiddenResponse: forbiddenMemberResponse})
   @NotFound()
   @ApiOkResponse({type: Project})
   async findOne(
@@ -54,8 +61,11 @@ export class ProjectController {
   async update(
     @Param('id') id: string,
     @Body() dto: UpdateProjectDto,
+    @AuthUser() user: UserToken,
   ): Promise<Project | null> {
-    return this.projectService.update(id, dto);
+    const project = await this.projectService.update(id, dto);
+    project && await this.memberService.update(id, user.sub, {});
+    return project;
   }
 
   @Delete(':id')
@@ -65,6 +75,7 @@ export class ProjectController {
   async remove(
     @Param('id') id: string,
   ): Promise<Project | null> {
+    await this.memberService.removeAll({projectId: id});
     return this.projectService.remove(id);
   }
 }

@@ -29,4 +29,8 @@ export class MemberService {
   async remove(projectId: string, userId: string): Promise<MemberDocument | null> {
     return this.model.findOneAndDelete({projectId, userId}).exec();
   }
+
+  async removeAll(where: FilterQuery<Member>): Promise<void> {
+    await this.model.deleteMany(where).exec();
+  }
 }
