@@ -78,14 +78,7 @@ export class ProjectService {
 
   getOwn(): Observable<Project[]> {
     return this.users.current$.pipe(
-      switchMap(user => {
-        if (!user || !user.id) {
-          return of([]);
-        }
-        return this.http.get<Project[]>(`${environment.projectsApiUrl}/projects`, {
-          params: {userId: user.id},
-        });
-      }),
+      switchMap(user => user ? this.http.get<Project[]>(`${environment.projectsApiUrl}/projects`) : of([])),
       map(projects => [...this.localProjectService.getAll(), ...projects]),
     );
   }
