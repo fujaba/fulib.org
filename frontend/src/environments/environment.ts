@@ -5,7 +5,6 @@
 export const environment = {
   production: false,
   apiURL: 'http://localhost:4567/api',
-  projectZipApiUrl: 'http://localhost:4568/api',
   assignmentsApiUrl: 'http://localhost:21318/api/v1',
   projectsApiUrl: 'http://localhost:6266/api/v1',
   auth: {
