@@ -1,6 +1,7 @@
 export const environment = {
   production: true,
   apiURL: '/api',
+  projectZipApiUrl: '/api',
   assignmentsApiUrl: '/api/v1',
   projectsApiUrl: '/api',
   auth: {

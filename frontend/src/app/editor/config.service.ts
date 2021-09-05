@@ -99,6 +99,6 @@ There is a Car with name Herbie.
   }
 
   downloadZip(projectZipRequest: ProjectZipRequest): Observable<Blob> {
-    return this.http.post(environment.apiURL + '/projectzip', projectZipRequest, {responseType: 'blob'});
+    return this.http.post(`${environment.projectZipApiUrl}/projectzip`, projectZipRequest, {responseType: 'blob'});
   }
 }

@@ -103,7 +103,7 @@ export class ProjectService {
   }
 
   generateFiles(container: Container, projectConfig: ProjectConfig): Observable<void> {
-    return this.http.post(`${environment.projectsApiUrl}/projectzip`, projectConfig, {responseType: 'blob'}).pipe(
+    return this.http.post(`${environment.projectZipApiUrl}/projectzip`, projectConfig, {responseType: 'blob'}).pipe(
       switchMap(zipBlob => this.http.post<void>(`${container.url}/zip//projects/${container.projectId}`, zipBlob)),
     );
   }
