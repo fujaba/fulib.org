@@ -1,11 +1,11 @@
 import {NotFound} from '@app/not-found';
 import {Body, Controller, Delete, Get, Param, Post} from '@nestjs/common';
 import {ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
-import {ProjectAuth} from '../project/project-auth.decorator';
+import {MemberAuth} from '../member/member-auth.decorator';
 import {ContainerDto, CreateContainerDto} from './container.dto';
 import {ContainerService} from './container.service';
 
-const forbiddenResponse = 'Not owner of project.';
+const forbiddenResponse = 'Not member of project.';
 
 @Controller()
 @ApiTags('Containers')
@@ -20,14 +20,14 @@ export class ContainerController {
   }
 
   @Post('projects/:id/container')
-  @ProjectAuth({forbiddenResponse})
+  @MemberAuth({forbiddenResponse})
   @ApiCreatedResponse({type: ContainerDto})
   async create(@Param('id') id: string): Promise<ContainerDto> {
     return this.containerService.create(id);
   }
 
   @Get('projects/:id/container')
-  @ProjectAuth({forbiddenResponse})
+  @MemberAuth({forbiddenResponse})
   @NotFound()
   @ApiOkResponse({type: ContainerDto})
   async findOne(@Param('id') id: string): Promise<ContainerDto | null> {
@@ -35,7 +35,7 @@ export class ContainerController {
   }
 
   @Delete('projects/:id/container')
-  @ProjectAuth({forbiddenResponse})
+  @MemberAuth({forbiddenResponse})
   @NotFound()
   @ApiOkResponse({type: ContainerDto})
   async remove(@Param('id') id: string): Promise<ContainerDto | null> {
