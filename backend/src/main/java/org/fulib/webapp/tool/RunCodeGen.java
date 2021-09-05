@@ -1,6 +1,7 @@
 package org.fulib.webapp.tool;
 
 import org.fulib.StrUtil;
+import org.fulib.webapp.markdown.MarkdownRenderer;
 import org.fulib.webapp.mongo.Mongo;
 import org.fulib.webapp.tool.model.CodeGenData;
 import org.fulib.webapp.tool.model.Diagram;
@@ -200,7 +201,7 @@ public class RunCodeGen
 
 				collectObjectDiagrams(result.getObjectDiagrams(), bodyText, projectDir, packagePath);
 
-				final MarkdownUtil renderer = new MarkdownUtil();
+				final MarkdownRenderer renderer = new MarkdownRenderer();
 				renderer.setImageBaseUrl("/" + tempDir.relativize(packagePath).toString() + "/");
 				final String html = renderer.renderHtml(bodyText);
 				result.setHtml(html);

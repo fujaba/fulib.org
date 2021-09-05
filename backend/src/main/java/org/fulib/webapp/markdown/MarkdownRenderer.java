@@ -1,4 +1,4 @@
-package org.fulib.webapp.tool;
+package org.fulib.webapp.markdown;
 
 import org.commonmark.Extension;
 import org.commonmark.ext.autolink.AutolinkExtension;
@@ -15,7 +15,7 @@ import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 
-public class MarkdownUtil
+public class MarkdownRenderer
 {
 	// =============== Fields ===============
 

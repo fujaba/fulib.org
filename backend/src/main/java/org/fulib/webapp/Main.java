@@ -1,7 +1,7 @@
 package org.fulib.webapp;
 
+import org.fulib.webapp.markdown.MarkdownController;
 import org.fulib.webapp.projectzip.ProjectZipController;
-import org.fulib.webapp.tool.MarkdownUtil;
 import org.fulib.webapp.tool.RunCodeGen;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -37,14 +37,16 @@ public class Main
 	private Service service;
 	private final RunCodeGen runCodeGen;
 	private final ProjectZipController projectZipController;
+	private final MarkdownController markdownController;
 
 	// =============== Constructors ===============
 
 	@Inject
-	Main(RunCodeGen runCodeGen, ProjectZipController projectZipController)
+	Main(RunCodeGen runCodeGen, ProjectZipController projectZipController, MarkdownController markdownController)
 	{
 		this.runCodeGen = runCodeGen;
 		this.projectZipController = projectZipController;
+		this.markdownController = markdownController;
 	}
 
 	// =============== Static Methods ===============
@@ -87,21 +89,7 @@ public class Main
 		service.post("/runcodegen", runCodeGen::handle);
 		service.get("/versions", (req, res) -> new JSONObject(VERSIONS).toString(2));
 		service.post("/projectzip", projectZipController::handle);
-		service.post("/rendermarkdown", (request, response) -> {
-			final String imageBaseUrl = request.queryParams("image_base_url");
-			final String linkBaseUrl = request.queryParams("link_base_url");
-			final MarkdownUtil util = new MarkdownUtil();
-			if (imageBaseUrl != null)
-			{
-				util.setImageBaseUrl(imageBaseUrl);
-			}
-			if (linkBaseUrl != null)
-			{
-				util.setLinkBaseUrl(linkBaseUrl);
-			}
-			response.type("text/html");
-			return util.renderHtml(request.body());
-		});
+		service.post("/rendermarkdown", markdownController::render);
 	}
 
 	void awaitStart()
