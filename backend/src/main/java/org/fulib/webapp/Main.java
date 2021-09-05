@@ -1,6 +1,6 @@
 package org.fulib.webapp;
 
-import org.fulib.webapp.mongo.Mongo;
+import org.fulib.webapp.projectzip.ProjectZipController;
 import org.fulib.webapp.tool.MarkdownUtil;
 import org.fulib.webapp.tool.RunCodeGen;
 import org.json.JSONObject;
@@ -8,14 +8,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Service;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.util.Properties;
 
-public class WebService
+public class Main
 {
-	// =============== Static Fields ===============
+	private static final int PORT = 4567;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(WebService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
 	public static final Properties VERSIONS = new Properties();
 
@@ -23,7 +24,7 @@ public class WebService
 	{
 		try
 		{
-			VERSIONS.load(WebService.class.getResourceAsStream("version.properties"));
+			VERSIONS.load(Main.class.getResourceAsStream("version.properties"));
 		}
 		catch (Exception e)
 		{
@@ -34,32 +35,24 @@ public class WebService
 	// =============== Fields ===============
 
 	private Service service;
-	private final MarkdownUtil markdownUtil;
 	private final RunCodeGen runCodeGen;
+	private final ProjectZipController projectZipController;
 
 	// =============== Constructors ===============
 
-	public WebService()
+	@Inject
+	Main(RunCodeGen runCodeGen, ProjectZipController projectZipController)
 	{
-		this(new Mongo(System.getenv("FULIB_MONGO_URL")));
-	}
-
-	WebService(Mongo db)
-	{
-		this(new RunCodeGen(db), new MarkdownUtil());
-	}
-
-	WebService(RunCodeGen runCodeGen, MarkdownUtil markdownUtil)
-	{
-		this.markdownUtil = markdownUtil;
 		this.runCodeGen = runCodeGen;
+		this.projectZipController = projectZipController;
 	}
 
 	// =============== Static Methods ===============
 
 	public static void main(String[] args)
 	{
-		new WebService().start();
+		final Main main = DaggerMainFactory.create().main();
+		main.start();
 	}
 
 	// =============== Methods ===============
@@ -67,7 +60,7 @@ public class WebService
 	public void start()
 	{
 		service = Service.ignite();
-		service.port(4567);
+		service.port(PORT);
 
 		new File(this.runCodeGen.getTempDir()).mkdirs();
 
@@ -91,8 +84,24 @@ public class WebService
 
 	private void addApiRoutes()
 	{
-		addMainRoutes();
-		addUtilRoutes();
+		service.post("/runcodegen", runCodeGen::handle);
+		service.get("/versions", (req, res) -> new JSONObject(VERSIONS).toString(2));
+		service.post("/projectzip", projectZipController::handle);
+		service.post("/rendermarkdown", (request, response) -> {
+			final String imageBaseUrl = request.queryParams("image_base_url");
+			final String linkBaseUrl = request.queryParams("link_base_url");
+			final MarkdownUtil util = new MarkdownUtil();
+			if (imageBaseUrl != null)
+			{
+				util.setImageBaseUrl(imageBaseUrl);
+			}
+			if (linkBaseUrl != null)
+			{
+				util.setLinkBaseUrl(linkBaseUrl);
+			}
+			response.type("text/html");
+			return util.renderHtml(request.body());
+		});
 	}
 
 	void awaitStart()
@@ -106,33 +115,6 @@ public class WebService
 	}
 
 	// --------------- Helpers ---------------
-
-	private void addMainRoutes()
-	{
-		service.post("/runcodegen", runCodeGen::handle);
-		service.get("/versions", (req, res) -> new JSONObject(VERSIONS).toString(2));
-	}
-
-	private void addUtilRoutes()
-	{
-		service.post("/rendermarkdown", (request, response) -> {
-			final String imageBaseUrl = request.queryParams("image_base_url");
-			final String linkBaseUrl = request.queryParams("link_base_url");
-			final MarkdownUtil util;
-			if (imageBaseUrl != null || linkBaseUrl != null)
-			{
-				util = new MarkdownUtil();
-				util.setImageBaseUrl(imageBaseUrl);
-				util.setLinkBaseUrl(linkBaseUrl);
-			}
-			else
-			{
-				util = this.markdownUtil;
-			}
-			response.type("text/html");
-			return util.renderHtml(request.body());
-		});
-	}
 
 	private void setupExceptionHandler()
 	{

@@ -1,7 +1,7 @@
-package org.fulib.webapp.projects.projectzip;
+package org.fulib.webapp.projectzip;
 
 import org.apache.commons.io.IOUtils;
-import org.fulib.webapp.projects.Main;
+import org.fulib.webapp.Main;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -72,7 +72,7 @@ public class ProjectGenerator
 	private void copy(FileGenerator generator, String resourceName, String file) throws IOException
 	{
 		generator.generate(file, output -> {
-			try (final InputStream fileInput = Main.class.getResourceAsStream("zip/" + resourceName))
+			try (final InputStream fileInput = ProjectGenerator.class.getResourceAsStream(resourceName))
 			{
 				IOUtils.copyLarge(fileInput, output, buffer);
 			}
@@ -83,7 +83,7 @@ public class ProjectGenerator
 		throws IOException
 	{
 		generator.generate(file, output -> {
-			try (final InputStream input = Main.class.getResourceAsStream("zip/" + resourceName))
+			try (final InputStream input = ProjectGenerator.class.getResourceAsStream(resourceName))
 			{
 				String content = IOUtils.toString(input, StandardCharsets.UTF_8);
 				for (int i = 0; i < replacements.length; i += 2)

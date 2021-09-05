@@ -14,8 +14,9 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.Convention;
 import org.bson.codecs.pojo.Conventions;
 import org.bson.codecs.pojo.PojoCodecProvider;
-import org.fulib.webapp.WebService;
+import org.fulib.webapp.Main;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -34,7 +35,7 @@ public class Mongo
 
 	static
 	{
-		for (final Map.Entry<Object, Object> entry : WebService.VERSIONS.entrySet())
+		for (final Map.Entry<Object, Object> entry : Main.VERSIONS.entrySet())
 		{
 			String key = entry.getKey().toString();
 			if ("fulib.org".equals(key))
@@ -65,6 +66,12 @@ public class Mongo
 		fromProviders(this.pojoCodecProvider));
 
 	// =============== Constructors ===============
+
+	@Inject
+	public Mongo()
+	{
+		this(System.getenv("FULIB_MONGO_URL"));
+	}
 
 	public Mongo(String url)
 	{

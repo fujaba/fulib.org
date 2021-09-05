@@ -1,4 +1,4 @@
-package org.fulib.webapp.projects;
+package org.fulib.webapp;
 
 import dagger.Component;
 

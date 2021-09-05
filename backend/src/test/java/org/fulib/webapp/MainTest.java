@@ -1,6 +1,6 @@
 package org.fulib.webapp;
 
-import org.fulib.webapp.tool.MarkdownUtil;
+import org.fulib.webapp.projectzip.ProjectZipController;
 import org.fulib.webapp.tool.RunCodeGen;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -15,11 +15,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class WebServiceTest
+public class MainTest
 {
 	private static final RunCodeGen runCodeGen = mock(RunCodeGen.class);
-	private static final MarkdownUtil markdownUtil = mock(MarkdownUtil.class);
-	private static final WebService service = new WebService(runCodeGen, markdownUtil);
+	private static final ProjectZipController projectZipController = mock(ProjectZipController.class);
+	private static final Main service = new Main(runCodeGen, projectZipController);
 
 	@BeforeClass
 	public static void setup()
@@ -47,13 +47,19 @@ public class WebServiceTest
 	}
 
 	@Test
+	public void projectZip() throws IOException
+	{
+		when(projectZipController.handle(any(), any())).thenReturn("");
+
+		checkRoute("POST", "/api/projectzip");
+
+		verify(projectZipController).handle(any(), any());
+	}
+
+	@Test
 	public void markdown() throws IOException
 	{
-		when(markdownUtil.renderHtml(any())).thenReturn("");
-
-		checkRoute("POST", "/rendermarkdown");
-
-		verify(markdownUtil).renderHtml(any());
+		// TODO checkRoute("POST", "/rendermarkdown");
 	}
 
 	@Test

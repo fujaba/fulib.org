@@ -1,4 +1,4 @@
-package org.fulib.webapp.projects.util;
+package org.fulib.webapp.util;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.WriteListener;

@@ -15,7 +15,7 @@ description = 'The fulib.org website and fulibScenarios Web App'
 
 // --------------- General Settings ---------------
 
-mainClassName = 'org.fulib.webapp.WebService'
+mainClassName = 'org.fulib.webapp.Main'
 
 shadowJar.archiveClassifier = 'all'
 
@@ -27,6 +27,12 @@ repositories {
 }
 
 dependencies {
+	// --------------- Dagger (Dependency Injection) ---------------
+
+	// https://mvnrepository.com/artifact/com.google.dagger/dagger
+	implementation 'com.google.dagger:dagger:2.37'
+	annotationProcessor 'com.google.dagger:dagger-compiler:2.37'
+
 	// --------------- Fulib Libraries ---------------
 
 	implementation fulibDependency

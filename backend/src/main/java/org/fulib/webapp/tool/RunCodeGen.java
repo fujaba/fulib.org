@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import spark.Request;
 import spark.Response;
 
+import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -44,6 +45,7 @@ public class RunCodeGen
 
 	// =============== Constructors ===============
 
+	@Inject
 	public RunCodeGen(Mongo db)
 	{
 		this.db = db;
