@@ -46,13 +46,18 @@ export class ContainerService {
   }
 
   async findOne(projectId: string): Promise<ContainerDto | null> {
-    // TODO can't we apply filters before listing ALL containers?
-    const containers = await this.docker.listContainers({});
-    const container = containers.find(c => (c.State === 'created' || c.State === 'running') && c.Labels['org.fulib.project'] === projectId);
-    if (!container) {
+    const containers = await this.docker.listContainers({
+      all: 1,
+      limit: 1,
+      filters: {
+        status: ['created', 'running'],
+        label: [`org.fulib.project=${projectId}`],
+      },
+    });
+    if (containers.length === 0) {
       return null;
     }
-    return this.toContainer(container.Id, projectId);
+    return this.toContainer(containers[0].Id, projectId);
   }
 
   async remove(projectId: string): Promise<ContainerDto | null> {
