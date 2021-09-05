@@ -24,7 +24,8 @@ export class ContainerService {
       Tty: true,
       NetworkingConfig: {
         EndpointsConfig: {
-          'fulib-projects': {},
+          [environment.docker.network]: {
+          },
         },
       },
       HostConfig: {

@@ -13,8 +13,8 @@ export const environment = {
     version: process.env.DOCKER_VERSION || 'v1.41',
     bindPrefix: process.env.FULIB_PROJECTS_DATA_DIR || 'data',
     containerImage: process.env.FULIB_PROJECTS_CONTAINER_IMAGE || 'fulib/fulib.org-projects',
-    proxyHost: process.env.FULIB_PROJECT_PROXY_URL || 'http://localhost:8080',
-    network: 'fulib-projects',
+    proxyHost: process.env.FULIB_PROJECTS_PROXY_URL || 'http://localhost:8080',
+    network: process.env.FULIB_PROJECTS_NETWORK || 'fulib_projects',
   },
   auth: {
     publicKey: `-----BEGIN PUBLIC KEY-----\n${
