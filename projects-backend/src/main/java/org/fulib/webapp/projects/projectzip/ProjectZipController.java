@@ -1,7 +1,5 @@
 package org.fulib.webapp.projects.projectzip;
 
-import org.fulib.webapp.projects.projects.ProjectData;
-import org.fulib.webapp.projects.projects.ProjectGenerator;
 import org.json.JSONException;
 import org.json.JSONObject;
 import spark.Request;

@@ -1,4 +1,4 @@
-package org.fulib.webapp.projects.projects;
+package org.fulib.webapp.projects.projectzip;
 
 public class ProjectData
 {

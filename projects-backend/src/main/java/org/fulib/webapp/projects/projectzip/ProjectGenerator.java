@@ -1,4 +1,4 @@
-package org.fulib.webapp.projects.projects;
+package org.fulib.webapp.projects.projectzip;
 
 import org.apache.commons.io.IOUtils;
 import org.fulib.webapp.projects.Main;

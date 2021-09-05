@@ -1,8 +1,5 @@
 package org.fulib.webapp.projects;
 
-import org.fulib.webapp.projects.containers.ContainerController;
-import org.fulib.webapp.projects.members.MemberController;
-import org.fulib.webapp.projects.projects.ProjectController;
 import org.fulib.webapp.projects.projectzip.ProjectZipController;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -20,11 +17,7 @@ import static org.mockito.Mockito.*;
 public class MainTest
 {
 	private static final ProjectZipController projectZipController = mock(ProjectZipController.class);
-	private static final ProjectController projectController = mock(ProjectController.class);
-	private static final ContainerController containerController = mock(ContainerController.class);
-	private static final MemberController memberController = mock(MemberController.class);
-	private static final Main main = new Main(projectZipController, projectController, containerController,
-	                                          memberController);
+	private static final Main main = new Main(projectZipController);
 
 	@BeforeClass
 	public static void setup()
@@ -47,30 +40,6 @@ public class MainTest
 		checkRoute("POST", "/api/projectzip");
 
 		verify(projectZipController).handle(any(), any());
-	}
-
-	@Test
-	public void projects() throws Exception
-	{
-		when(projectController.get(any(), any())).thenReturn("");
-		when(projectController.getAll(any(), any())).thenReturn("");
-		when(projectController.create(any(), any())).thenReturn("");
-		when(projectController.update(any(), any())).thenReturn("");
-		when(projectController.delete(any(), any())).thenReturn("");
-
-		checkRoute("POST", "/api/projects");
-		checkRoute("GET", "/api/projects");
-		checkRoute("GET", "/api/projects/1");
-		checkRoute("PUT", "/api/projects/1");
-		checkRoute("DELETE", "/api/projects/1");
-
-		// TODO container and member routes
-
-		verify(projectController).get(any(), any());
-		verify(projectController).getAll(any(), any());
-		verify(projectController).create(any(), any());
-		verify(projectController).update(any(), any());
-		verify(projectController).delete(any(), any());
 	}
 
 	private void checkRoute(String method, String path) throws IOException

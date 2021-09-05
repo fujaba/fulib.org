@@ -1,15 +1,11 @@
 package org.fulib.webapp.projects;
 
-import org.fulib.webapp.projects.containers.ContainerController;
-import org.fulib.webapp.projects.members.MemberController;
-import org.fulib.webapp.projects.projects.ProjectController;
 import org.fulib.webapp.projects.projectzip.ProjectZipController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Service;
 
 import javax.inject.Inject;
-import java.io.File;
 
 public class Main
 {
@@ -22,22 +18,15 @@ public class Main
 	// =============== Fields ===============
 
 	private final ProjectZipController projectZipController;
-	private final ProjectController projectController;
-	private final ContainerController containerController;
-	private final MemberController memberController;
 
 	private Service service;
 
 	// =============== Constructors ===============
 
 	@Inject
-	public Main(ProjectZipController projectZipController, ProjectController projectController,
-		ContainerController containerController, MemberController memberController)
+	public Main(ProjectZipController projectZipController)
 	{
 		this.projectZipController = projectZipController;
-		this.projectController = projectController;
-		this.containerController = containerController;
-		this.memberController = memberController;
 	}
 
 	// =============== Static Methods ===============
@@ -70,7 +59,6 @@ public class Main
 	private void addApiRoutes()
 	{
 		addMainRoutes();
-		addProjectsRoutes();
 	}
 
 	void awaitStart()
@@ -88,33 +76,6 @@ public class Main
 	private void addMainRoutes()
 	{
 		service.post("/projectzip", projectZipController::handle);
-	}
-
-	private void addProjectsRoutes()
-	{
-		service.path("/projects", () -> {
-			service.post("", projectController::create);
-			service.get("", projectController::getAll);
-			service.post("/container", containerController::create);
-
-			service.path("/:projectId", this::addProjectRoutes);
-		});
-	}
-
-	private void addProjectRoutes()
-	{
-		service.get("", projectController::get);
-		service.put("", projectController::update);
-		service.delete("", projectController::delete);
-		service.path("/members", () -> {
-			service.get("", memberController::getAll);
-			service.get("/:userId", memberController::getOne);
-			service.put("/:userId", memberController::updateOne);
-			service.delete("/:userId", memberController::deleteOne);
-		});
-		service.get("/container", containerController::get);
-		service.post("/container", containerController::create);
-		service.delete("/container", containerController::delete);
 	}
 
 	private void setupExceptionHandler()
