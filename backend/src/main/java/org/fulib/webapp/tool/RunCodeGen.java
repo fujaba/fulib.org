@@ -174,6 +174,11 @@ public class RunCodeGen
 			final Result result = new Result(id);
 			result.setExitCode(exitCode);
 
+			final MarkdownUtil renderer = new MarkdownUtil();
+			renderer.setImageBaseUrl("/" + tempDir.relativize(packagePath) + "/");
+			final String html = renderer.renderHtml(bodyText);
+			result.setHtml(html);
+
 			final String output = new String(out.toByteArray(), StandardCharsets.UTF_8);
 			final String sanitizedOutput = output.replace(projectDir.toString(), ".");
 			result.setOutput(sanitizedOutput);
@@ -197,11 +202,6 @@ public class RunCodeGen
 				}
 
 				collectObjectDiagrams(result.getObjectDiagrams(), bodyText, projectDir, packagePath);
-
-				final MarkdownUtil renderer = new MarkdownUtil();
-				renderer.setImageBaseUrl("/" + tempDir.relativize(packagePath).toString() + "/");
-				final String html = renderer.renderHtml(bodyText);
-				result.setHtml(html);
 			}
 
 			return result;
