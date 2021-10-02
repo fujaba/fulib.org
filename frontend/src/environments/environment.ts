@@ -8,7 +8,7 @@ export const environment = {
   assignmentsApiUrl: 'http://localhost:21318/api/v1',
   projectsApiUrl: 'http://localhost:6266/api/v1',
   auth: {
-    url: 'http://localhost:24785/auth',
+    url: 'https://se.uniks.de/auth',
     realm: 'fulib.org',
     clientId: 'fulib.org',
   },
