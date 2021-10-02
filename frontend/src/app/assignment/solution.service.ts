@@ -127,11 +127,11 @@ export class SolutionService {
     return ids;
   }
 
-  getOwn(): Observable<[Assignment[], Solution[]]> {
+  getOwnWithAssignments(): Observable<[Assignment[], Solution[]]> {
     return this.users.current$.pipe(
       switchMap(user => {
         if (user && user.id) {
-          return this.getByUserId(user.id).pipe(switchMap(solutions => {
+          return this.getOwn().pipe(switchMap(solutions => {
             const assignmentIds = [...new Set<string>(solutions.map(s => s.assignment))];
             const assignments = forkJoin(assignmentIds.map(aid => this.assignmentService.get(aid)));
 
@@ -185,16 +185,8 @@ export class SolutionService {
     );
   }
 
-  getByUserId(userId: string): Observable<Solution[]> {
-    // TODO NYI in new backend service
-    return this.http.get<Solution[]>(`${environment.apiURL}/solutions`, {params: {userId}}).pipe(
-      map(solutions => {
-        for (const solution of solutions) {
-          // solution.token = this.getToken(solution.assignment.id, solution.id);
-        }
-        return solutions;
-      }),
-    );
+  getOwn(): Observable<Solution[]> {
+    return this.http.get<Solution[]>(`${environment.assignmentsApiUrl}/solutions`);
   }
 
   getComments(assignment: Assignment | string, id: string): Observable<Comment[]> {

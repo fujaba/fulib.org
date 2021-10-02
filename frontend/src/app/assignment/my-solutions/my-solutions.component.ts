@@ -33,7 +33,7 @@ export class MySolutionsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.solutionService.getOwn().subscribe(([assignments, solutions]) => {
+    this.solutionService.getOwnWithAssignments().subscribe(([assignments, solutions]) => {
       this.assignments = assignments.sort(Assignment.comparator);
       this.solutions = new Map<string, Solution[]>();
 

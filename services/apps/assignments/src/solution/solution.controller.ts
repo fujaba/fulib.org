@@ -12,7 +12,7 @@ import {SolutionService} from './solution.service';
 const forbiddenResponse = 'Not owner of solution or assignment, or invalid Assignment-Token or Solution-Token.';
 const forbiddenAssignmentResponse = 'Not owner of assignment, or invalid Assignment-Token.';
 
-@Controller('assignments/:assignment/solutions')
+@Controller()
 @ApiTags('Solutions')
 export class SolutionController {
   constructor(
@@ -21,7 +21,7 @@ export class SolutionController {
   ) {
   }
 
-  @Post()
+  @Post('assignments/:assignment/solutions')
   @Auth({optional: true})
   @ApiCreatedResponse({type: Solution})
   async create(
@@ -32,7 +32,7 @@ export class SolutionController {
     return this.solutionService.create(assignment, dto, user?.sub);
   }
 
-  @Get()
+  @Get('assignments/:assignment/solutions')
   @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
   @ApiOkResponse({type: [ReadSolutionDto]})
   async findAll(
@@ -41,7 +41,7 @@ export class SolutionController {
     return this.solutionService.findAll({assignment});
   }
 
-  @Get(':id')
+  @Get('assignments/:assignment/solutions/:id')
   @SolutionAuth({forbiddenResponse})
   @NotFound()
   @ApiOkResponse({type: ReadSolutionDto})
@@ -52,7 +52,16 @@ export class SolutionController {
     return this.solutionService.mask(solution.toObject());
   }
 
-  @Patch(':id')
+  @Get('solutions')
+  @Auth()
+  @ApiOkResponse({type: [ReadSolutionDto]})
+  async findOwn(
+    @AuthUser() user: UserToken,
+  ): Promise<ReadSolutionDto[]> {
+    return this.solutionService.findAll({createdBy: user.sub});
+  }
+
+  @Patch('assignments/:assignment/solutions/:id')
   @SolutionAuth({forbiddenResponse})
   @NotFound()
   @ApiOkResponse({type: ReadSolutionDto})
@@ -64,7 +73,7 @@ export class SolutionController {
     return this.solutionService.mask(solution);
   }
 
-  @Delete(':id')
+  @Delete('assignments/:assignment/solutions/:id')
   @SolutionAuth({forbiddenResponse})
   @NotFound()
   @ApiOkResponse({type: ReadSolutionDto})
