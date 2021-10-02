@@ -1,7 +1,7 @@
 import {UserToken} from '@app/keycloak-auth';
 import {Injectable} from '@nestjs/common';
-import {InjectModel} from '@nestjs/mongoose';
-import {FilterQuery, Model} from 'mongoose';
+import {InjectConnection, InjectModel} from '@nestjs/mongoose';
+import {Connection, FilterQuery, Model} from 'mongoose';
 import {generateToken} from '../utils';
 import {CreateSolutionDto, ReadSolutionDto, UpdateSolutionDto} from './solution.dto';
 import {Solution, SolutionDocument} from './solution.schema';
@@ -10,7 +10,19 @@ import {Solution, SolutionDocument} from './solution.schema';
 export class SolutionService {
   constructor(
     @InjectModel('solutions') private model: Model<Solution>,
+    @InjectConnection() private connection: Connection,
   ) {
+    this.migrate();
+  }
+
+  async migrate() {
+    const solutions = this.connection.collection('solutions');
+    const result = await solutions.updateMany({}, {$rename: {
+      // TODO id: '_id'
+      userId: 'createdBy',
+      timeStamp: 'timestamp',
+    }});
+    console.info('Migrated', result.modifiedCount, 'solutions');
   }
 
   async create(assignment: string, dto: CreateSolutionDto, createdBy?: string): Promise<SolutionDocument> {
