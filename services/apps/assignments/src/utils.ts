@@ -1,3 +1,4 @@
+import {isUUID} from 'class-validator';
 import {randomBytes} from 'crypto';
 import {FilterQuery} from 'mongoose';
 
@@ -8,5 +9,5 @@ export function generateToken(): string {
 }
 
 export function idFilter(id: string): FilterQuery<any> {
-  return {$or: [{_id: id}, {id}]};
+  return isUUID(id) ? {id} : {_id: id};
 }
