@@ -137,7 +137,7 @@ export class AssignmentService {
   }
 
   check(assignment: CheckAssignment): Observable<CheckResult> {
-    return this.http.post<CheckResult>(`${environment.apiURL}/assignments/create/check`, assignment);
+    return this.http.post<CheckResult>(`${environment.assignmentsApiUrl}/assignments/check`, assignment);
   }
 
   lint(result: CheckResult): Marker[] {

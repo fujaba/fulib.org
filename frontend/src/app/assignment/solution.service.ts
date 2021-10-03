@@ -153,7 +153,7 @@ export class SolutionService {
   // --------------- HTTP Methods ---------------
 
   check(solution: CheckSolution): Observable<CheckResult> {
-    return this.http.post<CheckResult>(`${environment.apiURL}/assignments/${solution.assignment._id}/check`, solution);
+    return this.http.post<CheckResult>(`${environment.assignmentsApiUrl}/assignments/${solution.assignment._id}/check`, solution);
   }
 
   submit(solution: Solution): Observable<Solution> {
