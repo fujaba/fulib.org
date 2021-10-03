@@ -14,4 +14,7 @@ MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjSudUTRH8wtEeIQdKh4Yv97HcFGjLzl9+yBm
     algorithms: (process.env.AUTH_ALGORITHMS || 'RS256').split(','),
     issuer: process.env.AUTH_ISSUER || 'https://se.uniks.de/auth/realms/fulib.org',
   },
+  compiler: {
+    apiUrl: process.env.COMPILER_API_URL || 'http://localhost:4567/api',
+  },
 };

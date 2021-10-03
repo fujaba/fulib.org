@@ -1,16 +1,22 @@
 import {UserToken} from '@app/keycloak-auth';
+import {HttpService} from '@nestjs/axios';
 import {Injectable} from '@nestjs/common';
 import {InjectConnection, InjectModel} from '@nestjs/mongoose';
 import {Connection, FilterQuery, Model} from 'mongoose';
+import {Task} from '../assignment/assignment.schema';
+import {AssignmentService} from '../assignment/assignment.service';
+import {environment} from '../environment';
 import {generateToken, idFilter} from '../utils';
 import {CreateSolutionDto, ReadSolutionDto, UpdateSolutionDto} from './solution.dto';
-import {Solution, SolutionDocument} from './solution.schema';
+import {Solution, SolutionDocument, TaskResult} from './solution.schema';
 
 @Injectable()
 export class SolutionService {
   constructor(
     @InjectModel('solutions') private model: Model<Solution>,
     @InjectConnection() private connection: Connection,
+    private assignmentService: AssignmentService,
+    private http: HttpService,
   ) {
     this.migrate();
   }
@@ -25,16 +31,33 @@ export class SolutionService {
   }
 
   async create(assignment: string, dto: CreateSolutionDto, createdBy?: string): Promise<SolutionDocument> {
-    const token = generateToken();
-    const timestamp = new Date();
     return this.model.create({
       ...dto,
       assignment,
-      token,
       createdBy,
-      timestamp,
-      // TODO results
+      token: generateToken(),
+      timestamp: new Date(),
+      results: await this.results(assignment, dto),
     });
+  }
+
+  private async results(assignmentId: string, dto: CreateSolutionDto): Promise<TaskResult[]> {
+    const assignment = await this.assignmentService.findOne(assignmentId);
+    return assignment ? Promise.all(assignment.tasks.map(t => this.taskResult(dto, t))) : [];
+  }
+
+  private async taskResult(dto: CreateSolutionDto, task: Task): Promise<TaskResult> {
+    const response = await this.http.post(`${environment.compiler.apiUrl}/runcodegen`, {
+      privacy: 'none',
+      packageName: 'org.fulib.assignments',
+      scenarioFileName: 'Scenario.md',
+      scenarioText: `# Solution\n\n${dto.solution}\n\n## Verification\n\n${task.verification}\n\n`,
+    }).toPromise();
+    console.debug(response?.data);
+    return {
+      points: response?.data.exitCode === 0 ? task.points : 0,
+      output: response?.data.output,
+    };
   }
 
   async findAll(where: FilterQuery<Solution> = {}): Promise<ReadSolutionDto[]> {
