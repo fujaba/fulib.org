@@ -2,7 +2,7 @@ import {UserToken} from '@app/keycloak-auth';
 import {Injectable} from '@nestjs/common';
 import {InjectConnection, InjectModel} from '@nestjs/mongoose';
 import {Connection, FilterQuery, Model} from 'mongoose';
-import {generateToken} from '../utils';
+import {generateToken, idFilter} from '../utils';
 import {CreateAssignmentDto, ReadAssignmentDto, UpdateAssignmentDto} from './assignment.dto';
 import {Assignment, AssignmentDocument} from './assignment.schema';
 
@@ -19,7 +19,6 @@ export class AssignmentService {
     const collection = this.connection.collection('assignments');
     const result = await collection.updateMany({}, {
       $rename: {
-        // TODO id: '_id'
         userId: 'createdBy',
       },
       $unset: {
@@ -43,7 +42,7 @@ export class AssignmentService {
   }
 
   async findOne(id: string): Promise<AssignmentDocument | null> {
-    return this.model.findById(id).exec();
+    return this.model.findOne(idFilter(id)).exec();
   }
 
   mask(assignment: Assignment): ReadAssignmentDto {
@@ -55,11 +54,11 @@ export class AssignmentService {
   }
 
   async update(id: string, dto: UpdateAssignmentDto): Promise<Assignment | null> {
-    return this.model.findByIdAndUpdate(id, dto, {new: true}).exec();
+    return this.model.findOneAndUpdate(idFilter(id), dto, {new: true}).exec();
   }
 
   async remove(id: string): Promise<AssignmentDocument | null> {
-    return this.model.findByIdAndDelete(id).exec();
+    return this.model.findOneAndDelete(idFilter(id)).exec();
   }
 
   isAuthorized(assignment: Assignment, user?: UserToken, token?: string): boolean {

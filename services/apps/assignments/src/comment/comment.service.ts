@@ -2,6 +2,7 @@ import {UserToken} from '@app/keycloak-auth';
 import {Injectable} from '@nestjs/common';
 import {InjectConnection, InjectModel} from '@nestjs/mongoose';
 import {Connection, FilterQuery, Model} from 'mongoose';
+import {idFilter} from '../utils';
 import {CreateCommentDto, UpdateCommentDto} from './comment.dto';
 import {Comment, CommentDocument} from './comment.schema';
 
@@ -19,7 +20,6 @@ export class CommentService {
     const result = await collection.updateMany({}, {
       // TODO assignment
       $rename: {
-        // TODO id: '_id'
         parent: 'solution',
         userId: 'createdBy',
         timeStamp: 'timestamp',
@@ -49,15 +49,15 @@ export class CommentService {
   }
 
   async findOne(id: string): Promise<CommentDocument | null> {
-    return this.model.findById(id).exec();
+    return this.model.findOne(idFilter(id)).exec();
   }
 
   async update(id: string, dto: UpdateCommentDto): Promise<Comment | null> {
-    return this.model.findByIdAndUpdate(id, dto, {new: true}).exec();
+    return this.model.findOneAndUpdate(idFilter(id), dto, {new: true}).exec();
   }
 
   async remove(id: string): Promise<CommentDocument | null> {
-    return this.model.findByIdAndDelete(id).exec();
+    return this.model.findOneAndDelete(idFilter(id)).exec();
   }
 
   isAuthorized(comment: Comment, bearerToken: UserToken) {

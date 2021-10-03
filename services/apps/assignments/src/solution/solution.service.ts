@@ -2,7 +2,7 @@ import {UserToken} from '@app/keycloak-auth';
 import {Injectable} from '@nestjs/common';
 import {InjectConnection, InjectModel} from '@nestjs/mongoose';
 import {Connection, FilterQuery, Model} from 'mongoose';
-import {generateToken} from '../utils';
+import {generateToken, idFilter} from '../utils';
 import {CreateSolutionDto, ReadSolutionDto, UpdateSolutionDto} from './solution.dto';
 import {Solution, SolutionDocument} from './solution.schema';
 
@@ -18,7 +18,6 @@ export class SolutionService {
   async migrate() {
     const solutions = this.connection.collection('solutions');
     const result = await solutions.updateMany({}, {$rename: {
-      // TODO id: '_id'
       userId: 'createdBy',
       timeStamp: 'timestamp',
     }});
@@ -43,7 +42,7 @@ export class SolutionService {
   }
 
   async findOne(id: string): Promise<SolutionDocument | null> {
-    return this.model.findById(id).exec();
+    return this.model.findOne(idFilter(id)).exec();
   }
 
   mask(solution: Solution): ReadSolutionDto {
@@ -52,11 +51,11 @@ export class SolutionService {
   }
 
   async update(id: string, dto: UpdateSolutionDto): Promise<Solution | null> {
-    return this.model.findByIdAndUpdate(id, dto, {new: true}).exec();
+    return this.model.findOneAndUpdate(idFilter(id), dto, {new: true}).exec();
   }
 
   async remove(id: string): Promise<SolutionDocument | null> {
-    return this.model.findByIdAndDelete(id).exec();
+    return this.model.findOneAndDelete(idFilter(id)).exec();
   }
 
   isAuthorized(solution: Solution, user?: UserToken, token?: string): boolean {

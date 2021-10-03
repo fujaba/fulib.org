@@ -1,6 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {InjectConnection, InjectModel} from '@nestjs/mongoose';
 import {Connection, Model} from 'mongoose';
+import {idFilter} from '../utils';
 import {CreateCourseDto, UpdateCourseDto} from './course.dto';
 import {Course, CourseDocument} from './course.schema';
 
@@ -17,7 +18,6 @@ export class CourseService {
     const collection = this.connection.collection('courses');
     const result = await collection.updateMany({}, {
       $rename: {
-        // TODO id: '_id'
         assignmentIds: 'assignments',
         userId: 'createdBy',
       },
@@ -40,14 +40,14 @@ export class CourseService {
   }
 
   async findOne(id: string): Promise<CourseDocument | null> {
-    return this.model.findById(id).exec();
+    return this.model.findOne(idFilter(id)).exec();
   }
 
   async update(id: string, dto: UpdateCourseDto): Promise<Course | null> {
-    return this.model.findByIdAndUpdate(id, dto, {new: true}).exec();
+    return this.model.findOneAndUpdate(idFilter(id), dto, {new: true}).exec();
   }
 
   async remove(id: string): Promise<CourseDocument | null> {
-    return this.model.findByIdAndDelete(id).exec();
+    return this.model.findOneAndDelete(idFilter(id)).exec();
   }
 }

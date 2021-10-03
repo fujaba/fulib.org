@@ -16,7 +16,6 @@ export class GradingService {
   async migrate() {
     const collection = this.connection.collection('gradings');
     const result = await collection.updateMany({}, {$rename: {
-      // TODO id: '_id'
       solutionID: 'solution',
       taskID: 'task',
       userId: 'createdBy',
