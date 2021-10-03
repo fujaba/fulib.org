@@ -1,16 +1,20 @@
 import {UserToken} from '@app/keycloak-auth';
+import {HttpService} from '@nestjs/axios';
 import {Injectable} from '@nestjs/common';
 import {InjectConnection, InjectModel} from '@nestjs/mongoose';
 import {Connection, FilterQuery, Model} from 'mongoose';
+import {environment} from '../environment';
+import {TaskResult} from '../solution/solution.schema';
 import {generateToken, idFilter} from '../utils';
 import {CreateAssignmentDto, ReadAssignmentDto, UpdateAssignmentDto} from './assignment.dto';
-import {Assignment, AssignmentDocument} from './assignment.schema';
+import {Assignment, AssignmentDocument, Task} from './assignment.schema';
 
 @Injectable()
 export class AssignmentService {
   constructor(
     @InjectModel('assignments') private model: Model<Assignment>,
     @InjectConnection() private connection: Connection,
+    private http: HttpService,
   ) {
     this.migrate();
   }
@@ -26,6 +30,23 @@ export class AssignmentService {
       },
     });
     console.info('Migrated', result.modifiedCount, 'assignments');
+  }
+
+  async check(solution: string, {tasks}: Pick<Assignment, 'tasks'>): Promise<TaskResult[]> {
+    return Promise.all(tasks.map(task => this.checkTask(solution, task)));
+  }
+
+  async checkTask(solution: string, task: Task): Promise<TaskResult> {
+    const response = await this.http.post(`${environment.compiler.apiUrl}/runcodegen`, {
+      privacy: 'none',
+      packageName: 'org.fulib.assignments',
+      scenarioFileName: 'Scenario.md',
+      scenarioText: `# Solution\n\n${solution}\n\n## Verification\n\n${task.verification}\n\n`,
+    }).toPromise();
+    return {
+      points: response?.data.exitCode === 0 ? task.points : 0,
+      output: response?.data.output,
+    };
   }
 
   async create(dto: CreateAssignmentDto, userId?: string): Promise<AssignmentDocument> {

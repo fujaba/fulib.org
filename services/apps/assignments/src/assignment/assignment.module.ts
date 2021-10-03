@@ -1,3 +1,4 @@
+import {HttpModule} from '@nestjs/axios';
 import {Module} from '@nestjs/common';
 import {MongooseModule} from '@nestjs/mongoose';
 import {AssignmentAuthGuard} from './assignment-auth.guard';
@@ -13,6 +14,7 @@ import {AssignmentService} from './assignment.service';
         schema: AssignmentSchema,
       },
     ]),
+    HttpModule,
   ],
   controllers: [AssignmentController],
   providers: [

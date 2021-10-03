@@ -3,7 +3,14 @@ import {NotFound, notFound} from '@app/not-found';
 import {Body, Controller, Delete, Get, Headers, Param, Patch, Post, Query} from '@nestjs/common';
 import {ApiCreatedResponse, ApiHeader, ApiOkResponse, ApiTags, getSchemaPath} from '@nestjs/swagger';
 import {AssignmentAuth} from './assignment-auth.decorator';
-import {CreateAssignmentDto, ReadAssignmentDto, UpdateAssignmentDto} from './assignment.dto';
+import {
+  CheckNewRequestDto,
+  CheckRequestDto,
+  CheckResponseDto,
+  CreateAssignmentDto,
+  ReadAssignmentDto,
+  UpdateAssignmentDto,
+} from './assignment.dto';
 import {Assignment} from './assignment.schema';
 import {AssignmentService} from './assignment.service';
 
@@ -58,6 +65,29 @@ export class AssignmentController {
       return assignment;
     }
     return this.assignmentService.mask(assignment.toObject());
+  }
+
+  @Post('check')
+  @ApiOkResponse({type: CheckResponseDto})
+  async checkNew(
+    @Body() dto: CheckNewRequestDto,
+  ): Promise<CheckResponseDto> {
+    return {
+      results: await this.assignmentService.check(dto.solution, dto),
+    };
+  }
+
+  @Post(':id/check')
+  @NotFound()
+  @ApiOkResponse({type: CheckResponseDto})
+  async check(
+    @Param('id') id: string,
+    @Body() dto: CheckRequestDto,
+  ): Promise<CheckResponseDto> {
+    const assignment = await this.assignmentService.findOne(id) ?? notFound(id);
+    return {
+      results: await this.assignmentService.check(dto.solution, assignment),
+    };
   }
 
   @Patch(':id')
