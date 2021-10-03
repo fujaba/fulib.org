@@ -5,13 +5,11 @@ import {AssigneeController} from './assignee.controller';
 import {AssigneeSchema} from './assignee.schema';
 import {AssigneeService} from './assignee.service';
 
-// TODO migration: assignee -> assignees { _id -> -, id -> solution, assignee }
-
 @Module({
   imports: [
     MongooseModule.forFeature([
       {
-        name: 'assignees',
+        name: 'assignee',
         schema: AssigneeSchema,
       },
     ]),
