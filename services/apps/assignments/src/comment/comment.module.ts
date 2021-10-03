@@ -7,8 +7,6 @@ import {CommentController} from './comment.controller';
 import {CommentSchema} from './comment.schema';
 import {CommentService} from './comment.service';
 
-// TODO migration: comments { id -> _id, parent -> solution, - -> assignment, userId -> createdBy, timeStamp -> timestamp, markdown -> body, html -> - }
-
 @Module({
   imports: [
     MongooseModule.forFeature([

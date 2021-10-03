@@ -1,6 +1,6 @@
 import {Injectable} from '@nestjs/common';
-import {InjectModel} from '@nestjs/mongoose';
-import {Model} from 'mongoose';
+import {InjectConnection, InjectModel} from '@nestjs/mongoose';
+import {Connection, Model} from 'mongoose';
 import {CreateCourseDto, UpdateCourseDto} from './course.dto';
 import {Course, CourseDocument} from './course.schema';
 
@@ -8,7 +8,24 @@ import {Course, CourseDocument} from './course.schema';
 export class CourseService {
   constructor(
     @InjectModel('courses') private model: Model<Course>,
+    @InjectConnection() private connection: Connection,
   ) {
+    this.migrate();
+  }
+
+  async migrate() {
+    const collection = this.connection.collection('courses');
+    const result = await collection.updateMany({}, {
+      $rename: {
+        // TODO id: '_id'
+        assignmentIds: 'assignments',
+        userId: 'createdBy',
+      },
+      $unset: {
+        descriptionHtml: 1,
+      },
+    });
+    console.info('Migrated', result.modifiedCount, 'courses');
   }
 
   async create(dto: CreateCourseDto, userId?: string): Promise<CourseDocument> {

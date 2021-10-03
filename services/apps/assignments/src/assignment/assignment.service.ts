@@ -1,7 +1,7 @@
 import {UserToken} from '@app/keycloak-auth';
 import {Injectable} from '@nestjs/common';
-import {InjectModel} from '@nestjs/mongoose';
-import {FilterQuery, Model} from 'mongoose';
+import {InjectConnection, InjectModel} from '@nestjs/mongoose';
+import {Connection, FilterQuery, Model} from 'mongoose';
 import {generateToken} from '../utils';
 import {CreateAssignmentDto, ReadAssignmentDto, UpdateAssignmentDto} from './assignment.dto';
 import {Assignment, AssignmentDocument} from './assignment.schema';
@@ -10,7 +10,23 @@ import {Assignment, AssignmentDocument} from './assignment.schema';
 export class AssignmentService {
   constructor(
     @InjectModel('assignments') private model: Model<Assignment>,
+    @InjectConnection() private connection: Connection,
   ) {
+    this.migrate();
+  }
+
+  async migrate() {
+    const collection = this.connection.collection('assignments');
+    const result = await collection.updateMany({}, {
+      $rename: {
+        // TODO id: '_id'
+        userId: 'createdBy',
+      },
+      $unset: {
+        descriptionHtml: 1,
+      },
+    });
+    console.info('Migrated', result.modifiedCount, 'assignments');
   }
 
   async create(dto: CreateAssignmentDto, userId?: string): Promise<AssignmentDocument> {

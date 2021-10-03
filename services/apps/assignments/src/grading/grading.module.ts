@@ -6,8 +6,6 @@ import {GradingController} from './grading.controller';
 import {GradingSchema} from './grading.schema';
 import {GradingService} from './grading.service';
 
-// TODO migration: gradings { id -> _id, solutionID -> solution, taskID -> task, userId -> createdBy, timeStamp -> timestamp }
-
 @Module({
   imports: [
     MongooseModule.forFeature([

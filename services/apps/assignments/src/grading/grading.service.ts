@@ -1,6 +1,6 @@
 import {Injectable} from '@nestjs/common';
-import {InjectModel} from '@nestjs/mongoose';
-import {FilterQuery, Model} from 'mongoose';
+import {InjectConnection, InjectModel} from '@nestjs/mongoose';
+import {Connection, FilterQuery, Model} from 'mongoose';
 import {UpdateGradingDto} from './grading.dto';
 import {Grading, GradingDocument} from './grading.schema';
 
@@ -8,7 +8,21 @@ import {Grading, GradingDocument} from './grading.schema';
 export class GradingService {
   constructor(
     @InjectModel('gradings') private model: Model<Grading>,
+    @InjectConnection() private connection: Connection,
   ) {
+    this.migrate();
+  }
+
+  async migrate() {
+    const collection = this.connection.collection('gradings');
+    const result = await collection.updateMany({}, {$rename: {
+      // TODO id: '_id'
+      solutionID: 'solution',
+      taskID: 'task',
+      userId: 'createdBy',
+      timeStamp: 'timestamp',
+    }});
+    console.info('Migrated', result.modifiedCount, 'gradings');
   }
 
   async findAll(where: FilterQuery<Grading> = {}): Promise<GradingDocument[]> {
