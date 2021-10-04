@@ -1,47 +1,4 @@
-<div class="d-flex h-100">
-  <div class="d-flex flex-column sidebar">
-    <a *ngFor="let entry of sidebarItems"
-         class="sidebar-item"
-         [ngbTooltip]="entry.name" placement="right"
-         [routerLink]="[{outlets: {panel: entry.id}}]"
-         routerLinkActive="active"
-    >
-      <i class="bi-{{entry.icon}}" role="navigation" [attr.aria-label]="entry.name"></i>
-    </a>
-    <div class="border-top m-1"></div>
-    <a class="sidebar-item" routerLink="search" ngbTooltip="Search Everywhere" placement="right">
-      <i class="bi-search"></i>
-    </a>
-    <a class="sidebar-item" routerLink="run" ngbTooltip="Run Anything" placement="right">
-      <i class="bi-play"></i>
-    </a>
-    <div class="border-top m-1 mt-auto"></div>
-    <a class="sidebar-item" routerLink="tutorial" ngbTooltip="Tutorial" placement="right">
-      <i class="bi-question-circle"></i>
-    </a>
-    <a class="sidebar-item" href="/projects" ngbTooltip="Exit" placement="right" (click)="exit(); $event.preventDefault()">
-      <i class="bi-box-arrow-left"></i>
-    </a>
-  </div>
-  <as-split class="flex-grow-1 h-100" direction="horizontal">
-    <as-split-area *ngIf="progress.projectRoot" [size]="20" [order]="0">
-      <router-outlet name="panel"></router-outlet>
-    </as-split-area>
-    <as-split-area [size]="60" [order]="1">
-      <as-split direction="vertical">
-        <as-split-area *ngIf="progress.projectRoot" [size]="70" [order]="0">
-          <app-split-panel></app-split-panel>
-        </as-split-area>
-        <as-split-area *ngIf="progress.connect" [size]="30" [order]="1">
-          <app-terminal-tabs></app-terminal-tabs>
-        </as-split-area>
-      </as-split>
-    </as-split-area>
-    <as-split-area [size]="20" [order]="2">
-      <router-outlet name="docs" routerLink="docs:"></router-outlet>
-    </as-split-area>
-  </as-split>
-</div>
+<iframe *ngIf="container" [src]="container.url | safeResourceUrl" class="w-100 h-100 border-0"></iframe>
 <ng-template #loadingModal let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="loading-modal-title">
@@ -65,5 +22,3 @@
     </a>
   </div>
 </ng-template>
-
-<router-outlet></router-outlet>

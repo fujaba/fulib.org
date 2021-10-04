@@ -31,11 +31,12 @@ export class ContainerService {
       HostConfig: {
         AutoRemove: true,
         Binds: [
-          `${bindPrefix}/projects/${this.idBin(projectId)}/${projectId}:/projects/${projectId}`,
+          `${bindPrefix}/projects/${this.idBin(projectId)}/${projectId}:/home/coder/project`,
         ],
       },
       Env: [
         `PROJECT_ID=${projectId}`,
+        'PASSWORD=fulib',
       ],
       Labels: {
         'org.fulib.project': projectId,
@@ -79,7 +80,7 @@ export class ContainerService {
   }
 
   private containerUrl(id: string): string {
-    return `${environment.docker.proxyHost}/containers/${id.substring(0, 12)}`;
+    return `${environment.docker.proxyHost}/containers/${id.substring(0, 12)}/`;
   }
 
   private idBin(projectId: string) {
