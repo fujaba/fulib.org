@@ -1,4 +1,5 @@
 import {Injectable} from '@nestjs/common';
+import {randomBytes} from 'crypto';
 import * as Dockerode from 'dockerode';
 import * as path from 'path';
 import {environment} from '../environment';
@@ -19,6 +20,7 @@ export class ContainerService {
 
   async start(projectId: string): Promise<ContainerDto> {
     const bindPrefix = path.resolve(environment.docker.bindPrefix);
+    const token = randomBytes(10).toString('base64');
     const container = await this.docker.createContainer({
       Image: environment.docker.containerImage,
       Tty: true,
@@ -39,14 +41,15 @@ export class ContainerService {
       },
       Env: [
         `PROJECT_ID=${projectId}`,
-        'PASSWORD=fulib',
+        `PASSWORD=${token}`,
       ],
       Labels: {
         'org.fulib.project': projectId,
+        'org.fulib.token': token,
       },
     });
     await container.start();
-    return this.toContainer(container.id, projectId);
+    return this.toContainer(container.id, token, projectId);
   }
 
   async findOne(projectId: string): Promise<ContainerDto | null> {
@@ -61,7 +64,7 @@ export class ContainerService {
     if (containers.length === 0) {
       return null;
     }
-    return this.toContainer(containers[0].Id, projectId);
+    return this.toContainer(containers[0].Id, projectId, containers[0].Labels['org.fulib.token']);
   }
 
   async remove(projectId: string): Promise<ContainerDto | null> {
@@ -74,10 +77,11 @@ export class ContainerService {
     return existing;
   }
 
-  private toContainer(id: string, projectId: string) {
+  private toContainer(id: string, projectId: string, token: string): ContainerDto {
     return {
       id,
       projectId,
+      token,
       url: this.containerUrl(id),
     };
   }

@@ -1,5 +1,5 @@
 import {ApiProperty} from '@nestjs/swagger';
-import {IsMongoId, IsUrl} from 'class-validator';
+import {IsAlphanumeric, IsMongoId, IsUrl} from 'class-validator';
 
 export class ContainerDto {
   @ApiProperty()
@@ -13,6 +13,10 @@ export class ContainerDto {
   @ApiProperty()
   @IsMongoId()
   projectId: string;
+
+  @ApiProperty()
+  @IsAlphanumeric()
+  token: string;
 }
 
 export class CreateContainerDto {
