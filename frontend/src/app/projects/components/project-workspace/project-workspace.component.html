@@ -1,3 +1,17 @@
+<ngb-alert *ngIf="container && showAlert" type="success" class="m-3" (closed)="showAlert = false">
+  <h4>
+    Your container is now ready!
+  </h4>
+  <p>
+    If prompted for a login password, use the following:
+  </p>
+  <p class="text-monospace text-body">
+    {{ container.token }}
+    <button class="btn btn-sm btn-outline-primary" *ngxClipboardIfSupported ngxClipboard [cbContent]="container.token">
+      Copy
+    </button>
+  </p>
+</ngb-alert>
 <iframe *ngIf="container" [src]="container.url | safeResourceUrl" class="w-100 h-100 border-0"></iframe>
 <ng-template #loadingModal let-modal>
   <div class="modal-header">

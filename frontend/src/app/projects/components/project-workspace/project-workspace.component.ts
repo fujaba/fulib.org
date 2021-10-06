@@ -38,19 +38,21 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
   project?: Project;
   container?: Container;
 
+  showAlert = true;
+
   constructor(
     private route: ActivatedRoute,
     private localProjectService: LocalProjectService,
     private projectService: ProjectService,
     private containerService: ContainerService,
     private ngbModal: NgbModal,
-    private http: HttpClient,
   ) {
   }
 
   ngOnInit(): void {
     this.route.params.pipe(
       tap(() => {
+        this.showAlert = false;
         this.openModal = this.ngbModal.open(this.loadingModal, {
           ariaLabelledBy: 'loading-modal-title',
           centered: true,
@@ -85,6 +87,7 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
       }),
     ).subscribe(() => {
       this.openModal?.close();
+      this.showAlert = true;
     });
   }
 

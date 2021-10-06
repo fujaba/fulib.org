@@ -3,6 +3,7 @@ import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {AngularSplitModule} from 'angular-split';
+import {ClipboardModule} from 'ngx-clipboard';
 import {DndModule} from 'ngx-drag-drop';
 
 import {SharedModule} from '../shared/shared.module';
@@ -38,23 +39,24 @@ import { TutorialComponent } from './components/tutorial/tutorial.component';
     RunAnythingComponent,
     TutorialComponent,
   ],
-  imports: [
-    // Angular
-    CommonModule,
-    FormsModule,
-    // 3rd Party
-    DndModule,
-    NgbModule,
-    AngularSplitModule,
-    // Shared
-    SharedModule,
-    // Routing
-    ProjectsRoutingModule,
-    // Submodules
-    EditorModule,
-    SetupModule,
-    TerminalModule,
-  ],
+    imports: [
+        // Angular
+        CommonModule,
+        FormsModule,
+        // 3rd Party
+        DndModule,
+        NgbModule,
+        AngularSplitModule,
+        // Shared
+        SharedModule,
+        // Routing
+        ProjectsRoutingModule,
+        // Submodules
+        EditorModule,
+        SetupModule,
+        TerminalModule,
+        ClipboardModule,
+    ],
   providers: [
     ConfigService,
     ContainerService,
