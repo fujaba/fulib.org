@@ -31,6 +31,9 @@ export class ContainerService {
       HostConfig: {
         AutoRemove: true,
         Binds: [
+          // TODO bind heartbeat file to detect idle
+          //      https://coder.com/docs/code-server/v3.12.0/FAQ#what-is-the-heartbeat-file
+          //      https://github.com/cdr/code-server/issues/1636
           `${bindPrefix}/projects/${this.idBin(projectId)}/${projectId}:/home/coder/project`,
         ],
       },
