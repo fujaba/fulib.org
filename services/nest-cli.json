@@ -1,0 +1,45 @@
+{
+  "collection": "@nestjs/schematics",
+  "monorepo": true,
+  "compilerOptions": {
+    "webpack": true
+  },
+  "projects": {
+    "assignments": {
+      "type": "application",
+      "root": "apps/assignments",
+      "entryFile": "main",
+      "sourceRoot": "apps/assignments/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/assignments/tsconfig.app.json"
+      }
+    },
+    "keycloak-auth": {
+      "type": "library",
+      "root": "libs/keycloak-auth",
+      "entryFile": "index",
+      "sourceRoot": "libs/keycloak-auth/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/keycloak-auth/tsconfig.lib.json"
+      }
+    },
+    "projects": {
+      "type": "application",
+      "root": "apps/projects",
+      "entryFile": "main",
+      "sourceRoot": "apps/projects/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/projects/tsconfig.app.json"
+      }
+    },
+    "not-found": {
+      "type": "library",
+      "root": "libs/not-found",
+      "entryFile": "index",
+      "sourceRoot": "libs/not-found/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/not-found/tsconfig.lib.json"
+      }
+    }
+  }
+}

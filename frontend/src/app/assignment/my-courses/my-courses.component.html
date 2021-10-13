@@ -10,7 +10,7 @@
   <div class="list-group" *ngIf="courses?.length">
     <a *ngFor="let course of courses"
        class="list-group-item list-group-item-action"
-       routerLink="/assignments/courses/{{course.id}}"
+       routerLink="/assignments/courses/{{course._id}}"
     >
       <h3>
         {{course.title}}

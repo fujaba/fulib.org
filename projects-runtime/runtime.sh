@@ -2,7 +2,7 @@
 dockerd --host tcp://0.0.0.0:2376 --tls=false & sleep 20
 
 export DOCKER_HOST=localhost:2376
-docker network create fulib-projects
+docker network create "$FULIB_PROJECTS_NETWORK"
 
 if [ -n "$DOCKER_REGISTRY" ]
 then
@@ -10,5 +10,5 @@ then
 fi
 
 docker pull "$FULIB_PROJECTS_CONTAINER_IMAGE" &
-docker run -p 8080:80 --network=fulib-projects "$FULIB_PROJECTS_PROXY_IMAGE" &
+docker run -p 8080:80 --network="$FULIB_PROJECTS_NETWORK" "$FULIB_PROJECTS_PROXY_IMAGE" &
 wait

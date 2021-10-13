@@ -15,7 +15,7 @@ description = 'The fulib.org website and fulibScenarios Web App'
 
 // --------------- General Settings ---------------
 
-mainClassName = 'org.fulib.webapp.WebService'
+mainClassName = 'org.fulib.webapp.Main'
 
 shadowJar.archiveClassifier = 'all'
 
@@ -27,6 +27,12 @@ repositories {
 }
 
 dependencies {
+	// --------------- Dagger (Dependency Injection) ---------------
+
+	// https://mvnrepository.com/artifact/com.google.dagger/dagger
+	implementation 'com.google.dagger:dagger:2.37'
+	annotationProcessor 'com.google.dagger:dagger-compiler:2.37'
+
 	// --------------- Fulib Libraries ---------------
 
 	implementation fulibDependency
@@ -90,6 +96,15 @@ processResources {
 	def fulibScenariosVersion = getDependencyVersion(config, 'org.fulib', 'fulibScenarios')
 	def fulibGradleVersion = getDependencyVersion(rootProject.buildscript.configurations.classpath, 'org.fulib', 'fulibGradle')
 	def fulibMockupsVersion = getDependencyVersion(config, 'org.fulib', 'fulibMockups')
+
+	from(rootProject.rootDir) {
+		include 'gradle/wrapper/**', 'gradlew', 'gradlew.bat'
+		into 'org/fulib/webapp/projectzip'
+
+		// we have to save the wrapper jar as a zip, see
+		// https://imperceptiblethoughts.com/shadow/configuration/dependencies/#embedding-jar-files-inside-your-shadow-jar
+		rename 'gradle-wrapper.jar', 'gradle-wrapper.jar.zip'
+	}
 
 	filesMatching([
 			'org/fulib/webapp/version.properties',

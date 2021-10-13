@@ -3,6 +3,7 @@ import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {combineLatest, forkJoin, Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
+import {Assignee} from '../model/assignee';
 
 import Assignment from '../model/assignment';
 import {AssignmentService} from '../assignment.service';
@@ -18,11 +19,12 @@ import {TokenModalComponent} from '../token-modal/token-modal.component';
 export class SolutionTableComponent implements OnInit {
   @ViewChild('tokenModal', {static: true}) tokenModal: TokenModalComponent;
 
-  readonly searchableProperties: (keyof Solution)[] = ['name', 'studentID', 'email', 'assignee'];
+  readonly searchableProperties: (keyof Solution | 'assignee')[] = ['name', 'studentID', 'email', 'assignee'];
 
   assignment?: Assignment;
   totalPoints?: number;
   solutions?: Solution[];
+  assignees?: Record<string, Assignee>;
   searchText = '';
   filteredSolutions?: Solution[];
 
@@ -61,6 +63,12 @@ export class SolutionTableComponent implements OnInit {
           this.solutions = solutions;
           this.updateSearch();
         })),
+        this.solutionService.getAssignees(assignmentId).pipe(tap(assignees => {
+          this.assignees = {};
+          for (let assignee of assignees) {
+            this.assignees[assignee.solution] = assignee;
+          }
+        })),
       ])),
     ).subscribe(_ => {
     }, error => {
@@ -84,7 +92,10 @@ export class SolutionTableComponent implements OnInit {
 
   setAssignee(solution: Solution, input: HTMLInputElement): void {
     input.disabled = true;
-    solution.assignee = input.value;
+    const assignee = this.assignees?.[solution._id!];
+    if (assignee) {
+      assignee.assignee = input.value;
+    }
     this.solutionService.setAssignee(solution, input.value).subscribe(() => {
       input.disabled = false;
     });
@@ -100,12 +111,12 @@ export class SolutionTableComponent implements OnInit {
       const colonIndex = searchWord.indexOf(':');
       if (colonIndex > 0) {
         const propertyName = searchWord.substring(0, colonIndex);
-        if (!this.searchableProperties.includes(propertyName as keyof Solution)) {
+        if (!this.searchableProperties.includes(propertyName as any)) {
           continue;
         }
 
         const searchValue = searchWord.substring(colonIndex + 1);
-        const propertyValue = solution[propertyName] as string;
+        const propertyValue = this.getProperty(solution, propertyName);
         if (!propertyValue || propertyValue.indexOf(searchValue) < 0) {
           return false;
         }
@@ -121,12 +132,22 @@ export class SolutionTableComponent implements OnInit {
 
   private hasAnyPropertyWithValue(solution: Solution, searchWord: string): boolean {
     for (const propertyName of this.searchableProperties) {
-      const propertyValue = solution[propertyName] as string;
+      const propertyValue = this.getProperty(solution, propertyName);
       if (propertyValue && propertyValue.indexOf(searchWord) >= 0) {
         return true;
       }
     }
     return false;
+  }
+
+  private getProperty(solution: Solution, property: string): string | undefined {
+    if (property === 'assignee') {
+      return this.assignees?.[solution._id!]?.assignee;
+    }
+    if (typeof solution[property] === 'string') {
+      return solution[property];
+    }
+    return undefined;
   }
 
   typeahead = (text$: Observable<string>): Observable<string[]> => {
@@ -167,7 +188,7 @@ export class SolutionTableComponent implements OnInit {
   private collectAllValues(propertyName: string): string[] {
     const valueSet = new Set<string>();
     for (const solution of this.solutions!) {
-      const propertyValue = solution[propertyName] as string;
+      const propertyValue = this.getProperty(solution, propertyName);
       if (propertyValue) {
         valueSet.add(propertyValue);
       }

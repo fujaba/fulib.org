@@ -112,10 +112,11 @@ export class SolutionComponent implements OnInit, OnDestroy {
     this.submittingComment = true;
 
     const comment: Comment = {
-      parent: this.solution!.id!,
+      assignment: this.solution!.assignment,
+      solution: this.solution!._id!,
       author: this.commentName,
       email: this.commentEmail,
-      markdown: this.commentBody,
+      body: this.commentBody,
     };
     this.solutionService.postComment(this.solution!, comment).subscribe(result => {
       this.comments.push(result);
@@ -144,7 +145,7 @@ export class SolutionComponent implements OnInit, OnDestroy {
     this.solutionService.deleteComment(this.solution!, comment).subscribe(result => {
       const index = this.comments.indexOf(comment);
       if (index >= 0) {
-        this.comments[index] = result;
+        this.comments.splice(index, 1);
       }
     });
   }

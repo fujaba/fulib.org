@@ -78,14 +78,7 @@ export class ProjectService {
 
   getOwn(): Observable<Project[]> {
     return this.users.current$.pipe(
-      switchMap(user => {
-        if (!user || !user.id) {
-          return of([]);
-        }
-        return this.http.get<Project[]>(`${environment.projectsApiUrl}/projects`, {
-          params: {userId: user.id},
-        });
-      }),
+      switchMap(user => user ? this.http.get<Project[]>(`${environment.projectsApiUrl}/projects`) : of([])),
       map(projects => [...this.localProjectService.getAll(), ...projects]),
     );
   }
@@ -103,7 +96,7 @@ export class ProjectService {
   }
 
   generateFiles(container: Container, projectConfig: ProjectConfig): Observable<void> {
-    return this.http.post(`${environment.projectsApiUrl}/projectzip`, projectConfig, {responseType: 'blob'}).pipe(
+    return this.http.post(`${environment.apiURL}/projectzip`, projectConfig, {responseType: 'blob'}).pipe(
       switchMap(zipBlob => this.http.post<void>(`${container.url}/zip//projects/${container.projectId}`, zipBlob)),
     );
   }

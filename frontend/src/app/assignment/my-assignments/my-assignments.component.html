@@ -10,7 +10,7 @@
   <div class="list-group" *ngIf="assignments?.length">
     <a *ngFor="let assignment of assignments"
        class="list-group-item list-group-item-action"
-       routerLink="/assignments/{{assignment.id}}/solutions"
+       routerLink="/assignments/{{assignment._id}}/solutions"
     >
       <h3>
         {{assignment.title}}

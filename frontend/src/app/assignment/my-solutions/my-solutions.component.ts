@@ -33,12 +33,12 @@ export class MySolutionsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.solutionService.getOwn().subscribe(([assignments, solutions]) => {
+    this.solutionService.getOwnWithAssignments().subscribe(([assignments, solutions]) => {
       this.assignments = assignments.sort(Assignment.comparator);
       this.solutions = new Map<string, Solution[]>();
 
       for (const assignment of this.assignments) {
-        this.solutions.set(assignment.id!, []);
+        this.solutions.set(assignment._id!, []);
       }
 
       for (const solution of solutions) {
@@ -46,7 +46,7 @@ export class MySolutionsComponent implements OnInit {
       }
 
       for (const [_, solutionList] of this.solutions) {
-        solutionList.sort((a, b) => new Date(a.timeStamp || 0).getTime() - new Date(b.timeStamp || 0).getTime());
+        solutionList.sort((a, b) => new Date(a.timestamp || 0).getTime() - new Date(b.timestamp || 0).getTime());
       }
     });
   }

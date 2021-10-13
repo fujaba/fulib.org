@@ -1,6 +1,7 @@
 package org.fulib.webapp.tool;
 
 import org.fulib.StrUtil;
+import org.fulib.webapp.markdown.MarkdownRenderer;
 import org.fulib.webapp.mongo.Mongo;
 import org.fulib.webapp.tool.model.CodeGenData;
 import org.fulib.webapp.tool.model.Diagram;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import spark.Request;
 import spark.Response;
 
+import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -44,6 +46,7 @@ public class RunCodeGen
 
 	// =============== Constructors ===============
 
+	@Inject
 	public RunCodeGen(Mongo db)
 	{
 		this.db = db;
@@ -174,8 +177,8 @@ public class RunCodeGen
 			final Result result = new Result(id);
 			result.setExitCode(exitCode);
 
-			final MarkdownUtil renderer = new MarkdownUtil();
-			renderer.setImageBaseUrl("/" + tempDir.relativize(packagePath) + "/");
+			final MarkdownRenderer renderer = new MarkdownRenderer();
+			renderer.setImageBaseUrl("/" + tempDir.relativize(packagePath).toString() + "/");
 			final String html = renderer.renderHtml(bodyText);
 			result.setHtml(html);
 

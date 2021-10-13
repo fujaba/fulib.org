@@ -1,10 +1,6 @@
-import Assignment from './assignment';
-
 export default class Course {
-  id?: string;
+  _id?: string;
   title: string;
   description: string;
-  descriptionHtml?: string;
-  assignmentIds?: string[];
-  assignments?: Assignment[];
+  assignments: string[];
 }

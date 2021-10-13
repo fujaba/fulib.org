@@ -1,20 +1,20 @@
 import Task from './task';
 
 export default class Assignment {
-  id?: string;
+  _id?: string;
   token?: string;
 
   title: string;
   description: string;
   descriptionHtml?: string;
-  userId?: string;
+  createdBy?: string;
   author: string;
   email: string;
-  deadline: Date | null;
+  deadline?: Date;
 
   tasks: Task[];
   solution: string;
   templateSolution: string;
 
-  static comparator = (a: Assignment, b: Assignment) => a.title.localeCompare(b.title) || a.id!.localeCompare(b.id!);
+  static comparator = (a: Assignment, b: Assignment) => a.title.localeCompare(b.title) || a._id!.localeCompare(b._id!);
 }

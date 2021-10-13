@@ -18,15 +18,7 @@ export class TaskListComponent {
   outputExpanded: boolean[] = [];
 
   getTaskPoints(taskID: number) {
-    if (this.gradings) {
-      for (let i = this.gradings.length - 1; i >= 0; i--) {
-        const grading = this.gradings[i];
-        if (grading.taskID === taskID) {
-          return grading.points;
-        }
-      }
-    }
-    return this.results![taskID].points;
+    return this.gradings?.[taskID]?.points ?? this.results?.[taskID]?.points ?? 0;
   }
 
   getColorClass(taskID: number) {

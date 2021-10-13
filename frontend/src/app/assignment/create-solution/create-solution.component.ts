@@ -95,26 +95,26 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
 
   getSolution(): Solution {
     return {
-      assignment: this.assignment.id!,
-      id: this.id,
+      assignment: this.assignment._id!,
+      _id: this.id,
       token: this.token,
       name: this.name,
       studentID: this.studentID,
       email: this.email,
       solution: this.solution,
-      timeStamp: this.timeStamp,
+      timestamp: this.timeStamp,
       results: this.results,
     };
   }
 
   setSolution(result: Solution): void {
-    this.id = result.id;
+    this.id = result._id;
     this.token = result.token;
     this.name = result.name;
     this.studentID = result.studentID;
     this.email = result.email;
     this.solution = result.solution;
-    this.timeStamp = result.timeStamp;
+    this.timeStamp = result.timestamp;
     this.results = result.results;
   }
 
@@ -153,6 +153,6 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
   }
 
   getLink(origin: boolean): string {
-    return `${origin ? this.origin : ''}/assignments/${this.assignment.id}/solutions/${this.id}`;
+    return `${origin ? this.origin : ''}/assignments/${this.assignment._id}/solutions/${this.id}`;
   }
 }

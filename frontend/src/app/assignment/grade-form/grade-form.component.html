@@ -1,3 +1,23 @@
+<ng-container *ngIf="grading">
+  <h4>
+    <span class="badge badge-secondary">{{grading.points}}</span>
+    Points
+  </h4>
+  <p>
+    {{grading.note}}
+  </p>
+  <p>
+    {{grading.author}}
+    <span *ngIf="grading.createdBy" class="badge badge-pill badge-primary" ngbTooltip="Registered">
+      &#10003;
+    </span>
+    <span class="text-muted">
+      &#8226;
+      {{grading.timestamp | date:'medium'}}
+    </span>
+  </p>
+  <hr/>
+</ng-container>
 <div class="form">
   <div class="form-group">
     <label for="pointsInput">Points</label>
@@ -12,26 +32,7 @@
     <input type="text" class="form-control" id="nameInput" [(ngModel)]="name" (change)="saveDraft()"
            [disabled]="loggedIn">
   </div>
+  <button type="button" class="btn btn-primary" (click)="doSubmit()">
+    Submit
+  </button>
 </div>
-
-<button type="button" class="btn btn-primary" (click)="doSubmit()">
-  Submit
-</button>
-
-<h4>History</h4>
-<ul *ngIf="gradings">
-  <li *ngFor="let grading of filteredGradings">
-    <span class="badge badge-secondary">{{grading.points}}</span>
-    {{grading.note}}
-    &#8226;
-    {{grading.author}}
-    <span *ngIf="grading.userId" class="badge badge-pill badge-primary" ngbTooltip="Registered">
-      &#10003;
-    </span>
-    &#8226;
-    <span class="text-muted">{{grading.timeStamp | date:'medium'}}</span>
-  </li>
-</ul>
-<p *ngIf="!gradings">
-  Loading...
-</p>

@@ -3,7 +3,7 @@
   <ng-container *ngIf="assignment">
     by
     <app-author-name [name]="assignment.author" [email]="assignment.email"></app-author-name>
-    <span *ngIf="assignment.userId" class="badge badge-pill badge-primary" ngbTooltip="Registered">
+    <span *ngIf="assignment.createdBy" class="badge badge-pill badge-primary" ngbTooltip="Registered">
       &#10003;
     </span>
     <ng-container *ngIf="assignment.deadline">
@@ -16,5 +16,5 @@
   </ng-container>
 </p>
 <p>
-  <app-markdown [html]="assignment?.descriptionHtml ?? 'Loading Description...'"></app-markdown>
+  <app-markdown [markdown]="assignment?.description"></app-markdown>
 </p>
