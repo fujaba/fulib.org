@@ -3,6 +3,7 @@ import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {combineLatest, forkJoin, Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
+import {Assignee} from '../model/assignee';
 
 import Assignment from '../model/assignment';
 import {AssignmentService} from '../assignment.service';
@@ -18,11 +19,12 @@ import {TokenModalComponent} from '../token-modal/token-modal.component';
 export class SolutionTableComponent implements OnInit {
   @ViewChild('tokenModal', {static: true}) tokenModal: TokenModalComponent;
 
-  readonly searchableProperties: (keyof Solution)[] = ['name', 'studentID', 'email', 'assignee'];
+  readonly searchableProperties: (keyof Solution)[] = ['name', 'studentID', 'email'];
 
   assignment?: Assignment;
   totalPoints?: number;
   solutions?: Solution[];
+  assignees?: Record<string, Assignee>;
   searchText = '';
   filteredSolutions?: Solution[];
 
@@ -61,6 +63,12 @@ export class SolutionTableComponent implements OnInit {
           this.solutions = solutions;
           this.updateSearch();
         })),
+        this.solutionService.getAssignees(assignmentId).pipe(tap(assignees => {
+          this.assignees = {};
+          for (let assignee of assignees) {
+            this.assignees[assignee.solution] = assignee;
+          }
+        })),
       ])),
     ).subscribe(_ => {
     }, error => {
@@ -84,7 +92,10 @@ export class SolutionTableComponent implements OnInit {
 
   setAssignee(solution: Solution, input: HTMLInputElement): void {
     input.disabled = true;
-    solution.assignee = input.value;
+    const assignee = this.assignees?.[solution._id!];
+    if (assignee) {
+      assignee.assignee = input.value;
+    }
     this.solutionService.setAssignee(solution, input.value).subscribe(() => {
       input.disabled = false;
     });

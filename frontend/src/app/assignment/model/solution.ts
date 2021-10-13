@@ -13,6 +13,4 @@ export default class Solution {
 
   timestamp?: Date;
   results?: TaskResult[];
-
-  assignee?: string;
 }

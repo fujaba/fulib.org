@@ -139,8 +139,7 @@
       <td><span class="badge badge-primary badge-pill">
           {{totalResultPoints(solution)}} / {{totalPoints}}
         </span></td>
-      <td><input class="form-control" #assigneeInput
-                 [ngModel]="solution.assignee" (change)="setAssignee(solution, assigneeInput)"></td>
+      <td><input class="form-control" #assigneeInput [ngModel]="assignees?.[solution._id!]?.assignee" (change)="setAssignee(solution, assigneeInput)"></td>
       <td>
         <a class="btn btn-primary" routerLink="/assignments/{{assignment?._id}}/solutions/{{solution._id}}">
           View

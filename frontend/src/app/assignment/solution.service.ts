@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {forkJoin, Observable, of} from 'rxjs';
 import {map, mapTo, switchMap, tap} from 'rxjs/operators';
+import {Assignee} from './model/assignee';
 
 import Solution from './model/solution';
 import {environment} from '../../environments/environment';
@@ -232,6 +233,12 @@ export class SolutionService {
     return this.http.put<TaskGrading>(url, grading, {headers});
   }
 
+  getAssignees(assignment: string): Observable<Assignee[]> {
+    const headers = {};
+    this.addAssignmentToken(headers, assignment);
+    return this.http.get<Assignee[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/assignees`, {headers});
+  }
+
   setAssignee(solution: Solution, assignee: string): Observable<void> {
     const body = {
       assignee,
@@ -239,7 +246,7 @@ export class SolutionService {
     const headers = {};
     const assignmentID = solution.assignment;
     this.addAssignmentToken(headers, assignmentID);
-    return this.http.put<void>(`${environment.apiURL}/assignments/${assignmentID}/solutions/${solution._id}/assignee`, body, {headers});
+    return this.http.put<void>(`${environment.assignmentsApiUrl}/assignments/${assignmentID}/solutions/${solution._id}/assignee`, body, {headers});
   }
 
   private addAssignmentToken(headers: any, assignmentID: string) {
