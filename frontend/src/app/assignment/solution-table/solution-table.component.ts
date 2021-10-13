@@ -19,7 +19,7 @@ import {TokenModalComponent} from '../token-modal/token-modal.component';
 export class SolutionTableComponent implements OnInit {
   @ViewChild('tokenModal', {static: true}) tokenModal: TokenModalComponent;
 
-  readonly searchableProperties: (keyof Solution)[] = ['name', 'studentID', 'email'];
+  readonly searchableProperties: (keyof Solution | 'assignee')[] = ['name', 'studentID', 'email', 'assignee'];
 
   assignment?: Assignment;
   totalPoints?: number;
@@ -111,12 +111,12 @@ export class SolutionTableComponent implements OnInit {
       const colonIndex = searchWord.indexOf(':');
       if (colonIndex > 0) {
         const propertyName = searchWord.substring(0, colonIndex);
-        if (!this.searchableProperties.includes(propertyName as keyof Solution)) {
+        if (!this.searchableProperties.includes(propertyName as any)) {
           continue;
         }
 
         const searchValue = searchWord.substring(colonIndex + 1);
-        const propertyValue = solution[propertyName] as string;
+        const propertyValue = this.getProperty(solution, propertyName);
         if (!propertyValue || propertyValue.indexOf(searchValue) < 0) {
           return false;
         }
@@ -132,12 +132,22 @@ export class SolutionTableComponent implements OnInit {
 
   private hasAnyPropertyWithValue(solution: Solution, searchWord: string): boolean {
     for (const propertyName of this.searchableProperties) {
-      const propertyValue = solution[propertyName] as string;
+      const propertyValue = this.getProperty(solution, propertyName);
       if (propertyValue && propertyValue.indexOf(searchWord) >= 0) {
         return true;
       }
     }
     return false;
+  }
+
+  private getProperty(solution: Solution, property: string): string | undefined {
+    if (property === 'assignee') {
+      return this.assignees?.[solution._id!]?.assignee;
+    }
+    if (typeof solution[property] === 'string') {
+      return solution[property];
+    }
+    return undefined;
   }
 
   typeahead = (text$: Observable<string>): Observable<string[]> => {
@@ -178,7 +188,7 @@ export class SolutionTableComponent implements OnInit {
   private collectAllValues(propertyName: string): string[] {
     const valueSet = new Set<string>();
     for (const solution of this.solutions!) {
-      const propertyValue = solution[propertyName] as string;
+      const propertyValue = this.getProperty(solution, propertyName);
       if (propertyValue) {
         valueSet.add(propertyValue);
       }
