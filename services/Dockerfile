@@ -1,10 +1,9 @@
-ARG SERVICE
-
 FROM node:14-slim as builder
 RUN npm install -g pnpm
 WORKDIR /app
 COPY . .
 RUN pnpm install
+ARG SERVICE
 RUN pnpm build $SERVICE
 
 FROM node:14-slim
