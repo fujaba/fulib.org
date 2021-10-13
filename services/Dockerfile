@@ -12,7 +12,6 @@ WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=builder /app/dist ./dist
 COPY package.json pnpm-lock.yaml ./
-COPY docs ./docs
 RUN pnpm install
 ENV PORT=3000
 EXPOSE 3000
