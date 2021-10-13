@@ -16,4 +16,5 @@ RUN pnpm install
 ENV PORT=3000
 EXPOSE 3000
 ARG SERVICE
+ENV SERVICE=$SERVICE
 CMD node dist/apps/$SERVICE/main.js
