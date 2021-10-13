@@ -9,7 +9,7 @@ import {AssigneeService} from './assignee.service';
 
 const forbiddenResponse = 'Not owner of assignment, or invalid Assignment-Token';
 
-@Controller('assignments/:assignment/solutions/:solution/assignee')
+@Controller()
 @ApiTags('Assignees')
 export class AssigneeController {
   constructor(
@@ -18,7 +18,16 @@ export class AssigneeController {
   ) {
   }
 
-  @Get()
+  @Get('assignments/:assignment/assignees')
+  @AssignmentAuth({forbiddenResponse})
+  @ApiOkResponse({type: [Assignee]})
+  async findAll(
+    @Param('assignment') assignment: string,
+  ): Promise<Assignee[]> {
+    return this.assigneeService.findAll({assignment});
+  }
+
+  @Get('assignments/:assignment/solutions/:solution/assignee')
   @NotFound()
   @AssignmentAuth({forbiddenResponse})
   @ApiOkResponse({type: Assignee})
@@ -29,7 +38,7 @@ export class AssigneeController {
     return this.assigneeService.findOne(assignmentId, solutionId);
   }
 
-  @Put()
+  @Put('assignments/:assignment/solutions/:solution/assignee')
   @AssignmentAuth({forbiddenResponse})
   @ApiOkResponse({type: Assignee})
   async update(
@@ -40,7 +49,7 @@ export class AssigneeController {
     return this.assigneeService.update(assignmentId, solutionId, dto);
   }
 
-  @Delete()
+  @Delete('assignments/:assignment/solutions/:solution/assignee')
   @NotFound()
   @AssignmentAuth({forbiddenResponse})
   @ApiOkResponse({type: Assignee})
