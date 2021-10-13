@@ -15,4 +15,5 @@ COPY package.json pnpm-lock.yaml ./
 RUN pnpm install
 ENV PORT=3000
 EXPOSE 3000
-CMD pnpm run start:prod
+ARG SERVICE
+CMD node dist/apps/$SERVICE/main.js
