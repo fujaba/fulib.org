@@ -33,6 +33,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     tasks: [],
     solution: '',
     templateSolution: '',
+    classroom: {},
   };
   deadlineDate?: string;
   deadlineTime?: string;
@@ -100,6 +101,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
 
   setAssignment(a: Assignment): void {
     this.assignment = a;
+    this.assignment.classroom ??= {};
     const deadline = a.deadline;
     if (deadline) {
       const year = deadline.getFullYear();

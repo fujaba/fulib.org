@@ -44,6 +44,23 @@
     </div>
   </div>
 
+  <h2>
+    GitHub Classroom
+    <span class="badge badge-primary">New</span>
+  </h2>
+  <div class="form">
+    <div class="form-group row">
+      <label for="classroomAssignmentInput" class="col-sm-2 col-form-label">GitHub Classroom Assignment Link</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="classroomAssignmentInput" placeholder="https://classroom.github.com/classrooms/0000000-xxxxxxx/assignments/yyyyyyy"
+               [(ngModel)]="assignment.classroom!.link" (change)="saveDraft()">
+        <small class="text-muted">
+          Allows importing solutions from Classroom Submissions.
+        </small>
+      </div>
+    </div>
+  </div>
+
   <h2><label for="descriptionInput">Description</label></h2>
 
   <p>

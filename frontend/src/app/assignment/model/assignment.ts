@@ -12,6 +12,10 @@ export default class Assignment {
   email: string;
   deadline?: Date;
 
+  classroom?: {
+    link?: string;
+  };
+
   tasks: Task[];
   solution: string;
   templateSolution: string;
