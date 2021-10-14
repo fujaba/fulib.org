@@ -3,7 +3,7 @@
 
   <app-task-list [assignment]="assignment"></app-task-list>
 
-  <a *ngIf="assignment?.token" class="btn btn-primary" [routerLink]="['/assignments', assignment?._id, 'edit']">
+  <a class="btn btn-primary" [routerLink]="['/assignments', assignment?._id, 'edit']">
     <i class="bi-pencil"></i>
     Edit Assignment
   </a>
