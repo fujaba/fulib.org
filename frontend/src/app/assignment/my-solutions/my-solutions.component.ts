@@ -1,9 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import Solution from '../model/solution';
 import Assignment from '../model/assignment';
+import Solution, {AuthorInfo} from '../model/solution';
 import {SolutionService} from '../solution.service';
-import {AssignmentService} from '../assignment.service';
-import {forkJoin} from 'rxjs';
 
 @Component({
   selector: 'app-my-solutions',
@@ -11,28 +9,17 @@ import {forkJoin} from 'rxjs';
   styleUrls: ['./my-solutions.component.scss'],
 })
 export class MySolutionsComponent implements OnInit {
+  author?: AuthorInfo;
   assignments?: Assignment[];
   solutions?: Map<string, Solution[]>;
 
   constructor(
     private solutionService: SolutionService,
-    private assignmentService: AssignmentService,
   ) {
   }
 
-  get name(): string | null {
-    return this.solutionService.name;
-  }
-
-  get email(): string | null {
-    return this.solutionService.email;
-  }
-
-  get studentID(): string | null {
-    return this.solutionService.studentID;
-  }
-
   ngOnInit() {
+    this.author = this.solutionService.getAuthor();
     this.solutionService.getOwnWithAssignments().subscribe(([assignments, solutions]) => {
       this.assignments = assignments.sort(Assignment.comparator);
       this.solutions = new Map<string, Solution[]>();

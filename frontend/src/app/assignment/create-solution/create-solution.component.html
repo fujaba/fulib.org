@@ -27,21 +27,21 @@
       <label for="nameInput" class="col-sm-2 col-form-label">Name</label>
       <div class="col-sm-10">
         <input type="text" class="form-control" id="nameInput" placeholder="John Doe"
-               [(ngModel)]="name" (change)="saveDraft()" [disabled]="loggedIn">
+               [(ngModel)]="author.name" (change)="saveDraft()" [disabled]="loggedIn">
       </div>
     </div>
     <div class="form-group row">
       <label for="studentIDInput" class="col-sm-2 col-form-label">Student ID</label>
       <div class="col-sm-10">
         <input type="text" class="form-control" id="studentIDInput" placeholder="12345678"
-               [(ngModel)]="studentID" (change)="saveDraft()">
+               [(ngModel)]="author.studentId" (change)="saveDraft()">
       </div>
     </div>
     <div class="form-group row">
       <label for="emailInput" class="col-sm-2 col-form-label">E-Mail</label>
       <div class="col-sm-10">
         <input type="text" class="form-control" id="emailInput" placeholder="jdoe@example.com"
-               [(ngModel)]="email" (change)="saveDraft()" [disabled]="loggedIn">
+               [(ngModel)]="author.email" (change)="saveDraft()" [disabled]="loggedIn">
       </div>
     </div>
   </div>

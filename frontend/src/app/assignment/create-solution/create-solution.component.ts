@@ -12,7 +12,7 @@ import {AssignmentService} from '../assignment.service';
 import {CourseService} from '../course.service';
 import Assignment from '../model/assignment';
 import Course from '../model/course';
-import Solution from '../model/solution';
+import Solution, {AuthorInfo} from '../model/solution';
 import TaskResult from '../model/task-result';
 import {SolutionService} from '../solution.service';
 
@@ -28,9 +28,7 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
   assignment: Assignment;
   solution: string;
   loggedIn = false;
-  name: string;
-  studentID: string;
-  email: string;
+  author: AuthorInfo;
 
   checking = false;
   results?: TaskResult[];
@@ -61,6 +59,12 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.author = this.solutionService.getAuthor() ?? {
+      name: '',
+      studentId: '',
+      email: '',
+    };
+
     this.route.params.pipe(
       switchMap(params => forkJoin({
         assignment: this.assignmentService.get(params.aid).pipe(tap(assignment => {
@@ -81,10 +85,10 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
 
       this.loggedIn = true;
       if (user.firstName && user.lastName) {
-        this.name = `${user.firstName} ${user.lastName}`;
+        this.author.name = `${user.firstName} ${user.lastName}`;
       }
       if (user.email) {
-        this.email = user.email;
+        this.author.email = user.email;
       }
     });
   }
@@ -98,11 +102,7 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
       assignment: this.assignment._id!,
       _id: this.id,
       token: this.token,
-      author: {
-        name: this.name,
-        studentId: this.studentID,
-        email: this.email,
-      },
+      author: this.author,
       solution: this.solution,
       timestamp: this.timeStamp,
       results: this.results,
@@ -112,25 +112,18 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
   setSolution(result: Solution): void {
     this.id = result._id;
     this.token = result.token;
-    this.name = result.author.name;
-    this.studentID = result.author.studentId;
-    this.email = result.author.email;
+    this.author = result.author;
     this.solution = result.solution;
     this.timeStamp = result.timestamp;
     this.results = result.results;
   }
 
   loadDraft(): void {
-    this.name = this.solutionService.name ?? '';
-    this.studentID = this.solutionService.studentID ?? '';
-    this.email = this.solutionService.email ?? '';
     this.solution = this.solutionService.getDraft(this.assignment) ?? this.assignment.templateSolution;
   }
 
   saveDraft(): void {
-    this.solutionService.name = this.name;
-    this.solutionService.studentID = this.studentID;
-    this.solutionService.email = this.email;
+    this.solutionService.setAuthor(this.author);
     this.solutionService.setDraft(this.assignment, this.solution);
   }
 
