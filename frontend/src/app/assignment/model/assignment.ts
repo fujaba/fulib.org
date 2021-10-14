@@ -6,7 +6,6 @@ export default class Assignment {
 
   title: string;
   description: string;
-  descriptionHtml?: string;
   createdBy?: string;
   author: string;
   email: string;

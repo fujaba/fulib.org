@@ -16,8 +16,6 @@ import TaskResult from '../model/task-result';
   styleUrls: ['./create-assignment.component.scss'],
 })
 export class CreateAssignmentComponent implements OnInit, OnDestroy {
-  @ViewChild('successModal', {static: true}) successModal;
-
   collapse = {
     solution: false,
     templateSolution: false,
