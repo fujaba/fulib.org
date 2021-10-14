@@ -37,16 +37,19 @@ export class Task {
 export class ClassroomInfo {
   @Prop()
   @ApiProperty({required: false})
+  @IsOptional()
   @IsUrl()
   link?: string;
 
   @Prop()
   @ApiProperty({required: false})
+  @IsOptional()
   @IsString()
   org?: string;
 
   @Prop()
   @ApiProperty({required: false})
+  @IsOptional()
   @IsString()
   prefix?: string;
 }
