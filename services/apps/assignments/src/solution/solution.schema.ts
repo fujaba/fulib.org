@@ -8,7 +8,7 @@ import {
   IsMongoId,
   IsNotEmpty,
   IsOptional,
-  IsString,
+  IsString, IsUUID,
   Min,
   ValidateNested,
 } from 'class-validator';
@@ -63,8 +63,10 @@ export class Solution {
   assignment: string;
 
   @Prop()
-  @ApiProperty()
-  createdBy: string;
+  @ApiProperty({required: false})
+  @IsOptional()
+  @IsUUID()
+  createdBy?: string;
 
   @Prop()
   @ApiProperty()

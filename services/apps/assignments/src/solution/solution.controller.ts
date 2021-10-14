@@ -21,6 +21,15 @@ export class SolutionController {
   ) {
   }
 
+  @Post('assignments/:assignment/solutions/import')
+  // @AssignmentAuth // TODO
+  @ApiCreatedResponse({type: [Solution]})
+  async import(
+    @Param('assignment') assignment: string,
+  ): Promise<Solution[]> {
+    return this.solutionService.import(assignment);
+  }
+
   @Post('assignments/:assignment/solutions')
   @Auth({optional: true})
   @ApiCreatedResponse({type: Solution})
