@@ -4,6 +4,7 @@ export class AuthorInfo {
   name: string;
   studentId: string;
   email: string;
+  github: string;
 }
 
 export default class Solution {

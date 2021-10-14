@@ -1,7 +1,17 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {ApiProperty} from '@nestjs/swagger';
 import {Type} from 'class-transformer';
-import {IsArray, IsDateString, IsEmail, IsMongoId, IsNotEmpty, IsString, Min, ValidateNested} from 'class-validator';
+import {
+  IsArray,
+  IsDateString,
+  IsEmail,
+  IsMongoId,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Min,
+  ValidateNested,
+} from 'class-validator';
 import {Document} from 'mongoose';
 
 export class TaskResult {
@@ -33,6 +43,12 @@ export class AuthorInfo {
   @ApiProperty()
   @IsEmail()
   email: string;
+
+  @Prop()
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  github?: string;
 }
 
 @Schema()

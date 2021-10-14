@@ -63,6 +63,7 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
       name: '',
       studentId: '',
       email: '',
+      github: '',
     };
 
     this.route.params.pipe(
