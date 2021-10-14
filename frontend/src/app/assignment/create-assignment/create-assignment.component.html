@@ -218,7 +218,7 @@
     </small>
   </p>
 
-  <p class="text-center">
+  <p *ngIf="!assignment._id" class="text-center">
     Click "Submit" to finalize your assignment and generate a link.
   </p>
   <div *ngIf="!loggedIn" class="alert alert-warning" role="alert">
@@ -250,7 +250,7 @@
 
   <div class="text-center">
     <button type="button" class="btn btn-primary btn-lg" (click)="submit()" [disabled]="submitting">
-      {{submitting ? 'Submitting...' : 'Submit'}}
+      {{assignment._id ? (submitting ? 'Saving...' : 'Save') : (submitting ? 'Submitting...' : 'Submit')}}
     </button>
   </div>
 </div>

@@ -3,6 +3,11 @@
 
   <app-task-list [assignment]="assignment"></app-task-list>
 
+  <a *ngIf="assignment?.token" class="btn btn-primary" [routerLink]="['/assignments', assignment?._id, 'edit']">
+    <i class="bi-pencil"></i>
+    Edit Assignment
+  </a>
+
   <h2>
     Sample Solution
     <app-collapse-button [(collapsed)]="solutionCollapsed"></app-collapse-button>

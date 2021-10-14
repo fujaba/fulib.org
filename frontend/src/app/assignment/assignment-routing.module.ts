@@ -16,6 +16,7 @@ const routes: Routes = [
   {path: 'courses', component: MyCoursesComponent},
   {path: 'create', component: CreateAssignmentComponent},
   {path: ':aid', component: CreateSolutionComponent},
+  {path: ':aid/edit', component: CreateAssignmentComponent},
   {path: ':aid/solutions', component: SolutionTableComponent},
   {path: ':aid/solutions/:sid', component: SolutionComponent},
   {path: 'courses/create', component: CreateCourseComponent},
