@@ -1,5 +1,8 @@
 <div class="container">
-  <h1>Create Assignment</h1>
+  <h1>
+    {{assignment._id ? 'Edit' : 'Create'}}
+    Assignment
+  </h1>
 
   <app-import-export (import)="onImport($event)" (export)="onExport()"></app-import-export>
 

@@ -13,10 +13,10 @@ import TaskResult from '../model/task-result';
 
 @Component({
   selector: 'app-create-assignment',
-  templateUrl: './create-assignment.component.html',
-  styleUrls: ['./create-assignment.component.scss'],
+  templateUrl: './edit-assignment.component.html',
+  styleUrls: ['./edit-assignment.component.scss'],
 })
-export class CreateAssignmentComponent implements OnInit, OnDestroy {
+export class EditAssignmentComponent implements OnInit, OnDestroy {
   collapse = {
     solution: false,
     templateSolution: false,
