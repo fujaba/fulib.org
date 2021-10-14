@@ -102,7 +102,13 @@ export class SolutionTableComponent implements OnInit {
   }
 
   updateSearch(): void {
-    const searchWords = this.searchText.split(/\s+/).map(s => s.replace('+', ' '));
+    const searchText = this.searchText.trim();
+    if (!searchText) {
+      this.filteredSolutions = this.solutions;
+      return;
+    }
+
+    const searchWords = searchText.split(/\s+/).map(s => s.replace('+', ' '));
     this.filteredSolutions = this.solutions!.filter(solution => this.includeInSearch(solution, searchWords));
   }
 
