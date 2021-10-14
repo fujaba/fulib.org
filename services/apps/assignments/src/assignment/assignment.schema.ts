@@ -39,6 +39,16 @@ export class ClassroomInfo {
   @ApiProperty({required: false})
   @IsUrl()
   link?: string;
+
+  @Prop()
+  @ApiProperty({required: false})
+  @IsString()
+  org?: string;
+
+  @Prop()
+  @ApiProperty({required: false})
+  @IsString()
+  prefix?: string;
 }
 
 @Schema()

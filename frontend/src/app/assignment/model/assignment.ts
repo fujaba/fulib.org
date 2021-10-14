@@ -14,6 +14,8 @@ export default class Assignment {
 
   classroom?: {
     link?: string;
+    org?: string;
+    prefix?: string;
   };
 
   tasks: Task[];
