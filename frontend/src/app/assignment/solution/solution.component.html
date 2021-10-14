@@ -21,21 +21,21 @@
       <label for="nameInput" class="col-sm-2 col-form-label">Name</label>
       <div class="col-sm-10">
         <input type="text" class="form-control" id="nameInput" readonly
-               [ngModel]="solution?.name || 'Loading...'">
+               [ngModel]="solution?.author?.name || 'Loading...'">
       </div>
     </div>
     <div class="form-group row">
       <label for="studentIDInput" class="col-sm-2 col-form-label">Student ID</label>
       <div class="col-sm-10">
         <input type="text" class="form-control" id="studentIDInput" readonly
-               [ngModel]="solution?.studentID || 'Loading...'">
+               [ngModel]="solution?.author?.studentId || 'Loading...'">
       </div>
     </div>
     <div class="form-group row">
       <label for="emailInput" class="col-sm-2 col-form-label">E-Mail</label>
       <div class="col-sm-10">
         <input type="text" class="form-control" id="emailInput" readonly
-               [ngModel]="solution?.email || 'Loading...'">
+               [ngModel]="solution?.author?.email || 'Loading...'">
       </div>
     </div>
   </div>

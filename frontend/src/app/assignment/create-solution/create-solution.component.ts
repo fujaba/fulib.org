@@ -98,9 +98,11 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
       assignment: this.assignment._id!,
       _id: this.id,
       token: this.token,
-      name: this.name,
-      studentID: this.studentID,
-      email: this.email,
+      author: {
+        name: this.name,
+        studentId: this.studentID,
+        email: this.email,
+      },
       solution: this.solution,
       timestamp: this.timeStamp,
       results: this.results,
@@ -110,9 +112,9 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
   setSolution(result: Solution): void {
     this.id = result._id;
     this.token = result.token;
-    this.name = result.name;
-    this.studentID = result.studentID;
-    this.email = result.email;
+    this.name = result.author.name;
+    this.studentID = result.author.studentId;
+    this.email = result.author.email;
     this.solution = result.solution;
     this.timeStamp = result.timestamp;
     this.results = result.results;

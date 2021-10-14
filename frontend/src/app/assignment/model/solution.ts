@@ -6,9 +6,11 @@ export default class Solution {
   assignment: string;
 
   createdBy?: string;
-  name: string;
-  studentID: string;
-  email: string;
+  author: {
+    name: string;
+    studentId: string;
+    email: string;
+  };
   solution: string;
 
   timestamp?: Date;

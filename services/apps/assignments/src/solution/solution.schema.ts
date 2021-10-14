@@ -16,22 +16,8 @@ export class TaskResult {
   output: string;
 }
 
-@Schema()
-export class Solution {
+export class AuthorInfo {
   @Prop()
-  @ApiProperty()
-  token: string;
-
-  @Prop({index: 1})
-  @ApiProperty()
-  @IsMongoId()
-  assignment: string;
-
-  @Prop()
-  @ApiProperty()
-  createdBy: string;
-
-  @Prop({index: 1})
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
@@ -47,6 +33,28 @@ export class Solution {
   @ApiProperty()
   @IsEmail()
   email: string;
+}
+
+@Schema()
+export class Solution {
+  @Prop()
+  @ApiProperty()
+  token: string;
+
+  @Prop({index: 1})
+  @ApiProperty()
+  @IsMongoId()
+  assignment: string;
+
+  @Prop()
+  @ApiProperty()
+  createdBy: string;
+
+  @Prop()
+  @ApiProperty()
+  @ValidateNested()
+  @Type(() => AuthorInfo)
+  author: AuthorInfo;
 
   @Prop()
   @ApiProperty()

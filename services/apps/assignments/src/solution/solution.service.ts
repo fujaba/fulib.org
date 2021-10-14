@@ -23,6 +23,9 @@ export class SolutionService {
       $rename: {
         userId: 'createdBy',
         timeStamp: 'timestamp',
+        name: 'author.name',
+        email: 'author.email',
+        studentID: 'author.studentId',
       },
     });
     console.info('Migrated', result.modifiedCount, 'solutions');

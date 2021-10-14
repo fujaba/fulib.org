@@ -129,9 +129,9 @@
     </thead>
     <tbody>
     <tr *ngFor="let solution of filteredSolutions">
-      <td>{{solution.name}}</td>
-      <td>{{solution.studentID}}</td>
-      <td><a href="mailto:{{solution.email}}">{{solution.email}}</a></td>
+      <td>{{solution.author.name}}</td>
+      <td>{{solution.author.studentId}}</td>
+      <td><a href="mailto:{{solution.author.email}}">{{solution.author.email}}</a></td>
       <td>
         <span *ngIf="assignment && assignment.deadline && solution.timestamp && assignment.deadline < solution.timestamp else timestamp"
           class="text-danger" ngbTooltip="Submitted after Deadline">
