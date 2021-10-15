@@ -24,4 +24,14 @@ export class ClassroomController {
     return this.classroomService.import(assignment, auth);
   }
 
+  @Post('assignments/:assignment/solutions/:solution/export')
+  @AssignmentAuth({forbiddenResponse})
+  @ApiCreatedResponse()
+  async export(
+    @Param('assignment') assignment: string,
+    @Param('solution') solution: string,
+    @Headers('Authorization') auth: string,
+  ) {
+    return this.classroomService.export(assignment, solution, auth);
+  }
 }
