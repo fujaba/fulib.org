@@ -5,6 +5,7 @@ import {InjectConnection, InjectModel} from '@nestjs/mongoose';
 import {Connection, FilterQuery, Model} from 'mongoose';
 import {firstValueFrom} from 'rxjs';
 import {AssignmentService} from '../assignment/assignment.service';
+import {environment} from '../environment';
 import {generateToken, idFilter} from '../utils';
 import {CreateSolutionDto, ReadSolutionDto, UpdateSolutionDto} from './solution.dto';
 import {Solution, SolutionDocument, TaskResult} from './solution.schema';
@@ -74,11 +75,13 @@ export class SolutionService {
     return rest;
   }
 
-  async import(id: string): Promise<Solution[]> {
+  async import(id: string, auth: string): Promise<Solution[]> {
     const assignment = await this.assignmentService.findOne(id);
     if (!assignment || !assignment.classroom || !assignment.classroom.org || !assignment.classroom.prefix) {
       return [];
     }
+
+    const githubToken = await this.getGithubToken(auth);
 
     const query = `org:${assignment.classroom.org} ${assignment.classroom.prefix} in:name`;
     const response = await firstValueFrom(this.http.get<SearchResult>('https://api.github.com/search/repositories', {
@@ -86,9 +89,8 @@ export class SolutionService {
         q: query,
         per_page: 100, // TODO paginate
       },
-      auth: { // TODO
-        username: process.env.GITHUB_USERNAME!,
-        password: process.env.GITHUB_TOKEN!,
+      headers: {
+        Authorization: `Bearer ${githubToken}`,
       },
     }));
     const repositories = response.data.items;
@@ -116,6 +118,18 @@ export class SolutionService {
       };
     }));
     return this.model.find({_id: {$in: Object.values(result.upsertedIds)}});
+  }
+
+  private async getGithubToken(auth: string): Promise<string> {
+    const {data} = await firstValueFrom(this.http.get<string>(`${environment.auth.issuer}/broker/github/token`, {
+      headers: {
+        Authorization: auth,
+      },
+      responseType: 'text',
+    }));
+    const parts = data.split('&');
+    const paramName = 'access_token=';
+    return parts.filter(s => s.startsWith(paramName))[0].substring(paramName.length);
   }
 
   async update(id: string, dto: UpdateSolutionDto): Promise<Solution | null> {
