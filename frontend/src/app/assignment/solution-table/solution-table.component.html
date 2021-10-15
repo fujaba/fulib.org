@@ -151,11 +151,25 @@
       <td><span class="badge badge-primary badge-pill">
           {{totalResultPoints(solution)}} / {{totalPoints}}
         </span></td>
-      <td><input class="form-control" #assigneeInput [ngModel]="assignees?.[solution._id!]?.assignee" (change)="setAssignee(solution, assigneeInput)"></td>
       <td>
-        <a class="btn btn-primary" routerLink="/assignments/{{assignment?._id}}/solutions/{{solution._id}}">
-          View
-        </a>
+        <input class="form-control m-n2" #assigneeInput [ngModel]="assignees?.[solution._id!]?.assignee" (change)="setAssignee(solution, assigneeInput)">
+      </td>
+      <td>
+        <div class="btn-group m-n2">
+          <a class="btn btn-primary" routerLink="/assignments/{{assignment?._id}}/solutions/{{solution._id}}"
+             ngbTooltip="View"
+          >
+            <i class="bi-eye-fill"></i>
+          </a>
+          <a class="btn btn-primary"
+             *ngIf="assignment?.classroom?.org && assignment?.classroom?.prefix && solution.author.github"
+             href="https://github.com/{{assignment?.classroom?.org}}/{{assignment?.classroom?.prefix}}-{{solution.author.github}}"
+             target="_blank"
+             ngbTooltip="View Repository on GitHub"
+          >
+            <i class="bi-github"></i>
+          </a>
+        </div>
       </td>
     </tr>
     </tbody>
