@@ -1,5 +1,5 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
-import {ApiProperty} from '@nestjs/swagger';
+import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
 import {Type} from 'class-transformer';
 import {
   IsArray,
@@ -29,9 +29,10 @@ export class Task {
   points: number;
 
   @Prop()
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
-  verification: string;
+  verification?: string;
 }
 
 export class ClassroomInfo {
