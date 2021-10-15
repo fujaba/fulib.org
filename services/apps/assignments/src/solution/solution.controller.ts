@@ -1,6 +1,6 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound, notFound} from '@app/not-found';
-import {Body, Controller, Delete, Get, Headers, Param, Patch, Post} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Headers, Param, Patch, Post, Query} from '@nestjs/common';
 import {ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {AssignmentService} from '../assignment/assignment.service';
@@ -47,8 +47,9 @@ export class SolutionController {
   @ApiOkResponse({type: [ReadSolutionDto]})
   async findAll(
     @Param('assignment') assignment: string,
+    @Query('author.github') github?: string,
   ): Promise<ReadSolutionDto[]> {
-    return this.solutionService.findAll({assignment});
+    return this.solutionService.findAll({assignment, 'author.github': github});
   }
 
   @Get('assignments/:assignment/solutions/:id')
