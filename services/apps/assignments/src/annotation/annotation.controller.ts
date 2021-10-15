@@ -40,11 +40,11 @@ export class AnnotationController {
     @Param('assignment') assignment: string,
     @Param('solution') solution: string,
     @Query('file') file?: string,
-    @Query('remark') remark?: string,
+    @Query('task') task?: number,
   ): Promise<Annotation[]> {
     const where: FilterQuery<Annotation> = {assignment, solution};
     file && (where['snippets.file'] = file);
-    remark && (where.remark = remark);
+    task && (where.task = task);
     return this.annotationService.findAll(where);
   }
 

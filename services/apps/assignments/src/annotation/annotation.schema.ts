@@ -61,6 +61,11 @@ export class Annotation {
 
   @Prop()
   @ApiProperty()
+  @IsNumber()
+  task: number;
+
+  @Prop()
+  @ApiProperty()
   @IsString()
   author: string;
 
@@ -86,5 +91,5 @@ export type AnnotationDocument = Annotation & Document;
 export const AnnotationSchema = SchemaFactory.createForClass(Annotation)
   .index({assignment: 1, solution: 1})
   .index({assignment: 1, solution: 1, 'snippets.file': 1})
-  .index({assignment: 1, solution: 1, remark: 1})
+  .index({assignment: 1, solution: 1, task: 1})
 ;
