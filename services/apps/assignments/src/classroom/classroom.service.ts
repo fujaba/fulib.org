@@ -135,7 +135,6 @@ export class ClassroomService {
   }
 
   private async exportIssue(assignment: AssignmentDocument, solution: SolutionDocument): Promise<Omit<Issue, 'number'>> {
-    const timestamp = new Date().toISOString();
     const gradings = await this.gradingService.findAll({assignment: assignment._id, solution: solution._id});
     const total = assignment.tasks.reduce((a, c) => a + c.points, 0);
     let sum = 0;
@@ -148,17 +147,21 @@ export class ClassroomService {
 ${i + 1}. ${task.description} ${grading ? '- **' + grading.note + '** ' : ''}(${points}/${task.points}P)
 `;
     }).join('');
+
+    const timestamp = new Date();
+    const metadata = {
+      assignment: assignment._id,
+      solution: solution._id,
+      timestamp,
+    };
+
     return {
       title: `${assignment.title} (${sum}/${total}P)`,
-      body: `
+      body: `\
 ${tasks}
 
-<sub>*This issue was created with fulib.org at \`${timestamp}\`.*</sub>
-<!--Metadata:{
-"assignment": "${assignment._id}",
-"solution": "${solution._id}",
-"timestamp": "${timestamp}"
-}-->
+<sub>*This issue was created with [fulib.org](https://fulib.org/assignments) on ${timestamp.toLocaleDateString()} at ${timestamp.toLocaleTimeString()}.*</sub>
+<!--Metadata:${JSON.stringify(metadata, undefined, 2)}-->
 `,
     };
   }
