@@ -139,23 +139,20 @@ export class ClassroomService {
 
   private async exportIssue(assignment: AssignmentDocument, solution: SolutionDocument): Promise<Omit<Issue, 'number'>> {
     const {total, sum, tasks} = await this.renderTasks(assignment, solution);
-    const annotations = await this.renderAnnotations(assignment, solution);
     const footer = this.renderFooter(assignment, solution);
 
     return {
       title: `${assignment.title} (${sum}/${total}P)`,
-      body: `\
-${tasks}
-
-${annotations}
-
-${footer}
-`,
+      body: `${tasks}\n\n${footer}`,
     };
   }
 
   private async renderTasks(assignment: AssignmentDocument, solution: SolutionDocument) {
     const gradings = await this.gradingService.findAll({assignment: assignment._id, solution: solution._id});
+    const annotations = await this.annotationService.findAll({
+      assignment: assignment._id,
+      solution: solution._id,
+    });
     const total = assignment.tasks.reduce((a, c) => a + c.points, 0);
     let sum = 0;
 
@@ -163,28 +160,23 @@ ${footer}
       const grading = gradings[i];
       const points = grading?.points ?? solution.results[i]?.points ?? 0;
       sum += points;
+      const annotationsStr = annotations.filter(a => a.task === i).map(a => this.renderAnnotation(assignment, solution, a)).join('\n');
       return `\
 ${i + 1}. ${task.description} ${grading ? '- **' + grading.note + '** ' : ''}(${points}/${task.points}P)
+${annotationsStr}
 `;
     }).join('');
     return {total, sum, tasks};
   }
 
-  private async renderAnnotations(assignment: AssignmentDocument, solution: SolutionDocument) {
-    const annotations = await this.annotationService.findAll({
-      assignment: assignment._id,
-      solution: solution._id,
-    });
-    return annotations.map(annotation => this.renderAnnotation(assignment, solution, annotation)).join('\n');
-  }
-
   private renderAnnotation(assignment: AssignmentDocument, solution: SolutionDocument, annotation: Annotation) {
     const snippets = annotation.snippets.map(snippet => this.renderSnippet(assignment, solution, snippet)).join('\n');
-    return `- ${annotation.remark} (${annotation.points}P)\n${snippets}`;
+    return `   * ${annotation.remark} (${annotation.points}P)\n${snippets}`;
   }
 
   private renderSnippet(assignment: AssignmentDocument, solution: SolutionDocument, snippet: Snippet) {
-    return `  ${snippet.comment}\n  https://github.com/${assignment.classroom!.org}/${assignment.classroom!.prefix}-${solution.author.github}/blob/${solution.solution}/${snippet.file}#L${snippet.from.line + 1}-L${snippet.to.line + 1}`;
+    const link = `https://github.com/${assignment.classroom!.org}/${assignment.classroom!.prefix}-${solution.author.github}/blob/${solution.solution}/${snippet.file}#L${snippet.from.line + 1}-L${snippet.to.line + 1}`;
+    return `      * ${snippet.comment}: ${link}`;
   }
 
   private renderFooter(assignment: AssignmentDocument, solution: SolutionDocument) {
