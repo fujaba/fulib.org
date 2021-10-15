@@ -4,6 +4,7 @@ import {firstValueFrom} from 'rxjs';
 import {Assignment, AssignmentDocument} from '../assignment/assignment.schema';
 import {AssignmentService} from '../assignment/assignment.service';
 import {environment} from '../environment';
+import {GradingService} from '../grading/grading.service';
 import {ReadSolutionDto} from '../solution/solution.dto';
 import {Solution, SolutionDocument} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
@@ -32,6 +33,7 @@ export class ClassroomService {
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
     private http: HttpService,
+    private gradingService: GradingService,
   ) {
   }
 
@@ -134,9 +136,23 @@ export class ClassroomService {
 
   private async exportIssue(assignment: AssignmentDocument, solution: SolutionDocument): Promise<Omit<Issue, 'number'>> {
     const timestamp = new Date().toISOString();
+    const gradings = await this.gradingService.findAll({assignment: assignment._id, solution: solution._id});
+    const total = assignment.tasks.reduce((a, c) => a + c.points, 0);
+    let sum = 0;
+
+    const tasks = assignment.tasks.map((task, i) => {
+      const grading = gradings[i];
+      const points = grading?.points ?? solution.results[i]?.points ?? 0;
+      sum += points;
+      return `\
+${i + 1}. ${task.description} ${grading ? '- **' + grading.note + '** ' : ''}(${points}/${task.points}P)
+`;
+    }).join('');
     return {
-      title: assignment.title,
+      title: `${assignment.title} (${sum}/${total}P)`,
       body: `
+${tasks}
+
 <sub>*This issue was created with fulib.org at \`${timestamp}\`.*</sub>
 <!--Metadata:{
 "assignment": "${assignment._id}",
