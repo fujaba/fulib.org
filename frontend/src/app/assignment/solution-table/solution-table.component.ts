@@ -217,4 +217,8 @@ export class SolutionTableComponent implements OnInit {
       this.solutions?.push(...solutions);
     });
   }
+
+  export(solution: Solution) {
+    this.solutionService.export(this.assignment!._id!, solution._id!).subscribe();
+  }
 }
