@@ -133,12 +133,15 @@ export class ClassroomService {
   }
 
   private async exportIssue(assignment: AssignmentDocument, solution: SolutionDocument): Promise<Omit<Issue, 'number'>> {
+    const timestamp = new Date().toISOString();
     return {
       title: assignment.title,
       body: `
-<!--Metadata{
+<sub>*This issue was created with fulib.org at \`${timestamp}\`.*</sub>
+<!--Metadata:{
 "assignment": "${assignment._id}",
-"solution": "${solution._id}"
+"solution": "${solution._id}",
+"timestamp": "${timestamp}"
 }-->
 `,
     };
