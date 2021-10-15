@@ -19,7 +19,7 @@ import {TokenModalComponent} from '../token-modal/token-modal.component';
 export class SolutionTableComponent implements OnInit {
   @ViewChild('tokenModal', {static: true}) tokenModal: TokenModalComponent;
 
-  readonly searchableProperties: string[] = ['name', 'studentID', 'email', 'assignee'];
+  readonly searchableProperties: string[] = ['name', 'studentID', 'email', 'assignee', 'github'];
 
   assignment?: Assignment;
   totalPoints?: number;
