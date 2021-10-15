@@ -1,7 +1,8 @@
 import {HttpService} from '@nestjs/axios';
 import {Injectable} from '@nestjs/common';
 import {firstValueFrom} from 'rxjs';
-import {Assignment, AssignmentDocument} from '../assignment/assignment.schema';
+import {AnnotationService} from '../annotation/annotation.service';
+import {AssignmentDocument} from '../assignment/assignment.schema';
 import {AssignmentService} from '../assignment/assignment.service';
 import {environment} from '../environment';
 import {GradingService} from '../grading/grading.service';
@@ -34,6 +35,7 @@ export class ClassroomService {
     private solutionService: SolutionService,
     private http: HttpService,
     private gradingService: GradingService,
+    private annotationService: AnnotationService,
   ) {
   }
 
@@ -148,6 +150,18 @@ ${i + 1}. ${task.description} ${grading ? '- **' + grading.note + '** ' : ''}(${
 `;
     }).join('');
 
+    const annotations = await this.annotationService.findAll({
+      assignment: assignment._id,
+      solution: solution._id,
+    });
+    const org = assignment.classroom?.org;
+    const prefix = assignment.classroom?.prefix;
+    const github = solution.author.github;
+    const annotationsStr = annotations.map(annotation => {
+      const snippets = annotation.snippets.map(snippet => `  ${snippet.comment}\n  https://github.com/${org}/${prefix}-${github}/blob/${solution.solution}/${snippet.file}#L${snippet.from.line + 1}-L${snippet.to.line + 1}`).join('\n');
+      return `- ${annotation.remark} (${annotation.points}P)\n${snippets}`;
+    }).join('\n');
+
     const timestamp = new Date();
     const metadata = {
       assignment: assignment._id,
@@ -159,6 +173,8 @@ ${i + 1}. ${task.description} ${grading ? '- **' + grading.note + '** ' : ''}(${
       title: `${assignment.title} (${sum}/${total}P)`,
       body: `\
 ${tasks}
+
+${annotationsStr}
 
 <sub>*This issue was created with [fulib.org](https://fulib.org/assignments) on ${timestamp.toLocaleDateString()} at ${timestamp.toLocaleTimeString()}.*</sub>
 <!--Metadata:${JSON.stringify(metadata, undefined, 2)}-->

@@ -19,6 +19,9 @@ import {AnnotationService} from './annotation.service';
   providers: [
     AnnotationService,
   ],
+  exports: [
+    AnnotationService,
+  ],
 })
 export class AnnotationModule {
 }
