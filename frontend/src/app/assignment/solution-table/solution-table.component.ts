@@ -211,4 +211,10 @@ export class SolutionTableComponent implements OnInit {
       },
     });
   }
+
+  import() {
+    this.solutionService.import(this.assignment!._id!).subscribe(solutions => {
+      this.solutions?.push(...solutions);
+    });
+  }
 }

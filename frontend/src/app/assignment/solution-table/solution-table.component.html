@@ -8,6 +8,11 @@
     Edit Assignment
   </a>
 
+  <button *ngIf="assignment?.classroom?.org && assignment?.classroom?.prefix" class="btn btn-primary" (click)="import()">
+    <i class="bi-download"></i>
+    Import from GitHub Classroom
+  </button>
+
   <h2>
     Sample Solution
     <app-collapse-button [(collapsed)]="solutionCollapsed"></app-collapse-button>

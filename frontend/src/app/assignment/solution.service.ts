@@ -148,6 +148,12 @@ export class SolutionService {
     );
   }
 
+  import(assignment: string): Observable<Solution[]> {
+    const headers = {};
+    this.addAssignmentToken(headers, assignment);
+    return this.http.post<Solution[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/import`, {}, {headers});
+  }
+
   get(assignment: Assignment | string, id: string): Observable<Solution> {
     const assignmentID = asID(assignment);
     const headers = {};
