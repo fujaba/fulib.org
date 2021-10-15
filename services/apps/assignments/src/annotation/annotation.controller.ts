@@ -1,6 +1,7 @@
 import {NotFound} from '@app/not-found';
 import {Body, Controller, Delete, Get, Param, Patch, Post, Query} from '@nestjs/common';
 import {ApiCreatedResponse, ApiOkResponse, ApiQuery, ApiTags} from '@nestjs/swagger';
+import {FilterQuery} from 'mongoose';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {SolutionAuth} from '../solution/solution-auth.decorator';
 import {CreateAnnotationDto, UpdateAnnotationDto} from './annotation.dto';
@@ -34,12 +35,17 @@ export class AnnotationController {
   @SolutionAuth({forbiddenResponse})
   @ApiOkResponse({type: [Annotation]})
   @ApiQuery({name: 'file', required: false})
+  @ApiQuery({name: 'remark', required: false})
   async findAll(
     @Param('assignment') assignment: string,
     @Param('solution') solution: string,
     @Query('file') file?: string,
+    @Query('remark') remark?: string,
   ): Promise<Annotation[]> {
-    return this.annotationService.findAll({assignment, solution, 'snippets.file': file});
+    const where: FilterQuery<Annotation> = {assignment, solution};
+    file && (where['snippets.file'] = file);
+    remark && (where.remark = remark);
+    return this.annotationService.findAll(where);
   }
 
   @Get(':id')
