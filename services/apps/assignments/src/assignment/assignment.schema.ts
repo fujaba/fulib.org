@@ -9,6 +9,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  IsUrl,
   Min,
   ValidateNested,
 } from 'class-validator';
@@ -31,6 +32,26 @@ export class Task {
   @ApiProperty()
   @IsString()
   verification: string;
+}
+
+export class ClassroomInfo {
+  @Prop()
+  @ApiProperty({required: false})
+  @IsOptional()
+  @IsUrl()
+  link?: string;
+
+  @Prop()
+  @ApiProperty({required: false})
+  @IsOptional()
+  @IsString()
+  org?: string;
+
+  @Prop()
+  @ApiProperty({required: false})
+  @IsOptional()
+  @IsString()
+  prefix?: string;
 }
 
 @Schema()
@@ -70,6 +91,13 @@ export class Assignment {
   @IsOptional()
   @IsDateString()
   deadline?: Date;
+
+  @Prop()
+  @ApiProperty({required: false})
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => ClassroomInfo)
+  classroom?: ClassroomInfo;
 
   @Prop()
   @ApiProperty({type: [Task]})

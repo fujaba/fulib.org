@@ -1,8 +1,9 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Router} from '@angular/router';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 import {KeycloakService} from 'keycloak-angular';
 import {DragulaService} from 'ng2-dragula';
-import {Subscription} from 'rxjs';
+import {of, Subscription} from 'rxjs';
+import {switchMap} from 'rxjs/operators';
 
 import {Marker} from '../../shared/model/marker';
 import {UserService} from '../../user/user.service';
@@ -12,28 +13,17 @@ import TaskResult from '../model/task-result';
 
 @Component({
   selector: 'app-create-assignment',
-  templateUrl: './create-assignment.component.html',
-  styleUrls: ['./create-assignment.component.scss'],
+  templateUrl: './edit-assignment.component.html',
+  styleUrls: ['./edit-assignment.component.scss'],
 })
-export class CreateAssignmentComponent implements OnInit, OnDestroy {
-  @ViewChild('successModal', {static: true}) successModal;
-
+export class EditAssignmentComponent implements OnInit, OnDestroy {
   collapse = {
     solution: false,
     templateSolution: false,
   };
   loggedIn = false;
 
-  assignment: Assignment = {
-    title: '',
-    author: '',
-    email: '',
-    deadline: new Date(),
-    description: '',
-    tasks: [],
-    solution: '',
-    templateSolution: '',
-  };
+  assignment: Assignment = this.createNew();
   deadlineDate?: string;
   deadlineTime?: string;
 
@@ -50,6 +40,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     private dragulaService: DragulaService,
     private users: UserService,
     private keycloakService: KeycloakService,
+    private route: ActivatedRoute,
     private router: Router,
   ) {
   }
@@ -61,10 +52,18 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
       },
     });
 
-    const draft = this.assignmentService.draft;
-    if (draft) {
-      this.setAssignment(draft);
-    }
+    this.route.params.pipe(
+      switchMap(({aid}) => {
+        if (aid) {
+          return this.assignmentService.get(aid);
+        }
+        const draft = this.assignmentService.draft;
+        if (draft) {
+          return of(draft);
+        }
+        return of(this.createNew());
+      }),
+    ).subscribe(assignment => this.setAssignment(assignment));
 
     this.userSubscription = this.users.current$.subscribe(user => {
       if (!user) {
@@ -86,6 +85,20 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
     this.dragulaService.destroy('TASKS');
   }
 
+  private createNew(): Assignment {
+    return {
+      title: '',
+      author: '',
+      email: '',
+      deadline: new Date(),
+      description: '',
+      tasks: [],
+      solution: '',
+      templateSolution: '',
+      classroom: {},
+    };
+  }
+
   getDeadline(): Date | undefined {
     return this.deadlineDate ? new Date(this.deadlineDate + ' ' + (this.deadlineTime ?? '00:00')) : undefined;
   }
@@ -100,6 +113,7 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
 
   setAssignment(a: Assignment): void {
     this.assignment = a;
+    this.assignment.classroom ??= {};
     const deadline = a.deadline;
     if (deadline) {
       const year = deadline.getFullYear();
@@ -131,7 +145,9 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
   }
 
   saveDraft(): void {
-    this.assignmentService.draft = this.getAssignment();
+    if (!this.assignment._id) {
+      this.assignmentService.draft = this.getAssignment();
+    }
   }
 
   onImport(file: File): void {
@@ -172,7 +188,9 @@ export class CreateAssignmentComponent implements OnInit, OnDestroy {
 
   submit(): void {
     this.submitting = true;
-    this.assignmentService.submit(this.getAssignment()).subscribe(result => {
+    const assignment = this.getAssignment();
+    const operation = assignment._id ? this.assignmentService.update(assignment) : this.assignmentService.create(assignment);
+    operation.subscribe(result => {
       this.router.navigate(['/assignments', result._id, 'solutions'], {queryParams: {share: true}});
     });
   }

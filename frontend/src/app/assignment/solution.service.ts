@@ -4,7 +4,7 @@ import {forkJoin, Observable, of} from 'rxjs';
 import {map, mapTo, switchMap, tap} from 'rxjs/operators';
 import {Assignee} from './model/assignee';
 
-import Solution from './model/solution';
+import Solution, {AuthorInfo} from './model/solution';
 import {environment} from '../../environments/environment';
 import Assignment from './model/assignment';
 import {AssignmentService} from './assignment.service';
@@ -32,28 +32,13 @@ export class SolutionService {
 
   // --------------- Solution Drafts ---------------
 
-  get name(): string | null {
-    return this.storageService.get('solutionName');
+  getAuthor(): AuthorInfo | undefined {
+    const json = this.storageService.get('solutionAuthor');
+    return json ? JSON.parse(json) : undefined;
   }
 
-  set name(value: string | null) {
-    this.storageService.set('solutionName', value);
-  }
-
-  get studentID(): string | null {
-    return this.storageService.get('solutionStudentID');
-  }
-
-  set studentID(value: string | null) {
-    this.storageService.set('solutionStudentID', value);
-  }
-
-  get email(): string | null {
-    return this.storageService.get('solutionEmail');
-  }
-
-  set email(value: string | null) {
-    this.storageService.set('solutionEmail', value);
+  setAuthor(value: AuthorInfo) {
+    this.storageService.set('solutionAuthor', JSON.stringify(value));
   }
 
   getDraft(assignment: Assignment): string | null {
@@ -161,6 +146,12 @@ export class SolutionService {
     return this.http.post<Solution>(`${environment.assignmentsApiUrl}/assignments/${solution.assignment}/solutions`, solution).pipe(
       tap(response => this.setToken(solution.assignment, response._id!, response.token!)),
     );
+  }
+
+  import(assignment: string): Observable<Solution[]> {
+    const headers = {};
+    this.addAssignmentToken(headers, assignment);
+    return this.http.post<Solution[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/import`, {}, {headers});
   }
 
   get(assignment: Assignment | string, id: string): Observable<Solution> {

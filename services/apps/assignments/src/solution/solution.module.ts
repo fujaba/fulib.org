@@ -1,3 +1,4 @@
+import {HttpModule} from '@nestjs/axios';
 import {Module} from '@nestjs/common';
 import {MongooseModule} from '@nestjs/mongoose';
 import {AssignmentModule} from '../assignment/assignment.module';
@@ -14,6 +15,7 @@ import {SolutionService} from './solution.service';
         schema: SolutionSchema,
       },
     ]),
+    HttpModule,
     AssignmentModule,
   ],
   controllers: [SolutionController],

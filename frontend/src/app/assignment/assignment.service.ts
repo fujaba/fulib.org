@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 
 import {saveAs} from 'file-saver';
 import {forkJoin, Observable, of} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
+import {map, switchMap, tap} from 'rxjs/operators';
 
 import {environment} from '../../environments/environment';
 import {LintService} from '../shared/lint.service';
@@ -171,12 +171,21 @@ export class AssignmentService {
     return markers;
   }
 
-  submit(assignment: Assignment): Observable<Assignment> {
+  create(assignment: Assignment): Observable<Assignment> {
     return this.http.post<Assignment>(`${environment.assignmentsApiUrl}/assignments`, assignment).pipe(
       map(response => {
         this.setToken(response._id!, response.token!);
         this._cache.set(response._id!, response);
         return response;
+      }),
+    );
+  }
+
+  update(assignment: Assignment): Observable<Assignment> {
+    return this.http.patch<Assignment>(`${environment.assignmentsApiUrl}/assignments/${assignment._id}`, assignment).pipe(
+      tap(response => {
+        response.token = assignment.token;
+        this._cache.set(assignment._id!, response);
       }),
     );
   }

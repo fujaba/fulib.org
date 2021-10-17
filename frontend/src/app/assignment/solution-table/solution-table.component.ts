@@ -19,7 +19,7 @@ import {TokenModalComponent} from '../token-modal/token-modal.component';
 export class SolutionTableComponent implements OnInit {
   @ViewChild('tokenModal', {static: true}) tokenModal: TokenModalComponent;
 
-  readonly searchableProperties: (keyof Solution | 'assignee')[] = ['name', 'studentID', 'email', 'assignee'];
+  readonly searchableProperties: string[] = ['name', 'studentID', 'email', 'assignee', 'github'];
 
   assignment?: Assignment;
   totalPoints?: number;
@@ -102,7 +102,13 @@ export class SolutionTableComponent implements OnInit {
   }
 
   updateSearch(): void {
-    const searchWords = this.searchText.split(/\s+/).map(s => s.replace('+', ' '));
+    const searchText = this.searchText.trim();
+    if (!searchText) {
+      this.filteredSolutions = this.solutions;
+      return;
+    }
+
+    const searchWords = searchText.split(/\s+/).map(s => s.replace('+', ' '));
     this.filteredSolutions = this.solutions!.filter(solution => this.includeInSearch(solution, searchWords));
   }
 
@@ -111,7 +117,7 @@ export class SolutionTableComponent implements OnInit {
       const colonIndex = searchWord.indexOf(':');
       if (colonIndex > 0) {
         const propertyName = searchWord.substring(0, colonIndex);
-        if (!this.searchableProperties.includes(propertyName as any)) {
+        if (!this.searchableProperties.includes(propertyName)) {
           continue;
         }
 
@@ -144,8 +150,8 @@ export class SolutionTableComponent implements OnInit {
     if (property === 'assignee') {
       return this.assignees?.[solution._id!]?.assignee;
     }
-    if (typeof solution[property] === 'string') {
-      return solution[property];
+    if (typeof solution.author[property] === 'string') {
+      return solution.author[property];
     }
     return undefined;
   }
@@ -203,6 +209,12 @@ export class SolutionTableComponent implements OnInit {
       queryParams: {
         atok: assignmentToken,
       },
+    });
+  }
+
+  import() {
+    this.solutionService.import(this.assignment!._id!).subscribe(solutions => {
+      this.solutions?.push(...solutions);
     });
   }
 }

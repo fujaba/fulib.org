@@ -1,7 +1,17 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {ApiProperty} from '@nestjs/swagger';
 import {Type} from 'class-transformer';
-import {IsArray, IsDateString, IsEmail, IsMongoId, IsNotEmpty, IsString, Min, ValidateNested} from 'class-validator';
+import {
+  IsArray,
+  IsDateString,
+  IsEmail,
+  IsMongoId,
+  IsNotEmpty,
+  IsOptional,
+  IsString, IsUUID,
+  Min,
+  ValidateNested,
+} from 'class-validator';
 import {Document} from 'mongoose';
 
 export class TaskResult {
@@ -16,22 +26,8 @@ export class TaskResult {
   output: string;
 }
 
-@Schema()
-export class Solution {
+export class AuthorInfo {
   @Prop()
-  @ApiProperty()
-  token: string;
-
-  @Prop({index: 1})
-  @ApiProperty()
-  @IsMongoId()
-  assignment: string;
-
-  @Prop()
-  @ApiProperty()
-  createdBy: string;
-
-  @Prop({index: 1})
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
@@ -47,6 +43,36 @@ export class Solution {
   @ApiProperty()
   @IsEmail()
   email: string;
+
+  @Prop()
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  github?: string;
+}
+
+@Schema()
+export class Solution {
+  @Prop()
+  @ApiProperty()
+  token: string;
+
+  @Prop({index: 1})
+  @ApiProperty()
+  @IsMongoId()
+  assignment: string;
+
+  @Prop()
+  @ApiProperty({required: false})
+  @IsOptional()
+  @IsUUID()
+  createdBy?: string;
+
+  @Prop()
+  @ApiProperty()
+  @ValidateNested()
+  @Type(() => AuthorInfo)
+  author: AuthorInfo;
 
   @Prop()
   @ApiProperty()

@@ -1,6 +1,6 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound, notFound} from '@app/not-found';
-import {Body, Controller, Delete, Get, Param, Patch, Post} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Headers, Param, Patch, Post} from '@nestjs/common';
 import {ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {AssignmentService} from '../assignment/assignment.service';
@@ -19,6 +19,16 @@ export class SolutionController {
     private readonly assignmentService: AssignmentService,
     private readonly solutionService: SolutionService,
   ) {
+  }
+
+  @Post('assignments/:assignment/solutions/import')
+  @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
+  @ApiCreatedResponse({type: [Solution]})
+  async import(
+    @Param('assignment') assignment: string,
+    @Headers('Authorization') auth: string,
+  ): Promise<Solution[]> {
+    return this.solutionService.import(assignment, auth);
   }
 
   @Post('assignments/:assignment/solutions')

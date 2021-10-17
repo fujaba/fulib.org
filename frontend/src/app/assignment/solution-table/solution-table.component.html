@@ -3,6 +3,16 @@
 
   <app-task-list [assignment]="assignment"></app-task-list>
 
+  <a class="btn btn-primary" [routerLink]="['/assignments', assignment?._id, 'edit']">
+    <i class="bi-pencil"></i>
+    Edit Assignment
+  </a>
+
+  <button *ngIf="assignment?.classroom?.org && assignment?.classroom?.prefix" class="btn btn-primary" (click)="import()">
+    <i class="bi-download"></i>
+    Import from GitHub Classroom
+  </button>
+
   <h2>
     Sample Solution
     <app-collapse-button [(collapsed)]="solutionCollapsed"></app-collapse-button>
@@ -84,7 +94,7 @@
   <div class="form-inline mb-3 d-flex">
     <label for="searchInput" class="mr-sm-2">Search:</label>
     <input type="text" class="form-control mr-sm-2 flex-grow-1" id="searchInput"
-           placeholder="Name, Student ID, E-Mail, Assignee"
+           placeholder="Name, Student ID, E-Mail, GitHub Username, Assignee"
            [(ngModel)]="searchText" (change)="updateSearch()"
            [ngbTypeahead]="typeahead" [resultFormatter]="formatTypeahead">
     <button type="button" class="btn btn-outline-secondary" ngbTooltip="View Search Help"
@@ -116,6 +126,7 @@
       <th>Name</th>
       <th>Student ID</th>
       <th>E-Mail</th>
+      <th>GitHub Username</th>
       <th>Submitted</th>
       <th>Points</th>
       <th>Assignee</th>
@@ -124,9 +135,10 @@
     </thead>
     <tbody>
     <tr *ngFor="let solution of filteredSolutions">
-      <td>{{solution.name}}</td>
-      <td>{{solution.studentID}}</td>
-      <td><a href="mailto:{{solution.email}}">{{solution.email}}</a></td>
+      <td>{{solution.author.name}}</td>
+      <td>{{solution.author.studentId}}</td>
+      <td><a href="mailto:{{solution.author.email}}">{{solution.author.email}}</a></td>
+      <td>{{solution.author.github}}</td>
       <td>
         <span *ngIf="assignment && assignment.deadline && solution.timestamp && assignment.deadline < solution.timestamp else timestamp"
           class="text-danger" ngbTooltip="Submitted after Deadline">
@@ -139,11 +151,25 @@
       <td><span class="badge badge-primary badge-pill">
           {{totalResultPoints(solution)}} / {{totalPoints}}
         </span></td>
-      <td><input class="form-control" #assigneeInput [ngModel]="assignees?.[solution._id!]?.assignee" (change)="setAssignee(solution, assigneeInput)"></td>
       <td>
-        <a class="btn btn-primary" routerLink="/assignments/{{assignment?._id}}/solutions/{{solution._id}}">
-          View
-        </a>
+        <input class="form-control m-n2" #assigneeInput [ngModel]="assignees?.[solution._id!]?.assignee" (change)="setAssignee(solution, assigneeInput)">
+      </td>
+      <td>
+        <div class="btn-group m-n2">
+          <a class="btn btn-primary" routerLink="/assignments/{{assignment?._id}}/solutions/{{solution._id}}"
+             ngbTooltip="View"
+          >
+            <i class="bi-eye-fill"></i>
+          </a>
+          <a class="btn btn-primary"
+             *ngIf="assignment?.classroom?.org && assignment?.classroom?.prefix && solution.author.github"
+             href="https://github.com/{{assignment?.classroom?.org}}/{{assignment?.classroom?.prefix}}-{{solution.author.github}}"
+             target="_blank"
+             ngbTooltip="View Repository on GitHub"
+          >
+            <i class="bi-github"></i>
+          </a>
+        </div>
       </td>
     </tr>
     </tbody>

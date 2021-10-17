@@ -1,5 +1,8 @@
 <div class="container">
-  <h1>Create Assignment</h1>
+  <h1>
+    {{assignment._id ? 'Edit' : 'Create'}}
+    Assignment
+  </h1>
 
   <app-import-export (import)="onImport($event)" (export)="onExport()"></app-import-export>
 
@@ -40,6 +43,51 @@
       <div class="col-sm-2">
         <input type="time" class="form-control" id="deadlineTimeInput" [disabled]="!deadlineDate"
                [(ngModel)]="deadlineTime" (change)="saveDraft()">
+      </div>
+    </div>
+  </div>
+
+  <h2>
+    GitHub Classroom
+    <span class="badge badge-primary">New</span>
+  </h2>
+  <div class="form">
+    <div class="form-group row">
+      <label for="classroomAssignmentInput" class="col-sm-2 col-form-label">GitHub Classroom Assignment Link</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="classroomAssignmentInput" placeholder="https://classroom.github.com/classrooms/0000000-xxxxxxx/assignments/yyyyyyy"
+               [(ngModel)]="assignment.classroom!.link" (change)="saveDraft()">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label">
+        Organization and Prefix
+      </label>
+      <div class="col-sm-10">
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">
+              https://github.com/
+            </span>
+          </div>
+          <input type="text" class="form-control" id="classroomOrgInput" placeholder="my-awesome-org" aria-label="Org"
+                 [(ngModel)]="assignment.classroom!.org" (change)="saveDraft()">
+          <div class="input-group-prepend input-group-append">
+            <span class="input-group-text">
+              /
+            </span>
+          </div>
+          <input type="text" class="form-control" id="classroomPrefixInput" placeholder="prefix" aria-label="Prefix"
+                 [(ngModel)]="assignment.classroom!.prefix" (change)="saveDraft()">
+          <div class="input-group-append">
+            <span class="input-group-text">
+              -Student
+            </span>
+          </div>
+        </div>
+        <small class="text-muted">
+          Allows importing solutions from Classroom Submissions.
+        </small>
       </div>
     </div>
   </div>
@@ -173,7 +221,7 @@
     </small>
   </p>
 
-  <p class="text-center">
+  <p *ngIf="!assignment._id" class="text-center">
     Click "Submit" to finalize your assignment and generate a link.
   </p>
   <div *ngIf="!loggedIn" class="alert alert-warning" role="alert">
@@ -205,7 +253,7 @@
 
   <div class="text-center">
     <button type="button" class="btn btn-primary btn-lg" (click)="submit()" [disabled]="submitting">
-      {{submitting ? 'Submitting...' : 'Submit'}}
+      {{assignment._id ? (submitting ? 'Saving...' : 'Save') : (submitting ? 'Submitting...' : 'Submit')}}
     </button>
   </div>
 </div>

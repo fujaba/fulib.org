@@ -6,11 +6,16 @@ export default class Assignment {
 
   title: string;
   description: string;
-  descriptionHtml?: string;
   createdBy?: string;
   author: string;
   email: string;
   deadline?: Date;
+
+  classroom?: {
+    link?: string;
+    org?: string;
+    prefix?: string;
+  };
 
   tasks: Task[];
   solution: string;
