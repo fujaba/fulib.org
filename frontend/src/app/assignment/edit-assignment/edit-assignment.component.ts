@@ -170,7 +170,7 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
   }
 
   addTask(): void {
-    const id = ObjectID.generate();
+    const id = new ObjectID().toHexString();
     this.assignment.tasks.push({
       _id: id,
       description: '',
