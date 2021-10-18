@@ -2,6 +2,7 @@ import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {ApiProperty} from '@nestjs/swagger';
 import {Type} from 'class-transformer';
 import {
+  IsAlphanumeric,
   IsArray,
   IsDateString,
   IsEmail,
@@ -16,6 +17,12 @@ import {
 import {Document} from 'mongoose';
 
 export class Task {
+  @Prop()
+  @ApiProperty()
+  @IsAlphanumeric()
+  @IsNotEmpty()
+  _id: string;
+
   @Prop()
   @ApiProperty()
   @IsString()

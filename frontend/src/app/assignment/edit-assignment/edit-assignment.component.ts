@@ -1,5 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import ObjectID from 'bson-objectid';
 import {KeycloakService} from 'keycloak-angular';
 import {DragulaService} from 'ng2-dragula';
 import {of, Subscription} from 'rxjs';
@@ -9,6 +10,7 @@ import {Marker} from '../../shared/model/marker';
 import {UserService} from '../../user/user.service';
 import {AssignmentService} from '../assignment.service';
 import Assignment from '../model/assignment';
+import Task from '../model/task';
 import TaskResult from '../model/task-result';
 
 @Component({
@@ -28,7 +30,7 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
   deadlineTime?: string;
 
   checking = false;
-  results?: TaskResult[];
+  results?: Record<string, TaskResult>;
   markers: Marker[] = [];
 
   submitting = false;
@@ -139,7 +141,10 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
     this.checking = true;
     this.assignmentService.check(this.assignment).subscribe(response => {
       this.checking = false;
-      this.results = response.results;
+      this.results = {};
+      for (let result of response.results) {
+        this.results[result.task] = result;
+      }
       this.markers = this.assignmentService.lint(response);
     });
   }
@@ -165,20 +170,32 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
   }
 
   addTask(): void {
-    this.assignment.tasks.push({description: '', points: 0, verification: '', collapsed: false, deleted: false});
+    const id = ObjectID.generate();
+    this.assignment.tasks.push({
+      _id: id,
+      description: '',
+      points: 0,
+      verification: '',
+      collapsed: false,
+      deleted: false,
+    });
     if (this.results) {
-      this.results.push({output: '', points: 0});
+      this.results[id] = {
+        task: id,
+        points: 0,
+        output: '',
+      };
     }
     this.saveDraft();
   }
 
-  removeTask(id: number): void {
-    this.assignment.tasks[id].deleted = true;
+  removeTask(task: Task): void {
+    task.deleted = true;
     this.saveDraft();
   }
 
-  restoreTask(id: number): void {
-    this.assignment.tasks[id].deleted = false;
+  restoreTask(task: Task): void {
+    task.deleted = false;
     this.saveDraft();
   }
 
@@ -195,11 +212,11 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
     });
   }
 
-  getColorClass(taskID: number): string {
+  getColorClass(task: Task): string {
     if (!this.results) {
       return '';
     }
-    const result = this.results[taskID];
+    const result = this.results[task._id];
     if (!result) {
       return '';
     }

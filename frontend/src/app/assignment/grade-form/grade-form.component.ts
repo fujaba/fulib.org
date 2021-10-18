@@ -12,7 +12,7 @@ import {UserService} from '../../user/user.service';
 })
 export class GradeFormComponent implements OnInit, OnDestroy {
   @Input() solution: Solution;
-  @Input() task: number;
+  @Input() task: string;
   @Input() grading?: TaskGrading;
 
   loggedIn = false;
