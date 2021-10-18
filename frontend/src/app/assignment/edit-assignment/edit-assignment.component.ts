@@ -109,7 +109,7 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
     return {
       ...this.assignment,
       deadline: this.getDeadline(),
-      tasks: this.assignment.tasks.filter(t => !t.deleted),
+      tasks: this.assignment.tasks.filter(t => !t.deleted).map(({deleted, collapsed, ...rest}) => rest),
     };
   }
 
