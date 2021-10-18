@@ -1,6 +1,7 @@
 import {Component, Input} from '@angular/core';
 import Assignment from '../model/assignment';
 import Solution from '../model/solution';
+import Task from '../model/task';
 import TaskGrading from '../model/task-grading';
 import TaskResult from '../model/task-result';
 
@@ -12,21 +13,21 @@ import TaskResult from '../model/task-result';
 export class TaskListComponent {
   @Input() assignment?: Assignment;
   @Input() solution?: Solution;
-  @Input() results?: TaskResult[];
-  @Input() gradings?: TaskGrading[];
+  @Input() results?: Record<string, TaskResult>;
+  @Input() gradings?: Record<string, TaskGrading>;
 
   outputExpanded: boolean[] = [];
 
-  getTaskPoints(taskID: number) {
-    return this.gradings?.[taskID]?.points ?? this.results?.[taskID]?.points ?? 0;
+  getTaskPoints(task: Task) {
+    return this.gradings?.[task._id]?.points ?? this.results?.[task._id]?.points ?? 0;
   }
 
-  getColorClass(taskID: number) {
+  getColorClass(task: Task) {
     if (!this.results) {
       return 'secondary';
     }
-    const points = this.getTaskPoints(taskID);
-    const maxPoints = this.assignment!.tasks[taskID].points;
+    const points = this.getTaskPoints(task);
+    const maxPoints = task.points;
     if (points === maxPoints) {
       return 'success';
     }
