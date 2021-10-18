@@ -1,5 +1,5 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
-import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
+import {ApiProperty} from '@nestjs/swagger';
 import {Type} from 'class-transformer';
 import {
   IsAlphanumeric,
@@ -18,10 +18,10 @@ import {Document} from 'mongoose';
 
 export class Task {
   @Prop()
-  @ApiPropertyOptional()
+  @ApiProperty()
   @IsAlphanumeric()
   @IsNotEmpty()
-  _id?: string;
+  _id: string;
 
   @Prop()
   @ApiProperty()
