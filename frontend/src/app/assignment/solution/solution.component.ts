@@ -10,6 +10,7 @@ import Assignment from '../model/assignment';
 import Comment from '../model/comment';
 import Solution from '../model/solution';
 import TaskGrading from '../model/task-grading';
+import TaskResult from '../model/task-result';
 import {SolutionService} from '../solution.service';
 
 @Component({
@@ -24,7 +25,8 @@ export class SolutionComponent implements OnInit, OnDestroy {
   solution?: Solution;
   markers: Marker[] = [];
 
-  gradings?: TaskGrading[];
+  gradings?: Record<string, TaskGrading>;
+  results?: Record<string, TaskResult>;
   comments: Comment[] = [];
 
   userId?: string;
@@ -61,10 +63,19 @@ export class SolutionComponent implements OnInit, OnDestroy {
         this.assignmentService.get(assignmentId).pipe(tap(assignment => this.assignment = assignment)),
         this.solutionService.get(assignmentId, solutionId).pipe(tap(solution => {
           this.solution = solution;
+          this.results = {};
+          for (let result of solution.results!) {
+            this.results[result.task] = result;
+          }
           this.loadCommentDraft();
         })),
         this.solutionService.getComments(assignmentId, solutionId).pipe(tap(comments => this.comments = comments)),
-        this.solutionService.getGradings(assignmentId, solutionId).pipe(tap(gradings => this.gradings = gradings)),
+        this.solutionService.getGradings(assignmentId, solutionId).pipe(tap(gradings => {
+          this.gradings = {};
+          for (let grading of gradings) {
+            this.gradings[grading.task] = grading;
+          }
+        })),
       ])),
     ).subscribe(([_, solution]) => {
       // NB: this happens here instead of where the solution is loaded above, because the solution text needs to be updated first.

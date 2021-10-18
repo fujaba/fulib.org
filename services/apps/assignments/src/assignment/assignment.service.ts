@@ -44,6 +44,7 @@ export class AssignmentService {
       scenarioText: `# Solution\n\n${solution}\n\n## Verification\n\n${task.verification}\n\n`,
     }).toPromise();
     return {
+      task: task._id,
       points: response?.data.exitCode === 0 ? task.points : 0,
       output: response?.data.output,
     };

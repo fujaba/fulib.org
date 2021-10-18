@@ -31,7 +31,7 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
   author: AuthorInfo;
 
   checking = false;
-  results?: TaskResult[];
+  results?: Record<string, TaskResult>;
   markers: Marker[] = [];
 
   id?: string;
@@ -106,17 +106,23 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
       author: this.author,
       solution: this.solution,
       timestamp: this.timeStamp,
-      results: this.results,
     };
   }
 
-  setSolution(result: Solution): void {
-    this.id = result._id;
-    this.token = result.token;
-    this.author = result.author;
-    this.solution = result.solution;
-    this.timeStamp = result.timestamp;
-    this.results = result.results;
+  setSolution(solution: Solution): void {
+    this.id = solution._id;
+    this.token = solution.token;
+    this.author = solution.author;
+    this.solution = solution.solution;
+    this.timeStamp = solution.timestamp;
+    this.setResults(solution.results ?? []);
+  }
+
+  private setResults(results: TaskResult[]) {
+    this.results = {};
+    for (let result of results) {
+      this.results[result.task] = result;
+    }
   }
 
   loadDraft(): void {
@@ -132,10 +138,10 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
     this.saveDraft();
     this.checking = true;
 
-    this.solutionService.check({assignment: this.assignment, solution: this.solution}).subscribe(result => {
+    this.solutionService.check({assignment: this.assignment, solution: this.solution}).subscribe(response => {
       this.checking = false;
-      this.results = result.results;
-      this.markers = this.assignmentService.lint(result);
+      this.setResults(response.results);
+      this.markers = this.assignmentService.lint(response);
     });
   }
 

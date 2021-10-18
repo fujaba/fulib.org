@@ -1,7 +1,7 @@
 export default class TaskGrading {
   assignment: string;
   solution: string;
-  task: number;
+  task: string;
 
   timestamp?: Date;
   createdBy?: string;

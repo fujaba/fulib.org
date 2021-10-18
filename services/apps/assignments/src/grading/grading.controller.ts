@@ -38,7 +38,7 @@ export class GradingController {
   async findOne(
     @Param('assignment') assignment: string,
     @Param('solution') solution: string,
-    @Param('task', ParseIntPipe) task: number,
+    @Param('task') task: string,
   ): Promise<Grading | null> {
     return this.gradingService.findOne({
       assignment,
@@ -54,7 +54,7 @@ export class GradingController {
   async update(
     @Param('assignment') assignment: string,
     @Param('solution') solution: string,
-    @Param('task', ParseIntPipe) task: number,
+    @Param('task') task: string,
     @Body() dto: UpdateGradingDto,
     @AuthUser() user?: UserToken,
   ): Promise<Grading | null> {
@@ -72,7 +72,7 @@ export class GradingController {
   async remove(
     @Param('assignment') assignment: string,
     @Param('solution') solution: string,
-    @Param('task', ParseIntPipe) task: number,
+    @Param('task') task: string,
   ): Promise<Grading | null> {
     return this.gradingService.remove({
       assignment,

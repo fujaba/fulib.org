@@ -1,16 +1,16 @@
 <h2>Tasks</h2>
 <ol *ngIf="assignment">
-  <li *ngFor="let task of assignment.tasks; let i = index"
-      class="text-{{getColorClass(i)}}">
+  <li *ngFor="let task of assignment.tasks"
+      class="text-{{getColorClass(task)}}">
     {{task.description}}
-    <span class="badge badge-{{getColorClass(i)}}">
-      <ng-container *ngIf="results">{{getTaskPoints(i)}} / </ng-container>
+    <span class="badge badge-{{getColorClass(task)}}">
+      <ng-container *ngIf="results">{{getTaskPoints(task)}} / </ng-container>
       {{task.points}}
     </span>
     <button type="button" class="btn btn-sm btn-outline-secondary m-1 p-1"
-            *ngIf="results?.[i]?.output"
-            (click)="outputExpanded[i] = !outputExpanded[i]">
-      {{outputExpanded[i] ? 'Hide Output' : 'Show Output'}}
+            *ngIf="results?.[task._id]?.output"
+            (click)="outputExpanded[task._id] = !outputExpanded[task._id]">
+      {{outputExpanded[task._id] ? 'Hide Output' : 'Show Output'}}
     </button>
     <button type="button" class="btn btn-sm btn-outline-primary m-1 p-1"
             *ngIf="results && solution"
@@ -20,10 +20,10 @@
     </button>
     <ng-template #gradePopoverContent>
       <app-grade-form *ngIf="solution && gradings"
-                      [solution]="solution" [task]="i" [grading]="gradings[i]"></app-grade-form>
+                      [solution]="solution" [task]="task._id" [grading]="gradings[task._id]"></app-grade-form>
     </ng-template>
-    <div *ngIf="results?.[i]?.output" [ngbCollapse]="!outputExpanded[i]" class="my-3">
-      <app-autotheme-codemirror [content]="results![i].output" [options]="{
+    <div *ngIf="results?.[task._id]?.output as output" [ngbCollapse]="!outputExpanded[task._id]" class="my-3">
+      <app-autotheme-codemirror [content]="output" [options]="{
         autoRefresh: true,
         lineNumbers: true,
         readOnly: true
