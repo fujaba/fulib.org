@@ -422,3 +422,31 @@
 ## Bugfixes
 
 * Editor tooltips now display above the navigation bar so they are always readable, even if long. #160
+
+# fulib.org v1.9.0
+
+## General
+
+* Rewrote the Assignments and Projects services in NestJS. #173
+
+## New Features
+
++ Added Projects.
+  + Projects run in a Docker container. #132
+  + Files are served with WebDAV #133
+  + A Web Terminal allows running commands. #134
+  + Files and directories can be viewed in a file tree. #135
+  + Projects offer a polished but simplified IDE. #136
+  + Files can be edited in a rich code editor. #139
+  + Projects can be managed (created, edited, deleted, transferred, ...). #149
+  + Projects can be stored locally / in the Browser. #150
+  + The code editor displays markers for Scenarios, Java and other code. #156
+  + Multiple users can access a Project, edit files and share terminals. #157
+  + Search Everywhere allows finding files easily. #158
+  + Run Anything allows quickly running commands. #161
+  + Docs can be viewed side-by-side with the code editor. #166
++ The Assignments and Projects services now offer an API documentation using Swagger. #173
+
+## Bugfixes
+
+* Fixed a problem where the editor would not update the output and other areas when a scenario failed to compile. #167
