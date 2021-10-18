@@ -40,6 +40,12 @@ export class Task {
   @IsOptional()
   @IsString()
   verification?: string;
+
+  @Prop({default: []})
+  @ApiProperty()
+  @ValidateNested({each: true})
+  @Type(() => Task)
+  children: Task[];
 }
 
 export class ClassroomInfo {

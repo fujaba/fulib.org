@@ -33,10 +33,23 @@ export class AssignmentService {
   }
 
   async check(solution: string, {tasks}: Pick<Assignment, 'tasks'>): Promise<TaskResult[]> {
-    return Promise.all(tasks.map(task => this.checkTask(solution, task)));
+    const results = await Promise.all(tasks.map(task => this.checkTasksRecursively(solution, task)));
+    return results.flatMap(x => x);
   }
 
-  async checkTask(solution: string, task: Task): Promise<TaskResult> {
+  async checkTasksRecursively(solution: string, task: Task): Promise<TaskResult[]> {
+    const [first, rest] = await Promise.all([
+      this.checkTask(solution, task),
+      Promise.all(task.children.map(t => this.checkTasksRecursively(solution, t))),
+    ]);
+    const flatRest = rest.flatMap(x => x);
+    return first ? [first, ...flatRest] : flatRest;
+  }
+
+  async checkTask(solution: string, task: Task): Promise<TaskResult | undefined> {
+    if (!task.verification) {
+      return undefined;
+    }
     const response = await this.http.post(`${environment.compiler.apiUrl}/runcodegen`, {
       privacy: 'none',
       packageName: 'org.fulib.assignments',
