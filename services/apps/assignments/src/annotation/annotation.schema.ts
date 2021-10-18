@@ -1,7 +1,17 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {ApiProperty} from '@nestjs/swagger';
 import {Type} from 'class-transformer';
-import {IsInt, IsMongoId, IsNumber, IsString, Min, ValidateNested} from 'class-validator';
+import {
+  IS_ALPHA,
+  IsAlphanumeric,
+  IsInt,
+  IsMongoId,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  Min,
+  ValidateNested,
+} from 'class-validator';
 import {Document} from 'mongoose';
 
 export class Location {
@@ -61,8 +71,9 @@ export class Annotation {
 
   @Prop()
   @ApiProperty()
-  @IsNumber()
-  task: number;
+  @IsAlphanumeric()
+  @IsNotEmpty()
+  task: string;
 
   @Prop()
   @ApiProperty()

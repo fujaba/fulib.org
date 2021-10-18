@@ -156,13 +156,14 @@ export class ClassroomService {
     const total = assignment.tasks.reduce((a, c) => a + c.points, 0);
     let sum = 0;
 
-    const tasks = assignment.tasks.map((task, i) => {
-      const grading = gradings[i];
-      const points = grading?.points ?? solution.results[i]?.points ?? 0;
+    const tasks = assignment.tasks.map((task, index) => {
+      const grading = gradings.find(g => g.task === task._id);
+      const result = solution.results.find(r => r.task === task._id);
+      const points = grading?.points ?? result?.points ?? 0;
       sum += points;
-      const annotationsStr = annotations.filter(a => a.task === i).map(a => this.renderAnnotation(assignment, solution, a)).join('\n');
+      const annotationsStr = annotations.filter(a => a.task === task._id).map(a => this.renderAnnotation(assignment, solution, a)).join('\n');
       return `\
-${i + 1}. ${task.description} ${grading ? '- **' + grading.note + '** ' : ''}(${points}/${task.points}P)
+${index + 1}. ${task.description} ${grading ? '- **' + grading.note + '** ' : ''}(${points}/${task.points}P)
 ${annotationsStr}
 `;
     }).join('');
