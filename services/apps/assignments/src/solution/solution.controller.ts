@@ -1,7 +1,8 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound, notFound} from '@app/not-found';
-import {Body, Controller, Delete, Get, Headers, Param, Patch, Post} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Patch, Post, Query} from '@nestjs/common';
 import {ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
+import {FilterQuery} from 'mongoose';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {AssignmentService} from '../assignment/assignment.service';
 import {SolutionAuth} from './solution-auth.decorator';
@@ -21,16 +22,6 @@ export class SolutionController {
   ) {
   }
 
-  @Post('assignments/:assignment/solutions/import')
-  @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
-  @ApiCreatedResponse({type: [Solution]})
-  async import(
-    @Param('assignment') assignment: string,
-    @Headers('Authorization') auth: string,
-  ): Promise<Solution[]> {
-    return this.solutionService.import(assignment, auth);
-  }
-
   @Post('assignments/:assignment/solutions')
   @Auth({optional: true})
   @ApiCreatedResponse({type: Solution})
@@ -47,8 +38,11 @@ export class SolutionController {
   @ApiOkResponse({type: [ReadSolutionDto]})
   async findAll(
     @Param('assignment') assignment: string,
+    @Query('author.github') github?: string,
   ): Promise<ReadSolutionDto[]> {
-    return this.solutionService.findAll({assignment});
+    const query: FilterQuery<Solution> = {assignment};
+    github && (query['author.github'] = github);
+    return this.solutionService.findAll(query);
   }
 
   @Get('assignments/:assignment/solutions/:id')

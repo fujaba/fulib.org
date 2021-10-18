@@ -1,25 +1,11 @@
 import {UserToken} from '@app/keycloak-auth';
-import {HttpService} from '@nestjs/axios';
 import {Injectable} from '@nestjs/common';
 import {InjectConnection, InjectModel} from '@nestjs/mongoose';
 import {Connection, FilterQuery, Model} from 'mongoose';
-import {firstValueFrom} from 'rxjs';
 import {AssignmentService} from '../assignment/assignment.service';
-import {environment} from '../environment';
 import {generateToken, idFilter} from '../utils';
 import {CreateSolutionDto, ReadSolutionDto, UpdateSolutionDto} from './solution.dto';
 import {Solution, SolutionDocument, TaskResult} from './solution.schema';
-
-interface RepositoryInfo {
-  name: string;
-  pushed_at: string;
-}
-
-interface SearchResult {
-  total_count: number;
-  incomplete_results: boolean;
-  items: RepositoryInfo[];
-}
 
 @Injectable()
 export class SolutionService {
@@ -27,7 +13,6 @@ export class SolutionService {
     @InjectModel('solutions') private model: Model<Solution>,
     @InjectConnection() private connection: Connection,
     private assignmentService: AssignmentService,
-    private http: HttpService,
   ) {
     this.migrate();
   }
@@ -75,63 +60,6 @@ export class SolutionService {
     return rest;
   }
 
-  async import(id: string, auth: string): Promise<Solution[]> {
-    const assignment = await this.assignmentService.findOne(id);
-    if (!assignment || !assignment.classroom || !assignment.classroom.org || !assignment.classroom.prefix) {
-      return [];
-    }
-
-    const githubToken = await this.getGithubToken(auth);
-
-    const query = `org:${assignment.classroom.org} ${assignment.classroom.prefix} in:name`;
-    const response = await firstValueFrom(this.http.get<SearchResult>('https://api.github.com/search/repositories', {
-      params: {
-        q: query,
-        per_page: 100, // TODO paginate
-      },
-      headers: {
-        Authorization: `Bearer ${githubToken}`,
-      },
-    }));
-    const repositories = response.data.items;
-    const result = await this.model.bulkWrite(repositories.map(repo => {
-      const githubName = repo.name.substring(assignment.classroom!.prefix!.length + 1);
-      const solution: Solution = {
-        assignment: id,
-        author: {
-          name: '',
-          email: '',
-          github: githubName,
-          studentID: '',
-        },
-        solution: '',
-        results: [],
-        token: generateToken(),
-        timestamp: new Date(repo.pushed_at),
-      };
-      return {
-        updateOne: {
-          filter: {'author.github': githubName},
-          update: {$setOnInsert: solution},
-          upsert: true,
-        },
-      };
-    }));
-    return this.model.find({_id: {$in: Object.values(result.upsertedIds)}});
-  }
-
-  private async getGithubToken(auth: string): Promise<string> {
-    const {data} = await firstValueFrom(this.http.get<string>(`${environment.auth.issuer}/broker/github/token`, {
-      headers: {
-        Authorization: auth,
-      },
-      responseType: 'text',
-    }));
-    const parts = data.split('&');
-    const paramName = 'access_token=';
-    return parts.filter(s => s.startsWith(paramName))[0].substring(paramName.length);
-  }
-
   async update(id: string, dto: UpdateSolutionDto): Promise<Solution | null> {
     return this.model.findOneAndUpdate(idFilter(id), dto, {new: true}).exec();
   }
@@ -142,5 +70,9 @@ export class SolutionService {
 
   isAuthorized(solution: Solution, user?: UserToken, token?: string): boolean {
     return solution.token === token || !!user && user.sub === solution.createdBy;
+  }
+
+  bulkWrite(map: any) {
+    return this.model.bulkWrite(map);
   }
 }

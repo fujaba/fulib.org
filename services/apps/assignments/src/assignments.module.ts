@@ -8,6 +8,8 @@ import {CourseModule} from './course/course.module';
 import {environment} from './environment';
 import {GradingModule} from './grading/grading.module';
 import {SolutionModule} from './solution/solution.module';
+import { AnnotationModule } from './annotation/annotation.module';
+import { ClassroomModule } from './classroom/classroom.module';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import {SolutionModule} from './solution/solution.module';
     GradingModule,
     CommentModule,
     CourseModule,
+    AnnotationModule,
+    ClassroomModule,
   ],
   controllers: [],
   providers: [],

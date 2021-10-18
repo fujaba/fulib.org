@@ -169,6 +169,13 @@
           >
             <i class="bi-github"></i>
           </a>
+          <button *ngIf="assignment?.classroom?.org && assignment?.classroom?.prefix && solution.author.github"
+            class="btn btn-success"
+            ngbTooltip="Post Feedback to GitHub"
+            (click)="export(solution)"
+          >
+            <i class="bi-github"></i>
+          </button>
         </div>
       </td>
     </tr>
