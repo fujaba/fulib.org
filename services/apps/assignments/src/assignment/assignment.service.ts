@@ -58,7 +58,7 @@ export class AssignmentService {
     }).toPromise();
     return {
       task: task._id,
-      points: response?.data.exitCode === 0 ? task.points : 0,
+      points: response?.data.exitCode === 0 ? Math.max(task.points, 0) : Math.min(task.points, 0),
       output: response?.data.output,
     };
   }

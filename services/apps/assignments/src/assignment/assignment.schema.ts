@@ -30,9 +30,8 @@ export class Task {
   description: string;
 
   @Prop()
-  @ApiProperty({minimum: 0})
+  @ApiProperty()
   @IsNumber()
-  @Min(0)
   points: number;
 
   @Prop()
