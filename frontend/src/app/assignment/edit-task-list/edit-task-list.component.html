@@ -77,7 +77,7 @@
         </div>
       </div>
     </div>
-    <app-edit-task-list [tasks]="task.children" [results]="results"></app-edit-task-list>
+    <app-edit-task-list [tasks]="task.children" [results]="results" (save)="saveDraft()"></app-edit-task-list>
   </li>
   <li>
     <a routerLink="." class="text-success" (click)="addTask()">

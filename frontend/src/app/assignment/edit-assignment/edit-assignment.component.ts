@@ -8,6 +8,7 @@ import {Marker} from '../../shared/model/marker';
 import {UserService} from '../../user/user.service';
 import {AssignmentService} from '../assignment.service';
 import Assignment from '../model/assignment';
+import Task from '../model/task';
 import TaskResult from '../model/task-result';
 
 @Component({
@@ -94,12 +95,20 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
     return this.deadlineDate ? new Date(this.deadlineDate + ' ' + (this.deadlineTime ?? '00:00')) : undefined;
   }
 
-  getAssignment(): Assignment {
+  getAssignment(forDraft?: boolean): Assignment {
     return {
       ...this.assignment,
       deadline: this.getDeadline(),
-      tasks: this.assignment.tasks.filter(t => !t.deleted).map(({deleted, collapsed, ...rest}) => rest),
+      tasks: this.getTasks(this.assignment.tasks, forDraft),
     };
+  }
+
+  private getTasks(tasks: Task[], forDraft?: boolean): Task[] {
+    return tasks.filter(t => !t.deleted).map(({deleted, collapsed, children, ...rest}) => ({
+      ...rest,
+      ...(forDraft ? {collapsed} : {}),
+      children: this.getTasks(children, forDraft),
+    }));
   }
 
   setAssignment(a: Assignment): void {
@@ -140,7 +149,7 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
 
   saveDraft(): void {
     if (!this.assignment._id) {
-      this.assignmentService.draft = this.getAssignment();
+      this.assignmentService.draft = this.getAssignment(true);
     }
   }
 
