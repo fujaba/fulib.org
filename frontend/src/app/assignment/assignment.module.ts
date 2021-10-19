@@ -26,6 +26,7 @@ import {MyAssignmentsComponent} from './my-assignments/my-assignments.component'
 import {MySolutionsComponent} from './my-solutions/my-solutions.component';
 import {AuthorNameComponent} from './author-name/author-name.component';
 import {ImportExportComponent} from './import-export/import-export.component';
+import { EditTaskListComponent } from './edit-task-list/edit-task-list.component';
 
 @NgModule({
     declarations: [
@@ -44,6 +45,7 @@ import {ImportExportComponent} from './import-export/import-export.component';
         MyCoursesComponent,
         AuthorNameComponent,
         ImportExportComponent,
+        EditTaskListComponent,
     ],
     imports: [
         CommonModule,

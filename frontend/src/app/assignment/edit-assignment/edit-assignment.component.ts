@@ -2,7 +2,6 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import ObjectID from 'bson-objectid';
 import {KeycloakService} from 'keycloak-angular';
-import {DragulaService} from 'ng2-dragula';
 import {of, Subscription} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 
@@ -10,7 +9,6 @@ import {Marker} from '../../shared/model/marker';
 import {UserService} from '../../user/user.service';
 import {AssignmentService} from '../assignment.service';
 import Assignment from '../model/assignment';
-import Task from '../model/task';
 import TaskResult from '../model/task-result';
 
 @Component({
@@ -39,7 +37,6 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
 
   constructor(
     private assignmentService: AssignmentService,
-    private dragulaService: DragulaService,
     private users: UserService,
     private keycloakService: KeycloakService,
     private route: ActivatedRoute,
@@ -48,12 +45,6 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.dragulaService.createGroup('TASKS', {
-      moves(el, container, handle): boolean {
-        return handle?.classList.contains('handle') ?? false;
-      },
-    });
-
     this.route.params.pipe(
       switchMap(({aid}) => {
         if (aid) {
@@ -84,7 +75,6 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.userSubscription.unsubscribe();
-    this.dragulaService.destroy('TASKS');
   }
 
   private createNew(): Assignment {
@@ -178,6 +168,7 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
       verification: '',
       collapsed: false,
       deleted: false,
+      children: [],
     });
     if (this.results) {
       this.results[id] = {
@@ -186,16 +177,6 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
         output: '',
       };
     }
-    this.saveDraft();
-  }
-
-  removeTask(task: Task): void {
-    task.deleted = true;
-    this.saveDraft();
-  }
-
-  restoreTask(task: Task): void {
-    task.deleted = false;
     this.saveDraft();
   }
 
@@ -210,18 +191,5 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
     operation.subscribe(result => {
       this.router.navigate(['/assignments', result._id, 'solutions'], {queryParams: {share: true}});
     });
-  }
-
-  getColorClass(task: Task): string {
-    if (!this.results) {
-      return '';
-    }
-    const result = this.results[task._id];
-    if (!result) {
-      return '';
-    }
-
-    const points = result.points;
-    return points === 0 ? 'danger' : 'success';
   }
 }
