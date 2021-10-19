@@ -1,6 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import ObjectID from 'bson-objectid';
 import {KeycloakService} from 'keycloak-angular';
 import {of, Subscription} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
@@ -157,27 +156,6 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
   onExport(): void {
     const assignment = this.getAssignment();
     this.assignmentService.download(assignment);
-  }
-
-  addTask(): void {
-    const id = new ObjectID().toHexString();
-    this.assignment.tasks.push({
-      _id: id,
-      description: '',
-      points: 0,
-      verification: '',
-      collapsed: false,
-      deleted: false,
-      children: [],
-    });
-    if (this.results) {
-      this.results[id] = {
-        task: id,
-        points: 0,
-        output: '',
-      };
-    }
-    this.saveDraft();
   }
 
   login(): void {

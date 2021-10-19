@@ -102,12 +102,7 @@
     </small>
   </p>
 
-  <h2 class="d-flex align-items-center">
-    Tasks
-    <button type="button" class="btn btn-success ml-auto" (click)="addTask()">
-      Add Task
-    </button>
-  </h2>
+  <h2>Tasks</h2>
   <app-edit-task-list [tasks]="assignment.tasks" [results]="results" (save)="saveDraft()"></app-edit-task-list>
 
   <h2>

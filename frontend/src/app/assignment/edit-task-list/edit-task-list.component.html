@@ -79,4 +79,9 @@
     </div>
     <app-edit-task-list [tasks]="task.children" [results]="results"></app-edit-task-list>
   </li>
+  <li>
+    <a routerLink="." class="text-success" (click)="addTask()">
+      Add Task
+    </a>
+  </li>
 </ol>

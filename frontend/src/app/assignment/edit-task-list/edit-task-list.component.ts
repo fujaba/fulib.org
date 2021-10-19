@@ -1,4 +1,5 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import ObjectID from 'bson-objectid';
 import {DragulaService} from 'ng2-dragula';
 import {DndDropEvent} from 'ngx-drag-drop';
 import Task from '../model/task';
@@ -33,6 +34,27 @@ export class EditTaskListComponent implements OnInit, OnDestroy {
 
   saveDraft() {
     this.save.emit();
+  }
+
+  addTask(): void {
+    const id = new ObjectID().toHexString();
+    this.tasks.push({
+      _id: id,
+      description: '',
+      points: 0,
+      verification: '',
+      collapsed: false,
+      deleted: false,
+      children: [],
+    });
+    if (this.results) {
+      this.results[id] = {
+        task: id,
+        points: 0,
+        output: '',
+      };
+    }
+    this.saveDraft();
   }
 
   removeTask(task: Task): void {
