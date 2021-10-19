@@ -155,18 +155,17 @@ export class ClassroomService {
       solution: solution._id,
     });
     const total = assignment.tasks.reduce((a, c) => a + c.points, 0);
-    let sum = 0;
-
-    const tasks = this.renderSubTasks(assignment, solution, assignment.tasks, gradings, annotations);
+    const {sum, tasks} = this.renderSubTasks(assignment, solution, assignment.tasks, gradings, annotations);
     return {total, sum, tasks};
   }
 
-  private renderSubTasks(assignment: AssignmentDocument, solution: SolutionDocument, taskList: Task[], gradings: GradingDocument[], annotations: Annotation[]): {tasks: string, sum: number} {
+  private renderSubTasks(assignment: AssignmentDocument, solution: SolutionDocument, taskList: Task[], gradings: GradingDocument[], annotations: Annotation[], depth = 0): {tasks: string, sum: number} {
     if (taskList.length === 0) {
       return {tasks: '', sum: 0};
     }
 
     let sum = 0;
+    const headlinePrefix = '#'.repeat(depth + 2);
     const tasks = taskList.map((task, index) => {
       const grading = gradings.find(g => g.task === task._id);
       const result = solution.results.find(r => r.task === task._id);
@@ -176,7 +175,7 @@ export class ClassroomService {
       const {tasks: subTasks, sum: subSum} = this.renderSubTasks(assignment, solution, task.children, gradings, annotations);
       sum += subSum;
       return `\
-${index + 1}. ${task.description} ${grading ? '- **' + grading.note + '** ' : ''}(${points}/${task.points}P)
+${task.children.length ? headlinePrefix : `${index + 1}.`} ${task.description} ${grading ? '- **' + grading.note + '** ' : ''}(${points}/${task.points}P)
 ${annotationsStr}
 ${subTasks}
 `;
