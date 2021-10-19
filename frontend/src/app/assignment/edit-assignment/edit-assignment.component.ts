@@ -1,8 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import ObjectID from 'bson-objectid';
 import {KeycloakService} from 'keycloak-angular';
-import {DragulaService} from 'ng2-dragula';
 import {of, Subscription} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 
@@ -39,7 +37,6 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
 
   constructor(
     private assignmentService: AssignmentService,
-    private dragulaService: DragulaService,
     private users: UserService,
     private keycloakService: KeycloakService,
     private route: ActivatedRoute,
@@ -48,12 +45,6 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.dragulaService.createGroup('TASKS', {
-      moves(el, container, handle): boolean {
-        return handle?.classList.contains('handle') ?? false;
-      },
-    });
-
     this.route.params.pipe(
       switchMap(({aid}) => {
         if (aid) {
@@ -84,7 +75,6 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.userSubscription.unsubscribe();
-    this.dragulaService.destroy('TASKS');
   }
 
   private createNew(): Assignment {
@@ -105,12 +95,20 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
     return this.deadlineDate ? new Date(this.deadlineDate + ' ' + (this.deadlineTime ?? '00:00')) : undefined;
   }
 
-  getAssignment(): Assignment {
+  getAssignment(forDraft?: boolean): Assignment {
     return {
       ...this.assignment,
       deadline: this.getDeadline(),
-      tasks: this.assignment.tasks.filter(t => !t.deleted),
+      tasks: this.getTasks(this.assignment.tasks, forDraft),
     };
+  }
+
+  private getTasks(tasks: Task[], forDraft?: boolean): Task[] {
+    return tasks.filter(t => !t.deleted).map(({deleted, collapsed, children, ...rest}) => ({
+      ...rest,
+      ...(forDraft ? {collapsed} : {}),
+      children: this.getTasks(children, forDraft),
+    }));
   }
 
   setAssignment(a: Assignment): void {
@@ -151,7 +149,7 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
 
   saveDraft(): void {
     if (!this.assignment._id) {
-      this.assignmentService.draft = this.getAssignment();
+      this.assignmentService.draft = this.getAssignment(true);
     }
   }
 
@@ -169,36 +167,6 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
     this.assignmentService.download(assignment);
   }
 
-  addTask(): void {
-    const id = new ObjectID().toHexString();
-    this.assignment.tasks.push({
-      _id: id,
-      description: '',
-      points: 0,
-      verification: '',
-      collapsed: false,
-      deleted: false,
-    });
-    if (this.results) {
-      this.results[id] = {
-        task: id,
-        points: 0,
-        output: '',
-      };
-    }
-    this.saveDraft();
-  }
-
-  removeTask(task: Task): void {
-    task.deleted = true;
-    this.saveDraft();
-  }
-
-  restoreTask(task: Task): void {
-    task.deleted = false;
-    this.saveDraft();
-  }
-
   login(): void {
     this.keycloakService.login().then();
   }
@@ -210,18 +178,5 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
     operation.subscribe(result => {
       this.router.navigate(['/assignments', result._id, 'solutions'], {queryParams: {share: true}});
     });
-  }
-
-  getColorClass(task: Task): string {
-    if (!this.results) {
-      return '';
-    }
-    const result = this.results[task._id];
-    if (!result) {
-      return '';
-    }
-
-    const points = result.points;
-    return points === 0 ? 'danger' : 'success';
   }
 }

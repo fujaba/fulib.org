@@ -1,6 +1,5 @@
-<h2>Tasks</h2>
-<ol *ngIf="assignment">
-  <li *ngFor="let task of assignment.tasks"
+<ol *ngIf="tasks else loading">
+  <li *ngFor="let task of tasks"
       class="text-{{getColorClass(task)}}">
     {{task.description}}
     <span class="badge badge-{{getColorClass(task)}}">
@@ -29,8 +28,11 @@
         readOnly: true
       }"></app-autotheme-codemirror>
     </div>
+    <app-task-list *ngIf="task.children.length"
+                   [tasks]="task.children" [solution]="solution" [results]="results" [gradings]="gradings"
+    ></app-task-list>
   </li>
 </ol>
-<p *ngIf="!assignment">
+<ng-template #loading>
   Loading Tasks...
-</p>
+</ng-template>

@@ -11,7 +11,7 @@ import TaskResult from '../model/task-result';
   styleUrls: ['./task-list.component.scss'],
 })
 export class TaskListComponent {
-  @Input() assignment?: Assignment;
+  @Input() tasks?: Task[];
   @Input() solution?: Solution;
   @Input() results?: Record<string, TaskResult>;
   @Input() gradings?: Record<string, TaskGrading>;

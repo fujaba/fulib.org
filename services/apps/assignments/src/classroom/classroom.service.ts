@@ -3,9 +3,10 @@ import {Injectable} from '@nestjs/common';
 import {firstValueFrom} from 'rxjs';
 import {Annotation, Snippet} from '../annotation/annotation.schema';
 import {AnnotationService} from '../annotation/annotation.service';
-import {AssignmentDocument} from '../assignment/assignment.schema';
+import {AssignmentDocument, Task} from '../assignment/assignment.schema';
 import {AssignmentService} from '../assignment/assignment.service';
 import {environment} from '../environment';
+import {GradingDocument} from '../grading/grading.schema';
 import {GradingService} from '../grading/grading.service';
 import {ReadSolutionDto} from '../solution/solution.dto';
 import {Solution, SolutionDocument} from '../solution/solution.schema';
@@ -154,20 +155,32 @@ export class ClassroomService {
       solution: solution._id,
     });
     const total = assignment.tasks.reduce((a, c) => a + c.points, 0);
-    let sum = 0;
+    const {sum, tasks} = this.renderSubTasks(assignment, solution, assignment.tasks, gradings, annotations);
+    return {total, sum, tasks};
+  }
 
-    const tasks = assignment.tasks.map((task, index) => {
+  private renderSubTasks(assignment: AssignmentDocument, solution: SolutionDocument, taskList: Task[], gradings: GradingDocument[], annotations: Annotation[], depth = 0): {tasks: string, sum: number} {
+    if (taskList.length === 0) {
+      return {tasks: '', sum: 0};
+    }
+
+    let sum = 0;
+    const headlinePrefix = '#'.repeat(depth + 2);
+    const tasks = taskList.map((task, index) => {
       const grading = gradings.find(g => g.task === task._id);
       const result = solution.results.find(r => r.task === task._id);
       const points = grading?.points ?? result?.points ?? 0;
       sum += points;
       const annotationsStr = annotations.filter(a => a.task === task._id).map(a => this.renderAnnotation(assignment, solution, a)).join('\n');
+      const {tasks: subTasks, sum: subSum} = this.renderSubTasks(assignment, solution, task.children, gradings, annotations);
+      sum += subSum;
       return `\
-${index + 1}. ${task.description} ${grading ? '- **' + grading.note + '** ' : ''}(${points}/${task.points}P)
+${task.children.length ? headlinePrefix : `${index + 1}.`} ${task.description} ${grading ? '- **' + grading.note + '** ' : ''}(${points}/${task.points}P)
 ${annotationsStr}
+${subTasks}
 `;
     }).join('');
-    return {total, sum, tasks};
+    return {tasks, sum};
   }
 
   private renderAnnotation(assignment: AssignmentDocument, solution: SolutionDocument, annotation: Annotation) {

@@ -102,82 +102,8 @@
     </small>
   </p>
 
-  <h2 class="d-flex align-items-center">
-    Tasks
-    <button type="button" class="btn btn-success ml-auto" (click)="addTask()">
-      Add Task
-    </button>
-  </h2>
-  <ol dragula="TASKS" [(dragulaModel)]="assignment.tasks" (dragulaModelChange)="saveDraft()">
-    <li *ngFor="let task of assignment.tasks" class="text-{{task.deleted ? 'muted' : getColorClass(task)}}">
-      <div class="d-flex align-items-center mb-2">
-        <div class="mr-2">
-          <del *ngIf="task.deleted; else taskDesc">
-            <ng-container *ngTemplateOutlet="taskDesc"></ng-container>
-          </del>
-          <ng-template #taskDesc>
-            {{task.description || '(no description)'}}
-          </ng-template>
-          <span class="badge badge-{{task.deleted ? 'secondary' : getColorClass(task) || 'secondary'}}">
-            {{task.points}}
-          </span>
-        </div>
-        <app-collapse-button class="ml-auto" [collapsed]="!!task.collapsed" (collapsedChange)="task.collapsed = $event; saveDraft()">
-        </app-collapse-button>
-        <div class="btn btn-secondary ml-2 handle" aria-label="Reorder" ngbTooltip="Drag to Reorder">
-          <i class="bi-grip-horizontal handle"></i>
-        </div>
-        <button *ngIf="!task.deleted"
-                type="button" class="btn btn-danger ml-2" aria-label="Delete" ngbTooltip="Delete"
-                (click)="removeTask(task)">
-          <i class="bi-trash"></i>
-        </button>
-        <button *ngIf="task.deleted"
-                type="button" class="btn btn-success ml-2" aria-label="Restore" ngbTooltip="Restore"
-                (click)="restoreTask(task)">
-          <i class="bi-arrow-repeat"></i>
-        </button>
-      </div>
-      <div class="form mb-3" [ngbCollapse]="!!task.collapsed">
-        <div class="form-group row">
-          <label for="task/{{task._id}}/descriptionInput" class="col-sm-2 col-form-label">Description</label>
-          <div class="col-sm-10">
-            <input type="text" class="form-control" id="task/{{task._id}}/descriptionInput"
-                   [(ngModel)]="task.description" (change)="saveDraft()">
-          </div>
-        </div>
-        <div class="form-group row">
-          <label for="task/{{task._id}}/pointsInput" class="col-sm-2 col-form-label">Points</label>
-          <div class="col-sm-10">
-            <input type="number" class="form-control" id="task/{{task._id}}/pointsInput" min="0"
-                   [(ngModel)]="task.points" (change)="saveDraft()">
-          </div>
-        </div>
-        <div class="form-group row">
-          <label for="task/{{task._id}}/verificationInput" class="col-sm-2 col-form-label">Verification</label>
-          <div class="col-sm-10">
-            <app-scenario-codemirror
-              id="task/{{task._id}}/verificationInput"
-              [content]="task.verification"
-              [autoRefresh]="true"
-              [autoSubmit]="true"
-              (save)="saveDraft()"
-            ></app-scenario-codemirror>
-          </div>
-        </div>
-        <div class="form-group row" *ngIf="!task.deleted && results?.[task._id]?.output">
-          <label for="task/{{task._id}}/output" class="col-sm-2 col-form-label">Output</label>
-          <div class="col-sm-10">
-            <app-autotheme-codemirror id="task/{{task._id}}/output" [content]="results![task._id]!.output" [options]="{
-              autoRefresh: true,
-              lineNumbers: true,
-              styleActiveLine: true
-            }"></app-autotheme-codemirror>
-          </div>
-        </div>
-      </div>
-    </li>
-  </ol>
+  <h2>Tasks</h2>
+  <app-edit-task-list [tasks]="assignment.tasks" [results]="results" (save)="saveDraft()"></app-edit-task-list>
 
   <h2>
     <label for="templateSolutionInput">Template Solution</label>

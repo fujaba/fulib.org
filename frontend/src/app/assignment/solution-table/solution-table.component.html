@@ -1,7 +1,8 @@
 <div class="container">
   <app-assignment-info [assignment]="assignment"></app-assignment-info>
 
-  <app-task-list [assignment]="assignment"></app-task-list>
+  <h2>Tasks</h2>
+  <app-task-list [tasks]="assignment?.tasks"></app-task-list>
 
   <a class="btn btn-primary" [routerLink]="['/assignments', assignment?._id, 'edit']">
     <i class="bi-pencil"></i>
