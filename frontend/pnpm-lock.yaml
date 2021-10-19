@@ -33,7 +33,7 @@ specifiers:
   angular-split: ^5.0.0
   bootstrap: ~4.6.0
   bootstrap-darkmode: ^0.9.1
-  bootstrap-icons: ^1.5.0
+  bootstrap-icons: ^1.6.1
   bson-objectid: ^2.0.1
   codemirror: ^5.62.2
   eslint: ^7.32.0
@@ -77,7 +77,7 @@ dependencies:
   angular-split: 5.0.0_0b09161855d5ba3034afe699aa518069
   bootstrap: 4.6.0
   bootstrap-darkmode: 0.9.1_bootstrap@4.6.0
-  bootstrap-icons: 1.5.0
+  bootstrap-icons: 1.6.1
   bson-objectid: 2.0.1
   codemirror: 5.62.2
   file-saver: 2.0.5
@@ -2954,8 +2954,8 @@ packages:
       tslib: 2.3.0
     dev: false
 
-  /bootstrap-icons/1.5.0:
-    resolution: {integrity: sha512-44feMc7DE1Ccpsas/1wioN8ewFJNquvi5FewA06wLnqct7CwMdGDVy41ieHaacogzDqLfG8nADIvMNp9e4bfbA==}
+  /bootstrap-icons/1.6.1:
+    resolution: {integrity: sha512-MNpF89+njCdVJePDRbCd2DrUusqIyNsPlBrdKqBEXAvFZpwb+Gc8k2VlyF2ueiDQn1PoeTSg9UqQNgx8tGqHAA==}
     engines: {node: '>=10'}
     dev: false
 
