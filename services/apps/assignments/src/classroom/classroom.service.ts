@@ -184,13 +184,12 @@ ${subTasks}
   }
 
   private renderAnnotation(assignment: AssignmentDocument, solution: SolutionDocument, annotation: Annotation) {
-    const snippets = annotation.snippets.map(snippet => this.renderSnippet(assignment, solution, snippet)).join('\n');
-    return `   * ${annotation.remark} (${annotation.points}P)\n${snippets}`;
+    return annotation.snippets.map(snippet => this.renderSnippet(assignment, solution, snippet)).join('\n');
   }
 
   private renderSnippet(assignment: AssignmentDocument, solution: SolutionDocument, snippet: Snippet) {
     const link = `https://github.com/${assignment.classroom!.org}/${assignment.classroom!.prefix}-${solution.author.github}/blob/${solution.solution}/${snippet.file}#L${snippet.from.line + 1}-L${snippet.to.line + 1}`;
-    return `      * ${snippet.comment}: ${link}`;
+    return `   * ${snippet.comment}: ${link}`;
   }
 
   private renderFooter(assignment: AssignmentDocument, solution: SolutionDocument) {
