@@ -90,4 +90,8 @@ export class EditTaskListComponent implements OnInit, OnDestroy {
       this.saveDraft();
     }
   }
+
+  calcPoints(task: Task) {
+    task.points = task.children.reduce((a, c) => a + Math.abs(c.points), 0);
+  }
 }
