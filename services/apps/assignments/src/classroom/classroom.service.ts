@@ -195,14 +195,25 @@ ${subTasks}
 
   private renderFooter(assignment: AssignmentDocument, solution: SolutionDocument) {
     const timestamp = new Date();
-    const metadata = {
-      assignment: assignment._id,
-      solution: solution._id,
-      timestamp,
+    const settings = {
+      'fulibFeedback.apiServer': 'https://fulib.org',
+      'fulibFeedback.assignment.id': assignment._id,
+      'fulibFeedback.solution.id': solution._id,
+      'fulibFeedback.solution.token': solution.token,
     };
     return `\
+---
+<details>
+<summary>View Annotations in VSCode</summary>
+
+Copy this to \`.vscode/settings.json\`:
+\`\`\`json
+${JSON.stringify(settings, null, 2)}
+\`\`\`
+
+</details>
+
 <sub>*This issue was created with [fulib.org](https://fulib.org/assignments) on ${timestamp.toLocaleDateString()} at ${timestamp.toLocaleTimeString()}.*</sub>
-<!--Metadata:${JSON.stringify(metadata, undefined, 2)}-->
 `;
   }
 }
