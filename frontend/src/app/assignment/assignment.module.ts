@@ -6,6 +6,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {ClipboardModule} from 'ngx-clipboard';
 import {DragulaModule} from 'ng2-dragula';
+import {DndModule} from 'ngx-drag-drop';
 
 import {SharedModule} from '../shared/shared.module';
 
@@ -55,6 +56,7 @@ import { EditTaskListComponent } from './edit-task-list/edit-task-list.component
         NgbModule,
         ClipboardModule,
         DragulaModule,
+      DndModule,
         AssignmentRoutingModule,
     ],
     exports: [

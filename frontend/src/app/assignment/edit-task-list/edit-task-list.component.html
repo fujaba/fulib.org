@@ -1,7 +1,17 @@
-<ol dragula="TASKS" [(dragulaModel)]="tasks" (dragulaModelChange)="saveDraft()">
-  <li *ngFor="let task of tasks" class="text-{{task.deleted ? 'muted' : getColorClass(task)}}">
+<ol [dndDropzone]="['task']" (dndDrop)="drop($event)">
+  <li dndPlaceholderRef>
+    <hr class="border-success"/>
+  </li>
+  <li *ngFor="let task of tasks"
+      class="text-{{task.deleted ? 'muted' : getColorClass(task)}}"
+      dndType="task"
+      [dndDraggable]="task"
+      dndEffectAllowed="move"
+      (dndMoved)="dragged(task)"
+      (dndEnd)="saveDraft()"
+  >
     <div class="d-flex align-items-center mb-2">
-      <div class="mr-2">
+      <div class="mr-2" dndDragImageRef>
         <del *ngIf="task.deleted; else taskDesc">
           <ng-container *ngTemplateOutlet="taskDesc"></ng-container>
         </del>
@@ -12,10 +22,11 @@
             {{task.points}}
           </span>
       </div>
-      <app-collapse-button class="ml-auto" [collapsed]="!!task.collapsed" (collapsedChange)="task.collapsed = $event; saveDraft()">
+      <app-collapse-button class="ml-auto" [collapsed]="!!task.collapsed"
+                           (collapsedChange)="task.collapsed = $event; saveDraft()">
       </app-collapse-button>
-      <div class="btn btn-secondary ml-2 handle" aria-label="Reorder" ngbTooltip="Drag to Reorder">
-        <i class="bi-grip-horizontal handle"></i>
+      <div class="btn btn-secondary ml-2 handle" aria-label="Reorder" ngbTooltip="Drag to Reorder" dndHandle>
+        <i class="bi-grip-horizontal"></i>
       </div>
       <button *ngIf="!task.deleted"
               type="button" class="btn btn-danger ml-2" aria-label="Delete" ngbTooltip="Delete"

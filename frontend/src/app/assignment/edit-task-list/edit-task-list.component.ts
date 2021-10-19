@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {DragulaService} from 'ng2-dragula';
+import {DndDropEvent} from 'ngx-drag-drop';
 import Task from '../model/task';
 import TaskResult from '../model/task-result';
 
@@ -55,5 +56,16 @@ export class EditTaskListComponent implements OnInit, OnDestroy {
 
     const points = result.points;
     return points === 0 ? 'danger' : 'success';
+  }
+
+  dragged(task: Task) {
+    this.tasks.removeFirst(t => t === task);
+  }
+
+  drop(event: DndDropEvent) {
+    if (event.index !== undefined) {
+      this.tasks.splice(event.index, 0, event.data);
+      this.saveDraft();
+    }
   }
 }
