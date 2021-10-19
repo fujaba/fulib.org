@@ -87,5 +87,5 @@ export type AnnotationDocument = Annotation & Document;
 export const AnnotationSchema = SchemaFactory.createForClass(Annotation)
   .index({assignment: 1, solution: 1})
   .index({assignment: 1, solution: 1, 'snippets.file': 1})
-  .index({assignment: 1, solution: 1, task: 1})
+  .index({assignment: 1, solution: 1, task: 1}, {unique: true})
 ;

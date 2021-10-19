@@ -169,9 +169,10 @@ export class ClassroomService {
     const tasks = taskList.map((task, index) => {
       const grading = gradings.find(g => g.task === task._id);
       const result = solution.results.find(r => r.task === task._id);
-      const points = grading?.points ?? result?.points ?? 0;
+      const annotation = annotations.find(a => a.task === task._id);
+      const points = annotation?.points ?? grading?.points ?? result?.points ?? 0;
       sum += points;
-      const annotationsStr = annotations.filter(a => a.task === task._id).map(a => this.renderAnnotation(assignment, solution, a)).join('\n');
+      const annotationsStr = annotation ? this.renderAnnotation(assignment, solution, annotation) : '';
       const {tasks: subTasks, sum: subSum} = this.renderSubTasks(assignment, solution, task.children, gradings, annotations);
       sum += subSum;
       return `\

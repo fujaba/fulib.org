@@ -35,7 +35,7 @@ export class AnnotationController {
   @SolutionAuth({forbiddenResponse})
   @ApiOkResponse({type: [Annotation]})
   @ApiQuery({name: 'file', required: false})
-  @ApiQuery({name: 'remark', required: false})
+  @ApiQuery({name: 'task', required: false})
   async findAll(
     @Param('assignment') assignment: string,
     @Param('solution') solution: string,
