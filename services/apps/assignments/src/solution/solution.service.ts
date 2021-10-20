@@ -8,7 +8,7 @@ import {Evaluation} from '../evaluation/evaluation.schema';
 import {EvaluationService} from '../evaluation/evaluation.service';
 import {generateToken, idFilter} from '../utils';
 import {CreateSolutionDto, ReadSolutionDto, UpdateSolutionDto} from './solution.dto';
-import {Solution, SolutionDocument, TaskResult} from './solution.schema';
+import {Solution, SolutionDocument} from './solution.schema';
 
 @Injectable()
 export class SolutionService {
@@ -25,7 +25,19 @@ export class SolutionService {
     let count = 0;
     for await (const solution of this.model.find({results: {$exists: true}})) {
       for (const result of solution.results!) {
-        await this.createEvaluation(solution, result);
+        const {
+          task,
+          output: remark,
+          points,
+        } = result;
+        const dto: CreateEvaluationDto = {
+          task,
+          author: 'Autograding',
+          remark,
+          points,
+          snippets: [],
+        };
+        await this.createEvaluation(solution, dto);
       }
       count += solution.results!.length;
     }
@@ -46,19 +58,7 @@ export class SolutionService {
     console.info('Migrated', result.modifiedCount, 'solutions');
   }
 
-  private async createEvaluation(solution: SolutionDocument, result: TaskResult): Promise<Evaluation> {
-    const {
-      task,
-      points,
-      output,
-    } = result;
-    const dto: CreateEvaluationDto = {
-      task,
-      author: 'Autograding',
-      remark: output,
-      points,
-      snippets: [],
-    };
+  private async createEvaluation(solution: SolutionDocument, dto: CreateEvaluationDto): Promise<Evaluation> {
     return this.evaluationService.create(solution.assignment, solution._id, dto);
   }
 
