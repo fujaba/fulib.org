@@ -30,7 +30,9 @@ export class SolutionController {
     @Body() dto: CreateSolutionDto,
     @AuthUser() user?: UserToken,
   ): Promise<Solution> {
-    return this.solutionService.create(assignment, dto, user?.sub);
+    const solution = await this.solutionService.create(assignment, dto, user?.sub);
+    await this.solutionService.autoGrade(solution);
+    return solution;
   }
 
   @Get('assignments/:assignment/solutions')

@@ -4,6 +4,7 @@ import {InjectConnection, InjectModel} from '@nestjs/mongoose';
 import {Connection, FilterQuery, Model} from 'mongoose';
 import {AssignmentService} from '../assignment/assignment.service';
 import {CreateEvaluationDto} from '../evaluation/evaluation.dto';
+import {Evaluation} from '../evaluation/evaluation.schema';
 import {EvaluationService} from '../evaluation/evaluation.service';
 import {generateToken, idFilter} from '../utils';
 import {CreateSolutionDto, ReadSolutionDto, UpdateSolutionDto} from './solution.dto';
@@ -24,21 +25,9 @@ export class SolutionService {
     let count = 0;
     for await (const solution of this.model.find({results: {$exists: true}})) {
       for (const result of solution.results!) {
-        const {
-          task,
-          points,
-          output,
-        } = result;
-        const dto: CreateEvaluationDto = {
-          task,
-          author: 'Autograding',
-          remark: output,
-          points,
-          snippets: [],
-        };
-        count++;
-        await this.evaluationService.create(solution.assignment, solution._id, dto);
+        await this.createEvaluation(solution, result);
       }
+      count += solution.results!.length;
     }
     console.info('Migrated', count, 'results');
 
@@ -57,6 +46,22 @@ export class SolutionService {
     console.info('Migrated', result.modifiedCount, 'solutions');
   }
 
+  private async createEvaluation(solution: SolutionDocument, result: TaskResult): Promise<Evaluation> {
+    const {
+      task,
+      points,
+      output,
+    } = result;
+    const dto: CreateEvaluationDto = {
+      task,
+      author: 'Autograding',
+      remark: output,
+      points,
+      snippets: [],
+    };
+    return this.evaluationService.create(solution.assignment, solution._id, dto);
+  }
+
   async create(assignment: string, dto: CreateSolutionDto, createdBy?: string): Promise<SolutionDocument> {
     return this.model.create({
       ...dto,
@@ -64,13 +69,16 @@ export class SolutionService {
       createdBy,
       token: generateToken(),
       timestamp: new Date(),
-      results: await this.results(assignment, dto),
     });
   }
 
-  private async results(assignmentId: string, dto: CreateSolutionDto): Promise<TaskResult[]> {
-    const assignment = await this.assignmentService.findOne(assignmentId);
-    return assignment ? this.assignmentService.check(dto.solution, assignment) : [];
+  async autoGrade(solution: SolutionDocument): Promise<void> {
+    const assignment = await this.assignmentService.findOne(solution.assignment);
+    if (!assignment) {
+      return;
+    }
+    const results = await this.assignmentService.check(solution._id, assignment);
+    await Promise.all(results.map(r => this.createEvaluation(solution, r)));
   }
 
   async findAll(where: FilterQuery<Solution> = {}): Promise<ReadSolutionDto[]> {
