@@ -1,8 +1,7 @@
 import {Component, Input} from '@angular/core';
-import Assignment from '../model/assignment';
+import {Evaluation} from '../model/evaluation';
 import Solution from '../model/solution';
 import Task from '../model/task';
-import TaskGrading from '../model/task-grading';
 import TaskResult from '../model/task-result';
 
 @Component({
@@ -14,12 +13,12 @@ export class TaskListComponent {
   @Input() tasks?: Task[];
   @Input() solution?: Solution;
   @Input() results?: Record<string, TaskResult>;
-  @Input() gradings?: Record<string, TaskGrading>;
+  @Input() evaluations?: Record<string, Evaluation>;
 
   outputExpanded: boolean[] = [];
 
   getTaskPoints(task: Task) {
-    return this.gradings?.[task._id]?.points ?? this.results?.[task._id]?.points ?? 0;
+    return this.evaluations?.[task._id]?.points ?? this.results?.[task._id]?.points ?? 0;
   }
 
   getColorClass(task: Task) {

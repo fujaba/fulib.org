@@ -9,7 +9,7 @@ import {AssignmentService} from '../assignment.service';
 import Assignment from '../model/assignment';
 import Comment from '../model/comment';
 import Solution from '../model/solution';
-import TaskGrading from '../model/task-grading';
+import {Evaluation} from '../model/evaluation';
 import TaskResult from '../model/task-result';
 import {SolutionService} from '../solution.service';
 
@@ -25,7 +25,7 @@ export class SolutionComponent implements OnInit, OnDestroy {
   solution?: Solution;
   markers: Marker[] = [];
 
-  gradings?: Record<string, TaskGrading>;
+  evaluations?: Record<string, Evaluation>;
   results?: Record<string, TaskResult>;
   comments: Comment[] = [];
 
@@ -70,10 +70,10 @@ export class SolutionComponent implements OnInit, OnDestroy {
           this.loadCommentDraft();
         })),
         this.solutionService.getComments(assignmentId, solutionId).pipe(tap(comments => this.comments = comments)),
-        this.solutionService.getGradings(assignmentId, solutionId).pipe(tap(gradings => {
-          this.gradings = {};
-          for (let grading of gradings) {
-            this.gradings[grading.task] = grading;
+        this.solutionService.getEvaluations(assignmentId, solutionId).pipe(tap(evaluations => {
+          this.evaluations = {};
+          for (const evaluation of evaluations) {
+            this.evaluations[evaluation.task] = evaluation;
           }
         })),
       ])),

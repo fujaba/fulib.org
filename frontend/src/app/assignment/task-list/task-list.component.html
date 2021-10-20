@@ -18,8 +18,8 @@
       Grade
     </button>
     <ng-template #gradePopoverContent>
-      <app-grade-form *ngIf="solution && gradings"
-                      [solution]="solution" [task]="task._id" [grading]="gradings[task._id]"></app-grade-form>
+      <app-grade-form *ngIf="solution && evaluations"
+                      [solution]="solution" [task]="task._id" [evaluation]="evaluations[task._id]"></app-grade-form>
     </ng-template>
     <div *ngIf="results?.[task._id]?.output as output" [ngbCollapse]="!outputExpanded[task._id]" class="my-3">
       <app-autotheme-codemirror [content]="output" [options]="{
@@ -29,7 +29,7 @@
       }"></app-autotheme-codemirror>
     </div>
     <app-task-list *ngIf="task.children.length"
-                   [tasks]="task.children" [solution]="solution" [results]="results" [gradings]="gradings"
+                   [tasks]="task.children" [solution]="solution" [results]="results" [evaluations]="evaluations"
     ></app-task-list>
   </li>
 </ol>

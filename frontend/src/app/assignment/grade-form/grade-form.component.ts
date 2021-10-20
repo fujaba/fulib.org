@@ -1,8 +1,8 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
+import {CreateEvaluationDto, Evaluation} from '../model/evaluation';
 import Solution from '../model/solution';
 import {SolutionService} from '../solution.service';
-import TaskGrading from '../model/task-grading';
 import {UserService} from '../../user/user.service';
 
 @Component({
@@ -13,12 +13,16 @@ import {UserService} from '../../user/user.service';
 export class GradeFormComponent implements OnInit, OnDestroy {
   @Input() solution: Solution;
   @Input() task: string;
-  @Input() grading?: TaskGrading;
+  @Input() evaluation?: Evaluation;
+  dto: CreateEvaluationDto = {
+    task: '',
+    author: '',
+    remark: '',
+    points: 0,
+    snippets: [],
+  };
 
   loggedIn = false;
-  name: string;
-  points: number;
-  note: string;
 
   private userSubscription: Subscription;
 
@@ -29,12 +33,13 @@ export class GradeFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.name = this.solutionService.commentName || '';
+    this.dto.task = this.task;
+    this.dto.author = this.solutionService.commentName || '';
 
     this.userSubscription = this.users.current$.subscribe(user => {
       if (user) {
         this.loggedIn = true;
-        this.name = `${user.firstName} ${user.lastName}`;
+        this.dto.author = `${user.firstName} ${user.lastName}`;
       }
     });
   }
@@ -44,20 +49,16 @@ export class GradeFormComponent implements OnInit, OnDestroy {
   }
 
   saveDraft(): void {
-    this.solutionService.commentName = this.name;
+    this.solutionService.commentName = this.dto.author;
   }
 
   doSubmit(): void {
-    const grading: TaskGrading = {
-      assignment: this.solution.assignment,
-      solution: this.solution._id!,
-      task: this.task,
-      note: this.note,
-      points: this.points,
-      author: this.name,
-    };
-    this.solutionService.postGrading(grading).subscribe(result => {
-      this.grading = result;
+    const {assignment, _id: solution} = this.solution;
+    const op = this.evaluation
+      ? this.solutionService.updateEvaluation(assignment, solution!, this.evaluation._id, this.dto)
+      : this.solutionService.createEvaluation(assignment, solution!, this.dto);
+    op.subscribe(result => {
+      this.evaluation = result;
     });
   }
 }
