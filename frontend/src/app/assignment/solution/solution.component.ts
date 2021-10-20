@@ -71,10 +71,10 @@ export class SolutionComponent implements OnInit, OnDestroy {
           }
         })),
       ])),
-    ).subscribe(() => {
+    ).subscribe(([, , , evaluations]) => {
       // NB: this happens here instead of where the solution is loaded above, because the solution text needs to be updated first.
       // Otherwise the markers don't show up
-      // TODO set markers
+      this.markers = this.assignmentService.lint({results: evaluations});
     }, error => {
       if (error.status === 401) {
         this.tokenModal.open();
