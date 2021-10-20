@@ -12,8 +12,8 @@ import {AssignmentService} from '../assignment.service';
 import {CourseService} from '../course.service';
 import Assignment from '../model/assignment';
 import Course from '../model/course';
+import {CreateEvaluationDto} from '../model/evaluation';
 import Solution, {AuthorInfo} from '../model/solution';
-import TaskResult from '../model/task-result';
 import {SolutionService} from '../solution.service';
 
 @Component({
@@ -31,7 +31,7 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
   author: AuthorInfo;
 
   checking = false;
-  results?: Record<string, TaskResult>;
+  evaluations?: Record<string, CreateEvaluationDto>;
   markers: Marker[] = [];
 
   id?: string;
@@ -117,13 +117,6 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
     this.timeStamp = solution.timestamp;
   }
 
-  private setResults(results: TaskResult[]) {
-    this.results = {};
-    for (let result of results) {
-      this.results[result.task] = result;
-    }
-  }
-
   loadDraft(): void {
     this.solution = this.solutionService.getDraft(this.assignment) ?? this.assignment.templateSolution;
   }
@@ -139,7 +132,10 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
 
     this.solutionService.check({assignment: this.assignment, solution: this.solution}).subscribe(response => {
       this.checking = false;
-      this.setResults(response.results);
+      this.evaluations = {};
+      for (let result of response.results) {
+        this.evaluations[result.task] = result;
+      }
       this.markers = this.assignmentService.lint(response);
     });
   }

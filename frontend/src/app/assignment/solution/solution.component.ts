@@ -10,7 +10,6 @@ import Assignment from '../model/assignment';
 import Comment from '../model/comment';
 import Solution from '../model/solution';
 import {Evaluation} from '../model/evaluation';
-import TaskResult from '../model/task-result';
 import {SolutionService} from '../solution.service';
 
 @Component({

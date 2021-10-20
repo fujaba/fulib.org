@@ -13,7 +13,7 @@ import {UserService} from '../../user/user.service';
 export class GradeFormComponent implements OnInit, OnDestroy {
   @Input() solution: Solution;
   @Input() task: string;
-  @Input() evaluation?: Evaluation;
+  @Input() evaluation?: CreateEvaluationDto | Evaluation;
   dto: CreateEvaluationDto = {
     task: '',
     author: '',
@@ -54,7 +54,7 @@ export class GradeFormComponent implements OnInit, OnDestroy {
 
   doSubmit(): void {
     const {assignment, _id: solution} = this.solution;
-    const op = this.evaluation
+    const op = this.evaluation && '_id' in this.evaluation
       ? this.solutionService.updateEvaluation(assignment, solution!, this.evaluation._id, this.dto)
       : this.solutionService.createEvaluation(assignment, solution!, this.dto);
     op.subscribe(result => {

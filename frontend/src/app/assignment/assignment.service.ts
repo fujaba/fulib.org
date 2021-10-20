@@ -146,7 +146,7 @@ export class AssignmentService {
     for (let i = 0; i < result.results.length; i++) {
       const taskNum = i + 1;
       const taskResult = result.results[i];
-      for (const marker of this.lintService.lint(taskResult.output)) {
+      for (const marker of this.lintService.lint(taskResult.remark)) {
         marker.from.line -= 2;
         marker.to.line -= 2;
 

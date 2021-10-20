@@ -8,12 +8,12 @@
   </p>
   <p>
     {{evaluation.author}}
-    <span *ngIf="evaluation.createdBy" class="badge badge-pill badge-primary" ngbTooltip="Registered">
+    <span *ngIf="evaluation['createdBy']" class="badge badge-pill badge-primary" ngbTooltip="Registered">
       &#10003;
     </span>
-    <span class="text-muted">
+    <span class="text-muted" *ngIf="evaluation['createdAt']">
       &#8226;
-      {{evaluation.createdAt | date:'medium'}}
+      {{evaluation['createdAt'] | date:'medium'}}
     </span>
   </p>
   <hr/>

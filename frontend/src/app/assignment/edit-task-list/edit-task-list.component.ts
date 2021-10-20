@@ -2,8 +2,8 @@ import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angula
 import ObjectID from 'bson-objectid';
 import {DragulaService} from 'ng2-dragula';
 import {DndDropEvent} from 'ngx-drag-drop';
+import {CreateEvaluationDto} from '../model/evaluation';
 import Task from '../model/task';
-import TaskResult from '../model/task-result';
 
 @Component({
   selector: 'app-edit-task-list',
@@ -12,7 +12,7 @@ import TaskResult from '../model/task-result';
 })
 export class EditTaskListComponent implements OnInit, OnDestroy {
   @Input() tasks: Task[];
-  @Input() results?: Record<string, TaskResult>;
+  @Input() evaluations?: Record<string, CreateEvaluationDto>;
   @Output() save = new EventEmitter<void>();
 
   constructor(
@@ -47,11 +47,13 @@ export class EditTaskListComponent implements OnInit, OnDestroy {
       deleted: false,
       children: [],
     });
-    if (this.results) {
-      this.results[id] = {
+    if (this.evaluations) {
+      this.evaluations[id] = {
         task: id,
         points: 0,
-        output: '',
+        remark: '',
+        author: '',
+        snippets: [],
       };
     }
     this.saveDraft();
@@ -68,10 +70,10 @@ export class EditTaskListComponent implements OnInit, OnDestroy {
   }
 
   getColorClass(task: Task): string {
-    if (!this.results) {
+    if (!this.evaluations) {
       return '';
     }
-    const result = this.results[task._id];
+    const result = this.evaluations[task._id];
     if (!result) {
       return '';
     }

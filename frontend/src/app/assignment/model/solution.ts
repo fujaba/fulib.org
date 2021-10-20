@@ -1,5 +1,3 @@
-import TaskResult from './task-result';
-
 export class AuthorInfo {
   name: string;
   studentId: string;
