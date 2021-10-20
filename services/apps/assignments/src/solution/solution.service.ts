@@ -77,7 +77,7 @@ export class SolutionService {
     if (!assignment) {
       return;
     }
-    const results = await this.assignmentService.check(solution._id, assignment);
+    const results = await this.assignmentService.check(solution.solution, assignment);
     await Promise.all(results.map(r => this.createEvaluation(solution, r)));
   }
 
