@@ -95,6 +95,11 @@ export class Evaluation {
 
   @Prop()
   @ApiProperty()
+  @IsString()
+  remark: string;
+
+  @Prop()
+  @ApiProperty()
   @IsNumber()
   points: number;
 
