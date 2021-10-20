@@ -17,5 +17,4 @@ export default class Solution {
   solution: string;
 
   timestamp?: Date;
-  results?: TaskResult[];
 }

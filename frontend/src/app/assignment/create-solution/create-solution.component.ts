@@ -115,7 +115,6 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
     this.author = solution.author;
     this.solution = solution.solution;
     this.timeStamp = solution.timestamp;
-    this.setResults(solution.results ?? []);
   }
 
   private setResults(results: TaskResult[]) {

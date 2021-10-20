@@ -26,7 +26,6 @@ export class SolutionComponent implements OnInit, OnDestroy {
   markers: Marker[] = [];
 
   evaluations?: Record<string, Evaluation>;
-  results?: Record<string, TaskResult>;
   comments: Comment[] = [];
 
   userId?: string;
@@ -63,10 +62,6 @@ export class SolutionComponent implements OnInit, OnDestroy {
         this.assignmentService.get(assignmentId).pipe(tap(assignment => this.assignment = assignment)),
         this.solutionService.get(assignmentId, solutionId).pipe(tap(solution => {
           this.solution = solution;
-          this.results = {};
-          for (let result of solution.results!) {
-            this.results[result.task] = result;
-          }
           this.loadCommentDraft();
         })),
         this.solutionService.getComments(assignmentId, solutionId).pipe(tap(comments => this.comments = comments)),
@@ -77,10 +72,10 @@ export class SolutionComponent implements OnInit, OnDestroy {
           }
         })),
       ])),
-    ).subscribe(([_, solution]) => {
+    ).subscribe(() => {
       // NB: this happens here instead of where the solution is loaded above, because the solution text needs to be updated first.
       // Otherwise the markers don't show up
-      this.markers = this.assignmentService.lint({results: solution.results!});
+      // TODO set markers
     }, error => {
       if (error.status === 401) {
         this.tokenModal.open();
