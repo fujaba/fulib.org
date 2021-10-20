@@ -1,18 +1,18 @@
-import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
 import {forkJoin, Observable, of} from 'rxjs';
-import {map, mapTo, switchMap, tap} from 'rxjs/operators';
+import {switchMap, tap} from 'rxjs/operators';
+import {environment} from '../../environments/environment';
+import {StorageService} from '../storage.service';
+import {UserService} from '../user/user.service';
+import {AssignmentService} from './assignment.service';
 import {Assignee} from './model/assignee';
+import Assignment from './model/assignment';
+import {CheckResult, CheckSolution} from './model/check';
+import Comment from './model/comment';
+import {CreateEvaluationDto, Evaluation, UpdateEvaluationDto} from './model/evaluation';
 
 import Solution, {AuthorInfo} from './model/solution';
-import {environment} from '../../environments/environment';
-import Assignment from './model/assignment';
-import {AssignmentService} from './assignment.service';
-import Comment from './model/comment';
-import {StorageService} from '../storage.service';
-import TaskGrading from './model/task-grading';
-import {CheckResult, CheckSolution} from './model/check';
-import {UserService} from '../user/user.service';
 
 function asID(id: { _id?: string, id?: string } | string): string {
   return typeof id === 'string' ? id : id._id! || id.id!;
@@ -212,22 +212,30 @@ export class SolutionService {
     return this.http.delete<Comment>(url);
   }
 
-  getGradings(assignment: Assignment | string, id: string): Observable<TaskGrading[]> {
+  getEvaluations(assignment: Assignment | string, id: string): Observable<Evaluation[]> {
     const assignmentID = asID(assignment);
     const headers = {};
     this.addSolutionToken(headers, assignmentID, id);
     this.addAssignmentToken(headers, assignmentID);
 
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignmentID}/solutions/${id}/gradings`;
-    return this.http.get<TaskGrading[]>(url, {headers});
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignmentID}/solutions/${id}/evaluations`;
+    return this.http.get<Evaluation[]>(url, {headers});
   }
 
-  postGrading(grading: TaskGrading): Observable<TaskGrading> {
+  createEvaluation(assignment: string, solution: string, dto: CreateEvaluationDto): Observable<Evaluation> {
     const headers = {};
-    this.addAssignmentToken(headers, grading.assignment);
+    this.addAssignmentToken(headers, assignment);
 
-    const url = `${environment.assignmentsApiUrl}/assignments/${grading.assignment}/solutions/${grading.solution}/gradings/${grading.task}`;
-    return this.http.put<TaskGrading>(url, grading, {headers});
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/evaluations`;
+    return this.http.post<Evaluation>(url, dto, {headers});
+  }
+
+  updateEvaluation(assignment: string, solution: string, id: string, dto: UpdateEvaluationDto): Observable<Evaluation> {
+    const headers = {};
+    this.addAssignmentToken(headers, assignment);
+
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/evaluations/${id}`;
+    return this.http.patch<Evaluation>(url, dto, {headers});
   }
 
   getAssignees(assignment: string): Observable<Assignee[]> {

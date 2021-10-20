@@ -4,7 +4,7 @@ import {Injectable} from '@nestjs/common';
 import {InjectConnection, InjectModel} from '@nestjs/mongoose';
 import {Connection, FilterQuery, Model} from 'mongoose';
 import {environment} from '../environment';
-import {TaskResult} from '../solution/solution.schema';
+import {CreateEvaluationDto} from '../evaluation/evaluation.dto';
 import {generateToken, idFilter} from '../utils';
 import {CreateAssignmentDto, ReadAssignmentDto, UpdateAssignmentDto} from './assignment.dto';
 import {Assignment, AssignmentDocument, Task} from './assignment.schema';
@@ -32,12 +32,12 @@ export class AssignmentService {
     console.info('Migrated', result.modifiedCount, 'assignments');
   }
 
-  async check(solution: string, {tasks}: Pick<Assignment, 'tasks'>): Promise<TaskResult[]> {
+  async check(solution: string, {tasks}: Pick<Assignment, 'tasks'>): Promise<CreateEvaluationDto[]> {
     const results = await Promise.all(tasks.map(task => this.checkTasksRecursively(solution, task)));
     return results.flatMap(x => x);
   }
 
-  async checkTasksRecursively(solution: string, task: Task): Promise<TaskResult[]> {
+  async checkTasksRecursively(solution: string, task: Task): Promise<CreateEvaluationDto[]> {
     const [first, rest] = await Promise.all([
       this.checkTask(solution, task),
       Promise.all(task.children.map(t => this.checkTasksRecursively(solution, t))),
@@ -46,7 +46,7 @@ export class AssignmentService {
     return first ? [first, ...flatRest] : flatRest;
   }
 
-  async checkTask(solution: string, task: Task): Promise<TaskResult | undefined> {
+  async checkTask(solution: string, task: Task): Promise<CreateEvaluationDto | undefined> {
     if (!task.verification) {
       return undefined;
     }
@@ -58,8 +58,10 @@ export class AssignmentService {
     }).toPromise();
     return {
       task: task._id,
+      author: 'Autograding',
+      remark: response?.data.output ?? '',
       points: response?.data.exitCode === 0 ? task.points : 0,
-      output: response?.data.output,
+      snippets: [],
     };
   }
 

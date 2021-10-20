@@ -73,10 +73,10 @@
           ></app-scenario-codemirror>
         </div>
       </div>
-      <div class="form-group row" *ngIf="!task.deleted && results?.[task._id]?.output">
+      <div class="form-group row" *ngIf="!task.deleted && evaluations?.[task._id]?.remark">
         <label for="task/{{task._id}}/output" class="col-sm-2 col-form-label">Output</label>
         <div class="col-sm-10">
-          <app-autotheme-codemirror id="task/{{task._id}}/output" [content]="results![task._id]!.output" [options]="{
+          <app-autotheme-codemirror id="task/{{task._id}}/output" [content]="evaluations![task._id]!.remark" [options]="{
               autoRefresh: true,
               lineNumbers: true,
               styleActiveLine: true
@@ -84,7 +84,7 @@
         </div>
       </div>
     </div>
-    <app-edit-task-list [tasks]="task.children" [results]="results" (save)="saveDraft()"></app-edit-task-list>
+    <app-edit-task-list [tasks]="task.children" [evaluations]="evaluations" (save)="saveDraft()"></app-edit-task-list>
   </li>
   <li>
     <a routerLink="." class="text-success" (click)="addTask()">

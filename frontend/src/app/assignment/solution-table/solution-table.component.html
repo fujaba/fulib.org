@@ -149,9 +149,9 @@
           {{solution.timestamp | date:'medium'}}
         </ng-template>
       </td>
-      <td><span class="badge badge-primary badge-pill">
-          {{totalResultPoints(solution)}} / {{totalPoints}}
-        </span></td>
+      <td>
+        <span class="badge badge-primary badge-pill">? / {{totalPoints}}</span>
+      </td>
       <td>
         <input class="form-control m-n2" #assigneeInput [ngModel]="assignees?.[solution._id!]?.assignee" (change)="setAssignee(solution, assigneeInput)">
       </td>

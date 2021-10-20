@@ -1,19 +1,19 @@
-<ng-container *ngIf="grading">
+<ng-container *ngIf="evaluation">
   <h4>
-    <span class="badge badge-secondary">{{grading.points}}</span>
+    <span class="badge badge-secondary">{{evaluation.points}}</span>
     Points
   </h4>
   <p>
-    {{grading.note}}
+    {{evaluation.remark}}
   </p>
   <p>
-    {{grading.author}}
-    <span *ngIf="grading.createdBy" class="badge badge-pill badge-primary" ngbTooltip="Registered">
+    {{evaluation.author}}
+    <span *ngIf="evaluation['createdBy']" class="badge badge-pill badge-primary" ngbTooltip="Registered">
       &#10003;
     </span>
-    <span class="text-muted">
+    <span class="text-muted" *ngIf="evaluation['createdAt']">
       &#8226;
-      {{grading.timestamp | date:'medium'}}
+      {{evaluation['createdAt'] | date:'medium'}}
     </span>
   </p>
   <hr/>
@@ -21,15 +21,15 @@
 <div class="form">
   <div class="form-group">
     <label for="pointsInput">Points</label>
-    <input type="number" class="form-control" id="pointsInput" min="0" step="1" [(ngModel)]="points">
+    <input type="number" class="form-control" id="pointsInput" min="0" step="1" [(ngModel)]="dto.points">
   </div>
   <div class="form-group">
-    <label for="noteInput">Note</label>
-    <input type="text" class="form-control" id="noteInput" [(ngModel)]="note">
+    <label for="remarkInput">Remark</label>
+    <input type="text" class="form-control" id="remarkInput" [(ngModel)]="dto.remark">
   </div>
   <div class="form-group">
     <label for="nameInput">Name</label>
-    <input type="text" class="form-control" id="nameInput" [(ngModel)]="name" (change)="saveDraft()"
+    <input type="text" class="form-control" id="nameInput" [(ngModel)]="dto.author" (change)="saveDraft()"
            [disabled]="loggedIn">
   </div>
   <button type="button" class="btn btn-primary" (click)="doSubmit()">

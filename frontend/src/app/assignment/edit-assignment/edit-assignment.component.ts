@@ -8,8 +8,8 @@ import {Marker} from '../../shared/model/marker';
 import {UserService} from '../../user/user.service';
 import {AssignmentService} from '../assignment.service';
 import Assignment from '../model/assignment';
+import {CreateEvaluationDto} from '../model/evaluation';
 import Task from '../model/task';
-import TaskResult from '../model/task-result';
 
 @Component({
   selector: 'app-create-assignment',
@@ -28,7 +28,7 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
   deadlineTime?: string;
 
   checking = false;
-  results?: Record<string, TaskResult>;
+  evaluations?: Record<string, CreateEvaluationDto>;
   markers: Marker[] = [];
 
   submitting = false;
@@ -139,9 +139,9 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
     this.checking = true;
     this.assignmentService.check(this.assignment).subscribe(response => {
       this.checking = false;
-      this.results = {};
+      this.evaluations = {};
       for (let result of response.results) {
-        this.results[result.task] = result;
+        this.evaluations[result.task] = result;
       }
       this.markers = this.assignmentService.lint(response);
     });
@@ -157,7 +157,7 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
     this.assignmentService.upload(file).subscribe(result => {
       this.setAssignment(result);
       this.saveDraft();
-      this.results = undefined;
+      this.evaluations = undefined;
       this.markers = [];
     });
   }
