@@ -1,4 +1,4 @@
-import {Module} from '@nestjs/common';
+import {forwardRef, Module} from '@nestjs/common';
 import {MongooseModule} from '@nestjs/mongoose';
 import {AssignmentModule} from '../assignment/assignment.module';
 import {SolutionModule} from '../solution/solution.module';
@@ -13,7 +13,7 @@ import {EvaluationService} from './evaluation.service';
       schema: EvaluationSchema,
     }]),
     AssignmentModule,
-    SolutionModule,
+    forwardRef(() => SolutionModule),
   ],
   controllers: [EvaluationController],
   providers: [

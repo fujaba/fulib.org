@@ -163,9 +163,8 @@ export class ClassroomService {
     let sum = 0;
     const headlinePrefix = '#'.repeat(depth + 2);
     const tasks = taskList.map((task, index) => {
-      const result = solution.results.find(r => r.task === task._id);
       const evaluation = evaluations.find(a => a.task === task._id);
-      const points = evaluation?.points ?? result?.points ?? 0;
+      const points = evaluation?.points ?? 0;
       sum += points;
       const evaluationsStr = evaluation ? this.renderEvaluation(assignment, solution, evaluation) : '';
       const {tasks: subTasks, sum: subSum} = this.renderSubTasks(assignment, solution, task.children, evaluations);

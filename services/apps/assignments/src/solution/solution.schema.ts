@@ -92,11 +92,7 @@ export class Solution {
   timestamp?: Date;
 
   @Prop()
-  @ApiProperty({type: [TaskResult]})
-  @IsArray()
-  @ValidateNested({each: true})
-  @Type(() => TaskResult)
-  results: TaskResult[];
+  results?: TaskResult[];
 }
 
 export type SolutionDocument = Solution & Document;

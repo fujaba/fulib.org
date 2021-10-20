@@ -3,6 +3,8 @@ import {Injectable} from '@nestjs/common';
 import {InjectConnection, InjectModel} from '@nestjs/mongoose';
 import {Connection, FilterQuery, Model} from 'mongoose';
 import {AssignmentService} from '../assignment/assignment.service';
+import {CreateEvaluationDto} from '../evaluation/evaluation.dto';
+import {EvaluationService} from '../evaluation/evaluation.service';
 import {generateToken, idFilter} from '../utils';
 import {CreateSolutionDto, ReadSolutionDto, UpdateSolutionDto} from './solution.dto';
 import {Solution, SolutionDocument, TaskResult} from './solution.schema';
@@ -11,21 +13,45 @@ import {Solution, SolutionDocument, TaskResult} from './solution.schema';
 export class SolutionService {
   constructor(
     @InjectModel('solutions') private model: Model<Solution>,
-    @InjectConnection() private connection: Connection,
+    @InjectConnection() connection: Connection,
     private assignmentService: AssignmentService,
+    private evaluationService: EvaluationService,
   ) {
-    this.migrate();
+    connection.on('connected', () => this.migrate());
   }
 
   async migrate() {
-    const solutions = this.connection.collection('solutions');
-    const result = await solutions.updateMany({}, {
+    let count = 0;
+    for await (const solution of this.model.find({results: {$exists: true}})) {
+      for (const result of solution.results!) {
+        const {
+          task,
+          points,
+          output,
+        } = result;
+        const dto: CreateEvaluationDto = {
+          task,
+          author: 'Autograding',
+          remark: output,
+          points,
+          snippets: [],
+        };
+        count++;
+        await this.evaluationService.create(solution.assignment, solution._id, dto);
+      }
+    }
+    console.info('Migrated', count, 'results');
+
+    const result = await this.model.updateMany({}, {
       $rename: {
         userId: 'createdBy',
         timeStamp: 'timestamp',
         name: 'author.name',
         email: 'author.email',
         studentID: 'author.studentId',
+      },
+      $unset: {
+        results: 1,
       },
     });
     console.info('Migrated', result.modifiedCount, 'solutions');
