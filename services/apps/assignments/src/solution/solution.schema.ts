@@ -35,7 +35,7 @@ export class AuthorInfo {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  studentID: string;
+  studentId: string;
 
   @Prop()
   @ApiProperty()

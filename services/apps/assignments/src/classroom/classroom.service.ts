@@ -65,7 +65,7 @@ export class ClassroomService {
           name: '',
           email: '',
           github: githubName,
-          studentID: '',
+          studentId: '',
         },
         solution: '',
         token: generateToken(),
