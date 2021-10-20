@@ -1,5 +1,5 @@
 import {ApiProperty, OmitType, PartialType, PickType} from '@nestjs/swagger';
-import {Solution} from '../solution/solution.schema';
+import {Solution, TaskResult} from '../solution/solution.schema';
 import {Assignment, Task} from './assignment.schema';
 
 export class CreateAssignmentDto extends OmitType(Assignment, [
@@ -25,7 +25,9 @@ export class UpdateAssignmentDto extends PartialType(OmitType(Assignment, [
 export class CheckRequestDto extends PickType(Solution, ['solution'] as const) {
 }
 
-export class CheckResponseDto extends PickType(Solution, ['results'] as const) {
+export class CheckResponseDto {
+  @ApiProperty({type: [TaskResult]})
+  results: TaskResult[];
 }
 
 export class CheckNewRequestDto extends PickType(Assignment, ['solution', 'tasks'] as const) {
