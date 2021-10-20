@@ -1,13 +1,11 @@
 import {HttpService} from '@nestjs/axios';
 import {Injectable} from '@nestjs/common';
 import {firstValueFrom} from 'rxjs';
-import {Evaluation, Snippet} from '../evaluation/evaluation.schema';
-import {EvaluationService} from '../evaluation/evaluation.service';
 import {AssignmentDocument, Task} from '../assignment/assignment.schema';
 import {AssignmentService} from '../assignment/assignment.service';
 import {environment} from '../environment';
-import {GradingDocument} from '../grading/grading.schema';
-import {GradingService} from '../grading/grading.service';
+import {Evaluation, Snippet} from '../evaluation/evaluation.schema';
+import {EvaluationService} from '../evaluation/evaluation.service';
 import {ReadSolutionDto} from '../solution/solution.dto';
 import {Solution, SolutionDocument} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
@@ -36,7 +34,6 @@ export class ClassroomService {
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
     private http: HttpService,
-    private gradingService: GradingService,
     private evaluationService: EvaluationService,
   ) {
   }
@@ -149,17 +146,16 @@ export class ClassroomService {
   }
 
   private async renderTasks(assignment: AssignmentDocument, solution: SolutionDocument) {
-    const gradings = await this.gradingService.findAll({assignment: assignment._id, solution: solution._id});
     const evaluations = await this.evaluationService.findAll({
       assignment: assignment._id,
       solution: solution._id,
     });
     const total = assignment.tasks.reduce((a, c) => a + c.points, 0);
-    const {sum, tasks} = this.renderSubTasks(assignment, solution, assignment.tasks, gradings, evaluations);
+    const {sum, tasks} = this.renderSubTasks(assignment, solution, assignment.tasks, evaluations);
     return {total, sum, tasks};
   }
 
-  private renderSubTasks(assignment: AssignmentDocument, solution: SolutionDocument, taskList: Task[], gradings: GradingDocument[], evaluations: Evaluation[], depth = 0): {tasks: string, sum: number} {
+  private renderSubTasks(assignment: AssignmentDocument, solution: SolutionDocument, taskList: Task[], evaluations: Evaluation[], depth = 0): { tasks: string, sum: number } {
     if (taskList.length === 0) {
       return {tasks: '', sum: 0};
     }
@@ -167,16 +163,15 @@ export class ClassroomService {
     let sum = 0;
     const headlinePrefix = '#'.repeat(depth + 2);
     const tasks = taskList.map((task, index) => {
-      const grading = gradings.find(g => g.task === task._id);
       const result = solution.results.find(r => r.task === task._id);
       const evaluation = evaluations.find(a => a.task === task._id);
-      const points = evaluation?.points ?? grading?.points ?? result?.points ?? 0;
+      const points = evaluation?.points ?? result?.points ?? 0;
       sum += points;
       const evaluationsStr = evaluation ? this.renderEvaluation(assignment, solution, evaluation) : '';
-      const {tasks: subTasks, sum: subSum} = this.renderSubTasks(assignment, solution, task.children, gradings, evaluations);
+      const {tasks: subTasks, sum: subSum} = this.renderSubTasks(assignment, solution, task.children, evaluations);
       sum += subSum;
       return `\
-${task.children.length ? headlinePrefix : `${index + 1}.`} ${task.description} ${grading ? '- **' + grading.note + '** ' : ''}(${points}/${task.points}P)
+${task.children.length ? headlinePrefix : `${index + 1}.`} ${task.description} ${evaluation?.remark ? `- **${evaluation.remark}** ` : ''}(${points}/${task.points}P)
 ${evaluationsStr}
 ${subTasks}
 `;
