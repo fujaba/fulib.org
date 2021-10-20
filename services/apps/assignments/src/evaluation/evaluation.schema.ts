@@ -48,7 +48,7 @@ export class Snippet {
 }
 
 @Schema()
-export class Annotation {
+export class Evaluation {
   @Prop()
   @ApiProperty()
   @IsMongoId()
@@ -82,9 +82,9 @@ export class Annotation {
   snippets: Snippet[];
 }
 
-export type AnnotationDocument = Annotation & Document;
+export type EvaluationDocument = Evaluation & Document;
 
-export const AnnotationSchema = SchemaFactory.createForClass(Annotation)
+export const EvaluationSchema = SchemaFactory.createForClass(Evaluation)
   .index({assignment: 1, solution: 1})
   .index({assignment: 1, solution: 1, 'snippets.file': 1})
   .index({assignment: 1, solution: 1, task: 1}, {unique: true})

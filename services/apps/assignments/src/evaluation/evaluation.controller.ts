@@ -4,36 +4,36 @@ import {ApiCreatedResponse, ApiOkResponse, ApiQuery, ApiTags} from '@nestjs/swag
 import {FilterQuery} from 'mongoose';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {SolutionAuth} from '../solution/solution-auth.decorator';
-import {CreateAnnotationDto, UpdateAnnotationDto} from './annotation.dto';
-import {Annotation} from './annotation.schema';
-import {AnnotationService} from './annotation.service';
+import {CreateEvaluationDto, UpdateEvaluationDto} from './evaluation.dto';
+import {Evaluation} from './evaluation.schema';
+import {EvaluationService} from './evaluation.service';
 
 const forbiddenResponse = 'Not owner of solution or assignment, or invalid Assignment-Token or Solution-Token.';
 const forbiddenAssignmentResponse = 'Not owner of assignment, or invalid Assignment-Token.';
 
-@Controller('assignments/:assignment/solutions/:solution/annotations')
-@ApiTags('Annotations')
-export class AnnotationController {
+@Controller('assignments/:assignment/solutions/:solution/evaluations')
+@ApiTags('Evaluations')
+export class EvaluationController {
 
   constructor(
-    private readonly annotationService: AnnotationService,
+    private readonly evaluationService: EvaluationService,
   ) {
   }
 
   @Post()
   @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
-  @ApiCreatedResponse({type: Annotation})
+  @ApiCreatedResponse({type: Evaluation})
   async create(
     @Param('assignment') assignment: string,
     @Param('solution') solution: string,
-    @Body() dto: CreateAnnotationDto,
-  ): Promise<Annotation> {
-    return this.annotationService.create(assignment, solution, dto);
+    @Body() dto: CreateEvaluationDto,
+  ): Promise<Evaluation> {
+    return this.evaluationService.create(assignment, solution, dto);
   }
 
   @Get()
   @SolutionAuth({forbiddenResponse})
-  @ApiOkResponse({type: [Annotation]})
+  @ApiOkResponse({type: [Evaluation]})
   @ApiQuery({name: 'file', required: false})
   @ApiQuery({name: 'task', required: false})
   async findAll(
@@ -41,43 +41,43 @@ export class AnnotationController {
     @Param('solution') solution: string,
     @Query('file') file?: string,
     @Query('task') task?: string,
-  ): Promise<Annotation[]> {
-    const where: FilterQuery<Annotation> = {assignment, solution};
+  ): Promise<Evaluation[]> {
+    const where: FilterQuery<Evaluation> = {assignment, solution};
     file && (where['snippets.file'] = file);
     task && (where.task = task);
-    return this.annotationService.findAll(where);
+    return this.evaluationService.findAll(where);
   }
 
   @Get(':id')
   @SolutionAuth({forbiddenResponse})
-  @ApiOkResponse({type: Annotation})
+  @ApiOkResponse({type: Evaluation})
   @NotFound()
   async findOne(
     @Param('assignment') assignment: string,
     @Param('solution') solution: string,
     @Param('id') id: string,
-  ): Promise<Annotation | null> {
-    return this.annotationService.findOne(id);
+  ): Promise<Evaluation | null> {
+    return this.evaluationService.findOne(id);
   }
 
   @Patch(':id')
   @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
-  @ApiOkResponse({type: Annotation})
+  @ApiOkResponse({type: Evaluation})
   @NotFound()
   async update(
     @Param('id') id: string,
-    @Body() dto: UpdateAnnotationDto,
-  ): Promise<Annotation | null> {
-    return this.annotationService.update(id, dto);
+    @Body() dto: UpdateEvaluationDto,
+  ): Promise<Evaluation | null> {
+    return this.evaluationService.update(id, dto);
   }
 
   @Delete(':id')
   @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
-  @ApiOkResponse({type: Annotation})
+  @ApiOkResponse({type: Evaluation})
   @NotFound()
   async remove(
     @Param('id') id: string,
-  ): Promise<Annotation | null> {
-    return this.annotationService.remove(id);
+  ): Promise<Evaluation | null> {
+    return this.evaluationService.remove(id);
   }
 }

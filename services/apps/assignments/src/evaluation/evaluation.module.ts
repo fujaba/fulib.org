@@ -2,26 +2,26 @@ import {Module} from '@nestjs/common';
 import {MongooseModule} from '@nestjs/mongoose';
 import {AssignmentModule} from '../assignment/assignment.module';
 import {SolutionModule} from '../solution/solution.module';
-import {AnnotationController} from './annotation.controller';
-import {AnnotationSchema} from './annotation.schema';
-import {AnnotationService} from './annotation.service';
+import {EvaluationController} from './evaluation.controller';
+import {EvaluationSchema} from './evaluation.schema';
+import {EvaluationService} from './evaluation.service';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{
-      name: 'annotations',
-      schema: AnnotationSchema,
+      name: 'evaluations',
+      schema: EvaluationSchema,
     }]),
     AssignmentModule,
     SolutionModule,
   ],
-  controllers: [AnnotationController],
+  controllers: [EvaluationController],
   providers: [
-    AnnotationService,
+    EvaluationService,
   ],
   exports: [
-    AnnotationService,
+    EvaluationService,
   ],
 })
-export class AnnotationModule {
+export class EvaluationModule {
 }
