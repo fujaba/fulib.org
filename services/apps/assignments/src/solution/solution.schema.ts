@@ -2,34 +2,25 @@ import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {ApiProperty} from '@nestjs/swagger';
 import {Type} from 'class-transformer';
 import {
-  IsAlphanumeric,
-  IsArray,
   IsDateString,
   IsEmail,
   IsMongoId,
   IsNotEmpty,
   IsOptional,
-  IsString, IsUUID,
-  Min,
+  IsString,
+  IsUUID,
   ValidateNested,
 } from 'class-validator';
 import {Document} from 'mongoose';
 
 export class TaskResult {
   @Prop()
-  @ApiProperty()
-  @IsAlphanumeric()
-  @IsNotEmpty()
   task: string;
 
   @Prop()
-  @ApiProperty()
-  @Min(0)
   points: number;
 
   @Prop()
-  @ApiProperty()
-  @IsString()
   output: string;
 }
 

@@ -68,7 +68,6 @@ export class ClassroomService {
           studentID: '',
         },
         solution: '',
-        results: [],
         token: generateToken(),
         timestamp: new Date(repo.pushed_at),
       };
