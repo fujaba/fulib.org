@@ -5,6 +5,9 @@ import {Evaluation} from './evaluation.schema';
 export class CreateEvaluationDto extends OmitType(Evaluation, [
   'assignment',
   'solution',
+  'createdAt',
+  'createdBy',
+  'updatedAt',
 ] as const) {
 }
 

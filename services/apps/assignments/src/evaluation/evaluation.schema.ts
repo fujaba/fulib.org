@@ -1,7 +1,17 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
-import {ApiProperty} from '@nestjs/swagger';
+import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
 import {Type} from 'class-transformer';
-import {IsAlphanumeric, IsInt, IsMongoId, IsNotEmpty, IsNumber, IsString, Min, ValidateNested} from 'class-validator';
+import {
+  IsAlphanumeric,
+  IsInt,
+  IsMongoId,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Min,
+  ValidateNested,
+} from 'class-validator';
 import {Document} from 'mongoose';
 
 export class Location {
@@ -47,7 +57,7 @@ export class Snippet {
   comment: string;
 }
 
-@Schema()
+@Schema({timestamps: true})
 export class Evaluation {
   @Prop()
   @ApiProperty()
@@ -64,6 +74,19 @@ export class Evaluation {
   @IsAlphanumeric()
   @IsNotEmpty()
   task: string;
+
+  @ApiProperty()
+  createdAt: Date;
+
+  @ApiProperty()
+  updatedAt: Date;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  createdBy?: string;
 
   @Prop()
   @ApiProperty()

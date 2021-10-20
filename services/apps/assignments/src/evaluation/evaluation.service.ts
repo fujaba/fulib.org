@@ -11,10 +11,11 @@ export class EvaluationService {
   ) {
   }
 
-  async create(assignment: string, solution: string, dto: CreateEvaluationDto): Promise<Evaluation> {
+  async create(assignment: string, solution: string, dto: CreateEvaluationDto, createdBy?: string): Promise<Evaluation> {
     return this.model.create({
       assignment,
       solution,
+      createdBy,
       ...dto,
     });
   }

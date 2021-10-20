@@ -1,3 +1,4 @@
+import {AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound} from '@app/not-found';
 import {Body, Controller, Delete, Get, Param, Patch, Post, Query} from '@nestjs/common';
 import {ApiCreatedResponse, ApiOkResponse, ApiQuery, ApiTags} from '@nestjs/swagger';
@@ -27,8 +28,9 @@ export class EvaluationController {
     @Param('assignment') assignment: string,
     @Param('solution') solution: string,
     @Body() dto: CreateEvaluationDto,
+    @AuthUser() user?: UserToken,
   ): Promise<Evaluation> {
-    return this.evaluationService.create(assignment, solution, dto);
+    return this.evaluationService.create(assignment, solution, dto, user?.sub);
   }
 
   @Get()
