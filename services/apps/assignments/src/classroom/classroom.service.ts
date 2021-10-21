@@ -163,12 +163,16 @@ export class ClassroomService {
       }
 
       const headlinePrefix = '#'.repeat(depth + 2);
-      return tasks.map((task, index) => {
+      return tasks.map(task => {
         const evaluation = evaluationRecord[task._id];
+        if (task.points < 0 && points[task._id] === 0) {
+          return '';
+        }
+
         const evaluationsStr = evaluation ? this.renderEvaluation(assignment, solution, evaluation) : '';
         const subTasks = renderSubTasks(task.children, depth + 1);
         return `\
-${task.children.length ? headlinePrefix : `${index + 1}.`} ${task.description} ${evaluation?.remark ? `- **${evaluation.remark}** ` : ''}(${points[task._id]}/${task.points}P)
+${task.points < 0 ? '-' : headlinePrefix} ${task.description} (${points[task._id]}/${task.points}P)
 ${evaluationsStr}
 ${subTasks}
 `;
@@ -180,12 +184,13 @@ ${subTasks}
   }
 
   private renderEvaluation(assignment: AssignmentDocument, solution: SolutionDocument, evaluation: Evaluation) {
-    return evaluation.snippets.map(snippet => this.renderSnippet(assignment, solution, snippet)).join('\n');
+    const snippets = evaluation.snippets.map(snippet => this.renderSnippet(assignment, solution, snippet)).join('\n');
+    return evaluation.remark ? `  ${evaluation.remark}\n${snippets}` : snippets;
   }
 
   private renderSnippet(assignment: AssignmentDocument, solution: SolutionDocument, snippet: Snippet) {
     const link = `https://github.com/${assignment.classroom!.org}/${assignment.classroom!.prefix}-${solution.author.github}/blob/${solution.solution}/${snippet.file}#L${snippet.from.line + 1}-L${snippet.to.line + 1}`;
-    return `   * ${snippet.comment}: ${link}`;
+    return `  * ${snippet.comment}: ${link}`;
   }
 
   private renderFooter(assignment: AssignmentDocument, solution: SolutionDocument) {
