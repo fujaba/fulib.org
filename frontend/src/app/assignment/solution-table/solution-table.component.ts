@@ -57,7 +57,7 @@ export class SolutionTableComponent implements OnInit {
       switchMap(assignmentId => forkJoin([
         this.assignmentService.get(assignmentId).pipe(tap(assignment => {
           this.assignment = assignment;
-          this.totalPoints = this.sumPoints(assignment.tasks);
+          this.totalPoints = assignment.tasks.reduce((a, c) => c.points > 0 ? a + c.points : a, 0);
         })),
         this.solutionService.getAll(assignmentId).pipe(tap(solutions => {
           this.solutions = solutions;
@@ -80,10 +80,6 @@ export class SolutionTableComponent implements OnInit {
 
   setSharing(sharing: boolean): void {
     this.router.navigate([], {queryParams: {share: sharing ? true : undefined}}).then();
-  }
-
-  private sumPoints(arr: { points: number }[]): number {
-    return arr.reduce((acc, item) => acc + item.points, 0);
   }
 
   setAssignee(solution: Solution, input: HTMLInputElement): void {

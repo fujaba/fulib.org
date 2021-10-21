@@ -3,7 +3,7 @@
     <hr class="border-success"/>
   </li>
   <li *ngFor="let task of tasks"
-      class="text-{{task.deleted ? 'muted' : getColorClass(task)}}"
+      class="text-{{task|taskColor:evaluations?.[task._id]?.points}}"
       dndType="task"
       [dndDraggable]="task"
       dndEffectAllowed="move"
@@ -18,7 +18,7 @@
         <ng-template #taskDesc>
           {{task.description || '(no description)'}}
         </ng-template>
-        <span class="badge badge-{{task.deleted ? 'secondary' : getColorClass(task) || 'secondary'}}">
+        <span class="badge badge-{{task|taskColor:evaluations?.[task._id]?.points}}">
             {{task.points}}
           </span>
       </div>

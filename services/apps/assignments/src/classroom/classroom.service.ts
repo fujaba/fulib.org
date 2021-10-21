@@ -149,32 +149,34 @@ export class ClassroomService {
       assignment: assignment._id,
       solution: solution._id,
     });
-    const total = assignment.tasks.reduce((a, c) => a + c.points, 0);
-    const {sum, tasks} = this.renderSubTasks(assignment, solution, assignment.tasks, evaluations);
-    return {total, sum, tasks};
-  }
-
-  private renderSubTasks(assignment: AssignmentDocument, solution: SolutionDocument, taskList: Task[], evaluations: Evaluation[], depth = 0): { tasks: string, sum: number } {
-    if (taskList.length === 0) {
-      return {tasks: '', sum: 0};
+    const evaluationRecord: Record<string, Evaluation> = {};
+    for (let evaluation of evaluations) {
+      evaluationRecord[evaluation.task] = evaluation;
     }
+    const points = this.assignmentService.createPointsCache(assignment.tasks, evaluationRecord);
+    const total = assignment.tasks.reduce((a, c) => c.points > 0 ? a + c.points : 0, 0);
+    const sum = assignment.tasks.reduce((a, c) => a + points[c._id], 0);
 
-    let sum = 0;
-    const headlinePrefix = '#'.repeat(depth + 2);
-    const tasks = taskList.map((task, index) => {
-      const evaluation = evaluations.find(a => a.task === task._id);
-      const points = evaluation?.points ?? 0;
-      sum += points;
-      const evaluationsStr = evaluation ? this.renderEvaluation(assignment, solution, evaluation) : '';
-      const {tasks: subTasks, sum: subSum} = this.renderSubTasks(assignment, solution, task.children, evaluations);
-      sum += subSum;
-      return `\
-${task.children.length ? headlinePrefix : `${index + 1}.`} ${task.description} ${evaluation?.remark ? `- **${evaluation.remark}** ` : ''}(${points}/${task.points}P)
+    const renderSubTasks = (tasks: Task[], depth: number): string => {
+      if (tasks.length === 0) {
+        return '';
+      }
+
+      const headlinePrefix = '#'.repeat(depth + 2);
+      return tasks.map((task, index) => {
+        const evaluation = evaluationRecord[task._id];
+        const evaluationsStr = evaluation ? this.renderEvaluation(assignment, solution, evaluation) : '';
+        const subTasks = renderSubTasks(task.children, depth + 1);
+        return `\
+${task.children.length ? headlinePrefix : `${index + 1}.`} ${task.description} ${evaluation?.remark ? `- **${evaluation.remark}** ` : ''}(${points[task._id]}/${task.points}P)
 ${evaluationsStr}
 ${subTasks}
 `;
-    }).join('');
-    return {tasks, sum};
+      }).join('');
+    }
+
+    const tasks = renderSubTasks(assignment.tasks, 0);
+    return {total, sum, tasks};
   }
 
   private renderEvaluation(assignment: AssignmentDocument, solution: SolutionDocument, evaluation: Evaluation) {

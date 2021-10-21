@@ -28,6 +28,7 @@ import {MySolutionsComponent} from './my-solutions/my-solutions.component';
 import {AuthorNameComponent} from './author-name/author-name.component';
 import {ImportExportComponent} from './import-export/import-export.component';
 import { EditTaskListComponent } from './edit-task-list/edit-task-list.component';
+import { TaskColorPipe } from './task-color.pipe';
 
 @NgModule({
     declarations: [
@@ -47,6 +48,7 @@ import { EditTaskListComponent } from './edit-task-list/edit-task-list.component
         AuthorNameComponent,
         ImportExportComponent,
         EditTaskListComponent,
+        TaskColorPipe,
     ],
     imports: [
         CommonModule,
