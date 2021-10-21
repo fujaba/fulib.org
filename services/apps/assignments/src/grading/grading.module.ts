@@ -1,8 +1,6 @@
 import {Module} from '@nestjs/common';
 import {MongooseModule} from '@nestjs/mongoose';
-import {AssignmentModule} from '../assignment/assignment.module';
-import {SolutionModule} from '../solution/solution.module';
-import {GradingController} from './grading.controller';
+import {EvaluationModule} from '../evaluation/evaluation.module';
 import {GradingSchema} from './grading.schema';
 import {GradingService} from './grading.service';
 
@@ -14,10 +12,8 @@ import {GradingService} from './grading.service';
         schema: GradingSchema,
       },
     ]),
-    AssignmentModule,
-    SolutionModule,
+    EvaluationModule,
   ],
-  controllers: [GradingController],
   providers: [GradingService],
   exports: [
     GradingService,

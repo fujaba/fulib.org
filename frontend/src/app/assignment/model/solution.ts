@@ -1,5 +1,3 @@
-import TaskResult from './task-result';
-
 export class AuthorInfo {
   name: string;
   studentId: string;
@@ -17,5 +15,4 @@ export default class Solution {
   solution: string;
 
   timestamp?: Date;
-  results?: TaskResult[];
 }

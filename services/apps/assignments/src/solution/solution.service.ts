@@ -3,23 +3,47 @@ import {Injectable} from '@nestjs/common';
 import {InjectConnection, InjectModel} from '@nestjs/mongoose';
 import {Connection, FilterQuery, Model} from 'mongoose';
 import {AssignmentService} from '../assignment/assignment.service';
+import {CreateEvaluationDto} from '../evaluation/evaluation.dto';
+import {Evaluation} from '../evaluation/evaluation.schema';
+import {EvaluationService} from '../evaluation/evaluation.service';
 import {generateToken, idFilter} from '../utils';
 import {CreateSolutionDto, ReadSolutionDto, UpdateSolutionDto} from './solution.dto';
-import {Solution, SolutionDocument, TaskResult} from './solution.schema';
+import {Solution, SolutionDocument} from './solution.schema';
 
 @Injectable()
 export class SolutionService {
   constructor(
     @InjectModel('solutions') private model: Model<Solution>,
-    @InjectConnection() private connection: Connection,
+    @InjectConnection() connection: Connection,
     private assignmentService: AssignmentService,
+    private evaluationService: EvaluationService,
   ) {
-    this.migrate();
+    connection.on('connected', () => this.migrate());
   }
 
   async migrate() {
-    const solutions = this.connection.collection('solutions');
-    const result = await solutions.updateMany({}, {
+    let count = 0;
+    for await (const solution of this.model.find({results: {$exists: true}})) {
+      for (const result of solution.results!) {
+        const {
+          task,
+          output: remark,
+          points,
+        } = result;
+        const dto: CreateEvaluationDto = {
+          task,
+          author: 'Autograding',
+          remark,
+          points,
+          snippets: [],
+        };
+        await this.createEvaluation(solution, dto);
+      }
+      count += solution.results!.length;
+    }
+    console.info('Migrated', count, 'results');
+
+    const result = await this.model.updateMany({}, {
       $rename: {
         userId: 'createdBy',
         timeStamp: 'timestamp',
@@ -27,8 +51,15 @@ export class SolutionService {
         email: 'author.email',
         studentID: 'author.studentId',
       },
+      $unset: {
+        results: 1,
+      },
     });
     console.info('Migrated', result.modifiedCount, 'solutions');
+  }
+
+  private async createEvaluation(solution: SolutionDocument, dto: CreateEvaluationDto): Promise<Evaluation> {
+    return this.evaluationService.create(solution.assignment, solution._id, dto);
   }
 
   async create(assignment: string, dto: CreateSolutionDto, createdBy?: string): Promise<SolutionDocument> {
@@ -38,13 +69,16 @@ export class SolutionService {
       createdBy,
       token: generateToken(),
       timestamp: new Date(),
-      results: await this.results(assignment, dto),
     });
   }
 
-  private async results(assignmentId: string, dto: CreateSolutionDto): Promise<TaskResult[]> {
-    const assignment = await this.assignmentService.findOne(assignmentId);
-    return assignment ? this.assignmentService.check(dto.solution, assignment) : [];
+  async autoGrade(solution: SolutionDocument): Promise<void> {
+    const assignment = await this.assignmentService.findOne(solution.assignment);
+    if (!assignment) {
+      return;
+    }
+    const results = await this.assignmentService.check(solution.solution, assignment);
+    await Promise.all(results.map(r => this.createEvaluation(solution, r)));
   }
 
   async findAll(where: FilterQuery<Solution> = {}): Promise<ReadSolutionDto[]> {

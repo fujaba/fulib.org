@@ -1,35 +1,20 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import ObjectID from 'bson-objectid';
-import {DragulaService} from 'ng2-dragula';
 import {DndDropEvent} from 'ngx-drag-drop';
+import {CreateEvaluationDto} from '../model/evaluation';
 import Task from '../model/task';
-import TaskResult from '../model/task-result';
 
 @Component({
   selector: 'app-edit-task-list',
   templateUrl: './edit-task-list.component.html',
   styleUrls: ['./edit-task-list.component.scss'],
 })
-export class EditTaskListComponent implements OnInit, OnDestroy {
+export class EditTaskListComponent {
   @Input() tasks: Task[];
-  @Input() results?: Record<string, TaskResult>;
+  @Input() evaluations?: Record<string, CreateEvaluationDto>;
   @Output() save = new EventEmitter<void>();
 
-  constructor(
-    private dragulaService: DragulaService,
-  ) {
-  }
-
-  ngOnInit(): void {
-    this.dragulaService.createGroup('TASKS', {
-      moves(el, container, handle): boolean {
-        return handle?.classList.contains('handle') ?? false;
-      },
-    });
-  }
-
-  ngOnDestroy() {
-    this.dragulaService.destroy('TASKS');
+  constructor() {
   }
 
   saveDraft() {
@@ -47,11 +32,13 @@ export class EditTaskListComponent implements OnInit, OnDestroy {
       deleted: false,
       children: [],
     });
-    if (this.results) {
-      this.results[id] = {
+    if (this.evaluations) {
+      this.evaluations[id] = {
         task: id,
         points: 0,
-        output: '',
+        remark: '',
+        author: '',
+        snippets: [],
       };
     }
     this.saveDraft();
@@ -68,10 +55,10 @@ export class EditTaskListComponent implements OnInit, OnDestroy {
   }
 
   getColorClass(task: Task): string {
-    if (!this.results) {
+    if (!this.evaluations) {
       return '';
     }
-    const result = this.results[task._id];
+    const result = this.evaluations[task._id];
     if (!result) {
       return '';
     }

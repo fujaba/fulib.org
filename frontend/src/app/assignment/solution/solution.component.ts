@@ -9,8 +9,7 @@ import {AssignmentService} from '../assignment.service';
 import Assignment from '../model/assignment';
 import Comment from '../model/comment';
 import Solution from '../model/solution';
-import TaskGrading from '../model/task-grading';
-import TaskResult from '../model/task-result';
+import {Evaluation} from '../model/evaluation';
 import {SolutionService} from '../solution.service';
 
 @Component({
@@ -25,8 +24,7 @@ export class SolutionComponent implements OnInit, OnDestroy {
   solution?: Solution;
   markers: Marker[] = [];
 
-  gradings?: Record<string, TaskGrading>;
-  results?: Record<string, TaskResult>;
+  evaluations?: Record<string, Evaluation>;
   comments: Comment[] = [];
 
   userId?: string;
@@ -63,24 +61,20 @@ export class SolutionComponent implements OnInit, OnDestroy {
         this.assignmentService.get(assignmentId).pipe(tap(assignment => this.assignment = assignment)),
         this.solutionService.get(assignmentId, solutionId).pipe(tap(solution => {
           this.solution = solution;
-          this.results = {};
-          for (let result of solution.results!) {
-            this.results[result.task] = result;
-          }
           this.loadCommentDraft();
         })),
         this.solutionService.getComments(assignmentId, solutionId).pipe(tap(comments => this.comments = comments)),
-        this.solutionService.getGradings(assignmentId, solutionId).pipe(tap(gradings => {
-          this.gradings = {};
-          for (let grading of gradings) {
-            this.gradings[grading.task] = grading;
+        this.solutionService.getEvaluations(assignmentId, solutionId).pipe(tap(evaluations => {
+          this.evaluations = {};
+          for (const evaluation of evaluations) {
+            this.evaluations[evaluation.task] = evaluation;
           }
         })),
       ])),
-    ).subscribe(([_, solution]) => {
+    ).subscribe(([, , , evaluations]) => {
       // NB: this happens here instead of where the solution is loaded above, because the solution text needs to be updated first.
       // Otherwise the markers don't show up
-      this.markers = this.assignmentService.lint({results: solution.results!});
+      this.markers = this.assignmentService.lint({results: evaluations});
     }, error => {
       if (error.status === 401) {
         this.tokenModal.open();

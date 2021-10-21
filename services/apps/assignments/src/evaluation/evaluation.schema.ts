@@ -1,7 +1,17 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
-import {ApiProperty} from '@nestjs/swagger';
+import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
 import {Type} from 'class-transformer';
-import {IsAlphanumeric, IsInt, IsMongoId, IsNotEmpty, IsNumber, IsString, Min, ValidateNested} from 'class-validator';
+import {
+  IsAlphanumeric,
+  IsInt,
+  IsMongoId,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Min,
+  ValidateNested,
+} from 'class-validator';
 import {Document} from 'mongoose';
 
 export class Location {
@@ -47,8 +57,8 @@ export class Snippet {
   comment: string;
 }
 
-@Schema()
-export class Annotation {
+@Schema({timestamps: true})
+export class Evaluation {
   @Prop()
   @ApiProperty()
   @IsMongoId()
@@ -65,10 +75,28 @@ export class Annotation {
   @IsNotEmpty()
   task: string;
 
+  @ApiProperty()
+  createdAt: Date;
+
+  @ApiProperty()
+  updatedAt: Date;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  createdBy?: string;
+
   @Prop()
   @ApiProperty()
   @IsString()
   author: string;
+
+  @Prop()
+  @ApiProperty()
+  @IsString()
+  remark: string;
 
   @Prop()
   @ApiProperty()
@@ -82,9 +110,9 @@ export class Annotation {
   snippets: Snippet[];
 }
 
-export type AnnotationDocument = Annotation & Document;
+export type EvaluationDocument = Evaluation & Document;
 
-export const AnnotationSchema = SchemaFactory.createForClass(Annotation)
+export const EvaluationSchema = SchemaFactory.createForClass(Evaluation)
   .index({assignment: 1, solution: 1})
   .index({assignment: 1, solution: 1, 'snippets.file': 1})
   .index({assignment: 1, solution: 1, task: 1}, {unique: true})

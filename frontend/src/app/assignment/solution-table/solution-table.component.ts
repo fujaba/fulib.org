@@ -82,10 +82,6 @@ export class SolutionTableComponent implements OnInit {
     this.router.navigate([], {queryParams: {share: sharing ? true : undefined}}).then();
   }
 
-  totalResultPoints(solution: Solution): number {
-    return this.sumPoints(solution.results!);
-  }
-
   private sumPoints(arr: { points: number }[]): number {
     return arr.reduce((acc, item) => acc + item.points, 0);
   }
