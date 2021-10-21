@@ -1,9 +1,8 @@
 <ol *ngIf="tasks else loading">
-  <li *ngFor="let task of tasks"
-      class="text-{{getColorClass(task)}}">
+  <li *ngFor="let task of tasks" class="text-{{task | taskColor:points[task._id]}}">
     {{task.description}}
-    <span class="badge badge-{{getColorClass(task)}}">
-      <ng-container *ngIf="evaluations">{{getTaskPoints(task)}} / </ng-container>
+    <span class="badge badge-{{task | taskColor:points[task._id]}}">
+      <ng-container *ngIf="evaluations">{{points[task._id]}} / </ng-container>
       {{task.points}}
     </span>
     <button type="button" class="btn btn-sm btn-outline-secondary m-1 p-1"
