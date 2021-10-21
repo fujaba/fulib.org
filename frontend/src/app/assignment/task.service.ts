@@ -19,9 +19,21 @@ export class TaskService {
   }
 
   private calculateTaskPoints(task: Task, evaluations: Record<string, CreateEvaluationDto>, cache: Record<string, number>): number {
-    if (task.children.length) {
-      return task.children.reduce((a, c) => a + this.getTaskPoints(c, evaluations, cache) - Math.min(c.points, 0), 0);
+    const evaluation = evaluations?.[task._id];
+    if (evaluation) {
+      // An evaluation overrides children.
+      return evaluation.points;
     }
-    return evaluations?.[task._id]?.points ?? Math.max(task.points, 0);
+
+    if (!task.children.length) {
+      // A task with positive points but no children defaults to being failed.
+      return 0;
+    }
+
+    const positiveChildDeduction = task.children.reduce((a, c) => c.points > 0 ? a + c.points : a, 0);
+    // A task with children is granted, by default, its total points minus the total of positive children
+    const basePoints = task.points - positiveChildDeduction;
+    const childSum = task.children.reduce((a, c) => a + this.getTaskPoints(c, evaluations, cache), 0);
+    return basePoints + childSum;
   }
 }
