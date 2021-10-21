@@ -157,27 +157,22 @@ export class ClassroomService {
     const total = assignment.tasks.reduce((a, c) => c.points > 0 ? a + c.points : 0, 0);
     const sum = assignment.tasks.reduce((a, c) => a + points[c._id], 0);
 
-    const renderSubTasks = (tasks: Task[], depth: number): string => {
-      if (tasks.length === 0) {
+    const renderTask = (task: Task, depth: number): string => {
+      const evaluation = evaluationRecord[task._id];
+      if (task.points < 0 && points[task._id] === 0) {
         return '';
       }
 
-      const headlinePrefix = '#'.repeat(depth + 2);
-      return tasks.map(task => {
-        const evaluation = evaluationRecord[task._id];
-        if (task.points < 0 && points[task._id] === 0) {
-          return '';
-        }
-
-        const evaluationsStr = evaluation ? this.renderEvaluation(assignment, solution, evaluation) : '';
-        const subTasks = renderSubTasks(task.children, depth + 1);
-        return `\
-${task.points < 0 ? '-' : headlinePrefix} ${task.description} (${points[task._id]}/${task.points}P)
+      const evaluationsStr = evaluation ? this.renderEvaluation(assignment, solution, evaluation) : '';
+      const subTasks = renderSubTasks(task.children, depth + 1);
+      return `\
+${task.points < 0 ? '-' : '#'.repeat(depth + 2)} ${task.description} (${points[task._id]}/${task.points}P)
 ${evaluationsStr}
 ${subTasks}
 `;
-      }).join('');
-    }
+    };
+
+    const renderSubTasks = (tasks: Task[], depth: number): string => tasks.map(task => renderTask(task, depth)).join('');
 
     const tasks = renderSubTasks(assignment.tasks, 0);
     return {total, sum, tasks};
