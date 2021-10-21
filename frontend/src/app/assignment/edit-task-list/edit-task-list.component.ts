@@ -54,19 +54,6 @@ export class EditTaskListComponent {
     this.saveDraft();
   }
 
-  getColorClass(task: Task): string {
-    if (!this.evaluations) {
-      return '';
-    }
-    const result = this.evaluations[task._id];
-    if (!result) {
-      return '';
-    }
-
-    const points = result.points;
-    return points === 0 ? 'danger' : 'success';
-  }
-
   dragged(task: Task) {
     this.tasks.removeFirst(t => t === task);
   }

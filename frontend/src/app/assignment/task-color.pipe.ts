@@ -5,8 +5,8 @@ import Task from './model/task';
   name: 'taskColor',
 })
 export class TaskColorPipe implements PipeTransform {
-  transform(task: Task, points?: number): string {
-    if (points === undefined) {
+  transform(task: Task, points: number | null | undefined): string {
+    if (points === undefined || points === null || task.deleted) {
       return 'secondary';
     }
     if (points === Math.max(task.points, 0)) {
