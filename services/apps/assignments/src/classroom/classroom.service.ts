@@ -158,29 +158,30 @@ export class ClassroomService {
     const sum = assignment.tasks.reduce((a, c) => a + points[c._id], 0);
 
     const renderTask = (task: Task, depth: number): string => {
+      const point = points[task._id];
       const evaluation = evaluationRecord[task._id];
-      if (task.points < 0 && points[task._id] === 0) {
+      const snippets = evaluation ? this.renderSnippets(assignment, solution, evaluation.snippets) : '';
+      if (task.points >= 0) {
+        const headlinePrefix = '#'.repeat(depth + 2);
+        const subTasks = renderSubTasks(task.children, depth + 1);
+        const header = `${headlinePrefix} ${task.description} (${point}/${task.points}P)`;
+        return [header, evaluation?.remark, snippets, subTasks].filter(x => x).join('\n');
+      }
+      if (point === 0) {
+        // do not render deductions that were not given
         return '';
       }
-
-      const evaluationsStr = evaluation ? this.renderEvaluation(assignment, solution, evaluation) : '';
-      const subTasks = renderSubTasks(task.children, depth + 1);
-      return `\
-${task.points < 0 ? '-' : '#'.repeat(depth + 2)} ${task.description} (${points[task._id]}/${task.points}P)
-${evaluationsStr}
-${subTasks}
-`;
+      return `- ${task.description}: ${evaluation.remark} (${point}P)\n${snippets}`;
     };
 
-    const renderSubTasks = (tasks: Task[], depth: number): string => tasks.map(task => renderTask(task, depth)).join('');
+    const renderSubTasks = (tasks: Task[], depth: number): string => tasks.map(task => renderTask(task, depth)).join('\n');
 
     const tasks = renderSubTasks(assignment.tasks, 0);
     return {total, sum, tasks};
   }
 
-  private renderEvaluation(assignment: AssignmentDocument, solution: SolutionDocument, evaluation: Evaluation) {
-    const snippets = evaluation.snippets.map(snippet => this.renderSnippet(assignment, solution, snippet)).join('\n');
-    return evaluation.remark ? `  ${evaluation.remark}\n${snippets}` : snippets;
+  private renderSnippets(assignment: AssignmentDocument, solution: SolutionDocument, snippets: Snippet[]) {
+    return snippets.map(snippet => this.renderSnippet(assignment, solution, snippet)).join('\n');
   }
 
   private renderSnippet(assignment: AssignmentDocument, solution: SolutionDocument, snippet: Snippet) {
