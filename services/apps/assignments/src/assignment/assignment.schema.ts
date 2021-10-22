@@ -41,7 +41,7 @@ export class Task {
   verification?: string;
 
   @Prop({default: []})
-  @ApiProperty()
+  @ApiProperty({type: [Task]})
   @ValidateNested({each: true})
   @Type(() => Task)
   children: Task[];
@@ -85,8 +85,8 @@ export class Assignment {
   description: string;
 
   @Prop()
-  @ApiProperty()
-  createdBy: string;
+  @ApiPropertyOptional()
+  createdBy?: string;
 
   @Prop()
   @ApiProperty()
