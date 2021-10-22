@@ -38,7 +38,7 @@ export class ClassroomService {
   ) {
   }
 
-  async import(id: string, auth: string): Promise<ReadSolutionDto[]> {
+  async importSolutions(id: string, auth: string): Promise<ReadSolutionDto[]> {
     const assignment = await this.assignmentService.findOne(id);
     if (!assignment || !assignment.classroom || !assignment.classroom.org || !assignment.classroom.prefix) {
       return [];
@@ -94,7 +94,7 @@ export class ClassroomService {
     return parts.filter(s => s.startsWith(paramName))[0].substring(paramName.length);
   }
 
-  async export(assignmentId: string, solutionId: string, auth: string) {
+  async exportGithubIssue(assignmentId: string, solutionId: string, auth: string) {
     const assignment = await this.assignmentService.findOne(assignmentId);
     if (!assignment || !assignment.classroom || !assignment.classroom.org || !assignment.classroom.prefix) {
       return;

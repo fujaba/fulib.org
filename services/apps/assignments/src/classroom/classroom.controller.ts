@@ -17,21 +17,21 @@ export class ClassroomController {
   @Post('assignments/:assignment/solutions/import')
   @AssignmentAuth({forbiddenResponse})
   @ApiCreatedResponse({type: [ReadSolutionDto]})
-  async import(
+  async importSolutions(
     @Param('assignment') assignment: string,
     @Headers('Authorization') auth: string,
   ): Promise<ReadSolutionDto[]> {
-    return this.classroomService.import(assignment, auth);
+    return this.classroomService.importSolutions(assignment, auth);
   }
 
   @Post('assignments/:assignment/solutions/:solution/export')
   @AssignmentAuth({forbiddenResponse})
   @ApiCreatedResponse()
-  async export(
+  async exportGithubIssue(
     @Param('assignment') assignment: string,
     @Param('solution') solution: string,
     @Headers('Authorization') auth: string,
   ) {
-    return this.classroomService.export(assignment, solution, auth);
+    return this.classroomService.exportGithubIssue(assignment, solution, auth);
   }
 }
