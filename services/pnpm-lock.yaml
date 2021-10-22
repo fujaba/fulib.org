@@ -23,6 +23,7 @@ specifiers:
   '@typescript-eslint/eslint-plugin': ^4.28.2
   '@typescript-eslint/parser': ^4.28.2
   axios: 0.21.4
+  bson-objectid: ^2.0.1
   class-transformer: ^0.4.0
   class-validator: ^0.13.1
   dockerode: ^3.3.0
@@ -58,6 +59,7 @@ dependencies:
   '@types/dockerode': 3.2.7
   '@types/passport-jwt': 3.0.6
   axios: 0.21.4
+  bson-objectid: 2.0.1
   class-transformer: 0.4.0
   class-validator: 0.13.1
   dockerode: 3.3.0
@@ -1910,6 +1912,10 @@ packages:
     dependencies:
       node-int64: 0.4.0
     dev: true
+
+  /bson-objectid/2.0.1:
+    resolution: {integrity: sha512-b4D1/G4uP9Yks4rv+nDVsZ4ybT1W5nQYw4lfpfaRP2Q18azlR6Oe2BAuirG1lzrwQFtHnJ0nrK5kWKKZVEMUng==}
+    dev: false
 
   /bson/4.5.1:
     resolution: {integrity: sha512-XqFP74pbTVLyLy5KFxVfTUyRrC1mgOlmu/iXHfXqfCKT59jyP9lwbotGfbN59cHBRbJSamZNkrSopjv+N0SqAA==}
