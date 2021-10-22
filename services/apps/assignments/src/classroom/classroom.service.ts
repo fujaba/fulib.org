@@ -237,11 +237,35 @@ ${JSON.stringify(settings, null, 2)}
 `;
   }
 
-  parseAssignment(markdown: string): ImportAssignmentDto {
-    return {
-      title: '',
+  parseAssignment(markdown: string): ImportAssignmentDto[] {
+    // # Assignment 1 (xP/100P)
+    // ## Task 1 (xP/30P)
+    // - Something wrong (-1P)
+    const pattern = /(#+|-)\s+(.*)\s+\((?:[x\d]+P?\/)?(-?\d+)P?\)/;
+    const taskStack: Task[][] = [[]];
+    for (const line of markdown.split('\n')) {
+      const match = line.match(pattern);
+      if (!match) {
+        continue;
+      }
+
+      const [, prefix, description, points] = match;
+      const depth = prefix === '-' ? taskStack.length : prefix.length;
+      const list = taskStack[depth - 1];
+      const task: Task = {
+        _id: '',
+        points: +points,
+        description,
+        children: [],
+      };
+      taskStack.splice(depth, taskStack.length, task.children);
+      list.push(task);
+    }
+
+    return taskStack[0].map(t => ({
+      title: t.description,
       description: '',
-      tasks: [],
-    };
+      tasks: t.children,
+    }));
   }
 }
