@@ -15,6 +15,8 @@ import {generateToken} from '../utils';
 interface RepositoryInfo {
   name: string;
   pushed_at: string;
+  full_name: string;
+  default_branch: string;
 }
 
 interface SearchResult {
@@ -52,29 +54,41 @@ export class ClassroomService {
       q: query,
       per_page: 100, // TODO paginate
     });
-    const result = await this.solutionService.bulkWrite(items.map(repo => {
-      const githubName = repo.name.substring(assignment.classroom!.prefix!.length + 1);
-      const solution: Solution = {
-        assignment: id,
-        author: {
-          name: '',
-          email: '',
-          github: githubName,
-          studentId: '',
-        },
-        solution: '',
-        token: generateToken(),
-        timestamp: new Date(repo.pushed_at),
-      };
+    const writes = await Promise.all(items.map(async repo => {
+      const solution = await this.createSolution(assignment, repo, githubToken);
       return {
         updateOne: {
-          filter: {'author.github': githubName},
+          filter: {'author.github': solution.author.github},
           update: {$setOnInsert: solution},
           upsert: true,
         },
       };
     }));
+    const result = await this.solutionService.bulkWrite(writes);
     return this.solutionService.findAll({_id: {$in: Object.values(result.upsertedIds)}});
+  }
+
+  private async createSolution(assignment: AssignmentDocument, repo: RepositoryInfo, token: string): Promise<Solution> {
+    const githubName = repo.name.substring(assignment.classroom!.prefix!.length + 1);
+    const commit = await this.getMainCommitSHA(repo, token);
+    return {
+      assignment: assignment._id,
+      author: {
+        name: '',
+        email: '',
+        github: githubName,
+        studentId: '',
+      },
+      solution: commit, // TODO maybe put this into a separate field
+      token: generateToken(),
+      timestamp: new Date(repo.pushed_at),
+    };
+  }
+
+  private async getMainCommitSHA(repo: RepositoryInfo, token: string): Promise<string> {
+    const url = `https://api.github.com/repos/${repo.full_name}/branches/${repo.default_branch}`;
+    const branch = await this.github<{ commit: { sha: string }; }>('GET', url, token);
+    return branch.commit.sha;
   }
 
   private async getGithubToken(auth: string): Promise<string> {
