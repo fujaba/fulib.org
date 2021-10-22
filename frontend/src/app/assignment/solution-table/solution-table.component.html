@@ -164,7 +164,7 @@
           </a>
           <a class="btn btn-primary"
              *ngIf="assignment?.classroom?.org && assignment?.classroom?.prefix && solution.author.github"
-             href="https://github.com/{{assignment?.classroom?.org}}/{{assignment?.classroom?.prefix}}-{{solution.author.github}}"
+             href="https://github.com/{{assignment?.classroom?.org}}/{{assignment?.classroom?.prefix}}-{{solution.author.github}}{{solution.commit ? '/tree/' + solution.commit : ''}}"
              target="_blank"
              ngbTooltip="View Repository on GitHub"
           >

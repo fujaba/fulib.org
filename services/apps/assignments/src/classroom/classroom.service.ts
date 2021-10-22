@@ -1,5 +1,6 @@
 import {HttpService} from '@nestjs/axios';
 import {Injectable} from '@nestjs/common';
+import {Method} from 'axios';
 import {firstValueFrom} from 'rxjs';
 import {AssignmentDocument, Task} from '../assignment/assignment.schema';
 import {AssignmentService} from '../assignment/assignment.service';
@@ -14,6 +15,8 @@ import {generateToken} from '../utils';
 interface RepositoryInfo {
   name: string;
   pushed_at: string;
+  full_name: string;
+  default_branch: string;
 }
 
 interface SearchResult {
@@ -47,39 +50,46 @@ export class ClassroomService {
     const githubToken = await this.getGithubToken(auth);
 
     const query = `org:${assignment.classroom.org} ${assignment.classroom.prefix} in:name`;
-    const response = await firstValueFrom(this.http.get<SearchResult>('https://api.github.com/search/repositories', {
-      params: {
-        q: query,
-        per_page: 100, // TODO paginate
-      },
-      headers: {
-        Authorization: `Bearer ${githubToken}`,
-      },
-    }));
-    const repositories = response.data.items;
-    const result = await this.solutionService.bulkWrite(repositories.map(repo => {
-      const githubName = repo.name.substring(assignment.classroom!.prefix!.length + 1);
-      const solution: Solution = {
-        assignment: id,
-        author: {
-          name: '',
-          email: '',
-          github: githubName,
-          studentId: '',
-        },
-        solution: '',
-        token: generateToken(),
-        timestamp: new Date(repo.pushed_at),
-      };
+    const {items} = await this.github<SearchResult>('GET', 'https://api.github.com/search/repositories', githubToken, {
+      q: query,
+      per_page: 100, // TODO paginate
+    });
+    const writes = await Promise.all(items.map(async repo => {
+      const solution = await this.createSolution(assignment, repo, githubToken);
       return {
         updateOne: {
-          filter: {'author.github': githubName},
+          filter: {'author.github': solution.author.github},
           update: {$setOnInsert: solution},
           upsert: true,
         },
       };
     }));
+    const result = await this.solutionService.bulkWrite(writes);
     return this.solutionService.findAll({_id: {$in: Object.values(result.upsertedIds)}});
+  }
+
+  private async createSolution(assignment: AssignmentDocument, repo: RepositoryInfo, token: string): Promise<Solution> {
+    const githubName = repo.name.substring(assignment.classroom!.prefix!.length + 1);
+    const commit = await this.getMainCommitSHA(repo, token);
+    return {
+      assignment: assignment._id,
+      author: {
+        name: '',
+        email: '',
+        github: githubName,
+        studentId: '',
+      },
+      solution: '',
+      commit,
+      token: generateToken(),
+      timestamp: new Date(repo.pushed_at),
+    };
+  }
+
+  private async getMainCommitSHA(repo: RepositoryInfo, token: string): Promise<string> {
+    const url = `https://api.github.com/repos/${repo.full_name}/branches/${repo.default_branch}`;
+    const branch = await this.github<{ commit: { sha: string }; }>('GET', url, token);
+    return branch.commit.sha;
   }
 
   private async getGithubToken(auth: string): Promise<string> {
@@ -92,6 +102,19 @@ export class ClassroomService {
     const parts = data.split('&');
     const paramName = 'access_token=';
     return parts.filter(s => s.startsWith(paramName))[0].substring(paramName.length);
+  }
+
+  private async github<T>(method: Method, url: string, token: string, params: Record<string, any> = {}, body?: any): Promise<T> {
+    const {data} = await firstValueFrom(this.http.request({
+      params,
+      method,
+      url,
+      data: body,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }));
+    return data;
   }
 
   async exportGithubIssue(assignmentId: string, solutionId: string, auth: string) {
@@ -109,28 +132,15 @@ export class ClassroomService {
     const issue = await this.exportIssue(assignment, solution);
 
     const baseUrl = `https://api.github.com/repos/${assignment.classroom.org}/${assignment.classroom.prefix}-${solution.author.github}/issues`;
-    const {data: issues} = await firstValueFrom(this.http.get<Issue[]>(baseUrl, {
-      params: {
-        state: 'all',
-      },
-      headers: {
-        Authorization: `Bearer ${githubToken}`,
-      },
-    }));
+    const issues = await this.github<Issue[]>('GET', baseUrl, githubToken, {
+      state: 'all',
+    });
 
     const existing = issues.find(i => i.body.includes(assignmentId));
     if (existing) {
-      await firstValueFrom(this.http.patch(baseUrl + '/' + existing.number, issue, {
-        headers: {
-          Authorization: `Bearer ${githubToken}`,
-        },
-      }));
+      await this.github('PATCH', `${baseUrl}/${existing.number}`, githubToken, {}, issue);
     } else {
-      await firstValueFrom(this.http.post(baseUrl, issue, {
-        headers: {
-          Authorization: `Bearer ${githubToken}`,
-        },
-      }));
+      await this.github('POST', baseUrl, githubToken, {}, issue);
     }
   }
 
@@ -185,7 +195,7 @@ export class ClassroomService {
   }
 
   private renderSnippet(assignment: AssignmentDocument, solution: SolutionDocument, snippet: Snippet) {
-    const link = `https://github.com/${assignment.classroom!.org}/${assignment.classroom!.prefix}-${solution.author.github}/blob/${solution.solution}/${snippet.file}#L${snippet.from.line + 1}-L${snippet.to.line + 1}`;
+    const link = `https://github.com/${assignment.classroom!.org}/${assignment.classroom!.prefix}-${solution.author.github}/blob/${solution.commit}/${snippet.file}#L${snippet.from.line + 1}-L${snippet.to.line + 1}`;
     return `  * ${snippet.comment}: ${link}`;
   }
 
@@ -209,7 +219,7 @@ ${JSON.stringify(settings, null, 2)}
 
 </details>
 
-<sub>*This issue was created with [fulib.org](https://fulib.org/assignments) on ${timestamp.toLocaleDateString()} at ${timestamp.toLocaleTimeString()}.*</sub>
+<sub>*This issue was created with [fulib.org](https://fulib.org/assignments) on ${timestamp.toLocaleDateString()} at ${timestamp.toLocaleTimeString()} for commit ${solution.commit}.*</sub>
 `;
   }
 }

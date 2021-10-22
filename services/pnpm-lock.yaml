@@ -20,6 +20,7 @@ specifiers:
   '@types/supertest': ^2.0.11
   '@typescript-eslint/eslint-plugin': ^4.28.2
   '@typescript-eslint/parser': ^4.28.2
+  axios: 0.21.4
   class-transformer: ^0.4.0
   class-validator: ^0.13.1
   dockerode: ^3.3.0
@@ -53,6 +54,7 @@ dependencies:
   '@nestjs/swagger': 5.0.9_d6863c03ba5575c4f4a12471120bc20a
   '@types/dockerode': 3.2.7
   '@types/passport-jwt': 3.0.6
+  axios: 0.21.4
   class-transformer: 0.4.0
   class-validator: 0.13.1
   dockerode: 3.3.0
