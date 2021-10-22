@@ -12,6 +12,7 @@ import {ReadSolutionDto} from '../solution/solution.dto';
 import {Solution, SolutionDocument} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {generateToken} from '../utils';
+import {ImportAssignmentDto} from './classroom.dto';
 
 interface RepositoryInfo {
   name: string;
@@ -234,5 +235,13 @@ ${JSON.stringify(settings, null, 2)}
 
 <sub>*This issue was created with [fulib.org](https://fulib.org/assignments) on ${timestamp.toLocaleDateString()} at ${timestamp.toLocaleTimeString()} for commit ${solution.commit}.*</sub>
 `;
+  }
+
+  parseAssignment(markdown: string): ImportAssignmentDto {
+    return {
+      title: '',
+      description: '',
+      tasks: [],
+    };
   }
 }
