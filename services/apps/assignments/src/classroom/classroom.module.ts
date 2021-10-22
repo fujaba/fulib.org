@@ -5,6 +5,7 @@ import {AssignmentModule} from '../assignment/assignment.module';
 import {GradingModule} from '../grading/grading.module';
 import {SolutionModule} from '../solution/solution.module';
 import {ClassroomController} from './classroom.controller';
+import {ClassroomScheduler} from './classroom.scheduler';
 import {ClassroomService} from './classroom.service';
 
 @Module({
@@ -15,7 +16,10 @@ import {ClassroomService} from './classroom.service';
     EvaluationModule,
     HttpModule,
   ],
-  providers: [ClassroomService],
+  providers: [
+    ClassroomService,
+    ClassroomScheduler,
+  ],
   controllers: [ClassroomController],
 })
 export class ClassroomModule {

@@ -2,6 +2,7 @@ import {HttpService} from '@nestjs/axios';
 import {Injectable} from '@nestjs/common';
 import {Method} from 'axios';
 import {firstValueFrom} from 'rxjs';
+import {ReadAssignmentDto} from '../assignment/assignment.dto';
 import {AssignmentDocument, Task} from '../assignment/assignment.schema';
 import {AssignmentService} from '../assignment/assignment.service';
 import {environment} from '../environment';
@@ -48,8 +49,12 @@ export class ClassroomService {
     }
 
     const githubToken = await this.getGithubToken(auth);
+    const ids = await this.importSolutions2(assignment, githubToken);
+    return this.solutionService.findAll({_id: {$in: ids}});
+  }
 
-    const query = `org:${assignment.classroom.org} ${assignment.classroom.prefix} in:name`;
+  async importSolutions2(assignment: AssignmentDocument, githubToken: string): Promise<string[]> {
+    const query = `org:${assignment.classroom!.org} ${assignment.classroom!.prefix} in:name`;
     const {items} = await this.github<SearchResult>('GET', 'https://api.github.com/search/repositories', githubToken, {
       q: query,
       per_page: 100, // TODO paginate
@@ -65,7 +70,7 @@ export class ClassroomService {
       };
     }));
     const result = await this.solutionService.bulkWrite(writes);
-    return this.solutionService.findAll({_id: {$in: Object.values(result.upsertedIds)}});
+    return Object.values(result.upsertedIds);
   }
 
   private async createSolution(assignment: AssignmentDocument, repo: RepositoryInfo, token: string): Promise<Solution> {
@@ -92,7 +97,7 @@ export class ClassroomService {
     return branch.commit.sha;
   }
 
-  private async getGithubToken(auth: string): Promise<string> {
+  async getGithubToken(auth: string): Promise<string> {
     const {data} = await firstValueFrom(this.http.get<string>(`${environment.auth.issuer}/broker/github/token`, {
       headers: {
         Authorization: auth,

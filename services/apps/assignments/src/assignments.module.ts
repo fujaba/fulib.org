@@ -1,6 +1,7 @@
 import {AuthModule} from '@app/keycloak-auth';
 import {Module} from '@nestjs/common';
 import {MongooseModule} from '@nestjs/mongoose';
+import {ScheduleModule} from '@nestjs/schedule';
 import {AssigneeModule} from './assignee/assignee.module';
 import {AssignmentModule} from './assignment/assignment.module';
 import {CommentModule} from './comment/comment.module';
@@ -15,6 +16,7 @@ import { ClassroomModule } from './classroom/classroom.module';
   imports: [
     MongooseModule.forRoot(environment.mongo.uri, environment.mongo.options),
     AuthModule.register(environment.auth),
+    ScheduleModule.forRoot(),
     AssignmentModule,
     SolutionModule,
     AssigneeModule,
