@@ -1,9 +1,9 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
-import {ApiProperty} from '@nestjs/swagger';
+import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
 import {Type} from 'class-transformer';
 import {
   IsDateString,
-  IsEmail,
+  IsEmail, IsHash,
   IsMongoId,
   IsNotEmpty,
   IsOptional,
@@ -76,6 +76,12 @@ export class Solution {
   @ApiProperty()
   @IsString()
   solution: string;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsHash('sha1')
+  commit?: string;
 
   @Prop()
   @ApiProperty()

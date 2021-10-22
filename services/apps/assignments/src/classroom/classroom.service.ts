@@ -79,7 +79,8 @@ export class ClassroomService {
         github: githubName,
         studentId: '',
       },
-      solution: commit, // TODO maybe put this into a separate field
+      solution: '',
+      commit,
       token: generateToken(),
       timestamp: new Date(repo.pushed_at),
     };
@@ -194,7 +195,7 @@ export class ClassroomService {
   }
 
   private renderSnippet(assignment: AssignmentDocument, solution: SolutionDocument, snippet: Snippet) {
-    const link = `https://github.com/${assignment.classroom!.org}/${assignment.classroom!.prefix}-${solution.author.github}/blob/${solution.solution}/${snippet.file}#L${snippet.from.line + 1}-L${snippet.to.line + 1}`;
+    const link = `https://github.com/${assignment.classroom!.org}/${assignment.classroom!.prefix}-${solution.author.github}/blob/${solution.commit}/${snippet.file}#L${snippet.from.line + 1}-L${snippet.to.line + 1}`;
     return `  * ${snippet.comment}: ${link}`;
   }
 
