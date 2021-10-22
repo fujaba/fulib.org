@@ -114,8 +114,8 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
   setAssignment(a: Assignment): void {
     this.assignment = a;
     this.assignment.classroom ??= {};
-    const deadline = a.deadline;
-    if (deadline) {
+    if (a.deadline) {
+      const deadline = new Date(a.deadline);
       const year = deadline.getFullYear();
       const month = String(deadline.getMonth() + 1).padStart(2, '0');
       const day = String(deadline.getDate()).padStart(2, '0');

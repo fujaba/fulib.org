@@ -9,9 +9,11 @@ specifiers:
   '@nestjs/mongoose': ^8.0.1
   '@nestjs/passport': ^8.0.1
   '@nestjs/platform-express': ^8.0.0
+  '@nestjs/schedule': ^1.0.1
   '@nestjs/schematics': ^8.0.0
   '@nestjs/swagger': ^5.0.9
   '@nestjs/testing': ^8.0.0
+  '@types/cron': ^1.7.3
   '@types/dockerode': ^3.2.7
   '@types/express': ^4.17.13
   '@types/jest': ^27.0.1
@@ -51,6 +53,7 @@ dependencies:
   '@nestjs/mongoose': 8.0.1_920220fee210ab02a4043c93cf0b2412
   '@nestjs/passport': 8.0.1_2c02db70fddcb59258fa0eed39c4b725
   '@nestjs/platform-express': 8.0.6_67f7e5db8827badcb202b1d38f6b1aea
+  '@nestjs/schedule': 1.0.1_be74d10e7c1accb5ea6dd58471a1ec77
   '@nestjs/swagger': 5.0.9_d6863c03ba5575c4f4a12471120bc20a
   '@types/dockerode': 3.2.7
   '@types/passport-jwt': 3.0.6
@@ -70,6 +73,7 @@ devDependencies:
   '@nestjs/cli': 8.1.1
   '@nestjs/schematics': 8.0.3_typescript@4.4.2
   '@nestjs/testing': 8.0.6_0f6569408de1f55b1e6481ed04272f1a
+  '@types/cron': 1.7.3
   '@types/express': 4.17.13
   '@types/jest': 27.0.1
   '@types/node': 16.7.8
@@ -913,6 +917,20 @@ packages:
       tslib: 2.3.0
     dev: false
 
+  /@nestjs/schedule/1.0.1_be74d10e7c1accb5ea6dd58471a1ec77:
+    resolution: {integrity: sha512-EU2tB4rxuEgum8JlorAFvXkU982EYZm/IBa7n6kgkyps5BbxQSFf7iR1CLkP9zODO9ApZTWk5z3q9L3O7vrkoQ==}
+    peerDependencies:
+      '@nestjs/common': ^6.10.11 || ^7.0.0 || ^8.0.0
+      '@nestjs/core': ^7.0.0 || ^8.0.0
+      reflect-metadata: ^0.1.12
+    dependencies:
+      '@nestjs/common': 8.0.6_7de7ece315067f012f2001b6a7f20971
+      '@nestjs/core': 8.0.6_a4d6c832897073857f471f32139e452f
+      cron: 1.7.2
+      reflect-metadata: 0.1.13
+      uuid: 8.3.2
+    dev: false
+
   /@nestjs/schematics/8.0.3_typescript@4.3.5:
     resolution: {integrity: sha512-A5qyS9yv6v2RIBqbsyYG57NfYA8Jm/aypRV1nc7JXjhdfDHwWKqCsgQ/7/82vVjhlvVAfr5x/dpCWqcF3XYd7w==}
     peerDependencies:
@@ -1091,6 +1109,13 @@ packages:
 
   /@types/cookiejar/2.1.2:
     resolution: {integrity: sha512-t73xJJrvdTjXrn4jLS9VSGRbz0nUY3cl2DMGDU48lKl+HR9dbbjW2A9r3g40VA++mQpy6uuHg33gy7du2BKpog==}
+    dev: true
+
+  /@types/cron/1.7.3:
+    resolution: {integrity: sha512-iPmUXyIJG1Js+ldPYhOQcYU3kCAQ2FWrSkm1FJPoii2eYSn6wEW6onPukNTT0bfiflexNSRPl6KWmAIqS+36YA==}
+    dependencies:
+      '@types/node': 16.7.8
+      moment: 2.29.1
     dev: true
 
   /@types/docker-modem/3.0.1:
@@ -2195,6 +2220,12 @@ packages:
   /create-require/1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
     dev: true
+
+  /cron/1.7.2:
+    resolution: {integrity: sha512-+SaJ2OfeRvfQqwXQ2kgr0Y5pzBR/lijf5OpnnaruwWnmI799JfWr2jN2ItOV9s3A/+TFOt6mxvKzQq5F0Jp6VQ==}
+    dependencies:
+      moment-timezone: 0.5.33
+    dev: false
 
   /cross-spawn/7.0.3:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
@@ -4150,6 +4181,15 @@ packages:
     dependencies:
       minimist: 1.2.5
     dev: false
+
+  /moment-timezone/0.5.33:
+    resolution: {integrity: sha512-PTc2vcT8K9J5/9rDEPe5czSIKgLoGsH8UNpA4qZTVw0Vd/Uz19geE9abbIOQKaAQFcnQ3v5YEXrbSc5BpshH+w==}
+    dependencies:
+      moment: 2.29.1
+    dev: false
+
+  /moment/2.29.1:
+    resolution: {integrity: sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==}
 
   /mongodb-connection-string-url/2.0.0:
     resolution: {integrity: sha512-M0I1vyLoq5+HQTuPSJWbt+hIXsMCfE8sS1fS5mvP9R2DOMoi2ZD32yWqgBIITyu0dFu4qtS50erxKjvUeBiyog==}
