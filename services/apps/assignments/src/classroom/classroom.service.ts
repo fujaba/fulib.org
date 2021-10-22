@@ -1,5 +1,6 @@
 import {HttpService} from '@nestjs/axios';
 import {Injectable} from '@nestjs/common';
+import {Method} from 'axios';
 import {firstValueFrom} from 'rxjs';
 import {AssignmentDocument, Task} from '../assignment/assignment.schema';
 import {AssignmentService} from '../assignment/assignment.service';
@@ -47,17 +48,11 @@ export class ClassroomService {
     const githubToken = await this.getGithubToken(auth);
 
     const query = `org:${assignment.classroom.org} ${assignment.classroom.prefix} in:name`;
-    const response = await firstValueFrom(this.http.get<SearchResult>('https://api.github.com/search/repositories', {
-      params: {
-        q: query,
-        per_page: 100, // TODO paginate
-      },
-      headers: {
-        Authorization: `Bearer ${githubToken}`,
-      },
-    }));
-    const repositories = response.data.items;
-    const result = await this.solutionService.bulkWrite(repositories.map(repo => {
+    const {items} = await this.github<SearchResult>('GET', 'https://api.github.com/search/repositories', githubToken, {
+      q: query,
+      per_page: 100, // TODO paginate
+    });
+    const result = await this.solutionService.bulkWrite(items.map(repo => {
       const githubName = repo.name.substring(assignment.classroom!.prefix!.length + 1);
       const solution: Solution = {
         assignment: id,
@@ -94,6 +89,19 @@ export class ClassroomService {
     return parts.filter(s => s.startsWith(paramName))[0].substring(paramName.length);
   }
 
+  private async github<T>(method: Method, url: string, token: string, params: Record<string, any> = {}, body?: any): Promise<T> {
+    const {data} = await firstValueFrom(this.http.request({
+      params,
+      method,
+      url,
+      data: body,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }));
+    return data;
+  }
+
   async exportGithubIssue(assignmentId: string, solutionId: string, auth: string) {
     const assignment = await this.assignmentService.findOne(assignmentId);
     if (!assignment || !assignment.classroom || !assignment.classroom.org || !assignment.classroom.prefix) {
@@ -109,28 +117,15 @@ export class ClassroomService {
     const issue = await this.exportIssue(assignment, solution);
 
     const baseUrl = `https://api.github.com/repos/${assignment.classroom.org}/${assignment.classroom.prefix}-${solution.author.github}/issues`;
-    const {data: issues} = await firstValueFrom(this.http.get<Issue[]>(baseUrl, {
-      params: {
-        state: 'all',
-      },
-      headers: {
-        Authorization: `Bearer ${githubToken}`,
-      },
-    }));
+    const issues = await this.github<Issue[]>('GET', baseUrl, githubToken, {
+      state: 'all',
+    });
 
     const existing = issues.find(i => i.body.includes(assignmentId));
     if (existing) {
-      await firstValueFrom(this.http.patch(baseUrl + '/' + existing.number, issue, {
-        headers: {
-          Authorization: `Bearer ${githubToken}`,
-        },
-      }));
+      await this.github('PATCH', `${baseUrl}/${existing.number}`, githubToken, {}, issue);
     } else {
-      await firstValueFrom(this.http.post(baseUrl, issue, {
-        headers: {
-          Authorization: `Bearer ${githubToken}`,
-        },
-      }));
+      await this.github('POST', baseUrl, githubToken, {}, issue);
     }
   }
 
