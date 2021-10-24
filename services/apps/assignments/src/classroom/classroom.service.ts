@@ -55,11 +55,19 @@ export class ClassroomService {
 
   async importSolutions2(assignment: AssignmentDocument, githubToken: string): Promise<string[]> {
     const query = `org:${assignment.classroom!.org} ${assignment.classroom!.prefix} in:name`;
-    const {items} = await this.github<SearchResult>('GET', 'https://api.github.com/search/repositories', githubToken, {
-      q: query,
-      per_page: 100, // TODO paginate
-    });
-    const writes = await Promise.all(items.map(async repo => {
+    const repositories: RepositoryInfo[] = [];
+    let total = Number.MAX_SAFE_INTEGER;
+    for (let page = 1; repositories.length < total; page++) {
+      const result = await this.github<SearchResult>('GET', 'https://api.github.com/search/repositories', githubToken, {
+        q: query,
+        per_page: 100,
+        page,
+      });
+      total = result.total_count;
+      repositories.push(...result.items);
+    }
+
+    const writes = await Promise.all(repositories.map(async repo => {
       const solution = await this.createSolution(assignment, repo, githubToken);
       return {
         updateOne: {
