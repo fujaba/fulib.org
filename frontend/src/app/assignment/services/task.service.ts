@@ -61,7 +61,10 @@ export class TaskService {
         verification: '',
         children: [],
       };
-      taskStack.splice(depth, taskStack.length, task.children);
+      taskStack.splice(depth, taskStack.length);
+      if (prefix !== '-') {
+        taskStack.push(task.children);
+      }
       list.push(task);
     }
 
