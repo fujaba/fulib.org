@@ -85,10 +85,10 @@ export class TaskService {
       return '';
     }
     if (t.points < 0) {
-      return `- ${t.description} (${t.points}P)\n`;
+      return `- ${t.description} (${t.points}P)<!--${t._id}-->\n`;
     }
     const children = this.renderTasks(t.children, depth + 1);
     const headlinePrefix = '#'.repeat(depth + 2);
-    return `${headlinePrefix} ${t.description} (x/${t.points}P)\n${children}`;
+    return `${headlinePrefix} ${t.description} (x/${t.points}P)<!--${t._id}-->\n${children}`;
   }
 }
