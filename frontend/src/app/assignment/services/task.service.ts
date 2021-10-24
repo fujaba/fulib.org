@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import ObjectID from 'bson-objectid';
-import Assignment from '../model/assignment';
 import {CreateEvaluationDto} from '../model/evaluation';
 import Task from '../model/task';
 
@@ -8,6 +7,10 @@ import Task from '../model/task';
   providedIn: 'root',
 })
 export class TaskService {
+  generateID(): string {
+    return new ObjectID().toHexString();
+  }
+
   createPointsCache(tasks: Task[], evaluations: Record<string, CreateEvaluationDto>): Record<string, number> {
     const cache = {};
     for (let task of tasks) {
@@ -53,7 +56,7 @@ export class TaskService {
 
       const [, prefix, description, points, id] = match;
       const task: Task = {
-        _id: id || new ObjectID().toHexString(),
+        _id: id || this.generateID(),
         points: +points,
         description,
         verification: '',
