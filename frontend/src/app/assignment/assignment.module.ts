@@ -12,23 +12,23 @@ import {SharedModule} from '../shared/shared.module';
 
 import {AssignmentRoutingModule} from './assignment-routing.module';
 
-import {EditAssignmentComponent} from './edit-assignment/edit-assignment.component';
-import {CreateSolutionComponent} from './create-solution/create-solution.component';
-import {MyCoursesComponent} from './my-courses/my-courses.component';
-import {SolutionComponent} from './solution/solution.component';
-import {TokenModalComponent} from './token-modal/token-modal.component';
-import {SolutionTableComponent} from './solution-table/solution-table.component';
-import {AssignmentInfoComponent} from './assignment-info/assignment-info.component';
-import {TaskListComponent} from './task-list/task-list.component';
-import {GradeFormComponent} from './grade-form/grade-form.component';
-import {CourseComponent} from './course/course.component';
-import {CreateCourseComponent} from './create-course/create-course.component';
-import {MyAssignmentsComponent} from './my-assignments/my-assignments.component';
-import {MySolutionsComponent} from './my-solutions/my-solutions.component';
-import {AuthorNameComponent} from './author-name/author-name.component';
-import {ImportExportComponent} from './import-export/import-export.component';
-import { EditTaskListComponent } from './edit-task-list/edit-task-list.component';
-import { TaskColorPipe } from './task-color.pipe';
+import {EditAssignmentComponent} from './pages/edit-assignment/edit-assignment.component';
+import {CreateSolutionComponent} from './pages/create-solution/create-solution.component';
+import {MyCoursesComponent} from './pages/my-courses/my-courses.component';
+import {SolutionComponent} from './pages/solution/solution.component';
+import {TokenModalComponent} from './components/token-modal/token-modal.component';
+import {SolutionTableComponent} from './pages/solution-table/solution-table.component';
+import {AssignmentInfoComponent} from './components/assignment-info/assignment-info.component';
+import {TaskListComponent} from './components/task-list/task-list.component';
+import {GradeFormComponent} from './components/grade-form/grade-form.component';
+import {CourseComponent} from './pages/course/course.component';
+import {CreateCourseComponent} from './pages/create-course/create-course.component';
+import {MyAssignmentsComponent} from './pages/my-assignments/my-assignments.component';
+import {MySolutionsComponent} from './pages/my-solutions/my-solutions.component';
+import {AuthorNameComponent} from './components/author-name/author-name.component';
+import {ImportExportComponent} from './components/import-export/import-export.component';
+import { EditTaskListComponent } from './components/edit-task-list/edit-task-list.component';
+import { TaskColorPipe } from './pipes/task-color.pipe';
 
 @NgModule({
     declarations: [
