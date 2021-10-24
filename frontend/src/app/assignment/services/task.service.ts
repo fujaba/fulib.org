@@ -52,8 +52,6 @@ export class TaskService {
       }
 
       const [, prefix, description, points, id] = match;
-      const depth = prefix === '-' ? taskStack.length : prefix.length;
-      const list = taskStack[depth - 1];
       const task: Task = {
         _id: id || new ObjectID().toHexString(),
         points: +points,
@@ -62,11 +60,17 @@ export class TaskService {
         children: [],
         collapsed: true,
       };
-      taskStack.splice(depth, taskStack.length);
-      if (prefix !== '-') {
-        taskStack.push(task.children);
+      switch (prefix) {
+        case '-':
+          taskStack[taskStack.length - 1].push(task);
+          break;
+        case '#':
+          break;
+        default:
+          taskStack[prefix.length - 2].push(task);
+          taskStack.splice(prefix.length - 1, taskStack.length, task.children);
+          break;
       }
-      list.push(task);
     }
 
     return taskStack[0];
@@ -84,7 +88,7 @@ export class TaskService {
       return `- ${t.description} (${t.points}P)\n`;
     }
     const children = this.renderTasks(t.children, depth + 1);
-    const headlinePrefix = '#'.repeat(depth + 1);
+    const headlinePrefix = '#'.repeat(depth + 2);
     return `${headlinePrefix} ${t.description} (x/${t.points}P)\n${children}`;
   }
 }
