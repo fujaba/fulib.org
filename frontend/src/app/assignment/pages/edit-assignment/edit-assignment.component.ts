@@ -180,7 +180,7 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
       this.saveDraft();
       this.markdown = undefined;
     } else {
-      this.markdown = ''; // TODO render
+      this.markdown = this.taskService.renderTasks(this.assignment.tasks);
     }
   }
 

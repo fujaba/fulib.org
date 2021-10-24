@@ -65,6 +65,19 @@ export class TaskService {
       list.push(task);
     }
 
-    return taskStack[1];
+    return taskStack[0];
+  }
+
+  renderTasks(tasks: Task[], depth = 0) {
+    return tasks.map(t => this.renderTask(t, depth)).join('');
+  }
+
+  private renderTask(t: Task, depth: number) {
+    if (t.points < 0) {
+      return `- ${t.description} (${t.points}P)\n`;
+    }
+    const children = this.renderTasks(t.children, depth + 1);
+    const headlinePrefix = '#'.repeat(depth + 1);
+    return `${headlinePrefix} ${t.description} (x/${t.points}P)\n${children}`;
   }
 }
