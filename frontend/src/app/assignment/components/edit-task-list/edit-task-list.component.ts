@@ -1,8 +1,8 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import ObjectID from 'bson-objectid';
 import {DndDropEvent} from 'ngx-drag-drop';
 import {CreateEvaluationDto} from '../../model/evaluation';
 import Task from '../../model/task';
+import {TaskService} from '../../services/task.service';
 
 @Component({
   selector: 'app-edit-task-list',
@@ -14,7 +14,9 @@ export class EditTaskListComponent {
   @Input() evaluations?: Record<string, CreateEvaluationDto>;
   @Output() save = new EventEmitter<void>();
 
-  constructor() {
+  constructor(
+    private taskService: TaskService,
+  ) {
   }
 
   saveDraft() {
@@ -22,7 +24,7 @@ export class EditTaskListComponent {
   }
 
   addTask(): void {
-    const id = new ObjectID().toHexString();
+    const id = this.taskService.generateID();
     this.tasks.push({
       _id: id,
       description: '',

@@ -2,7 +2,6 @@ import {HttpService} from '@nestjs/axios';
 import {Injectable} from '@nestjs/common';
 import {Method} from 'axios';
 import {firstValueFrom} from 'rxjs';
-import {ReadAssignmentDto} from '../assignment/assignment.dto';
 import {AssignmentDocument, Task} from '../assignment/assignment.schema';
 import {AssignmentService} from '../assignment/assignment.service';
 import {environment} from '../environment';
