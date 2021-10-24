@@ -1,4 +1,6 @@
 import {Injectable} from '@angular/core';
+import ObjectID from 'bson-objectid';
+import Assignment from '../model/assignment';
 import {CreateEvaluationDto} from '../model/evaluation';
 import Task from '../model/task';
 
@@ -35,5 +37,34 @@ export class TaskService {
     const basePoints = task.points - positiveChildDeduction;
     const childSum = task.children.reduce((a, c) => a + this.getTaskPoints(c, evaluations, cache), 0);
     return basePoints + childSum;
+  }
+
+  parseTasks(markdown: string): Task[] {
+    // # Assignment 1 (xP/100P)
+    // ## Task 1 (xP/30P)
+    // - Something wrong (-1P)
+    const pattern = /(#+|-)\s+(.*)\s+\((?:[x\d]+P?\/)?(-?\d+)P?\)(?:\s*<!--([a-zA-Z0-9])-->)?/;
+    const taskStack: Task[][] = [[]];
+    for (const line of markdown.split('\n')) {
+      const match = line.match(pattern);
+      if (!match) {
+        continue;
+      }
+
+      const [, prefix, description, points, id] = match;
+      const depth = prefix === '-' ? taskStack.length : prefix.length;
+      const list = taskStack[depth - 1];
+      const task: Task = {
+        _id: id || new ObjectID().toHexString(),
+        points: +points,
+        description,
+        verification: '',
+        children: [],
+      };
+      taskStack.splice(depth, taskStack.length, task.children);
+      list.push(task);
+    }
+
+    return taskStack[1];
   }
 }

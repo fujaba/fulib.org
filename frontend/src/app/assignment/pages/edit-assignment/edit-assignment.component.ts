@@ -10,6 +10,7 @@ import {AssignmentService} from '../../services/assignment.service';
 import Assignment from '../../model/assignment';
 import {CreateEvaluationDto} from '../../model/evaluation';
 import Task from '../../model/task';
+import {TaskService} from '../../services/task.service';
 
 @Component({
   selector: 'app-create-assignment',
@@ -26,6 +27,7 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
   assignment: Assignment = this.createNew();
   deadlineDate?: string;
   deadlineTime?: string;
+  markdown?: string;
 
   checking = false;
   evaluations?: Record<string, CreateEvaluationDto>;
@@ -39,6 +41,7 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
     private assignmentService: AssignmentService,
     private users: UserService,
     private keycloakService: KeycloakService,
+    private taskService: TaskService,
     private route: ActivatedRoute,
     private router: Router,
   ) {
@@ -99,7 +102,7 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
     return {
       ...this.assignment,
       deadline: this.getDeadline(),
-      tasks: this.getTasks(this.assignment.tasks, forDraft),
+      tasks: this.markdown ? this.taskService.parseTasks(this.markdown) : this.getTasks(this.assignment.tasks, forDraft),
     };
   }
 
@@ -169,6 +172,16 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
 
   login(): void {
     this.keycloakService.login().then();
+  }
+
+  switchMarkdown() {
+    if (this.markdown !== undefined) {
+      this.assignment.tasks = this.taskService.parseTasks(this.markdown);
+      this.saveDraft();
+      this.markdown = undefined;
+    } else {
+      this.markdown = ''; // TODO render
+    }
   }
 
   submit(): void {

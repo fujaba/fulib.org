@@ -1,8 +1,7 @@
-import {Body, Controller, Headers, Param, Post} from '@nestjs/common';
+import {Controller, Headers, Param, Post} from '@nestjs/common';
 import {ApiCreatedResponse, ApiTags} from '@nestjs/swagger';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {ReadSolutionDto} from '../solution/solution.dto';
-import {ImportAssignmentDto, ImportDto} from './classroom.dto';
 import {ClassroomService} from './classroom.service';
 
 const forbiddenResponse = 'Not owner of assignment, or invalid Assignment-Token.';
@@ -13,14 +12,6 @@ export class ClassroomController {
   constructor(
     private classroomService: ClassroomService,
   ) {
-  }
-
-  @Post('assignments/import')
-  @ApiCreatedResponse({type: [ImportAssignmentDto]})
-  async importAssignment(
-    @Body() dto: ImportDto,
-  ): Promise<ImportAssignmentDto[]> {
-    return this.classroomService.parseAssignment(dto.markdown);
   }
 
   @Post('assignments/:assignment/solutions/import')
