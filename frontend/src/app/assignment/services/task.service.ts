@@ -60,6 +60,7 @@ export class TaskService {
         description,
         verification: '',
         children: [],
+        collapsed: true,
       };
       taskStack.splice(depth, taskStack.length);
       if (prefix !== '-') {
@@ -76,6 +77,9 @@ export class TaskService {
   }
 
   private renderTask(t: Task, depth: number) {
+    if (t.deleted) {
+      return '';
+    }
     if (t.points < 0) {
       return `- ${t.description} (${t.points}P)\n`;
     }
