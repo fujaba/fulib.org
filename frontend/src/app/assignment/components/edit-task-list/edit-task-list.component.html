@@ -3,7 +3,7 @@
     <hr class="border-success"/>
   </li>
   <li *ngFor="let task of tasks"
-      class="text-{{task|taskColor:evaluations?.[task._id]?.points}}"
+      class="text-{{task|taskColor:context.evaluations?.[task._id]?.points}}"
       dndType="task"
       [dndDraggable]="task"
       dndEffectAllowed="move"
@@ -18,11 +18,15 @@
         <ng-template #taskDesc>
           {{task.description || '(no description)'}}
         </ng-template>
-        <span class="badge badge-{{task|taskColor:evaluations?.[task._id]?.points}}">
+        <span class="badge badge-{{task|taskColor:context.evaluations?.[task._id]?.points}}">
             {{task.points}}
           </span>
       </div>
-      <app-collapse-button class="ml-auto" [collapsed]="!!task.collapsed"
+      <a class="btn btn-primary ml-auto" aria-label="Edit" ngbTooltip="Edit"
+         [routerLink]="['tasks', task._id]" [queryParams]="{parent}">
+        <i class="bi-pencil"></i>
+      </a>
+      <app-collapse-button class="ml-2" [collapsed]="!!task.collapsed"
                            (collapsedChange)="task.collapsed = $event; saveDraft()">
       </app-collapse-button>
       <div class="btn btn-secondary ml-2 handle" aria-label="Reorder" ngbTooltip="Drag to Reorder" dndHandle>
@@ -39,52 +43,7 @@
         <i class="bi-arrow-repeat"></i>
       </button>
     </div>
-    <div class="form mb-3" [ngbCollapse]="!!task.collapsed">
-      <div class="form-group row">
-        <label for="task/{{task._id}}/descriptionInput" class="col-sm-2 col-form-label">Description</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control" id="task/{{task._id}}/descriptionInput"
-                 [(ngModel)]="task.description" (change)="saveDraft()">
-        </div>
-      </div>
-      <div class="form-group row">
-        <label for="task/{{task._id}}/pointsInput" class="col-sm-2 col-form-label">Points</label>
-        <div class="col-sm-10">
-          <div class="input-group">
-            <input type="number" class="form-control" id="task/{{task._id}}/pointsInput" min="0"
-                   [(ngModel)]="task.points" (change)="saveDraft()">
-            <div class="input-group-append" *ngIf="task.children.length">
-              <button class="btn btn-outline-secondary" ngbTooltip="Calculate Automatically" (click)="calcPoints(task)">
-                <i class="bi-magic"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="form-group row">
-        <label for="task/{{task._id}}/verificationInput" class="col-sm-2 col-form-label">Verification</label>
-        <div class="col-sm-10">
-          <app-scenario-codemirror
-            id="task/{{task._id}}/verificationInput"
-            [content]="task.verification"
-            [autoRefresh]="true"
-            [autoSubmit]="true"
-            (save)="saveDraft()"
-          ></app-scenario-codemirror>
-        </div>
-      </div>
-      <div class="form-group row" *ngIf="!task.deleted && evaluations?.[task._id]?.remark">
-        <label for="task/{{task._id}}/output" class="col-sm-2 col-form-label">Output</label>
-        <div class="col-sm-10">
-          <app-autotheme-codemirror id="task/{{task._id}}/output" [content]="evaluations![task._id]!.remark" [options]="{
-              autoRefresh: true,
-              lineNumbers: true,
-              styleActiveLine: true
-            }"></app-autotheme-codemirror>
-        </div>
-      </div>
-    </div>
-    <app-edit-task-list [tasks]="task.children" [evaluations]="evaluations" (save)="saveDraft()"></app-edit-task-list>
+    <app-edit-task-list [parent]="task._id" [tasks]="task.children" (save)="saveDraft()"></app-edit-task-list>
   </li>
   <li>
     <a routerLink="." class="text-success" (click)="addTask()">

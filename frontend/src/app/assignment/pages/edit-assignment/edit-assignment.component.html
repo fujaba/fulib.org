@@ -106,7 +106,6 @@
   <app-edit-task-list
     *ngIf="markdown === undefined"
     [tasks]="assignment.tasks"
-    [evaluations]="evaluations"
     (save)="saveDraft()"
   ></app-edit-task-list>
   <app-autotheme-codemirror
@@ -200,3 +199,4 @@
     </button>
   </div>
 </div>
+<router-outlet></router-outlet>

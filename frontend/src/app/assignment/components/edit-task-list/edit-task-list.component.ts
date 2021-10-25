@@ -1,7 +1,8 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 import {DndDropEvent} from 'ngx-drag-drop';
-import {CreateEvaluationDto} from '../../model/evaluation';
 import Task from '../../model/task';
+import {AssignmentContext} from '../../services/assignment.context';
 import {TaskService} from '../../services/task.service';
 
 @Component({
@@ -10,12 +11,15 @@ import {TaskService} from '../../services/task.service';
   styleUrls: ['./edit-task-list.component.scss'],
 })
 export class EditTaskListComponent {
+  @Input() parent?: string;
   @Input() tasks: Task[];
-  @Input() evaluations?: Record<string, CreateEvaluationDto>;
   @Output() save = new EventEmitter<void>();
 
   constructor(
     private taskService: TaskService,
+    private router: Router,
+    private route: ActivatedRoute,
+    public context: AssignmentContext,
   ) {
   }
 
@@ -25,25 +29,7 @@ export class EditTaskListComponent {
 
   addTask(): void {
     const id = this.taskService.generateID();
-    this.tasks.push({
-      _id: id,
-      description: '',
-      points: 0,
-      verification: '',
-      collapsed: false,
-      deleted: false,
-      children: [],
-    });
-    if (this.evaluations) {
-      this.evaluations[id] = {
-        task: id,
-        points: 0,
-        remark: '',
-        author: '',
-        snippets: [],
-      };
-    }
-    this.saveDraft();
+    this.router.navigate(['tasks', id], {queryParams: {parent: this.parent}, relativeTo: this.route});
   }
 
   removeTask(task: Task): void {
@@ -65,9 +51,5 @@ export class EditTaskListComponent {
       this.tasks.splice(event.index, 0, event.data);
       this.saveDraft();
     }
-  }
-
-  calcPoints(task: Task) {
-    task.points = task.children.reduce((a, c) => a + Math.abs(c.points), 0);
   }
 }
