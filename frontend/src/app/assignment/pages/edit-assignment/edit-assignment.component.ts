@@ -6,6 +6,7 @@ import {switchMap} from 'rxjs/operators';
 
 import {Marker} from '../../../shared/model/marker';
 import {UserService} from '../../../user/user.service';
+import {AssignmentContext} from '../../services/assignment.context';
 import {AssignmentService} from '../../services/assignment.service';
 import Assignment from '../../model/assignment';
 import {CreateEvaluationDto} from '../../model/evaluation';
@@ -16,6 +17,7 @@ import {TaskService} from '../../services/task.service';
   selector: 'app-create-assignment',
   templateUrl: './edit-assignment.component.html',
   styleUrls: ['./edit-assignment.component.scss'],
+  providers: [AssignmentContext],
 })
 export class EditAssignmentComponent implements OnInit, OnDestroy {
   collapse = {
@@ -42,6 +44,7 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
     private users: UserService,
     private keycloakService: KeycloakService,
     private taskService: TaskService,
+    private assignmentContext: AssignmentContext,
     private route: ActivatedRoute,
     private router: Router,
   ) {
@@ -115,6 +118,7 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
   }
 
   setAssignment(a: Assignment): void {
+    this.assignmentContext.assignment = a;
     this.assignment = a;
     this.assignment.classroom ??= {};
     if (a.deadline) {
@@ -143,6 +147,7 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
     this.assignmentService.check(this.assignment).subscribe(response => {
       this.checking = false;
       this.evaluations = {};
+      this.assignmentContext.evaluations = this.evaluations;
       for (let result of response.results) {
         this.evaluations[result.task] = result;
       }
@@ -161,6 +166,7 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
       this.setAssignment(result);
       this.saveDraft();
       this.evaluations = undefined;
+      this.assignmentContext.evaluations = undefined;
       this.markers = [];
     });
   }

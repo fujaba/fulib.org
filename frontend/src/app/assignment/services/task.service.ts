@@ -7,6 +7,19 @@ import Task from '../model/task';
   providedIn: 'root',
 })
 export class TaskService {
+  find(tasks: Task[], id: string): Task | undefined {
+    for (let task of tasks) {
+      if (task._id === id) {
+        return task;
+      }
+      const child = this.find(task.children, id);
+      if (child) {
+        return child;
+      }
+    }
+    return undefined;
+  }
+
   generateID(): string {
     return new ObjectID().toHexString();
   }
