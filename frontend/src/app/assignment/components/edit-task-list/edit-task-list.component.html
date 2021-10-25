@@ -43,7 +43,7 @@
         <i class="bi-arrow-repeat"></i>
       </button>
     </div>
-    <app-edit-task-list [parent]="task._id" [tasks]="task.children" (save)="saveDraft()"></app-edit-task-list>
+    <app-edit-task-list *ngIf="!task.collapsed" [parent]="task._id" [tasks]="task.children" (save)="saveDraft()"></app-edit-task-list>
   </li>
   <li>
     <a routerLink="." class="text-success" (click)="addTask()">
