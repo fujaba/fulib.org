@@ -16,7 +16,18 @@
             </span>
           </a>
           <ng-template ngbNavContent>
-            <app-markdown [html]="changelogs[repo]!"></app-markdown>
+            <details *ngFor="let release of changelogs[repo]" (toggle)="render(repo, release)">
+              <summary class="h4">
+                {{ release.name }}
+                <span class="badge badge-secondary">
+                  {{ release.tag_name }}
+                </span>
+                <span class="text-muted" [ngbTooltip]="release.created_at | date:'medium'">
+                  {{ release.created_at | date:'shortDate' }}
+                </span>
+              </summary>
+              <app-markdown [html]="release.bodyHtml ?? 'Loading...'"></app-markdown>
+            </details>
           </ng-template>
         </li>
       </ng-container>
