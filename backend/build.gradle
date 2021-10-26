@@ -106,9 +106,7 @@ processResources {
 		rename 'gradle-wrapper.jar', 'gradle-wrapper.jar.zip'
 	}
 
-	filesMatching([
-			'org/fulib/webapp/version.properties',
-	]) {
+	filesMatching(['**/*.gradle', '**/*.properties']) {
 		filter {
 			it = it.replace('$$version$$', version)
 			it = it.replace('$$fulibVersion$$', fulibVersion)
