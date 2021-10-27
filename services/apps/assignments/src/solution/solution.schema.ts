@@ -3,7 +3,8 @@ import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
 import {Type} from 'class-transformer';
 import {
   IsDateString,
-  IsEmail, IsHash,
+  IsEmail,
+  IsHash,
   IsMongoId,
   IsNotEmpty,
   IsOptional,
@@ -60,7 +61,7 @@ export class Solution {
   @IsMongoId()
   assignment: string;
 
-  @Prop()
+  @Prop({index: 1})
   @ApiProperty({required: false})
   @IsOptional()
   @IsUUID()
@@ -94,4 +95,6 @@ export class Solution {
 
 export type SolutionDocument = Solution & Document;
 
-export const SolutionSchema = SchemaFactory.createForClass(Solution);
+export const SolutionSchema = SchemaFactory.createForClass(Solution)
+  .index({assignment: 1, 'author.github': 1})
+;

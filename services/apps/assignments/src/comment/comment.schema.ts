@@ -19,7 +19,7 @@ export class Comment {
   @ApiProperty()
   createdBy?: string;
 
-  @Prop({index: 1})
+  @Prop()
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
@@ -49,4 +49,6 @@ export class Comment {
 
 export type CommentDocument = Comment & Document;
 
-export const CommentSchema = SchemaFactory.createForClass(Comment);
+export const CommentSchema = SchemaFactory.createForClass(Comment)
+  .index({assignment: 1, solution: 1})
+;

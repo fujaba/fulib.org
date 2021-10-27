@@ -84,7 +84,7 @@ export class Assignment {
   @IsString()
   description: string;
 
-  @Prop()
+  @Prop({index: 1})
   @ApiPropertyOptional()
   createdBy?: string;
 
@@ -99,7 +99,7 @@ export class Assignment {
   @IsEmail()
   email: string;
 
-  @Prop()
+  @Prop({index: 1})
   @ApiProperty({required: false})
   @IsOptional()
   @IsDateString()
