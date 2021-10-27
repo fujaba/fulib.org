@@ -1,19 +1,19 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 import {Subscription} from 'rxjs';
+import {switchMap} from 'rxjs/operators';
 import {CreateEvaluationDto, Evaluation} from '../../model/evaluation';
 import Solution from '../../model/solution';
 import {SolutionService} from '../../services/solution.service';
 import {UserService} from '../../../user/user.service';
 
 @Component({
-  selector: 'app-grade-form',
-  templateUrl: './grade-form.component.html',
-  styleUrls: ['./grade-form.component.scss'],
+  selector: 'app-evaluation-modal',
+  templateUrl: './evaluation-modal.component.html',
+  styleUrls: ['./evaluation-modal.component.scss'],
 })
-export class GradeFormComponent implements OnInit, OnDestroy {
-  @Input() solution: Solution;
-  @Input() task: string;
-  @Input() evaluation?: CreateEvaluationDto | Evaluation;
+export class EvaluationModalComponent implements OnInit, OnDestroy {
+  evaluation?: Evaluation;
   dto: CreateEvaluationDto = {
     task: '',
     author: '',
@@ -29,12 +29,18 @@ export class GradeFormComponent implements OnInit, OnDestroy {
   constructor(
     private solutionService: SolutionService,
     private users: UserService,
+    public route: ActivatedRoute,
   ) {
   }
 
   ngOnInit(): void {
-    this.dto.task = this.task;
     this.dto.author = this.solutionService.commentName || '';
+
+    this.route.params.pipe(
+      switchMap(({aid, sid, task}) => this.solutionService.getEvaluations(aid, sid, task)),
+    ).subscribe(evaluations => {
+      this.evaluation = evaluations[0];
+    });
 
     this.userSubscription = this.users.current$.subscribe(user => {
       if (user) {
@@ -53,10 +59,11 @@ export class GradeFormComponent implements OnInit, OnDestroy {
   }
 
   doSubmit(): void {
-    const {assignment, _id: solution} = this.solution;
-    const op = this.evaluation && '_id' in this.evaluation
-      ? this.solutionService.updateEvaluation(assignment, solution!, this.evaluation._id, this.dto)
-      : this.solutionService.createEvaluation(assignment, solution!, this.dto);
+    const {aid, sid, task} = this.route.snapshot.params;
+    this.dto.task = task;
+    const op = this.evaluation
+      ? this.solutionService.updateEvaluation(aid, sid, this.evaluation._id, this.dto)
+      : this.solutionService.createEvaluation(aid, sid, this.dto);
     op.subscribe(result => {
       this.evaluation = result;
     });

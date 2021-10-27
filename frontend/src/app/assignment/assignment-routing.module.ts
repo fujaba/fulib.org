@@ -1,5 +1,6 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
+import {EvaluationModalComponent} from './pages/evaluation-modal/evaluation-modal.component';
 import {CourseComponent} from './pages/course/course.component';
 import {CreateCourseComponent} from './pages/create-course/create-course.component';
 import {CreateSolutionComponent} from './pages/create-solution/create-solution.component';
@@ -31,7 +32,13 @@ const routes: Routes = [
     ],
   },
   {path: ':aid/solutions', component: SolutionTableComponent},
-  {path: ':aid/solutions/:sid', component: SolutionComponent},
+  {
+    path: ':aid/solutions/:sid',
+    component: SolutionComponent,
+    children: [
+      {path: 'tasks/:task', component: EvaluationModalComponent},
+    ],
+  },
   {path: 'courses/create', component: CreateCourseComponent},
   {path: 'courses/:cid', component: CourseComponent},
   {path: 'courses/:cid/assignments/:aid', component: CourseComponent},

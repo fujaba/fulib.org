@@ -11,6 +11,7 @@ import Comment from '../../model/comment';
 import Solution from '../../model/solution';
 import {Evaluation} from '../../model/evaluation';
 import {SolutionService} from '../../services/solution.service';
+import {TaskService} from '../../services/task.service';
 
 @Component({
   selector: 'app-solution',
@@ -24,6 +25,7 @@ export class SolutionComponent implements OnInit, OnDestroy {
   solution?: Solution;
   markers: Marker[] = [];
 
+  points?: Record<string, number>;
   evaluations?: Record<string, Evaluation>;
   comments: Comment[] = [];
 
@@ -40,6 +42,7 @@ export class SolutionComponent implements OnInit, OnDestroy {
     private router: Router,
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
+    private taskService: TaskService,
     private users: UserService,
   ) {
   }
@@ -71,7 +74,8 @@ export class SolutionComponent implements OnInit, OnDestroy {
           }
         })),
       ])),
-    ).subscribe(([, , , evaluations]) => {
+    ).subscribe(([assignment, , , evaluations]) => {
+      this.points = this.taskService.createPointsCache(assignment.tasks, this.evaluations!);
       // NB: this happens here instead of where the solution is loaded above, because the solution text needs to be updated first.
       // Otherwise the markers don't show up
       this.markers = this.assignmentService.lint({results: evaluations});

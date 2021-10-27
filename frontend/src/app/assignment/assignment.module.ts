@@ -20,7 +20,7 @@ import {TokenModalComponent} from './components/token-modal/token-modal.componen
 import {SolutionTableComponent} from './pages/solution-table/solution-table.component';
 import {AssignmentInfoComponent} from './components/assignment-info/assignment-info.component';
 import {TaskListComponent} from './components/task-list/task-list.component';
-import {GradeFormComponent} from './components/grade-form/grade-form.component';
+import {EvaluationModalComponent} from './pages/evaluation-modal/evaluation-modal.component';
 import {CourseComponent} from './pages/course/course.component';
 import {CreateCourseComponent} from './pages/create-course/create-course.component';
 import {MyAssignmentsComponent} from './pages/my-assignments/my-assignments.component';
@@ -40,7 +40,7 @@ import { EditTaskModalComponent } from './pages/edit-task-modal/edit-task-modal.
         SolutionTableComponent,
         AssignmentInfoComponent,
         TaskListComponent,
-        GradeFormComponent,
+        EvaluationModalComponent,
         CourseComponent,
         CreateCourseComponent,
         MyAssignmentsComponent,
