@@ -2,7 +2,7 @@ import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {KeycloakService} from 'keycloak-angular';
 import {environment} from '../../environments/environment';
-import {ChangelogService, Versions} from '../changelog.service';
+import {ChangelogService, REPOS, Versions} from '../changelog.service';
 
 import {PrivacyService} from '../privacy.service';
 
@@ -23,7 +23,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
   menuCollapsed = true;
 
-  repos?: (keyof Versions)[];
+  readonly repos = REPOS;
   versions?: Versions;
 
   username?: string;
@@ -40,7 +40,6 @@ export class HeaderComponent implements OnInit, AfterViewInit {
       });
     });
 
-    this.repos = this.changelogService.repos;
     this.changelogService.getCurrentVersions().subscribe(currentVersions => {
       this.versions = currentVersions;
       if (this.changelogService.autoShow) {
