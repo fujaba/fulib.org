@@ -7,17 +7,12 @@
     </span>
     <a
       *ngIf="evaluations && solution"
-      routerLink="."
+      [routerLink]="['tasks', task._id]"
       [class.text-primary]="!evaluations[task._id]"
       [class.text-secondary]="evaluations[task._id]"
-      [ngbPopover]="gradePopoverContent" popoverTitle="Grade" placement="right" autoClose="outside" container="body"
     >
       {{ evaluations[task._id] ? '&check; Graded' : 'Grade' }}
     </a>
-    <ng-template #gradePopoverContent>
-      <app-grade-form *ngIf="solution && evaluations"
-                      [solution]="solution" [task]="task._id" [evaluation]="evaluations[task._id]"></app-grade-form>
-    </ng-template>
     <app-task-list *ngIf="task.children.length"
                    [tasks]="task.children" [solution]="solution" [evaluations]="evaluations"
     ></app-task-list>
