@@ -187,28 +187,26 @@ export class SolutionService {
     return this.http.get<Solution[]>(`${environment.assignmentsApiUrl}/solutions`);
   }
 
-  getComments(assignment: Assignment | string, id: string): Observable<Comment[]> {
-    const assignmentID = asID(assignment);
+  getComments(assignment: string, solution: string): Observable<Comment[]> {
     const headers = {};
-    this.addSolutionToken(headers, assignmentID, id);
-    this.addAssignmentToken(headers, assignmentID);
+    this.addSolutionToken(headers, assignment, solution);
+    this.addAssignmentToken(headers, assignment);
 
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignmentID}/solutions/${id}/comments`;
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/comments`;
     return this.http.get<Comment[]>(url, {headers});
   }
 
-  postComment(solution: Solution, comment: Comment): Observable<Comment> {
-    const assignmentID = solution.assignment;
+  postComment(assignment: string, solution: string, comment: Comment): Observable<Comment> {
     const headers = {};
-    this.addSolutionToken(headers, assignmentID, solution._id!);
-    this.addAssignmentToken(headers, assignmentID);
+    this.addSolutionToken(headers, assignment, solution);
+    this.addAssignmentToken(headers, assignment);
 
-    const url = `${environment.assignmentsApiUrl}/assignments/${solution.assignment}/solutions/${solution._id}/comments`;
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/comments`;
     return this.http.post<Comment>(url, comment, {headers});
   }
 
-  deleteComment(solution: Solution, comment: Comment): Observable<Comment> {
-    const url = `${environment.assignmentsApiUrl}/assignments/${solution.assignment}/solutions/${solution._id}/comments/${comment._id}`;
+  deleteComment(assignment: string, solution: string, comment: string): Observable<Comment> {
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/comments/${comment}`;
     return this.http.delete<Comment>(url);
   }
 

@@ -1,0 +1,73 @@
+<ol class="timeline-list">
+  <li *ngFor="let comment of comments" class="timeline-item">
+    <div class="timeline-item-badge bg-secondary">
+      {{comment.author.charAt(0)}}
+    </div>
+    <div class="timeline-item-body">
+      <div class="card">
+        <div class="card-header">
+          <app-author-name [name]="comment.author" [email]="comment.email"></app-author-name>
+          <span *ngIf="comment.distinguished" class="badge badge-pill badge-primary"
+                ngbTooltip="Assignment Authority">
+              &#10003;
+            </span>
+          <span class="text-muted">
+              &#8226;
+            {{comment.timestamp | date:'medium'}}
+            </span>
+          <ng-container *ngIf="userId && comment.createdBy === userId">
+            &#8226;
+            <button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(comment)">
+              Delete
+            </button>
+          </ng-container>
+        </div>
+        <div class="card-body">
+          <div class="card-text">
+            <app-markdown [markdown]="comment.body"></app-markdown>
+          </div>
+        </div>
+      </div>
+    </div>
+  </li>
+  <li class="timeline-item">
+    <div class="timeline-item-badge bg-secondary">
+      +
+    </div>
+    <div class="timeline-item-body">
+      <div class="card">
+        <div class="card-header">
+          <div class="form-inline">
+            <span class="sr-only">New Comment</span>
+
+            <label for="commentNameInput" class="sr-only">Name</label>
+            <input type="text" class="form-control mr-2" id="commentNameInput" placeholder="John Doe"
+                   [(ngModel)]="commentName" (change)="saveCommentDraft()" [disabled]="!!userId">
+
+            <span class="mr-2">&#8226;</span>
+
+            <label for="commentEmailInput" class="sr-only">Email</label>
+            <input type="text" class="form-control mr-2" id="commentEmailInput" placeholder="jdoe@example.com"
+                   [(ngModel)]="commentEmail" (change)="saveCommentDraft()" [disabled]="!!userId">
+
+            <span class="mr-2">&#8226;</span>
+
+            <button type="button" class="btn btn-primary mr-2" id="commentSubmitButton"
+                    ngbTooltip="Keyboard Shortcuts: Ctrl-&#9166;"
+                    (click)="submitComment()" [disabled]="submittingComment">
+              {{submittingComment ? 'Submitting...' : 'Submit'}}
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+            <textarea class="form-control" id="commentBodyInput"
+                      [(ngModel)]="commentBody" (change)="saveCommentDraft()" (keyup.control.enter)="submitComment()">
+            </textarea>
+          <small class="form-text text-muted">
+            <a href="https://commonmark.org/help/">Markdown syntax</a> is supported.
+          </small>
+        </div>
+      </div>
+    </div>
+  </li>
+</ol>

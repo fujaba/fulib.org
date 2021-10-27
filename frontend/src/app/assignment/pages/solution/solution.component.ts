@@ -1,15 +1,13 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {combineLatest, forkJoin, Subscription} from 'rxjs';
+import {combineLatest, forkJoin} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
 
 import {Marker} from '../../../shared/model/marker';
-import {UserService} from '../../../user/user.service';
-import {AssignmentService} from '../../services/assignment.service';
 import Assignment from '../../model/assignment';
-import Comment from '../../model/comment';
-import Solution from '../../model/solution';
 import {Evaluation} from '../../model/evaluation';
+import Solution from '../../model/solution';
+import {AssignmentService} from '../../services/assignment.service';
 import {SolutionService} from '../../services/solution.service';
 import {TaskService} from '../../services/task.service';
 
@@ -18,7 +16,7 @@ import {TaskService} from '../../services/task.service';
   templateUrl: './solution.component.html',
   styleUrls: ['./solution.component.scss'],
 })
-export class SolutionComponent implements OnInit, OnDestroy {
+export class SolutionComponent implements OnInit {
   @ViewChild('tokenModal', {static: true}) tokenModal;
 
   assignment?: Assignment;
@@ -27,15 +25,6 @@ export class SolutionComponent implements OnInit, OnDestroy {
 
   points?: Record<string, number>;
   evaluations?: Record<string, Evaluation>;
-  comments: Comment[] = [];
-
-  userId?: string;
-  commentName: string;
-  commentEmail: string;
-  commentBody: string;
-  submittingComment: boolean;
-
-  private userSubscription: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -43,7 +32,6 @@ export class SolutionComponent implements OnInit, OnDestroy {
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
     private taskService: TaskService,
-    private users: UserService,
   ) {
   }
 
@@ -64,9 +52,7 @@ export class SolutionComponent implements OnInit, OnDestroy {
         this.assignmentService.get(assignmentId).pipe(tap(assignment => this.assignment = assignment)),
         this.solutionService.get(assignmentId, solutionId).pipe(tap(solution => {
           this.solution = solution;
-          this.loadCommentDraft();
         })),
-        this.solutionService.getComments(assignmentId, solutionId).pipe(tap(comments => this.comments = comments)),
         this.solutionService.getEvaluations(assignmentId, solutionId).pipe(tap(evaluations => {
           this.evaluations = {};
           for (const evaluation of evaluations) {
@@ -74,7 +60,7 @@ export class SolutionComponent implements OnInit, OnDestroy {
           }
         })),
       ])),
-    ).subscribe(([assignment, , , evaluations]) => {
+    ).subscribe(([assignment, , evaluations]) => {
       this.points = this.taskService.createPointsCache(assignment.tasks, this.evaluations!);
       // NB: this happens here instead of where the solution is loaded above, because the solution text needs to be updated first.
       // Otherwise the markers don't show up
@@ -83,55 +69,6 @@ export class SolutionComponent implements OnInit, OnDestroy {
       if (error.status === 401) {
         this.tokenModal.open();
       }
-    });
-
-    this.userSubscription = this.users.current$.subscribe(user => {
-      if (!user) {
-        this.userId = undefined;
-        return;
-      }
-
-      this.userId = user.id;
-      if (user.firstName && user.lastName) {
-        this.commentName = `${user.firstName} ${user.lastName}`;
-      }
-      if (user.email) {
-        this.commentEmail = user.email;
-      }
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.userSubscription.unsubscribe();
-  }
-
-  loadCommentDraft(): void {
-    this.commentName = this.solutionService.commentName || '';
-    this.commentEmail = this.solutionService.commentEmail || '';
-    this.commentBody = this.solutionService.getCommentDraft(this.solution!) || '';
-  }
-
-  saveCommentDraft(): void {
-    this.solutionService.commentName = this.commentName;
-    this.solutionService.commentEmail = this.commentEmail;
-    this.solutionService.setCommentDraft(this.solution!, this.commentBody);
-  }
-
-  submitComment(): void {
-    this.submittingComment = true;
-
-    const comment: Comment = {
-      assignment: this.solution!.assignment,
-      solution: this.solution!._id!,
-      author: this.commentName,
-      email: this.commentEmail,
-      body: this.commentBody,
-    };
-    this.solutionService.postComment(this.solution!, comment).subscribe(result => {
-      this.comments.push(result);
-      this.commentBody = '';
-      this.saveCommentDraft();
-      this.submittingComment = false;
     });
   }
 
@@ -143,19 +80,6 @@ export class SolutionComponent implements OnInit, OnDestroy {
         atok: assignmentToken,
         stok: solutionToken,
       },
-    });
-  }
-
-  delete(comment: Comment): void {
-    if (!confirm('Are you sure you want to delete this comment? This action cannot be undone.')) {
-      return;
-    }
-
-    this.solutionService.deleteComment(this.solution!, comment).subscribe(result => {
-      const index = this.comments.indexOf(comment);
-      if (index >= 0) {
-        this.comments.splice(index, 1);
-      }
     });
   }
 }
