@@ -9,14 +9,13 @@ import {Course, CourseDocument} from './course.schema';
 export class CourseService {
   constructor(
     @InjectModel('courses') private model: Model<Course>,
-    @InjectConnection() private connection: Connection,
+    @InjectConnection() connection: Connection,
   ) {
-    this.migrate();
+    connection.once('connected', () => this.migrate());
   }
 
   async migrate() {
-    const collection = this.connection.collection('courses');
-    const result = await collection.updateMany({}, {
+    const result = await this.model.updateMany({}, {
       $rename: {
         assignmentIds: 'assignments',
         userId: 'createdBy',

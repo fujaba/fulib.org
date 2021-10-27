@@ -13,15 +13,14 @@ import {Assignment, AssignmentDocument, Task} from './assignment.schema';
 export class AssignmentService {
   constructor(
     @InjectModel('assignments') private model: Model<Assignment>,
-    @InjectConnection() private connection: Connection,
+    @InjectConnection() connection: Connection,
     private http: HttpService,
   ) {
-    this.migrate();
+    connection.once('connected', () => this.migrate());
   }
 
   async migrate() {
-    const collection = this.connection.collection('assignments');
-    const result = await collection.updateMany({}, {
+    const result = await this.model.updateMany({}, {
       $rename: {
         userId: 'createdBy',
       },

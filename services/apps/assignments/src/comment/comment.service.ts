@@ -10,14 +10,13 @@ import {Comment, CommentDocument} from './comment.schema';
 export class CommentService {
   constructor(
     @InjectModel('comments') private model: Model<Comment>,
-    @InjectConnection() private connection: Connection,
+    @InjectConnection() connection: Connection,
   ) {
-    this.migrate();
+    connection.once('connected', () => this.migrate());
   }
 
   async migrate() {
-    const collection = this.connection.collection('comments');
-    const result = await collection.updateMany({}, {
+    const result = await this.model.updateMany({}, {
       // TODO assignment
       $rename: {
         parent: 'solution',

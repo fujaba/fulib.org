@@ -18,7 +18,7 @@ export class SolutionService {
     private assignmentService: AssignmentService,
     private evaluationService: EvaluationService,
   ) {
-    connection.on('connected', () => this.migrate());
+    connection.once('connected', () => this.migrate());
   }
 
   async migrate() {

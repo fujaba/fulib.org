@@ -9,14 +9,13 @@ import {Assignee, AssigneeDocument} from './assignee.schema';
 export class AssigneeService {
   constructor(
     @InjectModel('assignee') private model: Model<Assignee>,
-    @InjectConnection() private connection: Connection,
+    @InjectConnection() connection: Connection,
   ) {
-    this.migrate();
+    connection.once('connected', () => this.migrate());
   }
 
   async migrate() {
-    const collection = this.connection.collection('assignee');
-    const result = await collection.updateMany({}, {
+    const result = await this.model.updateMany({}, {
       $rename: {
         id: 'solution',
       },

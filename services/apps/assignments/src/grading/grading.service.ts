@@ -12,7 +12,7 @@ export class GradingService {
     @InjectConnection() connection: Connection,
     private evaluationService: EvaluationService,
   ) {
-    connection.on('connected', () => this.migrate());
+    connection.once('connected', () => this.migrate());
   }
 
   async migrate() {
