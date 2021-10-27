@@ -15,7 +15,6 @@ export class TaskListComponent implements OnChanges {
   @Input() evaluations?: Record<string, CreateEvaluationDto>;
 
   points: Record<string, number> = {};
-  outputExpanded: boolean[] = [];
 
   constructor(
     private readonly taskService: TaskService,
