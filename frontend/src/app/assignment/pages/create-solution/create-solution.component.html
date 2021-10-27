@@ -2,7 +2,7 @@
   <app-assignment-info [assignment]="assignment"></app-assignment-info>
 
   <h2>Tasks</h2>
-  <app-task-list [tasks]="assignment?.tasks" [evaluations]="evaluations"></app-task-list>
+  <app-task-list [tasks]="assignment?.tasks"></app-task-list>
 
   <h2><label for="solutionInput">Your Solution</label></h2>
   <p>
@@ -15,7 +15,7 @@
     ></app-scenario-codemirror>
     <small class="text-muted">
       {{checking ? 'Checking...'
-      : (evaluations ? 'Your solution was checked automatically. Don\'t forget to submit when you are done!'
+      : (checked ? 'Your solution was checked automatically. Don\'t forget to submit when you are done!'
         : 'Your solution is checked automatically when you make changes.')
       }}
     </small>

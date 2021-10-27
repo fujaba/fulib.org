@@ -31,7 +31,7 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
   author: AuthorInfo;
 
   checking = false;
-  evaluations?: Record<string, CreateEvaluationDto>;
+  checked = false;
   markers: Marker[] = [];
 
   id?: string;
@@ -132,10 +132,7 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
 
     this.solutionService.check({assignment: this.assignment, solution: this.solution}).subscribe(response => {
       this.checking = false;
-      this.evaluations = {};
-      for (let result of response.results) {
-        this.evaluations[result.task] = result;
-      }
+      this.checked = true;
       this.markers = this.assignmentService.lint(response);
     });
   }
