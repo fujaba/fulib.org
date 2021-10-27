@@ -10,11 +10,14 @@
             (click)="outputExpanded[task._id] = !outputExpanded[task._id]">
       {{outputExpanded[task._id] ? 'Hide Output' : 'Show Output'}}
     </button>
-    <button type="button" class="btn btn-sm btn-outline-primary m-1 p-1"
-            *ngIf="evaluations && solution"
-            [ngbPopover]="gradePopoverContent" popoverTitle="Grade" placement="right" autoClose="outside"
-            container="body">
-      Grade
+    <button
+      *ngIf="evaluations && solution"
+      class="btn btn-sm mx-1 p-1"
+      [class.btn-outline-primary]="!evaluations[task._id]"
+      [class.btn-outline-secondary]="evaluations[task._id]"
+      [ngbPopover]="gradePopoverContent" popoverTitle="Grade" placement="right" autoClose="outside" container="body"
+    >
+      {{ evaluations[task._id] ? '&check; Graded' : 'Grade' }}
     </button>
     <ng-template #gradePopoverContent>
       <app-grade-form *ngIf="solution && evaluations"
