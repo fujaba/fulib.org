@@ -5,15 +5,15 @@
       <ng-container *ngIf="evaluations">{{points[task._id]}} / </ng-container>
       {{task.points}}
     </span>
-    <button
+    <a
       *ngIf="evaluations && solution"
-      class="btn btn-sm mx-1 p-1"
-      [class.btn-outline-primary]="!evaluations[task._id]"
-      [class.btn-outline-secondary]="evaluations[task._id]"
+      routerLink="."
+      [class.text-primary]="!evaluations[task._id]"
+      [class.text-secondary]="evaluations[task._id]"
       [ngbPopover]="gradePopoverContent" popoverTitle="Grade" placement="right" autoClose="outside" container="body"
     >
       {{ evaluations[task._id] ? '&check; Graded' : 'Grade' }}
-    </button>
+    </a>
     <ng-template #gradePopoverContent>
       <app-grade-form *ngIf="solution && evaluations"
                       [solution]="solution" [task]="task._id" [evaluation]="evaluations[task._id]"></app-grade-form>
