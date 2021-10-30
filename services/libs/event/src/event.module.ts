@@ -1,8 +1,31 @@
-import { Module } from '@nestjs/common';
-import { EventService } from './event.service';
+import {DynamicModule} from '@nestjs/common';
+import {EventEmitterModule} from '@nestjs/event-emitter';
+import {ClientsModule, Transport} from '@nestjs/microservices';
+import {EventService} from './event.service';
 
-@Module({
-  providers: [EventService],
-  exports: [EventService],
-})
-export class EventModule {}
+export class EventModule {
+  static forRoot(options: { nats: any }): DynamicModule {
+    return {
+      module: EventModule,
+      imports: [
+        ClientsModule.register([
+          {
+            name: 'EVENT_SERVICE',
+            transport: Transport.NATS,
+            options: options.nats,
+          },
+        ]),
+        EventEmitterModule.forRoot({
+          wildcard: true,
+        }),
+      ],
+      providers: [
+        EventService,
+      ],
+      exports: [
+        EventEmitterModule,
+        EventService,
+      ],
+    };
+  }
+}

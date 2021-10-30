@@ -1,3 +1,4 @@
+import {EventModule} from '@app/event';
 import {AuthModule} from '@app/keycloak-auth';
 import {Module} from '@nestjs/common';
 import {MongooseModule} from '@nestjs/mongoose';
@@ -16,6 +17,7 @@ import { ClassroomModule } from './classroom/classroom.module';
   imports: [
     MongooseModule.forRoot(environment.mongo.uri, environment.mongo.options),
     AuthModule.register(environment.auth),
+    EventModule.forRoot({nats: environment.nats}),
     ScheduleModule.forRoot(),
     AssignmentModule,
     SolutionModule,
