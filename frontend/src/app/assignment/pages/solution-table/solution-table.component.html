@@ -4,15 +4,21 @@
   <h2>Tasks</h2>
   <app-task-list [tasks]="assignment?.tasks"></app-task-list>
 
-  <a class="btn btn-primary" [routerLink]="['/assignments', assignment?._id, 'edit']">
-    <i class="bi-pencil"></i>
-    Edit Assignment
-  </a>
-
-  <button *ngIf="assignment?.classroom?.org && assignment?.classroom?.prefix" class="btn btn-primary" (click)="import()">
-    <i class="bi-download"></i>
-    Import from GitHub Classroom
-  </button>
+  <div class="btn-group" role="group" aria-label="Actions">
+    <a class="btn btn-primary" [routerLink]="['/assignments', assignment?._id, 'edit']">
+      <i class="bi-pencil"></i>
+      Edit Assignment
+    </a>
+    <button
+      *ngIf="assignment?.classroom?.org && assignment?.classroom?.prefix"
+      class="btn btn-success"
+      ngbTooltip="Import Solutions from GitHub Classroom (requires Account linked to GitHub)"
+      (click)="import()"
+    >
+      <i class="bi-download"></i>
+      Import Solutions
+    </button>
+  </div>
 
   <h2>
     Sample Solution
