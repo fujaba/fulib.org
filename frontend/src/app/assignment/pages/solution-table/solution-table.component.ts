@@ -3,13 +3,13 @@ import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {combineLatest, forkJoin, Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
+import {TokenModalComponent} from '../../components/token-modal/token-modal.component';
 import {Assignee} from '../../model/assignee';
 
 import Assignment from '../../model/assignment';
-import {AssignmentService} from '../../services/assignment.service';
 import Solution from '../../model/solution';
+import {AssignmentService} from '../../services/assignment.service';
 import {SolutionService} from '../../services/solution.service';
-import {TokenModalComponent} from '../../components/token-modal/token-modal.component';
 
 @Component({
   selector: 'app-solution-table',
@@ -49,6 +49,9 @@ export class SolutionTableComponent implements OnInit {
         const assignmentId = params.aid;
         if (query.atok) {
           this.assignmentService.setToken(assignmentId, query.atok);
+        }
+        if (query.q) {
+          this.searchText = query.q;
         }
         this.sharing = !!query.share;
         return assignmentId;
@@ -95,6 +98,8 @@ export class SolutionTableComponent implements OnInit {
 
   updateSearch(): void {
     const searchText = this.searchText.trim();
+    this.router.navigate([], {queryParams: {q: searchText}, relativeTo: this.activatedRoute});
+
     if (!searchText) {
       this.filteredSolutions = this.solutions;
       return;
