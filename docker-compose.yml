@@ -1,5 +1,9 @@
 version: '3.9'
 services:
+  nats:
+    image: nats:1.4.1
+    ports:
+      - "4222:4222"
   proxy:
     build: projects-proxy
     image: fulib/fulib.org-projects-proxy
