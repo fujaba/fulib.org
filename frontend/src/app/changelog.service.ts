@@ -1,21 +1,34 @@
-import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {EMPTY, Observable} from 'rxjs';
-import {switchMap} from 'rxjs/operators';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
+import {map, mapTo, tap} from 'rxjs/operators';
+import {environment} from '../environments/environment';
 import {MarkdownService} from './markdown.service';
 
 import {PrivacyService} from './privacy.service';
-import {environment} from '../environments/environment';
 
-export class Versions {
-  'fulib.org'?: string;
-  fulib?: string;
-  fulibTools?: string;
-  fulibYaml?: string;
-  fulibTables?: string;
-  fulibScenarios?: string;
-  fulibMockups?: string;
-  fulibGradle?: string;
+export const REPOS = [
+  'fulib.org',
+  'fulib',
+  'fulibTools',
+  'fulibYaml',
+  'fulibTables',
+  'fulibScenarios',
+  'fulibMockups',
+  'fulibGradle',
+] as const;
+
+export type Repository = (typeof REPOS)[number];
+
+export type Versions = Record<Repository, string>;
+
+export class Release {
+  tag_name: string;
+  name: string;
+  body: string;
+  created_at: string; // Date
+
+  bodyHtml?: string;
 }
 
 @Injectable({
@@ -38,19 +51,6 @@ export class ChangelogService {
     this.privacyService.setStorage('autoShowChangelog', `${value}`);
   }
 
-  public get repos(): (keyof Versions)[] {
-    return [
-      'fulib.org',
-      'fulib',
-      'fulibTools',
-      'fulibYaml',
-      'fulibTables',
-      'fulibScenarios',
-      'fulibMockups',
-      'fulibGradle',
-    ];
-  }
-
   getCurrentVersions(): Observable<Versions> {
     return this.http.get<Versions>(environment.apiURL + '/versions');
   }
@@ -69,8 +69,8 @@ export class ChangelogService {
   }
 
   getVersionDiff(lastUsedVersions: Versions, currentVersions: Versions) {
-    const result: Versions = {};
-    for (const repo of this.repos) {
+    const result = {} as Versions;
+    for (const repo of REPOS) {
       const lastUsedVersion = lastUsedVersions[repo];
       const currentVersion = currentVersions[repo];
       if (lastUsedVersion && currentVersion && currentVersion !== lastUsedVersion) {
@@ -81,46 +81,18 @@ export class ChangelogService {
     return result;
   }
 
-  private loadRawChangelog(repo: string): Observable<string> {
-    return this.http.get(`https://api.github.com/repos/fujaba/${repo}/contents/CHANGELOG.md`, {
-      responseType: 'text',
+  private loadRawChangelog(repo: string): Observable<Release[]> {
+    return this.http.get<Release[]>(`https://api.github.com/repos/fujaba/${repo}/releases`, {
       headers: {
         Accept: 'application/vnd.github.raw',
       },
     });
   }
 
-  private partialChangelog(fullChangelog: string, lastUsedVersion: string, currentVersion?: string): string {
-    let result = '';
-    let version = '';
-
-    loop: for (const line of fullChangelog.split('\n')) {
-      if (line.startsWith('# ')) { // indicating a version headline
-        if (line.includes(lastUsedVersion)) {
-          version = 'lastUsed';
-        } else if (currentVersion && line.includes(currentVersion)) {
-          version = 'current';
-        } else { // some other version
-          switch (version) {
-            case 'lastUsed': // the ones after lastUsed are new and therefore interesting
-              version = 'new';
-              break;
-            case 'current': // the ones after current are too new, and their features are not available, so they are not interesting
-              version = 'future';
-              break loop;
-          }
-        }
-      }
-
-      switch (version) {
-        case 'new':
-        case 'current':
-          result += line + '\n';
-          break;
-      }
-    }
-
-    return result;
+  private partialChangelog(fullChangelog: Release[], lastUsedVersion: string, currentVersion?: string): Release[] {
+    const start = fullChangelog.findIndex(r => r.tag_name === 'v' + currentVersion);
+    const end = currentVersion ? fullChangelog.findIndex(r => r.tag_name === 'v' + lastUsedVersion) : fullChangelog.length;
+    return fullChangelog.slice(start, end);
   }
 
   private replaceIssueLinks(repo: string, markdown: string): string {
@@ -129,16 +101,14 @@ export class ChangelogService {
     });
   }
 
-  getChangelog(repo: keyof Versions, lastUsedVersion?: string, currentVersion?: string): Observable<string> {
+  getChangelog(repo: Repository, lastUsedVersion?: string, currentVersion?: string): Observable<Release[]> {
     return this.loadRawChangelog(repo).pipe(
-      switchMap(fullChangelog => {
-        const changelog = lastUsedVersion ? this.partialChangelog(fullChangelog, lastUsedVersion, currentVersion) : fullChangelog;
-        if (!changelog) { // already newest version
-          return EMPTY;
-        }
-        const issueLinks = this.replaceIssueLinks('fujaba/' + repo, changelog);
-        return this.markdownService.renderMarkdown(issueLinks);
-      }),
+      map(fullChangelog => lastUsedVersion ? this.partialChangelog(fullChangelog, lastUsedVersion, currentVersion) : fullChangelog),
     );
+  }
+
+  renderChangelog(repo: Repository, release: Release): Observable<Release> {
+    const issueLinks = this.replaceIssueLinks('fujaba/' + repo, release.body);
+    return this.markdownService.renderMarkdown(issueLinks).pipe(tap(html => release.bodyHtml = html), mapTo(release));
   }
 }
