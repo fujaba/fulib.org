@@ -26,6 +26,12 @@
       ],
       "@app/not-found/*": [
         "libs/not-found/src/*"
+      ],
+      "@app/event": [
+        "libs/event/src"
+      ],
+      "@app/event/*": [
+        "libs/event/src/*"
       ]
     }
   }
