@@ -1,3 +1,4 @@
+import {EventService} from '@app/event';
 import {UserToken} from '@app/keycloak-auth';
 import {HttpService} from '@nestjs/axios';
 import {Injectable} from '@nestjs/common';
@@ -15,6 +16,7 @@ export class AssignmentService {
     @InjectModel('assignments') private model: Model<Assignment>,
     @InjectConnection() connection: Connection,
     private http: HttpService,
+    private eventService: EventService,
   ) {
     connection.once('connected', () => this.migrate());
   }
@@ -97,11 +99,13 @@ export class AssignmentService {
 
   async create(dto: CreateAssignmentDto, userId?: string): Promise<AssignmentDocument> {
     const token = generateToken();
-    return this.model.create({
+    const created = await this.model.create({
       ...dto,
       token,
       createdBy: userId,
     });
+    created && this.emit('created', created._id, created);
+    return created;
   }
 
   async findAll(where: FilterQuery<Assignment> = {}): Promise<ReadAssignmentDto[]> {
@@ -121,14 +125,23 @@ export class AssignmentService {
   }
 
   async update(id: string, dto: UpdateAssignmentDto): Promise<Assignment | null> {
-    return this.model.findOneAndUpdate(idFilter(id), dto, {new: true}).exec();
+    const updated = await this.model.findOneAndUpdate(idFilter(id), dto, {new: true}).exec();
+    updated && this.emit('updated', id, updated);
+    return updated;
   }
 
   async remove(id: string): Promise<AssignmentDocument | null> {
-    return this.model.findOneAndDelete(idFilter(id)).exec();
+    const deleted = await this.model.findOneAndDelete(idFilter(id)).exec();
+    deleted && this.emit('deleted', id, deleted);
+    return deleted;
   }
 
   isAuthorized(assignment: Assignment, user?: UserToken, token?: string): boolean {
     return assignment.token === token || !!user && user.sub === assignment.createdBy;
+  }
+
+  private emit(action: string, id: string, assignment: Assignment) {
+    const users = [assignment.token, assignment.createdBy].filter(i => i);
+    this.eventService.emit(`assignment.${id}.${action}`, assignment, users);
   }
 }
