@@ -3,7 +3,6 @@
     <hr class="border-success"/>
   </li>
   <li *ngFor="let task of tasks"
-      class="text-{{task|taskColor:context.evaluations?.[task._id]?.points}}"
       dndType="task"
       [dndDraggable]="task"
       dndEffectAllowed="move"
@@ -18,9 +17,9 @@
         <ng-template #taskDesc>
           {{task.description || '(no description)'}}
         </ng-template>
-        <span class="badge badge-{{task|taskColor:context.evaluations?.[task._id]?.points}}">
-            {{task.points}}
-          </span>
+        <span class="badge badge-secondary">
+          {{task.points}}
+        </span>
       </div>
       <a class="btn btn-primary ml-auto" aria-label="Edit" ngbTooltip="Edit"
          [routerLink]="[task._id]" [queryParams]="{parent}">
