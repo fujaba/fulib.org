@@ -20,10 +20,6 @@ import {TaskService} from '../../services/task.service';
   providers: [AssignmentContext],
 })
 export class EditAssignmentComponent implements OnInit, OnDestroy {
-  collapse = {
-    solution: false,
-    templateSolution: false,
-  };
   loggedIn = false;
 
   assignment: Assignment = this.createNew();
@@ -45,7 +41,7 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
     private keycloakService: KeycloakService,
     private taskService: TaskService,
     private assignmentContext: AssignmentContext,
-    private route: ActivatedRoute,
+    public route: ActivatedRoute,
     private router: Router,
   ) {
   }
@@ -136,9 +132,6 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
       this.deadlineDate = undefined;
       this.deadlineTime = undefined;
     }
-
-    this.collapse.solution = !a.solution;
-    this.collapse.templateSolution = !a.templateSolution;
   }
 
   check(): void {
