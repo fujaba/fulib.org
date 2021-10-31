@@ -1,0 +1,38 @@
+<app-assignment-info [assignment]="assignment"></app-assignment-info>
+<app-task-list [tasks]="assignment.tasks"></app-task-list>
+
+<p *ngIf="!assignment._id" class="text-center">
+  Click "Submit" to finalize your assignment and generate a link.
+</p>
+<div *ngIf="!loggedIn" class="alert alert-warning" role="alert">
+  <h4 class="alert-heading">
+    Warning!
+  </h4>
+  <p>
+    You are currently not logged in, therefore submitting this assignment as a guest.
+  </p>
+  <p>
+    <a routerLink="." (click)="login()">
+      Logging in
+    </a>
+    has the following advantages:
+  </p>
+  <ul>
+    <li>
+      You will be shown as Registered <span class="badge badge-pill badge-primary">&#10003;</span>
+      to students viewing your assignment.
+    </li>
+    <li>
+      You can view student submissions on other devices without entering the generated token.
+    </li>
+    <li>
+      You will have access to future features like notifications and improved access control.
+    </li>
+  </ul>
+</div>
+
+<div class="text-center">
+  <button type="button" class="btn btn-primary btn-lg" (click)="submit()" [disabled]="submitting">
+    {{assignment._id ? (submitting ? 'Saving...' : 'Save') : (submitting ? 'Submitting...' : 'Submit')}}
+  </button>
+</div>

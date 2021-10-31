@@ -20,11 +20,7 @@ import {TaskService} from '../../services/task.service';
   providers: [AssignmentContext],
 })
 export class EditAssignmentComponent implements OnInit {
-  loggedIn = false;
-
   assignment: Assignment = this.createNew();
-
-  submitting = false;
 
   constructor(
     private assignmentService: AssignmentService,
@@ -68,18 +64,17 @@ export class EditAssignmentComponent implements OnInit {
     };
   }
 
-  getAssignment(forDraft?: boolean): Assignment {
+  private getAssignment(): Assignment {
     return {
       ...this.assignment,
-      tasks: this.getTasks(this.assignment.tasks, forDraft),
+      tasks: this.getTasks(this.assignment.tasks),
     };
   }
 
-  private getTasks(tasks: Task[], forDraft?: boolean): Task[] {
-    return tasks.filter(t => !t.deleted).map(({deleted, collapsed, children, ...rest}) => ({
+  private getTasks(tasks: Task[]): Task[] {
+    return tasks.filter(t => !t.deleted).map(({deleted, children, ...rest}) => ({
       ...rest,
-      ...(forDraft ? {collapsed} : {}),
-      children: this.getTasks(children, forDraft),
+      children: this.getTasks(children),
     }));
   }
 
@@ -91,7 +86,7 @@ export class EditAssignmentComponent implements OnInit {
 
   saveDraft(): void {
     if (!this.assignment._id) {
-      this.assignmentService.draft = this.getAssignment(true);
+      this.assignmentService.draft = this.getAssignment();
     }
   }
 
@@ -108,16 +103,4 @@ export class EditAssignmentComponent implements OnInit {
     this.assignmentService.download(assignment);
   }
 
-  login(): void {
-    this.keycloakService.login().then();
-  }
-
-  submit(): void {
-    this.submitting = true;
-    const assignment = this.getAssignment();
-    const operation = assignment._id ? this.assignmentService.update(assignment) : this.assignmentService.create(assignment);
-    operation.subscribe(result => {
-      this.router.navigate(['/assignments', result._id, 'solutions'], {queryParams: {tab: 'share'}});
-    });
-  }
 }
