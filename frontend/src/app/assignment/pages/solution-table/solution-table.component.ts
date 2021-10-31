@@ -73,7 +73,12 @@ export class SolutionTableComponent implements OnInit {
 
   updateSearch(): void {
     const searchText = this.searchText.trim();
-    this.router.navigate([], {queryParams: {q: searchText}, relativeTo: this.activatedRoute});
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: {q: searchText},
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
 
     if (!searchText) {
       this.filteredSolutions = this.solutions;
