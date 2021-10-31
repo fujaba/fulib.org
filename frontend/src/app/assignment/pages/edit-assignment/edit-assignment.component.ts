@@ -195,7 +195,7 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
     const assignment = this.getAssignment();
     const operation = assignment._id ? this.assignmentService.update(assignment) : this.assignmentService.create(assignment);
     operation.subscribe(result => {
-      this.router.navigate(['/assignments', result._id, 'solutions'], {queryParams: {share: true}});
+      this.router.navigate(['/assignments', result._id, 'solutions'], {queryParams: {tab: 'share'}});
     });
   }
 }

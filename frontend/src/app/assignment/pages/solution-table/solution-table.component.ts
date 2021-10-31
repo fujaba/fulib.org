@@ -28,14 +28,10 @@ export class SolutionTableComponent implements OnInit {
   searchText = '';
   filteredSolutions?: Solution[];
 
-  tasksCollapsed = true;
-  solutionCollapsed = true;
-  sharing = false;
-
   readonly origin: string;
 
   constructor(
-    private activatedRoute: ActivatedRoute,
+    public activatedRoute: ActivatedRoute,
     private router: Router,
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
@@ -54,7 +50,6 @@ export class SolutionTableComponent implements OnInit {
         if (query.q) {
           this.searchText = query.q;
         }
-        this.sharing = !!query.share;
         return assignmentId;
       }),
       distinctUntilChanged(),
@@ -80,10 +75,6 @@ export class SolutionTableComponent implements OnInit {
         this.tokenModal.open();
       }
     });
-  }
-
-  setSharing(sharing: boolean): void {
-    this.router.navigate([], {queryParams: {share: sharing ? true : undefined}}).then();
   }
 
   setAssignee(solution: Solution, input: HTMLInputElement): void {
