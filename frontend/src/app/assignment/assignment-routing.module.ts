@@ -30,6 +30,7 @@ const editChildren: Routes = [
   {path: 'template', component: TemplateComponent},
   {path: 'sample', component: SampleComponent},
   {path: 'preview', component: PreviewComponent},
+  {path: '', redirectTo: 'info'},
 ];
 
 const routes: Routes = [
