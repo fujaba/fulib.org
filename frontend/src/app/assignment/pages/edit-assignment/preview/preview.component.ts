@@ -27,6 +27,7 @@ export class PreviewComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.keycloakService.isLoggedIn().then(loggedIn => this.loggedIn = loggedIn);
   }
 
   submit(): void {
