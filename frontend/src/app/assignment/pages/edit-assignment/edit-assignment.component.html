@@ -1,6 +1,6 @@
 <div class="container">
   <h1>
-    {{assignment._id ? 'Edit' : 'Create'}}
+    {{context.assignment._id ? 'Edit' : 'Create'}}
     Assignment
   </h1>
 
@@ -15,5 +15,5 @@
     </li>
   </ul>
 
-  <router-outlet></router-outlet>
+  <router-outlet *ngIf="context.assignment"></router-outlet>
 </div>

@@ -14,8 +14,6 @@ import {AssignmentService} from '../../services/assignment.service';
   providers: [AssignmentContext],
 })
 export class EditAssignmentComponent implements OnInit {
-  assignment: Assignment = this.createNew();
-
   steps = [
     ['info', undefined, 'Info'],
     ['classroom', 'github', 'Classroom'],
@@ -27,13 +25,13 @@ export class EditAssignmentComponent implements OnInit {
 
   constructor(
     private assignmentService: AssignmentService,
-    private assignmentContext: AssignmentContext,
+    public context: AssignmentContext,
     public route: ActivatedRoute,
   ) {
   }
 
   ngOnInit(): void {
-    this.assignmentContext.saveDraft = () => this.saveDraft();
+    this.context.saveDraft = () => this.saveDraft();
 
     this.route.params.pipe(
       switchMap(({aid}) => {
@@ -65,8 +63,8 @@ export class EditAssignmentComponent implements OnInit {
 
   private getAssignment(): Assignment {
     return {
-      ...this.assignment,
-      tasks: this.getTasks(this.assignment.tasks),
+      ...this.context.assignment,
+      tasks: this.getTasks(this.context.assignment.tasks),
     };
   }
 
@@ -78,13 +76,12 @@ export class EditAssignmentComponent implements OnInit {
   }
 
   setAssignment(a: Assignment): void {
-    this.assignmentContext.assignment = a;
-    this.assignment = a;
-    this.assignment.classroom ??= {};
+    this.context.assignment = a;
+    a.classroom ??= {};
   }
 
   saveDraft(): void {
-    if (!this.assignment._id) {
+    if (!this.context.assignment._id) {
       this.assignmentService.draft = this.getAssignment();
     }
   }
@@ -93,7 +90,7 @@ export class EditAssignmentComponent implements OnInit {
     this.assignmentService.upload(file).subscribe(result => {
       this.setAssignment(result);
       this.saveDraft();
-      this.assignmentContext.evaluations = undefined;
+      this.context.evaluations = undefined;
     });
   }
 
