@@ -43,6 +43,9 @@ export class MarkdownComponent implements OnInit, OnChanges {
   }
 
   private renderMarkdown(): void {
+    if (this.markdown === '') {
+      this.html = '';
+    }
     if (!this.markdown) {
       return;
     }
