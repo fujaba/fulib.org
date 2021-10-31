@@ -33,6 +33,7 @@ import { EditTaskModalComponent } from './pages/edit-task-modal/edit-task-modal.
 import { CommentListComponent } from './components/comment-list/comment-list.component';
 import { AssignmentComponent } from './pages/assignment/assignment.component';
 import { InfoComponent } from './pages/edit-assignment/info/info.component';
+import { ClassroomComponent } from './pages/edit-assignment/classroom/classroom.component';
 
 @NgModule({
     declarations: [
@@ -57,6 +58,7 @@ import { InfoComponent } from './pages/edit-assignment/info/info.component';
         CommentListComponent,
         AssignmentComponent,
         InfoComponent,
+        ClassroomComponent,
     ],
     imports: [
         CommonModule,
