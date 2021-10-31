@@ -25,10 +25,6 @@ export class EditAssignmentComponent implements OnInit {
   assignment: Assignment = this.createNew();
   markdown?: string;
 
-  checking = false;
-  evaluations?: Record<string, CreateEvaluationDto>;
-  markers: Marker[] = [];
-
   submitting = false;
 
   constructor(
@@ -94,20 +90,6 @@ export class EditAssignmentComponent implements OnInit {
     this.assignment.classroom ??= {};
   }
 
-  check(): void {
-    this.saveDraft();
-    this.checking = true;
-    this.assignmentService.check(this.assignment).subscribe(response => {
-      this.checking = false;
-      this.evaluations = {};
-      this.assignmentContext.evaluations = this.evaluations;
-      for (let result of response.results) {
-        this.evaluations[result.task] = result;
-      }
-      this.markers = this.assignmentService.lint(response);
-    });
-  }
-
   saveDraft(): void {
     if (!this.assignment._id) {
       this.assignmentService.draft = this.getAssignment(true);
@@ -118,9 +100,7 @@ export class EditAssignmentComponent implements OnInit {
     this.assignmentService.upload(file).subscribe(result => {
       this.setAssignment(result);
       this.saveDraft();
-      this.evaluations = undefined;
       this.assignmentContext.evaluations = undefined;
-      this.markers = [];
     });
   }
 

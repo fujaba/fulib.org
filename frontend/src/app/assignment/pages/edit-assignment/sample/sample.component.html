@@ -1,0 +1,17 @@
+<app-scenario-codemirror
+  id="solutionInput"
+  [(content)]="assignment.solution"
+  [autoRefresh]="true"
+  [autoSubmit]="true"
+  [markers]="markers"
+  (save)="check()"
+></app-scenario-codemirror>
+<small class="text-muted">
+  You can provide a sample solution to ensure your assignment is solvable.
+  Students cannot see this.
+  <br/>
+  {{checking ? 'Checking...'
+  : (evaluations ? 'The sample solution was checked automatically, check the task list for results.'
+    : 'The sample solution is checked automatically when you change it.')
+  }}
+</small>
