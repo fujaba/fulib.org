@@ -1,8 +1,8 @@
-<ng-template #tokenModal let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title" id="tokenModalLabel">Authorization Required</h5>
-  </div>
-  <div class="modal-body">
+<app-modal #modal [back]="['..']" [backOptions]="{relativeTo: route}">
+  <ng-container modal-header>
+    Authorization Required
+  </ng-container>
+  <ng-container modal-body>
     <ng-container *ngIf="solution">
       <p>
         Please enter the token for this solution to view it:
@@ -28,13 +28,13 @@
                placeholder="XXXX-XXXX-XXXX-XXXX" [(ngModel)]="assignmentToken">
       </div>
     </div>
-  </div>
-  <div class="modal-footer">
+  </ng-container>
+  <ng-container modal-footer>
     <button type="button" class="btn btn-secondary" (click)="modal.close()">
       Cancel
     </button>
-    <button type="button" class="btn btn-primary" (click)="submit(); modal.close()">
+    <button type="button" class="btn btn-primary" (click)="save(); modal.close()">
       Submit
     </button>
-  </div>
-</ng-template>
+  </ng-container>
+</app-modal>

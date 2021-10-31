@@ -16,7 +16,7 @@ import {EditAssignmentComponent} from './pages/edit-assignment/edit-assignment.c
 import {CreateSolutionComponent} from './pages/create-solution/create-solution.component';
 import {MyCoursesComponent} from './pages/my-courses/my-courses.component';
 import {SolutionComponent} from './pages/solution/solution.component';
-import {TokenModalComponent} from './components/token-modal/token-modal.component';
+import {TokenModalComponent} from './pages/token-modal/token-modal.component';
 import {SolutionTableComponent} from './pages/solution-table/solution-table.component';
 import {AssignmentInfoComponent} from './components/assignment-info/assignment-info.component';
 import {TaskListComponent} from './components/task-list/task-list.component';

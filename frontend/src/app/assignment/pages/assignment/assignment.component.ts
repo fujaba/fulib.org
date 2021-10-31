@@ -3,7 +3,7 @@ import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {combineLatest} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
-import {TokenModalComponent} from '../../components/token-modal/token-modal.component';
+import {TokenModalComponent} from '../token-modal/token-modal.component';
 import Assignment from '../../model/assignment';
 import {AssignmentService} from '../../services/assignment.service';
 import {SolutionService} from '../../services/solution.service';
@@ -14,8 +14,6 @@ import {SolutionService} from '../../services/solution.service';
   styleUrls: ['./assignment.component.scss'],
 })
 export class AssignmentComponent implements OnInit {
-  @ViewChild('tokenModal', {static: true}) tokenModal: TokenModalComponent;
-
   assignment?: Assignment;
 
   readonly origin: string;
@@ -44,18 +42,8 @@ export class AssignmentComponent implements OnInit {
       this.assignment = assignment;
     }, error => {
       if (error.status === 401) {
-        this.tokenModal.open();
+        this.router.navigate(['token'], {relativeTo: this.activatedRoute});
       }
-    });
-  }
-
-  setToken(assignmentToken: string): void {
-    this.router.navigate([], {
-      relativeTo: this.activatedRoute,
-      queryParamsHandling: 'merge',
-      queryParams: {
-        atok: assignmentToken,
-      },
     });
   }
 

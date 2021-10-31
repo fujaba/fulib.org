@@ -17,8 +17,6 @@ import {TaskService} from '../../services/task.service';
   styleUrls: ['./solution.component.scss'],
 })
 export class SolutionComponent implements OnInit {
-  @ViewChild('tokenModal', {static: true}) tokenModal;
-
   assignment?: Assignment;
   solution?: Solution;
   markers: Marker[] = [];
@@ -67,19 +65,8 @@ export class SolutionComponent implements OnInit {
       this.markers = this.assignmentService.lint({results: evaluations});
     }, error => {
       if (error.status === 401) {
-        this.tokenModal.open();
+        this.router.navigate(['token'], {relativeTo: this.route});
       }
-    });
-  }
-
-  setTokens(assignmentToken: string, solutionToken?: string): void {
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParamsHandling: 'merge',
-      queryParams: {
-        atok: assignmentToken,
-        stok: solutionToken,
-      },
     });
   }
 }
