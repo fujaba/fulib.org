@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {of} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
+import {editChildren} from '../../assignment-routing.module';
 import Assignment from '../../model/assignment';
 import Task from '../../model/task';
 import {AssignmentContext} from '../../services/assignment.context';
@@ -14,14 +15,7 @@ import {AssignmentService} from '../../services/assignment.service';
   providers: [AssignmentContext],
 })
 export class EditAssignmentComponent implements OnInit {
-  steps = [
-    ['info', undefined, 'Info'],
-    ['classroom', 'github', 'Classroom'],
-    ['tasks', undefined, 'Tasks'],
-    ['template', undefined, 'Template'],
-    ['sample', undefined, 'Sample'],
-    ['preview', undefined, 'Preview & Finish'],
-  ] as const;
+  steps = editChildren;
 
   constructor(
     private assignmentService: AssignmentService,

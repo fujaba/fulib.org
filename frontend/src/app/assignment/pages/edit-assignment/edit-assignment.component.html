@@ -7,10 +7,13 @@
   <app-import-export (import)="onImport($event)" (export)="onExport()"></app-import-export>
 
   <ul ngbNav [activeId]="route.firstChild?.routeConfig?.path" class="nav-tabs mb-3">
-    <li *ngFor="let step of steps" [ngbNavItem]="step[0]">
-      <a ngbNavLink [routerLink]="step[0]">
-        <i *ngIf="step[1]" class="bi-{{ step[1] }}"></i>
-        {{ step[2] }}
+    <li *ngFor="let step of steps" [ngbNavItem]="step.path">
+      <a ngbNavLink [routerLink]="step.path">
+        <i *ngIf="step.data?.icon" class="bi-{{ step.data!.icon }}"></i>
+        {{ step.data?.title }}
+        <span *ngIf="step.data?.new" class="badge badge-primary">
+          New
+        </span>
       </a>
     </li>
   </ul>

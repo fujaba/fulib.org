@@ -19,17 +19,20 @@ import {MySolutionsComponent} from './pages/my-solutions/my-solutions.component'
 import {SolutionComponent} from './pages/solution/solution.component';
 import {TokenModalComponent} from './pages/token-modal/token-modal.component';
 
-const editChildren: Routes = [
-  {path: 'info', component: InfoComponent},
-  {path: 'classroom', component: ClassroomComponent},
+export const editChildren: Routes = [
+  {path: 'info', component: InfoComponent, data: {title: 'Info'}},
+  {path: 'classroom', component: ClassroomComponent, data: {icon: 'github', title: 'Classroom', new: true}},
   {
-    path: 'tasks', component: TasksComponent, children: [
+    path: 'tasks',
+    component: TasksComponent,
+    data: {title: 'Tasks'},
+    children: [
       {path: ':task', component: EditTaskModalComponent},
     ],
   },
-  {path: 'template', component: TemplateComponent},
-  {path: 'sample', component: SampleComponent},
-  {path: 'preview', component: PreviewComponent},
+  {path: 'template', component: TemplateComponent, data: {title: 'Template'}},
+  {path: 'sample', component: SampleComponent, data: {title: 'Sample'}},
+  {path: 'preview', component: PreviewComponent, data: {title: 'Preview'}},
   {path: '', redirectTo: 'info'},
 ];
 
