@@ -133,16 +133,6 @@ export class EditAssignmentComponent implements OnInit {
     this.keycloakService.login().then();
   }
 
-  switchMarkdown() {
-    if (this.markdown !== undefined) {
-      this.assignment.tasks = this.taskService.parseTasks(this.markdown);
-      this.saveDraft();
-      this.markdown = undefined;
-    } else {
-      this.markdown = this.taskService.renderTasks(this.assignment.tasks);
-    }
-  }
-
   submit(): void {
     this.submitting = true;
     const assignment = this.getAssignment();

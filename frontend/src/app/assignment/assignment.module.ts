@@ -34,6 +34,7 @@ import { CommentListComponent } from './components/comment-list/comment-list.com
 import { AssignmentComponent } from './pages/assignment/assignment.component';
 import { InfoComponent } from './pages/edit-assignment/info/info.component';
 import { ClassroomComponent } from './pages/edit-assignment/classroom/classroom.component';
+import { TasksComponent } from './pages/edit-assignment/tasks/tasks.component';
 
 @NgModule({
     declarations: [
@@ -59,6 +60,7 @@ import { ClassroomComponent } from './pages/edit-assignment/classroom/classroom.
         AssignmentComponent,
         InfoComponent,
         ClassroomComponent,
+        TasksComponent,
     ],
     imports: [
         CommonModule,
