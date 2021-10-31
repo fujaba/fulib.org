@@ -1,8 +1,13 @@
 <div class="container">
   <app-assignment-info [assignment]="assignment"></app-assignment-info>
 
-  <h2>Tasks</h2>
-  <app-task-list [tasks]="assignment?.tasks"></app-task-list>
+  <h2>
+    Tasks
+    <app-collapse-button [(collapsed)]="tasksCollapsed"></app-collapse-button>
+  </h2>
+  <div [ngbCollapse]="tasksCollapsed">
+    <app-task-list [tasks]="assignment?.tasks"></app-task-list>
+  </div>
 
   <div class="btn-group" role="group" aria-label="Actions">
     <a class="btn btn-primary" [routerLink]="['/assignments', assignment?._id, 'edit']">

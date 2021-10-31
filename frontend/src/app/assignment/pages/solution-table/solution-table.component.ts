@@ -28,6 +28,7 @@ export class SolutionTableComponent implements OnInit {
   searchText = '';
   filteredSolutions?: Solution[];
 
+  tasksCollapsed = true;
   solutionCollapsed = true;
   sharing = false;
 
