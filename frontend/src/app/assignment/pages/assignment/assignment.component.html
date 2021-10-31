@@ -23,7 +23,9 @@
         Tasks
       </a>
       <ng-template ngbNavContent>
-        <app-task-list [tasks]="assignment?.tasks"></app-task-list>
+        <div class="container">
+          <app-task-list [tasks]="assignment?.tasks"></app-task-list>
+        </div>
       </ng-template>
     </li>
     <li ngbNavItem="sample">
@@ -31,11 +33,13 @@
         Sample Solution
       </a>
       <ng-template ngbNavContent>
-        <app-scenario-codemirror
-          [content]="assignment?.solution ?? 'Loading...'"
-          [readOnly]="true"
-          [autoRefresh]="true"
-        ></app-scenario-codemirror>
+        <div class="container">
+          <app-scenario-codemirror
+            [content]="assignment?.solution ?? 'Loading...'"
+            [readOnly]="true"
+            [autoRefresh]="true"
+          ></app-scenario-codemirror>
+        </div>
       </ng-template>
     </li>
     <li ngbNavItem="share">
@@ -43,56 +47,58 @@
         Sharing
       </a>
       <ng-template ngbNavContent>
-        <h5 class="card-title">
-          Student Link
-        </h5>
-        <p>
-          You can now give your students the following link:
-        </p>
-        <p *ngIf="('/assignments/' + assignment?._id) as link">
-          <a class="text-monospace" [routerLink]="link">
-            {{origin + link}}
-          </a>
-          <button type="button" class="btn btn-sm btn-outline-primary"
-                  ngxClipboard *ngxClipboardIfSupported [cbContent]="origin + link">
-            Copy
-          </button>
-        </p>
-        <ng-container *ngIf="assignment && assignment.token">
-          <hr/>
+        <div class="container">
           <h5 class="card-title">
-            Access Token
+            Student Link
           </h5>
           <p>
-            To view submissions on other devices, you may be asked for the following token.
-            Please save it or write it down somewhere.
-            <b>Keep this token secret, do not share it with students!</b>
+            You can now give your students the following link:
           </p>
-          <p>
-            <span class="text-monospace">{{assignment?.token}}</span>
-            <button type="button" class="btn btn-sm btn-outline-secondary"
-                    ngxClipboard *ngxClipboardIfSupported [cbContent]="assignment?.token">
-              Copy
-            </button>
-          </p>
-          <hr/>
-          <h5 class="card-title">
-            Teaching Assistant Invitation
-          </h5>
-          <p>
-            You can invite Teaching Assistants by giving them the following link.
-            <b>It includes the Access Token, so keep the link secret and do not share it with students!</b>
-          </p>
-          <p *ngIf="('/assignments/' + assignment._id + '/solutions') as link">
-            <a class="text-monospace" [routerLink]="link" [queryParams]="{atok: assignment.token}">
-              {{origin + link + '?atok=' + assignment.token}}
+          <p *ngIf="('/assignments/' + assignment?._id) as link">
+            <a class="text-monospace" [routerLink]="link">
+              {{origin + link}}
             </a>
             <button type="button" class="btn btn-sm btn-outline-primary"
-                    ngxClipboard *ngxClipboardIfSupported [cbContent]="origin + link + '?atok=' + assignment.token">
+                    ngxClipboard *ngxClipboardIfSupported [cbContent]="origin + link">
               Copy
             </button>
           </p>
-        </ng-container>
+          <ng-container *ngIf="assignment && assignment.token">
+            <hr/>
+            <h5 class="card-title">
+              Access Token
+            </h5>
+            <p>
+              To view submissions on other devices, you may be asked for the following token.
+              Please save it or write it down somewhere.
+              <b>Keep this token secret, do not share it with students!</b>
+            </p>
+            <p>
+              <span class="text-monospace">{{assignment?.token}}</span>
+              <button type="button" class="btn btn-sm btn-outline-secondary"
+                      ngxClipboard *ngxClipboardIfSupported [cbContent]="assignment?.token">
+                Copy
+              </button>
+            </p>
+            <hr/>
+            <h5 class="card-title">
+              Teaching Assistant Invitation
+            </h5>
+            <p>
+              You can invite Teaching Assistants by giving them the following link.
+              <b>It includes the Access Token, so keep the link secret and do not share it with students!</b>
+            </p>
+            <p *ngIf="('/assignments/' + assignment._id + '/solutions') as link">
+              <a class="text-monospace" [routerLink]="link" [queryParams]="{atok: assignment.token}">
+                {{origin + link + '?atok=' + assignment.token}}
+              </a>
+              <button type="button" class="btn btn-sm btn-outline-primary"
+                      ngxClipboard *ngxClipboardIfSupported [cbContent]="origin + link + '?atok=' + assignment.token">
+                Copy
+              </button>
+            </p>
+          </ng-container>
+        </div>
       </ng-template>
     </li>
     <li ngbNavItem="solutions">
@@ -104,6 +110,6 @@
       </ng-template>
     </li>
   </ul>
-  <div [ngbNavOutlet]="nav"></div>
 </div>
+<div [ngbNavOutlet]="nav"></div>
 <router-outlet></router-outlet>
