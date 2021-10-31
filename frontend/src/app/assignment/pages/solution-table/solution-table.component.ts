@@ -1,11 +1,8 @@
-import {DOCUMENT} from '@angular/common';
-import {Component, Inject, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {combineLatest, forkJoin, Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
-import {TokenModalComponent} from '../../components/token-modal/token-modal.component';
 import {Assignee} from '../../model/assignee';
-
 import Assignment from '../../model/assignment';
 import Solution from '../../model/solution';
 import {AssignmentService} from '../../services/assignment.service';
@@ -17,44 +14,31 @@ import {SolutionService} from '../../services/solution.service';
   styleUrls: ['./solution-table.component.scss'],
 })
 export class SolutionTableComponent implements OnInit {
-  @ViewChild('tokenModal', {static: true}) tokenModal: TokenModalComponent;
-
   readonly searchableProperties: string[] = ['name', 'studentID', 'email', 'assignee', 'github'];
 
   assignment?: Assignment;
   totalPoints?: number;
   solutions?: Solution[];
   assignees?: Record<string, Assignee>;
+
   searchText = '';
   filteredSolutions?: Solution[];
 
-  solutionCollapsed = true;
-  sharing = false;
-
-  readonly origin: string;
-
   constructor(
-    private activatedRoute: ActivatedRoute,
-    private router: Router,
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
-    @Inject(DOCUMENT) document: Document,
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
   ) {
-    this.origin = document.location.origin;
   }
 
   ngOnInit(): void {
     combineLatest([this.activatedRoute.params, this.activatedRoute.queryParams]).pipe(
       map(([params, query]) => {
-        const assignmentId = params.aid;
-        if (query.atok) {
-          this.assignmentService.setToken(assignmentId, query.atok);
-        }
         if (query.q) {
           this.searchText = query.q;
         }
-        this.sharing = !!query.share;
-        return assignmentId;
+        return params.aid;
       }),
       distinctUntilChanged(),
       switchMap(assignmentId => forkJoin([
@@ -73,16 +57,7 @@ export class SolutionTableComponent implements OnInit {
           }
         })),
       ])),
-    ).subscribe(_ => {
-    }, error => {
-      if (error.status === 401) {
-        this.tokenModal.open();
-      }
-    });
-  }
-
-  setSharing(sharing: boolean): void {
-    this.router.navigate([], {queryParams: {share: sharing ? true : undefined}}).then();
+    ).subscribe();
   }
 
   setAssignee(solution: Solution, input: HTMLInputElement): void {
@@ -199,23 +174,7 @@ export class SolutionTableComponent implements OnInit {
     return [...valueSet].sort();
   }
 
-  setToken(assignmentToken: string): void {
-    this.router.navigate([], {
-      relativeTo: this.activatedRoute,
-      queryParamsHandling: 'merge',
-      queryParams: {
-        atok: assignmentToken,
-      },
-    });
-  }
-
-  import() {
-    this.solutionService.import(this.assignment!._id!).subscribe(solutions => {
-      this.solutions?.push(...solutions);
-    });
-  }
-
   export(solution: Solution) {
-    this.solutionService.export(this.assignment!._id!, solution._id!).subscribe();
+    this.solutionService.export(solution.assignment, solution._id!).subscribe();
   }
 }

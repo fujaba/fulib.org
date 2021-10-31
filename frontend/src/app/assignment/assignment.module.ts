@@ -16,7 +16,7 @@ import {EditAssignmentComponent} from './pages/edit-assignment/edit-assignment.c
 import {CreateSolutionComponent} from './pages/create-solution/create-solution.component';
 import {MyCoursesComponent} from './pages/my-courses/my-courses.component';
 import {SolutionComponent} from './pages/solution/solution.component';
-import {TokenModalComponent} from './components/token-modal/token-modal.component';
+import {TokenModalComponent} from './pages/token-modal/token-modal.component';
 import {SolutionTableComponent} from './pages/solution-table/solution-table.component';
 import {AssignmentInfoComponent} from './components/assignment-info/assignment-info.component';
 import {TaskListComponent} from './components/task-list/task-list.component';
@@ -31,6 +31,7 @@ import { EditTaskListComponent } from './components/edit-task-list/edit-task-lis
 import { TaskColorPipe } from './pipes/task-color.pipe';
 import { EditTaskModalComponent } from './pages/edit-task-modal/edit-task-modal.component';
 import { CommentListComponent } from './components/comment-list/comment-list.component';
+import { AssignmentComponent } from './pages/assignment/assignment.component';
 
 @NgModule({
     declarations: [
@@ -53,6 +54,7 @@ import { CommentListComponent } from './components/comment-list/comment-list.com
         TaskColorPipe,
         EditTaskModalComponent,
         CommentListComponent,
+        AssignmentComponent,
     ],
     imports: [
         CommonModule,
