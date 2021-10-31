@@ -1,3 +1,14 @@
+<div class="btn-group btn-group-toggle mb-3"
+     ngbRadioGroup name="radioBasic" [ngModel]="markdown !== undefined" (ngModelChange)="switchMarkdown($event)">
+  <label ngbButtonLabel class="btn-secondary">
+    <input ngbButton type="radio" [value]="true">
+    Markdown
+  </label>
+  <label ngbButtonLabel class="btn-secondary">
+    <input ngbButton type="radio" [value]="false">
+    List
+  </label>
+</div>
 <app-edit-task-list
   *ngIf="markdown === undefined"
   [tasks]="assignment.tasks"
@@ -11,7 +22,4 @@
             lineNumbers: true
           }"
 ></app-autotheme-codemirror>
-<button type="button" class="btn btn-primary" (click)="switchMarkdown()">
-  Edit as {{markdown !== undefined ? 'List' : 'Markdown'}}
-</button>
 <router-outlet></router-outlet>

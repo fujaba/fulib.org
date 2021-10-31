@@ -24,8 +24,8 @@ export class TasksComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  switchMarkdown() {
-    if (this.markdown !== undefined) {
+  switchMarkdown(markdown: boolean) {
+    if (!markdown && this.markdown) {
       this.assignment.tasks = this.taskService.parseTasks(this.markdown);
       this.saveDraft();
       this.markdown = undefined;
