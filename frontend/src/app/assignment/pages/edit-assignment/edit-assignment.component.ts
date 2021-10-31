@@ -15,7 +15,7 @@ import {AssignmentService} from '../../services/assignment.service';
   providers: [AssignmentContext],
 })
 export class EditAssignmentComponent implements OnInit {
-  steps = editChildren;
+  steps = editChildren.filter(r => r.path);
 
   constructor(
     private assignmentService: AssignmentService,
