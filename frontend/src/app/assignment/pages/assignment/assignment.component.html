@@ -1,7 +1,7 @@
 <div class="container">
   <app-assignment-info [assignment]="assignment"></app-assignment-info>
 
-  <div class="btn-group" role="group" aria-label="Actions">
+  <div class="btn-group mb-3" role="group" aria-label="Actions">
     <a class="btn btn-primary" [routerLink]="['/assignments', assignment?._id, 'edit']">
       <i class="bi-pencil"></i>
       Edit Assignment
@@ -17,7 +17,7 @@
     </button>
   </div>
 
-  <ul ngbNav #nav="ngbNav" [activeId]="(activatedRoute.queryParams | async)?.['tab'] ?? 'solutions'" class="nav-tabs">
+  <ul ngbNav #nav="ngbNav" [activeId]="(activatedRoute.queryParams | async)?.['tab'] ?? 'solutions'" class="nav-tabs mb-3">
     <li ngbNavItem="tasks">
       <a ngbNavLink routerLink="." [queryParams]="{tab: 'tasks'}">
         Tasks
