@@ -107,7 +107,6 @@
         <app-edit-task-list
           *ngIf="markdown === undefined"
           [tasks]="assignment.tasks"
-          (save)="saveDraft()"
         ></app-edit-task-list>
         <app-autotheme-codemirror
           *ngIf="markdown !== undefined"

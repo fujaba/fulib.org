@@ -47,6 +47,8 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.assignmentContext.saveDraft = () => this.saveDraft();
+
     this.route.params.pipe(
       switchMap(({aid}) => {
         if (aid) {
