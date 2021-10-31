@@ -23,7 +23,6 @@ export class EditAssignmentComponent implements OnInit {
   loggedIn = false;
 
   assignment: Assignment = this.createNew();
-  markdown?: string;
 
   submitting = false;
 
@@ -72,7 +71,7 @@ export class EditAssignmentComponent implements OnInit {
   getAssignment(forDraft?: boolean): Assignment {
     return {
       ...this.assignment,
-      tasks: this.markdown ? this.taskService.parseTasks(this.markdown) : this.getTasks(this.assignment.tasks, forDraft),
+      tasks: this.getTasks(this.assignment.tasks, forDraft),
     };
   }
 
