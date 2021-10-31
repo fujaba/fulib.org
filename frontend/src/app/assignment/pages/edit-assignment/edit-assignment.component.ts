@@ -19,12 +19,10 @@ import {TaskService} from '../../services/task.service';
   styleUrls: ['./edit-assignment.component.scss'],
   providers: [AssignmentContext],
 })
-export class EditAssignmentComponent implements OnInit, OnDestroy {
+export class EditAssignmentComponent implements OnInit {
   loggedIn = false;
 
   assignment: Assignment = this.createNew();
-  deadlineDate?: string;
-  deadlineTime?: string;
   markdown?: string;
 
   checking = false;
@@ -32,8 +30,6 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
   markers: Marker[] = [];
 
   submitting = false;
-
-  private userSubscription: Subscription;
 
   constructor(
     private assignmentService: AssignmentService,
@@ -61,24 +57,6 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
         return of(this.createNew());
       }),
     ).subscribe(assignment => this.setAssignment(assignment));
-
-    this.userSubscription = this.users.current$.subscribe(user => {
-      if (!user) {
-        return;
-      }
-
-      this.loggedIn = true;
-      if (user.firstName && user.lastName) {
-        this.assignment.author = `${user.firstName} ${user.lastName}`;
-      }
-      if (user.email) {
-        this.assignment.email = user.email;
-      }
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.userSubscription.unsubscribe();
   }
 
   private createNew(): Assignment {
@@ -95,14 +73,9 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
     };
   }
 
-  getDeadline(): Date | undefined {
-    return this.deadlineDate ? new Date(this.deadlineDate + ' ' + (this.deadlineTime ?? '00:00')) : undefined;
-  }
-
   getAssignment(forDraft?: boolean): Assignment {
     return {
       ...this.assignment,
-      deadline: this.getDeadline(),
       tasks: this.markdown ? this.taskService.parseTasks(this.markdown) : this.getTasks(this.assignment.tasks, forDraft),
     };
   }
@@ -119,21 +92,6 @@ export class EditAssignmentComponent implements OnInit, OnDestroy {
     this.assignmentContext.assignment = a;
     this.assignment = a;
     this.assignment.classroom ??= {};
-    if (a.deadline) {
-      const deadline = new Date(a.deadline);
-      const year = deadline.getFullYear();
-      const month = String(deadline.getMonth() + 1).padStart(2, '0');
-      const day = String(deadline.getDate()).padStart(2, '0');
-      this.deadlineDate = `${year}-${month}-${day}`;
-
-      const hour = String(deadline.getHours()).padStart(2, '0');
-      const minute = String(deadline.getMinutes()).padStart(2, '0');
-      const second = String(deadline.getSeconds()).padStart(2, '0');
-      this.deadlineTime = `${hour}:${minute}:${second}`;
-    } else {
-      this.deadlineDate = undefined;
-      this.deadlineTime = undefined;
-    }
   }
 
   check(): void {
