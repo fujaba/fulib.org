@@ -38,17 +38,7 @@
         Template
       </a>
       <ng-template ngbNavContent>
-        <app-scenario-codemirror
-          id="templateSolutionInput"
-          [(content)]="assignment.templateSolution"
-          [autoRefresh]="true"
-          [autoSubmit]="true"
-          (save)="saveDraft()"
-        ></app-scenario-codemirror>
-        <small class="text-muted">
-          Optional. This will be shown to students in the solution editor when they first open your assignment.
-          You can instruct them to fill in blanks or make changes.
-        </small>
+        <app-edit-assignment-template></app-edit-assignment-template>
       </ng-template>
     </li>
     <li ngbNavItem="sample">

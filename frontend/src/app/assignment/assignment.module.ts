@@ -35,6 +35,7 @@ import { AssignmentComponent } from './pages/assignment/assignment.component';
 import { InfoComponent } from './pages/edit-assignment/info/info.component';
 import { ClassroomComponent } from './pages/edit-assignment/classroom/classroom.component';
 import { TasksComponent } from './pages/edit-assignment/tasks/tasks.component';
+import { TemplateComponent } from './pages/edit-assignment/template/template.component';
 
 @NgModule({
     declarations: [
@@ -61,6 +62,7 @@ import { TasksComponent } from './pages/edit-assignment/tasks/tasks.component';
         InfoComponent,
         ClassroomComponent,
         TasksComponent,
+        TemplateComponent,
     ],
     imports: [
         CommonModule,
