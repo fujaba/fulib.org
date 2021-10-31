@@ -23,7 +23,7 @@
           </span>
       </div>
       <a class="btn btn-primary ml-auto" aria-label="Edit" ngbTooltip="Edit"
-         [routerLink]="['tasks', task._id]" [queryParams]="{parent}">
+         [routerLink]="[task._id]" [queryParams]="{parent}">
         <i class="bi-pencil"></i>
       </a>
       <app-collapse-button class="ml-2" [collapsed]="!!task.collapsed"

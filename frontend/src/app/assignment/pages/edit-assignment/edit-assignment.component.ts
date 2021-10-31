@@ -16,6 +16,15 @@ import {AssignmentService} from '../../services/assignment.service';
 export class EditAssignmentComponent implements OnInit {
   assignment: Assignment = this.createNew();
 
+  steps = [
+    ['info', undefined, 'Info'],
+    ['classroom', 'github', 'Classroom'],
+    ['tasks', undefined, 'Tasks'],
+    ['template', undefined, 'Template'],
+    ['sample', undefined, 'Sample'],
+    ['preview', undefined, 'Preview & Finish'],
+  ] as const;
+
   constructor(
     private assignmentService: AssignmentService,
     private assignmentContext: AssignmentContext,

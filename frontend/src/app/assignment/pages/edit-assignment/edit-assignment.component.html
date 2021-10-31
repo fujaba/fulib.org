@@ -6,59 +6,14 @@
 
   <app-import-export (import)="onImport($event)" (export)="onExport()"></app-import-export>
 
-  <ul ngbNav #nav="ngbNav" [activeId]="(route.queryParams | async)?.['tab'] ?? 'info'" class="nav-tabs mb-3">
-    <li ngbNavItem="info">
-      <a ngbNavLink routerLink="." [queryParams]="{tab: 'info'}">
-        Info
+  <ul ngbNav [activeId]="route.firstChild?.routeConfig?.path ?? steps[0][0]" class="nav-tabs mb-3">
+    <li *ngFor="let step of steps" [ngbNavItem]="step[0]">
+      <a ngbNavLink [routerLink]="step[0]">
+        <i *ngIf="step[1]" class="bi-{{ step[1] }}"></i>
+        {{ step[2] }}
       </a>
-      <ng-template ngbNavContent>
-        <app-edit-assignment-info></app-edit-assignment-info>
-      </ng-template>
-    </li>
-    <li ngbNavItem="classroom">
-      <a ngbNavLink routerLink="." [queryParams]="{tab: 'classroom'}">
-        <i class="bi-github"></i>
-        Classroom
-        <span class="badge badge-primary">New</span>
-      </a>
-      <ng-template ngbNavContent>
-        <app-edit-assignment-classroom></app-edit-assignment-classroom>
-      </ng-template>
-    </li>
-    <li ngbNavItem="tasks">
-      <a ngbNavLink routerLink="." [queryParams]="{tab: 'tasks'}">
-        Tasks
-      </a>
-      <ng-template ngbNavContent>
-        <app-edit-assignment-tasks></app-edit-assignment-tasks>
-      </ng-template>
-    </li>
-    <li ngbNavItem="template">
-      <a ngbNavLink routerLink="." [queryParams]="{tab: 'template'}">
-        Template
-      </a>
-      <ng-template ngbNavContent>
-        <app-edit-assignment-template></app-edit-assignment-template>
-      </ng-template>
-    </li>
-    <li ngbNavItem="sample">
-      <a ngbNavLink routerLink="." [queryParams]="{tab: 'sample'}">
-        Sample
-      </a>
-      <ng-template ngbNavContent>
-        <app-edit-assignment-sample></app-edit-assignment-sample>
-      </ng-template>
-    </li>
-    <li ngbNavItem="finish">
-      <a ngbNavLink routerLink="." [queryParams]="{tab: 'finish'}">
-        Preview & Finish
-      </a>
-      <ng-template ngbNavContent>
-        <app-edit-assignment-preview></app-edit-assignment-preview>
-      </ng-template>
     </li>
   </ul>
 
-  <div [ngbNavOutlet]="nav"></div>
+  <router-outlet></router-outlet>
 </div>
-<router-outlet></router-outlet>
