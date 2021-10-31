@@ -4,6 +4,7 @@ import Assignment from '../../../model/assignment';
 import {CreateEvaluationDto} from '../../../model/evaluation';
 import {AssignmentContext} from '../../../services/assignment.context';
 import {AssignmentService} from '../../../services/assignment.service';
+import {TaskService} from '../../../services/task.service';
 
 @Component({
   selector: 'app-edit-assignment-sample',
@@ -16,10 +17,12 @@ export class SampleComponent {
 
   checking = false;
   evaluations?: Record<string, CreateEvaluationDto>;
+  points?: Record<string, number>;
   markers: Marker[] = [];
 
   constructor(
     private assignmentService: AssignmentService,
+    private taskService: TaskService,
     private context: AssignmentContext,
   ) {
     this.assignment = context.assignment;
@@ -36,6 +39,7 @@ export class SampleComponent {
       for (let result of response.results) {
         this.evaluations[result.task] = result;
       }
+      this.points = this.taskService.createPointsCache(this.assignment.tasks, this.evaluations);
       this.markers = this.assignmentService.lint(response);
     });
   }

@@ -31,7 +31,14 @@ export const editChildren: Routes = [
     ],
   },
   {path: 'template', component: TemplateComponent, data: {title: 'Template'}},
-  {path: 'sample', component: SampleComponent, data: {title: 'Sample'}},
+  {
+    path: 'sample',
+    component: SampleComponent,
+    data: {title: 'Sample'},
+    children: [
+      {path: 'tasks/:task', component: EditTaskModalComponent},
+    ],
+  },
   {path: 'preview', component: PreviewComponent, data: {title: 'Preview'}},
   {path: '', redirectTo: 'info'},
 ];
