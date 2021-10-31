@@ -1,17 +1,11 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {KeycloakService} from 'keycloak-angular';
-import {of, Subscription} from 'rxjs';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {of} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
-
-import {Marker} from '../../../shared/model/marker';
-import {UserService} from '../../../user/user.service';
+import Assignment from '../../model/assignment';
+import Task from '../../model/task';
 import {AssignmentContext} from '../../services/assignment.context';
 import {AssignmentService} from '../../services/assignment.service';
-import Assignment from '../../model/assignment';
-import {CreateEvaluationDto} from '../../model/evaluation';
-import Task from '../../model/task';
-import {TaskService} from '../../services/task.service';
 
 @Component({
   selector: 'app-create-assignment',
@@ -24,12 +18,8 @@ export class EditAssignmentComponent implements OnInit {
 
   constructor(
     private assignmentService: AssignmentService,
-    private users: UserService,
-    private keycloakService: KeycloakService,
-    private taskService: TaskService,
     private assignmentContext: AssignmentContext,
     public route: ActivatedRoute,
-    private router: Router,
   ) {
   }
 
