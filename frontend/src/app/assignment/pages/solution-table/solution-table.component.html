@@ -1,203 +1,92 @@
-<div class="container">
-  <app-assignment-info [assignment]="assignment"></app-assignment-info>
-
-  <div class="btn-group" role="group" aria-label="Actions">
-    <a class="btn btn-primary" [routerLink]="['/assignments', assignment?._id, 'edit']">
-      <i class="bi-pencil"></i>
-      Edit Assignment
-    </a>
-    <button
-      *ngIf="assignment?.classroom?.org && assignment?.classroom?.prefix"
-      class="btn btn-success"
-      ngbTooltip="Import Solutions from GitHub Classroom (requires Account linked to GitHub)"
-      (click)="import()"
-    >
-      <i class="bi-download"></i>
-      Import Solutions
-    </button>
-  </div>
-
-  <ul ngbNav #nav="ngbNav" [activeId]="(activatedRoute.queryParams | async)?.['tab'] ?? 'solutions'" class="nav-tabs">
-    <li ngbNavItem="tasks">
-      <a ngbNavLink routerLink="." [queryParams]="{tab: 'tasks'}">
-        Tasks
-      </a>
-      <ng-template ngbNavContent>
-        <app-task-list [tasks]="assignment?.tasks"></app-task-list>
-      </ng-template>
-    </li>
-    <li ngbNavItem="sample">
-      <a ngbNavLink routerLink="." [queryParams]="{tab: 'sample'}">
-        Sample Solution
-      </a>
-      <ng-template ngbNavContent>
-        <app-scenario-codemirror
-          [content]="assignment?.solution ?? 'Loading...'"
-          [readOnly]="true"
-          [autoRefresh]="true"
-        ></app-scenario-codemirror>
-      </ng-template>
-    </li>
-    <li ngbNavItem="share">
-      <a ngbNavLink routerLink="." [queryParams]="{tab: 'share'}">
-        Sharing
-      </a>
-      <ng-template ngbNavContent>
-        <h5 class="card-title">
-          Student Link
-        </h5>
-        <p>
-          You can now give your students the following link:
-        </p>
-        <p *ngIf="('/assignments/' + assignment?._id) as link">
-          <a class="text-monospace" [routerLink]="link">
-            {{origin + link}}
-          </a>
-          <button type="button" class="btn btn-sm btn-outline-primary"
-                  ngxClipboard *ngxClipboardIfSupported [cbContent]="origin + link">
-            Copy
-          </button>
-        </p>
-        <ng-container *ngIf="assignment && assignment.token">
-          <hr/>
-          <h5 class="card-title">
-            Access Token
-          </h5>
-          <p>
-            To view submissions on other devices, you may be asked for the following token.
-            Please save it or write it down somewhere.
-            <b>Keep this token secret, do not share it with students!</b>
-          </p>
-          <p>
-            <span class="text-monospace">{{assignment?.token}}</span>
-            <button type="button" class="btn btn-sm btn-outline-secondary"
-                    ngxClipboard *ngxClipboardIfSupported [cbContent]="assignment?.token">
-              Copy
-            </button>
-          </p>
-          <hr/>
-          <h5 class="card-title">
-            Teaching Assistant Invitation
-          </h5>
-          <p>
-            You can invite Teaching Assistants by giving them the following link.
-            <b>It includes the Access Token, so keep the link secret and do not share it with students!</b>
-          </p>
-          <p *ngIf="('/assignments/' + assignment._id + '/solutions') as link">
-            <a class="text-monospace" [routerLink]="link" [queryParams]="{atok: assignment.token}">
-              {{origin + link + '?atok=' + assignment.token}}
-            </a>
-            <button type="button" class="btn btn-sm btn-outline-primary"
-                    ngxClipboard *ngxClipboardIfSupported [cbContent]="origin + link + '?atok=' + assignment.token">
-              Copy
-            </button>
-          </p>
-        </ng-container>
-      </ng-template>
-    </li>
-    <li ngbNavItem="solutions">
-      <a ngbNavLink routerLink="." [queryParams]="{tab: 'solutions'}">
-        Solutions
-        <span class="text-muted" *ngIf="solutions">
-          (<span *ngIf="filteredSolutions && solutions.length !== filteredSolutions.length">{{filteredSolutions.length}}
-              of </span>{{solutions.length}})
-        </span>
-      </a>
-      <ng-template ngbNavContent>
-        <div class="form-inline mb-3 d-flex">
-          <label for="searchInput" class="mr-sm-2">Search:</label>
-          <input type="text" class="form-control mr-sm-2 flex-grow-1" id="searchInput"
-                 placeholder="Name, Student ID, E-Mail, GitHub Username, Assignee"
-                 [(ngModel)]="searchText" (change)="updateSearch()"
-                 [ngbTypeahead]="typeahead" [resultFormatter]="formatTypeahead">
-          <button type="button" class="btn btn-outline-secondary" ngbTooltip="View Search Help"
-                  [ngbPopover]="searchHelp" popoverTitle="Search Help">
-            ?
-          </button>
-          <ng-template #searchHelp>
-            <ul>
-              <li>Search terms are separated by spaces and case sensitive</li>
-              <li>Each search term has to match for a result to be shown</li>
-              <li>To search for terms including spaces, use <code>+</code> in their place<br/>
-                  E.g. <code>John+Doe</code>
-              </li>
-              <li>To search for specific attributes, enter <code>attribute:value</code><br/>
-                  E.g. <code>studentID:1234</code>, <code>email:@example.org</code>, or <code>assignee:John+Doe</code><br/>
-                  Supported attribute names (case sensitive):
-                <ul>
-                  <li *ngFor="let propertyName of searchableProperties">
-                    <code>{{propertyName}}</code>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </ng-template>
-        </div>
-        <table class="table table-bordered table-hover" *ngIf="solutions">
-          <thead>
-          <tr>
-            <th>Name</th>
-            <th>Student ID</th>
-            <th>E-Mail</th>
-            <th>GitHub Username</th>
-            <th>Submitted</th>
-            <th>Points</th>
-            <th>Assignee</th>
-            <th>Actions</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr *ngFor="let solution of filteredSolutions">
-            <td>{{solution.author.name}}</td>
-            <td>{{solution.author.studentId}}</td>
-            <td><a href="mailto:{{solution.author.email}}">{{solution.author.email}}</a></td>
-            <td>{{solution.author.github}}</td>
-            <td>
-        <span *ngIf="assignment && assignment.deadline && solution.timestamp && assignment.deadline < solution.timestamp else timestamp"
-              class="text-danger" ngbTooltip="Submitted after Deadline">
+<div class="form-inline mb-3 d-flex">
+  <label for="searchInput" class="mr-sm-2">Search:</label>
+  <input type="text" class="form-control mr-sm-2 flex-grow-1" id="searchInput"
+         placeholder="Name, Student ID, E-Mail, GitHub Username, Assignee"
+         [(ngModel)]="searchText" (change)="updateSearch()"
+         [ngbTypeahead]="typeahead" [resultFormatter]="formatTypeahead">
+  <button type="button" class="btn btn-outline-secondary" ngbTooltip="View Search Help"
+          [ngbPopover]="searchHelp" popoverTitle="Search Help">
+    ?
+  </button>
+  <ng-template #searchHelp>
+    <ul>
+      <li>Search terms are separated by spaces and case sensitive</li>
+      <li>Each search term has to match for a result to be shown</li>
+      <li>To search for terms including spaces, use <code>+</code> in their place<br/>
+          E.g. <code>John+Doe</code>
+      </li>
+      <li>To search for specific attributes, enter <code>attribute:value</code><br/>
+          E.g. <code>studentID:1234</code>, <code>email:@example.org</code>, or <code>assignee:John+Doe</code><br/>
+          Supported attribute names (case sensitive):
+        <ul>
+          <li *ngFor="let propertyName of searchableProperties">
+            <code>{{propertyName}}</code>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </ng-template>
+</div>
+<table class="table table-bordered table-hover" *ngIf="solutions">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>Student ID</th>
+    <th>E-Mail</th>
+    <th>GitHub Username</th>
+    <th>Submitted</th>
+    <th>Points</th>
+    <th>Assignee</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let solution of filteredSolutions">
+    <td>{{solution.author.name}}</td>
+    <td>{{solution.author.studentId}}</td>
+    <td><a href="mailto:{{solution.author.email}}">{{solution.author.email}}</a></td>
+    <td>{{solution.author.github}}</td>
+    <td>
+        <span
+          *ngIf="assignment && assignment.deadline && solution.timestamp && assignment.deadline < solution.timestamp else timestamp"
+          class="text-danger" ngbTooltip="Submitted after Deadline">
           {{solution.timestamp | date:'medium'}}
         </span>
-              <ng-template #timestamp>
-                {{solution.timestamp | date:'medium'}}
-              </ng-template>
-            </td>
-            <td>
-              <span class="badge badge-primary badge-pill">? / {{totalPoints}}</span>
-            </td>
-            <td>
-              <input class="form-control m-n2" #assigneeInput [ngModel]="assignees?.[solution._id!]?.assignee" (change)="setAssignee(solution, assigneeInput)">
-            </td>
-            <td>
-              <div class="btn-group m-n2">
-                <a class="btn btn-primary" routerLink="/assignments/{{assignment?._id}}/solutions/{{solution._id}}"
-                   ngbTooltip="View"
-                >
-                  <i class="bi-eye-fill"></i>
-                </a>
-                <a class="btn btn-primary"
-                   *ngIf="assignment?.classroom?.org && assignment?.classroom?.prefix && solution.author.github"
-                   href="https://github.com/{{assignment?.classroom?.org}}/{{assignment?.classroom?.prefix}}-{{solution.author.github}}{{solution.commit ? '/tree/' + solution.commit : ''}}"
-                   target="_blank"
-                   ngbTooltip="View Repository on GitHub"
-                >
-                  <i class="bi-github"></i>
-                </a>
-                <button *ngIf="assignment?.classroom?.org && assignment?.classroom?.prefix && solution.author.github"
-                        class="btn btn-success"
-                        ngbTooltip="Post Feedback to GitHub"
-                        (click)="export(solution)"
-                >
-                  <i class="bi-github"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
-          </tbody>
-        </table>
+      <ng-template #timestamp>
+        {{solution.timestamp | date:'medium'}}
       </ng-template>
-    </li>
-  </ul>
-  <div [ngbNavOutlet]="nav"></div>
-</div>
-
-<app-token-modal #tokenModal [solution]="false" (submitTokens)="setToken($event.assignmentToken)"></app-token-modal>
+    </td>
+    <td>
+      <span class="badge badge-primary badge-pill">? / {{totalPoints}}</span>
+    </td>
+    <td>
+      <input class="form-control m-n2" #assigneeInput [ngModel]="assignees?.[solution._id!]?.assignee"
+             (change)="setAssignee(solution, assigneeInput)">
+    </td>
+    <td>
+      <div class="btn-group m-n2">
+        <a class="btn btn-primary" routerLink="/assignments/{{assignment?._id}}/solutions/{{solution._id}}"
+           ngbTooltip="View"
+        >
+          <i class="bi-eye-fill"></i>
+        </a>
+        <a class="btn btn-primary"
+           *ngIf="assignment?.classroom?.org && assignment?.classroom?.prefix && solution.author.github"
+           href="https://github.com/{{assignment?.classroom?.org}}/{{assignment?.classroom?.prefix}}-{{solution.author.github}}{{solution.commit ? '/tree/' + solution.commit : ''}}"
+           target="_blank"
+           ngbTooltip="View Repository on GitHub"
+        >
+          <i class="bi-github"></i>
+        </a>
+        <button *ngIf="assignment?.classroom?.org && assignment?.classroom?.prefix && solution.author.github"
+                class="btn btn-success"
+                ngbTooltip="Post Feedback to GitHub"
+                (click)="export(solution)"
+        >
+          <i class="bi-github"></i>
+        </button>
+      </div>
+    </td>
+  </tr>
+  </tbody>
+</table>

@@ -31,6 +31,7 @@ import { EditTaskListComponent } from './components/edit-task-list/edit-task-lis
 import { TaskColorPipe } from './pipes/task-color.pipe';
 import { EditTaskModalComponent } from './pages/edit-task-modal/edit-task-modal.component';
 import { CommentListComponent } from './components/comment-list/comment-list.component';
+import { AssignmentComponent } from './pages/assignment/assignment.component';
 
 @NgModule({
     declarations: [
@@ -53,6 +54,7 @@ import { CommentListComponent } from './components/comment-list/comment-list.com
         TaskColorPipe,
         EditTaskModalComponent,
         CommentListComponent,
+        AssignmentComponent,
     ],
     imports: [
         CommonModule,
