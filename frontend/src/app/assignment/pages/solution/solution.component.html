@@ -41,13 +41,34 @@
           </div>
           <div class="form-group">
             <label for="emailInput">E-Mail</label>
-            <input type="text" class="form-control" id="emailInput" readonly
-                   [ngModel]="solution ? solution.author.email : 'Loading...'">
+            <div class="input-group">
+              <input type="text" class="form-control" id="emailInput" readonly
+                     [ngModel]="solution ? solution.author.email : 'Loading...'">
+              <div class="input-group-append" *ngIf="solution && solution.author.email">
+                <a class="btn btn-primary"
+                   href="mailto:{{solution.author.email}}"
+                   ngbTooltip="Compose Mail"
+                >
+                  <i class="bi-envelope"></i>
+                </a>
+              </div>
+            </div>
           </div>
           <div class="form-group">
             <label for="githubInput">GitHub Username</label>
-            <input type="text" class="form-control" id="githubInput" readonly
-                   [ngModel]="solution ? solution.author.github : 'Loading...'">
+            <div class="input-group">
+              <input type="text" class="form-control" id="githubInput" readonly
+                     [ngModel]="solution ? solution.author.github : 'Loading...'">
+              <div class="input-group-append" *ngIf="solution && solution.author.github">
+                <a class="btn btn-primary"
+                   href="https://github.com/{{solution.author.github}}"
+                   target="_blank"
+                   ngbTooltip="Open on GitHub"
+                >
+                  <i class="bi-github"></i>
+                </a>
+              </div>
+            </div>
           </div>
           <div class="form-group" *ngIf="solution && solution.commit">
             <label for="commitInput">Git Commit</label>
