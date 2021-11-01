@@ -4,23 +4,31 @@
   <ul ngbNav #nav="ngbNav" [activeId]="(route.queryParams | async)?.['tab'] ?? 'solution'" class="nav-tabs mb-3">
     <li ngbNavItem="solution">
       <a ngbNavLink routerLink="." [queryParams]="{tab: 'solution'}">
-        Solution
+        Solution & Tasks
       </a>
       <ng-template ngbNavContent>
-        <app-scenario-codemirror
-          id="solutionInput"
-          [content]="solution ? solution.solution : 'Loading...'"
-          [markers]="markers"
-          [readOnly]="true"
-        ></app-scenario-codemirror>
-      </ng-template>
-    </li>
-    <li ngbNavItem="tasks">
-      <a ngbNavLink routerLink="." [queryParams]="{tab: 'tasks'}">
-        Tasks
-      </a>
-      <ng-template ngbNavContent>
-        <app-task-list [tasks]="assignment?.tasks" [evaluations]="evaluations" [points]="points"></app-task-list>
+        <div class="row">
+          <div class="col-md-6" *ngIf="solution && solution.solution">
+            <div class="form position-sticky" style="top: 4rem">
+              <div class="form-group">
+                <label for="solutionInput">Solution</label>
+                <app-scenario-codemirror
+                  id="solutionInput"
+                  [content]="solution ? solution.solution : 'Loading...'"
+                  [markers]="markers"
+                  [readOnly]="true"
+                ></app-scenario-codemirror>
+              </div>
+              <p class="text-center">
+                Submitted <b>{{solution.timestamp | date:'medium'}}</b>.
+              </p>
+            </div>
+          </div>
+          <div class="col-12" [class.col-md-6]="solution && solution.solution">
+            Tasks
+            <app-task-list [tasks]="assignment?.tasks" [evaluations]="evaluations" [points]="points"></app-task-list>
+          </div>
+        </div>
       </ng-template>
     </li>
     <li ngbNavItem="info">
