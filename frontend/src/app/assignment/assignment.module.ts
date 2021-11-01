@@ -32,6 +32,12 @@ import { TaskColorPipe } from './pipes/task-color.pipe';
 import { EditTaskModalComponent } from './pages/edit-task-modal/edit-task-modal.component';
 import { CommentListComponent } from './components/comment-list/comment-list.component';
 import { AssignmentComponent } from './pages/assignment/assignment.component';
+import { InfoComponent } from './pages/edit-assignment/info/info.component';
+import { ClassroomComponent } from './pages/edit-assignment/classroom/classroom.component';
+import { TasksComponent } from './pages/edit-assignment/tasks/tasks.component';
+import { TemplateComponent } from './pages/edit-assignment/template/template.component';
+import { SampleComponent } from './pages/edit-assignment/sample/sample.component';
+import { PreviewComponent } from './pages/edit-assignment/preview/preview.component';
 
 @NgModule({
     declarations: [
@@ -55,6 +61,12 @@ import { AssignmentComponent } from './pages/assignment/assignment.component';
         EditTaskModalComponent,
         CommentListComponent,
         AssignmentComponent,
+        InfoComponent,
+        ClassroomComponent,
+        TasksComponent,
+        TemplateComponent,
+        SampleComponent,
+        PreviewComponent,
     ],
     imports: [
         CommonModule,

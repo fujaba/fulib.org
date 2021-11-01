@@ -1,18 +1,47 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {TokenModalComponent} from './pages/token-modal/token-modal.component';
 import {AssignmentComponent} from './pages/assignment/assignment.component';
-import {EvaluationModalComponent} from './pages/evaluation-modal/evaluation-modal.component';
 import {CourseComponent} from './pages/course/course.component';
 import {CreateCourseComponent} from './pages/create-course/create-course.component';
 import {CreateSolutionComponent} from './pages/create-solution/create-solution.component';
+import {ClassroomComponent} from './pages/edit-assignment/classroom/classroom.component';
 import {EditAssignmentComponent} from './pages/edit-assignment/edit-assignment.component';
+import {InfoComponent} from './pages/edit-assignment/info/info.component';
+import {PreviewComponent} from './pages/edit-assignment/preview/preview.component';
+import {SampleComponent} from './pages/edit-assignment/sample/sample.component';
+import {TasksComponent} from './pages/edit-assignment/tasks/tasks.component';
+import {TemplateComponent} from './pages/edit-assignment/template/template.component';
 import {EditTaskModalComponent} from './pages/edit-task-modal/edit-task-modal.component';
+import {EvaluationModalComponent} from './pages/evaluation-modal/evaluation-modal.component';
 import {MyAssignmentsComponent} from './pages/my-assignments/my-assignments.component';
 import {MyCoursesComponent} from './pages/my-courses/my-courses.component';
 import {MySolutionsComponent} from './pages/my-solutions/my-solutions.component';
-import {SolutionTableComponent} from './pages/solution-table/solution-table.component';
 import {SolutionComponent} from './pages/solution/solution.component';
+import {TokenModalComponent} from './pages/token-modal/token-modal.component';
+
+export const editChildren: Routes = [
+  {path: 'info', component: InfoComponent, data: {title: 'Info'}},
+  {path: 'classroom', component: ClassroomComponent, data: {icon: 'github', title: 'Classroom', new: true}},
+  {
+    path: 'tasks',
+    component: TasksComponent,
+    data: {title: 'Tasks'},
+    children: [
+      {path: ':task', component: EditTaskModalComponent},
+    ],
+  },
+  {path: 'template', component: TemplateComponent, data: {title: 'Template'}},
+  {
+    path: 'sample',
+    component: SampleComponent,
+    data: {title: 'Sample'},
+    children: [
+      {path: 'tasks/:task', component: EditTaskModalComponent},
+    ],
+  },
+  {path: 'preview', component: PreviewComponent, data: {title: 'Preview'}},
+  {path: '', redirectTo: 'info'},
+];
 
 const routes: Routes = [
   {path: '', component: MyAssignmentsComponent},
@@ -21,17 +50,13 @@ const routes: Routes = [
   {
     path: 'create',
     component: EditAssignmentComponent,
-    children: [
-      {path: 'tasks/:task', component: EditTaskModalComponent},
-    ],
+    children: editChildren,
   },
   {path: ':aid', component: CreateSolutionComponent},
   {
     path: ':aid/edit',
     component: EditAssignmentComponent,
-    children: [
-      {path: 'tasks/:task', component: EditTaskModalComponent},
-    ],
+    children: editChildren,
   },
   {
     path: ':aid/solutions',

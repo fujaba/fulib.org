@@ -59,6 +59,6 @@ export class EditTaskModalComponent implements OnInit {
       list.push(this.task);
     }
 
-    // TODO Save Draft
+    this.context.saveDraft();
   }
 }

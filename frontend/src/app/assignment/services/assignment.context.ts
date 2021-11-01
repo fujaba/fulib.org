@@ -6,5 +6,5 @@ import {CreateEvaluationDto} from '../model/evaluation';
 export class AssignmentContext {
   assignment: Assignment;
   evaluations?: Record<string, CreateEvaluationDto>;
-
+  saveDraft: () => void;
 }

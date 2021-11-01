@@ -13,7 +13,6 @@ import {TaskService} from '../../services/task.service';
 export class EditTaskListComponent {
   @Input() parent?: string;
   @Input() tasks: Task[];
-  @Output() save = new EventEmitter<void>();
 
   constructor(
     private taskService: TaskService,
@@ -24,7 +23,7 @@ export class EditTaskListComponent {
   }
 
   saveDraft() {
-    this.save.emit();
+    this.context.saveDraft();
   }
 
   addTask(): void {

@@ -1,4 +1,4 @@
-<app-modal #modal [back]="['../..']" [backOptions]="{relativeTo: route, queryParams: {parent: null}}">
+<app-modal #modal [back]="['.']" [backOptions]="{relativeTo: route.parent, queryParams: {parent: null}}">
   <ng-container modal-header>
     Edit Task
   </ng-container>
