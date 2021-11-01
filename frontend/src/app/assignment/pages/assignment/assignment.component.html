@@ -62,45 +62,43 @@
               </button>
             </div>
           </div>
-          <ng-container *ngIf="assignment && assignment.token">
-            <hr/>
-            <h5 class="card-title">
-              Access Token
-            </h5>
-            <p>
-              To view submissions on other devices, you may be asked for the following token.
-              Please save it or write it down somewhere.
-              <span class="text-danger">
-                Keep this token secret, do not share it with students!
-              </span>
-            </p>
-            <div class="input-group">
-              <input #tokenInput type="text" class="form-control text-monospace" readonly [value]="assignment?.token">
-              <div class="input-group-append" *ngxClipboardIfSupported>
-                <button type="button" class="btn btn-outline-secondary" [ngxClipboard]="tokenInput">
-                  Copy
-                </button>
-              </div>
+          <hr/>
+          <h5 class="card-title">
+            Access Token
+          </h5>
+          <p>
+            To view submissions on other devices, you may be asked for the following token.
+            Please save it or write it down somewhere.
+            <span class="text-danger">
+              Keep this token secret, do not share it with students!
+            </span>
+          </p>
+          <div class="input-group">
+            <input #tokenInput type="text" class="form-control text-monospace" readonly [value]="assignment?.token">
+            <div class="input-group-append" *ngxClipboardIfSupported>
+              <button type="button" class="btn btn-outline-secondary" [ngxClipboard]="tokenInput">
+                Copy
+              </button>
             </div>
-            <hr/>
-            <h5 class="card-title">
-              Teaching Assistant Invitation
-            </h5>
-            <p>
-              You can invite Teaching Assistants by giving them the following link.
-              <span class="text-danger">
-                It includes the Access Token, so keep the link secret and do not share it with students!
-              </span>
-            </p>
-            <div class="input-group">
-              <input #taLinkInput type="text" class="form-control" readonly [value]="origin + '/assignments/' + assignment._id + '/solutions?atok=' + assignment.token">
-              <div class="input-group-append" *ngxClipboardIfSupported>
-                <button type="button" class="btn btn-outline-secondary" [ngxClipboard]="taLinkInput">
-                  Copy
-                </button>
-              </div>
+          </div>
+          <hr/>
+          <h5 class="card-title">
+            Teaching Assistant Invitation
+          </h5>
+          <p>
+            You can invite Teaching Assistants by giving them the following link.
+            <span class="text-danger">
+              It includes the Access Token, so keep the link secret and do not share it with students!
+            </span>
+          </p>
+          <div class="input-group">
+            <input #taLinkInput type="text" class="form-control" readonly [value]="origin + '/assignments/' + assignment?._id + '/solutions?atok=' + assignment?.token">
+            <div class="input-group-append" *ngxClipboardIfSupported>
+              <button type="button" class="btn btn-outline-secondary" [ngxClipboard]="taLinkInput">
+                Copy
+              </button>
             </div>
-          </ng-container>
+          </div>
         </div>
       </ng-template>
     </li>
