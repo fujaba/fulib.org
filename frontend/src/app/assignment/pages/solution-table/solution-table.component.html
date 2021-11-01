@@ -27,7 +27,7 @@
     </ul>
   </ng-template>
 </div>
-<table class="table table-bordered table-hover" *ngIf="solutions">
+<table class="table table-bordered table-hover table-sm table-centered" *ngIf="solutions">
   <thead>
   <tr>
     <th>Name</th>
@@ -60,11 +60,11 @@
       <span class="badge badge-primary badge-pill">? / {{totalPoints}}</span>
     </td>
     <td>
-      <input class="form-control m-n2" #assigneeInput [ngModel]="assignees?.[solution._id!]?.assignee"
+      <input class="form-control" #assigneeInput [ngModel]="assignees?.[solution._id!]?.assignee"
              (change)="setAssignee(solution, assigneeInput)">
     </td>
     <td>
-      <div class="btn-group m-n2">
+      <div class="btn-group">
         <a class="btn btn-primary" routerLink="/assignments/{{assignment?._id}}/solutions/{{solution._id}}"
            ngbTooltip="View"
         >
