@@ -203,8 +203,7 @@ export class AssignmentService {
     }
     return this.http.get<Assignment>(`${environment.assignmentsApiUrl}/assignments/${id}`, {headers}).pipe(
       map(a => {
-        a._id = id;
-        a.token = this.getToken(id) ?? undefined;
+        a.token ??= this.getToken(id) ?? undefined;
         this._cache.set(id, a);
         return a;
       }),
