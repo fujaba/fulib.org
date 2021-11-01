@@ -89,7 +89,12 @@ export class SolutionService {
   }
 
   async findAll(where: FilterQuery<Solution> = {}): Promise<ReadSolutionDto[]> {
-    return this.model.find(where).select(['-token']).sort('+name +timestamp').exec();
+    return this.model
+      .find(where)
+      .select(['-token'])
+      .sort('author.name author.github timestamp')
+      .collation({locale: 'en', caseFirst: 'off'})
+      .exec();
   }
 
   async findOne(id: string): Promise<SolutionDocument | null> {

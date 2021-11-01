@@ -95,5 +95,7 @@ export class Solution {
 export type SolutionDocument = Solution & Document;
 
 export const SolutionSchema = SchemaFactory.createForClass(Solution)
+  .index({assignment: 1, 'author.name': 1})
   .index({assignment: 1, 'author.github': 1})
+  .index({assignment: 1, 'timestamp': 1})
 ;
