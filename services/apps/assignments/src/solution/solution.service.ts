@@ -22,9 +22,16 @@ export class SolutionService {
   }
 
   async migrate() {
-    let count = 0;
-    for await (const solution of this.model.find({results: {$exists: true}})) {
-      for (const result of solution.results!) {
+    const solutions: Pick<SolutionDocument, 'assignment' | '_id' | 'results'>[] = await this.model
+      .find({results: {$type: 4}})
+      .select('assignment _id results')
+      .exec();
+    await Promise.all(solutions.map(async ({assignment, _id, results}) => {
+      if (!results) {
+        // TODO why does this even happen
+        return;
+      }
+      await Promise.all(results.map(result => {
         const {
           task,
           output: remark,
@@ -37,11 +44,11 @@ export class SolutionService {
           points,
           snippets: [],
         };
-        await this.createEvaluation(solution, dto);
-      }
-      count += solution.results!.length;
-    }
-    console.info('Migrated', count, 'results');
+        return this.evaluationService.create(assignment, _id, dto);
+      }));
+    }));
+    const count = solutions.reduce((a, c) => c.results ? a + c.results.length : a, 0);
+    console.info('Migrated', count, 'results of', solutions.length, 'solutions');
 
     const result = await this.model.updateMany({}, {
       $rename: {

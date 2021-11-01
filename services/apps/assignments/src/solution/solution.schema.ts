@@ -89,7 +89,6 @@ export class Solution {
   @IsDateString()
   timestamp?: Date;
 
-  @Prop()
   results?: TaskResult[];
 }
 
