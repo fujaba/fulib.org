@@ -49,6 +49,22 @@
             <input type="text" class="form-control" id="githubInput" readonly
                    [ngModel]="solution ? solution.author.github : 'Loading...'">
           </div>
+          <div class="form-group" *ngIf="solution && solution.commit">
+            <label for="commitInput">Git Commit</label>
+            <div class="input-group">
+              <input type="text" class="form-control text-monospace" id="commitInput" readonly
+                   [ngModel]="solution.commit">
+              <div class="input-group-append">
+                <a class="btn btn-primary"
+                   href="https://github.com/{{assignment?.classroom?.org}}/{{assignment?.classroom?.prefix}}-{{solution.author.github}}/tree/{{solution.commit}}"
+                   target="_blank"
+                   ngbTooltip="Open on GitHub"
+                >
+                  <i class="bi-github"></i>
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </ng-template>
     </li>
