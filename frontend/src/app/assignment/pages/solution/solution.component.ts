@@ -25,7 +25,7 @@ export class SolutionComponent implements OnInit {
   evaluations?: Record<string, Evaluation>;
 
   constructor(
-    private route: ActivatedRoute,
+    public route: ActivatedRoute,
     private router: Router,
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
