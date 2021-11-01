@@ -64,7 +64,7 @@ export class SolutionComponent implements OnInit {
       // Otherwise the markers don't show up
       this.markers = this.assignmentService.lint({results: evaluations});
     }, error => {
-      if (error.status === 401) {
+      if (error.status === 401 || error.status === 403) {
         this.router.navigate(['token'], {relativeTo: this.route});
       }
     });

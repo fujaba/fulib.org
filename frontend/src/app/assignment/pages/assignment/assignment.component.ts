@@ -41,7 +41,7 @@ export class AssignmentComponent implements OnInit {
     ).subscribe(assignment => {
       this.assignment = assignment;
     }, error => {
-      if (error.status === 401) {
+      if (error.status === 401 || error.status === 403) {
         this.router.navigate(['token'], {relativeTo: this.activatedRoute});
       }
     });
