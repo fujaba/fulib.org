@@ -1,7 +1,7 @@
 lockfileVersion: 5.3
 
 specifiers:
-  '@elastic/elasticsearch': ^7.15.0
+  '@elastic/elasticsearch': ~7.13.0
   '@nestjs/axios': ^0.0.2
   '@nestjs/cli': ^8.0.0
   '@nestjs/common': ^8.0.0
@@ -49,11 +49,11 @@ specifiers:
   typescript: ^4.3.5
 
 dependencies:
-  '@elastic/elasticsearch': 7.15.0
+  '@elastic/elasticsearch': 7.13.0
   '@nestjs/axios': 0.0.2_e2399148d990aa1f9a4b6ba2ac7a5b74
   '@nestjs/common': 8.0.6_7de7ece315067f012f2001b6a7f20971
   '@nestjs/core': 8.0.6_a4d6c832897073857f471f32139e452f
-  '@nestjs/elasticsearch': 8.0.0_d1b1b213e18d12e90a375bef9411478c
+  '@nestjs/elasticsearch': 8.0.0_5844d0485bca6629c5312b6e895fa3b3
   '@nestjs/jwt': 8.0.0_@nestjs+common@8.0.6
   '@nestjs/mongoose': 8.0.1_920220fee210ab02a4043c93cf0b2412
   '@nestjs/passport': 8.0.1_2c02db70fddcb59258fa0eed39c4b725
@@ -514,8 +514,8 @@ packages:
       '@cspotcode/source-map-consumer': 0.8.0
     dev: true
 
-  /@elastic/elasticsearch/7.15.0:
-    resolution: {integrity: sha512-FUKvjV2IKtIiWsvBy7D+wLbSEONsmNR15RRN7P/Sb30g4ObZRHH2qGOP5PPnzxdntEkzZ8HzY7nKKXFS+3Du1g==}
+  /@elastic/elasticsearch/7.13.0:
+    resolution: {integrity: sha512-WgwLWo2p9P2tdqzBGX9fHeG8p5IOTXprXNTECQG2mJ7z9n93N5AFBJpEw4d35tWWeCWi9jI13A2wzQZH7XZ/xw==}
     engines: {node: '>=12'}
     dependencies:
       debug: 4.3.2
@@ -870,14 +870,14 @@ packages:
       uuid: 8.3.2
     dev: false
 
-  /@nestjs/elasticsearch/8.0.0_d1b1b213e18d12e90a375bef9411478c:
+  /@nestjs/elasticsearch/8.0.0_5844d0485bca6629c5312b6e895fa3b3:
     resolution: {integrity: sha512-Yr0DldZA2pZGAF77R7CDClbXJd6cKctI5zgFc/6vFARjaHhRwETyeTES/nRiQLCZ+hfWmpRyvu1YX3reNMqW6A==}
     peerDependencies:
       '@elastic/elasticsearch': ^7.4.0
       '@nestjs/common': ^6.0.0 || ^7.0.0 || ^8.0.0
       rxjs: ^6.2.1 || ^7.2.0
     dependencies:
-      '@elastic/elasticsearch': 7.15.0
+      '@elastic/elasticsearch': 7.13.0
       '@nestjs/common': 8.0.6_7de7ece315067f012f2001b6a7f20971
       rxjs: 7.3.0
     dev: false
