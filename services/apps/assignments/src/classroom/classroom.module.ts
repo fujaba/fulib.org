@@ -1,5 +1,7 @@
 import {HttpModule} from '@nestjs/axios';
 import {Module} from '@nestjs/common';
+import {ElasticsearchModule} from '@nestjs/elasticsearch';
+import {environment} from '../environment';
 import {EvaluationModule} from '../evaluation/evaluation.module';
 import {AssignmentModule} from '../assignment/assignment.module';
 import {GradingModule} from '../grading/grading.module';
@@ -10,6 +12,7 @@ import {ClassroomService} from './classroom.service';
 
 @Module({
   imports: [
+    ElasticsearchModule.register(environment.elasticsearch),
     AssignmentModule,
     SolutionModule,
     GradingModule,
