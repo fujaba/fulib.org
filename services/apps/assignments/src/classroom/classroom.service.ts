@@ -70,7 +70,10 @@ export class ClassroomService {
       const solution = await this.createSolution(assignment, repo, githubToken);
       return {
         updateOne: {
-          filter: {'author.github': solution.author.github},
+          filter: {
+            assignment: assignment._id,
+            'author.github': solution.author.github,
+          },
           update: {$setOnInsert: solution},
           upsert: true,
         },
