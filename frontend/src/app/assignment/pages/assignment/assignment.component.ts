@@ -1,9 +1,8 @@
 import {DOCUMENT} from '@angular/common';
-import {Component, Inject, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {combineLatest} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
-import {TokenModalComponent} from '../token-modal/token-modal.component';
+import {switchMap} from 'rxjs/operators';
 import Assignment from '../../model/assignment';
 import {AssignmentService} from '../../services/assignment.service';
 import {SolutionService} from '../../services/solution.service';
@@ -19,7 +18,7 @@ export class AssignmentComponent implements OnInit {
   readonly origin: string;
 
   constructor(
-    public activatedRoute: ActivatedRoute,
+    public route: ActivatedRoute,
     private router: Router,
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
@@ -29,20 +28,17 @@ export class AssignmentComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    combineLatest([this.activatedRoute.params, this.activatedRoute.queryParams]).pipe(
-      map(([params, query]) => {
-        const assignmentId: string = params.aid;
-        if (query.atok) {
-          this.assignmentService.setToken(assignmentId, query.atok);
-        }
-        return assignmentId;
-      }),
-      switchMap(assignmentId => this.assignmentService.get(assignmentId)),
+    combineLatest([this.route.params, this.route.queryParams]).subscribe(([{aid}, {atok}]) => {
+      aid && atok && this.assignmentService.setToken(aid, atok);
+    });
+
+    this.route.params.pipe(
+      switchMap(({aid}) => this.assignmentService.get(aid)),
     ).subscribe(assignment => {
       this.assignment = assignment;
     }, error => {
       if (error.status === 401 || error.status === 403) {
-        this.router.navigate(['token'], {relativeTo: this.activatedRoute});
+        this.router.navigate(['token'], {relativeTo: this.route});
       }
     });
   }
