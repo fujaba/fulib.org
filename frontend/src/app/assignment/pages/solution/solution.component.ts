@@ -1,7 +1,7 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {combineLatest, forkJoin} from 'rxjs';
-import {map, switchMap, tap} from 'rxjs/operators';
+import {switchMap, tap} from 'rxjs/operators';
 
 import {Marker} from '../../../shared/model/marker';
 import Assignment from '../../model/assignment';
@@ -34,19 +34,13 @@ export class SolutionComponent implements OnInit {
   }
 
   ngOnInit() {
-    combineLatest([this.route.params, this.route.queryParams]).pipe(
-      map(([params, query]) => {
-        const assignmentId = params.aid;
-        if (query.atok) {
-          this.assignmentService.setToken(assignmentId, query.atok);
-        }
-        const solutionId = params.sid;
-        if (query.stok) {
-          this.solutionService.setToken(assignmentId, solutionId, query.stok);
-        }
-        return [assignmentId, solutionId];
-      }),
-      switchMap(([assignmentId, solutionId]) => forkJoin([
+    combineLatest([this.route.params, this.route.queryParams]).subscribe(([{aid, sid}, {atok, stok}]) => {
+      aid && atok && this.assignmentService.setToken(aid, atok);
+      aid && sid && stok && this.solutionService.setToken(aid, sid, stok);
+    });
+
+    this.route.params.pipe(
+      switchMap(({aid: assignmentId, sid: solutionId}) => forkJoin([
         this.assignmentService.get(assignmentId).pipe(tap(assignment => this.assignment = assignment)),
         this.solutionService.get(assignmentId, solutionId).pipe(tap(solution => {
           this.solution = solution;
