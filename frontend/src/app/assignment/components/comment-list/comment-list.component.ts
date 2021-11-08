@@ -2,6 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
+import {ToastService} from '../../../toast.service';
 import {UserService} from '../../../user/user.service';
 import Comment from '../../model/comment';
 import {SolutionService} from '../../services/solution.service';
@@ -18,13 +19,14 @@ export class CommentListComponent implements OnInit, OnDestroy {
   commentName: string;
   commentEmail: string;
   commentBody: string;
-  submittingComment: boolean;
+  submitting: boolean;
 
   private userSubscription: Subscription;
 
   constructor(
     private userService: UserService,
     private solutionService: SolutionService,
+    private toastService: ToastService,
     private route: ActivatedRoute,
   ) {
   }
@@ -72,7 +74,7 @@ export class CommentListComponent implements OnInit, OnDestroy {
   }
 
   submitComment(): void {
-    this.submittingComment = true;
+    this.submitting = true;
 
     const {sid, aid} = this.route.snapshot.params;
     const comment: Comment = {
@@ -86,7 +88,10 @@ export class CommentListComponent implements OnInit, OnDestroy {
       this.comments.push(result);
       this.commentBody = '';
       this.saveCommentDraft();
-      this.submittingComment = false;
+      this.submitting = false;
+    }, error => {
+      this.submitting = false;
+      this.toastService.error('Comment', 'Failed to post comment', error);
     });
   }
 
