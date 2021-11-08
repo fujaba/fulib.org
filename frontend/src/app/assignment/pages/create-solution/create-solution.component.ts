@@ -1,8 +1,5 @@
-import {DOCUMENT} from '@angular/common';
-import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 import {forkJoin, of, Subscription} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
 
@@ -22,8 +19,6 @@ import {SolutionService} from '../../services/solution.service';
   styleUrls: ['./create-solution.component.scss'],
 })
 export class CreateSolutionComponent implements OnInit, OnDestroy {
-  @ViewChild('successModal', {static: true}) successModal;
-
   course?: Course;
   assignment: Assignment;
   solution: string;
@@ -34,13 +29,7 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
   checked = false;
   markers: Marker[] = [];
 
-  id?: string;
-  token?: string;
-  timeStamp?: Date;
-
   submitting: boolean;
-
-  private readonly origin: string;
 
   nextAssignment?: Assignment;
 
@@ -50,13 +39,11 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
     private courseService: CourseService,
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
+    private router: Router,
     private route: ActivatedRoute,
-    private modalService: NgbModal,
     private users: UserService,
     private toastService: ToastService,
-    @Inject(DOCUMENT) document: Document,
   ) {
-    this.origin = document.location.origin;
   }
 
   ngOnInit(): void {
@@ -102,20 +89,9 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
   getSolution(): Solution {
     return {
       assignment: this.assignment._id!,
-      _id: this.id,
-      token: this.token,
       author: this.author,
       solution: this.solution,
-      timestamp: this.timeStamp,
     };
-  }
-
-  setSolution(solution: Solution): void {
-    this.id = solution._id;
-    this.token = solution.token;
-    this.author = solution.author;
-    this.solution = solution.solution;
-    this.timeStamp = solution.timestamp;
   }
 
   loadDraft(): void {
@@ -141,16 +117,16 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
   submit(): void {
     this.submitting = true;
     this.solutionService.submit(this.getSolution()).subscribe(result => {
-      this.setSolution(result);
-      this.modalService.open(this.successModal, {ariaLabelledBy: 'successModalLabel', size: 'xl'});
       this.submitting = false;
+      this.toastService.success('Solution', 'Successfully submitted solution');
+      if (this.course && this.nextAssignment) {
+        this.router.navigate(['/assignments', 'courses', this.course._id, 'assignments', this.nextAssignment._id]);
+      } else {
+        this.router.navigate(['/assignments', result.assignment, 'solutions', result._id], {queryParams: {tab: 'share'}});
+      }
     }, error => {
       this.toastService.error('Solution', 'Failed to submit solution', error);
       this.submitting = false;
     });
-  }
-
-  getLink(origin: boolean): string {
-    return `${origin ? this.origin : ''}/assignments/${this.assignment._id}/solutions/${this.id}`;
   }
 }

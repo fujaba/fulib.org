@@ -1,4 +1,5 @@
-import {Component, OnInit} from '@angular/core';
+import {DOCUMENT} from '@angular/common';
+import {Component, Inject, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {combineLatest, forkJoin} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
@@ -24,13 +25,17 @@ export class SolutionComponent implements OnInit {
   points?: Record<string, number>;
   evaluations?: Record<string, Evaluation>;
 
+  origin: string;
+
   constructor(
     public route: ActivatedRoute,
     private router: Router,
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
     private taskService: TaskService,
+    @Inject(DOCUMENT) document: Document,
   ) {
+    this.origin = document.location.origin;
   }
 
   ngOnInit() {
