@@ -7,13 +7,13 @@ import {forkJoin, of, Subscription} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
 
 import {Marker} from '../../../shared/model/marker';
+import {ToastService} from '../../../toast.service';
 import {UserService} from '../../../user/user.service';
-import {AssignmentService} from '../../services/assignment.service';
-import {CourseService} from '../../services/course.service';
 import Assignment from '../../model/assignment';
 import Course from '../../model/course';
-import {CreateEvaluationDto} from '../../model/evaluation';
 import Solution, {AuthorInfo} from '../../model/solution';
+import {AssignmentService} from '../../services/assignment.service';
+import {CourseService} from '../../services/course.service';
 import {SolutionService} from '../../services/solution.service';
 
 @Component({
@@ -53,6 +53,7 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private modalService: NgbModal,
     private users: UserService,
+    private toastService: ToastService,
     @Inject(DOCUMENT) document: Document,
   ) {
     this.origin = document.location.origin;
@@ -142,6 +143,9 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
     this.solutionService.submit(this.getSolution()).subscribe(result => {
       this.setSolution(result);
       this.modalService.open(this.successModal, {ariaLabelledBy: 'successModalLabel', size: 'xl'});
+      this.submitting = false;
+    }, error => {
+      this.toastService.error('Solution', 'Failed to submit solution', error);
       this.submitting = false;
     });
   }

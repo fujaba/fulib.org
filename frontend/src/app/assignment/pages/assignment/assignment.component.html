@@ -10,10 +10,12 @@
       *ngIf="assignment?.classroom?.org && assignment?.classroom?.prefix"
       class="btn btn-success"
       ngbTooltip="Import Solutions from GitHub Classroom (requires Account linked to GitHub)"
+      [disabled]="importing"
       (click)="import()"
     >
-      <i class="bi-download"></i>
-      Import Solutions
+      <i *ngIf="!importing" class="bi-download"></i>
+      <span *ngIf="importing" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      {{ importing ? 'Importing Solutions...' : 'Import Solutions' }}
     </button>
   </div>
 

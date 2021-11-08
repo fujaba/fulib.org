@@ -2,6 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
+import {ToastService} from '../../../toast.service';
 import {UserService} from '../../../user/user.service';
 import {CreateEvaluationDto, Evaluation} from '../../model/evaluation';
 import {SolutionService} from '../../services/solution.service';
@@ -28,6 +29,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
   constructor(
     private solutionService: SolutionService,
     private users: UserService,
+    private toastService: ToastService,
     public route: ActivatedRoute,
   ) {
   }
@@ -64,7 +66,10 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       ? this.solutionService.updateEvaluation(aid, sid, this.evaluation._id, this.dto)
       : this.solutionService.createEvaluation(aid, sid, this.dto);
     op.subscribe(result => {
+      this.toastService.success('Evaluation', `Successfully ${this.evaluation ? 'updated' : 'created'} evaluation`);
       this.evaluation = result;
+    }, error => {
+      this.toastService.error('Evaluation', `Failed to ${this.evaluation ? 'update' : 'create'} evaluation`, error);
     });
   }
 }
