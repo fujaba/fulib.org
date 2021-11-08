@@ -3,6 +3,7 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {combineLatest} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
+import {ToastService} from '../../../toast.service';
 import Assignment from '../../model/assignment';
 import {AssignmentService} from '../../services/assignment.service';
 import {SolutionService} from '../../services/solution.service';
@@ -14,6 +15,7 @@ import {SolutionService} from '../../services/solution.service';
 })
 export class AssignmentComponent implements OnInit {
   assignment?: Assignment;
+  importing = false;
 
   readonly origin: string;
 
@@ -22,6 +24,7 @@ export class AssignmentComponent implements OnInit {
     private router: Router,
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
+    private toastService: ToastService,
     @Inject(DOCUMENT) document: Document,
   ) {
     this.origin = document.location.origin;
@@ -45,6 +48,13 @@ export class AssignmentComponent implements OnInit {
 
   import() {
     // TODO update table
-    this.solutionService.import(this.assignment!._id!).subscribe();
+    this.importing = true;
+    this.solutionService.import(this.assignment!._id!).subscribe(results => {
+      this.importing = false;
+      this.toastService.success('Import', `Successfully imported ${results.length} solutions`);
+    }, error => {
+      this.importing = false;
+      this.toastService.error('Import', 'Failed to import solutions', error);
+    });
   }
 }
