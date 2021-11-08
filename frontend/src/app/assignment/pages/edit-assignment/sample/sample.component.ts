@@ -15,7 +15,7 @@ export class SampleComponent {
   assignment: Assignment;
   saveDraft: () => void;
 
-  checking = false;
+  status = 'The sample solution is checked automatically when you change it.';
   evaluations?: Record<string, CreateEvaluationDto>;
   points?: Record<string, number>;
   markers: Marker[] = [];
@@ -31,9 +31,9 @@ export class SampleComponent {
 
   check(): void {
     this.saveDraft();
-    this.checking = true;
+    this.status = 'Checking...';
     this.assignmentService.check(this.assignment).subscribe(response => {
-      this.checking = false;
+      this.status = 'The sample solution was checked automatically, check the task list for results.';
       this.evaluations = {};
       this.context.evaluations = this.evaluations;
       for (let result of response.results) {
@@ -41,6 +41,8 @@ export class SampleComponent {
       }
       this.points = this.taskService.createPointsCache(this.assignment.tasks, this.evaluations);
       this.markers = this.assignmentService.lint(response);
+    }, error => {
+      this.status = 'Failed to check the sample solution automatically: ' + error.error?.message ?? error.message;
     });
   }
 
