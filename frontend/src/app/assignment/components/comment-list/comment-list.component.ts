@@ -106,6 +106,9 @@ export class CommentListComponent implements OnInit, OnDestroy {
       if (index >= 0) {
         this.comments.splice(index, 1);
       }
+      this.toastService.warn('Comment', 'Successfully deleted comment');
+    }, error => {
+      this.toastService.error('Comment', 'Failed to delete comment', error);
     });
   }
 }
