@@ -25,8 +25,7 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
   loggedIn = false;
   author: AuthorInfo;
 
-  checking = false;
-  checked = false;
+  status = 'Your solution is checked automatically when you make changes.';
   markers: Marker[] = [];
 
   submitting: boolean;
@@ -105,12 +104,12 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
 
   check(): void {
     this.saveDraft();
-    this.checking = true;
-
+    this.status = 'Checking...';
     this.solutionService.check({assignment: this.assignment, solution: this.solution}).subscribe(response => {
-      this.checking = false;
-      this.checked = true;
+      this.status = 'Your solution was checked automatically. Don\'t forget to submit when you are done!';
       this.markers = this.assignmentService.lint(response);
+    }, error => {
+      this.status = 'Failed to check your solution automatically: ' + error.error?.message ?? error.message;
     });
   }
 

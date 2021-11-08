@@ -14,10 +14,7 @@
       (save)="check()"
     ></app-scenario-codemirror>
     <small class="text-muted">
-      {{checking ? 'Checking...'
-      : (checked ? 'Your solution was checked automatically. Don\'t forget to submit when you are done!'
-        : 'Your solution is checked automatically when you make changes.')
-      }}
+      {{ status }}
     </small>
   </p>
 
