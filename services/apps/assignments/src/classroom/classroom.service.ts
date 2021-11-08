@@ -151,7 +151,7 @@ export class ClassroomService {
       state: 'all',
     });
 
-    const existing = issues.find(i => i.body.includes(assignmentId));
+    const existing = issues.find(i => i.body?.includes(assignmentId));
     if (existing) {
       await this.github('PATCH', `${baseUrl}/${existing.number}`, githubToken, {}, issue);
     } else {
