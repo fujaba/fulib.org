@@ -92,12 +92,17 @@ export class SolutionComponent implements OnInit, OnDestroy {
         return;
       }
 
+      const oldEvaluation = this.evaluations[task];
+      this.evaluations[task] = evaluation;
+      if (evaluation?.points === oldEvaluation?.points) {
+        return;
+      }
+
       // Clear cache for affected tasks
       const tasks = this.taskService.findWithParents(this.assignment.tasks, task);
       for (let task of tasks) {
         delete this.points[task._id];
       }
-      this.evaluations[task] = evaluation;
 
       // Restore cache
       for (let task of this.assignment.tasks) {
