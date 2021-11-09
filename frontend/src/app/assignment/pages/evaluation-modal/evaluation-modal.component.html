@@ -3,26 +3,24 @@
     Grade
   </ng-container>
   <ng-container modal-body>
-    <ng-container *ngIf="evaluation">
-      <h4>
-        <span class="badge badge-secondary">{{evaluation.points}}</span>
-        Points
-      </h4>
-      <p>
-        {{evaluation.remark}}
-      </p>
-      <p>
-        {{evaluation.author}}
-        <span *ngIf="evaluation['createdBy']" class="badge badge-pill badge-primary" ngbTooltip="Registered">
-          &#10003;
-        </span>
-        <span class="text-muted" *ngIf="evaluation['createdAt']">
-          &#8226;
-          {{evaluation['createdAt'] | date:'medium'}}
-        </span>
-      </p>
-      <hr/>
-    </ng-container>
+    <h4>
+      <span class="badge badge-secondary">{{(evaluation || dto).points}}</span>
+      Points
+    </h4>
+    <p>
+      {{(evaluation || dto).remark}}
+    </p>
+    <p>
+      {{(evaluation || dto).author}}
+      <span *ngIf="evaluation?.createdBy" class="badge badge-pill badge-primary" ngbTooltip="Registered">
+        &#10003;
+      </span>
+      <span class="text-muted">
+        &#8226;
+        {{evaluation ? (evaluation.createdAt | date:'medium') : 'Preview'}}
+      </span>
+    </p>
+    <hr/>
     <div class="form">
       <div class="form-group">
         <label for="pointsInput">Points</label>
