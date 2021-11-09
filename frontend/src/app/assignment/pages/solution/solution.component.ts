@@ -85,21 +85,19 @@ export class SolutionComponent implements OnInit, OnDestroy {
           return EMPTY;
         }
 
-        return this.solutionService.getEvaluations(aid, sid, task);
+        return this.solutionService.getEvaluations(aid, sid, task).pipe(map(e => [e[0], task] as const));
       }),
-    ).subscribe(evaluations => {
+    ).subscribe(([evaluation, task]) => {
       if (!this.assignment || !this.points || !this.evaluations) {
         return;
       }
 
       // Clear cache for affected tasks
-      for (let evaluation of evaluations) {
-        this.evaluations[evaluation.task] = evaluation;
-        const tasks = this.taskService.findWithParents(this.assignment.tasks, evaluation.task);
-        for (let task of tasks) {
-          delete this.points[task._id];
-        }
+      const tasks = this.taskService.findWithParents(this.assignment.tasks, task);
+      for (let task of tasks) {
+        delete this.points[task._id];
       }
+      this.evaluations[task] = evaluation;
 
       // Restore cache
       for (let task of this.assignment.tasks) {
