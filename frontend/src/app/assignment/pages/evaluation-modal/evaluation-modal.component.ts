@@ -115,4 +115,18 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       this.toastService.error('Evaluation', `Failed to ${this.evaluation ? 'update' : 'create'} evaluation`, error);
     });
   }
+
+  delete(): boolean {
+    if (!this.evaluation || !confirm('Are you sure you want to delete this evaluation? This action cannot be undone.')) {
+      return false;
+    }
+
+    const {aid, sid} = this.route.snapshot.params;
+    this.solutionService.deleteEvaluation(aid, sid, this.evaluation._id).subscribe(() => {
+      this.toastService.warn('Evaluation', 'Successfully deleted evaluation');
+    }, error => {
+      this.toastService.error('Evaluation', 'Failed to delete evaluation', error);
+    });
+    return true;
+  }
 }

@@ -236,6 +236,14 @@ export class SolutionService {
     return this.http.patch<Evaluation>(url, dto, {headers});
   }
 
+  deleteEvaluation(assignment: string, solution: string, id: string): Observable<Evaluation> {
+    const headers = {};
+    this.addAssignmentToken(headers, assignment);
+
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/evaluations/${id}`;
+    return this.http.delete<Evaluation>(url, {headers});
+  }
+
   getAssignees(assignment: string): Observable<Assignee[]> {
     const headers = {};
     this.addAssignmentToken(headers, assignment);
