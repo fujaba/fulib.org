@@ -23,7 +23,7 @@
       </p>
       <hr/>
     </ng-container>
-    <div class="form">
+    <div class="form" (keyup.ctrl.enter)="doSubmit(); modal.close()">
       <div class="form-group">
         <label for="pointsInput">Points</label>
         <div class="input-group">
@@ -48,12 +48,17 @@
                [disabled]="loggedIn">
       </div>
     </div>
+    <p class="text-muted">
+      <i class="bi-lightbulb"></i>
+      ProTip:
+      Press Ctrl-Enter to quickly submit the evaluation.
+    </p>
   </ng-container>
   <ng-container modal-footer>
     <button type="button" class="btn btn-secondary" (click)="modal.close()">
       Cancel
     </button>
-    <button type="button" class="btn btn-primary" (click)="doSubmit(); modal.close()">
+    <button type="button" class="btn btn-primary" ngbTooltip="Keyboard Shortcut: Ctrl+&#9166;" (click)="doSubmit(); modal.close()">
       Submit
     </button>
   </ng-container>
