@@ -26,7 +26,17 @@
     <div class="form">
       <div class="form-group">
         <label for="pointsInput">Points</label>
-        <input type="number" class="form-control" id="pointsInput" [(ngModel)]="dto.points">
+        <div class="input-group">
+          <input type="number" class="form-control" id="pointsInput" [min]="min ?? ''" [max]="max ?? ''" [(ngModel)]="dto.points">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary text-danger" (click)="dto.points = min ?? 0">
+              {{ min }}
+            </button>
+            <button class="btn btn-outline-secondary text-success" (click)="dto.points = max ?? 0">
+              {{ max }}
+            </button>
+          </div>
+        </div>
       </div>
       <div class="form-group">
         <label for="remarkInput">Remark</label>

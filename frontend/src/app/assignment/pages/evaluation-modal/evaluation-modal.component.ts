@@ -1,11 +1,13 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {Subscription} from 'rxjs';
-import {switchMap} from 'rxjs/operators';
+import {forkJoin, Subscription} from 'rxjs';
+import {map, switchMap} from 'rxjs/operators';
 import {ToastService} from '../../../toast.service';
 import {UserService} from '../../../user/user.service';
 import {CreateEvaluationDto, Evaluation} from '../../model/evaluation';
+import {AssignmentService} from '../../services/assignment.service';
 import {SolutionService} from '../../services/solution.service';
+import {TaskService} from '../../services/task.service';
 
 @Component({
   selector: 'app-evaluation-modal',
@@ -23,10 +25,14 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
   };
 
   loggedIn = false;
+  min?: number;
+  max?: number;
 
   private userSubscription: Subscription;
 
   constructor(
+    private assignmentService: AssignmentService,
+    private taskService: TaskService,
     private solutionService: SolutionService,
     private users: UserService,
     private toastService: ToastService,
@@ -38,8 +44,15 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     this.dto.author = this.solutionService.commentName || '';
 
     this.route.params.pipe(
-      switchMap(({aid, sid, task}) => this.solutionService.getEvaluations(aid, sid, task)),
-    ).subscribe(evaluations => {
+      switchMap(({aid, sid, task}) => forkJoin(
+        this.assignmentService.get(aid).pipe(map(assignment => this.taskService.find(assignment.tasks, task))),
+        this.solutionService.getEvaluations(aid, sid, task),
+      )),
+    ).subscribe(([task, evaluations]) => {
+      if (task) {
+        this.min = Math.min(task.points, 0);
+        this.max = Math.max(task.points, 0);
+      }
       this.evaluation = evaluations[0];
     });
 
