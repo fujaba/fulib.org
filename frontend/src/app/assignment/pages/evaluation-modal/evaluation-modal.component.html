@@ -51,11 +51,12 @@
                [disabled]="loggedIn">
       </div>
     </div>
-    <p class="text-muted">
-      <i class="bi-lightbulb"></i>
-      ProTip:
-      Press Ctrl-Enter to quickly submit the evaluation.
-    </p>
+    <app-pro-tip [tips]="[
+      'Press Ctrl-Enter to quickly submit your evaluation',
+      'Press Ctrl-+ to give the maximum points',
+      'Press Ctrl-- to give the minimum points',
+      'Press Ctrl-0 to give zero points',
+    ]"></app-pro-tip>
   </ng-container>
   <ng-container modal-footer>
     <button type="button" class="btn btn-secondary" (click)="modal.close()">
