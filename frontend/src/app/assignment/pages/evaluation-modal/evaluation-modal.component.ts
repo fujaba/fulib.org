@@ -1,7 +1,8 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {forkJoin, Subscription} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
+import {ModalComponent} from '../../../shared/modal/modal.component';
 import {ToastService} from '../../../toast.service';
 import {UserService} from '../../../user/user.service';
 import {CreateEvaluationDto, Evaluation} from '../../model/evaluation';
@@ -15,6 +16,8 @@ import {TaskService} from '../../services/task.service';
   styleUrls: ['./evaluation-modal.component.scss'],
 })
 export class EvaluationModalComponent implements OnInit, OnDestroy {
+  @ViewChild('modal', {static: true}) modal: ModalComponent;
+
   evaluation?: Evaluation;
   dto: CreateEvaluationDto = {
     task: '',
@@ -66,6 +69,33 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.userSubscription.unsubscribe();
+  }
+
+  @HostListener('document:keyup', ['$event'])
+  onKeyUp(event: KeyboardEvent) {
+    if (!event.ctrlKey) {
+      return;
+    }
+
+    switch (event.key) {
+      case '+':
+        this.setPoints(this.max);
+        return;
+      case '-':
+        this.setPoints(this.min);
+        return;
+      case '0':
+        this.setPoints(0);
+        return;
+      case 'Enter':
+        this.doSubmit();
+        this.modal.close();
+        return;
+    }
+  }
+
+  setPoints(points?: number) {
+    this.dto.points = points ?? 0;
   }
 
   saveDraft(): void {
