@@ -1,11 +1,15 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {Subscription} from 'rxjs';
-import {switchMap} from 'rxjs/operators';
+import {forkJoin, Subscription} from 'rxjs';
+import {map, switchMap} from 'rxjs/operators';
+import {ModalComponent} from '../../../shared/modal/modal.component';
 import {ToastService} from '../../../toast.service';
 import {UserService} from '../../../user/user.service';
 import {CreateEvaluationDto, Evaluation} from '../../model/evaluation';
+import Task from '../../model/task';
+import {AssignmentService} from '../../services/assignment.service';
 import {SolutionService} from '../../services/solution.service';
+import {TaskService} from '../../services/task.service';
 
 @Component({
   selector: 'app-evaluation-modal',
@@ -13,6 +17,9 @@ import {SolutionService} from '../../services/solution.service';
   styleUrls: ['./evaluation-modal.component.scss'],
 })
 export class EvaluationModalComponent implements OnInit, OnDestroy {
+  @ViewChild('modal', {static: true}) modal: ModalComponent;
+
+  task?: Task;
   evaluation?: Evaluation;
   dto: CreateEvaluationDto = {
     task: '',
@@ -23,10 +30,14 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
   };
 
   loggedIn = false;
+  min?: number;
+  max?: number;
 
   private userSubscription: Subscription;
 
   constructor(
+    private assignmentService: AssignmentService,
+    private taskService: TaskService,
     private solutionService: SolutionService,
     private users: UserService,
     private toastService: ToastService,
@@ -38,8 +49,16 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     this.dto.author = this.solutionService.commentName || '';
 
     this.route.params.pipe(
-      switchMap(({aid, sid, task}) => this.solutionService.getEvaluations(aid, sid, task)),
-    ).subscribe(evaluations => {
+      switchMap(({aid, sid, task}) => forkJoin(
+        this.assignmentService.get(aid).pipe(map(assignment => this.taskService.find(assignment.tasks, task))),
+        this.solutionService.getEvaluations(aid, sid, task),
+      )),
+    ).subscribe(([task, evaluations]) => {
+      this.task = task;
+      if (task) {
+        this.min = Math.min(task.points, 0);
+        this.max = Math.max(task.points, 0);
+      }
       this.evaluation = evaluations[0];
     });
 
@@ -53,6 +72,33 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.userSubscription.unsubscribe();
+  }
+
+  @HostListener('document:keyup', ['$event'])
+  onKeyUp(event: KeyboardEvent) {
+    if (!event.ctrlKey) {
+      return;
+    }
+
+    switch (event.key) {
+      case '+':
+        this.setPoints(this.max);
+        return;
+      case '-':
+        this.setPoints(this.min);
+        return;
+      case '0':
+        this.setPoints(0);
+        return;
+      case 'Enter':
+        this.doSubmit();
+        this.modal.close();
+        return;
+    }
+  }
+
+  setPoints(points?: number) {
+    this.dto.points = points ?? 0;
   }
 
   saveDraft(): void {
@@ -71,5 +117,19 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     }, error => {
       this.toastService.error('Evaluation', `Failed to ${this.evaluation ? 'update' : 'create'} evaluation`, error);
     });
+  }
+
+  delete(): boolean {
+    if (!this.evaluation || !confirm('Are you sure you want to delete this evaluation? This action cannot be undone.')) {
+      return false;
+    }
+
+    const {aid, sid} = this.route.snapshot.params;
+    this.solutionService.deleteEvaluation(aid, sid, this.evaluation._id).subscribe(() => {
+      this.toastService.warn('Evaluation', 'Successfully deleted evaluation');
+    }, error => {
+      this.toastService.error('Evaluation', 'Failed to delete evaluation', error);
+    });
+    return true;
   }
 }

@@ -1,8 +1,8 @@
 import {DOCUMENT} from '@angular/common';
-import {Component, Inject, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {combineLatest, forkJoin} from 'rxjs';
-import {switchMap, tap} from 'rxjs/operators';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
+import {ActivatedRoute, NavigationStart, Router} from '@angular/router';
+import {combineLatest, EMPTY, forkJoin, Subscription} from 'rxjs';
+import {filter, map, mergeMap, switchMap, tap} from 'rxjs/operators';
 
 import {Marker} from '../../../shared/model/marker';
 import Assignment from '../../model/assignment';
@@ -17,7 +17,7 @@ import {TaskService} from '../../services/task.service';
   templateUrl: './solution.component.html',
   styleUrls: ['./solution.component.scss'],
 })
-export class SolutionComponent implements OnInit {
+export class SolutionComponent implements OnInit, OnDestroy {
   assignment?: Assignment;
   solution?: Solution;
   markers: Marker[] = [];
@@ -26,6 +26,8 @@ export class SolutionComponent implements OnInit {
   evaluations?: Record<string, Evaluation>;
 
   origin: string;
+
+  subscription?: Subscription;
 
   constructor(
     public route: ActivatedRoute,
@@ -67,5 +69,49 @@ export class SolutionComponent implements OnInit {
         this.router.navigate(['token'], {relativeTo: this.route});
       }
     });
+
+    this.subscription = this.router.events.pipe(
+      filter(e => e instanceof NavigationStart),
+      // NB: Using mergeMap instead of switchMap because we need to update
+      // all evaluations that might have changed in the meantime.
+      mergeMap(() => {
+        const firstChild = this.route.firstChild;
+        if (!firstChild) {
+          return EMPTY;
+        }
+        const {aid, sid} = this.route.snapshot.params;
+        const {task} = firstChild.snapshot.params;
+        if (!task) {
+          return EMPTY;
+        }
+
+        return this.solutionService.getEvaluations(aid, sid, task).pipe(map(e => [e[0], task] as const));
+      }),
+    ).subscribe(([evaluation, task]) => {
+      if (!this.assignment || !this.points || !this.evaluations) {
+        return;
+      }
+
+      const oldEvaluation = this.evaluations[task];
+      this.evaluations[task] = evaluation;
+      if (evaluation?.points === oldEvaluation?.points) {
+        return;
+      }
+
+      // Clear cache for affected tasks
+      const tasks = this.taskService.findWithParents(this.assignment.tasks, task);
+      for (let task of tasks) {
+        delete this.points[task._id];
+      }
+
+      // Restore cache
+      for (let task of this.assignment.tasks) {
+        this.taskService.getTaskPoints(task, this.evaluations, this.points);
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.subscription?.unsubscribe();
   }
 }
