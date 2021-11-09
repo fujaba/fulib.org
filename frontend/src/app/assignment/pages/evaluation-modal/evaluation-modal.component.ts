@@ -6,6 +6,7 @@ import {ModalComponent} from '../../../shared/modal/modal.component';
 import {ToastService} from '../../../toast.service';
 import {UserService} from '../../../user/user.service';
 import {CreateEvaluationDto, Evaluation} from '../../model/evaluation';
+import Task from '../../model/task';
 import {AssignmentService} from '../../services/assignment.service';
 import {SolutionService} from '../../services/solution.service';
 import {TaskService} from '../../services/task.service';
@@ -18,6 +19,7 @@ import {TaskService} from '../../services/task.service';
 export class EvaluationModalComponent implements OnInit, OnDestroy {
   @ViewChild('modal', {static: true}) modal: ModalComponent;
 
+  task?: Task;
   evaluation?: Evaluation;
   dto: CreateEvaluationDto = {
     task: '',
@@ -52,6 +54,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
         this.solutionService.getEvaluations(aid, sid, task),
       )),
     ).subscribe(([task, evaluations]) => {
+      this.task = task;
       if (task) {
         this.min = Math.min(task.points, 0);
         this.max = Math.max(task.points, 0);
