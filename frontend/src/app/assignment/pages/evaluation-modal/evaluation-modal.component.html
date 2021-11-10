@@ -3,34 +3,46 @@
     Grade
   </ng-container>
   <ng-container modal-body>
-    <ng-container *ngIf="evaluation">
-      <h4>
-        <span class="badge badge-secondary">{{evaluation.points}}</span>
-        Points
-      </h4>
-      <p>
-        {{evaluation.remark}}
-      </p>
-      <p>
-        {{evaluation.author}}
-        <span *ngIf="evaluation['createdBy']" class="badge badge-pill badge-primary" ngbTooltip="Registered">
-          &#10003;
+    <ul>
+      <li>
+        {{ task?.description }}:
+        {{(evaluation || dto).remark}}
+        <span class="badge badge-secondary">
+          {{(evaluation || dto).points}}
         </span>
-        <span class="text-muted" *ngIf="evaluation['createdAt']">
+        <span class="text-muted">
           &#8226;
-          {{evaluation['createdAt'] | date:'medium'}}
+          {{(evaluation || dto).author}}
+          <span *ngIf="evaluation?.createdBy" class="badge badge-pill badge-primary" ngbTooltip="Registered">
+            &#10003;
+          </span>
+          &#8226;
+          {{evaluation ? (evaluation.createdAt | date:'medium') : 'Preview'}}
         </span>
-      </p>
-      <hr/>
-    </ng-container>
+      </li>
+    </ul>
+    <hr/>
     <div class="form">
       <div class="form-group">
         <label for="pointsInput">Points</label>
-        <input type="number" class="form-control" id="pointsInput" min="0" step="1" [(ngModel)]="dto.points">
+        <div class="input-group">
+          <input type="number" class="form-control" id="pointsInput" [min]="min ?? ''" [max]="max ?? ''"
+                 [(ngModel)]="dto.points">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary text-danger" ngbTooltip="Keyboard Shortcut: Ctrl--"
+                    (click)="setPoints(min)">
+              {{ min }}
+            </button>
+            <button class="btn btn-outline-secondary text-success" ngbTooltip="Keyboard Shortcut: Ctrl-+"
+                    (click)="setPoints(max)">
+              {{ max }}
+            </button>
+          </div>
+        </div>
       </div>
       <div class="form-group">
         <label for="remarkInput">Remark</label>
-        <input type="text" class="form-control" id="remarkInput" [(ngModel)]="dto.remark">
+        <input type="text" class="form-control" id="remarkInput" ngbAutofocus [(ngModel)]="dto.remark">
       </div>
       <div class="form-group">
         <label for="nameInput">Name</label>
@@ -38,12 +50,22 @@
                [disabled]="loggedIn">
       </div>
     </div>
+    <app-pro-tip [tips]="[
+      'Press Ctrl-Enter to quickly submit your evaluation',
+      'Press Ctrl-+ to give the maximum points',
+      'Press Ctrl-- to give the minimum points',
+      'Press Ctrl-0 to give zero points',
+    ]"></app-pro-tip>
   </ng-container>
   <ng-container modal-footer>
     <button type="button" class="btn btn-secondary" (click)="modal.close()">
       Cancel
     </button>
-    <button type="button" class="btn btn-primary" (click)="doSubmit(); modal.close()">
+    <button *ngIf="evaluation" class="btn btn-danger" (click)="delete() && modal.close()">
+      Delete
+    </button>
+    <button type="button" class="btn btn-primary" ngbTooltip="Keyboard Shortcut: Ctrl+&#9166;"
+            (click)="doSubmit(); modal.close()">
       Submit
     </button>
   </ng-container>

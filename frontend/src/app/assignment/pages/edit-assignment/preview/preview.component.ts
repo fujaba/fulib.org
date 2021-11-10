@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {KeycloakService} from 'keycloak-angular';
+import {ToastService} from '../../../../toast.service';
 import Assignment from '../../../model/assignment';
 import Task from '../../../model/task';
 import {AssignmentContext} from '../../../services/assignment.context';
@@ -21,6 +22,7 @@ export class PreviewComponent implements OnInit {
     private assignmentService: AssignmentService,
     private router: Router,
     private keycloakService: KeycloakService,
+    private toastService: ToastService,
     context: AssignmentContext,
   ) {
     this.assignment = context.assignment;
@@ -35,7 +37,12 @@ export class PreviewComponent implements OnInit {
     const assignment = this.getAssignment();
     const operation = assignment._id ? this.assignmentService.update(assignment) : this.assignmentService.create(assignment);
     operation.subscribe(result => {
+      this.submitting = false
+      this.toastService.success('Assignment', `Successfully ${assignment._id ? 'updated' : 'created'} assignment`);
       this.router.navigate(['/assignments', result._id, 'solutions'], {queryParams: {tab: 'share'}});
+    }, error => {
+      this.submitting = false
+      this.toastService.error('Assignment', `Failed to ${assignment._id ? 'update' : 'create'} assignment`, error);
     });
   }
 

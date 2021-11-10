@@ -70,7 +70,10 @@ export class ClassroomService {
       const solution = await this.createSolution(assignment, repo, githubToken);
       return {
         updateOne: {
-          filter: {'author.github': solution.author.github},
+          filter: {
+            assignment: assignment._id,
+            'author.github': solution.author.github,
+          },
           update: {$setOnInsert: solution},
           upsert: true,
         },
@@ -148,7 +151,7 @@ export class ClassroomService {
       state: 'all',
     });
 
-    const existing = issues.find(i => i.body.includes(assignmentId));
+    const existing = issues.find(i => i.body?.includes(assignmentId));
     if (existing) {
       await this.github('PATCH', `${baseUrl}/${existing.number}`, githubToken, {}, issue);
     } else {
@@ -185,7 +188,7 @@ export class ClassroomService {
       const snippets = evaluation ? this.renderSnippets(assignment, solution, evaluation.snippets) : '';
       if (task.points >= 0) {
         const headlinePrefix = '#'.repeat(depth + 2);
-        const subTasks = renderSubTasks(task.children, depth + 1);
+        const subTasks = evaluation ? '' : renderSubTasks(task.children, depth + 1);
         const header = `${headlinePrefix} ${task.description} (${point}/${task.points}P)`;
         return [header, evaluation?.remark, snippets, subTasks].filter(x => x).join('\n');
       }
@@ -193,7 +196,7 @@ export class ClassroomService {
         // do not render deductions that were not given
         return '';
       }
-      return `- ${task.description}: ${evaluation.remark} (${point}P)\n${snippets}`;
+      return `- ${task.description}${evaluation && evaluation.remark ? ': ' + evaluation.remark : ''} (${point}P)\n${snippets}`;
     };
 
     const renderSubTasks = (tasks: Task[], depth: number): string => tasks.map(task => renderTask(task, depth)).join('\n');

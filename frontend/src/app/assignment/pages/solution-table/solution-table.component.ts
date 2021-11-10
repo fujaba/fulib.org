@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {combineLatest, forkJoin, Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
+import {ToastService} from '../../../toast.service';
 import {Assignee} from '../../model/assignee';
 import Assignment from '../../model/assignment';
 import Solution from '../../model/solution';
@@ -29,6 +30,7 @@ export class SolutionTableComponent implements OnInit {
     private solutionService: SolutionService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    private toastService: ToastService,
   ) {
   }
 
@@ -68,6 +70,10 @@ export class SolutionTableComponent implements OnInit {
     }
     this.solutionService.setAssignee(solution, input.value).subscribe(() => {
       input.disabled = false;
+      this.toastService.success('Assignee', input.value ? `Successfully assigned to ${input.value}` : 'Successfully de-assigned');
+    }, error => {
+      input.disabled = false;
+      this.toastService.error('Assignee', 'Failed to assign', error);
     });
   }
 
@@ -85,7 +91,7 @@ export class SolutionTableComponent implements OnInit {
       return;
     }
 
-    const searchWords = searchText.split(/\s+/).map(s => s.replace('+', ' '));
+    const searchWords = searchText.split(/\s+/).map(s => s.replace(/\+/g, ' '));
     this.filteredSolutions = this.solutions!.filter(solution => this.includeInSearch(solution, searchWords));
   }
 
@@ -162,7 +168,7 @@ export class SolutionTableComponent implements OnInit {
         results.push(prefix + propertyPrefix);
       } else if (lastWord.startsWith(propertyPrefix)) {
         const possibleValues = this.collectAllValues(propertyName).slice(0, 10);
-        results.push(...possibleValues.map(v => prefix + propertyPrefix + v.replace(' ', '+')));
+        results.push(...possibleValues.map(v => prefix + propertyPrefix + v.replace(/ /g, '+')));
       }
     }
     return results;
@@ -180,6 +186,10 @@ export class SolutionTableComponent implements OnInit {
   }
 
   export(solution: Solution) {
-    this.solutionService.export(solution.assignment, solution._id!).subscribe();
+    this.solutionService.export(solution.assignment, solution._id!).subscribe(() => {
+      this.toastService.success('Export', 'Successfully created issue');
+    }, error => {
+      this.toastService.error('Export', 'Failed to create issue', error);
+    });
   }
 }

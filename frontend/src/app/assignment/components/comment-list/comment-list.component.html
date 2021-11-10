@@ -54,8 +54,8 @@
 
             <button type="button" class="btn btn-primary mr-2" id="commentSubmitButton"
                     ngbTooltip="Keyboard Shortcuts: Ctrl-&#9166;"
-                    (click)="submitComment()" [disabled]="submittingComment">
-              {{submittingComment ? 'Submitting...' : 'Submit'}}
+                    (click)="submitComment()" [disabled]="submitting">
+              {{submitting ? 'Submitting...' : 'Submit'}}
             </button>
           </div>
         </div>

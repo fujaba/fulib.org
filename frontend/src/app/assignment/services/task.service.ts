@@ -20,6 +20,19 @@ export class TaskService {
     return undefined;
   }
 
+  findWithParents(tasks: Task[], id: string): Task[] {
+    for (let task of tasks) {
+      if (task._id === id) {
+        return [task];
+      }
+      const child = this.findWithParents(task.children, id);
+      if (child.length) {
+        return [task, ...child];
+      }
+    }
+    return [];
+  }
+
   generateID(): string {
     return new ObjectID().toHexString();
   }
@@ -32,7 +45,7 @@ export class TaskService {
     return cache;
   }
 
-  private getTaskPoints(task: Task, evaluations: Record<string, CreateEvaluationDto>, cache: Record<string, number>): number {
+  getTaskPoints(task: Task, evaluations: Record<string, CreateEvaluationDto>, cache: Record<string, number>): number {
     return cache[task._id] ??= this.calculateTaskPoints(task, evaluations, cache);
   }
 

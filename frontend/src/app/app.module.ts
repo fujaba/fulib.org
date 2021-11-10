@@ -23,6 +23,7 @@ import {PrivacyService} from './privacy.service';
 import {PrivacyComponent} from './privacy/privacy.component';
 import {SharedModule} from './shared/shared.module';
 import {UserModule} from './user/user.module';
+import { ToastListComponent } from './toast-list/toast-list.component';
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () => keycloak.init({
@@ -52,6 +53,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
     FeedbackComponent,
     PrivacyComponent,
     AboutComponent,
+    ToastListComponent,
   ],
   imports: [
     BrowserModule,

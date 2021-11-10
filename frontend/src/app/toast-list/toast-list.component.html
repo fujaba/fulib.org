@@ -1,0 +1,15 @@
+<div style="position: fixed; top: 4rem; right: 1rem">
+  <ngb-toast
+    *ngFor="let toast of toastService.toasts"
+    [class]="toast.class"
+    [autohide]="true"
+    [header]="toast.title || ''"
+    [delay]="toast.delay || 5000"
+    (hidden)="toastService.remove(toast)"
+  >
+    {{ toast.body }}
+    <a *ngFor="let action of toast.actions" [routerLink]="action.link" (click)="action.run && action.run()">
+      {{ action.name }}
+    </a>
+  </ngb-toast>
+</div>

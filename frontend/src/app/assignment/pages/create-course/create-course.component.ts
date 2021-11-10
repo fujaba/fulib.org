@@ -5,6 +5,7 @@ import {forkJoin, Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 
 import {DragulaService} from 'ng2-dragula';
+import {ToastService} from '../../../toast.service';
 
 import Assignment from '../../model/assignment';
 import {AssignmentService} from '../../services/assignment.service';
@@ -54,6 +55,7 @@ export class CreateCourseComponent implements OnInit, OnDestroy {
     private courseService: CourseService,
     private modalService: NgbModal,
     private dragulaService: DragulaService,
+    private toastService: ToastService,
     @Inject(DOCUMENT) document: Document,
   ) {
     this.origin = document.location.origin;
@@ -144,6 +146,9 @@ export class CreateCourseComponent implements OnInit, OnDestroy {
       this.id = course._id;
       this.submitting = false;
       this.modalService.open(this.successModal, {ariaLabelledBy: 'successModalLabel', size: 'xl'});
+    }, error => {
+      this.toastService.error('Course', 'Failed to create course', error);
+      this.submitting = false;
     });
   }
 

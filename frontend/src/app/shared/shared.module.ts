@@ -16,6 +16,7 @@ import {PreviewComponent} from './preview/preview.component';
 import {ProjectConfigFormComponent} from './project-config-form/project-config-form.component';
 import {ScenarioCodemirrorComponent} from './scenario-codemirror/scenario-codemirror.component';
 import {TabsComponent} from './tabs/tabs.component';
+import { ProTipComponent } from './pro-tip/pro-tip.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import {TabsComponent} from './tabs/tabs.component';
     ModalComponent,
     ProjectConfigFormComponent,
     TabsComponent,
+    ProTipComponent,
   ],
   imports: [
     FormsModule,
@@ -40,20 +42,21 @@ import {TabsComponent} from './tabs/tabs.component';
     NgbDropdownModule,
     NgbNavModule,
   ],
-  exports: [
-    SafeHtmlPipe,
-    SafeUrlPipe,
-    SafeResourceUrlPipe,
-    AutothemeCodemirrorComponent,
-    CollapseButtonComponent,
-    ScenarioCodemirrorComponent,
-    PreviewComponent,
-    MarkdownComponent,
-    ProjectConfigFormComponent,
-    ModalComponent,
-    ProjectConfigFormComponent,
-    TabsComponent,
-  ],
+    exports: [
+        SafeHtmlPipe,
+        SafeUrlPipe,
+        SafeResourceUrlPipe,
+        AutothemeCodemirrorComponent,
+        CollapseButtonComponent,
+        ScenarioCodemirrorComponent,
+        PreviewComponent,
+        MarkdownComponent,
+        ProjectConfigFormComponent,
+        ModalComponent,
+        ProjectConfigFormComponent,
+        TabsComponent,
+        ProTipComponent,
+    ],
 })
 export class SharedModule {
 }
