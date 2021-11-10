@@ -116,17 +116,4 @@
   </div>
 </nav>
 
-<div class="float-right m-3">
-  <ngb-toast
-    *ngFor="let toast of toastService.toasts"
-    [class]="toast.class"
-    [autohide]="true"
-    [header]="toast.title || ''"
-    [delay]="toast.delay || 5000"
-    (hidden)="toastService.remove(toast)"
-  >
-    {{ toast.body }}
-  </ngb-toast>
-</div>
-
 </header>

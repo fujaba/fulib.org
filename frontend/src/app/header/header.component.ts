@@ -5,7 +5,6 @@ import {environment} from '../../environments/environment';
 import {ChangelogService, REPOS, Versions} from '../changelog.service';
 
 import {PrivacyService} from '../privacy.service';
-import {ToastService} from '../toast.service';
 
 @Component({
   selector: 'app-header',
@@ -19,7 +18,6 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     private router: Router,
     private route: ActivatedRoute,
     private keycloak: KeycloakService,
-    public toastService: ToastService,
   ) {
   }
 

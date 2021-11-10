@@ -1,0 +1,12 @@
+<div style="position: fixed; top: 4rem; right: 1rem">
+  <ngb-toast
+    *ngFor="let toast of toastService.toasts"
+    [class]="toast.class"
+    [autohide]="true"
+    [header]="toast.title || ''"
+    [delay]="toast.delay || 5000"
+    (hidden)="toastService.remove(toast)"
+  >
+    {{ toast.body }}
+  </ngb-toast>
+</div>
