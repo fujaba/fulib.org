@@ -8,5 +8,8 @@
     (hidden)="toastService.remove(toast)"
   >
     {{ toast.body }}
+    <a *ngFor="let action of toast.actions" [routerLink]="action.link" (click)="action.run && action.run()">
+      {{ action.name }}
+    </a>
   </ngb-toast>
 </div>
