@@ -1,5 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Component, Input} from '@angular/core';
 import {DndDropEvent} from 'ngx-drag-drop';
 import Task from '../../model/task';
 import {AssignmentContext} from '../../services/assignment.context';
@@ -14,21 +13,21 @@ export class EditTaskListComponent {
   @Input() parent?: string;
   @Input() tasks: Task[];
 
+  nextId: string;
+
   constructor(
     private taskService: TaskService,
-    private router: Router,
-    private route: ActivatedRoute,
     public context: AssignmentContext,
   ) {
+    this.generateId();
+  }
+
+  generateId(): void {
+    this.nextId = this.taskService.generateID();
   }
 
   saveDraft() {
     this.context.saveDraft();
-  }
-
-  addTask(): void {
-    const id = this.taskService.generateID();
-    this.router.navigate(['tasks', id], {queryParams: {parent: this.parent}, relativeTo: this.route});
   }
 
   removeTask(task: Task): void {

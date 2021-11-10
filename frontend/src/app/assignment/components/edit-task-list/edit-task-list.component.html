@@ -45,7 +45,10 @@
     <app-edit-task-list *ngIf="!task.collapsed" [parent]="task._id" [tasks]="task.children"></app-edit-task-list>
   </li>
   <li>
-    <a routerLink="." class="text-success" (click)="addTask()">
+    <a class="text-success"
+       [routerLink]="nextId" [queryParams]="{parent}" queryParamsHandling="merge"
+       (click)="generateId()"
+    >
       Add Task
     </a>
   </li>
