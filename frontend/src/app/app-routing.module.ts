@@ -9,10 +9,11 @@ import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
 import {PrivacyComponent} from './privacy/privacy.component';
 
 const routes: Routes = [
-  {path: 'editor', loadChildren: () => import('./editor/editor.module').then(m => m.EditorModule)},
+  {path: 'scenarios', loadChildren: () => import('./editor/editor.module').then(m => m.EditorModule)},
   {path: 'assignments', loadChildren: () => import('./assignment/assignment.module').then(m => m.AssignmentModule)},
   {path: 'docs', loadChildren: () => import('./docs/docs.module').then(m => m.DocsModule)},
   {path: 'projects', loadChildren: () => import('./projects/projects.module').then(m => m.ProjectsModule)},
+  {path: 'editor', redirectTo: 'scenarios'},
   {path: '', pathMatch: 'full', component: HomeComponent},
   {path: '**', component: PageNotFoundComponent},
   {outlet: 'modal', path: 'feedback', component: FeedbackComponent},

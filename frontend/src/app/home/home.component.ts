@@ -11,7 +11,7 @@ export class HomeComponent implements OnInit {
       icon: 'file-earmark-richtext',
       title: 'Scenarios',
       description: 'A textual example description and programming language based on Markdown and regular English.',
-      link: '/editor',
+      link: '/scenarios',
     },
     {
       icon: 'book',
