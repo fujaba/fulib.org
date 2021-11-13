@@ -4,6 +4,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {AboutComponent} from './about/about.component';
 import {ChangelogComponent} from './changelog/changelog.component';
 import {FeedbackComponent} from './feedback/feedback.component';
+import {HomeComponent} from './home/home.component';
 import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
 import {PrivacyComponent} from './privacy/privacy.component';
 
@@ -12,7 +13,7 @@ const routes: Routes = [
   {path: 'assignments', loadChildren: () => import('./assignment/assignment.module').then(m => m.AssignmentModule)},
   {path: 'docs', loadChildren: () => import('./docs/docs.module').then(m => m.DocsModule)},
   {path: 'projects', loadChildren: () => import('./projects/projects.module').then(m => m.ProjectsModule)},
-  {path: '', redirectTo: 'editor', pathMatch: 'full'},
+  {path: '', pathMatch: 'full', component: HomeComponent},
   {path: '**', component: PageNotFoundComponent},
   {outlet: 'modal', path: 'feedback', component: FeedbackComponent},
   {outlet: 'modal', path: 'privacy', component: PrivacyComponent},

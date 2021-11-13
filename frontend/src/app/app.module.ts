@@ -24,6 +24,7 @@ import {PrivacyComponent} from './privacy/privacy.component';
 import {SharedModule} from './shared/shared.module';
 import {UserModule} from './user/user.module';
 import { ToastListComponent } from './toast-list/toast-list.component';
+import { HomeComponent } from './home/home.component';
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () => keycloak.init({
@@ -54,6 +55,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
     PrivacyComponent,
     AboutComponent,
     ToastListComponent,
+    HomeComponent,
   ],
   imports: [
     BrowserModule,
