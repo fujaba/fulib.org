@@ -72,7 +72,7 @@ export class TaskService {
     // # Assignment 1 (xP/100P)
     // ## Task 1 (xP/30P)
     // - Something wrong (-1P)
-    const pattern = /(#+|-)\s+(.*)\s+\((?:[x\d]+P?\/)?(-?\d+)P?\)(?:\s*<!--([a-zA-Z0-9])-->)?/;
+    const pattern = /(#+|-)\s+(.*)\s+\((?:[x\d]+P?\/)?(-?\d+)P?\)(?:\s*<!--([a-zA-Z0-9]+)-->)?/;
     const taskStack: Task[][] = [[]];
     for (const line of markdown.split('\n')) {
       const match = line.match(pattern);
