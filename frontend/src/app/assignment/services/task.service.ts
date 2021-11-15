@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import ObjectID from 'bson-objectid';
+import {TASK_ITEM_PATTERN, extractTaskItem} from '../../../modes/task-list-codemirror-mode';
 import {CreateEvaluationDto} from '../model/evaluation';
 import Task from '../model/task';
 
@@ -72,15 +73,14 @@ export class TaskService {
     // # Assignment 1 (xP/100P)
     // ## Task 1 (xP/30P)
     // - Something wrong (-1P)
-    const pattern = /(#+|-)\s+(.*)\s+\((?:[x\d]+P?\/)?(-?\d+)P?\)(?:\s*<!--([a-zA-Z0-9]+)-->)?/;
     const taskStack: Task[][] = [[]];
     for (const line of markdown.split('\n')) {
-      const match = line.match(pattern);
+      const match = line.match(TASK_ITEM_PATTERN);
       if (!match) {
         continue;
       }
 
-      const [, prefix, description, points, id] = match;
+      const {prefix, description, points, id} = extractTaskItem(match);
       const task: Task = {
         _id: id || this.generateID(),
         points: +points,
