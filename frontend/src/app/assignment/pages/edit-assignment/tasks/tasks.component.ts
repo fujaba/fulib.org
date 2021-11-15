@@ -1,5 +1,4 @@
 import {Component, OnDestroy} from '@angular/core';
-import Assignment from '../../../model/assignment';
 import {AssignmentContext} from '../../../services/assignment.context';
 import {TaskService} from '../../../services/task.service';
 
@@ -9,16 +8,12 @@ import {TaskService} from '../../../services/task.service';
   styleUrls: ['./tasks.component.scss'],
 })
 export class TasksComponent implements OnDestroy {
-  assignment: Assignment;
   markdown?: string;
-  saveDraft: () => void;
 
   constructor(
     private taskService: TaskService,
-    context: AssignmentContext,
+    public context: AssignmentContext,
   ) {
-    this.assignment = context.assignment;
-    this.saveDraft = context.saveDraft;
   }
 
   ngOnDestroy(): void {
@@ -27,10 +22,10 @@ export class TasksComponent implements OnDestroy {
 
   switchMarkdown(markdown: boolean) {
     if (markdown) {
-      this.markdown = this.taskService.renderTasks(this.assignment.tasks);
+      this.markdown = this.taskService.renderTasks(this.context.assignment.tasks);
     } else if (this.markdown !== undefined) {
-      this.assignment.tasks = this.taskService.parseTasks(this.markdown);
-      this.saveDraft();
+      this.context.assignment.tasks = this.taskService.parseTasks(this.markdown);
+      this.context.saveDraft();
       this.markdown = undefined;
     }
   }
