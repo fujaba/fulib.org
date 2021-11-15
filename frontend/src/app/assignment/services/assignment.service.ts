@@ -36,7 +36,7 @@ export class AssignmentService {
 
   loadDraft(id?: string): Assignment | undefined {
     const stored = localStorage.getItem(this.getDraftKey(id));
-    return stored ? this.fromJson(stored) : undefined;
+    return stored ? JSON.parse(stored) : undefined;
   }
 
   saveDraft(id?: string, value?: Assignment) {
@@ -60,24 +60,10 @@ export class AssignmentService {
     this.storage.set(`assignmentToken/${id}`, token);
   }
 
-  // --------------- JSON Conversion ---------------
-
-  fromJson(json: string): Assignment {
-    const reviver = (k, v) => k === 'deadline' && v ? new Date(v) : v;
-    const data = JSON.parse(json, reviver);
-    const assignment = new Assignment();
-    Object.assign(assignment, data);
-    return assignment;
-  }
-
-  toJson(assignment: Assignment, space?: string): string {
-    return JSON.stringify(assignment, undefined, space);
-  }
-
   // --------------- Import/Export ---------------
 
   download(assignment: Assignment): void {
-    const json = this.toJson(assignment, '  ');
+    const json = JSON.stringify(assignment, undefined, '  ');
     saveAs(new Blob([json], {type: 'application/json'}), assignment.title + '.json');
   }
 
@@ -86,7 +72,7 @@ export class AssignmentService {
       const reader = new FileReader();
       reader.onload = _ => {
         const text = reader.result as string;
-        const assignment = this.fromJson(text);
+        const assignment = JSON.parse(text);
         subscriber.next(assignment);
       };
       reader.readAsText(file);
