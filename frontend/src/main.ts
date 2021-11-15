@@ -18,8 +18,10 @@ import * as CodeMirror from 'codemirror';
 import {AppModule} from './app/app.module';
 import {environment} from './environments/environment';
 import {SCENARIO_CODEMIRROR_MODE} from './modes/scenario-codemirror-mode';
+import {TASK_LIST_CODEMIRROR_MODE} from './modes/task-list-codemirror-mode';
 
 CodeMirror.defineSimpleMode('scenario', SCENARIO_CODEMIRROR_MODE);
+CodeMirror.defineSimpleMode('task-list', TASK_LIST_CODEMIRROR_MODE);
 
 import hljs from 'highlight.js/lib/core';
 import java from 'highlight.js/lib/languages/java';
