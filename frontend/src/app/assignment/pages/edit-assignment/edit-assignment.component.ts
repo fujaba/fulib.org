@@ -29,12 +29,12 @@ export class EditAssignmentComponent implements OnInit {
 
     this.route.params.pipe(
       switchMap(({aid}) => {
-        if (aid) {
-          return this.assignmentService.get(aid);
-        }
-        const draft = this.assignmentService.draft;
+        const draft = this.assignmentService.loadDraft(aid);
         if (draft) {
           return of(draft);
+        }
+        if (aid) {
+          return this.assignmentService.get(aid);
         }
         return of(this.createNew());
       }),
@@ -75,9 +75,7 @@ export class EditAssignmentComponent implements OnInit {
   }
 
   saveDraft(): void {
-    if (!this.context.assignment._id) {
-      this.assignmentService.draft = this.getAssignment();
-    }
+    this.assignmentService.saveDraft(this.context.assignment._id, this.getAssignment());
   }
 
   onImport(file: File): void {

@@ -18,7 +18,6 @@ import Course from '../model/course';
   providedIn: 'root',
 })
 export class AssignmentService {
-  private _draft?: Assignment | null;
   private _cache = new Map<string, Assignment>();
 
   constructor(
@@ -31,20 +30,21 @@ export class AssignmentService {
 
   // --------------- Assignment Drafts ---------------
 
-  get draft(): Assignment | null {
-    if (typeof this._draft === 'undefined') {
-      const json = localStorage.getItem('assignmentDraft');
-      this._draft = json ? this.fromJson(json) : null;
-    }
-    return this._draft;
+  private getDraftKey(id?: string) {
+    return id ? `assignments/${id}/draft` : 'assignmentDraft';
   }
 
-  set draft(value: Assignment | null) {
-    this._draft = value;
+  loadDraft(id?: string): Assignment | undefined {
+    const stored = localStorage.getItem(this.getDraftKey(id));
+    return stored ? this.fromJson(stored) : undefined;
+  }
+
+  saveDraft(id?: string, value?: Assignment) {
+    const key = this.getDraftKey(id);
     if (value) {
-      localStorage.setItem('assignmentDraft', JSON.stringify(value));
+      localStorage.setItem(key, JSON.stringify(value));
     } else {
-      localStorage.removeItem('assignmentDraft');
+      localStorage.removeItem(key);
     }
   }
 
