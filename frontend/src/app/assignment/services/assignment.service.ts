@@ -168,7 +168,8 @@ export class AssignmentService {
   }
 
   update(assignment: Assignment): Observable<Assignment> {
-    return this.http.patch<Assignment>(`${environment.assignmentsApiUrl}/assignments/${assignment._id}`, assignment).pipe(
+    const headers = this.getHeaders(assignment.token);
+    return this.http.patch<Assignment>(`${environment.assignmentsApiUrl}/assignments/${assignment._id}`, assignment, {headers}).pipe(
       tap(response => {
         response.token = assignment.token;
         this._cache.set(assignment._id!, response);
@@ -182,11 +183,7 @@ export class AssignmentService {
       return of(cached);
     }
 
-    const headers = {};
-    const token = this.getToken(id);
-    if (token) {
-      headers['Assignment-Token'] = token;
-    }
+    const headers = this.getHeaders(this.getToken(id));
     return this.http.get<Assignment>(`${environment.assignmentsApiUrl}/assignments/${id}`, {headers}).pipe(
       map(a => {
         a.token ??= this.getToken(id) ?? undefined;
@@ -194,6 +191,12 @@ export class AssignmentService {
         return a;
       }),
     );
+  }
+
+  private getHeaders(token?: string | null | undefined): Record<string, string> {
+    return token ? {
+      'Assignment-Token': token,
+    } : {};
   }
 
   getNext(course: Course, assignment: Assignment): Observable<Assignment | undefined> {
