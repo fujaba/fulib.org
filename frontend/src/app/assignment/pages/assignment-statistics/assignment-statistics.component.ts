@@ -36,16 +36,23 @@ export class AssignmentStatisticsComponent implements OnInit {
         taskTotals.set(evaluation.task, (taskTotals.get(evaluation.task) ?? 0) + evaluation.points);
       }
 
-      const sortedTaskIds = Array.from(taskTotals)
+      const sortedTasks = Array.from(taskTotals)
         .sort(([, a], [, b]) => b - a)
-        .map(([key]) => key)
       ;
 
       // group by parent
       const groupedTasks = new Map<string, Task[]>();
-      for (const taskId of sortedTaskIds) {
+      for (const [taskId, total] of sortedTasks) {
+        if (total === 0) {
+          continue;
+        }
+
         const parents = this.taskService.findWithParents(assignment.tasks, taskId);
         const task = parents[parents.length - 1];
+        if (task.points === 0) {
+          continue;
+        }
+
         const parent = parents.length === 1 ? 'root' : parents[0]._id;
         const list = groupedTasks.get(parent);
         if (list) {
