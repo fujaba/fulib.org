@@ -105,20 +105,14 @@
       </ng-template>
     </li>
     <li ngbNavItem="solutions">
-      <a ngbNavLink routerLink="." [queryParams]="{tab: 'solutions'}">
+      <a ngbNavLink routerLink="solutions">
         Solutions
       </a>
-      <ng-template ngbNavContent>
-        <app-solution-table></app-solution-table>
-      </ng-template>
     </li>
     <li ngbNavItem="statistics">
-      <a ngbNavLink routerLink="." [queryParams]="{tab: 'statistics'}">
+      <a ngbNavLink routerLink="statistics">
         Statistics
       </a>
-      <ng-template ngbNavContent>
-        <app-assignment-statistics></app-assignment-statistics>
-      </ng-template>
     </li>
   </ul>
 </div>

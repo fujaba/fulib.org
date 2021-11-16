@@ -1,6 +1,8 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {AssignmentComponent} from './pages/assignment/assignment.component';
+import {SolutionTableComponent} from './pages/assignment/solution-table/solution-table.component';
+import {StatisticsComponent} from './pages/assignment/statistics/statistics.component';
 import {CourseComponent} from './pages/course/course.component';
 import {CreateCourseComponent} from './pages/create-course/create-course.component';
 import {CreateSolutionComponent} from './pages/create-solution/create-solution.component';
@@ -47,24 +49,15 @@ const routes: Routes = [
   {path: '', component: MyAssignmentsComponent},
   {path: 'solutions', component: MySolutionsComponent},
   {path: 'courses', component: MyCoursesComponent},
+  {path: 'courses/create', component: CreateCourseComponent},
+  {path: 'courses/:cid', component: CourseComponent},
+  {path: 'courses/:cid/assignments/:aid', component: CourseComponent},
   {
     path: 'create',
     component: EditAssignmentComponent,
     children: editChildren,
   },
-  {path: ':aid', component: CreateSolutionComponent},
-  {
-    path: ':aid/edit',
-    component: EditAssignmentComponent,
-    children: editChildren,
-  },
-  {
-    path: ':aid/solutions',
-    component: AssignmentComponent,
-    children: [
-      {path: 'token', component: TokenModalComponent},
-    ],
-  },
+  {path: ':aid/solutions/new', component: CreateSolutionComponent},
   {
     path: ':aid/solutions/:sid',
     component: SolutionComponent,
@@ -73,9 +66,21 @@ const routes: Routes = [
       {path: 'tasks/:task', component: EvaluationModalComponent},
     ],
   },
-  {path: 'courses/create', component: CreateCourseComponent},
-  {path: 'courses/:cid', component: CourseComponent},
-  {path: 'courses/:cid/assignments/:aid', component: CourseComponent},
+  {
+    path: ':aid/edit',
+    component: EditAssignmentComponent,
+    children: editChildren,
+  },
+  {path: ':aid', pathMatch: 'full', redirectTo: ':aid/solutions/new'},
+  {
+    path: ':aid',
+    component: AssignmentComponent,
+    children: [
+      {path: 'solutions', component: SolutionTableComponent},
+      {path: 'statistics', component: StatisticsComponent},
+      {path: 'token', component: TokenModalComponent},
+    ],
+  },
 ];
 
 @NgModule({
