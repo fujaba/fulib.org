@@ -2,17 +2,17 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {forkJoin} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
-import Task from '../../model/task';
-import {AssignmentService} from '../../services/assignment.service';
-import {SolutionService} from '../../services/solution.service';
-import {TaskService} from '../../services/task.service';
+import Task from '../../../model/task';
+import {AssignmentService} from '../../../services/assignment.service';
+import {SolutionService} from '../../../services/solution.service';
+import {TaskService} from '../../../services/task.service';
 
 @Component({
   selector: 'app-assignment-statistics',
-  templateUrl: './assignment-statistics.component.html',
-  styleUrls: ['./assignment-statistics.component.scss'],
+  templateUrl: './statistics.component.html',
+  styleUrls: ['./statistics.component.scss'],
 })
-export class AssignmentStatisticsComponent implements OnInit {
+export class StatisticsComponent implements OnInit {
   results: { name: string, series: { name: string, value: number }[]; }[] = [];
 
   constructor(

@@ -2,12 +2,12 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {combineLatest, forkJoin, Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
-import {ToastService} from '../../../toast.service';
-import {Assignee} from '../../model/assignee';
-import Assignment from '../../model/assignment';
-import Solution from '../../model/solution';
-import {AssignmentService} from '../../services/assignment.service';
-import {SolutionService} from '../../services/solution.service';
+import {ToastService} from '../../../../toast.service';
+import {Assignee} from '../../../model/assignee';
+import Assignment from '../../../model/assignment';
+import Solution from '../../../model/solution';
+import {AssignmentService} from '../../../services/assignment.service';
+import {SolutionService} from '../../../services/solution.service';
 
 @Component({
   selector: 'app-solution-table',
