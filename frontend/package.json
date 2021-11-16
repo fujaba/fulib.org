@@ -12,6 +12,7 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "~12.2.0",
+    "@angular/cdk": "~12.2.0",
     "@angular/common": "~12.2.0",
     "@angular/compiler": "~12.2.0",
     "@angular/core": "~12.2.0",
@@ -23,6 +24,7 @@
     "@angular/service-worker": "~12.2.0",
     "@ctrl/ngx-codemirror": "^5.0.0",
     "@ng-bootstrap/ng-bootstrap": "^10.0.0",
+    "@swimlane/ngx-charts": "^19.1.0",
     "angular-gridster2": "^12.1.0",
     "angular-split": "^5.0.0",
     "bootstrap": "~4.6.0",
