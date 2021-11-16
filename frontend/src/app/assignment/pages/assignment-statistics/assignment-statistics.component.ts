@@ -49,7 +49,7 @@ export class AssignmentStatisticsComponent implements OnInit {
 
         const parents = this.taskService.findWithParents(assignment.tasks, taskId);
         const task = parents[parents.length - 1];
-        if (task.points === 0) {
+        if (!task || task.points === 0) {
           continue;
         }
 
