@@ -210,12 +210,14 @@ export class SolutionService {
     return this.http.delete<Comment>(url);
   }
 
-  getEvaluations(assignment: Assignment | string, id: string, task?: string): Observable<Evaluation[]> {
+  getEvaluations(assignment: Assignment | string, id?: string, task?: string): Observable<Evaluation[]> {
     const assignmentID = asID(assignment);
     const headers = {};
-    this.addSolutionToken(headers, assignmentID, id);
+    if (id) {
+      this.addSolutionToken(headers, assignmentID, id);
+    }
     this.addAssignmentToken(headers, assignmentID);
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignmentID}/solutions/${id}/evaluations`;
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignmentID}/${id ? `solutions/${id}/` : ''}evaluations`;
     const params: Record<string, string> = task ? {task} : {};
     return this.http.get<Evaluation[]>(url, {headers, params});
   }
