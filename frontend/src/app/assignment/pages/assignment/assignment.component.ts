@@ -17,17 +17,13 @@ export class AssignmentComponent implements OnInit {
   assignment?: Assignment;
   importing = false;
 
-  readonly origin: string;
-
   constructor(
     public route: ActivatedRoute,
     private router: Router,
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
     private toastService: ToastService,
-    @Inject(DOCUMENT) document: Document,
   ) {
-    this.origin = document.location.origin;
   }
 
   ngOnInit(): void {

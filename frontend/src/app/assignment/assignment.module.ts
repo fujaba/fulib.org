@@ -20,6 +20,7 @@ import {ImportExportComponent} from './components/import-export/import-export.co
 import {TaskListComponent} from './components/task-list/task-list.component';
 
 import {AssignmentComponent} from './pages/assignment/assignment.component';
+import {ShareComponent} from './pages/assignment/share/share.component';
 import {SolutionTableComponent} from './pages/assignment/solution-table/solution-table.component';
 import {StatisticsComponent} from './pages/assignment/statistics/statistics.component';
 import {CourseComponent} from './pages/course/course.component';
@@ -62,6 +63,7 @@ import {TaskColorPipe} from './pipes/task-color.pipe';
     MySolutionsComponent,
     PreviewComponent,
     SampleComponent,
+    ShareComponent,
     SolutionComponent,
     SolutionTableComponent,
     StatisticsComponent,
