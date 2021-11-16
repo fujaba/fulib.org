@@ -2,6 +2,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {APP_INITIALIZER, NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ServiceWorkerModule} from '@angular/service-worker';
 
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -61,6 +62,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
     BrowserModule,
     FormsModule,
     HttpClientModule,
+    BrowserAnimationsModule,
     NgbModule,
     NgBootstrapDarkmodeModule,
     DragulaModule.forRoot(),

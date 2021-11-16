@@ -4,6 +4,7 @@ import {FormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {BarChartModule} from '@swimlane/ngx-charts';
 import {ClipboardModule} from 'ngx-clipboard';
 import {DragulaModule} from 'ng2-dragula';
 import {DndModule} from 'ngx-drag-drop';
@@ -38,6 +39,7 @@ import { TasksComponent } from './pages/edit-assignment/tasks/tasks.component';
 import { TemplateComponent } from './pages/edit-assignment/template/template.component';
 import { SampleComponent } from './pages/edit-assignment/sample/sample.component';
 import { PreviewComponent } from './pages/edit-assignment/preview/preview.component';
+import { AssignmentStatisticsComponent } from './pages/assignment-statistics/assignment-statistics.component';
 
 @NgModule({
     declarations: [
@@ -67,18 +69,24 @@ import { PreviewComponent } from './pages/edit-assignment/preview/preview.compon
         TemplateComponent,
         SampleComponent,
         PreviewComponent,
+        AssignmentStatisticsComponent,
     ],
-    imports: [
-        CommonModule,
-        SharedModule,
-        FormsModule,
-        HttpClientModule,
-        NgbModule,
-        ClipboardModule,
-        DragulaModule,
-      DndModule,
-        AssignmentRoutingModule,
-    ],
+  imports: [
+    CommonModule,
+    SharedModule,
+    FormsModule,
+    HttpClientModule,
+    NgbModule,
+    ClipboardModule,
+    DragulaModule,
+    DndModule,
+    AssignmentRoutingModule,
+    BarChartModule,
+    BarChartModule,
+    BarChartModule,
+    BarChartModule,
+    BarChartModule,
+  ],
     exports: [
         AssignmentInfoComponent,
     ],
