@@ -174,6 +174,18 @@ export class SolutionTableComponent implements OnInit {
     return results;
   }
 
+  assigneeTypeahead = (text$: Observable<string>): Observable<string[]> => {
+    return text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      map(searchInput => {
+        const assignees = this.collectAllValues('assignee');
+        return assignees.filter(a => a.startsWith(searchInput)).slice(0, 10);
+      }),
+    );
+  };
+
+
   private collectAllValues(propertyName: string): string[] {
     const valueSet = new Set<string>();
     for (const solution of this.solutions!) {

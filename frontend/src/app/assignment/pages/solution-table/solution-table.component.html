@@ -60,8 +60,14 @@
       <span class="badge badge-primary badge-pill">? / {{totalPoints}}</span>
     </td>
     <td>
-      <input class="form-control" #assigneeInput [ngModel]="assignees?.[solution._id!]?.assignee"
-             (change)="setAssignee(solution, assigneeInput)">
+      <input
+        #assigneeInput
+        type="text"
+        class="form-control"
+        [ngModel]="assignees?.[solution._id!]?.assignee"
+        (change)="setAssignee(solution, assigneeInput)"
+        [ngbTypeahead]="assigneeTypeahead"
+      >
     </td>
     <td>
       <div class="btn-group">
