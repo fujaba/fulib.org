@@ -8,6 +8,7 @@ specifiers:
   '@angular-eslint/schematics': ~12.3.1
   '@angular-eslint/template-parser': ~12.3.1
   '@angular/animations': ~12.2.0
+  '@angular/cdk': ~12.2.0
   '@angular/cli': ~12.2.0
   '@angular/common': ~12.2.0
   '@angular/compiler': ~12.2.0
@@ -63,6 +64,7 @@ specifiers:
 
 dependencies:
   '@angular/animations': 12.2.0_@angular+core@12.2.0
+  '@angular/cdk': 12.2.13_0b09161855d5ba3034afe699aa518069
   '@angular/common': 12.2.0_@angular+core@12.2.0+rxjs@6.6.7
   '@angular/compiler': 12.2.0
   '@angular/core': 12.2.0_rxjs@6.6.7+zone.js@0.11.4
@@ -74,7 +76,7 @@ dependencies:
   '@angular/service-worker': 12.2.0_ada9c9641a95851f5c472dd7daff6cde
   '@ctrl/ngx-codemirror': 5.0.0_059c61eb280aab128ace61b72d7d0a6b
   '@ng-bootstrap/ng-bootstrap': 10.0.0_2f7d63569bbd7904da41da891dfdf47e
-  '@swimlane/ngx-charts': 19.1.0_1d1f1a327cbf436f1d28bd6981f6014b
+  '@swimlane/ngx-charts': 19.1.0_f0d13b3b7bc2ea274ab262fc6d3f8af2
   angular-gridster2: 12.1.0_ada9c9641a95851f5c472dd7daff6cde
   angular-split: 5.0.0_0b09161855d5ba3034afe699aa518069
   bootstrap: 4.6.0
@@ -97,10 +99,10 @@ dependencies:
 
 devDependencies:
   '@angular-devkit/build-angular': 12.2.0_592d3fb7f909b113f6d681fb07fc3085
-  '@angular-eslint/builder': 12.3.1_eslint@7.32.0+typescript@4.3.5
+  '@angular-eslint/builder': 12.3.1_81ecc7788efd9cc1da6bd7843d153c92
   '@angular-eslint/eslint-plugin': 12.3.1_75247ddd4e45f6214e98d36b47ca6e46
   '@angular-eslint/eslint-plugin-template': 12.3.1_75247ddd4e45f6214e98d36b47ca6e46
-  '@angular-eslint/schematics': 12.3.1_75247ddd4e45f6214e98d36b47ca6e46
+  '@angular-eslint/schematics': 12.3.1_e9d95481a4ce52d39910b02df223cb8c
   '@angular-eslint/template-parser': 12.3.1_75247ddd4e45f6214e98d36b47ca6e46
   '@angular/cli': 12.2.0
   '@angular/compiler-cli': 12.2.0_525cecd12b51af8a72279cf378d453b6
@@ -308,13 +310,14 @@ packages:
       rxjs: 6.6.7
     dev: true
 
-  /@angular-eslint/builder/12.3.1_eslint@7.32.0+typescript@4.3.5:
+  /@angular-eslint/builder/12.3.1_81ecc7788efd9cc1da6bd7843d153c92:
     resolution: {integrity: sha512-Py7Y9n0evIWGgEIrnMaLvalE1+Nw9HoY+fcYLYd9POfY0cug8j7hbkoPQ6rM7GzNHVcVsqEi/8C4DoF7RXXNRg==}
     peerDependencies:
       '@angular/cli': '>= 12.0.0 < 13.0.0'
       eslint: '*'
       typescript: '*'
     dependencies:
+      '@angular/cli': 12.2.0
       '@nrwl/devkit': 12.6.3
       eslint: 7.32.0
       typescript: 4.3.5
@@ -352,13 +355,14 @@ packages:
       - supports-color
     dev: true
 
-  /@angular-eslint/schematics/12.3.1_75247ddd4e45f6214e98d36b47ca6e46:
+  /@angular-eslint/schematics/12.3.1_e9d95481a4ce52d39910b02df223cb8c:
     resolution: {integrity: sha512-r1yZaqyO0oJhKDIWio3gH9TWpWEN8bUpiftgkkR6Yyc4hKBbiR5N4RQo5aZ5bnGytdW8QP8zq2k1yYBWjhEX7A==}
     peerDependencies:
       '@angular/cli': '>= 12.0.0 < 13.0.0'
     dependencies:
       '@angular-eslint/eslint-plugin': 12.3.1_75247ddd4e45f6214e98d36b47ca6e46
       '@angular-eslint/eslint-plugin-template': 12.3.1_75247ddd4e45f6214e98d36b47ca6e46
+      '@angular/cli': 12.2.0
       ignore: 5.1.8
       strip-json-comments: 3.1.1
       tmp: 0.2.1
@@ -390,6 +394,21 @@ packages:
     dependencies:
       '@angular/core': 12.2.0_rxjs@6.6.7+zone.js@0.11.4
       tslib: 2.3.0
+    dev: false
+
+  /@angular/cdk/12.2.13_0b09161855d5ba3034afe699aa518069:
+    resolution: {integrity: sha512-zSKRhECyFqhingIeyRInIyTvYErt4gWo+x5DQr0b7YLUbU8DZSwWnG4w76Ke2s4U8T7ry1jpJBHoX/e8YBpGMg==}
+    peerDependencies:
+      '@angular/common': ^12.0.0 || ^13.0.0-0
+      '@angular/core': ^12.0.0 || ^13.0.0-0
+      rxjs: ^6.5.3 || ^7.0.0
+    dependencies:
+      '@angular/common': 12.2.0_@angular+core@12.2.0+rxjs@6.6.7
+      '@angular/core': 12.2.0_rxjs@6.6.7+zone.js@0.11.4
+      rxjs: 6.6.7
+      tslib: 2.3.0
+    optionalDependencies:
+      parse5: 5.1.1
     dev: false
 
   /@angular/cli/12.2.0:
@@ -1963,7 +1982,7 @@ packages:
       jsonc-parser: 3.0.0
     dev: true
 
-  /@swimlane/ngx-charts/19.1.0_1d1f1a327cbf436f1d28bd6981f6014b:
+  /@swimlane/ngx-charts/19.1.0_f0d13b3b7bc2ea274ab262fc6d3f8af2:
     resolution: {integrity: sha512-hxh9y7gSKWUtSmjlLw7F9dXqy1yjbDCwzmBAg7FKXNjKP72erkemguoEd1i6WMi/33TRaPcFNW5PLNmTAsS0Ng==}
     peerDependencies:
       '@angular/animations': '>=12.0.0'
@@ -1976,6 +1995,7 @@ packages:
       rxjs: 6.x
     dependencies:
       '@angular/animations': 12.2.0_@angular+core@12.2.0
+      '@angular/cdk': 12.2.13_0b09161855d5ba3034afe699aa518069
       '@angular/common': 12.2.0_@angular+core@12.2.0+rxjs@6.6.7
       '@angular/core': 12.2.0_rxjs@6.6.7+zone.js@0.11.4
       '@angular/forms': 12.2.0_1f5ba90bacf52451b50883acfad59326
@@ -7095,6 +7115,12 @@ packages:
     dependencies:
       parse5: 6.0.1
     dev: true
+
+  /parse5/5.1.1:
+    resolution: {integrity: sha512-ugq4DFI0Ptb+WWjAdOK16+u/nHfiIrcE+sh8kZMaM0WllQKLI9rOUq6c2b7cwPkXdzfQESqvoqK6ug7U/Yyzug==}
+    requiresBuild: true
+    dev: false
+    optional: true
 
   /parse5/6.0.1:
     resolution: {integrity: sha512-Ofn/CTFzRGTTxwpNEs9PP93gXShHcTq255nzRYSKe8AkVpZY7e1fpmTfOyoIvjP5HG7Z2ZM7VS9PPhQGW2pOpw==}
