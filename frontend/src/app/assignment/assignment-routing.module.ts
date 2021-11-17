@@ -24,7 +24,7 @@ import {MySolutionsComponent} from './pages/my-solutions/my-solutions.component'
 import {SolutionComponent} from './pages/solution/solution.component';
 import {TokenModalComponent} from './pages/token-modal/token-modal.component';
 
-export const editChildren: Routes = [
+export const editAssignmentChildRoutes: Routes = [
   {path: 'info', component: InfoComponent, data: {title: 'Info'}},
   {path: 'classroom', component: ClassroomComponent, data: {icon: 'github', title: 'Classroom', new: true}},
   {
@@ -66,7 +66,7 @@ const routes: Routes = [
   {
     path: 'create',
     component: EditAssignmentComponent,
-    children: editChildren,
+    children: editAssignmentChildRoutes,
   },
   {path: ':aid/solutions/new', component: CreateSolutionComponent},
   {
@@ -80,7 +80,7 @@ const routes: Routes = [
   {
     path: ':aid/edit',
     component: EditAssignmentComponent,
-    children: editChildren,
+    children: editAssignmentChildRoutes,
   },
   {path: ':aid', pathMatch: 'full', redirectTo: ':aid/solutions/new'},
   {
