@@ -39,6 +39,7 @@ import {EvaluationModalComponent} from './pages/evaluation-modal/evaluation-moda
 import {MyAssignmentsComponent} from './pages/my-assignments/my-assignments.component';
 import {MyCoursesComponent} from './pages/my-courses/my-courses.component';
 import {MySolutionsComponent} from './pages/my-solutions/my-solutions.component';
+import {SolutionShareComponent} from './pages/solution/share/share.component';
 import {SolutionComponent} from './pages/solution/solution.component';
 import {TokenModalComponent} from './pages/token-modal/token-modal.component';
 import {TaskColorPipe} from './pipes/task-color.pipe';
@@ -67,6 +68,7 @@ import {TaskColorPipe} from './pipes/task-color.pipe';
     SampleComponent,
     ShareComponent,
     SolutionComponent,
+    SolutionShareComponent,
     SolutionTableComponent,
     StatisticsComponent,
     TaskColorPipe,

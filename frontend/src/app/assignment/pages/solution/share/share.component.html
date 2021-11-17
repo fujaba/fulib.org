@@ -1,0 +1,53 @@
+<h5 class="card-title">
+  Submission Link
+</h5>
+<p>
+  You can view your submission with this link.
+</p>
+<div class="input-group">
+  <input #linkInput type="text" class="form-control" readonly
+         [value]="origin + '/assignments/' + assignmentId + '/solutions/' + solutionId">
+  <div class="input-group-append" *ngxClipboardIfSupported>
+    <button type="button" class="btn btn-outline-secondary" [ngxClipboard]="linkInput">
+      Copy
+    </button>
+  </div>
+</div>
+<hr/>
+<h5 class="card-title">
+  Access Token
+</h5>
+<p>
+  To view your submission on other devices, you may be asked for the following token.
+  Please save it or write it down somewhere.
+  <span class="text-danger">
+            Keep this token secret, do not share it with others!
+          </span>
+</p>
+<div class="input-group">
+  <input #tokenInput type="text" class="form-control text-monospace" readonly [value]="token">
+  <div class="input-group-append" *ngxClipboardIfSupported>
+    <button type="button" class="btn btn-outline-secondary" [ngxClipboard]="tokenInput">
+      Copy
+    </button>
+  </div>
+</div>
+<hr/>
+<h5 class="card-title">
+  Submission Link with Token
+</h5>
+<p>
+  You can view your submission with this link.
+  <span class="text-danger">
+            It includes the Access Token, so keep the link secret and do not share it with others!
+          </span>
+</p>
+<div class="input-group">
+  <input #linkWithTokenInput type="text" class="form-control" readonly
+         [value]="origin + '/assignments/' + assignmentId + '/solutions/' + solutionId + '/?stok=' + token">
+  <div class="input-group-append" *ngxClipboardIfSupported>
+    <button type="button" class="btn btn-outline-secondary" [ngxClipboard]="linkWithTokenInput">
+      Copy
+    </button>
+  </div>
+</div>
