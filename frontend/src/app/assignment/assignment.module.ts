@@ -7,18 +7,11 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {BarChartModule} from '@swimlane/ngx-charts';
 import {DragulaModule} from 'ng2-dragula';
 import {ClipboardModule} from 'ngx-clipboard';
-import {DndModule} from 'ngx-drag-drop';
 
 import {SharedModule} from '../shared/shared.module';
 import {AssignmentRoutingModule} from './assignment-routing.module';
-
 import {AssignmentSharedModule} from './modules/shared/shared.module';
 
-import {AssignmentComponent} from './pages/assignment/assignment.component';
-import {ShareComponent} from './pages/assignment/share/share.component';
-import {SolutionTableComponent} from './pages/assignment/solution-table/solution-table.component';
-import {StatisticsComponent} from './pages/assignment/statistics/statistics.component';
-import {AssignmentTasksComponent} from './pages/assignment/tasks/tasks.component';
 import {CourseComponent} from './pages/course/course.component';
 import {CreateCourseComponent} from './pages/create-course/create-course.component';
 import {CreateSolutionComponent} from './pages/create-solution/create-solution.component';
@@ -29,17 +22,12 @@ import {TokenModalComponent} from './pages/token-modal/token-modal.component';
 
 @NgModule({
   declarations: [
-    AssignmentComponent,
-    AssignmentTasksComponent,
     CourseComponent,
     CreateCourseComponent,
     CreateSolutionComponent,
     MyAssignmentsComponent,
     MyCoursesComponent,
     MySolutionsComponent,
-    ShareComponent,
-    SolutionTableComponent,
-    StatisticsComponent,
     TokenModalComponent,
   ],
   imports: [
@@ -52,7 +40,6 @@ import {TokenModalComponent} from './pages/token-modal/token-modal.component';
     DragulaModule,
     AssignmentSharedModule,
     AssignmentRoutingModule,
-    BarChartModule,
   ],
 })
 export class AssignmentModule {
