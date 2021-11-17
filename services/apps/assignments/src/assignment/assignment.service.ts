@@ -1,8 +1,8 @@
 import {UserToken} from '@app/keycloak-auth';
 import {HttpService} from '@nestjs/axios';
 import {Injectable} from '@nestjs/common';
-import {InjectConnection, InjectModel} from '@nestjs/mongoose';
-import {Connection, FilterQuery, Model} from 'mongoose';
+import {InjectModel} from '@nestjs/mongoose';
+import {FilterQuery, Model} from 'mongoose';
 import {environment} from '../environment';
 import {CreateEvaluationDto} from '../evaluation/evaluation.dto';
 import {generateToken, idFilter} from '../utils';
@@ -13,10 +13,9 @@ import {Assignment, AssignmentDocument, Task} from './assignment.schema';
 export class AssignmentService {
   constructor(
     @InjectModel('assignments') private model: Model<Assignment>,
-    @InjectConnection() connection: Connection,
     private http: HttpService,
   ) {
-    connection.once('connected', () => this.migrate());
+    this.migrate();
   }
 
   async migrate() {
