@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {combineLatest, forkJoin} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
+import {solutionChildRoutes} from '../../assignment-routing.module';
 import Assignment from '../../model/assignment';
 import Solution from '../../model/solution';
 import {AssignmentService} from '../../services/assignment.service';
@@ -15,6 +16,8 @@ import {SolutionService} from '../../services/solution.service';
 export class SolutionComponent implements OnInit {
   assignment?: Assignment;
   solution?: Solution;
+
+  routes = solutionChildRoutes;
 
   constructor(
     private assignmentService: AssignmentService,

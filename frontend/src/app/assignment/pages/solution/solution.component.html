@@ -31,40 +31,6 @@
     </ng-template>
   </p>
 
-  <ul ngbNav #nav="ngbNav" [activeId]="(route.queryParams | async)?.['tab'] ?? 'solution'" class="nav-tabs mb-3">
-    <li ngbNavItem="solution">
-      <a ngbNavLink routerLink="." [queryParams]="{tab: 'solution'}">
-        Solution & Tasks
-      </a>
-      <ng-template ngbNavContent>
-        <app-solution-tasks></app-solution-tasks>
-      </ng-template>
-    </li>
-    <li ngbNavItem="info">
-      <a ngbNavLink routerLink="." [queryParams]="{tab: 'info'}">
-        Student Info
-      </a>
-      <ng-template ngbNavContent>
-        <app-solution-details></app-solution-details>
-      </ng-template>
-    </li>
-    <li ngbNavItem="share">
-      <a ngbNavLink routerLink="." [queryParams]="{tab: 'share'}">
-        Sharing
-      </a>
-      <ng-template ngbNavContent>
-        <app-solution-share></app-solution-share>
-      </ng-template>
-    </li>
-    <li ngbNavItem="comments">
-      <a ngbNavLink routerLink="." [queryParams]="{tab: 'comments'}">
-        Comments
-      </a>
-      <ng-template ngbNavContent>
-        <app-comment-list></app-comment-list>
-      </ng-template>
-    </li>
-  </ul>
-  <div [ngbNavOutlet]="nav"></div>
+  <app-route-tabs [routes]="routes"></app-route-tabs>
+  <router-outlet></router-outlet>
 </div>
-<router-outlet></router-outlet>

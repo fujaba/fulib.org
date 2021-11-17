@@ -1,5 +1,6 @@
 import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
+import {Route, RouterModule, Routes} from '@angular/router';
+import {CommentListComponent} from './components/comment-list/comment-list.component';
 
 import {AssignmentComponent} from './pages/assignment/assignment.component';
 import {ShareComponent} from './pages/assignment/share/share.component';
@@ -21,7 +22,10 @@ import {EvaluationModalComponent} from './pages/evaluation-modal/evaluation-moda
 import {MyAssignmentsComponent} from './pages/my-assignments/my-assignments.component';
 import {MyCoursesComponent} from './pages/my-courses/my-courses.component';
 import {MySolutionsComponent} from './pages/my-solutions/my-solutions.component';
+import {SolutionDetailsComponent} from './pages/solution/info/details.component';
+import {SolutionShareComponent} from './pages/solution/share/share.component';
 import {SolutionComponent} from './pages/solution/solution.component';
+import {SolutionTasksComponent} from './pages/solution/tasks/tasks.component';
 import {TokenModalComponent} from './pages/token-modal/token-modal.component';
 
 export const editAssignmentChildRoutes: Routes = [
@@ -56,6 +60,13 @@ export const assignmentChildRoutes = [
   {path: 'token', component: TokenModalComponent},
 ];
 
+export const solutionChildRoutes: Routes = [
+  {path: 'tasks', component: SolutionTasksComponent, data: {title: 'Solution & Tasks'}},
+  {path: 'details', component: SolutionDetailsComponent, data: {title: 'Student Info'}},
+  {path: 'share', component: SolutionShareComponent, data: {title: 'Sharing'}},
+  {path: 'comments', component: CommentListComponent, data: {title: 'Comments'}},
+];
+
 const routes: Routes = [
   {path: '', component: MyAssignmentsComponent},
   {path: 'solutions', component: MySolutionsComponent},
@@ -73,8 +84,10 @@ const routes: Routes = [
     path: ':aid/solutions/:sid',
     component: SolutionComponent,
     children: [
+      ...solutionChildRoutes,
       {path: 'token', component: TokenModalComponent},
       {path: 'tasks/:task', component: EvaluationModalComponent},
+      {path: '', redirectTo: 'tasks'},
     ],
   },
   {
