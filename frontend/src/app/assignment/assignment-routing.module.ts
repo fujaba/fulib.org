@@ -45,7 +45,7 @@ export const editAssignmentChildRoutes: Routes = [
     component: SampleComponent,
     data: {title: 'Sample'},
     children: [
-      {path: 'tasks/:task', component: EditTaskModalComponent},
+      {path: ':task', component: EditTaskModalComponent},
     ],
   },
   {path: 'preview', component: PreviewComponent, data: {title: 'Preview'}},
@@ -61,7 +61,11 @@ export const assignmentChildRoutes = [
 ];
 
 export const solutionChildRoutes: Routes = [
-  {path: 'tasks', component: SolutionTasksComponent, data: {title: 'Solution & Tasks'}},
+  {
+    path: 'tasks', component: SolutionTasksComponent, data: {title: 'Solution & Tasks'}, children: [
+      {path: ':task', component: EvaluationModalComponent},
+    ],
+  },
   {path: 'details', component: SolutionDetailsComponent, data: {title: 'Student Info'}},
   {path: 'share', component: SolutionShareComponent, data: {title: 'Sharing'}},
   {path: 'comments', component: CommentListComponent, data: {title: 'Comments'}},
@@ -86,7 +90,6 @@ const routes: Routes = [
     children: [
       ...solutionChildRoutes,
       {path: 'token', component: TokenModalComponent},
-      {path: 'tasks/:task', component: EvaluationModalComponent},
       {path: '', redirectTo: 'tasks'},
     ],
   },

@@ -7,7 +7,7 @@
     </span>
     <a
       *ngIf="evaluations"
-      [routerLink]="['tasks', task._id]"
+      [routerLink]="[task._id]"
       [class.text-primary]="!evaluations[task._id]"
       [class.text-secondary]="evaluations[task._id]"
     >
