@@ -1,0 +1,24 @@
+<div class="container">
+  <app-assignment-info [assignment]="assignment"></app-assignment-info>
+
+  <div class="btn-group mb-3" role="group" aria-label="Actions">
+    <a class="btn btn-primary" [routerLink]="['/assignments', assignment?._id, 'edit']">
+      <i class="bi-pencil"></i>
+      Edit Assignment
+    </a>
+    <button
+      *ngIf="assignment?.classroom?.org && assignment?.classroom?.prefix"
+      class="btn btn-success"
+      ngbTooltip="Import Solutions from GitHub Classroom (requires Account linked to GitHub)"
+      [disabled]="importing"
+      (click)="import()"
+    >
+      <i *ngIf="!importing" class="bi-download"></i>
+      <span *ngIf="importing" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      {{ importing ? 'Importing Solutions...' : 'Import Solutions' }}
+    </button>
+  </div>
+
+  <app-route-tabs [routes]="routes"></app-route-tabs>
+</div>
+<router-outlet></router-outlet>

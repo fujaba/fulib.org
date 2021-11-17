@@ -121,7 +121,7 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
       if (this.course && this.nextAssignment) {
         this.router.navigate(['/assignments', 'courses', this.course._id, 'assignments', this.nextAssignment._id]);
       } else {
-        this.router.navigate(['/assignments', result.assignment, 'solutions', result._id], {queryParams: {tab: 'share'}});
+        this.router.navigate(['/assignments', result.assignment, 'solutions', result._id, 'share']);
       }
     }, error => {
       this.toastService.error('Solution', 'Failed to submit solution', error);
