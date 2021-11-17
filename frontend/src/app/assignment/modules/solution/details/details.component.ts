@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {forkJoin} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
+import {ToastService} from '../../../../toast.service';
 import Assignment from '../../../model/assignment';
 import Solution from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
@@ -16,9 +17,12 @@ export class SolutionDetailsComponent implements OnInit {
   assignment?: Assignment;
   solution?: Solution;
 
+  saving = false;
+
   constructor(
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
+    private toastService: ToastService,
     private route: ActivatedRoute,
   ) {
   }
@@ -27,7 +31,7 @@ export class SolutionDetailsComponent implements OnInit {
     this.route.params.pipe(
       switchMap(({aid, sid}) => forkJoin([
         this.assignmentService.get(aid),
-        this.solutionService.get(aid, sid)
+        this.solutionService.get(aid, sid),
       ])),
     ).subscribe(([assignment, solution]) => {
       this.assignment = assignment;
@@ -35,4 +39,18 @@ export class SolutionDetailsComponent implements OnInit {
     });
   }
 
+  save() {
+    const {assignment, _id, author} = this.solution!;
+    this.saving = true;
+    this.solutionService.update(assignment, _id!, {
+      author,
+    }).subscribe(solution => {
+      this.solution = solution;
+      this.saving = false;
+      this.toastService.success('Solution', 'Successfully updated student details');
+    }, error => {
+      this.toastService.error('Solution', 'Failed to update student details');
+      this.saving = false;
+    });
+  }
 }
