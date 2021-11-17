@@ -20,7 +20,7 @@ export class EditAssignmentComponent implements OnInit {
   constructor(
     private assignmentService: AssignmentService,
     public context: AssignmentContext,
-    public route: ActivatedRoute,
+    private route: ActivatedRoute,
   ) {
   }
 
