@@ -44,14 +44,12 @@ import {SolutionShareComponent} from './pages/solution/share/share.component';
 import {SolutionComponent} from './pages/solution/solution.component';
 import {SolutionTasksComponent} from './pages/solution/tasks/tasks.component';
 import {TokenModalComponent} from './pages/token-modal/token-modal.component';
-import {TaskColorPipe} from './pipes/task-color.pipe';
 
 @NgModule({
   declarations: [
     AssignmentComponent,
     AssignmentInfoComponent,
     AssignmentTasksComponent,
-    AuthorNameComponent,
     ClassroomComponent,
     CommentListComponent,
     CourseComponent,
@@ -75,8 +73,6 @@ import {TaskColorPipe} from './pipes/task-color.pipe';
     SolutionTableComponent,
     SolutionTasksComponent,
     StatisticsComponent,
-    TaskColorPipe,
-    TaskListComponent,
     TasksComponent,
     TemplateComponent,
     TokenModalComponent,
@@ -90,6 +86,7 @@ import {TaskColorPipe} from './pipes/task-color.pipe';
     ClipboardModule,
     DragulaModule,
     DndModule,
+    AssignmentSharedModule,
     AssignmentRoutingModule,
     BarChartModule,
   ],

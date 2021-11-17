@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
-import {CreateEvaluationDto} from '../../model/evaluation';
-import Task from '../../model/task';
+import {CreateEvaluationDto} from '../../../model/evaluation';
+import Task from '../../../model/task';
 
 @Component({
   selector: 'app-task-list',

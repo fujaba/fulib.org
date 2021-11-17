@@ -1,5 +1,5 @@
 import {Pipe, PipeTransform} from '@angular/core';
-import Task from '../model/task';
+import Task from '../../../model/task';
 
 @Pipe({
   name: 'taskColor',
