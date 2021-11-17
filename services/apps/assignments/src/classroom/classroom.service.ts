@@ -53,7 +53,7 @@ export class ClassroomService {
   }
 
   async importSolutions2(assignment: AssignmentDocument, githubToken: string): Promise<string[]> {
-    const query = `org:${assignment.classroom!.org} ${assignment.classroom!.prefix} in:name`;
+    const query = `org:${assignment.classroom!.org} "${assignment.classroom!.prefix}-" in:name`;
     const repositories: RepositoryInfo[] = [];
     let total = Number.MAX_SAFE_INTEGER;
     for (let page = 1; repositories.length < total; page++) {
