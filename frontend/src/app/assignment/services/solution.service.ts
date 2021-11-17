@@ -187,6 +187,16 @@ export class SolutionService {
     return this.http.get<Solution[]>(`${environment.assignmentsApiUrl}/solutions`);
   }
 
+  update(assignment: string, solution: string, dto: Partial<Solution>): Observable<Solution> {
+    const headers = {};
+    this.addSolutionToken(headers, assignment, solution);
+    this.addAssignmentToken(headers, assignment);
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}`;
+    return this.http.patch<Solution>(url, dto, {headers}).pipe(tap(result => {
+      result.token = this.getToken(assignment, solution) ?? undefined;
+    }));
+  }
+
   getComments(assignment: string, solution: string): Observable<Comment[]> {
     const headers = {};
     this.addSolutionToken(headers, assignment, solution);
