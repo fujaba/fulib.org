@@ -37,7 +37,7 @@
     "class-validator": "^0.13.1",
     "dockerode": "^3.3.1",
     "mongoose": "^6.0.13",
-    "passport": "^0.4.1",
+    "passport": "^0.5.0",
     "passport-jwt": "^4.0.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
