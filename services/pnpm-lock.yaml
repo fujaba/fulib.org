@@ -1,7 +1,7 @@
 lockfileVersion: 5.3
 
 specifiers:
-  '@nestjs/axios': ^0.0.2
+  '@nestjs/axios': ^0.0.3
   '@nestjs/cli': ^8.1.4
   '@nestjs/common': ^8.2.1
   '@nestjs/core': ^8.2.1
@@ -22,7 +22,7 @@ specifiers:
   '@types/supertest': ^2.0.11
   '@typescript-eslint/eslint-plugin': ^5.4.0
   '@typescript-eslint/parser': ^5.4.0
-  axios: 0.21.4
+  axios: ^0.24.0
   bson-objectid: ^2.0.1
   class-transformer: ^0.4.0
   class-validator: ^0.13.1
@@ -47,7 +47,7 @@ specifiers:
   typescript: ^4.4.4
 
 dependencies:
-  '@nestjs/axios': 0.0.2_dbd295fae640472b7439dc2d53357c1a
+  '@nestjs/axios': 0.0.3_dbd295fae640472b7439dc2d53357c1a
   '@nestjs/common': 8.2.1_43f93dd897e68fe834a23ddd32fb54cc
   '@nestjs/core': 8.2.1_f3b5d94d6c40d16d340f89e1706074b8
   '@nestjs/jwt': 8.0.0_@nestjs+common@8.2.1
@@ -58,7 +58,7 @@ dependencies:
   '@nestjs/swagger': 5.1.4_0a5ccf67604efdf0c09b27c72aaca28a
   '@types/dockerode': 3.3.0
   '@types/passport-jwt': 3.0.6
-  axios: 0.21.4
+  axios: 0.24.0
   bson-objectid: 2.0.1
   class-transformer: 0.4.0
   class-validator: 0.13.1
@@ -783,15 +783,15 @@ packages:
       chalk: 4.1.2
     dev: true
 
-  /@nestjs/axios/0.0.2_dbd295fae640472b7439dc2d53357c1a:
-    resolution: {integrity: sha512-T0EKw91tJ+/XhmDYsr4DrRJ+grn0VEOZ6zAkuJfKM4ltBqwI5dTM8T8BumGqVZ3iGe5YTo/PMb/o8oilJaajwg==}
+  /@nestjs/axios/0.0.3_dbd295fae640472b7439dc2d53357c1a:
+    resolution: {integrity: sha512-Cc+D2S2uesthRpalmZEPdm5wF2N9ji4l9Wsb2vFaug/CVWg2BoegHm0L1jzFUL+6kS+mXWSFvwXJmofv+7bajw==}
     peerDependencies:
       '@nestjs/common': ^7.0.0 || ^8.0.0
       reflect-metadata: ^0.1.12
       rxjs: ^6.0.0 || ^7.0.0
     dependencies:
       '@nestjs/common': 8.2.1_43f93dd897e68fe834a23ddd32fb54cc
-      axios: 0.21.4
+      axios: 0.23.0
       reflect-metadata: 0.1.13
       rxjs: 7.4.0
     transitivePeerDependencies:
@@ -1794,8 +1794,8 @@ packages:
     engines: {node: '>= 4.0.0'}
     dev: true
 
-  /axios/0.21.4:
-    resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
+  /axios/0.23.0:
+    resolution: {integrity: sha512-NmvAE4i0YAv5cKq8zlDoPd1VLKAqX5oLuZKs8xkJa4qi6RGn0uhCYFjWtHHC9EM/MwOwYWOs53W+V0aqEXq1sg==}
     dependencies:
       follow-redirects: 1.14.5
     transitivePeerDependencies:
