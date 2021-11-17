@@ -42,6 +42,7 @@ import {MySolutionsComponent} from './pages/my-solutions/my-solutions.component'
 import {SolutionDetailsComponent} from './pages/solution/info/details.component';
 import {SolutionShareComponent} from './pages/solution/share/share.component';
 import {SolutionComponent} from './pages/solution/solution.component';
+import {SolutionTasksComponent} from './pages/solution/tasks/tasks.component';
 import {TokenModalComponent} from './pages/token-modal/token-modal.component';
 import {TaskColorPipe} from './pipes/task-color.pipe';
 
@@ -72,6 +73,7 @@ import {TaskColorPipe} from './pipes/task-color.pipe';
     SolutionDetailsComponent,
     SolutionShareComponent,
     SolutionTableComponent,
+    SolutionTasksComponent,
     StatisticsComponent,
     TaskColorPipe,
     TaskListComponent,
