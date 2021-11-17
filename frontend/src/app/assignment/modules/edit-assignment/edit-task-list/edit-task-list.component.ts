@@ -1,8 +1,8 @@
 import {Component, Input} from '@angular/core';
 import {DndDropEvent} from 'ngx-drag-drop';
-import Task from '../../model/task';
-import {AssignmentContext} from '../../services/assignment.context';
-import {TaskService} from '../../services/task.service';
+import Task from '../../../model/task';
+import {AssignmentContext} from '../../../services/assignment.context';
+import {TaskService} from '../../../services/task.service';
 
 @Component({
   selector: 'app-edit-task-list',

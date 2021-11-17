@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {map} from 'rxjs/operators';
-import Task from '../../model/task';
-import {AssignmentContext} from '../../services/assignment.context';
-import {TaskService} from '../../services/task.service';
+import Task from '../../../model/task';
+import {AssignmentContext} from '../../../services/assignment.context';
+import {TaskService} from '../../../services/task.service';
 
 @Component({
   selector: 'app-edit-task-modal',

@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import Assignment from '../../model/assignment';
+import Assignment from '../../../model/assignment';
 
 @Component({
   selector: 'app-assignment-info',

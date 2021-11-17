@@ -2,11 +2,11 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {of} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
-import {editAssignmentChildRoutes} from '../../assignment-routing.module';
-import Assignment from '../../model/assignment';
-import Task from '../../model/task';
-import {AssignmentContext} from '../../services/assignment.context';
-import {AssignmentService} from '../../services/assignment.service';
+import Assignment from '../../../model/assignment';
+import Task from '../../../model/task';
+import {AssignmentContext} from '../../../services/assignment.context';
+import {AssignmentService} from '../../../services/assignment.service';
+import {editAssignmentChildRoutes} from '../edit-assignment-routing.module';
 
 @Component({
   selector: 'app-create-assignment',
@@ -15,7 +15,7 @@ import {AssignmentService} from '../../services/assignment.service';
   providers: [AssignmentContext],
 })
 export class EditAssignmentComponent implements OnInit {
-  steps = editAssignmentChildRoutes.filter(r => r.path);
+  steps = editAssignmentChildRoutes;
 
   constructor(
     private assignmentService: AssignmentService,
