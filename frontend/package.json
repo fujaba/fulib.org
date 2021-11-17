@@ -22,7 +22,7 @@
     "@angular/platform-browser-dynamic": "~12.2.13",
     "@angular/router": "~12.2.13",
     "@angular/service-worker": "~12.2.13",
-    "@ctrl/ngx-codemirror": "^5.1.0",
+    "@ctrl/ngx-codemirror": "~5.0.1",
     "@ng-bootstrap/ng-bootstrap": "^10.0.0",
     "@swimlane/ngx-charts": "^19.1.0",
     "angular-gridster2": "^12.1.1",

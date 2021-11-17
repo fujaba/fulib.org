@@ -21,7 +21,7 @@ specifiers:
   '@angular/platform-browser-dynamic': ~12.2.13
   '@angular/router': ~12.2.13
   '@angular/service-worker': ~12.2.13
-  '@ctrl/ngx-codemirror': ^5.1.0
+  '@ctrl/ngx-codemirror': ~5.0.1
   '@ng-bootstrap/ng-bootstrap': ^10.0.0
   '@swimlane/ngx-charts': ^19.1.0
   '@types/codemirror': ^5.60.5
@@ -74,7 +74,7 @@ dependencies:
   '@angular/platform-browser-dynamic': 12.2.13_df59fb07029055b5d0e612925b487993
   '@angular/router': 12.2.13_77f9be83c64208f20f952d6482f49f76
   '@angular/service-worker': 12.2.13_8e20f6afdaf26af34c281cd08cfa748e
-  '@ctrl/ngx-codemirror': 5.1.0_ffc22828d711459eef1410734de5e1be
+  '@ctrl/ngx-codemirror': 5.0.1_ffc22828d711459eef1410734de5e1be
   '@ng-bootstrap/ng-bootstrap': 10.0.0_ecd0f05ca02f5467409967e9cd7900e0
   '@swimlane/ngx-charts': 19.1.0_2390eab1a283c8819d62150c8c5f4d83
   angular-gridster2: 12.1.1_8e20f6afdaf26af34c281cd08cfa748e
@@ -1839,12 +1839,12 @@ packages:
     engines: {node: '>=4.0.0'}
     dev: true
 
-  /@ctrl/ngx-codemirror/5.1.0_ffc22828d711459eef1410734de5e1be:
-    resolution: {integrity: sha512-Y1198CSe2nZp7bf7tS1b5qfp5TFfoC/IPpzU0VA22p26ZDgASpbgPL6GuxtnPrGG9HRGGLJO6A/LXBXM1FOxZw==}
+  /@ctrl/ngx-codemirror/5.0.1_ffc22828d711459eef1410734de5e1be:
+    resolution: {integrity: sha512-NCO3isAsdABeGxin+smJlYd+m42bXpbmjQQKjgn7K0z7HPgGTPdFLInMLa5XZbQktFmMj0ASexA1PgTWHHXJTA==}
     peerDependencies:
       '@angular/core': '>=12.0.0-0'
       '@angular/forms': '>=12.0.0-0'
-      codemirror: '>=5.63.3'
+      codemirror: '>=5.61.0'
     dependencies:
       '@angular/core': 12.2.13_rxjs@6.6.7+zone.js@0.11.4
       '@angular/forms': 12.2.13_77f9be83c64208f20f952d6482f49f76
