@@ -106,7 +106,7 @@ export class SolutionService {
     return rest;
   }
 
-  async update(id: string, dto: UpdateSolutionDto): Promise<Solution | null> {
+  async update(id: string, dto: UpdateSolutionDto): Promise<SolutionDocument | null> {
     return this.model.findOneAndUpdate(idFilter(id), dto, {new: true}).exec();
   }
 
