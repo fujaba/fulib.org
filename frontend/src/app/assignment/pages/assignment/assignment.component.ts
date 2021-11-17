@@ -4,6 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {combineLatest} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import {ToastService} from '../../../toast.service';
+import {assignmentChildRoutes} from '../../assignment-routing.module';
 import Assignment from '../../model/assignment';
 import {AssignmentService} from '../../services/assignment.service';
 import {SolutionService} from '../../services/solution.service';
@@ -16,6 +17,7 @@ import {SolutionService} from '../../services/solution.service';
 export class AssignmentComponent implements OnInit {
   assignment?: Assignment;
   importing = false;
+  routes = assignmentChildRoutes.filter(r => r.path !== 'token');
 
   constructor(
     public route: ActivatedRoute,

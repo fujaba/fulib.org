@@ -48,6 +48,14 @@ export const editChildren: Routes = [
   {path: '', redirectTo: 'info'},
 ];
 
+export const assignmentChildRoutes = [
+  {path: 'tasks', component: AssignmentTasksComponent, data: {title: 'Tasks & Sample Solution'}},
+  {path: 'share', component: ShareComponent, data: {title: 'Sharing'}},
+  {path: 'solutions', component: SolutionTableComponent, data: {title: 'Solutions'}},
+  {path: 'statistics', component: StatisticsComponent, data: {title: 'Statistics', new: true}},
+  {path: 'token', component: TokenModalComponent},
+];
+
 const routes: Routes = [
   {path: '', component: MyAssignmentsComponent},
   {path: 'solutions', component: MySolutionsComponent},
@@ -78,13 +86,7 @@ const routes: Routes = [
   {
     path: ':aid',
     component: AssignmentComponent,
-    children: [
-      {path: 'tasks', component: AssignmentTasksComponent},
-      {path: 'solutions', component: SolutionTableComponent},
-      {path: 'statistics', component: StatisticsComponent},
-      {path: 'share', component: ShareComponent},
-      {path: 'token', component: TokenModalComponent},
-    ],
+    children: assignmentChildRoutes,
   },
 ];
 

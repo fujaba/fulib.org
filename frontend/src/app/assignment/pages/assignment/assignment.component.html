@@ -19,28 +19,6 @@
     </button>
   </div>
 
-  <ul ngbNav #nav="ngbNav" [activeId]="route.firstChild?.routeConfig?.path" class="nav-tabs mb-3">
-    <li ngbNavItem="tasks">
-      <a ngbNavLink routerLink="tasks">
-        Tasks & Sample Solution
-      </a>
-    </li>
-    <li ngbNavItem="share">
-      <a ngbNavLink routerLink="share">
-        Sharing
-      </a>
-    </li>
-    <li ngbNavItem="solutions">
-      <a ngbNavLink routerLink="solutions">
-        Solutions
-      </a>
-    </li>
-    <li ngbNavItem="statistics">
-      <a ngbNavLink routerLink="statistics">
-        Statistics
-      </a>
-    </li>
-  </ul>
+  <app-route-tabs [routes]="routes"></app-route-tabs>
 </div>
-<div [ngbNavOutlet]="nav"></div>
 <router-outlet></router-outlet>
