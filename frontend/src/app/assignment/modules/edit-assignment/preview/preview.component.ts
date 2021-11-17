@@ -39,7 +39,7 @@ export class PreviewComponent implements OnInit {
     operation.subscribe(result => {
       this.submitting = false
       this.toastService.success('Assignment', `Successfully ${assignment._id ? 'updated' : 'created'} assignment`);
-      this.router.navigate(['/assignments', result._id, 'solutions'], {queryParams: {tab: 'share'}});
+      this.router.navigate(['/assignments', result._id, 'share']);
     }, error => {
       this.submitting = false
       this.toastService.error('Assignment', `Failed to ${assignment._id ? 'update' : 'create'} assignment`, error);
