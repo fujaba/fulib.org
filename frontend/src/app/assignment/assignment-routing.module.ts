@@ -5,6 +5,7 @@ import {AssignmentComponent} from './pages/assignment/assignment.component';
 import {ShareComponent} from './pages/assignment/share/share.component';
 import {SolutionTableComponent} from './pages/assignment/solution-table/solution-table.component';
 import {StatisticsComponent} from './pages/assignment/statistics/statistics.component';
+import {AssignmentTasksComponent} from './pages/assignment/tasks/tasks.component';
 import {CourseComponent} from './pages/course/course.component';
 import {CreateCourseComponent} from './pages/create-course/create-course.component';
 import {CreateSolutionComponent} from './pages/create-solution/create-solution.component';
@@ -78,6 +79,7 @@ const routes: Routes = [
     path: ':aid',
     component: AssignmentComponent,
     children: [
+      {path: 'tasks', component: AssignmentTasksComponent},
       {path: 'solutions', component: SolutionTableComponent},
       {path: 'statistics', component: StatisticsComponent},
       {path: 'share', component: ShareComponent},

@@ -23,6 +23,7 @@ import {AssignmentComponent} from './pages/assignment/assignment.component';
 import {ShareComponent} from './pages/assignment/share/share.component';
 import {SolutionTableComponent} from './pages/assignment/solution-table/solution-table.component';
 import {StatisticsComponent} from './pages/assignment/statistics/statistics.component';
+import {AssignmentTasksComponent} from './pages/assignment/tasks/tasks.component';
 import {CourseComponent} from './pages/course/course.component';
 import {CreateCourseComponent} from './pages/create-course/create-course.component';
 import {CreateSolutionComponent} from './pages/create-solution/create-solution.component';
@@ -46,6 +47,7 @@ import {TaskColorPipe} from './pipes/task-color.pipe';
   declarations: [
     AssignmentComponent,
     AssignmentInfoComponent,
+    AssignmentTasksComponent,
     AuthorNameComponent,
     ClassroomComponent,
     CommentListComponent,

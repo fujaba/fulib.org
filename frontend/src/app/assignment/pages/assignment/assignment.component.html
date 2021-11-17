@@ -19,30 +19,11 @@
     </button>
   </div>
 
-  <ul ngbNav #nav="ngbNav" [activeId]="(route.queryParams | async)?.['tab'] ?? 'solutions'" class="nav-tabs mb-3">
+  <ul ngbNav #nav="ngbNav" [activeId]="route.firstChild?.routeConfig?.path" class="nav-tabs mb-3">
     <li ngbNavItem="tasks">
-      <a ngbNavLink routerLink="." [queryParams]="{tab: 'tasks'}">
-        Tasks
+      <a ngbNavLink routerLink="tasks">
+        Tasks & Sample Solution
       </a>
-      <ng-template ngbNavContent>
-        <div class="container">
-          <app-task-list [tasks]="assignment?.tasks"></app-task-list>
-        </div>
-      </ng-template>
-    </li>
-    <li ngbNavItem="sample">
-      <a ngbNavLink routerLink="." [queryParams]="{tab: 'sample'}">
-        Sample Solution
-      </a>
-      <ng-template ngbNavContent>
-        <div class="container">
-          <app-scenario-codemirror
-            [content]="assignment?.solution ?? 'Loading...'"
-            [readOnly]="true"
-            [autoRefresh]="true"
-          ></app-scenario-codemirror>
-        </div>
-      </ng-template>
     </li>
     <li ngbNavItem="share">
       <a ngbNavLink routerLink="share">
