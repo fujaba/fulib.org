@@ -13,11 +13,9 @@ import {SharedModule} from '../shared/shared.module';
 import {AssignmentRoutingModule} from './assignment-routing.module';
 
 import {AssignmentInfoComponent} from './components/assignment-info/assignment-info.component';
-import {AuthorNameComponent} from './components/author-name/author-name.component';
-import {CommentListComponent} from './components/comment-list/comment-list.component';
 import {EditTaskListComponent} from './components/edit-task-list/edit-task-list.component';
 import {ImportExportComponent} from './components/import-export/import-export.component';
-import {TaskListComponent} from './components/task-list/task-list.component';
+import {AssignmentSharedModule} from './modules/shared/shared.module';
 
 import {AssignmentComponent} from './pages/assignment/assignment.component';
 import {ShareComponent} from './pages/assignment/share/share.component';
@@ -35,14 +33,9 @@ import {SampleComponent} from './pages/edit-assignment/sample/sample.component';
 import {TasksComponent} from './pages/edit-assignment/tasks/tasks.component';
 import {TemplateComponent} from './pages/edit-assignment/template/template.component';
 import {EditTaskModalComponent} from './pages/edit-task-modal/edit-task-modal.component';
-import {EvaluationModalComponent} from './pages/evaluation-modal/evaluation-modal.component';
 import {MyAssignmentsComponent} from './pages/my-assignments/my-assignments.component';
 import {MyCoursesComponent} from './pages/my-courses/my-courses.component';
 import {MySolutionsComponent} from './pages/my-solutions/my-solutions.component';
-import {SolutionDetailsComponent} from './pages/solution/info/details.component';
-import {SolutionShareComponent} from './pages/solution/share/share.component';
-import {SolutionComponent} from './pages/solution/solution.component';
-import {SolutionTasksComponent} from './pages/solution/tasks/tasks.component';
 import {TokenModalComponent} from './pages/token-modal/token-modal.component';
 
 @NgModule({
@@ -51,14 +44,12 @@ import {TokenModalComponent} from './pages/token-modal/token-modal.component';
     AssignmentInfoComponent,
     AssignmentTasksComponent,
     ClassroomComponent,
-    CommentListComponent,
     CourseComponent,
     CreateCourseComponent,
     CreateSolutionComponent,
     EditAssignmentComponent,
     EditTaskListComponent,
     EditTaskModalComponent,
-    EvaluationModalComponent,
     ImportExportComponent,
     InfoComponent,
     MyAssignmentsComponent,
@@ -67,11 +58,7 @@ import {TokenModalComponent} from './pages/token-modal/token-modal.component';
     PreviewComponent,
     SampleComponent,
     ShareComponent,
-    SolutionComponent,
-    SolutionDetailsComponent,
-    SolutionShareComponent,
     SolutionTableComponent,
-    SolutionTasksComponent,
     StatisticsComponent,
     TasksComponent,
     TemplateComponent,

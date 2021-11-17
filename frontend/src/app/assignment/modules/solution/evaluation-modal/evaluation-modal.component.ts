@@ -2,14 +2,14 @@ import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/co
 import {ActivatedRoute} from '@angular/router';
 import {forkJoin, Subscription} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
-import {ModalComponent} from '../../../shared/modal/modal.component';
-import {ToastService} from '../../../toast.service';
-import {UserService} from '../../../user/user.service';
-import {CreateEvaluationDto, Evaluation} from '../../model/evaluation';
-import Task from '../../model/task';
-import {AssignmentService} from '../../services/assignment.service';
-import {SolutionService} from '../../services/solution.service';
-import {TaskService} from '../../services/task.service';
+import {ModalComponent} from '../../../../shared/modal/modal.component';
+import {ToastService} from '../../../../toast.service';
+import {UserService} from '../../../../user/user.service';
+import {CreateEvaluationDto, Evaluation} from '../../../model/evaluation';
+import Task from '../../../model/task';
+import {AssignmentService} from '../../../services/assignment.service';
+import {SolutionService} from '../../../services/solution.service';
+import {TaskService} from '../../../services/task.service';
 
 @Component({
   selector: 'app-evaluation-modal',

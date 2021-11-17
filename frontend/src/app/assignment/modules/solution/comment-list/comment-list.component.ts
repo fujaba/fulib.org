@@ -2,10 +2,10 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
-import {ToastService} from '../../../toast.service';
-import {UserService} from '../../../user/user.service';
-import Comment from '../../model/comment';
-import {SolutionService} from '../../services/solution.service';
+import {ToastService} from '../../../../toast.service';
+import {UserService} from '../../../../user/user.service';
+import Comment from '../../../model/comment';
+import {SolutionService} from '../../../services/solution.service';
 
 @Component({
   selector: 'app-comment-list',
