@@ -1,4 +1,5 @@
-<app-modal #modal [back]="['../../solutions']" [backOptions]="{relativeTo: route, queryParamsHandling: 'preserve'}">
+<app-modal #modal size="lg" [back]="['../../solutions']"
+           [backOptions]="{relativeTo: route, queryParamsHandling: 'preserve'}">
   <ng-container modal-header>
     Submit Feedback
   </ng-container>
@@ -8,14 +9,22 @@
     <button class="btn btn-secondary" (click)="modal.close()">
       Cancel
     </button>
-    <a
-      class="btn btn-primary"
-      [href]="draftLink"
-    >
-      Draft on GitHub
-    </a>
-    <button class="btn btn-success" (click)="create(); modal.close()">
-      Create Issue
-    </button>
+    <span class="d-inline-block" [ngbTooltip]="mailLink ? undefined : 'Student Email needs to be set'">
+      <a class="btn btn-primary bi-envelope" [href]="mailLink" [class.disabled]="!mailLink">
+        Draft Mail
+      </a>
+    </span>
+    <span class="d-inline-block"
+          [ngbTooltip]="draftLink ? undefined : 'Classroom Org, Prefix, and Student GitHub need to be set'">
+      <a class="btn btn-primary bi-github" [href]="draftLink" [class.disabled]="!draftLink">
+        Draft Issue
+      </a>
+    </span>
+    <span class="d-inline-block"
+          [ngbTooltip]="githubToken ? undefined : 'Need to be logged in with account linked to GitHub'">
+      <button class="btn btn-success" (click)="submitIssue(); modal.close()" [disabled]="!githubToken">
+        Submit Issue
+      </button>
+    </span>
   </ng-container>
 </app-modal>
