@@ -60,6 +60,10 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
         this.max = Math.max(task.points, 0);
       }
       this.evaluation = evaluations[0];
+      if (this.evaluation) {
+        this.dto.points = this.evaluation.points;
+        this.dto.remark = this.evaluation.remark;
+      }
     });
 
     this.userSubscription = this.users.current$.subscribe(user => {
