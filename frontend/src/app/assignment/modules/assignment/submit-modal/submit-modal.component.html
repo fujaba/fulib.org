@@ -4,6 +4,10 @@
     Submit Feedback
   </ng-container>
   <ng-container modal-body>
+    <h1>
+      {{ issue?.title }}
+    </h1>
+    <app-markdown [markdown]="issue?.body"></app-markdown>
   </ng-container>
   <ng-container modal-footer>
     <button class="btn btn-secondary" (click)="modal.close()">
