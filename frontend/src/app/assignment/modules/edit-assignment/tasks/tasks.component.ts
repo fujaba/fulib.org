@@ -1,6 +1,6 @@
 import {Component, OnDestroy} from '@angular/core';
 import {AssignmentContext} from '../../../services/assignment.context';
-import {TaskService} from '../../../services/task.service';
+import {TaskMarkdownService} from '../task-markdown.service';
 
 @Component({
   selector: 'app-edit-assignment-tasks',
@@ -11,7 +11,7 @@ export class TasksComponent implements OnDestroy {
   markdown?: string;
 
   constructor(
-    private taskService: TaskService,
+    private taskMarkdownService: TaskMarkdownService,
     public context: AssignmentContext,
   ) {
   }
@@ -22,9 +22,9 @@ export class TasksComponent implements OnDestroy {
 
   switchMarkdown(markdown: boolean) {
     if (markdown) {
-      this.markdown = this.taskService.renderTasks(this.context.assignment.tasks);
+      this.markdown = this.taskMarkdownService.renderTasks(this.context.assignment.tasks);
     } else if (this.markdown !== undefined) {
-      this.context.assignment.tasks = this.taskService.parseTasks(this.markdown);
+      this.context.assignment.tasks = this.taskMarkdownService.parseTasks(this.markdown);
       this.context.saveDraft();
       this.markdown = undefined;
     }
