@@ -84,13 +84,14 @@
         >
           <i class="bi-github"></i>
         </a>
-        <button *ngIf="assignment?.classroom?.org && assignment?.classroom?.prefix && solution.author.github"
-                class="btn btn-success"
-                ngbTooltip="Post Feedback to GitHub"
-                (click)="export(solution)"
+        <a
+          class="btn btn-primary"
+          ngbTooltip="Submit Feedback"
+          [routerLink]="['../submit', solution._id]"
+          queryParamsHandling="preserve"
         >
-          <i class="bi-github"></i>
-        </button>
+          <i class="bi-check-circle"></i>
+        </a>
       </div>
     </td>
   </tr>

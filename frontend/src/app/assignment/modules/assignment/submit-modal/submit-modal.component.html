@@ -1,0 +1,21 @@
+<app-modal #modal [back]="['../../solutions']" [backOptions]="{relativeTo: route, queryParamsHandling: 'preserve'}">
+  <ng-container modal-header>
+    Submit Feedback
+  </ng-container>
+  <ng-container modal-body>
+  </ng-container>
+  <ng-container modal-footer>
+    <button class="btn btn-secondary" (click)="modal.close()">
+      Cancel
+    </button>
+    <a
+      class="btn btn-primary"
+      [href]="draftLink"
+    >
+      Draft on GitHub
+    </a>
+    <button class="btn btn-success" (click)="create(); modal.close()">
+      Create Issue
+    </button>
+  </ng-container>
+</app-modal>
