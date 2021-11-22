@@ -196,12 +196,4 @@ export class SolutionTableComponent implements OnInit {
     }
     return [...valueSet].sort();
   }
-
-  export(solution: Solution) {
-    this.solutionService.export(solution.assignment, solution._id!).subscribe(() => {
-      this.toastService.success('Export', 'Successfully created issue');
-    }, error => {
-      this.toastService.error('Export', 'Failed to create issue', error);
-    });
-  }
 }

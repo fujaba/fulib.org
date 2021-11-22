@@ -23,15 +23,4 @@ export class ClassroomController {
   ): Promise<ReadSolutionDto[]> {
     return this.classroomService.importSolutions(assignment, auth);
   }
-
-  @Post('assignments/:assignment/solutions/:solution/export')
-  @AssignmentAuth({forbiddenResponse})
-  @ApiCreatedResponse()
-  async exportGithubIssue(
-    @Param('assignment') assignment: string,
-    @Param('solution') solution: string,
-    @Headers('Authorization') auth: string,
-  ) {
-    return this.classroomService.exportGithubIssue(assignment, solution, auth);
-  }
 }

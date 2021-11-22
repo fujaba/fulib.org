@@ -2,6 +2,7 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {TokenModalComponent} from '../../pages/token-modal/token-modal.component';
 import {AssignmentComponent} from './assignment/assignment.component';
+import {SubmitModalComponent} from './submit-modal/submit-modal.component';
 import {ShareComponent} from './share/share.component';
 import {SolutionTableComponent} from './solution-table/solution-table.component';
 import {StatisticsComponent} from './statistics/statistics.component';
@@ -21,6 +22,7 @@ const routes: Routes = [
     children: [
       ...assignmentChildRoutes,
       {path: 'token', component: TokenModalComponent},
+      {path: 'submit/:sid', component: SubmitModalComponent},
     ],
   },
 ];

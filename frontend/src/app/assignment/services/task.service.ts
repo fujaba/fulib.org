@@ -52,6 +52,10 @@ export class TaskService {
   private calculateTaskPoints(task: Task, evaluations: Record<string, CreateEvaluationDto>, cache: Record<string, number>): number {
     const evaluation = evaluations?.[task._id];
     if (evaluation) {
+      for (const child of task.children) {
+        this.getTaskPoints(child, evaluations, cache);
+      }
+
       // An evaluation overrides children.
       return evaluation.points;
     }

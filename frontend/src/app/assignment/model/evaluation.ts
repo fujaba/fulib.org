@@ -1,3 +1,10 @@
+export class Snippet {
+  file: string;
+  from: { line: number; };
+  to: { line: number; };
+  comment: string;
+}
+
 export class Evaluation {
   assignment: string;
   solution: string;
@@ -10,7 +17,7 @@ export class Evaluation {
   author: string;
   remark: string;
   points: number;
-  snippets: never[]; // TODO
+  snippets: Snippet[];
 }
 
 export type CreateEvaluationDto = Omit<Evaluation, '_id' | 'assignment' | 'solution' | 'createdAt' | 'createdBy' | 'updatedAt'>;
