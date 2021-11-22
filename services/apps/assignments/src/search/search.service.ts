@@ -65,17 +65,19 @@ export class SearchService {
           },
           pre_tags: [uniqueId],
           post_tags: [uniqueId],
+          number_of_fragments: 0,
         },
       },
     });
     return result.body.hits.hits.map((hit: any) => this._convertHit(hit, uniqueId));
   }
 
-  _convertHit(hit: { _source: FileDocument, highlight: string }, uniqueId: string): SearchResult {
+  _convertHit(hit: { _source: FileDocument, highlight: { content: string[] } }, uniqueId: string): SearchResult {
     const {assignment, solution, file, content} = hit._source;
-    const highlight = hit.highlight;
     const lineStartIndices = this._buildLineStartList(content);
-    const split = highlight.split(uniqueId);
+    const highlightContent = hit.highlight.content[0];
+    const split = highlightContent.split(uniqueId);
+
     let start = 0;
     const snippets: Snippet[] = [];
 
