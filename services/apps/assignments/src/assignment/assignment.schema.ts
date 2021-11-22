@@ -11,7 +11,6 @@ import {
   IsOptional,
   IsString,
   IsUrl,
-  Min,
   ValidateNested,
 } from 'class-validator';
 import {Document} from 'mongoose';
@@ -26,7 +25,6 @@ export class Task {
   @Prop()
   @ApiProperty()
   @IsString()
-  @IsNotEmpty()
   description: string;
 
   @Prop()
