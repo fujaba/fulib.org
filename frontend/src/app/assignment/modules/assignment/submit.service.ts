@@ -98,7 +98,7 @@ export class SubmitService {
         const headlinePrefix = '#'.repeat(depth + 2);
         const header = `${headlinePrefix} ${task.description} (${point}/${task.points}P)\n`;
         const remark = evaluation && evaluation.remark ? evaluation.remark + '\n' : '';
-        const subTasks = evaluation ? '' : renderSubTasks(task.children, depth + 1);
+        const subTasks = renderSubTasks(task.children, depth + 1);
         return header + remark + snippets + subTasks;
       }
       if (point === 0) {
