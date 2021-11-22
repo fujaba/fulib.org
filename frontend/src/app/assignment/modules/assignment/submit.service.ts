@@ -92,7 +92,17 @@ export class SubmitService {
 
     const renderTask = (task: Task, depth: number): string => {
       const point = points[task._id];
+      if (task.points < 0 && point === 0) {
+        // do not render deductions that were not given
+        return '';
+      }
+
       const evaluation = evaluationRecord[task._id];
+      if (depth !== 0 && point === task.points && !evaluation) {
+        // do not render subtasks with full points and no evaluation
+        return '';
+      }
+
       const snippets = evaluation ? this.renderSnippets(assignment, solution, evaluation.snippets) : '';
       if (task.points >= 0) {
         const headlinePrefix = '#'.repeat(depth + 2);
@@ -100,10 +110,6 @@ export class SubmitService {
         const remark = evaluation && evaluation.remark ? evaluation.remark + '\n' : '';
         const subTasks = renderSubTasks(task.children, depth + 1);
         return header + remark + snippets + subTasks;
-      }
-      if (point === 0) {
-        // do not render deductions that were not given
-        return '';
       }
       return `- ${task.description}${evaluation && evaluation.remark ? ': ' + evaluation.remark : ''} (${point}P)\n${snippets}`;
     };
