@@ -96,9 +96,10 @@ export class SubmitService {
       const snippets = evaluation ? this.renderSnippets(assignment, solution, evaluation.snippets) : '';
       if (task.points >= 0) {
         const headlinePrefix = '#'.repeat(depth + 2);
+        const header = `${headlinePrefix} ${task.description} (${point}/${task.points}P)\n`;
+        const remark = evaluation && evaluation.remark ? evaluation.remark + '\n' : '';
         const subTasks = evaluation ? '' : renderSubTasks(task.children, depth + 1);
-        const header = `${headlinePrefix} ${task.description} (${point}/${task.points}P)`;
-        return [header, evaluation?.remark, snippets, subTasks].filter(x => x).join('\n');
+        return header + remark + snippets + subTasks;
       }
       if (point === 0) {
         // do not render deductions that were not given
@@ -107,19 +108,19 @@ export class SubmitService {
       return `- ${task.description}${evaluation && evaluation.remark ? ': ' + evaluation.remark : ''} (${point}P)\n${snippets}`;
     };
 
-    const renderSubTasks = (tasks: Task[], depth: number): string => tasks.map(task => renderTask(task, depth)).join('\n');
+    const renderSubTasks = (tasks: Task[], depth: number): string => tasks.map(task => renderTask(task, depth)).join('');
 
     const tasks = renderSubTasks(assignment.tasks, 0);
     return {total, sum, tasks};
   }
 
   private renderSnippets(assignment: Assignment, solution: Solution, snippets: Snippet[]) {
-    return snippets.map(snippet => this.renderSnippet(assignment, solution, snippet)).join('\n');
+    return snippets.map(snippet => this.renderSnippet(assignment, solution, snippet)).join('');
   }
 
   private renderSnippet(assignment: Assignment, solution: Solution, snippet: Snippet) {
     const link = `https://github.com/${assignment.classroom!.org}/${assignment.classroom!.prefix}-${solution.author.github}/blob/${solution.commit}/${snippet.file}#L${snippet.from.line + 1}-L${snippet.to.line + 1}`;
-    return `  * ${snippet.comment}: ${link}`;
+    return `  * ${snippet.comment}: ${link}\n`;
   }
 
   private renderFooter(assignment: Assignment, solution: Solution) {
