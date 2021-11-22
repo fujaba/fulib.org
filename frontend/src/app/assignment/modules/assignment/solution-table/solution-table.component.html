@@ -1,0 +1,99 @@
+<div class="form-inline p-3 d-flex position-sticky bg-light bg-darkmode-dark" style="top: 3.5rem; z-index: 1">
+  <label for="searchInput" class="mr-sm-2">Search:</label>
+  <input type="text" class="form-control mr-sm-2 flex-grow-1" id="searchInput"
+         placeholder="Name, Student ID, E-Mail, GitHub Username, Assignee"
+         [(ngModel)]="searchText" (change)="updateSearch()"
+         [ngbTypeahead]="typeahead" [resultFormatter]="formatTypeahead">
+  <button type="button" class="btn btn-outline-secondary" ngbTooltip="View Search Help"
+          [ngbPopover]="searchHelp" popoverTitle="Search Help" placement="bottom-right">
+    ?
+  </button>
+  <ng-template #searchHelp>
+    <ul>
+      <li>Search terms are separated by spaces and case sensitive</li>
+      <li>Each search term has to match for a result to be shown</li>
+      <li>To search for terms including spaces, use <code>+</code> in their place<br/>
+          E.g. <code>John+Doe</code>
+      </li>
+      <li>To search for specific attributes, enter <code>attribute:value</code><br/>
+          E.g. <code>studentID:1234</code>, <code>email:@example.org</code>, or <code>assignee:John+Doe</code><br/>
+          Supported attribute names (case sensitive):
+        <ul>
+          <li *ngFor="let propertyName of searchableProperties">
+            <code>{{propertyName}}</code>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </ng-template>
+</div>
+<table class="table table-bordered table-hover table-sm table-centered" *ngIf="solutions">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>Student ID</th>
+    <th>E-Mail</th>
+    <th>GitHub Username</th>
+    <th>Submitted</th>
+    <th>Points</th>
+    <th>Assignee</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let solution of filteredSolutions">
+    <td>{{solution.author.name}}</td>
+    <td>{{solution.author.studentId}}</td>
+    <td><a href="mailto:{{solution.author.email}}">{{solution.author.email}}</a></td>
+    <td>{{solution.author.github}}</td>
+    <td>
+        <span
+          *ngIf="assignment && assignment.deadline && solution.timestamp && assignment.deadline < solution.timestamp else timestamp"
+          class="text-danger" ngbTooltip="Submitted after Deadline">
+          {{solution.timestamp | date:'medium'}}
+        </span>
+      <ng-template #timestamp>
+        {{solution.timestamp | date:'medium'}}
+      </ng-template>
+    </td>
+    <td>
+      <span class="badge badge-primary badge-pill">? / {{totalPoints}}</span>
+    </td>
+    <td>
+      <input
+        #assigneeInput
+        type="text"
+        class="form-control"
+        [ngModel]="assignees?.[solution._id!]?.assignee"
+        (change)="setAssignee(solution, assigneeInput)"
+        [ngbTypeahead]="assigneeTypeahead"
+      >
+    </td>
+    <td>
+      <div class="btn-group">
+        <a class="btn btn-primary" routerLink="/assignments/{{assignment?._id}}/solutions/{{solution._id}}"
+           ngbTooltip="View"
+        >
+          <i class="bi-eye-fill"></i>
+        </a>
+        <a class="btn btn-primary"
+           *ngIf="assignment?.classroom?.org && assignment?.classroom?.prefix && solution.author.github"
+           href="https://github.com/{{assignment?.classroom?.org}}/{{assignment?.classroom?.prefix}}-{{solution.author.github}}{{solution.commit ? '/tree/' + solution.commit : ''}}"
+           target="_blank"
+           ngbTooltip="View Repository on GitHub"
+        >
+          <i class="bi-github"></i>
+        </a>
+        <a
+          class="btn btn-primary"
+          ngbTooltip="Submit Feedback"
+          [routerLink]="['../submit', solution._id]"
+          queryParamsHandling="preserve"
+        >
+          <i class="bi-check-circle"></i>
+        </a>
+      </div>
+    </td>
+  </tr>
+  </tbody>
+</table>

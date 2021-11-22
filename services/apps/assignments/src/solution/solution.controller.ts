@@ -76,7 +76,7 @@ export class SolutionController {
     @Body() dto: UpdateSolutionDto,
   ): Promise<ReadSolutionDto> {
     const solution = await this.solutionService.update(id, dto) ?? notFound(id);
-    return this.solutionService.mask(solution);
+    return this.solutionService.mask(solution.toObject());
   }
 
   @Delete('assignments/:assignment/solutions/:id')

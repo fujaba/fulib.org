@@ -154,12 +154,6 @@ export class SolutionService {
     return this.http.post<Solution[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/import`, {}, {headers});
   }
 
-  export(assignment: string, solution: string): Observable<void> {
-    const headers = {};
-    this.addAssignmentToken(headers, assignment);
-    return this.http.post<void>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/export`, {}, {headers});
-  }
-
   get(assignment: Assignment | string, id: string): Observable<Solution> {
     const assignmentID = asID(assignment);
     const headers = {};
@@ -187,6 +181,16 @@ export class SolutionService {
     return this.http.get<Solution[]>(`${environment.assignmentsApiUrl}/solutions`);
   }
 
+  update(assignment: string, solution: string, dto: Partial<Solution>): Observable<Solution> {
+    const headers = {};
+    this.addSolutionToken(headers, assignment, solution);
+    this.addAssignmentToken(headers, assignment);
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}`;
+    return this.http.patch<Solution>(url, dto, {headers}).pipe(tap(result => {
+      result.token = this.getToken(assignment, solution) ?? undefined;
+    }));
+  }
+
   getComments(assignment: string, solution: string): Observable<Comment[]> {
     const headers = {};
     this.addSolutionToken(headers, assignment, solution);
@@ -210,12 +214,14 @@ export class SolutionService {
     return this.http.delete<Comment>(url);
   }
 
-  getEvaluations(assignment: Assignment | string, id: string, task?: string): Observable<Evaluation[]> {
+  getEvaluations(assignment: Assignment | string, id?: string, task?: string): Observable<Evaluation[]> {
     const assignmentID = asID(assignment);
     const headers = {};
-    this.addSolutionToken(headers, assignmentID, id);
+    if (id) {
+      this.addSolutionToken(headers, assignmentID, id);
+    }
     this.addAssignmentToken(headers, assignmentID);
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignmentID}/solutions/${id}/evaluations`;
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignmentID}/${id ? `solutions/${id}/` : ''}evaluations`;
     const params: Record<string, string> = task ? {task} : {};
     return this.http.get<Evaluation[]>(url, {headers, params});
   }

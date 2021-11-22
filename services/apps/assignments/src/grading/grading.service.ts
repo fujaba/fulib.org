@@ -1,6 +1,6 @@
 import {Injectable} from '@nestjs/common';
-import {InjectConnection, InjectModel} from '@nestjs/mongoose';
-import {Connection, Model} from 'mongoose';
+import {InjectModel} from '@nestjs/mongoose';
+import {Model} from 'mongoose';
 import {CreateEvaluationDto} from '../evaluation/evaluation.dto';
 import {EvaluationService} from '../evaluation/evaluation.service';
 import {Grading} from './grading.schema';
@@ -9,10 +9,9 @@ import {Grading} from './grading.schema';
 export class GradingService {
   constructor(
     @InjectModel('gradings') private model: Model<Grading>,
-    @InjectConnection() connection: Connection,
     private evaluationService: EvaluationService,
   ) {
-    connection.once('connected', () => this.migrate());
+    this.migrate();
   }
 
   async migrate() {

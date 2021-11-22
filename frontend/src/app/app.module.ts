@@ -2,6 +2,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {APP_INITIALIZER, NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ServiceWorkerModule} from '@angular/service-worker';
 
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -24,6 +25,7 @@ import {PrivacyComponent} from './privacy/privacy.component';
 import {SharedModule} from './shared/shared.module';
 import {UserModule} from './user/user.module';
 import { ToastListComponent } from './toast-list/toast-list.component';
+import { HomeComponent } from './home/home.component';
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () => keycloak.init({
@@ -54,11 +56,13 @@ function initializeKeycloak(keycloak: KeycloakService) {
     PrivacyComponent,
     AboutComponent,
     ToastListComponent,
+    HomeComponent,
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpClientModule,
+    BrowserAnimationsModule,
     NgbModule,
     NgBootstrapDarkmodeModule,
     DragulaModule.forRoot(),

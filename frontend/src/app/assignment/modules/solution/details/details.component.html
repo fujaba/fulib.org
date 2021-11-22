@@ -1,0 +1,57 @@
+<div class="form" *ngIf="solution">
+  <div class="form-group">
+    <label for="nameInput">Name</label>
+    <input type="text" class="form-control" id="nameInput" [(ngModel)]="solution.author.name">
+  </div>
+  <div class="form-group">
+    <label for="studentIDInput">Student ID</label>
+    <input type="text" class="form-control" id="studentIDInput" [(ngModel)]="solution.author.studentId">
+  </div>
+  <div class="form-group">
+    <label for="emailInput">E-Mail</label>
+    <div class="input-group">
+      <input type="text" class="form-control" id="emailInput" [(ngModel)]="solution.author.email">
+      <div class="input-group-append" *ngIf="solution.author.email">
+        <a class="btn btn-primary"
+           href="mailto:{{solution.author.email}}"
+           ngbTooltip="Compose Mail"
+        >
+          <i class="bi-envelope"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="githubInput">GitHub Username</label>
+    <div class="input-group">
+      <input type="text" class="form-control" id="githubInput" [(ngModel)]="solution.author.github">
+      <div class="input-group-append" *ngIf="solution && solution.author.github">
+        <a class="btn btn-primary"
+           href="https://github.com/{{solution.author.github}}"
+           target="_blank"
+           ngbTooltip="Open on GitHub"
+        >
+          <i class="bi-github"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="form-group" *ngIf="solution.commit">
+    <label for="commitInput">Git Commit</label>
+    <div class="input-group">
+      <input type="text" class="form-control text-monospace" id="commitInput" readonly [ngModel]="solution.commit">
+      <div class="input-group-append">
+        <a class="btn btn-primary"
+           href="https://github.com/{{assignment?.classroom?.org}}/{{assignment?.classroom?.prefix}}-{{solution.author.github}}/tree/{{solution.commit}}"
+           target="_blank"
+           ngbTooltip="Open on GitHub"
+        >
+          <i class="bi-github"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+  <button type="button" class="btn btn-primary" (click)="save()" [disabled]="saving">
+    {{ saving ? 'Saving...' : 'Save' }}
+  </button>
+</div>

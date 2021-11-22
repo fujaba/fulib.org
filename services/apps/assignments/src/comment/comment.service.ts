@@ -1,7 +1,7 @@
 import {UserToken} from '@app/keycloak-auth';
 import {Injectable} from '@nestjs/common';
-import {InjectConnection, InjectModel} from '@nestjs/mongoose';
-import {Connection, FilterQuery, Model} from 'mongoose';
+import {InjectModel} from '@nestjs/mongoose';
+import {FilterQuery, Model} from 'mongoose';
 import {idFilter} from '../utils';
 import {CreateCommentDto, UpdateCommentDto} from './comment.dto';
 import {Comment, CommentDocument} from './comment.schema';
@@ -10,9 +10,8 @@ import {Comment, CommentDocument} from './comment.schema';
 export class CommentService {
   constructor(
     @InjectModel('comments') private model: Model<Comment>,
-    @InjectConnection() connection: Connection,
   ) {
-    connection.once('connected', () => this.migrate());
+    this.migrate();
   }
 
   async migrate() {

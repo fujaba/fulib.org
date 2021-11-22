@@ -1,6 +1,7 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
+import {RouterModule} from '@angular/router';
 
 import {CodemirrorModule} from '@ctrl/ngx-codemirror';
 import {NgbDropdownModule, NgbNavModule, NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
@@ -17,6 +18,7 @@ import {ProjectConfigFormComponent} from './project-config-form/project-config-f
 import {ScenarioCodemirrorComponent} from './scenario-codemirror/scenario-codemirror.component';
 import {TabsComponent} from './tabs/tabs.component';
 import { ProTipComponent } from './pro-tip/pro-tip.component';
+import { RouteTabsComponent } from './route-tabs/route-tabs.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +35,7 @@ import { ProTipComponent } from './pro-tip/pro-tip.component';
     ProjectConfigFormComponent,
     TabsComponent,
     ProTipComponent,
+    RouteTabsComponent,
   ],
   imports: [
     FormsModule,
@@ -41,22 +44,24 @@ import { ProTipComponent } from './pro-tip/pro-tip.component';
     NgbTooltipModule,
     NgbDropdownModule,
     NgbNavModule,
+    RouterModule,
   ],
-    exports: [
-        SafeHtmlPipe,
-        SafeUrlPipe,
-        SafeResourceUrlPipe,
-        AutothemeCodemirrorComponent,
-        CollapseButtonComponent,
-        ScenarioCodemirrorComponent,
-        PreviewComponent,
-        MarkdownComponent,
-        ProjectConfigFormComponent,
-        ModalComponent,
-        ProjectConfigFormComponent,
-        TabsComponent,
-        ProTipComponent,
-    ],
+  exports: [
+    SafeHtmlPipe,
+    SafeUrlPipe,
+    SafeResourceUrlPipe,
+    AutothemeCodemirrorComponent,
+    CollapseButtonComponent,
+    ScenarioCodemirrorComponent,
+    PreviewComponent,
+    MarkdownComponent,
+    ProjectConfigFormComponent,
+    ModalComponent,
+    ProjectConfigFormComponent,
+    TabsComponent,
+    ProTipComponent,
+    RouteTabsComponent,
+  ],
 })
 export class SharedModule {
 }

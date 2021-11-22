@@ -18,7 +18,6 @@ import Course from '../model/course';
   providedIn: 'root',
 })
 export class AssignmentService {
-  private _draft?: Assignment | null;
   private _cache = new Map<string, Assignment>();
 
   constructor(
@@ -31,20 +30,21 @@ export class AssignmentService {
 
   // --------------- Assignment Drafts ---------------
 
-  get draft(): Assignment | null {
-    if (typeof this._draft === 'undefined') {
-      const json = localStorage.getItem('assignmentDraft');
-      this._draft = json ? this.fromJson(json) : null;
-    }
-    return this._draft;
+  private getDraftKey(id?: string) {
+    return id ? `assignments/${id}/draft` : 'assignmentDraft';
   }
 
-  set draft(value: Assignment | null) {
-    this._draft = value;
+  loadDraft(id?: string): Assignment | undefined {
+    const stored = localStorage.getItem(this.getDraftKey(id));
+    return stored ? JSON.parse(stored) : undefined;
+  }
+
+  saveDraft(id?: string, value?: Assignment) {
+    const key = this.getDraftKey(id);
     if (value) {
-      localStorage.setItem('assignmentDraft', JSON.stringify(value));
+      localStorage.setItem(key, JSON.stringify(value));
     } else {
-      localStorage.removeItem('assignmentDraft');
+      localStorage.removeItem(key);
     }
   }
 
@@ -60,24 +60,10 @@ export class AssignmentService {
     this.storage.set(`assignmentToken/${id}`, token);
   }
 
-  // --------------- JSON Conversion ---------------
-
-  fromJson(json: string): Assignment {
-    const reviver = (k, v) => k === 'deadline' && v ? new Date(v) : v;
-    const data = JSON.parse(json, reviver);
-    const assignment = new Assignment();
-    Object.assign(assignment, data);
-    return assignment;
-  }
-
-  toJson(assignment: Assignment, space?: string): string {
-    return JSON.stringify(assignment, undefined, space);
-  }
-
   // --------------- Import/Export ---------------
 
   download(assignment: Assignment): void {
-    const json = this.toJson(assignment, '  ');
+    const json = JSON.stringify(assignment, undefined, '  ');
     saveAs(new Blob([json], {type: 'application/json'}), assignment.title + '.json');
   }
 
@@ -86,7 +72,7 @@ export class AssignmentService {
       const reader = new FileReader();
       reader.onload = _ => {
         const text = reader.result as string;
-        const assignment = this.fromJson(text);
+        const assignment = JSON.parse(text);
         subscriber.next(assignment);
       };
       reader.readAsText(file);
@@ -182,7 +168,8 @@ export class AssignmentService {
   }
 
   update(assignment: Assignment): Observable<Assignment> {
-    return this.http.patch<Assignment>(`${environment.assignmentsApiUrl}/assignments/${assignment._id}`, assignment).pipe(
+    const headers = this.getHeaders(assignment.token);
+    return this.http.patch<Assignment>(`${environment.assignmentsApiUrl}/assignments/${assignment._id}`, assignment, {headers}).pipe(
       tap(response => {
         response.token = assignment.token;
         this._cache.set(assignment._id!, response);
@@ -196,11 +183,7 @@ export class AssignmentService {
       return of(cached);
     }
 
-    const headers = {};
-    const token = this.getToken(id);
-    if (token) {
-      headers['Assignment-Token'] = token;
-    }
+    const headers = this.getHeaders(this.getToken(id));
     return this.http.get<Assignment>(`${environment.assignmentsApiUrl}/assignments/${id}`, {headers}).pipe(
       map(a => {
         a.token ??= this.getToken(id) ?? undefined;
@@ -208,6 +191,12 @@ export class AssignmentService {
         return a;
       }),
     );
+  }
+
+  private getHeaders(token?: string | null | undefined): Record<string, string> {
+    return token ? {
+      'Assignment-Token': token,
+    } : {};
   }
 
   getNext(course: Course, assignment: Assignment): Observable<Assignment | undefined> {

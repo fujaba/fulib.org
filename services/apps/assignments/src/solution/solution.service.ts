@@ -1,7 +1,7 @@
 import {UserToken} from '@app/keycloak-auth';
 import {Injectable} from '@nestjs/common';
-import {InjectConnection, InjectModel} from '@nestjs/mongoose';
-import {Connection, FilterQuery, Model} from 'mongoose';
+import {InjectModel} from '@nestjs/mongoose';
+import {FilterQuery, Model} from 'mongoose';
 import {AssignmentService} from '../assignment/assignment.service';
 import {CreateEvaluationDto} from '../evaluation/evaluation.dto';
 import {Evaluation} from '../evaluation/evaluation.schema';
@@ -14,11 +14,10 @@ import {Solution, SolutionDocument} from './solution.schema';
 export class SolutionService {
   constructor(
     @InjectModel('solutions') private model: Model<Solution>,
-    @InjectConnection() connection: Connection,
     private assignmentService: AssignmentService,
     private evaluationService: EvaluationService,
   ) {
-    connection.once('connected', () => this.migrate());
+    this.migrate();
   }
 
   async migrate() {
@@ -106,7 +105,7 @@ export class SolutionService {
     return rest;
   }
 
-  async update(id: string, dto: UpdateSolutionDto): Promise<Solution | null> {
+  async update(id: string, dto: UpdateSolutionDto): Promise<SolutionDocument | null> {
     return this.model.findOneAndUpdate(idFilter(id), dto, {new: true}).exec();
   }
 

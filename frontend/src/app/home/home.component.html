@@ -1,0 +1,39 @@
+<div class="container">
+  <div class="jumbotron m-3">
+    <img src="/assets/icons/icon-512x512.png" alt="SE Logo" height="100" class="float-right"/>
+    <h1 class="display-4">
+      Welcome to fulib.org
+    </h1>
+    <p class="lead">
+      fulib is a platform for modern software engineering.
+    </p>
+    <hr>
+    <p>
+      The fulib toolkit consists of many different libraries, tools and web apps,
+      easily accessible right here in your browser.
+    </p>
+  </div>
+  <h4 class="text-center">
+    Here's what you can do on fulib.org:
+  </h4>
+  <div *ngFor="let feature of features" class="card mx-auto my-3">
+    <div class="row no-gutters align-items-center">
+      <div class="col-2 text-center">
+        <i class="m-3 display-3 bi-{{feature.icon}}"></i>
+      </div>
+      <div class="col-8">
+        <div class="card-body">
+          <h5 class="card-title">
+            {{ feature.title }}
+          </h5>
+          <p class="card-text">
+            {{ feature.description }}
+          </p>
+          <a class="btn btn-primary" [routerLink]="feature.link">
+            Launch
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
