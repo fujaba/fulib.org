@@ -110,8 +110,10 @@ export class SubmitService {
         const remark = evaluation && evaluation.remark ? evaluation.remark + '\n' : '';
         const subTasks = renderSubTasks(task.children, depth + 1);
         return header + remark + snippets + subTasks;
+      } else {
+        const desc = [task.description, evaluation?.remark].filter(x => x).join(': ');
+        return `- ${desc} (${point}P)\n${snippets}`;
       }
-      return `- ${task.description}${evaluation && evaluation.remark ? ': ' + evaluation.remark : ''} (${point}P)\n${snippets}`;
     };
 
     const renderSubTasks = (tasks: Task[], depth: number): string => tasks.map(task => renderTask(task, depth)).join('');
