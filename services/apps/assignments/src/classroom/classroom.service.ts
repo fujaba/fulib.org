@@ -8,6 +8,7 @@ import {extract} from 'tar-stream';
 import {AssignmentDocument} from '../assignment/assignment.schema';
 import {AssignmentService} from '../assignment/assignment.service';
 import {environment} from '../environment';
+import {SearchService} from '../search/search.service';
 import {ReadSolutionDto} from '../solution/solution.dto';
 import {Solution} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
@@ -35,8 +36,8 @@ export class ClassroomService {
   constructor(
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
+    private searchService: SearchService,
     private http: HttpService,
-    private elasticsearchService: ElasticsearchService,
   ) {
   }
 
@@ -111,24 +112,11 @@ export class ClassroomService {
         let content = '';
         stream.on('data', data => content += data.toString('utf8'));
         stream.on('end', () => {
-          this.addToIndex(assignment, solution, filename, content);
+          this.searchService.addFile(assignment, solution, filename, content);
           next();
         });
       });
       response.data.pipe(gunzip()).pipe(tar);
-    });
-  }
-
-  private addToIndex(assignment: string, solution: string, file: string, content: string) {
-    this.elasticsearchService.index({
-      index: 'files',
-      id: `${assignment}/${solution}/${file}`,
-      body: {
-        assignment,
-        solution,
-        file,
-        content,
-      },
     });
   }
 
