@@ -1,5 +1,6 @@
 import {AuthModule} from '@app/keycloak-auth';
 import {Module} from '@nestjs/common';
+import {ElasticsearchModule} from '@nestjs/elasticsearch';
 import {MongooseModule} from '@nestjs/mongoose';
 import {ScheduleModule} from '@nestjs/schedule';
 import {AssigneeModule} from './assignee/assignee.module';
@@ -11,6 +12,7 @@ import {GradingModule} from './grading/grading.module';
 import {SolutionModule} from './solution/solution.module';
 import { EvaluationModule } from './evaluation/evaluation.module';
 import { ClassroomModule } from './classroom/classroom.module';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -25,6 +27,7 @@ import { ClassroomModule } from './classroom/classroom.module';
     CourseModule,
     EvaluationModule,
     ClassroomModule,
+    SearchModule,
   ],
   controllers: [],
   providers: [],

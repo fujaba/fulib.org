@@ -17,6 +17,13 @@ services:
     restart: always
     volumes:
       - 'keycloak-data:/opt/jboss/keycloak/standalone/data/'
+  elasticsearch:
+    image: elasticsearch:7.13.4
+    environment:
+      - discovery.type=single-node
+    ports:
+      - '9200:9200'
+      - '9300:9300'
 volumes:
   keycloak-data:
 networks:

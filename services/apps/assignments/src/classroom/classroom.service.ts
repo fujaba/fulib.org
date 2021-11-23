@@ -1,14 +1,20 @@
 import {HttpService} from '@nestjs/axios';
 import {Injectable} from '@nestjs/common';
+import {ElasticsearchService} from '@nestjs/elasticsearch';
 import {Method} from 'axios';
 import {firstValueFrom} from 'rxjs';
+import {Stream} from 'stream';
+import {extract} from 'tar-stream';
 import {AssignmentDocument} from '../assignment/assignment.schema';
 import {AssignmentService} from '../assignment/assignment.service';
 import {environment} from '../environment';
+import {SearchService} from '../search/search.service';
 import {ReadSolutionDto} from '../solution/solution.dto';
 import {Solution} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {generateToken} from '../utils';
+
+import gunzip = require('gunzip-maybe');
 
 interface RepositoryInfo {
   name: string;
@@ -23,11 +29,14 @@ interface SearchResult {
   items: RepositoryInfo[];
 }
 
+const MAX_FILE_SIZE = 50 * 1024;
+
 @Injectable()
 export class ClassroomService {
   constructor(
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
+    private searchService: SearchService,
     private http: HttpService,
   ) {
   }
@@ -71,7 +80,44 @@ export class ClassroomService {
       };
     }));
     const result = await this.solutionService.bulkWrite(writes);
+
+    for (let i = 0; i < repositories.length; i++) {
+      const solution = result.upsertedIds[i];
+      if (!solution) {
+        continue;
+      }
+
+      const repo = repositories[i];
+      this.addContentsToIndex(repo, assignment.id, solution.toString(), githubToken);
+    }
+
     return Object.values(result.upsertedIds);
+  }
+
+  private addContentsToIndex(repo: RepositoryInfo, assignment: string, solution: string, githubToken: string) {
+    this.http.get<Stream>(`https://api.github.com/repos/${repo.full_name}/tarball/${repo.default_branch}`, {
+      headers: {
+        Authorization: 'Bearer ' + githubToken,
+      },
+      responseType: 'stream',
+    }).subscribe(response => {
+      const tar = extract();
+      tar.on('entry', (header, stream, next) => {
+        if (header.type !== 'file' || header.size && header.size > MAX_FILE_SIZE) {
+          stream.on('end', () => next());
+          stream.resume();
+          return;
+        }
+        const filename = header.name.substring(header.name.indexOf('/') + 1);
+        let content = '';
+        stream.on('data', data => content += data.toString('utf8'));
+        stream.on('end', () => {
+          this.searchService.addFile(assignment, solution, filename, content);
+          next();
+        });
+      });
+      response.data.pipe(gunzip()).pipe(tar);
+    });
   }
 
   private async createSolution(assignment: AssignmentDocument, repo: RepositoryInfo, token: string): Promise<Solution> {
