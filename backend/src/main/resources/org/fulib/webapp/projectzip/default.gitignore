@@ -1,6 +1,7 @@
 /.idea/
 /.gradle/
 /.settings/
+/.vscode/
 
 /bin/
 /build/
@@ -12,6 +13,8 @@
 hs_err_pid*
 
 .metadata
+.project
+.classpath
 *.iml
 local.properties
 
