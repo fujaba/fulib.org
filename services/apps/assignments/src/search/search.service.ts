@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common';
+import {Injectable, OnModuleInit} from '@nestjs/common';
 import {ElasticsearchService} from '@nestjs/elasticsearch';
 import {randomUUID} from 'crypto';
 import {Location, Snippet} from '../evaluation/evaluation.schema';
@@ -17,10 +17,55 @@ interface SearchResult {
 }
 
 @Injectable()
-export class SearchService {
+export class SearchService implements OnModuleInit {
   constructor(
     private elasticsearchService: ElasticsearchService,
   ) {
+  }
+
+  async onModuleInit() {
+    const pattern = Object.values({
+      number: /[+-]?[0-9]+(\.[0-9]+)?/,
+      string: /["](\\\\|\\["]|[^"])*["]/,
+      char: /'(\\\\|\\'|[^'])*'/,
+      identifier: /[a-zA-Z$_][a-zA-Z0-9$_]*/,
+      bracket: /[(){}<>\[\]]/,
+      symbol: /[.,;]/,
+      operator: /[+\-*/%|&=!<>?:]/,
+    }).map(r => r.source).join('|');
+    this.elasticsearchService.indices.create({
+      index: 'files',
+      body: {
+        mappings: {
+          properties: {
+            content: {
+              type: 'text',
+              analyzer: 'code',
+            },
+          },
+        },
+        settings: {
+          analysis: {
+            analyzer: {
+              code: {
+                tokenizer: 'code',
+              },
+            },
+            tokenizer: {
+              code: {
+                type: 'simple_pattern',
+                pattern,
+              },
+            },
+          },
+        },
+      },
+    }).catch(error => {
+      const body = error.meta.body;
+      if (body.error.type !== 'resource_already_exists_exception') {
+        console.error(body);
+      }
+    });
   }
 
   async addFile(assignment: string, solution: string, file: string, content: string) {
