@@ -157,24 +157,16 @@ export class SolutionService {
   get(assignment: Assignment | string, id: string): Observable<Solution> {
     const assignmentID = asID(assignment);
     const headers = {};
-    const token = this.addSolutionToken(headers, assignmentID, id);
+    this.addSolutionToken(headers, assignmentID, id);
     this.addAssignmentToken(headers, assignmentID);
-    return this.http.get<Solution>(`${environment.assignmentsApiUrl}/assignments/${assignmentID}/solutions/${id}`, {headers}).pipe(
-      tap(solution => solution.token = token ?? undefined),
-    );
+    return this.http.get<Solution>(`${environment.assignmentsApiUrl}/assignments/${assignmentID}/solutions/${id}`, {headers});
   }
 
   getAll(assignment: Assignment | string): Observable<Solution[]> {
     const assignmentID = asID(assignment);
     const headers = {};
     this.addAssignmentToken(headers, assignmentID);
-    return this.http.get<Solution[]>(`${environment.assignmentsApiUrl}/assignments/${assignmentID}/solutions`, {headers}).pipe(
-      tap(solutions => {
-        for (const solution of solutions) {
-          solution.token = this.getToken(assignmentID, solution._id!) ?? undefined;
-        }
-      }),
-    );
+    return this.http.get<Solution[]>(`${environment.assignmentsApiUrl}/assignments/${assignmentID}/solutions`, {headers});
   }
 
   getOwn(): Observable<Solution[]> {
@@ -186,9 +178,7 @@ export class SolutionService {
     this.addSolutionToken(headers, assignment, solution);
     this.addAssignmentToken(headers, assignment);
     const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}`;
-    return this.http.patch<Solution>(url, dto, {headers}).pipe(tap(result => {
-      result.token = this.getToken(assignment, solution) ?? undefined;
-    }));
+    return this.http.patch<Solution>(url, dto, {headers});
   }
 
   getComments(assignment: string, solution: string): Observable<Comment[]> {
