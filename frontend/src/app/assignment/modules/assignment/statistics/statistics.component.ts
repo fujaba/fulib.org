@@ -7,13 +7,20 @@ import {AssignmentService} from '../../../services/assignment.service';
 import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
 
+interface StatisticItem {
+  tasks: Task[];
+  totalPoints: number;
+  totalGiven: number;
+}
+
 @Component({
   selector: 'app-assignment-statistics',
   templateUrl: './statistics.component.html',
   styleUrls: ['./statistics.component.scss'],
 })
 export class StatisticsComponent implements OnInit {
-  results: { name: string, series: { name: string, value: number }[]; }[] = [];
+  results: StatisticItem[] = [];
+  totalSolutions = 0;
 
   constructor(
     private assignmentService: AssignmentService,
@@ -30,45 +37,35 @@ export class StatisticsComponent implements OnInit {
         this.solutionService.getEvaluations(aid),
       ])),
     ).subscribe(([assignment, evaluations]) => {
-      // count by task
-      const taskTotals = new Map<string, number>();
+      const solutions = new Set<string>();
+      const taskTotals = new Map<string, StatisticItem>();
       for (let evaluation of evaluations) {
-        taskTotals.set(evaluation.task, (taskTotals.get(evaluation.task) ?? 0) + evaluation.points);
+        solutions.add(evaluation.solution);
+
+        if (evaluation.points === 0) {
+          continue;
+        }
+
+        const task = evaluation.task;
+
+        let item = taskTotals.get(task);
+        if (!item) {
+          item = {
+            totalPoints: 0,
+            totalGiven: 0,
+            tasks: this.taskService.findWithParents(assignment.tasks, task),
+          };
+          taskTotals.set(task, item);
+        }
+
+        item.totalPoints += evaluation.points;
+        item.totalGiven++;
       }
 
-      const sortedTasks = Array.from(taskTotals)
-        .sort(([, a], [, b]) => b - a)
+      this.totalSolutions = solutions.size;
+      this.results = Array.from(taskTotals.values())
+        .sort((a, b) => b.totalPoints - a.totalPoints)
       ;
-
-      // group by parent
-      const groupedTasks = new Map<string, Task[]>();
-      for (const [taskId, total] of sortedTasks) {
-        if (total === 0) {
-          continue;
-        }
-
-        const parents = this.taskService.findWithParents(assignment.tasks, taskId);
-        const task = parents[parents.length - 1];
-        if (!task || task.points === 0) {
-          continue;
-        }
-
-        const parent = parents.length === 1 ? 'root' : parents[0]._id;
-        const list = groupedTasks.get(parent);
-        if (list) {
-          list.push(task);
-        } else {
-          groupedTasks.set(parent, [task]);
-        }
-      }
-
-      this.results = Array.from(groupedTasks.entries()).map(([parentId, tasks]) => ({
-        name: parentId === 'root' ? assignment.title : assignment.tasks.find(s => s._id === parentId)!.description,
-        series: tasks.map(task => ({
-          name: task.description,
-          value: taskTotals.get(task._id)! / task.points,
-        })),
-      }));
     });
   }
 }

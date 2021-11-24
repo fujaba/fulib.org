@@ -2,7 +2,6 @@ import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgbPopoverModule, NgbTooltipModule, NgbTypeaheadModule} from '@ng-bootstrap/ng-bootstrap';
-import {BarChartModule} from '@swimlane/ngx-charts';
 import {ClipboardModule} from 'ngx-clipboard';
 import {SharedModule} from '../../../shared/shared.module';
 import {AssignmentSharedModule} from '../shared/shared.module';
@@ -30,7 +29,6 @@ import {AssignmentTasksComponent} from './tasks/tasks.component';
     SharedModule,
     FormsModule,
     ClipboardModule,
-    BarChartModule,
     NgbTypeaheadModule,
     NgbPopoverModule,
     NgbTooltipModule,

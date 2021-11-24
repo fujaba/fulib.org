@@ -1,12 +1,43 @@
-<div class="container h-100" #container>
-  <ngx-charts-bar-horizontal-2d
-    [results]="results"
-    [view]="[container.clientWidth, 500]"
-    [xAxis]="true"
-    [showXAxisLabel]="true"
-    xAxisLabel="Points Given"
-    [yAxis]="true"
-    [showYAxisLabel]="true"
-    yAxisLabel="Tasks"
-  ></ngx-charts-bar-horizontal-2d>
+<div class="container">
+  <h2>
+    Evaluation Statistics
+  </h2>
+  <ul class="list-group mb-3">
+    <li class="list-group-item d-flex align-items-center" *ngFor="let result of results">
+      <ol class="breadcrumb mr-auto mb-0 bg-transparent">
+        <li *ngFor="let task of result.tasks; let last=last" class="breadcrumb-item" [class.text-muted]="!last">
+          {{ task.description }}
+          <span *ngIf="last" class="badge badge-secondary">
+            {{ task.points }}
+          </span>
+        </li>
+      </ol>
+      <div class="text-center">
+        <h3 class="mb-0">
+          {{ result.totalPoints }}
+        </h3>
+        <small class="text-muted">
+          Points Total
+        </small>
+      </div>
+      <div class="border-right mx-3 align-self-stretch"></div>
+      <div class="text-center">
+        <h3 class="mb-0">
+          {{ result.totalGiven }}
+        </h3>
+        <small class="text-muted">
+          Times Given
+        </small>
+      </div>
+      <div class="border-right mx-3 align-self-stretch"></div>
+      <div class="text-center">
+        <h3 class="mb-0">
+          {{ result.totalGiven / totalSolutions | percent:'0.0' }}
+        </h3>
+        <small class="text-muted">
+          of Solutions
+        </small>
+      </div>
+    </li>
+  </ul>
 </div>
