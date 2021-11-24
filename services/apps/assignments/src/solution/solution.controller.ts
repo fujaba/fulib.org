@@ -50,12 +50,11 @@ export class SolutionController {
   @Get('assignments/:assignment/solutions/:id')
   @SolutionAuth({forbiddenResponse})
   @NotFound()
-  @ApiOkResponse({type: ReadSolutionDto})
+  @ApiOkResponse({type: Solution})
   async findOne(
     @Param('id') id: string,
-  ): Promise<ReadSolutionDto> {
-    const solution = await this.solutionService.findOne(id) ?? notFound(id);
-    return this.solutionService.mask(solution.toObject());
+  ): Promise<Solution | null> {
+    return this.solutionService.findOne(id);
   }
 
   @Get('solutions')
@@ -70,23 +69,21 @@ export class SolutionController {
   @Patch('assignments/:assignment/solutions/:id')
   @SolutionAuth({forbiddenResponse})
   @NotFound()
-  @ApiOkResponse({type: ReadSolutionDto})
+  @ApiOkResponse({type: Solution})
   async update(
     @Param('id') id: string,
     @Body() dto: UpdateSolutionDto,
-  ): Promise<ReadSolutionDto> {
-    const solution = await this.solutionService.update(id, dto) ?? notFound(id);
-    return this.solutionService.mask(solution.toObject());
+  ): Promise<Solution | null> {
+    return this.solutionService.update(id, dto);
   }
 
   @Delete('assignments/:assignment/solutions/:id')
   @SolutionAuth({forbiddenResponse})
   @NotFound()
-  @ApiOkResponse({type: ReadSolutionDto})
+  @ApiOkResponse({type: Solution})
   async remove(
     @Param('id') id: string,
-  ): Promise<ReadSolutionDto> {
-    const solution = await this.solutionService.remove(id) ?? notFound(id);
-    return this.solutionService.mask(solution.toObject());
+  ): Promise<Solution | null> {
+    return this.solutionService.remove(id);
   }
 }

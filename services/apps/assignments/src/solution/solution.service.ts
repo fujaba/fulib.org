@@ -100,11 +100,6 @@ export class SolutionService {
     return this.model.findOne(idFilter(id)).exec();
   }
 
-  mask(solution: Solution): ReadSolutionDto {
-    const {token, ...rest} = solution;
-    return rest;
-  }
-
   async update(id: string, dto: UpdateSolutionDto): Promise<SolutionDocument | null> {
     return this.model.findOneAndUpdate(idFilter(id), dto, {new: true}).exec();
   }
