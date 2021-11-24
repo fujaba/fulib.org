@@ -1,0 +1,27 @@
+@mixin markdown-dark {
+  .markdown .hljs {
+    background-color: $gray-900;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-theme="auto"] {
+    @include markdown-dark;
+    @import "~highlight.js/scss/base16/darcula";
+  }
+}
+
+@media (prefers-color-scheme: light), (prefers-color-scheme: no-preference) {
+  [data-theme="auto"] {
+    @import "~highlight.js/scss/idea";
+  }
+}
+
+[data-theme="dark"] {
+  @include markdown-dark;
+  @import "~highlight.js/scss/base16/darcula";
+}
+
+[data-theme="light"] {
+  @import "~highlight.js/scss/idea";
+}

@@ -3,6 +3,8 @@ export class Snippet {
   from: { line: number; };
   to: { line: number; };
   comment: string;
+  code: string;
+  context?: string;
 }
 
 export class Evaluation {

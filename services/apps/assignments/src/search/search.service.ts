@@ -2,18 +2,13 @@ import {Injectable, OnModuleInit} from '@nestjs/common';
 import {ElasticsearchService} from '@nestjs/elasticsearch';
 import {randomUUID} from 'crypto';
 import {Location, Snippet} from '../evaluation/evaluation.schema';
+import {SearchResult, SearchSnippet} from './search.dto';
 
 interface FileDocument {
   assignment: string;
   solution: string;
   file: string;
   content: string;
-}
-
-interface SearchResult {
-  assignment: string;
-  solution: string;
-  snippets: Snippet[];
 }
 
 @Injectable()
@@ -124,7 +119,7 @@ export class SearchService implements OnModuleInit {
     const split = highlightContent.split(uniqueId);
 
     let start = 0;
-    const snippets: Snippet[] = [];
+    const snippets: SearchSnippet[] = [];
 
     for (let i = 1; i < split.length; i += 2) {
       start += split[i - 1].length;
@@ -134,12 +129,18 @@ export class SearchService implements OnModuleInit {
       const from = this._findLocation(lineStartIndices, start);
       const to = this._findLocation(lineStartIndices, end);
 
+      const contextLines = 2;
+      const contextStart = lineStartIndices[from.line < contextLines ? 0 : from.line - contextLines];
+      const contextEnd = to.line + contextLines + 1 >= lineStartIndices.length ? code.length : lineStartIndices[to.line + contextLines + 1];
+      const context = content.substring(contextStart, contextEnd);
+
       snippets.push({
         file,
         code,
         comment: '',
         from,
         to,
+        context,
       });
 
       start = end;

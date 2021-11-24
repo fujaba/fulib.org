@@ -1,0 +1,28 @@
+.markdown {
+  blockquote {
+    color: $text-muted;
+    padding-left: 1em;
+    border-left: 2px solid $text-muted;
+  }
+
+  pre {
+    @include border-radius($card-border-radius);
+    border: $card-border-width solid $card-border-color;
+    position: relative;
+  }
+
+  pre > code {
+    padding: 0.5em;
+    display: block;
+    overflow-x: auto;
+  }
+
+  pre > code[lang]::before {
+    content: attr(lang);
+    display: block;
+    color: $text-muted;
+    position: absolute;
+    right: 1em;
+    top: 1em;
+  }
+}

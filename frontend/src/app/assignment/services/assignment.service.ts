@@ -13,6 +13,7 @@ import {UserService} from '../../user/user.service';
 import Assignment from '../model/assignment';
 import {CheckAssignment, CheckResult} from '../model/check';
 import Course from '../model/course';
+import {SearchResult} from '../model/search-result';
 
 @Injectable({
   providedIn: 'root',
@@ -191,6 +192,14 @@ export class AssignmentService {
         return a;
       }),
     );
+  }
+
+  search(id: string, q: string): Observable<SearchResult[]> {
+    const headers = this.getHeaders(this.getToken(id));
+    return this.http.get<SearchResult[]>(`${environment.assignmentsApiUrl}/assignments/${id}/search`, {
+      params: {q},
+      headers,
+    });
   }
 
   private getHeaders(token?: string | null | undefined): Record<string, string> {
