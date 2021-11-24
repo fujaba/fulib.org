@@ -17,8 +17,8 @@
           <h6>
             {{ snippet.file }} lines {{ snippet.from.line }} to {{ snippet.to.line }}:
           </h6>
-          <div class="card card-body">
-            <pre><code>{{snippet.context}}</code></pre>
+          <div class="markdown" *ngIf="snippet.file.substring(snippet.file.lastIndexOf('.') + 1) as lang">
+            <pre><code class="hljs language-{{lang}}" [lang]="lang">{{snippet.context}}</code></pre>
           </div>
         </li>
       </ul>
