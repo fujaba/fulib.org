@@ -3,6 +3,7 @@ export class Snippet {
   from: { line: number; };
   to: { line: number; };
   comment: string;
+  code: string;
 }
 
 export class Evaluation {
