@@ -1,8 +1,7 @@
-import {AfterViewChecked, Component, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import hljs from 'highlight.js/lib/core';
-import {BehaviorSubject, combineLatest, forkJoin} from 'rxjs';
-import {debounceTime, distinctUntilChanged, switchMap, tap} from 'rxjs/operators';
+import {BehaviorSubject, combineLatest} from 'rxjs';
+import {debounceTime, distinctUntilChanged, switchMap} from 'rxjs/operators';
 import {SearchResult} from '../../../model/search-result';
 import Solution from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
@@ -44,15 +43,6 @@ export class SearchComponent implements OnInit {
       switchMap(([{aid}, {q}]) => this.assignmentService.search(aid, q)),
     ).subscribe(results => {
       this.results = results;
-
-      setTimeout(() => {
-        document.querySelectorAll<HTMLElement>('pre code[lang]').forEach(el => {
-          const lang = el.lang;
-          if (lang && hljs.getLanguage(lang)) {
-            hljs.highlightElement(el);
-          }
-        });
-      }, 0);
     });
 
     this.search$.pipe(

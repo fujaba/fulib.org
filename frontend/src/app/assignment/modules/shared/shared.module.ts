@@ -7,6 +7,7 @@ import {AssignmentInfoComponent} from './assignment-info/assignment-info.compone
 import {AuthorNameComponent} from './author-name/author-name.component';
 import {ImportExportComponent} from './import-export/import-export.component';
 import {TaskColorPipe} from './pipes/task-color.pipe';
+import {SnippetComponent} from './snippet/snippet.component';
 import {TaskListComponent} from './task-list/task-list.component';
 
 
@@ -21,6 +22,7 @@ import {TaskListComponent} from './task-list/task-list.component';
     AssignmentInfoComponent,
     AuthorNameComponent,
     ImportExportComponent,
+    SnippetComponent,
     TaskListComponent,
     TaskColorPipe,
   ],
@@ -28,6 +30,7 @@ import {TaskListComponent} from './task-list/task-list.component';
     AssignmentInfoComponent,
     AuthorNameComponent,
     ImportExportComponent,
+    SnippetComponent,
     TaskListComponent,
     TaskColorPipe,
   ],

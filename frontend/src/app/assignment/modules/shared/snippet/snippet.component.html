@@ -1,0 +1,6 @@
+<h6>
+  {{ snippet.file }} lines {{ snippet.from.line - contextLines + 1 }} to {{ snippet.to.line + contextLines + 1 }}:
+</h6>
+<div class="markdown">
+  <pre><code #code class="hljs language-{{fileType}}" [lang]="fileType">{{snippet.context ?? snippet.code}}</code></pre>
+</div>

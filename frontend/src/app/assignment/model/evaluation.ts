@@ -4,6 +4,7 @@ export class Snippet {
   to: { line: number; };
   comment: string;
   code: string;
+  context?: string;
 }
 
 export class Evaluation {
