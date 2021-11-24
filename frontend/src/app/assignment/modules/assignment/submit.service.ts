@@ -127,9 +127,11 @@ export class SubmitService {
   }
 
   private renderFooter(assignment: Assignment, solution: Solution) {
+    const apiUrl = environment.assignmentsApiUrl;
+    const apiServer = new URL(apiUrl, location.origin).origin;
     const timestamp = new Date();
     const settings = {
-      'fulibFeedback.apiServer': 'https://fulib.org',
+      'fulibFeedback.apiServer': apiServer,
       'fulibFeedback.assignment.id': assignment._id,
       'fulibFeedback.solution.id': solution._id,
       'fulibFeedback.solution.token': solution.token,
