@@ -24,7 +24,7 @@
       <ul class="list-group">
         <li *ngFor="let snippet of result.snippets" class="list-group-item">
           <h6>
-            {{ snippet.file }} lines {{ snippet.from.line }} to {{ snippet.to.line }}:
+            {{ snippet.file }} lines {{ snippet.from.line - 1 }} to {{ snippet.to.line + 3 }}:
           </h6>
           <div class="markdown" *ngIf="snippet.file.substring(snippet.file.lastIndexOf('.') + 1) as lang">
             <pre><code class="hljs language-{{lang}}" [lang]="lang">{{snippet.context}}</code></pre>
