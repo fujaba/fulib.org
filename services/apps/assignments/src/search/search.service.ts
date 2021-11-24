@@ -2,18 +2,13 @@ import {Injectable, OnModuleInit} from '@nestjs/common';
 import {ElasticsearchService} from '@nestjs/elasticsearch';
 import {randomUUID} from 'crypto';
 import {Location, Snippet} from '../evaluation/evaluation.schema';
+import {SearchResult} from './search.dto';
 
 interface FileDocument {
   assignment: string;
   solution: string;
   file: string;
   content: string;
-}
-
-interface SearchResult {
-  assignment: string;
-  solution: string;
-  snippets: Snippet[];
 }
 
 @Injectable()
