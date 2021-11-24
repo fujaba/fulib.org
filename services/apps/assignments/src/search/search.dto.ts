@@ -1,7 +1,13 @@
 import {ApiProperty} from '@nestjs/swagger';
 import {Type} from 'class-transformer';
-import {IsArray, IsMongoId, ValidateNested} from 'class-validator';
+import {IsArray, IsMongoId, IsString, ValidateNested} from 'class-validator';
 import {Snippet} from '../evaluation/evaluation.schema';
+
+export class SearchSnippet extends Snippet {
+  @ApiProperty()
+  @IsString()
+  context: string;
+}
 
 export class SearchResult {
   @ApiProperty()
@@ -12,9 +18,9 @@ export class SearchResult {
   @IsMongoId()
   solution: string;
 
-  @ApiProperty({type: [Snippet]})
+  @ApiProperty({type: [SearchSnippet]})
   @IsArray()
   @ValidateNested({each: true})
-  @Type(() => Snippet)
-  snippets: Snippet[];
+  @Type(() => SearchSnippet)
+  snippets: SearchSnippet[];
 }
