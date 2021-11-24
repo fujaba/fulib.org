@@ -14,8 +14,12 @@
       </h4>
       <ul class="list-group">
         <li *ngFor="let snippet of result.snippets" class="list-group-item">
-          {{ snippet.file }} lines {{ snippet.from.line }} to {{ snippet.to.line }}:
-          <pre><code>{{snippet.code}}</code></pre>
+          <h6>
+            {{ snippet.file }} lines {{ snippet.from.line }} to {{ snippet.to.line }}:
+          </h6>
+          <div class="card card-body">
+            <pre><code>{{snippet.context}}</code></pre>
+          </div>
         </li>
       </ul>
     </li>
