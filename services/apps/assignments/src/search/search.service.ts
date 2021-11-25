@@ -83,6 +83,7 @@ export class SearchService implements OnModuleInit {
     const result = await this.elasticsearchService.search({
       index: 'files',
       body: {
+        size: 10000,
         query: {
           bool: {
             must: {
