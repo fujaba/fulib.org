@@ -89,7 +89,6 @@ export class SearchService implements OnModuleInit {
               match_phrase: {
                 content: {
                   query: snippet,
-                  slop: 4,
                 },
               },
             },
