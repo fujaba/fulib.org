@@ -15,6 +15,7 @@ export class EvaluationService {
 
   async create(assignment: string, solution: string, dto: CreateEvaluationDto, createdBy?: string): Promise<Evaluation> {
     if (dto.codeSearch && dto.snippets.length) {
+      delete dto.codeSearch;
       this.codeSearch(assignment, dto);
     }
 
