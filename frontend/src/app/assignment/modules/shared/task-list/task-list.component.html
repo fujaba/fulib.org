@@ -11,7 +11,7 @@
       [class.text-primary]="!evaluations[task._id]"
       [class.text-secondary]="evaluations[task._id]"
     >
-      {{ evaluations[task._id] ? '&check; Graded' : 'Grade' }}
+      {{ evaluations[task._id] ? '&check; Graded by ' + evaluations[task._id].author : 'Grade' }}
     </a>
     <app-task-list
       *ngIf="task.children.length"
