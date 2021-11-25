@@ -29,8 +29,8 @@ export class SearchController {
   async findCode(
     @Param('assignment') assignment: string,
     @Query('q') code: string,
-    @Query('context', ParseIntPipe) context?: number,
+    @Query('context') context?: number,
   ): Promise<SearchResult[]> {
-    return this.searchService.find(assignment, code, context);
+    return this.searchService.find(assignment, code, context !== undefined ? +context : undefined);
   }
 }
