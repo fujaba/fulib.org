@@ -42,10 +42,6 @@ export class StatisticsComponent implements OnInit {
       for (let evaluation of evaluations) {
         solutions.add(evaluation.solution);
 
-        if (evaluation.points === 0) {
-          continue;
-        }
-
         const task = evaluation.task;
 
         let item = taskTotals.get(task);
