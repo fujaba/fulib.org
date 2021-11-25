@@ -93,8 +93,8 @@ export class SubmitService {
     const renderTask = (task: Task, depth: number): string => {
       const point = points[task._id];
       const evaluation = evaluationRecord[task._id];
-      if (task.points < 0 && point === 0 && !evaluation) {
-        // do not render deductions that were not given
+      if (task.points < 0 && point === 0 && !this.hasRelevantInfo(evaluation)) {
+        // do not render deductions without relevant information
         return '';
       }
 
@@ -115,6 +115,20 @@ export class SubmitService {
 
     const tasks = renderSubTasks(assignment.tasks, 0);
     return {total, sum, tasks};
+  }
+
+  private hasRelevantInfo(evaluation?: Evaluation): boolean {
+    if (!evaluation) {
+      return false;
+    }
+    if (evaluation.remark) {
+      return true;
+    }
+    if (evaluation.snippets.find(s => s.comment)) {
+      return true;
+    }
+    // No additional information
+    return false;
   }
 
   private renderSnippets(assignment: Assignment, solution: Solution, snippets: Snippet[]) {
