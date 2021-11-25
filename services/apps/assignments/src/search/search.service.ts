@@ -77,7 +77,7 @@ export class SearchService implements OnModuleInit {
     });
   }
 
-  async find(assignment: string, snippet: string): Promise<SearchResult[]> {
+  async find(assignment: string, snippet: string, context?: number): Promise<SearchResult[]> {
     const uniqueId = randomUUID();
     const result = await this.elasticsearchService.search({
       index: 'files',
@@ -109,10 +109,10 @@ export class SearchService implements OnModuleInit {
         },
       },
     });
-    return result.body.hits.hits.map((hit: any) => this._convertHit(hit, uniqueId));
+    return result.body.hits.hits.map((hit: any) => this._convertHit(hit, uniqueId, context));
   }
 
-  _convertHit(hit: { _source: FileDocument, highlight: { content: string[] } }, uniqueId: string): SearchResult {
+  _convertHit(hit: { _source: FileDocument, highlight: { content: string[] } }, uniqueId: string, contextLines?: number): SearchResult {
     const {assignment, solution, file, content} = hit._source;
     const lineStartIndices = this._buildLineStartList(content);
     const highlightContent = hit.highlight.content[0];
@@ -128,20 +128,21 @@ export class SearchService implements OnModuleInit {
       const end = start + code.length;
       const from = this._findLocation(lineStartIndices, start);
       const to = this._findLocation(lineStartIndices, end);
-
-      const contextLines = 2;
-      const contextStart = lineStartIndices[from.line < contextLines ? 0 : from.line - contextLines];
-      const contextEnd = to.line + contextLines + 1 >= lineStartIndices.length ? code.length : lineStartIndices[to.line + contextLines + 1];
-      const context = content.substring(contextStart, contextEnd);
-
-      snippets.push({
+      const snippet: SearchSnippet = {
         file,
-        code,
-        comment: '',
         from,
         to,
-        context,
-      });
+        code,
+        comment: '',
+      };
+
+      if (contextLines !== undefined) {
+        const contextStart = lineStartIndices[from.line < contextLines ? 0 : from.line - contextLines];
+        const contextEnd = to.line + contextLines + 1 >= lineStartIndices.length ? code.length : lineStartIndices[to.line + contextLines + 1];
+        snippet.context = content.substring(contextStart, contextEnd);
+      }
+
+      snippets.push(snippet);
 
       start = end;
     }

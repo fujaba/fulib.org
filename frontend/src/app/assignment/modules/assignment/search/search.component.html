@@ -1,9 +1,21 @@
 <div class="container">
+  <div *ngIf="assignment && !assignment.classroom?.codeSearch" class="alert alert-warning">
+    <h4 class="alert-heading">
+      Code Search is disabled
+    </h4>
+    To use Code Search, you need to enable it in the
+    <a routerLink="../edit/classroom">
+      Assignment Classroom Settings
+    </a>
+    .
+    Code will be indexed when importing new solutions.
+  </div>
   <div class="form">
     <div class="form-group">
       <label for="searchArea">Search for Code Snippet</label>
       <textarea class="form-control text-monospace" id="searchArea"
                 [ngModel]="search$.value" (ngModelChange)="search$.next($event)"
+                [disabled]="!assignment?.classroom?.codeSearch"
       ></textarea>
     </div>
   </div>

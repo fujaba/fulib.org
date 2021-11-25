@@ -14,33 +14,10 @@ export class EvaluationService {
   }
 
   async create(assignment: string, solution: string, dto: CreateEvaluationDto, createdBy?: string): Promise<Evaluation> {
-    dto.snippets.length && Promise.all(dto.snippets.map(snippet => this.searchService.find(assignment, snippet.code))).then(resultss => {
-      const solutions: Record<string, Snippet[]> = {};
-      for (let results of resultss) {
-        for (let result of results) {
-          (solutions[result.solution] ??= []).push(...result.snippets);
-        }
-      }
-      return this.model.bulkWrite(Object.entries(solutions).map(([solution, snippets]) => {
-        const filter: FilterQuery<Evaluation> = {
-          assignment,
-          solution,
-          task: dto.task,
-        };
-        const newEvaluation: CreateEvaluationDto = {
-          ...dto,
-          author: 'Code Search',
-          snippets,
-        };
-        return {
-          updateOne: {
-            filter,
-            update: {$setOnInsert: {assignment, solution, ...newEvaluation}},
-            upsert: true,
-          },
-        };
-      }));
-    });
+    if (dto.codeSearch && dto.snippets.length) {
+      delete dto.codeSearch;
+      this.codeSearch(assignment, dto);
+    }
 
     return this.model.create({
       assignment,
@@ -48,6 +25,35 @@ export class EvaluationService {
       createdBy,
       ...dto,
     });
+  }
+
+  private async codeSearch(assignment: string, dto: CreateEvaluationDto) {
+    const resultss = await Promise.all(dto.snippets.map(snippet => this.searchService.find(assignment, snippet.code)));
+    const solutions: Record<string, Snippet[]> = {};
+    for (let results of resultss) {
+      for (let result of results) {
+        (solutions[result.solution] ??= []).push(...result.snippets);
+      }
+    }
+    return this.model.bulkWrite(Object.entries(solutions).map(([solution, snippets]) => {
+      const filter: FilterQuery<Evaluation> = {
+        assignment,
+        solution,
+        task: dto.task,
+      };
+      const newEvaluation: CreateEvaluationDto = {
+        ...dto,
+        author: 'Code Search',
+        snippets,
+      };
+      return {
+        updateOne: {
+          filter,
+          update: {$setOnInsert: {assignment, solution, ...newEvaluation}},
+          upsert: true,
+        },
+      };
+    }));
   }
 
   async findAll(where: FilterQuery<Evaluation> = {}): Promise<Evaluation[]> {
