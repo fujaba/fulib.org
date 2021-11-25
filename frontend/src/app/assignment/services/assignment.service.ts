@@ -197,7 +197,7 @@ export class AssignmentService {
   search(id: string, q: string): Observable<SearchResult[]> {
     const headers = this.getHeaders(this.getToken(id));
     return this.http.get<SearchResult[]>(`${environment.assignmentsApiUrl}/assignments/${id}/search`, {
-      params: {q},
+      params: {q, context: 2},
       headers,
     });
   }
