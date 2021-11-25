@@ -36,6 +36,7 @@ export class SearchService implements OnModuleInit {
             content: {
               type: 'text',
               analyzer: 'code',
+              term_vector: 'with_positions_offsets',
             },
           },
         },
@@ -106,6 +107,7 @@ export class SearchService implements OnModuleInit {
           pre_tags: [uniqueId],
           post_tags: [uniqueId],
           number_of_fragments: 0,
+          type: 'fvh',
         },
       },
     });
