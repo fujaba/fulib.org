@@ -4,6 +4,7 @@ import {Type} from 'class-transformer';
 import {
   IsAlphanumeric,
   IsArray,
+  IsBoolean,
   IsDateString,
   IsEmail,
   IsNotEmpty,
@@ -63,6 +64,12 @@ export class ClassroomInfo {
   @IsOptional()
   @IsString()
   prefix?: string;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  codeSearch?: boolean;
 }
 
 @Schema()

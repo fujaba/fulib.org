@@ -81,14 +81,16 @@ export class ClassroomService {
     }));
     const result = await this.solutionService.bulkWrite(writes);
 
-    for (let i = 0; i < repositories.length; i++) {
-      const solution = result.upsertedIds[i];
-      if (!solution) {
-        continue;
-      }
+    if (assignment.classroom?.codeSearch) {
+      for (let i = 0; i < repositories.length; i++) {
+        const solution = result.upsertedIds[i];
+        if (!solution) {
+          continue;
+        }
 
-      const repo = repositories[i];
-      this.addContentsToIndex(repo, assignment.id, solution.toString(), githubToken);
+        const repo = repositories[i];
+        this.addContentsToIndex(repo, assignment.id, solution.toString(), githubToken);
+      }
     }
 
     return Object.values(result.upsertedIds);
