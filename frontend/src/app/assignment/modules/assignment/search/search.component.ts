@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {BehaviorSubject, combineLatest} from 'rxjs';
+import {BehaviorSubject, combineLatest, forkJoin} from 'rxjs';
 import {debounceTime, distinctUntilChanged, switchMap} from 'rxjs/operators';
+import Assignment from '../../../model/assignment';
 import {SearchResult} from '../../../model/search-result';
 import Solution from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
@@ -16,6 +17,7 @@ export class SearchComponent implements OnInit {
   search$ = new BehaviorSubject<string>(this.route.snapshot.queryParams.q);
 
   results: SearchResult[] = [];
+  assignment?: Assignment;
   solutions: Record<string, Solution> = {};
 
   constructor(
@@ -28,8 +30,12 @@ export class SearchComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.pipe(
-      switchMap(({aid}) => this.solutionService.getAll(aid)),
-    ).subscribe(solutions => {
+      switchMap(({aid}) => forkJoin([
+        this.assignmentService.get(aid),
+        this.solutionService.getAll(aid),
+      ])),
+    ).subscribe(([assignment, solutions]) => {
+      this.assignment = assignment;
       this.solutions = {};
       for (let solution of solutions) {
         this.solutions[solution._id!] = solution;

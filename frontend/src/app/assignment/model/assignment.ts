@@ -15,6 +15,7 @@ export default class Assignment {
     link?: string;
     org?: string;
     prefix?: string;
+    codeSearch?: boolean;
   };
 
   tasks: Task[];
