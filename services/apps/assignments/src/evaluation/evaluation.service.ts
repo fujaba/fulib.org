@@ -48,20 +48,28 @@ export class EvaluationService {
     return this.model.findByIdAndDelete(id).exec();
   }
 
-  private async codeSearch(assignment: string, snippets: Snippet[]): Promise<Record<string, Snippet[]>> {
+  private async codeSearch(assignment: string, snippets: Snippet[]): Promise<[string, Snippet[] | undefined][]> {
     const resultss = await Promise.all(snippets.map(snippet => this.searchService.find(assignment, snippet.code)));
-    const solutions: Record<string, Snippet[]> = {};
+    const solutions: Record<string, Snippet[][]> = {};
     for (let results of resultss) {
       for (let result of results) {
-        (solutions[result.solution] ??= []).push(...result.snippets);
+        (solutions[result.solution] ??= []).push(result.snippets);
       }
     }
-    return solutions;
+    return Object.entries(solutions)
+      .map(([solution, snippetss]) => {
+        if (snippetss.find(snippets => !snippets.length)) {
+          // remove solutions where any original snippet was not found
+          return [solution, undefined];
+        }
+        return [solution, snippetss.flat()];
+      })
+    ;
   }
 
   private async codeSearchCreate(assignment: string, dto: CreateEvaluationDto) {
     const solutions = await this.codeSearch(assignment, dto.snippets);
-    return this.model.bulkWrite(Object.entries(solutions).map(([solution, snippets]) => {
+    return this.model.bulkWrite(solutions.filter(s => s[1]).map(([solution, snippets]) => {
       const filter: FilterQuery<Evaluation> = {
         assignment,
         solution,
@@ -70,7 +78,7 @@ export class EvaluationService {
       const newEvaluation: CreateEvaluationDto = {
         ...dto,
         author: 'Code Search',
-        snippets,
+        snippets: snippets!,
       };
       return {
         updateOne: {
@@ -84,13 +92,18 @@ export class EvaluationService {
 
   private async codeSearchUpdate(assignment: string, dto: UpdateEvaluationDto) {
     const solutions = await this.codeSearch(assignment, dto.snippets!);
-    return this.model.bulkWrite(Object.entries(solutions).map(([solution, snippets]) => {
+    return this.model.bulkWrite(solutions.map(([solution, snippets]) => {
       const filter: FilterQuery<Evaluation> = {
         assignment,
         solution,
         task: dto.task,
         author: 'Code Search',
       };
+
+      if (!snippets) {
+        return {deleteOne: {filter}};
+      }
+
       const updatedEvaluation: UpdateEvaluationDto = {
         ...dto,
         snippets,
