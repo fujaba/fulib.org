@@ -58,6 +58,12 @@ export class Snippet {
 }
 
 export class CodeSearchInfo {
+  @Prop()
+  @ApiPropertyOptional({description: 'Only in GET responses'})
+  @IsOptional()
+  @IsMongoId()
+  origin?: string;
+
   @ApiPropertyOptional({description: 'Only in POST response'})
   @IsOptional()
   @IsInt()
