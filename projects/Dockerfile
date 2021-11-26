@@ -1,4 +1,4 @@
-FROM gradle:7.2-jre11 as preload
+FROM gradle:7.3-jdk11-alpine as preload
 WORKDIR /opt/preload
 COPY preload.build.gradle build.gradle
 RUN gradle wrapper
