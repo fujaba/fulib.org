@@ -3,7 +3,7 @@ import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model} from 'mongoose';
 import {SearchService} from '../search/search.service';
 import {CreateEvaluationDto, UpdateEvaluationDto} from './evaluation.dto';
-import {Evaluation, Snippet} from './evaluation.schema';
+import {CodeSearchInfo, Evaluation, Snippet} from './evaluation.schema';
 
 @Injectable()
 export class EvaluationService {
@@ -14,17 +14,17 @@ export class EvaluationService {
   }
 
   async create(assignment: string, solution: string, dto: CreateEvaluationDto, createdBy?: string): Promise<Evaluation> {
-    if (dto.codeSearch && dto.snippets.length) {
-      delete dto.codeSearch;
-      this.codeSearchCreate(assignment, dto);
-    }
-
-    return this.model.create({
+    const {codeSearch, ...rest} = dto;
+    const evaluation = await this.model.create({
       assignment,
       solution,
       createdBy,
-      ...dto,
+      ...rest,
     });
+    if (codeSearch && dto.snippets.length) {
+      evaluation.codeSearch = await this.codeSearchCreate(assignment, dto);
+    }
+    return evaluation;
   }
 
   async findAll(where: FilterQuery<Evaluation> = {}): Promise<Evaluation[]> {
@@ -36,10 +36,10 @@ export class EvaluationService {
   }
 
   async update(id: string, dto: UpdateEvaluationDto): Promise<Evaluation | null> {
-    const evaluation = await this.model.findByIdAndUpdate(id, dto, {new: true}).exec();
-    if (evaluation && dto.codeSearch && dto.snippets && dto.snippets.length) {
-      delete dto.codeSearch;
-      this.codeSearchUpdate(evaluation.assignment, dto);
+    const {codeSearch, ...rest} = dto;
+    const evaluation = await this.model.findByIdAndUpdate(id, rest, {new: true}).exec();
+    if (evaluation && codeSearch && dto.snippets && dto.snippets.length) {
+      evaluation.codeSearch = await this.codeSearchUpdate(evaluation.assignment, dto);
     }
     return evaluation;
   }
@@ -67,9 +67,9 @@ export class EvaluationService {
     ;
   }
 
-  private async codeSearchCreate(assignment: string, dto: CreateEvaluationDto) {
+  private async codeSearchCreate(assignment: string, dto: CreateEvaluationDto): Promise<CodeSearchInfo> {
     const solutions = await this.codeSearch(assignment, dto.snippets);
-    return this.model.bulkWrite(solutions.filter(s => s[1]).map(([solution, snippets]) => {
+    const result = await this.model.bulkWrite(solutions.filter(s => s[1]).map(([solution, snippets]) => {
       const filter: FilterQuery<Evaluation> = {
         assignment,
         solution,
@@ -88,11 +88,12 @@ export class EvaluationService {
         },
       };
     }));
+    return {created: result.upsertedCount};
   }
 
-  private async codeSearchUpdate(assignment: string, dto: UpdateEvaluationDto) {
+  private async codeSearchUpdate(assignment: string, dto: UpdateEvaluationDto): Promise<Partial<CodeSearchInfo>> {
     const solutions = await this.codeSearch(assignment, dto.snippets!);
-    return this.model.bulkWrite(solutions.map(([solution, snippets]) => {
+    const result = await this.model.bulkWrite(solutions.map(([solution, snippets]) => {
       const filter: FilterQuery<Evaluation> = {
         assignment,
         solution,
@@ -115,5 +116,6 @@ export class EvaluationService {
         },
       };
     }));
+    return {updated: result.modifiedCount, deleted: result.deletedCount};
   }
 }
