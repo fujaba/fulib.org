@@ -26,9 +26,9 @@ export class MemberController {
   @MemberAuth({forbiddenResponse})
   @ApiOkResponse({type: [Member]})
   async findAll(
-    @Param('project') project: string,
+    @Param('project') projectId: string,
   ): Promise<Member[]> {
-    return this.memberService.findAll({project});
+    return this.memberService.findAll({projectId});
   }
 
   @Get(':user')
