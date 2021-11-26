@@ -122,7 +122,7 @@ export class FileCodeEditorComponent implements OnInit, OnDestroy {
   }
 
   private onExternalChange(file: File, content: string) {
-    if (this.content && file.dirty && !confirm(file.name + ' was changed externally. Reload and discard changes?')) {
+    if (this.content && file.dirty && content !== this.content && !confirm(file.name + ' was changed externally. Reload and discard changes?')) {
       return;
     }
 
