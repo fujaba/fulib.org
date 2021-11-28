@@ -116,6 +116,8 @@ export class ClassroomService {
         });
       });
       response.data.pipe(gunzip()).pipe(tar);
+    }, error => {
+      console.error(`Failed to index ${org}/${prefix}-${github}: ${error.message}`);
     });
   }
 
