@@ -5,7 +5,7 @@ import {map, switchMap} from 'rxjs/operators';
 import {ModalComponent} from '../../../../shared/modal/modal.component';
 import {ToastService} from '../../../../toast.service';
 import {UserService} from '../../../../user/user.service';
-import {CreateEvaluationDto, Evaluation} from '../../../model/evaluation';
+import {CodeSearchInfo, CreateEvaluationDto, Evaluation} from '../../../model/evaluation';
 import Task from '../../../model/task';
 import {AssignmentService} from '../../../services/assignment.service';
 import {SolutionService} from '../../../services/solution.service';
@@ -117,7 +117,8 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       ? this.solutionService.updateEvaluation(aid, sid, this.evaluation._id, this.dto)
       : this.solutionService.createEvaluation(aid, sid, this.dto);
     op.subscribe(result => {
-      this.toastService.success('Evaluation', `Successfully ${this.evaluation ? 'updated' : 'created'} evaluation`);
+      const op = this.evaluation ? 'updated' : 'created';
+      this.toastService.success('Evaluation', `Successfully ${op} evaluation${this.codeSearchInfo(result.codeSeach)}`);
       this.evaluation = result;
     }, error => {
       this.toastService.error('Evaluation', `Failed to ${this.evaluation ? 'update' : 'create'} evaluation`, error);
@@ -130,11 +131,27 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     }
 
     const {aid, sid} = this.route.snapshot.params;
-    this.solutionService.deleteEvaluation(aid, sid, this.evaluation._id).subscribe(() => {
-      this.toastService.warn('Evaluation', 'Successfully deleted evaluation');
+    this.solutionService.deleteEvaluation(aid, sid, this.evaluation._id).subscribe(result => {
+      this.toastService.warn('Evaluation', `Successfully deleted evaluation${this.codeSearchInfo(result.codeSeach)}`);
     }, error => {
       this.toastService.error('Evaluation', 'Failed to delete evaluation', error);
     });
     return true;
+  }
+
+  private codeSearchInfo(codeSearch?: CodeSearchInfo): string {
+    if (!codeSearch) {
+      return '';
+    }
+    const ops = [
+      'created',
+      'updated',
+      'deleted',
+    ];
+    const info = ops
+      .map(op => codeSearch[op] ? op + ' ' + codeSearch[op] : '')
+      .filter(x => x)
+    ;
+    return ' and ' + info.join(', ') + ' via Code Search';
   }
 }

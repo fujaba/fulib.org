@@ -8,6 +8,7 @@ export class CreateEvaluationDto extends OmitType(Evaluation, [
   'createdAt',
   'createdBy',
   'updatedAt',
+  'codeSearch',
 ] as const) {
   @ApiPropertyOptional()
   @IsOptional()

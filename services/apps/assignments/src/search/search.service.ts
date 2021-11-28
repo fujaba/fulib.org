@@ -111,7 +111,17 @@ export class SearchService implements OnModuleInit {
         },
       },
     });
-    return result.body.hits.hits.map((hit: any) => this._convertHit(hit, uniqueId, context));
+    const grouped = new Map<string, SearchResult>();
+    for (let hit of result.body.hits.hits) {
+      const result = this._convertHit(hit, uniqueId, context);
+      const existing = grouped.get(result.solution);
+      if (existing) {
+        existing.snippets.push(...result.snippets);
+      } else {
+        grouped.set(result.solution, result);
+      }
+    }
+    return [...grouped.values()];
   }
 
   _convertHit(hit: { _source: FileDocument, highlight: { content: string[] } }, uniqueId: string, contextLines?: number): SearchResult {

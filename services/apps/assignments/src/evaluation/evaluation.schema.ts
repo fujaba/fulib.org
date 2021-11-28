@@ -57,6 +57,29 @@ export class Snippet {
   comment: string;
 }
 
+export class CodeSearchInfo {
+  @Prop()
+  @ApiPropertyOptional({description: 'Only in GET responses'})
+  @IsOptional()
+  @IsMongoId()
+  origin?: string;
+
+  @ApiPropertyOptional({description: 'Only in POST response'})
+  @IsOptional()
+  @IsInt()
+  created?: number;
+
+  @ApiPropertyOptional({description: 'Only in PUT response'})
+  @IsOptional()
+  @IsInt()
+  updated?: number;
+
+  @ApiPropertyOptional({description: 'Only in PUT response'})
+  @IsOptional()
+  @IsInt()
+  deleted?: number;
+}
+
 @Schema({timestamps: true})
 export class Evaluation {
   @Prop()
@@ -108,6 +131,13 @@ export class Evaluation {
   @ValidateNested({each: true})
   @Type(() => Snippet)
   snippets: Snippet[];
+
+  @Prop()
+  @ApiPropertyOptional({type: CodeSearchInfo})
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => CodeSearchInfo)
+  codeSearch?: CodeSearchInfo;
 }
 
 export type EvaluationDocument = Evaluation & Document;

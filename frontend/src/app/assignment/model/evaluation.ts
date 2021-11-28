@@ -7,6 +7,13 @@ export class Snippet {
   context?: string;
 }
 
+export interface CodeSearchInfo {
+  origin?: string;
+  created?: number;
+  updated?: number;
+  deleted?: number;
+}
+
 export class Evaluation {
   assignment: string;
   solution: string;
@@ -20,6 +27,8 @@ export class Evaluation {
   remark: string;
   points: number;
   snippets: Snippet[];
+
+  codeSeach?: CodeSearchInfo;
 }
 
 export type CreateEvaluationDto = Omit<Evaluation, '_id' | 'assignment' | 'solution' | 'createdAt' | 'createdBy' | 'updatedAt'>;

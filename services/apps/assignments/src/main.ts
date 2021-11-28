@@ -9,7 +9,7 @@ async function bootstrap() {
   const prefix = `/api/${environment.version}`;
   app.enableCors();
   app.setGlobalPrefix(prefix);
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({whitelist: true}));
 
   const config = new DocumentBuilder()
     .setTitle('Assignments')
