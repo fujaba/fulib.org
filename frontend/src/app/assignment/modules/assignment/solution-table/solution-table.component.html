@@ -70,29 +70,41 @@
       >
     </td>
     <td>
-      <div class="btn-group">
-        <a class="btn btn-primary" routerLink="/assignments/{{assignment?._id}}/solutions/{{solution._id}}"
-           ngbTooltip="View"
-        >
-          <i class="bi-eye-fill"></i>
-        </a>
-        <a class="btn btn-primary"
-           *ngIf="assignment?.classroom?.org && assignment?.classroom?.prefix && solution.author.github"
-           href="https://github.com/{{assignment?.classroom?.org}}/{{assignment?.classroom?.prefix}}-{{solution.author.github}}{{solution.commit ? '/tree/' + solution.commit : ''}}"
-           target="_blank"
-           ngbTooltip="View Repository on GitHub"
+      <a
+        class="btn btn-primary mr-1"
+        routerLink="/assignments/{{assignment?._id}}/solutions/{{solution._id}}"
+        ngbTooltip="View Solution"
+      >
+        <i class="bi-eye-fill"></i>
+      </a>
+      <div
+        *ngIf="assignment?.classroom?.org && assignment?.classroom?.prefix && solution.author.github"
+        class="btn-group mr-1"
+      >
+        <a
+          class="btn btn-secondary"
+          href="https://github.com/{{assignment?.classroom?.org}}/{{assignment?.classroom?.prefix}}-{{solution.author.github}}{{solution.commit ? '/tree/' + solution.commit : ''}}"
+          target="_blank"
+          ngbTooltip="View {{solution.commit ? 'Commit' : 'Repository'}} on GitHub"
         >
           <i class="bi-github"></i>
         </a>
         <a
-          class="btn btn-primary"
-          ngbTooltip="Submit Feedback"
-          [routerLink]="['../submit', solution._id]"
-          queryParamsHandling="preserve"
+          class="btn btn-secondary"
+          ngbTooltip="Clone in VSCode"
+          [href]="'vscode://vscode.git/clone?url=https%3A%2F%2Fgithub.com%2F' + assignment?.classroom?.org + '%2F' + assignment?.classroom?.prefix + '-' + solution.author.github | safeUrl"
         >
-          <i class="bi-check-circle"></i>
+          <i class="bi-code-square"></i>
         </a>
       </div>
+      <a
+        class="btn btn-primary mr-1"
+        ngbTooltip="Submit Feedback"
+        [routerLink]="['../submit', solution._id]"
+        queryParamsHandling="preserve"
+      >
+        <i class="bi-check-circle"></i>
+      </a>
     </td>
   </tr>
   </tbody>
