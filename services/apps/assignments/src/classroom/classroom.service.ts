@@ -10,7 +10,7 @@ import {AssignmentService} from '../assignment/assignment.service';
 import {environment} from '../environment';
 import {SearchService} from '../search/search.service';
 import {ReadSolutionDto} from '../solution/solution.dto';
-import {Solution} from '../solution/solution.schema';
+import {Solution, SolutionDocument} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {generateToken} from '../utils';
 
@@ -82,22 +82,19 @@ export class ClassroomService {
     const result = await this.solutionService.bulkWrite(writes);
 
     if (assignment.classroom?.codeSearch) {
-      for (let i = 0; i < repositories.length; i++) {
-        const solution = result.upsertedIds[i];
-        if (!solution) {
-          continue;
-        }
-
-        const repo = repositories[i];
-        this.addContentsToIndex(repo, assignment.id, solution.toString(), githubToken);
+      const solutions = await this.solutionService.findAll({assignment: assignment.id});
+      for (let solution of solutions) {
+        this.addContentsToIndex(assignment, solution as SolutionDocument, githubToken);
       }
     }
 
     return Object.values(result.upsertedIds);
   }
 
-  private addContentsToIndex(repo: RepositoryInfo, assignment: string, solution: string, githubToken: string) {
-    this.http.get<Stream>(`https://api.github.com/repos/${repo.full_name}/tarball/${repo.default_branch}`, {
+  private addContentsToIndex(assignment: AssignmentDocument, solution: SolutionDocument, githubToken: string) {
+    const {org, prefix} = assignment.classroom!;
+    const {author: {github}, commit} = solution;
+    this.http.get<Stream>(`https://api.github.com/repos/${org}/${prefix}-${github}/tarball/${commit}`, {
       headers: {
         Authorization: 'Bearer ' + githubToken,
       },
@@ -114,7 +111,7 @@ export class ClassroomService {
         let content = '';
         stream.on('data', data => content += data.toString('utf8'));
         stream.on('end', () => {
-          this.searchService.addFile(assignment, solution, filename, content);
+          this.searchService.addFile(assignment.id, solution.id, filename, content);
           next();
         });
       });
