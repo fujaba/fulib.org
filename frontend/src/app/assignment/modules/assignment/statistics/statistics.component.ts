@@ -23,6 +23,7 @@ export class StatisticsComponent implements OnInit {
   totalSolutions = 0;
   totalEvaluations = 0;
   codeSearchEvaluations = 0;
+  codeSearchSolutions = 0;
 
   constructor(
     private assignmentService: AssignmentService,
@@ -40,6 +41,7 @@ export class StatisticsComponent implements OnInit {
       ])),
     ).subscribe(([assignment, evaluations]) => {
       const solutions = new Set<string>();
+      const codeSearchSolutions = new Set<string>();
       const taskTotals = new Map<string, StatisticItem>();
       let codeSearchEvaluations = 0;
       for (let evaluation of evaluations) {
@@ -47,6 +49,7 @@ export class StatisticsComponent implements OnInit {
 
         if (evaluation.codeSearch?.origin) {
           codeSearchEvaluations++;
+          codeSearchSolutions.add(evaluation.solution);
         }
 
         const task = evaluation.task;
@@ -68,6 +71,7 @@ export class StatisticsComponent implements OnInit {
       this.totalSolutions = solutions.size;
       this.totalEvaluations = evaluations.length;
       this.codeSearchEvaluations = codeSearchEvaluations;
+      this.codeSearchSolutions = codeSearchSolutions.size;
       this.results = Array.from(taskTotals.values())
         .sort((a, b) => b.totalPoints - a.totalPoints)
       ;
