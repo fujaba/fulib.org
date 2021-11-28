@@ -1,7 +1,8 @@
 import {Injectable, OnModuleInit} from '@nestjs/common';
 import {ElasticsearchService} from '@nestjs/elasticsearch';
 import {randomUUID} from 'crypto';
-import {Location, Snippet} from '../evaluation/evaluation.schema';
+import {isDeepStrictEqual} from 'util';
+import {Location} from '../evaluation/evaluation.schema';
 import {SearchResult, SearchSnippet} from './search.dto';
 
 interface FileDocument {
@@ -19,6 +20,11 @@ export class SearchService implements OnModuleInit {
   }
 
   async onModuleInit() {
+    const files = await this.elasticsearchService.indices.get({
+      index: 'files',
+    });
+    const {0: oldName, 1: oldData} = Object.entries(files.body)[0];
+
     const pattern = Object.values({
       number: /[+-]?[0-9]+(\.[0-9]+)?/,
       string: /["](\\\\|\\["]|[^"])*["]/,
@@ -28,39 +34,65 @@ export class SearchService implements OnModuleInit {
       symbol: /[.,;]/,
       operator: /[+\-*/%|&=!<>?:]/,
     }).map(r => r.source).join('|');
-    this.elasticsearchService.indices.create({
-      index: 'files',
+
+    const expectedAnalysis = {
+      analyzer: {
+        code: {
+          tokenizer: 'code',
+        },
+      },
+      tokenizer: {
+        code: {
+          type: 'simple_pattern',
+          pattern,
+        },
+      },
+    };
+
+    const expectedContent = {
+      type: 'text',
+      analyzer: 'code',
+      term_vector: 'with_positions_offsets',
+    };
+    const actualContent = oldData.mappings?.properties?.content;
+    const actualAnalysis = oldData.settings?.index?.analysis;
+    if (isDeepStrictEqual(expectedContent, actualContent) && isDeepStrictEqual(actualAnalysis, expectedAnalysis)) {
+      return;
+    }
+
+    const newName = 'files-' + Date.now();
+    console.info('Migrating file index:', oldName, '->', newName);
+
+    await this.elasticsearchService.indices.create({
+      index: newName,
       body: {
         mappings: {
           properties: {
-            content: {
-              type: 'text',
-              analyzer: 'code',
-              term_vector: 'with_positions_offsets',
-            },
+            content: expectedContent,
           },
         },
         settings: {
-          analysis: {
-            analyzer: {
-              code: {
-                tokenizer: 'code',
-              },
-            },
-            tokenizer: {
-              code: {
-                type: 'simple_pattern',
-                pattern,
-              },
-            },
-          },
+          analysis: expectedAnalysis
         },
       },
-    }).catch(error => {
-      const body = error.meta.body;
-      if (body.error.type !== 'resource_already_exists_exception') {
-        console.error(body);
-      }
+    });
+    await this.elasticsearchService.reindex({
+      body: {
+        source: {
+          index: oldName,
+        },
+        dest: {
+          index: newName,
+        },
+      },
+    });
+    await this.elasticsearchService.indices.updateAliases({
+      body: {
+        actions: [
+          {remove_index: {index: oldName}},
+          {add: {index: newName, alias: 'files'}},
+        ],
+      },
     });
   }
 
