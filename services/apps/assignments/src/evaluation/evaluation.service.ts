@@ -3,7 +3,7 @@ import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model} from 'mongoose';
 import {SearchService} from '../search/search.service';
 import {CreateEvaluationDto, UpdateEvaluationDto} from './evaluation.dto';
-import {CodeSearchInfo, Evaluation, Snippet} from './evaluation.schema';
+import {CodeSearchInfo, Evaluation, EvaluationDocument, Snippet} from './evaluation.schema';
 
 @Injectable()
 export class EvaluationService {
@@ -48,7 +48,11 @@ export class EvaluationService {
   }
 
   async remove(id: string): Promise<Evaluation | null> {
-    return this.model.findByIdAndDelete(id).exec();
+    const deleted = await this.model.findByIdAndDelete(id).exec();
+    if (deleted) {
+      deleted.codeSearch = await this.codeSearchDelete(deleted);
+    }
+    return deleted;
   }
 
   private async codeSearch(assignment: string, snippets: Snippet[]): Promise<[string, Snippet[] | undefined][]> {
@@ -124,5 +128,15 @@ export class EvaluationService {
       };
     }));
     return {updated: result.modifiedCount, deleted: result.deletedCount};
+  }
+
+  private async codeSearchDelete(evaluation: EvaluationDocument): Promise<Partial<CodeSearchInfo>> {
+    const result = await this.model.deleteMany({
+      assignment: evaluation.assignment,
+      task: evaluation.task,
+      author: 'Code Search',
+      'codeSearch.origin': evaluation.id,
+    }).exec();
+    return {deleted: result.deletedCount};
   }
 }
