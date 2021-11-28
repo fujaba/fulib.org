@@ -30,9 +30,7 @@ export class SearchService implements OnModuleInit {
       string: /["](\\\\|\\["]|[^"])*["]/,
       char: /'(\\\\|\\'|[^'])*'/,
       identifier: /[a-zA-Z$_][a-zA-Z0-9$_]*/,
-      bracket: /[(){}<>\[\]]/,
-      symbol: /[.,;]/,
-      operator: /[+\-*/%|&=!<>?:]/,
+      symbol: /[(){}<>\[\].,;+\-*/%|&=!?:@^]/,
     }).map(r => r.source).join('|');
 
     const expectedAnalysis = {
