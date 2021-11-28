@@ -118,7 +118,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       : this.solutionService.createEvaluation(aid, sid, this.dto);
     op.subscribe(result => {
       const op = this.evaluation ? 'updated' : 'created';
-      this.toastService.success('Evaluation', `Successfully ${op} evaluation${this.codeSearchInfo(result.codeSeach)}`);
+      this.toastService.success('Evaluation', `Successfully ${op} evaluation${this.codeSearchInfo(result.codeSearch)}`);
       this.evaluation = result;
     }, error => {
       this.toastService.error('Evaluation', `Failed to ${this.evaluation ? 'update' : 'create'} evaluation`, error);
@@ -132,7 +132,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
 
     const {aid, sid} = this.route.snapshot.params;
     this.solutionService.deleteEvaluation(aid, sid, this.evaluation._id).subscribe(result => {
-      this.toastService.warn('Evaluation', `Successfully deleted evaluation${this.codeSearchInfo(result.codeSeach)}`);
+      this.toastService.warn('Evaluation', `Successfully deleted evaluation${this.codeSearchInfo(result.codeSearch)}`);
     }, error => {
       this.toastService.error('Evaluation', 'Failed to delete evaluation', error);
     });

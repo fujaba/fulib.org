@@ -28,7 +28,7 @@ export class Evaluation {
   points: number;
   snippets: Snippet[];
 
-  codeSeach?: CodeSearchInfo;
+  codeSearch?: CodeSearchInfo;
 }
 
 export type CreateEvaluationDto = Omit<Evaluation, '_id' | 'assignment' | 'solution' | 'createdAt' | 'createdBy' | 'updatedAt'>;
