@@ -11,6 +11,7 @@ import Task from '../../../model/task';
 import {AssignmentService} from '../../../services/assignment.service';
 import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
+import {SelectionService} from '../selection.service';
 
 @Component({
   selector: 'app-evaluation-modal',
@@ -43,6 +44,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     private assignmentService: AssignmentService,
     private taskService: TaskService,
     private solutionService: SolutionService,
+    private selectionService: SelectionService,
     private users: UserService,
     private toastService: ToastService,
     public route: ActivatedRoute,
@@ -91,6 +93,21 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
         this.dto.author = `${user.firstName} ${user.lastName}`;
       }
     });
+
+    const selectionSubscription = this.route.params.pipe(
+      switchMap(({aid, sid}) => this.selectionService.stream(aid, sid)),
+    ).subscribe(({author, snippet}) => {
+      if (author !== this.dto.author) {
+        return;
+      }
+      const existing = this.dto.snippets.findIndex(s => s.comment === '(fulibFeedback Selection)');
+      if (existing >= 0) {
+        this.dto.snippets[existing] = snippet;
+      } else {
+        this.dto.snippets.push(snippet);
+      }
+    });
+    this.userSubscription.add(selectionSubscription);
   }
 
   ngOnDestroy(): void {
