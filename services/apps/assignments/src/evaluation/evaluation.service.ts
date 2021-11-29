@@ -8,7 +8,7 @@ import {CodeSearchInfo, Evaluation, EvaluationDocument, Snippet} from './evaluat
 @Injectable()
 export class EvaluationService {
   constructor(
-    @InjectModel('evaluations') private model: Model<Evaluation>,
+    @InjectModel('evaluations') public model: Model<Evaluation>,
     private searchService: SearchService,
   ) {
   }

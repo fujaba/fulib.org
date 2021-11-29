@@ -13,6 +13,7 @@ import {SolutionModule} from './solution/solution.module';
 import { EvaluationModule } from './evaluation/evaluation.module';
 import { ClassroomModule } from './classroom/classroom.module';
 import { SearchModule } from './search/search.module';
+import { StatisticsModule } from './statistics/statistics.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { SearchModule } from './search/search.module';
     EvaluationModule,
     ClassroomModule,
     SearchModule,
+    StatisticsModule,
   ],
   controllers: [],
   providers: [],
