@@ -1,6 +1,6 @@
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
-import {FilterQuery, Model} from 'mongoose';
+import {FilterQuery, Model, UpdateQuery} from 'mongoose';
 import {SearchService} from '../search/search.service';
 import {CreateEvaluationDto, UpdateEvaluationDto} from './evaluation.dto';
 import {CodeSearchInfo, Evaluation, EvaluationDocument, Snippet} from './evaluation.schema';
@@ -92,12 +92,12 @@ export class EvaluationService {
         solution,
         task: dto.task,
       };
-      const newEvaluation: Partial<Evaluation> = {
+      const newEvaluation: UpdateQuery<Evaluation> = {
         ...dto,
         assignment,
         solution,
         author: 'Code Search',
-        snippets: snippets!,
+        snippets,
         codeSearch: {origin},
       };
       return {
@@ -126,16 +126,13 @@ export class EvaluationService {
         return {deleteOne: {filter}};
       }
 
-      const updatedEvaluation: UpdateEvaluationDto = {
+      const update: UpdateQuery<Evaluation> = {
         ...dto,
+        codeSearch: {origin},
+        author: 'Code Search',
         snippets,
       };
-      return {
-        updateOne: {
-          filter,
-          update: {$set: updatedEvaluation},
-        },
-      };
+      return {updateOne: {filter, update}};
     }));
     return {updated: result.modifiedCount, deleted: result.deletedCount};
   }
