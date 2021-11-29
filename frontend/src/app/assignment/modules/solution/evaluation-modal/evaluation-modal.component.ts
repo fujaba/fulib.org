@@ -108,7 +108,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       } else {
         index = this.dto.snippets.push(snippet) - 1;
       }
-      setTimeout(() => document.getElementById('snippet-' + index)?.scrollIntoView());
+      setTimeout(() => document.getElementById('snippet-' + index)?.focus());
     });
     this.userSubscription.add(selectionSubscription);
   }
