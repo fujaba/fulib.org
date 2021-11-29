@@ -49,16 +49,20 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     this.dto.author = this.solutionService.commentName || '';
 
     this.route.params.pipe(
-      switchMap(({aid, sid, task}) => forkJoin(
-        this.assignmentService.get(aid).pipe(map(assignment => this.taskService.find(assignment.tasks, task))),
-        this.solutionService.getEvaluations(aid, sid, task),
+      switchMap(({aid, task}) => this.assignmentService.get(aid).pipe(
+        map(assignment => this.taskService.find(assignment.tasks, task)),
       )),
-    ).subscribe(([task, evaluations]) => {
+    ).subscribe(task => {
       this.task = task;
       if (task) {
         this.min = Math.min(task.points, 0);
         this.max = Math.max(task.points, 0);
       }
+    });
+
+    this.route.params.pipe(
+      switchMap(({aid, sid, task}) => this.solutionService.getEvaluations(aid, sid, task)),
+    ).subscribe(evaluations => {
       this.evaluation = evaluations[0];
       if (this.evaluation) {
         this.dto.points = this.evaluation.points;
