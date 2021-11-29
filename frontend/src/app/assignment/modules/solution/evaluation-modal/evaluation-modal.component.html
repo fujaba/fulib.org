@@ -1,72 +1,80 @@
-<app-modal #modal [back]="['../..']" [backOptions]="{relativeTo: route}">
+<app-modal #modal size="lg" [back]="['../..']" [backOptions]="{relativeTo: route}">
   <ng-container modal-header>
     Grade
   </ng-container>
   <ng-container modal-body>
-    <ul>
-      <li>
-        {{ task?.description }}:
-        {{(evaluation || dto).remark}}
-        <span class="badge badge-secondary">
-          {{(evaluation || dto).points}}
-        </span>
-        <span class="text-muted">
-          &#8226;
-          {{(evaluation || dto).author}}
-          <span *ngIf="evaluation?.createdBy" class="badge badge-pill badge-primary" ngbTooltip="Registered">
-            &#10003;
-          </span>
-          &#8226;
-          {{evaluation ? (evaluation.createdAt | date:'medium') : 'Preview'}}
-        </span>
-      </li>
-    </ul>
-    <hr/>
     <div class="form">
-      <div class="form-group">
-        <label for="pointsInput">Points</label>
-        <div class="input-group">
-          <input type="number" class="form-control" id="pointsInput" [min]="min ?? ''" [max]="max ?? ''"
-                 [(ngModel)]="dto.points">
-          <div class="input-group-append">
-            <button class="btn btn-outline-secondary text-danger" ngbTooltip="Keyboard Shortcut: Ctrl--"
-                    (click)="setPoints(min)">
-              {{ min }}
-            </button>
-            <button class="btn btn-outline-secondary text-success" ngbTooltip="Keyboard Shortcut: Ctrl-+"
-                    (click)="setPoints(max)">
-              {{ max }}
-            </button>
+      <div class="row">
+        <div class="col-md-8" *ngIf="dto.snippets.length">
+          <div class="form-group">
+            <div class="alert alert-info" id="codeSearchOrigin" *ngIf="originEvaluation && originSolution">
+              This evaluation was initially created by Code Search based on the original
+              <a [routerLink]="['../../..', originSolution._id, 'tasks', originEvaluation.task]">
+                Evaluation by {{ originEvaluation.author }}
+              </a>
+              for the
+              <a [routerLink]="['../../..', originSolution._id]">
+                Solution by {{ originSolution.author.name || originSolution.author.github }}
+              </a>
+              .
+            </div>
+            <label for="snippets">
+              Snippets
+            </label>
+            <ul class="list-group" id="snippets">
+              <li *ngFor="let snippet of dto.snippets" class="list-group-item">
+                <input type="text" class="form-control" [(ngModel)]="snippet.comment" placeholder="Comment">
+                <app-snippet [snippet]="snippet"></app-snippet>
+              </li>
+            </ul>
+            <small class="form-text text-muted">
+              Use
+              <a href="https://marketplace.visualstudio.com/items?itemName=fulib.fulibFeedback" target="_blank">
+                fulibFeedback
+              </a>
+              to add or remove code snippets from within your IDE.
+            </small>
+          </div>
+        </div>
+        <div class="col" [class.col-md-4]="dto.snippets.length">
+          <div class="form-group">
+            <label for="pointsInput">Points</label>
+            <div class="input-group">
+              <input type="number" class="form-control" id="pointsInput" [min]="min ?? ''" [max]="max ?? ''"
+                     [(ngModel)]="dto.points">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary text-danger" ngbTooltip="Keyboard Shortcut: Ctrl--"
+                        (click)="setPoints(min)">
+                  {{ min }}
+                </button>
+                <button class="btn btn-outline-secondary text-success" ngbTooltip="Keyboard Shortcut: Ctrl-+"
+                        (click)="setPoints(max)">
+                  {{ max }}
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="remarkInput">Remark</label>
+            <input type="text" class="form-control" id="remarkInput" ngbAutofocus [(ngModel)]="dto.remark">
+          </div>
+          <div class="form-group">
+            <label for="nameInput">Name</label>
+            <input type="text" class="form-control" id="nameInput" [(ngModel)]="dto.author" (change)="saveDraft()"
+                   [disabled]="loggedIn">
           </div>
         </div>
       </div>
-      <div class="form-group">
-        <label for="remarkInput">Remark</label>
-        <input type="text" class="form-control" id="remarkInput" ngbAutofocus [(ngModel)]="dto.remark">
-      </div>
-      <div class="form-group">
-        <label for="nameInput">Name</label>
-        <input type="text" class="form-control" id="nameInput" [(ngModel)]="dto.author" (change)="saveDraft()"
-               [disabled]="loggedIn">
-      </div>
-      <div class="form-group">
-        <label for="snippets">
-          Snippets
-        </label>
-        <ul class="list-group" id="snippets">
-          <li *ngFor="let snippet of dto.snippets" class="list-group-item">
-            <input type="text" class="form-control" [(ngModel)]="snippet.comment" placeholder="Comment">
-            <app-snippet [snippet]="snippet"></app-snippet>
-          </li>
-        </ul>
-        <small class="form-text text-muted">
-          Use
-          <a href="https://marketplace.visualstudio.com/items?itemName=fulib.fulibFeedback" target="_blank">
-            fulibFeedback
-          </a>
-          to add or remove code snippets from within your IDE.
-        </small>
-      </div>
+    </div>
+    <div class="alert alert-info" *ngIf="!dto.snippets.length">
+      <span class="badge badge-primary">New</span>
+      <a href="https://marketplace.visualstudio.com/items?itemName=fulib.fulibFeedback" target="_blank">
+        fulibFeedback
+      </a>
+      can be used to add code snippets from within your IDE.
+      If Code Search is enabled,
+      it will automatically look for similar code in other solutions and transfer your evaluation,
+      allowing you to grade multiple students at once.
     </div>
     <app-pro-tip [tips]="[
       'Press Ctrl-Enter to quickly submit your evaluation',

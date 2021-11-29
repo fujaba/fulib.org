@@ -1,11 +1,12 @@
 import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {forkJoin, Subscription} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
+import {of, Subscription} from 'rxjs';
+import {map, switchMap, tap} from 'rxjs/operators';
 import {ModalComponent} from '../../../../shared/modal/modal.component';
 import {ToastService} from '../../../../toast.service';
 import {UserService} from '../../../../user/user.service';
 import {CodeSearchInfo, CreateEvaluationDto, Evaluation} from '../../../model/evaluation';
+import Solution from '../../../model/solution';
 import Task from '../../../model/task';
 import {AssignmentService} from '../../../services/assignment.service';
 import {SolutionService} from '../../../services/solution.service';
@@ -33,6 +34,9 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
   min?: number;
   max?: number;
 
+  originEvaluation?: Evaluation;
+  originSolution?: Solution;
+
   private userSubscription: Subscription;
 
   constructor(
@@ -49,24 +53,37 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     this.dto.author = this.solutionService.commentName || '';
 
     this.route.params.pipe(
-      switchMap(({aid, sid, task}) => forkJoin(
-        this.assignmentService.get(aid).pipe(map(assignment => this.taskService.find(assignment.tasks, task))),
-        this.solutionService.getEvaluations(aid, sid, task),
+      switchMap(({aid, task}) => this.assignmentService.get(aid).pipe(
+        map(assignment => this.taskService.find(assignment.tasks, task)),
       )),
-    ).subscribe(([task, evaluations]) => {
+    ).subscribe(task => {
       this.task = task;
       if (task) {
         this.min = Math.min(task.points, 0);
         this.max = Math.max(task.points, 0);
       }
-      this.evaluation = evaluations[0];
-      if (this.evaluation) {
-        this.dto.points = this.evaluation.points;
-        this.dto.remark = this.evaluation.remark;
-        this.dto.snippets = this.evaluation.snippets;
-        this.dto.codeSearch = !!this.evaluation.codeSearch?.origin;
-      }
     });
+
+    this.route.params.pipe(
+      switchMap(({aid, sid, task}) => this.solutionService.getEvaluations(aid, sid, task)),
+      map(([evaluation]) => evaluation),
+      tap(evaluation => {
+        this.evaluation = evaluation;
+        if (this.evaluation) {
+          this.dto.points = evaluation.points;
+          this.dto.remark = evaluation.remark;
+          this.dto.snippets = evaluation.snippets;
+          this.dto.codeSearch = !!evaluation.codeSearch?.origin;
+        }
+      }),
+      switchMap(evaluation => {
+        const origin = evaluation.codeSearch?.origin;
+        return origin ? this.solutionService.getEvaluation(evaluation.assignment, undefined, origin) : of(undefined);
+      }),
+      tap(originEvaluation => this.originEvaluation = originEvaluation),
+      switchMap(originEvaluation => originEvaluation ? this.solutionService.get(originEvaluation.assignment, originEvaluation.solution) : of(undefined)),
+      tap(originSolution => this.originSolution = originSolution),
+    ).subscribe();
 
     this.userSubscription = this.users.current$.subscribe(user => {
       if (user) {
