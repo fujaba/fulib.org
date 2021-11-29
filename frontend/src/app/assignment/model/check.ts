@@ -1,5 +1,5 @@
 import Assignment from './assignment';
-import {CreateEvaluationDto} from './evaluation';
+import {CreateEvaluationDto, Evaluation} from './evaluation';
 import Task from './task';
 
 export interface CheckSolution {
@@ -13,5 +13,5 @@ export interface CheckAssignment {
 }
 
 export interface CheckResult {
-  results: CreateEvaluationDto[];
+  results: (Evaluation | CreateEvaluationDto)[];
 }

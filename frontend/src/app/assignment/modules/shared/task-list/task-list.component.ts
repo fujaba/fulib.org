@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {CreateEvaluationDto} from '../../../model/evaluation';
+import {CreateEvaluationDto, Evaluation} from '../../../model/evaluation';
 import Task from '../../../model/task';
 
 @Component({
@@ -9,6 +9,6 @@ import Task from '../../../model/task';
 })
 export class TaskListComponent {
   @Input() tasks?: Task[];
-  @Input() evaluations?: Record<string, CreateEvaluationDto>;
+  @Input() evaluations?: Record<string, Evaluation | CreateEvaluationDto>;
   @Input() points?: Record<string, number>;
 }

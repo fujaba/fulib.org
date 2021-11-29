@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Marker} from '../../../../shared/model/marker';
 import Assignment from '../../../model/assignment';
-import {CreateEvaluationDto} from '../../../model/evaluation';
+import {CreateEvaluationDto, Evaluation} from '../../../model/evaluation';
 import {AssignmentContext} from '../../../services/assignment.context';
 import {AssignmentService} from '../../../services/assignment.service';
 import {TaskService} from '../../../services/task.service';
@@ -16,7 +16,7 @@ export class SampleComponent {
   saveDraft: () => void;
 
   status = 'The sample solution is checked automatically when you change it.';
-  evaluations?: Record<string, CreateEvaluationDto>;
+  evaluations?: Record<string, Evaluation | CreateEvaluationDto>;
   points?: Record<string, number>;
   markers: Marker[] = [];
 

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import ObjectID from 'bson-objectid';
-import {CreateEvaluationDto} from '../model/evaluation';
+import {CreateEvaluationDto, Evaluation} from '../model/evaluation';
 import Task from '../model/task';
 
 @Injectable({
@@ -37,7 +37,7 @@ export class TaskService {
     return new ObjectID().toHexString();
   }
 
-  createPointsCache(tasks: Task[], evaluations: Record<string, CreateEvaluationDto>): Record<string, number> {
+  createPointsCache(tasks: Task[], evaluations: Record<string, Evaluation | CreateEvaluationDto>): Record<string, number> {
     const cache = {};
     for (let task of tasks) {
       this.getTaskPoints(task, evaluations, cache);
@@ -45,11 +45,11 @@ export class TaskService {
     return cache;
   }
 
-  getTaskPoints(task: Task, evaluations: Record<string, CreateEvaluationDto>, cache: Record<string, number>): number {
+  getTaskPoints(task: Task, evaluations: Record<string, Evaluation | CreateEvaluationDto>, cache: Record<string, number>): number {
     return cache[task._id] ??= this.calculateTaskPoints(task, evaluations, cache);
   }
 
-  private calculateTaskPoints(task: Task, evaluations: Record<string, CreateEvaluationDto>, cache: Record<string, number>): number {
+  private calculateTaskPoints(task: Task, evaluations: Record<string, Evaluation | CreateEvaluationDto>, cache: Record<string, number>): number {
     const evaluation = evaluations?.[task._id];
     if (evaluation) {
       for (const child of task.children) {
