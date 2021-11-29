@@ -1,11 +1,11 @@
-<app-modal #modal size="xl" [back]="['../..']" [backOptions]="{relativeTo: route}">
+<app-modal #modal size="lg" [back]="['../..']" [backOptions]="{relativeTo: route}">
   <ng-container modal-header>
     Grade
   </ng-container>
   <ng-container modal-body>
     <div class="form">
       <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-8" *ngIf="dto.snippets.length">
           <div class="form-group">
             <div class="alert alert-info" id="codeSearchOrigin" *ngIf="originEvaluation && originSolution">
               This evaluation was initially created by Code Search based on the original
@@ -36,7 +36,7 @@
             </small>
           </div>
         </div>
-        <div class="col-md-4">
+        <div class="col" [class.col-md-4]="dto.snippets.length">
           <div class="form-group">
             <label for="pointsInput">Points</label>
             <div class="input-group">
