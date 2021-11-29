@@ -102,12 +102,13 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       if (author !== this.dto.author) {
         return;
       }
-      const existing = this.dto.snippets.findIndex(s => s.comment === this.selectionComment);
-      if (existing >= 0) {
-        this.dto.snippets[existing] = snippet;
+      let index = this.dto.snippets.findIndex(s => s.comment === this.selectionComment);
+      if (index >= 0) {
+        this.dto.snippets[index] = snippet;
       } else {
-        this.dto.snippets.push(snippet);
+        index = this.dto.snippets.push(snippet) - 1;
       }
+      setTimeout(() => document.getElementById('snippet-' + index)?.scrollIntoView());
     });
     this.userSubscription.add(selectionSubscription);
   }
