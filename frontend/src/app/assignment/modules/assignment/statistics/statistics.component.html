@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" *ngIf="stats">
   <div class="row">
     <div class="col-md-6">
       <h2>
@@ -9,23 +9,23 @@
           <div class="mr-auto">
             Code Search
           </div>
-          <app-statistic-value [value]="codeSearchSolutions" label="Automatically Graded"></app-statistic-value>
+          <app-statistic-value [value]="stats.solutions.codeSearch" label="Automatically Graded"></app-statistic-value>
           <div class="border-right mx-3 align-self-stretch"></div>
-          <app-statistic-value [value]="(codeSearchSolutions / totalSolutions) | percent:'0.0'" label="of All"></app-statistic-value>
+          <app-statistic-value [value]="(stats.solutions.codeSearch / stats.solutions.graded) | percent:'0.0'" label="of All"></app-statistic-value>
         </li>
         <li class="list-group-item d-flex align-items-center">
           <div class="mr-auto">
             Manual
           </div>
-          <app-statistic-value [value]="totalSolutions - codeSearchSolutions" label="Manually Graded"></app-statistic-value>
+          <app-statistic-value [value]="stats.solutions.manual" label="Manually Graded"></app-statistic-value>
           <div class="border-right mx-3 align-self-stretch"></div>
-          <app-statistic-value [value]="1 - (codeSearchSolutions / totalSolutions) | percent:'0.0'" label="of All"></app-statistic-value>
+          <app-statistic-value [value]="(stats.solutions.manual / stats.solutions.graded) | percent:'0.0'" label="of All"></app-statistic-value>
         </li>
         <li class="list-group-item d-flex align-items-center">
           <div class="mr-auto">
             Total
           </div>
-          <app-statistic-value [value]="totalSolutions" label="Graded Solutions"></app-statistic-value>
+          <app-statistic-value [value]="stats.solutions.graded" label="Graded Solutions"></app-statistic-value>
         </li>
       </ul>
     </div>
@@ -38,23 +38,23 @@
           <div class="mr-auto">
             Code Search
           </div>
-          <app-statistic-value [value]="codeSearchEvaluations" label="Automatically Found"></app-statistic-value>
+          <app-statistic-value [value]="stats.evaluations.codeSearch" label="Automatically Found"></app-statistic-value>
           <div class="border-right mx-3 align-self-stretch"></div>
-          <app-statistic-value [value]="(codeSearchEvaluations / totalEvaluations) | percent:'0.0'" label="of All"></app-statistic-value>
+          <app-statistic-value [value]="(stats.evaluations.codeSearch / stats.evaluations.total) | percent:'0.0'" label="of All"></app-statistic-value>
         </li>
         <li class="list-group-item d-flex align-items-center">
           <div class="mr-auto">
             Manual
           </div>
-          <app-statistic-value [value]="totalEvaluations - codeSearchEvaluations" label="Manually Evaluated"></app-statistic-value>
+          <app-statistic-value [value]="stats.evaluations.manual" label="Manually Evaluated"></app-statistic-value>
           <div class="border-right mx-3 align-self-stretch"></div>
-          <app-statistic-value [value]="1 - (codeSearchEvaluations / totalEvaluations) | percent:'0.0'" label="of All"></app-statistic-value>
+          <app-statistic-value [value]="(stats.evaluations.manual / stats.evaluations.total) | percent:'0.0'" label="of All"></app-statistic-value>
         </li>
         <li class="list-group-item d-flex align-items-center">
           <div class="mr-auto">
             Total
           </div>
-          <app-statistic-value [value]="totalEvaluations" label="Evaluations"></app-statistic-value>
+          <app-statistic-value [value]="stats.evaluations.total" label="Evaluations"></app-statistic-value>
         </li>
       </ul>
     </div>
@@ -63,20 +63,20 @@
     Tasks
   </h2>
   <ul class="list-group mb-3">
-    <li class="list-group-item d-flex align-items-center" *ngFor="let result of results">
+    <li class="list-group-item d-flex align-items-center" *ngFor="let taskStats of stats.tasks">
       <ol class="breadcrumb mr-auto mb-0 bg-transparent">
-        <li *ngFor="let task of result.tasks; let last=last" class="breadcrumb-item" [class.text-muted]="!last">
+        <li *ngFor="let task of taskStats.resolved; let last=last" class="breadcrumb-item" [class.text-muted]="!last">
           {{ task.description }}
           <span *ngIf="last" class="badge badge-secondary">
             {{ task.points }}
           </span>
         </li>
       </ol>
-      <app-statistic-value [value]="result.totalPoints" label="Points Total"></app-statistic-value>
+      <app-statistic-value [value]="taskStats.totalPoints" label="Points Total"></app-statistic-value>
       <div class="border-right mx-3 align-self-stretch"></div>
-      <app-statistic-value [value]="result.totalGiven" label="Times Given"></app-statistic-value>
+      <app-statistic-value [value]="taskStats.totalCount" label="Times Given"></app-statistic-value>
       <div class="border-right mx-3 align-self-stretch"></div>
-      <app-statistic-value [value]="result.totalGiven / totalSolutions | percent:'0.0'" label="of Solutions"></app-statistic-value>
+      <app-statistic-value [value]="taskStats.totalCount / stats.solutions.graded | percent:'0.0'" label="of Solutions"></app-statistic-value>
     </li>
   </ul>
 </div>
