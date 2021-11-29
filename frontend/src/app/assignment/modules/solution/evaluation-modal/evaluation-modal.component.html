@@ -29,6 +29,12 @@
                   </label>
                   <input type="text" class="form-control flex-grow-1 mr-2" id="snippet-{{index}}"
                          [(ngModel)]="snippet.comment">
+                  <button *ngIf="snippet.comment === selectionComment"
+                          type="button" class="btn btn-outline-success mr-2" ngbTooltip="Add Selection Snippet"
+                          (click)="snippet.comment = ''"
+                  >
+                    <i class="bi-plus-circle"></i>
+                  </button>
                   <button type="button" class="btn btn-outline-danger" ngbTooltip="Delete Snippet" (click)="deleteSnippet(index)">
                     <i class="bi-trash"></i>
                   </button>

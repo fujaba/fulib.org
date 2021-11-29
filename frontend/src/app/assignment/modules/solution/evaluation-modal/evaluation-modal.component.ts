@@ -155,6 +155,9 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
   doSubmit(): void {
     const {aid, sid, task} = this.route.snapshot.params;
     this.dto.task = task;
+
+    this.dto.snippets.removeFirst(s => s.comment === this.selectionComment);
+
     const op = this.evaluation
       ? this.solutionService.updateEvaluation(aid, sid, this.evaluation._id, this.dto)
       : this.solutionService.createEvaluation(aid, sid, this.dto);
