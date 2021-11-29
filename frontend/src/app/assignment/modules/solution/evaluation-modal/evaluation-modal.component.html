@@ -22,7 +22,7 @@
               Snippets
             </label>
             <ul class="list-group" id="snippets">
-              <li *ngFor="let snippet of dto.snippets" class="list-group-item">
+              <li *ngFor="let snippet of dto.snippets" class="list-group-item" [class.list-group-item-warning]="snippet.comment === selectionComment">
                 <input type="text" class="form-control" [(ngModel)]="snippet.comment" placeholder="Comment">
                 <app-snippet [snippet]="snippet"></app-snippet>
               </li>

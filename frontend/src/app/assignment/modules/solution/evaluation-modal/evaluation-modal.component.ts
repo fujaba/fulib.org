@@ -21,6 +21,8 @@ import {SelectionService} from '../selection.service';
 export class EvaluationModalComponent implements OnInit, OnDestroy {
   @ViewChild('modal', {static: true}) modal: ModalComponent;
 
+  selectionComment = '(fulibFeedback Selection)';
+
   task?: Task;
   evaluation?: Evaluation;
   dto: CreateEvaluationDto = {
@@ -100,7 +102,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       if (author !== this.dto.author) {
         return;
       }
-      const existing = this.dto.snippets.findIndex(s => s.comment === '(fulibFeedback Selection)');
+      const existing = this.dto.snippets.findIndex(s => s.comment === this.selectionComment);
       if (existing >= 0) {
         this.dto.snippets[existing] = snippet;
       } else {
