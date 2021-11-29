@@ -73,7 +73,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       map(([evaluation]) => evaluation),
       tap(evaluation => {
         this.evaluation = evaluation;
-        if (this.evaluation) {
+        if (evaluation) {
           this.dto.points = evaluation.points;
           this.dto.remark = evaluation.remark;
           this.dto.snippets = evaluation.snippets;
@@ -81,7 +81,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
         }
       }),
       switchMap(evaluation => {
-        const origin = evaluation.codeSearch?.origin;
+        const origin = evaluation?.codeSearch?.origin;
         return origin ? this.solutionService.getEvaluation(evaluation.assignment, undefined, origin) : of(undefined);
       }),
       tap(originEvaluation => this.originEvaluation = originEvaluation),
