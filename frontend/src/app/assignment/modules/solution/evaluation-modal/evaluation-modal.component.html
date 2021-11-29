@@ -1,71 +1,58 @@
-<app-modal #modal [back]="['../..']" [backOptions]="{relativeTo: route}">
+<app-modal #modal size="xl" [back]="['../..']" [backOptions]="{relativeTo: route}">
   <ng-container modal-header>
     Grade
   </ng-container>
   <ng-container modal-body>
-    <ul>
-      <li>
-        {{ task?.description }}:
-        {{(evaluation || dto).remark}}
-        <span class="badge badge-secondary">
-          {{(evaluation || dto).points}}
-        </span>
-        <span class="text-muted">
-          &#8226;
-          {{(evaluation || dto).author}}
-          <span *ngIf="evaluation?.createdBy" class="badge badge-pill badge-primary" ngbTooltip="Registered">
-            &#10003;
-          </span>
-          &#8226;
-          {{evaluation ? (evaluation.createdAt | date:'medium') : 'Preview'}}
-        </span>
-      </li>
-    </ul>
-    <hr/>
     <div class="form">
-      <div class="form-group">
-        <label for="pointsInput">Points</label>
-        <div class="input-group">
-          <input type="number" class="form-control" id="pointsInput" [min]="min ?? ''" [max]="max ?? ''"
-                 [(ngModel)]="dto.points">
-          <div class="input-group-append">
-            <button class="btn btn-outline-secondary text-danger" ngbTooltip="Keyboard Shortcut: Ctrl--"
-                    (click)="setPoints(min)">
-              {{ min }}
-            </button>
-            <button class="btn btn-outline-secondary text-success" ngbTooltip="Keyboard Shortcut: Ctrl-+"
-                    (click)="setPoints(max)">
-              {{ max }}
-            </button>
+      <div class="row">
+        <div class="col-md-8">
+          <div class="form-group">
+            <label for="snippets">
+              Snippets
+            </label>
+            <ul class="list-group" id="snippets">
+              <li *ngFor="let snippet of dto.snippets" class="list-group-item">
+                <input type="text" class="form-control" [(ngModel)]="snippet.comment" placeholder="Comment">
+                <app-snippet [snippet]="snippet"></app-snippet>
+              </li>
+            </ul>
+            <small class="form-text text-muted">
+              Use
+              <a href="https://marketplace.visualstudio.com/items?itemName=fulib.fulibFeedback" target="_blank">
+                fulibFeedback
+              </a>
+              to add or remove code snippets from within your IDE.
+            </small>
           </div>
         </div>
-      </div>
-      <div class="form-group">
-        <label for="remarkInput">Remark</label>
-        <input type="text" class="form-control" id="remarkInput" ngbAutofocus [(ngModel)]="dto.remark">
-      </div>
-      <div class="form-group">
-        <label for="nameInput">Name</label>
-        <input type="text" class="form-control" id="nameInput" [(ngModel)]="dto.author" (change)="saveDraft()"
-               [disabled]="loggedIn">
-      </div>
-      <div class="form-group">
-        <label for="snippets">
-          Snippets
-        </label>
-        <ul class="list-group" id="snippets">
-          <li *ngFor="let snippet of dto.snippets" class="list-group-item">
-            <input type="text" class="form-control" [(ngModel)]="snippet.comment" placeholder="Comment">
-            <app-snippet [snippet]="snippet"></app-snippet>
-          </li>
-        </ul>
-        <small class="form-text text-muted">
-          Use
-          <a href="https://marketplace.visualstudio.com/items?itemName=fulib.fulibFeedback" target="_blank">
-            fulibFeedback
-          </a>
-          to add or remove code snippets from within your IDE.
-        </small>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="pointsInput">Points</label>
+            <div class="input-group">
+              <input type="number" class="form-control" id="pointsInput" [min]="min ?? ''" [max]="max ?? ''"
+                     [(ngModel)]="dto.points">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary text-danger" ngbTooltip="Keyboard Shortcut: Ctrl--"
+                        (click)="setPoints(min)">
+                  {{ min }}
+                </button>
+                <button class="btn btn-outline-secondary text-success" ngbTooltip="Keyboard Shortcut: Ctrl-+"
+                        (click)="setPoints(max)">
+                  {{ max }}
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="remarkInput">Remark</label>
+            <input type="text" class="form-control" id="remarkInput" ngbAutofocus [(ngModel)]="dto.remark">
+          </div>
+          <div class="form-group">
+            <label for="nameInput">Name</label>
+            <input type="text" class="form-control" id="nameInput" [(ngModel)]="dto.author" (change)="saveDraft()"
+                   [disabled]="loggedIn">
+          </div>
+        </div>
       </div>
     </div>
     <app-pro-tip [tips]="[
