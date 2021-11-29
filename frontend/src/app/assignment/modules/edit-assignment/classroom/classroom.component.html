@@ -38,7 +38,7 @@
   <div class="form-group">
     <label for="codeSearchCheck">Code Search</label>
     <div class="form-check">
-      <input type="checkbox" class="form-check-input" id="codeSearchCheck" [(ngModel)]="assignment.classroom!.codeSearch">
+      <input type="checkbox" class="form-check-input" id="codeSearchCheck" [(ngModel)]="assignment.classroom!.codeSearch" (change)="saveDraft()">
       <label class="form-check-label" for="codeSearchCheck">Enable Code Search</label>
     </div>
     <small class="form-text text-muted">
