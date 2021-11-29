@@ -216,6 +216,16 @@ export class SolutionService {
     return this.http.get<Evaluation[]>(url, {headers, params});
   }
 
+  getEvaluation(assignment: string, solution: string | undefined, evaluation: string): Observable<Evaluation> {
+    const headers = {};
+    this.addAssignmentToken(headers, assignment);
+    if (solution) {
+      this.addSolutionToken(headers, assignment, solution);
+    }
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/${solution ? `solutions/${solution}/` : ''}evaluations/${evaluation}`;
+    return this.http.get<Evaluation>(url, {headers});
+  }
+
   createEvaluation(assignment: string, solution: string, dto: CreateEvaluationDto): Observable<Evaluation> {
     const headers = {};
     this.addAssignmentToken(headers, assignment);

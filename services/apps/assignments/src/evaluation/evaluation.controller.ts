@@ -6,7 +6,7 @@ import {FilterQuery} from 'mongoose';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {SolutionAuth} from '../solution/solution-auth.decorator';
 import {CreateEvaluationDto, UpdateEvaluationDto} from './evaluation.dto';
-import {Evaluation} from './evaluation.schema';
+import {Evaluation, EvaluationDocument} from './evaluation.schema';
 import {EvaluationService} from './evaluation.service';
 
 const forbiddenResponse = 'Not owner of solution or assignment, or invalid Assignment-Token or Solution-Token.';
@@ -35,6 +35,17 @@ export class EvaluationController {
     file && (where['snippets.file'] = file);
     task && (where.task = task);
     return this.evaluationService.findAll(where);
+  }
+
+  @Get('evaluations/:id')
+  @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
+  @ApiOkResponse({type: Evaluation})
+  @NotFound()
+  async findOneByAssignment(
+    @Param('assignment') assignment: string,
+    @Param('id') id: string,
+  ): Promise<Evaluation | null> {
+    return this.evaluationService.findOne(id);
   }
 
   @Post('solutions/:solution/evaluations')

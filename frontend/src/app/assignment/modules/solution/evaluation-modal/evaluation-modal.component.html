@@ -7,6 +7,17 @@
       <div class="row">
         <div class="col-md-8">
           <div class="form-group">
+            <div class="alert alert-info" id="codeSearchOrigin" *ngIf="originEvaluation && originSolution">
+              This evaluation was initially created by Code Search based on the original
+              <a [routerLink]="['../../..', originSolution._id, 'tasks', originEvaluation.task]">
+                Evaluation by {{ originEvaluation.author }}
+              </a>
+              for the
+              <a [routerLink]="['../../..', originSolution._id]">
+                Solution by {{ originSolution.author.name || originSolution.author.github }}
+              </a>
+              .
+            </div>
             <label for="snippets">
               Snippets
             </label>
