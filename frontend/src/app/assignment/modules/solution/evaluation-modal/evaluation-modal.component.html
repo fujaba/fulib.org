@@ -66,6 +66,16 @@
         </div>
       </div>
     </div>
+    <div class="alert alert-info" *ngIf="!dto.snippets.length">
+      <span class="badge badge-primary">New</span>
+      <a href="https://marketplace.visualstudio.com/items?itemName=fulib.fulibFeedback" target="_blank">
+        fulibFeedback
+      </a>
+      can be used to add code snippets from within your IDE.
+      If Code Search is enabled,
+      it will automatically look for similar code in other solutions and transfer your evaluation,
+      allowing you to grade multiple students at once.
+    </div>
     <app-pro-tip [tips]="[
       'Press Ctrl-Enter to quickly submit your evaluation',
       'Press Ctrl-+ to give the maximum points',
