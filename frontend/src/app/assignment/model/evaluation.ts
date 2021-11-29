@@ -31,6 +31,8 @@ export class Evaluation {
   codeSearch?: CodeSearchInfo;
 }
 
-export type CreateEvaluationDto = Omit<Evaluation, '_id' | 'assignment' | 'solution' | 'createdAt' | 'createdBy' | 'updatedAt'>;
+export interface CreateEvaluationDto extends Omit<Evaluation, '_id' | 'assignment' | 'solution' | 'createdAt' | 'createdBy' | 'updatedAt' | 'codeSearch'> {
+  codeSearch?: boolean;
+}
 
 export type UpdateEvaluationDto = Partial<CreateEvaluationDto>;

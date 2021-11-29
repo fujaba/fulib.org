@@ -64,6 +64,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
         this.dto.points = this.evaluation.points;
         this.dto.remark = this.evaluation.remark;
         this.dto.snippets = this.evaluation.snippets;
+        this.dto.codeSearch = !!this.evaluation.codeSearch?.origin;
       }
     });
 
