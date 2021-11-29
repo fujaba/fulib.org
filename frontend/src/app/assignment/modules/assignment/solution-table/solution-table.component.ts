@@ -64,11 +64,10 @@ export class SolutionTableComponent implements OnInit {
 
   setAssignee(solution: Solution, input: HTMLInputElement): void {
     input.disabled = true;
-    const assignee = this.assignees?.[solution._id!];
-    if (assignee) {
-      assignee.assignee = input.value;
-    }
-    this.solutionService.setAssignee(solution, input.value).subscribe(() => {
+    this.solutionService.setAssignee(solution, input.value).subscribe(result => {
+      if (this.assignees) {
+        this.assignees[solution._id!] = result;
+      }
       input.disabled = false;
       this.toastService.success('Assignee', input.value ? `Successfully assigned to ${input.value}` : 'Successfully de-assigned');
     }, error => {
