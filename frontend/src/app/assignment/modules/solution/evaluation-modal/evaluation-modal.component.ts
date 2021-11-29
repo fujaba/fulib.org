@@ -147,6 +147,10 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     this.solutionService.commentName = this.dto.author;
   }
 
+  deleteSnippet(index: number) {
+    this.dto.snippets.splice(index, 1);
+  }
+
   doSubmit(): void {
     const {aid, sid, task} = this.route.snapshot.params;
     this.dto.task = task;

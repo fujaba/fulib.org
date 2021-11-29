@@ -22,8 +22,17 @@
               Snippets
             </label>
             <ul class="list-group" id="snippets">
-              <li *ngFor="let snippet of dto.snippets" class="list-group-item" [class.list-group-item-warning]="snippet.comment === selectionComment">
-                <input type="text" class="form-control" [(ngModel)]="snippet.comment" placeholder="Comment">
+              <li *ngFor="let snippet of dto.snippets; let index=index" class="list-group-item" [class.list-group-item-warning]="snippet.comment === selectionComment">
+                <div class="form-inline mb-3">
+                  <label class="mr-2" for="snippet-{{index}}">
+                    Comment:
+                  </label>
+                  <input type="text" class="form-control flex-grow-1 mr-2" id="snippet-{{index}}"
+                         [(ngModel)]="snippet.comment">
+                  <button type="button" class="btn btn-outline-danger" ngbTooltip="Delete Snippet" (click)="deleteSnippet(index)">
+                    <i class="bi-trash"></i>
+                  </button>
+                </div>
                 <app-snippet [snippet]="snippet"></app-snippet>
               </li>
             </ul>
@@ -32,7 +41,7 @@
               <a href="https://marketplace.visualstudio.com/items?itemName=fulib.fulibFeedback" target="_blank">
                 fulibFeedback
               </a>
-              to add or remove code snippets from within your IDE.
+              to add code snippets from within your IDE.
             </small>
           </div>
         </div>
