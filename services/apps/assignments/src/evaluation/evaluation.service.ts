@@ -41,7 +41,7 @@ export class EvaluationService {
     if (evaluation && codeSearch && dto.snippets && dto.snippets.length) {
       evaluation.codeSearch = {
         ...evaluation.codeSearch,
-        ...await this.codeSearchUpdate(evaluation.assignment, id, dto),
+        ...await this.codeSearchUpdate(evaluation.assignment, evaluation._id, dto),
       };
     }
     return evaluation;
@@ -74,7 +74,7 @@ export class EvaluationService {
     ;
   }
 
-  private async codeSearchCreate(assignment: string, origin: string, dto: CreateEvaluationDto): Promise<CodeSearchInfo> {
+  private async codeSearchCreate(assignment: string, origin: any, dto: CreateEvaluationDto): Promise<CodeSearchInfo> {
     const solutions = await this.codeSearch(assignment, dto.snippets);
     const result = await this.model.bulkWrite(solutions.filter(s => s[1]).map(([solution, snippets]) => {
       const filter: FilterQuery<Evaluation> = {
@@ -101,7 +101,7 @@ export class EvaluationService {
     return {created: result.upsertedCount};
   }
 
-  private async codeSearchUpdate(assignment: string, origin: string, dto: UpdateEvaluationDto): Promise<Partial<CodeSearchInfo>> {
+  private async codeSearchUpdate(assignment: string, origin: any, dto: UpdateEvaluationDto): Promise<Partial<CodeSearchInfo>> {
     const solutions = await this.codeSearch(assignment, dto.snippets!);
     const result = await this.model.bulkWrite(solutions.map(([solution, snippets]) => {
       const filter: FilterQuery<Evaluation> = {
@@ -109,7 +109,7 @@ export class EvaluationService {
         solution,
         task: dto.task,
         author: 'Code Search',
-        'codeSearch.origin': origin,
+        codeSearch: {origin},
       };
 
       if (!snippets) {
@@ -135,7 +135,7 @@ export class EvaluationService {
       assignment: evaluation.assignment,
       task: evaluation.task,
       author: 'Code Search',
-      'codeSearch.origin': evaluation.id,
+      codeSearch: {origin: evaluation._id},
     }).exec();
     return {deleted: result.deletedCount};
   }
