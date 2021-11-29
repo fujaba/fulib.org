@@ -56,7 +56,15 @@ export class EvaluationService {
   }
 
   private async codeSearch(assignment: string, snippets: Snippet[]): Promise<[string, Snippet[] | undefined][]> {
-    const resultsBySnippet = await Promise.all(snippets.map(snippet => this.searchService.find(assignment, snippet.code)));
+    const resultsBySnippet = await Promise.all(snippets.map(async snippet => {
+      const results = await this.searchService.find(assignment, snippet.code);
+      for (let result of results) {
+        for (let snippet2 of result.snippets) {
+          snippet2.comment = snippet.comment;
+        }
+      }
+      return results;
+    }));
     const solutionMatches: Record<string, number> = {};
     const solutionSnippets: Record<string, Snippet[]> = {};
     for (let results of resultsBySnippet) {
