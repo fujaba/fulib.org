@@ -1,6 +1,9 @@
 <app-modal #modal size="lg" [back]="['../..']" [backOptions]="{relativeTo: route}">
   <ng-container modal-header>
-    Grade
+    Evaluation
+    <span class="text-muted">
+      {{ task?.description }}
+    </span>
   </ng-container>
   <ng-container modal-body>
     <div class="form">
