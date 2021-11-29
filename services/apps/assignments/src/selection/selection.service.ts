@@ -1,10 +1,10 @@
 import {Injectable} from '@nestjs/common';
-import {filter, Observable, Subject} from 'rxjs';
+import {filter, Observable, ReplaySubject} from 'rxjs';
 import {CreateSelectionDto, SelectionDto} from './selection.dto';
 
 @Injectable()
 export class SelectionService {
-  private selections = new Subject<SelectionDto>();
+  private selections = new ReplaySubject<SelectionDto>(1000);
 
   create(assignment: string, solution: string, dto: CreateSelectionDto): SelectionDto {
     const selection: SelectionDto = {...dto, assignment, solution};
