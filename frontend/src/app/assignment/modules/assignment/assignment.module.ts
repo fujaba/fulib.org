@@ -14,6 +14,7 @@ import {SolutionTableComponent} from './solution-table/solution-table.component'
 import {StatisticsComponent} from './statistics/statistics.component';
 import {AssignmentTasksComponent} from './tasks/tasks.component';
 import { SearchComponent } from './search/search.component';
+import { StatisticValueComponent } from './statistic-value/statistic-value.component';
 
 
 @NgModule({
@@ -25,6 +26,7 @@ import { SearchComponent } from './search/search.component';
     SolutionTableComponent,
     StatisticsComponent,
     SearchComponent,
+    StatisticValueComponent,
   ],
   imports: [
     CommonModule,
