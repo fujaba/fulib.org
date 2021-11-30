@@ -194,9 +194,9 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       'deleted',
     ];
     const info = ops
-      .map(op => codeSearch[op] ? op + ' ' + codeSearch[op] : '')
+      .map(op => codeSearch[op] && `${op} ${codeSearch[op]}`)
       .filter(x => x)
     ;
-    return ' and ' + info.join(', ') + ' via Code Search';
+    return info.length ? ` and ${info.join(', ')} via Code Search` : '';
   }
 }
