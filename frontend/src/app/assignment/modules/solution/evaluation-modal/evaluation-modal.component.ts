@@ -58,6 +58,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
 
     this.route.params.pipe(
       switchMap(({aid, task}) => this.assignmentService.get(aid).pipe(
+        tap(assignment => this.dto.codeSearch = !!assignment.classroom?.codeSearch),
         map(assignment => this.taskService.find(assignment.tasks, task)),
       )),
     ).subscribe(task => {
@@ -77,7 +78,6 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
           this.dto.points = evaluation.points;
           this.dto.remark = evaluation.remark;
           this.dto.snippets = evaluation.snippets;
-          this.dto.codeSearch = !!evaluation.codeSearch?.origin;
         }
       }),
       switchMap(evaluation => {
