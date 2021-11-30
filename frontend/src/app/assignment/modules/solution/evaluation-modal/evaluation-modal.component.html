@@ -102,6 +102,12 @@
     ]"></app-pro-tip>
   </ng-container>
   <ng-container modal-footer>
+    <div class="form-check">
+      <input type="checkbox" class="form-check-input" id="codeSearchCheck" [(ngModel)]="dto.codeSearch">
+      <label for="codeSearchCheck" class="form-check-label" ngbTooltip="Use Code Search to create or update derived evaluations in other solutions">
+        Code Search
+      </label>
+    </div>
     <button type="button" class="btn btn-secondary" (click)="modal.close()">
       Cancel
     </button>
