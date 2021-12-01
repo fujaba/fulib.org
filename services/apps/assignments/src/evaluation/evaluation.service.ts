@@ -1,16 +1,30 @@
-import {Injectable} from '@nestjs/common';
+import {Injectable, MessageEvent} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model, UpdateQuery} from 'mongoose';
+import {filter, Observable, Subject} from 'rxjs';
 import {SearchService} from '../search/search.service';
 import {CreateEvaluationDto, UpdateEvaluationDto} from './evaluation.dto';
 import {CodeSearchInfo, Evaluation, EvaluationDocument, Snippet} from './evaluation.schema';
 
 @Injectable()
 export class EvaluationService {
+  private events = new Subject<MessageEvent>();
+
   constructor(
     @InjectModel('evaluations') public model: Model<Evaluation>,
     private searchService: SearchService,
   ) {
+  }
+
+  stream(assignment: string, solution: string): Observable<MessageEvent> {
+    return this.events.pipe(filter(e => {
+      const evaluation: Evaluation = (e.data as any).evaluation;
+      return evaluation.assignment === assignment && evaluation.solution === solution;
+    }));
+  }
+
+  private fire(event: string, evaluation: EvaluationDocument) {
+    this.events.next({data: {event, evaluation}});
   }
 
   async create(assignment: string, solution: string, dto: CreateEvaluationDto, createdBy?: string): Promise<Evaluation> {
@@ -21,6 +35,7 @@ export class EvaluationService {
       createdBy,
       ...rest,
     });
+    this.fire('created', evaluation);
     if (codeSearch && dto.snippets.length) {
       evaluation.codeSearch = await this.codeSearchCreate(assignment, evaluation._id, dto);
     }
@@ -38,7 +53,12 @@ export class EvaluationService {
   async update(id: string, dto: UpdateEvaluationDto): Promise<Evaluation | null> {
     const {codeSearch, ...rest} = dto;
     const evaluation = await this.model.findByIdAndUpdate(id, rest, {new: true}).exec();
-    if (evaluation && codeSearch && dto.snippets && dto.snippets.length) {
+    if (!evaluation) {
+      return null;
+    }
+
+    this.fire('updated', evaluation);
+    if (codeSearch && dto.snippets && dto.snippets.length) {
       evaluation.codeSearch = {
         ...evaluation.codeSearch,
         ...await this.codeSearchUpdate(evaluation.assignment, evaluation._id, dto),
@@ -49,9 +69,12 @@ export class EvaluationService {
 
   async remove(id: string): Promise<Evaluation | null> {
     const deleted = await this.model.findByIdAndDelete(id).exec();
-    if (deleted) {
-      deleted.codeSearch = await this.codeSearchDelete(deleted);
+    if (!deleted) {
+      return null;
     }
+
+    this.fire('deleted', deleted);
+    deleted.codeSearch = await this.codeSearchDelete(deleted);
     return deleted;
   }
 
