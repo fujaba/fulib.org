@@ -216,6 +216,17 @@ export class SolutionService {
     return this.http.get<Evaluation[]>(url, {headers, params});
   }
 
+  streamEvaluations(assignment: string, solution: string): Observable<{ event: string, evaluation: Evaluation }> {
+    const token = this.assignmentService.getToken(assignment);
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/evaluations/events?token=${token}`;
+    return new Observable(observer => {
+      const eventSource = new EventSource(url);
+      eventSource.addEventListener('message', (event: MessageEvent) => observer.next(JSON.parse(event.data)));
+      eventSource.addEventListener('error', (error) => observer.error(error));
+      return () => eventSource.close();
+    });
+  }
+
   getEvaluation(assignment: string, solution: string | undefined, evaluation: string): Observable<Evaluation> {
     const headers = {};
     this.addAssignmentToken(headers, assignment);
