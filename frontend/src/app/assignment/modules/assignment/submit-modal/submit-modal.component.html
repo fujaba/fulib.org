@@ -14,12 +14,12 @@
       Cancel
     </button>
     <span class="d-inline-block" [ngbTooltip]="mailLink ? undefined : 'Student Email needs to be set'">
-      <a class="btn btn-primary bi-envelope" [href]="mailLink" [class.disabled]="!mailLink">
+      <a class="btn btn-primary bi-envelope" [href]="mailLink" [class.disabled]="!mailLink" (click)="saveAndClose(modal)">
         Draft Mail
       </a>
     </span>
     <span class="d-inline-block" [ngbTooltip]="draftLink ? undefined : draftIssueTooltip">
-      <a class="btn btn-primary bi-github" [href]="draftLink" [class.disabled]="!draftLink">
+      <a class="btn btn-primary bi-github" [href]="draftLink" target="_blank" [class.disabled]="!draftLink" (click)="saveAndClose(modal)">
         Draft Issue
       </a>
     </span>
@@ -32,7 +32,9 @@
       </ul>
     </ng-template>
     <span class="d-inline-block" [ngbTooltip]="draftLink && githubToken ? undefined : submitIssueTooltip">
-      <button class="btn btn-success" (click)="submitIssue(); modal.close()" [disabled]="!githubToken || !draftLink">
+      <button class="btn btn-success" [disabled]="submitting || !githubToken || !draftLink"
+              (click)="submitIssue(); saveAndClose(modal)"
+      >
         Submit Issue
       </button>
     </span>
