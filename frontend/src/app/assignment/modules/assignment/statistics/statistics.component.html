@@ -12,7 +12,7 @@
           <app-statistic-value [value]="stats.solutions.total" label="Total Solutions"></app-statistic-value>
         </li>
         <div class="text-center h1 bi-chevron-compact-down"></div>
-        <li class="list-group-item">
+        <li class="list-group-item bg-progress-blue" [style.--percentage.%]="stats.solutions.evaluated.total / stats.solutions.total * 100">
           <div class="d-flex align-items-center mb-3">
             <div class="mr-auto">
               Evaluated
@@ -22,7 +22,7 @@
             <app-statistic-value [value]="(stats.solutions.evaluated.total / stats.solutions.total) | percent:'0.0'" label="of All"></app-statistic-value>
           </div>
           <ul class="list-group">
-            <li class="list-group-item d-flex align-items-center">
+            <li class="list-group-item d-flex align-items-center bg-progress-teal" [style.--percentage.%]="stats.solutions.evaluated.codeSearch / stats.solutions.evaluated.total * 100">
               <div class="mr-auto">
                 ... by Code Search
               </div>
@@ -30,7 +30,7 @@
               <div class="border-right mx-3 align-self-stretch"></div>
               <app-statistic-value [value]="(stats.solutions.evaluated.codeSearch / stats.solutions.evaluated.total) | percent:'0.0'" label="of Graded"></app-statistic-value>
             </li>
-            <li class="list-group-item d-flex align-items-center">
+            <li class="list-group-item d-flex align-items-center bg-progress-purple" [style.--percentage.%]="stats.solutions.evaluated.manual / stats.solutions.evaluated.total * 100">
               <div class="mr-auto">
                 ... manually
               </div>
@@ -41,7 +41,7 @@
           </ul>
         </li>
         <div class="text-center h1 bi-chevron-compact-down"></div>
-        <li class="list-group-item d-flex align-items-center">
+        <li class="list-group-item d-flex align-items-center bg-progress-green" [style.--percentage.%]="stats.solutions.graded / stats.solutions.total * 100">
           <div class="mr-auto">
             Graded
           </div>
@@ -56,7 +56,7 @@
         Evaluations
       </h2>
       <ul class="list-group mb-3">
-        <li class="list-group-item d-flex align-items-center">
+        <li class="list-group-item d-flex align-items-center bg-progress-teal" [style.--percentage.%]="stats.evaluations.codeSearch / stats.evaluations.total * 100">
           <div class="mr-auto">
             Code Search
           </div>
@@ -64,7 +64,7 @@
           <div class="border-right mx-3 align-self-stretch"></div>
           <app-statistic-value [value]="(stats.evaluations.codeSearch / stats.evaluations.total) | percent:'0.0'" label="of All"></app-statistic-value>
         </li>
-        <li class="list-group-item d-flex align-items-center">
+        <li class="list-group-item d-flex align-items-center bg-progress-purple" [style.--percentage.%]="stats.evaluations.manual / stats.evaluations.total * 100">
           <div class="mr-auto">
             Manual
           </div>
