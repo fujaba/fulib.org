@@ -1,7 +1,12 @@
 export class SolutionStatistics {
-  codeSearch: number;
-  manual: number;
+  evaluated: {
+    codeSearch: number;
+    manual: number;
+    total: number;
+  };
   graded: number;
+  total: number;
+  pointsAvg: number;
 }
 
 export class EvaluationStatistics {
