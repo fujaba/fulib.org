@@ -85,7 +85,11 @@
     Tasks
   </h2>
   <ul class="list-group mb-3">
-    <li class="list-group-item d-flex align-items-center" *ngFor="let taskStats of stats.tasks">
+    <li
+      *ngFor="let taskStats of stats.tasks"
+      class="list-group-item d-flex align-items-center bg-progress-gray"
+      [style.--percentage.%]="taskStats.totalCount / stats.solutions.total * 100"
+    >
       <ol class="breadcrumb mr-auto mb-0 bg-transparent">
         <li *ngFor="let task of taskStats.resolved; let last=last" class="breadcrumb-item" [class.text-muted]="!last">
           {{ task.description }}
