@@ -11,6 +11,7 @@ import Task from '../../../model/task';
 import {AssignmentService} from '../../../services/assignment.service';
 import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
+import {SelectionService} from '../selection.service';
 
 @Component({
   selector: 'app-evaluation-modal',
@@ -19,6 +20,8 @@ import {TaskService} from '../../../services/task.service';
 })
 export class EvaluationModalComponent implements OnInit, OnDestroy {
   @ViewChild('modal', {static: true}) modal: ModalComponent;
+
+  selectionComment = '(fulibFeedback Selection)';
 
   task?: Task;
   evaluation?: Evaluation;
@@ -43,6 +46,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     private assignmentService: AssignmentService,
     private taskService: TaskService,
     private solutionService: SolutionService,
+    private selectionService: SelectionService,
     private users: UserService,
     private toastService: ToastService,
     public route: ActivatedRoute,
@@ -54,6 +58,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
 
     this.route.params.pipe(
       switchMap(({aid, task}) => this.assignmentService.get(aid).pipe(
+        tap(assignment => this.dto.codeSearch = !!assignment.classroom?.codeSearch),
         map(assignment => this.taskService.find(assignment.tasks, task)),
       )),
     ).subscribe(task => {
@@ -69,15 +74,14 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       map(([evaluation]) => evaluation),
       tap(evaluation => {
         this.evaluation = evaluation;
-        if (this.evaluation) {
+        if (evaluation) {
           this.dto.points = evaluation.points;
           this.dto.remark = evaluation.remark;
           this.dto.snippets = evaluation.snippets;
-          this.dto.codeSearch = !!evaluation.codeSearch?.origin;
         }
       }),
       switchMap(evaluation => {
-        const origin = evaluation.codeSearch?.origin;
+        const origin = evaluation?.codeSearch?.origin;
         return origin ? this.solutionService.getEvaluation(evaluation.assignment, undefined, origin) : of(undefined);
       }),
       tap(originEvaluation => this.originEvaluation = originEvaluation),
@@ -91,6 +95,22 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
         this.dto.author = `${user.firstName} ${user.lastName}`;
       }
     });
+
+    const selectionSubscription = this.route.params.pipe(
+      switchMap(({aid, sid}) => this.selectionService.stream(aid, sid)),
+    ).subscribe(({author, snippet}) => {
+      if (author !== this.dto.author) {
+        return;
+      }
+      let index = this.dto.snippets.findIndex(s => s.comment === this.selectionComment);
+      if (index >= 0) {
+        this.dto.snippets[index] = snippet;
+      } else {
+        index = this.dto.snippets.push(snippet) - 1;
+      }
+      setTimeout(() => document.getElementById('snippet-' + index)?.focus());
+    });
+    this.userSubscription.add(selectionSubscription);
   }
 
   ngOnDestroy(): void {
@@ -128,9 +148,16 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     this.solutionService.commentName = this.dto.author;
   }
 
+  deleteSnippet(index: number) {
+    this.dto.snippets.splice(index, 1);
+  }
+
   doSubmit(): void {
     const {aid, sid, task} = this.route.snapshot.params;
     this.dto.task = task;
+
+    this.dto.snippets.removeFirst(s => s.comment === this.selectionComment);
+
     const op = this.evaluation
       ? this.solutionService.updateEvaluation(aid, sid, this.evaluation._id, this.dto)
       : this.solutionService.createEvaluation(aid, sid, this.dto);
@@ -167,9 +194,9 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       'deleted',
     ];
     const info = ops
-      .map(op => codeSearch[op] ? op + ' ' + codeSearch[op] : '')
+      .map(op => codeSearch[op] && `${op} ${codeSearch[op]}`)
       .filter(x => x)
     ;
-    return ' and ' + info.join(', ') + ' via Code Search';
+    return info.length ? ` and ${info.join(', ')} via Code Search` : '';
   }
 }

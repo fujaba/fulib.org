@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute, NavigationStart, Router} from '@angular/router';
-import {EMPTY, forkJoin, Subscription} from 'rxjs';
-import {filter, map, mergeMap, switchMap, tap} from 'rxjs/operators';
+import {ActivatedRoute, Router} from '@angular/router';
+import {forkJoin, Subscription} from 'rxjs';
+import {switchMap, tap} from 'rxjs/operators';
 import {Marker} from '../../../../shared/model/marker';
 import Assignment from '../../../model/assignment';
 import {Evaluation} from '../../../model/evaluation';
@@ -58,31 +58,18 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.subscription = this.router.events.pipe(
-      filter(e => e instanceof NavigationStart),
-      // NB: Using mergeMap instead of switchMap because we need to update
-      // all evaluations that might have changed in the meantime.
-      mergeMap(() => {
-        const firstChild = this.route.firstChild;
-        if (!firstChild) {
-          return EMPTY;
-        }
-        const {aid, sid} = this.route.snapshot.params;
-        const {task} = firstChild.snapshot.params;
-        if (!task) {
-          return EMPTY;
-        }
-
-        return this.solutionService.getEvaluations(aid, sid, task).pipe(map(e => [e[0], task] as const));
-      }),
-    ).subscribe(([evaluation, task]) => {
+    this.subscription = this.route.params.pipe(
+      switchMap(({aid, sid}) => this.solutionService.streamEvaluations(aid, sid)),
+    ).subscribe(({event, evaluation}) => {
       if (!this.assignment || !this.points || !this.evaluations) {
         return;
       }
 
+      const task = evaluation.task;
+      const newEvaluation = event === 'deleted' ? undefined : evaluation;
       const oldEvaluation = this.evaluations[task];
-      this.evaluations[task] = evaluation;
-      if (evaluation?.points === oldEvaluation?.points) {
+      this.evaluations[task] = newEvaluation!;
+      if (newEvaluation?.points === oldEvaluation?.points) {
         return;
       }
 

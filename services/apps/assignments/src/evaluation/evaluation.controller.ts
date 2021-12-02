@@ -1,12 +1,13 @@
 import {AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound} from '@app/not-found';
-import {Body, Controller, Delete, Get, Param, Patch, Post, Query} from '@nestjs/common';
+import {Body, Controller, Delete, Get, MessageEvent, Param, Patch, Post, Query, Sse} from '@nestjs/common';
 import {ApiCreatedResponse, ApiOkResponse, ApiQuery, ApiTags} from '@nestjs/swagger';
 import {FilterQuery} from 'mongoose';
+import {Observable} from 'rxjs';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {SolutionAuth} from '../solution/solution-auth.decorator';
 import {CreateEvaluationDto, UpdateEvaluationDto} from './evaluation.dto';
-import {Evaluation, EvaluationDocument} from './evaluation.schema';
+import {Evaluation} from './evaluation.schema';
 import {EvaluationService} from './evaluation.service';
 
 const forbiddenResponse = 'Not owner of solution or assignment, or invalid Assignment-Token or Solution-Token.';
@@ -75,6 +76,16 @@ export class EvaluationController {
     file && (where['snippets.file'] = file);
     task && (where.task = task);
     return this.evaluationService.findAll(where);
+  }
+
+  @Sse('solutions/:solution/evaluations/events')
+  @SolutionAuth({forbiddenResponse})
+  @ApiOkResponse({type: Evaluation})
+  stream(
+    @Param('assignment') assignment: string,
+    @Param('solution') solution: string,
+  ): Observable<MessageEvent> {
+    return this.evaluationService.stream(assignment, solution);
   }
 
   @Get('solutions/:solution/evaluations/:id')

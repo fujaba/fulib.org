@@ -1,6 +1,9 @@
 <app-modal #modal size="lg" [back]="['../..']" [backOptions]="{relativeTo: route}">
   <ng-container modal-header>
-    Grade
+    Evaluation
+    <span class="text-muted">
+      {{ task?.description }}
+    </span>
   </ng-container>
   <ng-container modal-body>
     <div class="form">
@@ -22,8 +25,23 @@
               Snippets
             </label>
             <ul class="list-group" id="snippets">
-              <li *ngFor="let snippet of dto.snippets" class="list-group-item">
-                <input type="text" class="form-control" [(ngModel)]="snippet.comment" placeholder="Comment">
+              <li *ngFor="let snippet of dto.snippets; let index=index" class="list-group-item" [class.list-group-item-warning]="snippet.comment === selectionComment">
+                <div class="form-inline mb-3">
+                  <label class="mr-2" for="snippet-{{index}}">
+                    Comment:
+                  </label>
+                  <input type="text" class="form-control flex-grow-1 mr-2" id="snippet-{{index}}"
+                         [(ngModel)]="snippet.comment">
+                  <button *ngIf="snippet.comment === selectionComment"
+                          type="button" class="btn btn-outline-success mr-2" ngbTooltip="Add Selection Snippet"
+                          (click)="snippet.comment = ''"
+                  >
+                    <i class="bi-plus-circle"></i>
+                  </button>
+                  <button type="button" class="btn btn-outline-danger" ngbTooltip="Delete Snippet" (click)="deleteSnippet(index)">
+                    <i class="bi-trash"></i>
+                  </button>
+                </div>
                 <app-snippet [snippet]="snippet"></app-snippet>
               </li>
             </ul>
@@ -32,7 +50,7 @@
               <a href="https://marketplace.visualstudio.com/items?itemName=fulib.fulibFeedback" target="_blank">
                 fulibFeedback
               </a>
-              to add or remove code snippets from within your IDE.
+              to add code snippets from within your IDE.
             </small>
           </div>
         </div>
@@ -84,6 +102,12 @@
     ]"></app-pro-tip>
   </ng-container>
   <ng-container modal-footer>
+    <div class="form-check">
+      <input type="checkbox" class="form-check-input" id="codeSearchCheck" [(ngModel)]="dto.codeSearch">
+      <label for="codeSearchCheck" class="form-check-label" ngbTooltip="Use Code Search to create or update derived evaluations in other solutions">
+        Code Search
+      </label>
+    </div>
     <button type="button" class="btn btn-secondary" (click)="modal.close()">
       Cancel
     </button>

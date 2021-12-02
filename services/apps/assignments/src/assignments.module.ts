@@ -14,6 +14,7 @@ import { EvaluationModule } from './evaluation/evaluation.module';
 import { ClassroomModule } from './classroom/classroom.module';
 import { SearchModule } from './search/search.module';
 import { StatisticsModule } from './statistics/statistics.module';
+import { SelectionModule } from './selection/selection.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { StatisticsModule } from './statistics/statistics.module';
     ClassroomModule,
     SearchModule,
     StatisticsModule,
+    SelectionModule,
   ],
   controllers: [],
   providers: [],
