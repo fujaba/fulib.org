@@ -7,6 +7,7 @@ import {
   IsHash,
   IsMongoId,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   IsUUID,
@@ -88,6 +89,11 @@ export class Solution {
   @ApiProperty()
   @IsDateString()
   timestamp?: Date;
+
+  @Prop()
+  @ApiPropertyOptional({description: ''})
+  @IsNumber()
+  points?: number;
 
   results?: TaskResult[];
 }
