@@ -14,6 +14,7 @@ import {AssignmentStatistics, StatisticsService} from '../statistics.service';
 })
 export class StatisticsComponent implements OnInit {
   stats?: AssignmentStatistics;
+  maxPoints = 0;
 
   constructor(
     private assignmentService: AssignmentService,
@@ -30,6 +31,7 @@ export class StatisticsComponent implements OnInit {
         this.statisticsService.getAssignmentStatistics(aid),
       ])),
     ).subscribe(([assignment, statistics]) => {
+      this.maxPoints = this.taskService.sumPositivePoints(assignment.tasks);
       this.stats = statistics;
       for (let task of statistics.tasks) {
         task.resolved = this.taskService.findWithParents(assignment.tasks, task.task);

@@ -49,6 +49,10 @@ export class TaskService {
     return cache[task._id] ??= this.calculateTaskPoints(task, evaluations, cache);
   }
 
+  sumPositivePoints(tasks: Task[]): number {
+    return tasks.reduce((a, c) => c.points > 0 ? a + c.points : a, 0);
+  }
+
   private calculateTaskPoints(task: Task, evaluations: Record<string, Evaluation | CreateEvaluationDto>, cache: Record<string, number>): number {
     const evaluation = evaluations?.[task._id];
     if (evaluation) {
@@ -65,7 +69,7 @@ export class TaskService {
       return 0;
     }
 
-    const positiveChildDeduction = task.children.reduce((a, c) => c.points > 0 ? a + c.points : a, 0);
+    const positiveChildDeduction = this.sumPositivePoints(task.children);
     // A task with children is granted, by default, its total points minus the total of positive children
     const basePoints = task.points - positiveChildDeduction;
     const childSum = task.children.reduce((a, c) => a + this.getTaskPoints(c, evaluations, cache), 0);
