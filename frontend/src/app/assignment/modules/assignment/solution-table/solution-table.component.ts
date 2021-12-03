@@ -5,7 +5,7 @@ import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/oper
 import {ToastService} from '../../../../toast.service';
 import {Assignee} from '../../../model/assignee';
 import Assignment from '../../../model/assignment';
-import Solution from '../../../model/solution';
+import Solution, {AuthorInfo} from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
 import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
@@ -16,7 +16,13 @@ import {TaskService} from '../../../services/task.service';
   styleUrls: ['./solution-table.component.scss'],
 })
 export class SolutionTableComponent implements OnInit {
-  readonly searchableProperties: string[] = ['name', 'studentID', 'email', 'assignee', 'github'];
+  readonly searchableProperties: readonly (keyof AuthorInfo | 'assignee')[] = [
+    'name',
+    'studentId',
+    'email',
+    'github',
+    'assignee',
+  ];
 
   assignment?: Assignment;
   totalPoints?: number;
