@@ -1,6 +1,6 @@
 import {Component, OnInit, TrackByFunction} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {combineLatest, Observable} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 import {ToastService} from '../../../../toast.service';
 import {Assignee} from '../../../model/assignee';
@@ -29,7 +29,7 @@ export class SolutionTableComponent implements OnInit {
   solutions?: Solution[];
   assignees?: Record<string, Assignee>;
 
-  searchText = '';
+  search$ = new BehaviorSubject<string>('');
 
   solutionId: TrackByFunction<Solution> = (index, s) => s._id;
 
@@ -61,10 +61,22 @@ export class SolutionTableComponent implements OnInit {
     });
 
     combineLatest([this.activatedRoute.params, this.activatedRoute.queryParams]).pipe(
-      tap(([, {q}]) => this.searchText = q),
+      tap(([, {q}]) => this.search$.next(q)),
       switchMap(([{aid}, {q}]) => this.solutionService.getAll(aid, q)),
     ).subscribe(solutions => {
       this.solutions = solutions;
+    });
+
+    this.search$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+    ).subscribe(q => {
+      this.router.navigate([], {
+        relativeTo: this.activatedRoute,
+        queryParams: {q},
+        queryParamsHandling: 'merge',
+        replaceUrl: true,
+      });
     });
   }
 
@@ -79,15 +91,6 @@ export class SolutionTableComponent implements OnInit {
     }, error => {
       input.disabled = false;
       this.toastService.error('Assignee', 'Failed to assign', error);
-    });
-  }
-
-  updateSearch(): void {
-    this.router.navigate([], {
-      relativeTo: this.activatedRoute,
-      queryParams: {q: this.searchText},
-      queryParamsHandling: 'merge',
-      replaceUrl: true,
     });
   }
 

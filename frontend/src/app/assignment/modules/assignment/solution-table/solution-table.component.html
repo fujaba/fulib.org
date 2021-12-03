@@ -2,7 +2,7 @@
   <label for="searchInput" class="mr-sm-2">Search:</label>
   <input type="text" class="form-control mr-sm-2 flex-grow-1" id="searchInput"
          placeholder="Name, Student ID, E-Mail, GitHub Username, Assignee"
-         [(ngModel)]="searchText" (change)="updateSearch()"
+         [ngModel]="search$.value" (ngModelChange)="search$.next($event)"
          [ngbTypeahead]="typeahead" [resultFormatter]="formatTypeahead">
   <button type="button" class="btn btn-outline-secondary" ngbTooltip="View Search Help"
           [ngbPopover]="searchHelp" popoverTitle="Search Help" placement="bottom-right">
