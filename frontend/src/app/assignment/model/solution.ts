@@ -16,4 +16,5 @@ export default class Solution {
   commit?: string;
 
   timestamp?: Date;
+  points?: number;
 }

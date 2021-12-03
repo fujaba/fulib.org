@@ -14,19 +14,30 @@ export class StatisticsService {
   }
 
   async getAssignmentStatistics(assignment: string): Promise<AssignmentStatistics> {
+    let totalPoints = 0;
+    let gradedSolutions = 0;
+    let totalSolutions = 0;
+    for await (const {points} of this.solutionService.model.find({assignment}).select('points')) {
+      totalSolutions++;
+      if (points !== undefined) {
+        totalPoints += points;
+        gradedSolutions++;
+      }
+    }
+
     const evaluations = await this.evaluationService.findAll({assignment});
 
-    const solutions = new Set<string>();
+    const evaluatedSolutions = new Set<string>();
     const codeSearchSolutions = new Set<string>();
     const tasks = new Map<string, TaskStatistics>();
     let codeSearchEvaluations = 0;
-    for await (let {
+    for await (const {
       codeSearch,
       points,
       solution,
       task,
     } of this.evaluationService.model.find({assignment}).select('solution task points codeSearch')) {
-      solutions.add(solution);
+      evaluatedSolutions.add(solution);
 
       if (codeSearch?.origin) {
         codeSearchEvaluations++;
@@ -49,9 +60,14 @@ export class StatisticsService {
 
     return {
       solutions: {
-        codeSearch: codeSearchSolutions.size,
-        manual: solutions.size - codeSearchSolutions.size,
-        graded: solutions.size,
+        evaluated: {
+          codeSearch: codeSearchSolutions.size,
+          manual: evaluatedSolutions.size - codeSearchSolutions.size,
+          total: evaluatedSolutions.size,
+        },
+        graded: gradedSolutions,
+        total: totalSolutions,
+        pointsAvg: totalPoints / gradedSolutions,
       },
       evaluations: {
         codeSearch: codeSearchEvaluations,

@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {forkJoin} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
+import {ModalComponent} from '../../../../shared/modal/modal.component';
 import {ToastService} from '../../../../toast.service';
 import Assignment from '../../../model/assignment';
 import Solution from '../../../model/solution';
@@ -22,6 +23,8 @@ export class SubmitModalComponent implements OnInit {
   mailLink?: string;
   githubToken?: string;
   draftLink?: string;
+
+  submitting = false;
 
   constructor(
     public route: ActivatedRoute,
@@ -61,6 +64,24 @@ export class SubmitModalComponent implements OnInit {
     if (email) {
       this.mailLink = `mailto:${email}?subject=${encodedTitle}&body=${encodedBody}`;
     }
+  }
+
+  saveAndClose(modal: ModalComponent): void {
+    if (this.submitting) {
+      return;
+    }
+
+    this.submitting = true;
+    this.solutionService.update(this.solution!.assignment, this.solution!._id!, {
+      points: this.issue!._points,
+    }).subscribe(() => {
+      this.submitting = false;
+      this.toastService.success('Submit', 'Successfully saved points');
+      modal.close();
+    }, error => {
+      this.submitting = false;
+      this.toastService.error('Submit', 'Failed to save points', error);
+    });
   }
 
   async submitIssue() {

@@ -1,17 +1,23 @@
 import {OmitType, PartialType} from '@nestjs/swagger';
 import {Solution} from './solution.schema';
 
-export class CreateSolutionDto extends OmitType(Solution, [
+const excluded = [
   'token',
   'assignment',
   'createdBy',
   'timestamp',
-  'results',
+] as const;
+
+export class CreateSolutionDto extends OmitType(Solution, [
+  ...excluded,
+  'points',
 ] as const) {
 }
 
-export class UpdateSolutionDto extends PartialType(OmitType(CreateSolutionDto, [
+export class UpdateSolutionDto extends PartialType(OmitType(Solution, [
+  ...excluded,
   'solution',
+  'commit',
 ] as const)) {
 }
 

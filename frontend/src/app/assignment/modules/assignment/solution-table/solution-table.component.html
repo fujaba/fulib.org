@@ -57,7 +57,13 @@
       </ng-template>
     </td>
     <td>
-      <span class="badge badge-primary badge-pill">? / {{totalPoints}}</span>
+      <span
+        class="badge badge-pill"
+        [class.badge-secondary]="solution.points === undefined"
+        [class.badge-primary]="solution.points !== undefined"
+      >
+        {{ solution.points ?? '?' }} / {{ totalPoints }}
+      </span>
     </td>
     <td>
       <input

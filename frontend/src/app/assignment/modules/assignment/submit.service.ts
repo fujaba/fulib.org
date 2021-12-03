@@ -13,6 +13,7 @@ export interface Issue {
   number: number;
   title: string;
   body: string;
+  _points: number;
 }
 
 export type IssueDto = Omit<Issue, 'number'>;
@@ -77,6 +78,7 @@ export class SubmitService {
     return {
       title: `${assignment.title} (${sum}/${total}P)`,
       body: `${tasks}\n\n${footer}`,
+      _points: sum,
     };
   }
 

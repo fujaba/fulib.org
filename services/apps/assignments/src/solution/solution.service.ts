@@ -13,7 +13,7 @@ import {Solution, SolutionDocument} from './solution.schema';
 @Injectable()
 export class SolutionService {
   constructor(
-    @InjectModel('solutions') private model: Model<Solution>,
+    @InjectModel('solutions') public model: Model<Solution>,
     private assignmentService: AssignmentService,
     private evaluationService: EvaluationService,
   ) {
