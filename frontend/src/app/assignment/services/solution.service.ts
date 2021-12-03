@@ -1,5 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+import {Params} from '@angular/router';
 import {forkJoin, Observable, of} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
 import {environment} from '../../../environments/environment';
@@ -162,11 +163,12 @@ export class SolutionService {
     return this.http.get<Solution>(`${environment.assignmentsApiUrl}/assignments/${assignmentID}/solutions/${id}`, {headers});
   }
 
-  getAll(assignment: Assignment | string): Observable<Solution[]> {
-    const assignmentID = asID(assignment);
+  getAll(assignment: string, search?: string): Observable<Solution[]> {
     const headers = {};
-    this.addAssignmentToken(headers, assignmentID);
-    return this.http.get<Solution[]>(`${environment.assignmentsApiUrl}/assignments/${assignmentID}/solutions`, {headers});
+    this.addAssignmentToken(headers, assignment);
+    const params: Params = {};
+    search && (params.q = search);
+    return this.http.get<Solution[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions`, {headers, params});
   }
 
   getOwn(): Observable<Solution[]> {

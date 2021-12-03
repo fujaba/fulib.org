@@ -1,13 +1,20 @@
 <div class="form-inline p-3 d-flex position-sticky bg-light bg-darkmode-dark" style="top: 3.5rem; z-index: 1">
-  <label for="searchInput" class="mr-sm-2">Search:</label>
-  <input type="text" class="form-control mr-sm-2 flex-grow-1" id="searchInput"
+  <label for="searchInput" class="mr-sm-2">
+    Search
+    <a [ngbPopover]="searchHelp" popoverTitle="Search Help" placement="bottom-left">
+      <i class="bi-question-circle" ngbTooltip="View Search Help"></i>
+    </a>
+  </label>
+  <input type="search" class="form-control mr-sm-2 flex-grow-1" id="searchInput"
          placeholder="Name, Student ID, E-Mail, GitHub Username, Assignee"
-         [(ngModel)]="searchText" (change)="updateSearch()"
+         [ngModel]="search$.value" (ngModelChange)="search$.next($event)"
          [ngbTypeahead]="typeahead" [resultFormatter]="formatTypeahead">
-  <button type="button" class="btn btn-outline-secondary" ngbTooltip="View Search Help"
-          [ngbPopover]="searchHelp" popoverTitle="Search Help" placement="bottom-right">
-    ?
-  </button>
+  <div style="width: 8rem">
+    {{ solutions.length }} Solutions
+    <div *ngIf="loading" class="spinner-border spinner-border-sm" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
   <ng-template #searchHelp>
     <ul>
       <li>Search terms are separated by spaces and case sensitive</li>
@@ -41,7 +48,7 @@
   </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let solution of filteredSolutions">
+  <tr *ngFor="let solution of solutions; trackBy: solutionId">
     <td>{{solution.author.name}}</td>
     <td>{{solution.author.studentId}}</td>
     <td><a href="mailto:{{solution.author.email}}">{{solution.author.email}}</a></td>

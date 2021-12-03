@@ -1,13 +1,14 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, TrackByFunction} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {combineLatest, forkJoin, Observable} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 import {ToastService} from '../../../../toast.service';
 import {Assignee} from '../../../model/assignee';
 import Assignment from '../../../model/assignment';
-import Solution from '../../../model/solution';
+import Solution, {AuthorInfo} from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
 import {SolutionService} from '../../../services/solution.service';
+import {TaskService} from '../../../services/task.service';
 
 @Component({
   selector: 'app-solution-table',
@@ -15,15 +16,24 @@ import {SolutionService} from '../../../services/solution.service';
   styleUrls: ['./solution-table.component.scss'],
 })
 export class SolutionTableComponent implements OnInit {
-  readonly searchableProperties: string[] = ['name', 'studentID', 'email', 'assignee', 'github'];
+  readonly searchableProperties: readonly (keyof AuthorInfo | 'assignee')[] = [
+    'name',
+    'studentId',
+    'email',
+    'github',
+    'assignee',
+  ];
 
   assignment?: Assignment;
   totalPoints?: number;
-  solutions?: Solution[];
+  solutions: Solution[] = [];
   assignees?: Record<string, Assignee>;
 
-  searchText = '';
-  filteredSolutions?: Solution[];
+  loading = false;
+
+  search$ = new BehaviorSubject<string>('');
+
+  solutionId: TrackByFunction<Solution> = (index, s) => s._id;
 
   constructor(
     private assignmentService: AssignmentService,
@@ -31,35 +41,47 @@ export class SolutionTableComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private toastService: ToastService,
+    private taskService: TaskService,
   ) {
   }
 
   ngOnInit(): void {
+    this.activatedRoute.params.pipe(
+      switchMap(({aid}) => this.assignmentService.get(aid)),
+    ).subscribe(assignment => {
+      this.assignment = assignment;
+      this.totalPoints = this.taskService.sumPositivePoints(assignment.tasks);
+    });
+
+    this.activatedRoute.params.pipe(
+      switchMap(({aid}) => this.solutionService.getAssignees(aid)),
+    ).subscribe(assignees => {
+      this.assignees = {};
+      for (let assignee of assignees) {
+        this.assignees[assignee.solution] = assignee;
+      }
+    });
+
     combineLatest([this.activatedRoute.params, this.activatedRoute.queryParams]).pipe(
-      map(([params, query]) => {
-        if (query.q) {
-          this.searchText = query.q;
-        }
-        return params.aid;
-      }),
+      tap(() => this.loading = true),
+      tap(([, {q}]) => this.search$.next(q)),
+      switchMap(([{aid}, {q}]) => this.solutionService.getAll(aid, q)),
+    ).subscribe(solutions => {
+      this.solutions = solutions;
+      this.loading = false;
+    });
+
+    this.search$.pipe(
+      debounceTime(200),
       distinctUntilChanged(),
-      switchMap(assignmentId => forkJoin([
-        this.assignmentService.get(assignmentId).pipe(tap(assignment => {
-          this.assignment = assignment;
-          this.totalPoints = assignment.tasks.reduce((a, c) => c.points > 0 ? a + c.points : a, 0);
-        })),
-        this.solutionService.getAll(assignmentId).pipe(tap(solutions => {
-          this.solutions = solutions;
-          this.updateSearch();
-        })),
-        this.solutionService.getAssignees(assignmentId).pipe(tap(assignees => {
-          this.assignees = {};
-          for (let assignee of assignees) {
-            this.assignees[assignee.solution] = assignee;
-          }
-        })),
-      ])),
-    ).subscribe();
+    ).subscribe(q => {
+      this.router.navigate([], {
+        relativeTo: this.activatedRoute,
+        queryParams: {q},
+        queryParamsHandling: 'merge',
+        replaceUrl: true,
+      });
+    });
   }
 
   setAssignee(solution: Solution, input: HTMLInputElement): void {
@@ -74,58 +96,6 @@ export class SolutionTableComponent implements OnInit {
       input.disabled = false;
       this.toastService.error('Assignee', 'Failed to assign', error);
     });
-  }
-
-  updateSearch(): void {
-    const searchText = this.searchText.trim();
-    this.router.navigate([], {
-      relativeTo: this.activatedRoute,
-      queryParams: {q: searchText},
-      queryParamsHandling: 'merge',
-      replaceUrl: true,
-    });
-
-    if (!searchText) {
-      this.filteredSolutions = this.solutions;
-      return;
-    }
-
-    const searchWords = searchText.split(/\s+/).map(s => s.replace(/\+/g, ' '));
-    this.filteredSolutions = this.solutions!.filter(solution => this.includeInSearch(solution, searchWords));
-  }
-
-  private includeInSearch(solution: Solution, searchWords: string[]): boolean {
-    for (const searchWord of searchWords) {
-      const colonIndex = searchWord.indexOf(':');
-      if (colonIndex > 0) {
-        const propertyName = searchWord.substring(0, colonIndex);
-        if (!this.searchableProperties.includes(propertyName)) {
-          continue;
-        }
-
-        const searchValue = searchWord.substring(colonIndex + 1);
-        const propertyValue = this.getProperty(solution, propertyName);
-        if (!propertyValue || propertyValue.indexOf(searchValue) < 0) {
-          return false;
-        }
-        continue;
-      }
-
-      if (!this.hasAnyPropertyWithValue(solution, searchWord)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  private hasAnyPropertyWithValue(solution: Solution, searchWord: string): boolean {
-    for (const propertyName of this.searchableProperties) {
-      const propertyValue = this.getProperty(solution, propertyName);
-      if (propertyValue && propertyValue.indexOf(searchWord) >= 0) {
-        return true;
-      }
-    }
-    return false;
   }
 
   private getProperty(solution: Solution, property: string): string | undefined {
