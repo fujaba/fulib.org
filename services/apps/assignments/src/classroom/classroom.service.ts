@@ -1,7 +1,6 @@
 import {HttpService} from '@nestjs/axios';
 import {Injectable} from '@nestjs/common';
-import {ElasticsearchService} from '@nestjs/elasticsearch';
-import {Method} from 'axios';
+import axios, {Method} from 'axios';
 import {firstValueFrom} from 'rxjs';
 import {Stream} from 'stream';
 import {extract} from 'tar-stream';
@@ -13,7 +12,6 @@ import {ReadSolutionDto} from '../solution/solution.dto';
 import {Solution, SolutionDocument} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {generateToken} from '../utils';
-
 import gunzip = require('gunzip-maybe');
 
 interface RepositoryInfo {
@@ -139,10 +137,17 @@ export class ClassroomService {
     };
   }
 
-  private async getMainCommitSHA(repo: RepositoryInfo, token: string): Promise<string> {
+  private async getMainCommitSHA(repo: RepositoryInfo, token: string): Promise<string | undefined> {
     const url = `https://api.github.com/repos/${repo.full_name}/branches/${repo.default_branch}`;
-    const branch = await this.github<{ commit: { sha: string }; }>('GET', url, token);
-    return branch.commit.sha;
+    try {
+      const branch = await this.github<{ commit: { sha: string }; }>('GET', url, token);
+      return branch.commit.sha;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        return undefined;
+      }
+      throw error;
+    }
   }
 
   async getGithubToken(auth: string): Promise<string> {
