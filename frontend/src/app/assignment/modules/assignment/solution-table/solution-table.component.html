@@ -41,7 +41,7 @@
   </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let solution of filteredSolutions">
+  <tr *ngFor="let solution of solutions; trackBy: solutionId">
     <td>{{solution.author.name}}</td>
     <td>{{solution.author.studentId}}</td>
     <td><a href="mailto:{{solution.author.email}}">{{solution.author.email}}</a></td>
