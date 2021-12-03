@@ -9,6 +9,12 @@
          placeholder="Name, Student ID, E-Mail, GitHub Username, Assignee"
          [ngModel]="search$.value" (ngModelChange)="search$.next($event)"
          [ngbTypeahead]="typeahead" [resultFormatter]="formatTypeahead">
+  <div style="width: 8rem">
+    {{ solutions.length }} Solutions
+    <div *ngIf="loading" class="spinner-border spinner-border-sm" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
   <ng-template #searchHelp>
     <ul>
       <li>Search terms are separated by spaces and case sensitive</li>

@@ -26,8 +26,10 @@ export class SolutionTableComponent implements OnInit {
 
   assignment?: Assignment;
   totalPoints?: number;
-  solutions?: Solution[];
+  solutions: Solution[] = [];
   assignees?: Record<string, Assignee>;
+
+  loading = false;
 
   search$ = new BehaviorSubject<string>('');
 
@@ -61,10 +63,12 @@ export class SolutionTableComponent implements OnInit {
     });
 
     combineLatest([this.activatedRoute.params, this.activatedRoute.queryParams]).pipe(
+      tap(() => this.loading = true),
       tap(([, {q}]) => this.search$.next(q)),
       switchMap(([{aid}, {q}]) => this.solutionService.getAll(aid, q)),
     ).subscribe(solutions => {
       this.solutions = solutions;
+      this.loading = false;
     });
 
     this.search$.pipe(
