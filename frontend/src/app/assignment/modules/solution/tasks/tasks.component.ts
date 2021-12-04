@@ -61,7 +61,7 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
     this.subscription = this.route.params.pipe(
       switchMap(({aid, sid}) => this.solutionService.streamEvaluations(aid, sid)),
     ).subscribe(({event, evaluation}) => {
-      if (!this.assignment || !this.points || !this.evaluations) {
+      if (!this.assignment || !this.evaluations) {
         return;
       }
 
@@ -69,7 +69,7 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
       const newEvaluation = event === 'deleted' ? undefined : evaluation;
       const oldEvaluation = this.evaluations[task];
       this.evaluations[task] = newEvaluation!;
-      if (newEvaluation?.points === oldEvaluation?.points) {
+      if (!this.points || newEvaluation?.points === oldEvaluation?.points) {
         return;
       }
 
