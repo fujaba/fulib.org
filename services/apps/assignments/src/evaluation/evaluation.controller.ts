@@ -3,7 +3,7 @@ import {NotFound} from '@app/not-found';
 import {Body, Controller, Delete, Get, MessageEvent, Param, Patch, Post, Query, Sse} from '@nestjs/common';
 import {ApiCreatedResponse, ApiOkResponse, ApiQuery, ApiTags} from '@nestjs/swagger';
 import {FilterQuery} from 'mongoose';
-import {Observable} from 'rxjs';
+import {interval, mapTo, merge, Observable} from 'rxjs';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {SolutionAuth} from '../solution/solution-auth.decorator';
 import {CreateEvaluationDto, UpdateEvaluationDto} from './evaluation.dto';
@@ -85,7 +85,10 @@ export class EvaluationController {
     @Param('assignment') assignment: string,
     @Param('solution') solution: string,
   ): Observable<MessageEvent> {
-    return this.evaluationService.stream(assignment, solution);
+    return merge(
+      this.evaluationService.stream(assignment, solution),
+      interval(15000).pipe(mapTo({data: ''})),
+    );
   }
 
   @Get('solutions/:solution/evaluations/:id')

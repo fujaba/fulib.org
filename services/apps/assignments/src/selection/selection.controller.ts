@@ -1,6 +1,6 @@
 import {Body, Controller, MessageEvent, Param, Post, Query, Sse} from '@nestjs/common';
 import {ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
-import {map, Observable} from 'rxjs';
+import {interval, map, mapTo, merge, Observable} from 'rxjs';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {CreateSelectionDto, SelectionDto} from './selection.dto';
 import {SelectionService} from './selection.service';
@@ -34,8 +34,9 @@ export class SelectionController {
     @Param('solution') solution: string,
     @Query('author') author?: string,
   ): Observable<MessageEvent> {
-    return this.selectionService.stream(assignment, solution, author).pipe(
-      map(selection => ({data: selection})),
+    return merge(
+      this.selectionService.stream(assignment, solution, author).pipe(map(data => ({data}))),
+      interval(15000).pipe(mapTo({data: ''})),
     );
   }
 }
