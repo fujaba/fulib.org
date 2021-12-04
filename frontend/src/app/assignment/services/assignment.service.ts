@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 
 import {saveAs} from 'file-saver';
 import {forkJoin, Observable, of} from 'rxjs';
-import {map, switchMap, tap} from 'rxjs/operators';
+import {catchError, map, switchMap, take, tap} from 'rxjs/operators';
 
 import {environment} from '../../../environments/environment';
 import {LintService} from '../../shared/lint.service';
@@ -101,13 +101,16 @@ export class AssignmentService {
 
   getOwn(): Observable<Assignment[]> {
     return this.users.current$.pipe(
-      switchMap(user => {
-        if (user && user.id) {
-          return this.getByUserId(user.id);
-        } else {
-          return forkJoin(this.getOwnIds().map(id => this.get(id)));
-        }
-      }),
+      take(1),
+      switchMap(user => user && user.id ? this.getByUserId(user.id) : this.getOwnLocal()),
+    );
+  }
+
+  private getOwnLocal(): Observable<Assignment[]> {
+    return forkJoin(this.getOwnIds().map(id => this.get(id).pipe(
+      catchError(() => of(undefined)),
+    ))).pipe(
+      map(assignments => assignments.filter((a): a is Assignment => !!a)),
     );
   }
 
