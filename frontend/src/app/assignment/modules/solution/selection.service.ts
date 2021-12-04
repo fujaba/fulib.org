@@ -1,7 +1,8 @@
-import {Injectable, NgZone} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {environment} from '../../../../environments/environment';
 import {Snippet} from '../../model/evaluation';
+import {AssignmentService} from '../../services/assignment.service';
 
 interface SelectionDto {
   assignment: string;
@@ -15,16 +16,17 @@ interface SelectionDto {
 })
 export class SelectionService {
   constructor(
-    private zone: NgZone,
+    private assignmentService: AssignmentService,
   ) {
   }
 
   stream(assignment: string, solution: string): Observable<SelectionDto> {
+    const token = this.assignmentService.getToken(assignment);
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/selections?token=${token}`;
     return new Observable<SelectionDto>(observer => {
-      let url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/selections`;
       const eventSource = new EventSource(url);
-      eventSource.onmessage = x => this.zone.run(() => observer.next(JSON.parse(x.data)));
-      eventSource.onerror = x => this.zone.run(() => observer.error(x));
+      eventSource.addEventListener('message', event => observer.next(JSON.parse(event.data)));
+      eventSource.addEventListener('error', error => observer.error(error));
       return () => eventSource.close();
     });
   }
