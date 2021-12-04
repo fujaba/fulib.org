@@ -27,7 +27,7 @@ export class SelectionController {
   }
 
   @Sse()
-  // @AssignmentAuth({forbiddenResponse}) // FIXME not possible with EventSource...
+  @AssignmentAuth({forbiddenResponse})
   @ApiOkResponse({type: SelectionDto})
   stream(
     @Param('assignment') assignment: string,
