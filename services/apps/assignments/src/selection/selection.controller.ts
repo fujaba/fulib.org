@@ -1,4 +1,4 @@
-import {Body, Controller, MessageEvent, Param, Post, Query, Sse} from '@nestjs/common';
+import {Body, Controller, Get, MessageEvent, Param, Post, Query, Sse} from '@nestjs/common';
 import {ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {interval, map, mapTo, merge, Observable} from 'rxjs';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
@@ -26,7 +26,18 @@ export class SelectionController {
     return this.selectionService.create(assignment, solution, dto);
   }
 
-  @Sse()
+  @Get()
+  @AssignmentAuth({forbiddenResponse})
+  @ApiCreatedResponse({type: SelectionDto})
+  findAll(
+    @Param('assignment') assignment: string,
+    @Param('solution') solution: string,
+    @Query('author') author?: string,
+  ): SelectionDto[] {
+    return this.selectionService.findAll(assignment, solution, author);
+  }
+
+  @Sse('events')
   @AssignmentAuth({forbiddenResponse})
   @ApiOkResponse({type: SelectionDto})
   stream(
