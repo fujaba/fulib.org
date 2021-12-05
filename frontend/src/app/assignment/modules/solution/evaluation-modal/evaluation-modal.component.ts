@@ -1,7 +1,7 @@
 import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {concat, from, merge, Observable, of, Subject, Subscription} from 'rxjs';
-import {concatMap, debounceTime, distinctUntilChanged, map, mapTo, switchMap, tap} from 'rxjs/operators';
+import {concat, from, merge, Observable, of, OperatorFunction, Subject, Subscription} from 'rxjs';
+import {concatMap, debounceTime, distinctUntilChanged, filter, map, mapTo, switchMap, tap} from 'rxjs/operators';
 import {ModalComponent} from '../../../../shared/modal/modal.component';
 import {ToastService} from '../../../../toast.service';
 import {UserService} from '../../../../user/user.service';
@@ -51,10 +51,32 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
   ).pipe(
     distinctUntilChanged(),
     map(searchInput => {
-      const otherEvaluations = this.otherEvaluations.filter(e => e.remark.includes(searchInput));
+      const otherEvaluations = this.otherEvaluations.filter(e => e.remark && e.remark.includes(searchInput));
       return [...new Set(otherEvaluations.map(e => e.remark))].sort();
     }),
   );
+
+  commentFocus$ = new Subject<unknown>();
+
+  commentTypeahead(id: unknown): OperatorFunction<string, string[]> {
+    return (text$: Observable<string>): Observable<string[]> => merge(
+      this.commentFocus$.pipe(filter(x => x === id), mapTo('')),
+      text$.pipe(debounceTime(200)),
+    ).pipe(
+      distinctUntilChanged(),
+      map(searchInput => {
+        const set = new Set<string>();
+        for (let otherEvaluation of this.otherEvaluations) {
+          for (let snippet of otherEvaluation.snippets) {
+            if (snippet.comment && snippet.comment.includes(searchInput)) {
+              set.add(snippet.comment);
+            }
+          }
+        }
+        return [...set].sort();
+      }),
+    );
+  }
 
   constructor(
     private assignmentService: AssignmentService,
