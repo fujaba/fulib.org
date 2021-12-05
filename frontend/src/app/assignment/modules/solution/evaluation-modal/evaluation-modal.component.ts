@@ -24,7 +24,8 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
   selectionComment = '(fulibFeedback Selection)';
 
   task?: Task;
-  otherEvaluations: Evaluation[] = [];
+  remarks: string[] = [];
+  comments: string[] = [];
   evaluation?: Evaluation;
   dto: CreateEvaluationDto = {
     task: '',
@@ -50,10 +51,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     text$.pipe(debounceTime(200)),
   ).pipe(
     distinctUntilChanged(),
-    map(searchInput => {
-      const otherEvaluations = this.otherEvaluations.filter(e => e.remark && e.remark.includes(searchInput));
-      return [...new Set(otherEvaluations.map(e => e.remark))].sort();
-    }),
+    map(searchInput => this.remarks.filter(r => r.includes(searchInput))),
   );
 
   commentFocus$ = new Subject<unknown>();
@@ -64,17 +62,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       text$.pipe(debounceTime(200)),
     ).pipe(
       distinctUntilChanged(),
-      map(searchInput => {
-        const set = new Set<string>();
-        for (let otherEvaluation of this.otherEvaluations) {
-          for (let snippet of otherEvaluation.snippets) {
-            if (snippet.comment && snippet.comment.includes(searchInput)) {
-              set.add(snippet.comment);
-            }
-          }
-        }
-        return [...set].sort();
-      }),
+      map(searchInput => this.comments.filter(c => c.includes(searchInput))),
     );
   }
 
@@ -106,10 +94,8 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     });
 
     this.route.params.pipe(
-      switchMap(({aid, sid, task}) => this.solutionService.getEvaluations(aid, undefined, task).pipe(
-        tap(evaluations => this.otherEvaluations = evaluations),
-        map(evaluations => evaluations.find(e => e.solution === sid)),
-      )),
+      switchMap(({aid, sid, task}) => this.solutionService.getEvaluations(aid, sid, task)),
+      map(([evaluation]) => evaluation),
       tap(evaluation => {
         this.evaluation = evaluation;
         if (evaluation) {
@@ -126,6 +112,19 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       switchMap(originEvaluation => originEvaluation ? this.solutionService.get(originEvaluation.assignment, originEvaluation.solution) : of(undefined)),
       tap(originSolution => this.originSolution = originSolution),
     ).subscribe();
+
+    this.route.params.pipe(
+      switchMap(({aid, task}) => this.solutionService.getEvaluations(aid, undefined, task)),
+    ).subscribe(evaluations => {
+      this.remarks = [...new Set(evaluations.map(e => e.remark).filter(x => x))].sort();
+      const comments = new Set<string>();
+      for (const {snippets} of evaluations) {
+        for (const {comment} of snippets) {
+          comment && comments.add(comment);
+        }
+      }
+      this.comments = [...comments].sort();
+    });
 
     this.userSubscription = this.users.current$.subscribe(user => {
       if (user) {
