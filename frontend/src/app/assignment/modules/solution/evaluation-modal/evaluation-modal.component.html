@@ -30,8 +30,12 @@
                   <label class="mr-2" for="snippet-{{index}}">
                     Comment:
                   </label>
-                  <input type="text" class="form-control flex-grow-1 mr-2" id="snippet-{{index}}"
-                         [(ngModel)]="snippet.comment">
+                  <input
+                    type="text" class="form-control flex-grow-1 mr-2" id="snippet-{{index}}"
+                    [ngbTypeahead]="commentTypeahead(index)"
+                    (click)="commentFocus$.next((index))"
+                    [(ngModel)]="snippet.comment"
+                  >
                   <button *ngIf="snippet.comment === selectionComment"
                           type="button" class="btn btn-outline-success mr-2" ngbTooltip="Add Selection Snippet"
                           (click)="snippet.comment = ''"
@@ -74,7 +78,14 @@
           </div>
           <div class="form-group">
             <label for="remarkInput">Remark</label>
-            <input type="text" class="form-control" id="remarkInput" ngbAutofocus [(ngModel)]="dto.remark">
+            <input
+              type="text" class="form-control" id="remarkInput"
+              ngbAutofocus
+              [ngbTypeahead]="remarkTypeahead"
+              (focus)="remarkFocus$.next('')"
+              (click)="remarkFocus$.next('')"
+              [(ngModel)]="dto.remark"
+            >
           </div>
           <div class="form-group">
             <label for="nameInput">Name</label>

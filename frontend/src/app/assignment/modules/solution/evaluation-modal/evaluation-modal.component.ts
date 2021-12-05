@@ -1,7 +1,7 @@
 import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {concat, from, of, Subscription} from 'rxjs';
-import {concatMap, map, switchMap, tap} from 'rxjs/operators';
+import {concat, from, merge, Observable, of, OperatorFunction, Subject, Subscription} from 'rxjs';
+import {concatMap, debounceTime, distinctUntilChanged, filter, map, mapTo, switchMap, tap} from 'rxjs/operators';
 import {ModalComponent} from '../../../../shared/modal/modal.component';
 import {ToastService} from '../../../../toast.service';
 import {UserService} from '../../../../user/user.service';
@@ -24,6 +24,8 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
   selectionComment = '(fulibFeedback Selection)';
 
   task?: Task;
+  remarks: string[] = [];
+  comments: string[] = [];
   evaluation?: Evaluation;
   dto: CreateEvaluationDto = {
     task: '',
@@ -41,6 +43,28 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
   originSolution?: Solution;
 
   private userSubscription: Subscription;
+
+  remarkFocus$ = new Subject<string>();
+
+  remarkTypeahead = (text$: Observable<string>): Observable<string[]> => merge(
+    this.remarkFocus$,
+    text$.pipe(debounceTime(200)),
+  ).pipe(
+    distinctUntilChanged(),
+    map(searchInput => this.remarks.filter(r => r.includes(searchInput))),
+  );
+
+  commentFocus$ = new Subject<unknown>();
+
+  commentTypeahead(id: unknown): OperatorFunction<string, string[]> {
+    return (text$: Observable<string>): Observable<string[]> => merge(
+      this.commentFocus$.pipe(filter(x => x === id), mapTo('')),
+      text$.pipe(debounceTime(200)),
+    ).pipe(
+      distinctUntilChanged(),
+      map(searchInput => this.comments.filter(c => c.includes(searchInput))),
+    );
+  }
 
   constructor(
     private assignmentService: AssignmentService,
@@ -88,6 +112,19 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       switchMap(originEvaluation => originEvaluation ? this.solutionService.get(originEvaluation.assignment, originEvaluation.solution) : of(undefined)),
       tap(originSolution => this.originSolution = originSolution),
     ).subscribe();
+
+    this.route.params.pipe(
+      switchMap(({aid, task}) => this.solutionService.getEvaluations(aid, undefined, task)),
+    ).subscribe(evaluations => {
+      this.remarks = [...new Set(evaluations.map(e => e.remark).filter(x => x))].sort();
+      const comments = new Set<string>();
+      for (const {snippets} of evaluations) {
+        for (const {comment} of snippets) {
+          comment && comments.add(comment);
+        }
+      }
+      this.comments = [...comments].sort();
+    });
 
     this.userSubscription = this.users.current$.subscribe(user => {
       if (user) {
