@@ -24,16 +24,16 @@ import {SolutionTasksComponent} from './tasks/tasks.component';
     SolutionShareComponent,
     SolutionTasksComponent,
   ],
-    imports: [
-        CommonModule,
-        SharedModule,
-        FormsModule,
-        NgbTooltipModule,
-        ClipboardModule,
-        SolutionRoutingModule,
-        AssignmentSharedModule,
-        NgbTypeaheadModule,
-    ],
+  imports: [
+    CommonModule,
+    SharedModule,
+    FormsModule,
+    NgbTooltipModule,
+    ClipboardModule,
+    SolutionRoutingModule,
+    AssignmentSharedModule,
+    NgbTypeaheadModule,
+  ],
 })
 export class SolutionModule {
 }

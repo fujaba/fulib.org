@@ -106,7 +106,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       }),
       switchMap(evaluation => {
         const origin = evaluation?.codeSearch?.origin;
-        return origin ? this.solutionService.getEvaluation(evaluation!.assignment, undefined, origin) : of(undefined);
+        return origin ? this.solutionService.getEvaluation(evaluation.assignment, undefined, origin) : of(undefined);
       }),
       tap(originEvaluation => this.originEvaluation = originEvaluation),
       switchMap(originEvaluation => originEvaluation ? this.solutionService.get(originEvaluation.assignment, originEvaluation.solution) : of(undefined)),
