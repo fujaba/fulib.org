@@ -1,7 +1,7 @@
 import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {concat, from, merge, Observable, of, OperatorFunction, Subject, Subscription} from 'rxjs';
-import {concatMap, debounceTime, distinctUntilChanged, filter, map, mapTo, switchMap, tap} from 'rxjs/operators';
+import {concat, from, merge, Observable, of, Subject, Subscription} from 'rxjs';
+import {concatMap, debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 import {ModalComponent} from '../../../../shared/modal/modal.component';
 import {ToastService} from '../../../../toast.service';
 import {UserService} from '../../../../user/user.service';
@@ -13,6 +13,8 @@ import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
 import {SelectionService} from '../selection.service';
 
+export const selectionComment = '(fulibFeedback Selection)';
+
 @Component({
   selector: 'app-evaluation-modal',
   templateUrl: './evaluation-modal.component.html',
@@ -21,7 +23,7 @@ import {SelectionService} from '../selection.service';
 export class EvaluationModalComponent implements OnInit, OnDestroy {
   @ViewChild('modal', {static: true}) modal: ModalComponent;
 
-  selectionComment = '(fulibFeedback Selection)';
+  readonly selectionComment = selectionComment;
 
   task?: Task;
   remarks: string[] = [];
@@ -53,18 +55,6 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     distinctUntilChanged(),
     map(searchInput => this.remarks.filter(r => r.includes(searchInput))),
   );
-
-  commentFocus$ = new Subject<unknown>();
-
-  commentTypeahead(id: unknown): OperatorFunction<string, string[]> {
-    return (text$: Observable<string>): Observable<string[]> => merge(
-      this.commentFocus$.pipe(filter(x => x === id), mapTo('')),
-      text$.pipe(debounceTime(200)),
-    ).pipe(
-      distinctUntilChanged(),
-      map(searchInput => this.comments.filter(c => c.includes(searchInput))),
-    );
-  }
 
   constructor(
     private assignmentService: AssignmentService,

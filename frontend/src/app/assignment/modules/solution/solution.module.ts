@@ -13,6 +13,7 @@ import {SolutionShareComponent} from './share/share.component';
 import {SolutionRoutingModule} from './solution-routing.module';
 import {SolutionComponent} from './solution/solution.component';
 import {SolutionTasksComponent} from './tasks/tasks.component';
+import { EditSnippetComponent } from './edit-snippet/edit-snippet.component';
 
 
 @NgModule({
@@ -23,6 +24,7 @@ import {SolutionTasksComponent} from './tasks/tasks.component';
     SolutionDetailsComponent,
     SolutionShareComponent,
     SolutionTasksComponent,
+    EditSnippetComponent,
   ],
   imports: [
     CommonModule,
