@@ -1,7 +1,7 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
+import {NgbTooltipModule, NgbTypeaheadModule} from '@ng-bootstrap/ng-bootstrap';
 import {ClipboardModule} from 'ngx-clipboard';
 import {SharedModule} from '../../../shared/shared.module';
 import {AssignmentSharedModule} from '../shared/shared.module';
@@ -24,15 +24,16 @@ import {SolutionTasksComponent} from './tasks/tasks.component';
     SolutionShareComponent,
     SolutionTasksComponent,
   ],
-  imports: [
-    CommonModule,
-    SharedModule,
-    FormsModule,
-    NgbTooltipModule,
-    ClipboardModule,
-    SolutionRoutingModule,
-    AssignmentSharedModule,
-  ],
+    imports: [
+        CommonModule,
+        SharedModule,
+        FormsModule,
+        NgbTooltipModule,
+        ClipboardModule,
+        SolutionRoutingModule,
+        AssignmentSharedModule,
+        NgbTypeaheadModule,
+    ],
 })
 export class SolutionModule {
 }

@@ -1,7 +1,7 @@
 import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {concat, from, of, Subscription} from 'rxjs';
-import {concatMap, map, switchMap, tap} from 'rxjs/operators';
+import {concat, from, merge, Observable, of, Subject, Subscription} from 'rxjs';
+import {concatMap, debounceTime, distinctUntilChanged, map, mapTo, switchMap, tap} from 'rxjs/operators';
 import {ModalComponent} from '../../../../shared/modal/modal.component';
 import {ToastService} from '../../../../toast.service';
 import {UserService} from '../../../../user/user.service';
@@ -24,6 +24,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
   selectionComment = '(fulibFeedback Selection)';
 
   task?: Task;
+  otherEvaluations: Evaluation[] = [];
   evaluation?: Evaluation;
   dto: CreateEvaluationDto = {
     task: '',
@@ -41,6 +42,19 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
   originSolution?: Solution;
 
   private userSubscription: Subscription;
+
+  remarkFocus$ = new Subject<string>();
+
+  remarkTypeahead = (text$: Observable<string>): Observable<string[]> => merge(
+    this.remarkFocus$,
+    text$.pipe(debounceTime(200)),
+  ).pipe(
+    distinctUntilChanged(),
+    map(searchInput => {
+      const otherEvaluations = this.otherEvaluations.filter(e => e.remark.includes(searchInput));
+      return [...new Set(otherEvaluations.map(e => e.remark))].sort();
+    }),
+  );
 
   constructor(
     private assignmentService: AssignmentService,
@@ -70,8 +84,10 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     });
 
     this.route.params.pipe(
-      switchMap(({aid, sid, task}) => this.solutionService.getEvaluations(aid, sid, task)),
-      map(([evaluation]) => evaluation),
+      switchMap(({aid, sid, task}) => this.solutionService.getEvaluations(aid, undefined, task).pipe(
+        tap(evaluations => this.otherEvaluations = evaluations),
+        map(evaluations => evaluations.find(e => e.solution === sid)),
+      )),
       tap(evaluation => {
         this.evaluation = evaluation;
         if (evaluation) {
@@ -82,7 +98,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       }),
       switchMap(evaluation => {
         const origin = evaluation?.codeSearch?.origin;
-        return origin ? this.solutionService.getEvaluation(evaluation.assignment, undefined, origin) : of(undefined);
+        return origin ? this.solutionService.getEvaluation(evaluation!.assignment, undefined, origin) : of(undefined);
       }),
       tap(originEvaluation => this.originEvaluation = originEvaluation),
       switchMap(originEvaluation => originEvaluation ? this.solutionService.get(originEvaluation.assignment, originEvaluation.solution) : of(undefined)),
