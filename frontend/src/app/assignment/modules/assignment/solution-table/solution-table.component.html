@@ -15,6 +15,29 @@
       <span class="sr-only">Loading...</span>
     </div>
   </div>
+  <div ngbDropdown class="d-inline-block">
+    <button class="btn btn-outline-secondary" id="optionsDropdown" ngbDropdownToggle>
+      <i class="bi-gear"></i>
+      <span class="sr-only">Options</span>
+    </button>
+    <div ngbDropdownMenu aria-labelledby="optionsDropdown">
+      <ng-container *ngFor="let option of optionItems; let first=first">
+        <div *ngIf="!first" class="dropdown-divider"></div>
+        <h6 class="dropdown-header">
+          {{ option.title }}
+        </h6>
+        <button
+          *ngFor="let item of option.options"
+          ngbDropdownItem
+          role="check"
+          (click)="setOption(option.key, item[0])"
+          [class.dropdown-item-checked]="options[option.key] === item[0]"
+        >
+          {{ item[1] }}
+        </button>
+      </ng-container>
+    </div>
+  </div>
   <ng-template #searchHelp>
     <ul>
       <li>Search terms are separated by spaces and case sensitive</li>
@@ -105,8 +128,8 @@
         </a>
         <a
           class="btn btn-secondary"
-          ngbTooltip="Clone in VSCode"
-          [href]="'vscode://vscode.git/clone?url=https%3A%2F%2Fgithub.com%2F' + assignment?.classroom?.org + '%2F' + assignment?.classroom?.prefix + '-' + solution.author.github | safeUrl"
+          ngbTooltip="Clone in IDE"
+          [href]="options.ide + '://vscode.git/clone?url=' + clonePrefix[options.clone] + assignment?.classroom?.org + '%2F' + assignment?.classroom?.prefix + '-' + solution.author.github + cloneSuffix[options.clone] | safeUrl"
         >
           <i class="bi-code-square"></i>
         </a>
