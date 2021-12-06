@@ -86,6 +86,7 @@
       <a
         class="btn btn-primary mr-1"
         routerLink="/assignments/{{assignment?._id}}/solutions/{{solution._id}}"
+        queryParamsHandling="merge"
         ngbTooltip="View Solution"
       >
         <i class="bi-eye-fill"></i>
