@@ -154,12 +154,6 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     }
 
     switch (event.key) {
-      case '+':
-        this.setPoints(this.max);
-        return;
-      case '-':
-        this.setPoints(this.min);
-        return;
       case '0':
         this.setPoints(0);
         return;
