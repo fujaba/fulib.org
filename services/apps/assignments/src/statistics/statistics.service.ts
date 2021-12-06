@@ -28,20 +28,27 @@ export class StatisticsService {
     const evaluations = await this.evaluationService.findAll({assignment});
 
     const evaluatedSolutions = new Set<string>();
-    const codeSearchSolutions = new Set<string>();
     const tasks = new Map<string, TaskStatistics>();
     let codeSearchEvaluations = 0;
+    let editedCodeSearchEvaluations = 0;
+    let manualEvaluations = 0;
     for await (const {
       codeSearch,
       points,
       solution,
       task,
-    } of this.evaluationService.model.find({assignment}).select('solution task points codeSearch')) {
+      author,
+    } of this.evaluationService.model.find({assignment}).select('solution task points codeSearch author')) {
       evaluatedSolutions.add(solution);
 
       if (codeSearch?.origin) {
-        codeSearchEvaluations++;
-        codeSearchSolutions.add(solution);
+        if (author === 'Code Search') {
+          codeSearchEvaluations++;
+        } else {
+          editedCodeSearchEvaluations++;
+        }
+      } else {
+        manualEvaluations++;
       }
 
       let item = tasks.get(task);
@@ -60,18 +67,15 @@ export class StatisticsService {
 
     return {
       solutions: {
-        evaluated: {
-          codeSearch: codeSearchSolutions.size,
-          manual: evaluatedSolutions.size - codeSearchSolutions.size,
-          total: evaluatedSolutions.size,
-        },
+        evaluated: evaluatedSolutions.size,
         graded: gradedSolutions,
         total: totalSolutions,
         pointsAvg: totalPoints / gradedSolutions,
       },
       evaluations: {
         codeSearch: codeSearchEvaluations,
-        manual: evaluations.length - codeSearchEvaluations,
+        editedCodeSearch: editedCodeSearchEvaluations,
+        manual: manualEvaluations,
         total: evaluations.length,
       },
       tasks: Array.from(tasks.values()).sort((a, b) => b.totalPoints - a.totalPoints),
