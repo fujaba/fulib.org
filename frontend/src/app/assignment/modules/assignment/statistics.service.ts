@@ -6,11 +6,7 @@ import Task from '../../model/task';
 
 
 interface SolutionStatistics {
-  evaluated: {
-    codeSearch: number;
-    manual: number;
-    total: number;
-  };
+  evaluated: number;
   graded: number;
   pointsAvg: number;
   total: number;
@@ -18,6 +14,7 @@ interface SolutionStatistics {
 
 interface EvaluationStatistics {
   codeSearch: number;
+  editedCodeSearch: number;
   manual: number;
   total: number;
 }
