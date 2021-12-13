@@ -2,6 +2,8 @@ import {Component, OnInit, TrackByFunction} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
+import { PrivacyService } from 'src/app/privacy.service';
+import {StorageService} from '../../../../storage.service';
 import {ToastService} from '../../../../toast.service';
 import {Assignee} from '../../../model/assignee';
 import Assignment from '../../../model/assignment';
@@ -31,6 +33,27 @@ export class SolutionTableComponent implements OnInit {
 
   loading = false;
 
+  readonly optionItems = [
+    {
+      key: 'ide',
+      title: 'IDE',
+      options: [['vscode', 'VSCode'], ['oss-code', 'OSS Code'], ['vscodium', 'VSCodium']],
+    },
+    {
+      key: 'clone',
+      title: 'Git Clone Method',
+      options: [['https', 'HTTPS'], ['ssh', 'SSH']],
+    },
+  ];
+
+  options = {
+    ide: 'vscode',
+    clone: 'https',
+  };
+
+  readonly clonePrefix = {https: 'https://github.com/', ssh: 'git@github.com:'} as const;
+  readonly cloneSuffix = {https: '', ssh: '.git'} as const;
+
   search$ = new BehaviorSubject<string>('');
 
   solutionId: TrackByFunction<Solution> = (index, s) => s._id;
@@ -38,6 +61,7 @@ export class SolutionTableComponent implements OnInit {
   constructor(
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
+    private storageService: StorageService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private toastService: ToastService,
@@ -46,6 +70,8 @@ export class SolutionTableComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadOptions();
+
     this.activatedRoute.params.pipe(
       switchMap(({aid}) => this.assignmentService.get(aid)),
     ).subscribe(assignment => {
@@ -82,6 +108,18 @@ export class SolutionTableComponent implements OnInit {
         replaceUrl: true,
       });
     });
+  }
+
+  loadOptions() {
+    const value = this.storageService.get('assignments/solutionOptions');
+    if (value) {
+      Object.assign(this.options, JSON.parse(value));
+    }
+  }
+
+  setOption(key: string, value: string) {
+    this.options[key] = value;
+    this.storageService.set('assignments/solutionOptions', JSON.stringify(this.options));
   }
 
   setAssignee(solution: Solution, input: HTMLInputElement): void {
