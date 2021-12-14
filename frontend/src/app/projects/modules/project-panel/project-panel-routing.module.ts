@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import {ProjectTreeComponent} from './project-tree/project-tree.component';
 
 const routes: Routes = [
-  {path: '', component: ProjectTreeComponent},
+  {path: '', component: ProjectTreeComponent, data: {title: 'Project Tree'}},
 ];
 
 @NgModule({

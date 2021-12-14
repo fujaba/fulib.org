@@ -6,6 +6,7 @@ const routes: Routes = [
   {
     path: '',
     component: SettingsComponent,
+    data: {title: 'Project Settings'},
     loadChildren: () => import('../settings-modals/settings-modals.module').then(m => m.SettingsModalsModule),
   },
 ];

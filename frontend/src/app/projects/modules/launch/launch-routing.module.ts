@@ -7,8 +7,9 @@ const routes: Route[] = [
   {
     path: '',
     component: LaunchPanelComponent,
+    data: {title: 'Launch'},
     children: [
-      {path: 'edit/:launchId', component: EditModalComponent},
+      {path: 'edit/:launchId', component: EditModalComponent, data: {title: 'Edit Launch Config'}},
     ],
   },
 ];
