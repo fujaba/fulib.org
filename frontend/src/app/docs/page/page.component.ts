@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {Title} from '@angular/platform-browser';
 import {ActivatedRoute} from '@angular/router';
 import {forkJoin} from 'rxjs';
 import {distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
@@ -18,6 +19,7 @@ export class PageComponent implements OnInit {
   constructor(
     public activatedRoute: ActivatedRoute,
     private docsService: DocsService,
+    private title: Title,
   ) {
   }
 
@@ -59,6 +61,7 @@ export class PageComponent implements OnInit {
           }
         }
       }
+      this.title.setTitle(`${this.page.title} - Docs - fulib.org`);
     });
   }
 }
