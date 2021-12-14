@@ -14,12 +14,12 @@ const routes: Routes = [
   {path: 'docs', loadChildren: () => import('./docs/docs.module').then(m => m.DocsModule)},
   {path: 'projects', loadChildren: () => import('./projects/projects.module').then(m => m.ProjectsModule)},
   {path: 'editor', redirectTo: 'scenarios'},
-  {path: '', pathMatch: 'full', component: HomeComponent},
-  {path: '**', component: PageNotFoundComponent},
-  {outlet: 'modal', path: 'feedback', component: FeedbackComponent},
-  {outlet: 'modal', path: 'privacy', component: PrivacyComponent},
-  {outlet: 'modal', path: 'changelog', component: ChangelogComponent},
-  {outlet: 'modal', path: 'about', component: AboutComponent},
+  {path: '', pathMatch: 'full', component: HomeComponent, data: {title: 'Home'}},
+  {path: '**', component: PageNotFoundComponent, data: {title: '404'}},
+  {outlet: 'modal', path: 'feedback', component: FeedbackComponent, data: {title: 'Feedback'}},
+  {outlet: 'modal', path: 'privacy', component: PrivacyComponent, data: {title: 'Privacy'}},
+  {outlet: 'modal', path: 'changelog', component: ChangelogComponent, data: {title: 'Changelog'}},
+  {outlet: 'modal', path: 'about', component: AboutComponent, data: {title: 'About'}},
 ];
 
 @NgModule({
