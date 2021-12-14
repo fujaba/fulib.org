@@ -10,6 +10,7 @@ const routes: Routes = [
   {
     path: '',
     component: ProjectListComponent,
+    data: {title: 'My Projects'},
     children: [
       {path: ':id', loadChildren: () => import('./modules/settings-modals/settings-modals.module').then(m => m.SettingsModalsModule)},
     ],
@@ -17,11 +18,12 @@ const routes: Routes = [
   {
     path: ':id',
     component: ProjectWorkspaceComponent,
+    data: {title: 'Project Workspace'},
     children: [
       {path: 'setup', loadChildren: () => import('./modules/setup/setup.module').then(m => m.SetupModule)},
-      {path: 'search', component: SearchEverywhereComponent},
-      {path: 'run', component: RunAnythingComponent},
-      {path: 'tutorial/:step', component: TutorialComponent},
+      {path: 'search', component: SearchEverywhereComponent, data: {title: 'Search Everywhere'}},
+      {path: 'run', component: RunAnythingComponent, data: {title: 'Run Anything'}},
+      {path: 'tutorial/:step', component: TutorialComponent, data: {title: 'Tutorial'}},
       {path: 'tutorial', redirectTo: 'tutorial/0'},
       {outlet: 'panel', path: 'project', loadChildren: () => import('./modules/project-panel/project-panel.module').then(m => m.ProjectPanelModule)},
       {outlet: 'panel', path: 'launch', loadChildren: () => import('./modules/launch/launch.module').then(m => m.LaunchModule)},

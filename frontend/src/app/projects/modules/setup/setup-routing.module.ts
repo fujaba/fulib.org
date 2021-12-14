@@ -5,6 +5,7 @@ import {SetupComponent} from './setup/setup.component';
 const routes: Routes = [
   {
     path: '',
+    data: {title: 'Setup Project'},
     component: SetupComponent,
   },
 ];
