@@ -21,10 +21,11 @@ const routes: Routes = [
   {
     path: '',
     component: AssignmentComponent,
+    data: {title: 'Assignment'},
     children: [
       ...assignmentChildRoutes,
-      {path: 'token', component: TokenModalComponent},
-      {path: 'submit/:sid', component: SubmitModalComponent},
+      {path: 'token', component: TokenModalComponent, data: {title: 'Authorization Required'}},
+      {path: 'submit/:sid', component: SubmitModalComponent, data: {title: 'Submit Feedback'}},
     ],
   },
 ];

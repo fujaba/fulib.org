@@ -36,6 +36,7 @@ const routes: Routes = [
   {
     path: '',
     component: EditAssignmentComponent,
+    data: {title: 'Edit Assignment'},
     children: [
       ...editAssignmentChildRoutes,
       {path: '', redirectTo: 'info'},

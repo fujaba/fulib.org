@@ -11,7 +11,7 @@ import {SolutionTasksComponent} from './tasks/tasks.component';
 export const solutionChildRoutes: Routes = [
   {
     path: 'tasks', component: SolutionTasksComponent, data: {title: 'Solution & Tasks'}, children: [
-      {path: ':task', component: EvaluationModalComponent},
+      {path: ':task', component: EvaluationModalComponent, data: {title: 'Evaluation'}},
     ],
   },
   {path: 'details', component: SolutionDetailsComponent, data: {title: 'Student Info'}},
@@ -23,9 +23,10 @@ const routes: Routes = [
   {
     path: '',
     component: SolutionComponent,
+    data: {title: 'Solution'},
     children: [
       ...solutionChildRoutes,
-      {path: 'token', component: TokenModalComponent},
+      {path: 'token', component: TokenModalComponent, data: {title: 'Authorization Required'}},
       {path: '', redirectTo: 'tasks'},
     ],
   },
