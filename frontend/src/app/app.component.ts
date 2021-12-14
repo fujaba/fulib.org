@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Title} from '@angular/platform-browser';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
-import {filter, map, mergeMap} from 'rxjs/operators';
+import {filter, map, switchMap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -21,11 +21,13 @@ export class AppComponent implements OnInit {
       filter(event => event instanceof NavigationEnd),
       map(() => {
         let route = this.route;
-        while (route.firstChild) route = route.firstChild;
+        let child: ActivatedRoute | undefined;
+        while (child = route.children.find(c => c.outlet === 'primary')) {
+          route = child;
+        }
         return route;
       }),
-      filter(route => route.outlet === 'primary'),
-      mergeMap(route => route.data),
+      switchMap(route => route.data),
     ).subscribe(data => {
       const title = data?.title ? `${data.title} - fulib.org` : 'fulib.org';
       this.title.setTitle(title);
