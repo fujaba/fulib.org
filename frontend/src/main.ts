@@ -28,6 +28,7 @@ import java from 'highlight.js/lib/languages/java';
 import groovy from 'highlight.js/lib/languages/groovy';
 import yaml from 'highlight.js/lib/languages/yaml';
 import bnf from 'highlight.js/lib/languages/bnf';
+import json from 'highlight.js/lib/languages/json';
 import {scenario} from './modes/scenario-highlightjs-mode';
 
 hljs.registerLanguage('java', java);
@@ -35,6 +36,7 @@ hljs.registerLanguage('groovy', groovy);
 hljs.registerLanguage('yaml', yaml);
 hljs.registerLanguage('bnf', bnf);
 hljs.registerLanguage('scenario', scenario);
+hljs.registerLanguage(json.name, json);
 
 if (environment.production) {
   enableProdMode();
