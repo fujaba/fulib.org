@@ -42,11 +42,10 @@ dependencies {
 
 	// --------------- Other Libraries ---------------
 
+	implementation slf4jDependency
+
 	// https://mvnrepository.com/artifact/commons-io/commons-io
 	implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
-
-	// https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
-	implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.32'
 
 	// https://mvnrepository.com/artifact/com.sparkjava/spark-core
 	implementation group: 'com.sparkjava', name: 'spark-core', version: '2.9.3'
@@ -62,6 +61,8 @@ dependencies {
 
 	// compile instead of testCompile because the web service uses it
 	implementation junitDependency
+
+	testImplementation slf4jDependency
 
 	// https://mvnrepository.com/artifact/org.mockito/mockito-core
 	testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.11.2'
@@ -96,6 +97,7 @@ processResources {
 	def fulibScenariosVersion = getDependencyVersion(config, 'org.fulib', 'fulibScenarios')
 	def fulibGradleVersion = getDependencyVersion(rootProject.buildscript.configurations.classpath, 'org.fulib', 'fulibGradle')
 	def fulibMockupsVersion = getDependencyVersion(config, 'org.fulib', 'fulibMockups')
+	def slf4jVersion = getDependencyVersion(config, 'org.slf4j', 'slf4j-simple')
 
 	from(rootProject.rootDir) {
 		include 'gradle/wrapper/**', 'gradlew', 'gradlew.bat'
@@ -116,6 +118,7 @@ processResources {
 			it = it.replace('$$fulibScenariosVersion$$', fulibScenariosVersion)
 			it = it.replace('$$fulibMockupsVersion$$', fulibMockupsVersion)
 			it = it.replace('$$fulibGradleVersion$$', fulibGradleVersion)
+			it = it.replace('$$slf4jVersion$$', slf4jVersion)
 			it
 		}
 	}

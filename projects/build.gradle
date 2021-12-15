@@ -30,8 +30,7 @@ repositories {
 dependencies {
 	// --------------- Other Libraries ---------------
 
-	// https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
-	implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.32'
+	implementation slf4jDependency
 
 	// https://mvnrepository.com/artifact/com.sparkjava/spark-core
 	implementation group: 'com.sparkjava', name: 'spark-core', version: '2.9.3'

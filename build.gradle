@@ -28,6 +28,9 @@ ext {
 
 	// https://mvnrepository.com/artifact/junit/junit
 	junitDependency = [ group: 'junit', name: 'junit', version: '4.13.2' ]
+
+	// https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
+	slf4jDependency = [ group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.32' ]
 }
 
 // --------------- Dependencies ---------------
@@ -40,15 +43,14 @@ repositories {
 dependencies {
 	fulibScenarios fulibDependency
 	fulibScenarios fulibScenariosDependency
+	fulibScenarios slf4jDependency
 
 	testImplementation fulibDependency
 	testImplementation fulibToolsDependency
 	testImplementation fulibTablesDependency
 	testImplementation fulibMockupsDependency
 	testImplementation junitDependency
-
-	// https://mvnrepository.com/artifact/org.slf4j/slf4j-nop
-	testImplementation group: 'org.slf4j', name: 'slf4j-nop', version: '1.7.30'
+	testImplementation slf4jDependency
 }
 
 // --------------- Test Scenarios ---------------
