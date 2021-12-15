@@ -1,5 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+import {firstValueFrom} from 'rxjs';
 import {environment} from '../../../../environments/environment';
 import Assignment from '../../model/assignment';
 import {Evaluation, Snippet} from '../../model/evaluation';
@@ -33,9 +34,9 @@ export class SubmitService {
 
   async getGitHubToken(): Promise<string | undefined> {
     try {
-      const data = await this.http.get(`${environment.auth.url}/realms/${environment.auth.realm}/broker/github/token`, {
+      const data = await firstValueFrom(this.http.get(`${environment.auth.url}/realms/${environment.auth.realm}/broker/github/token`, {
         responseType: 'text',
-      }).toPromise();
+      }));
       const parts = data.split('&');
       const paramName = 'access_token=';
       return parts.filter(s => s.startsWith(paramName))[0]?.substring(paramName.length);
@@ -46,28 +47,28 @@ export class SubmitService {
 
   async postIssueToGitHub(assignment: Assignment, solution: Solution, issue: IssueDto, githubToken: string): Promise<Issue> {
     const baseUrl = `https://api.github.com/repos/${assignment.classroom!.org}/${assignment.classroom!.prefix}-${solution.author.github}/issues`;
-    const issues = await this.http.get<Issue[]>(baseUrl, {
+    const issues = await firstValueFrom(this.http.get<Issue[]>(baseUrl, {
       params: {
         state: 'all',
       },
       headers: {
         Authorization: `Bearer ${githubToken}`,
       },
-    }).toPromise();
+    }));
 
     const existing = issues.find(i => i.body?.includes(assignment._id!));
     if (existing) {
-      return this.http.patch<Issue>(`${baseUrl}/${existing.number}`, issue, {
+      return firstValueFrom(this.http.patch<Issue>(`${baseUrl}/${existing.number}`, issue, {
         headers: {
           Authorization: `Bearer ${githubToken}`,
         },
-      }).toPromise();
+      }));
     } else {
-      return this.http.post<Issue>(baseUrl, issue, {
+      return firstValueFrom(this.http.post<Issue>(baseUrl, issue, {
         headers: {
           Authorization: `Bearer ${githubToken}`,
         },
-      }).toPromise();
+      }));
     }
   }
 
@@ -83,7 +84,7 @@ export class SubmitService {
   }
 
   private async renderTasks(assignment: Assignment, solution: Solution) {
-    const evaluations = await this.solutionService.getEvaluations(assignment._id!, solution._id!).toPromise();
+    const evaluations = await firstValueFrom(this.solutionService.getEvaluations(assignment._id!, solution._id!));
     const evaluationRecord: Record<string, Evaluation> = {};
     for (let evaluation of evaluations) {
       evaluationRecord[evaluation.task] = evaluation;

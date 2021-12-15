@@ -39,7 +39,7 @@ export class ModalComponent implements OnInit, OnDestroy {
 
     const handler = result => {
       if (result === DESTROY) {
-        this.modalClose.next();
+        this.modalClose.next(undefined);
       } else {
         this.router.navigate(this.back, this.backOptions);
         this.modalClose.next(result);

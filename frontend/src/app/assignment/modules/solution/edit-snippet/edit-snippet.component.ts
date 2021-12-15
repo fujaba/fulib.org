@@ -24,11 +24,10 @@ export class EditSnippetComponent {
     text$.pipe(debounceTime(200)),
   ).pipe(
     distinctUntilChanged(),
-    tap(console.log),
     map(searchInput => this.comments.filter(c => c.includes(searchInput))),
   );
 
   delete() {
-    this.deleted.next();
+    this.deleted.next(undefined);
   }
 }
