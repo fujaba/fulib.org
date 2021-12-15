@@ -37,7 +37,7 @@ export class SolutionTableComponent implements OnInit {
     {
       key: 'ide',
       title: 'IDE',
-      options: [['vscode', 'VSCode'], ['oss-code', 'OSS Code'], ['vscodium', 'VSCodium']],
+      options: [['vscode', 'VSCode'], ['code-oss', 'Code - OSS'], ['vscodium', 'VSCodium']],
     },
     {
       key: 'clone',
