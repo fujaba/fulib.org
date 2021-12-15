@@ -52,7 +52,6 @@ specifiers:
   keycloak-js: 12.0.3
   ng-bootstrap-darkmode: ^0.5.0
   ng-terminal: ^3.2.0
-  ng2-dragula: ^2.1.1
   ngx-clipboard: ^15.0.1
   ngx-drag-drop: ^2.0.0
   protractor: ~7.0.0
@@ -90,7 +89,6 @@ dependencies:
   keycloak-js: 12.0.3
   ng-bootstrap-darkmode: 0.5.0_2b1fb2fbf070599c5461481ecf7b17b6
   ng-terminal: 3.2.0_be730d170419aa14dd48f501ef09e6c5
-  ng2-dragula: 2.1.1_@angular+core@13.1.0+rxjs@6.6.7
   ngx-clipboard: 15.0.1_e6a4475a8a2df01b4408ef7c53f82f2d
   ngx-drag-drop: 2.0.0
   rxjs: 6.6.7
@@ -2175,10 +2173,6 @@ packages:
       '@types/d3-path': 2.0.1
     dev: false
 
-  /@types/dragula/2.1.36:
-    resolution: {integrity: sha512-K1GIMqdiviBIvUsLJPO1xkjpDFS308nU2l57zmV7LEO+znF3gtZGnWQ+c/ef78r6Ngb0cniQk8pnNkObeNlXQQ==}
-    dev: false
-
   /@types/eslint-scope/3.7.1:
     resolution: {integrity: sha512-SCFeogqiptms4Fg29WpOTk5nHIzfpKCemSN63ksBQYKTcXoJEmJagV+DhVmbapZzY4/5YaOV1nZwrsU79fFm1g==}
     dependencies:
@@ -2793,10 +2787,6 @@ packages:
     engines: {node: '>= 4.0.0'}
     dev: true
 
-  /atoa/1.0.0:
-    resolution: {integrity: sha1-DMDpGkgOc4+SPrwQNnZHF3mzSkk=}
-    dev: false
-
   /atob/2.1.2:
     resolution: {integrity: sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==}
     engines: {node: '>= 4.5.0'}
@@ -3376,13 +3366,6 @@ packages:
     engines: {node: '>= 0.6'}
     dev: true
 
-  /contra/1.9.4:
-    resolution: {integrity: sha1-9TveQtfltZhcrk2ZqNYQUm3o8o0=}
-    dependencies:
-      atoa: 1.0.0
-      ticky: 1.0.1
-    dev: false
-
   /convert-source-map/1.8.0:
     resolution: {integrity: sha512-+OQdjP49zViI/6i7nIJpA8rAl4sV/JdPfU9nZs3VqOwGIgizICvuN2ru6fMd+4llL0tar18UYJXfZ/TWtmhUjA==}
     dependencies:
@@ -3491,12 +3474,6 @@ packages:
       which: 2.0.2
     dev: true
 
-  /crossvent/1.5.5:
-    resolution: {integrity: sha1-rSCHjkkh6b5z2daXb4suzQ9xoLE=}
-    dependencies:
-      custom-event: 1.0.1
-    dev: false
-
   /css-blank-pseudo/0.1.4:
     resolution: {integrity: sha512-LHz35Hr83dnFeipc7oqFDmsjHdljj3TQtxGGiNWSOsTLIAubSm4TEz8qCaKFpk7idaQ1GfWscF4E6mgpBysA1w==}
     engines: {node: '>=6.0.0'}
@@ -3580,6 +3557,7 @@ packages:
 
   /custom-event/1.0.1:
     resolution: {integrity: sha1-XQKkaFCt8bSjF5RqOSj8y1v9BCU=}
+    dev: true
 
   /d3-array/2.12.1:
     resolution: {integrity: sha512-B0ErZK/66mHtEsR1TkPEEkwdy+WDesimkM5gpZr5Dsg54BiTA5RXtYW5qTLIAcekaS9xfZrzBLF/OAkB3Qn1YQ==}
@@ -3908,13 +3886,6 @@ packages:
       domelementtype: 2.2.0
       domhandler: 4.3.0
     dev: true
-
-  /dragula/3.7.3:
-    resolution: {integrity: sha512-/rRg4zRhcpf81TyDhaHLtXt6sEywdfpv1cRUMeFFy7DuypH2U0WUL0GTdyAQvXegviT4PJK4KuMmOaIDpICseQ==}
-    dependencies:
-      contra: 1.9.4
-      crossvent: 1.5.5
-    dev: false
 
   /ecc-jsbn/0.1.2:
     resolution: {integrity: sha1-OoOpBOVDUyh4dMVkt1SThoSamMk=}
@@ -6084,18 +6055,6 @@ packages:
       xterm-addon-fit: 0.5.0_xterm@4.15.0
     dev: false
 
-  /ng2-dragula/2.1.1_@angular+core@13.1.0+rxjs@6.6.7:
-    resolution: {integrity: sha512-PSo6N2Ja894KDogVLLBI0Hzpylikay7L1hWqp+qQmW+qsNsNT9J/6J2Qim9XwGzK4VQZjAwBJaJjgJ/TijRkLQ==}
-    peerDependencies:
-      '@angular/core': '>=6.0.0'
-      rxjs: '>=6.0.0'
-    dependencies:
-      '@angular/core': 13.1.0_rxjs@6.6.7+zone.js@0.11.4
-      '@types/dragula': 2.1.36
-      dragula: 3.7.3
-      rxjs: 6.6.7
-    dev: false
-
   /ngx-clipboard/15.0.1_e6a4475a8a2df01b4408ef7c53f82f2d:
     resolution: {integrity: sha512-Bx0MvAvcYmLL/6TxScltzvYlRKu7JOVnrstzI+r4yXMTWP/0nUiEZ83UzjYbjf8FRlSuXDWeEYGhw5SNh/swSg==}
     peerDependencies:
@@ -8016,10 +7975,6 @@ packages:
   /thunky/1.1.0:
     resolution: {integrity: sha512-eHY7nBftgThBqOyHGVN+l8gF0BucP09fMo0oO/Lb0w1OF80dJv+lDVpXG60WMQvkcxAkNybKsrEIE3ZtKGmPrA==}
     dev: true
-
-  /ticky/1.0.1:
-    resolution: {integrity: sha1-t8+nHnaPHJAAxJe5FRswlHxQ5G0=}
-    dev: false
 
   /tmp/0.0.30:
     resolution: {integrity: sha1-ckGdSovn1s51FI/YsyTlk6cRwu0=}
