@@ -21,8 +21,8 @@ specifiers:
   '@angular/platform-browser-dynamic': ~13.1.0
   '@angular/router': ~13.1.0
   '@angular/service-worker': ~13.1.0
-  '@ctrl/ngx-codemirror': ~5.0.1
-  '@ng-bootstrap/ng-bootstrap': ^10.0.0
+  '@ctrl/ngx-codemirror': ~5.1.1
+  '@ng-bootstrap/ng-bootstrap': ^11.0.0-rc.0
   '@swimlane/ngx-charts': ^19.2.0
   '@types/codemirror': ^5.60.5
   '@types/file-saver': ^2.0.4
@@ -31,8 +31,8 @@ specifiers:
   '@types/node': ^16.11.13
   '@typescript-eslint/eslint-plugin': 5.3.0
   '@typescript-eslint/parser': 5.3.0
-  angular-gridster2: ^12.1.1
-  angular-split: ^5.0.0
+  angular-gridster2: ^13.1.0
+  angular-split: ^13.1.0
   bootstrap: ~4.6.1
   bootstrap-darkmode: ^0.9.1
   bootstrap-icons: ^1.7.2
@@ -53,7 +53,7 @@ specifiers:
   ng-bootstrap-darkmode: ^0.5.0
   ng-terminal: ^3.2.0
   ng2-dragula: ^2.1.1
-  ngx-clipboard: ^14.0.2
+  ngx-clipboard: ^15.0.1
   ngx-drag-drop: ^2.0.0
   protractor: ~7.0.0
   rxjs: ~6.6.7
@@ -74,11 +74,11 @@ dependencies:
   '@angular/platform-browser-dynamic': 13.1.0_3b79e2b742b1e19e442677b1f097499e
   '@angular/router': 13.1.0_d6f23b2b850abfce1d46437487c7576c
   '@angular/service-worker': 13.1.0_e6a4475a8a2df01b4408ef7c53f82f2d
-  '@ctrl/ngx-codemirror': 5.0.1_9e81a3114827e40a9334bb9580627e1e
-  '@ng-bootstrap/ng-bootstrap': 10.0.0_635ade162f3873a5c107652b5d116de2
+  '@ctrl/ngx-codemirror': 5.1.1_9e81a3114827e40a9334bb9580627e1e
+  '@ng-bootstrap/ng-bootstrap': 11.0.0-rc.0_635ade162f3873a5c107652b5d116de2
   '@swimlane/ngx-charts': 19.2.0_b0429eb2813cf68ce83de23948d53ae5
-  angular-gridster2: 12.1.1_e6a4475a8a2df01b4408ef7c53f82f2d
-  angular-split: 5.0.0_be730d170419aa14dd48f501ef09e6c5
+  angular-gridster2: 13.1.0_e6a4475a8a2df01b4408ef7c53f82f2d
+  angular-split: 13.1.0_be730d170419aa14dd48f501ef09e6c5
   bootstrap: 4.6.1
   bootstrap-darkmode: 0.9.1_bootstrap@4.6.1
   bootstrap-icons: 1.7.2
@@ -91,7 +91,7 @@ dependencies:
   ng-bootstrap-darkmode: 0.5.0_2b1fb2fbf070599c5461481ecf7b17b6
   ng-terminal: 3.2.0_be730d170419aa14dd48f501ef09e6c5
   ng2-dragula: 2.1.1_@angular+core@13.1.0+rxjs@6.6.7
-  ngx-clipboard: 14.0.2_e6a4475a8a2df01b4408ef7c53f82f2d
+  ngx-clipboard: 15.0.1_e6a4475a8a2df01b4408ef7c53f82f2d
   ngx-drag-drop: 2.0.0
   rxjs: 6.6.7
   tslib: 2.3.1
@@ -1836,12 +1836,12 @@ packages:
     engines: {node: '>=4.0.0'}
     dev: true
 
-  /@ctrl/ngx-codemirror/5.0.1_9e81a3114827e40a9334bb9580627e1e:
-    resolution: {integrity: sha512-NCO3isAsdABeGxin+smJlYd+m42bXpbmjQQKjgn7K0z7HPgGTPdFLInMLa5XZbQktFmMj0ASexA1PgTWHHXJTA==}
+  /@ctrl/ngx-codemirror/5.1.1_9e81a3114827e40a9334bb9580627e1e:
+    resolution: {integrity: sha512-MAByA/cJBZY3yv/cpO87mF9Q24/ptCWf2Pr4n4V1w3G0ya5cKAIyHwIfvJ5nJz/4Gj2i2O/pteDWkyxrbyICoA==}
     peerDependencies:
       '@angular/core': '>=12.0.0-0'
       '@angular/forms': '>=12.0.0-0'
-      codemirror: '>=5.61.0'
+      codemirror: '>=5.63.3'
     dependencies:
       '@angular/core': 13.1.0_rxjs@6.6.7+zone.js@0.11.4
       '@angular/forms': 13.1.0_d6f23b2b850abfce1d46437487c7576c
@@ -1912,14 +1912,14 @@ packages:
     engines: {node: '>=6.0.0'}
     dev: true
 
-  /@ng-bootstrap/ng-bootstrap/10.0.0_635ade162f3873a5c107652b5d116de2:
-    resolution: {integrity: sha512-Sz+QaxjuyJYJ+zyUbf0TevgcgVesCPQiiFiggEzxKjzY5R+Hvq3YgryLdXf2r/ryePL+C3FXCcmmKpTM5bfczQ==}
+  /@ng-bootstrap/ng-bootstrap/11.0.0-rc.0_635ade162f3873a5c107652b5d116de2:
+    resolution: {integrity: sha512-MA0YmQWOPGcbjtyB5PqTE09JRKysuK0Tj/z7K0AuZcEbvgfKE9YZdt8Vsa2svKxe6whFr2ps2h07EyOTtD+2zQ==}
     peerDependencies:
-      '@angular/common': ^12.0.0
-      '@angular/core': ^12.0.0
-      '@angular/forms': ^12.0.0
-      '@angular/localize': ^12.0.0
-      rxjs: ^6.5.5
+      '@angular/common': ^13.0.0
+      '@angular/core': ^13.0.0
+      '@angular/forms': ^13.0.0
+      '@angular/localize': ^13.0.0
+      rxjs: ^6.5.3 || ^7.4.0
     dependencies:
       '@angular/common': 13.1.0_@angular+core@13.1.0+rxjs@6.6.7
       '@angular/core': 13.1.0_rxjs@6.6.7+zone.js@0.11.4
@@ -2604,11 +2604,11 @@ packages:
       uri-js: 4.4.1
     dev: true
 
-  /angular-gridster2/12.1.1_e6a4475a8a2df01b4408ef7c53f82f2d:
-    resolution: {integrity: sha512-HK7vf212LSn7mp8g4sNA6/X8TQN4wJyHupKemx+PUPmTs6FHDyquUMUFXYxANR47jdyLEMW/DxCDI0bEhIIChw==}
+  /angular-gridster2/13.1.0_e6a4475a8a2df01b4408ef7c53f82f2d:
+    resolution: {integrity: sha512-3ZtyhLy49vSbUDrAh8bAdJWscgv9ZQoUtGhOXXzEfzvCSPe8O7QEWcF13JzHFRsUbs+JQ1Z+58n2OXp/vkAIRw==}
     peerDependencies:
-      '@angular/common': ^12.0.0
-      '@angular/core': ^12.0.0
+      '@angular/common': ^13.0.0
+      '@angular/core': ^13.0.0
     dependencies:
       '@angular/common': 13.1.0_@angular+core@13.1.0+rxjs@6.6.7
       '@angular/core': 13.1.0_rxjs@6.6.7+zone.js@0.11.4
@@ -2624,8 +2624,8 @@ packages:
       tslib: 1.14.1
     dev: false
 
-  /angular-split/5.0.0_be730d170419aa14dd48f501ef09e6c5:
-    resolution: {integrity: sha512-V7m/mdp31189EGeVRw5j6MOfb8EiYoDqr8XTay4D7GcCpEm2+7oHD1n6eWbCvQMuRb8X3ZfP2pZNDmJs8bLaAg==}
+  /angular-split/13.1.0_be730d170419aa14dd48f501ef09e6c5:
+    resolution: {integrity: sha512-fj4oyhdWV44XaMNwsWwHqu/6QJIx7RjghkGOQSYrsKgY28SIyXD15YD1O2kKC4jofJfRlYrskxyTYXYU7Mm1yw==}
     peerDependencies:
       '@angular/common': '>=9.0.0'
       '@angular/core': '>=9.0.0'
@@ -6096,15 +6096,15 @@ packages:
       rxjs: 6.6.7
     dev: false
 
-  /ngx-clipboard/14.0.2_e6a4475a8a2df01b4408ef7c53f82f2d:
-    resolution: {integrity: sha512-zJaFi09D2bq9X1RYvFixE0AfYOI7E8mUO8S0GXcq76HisuE816HRl+8A46G+NML5GPA3Lr5qaGnQJN533So+8g==}
+  /ngx-clipboard/15.0.1_e6a4475a8a2df01b4408ef7c53f82f2d:
+    resolution: {integrity: sha512-Bx0MvAvcYmLL/6TxScltzvYlRKu7JOVnrstzI+r4yXMTWP/0nUiEZ83UzjYbjf8FRlSuXDWeEYGhw5SNh/swSg==}
     peerDependencies:
-      '@angular/common': '>=10.0.0 <13.0.0'
-      '@angular/core': '>=10.0.0 <13.0.0'
+      '@angular/common': '>=13.0.0'
+      '@angular/core': '>=13.0.0'
     dependencies:
       '@angular/common': 13.1.0_@angular+core@13.1.0+rxjs@6.6.7
       '@angular/core': 13.1.0_rxjs@6.6.7+zone.js@0.11.4
-      ngx-window-token: 5.0.0_e6a4475a8a2df01b4408ef7c53f82f2d
+      ngx-window-token: 6.0.0_e6a4475a8a2df01b4408ef7c53f82f2d
       tslib: 2.3.1
     dev: false
 
@@ -6115,12 +6115,12 @@ packages:
       tslib: 1.14.1
     dev: false
 
-  /ngx-window-token/5.0.0_e6a4475a8a2df01b4408ef7c53f82f2d:
-    resolution: {integrity: sha512-DhigCrm9QO8R29lqJYzBC9aaTU0KiWgdnt8RNcTN/DvMaS7shfzAqyvUtxSIm/+JR4gW5JKqR/JODU8760nJMw==}
-    engines: {node: '>=10.13.x'}
+  /ngx-window-token/6.0.0_e6a4475a8a2df01b4408ef7c53f82f2d:
+    resolution: {integrity: sha512-IeLKO1jzfzSvZ6vlAt4QSY/B5XcHEhdOwTjqvWEPt6/esWV9T3mA2ln10kj6SCc9pUSx4NybxE10gcyyYroImg==}
+    engines: {node: '>=12.20.x'}
     peerDependencies:
-      '@angular/common': '>=10.0.0'
-      '@angular/core': '>=10.0.0'
+      '@angular/common': '>=13.0.0'
+      '@angular/core': '>=13.0.0'
     dependencies:
       '@angular/common': 13.1.0_@angular+core@13.1.0+rxjs@6.6.7
       '@angular/core': 13.1.0_rxjs@6.6.7+zone.js@0.11.4
