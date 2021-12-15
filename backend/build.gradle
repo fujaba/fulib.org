@@ -97,6 +97,7 @@ processResources {
 	def fulibScenariosVersion = getDependencyVersion(config, 'org.fulib', 'fulibScenarios')
 	def fulibGradleVersion = getDependencyVersion(rootProject.buildscript.configurations.classpath, 'org.fulib', 'fulibGradle')
 	def fulibMockupsVersion = getDependencyVersion(config, 'org.fulib', 'fulibMockups')
+	def junitVersion = getDependencyVersion(config, 'junit', 'junit')
 	def slf4jVersion = getDependencyVersion(config, 'org.slf4j', 'slf4j-simple')
 
 	from(rootProject.rootDir) {
@@ -118,6 +119,7 @@ processResources {
 			it = it.replace('$$fulibScenariosVersion$$', fulibScenariosVersion)
 			it = it.replace('$$fulibMockupsVersion$$', fulibMockupsVersion)
 			it = it.replace('$$fulibGradleVersion$$', fulibGradleVersion)
+			it = it.replace('$$junitVersion$$', junitVersion)
 			it = it.replace('$$slf4jVersion$$', slf4jVersion)
 			it
 		}
