@@ -24,7 +24,6 @@
     "@angular/service-worker": "~13.1.0",
     "@ctrl/ngx-codemirror": "~5.1.1",
     "@ng-bootstrap/ng-bootstrap": "^11.0.0-rc.0",
-    "@swimlane/ngx-charts": "^19.2.0",
     "angular-gridster2": "^13.1.0",
     "angular-split": "^13.1.0",
     "bootstrap": "~4.6.1",
