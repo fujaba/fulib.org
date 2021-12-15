@@ -1,4 +1,4 @@
-FROM gradle:7.3-jdk11-alpine as preload
+FROM gradle:7.3-jdk17-alpine as preload
 WORKDIR /opt/preload
 COPY preload.build.gradle build.gradle
 RUN gradle wrapper
@@ -11,8 +11,8 @@ FROM debian:latest
 
 # Basic Dependencies
 RUN apt-get update -y
-# OpenJDK 11, 430 MB
-RUN apt-get install -y openjdk-11-jdk-headless
+# OpenJDK 17, 430 MB
+RUN apt-get install -y openjdk-17-jdk-headless
 # NodeJS 14, 50 MB + 140 MB
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
 RUN apt-get install -y nodejs
