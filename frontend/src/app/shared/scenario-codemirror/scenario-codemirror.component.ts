@@ -1,9 +1,8 @@
 import {Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
-
+import {EditorConfiguration} from 'codemirror';
 import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
-
-import {Marker} from '../model/marker';
 import {AutothemeCodemirrorComponent} from '../autotheme-codemirror/autotheme-codemirror.component';
+import {Marker} from '../model/marker';
 
 @Component({
   selector: 'app-scenario-codemirror',
@@ -21,7 +20,7 @@ export class ScenarioCodemirrorComponent implements OnInit, OnDestroy {
 
   @Output() save = new EventEmitter<void>();
 
-  readonly options: any;
+  readonly options: EditorConfiguration | Record<string, any>;
 
   constructor(
     private zone: NgZone,
@@ -44,21 +43,12 @@ export class ScenarioCodemirrorComponent implements OnInit, OnDestroy {
   }
 
   get readOnly(): boolean {
-    return this.options.readOnly;
+    return !!this.options.readOnly;
   }
 
   @Input()
   set readOnly(value: boolean) {
     this.options.readOnly = value;
-  }
-
-  get autoRefresh(): boolean {
-    return this.options.autoRefresh;
-  }
-
-  @Input()
-  set autoRefresh(value: boolean) {
-    this.options.autoRefresh = value;
   }
 
   ngOnInit(): void {
