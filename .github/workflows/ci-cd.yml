@@ -81,21 +81,18 @@ jobs:
           deployment: fulib-frontend
           docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-frontend:${{ needs.deployment.outputs.version }}
   backend:
-    name: Backend (Java ${{ matrix.java }})
+    name: Backend
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        java: [8, 11]
     needs: [deployment]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Set up JDK ${{ matrix.java }}
-        uses: actions/setup-java@v1
+      - name: Set up JDK
+        uses: actions/setup-java@v2
         with:
-          java-version: ${{ matrix.java }}
+          java-version: 17
           java-package: jdk
       - name: Cache Gradle packages
         uses: actions/cache@v2
@@ -107,7 +104,7 @@ jobs:
         run: ./gradlew :backend:build && ./gradlew --stop
       - name: Determine Deployment Readiness
         id: deployment
-        if: matrix.java == 8 && needs.deployment.outputs.namespace
+        if: needs.deployment.outputs.namespace
         run: echo "::set-output name=ready::true"
       - name: Build the Backend Docker Image
         if: steps.deployment.outputs.ready
