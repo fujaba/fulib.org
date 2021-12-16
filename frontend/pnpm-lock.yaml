@@ -48,7 +48,7 @@ specifiers:
   karma-jasmine: ~4.0.1
   karma-jasmine-html-reporter: ^1.7.0
   keycloak-angular: ^8.4.0
-  keycloak-js: 12.0.3
+  keycloak-js: 15.1.0
   ng-bootstrap-darkmode: ^0.5.0
   ng-terminal: ^3.2.0
   ngx-clipboard: ^15.0.1
@@ -83,8 +83,8 @@ dependencies:
   codemirror: 5.64.0
   file-saver: 2.0.5
   highlight.js: 11.3.1
-  keycloak-angular: 8.4.0_2aedf62f888b1887c87e9d94dd90b75f
-  keycloak-js: 12.0.3
+  keycloak-angular: 8.4.0_1c4e9fe2406225129953491da174f34f
+  keycloak-js: 15.1.0
   ng-bootstrap-darkmode: 0.5.0_2b1fb2fbf070599c5461481ecf7b17b6
   ng-terminal: 3.2.0_9b99a5b0ad73166bfacb227b0c874177
   ngx-clipboard: 15.0.1_e6a4475a8a2df01b4408ef7c53f82f2d
@@ -5489,7 +5489,7 @@ packages:
       - utf-8-validate
     dev: true
 
-  /keycloak-angular/8.4.0_2aedf62f888b1887c87e9d94dd90b75f:
+  /keycloak-angular/8.4.0_1c4e9fe2406225129953491da174f34f:
     resolution: {integrity: sha512-3zBKzPf+ZG+16EfOdp1uxa/XTGElTOQSq5UkfFJzFcJe1D6p696hKIUJHNJECcYNUtt4XhYwUEolMIR+VySqgA==}
     peerDependencies:
       '@angular/common': ^10 || ^11 || ^12
@@ -5500,12 +5500,12 @@ packages:
       '@angular/common': 13.1.0_@angular+core@13.1.0+rxjs@7.4.0
       '@angular/core': 13.1.0_rxjs@7.4.0+zone.js@0.11.4
       '@angular/router': 13.1.0_3a603c5d19fdb4a491507d1568bbdc1d
-      keycloak-js: 12.0.3
+      keycloak-js: 15.1.0
       tslib: 2.3.1
     dev: false
 
-  /keycloak-js/12.0.3:
-    resolution: {integrity: sha512-KO9zaf8t2fAtB4myFAetb85zSxsZxM0TTrJpkBIv87Pq7t4Ehk7E1DQC6vgvuxwG7bzDpB2G7qBKBQ7kqPrLNg==}
+  /keycloak-js/15.1.0:
+    resolution: {integrity: sha512-HXujilW0VFw9iudWDnE6ta9neixGQ3/RB3+L2YN51RKqJsMeJFYn2OJEE3p0hb9dUG8p3FnD9CcGyxli0UUYSg==}
     dependencies:
       base64-js: 1.3.1
       js-sha256: 0.9.0
