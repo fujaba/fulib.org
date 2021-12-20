@@ -131,12 +131,17 @@ export class EvaluationService {
         },
       };
     }));
+    for await (const solution of this.model.find({_id: {$in: Object.values(result.upsertedIds)}})) {
+      this.fire('created', solution);
+    }
     return {created: result.upsertedCount};
   }
 
   private async codeSearchUpdate(assignment: string, origin: any, dto: UpdateEvaluationDto): Promise<Partial<CodeSearchInfo>> {
     const solutions = await this.codeSearch(assignment, dto.snippets!);
-    const result = await this.model.bulkWrite(solutions.map(([solution, snippets]) => {
+    let deleted = 0;
+    let updated = 0;
+    await Promise.all(solutions.map(async ([solution, snippets]) => {
       const filter: FilterQuery<Evaluation> = {
         assignment,
         solution,
@@ -145,28 +150,39 @@ export class EvaluationService {
         codeSearch: {origin},
       };
 
-      if (!snippets) {
-        return {deleteOne: {filter}};
+      if (snippets) {
+        const updatedEval = await this.model.findOneAndUpdate(filter, {
+          ...dto,
+          codeSearch: {origin},
+          author: 'Code Search',
+          snippets,
+        }, {new: true}).exec();
+        if (updatedEval) {
+          this.fire('updated', updatedEval);
+          updated++;
+        }
+      } else {
+        const deletedEval = await this.model.findOneAndDelete(filter).exec();
+        if (deletedEval) {
+          this.fire('deleted', deletedEval);
+          deleted++;
+        }
       }
-
-      const update: UpdateQuery<Evaluation> = {
-        ...dto,
-        codeSearch: {origin},
-        author: 'Code Search',
-        snippets,
-      };
-      return {updateOne: {filter, update}};
     }));
-    return {updated: result.modifiedCount, deleted: result.deletedCount};
+    return {updated, deleted};
   }
 
   private async codeSearchDelete(evaluation: EvaluationDocument): Promise<Partial<CodeSearchInfo>> {
-    const result = await this.model.deleteMany({
+    const solutions = await this.model.find({
       assignment: evaluation.assignment,
       task: evaluation.task,
       author: 'Code Search',
       codeSearch: {origin: evaluation._id},
     }).exec();
-    return {deleted: result.deletedCount};
+    for (let solution of solutions) {
+      this.fire('deleted', solution);
+    }
+    await this.model.deleteMany({_id: {$in: solutions.map(s => s._id)}});
+    return {deleted: solutions.length};
   }
 }
