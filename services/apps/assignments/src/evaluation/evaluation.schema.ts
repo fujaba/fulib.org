@@ -35,6 +35,12 @@ export class Snippet {
   file: string;
 
   @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  glob?: string;
+
+  @Prop()
   @ApiProperty()
   @ValidateNested()
   @Type(() => Location)
