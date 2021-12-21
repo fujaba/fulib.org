@@ -1,5 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+import {Params} from '@angular/router';
 
 import {saveAs} from 'file-saver';
 import {forkJoin, Observable, of} from 'rxjs';
@@ -197,10 +198,12 @@ export class AssignmentService {
     );
   }
 
-  search(id: string, q: string): Observable<SearchResult[]> {
+  search(id: string, q: string, context = 2, glob?: string): Observable<SearchResult[]> {
     const headers = this.getHeaders(this.getToken(id));
+    const params: Params = {q, context};
+    glob && (params.glob = glob);
     return this.http.get<SearchResult[]>(`${environment.assignmentsApiUrl}/assignments/${id}/search`, {
-      params: {q, context: 2},
+      params,
       headers,
     });
   }
