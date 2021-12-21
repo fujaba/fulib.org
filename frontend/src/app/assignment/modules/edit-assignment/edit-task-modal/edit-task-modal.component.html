@@ -20,6 +20,21 @@
         </div>
       </div>
       <div class="form-group">
+        <label for="globInput" class="form-label">
+          Filename Glob
+          <span class="badge badge-primary">New</span>
+        </label>
+        <div [ngbTooltip]="context.assignment.classroom?.codeSearch ? null : 'Code Search must be enabled.'">
+          <input type="text" class="form-control" id="globInput" [(ngModel)]="task.glob"
+                 [disabled]="!context.assignment.classroom?.codeSearch">
+        </div>
+        <div class="form-text text-muted">
+          Optional.
+          Use a glob pattern to restrict Code Search to matching filenames.
+          Example: <code>src/**/model/*.java</code>
+        </div>
+      </div>
+      <div class="form-group">
         <label for="verificationInput" class="form-label">Verification</label>
         <app-scenario-codemirror
           id="verificationInput"
