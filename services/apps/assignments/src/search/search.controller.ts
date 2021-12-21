@@ -30,7 +30,8 @@ export class SearchController {
     @Param('assignment') assignment: string,
     @Query('q') code: string,
     @Query('context') context?: number,
+    @Query('glob') glob?: string,
   ): Promise<SearchResult[]> {
-    return this.searchService.find(assignment, code, context !== undefined ? +context : undefined);
+    return this.searchService.find(assignment, code, context !== undefined ? +context : undefined, glob);
   }
 }
