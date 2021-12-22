@@ -4,6 +4,8 @@ import {ActivatedRoute} from '@angular/router';
 import hljs from 'highlight.js/lib/core';
 import {of} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
+import {environment} from '../../../../../environments/environment';
+import {StorageService} from '../../../../storage.service';
 import {AssignmentService} from '../../../services/assignment.service';
 
 @Component({
@@ -18,10 +20,12 @@ export class ShareComponent implements OnInit {
   token?: string;
 
   readonly origin: string;
+  readonly encodedApiServer = encodeURIComponent(new URL(environment.assignmentsApiUrl).origin);
 
   constructor(
     private assignmentService: AssignmentService,
     private route: ActivatedRoute,
+    private storageService: StorageService,
     @Inject(DOCUMENT) document: Document,
   ) {
     this.origin = document.location.origin;
