@@ -23,11 +23,12 @@ export class TaskMarkdownService {
         continue;
       }
 
-      const {prefix, description, points, id} = extractTaskItem(match);
+      const {prefix, description, points, _id, glob} = extractTaskItem(match);
       const task: Task = {
-        _id: id || this.taskService.generateID(),
+        _id: _id || this.taskService.generateID(),
         points: +points,
         description,
+        glob,
         verification: '',
         children: [],
         collapsed: true,
@@ -56,11 +57,13 @@ export class TaskMarkdownService {
     if (t.deleted) {
       return '';
     }
+    const {_id, glob} = t;
+    const extra = JSON.stringify({_id, glob});
     if (t.points < 0) {
-      return `- ${t.description} (${t.points}P)<!--${t._id}-->\n`;
+      return `- ${t.description} (${t.points}P)<!--${extra}-->\n`;
     }
     const children = this.renderTasks(t.children, depth + 1);
     const headlinePrefix = '#'.repeat(depth + 2);
-    return `${headlinePrefix} ${t.description} (x/${t.points}P)<!--${t._id}-->\n${children}`;
+    return `${headlinePrefix} ${t.description} (x/${t.points}P)<!--${extra}-->\n${children}`;
   }
 }
