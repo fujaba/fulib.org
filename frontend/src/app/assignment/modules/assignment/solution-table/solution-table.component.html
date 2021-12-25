@@ -21,7 +21,7 @@
       <span class="sr-only">Options</span>
     </button>
     <div ngbDropdownMenu aria-labelledby="optionsDropdown">
-      <ng-container *ngFor="let option of optionItems; let first=first">
+      <ng-container *ngFor="let option of optionItems!; let first=first">
         <div *ngIf="!first" class="dropdown-divider"></div>
         <h6 class="dropdown-header">
           {{ option.title }}

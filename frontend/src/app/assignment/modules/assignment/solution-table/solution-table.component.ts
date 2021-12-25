@@ -2,8 +2,6 @@ import {Component, OnInit, TrackByFunction} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
-import { PrivacyService } from 'src/app/privacy.service';
-import {StorageService} from '../../../../storage.service';
 import {ToastService} from '../../../../toast.service';
 import {Assignee} from '../../../model/assignee';
 import Assignment from '../../../model/assignment';
@@ -11,6 +9,7 @@ import Solution, {AuthorInfo} from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
 import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
+import {CONFIG_OPTIONS, ConfigKey, ConfigService} from '../../../services/config.service';
 
 @Component({
   selector: 'app-solution-table',
@@ -33,22 +32,10 @@ export class SolutionTableComponent implements OnInit {
 
   loading = false;
 
-  readonly optionItems = [
-    {
-      key: 'ide',
-      title: 'IDE',
-      options: [['vscode', 'VSCode'], ['code-oss', 'Code - OSS'], ['vscodium', 'VSCodium']],
-    },
-    {
-      key: 'clone',
-      title: 'Git Clone Method',
-      options: [['https', 'HTTPS'], ['ssh', 'SSH']],
-    },
-  ];
-
+  optionItems = CONFIG_OPTIONS;
   options = {
-    ide: 'vscode',
-    clone: 'https',
+    ide: this.configService.get('ide'),
+    clone: this.configService.get('cloneProtocol'),
   };
 
   readonly clonePrefix = {https: 'https://github.com/', ssh: 'git@github.com:'} as const;
@@ -61,7 +48,7 @@ export class SolutionTableComponent implements OnInit {
   constructor(
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
-    private storageService: StorageService,
+    private configService: ConfigService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private toastService: ToastService,
@@ -70,8 +57,6 @@ export class SolutionTableComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadOptions();
-
     this.activatedRoute.params.pipe(
       switchMap(({aid}) => this.assignmentService.get(aid)),
     ).subscribe(assignment => {
@@ -110,16 +95,9 @@ export class SolutionTableComponent implements OnInit {
     });
   }
 
-  loadOptions() {
-    const value = this.storageService.get('assignments/solutionOptions');
-    if (value) {
-      Object.assign(this.options, JSON.parse(value));
-    }
-  }
-
-  setOption(key: string, value: string) {
+  setOption(key: ConfigKey, value: string) {
     this.options[key] = value;
-    this.storageService.set('assignments/solutionOptions', JSON.stringify(this.options));
+    this.configService.set(key, value);
   }
 
   setAssignee(solution: Solution, input: HTMLInputElement): void {

@@ -4,7 +4,9 @@ import {ActivatedRoute} from '@angular/router';
 import hljs from 'highlight.js/lib/core';
 import {of} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
+import {environment} from '../../../../../environments/environment';
 import {AssignmentService} from '../../../services/assignment.service';
+import {ConfigService} from '../../../services/config.service';
 
 @Component({
   selector: 'app-assignment-share',
@@ -17,11 +19,15 @@ export class ShareComponent implements OnInit {
   id: string;
   token?: string;
 
+  ide = this.configService.get('ide');
+
   readonly origin: string;
+  readonly encodedApiServer = encodeURIComponent(new URL(environment.assignmentsApiUrl).origin);
 
   constructor(
     private assignmentService: AssignmentService,
     private route: ActivatedRoute,
+    private configService: ConfigService,
     @Inject(DOCUMENT) document: Document,
   ) {
     this.origin = document.location.origin;

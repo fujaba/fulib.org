@@ -19,6 +19,7 @@ import {MyAssignmentsComponent} from './pages/my-assignments/my-assignments.comp
 import {MyCoursesComponent} from './pages/my-courses/my-courses.component';
 import {MySolutionsComponent} from './pages/my-solutions/my-solutions.component';
 import {TokenModalComponent} from './pages/token-modal/token-modal.component';
+import {ConfigService} from './services/config.service';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,9 @@ import {TokenModalComponent} from './pages/token-modal/token-modal.component';
     DragulaModule,
     AssignmentSharedModule,
     AssignmentRoutingModule,
+  ],
+  providers: [
+    ConfigService,
   ],
 })
 export class AssignmentModule {
