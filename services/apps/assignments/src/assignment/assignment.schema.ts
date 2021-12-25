@@ -39,6 +39,12 @@ export class Task {
   @IsString()
   verification?: string;
 
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  glob?: string;
+
   @Prop({default: []})
   @ApiProperty({type: [Task]})
   @ValidateNested({each: true})

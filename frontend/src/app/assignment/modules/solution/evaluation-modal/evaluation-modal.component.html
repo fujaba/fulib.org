@@ -32,13 +32,16 @@
                 ></app-edit-snippet>
               </li>
             </ul>
-            <small class="form-text text-muted">
+            <div class="form-text text-muted">
               Use
               <a href="https://marketplace.visualstudio.com/items?itemName=fulib.fulibFeedback" target="_blank">
                 fulibFeedback
               </a>
               to add code snippets from within your IDE.
-            </small>
+              <span *ngIf="task && task.glob" class="text-info">
+                Code Search will only look for files matching the glob pattern <code>{{ task.glob }}</code>.
+              </span>
+            </div>
           </div>
         </div>
         <div class="col" [class.col-md-4]="dto.snippets.length">

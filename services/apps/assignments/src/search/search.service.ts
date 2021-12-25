@@ -108,8 +108,10 @@ export class SearchService implements OnModuleInit {
     });
   }
 
-  async find(assignment: string, snippet: string, context?: number): Promise<SearchResult[]> {
+  async find(assignment: string, snippet: string, context?: number, glob?: string): Promise<SearchResult[]> {
     const uniqueId = randomUUID();
+    const regex = glob && this.glob2RegExp(glob);
+    console.log(regex);
     const result = await this.elasticsearchService.search({
       index: 'files',
       body: {
@@ -123,11 +125,10 @@ export class SearchService implements OnModuleInit {
                 },
               },
             },
-            filter: [{
-              term: {
-                assignment,
-              },
-            }],
+            filter: [
+              {term: {assignment}},
+              ...(regex ? [{regexp: {'file.keyword': {value: regex, flags: '', case_insensitive: true}}}] : []),
+            ],
           },
         },
         highlight: {
@@ -152,6 +153,23 @@ export class SearchService implements OnModuleInit {
       }
     }
     return [...grouped.values()];
+  }
+
+  private glob2RegExp(glob: string): string {
+    return glob.replace(/\*\*|[.?+*|{}()"\\]/g, match => {
+      switch (match) {
+        case '**':
+          return '.*';
+        case '*':
+          return '[^\\/]*';
+        case '?':
+          return '.';
+        case '\\':
+          return '/';
+        default:
+          return '\\' + match;
+      }
+    });
   }
 
   _convertHit(hit: { _source: FileDocument, highlight: { content: string[] } }, uniqueId: string, contextLines?: number): SearchResult {

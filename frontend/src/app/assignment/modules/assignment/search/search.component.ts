@@ -15,6 +15,7 @@ import {SolutionService} from '../../../services/solution.service';
 })
 export class SearchComponent implements OnInit {
   search$ = new BehaviorSubject<string>(this.route.snapshot.queryParams.q);
+  glob$ = new BehaviorSubject<string>(this.route.snapshot.queryParams.glob);
 
   results: SearchResult[] = [];
   assignment?: Assignment;
@@ -46,18 +47,18 @@ export class SearchComponent implements OnInit {
       this.route.params,
       this.route.queryParams,
     ]).pipe(
-      switchMap(([{aid}, {q}]) => this.assignmentService.search(aid, q)),
+      switchMap(([{aid}, {q, glob}]) => this.assignmentService.search(aid, q, 2, glob)),
     ).subscribe(results => {
       this.results = results;
     });
 
-    this.search$.pipe(
-      debounceTime(200),
-      distinctUntilChanged(),
-    ).subscribe(q => {
+    combineLatest([
+      this.search$.pipe(debounceTime(200), distinctUntilChanged()),
+      this.glob$.pipe(debounceTime(200), distinctUntilChanged()),
+    ]).subscribe(([q, glob]) => {
       this.router.navigate([], {
         relativeTo: this.route,
-        queryParams: {q},
+        queryParams: {q, glob},
         queryParamsHandling: 'merge',
       });
     });

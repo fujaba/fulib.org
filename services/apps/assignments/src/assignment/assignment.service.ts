@@ -30,6 +30,19 @@ export class AssignmentService {
     console.info('Migrated', result.modifiedCount, 'assignments');
   }
 
+  findTask(tasks: Task[], id: string): Task | undefined {
+    for (const task of tasks) {
+      if (task._id == id) {
+        return task;
+      }
+      const subTask = this.findTask(task.children, id);
+      if (subTask) {
+        return subTask;
+      }
+    }
+    return undefined;
+  }
+
   async check(solution: string, {tasks}: Pick<Assignment, 'tasks'>): Promise<CreateEvaluationDto[]> {
     const results = await Promise.all(tasks.map(task => this.checkTasksRecursively(solution, task)));
     return results.flatMap(x => x);

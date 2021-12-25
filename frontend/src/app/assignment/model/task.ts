@@ -3,6 +3,7 @@ export default class Task {
   description: string;
   points: number;
   verification: string;
+  glob?: string;
   children: Task[];
 
   // used during editing
