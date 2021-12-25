@@ -56,13 +56,8 @@
   fulibFeedback Settings
 </h5>
 <p>
-  Add or replace these settings in VSCode <code>settings.json</code> to view fulibFeedback highlights for this solution.
+  Use the button below to configure fulibFeedback and view evaluations for this submission in VSCode.
 </p>
-<div class="markdown">
-    <pre><code #fulibFeedbackSettings class="hljs language-json" lang="json">// ...
-"fulibFeedback.apiServer": "{{origin}}",
-"fulibFeedback.assignment.id": "{{assignmentId}}",
-"fulibFeedback.solution.id": "{{solutionId}}",
-"fulibFeedback.solution.token": "{{token}}",
-// ...</code></pre>
-</div>
+<a class="btn btn-primary" [href]="'vscode://fulib.fulibfeedback/configure?api_server=' + encodedApiServer + '&assignment=' + assignmentId + '&solution=' + solutionId + '&token=' + token | safeUrl">
+  Configure
+</a>

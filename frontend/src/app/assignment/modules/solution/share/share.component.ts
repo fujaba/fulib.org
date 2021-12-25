@@ -5,6 +5,7 @@ import hljs from 'highlight.js/lib/core';
 import {of} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
 import {SolutionService} from 'src/app/assignment/services/solution.service';
+import {environment} from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-solution-share',
@@ -19,6 +20,7 @@ export class SolutionShareComponent implements OnInit {
   token?: string;
 
   readonly origin: string;
+  readonly encodedApiServer = encodeURIComponent(new URL(environment.assignmentsApiUrl).origin);
 
   constructor(
     private solutionService: SolutionService,
