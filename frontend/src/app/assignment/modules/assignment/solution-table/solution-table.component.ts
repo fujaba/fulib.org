@@ -9,7 +9,7 @@ import Solution, {AuthorInfo} from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
 import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
-import {CONFIG_OPTIONS, ConfigKey, ConfigService} from '../config.service';
+import {CONFIG_OPTIONS, ConfigKey, ConfigService} from '../../../services/config.service';
 
 @Component({
   selector: 'app-solution-table',

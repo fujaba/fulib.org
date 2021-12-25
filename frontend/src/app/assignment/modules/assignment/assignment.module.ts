@@ -8,7 +8,6 @@ import {AssignmentSharedModule} from '../shared/shared.module';
 
 import {AssignmentRoutingModule} from './assignment-routing.module';
 import {AssignmentComponent} from './assignment/assignment.component';
-import {ConfigService} from './config.service';
 import {SearchComponent} from './search/search.component';
 import {ShareComponent} from './share/share.component';
 import {SolutionTableComponent} from './solution-table/solution-table.component';
@@ -40,9 +39,6 @@ import {AssignmentTasksComponent} from './tasks/tasks.component';
     AssignmentSharedModule,
     AssignmentRoutingModule,
     NgbDropdownModule,
-  ],
-  providers: [
-    ConfigService,
   ],
 })
 export class AssignmentModule {

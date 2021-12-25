@@ -6,7 +6,7 @@ import {of} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
 import {environment} from '../../../../../environments/environment';
 import {AssignmentService} from '../../../services/assignment.service';
-import {ConfigService} from '../config.service';
+import {ConfigService} from '../../../services/config.service';
 
 @Component({
   selector: 'app-assignment-share',

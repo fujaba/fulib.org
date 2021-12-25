@@ -6,6 +6,7 @@ import {of} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
 import {SolutionService} from 'src/app/assignment/services/solution.service';
 import {environment} from '../../../../../environments/environment';
+import {CONFIG_OPTIONS, ConfigService} from '../../../services/config.service';
 
 @Component({
   selector: 'app-solution-share',
@@ -18,12 +19,15 @@ export class SolutionShareComponent implements OnInit {
   assignmentId: string;
   solutionId: string;
   token?: string;
+  ide = this.configService.get('ide');
 
   readonly origin: string;
   readonly encodedApiServer = encodeURIComponent(new URL(environment.assignmentsApiUrl).origin);
+  readonly ideOption = CONFIG_OPTIONS.find(o => o.key === 'ide')!;
 
   constructor(
     private solutionService: SolutionService,
+    private configService: ConfigService,
     private route: ActivatedRoute,
     @Inject(DOCUMENT) document: Document,
   ) {
@@ -47,5 +51,9 @@ export class SolutionShareComponent implements OnInit {
       this.token = token;
       setTimeout(() => hljs.highlightElement(this.settings.nativeElement));
     });
+  }
+
+  saveIde(value: string) {
+    this.configService.set('ide', value);
   }
 }
