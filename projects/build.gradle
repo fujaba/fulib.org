@@ -36,10 +36,10 @@ dependencies {
 	implementation group: 'com.sparkjava', name: 'spark-core', version: '2.9.3'
 
 	// https://mvnrepository.com/artifact/org.jetbrains.pty4j/pty4j
-	implementation group: 'org.jetbrains.pty4j', name: 'pty4j', version: '0.11.3'
+	implementation group: 'org.jetbrains.pty4j', name: 'pty4j', version: '0.12.5'
 
 	// https://mvnrepository.com/artifact/org.json/json
-	implementation group: 'org.json', name: 'json', version: '20210307'
+	implementation group: 'org.json', name: 'json', version: '20211205'
 
 	// https://mvnrepository.com/artifact/net.sf.jpathwatch/jpathwatch
 	implementation group: 'net.sf.jpathwatch', name: 'jpathwatch', version: '0.95'
