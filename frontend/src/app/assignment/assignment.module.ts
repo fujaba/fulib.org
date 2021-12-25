@@ -4,9 +4,8 @@ import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {BarChartModule} from '@swimlane/ngx-charts';
-import {DragulaModule} from 'ng2-dragula';
 import {ClipboardModule} from 'ngx-clipboard';
+import {DndModule} from 'ngx-drag-drop';
 
 import {SharedModule} from '../shared/shared.module';
 import {AssignmentRoutingModule} from './assignment-routing.module';
@@ -38,9 +37,9 @@ import {ConfigService} from './services/config.service';
     HttpClientModule,
     NgbModule,
     ClipboardModule,
-    DragulaModule,
     AssignmentSharedModule,
     AssignmentRoutingModule,
+    DndModule,
   ],
   providers: [
     ConfigService,

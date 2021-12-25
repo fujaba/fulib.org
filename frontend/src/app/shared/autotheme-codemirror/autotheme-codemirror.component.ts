@@ -1,19 +1,9 @@
-import {
-  AfterViewInit,
-  Component,
-  EventEmitter,
-  Input,
-  NgZone,
-  OnDestroy,
-  OnInit,
-  Output,
-  ViewChild,
-} from '@angular/core';
+import {Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {CodemirrorComponent} from '@ctrl/ngx-codemirror';
-import {signal, EditorChange, Editor, Position} from 'codemirror';
+import {Editor, EditorChange, EditorConfiguration, Position} from 'codemirror';
 import {ThemeService} from 'ng-bootstrap-darkmode';
-import {of, Subscription} from 'rxjs';
-import {switchMap} from 'rxjs/operators';
+import {interval, of, Subscription} from 'rxjs';
+import {filter, map, switchMap, take} from 'rxjs/operators';
 import {Marker} from '../model/marker';
 
 @Component({
@@ -21,13 +11,13 @@ import {Marker} from '../model/marker';
   templateUrl: './autotheme-codemirror.component.html',
   styleUrls: ['./autotheme-codemirror.component.scss'],
 })
-export class AutothemeCodemirrorComponent implements OnInit, OnDestroy, AfterViewInit {
+export class AutothemeCodemirrorComponent implements OnInit, OnDestroy {
   @Input() content: string;
   @Output() contentChange = new EventEmitter<string>();
   @Output() changes = new EventEmitter<EditorChange>();
   @Output() cursorActivity = new EventEmitter<Position>();
 
-  @Input() options: any;
+  @Input() options: EditorConfiguration | Record<string, any>;
 
   private _markers: Marker[] = [];
 
@@ -60,14 +50,18 @@ export class AutothemeCodemirrorComponent implements OnInit, OnDestroy, AfterVie
     this.subscription = this.themeService.theme$.pipe(
       switchMap(theme => theme === 'auto' ? this.themeService.detectedTheme$ : of(theme)),
     ).subscribe(theme => this.updateEditorThemes(theme));
-  }
 
-  ngAfterViewInit() {
-    this.refreshCodeMirror();
-    if (this.markers) {
-      this.performLint();
-    }
-    this.listenForChanges();
+    interval(50).pipe(
+      map(() => this.ngxCodemirror?.codeMirror),
+      filter(x => !!x),
+      take(1),
+    ).subscribe(() => {
+      this.refreshCodeMirror();
+      if (this.markers) {
+        this.performLint();
+      }
+      this.listenForChanges();
+    });
   }
 
   private performLint() {
