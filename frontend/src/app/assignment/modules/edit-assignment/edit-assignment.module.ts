@@ -30,16 +30,16 @@ import {TemplateComponent} from './template/template.component';
     TasksComponent,
     TemplateComponent,
   ],
-    imports: [
-        CommonModule,
-        SharedModule,
-        FormsModule,
-        DndModule,
-        AssignmentSharedModule,
-        EditAssignmentRoutingModule,
-        NgbButtonsModule,
-        NgbTooltipModule,
-    ],
+  imports: [
+    CommonModule,
+    SharedModule,
+    FormsModule,
+    DndModule,
+    AssignmentSharedModule,
+    EditAssignmentRoutingModule,
+    NgbButtonsModule,
+    NgbTooltipModule,
+  ],
 })
 export class EditAssignmentModule {
 }
