@@ -196,6 +196,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+          java-package: jdk
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/caches
+          key: gradle-${{ runner.os }}-${{ hashFiles('projects/*.gradle') }}
+          restore-keys: gradle-${{ runner.os }}-
+      - name: Build with Gradle
+        run: ./gradlew :projects:build && ./gradlew --stop
       - name: Build the Project Container Docker Image
         if: needs.deployment.outputs.namespace
         uses: whoan/docker-build-with-cache-action@v5
