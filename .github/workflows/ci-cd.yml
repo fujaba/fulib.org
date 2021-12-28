@@ -52,15 +52,11 @@ jobs:
         run: pnpm install
       - name: Build Angular
         run: pnpm build
-      - name: Determine Deployment Readiness
-        id: deployment
-        if: needs.deployment.outputs.namespace
-        run: echo "::set-output name=ready::true"
       - name: Build Angular again
-        if: steps.deployment.outputs.ready
+        if: needs.deployment.outputs.namespace
         run: pnpm build
       - name: Build the Docker Image
-        if: steps.deployment.outputs.ready
+        if: needs.deployment.outputs.namespace
         uses: whoan/docker-build-with-cache-action@v5
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -70,7 +66,7 @@ jobs:
           image_tag: ${{ needs.deployment.outputs.version }}
           context: frontend/
       - name: Deploy to Rancher
-        if: steps.deployment.outputs.ready
+        if: needs.deployment.outputs.namespace
         uses: sekassel-research/actions-rancher-update@2.0.2
         with:
           rancher_url: ${{ secrets.RANCHER_URL }}
@@ -102,12 +98,8 @@ jobs:
           restore-keys: gradle-${{ runner.os }}-
       - name: Build with Gradle
         run: ./gradlew :backend:build && ./gradlew --stop
-      - name: Determine Deployment Readiness
-        id: deployment
-        if: needs.deployment.outputs.namespace
-        run: echo "::set-output name=ready::true"
       - name: Build the Backend Docker Image
-        if: steps.deployment.outputs.ready
+        if: needs.deployment.outputs.namespace
         uses: whoan/docker-build-with-cache-action@v5
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -117,7 +109,7 @@ jobs:
           image_tag: ${{ needs.deployment.outputs.version }}
           context: backend/
       - name: Deploy the Backend to Rancher
-        if: steps.deployment.outputs.ready
+        if: needs.deployment.outputs.namespace
         uses: sekassel-research/actions-rancher-update@2.0.2
         with:
           rancher_url: ${{ secrets.RANCHER_URL }}
