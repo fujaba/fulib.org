@@ -7,7 +7,7 @@ import {Privacy, PrivacyService} from '../privacy.service';
   styleUrls: ['./privacy.component.scss'],
 })
 export class PrivacyComponent implements OnInit {
-  privacy: Privacy;
+  privacy: Privacy | null = null;
 
   constructor(
     private privacyService: PrivacyService,
@@ -19,7 +19,7 @@ export class PrivacyComponent implements OnInit {
   }
 
   loadPrivacy(): void {
-    this.privacy = this.privacyService.privacy ?? 'none';
+    this.privacy = this.privacyService.privacy;
   }
 
   savePrivacy(): void {

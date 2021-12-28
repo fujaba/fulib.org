@@ -1,6 +1,6 @@
 <app-modal #modal>
   <ng-container modal-header>
-    Leave Feedback
+    Submit Feedback
   </ng-container>
   <ng-container modal-body>
     <p>
@@ -8,7 +8,7 @@
       You will be redirected to a page with further instructions.
     </p>
     <p>
-      I want to leave feedback regarding...
+      I want to submit feedback regarding...
     </p>
     <p>
       <a role="button" class="btn btn-outline-secondary btn-block"
@@ -42,6 +42,8 @@
     </p>
   </ng-container>
   <ng-container modal-footer>
-    <button type="button" class="btn btn-primary" (click)="modal.close()">Close</button>
+    <button type="button" class="btn btn-secondary" (click)="modal.close()">
+      Cancel
+    </button>
   </ng-container>
 </app-modal>
