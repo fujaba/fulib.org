@@ -74,9 +74,12 @@
                 [(ngModel)]="dto.remark"
               >
               <div class="input-group-append">
-                <button type="button" class="btn btn-outline-secondary" (click)="multilineRemark = 3">
-                  +
-                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary bi-arrows-expand"
+                  (click)="multilineRemark = 3"
+                  ngbTooltip="Expand"
+                ></button>
               </div>
             </div>
             <textarea
