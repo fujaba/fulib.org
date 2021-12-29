@@ -109,8 +109,17 @@ export class SubmitService {
         const subTasks = renderSubTasks(task.children, depth + 1);
         return header + remark + snippets + subTasks;
       } else {
-        const desc = [task.description, evaluation?.remark].filter(x => x).join(': ');
-        return `- ${desc} (${point}P)\n${snippets}`;
+        let desc = task.description;
+        let remark = '';
+        if (evaluation && evaluation.remark) {
+          if (evaluation.remark.includes('\n')) {
+            remark = '\n  ' + evaluation.remark.trim().replace(/\n/g, '\n  ') + '\n';
+          } else {
+            desc = task.description ? `${task.description}: ${evaluation.remark}` : evaluation.remark;
+          }
+        }
+
+        return `- ${desc} (${point}P)\n${remark}${snippets}`;
       }
     };
 
