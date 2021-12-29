@@ -47,12 +47,12 @@ specifiers:
   karma-coverage-istanbul-reporter: ~3.0.3
   karma-jasmine: ~4.0.1
   karma-jasmine-html-reporter: ^1.7.0
-  keycloak-angular: ^8.4.0
+  keycloak-angular: ^9.0.0
   keycloak-js: 15.1.0
   ng-bootstrap-darkmode: ^0.5.0
-  ng-terminal: ^3.2.0
+  ng-terminal: ^4.0.0-alpha.2
   ngx-clipboard: ^15.0.1
-  ngx-drag-drop: ^2.0.0
+  ngx-drag-drop: ^13.1.0-alpha.1
   protractor: ~7.0.0
   rxjs: ~7.4.0
   ts-node: ^10.4.0
@@ -83,12 +83,12 @@ dependencies:
   codemirror: 5.65.0
   file-saver: 2.0.5
   highlight.js: 11.3.1
-  keycloak-angular: 8.4.0_799acdf046190ea6b299b6323657fc92
+  keycloak-angular: 9.0.0_799acdf046190ea6b299b6323657fc92
   keycloak-js: 15.1.0
   ng-bootstrap-darkmode: 0.5.0_5063f7afcb3e6c46d6c515cc8acf1080
-  ng-terminal: 3.2.0_c29e44c52f612f85d8772daafc0be51e
+  ng-terminal: 4.0.0-alpha.2_97c374658fb8cefbe875884a7f473e47
   ngx-clipboard: 15.0.1_97c374658fb8cefbe875884a7f473e47
-  ngx-drag-drop: 2.0.0
+  ngx-drag-drop: 13.1.0-alpha.1_97c374658fb8cefbe875884a7f473e47
   rxjs: 7.4.0
   tslib: 2.3.1
   zone.js: 0.11.4
@@ -5446,12 +5446,12 @@ packages:
       - utf-8-validate
     dev: true
 
-  /keycloak-angular/8.4.0_799acdf046190ea6b299b6323657fc92:
-    resolution: {integrity: sha512-3zBKzPf+ZG+16EfOdp1uxa/XTGElTOQSq5UkfFJzFcJe1D6p696hKIUJHNJECcYNUtt4XhYwUEolMIR+VySqgA==}
+  /keycloak-angular/9.0.0_799acdf046190ea6b299b6323657fc92:
+    resolution: {integrity: sha512-47ugycwEuheoVmeyQMnkW+s3dHzx3ipJ+88iDxhP+gPjVtV2s7lyNtUCw3dErHVTSbhqEhZJ8CrWwPk1qyiE5w==}
     peerDependencies:
-      '@angular/common': ^10 || ^11 || ^12
-      '@angular/core': ^10 || ^11 || ^12
-      '@angular/router': ^10 || ^11 || ^12
+      '@angular/common': ^11 || ^12 || ^13
+      '@angular/core': ^11 || ^12 || ^13
+      '@angular/router': ^11 || ^12 || ^13
       keycloak-js: ^10 || ^11 || ^12 || ^13 || ^14 || ^15
     dependencies:
       '@angular/common': 13.1.1_@angular+core@13.1.1+rxjs@7.4.0
@@ -5899,18 +5899,16 @@ packages:
       tslib: 2.3.1
     dev: false
 
-  /ng-terminal/3.2.0_c29e44c52f612f85d8772daafc0be51e:
-    resolution: {integrity: sha512-KDkAMLM+97Sc90+5fxbu2ZaT5d6K6t9U74s6ZfooX4qBJZHHE2HK/NkBOAQ8si8/tiy0DVvEBiOO/E0W1soVPQ==}
+  /ng-terminal/4.0.0-alpha.2_97c374658fb8cefbe875884a7f473e47:
+    resolution: {integrity: sha512-dIUfppTMKq+0BANj6ZofXOBkpT4qCCqsJQbuYyyrz553h2Tu7fqSKH4P4+rmlidS2XNRhiqas/K2ek5G/LSpTQ==}
     peerDependencies:
-      '@angular/common': '>=8.2.14'
-      '@angular/core': '>=8.2.14'
-      rxjs: '>=6.4.0'
+      '@angular/common': ^11.2.14 || ^12.0.0 || ^13.0.0
+      '@angular/core': ^11.2.14 || ^12.0.0 || ^13.0.0
     dependencies:
       '@angular/common': 13.1.1_@angular+core@13.1.1+rxjs@7.4.0
       '@angular/core': 13.1.1_rxjs@7.4.0+zone.js@0.11.4
       angular-resizable-element: 3.4.0_@angular+core@13.1.1
-      rxjs: 7.4.0
-      tslib: 1.14.1
+      tslib: 2.3.1
       xterm: 4.16.0
       xterm-addon-fit: 0.5.0_xterm@4.16.0
     dev: false
@@ -5927,11 +5925,15 @@ packages:
       tslib: 2.3.1
     dev: false
 
-  /ngx-drag-drop/2.0.0:
-    resolution: {integrity: sha512-t+4/eiC8zaXKqU1ruNfFEfGs1GpMNwpffD0baopvZFKjQHCb5rhNqFilJ54wO4T0OwGp4/RnsVhlcxe1mX6UJg==}
-    engines: {node: '>=8.9.0'}
+  /ngx-drag-drop/13.1.0-alpha.1_97c374658fb8cefbe875884a7f473e47:
+    resolution: {integrity: sha512-DtsJAWaNhFzaHErPZIBdtidK4Yzd7LIpPfCUR+4D3OBI1p3yQlj1lShCnvNgHerOvAa5NO1X06LTWVEug+t3cg==}
+    peerDependencies:
+      '@angular/common': ^13.1.0
+      '@angular/core': ^13.1.0
     dependencies:
-      tslib: 1.14.1
+      '@angular/common': 13.1.1_@angular+core@13.1.1+rxjs@7.4.0
+      '@angular/core': 13.1.1_rxjs@7.4.0+zone.js@0.11.4
+      tslib: 2.3.1
     dev: false
 
   /ngx-window-token/6.0.0_97c374658fb8cefbe875884a7f473e47:
