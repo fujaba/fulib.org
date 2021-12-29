@@ -50,9 +50,6 @@ jobs:
         run: pnpm install
       - name: Build Angular
         run: pnpm build
-      - name: Build Angular again
-        if: needs.deployment.outputs.namespace
-        run: pnpm build
       - name: Build the Docker Image
         if: needs.deployment.outputs.namespace
         uses: whoan/docker-build-with-cache-action@v5
