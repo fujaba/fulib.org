@@ -40,6 +40,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
   loggedIn = false;
   min?: number;
   max?: number;
+  multilineRemark = 0;
 
   originEvaluation?: Evaluation;
   originSolution?: Solution;
@@ -92,6 +93,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
           this.dto.points = evaluation.points;
           this.dto.remark = evaluation.remark;
           this.dto.snippets = evaluation.snippets;
+          this.multilineRemark = evaluation.remark.split('\n').length;
         }
       }),
       switchMap(evaluation => {
