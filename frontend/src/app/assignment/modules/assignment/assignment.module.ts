@@ -15,6 +15,7 @@ import {StatisticValueComponent} from './statistic-value/statistic-value.compone
 import {StatisticsComponent} from './statistics/statistics.component';
 import {SubmitModalComponent} from './submit-modal/submit-modal.component';
 import {AssignmentTasksComponent} from './tasks/tasks.component';
+import { ImportModalComponent } from './import-modal/import-modal.component';
 
 
 @NgModule({
@@ -27,6 +28,7 @@ import {AssignmentTasksComponent} from './tasks/tasks.component';
     StatisticsComponent,
     SearchComponent,
     StatisticValueComponent,
+    ImportModalComponent,
   ],
   imports: [
     CommonModule,
