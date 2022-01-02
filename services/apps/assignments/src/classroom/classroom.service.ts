@@ -9,7 +9,7 @@ import {AssignmentService} from '../assignment/assignment.service';
 import {environment} from '../environment';
 import {SearchService} from '../search/search.service';
 import {ReadSolutionDto} from '../solution/solution.dto';
-import {Solution, SolutionDocument} from '../solution/solution.schema';
+import {AuthorInfo, Solution, SolutionDocument} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {generateToken} from '../utils';
 import gunzip = require('gunzip-maybe');
@@ -37,6 +37,48 @@ export class ClassroomService {
     private searchService: SearchService,
     private http: HttpService,
   ) {
+  }
+
+  async importFiles(id: string, files: Express.Multer.File[]): Promise<ReadSolutionDto[]> {
+    const assignment = await this.assignmentService.findOne(id);
+    if (!assignment) {
+      return [];
+    }
+
+    const result = await this.solutionService.bulkWrite(files.map(file => {
+      const [key, value] = this.parseAuthorInfo(assignment, file.originalname);
+      const author: AuthorInfo = {email: '', name: '', studentId: ''};
+      author[key] = value;
+      const solution: Solution = {
+        assignment: id,
+        solution: '',
+        token: generateToken(),
+        author,
+      };
+      return {
+        updateOne: {
+          filter: {
+            assignment: assignment._id,
+            ['author.' + key]: value,
+          },
+          update: {$setOnInsert: solution},
+          upsert: true,
+        },
+      };
+    }));
+
+    return this.solutionService.findAll({_id: {$in: Object.values(result.upsertedIds)}});
+  }
+
+  private parseAuthorInfo(assignment: AssignmentDocument, filename: string): [keyof AuthorInfo, string] {
+    let match: RegExpMatchArray | null;
+    if (/[0-9]/.test(filename) && (match = filename.match(/^([a-zA-Z0-9_.-]+)\.(zip|jar)$/))) {
+      return ['studentId', match[1]];
+    } else if (assignment.classroom && assignment.classroom.prefix && filename.startsWith(assignment.classroom.prefix)) {
+      return ['github', filename.slice(assignment.classroom.prefix.length + 1, -4)];
+    } else {
+      return ['name', filename.slice(0, -4)];
+    }
   }
 
   async importSolutions(id: string, auth: string): Promise<ReadSolutionDto[]> {
