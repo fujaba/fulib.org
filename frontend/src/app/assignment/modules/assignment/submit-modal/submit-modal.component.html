@@ -13,6 +13,13 @@
     <button class="btn btn-secondary" (click)="modal.close()">
       Cancel
     </button>
+    <button
+      class="btn btn-primary"
+      *ngxClipboardIfSupported ngxClipboard [cbContent]="issue!.title + issue!.body"
+      (click)="saveAndClose(modal)"
+    >
+      Copy Markdown
+    </button>
     <a class="btn btn-primary bi-envelope" [href]="mailLink" (click)="saveAndClose(modal)">
       Draft Mail
     </a>
