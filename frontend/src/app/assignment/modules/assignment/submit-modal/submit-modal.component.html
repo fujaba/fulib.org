@@ -7,7 +7,7 @@
     <h1>
       {{ issue?.title }}
     </h1>
-    <app-markdown [markdown]="issue?.body"></app-markdown>
+    <app-markdown [markdown]="issue?.body" #markdownCmp></app-markdown>
   </ng-container>
   <ng-container modal-footer>
     <button class="btn btn-secondary" (click)="modal.close()">
@@ -19,6 +19,13 @@
       (click)="saveAndClose(modal)"
     >
       Copy Markdown
+    </button>
+    <button
+      class="btn btn-primary"
+      *ngxClipboardIfSupported ngxClipboard [cbContent]="markdownCmp.html"
+      (click)="saveAndClose(modal)"
+    >
+      Copy HTML
     </button>
     <a class="btn btn-primary bi-envelope" [href]="mailLink" (click)="saveAndClose(modal)">
       Draft Mail
