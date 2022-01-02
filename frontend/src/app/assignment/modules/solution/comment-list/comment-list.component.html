@@ -7,23 +7,21 @@
       <div class="card">
         <div class="card-header">
           <app-author-name [name]="comment.author" [email]="comment.email"></app-author-name>
-          <span *ngIf="comment.distinguished" class="badge badge-pill badge-primary"
-                ngbTooltip="Assignment Authority">
-              &#10003;
-            </span>
+          <span *ngIf="comment.distinguished" class="badge badge-pill badge-primary" ngbTooltip="Assignment Authority">
+            &#10003;
+          </span>
           <span class="text-muted">
-              &#8226;
-            {{comment.timestamp | date:'medium'}}
-            </span>
-          <ng-container *ngIf="userId && comment.createdBy === userId">
             &#8226;
+            {{comment.timestamp | date:'medium'}}
+          </span>
+          <ng-container *ngIf="userId && comment.createdBy === userId">
             <button type="button" class="btn btn-sm btn-outline-danger" (click)="delete(comment)">
               Delete
             </button>
           </ng-container>
         </div>
         <div class="card-body">
-          <div class="card-text">
+          <div class="card-text mb-n3">
             <app-markdown [markdown]="comment.body"></app-markdown>
           </div>
         </div>
@@ -43,15 +41,9 @@
             <label for="commentNameInput" class="sr-only">Name</label>
             <input type="text" class="form-control mr-2" id="commentNameInput" placeholder="John Doe"
                    [(ngModel)]="commentName" (change)="saveCommentDraft()" [disabled]="!!userId">
-
-            <span class="mr-2">&#8226;</span>
-
             <label for="commentEmailInput" class="sr-only">Email</label>
             <input type="text" class="form-control mr-2" id="commentEmailInput" placeholder="jdoe@example.com"
                    [(ngModel)]="commentEmail" (change)="saveCommentDraft()" [disabled]="!!userId">
-
-            <span class="mr-2">&#8226;</span>
-
             <button type="button" class="btn btn-primary mr-2" id="commentSubmitButton"
                     ngbTooltip="Keyboard Shortcuts: Ctrl-&#9166;"
                     (click)="submitComment()" [disabled]="submitting">

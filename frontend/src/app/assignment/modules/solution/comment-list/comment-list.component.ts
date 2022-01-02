@@ -16,10 +16,10 @@ export class CommentListComponent implements OnInit, OnDestroy {
   comments: Comment[] = [];
 
   userId?: string;
-  commentName: string;
-  commentEmail: string;
-  commentBody: string;
-  submitting: boolean;
+  commentName = '';
+  commentEmail = '';
+  commentBody = '';
+  submitting = false;
 
   private subscription = new Subscription();
 
