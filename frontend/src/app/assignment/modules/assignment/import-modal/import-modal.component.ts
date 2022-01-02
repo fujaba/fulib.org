@@ -12,6 +12,7 @@ import {SolutionService} from '../../../services/solution.service';
 export class ImportModalComponent implements OnInit {
   mode = 'github';
   importing = false;
+  files: File[] = [];
 
   constructor(
     private solutionService: SolutionService,
@@ -24,9 +25,10 @@ export class ImportModalComponent implements OnInit {
   }
 
   import(modal: ModalComponent) {
+    console.log(this.files);
     const assignmentId = this.route.snapshot.params.aid;
     this.importing = true;
-    this.solutionService.import(assignmentId).subscribe(results => {
+    this.solutionService.import(assignmentId, this.files).subscribe(results => {
       this.importing = false;
       this.toastService.success('Import', `Successfully imported ${results.length} solutions`);
       modal.close();
@@ -34,5 +36,9 @@ export class ImportModalComponent implements OnInit {
       this.importing = false;
       this.toastService.error('Import', 'Failed to import solutions', error);
     });
+  }
+
+  setFiles(files: FileList) {
+    this.files = Array.from(files);
   }
 }
