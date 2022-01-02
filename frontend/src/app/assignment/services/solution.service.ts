@@ -206,6 +206,12 @@ export class SolutionService {
     return this.http.delete<Comment>(url);
   }
 
+  streamComments(assignment: string, solution: string): Observable<{ event: string, comment: Comment }> {
+    const token = this.getToken(assignment, solution) || this.assignmentService.getToken(assignment);
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/comments/events?token=${token}`;
+    return this.stream<Comment, 'comment'>(url);
+  }
+
   getEvaluations(assignment: Assignment | string, id?: string, task?: string): Observable<Evaluation[]> {
     const assignmentID = asID(assignment);
     const headers = {};
@@ -221,6 +227,10 @@ export class SolutionService {
   streamEvaluations(assignment: string, solution: string): Observable<{ event: string, evaluation: Evaluation }> {
     const token = this.assignmentService.getToken(assignment);
     const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/evaluations/events?token=${token}`;
+    return this.stream<Evaluation, 'evaluation'>(url);
+  }
+
+  private stream<T, K extends string>(url: string): Observable<{ event: string } & Record<K, T>> {
     return new Observable(observer => {
       const eventSource = new EventSource(url);
       eventSource.addEventListener('message', (event: MessageEvent) => observer.next(JSON.parse(event.data)));
