@@ -61,9 +61,7 @@ export class SubmitModalComponent implements OnInit {
       this.draftLink = `https://github.com/${org}/${prefix}-${github}/issues/new?title=${encodedTitle}&body=${encodedBody}`;
     }
 
-    if (email) {
-      this.mailLink = `mailto:${email}?subject=${encodedTitle}&body=${encodedBody}`;
-    }
+    this.mailLink = `mailto:${email ?? ''}?subject=${encodedTitle}&body=${encodedBody}`;
   }
 
   saveAndClose(modal: ModalComponent): void {
