@@ -3,11 +3,27 @@
     Import Solutions
   </ng-container>
   <ng-container modal-body>
-
+    <ul ngbNav #nav="ngbNav" [(activeId)]="mode" class="nav-tabs mx-n3 px-3 mb-3">
+      <li ngbNavItem="github">
+        <a ngbNavLink>
+          GitHub
+        </a>
+        <ng-template ngbNavContent>
+          Imports solutions from GitHub using the organisation and prefix configured in the
+          <a routerLink="../edit/classroom">assignment settings</a>.
+          No further configuration is required.
+        </ng-template>
+      </li>
+    </ul>
+    <div [ngbNavOutlet]="nav"></div>
   </ng-container>
   <ng-container modal-footer>
     <button class="btn btn-secondary" (click)="modal.close()">
       Cancel
+    </button>
+    <button class="btn btn-success" (click)="import(modal)" [disabled]="importing">
+      <span *ngIf="importing" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      {{ importing ? 'Importing...' : 'Import' }}
     </button>
   </ng-container>
 </app-modal>
