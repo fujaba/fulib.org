@@ -4,7 +4,6 @@ import axios, {Method} from 'axios';
 import {createReadStream} from 'fs';
 import {firstValueFrom} from 'rxjs';
 import {Stream} from 'stream';
-import {extract} from 'tar-stream';
 import {Entry as ZipEntry, Parse as unzip} from 'unzipper';
 import {AssignmentDocument} from '../assignment/assignment.schema';
 import {AssignmentService} from '../assignment/assignment.service';
@@ -14,7 +13,6 @@ import {ReadSolutionDto} from '../solution/solution.dto';
 import {AuthorInfo, Solution, SolutionDocument} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {generateToken} from '../utils';
-import gunzip = require('gunzip-maybe');
 
 interface RepositoryInfo {
   name: string;
@@ -72,17 +70,9 @@ export class ClassroomService {
     if (assignment.classroom?.codeSearch) {
       for (let index = 0; index < files.length; index++) {
         const file = files[index];
-        createReadStream(file.path).pipe(unzip()).on('entry', (entry: ZipEntry) => {
-          if (entry.type !== 'File' || entry.extra.uncompressedSize > MAX_FILE_SIZE) {
-            entry.autodrain();
-            return;
-          }
-          entry.buffer().then(buffer => {
-            const content = buffer.toString('utf-8');
-            const solution = result.upsertedIds[index];
-            this.searchService.addFile(id, solution, entry.path, content);
-          });
-        });
+        const stream = createReadStream(file.path);
+        const solution = result.upsertedIds[index];
+        this.importZipStream(stream, id, solution);
       }
     }
 
@@ -98,6 +88,21 @@ export class ClassroomService {
     } else {
       return ['name', filename.slice(0, -4)];
     }
+  }
+
+  private importZipStream(stream: Stream, assignment: string, solution: string, commit?: string) {
+    stream.pipe(unzip()).on('entry', (entry: ZipEntry) => {
+      if (entry.type !== 'File' || entry.extra.uncompressedSize > MAX_FILE_SIZE) {
+        entry.autodrain();
+        return;
+      }
+      entry.buffer().then(buffer => {
+        const content = buffer.toString('utf-8');
+        let index: number;
+        const path = commit && (index = entry.path.indexOf(commit)) >= 0 ? entry.path.substring(index + commit.length + 1) : entry.path;
+        this.searchService.addFile(assignment, solution, path, content);
+      });
+    });
   }
 
   async importSolutions(id: string, auth: string): Promise<ReadSolutionDto[]> {
@@ -153,28 +158,17 @@ export class ClassroomService {
   private addContentsToIndex(assignment: AssignmentDocument, solution: SolutionDocument, githubToken: string) {
     const {org, prefix} = assignment.classroom!;
     const {author: {github}, commit} = solution;
-    this.http.get<Stream>(`https://api.github.com/repos/${org}/${prefix}-${github}/tarball/${commit}`, {
+    if (!github) {
+      return;
+    }
+
+    this.http.get<Stream>(`https://api.github.com/repos/${org}/${prefix}-${github}/zipball/${commit}`, {
       headers: {
         Authorization: 'Bearer ' + githubToken,
       },
       responseType: 'stream',
     }).subscribe(response => {
-      const tar = extract();
-      tar.on('entry', (header, stream, next) => {
-        if (header.type !== 'file' || header.size && header.size > MAX_FILE_SIZE) {
-          stream.on('end', () => next());
-          stream.resume();
-          return;
-        }
-        const filename = header.name.substring(header.name.indexOf('/') + 1);
-        let content = '';
-        stream.on('data', data => content += data.toString('utf8'));
-        stream.on('end', () => {
-          this.searchService.addFile(assignment.id, solution.id, filename, content);
-          next();
-        });
-      });
-      response.data.pipe(gunzip()).pipe(tar);
+      this.importZipStream(response.data, assignment.id, solution.id, commit);
     }, error => {
       console.error(`Failed to index ${org}/${prefix}-${github}: ${error.message}`);
     });
