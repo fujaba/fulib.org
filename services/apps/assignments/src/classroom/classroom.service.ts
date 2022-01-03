@@ -1,9 +1,11 @@
 import {HttpService} from '@nestjs/axios';
 import {Injectable} from '@nestjs/common';
 import axios, {Method} from 'axios';
+import {createReadStream} from 'fs';
 import {firstValueFrom} from 'rxjs';
 import {Stream} from 'stream';
 import {extract} from 'tar-stream';
+import {Entry as ZipEntry, Parse as unzip} from 'unzipper';
 import {AssignmentDocument} from '../assignment/assignment.schema';
 import {AssignmentService} from '../assignment/assignment.service';
 import {environment} from '../environment';
@@ -66,6 +68,23 @@ export class ClassroomService {
         },
       };
     }));
+
+    if (assignment.classroom?.codeSearch) {
+      for (let index = 0; index < files.length; index++) {
+        const file = files[index];
+        createReadStream(file.path).pipe(unzip()).on('entry', (entry: ZipEntry) => {
+          if (entry.type !== 'File' || entry.extra.uncompressedSize > MAX_FILE_SIZE) {
+            entry.autodrain();
+            return;
+          }
+          entry.buffer().then(buffer => {
+            const content = buffer.toString('utf-8');
+            const solution = result.upsertedIds[index];
+            this.searchService.addFile(id, solution, entry.path, content);
+          });
+        });
+      }
+    }
 
     return this.solutionService.findAll({_id: {$in: Object.values(result.upsertedIds)}});
   }
