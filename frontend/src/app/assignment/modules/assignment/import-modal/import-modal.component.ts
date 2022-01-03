@@ -25,7 +25,6 @@ export class ImportModalComponent implements OnInit {
   }
 
   import(modal: ModalComponent) {
-    console.log(this.files);
     const assignmentId = this.route.snapshot.params.aid;
     this.importing = true;
     this.solutionService.import(assignmentId, this.files).subscribe(results => {
