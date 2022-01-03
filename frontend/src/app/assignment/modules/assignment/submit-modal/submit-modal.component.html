@@ -7,17 +7,29 @@
     <h1>
       {{ issue?.title }}
     </h1>
-    <app-markdown [markdown]="issue?.body"></app-markdown>
+    <app-markdown [markdown]="issue?.body" #markdownCmp></app-markdown>
   </ng-container>
   <ng-container modal-footer>
     <button class="btn btn-secondary" (click)="modal.close()">
       Cancel
     </button>
-    <span class="d-inline-block" [ngbTooltip]="mailLink ? undefined : 'Student Email needs to be set'">
-      <a class="btn btn-primary bi-envelope" [href]="mailLink" [class.disabled]="!mailLink" (click)="saveAndClose(modal)">
-        Draft Mail
-      </a>
-    </span>
+    <button
+      class="btn btn-primary"
+      *ngxClipboardIfSupported ngxClipboard [cbContent]="issue!.title + issue!.body"
+      (click)="saveAndClose(modal)"
+    >
+      Copy Markdown
+    </button>
+    <button
+      class="btn btn-primary"
+      *ngxClipboardIfSupported ngxClipboard [cbContent]="markdownCmp.html"
+      (click)="saveAndClose(modal)"
+    >
+      Copy HTML
+    </button>
+    <a class="btn btn-primary bi-envelope" [href]="mailLink" (click)="saveAndClose(modal)">
+      Draft Mail
+    </a>
     <span class="d-inline-block" [ngbTooltip]="draftLink ? undefined : draftIssueTooltip">
       <a class="btn btn-primary bi-github" [href]="draftLink" target="_blank" [class.disabled]="!draftLink" (click)="saveAndClose(modal)">
         Draft Issue
