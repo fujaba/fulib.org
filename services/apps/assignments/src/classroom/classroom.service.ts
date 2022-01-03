@@ -1,15 +1,17 @@
 import {HttpService} from '@nestjs/axios';
 import {Injectable} from '@nestjs/common';
 import axios, {Method} from 'axios';
+import {createReadStream} from 'fs';
 import {firstValueFrom} from 'rxjs';
 import {Stream} from 'stream';
 import {extract} from 'tar-stream';
+import {Entry as ZipEntry, Parse as unzip} from 'unzipper';
 import {AssignmentDocument} from '../assignment/assignment.schema';
 import {AssignmentService} from '../assignment/assignment.service';
 import {environment} from '../environment';
 import {SearchService} from '../search/search.service';
 import {ReadSolutionDto} from '../solution/solution.dto';
-import {Solution, SolutionDocument} from '../solution/solution.schema';
+import {AuthorInfo, Solution, SolutionDocument} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {generateToken} from '../utils';
 import gunzip = require('gunzip-maybe');
@@ -37,6 +39,65 @@ export class ClassroomService {
     private searchService: SearchService,
     private http: HttpService,
   ) {
+  }
+
+  async importFiles(id: string, files: Express.Multer.File[]): Promise<ReadSolutionDto[]> {
+    const assignment = await this.assignmentService.findOne(id);
+    if (!assignment) {
+      return [];
+    }
+
+    const result = await this.solutionService.bulkWrite(files.map(file => {
+      const [key, value] = this.parseAuthorInfo(assignment, file.originalname);
+      const author: AuthorInfo = {email: '', name: '', studentId: ''};
+      author[key] = value;
+      const solution: Solution = {
+        assignment: id,
+        solution: '',
+        token: generateToken(),
+        author,
+      };
+      return {
+        updateOne: {
+          filter: {
+            assignment: assignment._id,
+            ['author.' + key]: value,
+          },
+          update: {$setOnInsert: solution},
+          upsert: true,
+        },
+      };
+    }));
+
+    if (assignment.classroom?.codeSearch) {
+      for (let index = 0; index < files.length; index++) {
+        const file = files[index];
+        createReadStream(file.path).pipe(unzip()).on('entry', (entry: ZipEntry) => {
+          if (entry.type !== 'File' || entry.extra.uncompressedSize > MAX_FILE_SIZE) {
+            entry.autodrain();
+            return;
+          }
+          entry.buffer().then(buffer => {
+            const content = buffer.toString('utf-8');
+            const solution = result.upsertedIds[index];
+            this.searchService.addFile(id, solution, entry.path, content);
+          });
+        });
+      }
+    }
+
+    return this.solutionService.findAll({_id: {$in: Object.values(result.upsertedIds)}});
+  }
+
+  private parseAuthorInfo(assignment: AssignmentDocument, filename: string): [keyof AuthorInfo, string] {
+    let match: RegExpMatchArray | null;
+    if (/[0-9]/.test(filename) && (match = filename.match(/^([a-zA-Z0-9_.-]+)\.(zip|jar)$/))) {
+      return ['studentId', match[1]];
+    } else if (assignment.classroom && assignment.classroom.prefix && filename.startsWith(assignment.classroom.prefix)) {
+      return ['github', filename.slice(assignment.classroom.prefix.length + 1, -4)];
+    } else {
+      return ['name', filename.slice(0, -4)];
+    }
   }
 
   async importSolutions(id: string, auth: string): Promise<ReadSolutionDto[]> {

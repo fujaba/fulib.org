@@ -111,7 +111,6 @@ export class SearchService implements OnModuleInit {
   async find(assignment: string, snippet: string, context?: number, glob?: string): Promise<SearchResult[]> {
     const uniqueId = randomUUID();
     const regex = glob && this.glob2RegExp(glob);
-    console.log(regex);
     const result = await this.elasticsearchService.search({
       index: 'files',
       body: {

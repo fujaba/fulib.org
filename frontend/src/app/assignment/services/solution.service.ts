@@ -149,10 +149,18 @@ export class SolutionService {
     );
   }
 
-  import(assignment: string): Observable<Solution[]> {
+  import(assignment: string, files?: File[]): Observable<Solution[]> {
     const headers = {};
     this.addAssignmentToken(headers, assignment);
-    return this.http.post<Solution[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/import`, {}, {headers});
+    let body;
+    if (files && files.length) {
+      const data = new FormData();
+      for (let file of files) {
+        data.append('files', file, file.name);
+      }
+      body = data;
+    }
+    return this.http.post<Solution[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/import`, body, {headers});
   }
 
   get(assignment: Assignment | string, id: string): Observable<Solution> {

@@ -42,16 +42,4 @@ export class AssignmentComponent implements OnInit {
       }
     });
   }
-
-  import() {
-    // TODO update table
-    this.importing = true;
-    this.solutionService.import(this.assignment!._id!).subscribe(results => {
-      this.importing = false;
-      this.toastService.success('Import', `Successfully imported ${results.length} solutions`);
-    }, error => {
-      this.importing = false;
-      this.toastService.error('Import', 'Failed to import solutions', error);
-    });
-  }
 }

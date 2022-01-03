@@ -1,5 +1,7 @@
 import {HttpModule} from '@nestjs/axios';
 import {Module} from '@nestjs/common';
+import {MulterModule} from '@nestjs/platform-express';
+import {diskStorage} from 'multer';
 import {AssignmentModule} from '../assignment/assignment.module';
 import {EvaluationModule} from '../evaluation/evaluation.module';
 import {GradingModule} from '../grading/grading.module';
@@ -17,6 +19,11 @@ import {ClassroomService} from './classroom.service';
     GradingModule,
     EvaluationModule,
     HttpModule,
+    MulterModule.register({
+      storage: diskStorage({
+        destination: './data/upload',
+      }),
+    }),
   ],
   providers: [
     ClassroomService,

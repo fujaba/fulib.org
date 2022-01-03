@@ -1,0 +1,59 @@
+<app-modal #modal [back]="['../solutions']" [backOptions]="{relativeTo: route}">
+  <ng-container modal-header>
+    Import Solutions
+  </ng-container>
+  <ng-container modal-body>
+    <ul ngbNav #nav="ngbNav" [(activeId)]="mode" class="nav-tabs mx-n3 px-3 mb-3">
+      <li ngbNavItem="github">
+        <a ngbNavLink>
+          GitHub
+        </a>
+        <ng-template ngbNavContent>
+          Imports solutions from GitHub using the organisation and prefix configured in the
+          <a routerLink="../edit/classroom">assignment settings</a>.
+          No further configuration is required.
+        </ng-template>
+      </li>
+      <li ngbNavItem="files">
+        <a ngbNavLink>
+          Files
+        </a>
+        <ng-template ngbNavContent>
+          <p>
+            Select multiple zip or jar files from your disk to upload.
+            The file name may have any of the following formats:
+          </p>
+          <ul>
+            <li>
+              Digits, e.g. <code>12345678.zip</code>, interpreted as Student IDs.
+            </li>
+            <li>
+              Prefixed with the same GitHub Classroom prefix as the assignment,
+              e.g. <code>assignment-1-Student.zip</code>,
+              which extracts the GitHub Username like <code>Student</code>.
+            </li>
+            <li>
+              Anything else, with the file name without extension becoming the student name.
+            </li>
+          </ul>
+          <div class="custom-file">
+            <input type="file" class="custom-file-input" id="files" multiple accept="application/zip" #input (change)="setFiles(input.files!)">
+            <label class="custom-file-label" for="files">
+              {{ files.length ? files.length + ' files' : 'Choose files' }}
+            </label>
+          </div>
+        </ng-template>
+      </li>
+    </ul>
+    <div [ngbNavOutlet]="nav"></div>
+  </ng-container>
+  <ng-container modal-footer>
+    <button class="btn btn-secondary" (click)="modal.close()">
+      Cancel
+    </button>
+    <button class="btn btn-success" (click)="import(modal)" [disabled]="importing">
+      <span *ngIf="importing" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      {{ importing ? 'Importing...' : 'Import' }}
+    </button>
+  </ng-container>
+</app-modal>
