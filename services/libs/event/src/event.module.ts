@@ -1,8 +1,9 @@
-import {DynamicModule} from '@nestjs/common';
+import {DynamicModule, Global} from '@nestjs/common';
 import {EventEmitterModule} from '@nestjs/event-emitter';
 import {ClientsModule, Transport} from '@nestjs/microservices';
 import {EventService} from './event.service';
 
+@Global()
 export class EventModule {
   static forRoot(options: { nats: any }): DynamicModule {
     return {

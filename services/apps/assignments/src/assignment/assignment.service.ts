@@ -122,7 +122,7 @@ export class AssignmentService {
   }
 
   private emit(action: string, id: string, assignment: Assignment) {
-    const users = [assignment.token, assignment.createdBy].filter(i => i);
+    const users = [assignment.token, assignment.createdBy].filter((i): i is string => !!i);
     this.eventService.emit(`assignment.${id}.${action}`, assignment, users);
   }
 }
