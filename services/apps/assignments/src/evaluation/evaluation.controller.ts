@@ -1,8 +1,9 @@
 import {AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound} from '@app/not-found';
-import {Body, Controller, Delete, Get, Param, Patch, Post, Query} from '@nestjs/common';
+import {Body, Controller, Delete, Get, MessageEvent, Param, Patch, Post, Query, Sse} from '@nestjs/common';
 import {ApiCreatedResponse, ApiOkResponse, ApiQuery, ApiTags} from '@nestjs/swagger';
 import {FilterQuery} from 'mongoose';
+import {interval, mapTo, merge, Observable} from 'rxjs';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {SolutionAuth} from '../solution/solution-auth.decorator';
 import {CreateEvaluationDto, UpdateEvaluationDto} from './evaluation.dto';
@@ -12,7 +13,7 @@ import {EvaluationService} from './evaluation.service';
 const forbiddenResponse = 'Not owner of solution or assignment, or invalid Assignment-Token or Solution-Token.';
 const forbiddenAssignmentResponse = 'Not owner of assignment, or invalid Assignment-Token.';
 
-@Controller('assignments/:assignment/solutions/:solution/evaluations')
+@Controller('assignments/:assignment')
 @ApiTags('Evaluations')
 export class EvaluationController {
 
@@ -21,7 +22,34 @@ export class EvaluationController {
   ) {
   }
 
-  @Post()
+  @Get('evaluations')
+  @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
+  @ApiOkResponse({type: [Evaluation]})
+  @ApiQuery({name: 'file', required: false})
+  @ApiQuery({name: 'task', required: false})
+  async findByAssignment(
+    @Param('assignment') assignment: string,
+    @Query('file') file?: string,
+    @Query('task') task?: string,
+  ): Promise<Evaluation[]> {
+    const where: FilterQuery<Evaluation> = {assignment};
+    file && (where['snippets.file'] = file);
+    task && (where.task = task);
+    return this.evaluationService.findAll(where);
+  }
+
+  @Get('evaluations/:id')
+  @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
+  @ApiOkResponse({type: Evaluation})
+  @NotFound()
+  async findOneByAssignment(
+    @Param('assignment') assignment: string,
+    @Param('id') id: string,
+  ): Promise<Evaluation | null> {
+    return this.evaluationService.findOne(id);
+  }
+
+  @Post('solutions/:solution/evaluations')
   @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
   @ApiCreatedResponse({type: Evaluation})
   async create(
@@ -33,7 +61,7 @@ export class EvaluationController {
     return this.evaluationService.create(assignment, solution, dto, user?.sub);
   }
 
-  @Get()
+  @Get('solutions/:solution/evaluations')
   @SolutionAuth({forbiddenResponse})
   @ApiOkResponse({type: [Evaluation]})
   @ApiQuery({name: 'file', required: false})
@@ -50,7 +78,20 @@ export class EvaluationController {
     return this.evaluationService.findAll(where);
   }
 
-  @Get(':id')
+  @Sse('solutions/:solution/evaluations/events')
+  @SolutionAuth({forbiddenResponse})
+  @ApiOkResponse({type: Evaluation})
+  stream(
+    @Param('assignment') assignment: string,
+    @Param('solution') solution: string,
+  ): Observable<MessageEvent> {
+    return merge(
+      this.evaluationService.stream(assignment, solution),
+      interval(15000).pipe(mapTo({data: ''})),
+    );
+  }
+
+  @Get('solutions/:solution/evaluations/:id')
   @SolutionAuth({forbiddenResponse})
   @ApiOkResponse({type: Evaluation})
   @NotFound()
@@ -62,7 +103,7 @@ export class EvaluationController {
     return this.evaluationService.findOne(id);
   }
 
-  @Patch(':id')
+  @Patch('solutions/:solution/evaluations/:id')
   @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
   @ApiOkResponse({type: Evaluation})
   @NotFound()
@@ -73,7 +114,7 @@ export class EvaluationController {
     return this.evaluationService.update(id, dto);
   }
 
-  @Delete(':id')
+  @Delete('solutions/:solution/evaluations/:id')
   @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
   @ApiOkResponse({type: Evaluation})
   @NotFound()

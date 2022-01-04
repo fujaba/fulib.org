@@ -1,4 +1,5 @@
-import {Controller, Headers, Param, Post} from '@nestjs/common';
+import {Controller, Headers, Param, Post, UploadedFiles, UseInterceptors} from '@nestjs/common';
+import {FilesInterceptor} from '@nestjs/platform-express';
 import {ApiCreatedResponse, ApiTags} from '@nestjs/swagger';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {ReadSolutionDto} from '../solution/solution.dto';
@@ -15,23 +16,14 @@ export class ClassroomController {
   }
 
   @Post('assignments/:assignment/solutions/import')
+  @UseInterceptors(FilesInterceptor('files'))
   @AssignmentAuth({forbiddenResponse})
   @ApiCreatedResponse({type: [ReadSolutionDto]})
   async importSolutions(
     @Param('assignment') assignment: string,
     @Headers('Authorization') auth: string,
+    @UploadedFiles() files?: Express.Multer.File[],
   ): Promise<ReadSolutionDto[]> {
-    return this.classroomService.importSolutions(assignment, auth);
-  }
-
-  @Post('assignments/:assignment/solutions/:solution/export')
-  @AssignmentAuth({forbiddenResponse})
-  @ApiCreatedResponse()
-  async exportGithubIssue(
-    @Param('assignment') assignment: string,
-    @Param('solution') solution: string,
-    @Headers('Authorization') auth: string,
-  ) {
-    return this.classroomService.exportGithubIssue(assignment, solution, auth);
+    return files ? this.classroomService.importFiles(assignment, files) : this.classroomService.importSolutions(assignment, auth);
   }
 }

@@ -1,3 +1,19 @@
+export class Snippet {
+  file: string;
+  from: { line: number; };
+  to: { line: number; };
+  comment: string;
+  code: string;
+  context?: string;
+}
+
+export interface CodeSearchInfo {
+  origin?: string;
+  created?: number;
+  updated?: number;
+  deleted?: number;
+}
+
 export class Evaluation {
   assignment: string;
   solution: string;
@@ -10,9 +26,13 @@ export class Evaluation {
   author: string;
   remark: string;
   points: number;
-  snippets: never[]; // TODO
+  snippets: Snippet[];
+
+  codeSearch?: CodeSearchInfo;
 }
 
-export type CreateEvaluationDto = Omit<Evaluation, '_id' | 'assignment' | 'solution' | 'createdAt' | 'createdBy' | 'updatedAt'>;
+export interface CreateEvaluationDto extends Omit<Evaluation, '_id' | 'assignment' | 'solution' | 'createdAt' | 'createdBy' | 'updatedAt' | 'codeSearch'> {
+  codeSearch?: boolean;
+}
 
 export type UpdateEvaluationDto = Partial<CreateEvaluationDto>;

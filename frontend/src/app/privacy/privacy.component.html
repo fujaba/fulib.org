@@ -46,8 +46,11 @@
     </p>
   </ng-container>
   <ng-container modal-footer>
-    <button type="button" class="btn btn-primary" (click)="modal.close(); savePrivacy()">
-      Save & Close
+    <button type="button" class="btn btn-secondary" (click)="modal.close()">
+      Cancel
+    </button>
+    <button type="button" class="btn btn-primary" (click)="modal.close(); savePrivacy()" [disabled]="!privacy">
+      Save
     </button>
   </ng-container>
 </app-modal>

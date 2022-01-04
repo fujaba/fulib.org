@@ -2,8 +2,8 @@ import {EventService} from '@app/event';
 import {UserToken} from '@app/keycloak-auth';
 import {HttpService} from '@nestjs/axios';
 import {Injectable} from '@nestjs/common';
-import {InjectConnection, InjectModel} from '@nestjs/mongoose';
-import {Connection, FilterQuery, Model} from 'mongoose';
+import {InjectModel} from '@nestjs/mongoose';
+import {FilterQuery, Model} from 'mongoose';
 import {environment} from '../environment';
 import {CreateEvaluationDto} from '../evaluation/evaluation.dto';
 import {generateToken, idFilter} from '../utils';
@@ -14,11 +14,10 @@ import {Assignment, AssignmentDocument, Task} from './assignment.schema';
 export class AssignmentService {
   constructor(
     @InjectModel('assignments') private model: Model<Assignment>,
-    @InjectConnection() connection: Connection,
     private http: HttpService,
     private eventService: EventService,
   ) {
-    connection.once('connected', () => this.migrate());
+    this.migrate();
   }
 
   async migrate() {
@@ -31,6 +30,19 @@ export class AssignmentService {
       },
     });
     console.info('Migrated', result.modifiedCount, 'assignments');
+  }
+
+  findTask(tasks: Task[], id: string): Task | undefined {
+    for (const task of tasks) {
+      if (task._id == id) {
+        return task;
+      }
+      const subTask = this.findTask(task.children, id);
+      if (subTask) {
+        return subTask;
+      }
+    }
+    return undefined;
   }
 
   async check(solution: string, {tasks}: Pick<Assignment, 'tasks'>): Promise<CreateEvaluationDto[]> {
@@ -64,37 +76,6 @@ export class AssignmentService {
       points: response?.data.exitCode === 0 ? Math.max(task.points, 0) : Math.min(task.points, 0),
       snippets: [],
     };
-  }
-
-  createPointsCache(tasks: Task[], evaluations: Record<string, CreateEvaluationDto>): Record<string, number> {
-    const cache = {};
-    for (let task of tasks) {
-      this.getTaskPoints(task, evaluations, cache);
-    }
-    return cache;
-  }
-
-  private getTaskPoints(task: Task, evaluations: Record<string, CreateEvaluationDto>, cache: Record<string, number>): number {
-    return cache[task._id] ??= this.calculateTaskPoints(task, evaluations, cache);
-  }
-
-  private calculateTaskPoints(task: Task, evaluations: Record<string, CreateEvaluationDto>, cache: Record<string, number>): number {
-    const evaluation = evaluations?.[task._id];
-    if (evaluation) {
-      // An evaluation overrides children.
-      return evaluation.points;
-    }
-
-    if (!task.children.length) {
-      // A task with positive points but no children defaults to being failed.
-      return 0;
-    }
-
-    const positiveChildDeduction = task.children.reduce((a, c) => c.points > 0 ? a + c.points : a, 0);
-    // A task with children is granted, by default, its total points minus the total of positive children
-    const basePoints = task.points - positiveChildDeduction;
-    const childSum = task.children.reduce((a, c) => a + this.getTaskPoints(c, evaluations, cache), 0);
-    return basePoints + childSum;
   }
 
   async create(dto: CreateAssignmentDto, userId?: string): Promise<AssignmentDocument> {

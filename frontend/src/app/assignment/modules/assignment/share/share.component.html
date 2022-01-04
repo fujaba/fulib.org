@@ -1,0 +1,64 @@
+<div class="container">
+  <h5>
+    Student Link
+  </h5>
+  <p>
+    You can now give your students the following link:
+  </p>
+  <div class="input-group">
+    <input #linkInput type="text" class="form-control" readonly [value]="origin + '/assignments/' + id">
+    <div class="input-group-append" *ngxClipboardIfSupported>
+      <button type="button" class="btn btn-outline-secondary" [ngxClipboard]="linkInput">
+        Copy
+      </button>
+    </div>
+  </div>
+  <hr/>
+  <h5>
+    Access Token
+  </h5>
+  <p>
+    To view submissions on other devices, you may be asked for the following token.
+    Please save it or write it down somewhere.
+    <span class="text-danger">
+              Keep this token secret, do not share it with students!
+            </span>
+  </p>
+  <div class="input-group">
+    <input #tokenInput type="text" class="form-control text-monospace" readonly [value]="token">
+    <div class="input-group-append" *ngxClipboardIfSupported>
+      <button type="button" class="btn btn-outline-secondary" [ngxClipboard]="tokenInput">
+        Copy
+      </button>
+    </div>
+  </div>
+  <hr/>
+  <h5>
+    Teaching Assistant Invitation
+  </h5>
+  <p>
+    You can invite Teaching Assistants by giving them the following link.
+    <span class="text-danger">
+              It includes the Access Token, so keep the link secret and do not share it with students!
+            </span>
+  </p>
+  <div class="input-group">
+    <input #taLinkInput type="text" class="form-control" readonly
+           [value]="origin + '/assignments/' + id + '/solutions?atok=' + token">
+    <div class="input-group-append" *ngxClipboardIfSupported>
+      <button type="button" class="btn btn-outline-secondary" [ngxClipboard]="taLinkInput">
+        Copy
+      </button>
+    </div>
+  </div>
+  <hr/>
+  <h5>
+    fulibFeedback Settings
+  </h5>
+  <p>
+    Use the button below to configure fulibFeedback for this assignment.
+  </p>
+  <a class="btn btn-primary" [href]="ide + '://fulib.fulibfeedback/configure?api_server=' + encodedApiServer + '&assignment=' + id + '&token=' + token | safeUrl">
+    Configure
+  </a>
+</div>

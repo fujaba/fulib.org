@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
 import Assignment from '../model/assignment';
-import {CreateEvaluationDto} from '../model/evaluation';
+import {CreateEvaluationDto, Evaluation} from '../model/evaluation';
 
 @Injectable()
 export class AssignmentContext {
   assignment: Assignment;
-  evaluations?: Record<string, CreateEvaluationDto>;
-
+  evaluations?: Record<string, Evaluation | CreateEvaluationDto>;
+  saveDraft: () => void;
 }

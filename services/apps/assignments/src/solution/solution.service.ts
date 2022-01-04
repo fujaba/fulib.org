@@ -1,7 +1,7 @@
 import {UserToken} from '@app/keycloak-auth';
 import {Injectable} from '@nestjs/common';
-import {InjectConnection, InjectModel} from '@nestjs/mongoose';
-import {Connection, FilterQuery, Model} from 'mongoose';
+import {InjectModel} from '@nestjs/mongoose';
+import {FilterQuery, Model} from 'mongoose';
 import {AssignmentService} from '../assignment/assignment.service';
 import {CreateEvaluationDto} from '../evaluation/evaluation.dto';
 import {Evaluation} from '../evaluation/evaluation.schema';
@@ -13,18 +13,24 @@ import {Solution, SolutionDocument} from './solution.schema';
 @Injectable()
 export class SolutionService {
   constructor(
-    @InjectModel('solutions') private model: Model<Solution>,
-    @InjectConnection() connection: Connection,
+    @InjectModel('solutions') public model: Model<Solution>,
     private assignmentService: AssignmentService,
     private evaluationService: EvaluationService,
   ) {
-    connection.once('connected', () => this.migrate());
+    this.migrate();
   }
 
   async migrate() {
-    let count = 0;
-    for await (const solution of this.model.find({results: {$exists: true}})) {
-      for (const result of solution.results!) {
+    const solutions: Pick<SolutionDocument, 'assignment' | '_id' | 'results'>[] = await this.model
+      .find({results: {$type: 4}})
+      .select('assignment _id results')
+      .exec();
+    await Promise.all(solutions.map(async ({assignment, _id, results}) => {
+      if (!results) {
+        // TODO why does this even happen
+        return;
+      }
+      await Promise.all(results.map(result => {
         const {
           task,
           output: remark,
@@ -37,11 +43,11 @@ export class SolutionService {
           points,
           snippets: [],
         };
-        await this.createEvaluation(solution, dto);
-      }
-      count += solution.results!.length;
-    }
-    console.info('Migrated', count, 'results');
+        return this.evaluationService.create(assignment, _id, dto);
+      }));
+    }));
+    const count = solutions.reduce((a, c) => c.results ? a + c.results.length : a, 0);
+    console.info('Migrated', count, 'results of', solutions.length, 'solutions');
 
     const result = await this.model.updateMany({}, {
       $rename: {
@@ -82,19 +88,19 @@ export class SolutionService {
   }
 
   async findAll(where: FilterQuery<Solution> = {}): Promise<ReadSolutionDto[]> {
-    return this.model.find(where).select(['-token']).sort('+name +timestamp').exec();
+    return this.model
+      .find(where)
+      .select(['-token'])
+      .sort('author.name author.github timestamp')
+      .collation({locale: 'en', caseFirst: 'off'})
+      .exec();
   }
 
   async findOne(id: string): Promise<SolutionDocument | null> {
     return this.model.findOne(idFilter(id)).exec();
   }
 
-  mask(solution: Solution): ReadSolutionDto {
-    const {token, ...rest} = solution;
-    return rest;
-  }
-
-  async update(id: string, dto: UpdateSolutionDto): Promise<Solution | null> {
+  async update(id: string, dto: UpdateSolutionDto): Promise<SolutionDocument | null> {
     return this.model.findOneAndUpdate(idFilter(id), dto, {new: true}).exec();
   }
 

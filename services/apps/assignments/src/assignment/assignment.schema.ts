@@ -4,6 +4,7 @@ import {Type} from 'class-transformer';
 import {
   IsAlphanumeric,
   IsArray,
+  IsBoolean,
   IsDateString,
   IsEmail,
   IsNotEmpty,
@@ -11,7 +12,6 @@ import {
   IsOptional,
   IsString,
   IsUrl,
-  Min,
   ValidateNested,
 } from 'class-validator';
 import {Document} from 'mongoose';
@@ -26,7 +26,6 @@ export class Task {
   @Prop()
   @ApiProperty()
   @IsString()
-  @IsNotEmpty()
   description: string;
 
   @Prop()
@@ -39,6 +38,12 @@ export class Task {
   @IsOptional()
   @IsString()
   verification?: string;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  glob?: string;
 
   @Prop({default: []})
   @ApiProperty({type: [Task]})
@@ -65,6 +70,12 @@ export class ClassroomInfo {
   @IsOptional()
   @IsString()
   prefix?: string;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  codeSearch?: boolean;
 }
 
 @Schema()

@@ -1,0 +1,36 @@
+<div class="container">
+  <h1>
+    <a class="bi-chevron-left" ngbTooltip="Back to All Solutions" routerLink=".." queryParamsHandling="merge">
+    </a>
+    Solution by {{solution?.author?.name || solution?.author?.github}}
+  </h1>
+  <p class="text-muted" *ngIf="solution">
+    <ng-container *ngIf="solution.author.github">
+      <a class="bi-github" href="https://github.com/{{solution.author.github}}">
+        {{ solution.author.github }}
+      </a>
+      &bull;
+    </ng-container>
+    <ng-container *ngIf="solution.author.email">
+      <a class="bi-envelope" href="mailto:{{solution.author.email}}">
+        {{ solution.author.email }}
+      </a>
+      &bull;
+    </ng-container>
+    <span
+      *ngIf="assignment && assignment.deadline && solution.timestamp && assignment.deadline < solution.timestamp else submitted"
+      class="text-danger"
+      [ngbTooltip]="'Deadline: ' + (assignment.deadline | date:'medium')"
+    >
+      <ng-container [ngTemplateOutlet]="submitted"></ng-container>
+    </span>
+    <ng-template #submitted>
+      <i class="bi-clock"></i>
+      Submitted:
+      {{solution?.timestamp | date:'medium'}}
+    </ng-template>
+  </p>
+
+  <app-route-tabs [routes]="routes"></app-route-tabs>
+  <router-outlet></router-outlet>
+</div>

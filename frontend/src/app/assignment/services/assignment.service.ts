@@ -1,9 +1,10 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+import {Params} from '@angular/router';
 
 import {saveAs} from 'file-saver';
 import {forkJoin, Observable, of} from 'rxjs';
-import {map, switchMap, tap} from 'rxjs/operators';
+import {catchError, map, switchMap, take, tap} from 'rxjs/operators';
 
 import {environment} from '../../../environments/environment';
 import {LintService} from '../../shared/lint.service';
@@ -13,12 +14,12 @@ import {UserService} from '../../user/user.service';
 import Assignment from '../model/assignment';
 import {CheckAssignment, CheckResult} from '../model/check';
 import Course from '../model/course';
+import {SearchResult} from '../model/search-result';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AssignmentService {
-  private _draft?: Assignment | null;
   private _cache = new Map<string, Assignment>();
 
   constructor(
@@ -31,20 +32,21 @@ export class AssignmentService {
 
   // --------------- Assignment Drafts ---------------
 
-  get draft(): Assignment | null {
-    if (typeof this._draft === 'undefined') {
-      const json = localStorage.getItem('assignmentDraft');
-      this._draft = json ? this.fromJson(json) : null;
-    }
-    return this._draft;
+  private getDraftKey(id?: string) {
+    return id ? `assignments/${id}/draft` : 'assignmentDraft';
   }
 
-  set draft(value: Assignment | null) {
-    this._draft = value;
+  loadDraft(id?: string): Assignment | undefined {
+    const stored = localStorage.getItem(this.getDraftKey(id));
+    return stored ? JSON.parse(stored) : undefined;
+  }
+
+  saveDraft(id?: string, value?: Assignment) {
+    const key = this.getDraftKey(id);
     if (value) {
-      localStorage.setItem('assignmentDraft', JSON.stringify(value));
+      localStorage.setItem(key, JSON.stringify(value));
     } else {
-      localStorage.removeItem('assignmentDraft');
+      localStorage.removeItem(key);
     }
   }
 
@@ -60,24 +62,10 @@ export class AssignmentService {
     this.storage.set(`assignmentToken/${id}`, token);
   }
 
-  // --------------- JSON Conversion ---------------
-
-  fromJson(json: string): Assignment {
-    const reviver = (k, v) => k === 'deadline' && v ? new Date(v) : v;
-    const data = JSON.parse(json, reviver);
-    const assignment = new Assignment();
-    Object.assign(assignment, data);
-    return assignment;
-  }
-
-  toJson(assignment: Assignment, space?: string): string {
-    return JSON.stringify(assignment, undefined, space);
-  }
-
   // --------------- Import/Export ---------------
 
   download(assignment: Assignment): void {
-    const json = this.toJson(assignment, '  ');
+    const json = JSON.stringify(assignment, undefined, '  ');
     saveAs(new Blob([json], {type: 'application/json'}), assignment.title + '.json');
   }
 
@@ -86,7 +74,7 @@ export class AssignmentService {
       const reader = new FileReader();
       reader.onload = _ => {
         const text = reader.result as string;
-        const assignment = this.fromJson(text);
+        const assignment = JSON.parse(text);
         subscriber.next(assignment);
       };
       reader.readAsText(file);
@@ -114,13 +102,16 @@ export class AssignmentService {
 
   getOwn(): Observable<Assignment[]> {
     return this.users.current$.pipe(
-      switchMap(user => {
-        if (user && user.id) {
-          return this.getByUserId(user.id);
-        } else {
-          return forkJoin(this.getOwnIds().map(id => this.get(id)));
-        }
-      }),
+      take(1),
+      switchMap(user => user && user.id ? this.getByUserId(user.id) : this.getOwnLocal()),
+    );
+  }
+
+  private getOwnLocal(): Observable<Assignment[]> {
+    return forkJoin(this.getOwnIds().map(id => this.get(id).pipe(
+      catchError(() => of(undefined)),
+    ))).pipe(
+      map(assignments => assignments.filter((a): a is Assignment => !!a)),
     );
   }
 
@@ -182,7 +173,8 @@ export class AssignmentService {
   }
 
   update(assignment: Assignment): Observable<Assignment> {
-    return this.http.patch<Assignment>(`${environment.assignmentsApiUrl}/assignments/${assignment._id}`, assignment).pipe(
+    const headers = this.getHeaders(assignment.token);
+    return this.http.patch<Assignment>(`${environment.assignmentsApiUrl}/assignments/${assignment._id}`, assignment, {headers}).pipe(
       tap(response => {
         response.token = assignment.token;
         this._cache.set(assignment._id!, response);
@@ -196,19 +188,30 @@ export class AssignmentService {
       return of(cached);
     }
 
-    const headers = {};
-    const token = this.getToken(id);
-    if (token) {
-      headers['Assignment-Token'] = token;
-    }
+    const headers = this.getHeaders(this.getToken(id));
     return this.http.get<Assignment>(`${environment.assignmentsApiUrl}/assignments/${id}`, {headers}).pipe(
       map(a => {
-        a._id = id;
-        a.token = this.getToken(id) ?? undefined;
+        a.token ??= this.getToken(id) ?? undefined;
         this._cache.set(id, a);
         return a;
       }),
     );
+  }
+
+  search(id: string, q: string, context = 2, glob?: string): Observable<SearchResult[]> {
+    const headers = this.getHeaders(this.getToken(id));
+    const params: Params = {q, context};
+    glob && (params.glob = glob);
+    return this.http.get<SearchResult[]>(`${environment.assignmentsApiUrl}/assignments/${id}/search`, {
+      params,
+      headers,
+    });
+  }
+
+  private getHeaders(token?: string | null | undefined): Record<string, string> {
+    return token ? {
+      'Assignment-Token': token,
+    } : {};
   }
 
   getNext(course: Course, assignment: Assignment): Observable<Assignment | undefined> {

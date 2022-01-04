@@ -32,8 +32,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
       - name: Set up Node
         uses: actions/setup-node@v1
         with:
@@ -52,15 +50,8 @@ jobs:
         run: pnpm install
       - name: Build Angular
         run: pnpm build
-      - name: Determine Deployment Readiness
-        id: deployment
-        if: needs.deployment.outputs.namespace
-        run: echo "::set-output name=ready::true"
-      - name: Build Angular again
-        if: steps.deployment.outputs.ready
-        run: pnpm build
       - name: Build the Docker Image
-        if: steps.deployment.outputs.ready
+        if: needs.deployment.outputs.namespace
         uses: whoan/docker-build-with-cache-action@v5
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -70,7 +61,7 @@ jobs:
           image_tag: ${{ needs.deployment.outputs.version }}
           context: frontend/
       - name: Deploy to Rancher
-        if: steps.deployment.outputs.ready
+        if: needs.deployment.outputs.namespace
         uses: sekassel-research/actions-rancher-update@2.0.2
         with:
           rancher_url: ${{ secrets.RANCHER_URL }}
@@ -81,21 +72,18 @@ jobs:
           deployment: fulib-frontend
           docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-frontend:${{ needs.deployment.outputs.version }}
   backend:
-    name: Backend (Java ${{ matrix.java }})
+    name: Backend
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        java: [8, 11]
     needs: [deployment]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Set up JDK ${{ matrix.java }}
+      - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: ${{ matrix.java }}
+          java-version: 17
           java-package: jdk
       - name: Cache Gradle packages
         uses: actions/cache@v2
@@ -105,12 +93,8 @@ jobs:
           restore-keys: gradle-${{ runner.os }}-
       - name: Build with Gradle
         run: ./gradlew :backend:build && ./gradlew --stop
-      - name: Determine Deployment Readiness
-        id: deployment
-        if: matrix.java == 8 && needs.deployment.outputs.namespace
-        run: echo "::set-output name=ready::true"
       - name: Build the Backend Docker Image
-        if: steps.deployment.outputs.ready
+        if: needs.deployment.outputs.namespace
         uses: whoan/docker-build-with-cache-action@v5
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -120,7 +104,7 @@ jobs:
           image_tag: ${{ needs.deployment.outputs.version }}
           context: backend/
       - name: Deploy the Backend to Rancher
-        if: steps.deployment.outputs.ready
+        if: needs.deployment.outputs.namespace
         uses: sekassel-research/actions-rancher-update@2.0.2
         with:
           rancher_url: ${{ secrets.RANCHER_URL }}
@@ -201,17 +185,17 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Set up JDK 11
+      - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: 11
+          java-version: 17
           java-package: jdk
       - name: Cache Gradle packages
         uses: actions/cache@v2
         with:
           path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('projects/*.gradle') }}
-          restore-keys: ${{ runner.os }}-gradle
+          key: gradle-${{ runner.os }}-${{ hashFiles('projects/*.gradle') }}
+          restore-keys: gradle-${{ runner.os }}-
       - name: Build with Gradle
         run: ./gradlew :projects:build && ./gradlew --stop
       - name: Build the Project Container Docker Image
@@ -232,8 +216,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
       - name: Build the Projects Proxy Docker Image
         uses: whoan/docker-build-with-cache-action@v5
         with:

@@ -1,0 +1,21 @@
+<div class="form-inline mb-3">
+  <label class="mr-2" for="snippet-{{index}}">
+    Comment:
+  </label>
+  <input
+    type="text" class="form-control flex-grow-1 mr-2" id="snippet-{{index}}"
+    [ngbTypeahead]="commentTypeahead"
+    (click)="commentFocus$.next('')"
+    [(ngModel)]="snippet.comment"
+  >
+  <button *ngIf="snippet.comment === selectionComment"
+          type="button" class="btn btn-outline-success mr-2" ngbTooltip="Add Selection Snippet"
+          (click)="snippet.comment = ''"
+  >
+    <i class="bi-plus-circle"></i>
+  </button>
+  <button type="button" class="btn btn-outline-danger" ngbTooltip="Delete Snippet" (click)="delete()">
+    <i class="bi-trash"></i>
+  </button>
+</div>
+<app-snippet [snippet]="snippet"></app-snippet>

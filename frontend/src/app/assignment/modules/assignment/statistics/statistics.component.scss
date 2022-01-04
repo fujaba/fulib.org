@@ -1,0 +1,9 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+
+@each $name, $value in $colors {
+  .bg-progress-#{$name} {
+    $color: rgba($value, 0.1);
+    background-image: linear-gradient(to right, $color 0, $color var(--percentage), transparent var(--percentage));
+  }
+}

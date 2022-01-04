@@ -9,12 +9,13 @@ export default class Assignment {
   createdBy?: string;
   author: string;
   email: string;
-  deadline?: Date;
+  deadline?: Date | string;
 
   classroom?: {
     link?: string;
     org?: string;
     prefix?: string;
+    codeSearch?: boolean;
   };
 
   tasks: Task[];

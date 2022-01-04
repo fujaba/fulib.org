@@ -17,6 +17,9 @@ import {AssigneeService} from './assignee.service';
   ],
   controllers: [AssigneeController],
   providers: [AssigneeService],
+  exports: [
+    AssigneeService,
+  ],
 })
 export class AssigneeModule {
 }

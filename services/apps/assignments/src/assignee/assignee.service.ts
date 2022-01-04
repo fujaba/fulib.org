@@ -1,6 +1,6 @@
 import {Injectable} from '@nestjs/common';
-import {InjectConnection, InjectModel} from '@nestjs/mongoose';
-import {Connection, FilterQuery, Model} from 'mongoose';
+import {InjectModel} from '@nestjs/mongoose';
+import {FilterQuery, Model} from 'mongoose';
 import {UpdateAssigneeDto} from './assignee.dto';
 
 import {Assignee, AssigneeDocument} from './assignee.schema';
@@ -9,9 +9,8 @@ import {Assignee, AssigneeDocument} from './assignee.schema';
 export class AssigneeService {
   constructor(
     @InjectModel('assignee') private model: Model<Assignee>,
-    @InjectConnection() connection: Connection,
   ) {
-    connection.once('connected', () => this.migrate());
+    this.migrate();
   }
 
   async migrate() {

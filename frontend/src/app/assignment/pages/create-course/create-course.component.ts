@@ -1,12 +1,14 @@
 import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DOCUMENT} from '@angular/common';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {DndDropEvent} from 'ngx-drag-drop';
 import {forkJoin, Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 
-import {DragulaService} from 'ng2-dragula';
+import {ToastService} from '../../../toast.service';
 
 import Assignment from '../../model/assignment';
+import Task from '../../model/task';
 import {AssignmentService} from '../../services/assignment.service';
 import Course from '../../model/course';
 import {CourseService} from '../../services/course.service';
@@ -16,7 +18,7 @@ import {CourseService} from '../../services/course.service';
   templateUrl: './create-course.component.html',
   styleUrls: ['./create-course.component.scss'],
 })
-export class CreateCourseComponent implements OnInit, OnDestroy {
+export class CreateCourseComponent implements OnInit {
   @ViewChild('successModal', {static: true}) successModal;
 
   title: string;
@@ -53,26 +55,17 @@ export class CreateCourseComponent implements OnInit, OnDestroy {
     private assignmentService: AssignmentService,
     private courseService: CourseService,
     private modalService: NgbModal,
-    private dragulaService: DragulaService,
+    private toastService: ToastService,
     @Inject(DOCUMENT) document: Document,
   ) {
     this.origin = document.location.origin;
   }
 
   ngOnInit() {
-    this.dragulaService.createGroup('ASSIGNMENTS', {
-      moves(el, container, handle): boolean {
-        return handle?.classList.contains('handle') ?? false;
-      },
-    });
     this.loadDraft();
     this.assignmentService.getOwn().subscribe(assignments => {
       this.ownAssignments = assignments;
     });
-  }
-
-  ngOnDestroy(): void {
-    this.dragulaService.destroy('ASSIGNMENTS');
   }
 
   getCourse(): Course {
@@ -144,10 +137,24 @@ export class CreateCourseComponent implements OnInit, OnDestroy {
       this.id = course._id;
       this.submitting = false;
       this.modalService.open(this.successModal, {ariaLabelledBy: 'successModalLabel', size: 'xl'});
+    }, error => {
+      this.toastService.error('Course', 'Failed to create course', error);
+      this.submitting = false;
     });
   }
 
   getLink(origin: boolean): string {
     return `${origin ? this.origin : ''}/assignments/courses/${this.id}`;
+  }
+
+  dragged(assignment: Assignment) {
+    this.assignments.removeFirst(t => t === assignment);
+  }
+
+  drop(event: DndDropEvent) {
+    if (event.index !== undefined) {
+      this.assignments.splice(event.index, 0, event.data);
+      this.saveDraft();
+    }
   }
 }

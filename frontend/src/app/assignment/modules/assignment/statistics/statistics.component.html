@@ -1,0 +1,107 @@
+<div class="container" *ngIf="stats">
+  <div class="row">
+    <div class="col-md-6">
+      <h2>
+        Solutions
+      </h2>
+      <ul class="list-group mb-3">
+        <li class="list-group-item d-flex align-items-center">
+          <div class="mr-auto">
+            Total
+          </div>
+          <app-statistic-value [value]="stats.solutions.total" label="Solutions"></app-statistic-value>
+        </li>
+        <div class="text-center h1 bi-chevron-compact-down"></div>
+        <li class="list-group-item d-flex align-items-center bg-progress-blue" [style.--percentage.%]="stats.solutions.evaluated / stats.solutions.total * 100">
+          <div class="mr-auto">
+            Evaluated
+          </div>
+          <app-statistic-value [value]="stats.solutions.evaluated" label="Solutions"></app-statistic-value>
+          <div class="border-right mx-3 align-self-stretch"></div>
+          <app-statistic-value [value]="(stats.solutions.evaluated / stats.solutions.total) | percent:'0.0'" label="of All"></app-statistic-value>
+        </li>
+        <div class="text-center h1 bi-chevron-compact-down"></div>
+        <li class="list-group-item d-flex align-items-center bg-progress-green" [style.--percentage.%]="stats.solutions.graded / stats.solutions.total * 100">
+          <div class="mr-auto">
+            Graded
+          </div>
+          <app-statistic-value [value]="stats.solutions.graded" label="Solutions"></app-statistic-value>
+          <div class="border-right mx-3 align-self-stretch"></div>
+          <app-statistic-value [value]="(stats.solutions.graded / stats.solutions.total) | percent:'0.0'" label="of All"></app-statistic-value>
+        </li>
+        <li class="list-group-item d-flex align-items-center bg-progress-green" [style.--percentage.%]="stats.solutions.pointsAvg / maxPoints * 100">
+          <div class="mr-auto">
+            Average Grade
+          </div>
+          <app-statistic-value [value]="stats.solutions.pointsAvg | number:'1.0-2'" label="Average Points"></app-statistic-value>
+          <div class="border-right mx-3 align-self-stretch"></div>
+          <app-statistic-value [value]="maxPoints" label="Total Points"></app-statistic-value>
+          <div class="border-right mx-3 align-self-stretch"></div>
+          <app-statistic-value [value]="(stats.solutions.pointsAvg / maxPoints) | percent:'0.0'" label="of Total"></app-statistic-value>
+        </li>
+      </ul>
+    </div>
+    <div class="col-md-6">
+      <h2>
+        Evaluations
+      </h2>
+      <ul class="list-group mb-3">
+        <li class="list-group-item d-flex align-items-center bg-progress-teal" [style.--percentage.%]="stats.evaluations.codeSearch / stats.evaluations.total * 100">
+          <div class="mr-auto">
+            Automatically Found by Code Search
+          </div>
+          <app-statistic-value [value]="stats.evaluations.codeSearch" label="Evaluations"></app-statistic-value>
+          <div class="border-right mx-3 align-self-stretch"></div>
+          <app-statistic-value [value]="(stats.evaluations.codeSearch / stats.evaluations.total) | percent:'0.0'" label="of All"></app-statistic-value>
+        </li>
+        <li class="list-group-item d-flex align-items-center bg-progress-teal" [style.--percentage.%]="stats.evaluations.editedCodeSearch / stats.evaluations.total * 100">
+          <div class="mr-auto">
+            Found by Code Search and Manually Edited
+          </div>
+          <app-statistic-value [value]="stats.evaluations.editedCodeSearch" label="Evaluations"></app-statistic-value>
+          <div class="border-right mx-3 align-self-stretch"></div>
+          <app-statistic-value [value]="(stats.evaluations.editedCodeSearch / stats.evaluations.total) | percent:'0.0'" label="of All"></app-statistic-value>
+        </li>
+        <li class="list-group-item d-flex align-items-center bg-progress-purple" [style.--percentage.%]="stats.evaluations.manual / stats.evaluations.total * 100">
+          <div class="mr-auto">
+            Manually Added
+          </div>
+          <app-statistic-value [value]="stats.evaluations.manual" label="Evaluations"></app-statistic-value>
+          <div class="border-right mx-3 align-self-stretch"></div>
+          <app-statistic-value [value]="(stats.evaluations.manual / stats.evaluations.total) | percent:'0.0'" label="of All"></app-statistic-value>
+        </li>
+        <div class="my-1"></div>
+        <li class="list-group-item d-flex align-items-center">
+          <div class="mr-auto">
+            Total
+          </div>
+          <app-statistic-value [value]="stats.evaluations.total" label="Evaluations"></app-statistic-value>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <h2>
+    Tasks
+  </h2>
+  <ul class="list-group mb-3">
+    <li
+      *ngFor="let taskStats of stats.tasks"
+      class="list-group-item d-flex align-items-center bg-progress-gray"
+      [style.--percentage.%]="taskStats.totalCount / stats.solutions.total * 100"
+    >
+      <ol class="breadcrumb mr-auto mb-0 bg-transparent">
+        <li *ngFor="let task of taskStats.resolved; let last=last" class="breadcrumb-item" [class.text-muted]="!last">
+          {{ task.description }}
+          <span *ngIf="last" class="badge badge-secondary">
+            {{ task.points }}
+          </span>
+        </li>
+      </ol>
+      <app-statistic-value [value]="taskStats.totalPoints" label="Points Total"></app-statistic-value>
+      <div class="border-right mx-3 align-self-stretch"></div>
+      <app-statistic-value [value]="taskStats.totalCount" label="Times Evaluated"></app-statistic-value>
+      <div class="border-right mx-3 align-self-stretch"></div>
+      <app-statistic-value [value]="taskStats.totalCount / stats.solutions.total | percent:'0.0'" label="of All Solutions"></app-statistic-value>
+    </li>
+  </ul>
+</div>

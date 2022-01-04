@@ -1,6 +1,7 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
+import {RouterModule} from '@angular/router';
 
 import {CodemirrorModule} from '@ctrl/ngx-codemirror';
 import {NgbDropdownModule, NgbNavModule, NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
@@ -16,6 +17,8 @@ import {PreviewComponent} from './preview/preview.component';
 import {ProjectConfigFormComponent} from './project-config-form/project-config-form.component';
 import {ScenarioCodemirrorComponent} from './scenario-codemirror/scenario-codemirror.component';
 import {TabsComponent} from './tabs/tabs.component';
+import { ProTipComponent } from './pro-tip/pro-tip.component';
+import { RouteTabsComponent } from './route-tabs/route-tabs.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +34,8 @@ import {TabsComponent} from './tabs/tabs.component';
     ModalComponent,
     ProjectConfigFormComponent,
     TabsComponent,
+    ProTipComponent,
+    RouteTabsComponent,
   ],
   imports: [
     FormsModule,
@@ -39,6 +44,7 @@ import {TabsComponent} from './tabs/tabs.component';
     NgbTooltipModule,
     NgbDropdownModule,
     NgbNavModule,
+    RouterModule,
   ],
   exports: [
     SafeHtmlPipe,
@@ -53,6 +59,8 @@ import {TabsComponent} from './tabs/tabs.component';
     ModalComponent,
     ProjectConfigFormComponent,
     TabsComponent,
+    ProTipComponent,
+    RouteTabsComponent,
   ],
 })
 export class SharedModule {

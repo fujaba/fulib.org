@@ -1,0 +1,148 @@
+<div class="form-inline p-3 d-flex position-sticky bg-light bg-darkmode-dark" style="top: 3.5rem; z-index: 1">
+  <label for="searchInput" class="mr-sm-2">
+    Search
+    <a [ngbPopover]="searchHelp" popoverTitle="Search Help" placement="bottom-left">
+      <i class="bi-question-circle" ngbTooltip="View Search Help"></i>
+    </a>
+  </label>
+  <input type="search" class="form-control mr-sm-2 flex-grow-1" id="searchInput"
+         placeholder="Name, Student ID, E-Mail, GitHub Username, Assignee"
+         [ngModel]="search$.value" (ngModelChange)="search$.next($event)"
+         [ngbTypeahead]="typeahead" [resultFormatter]="formatTypeahead">
+  <div style="width: 8rem">
+    {{ solutions.length }} Solutions
+    <div *ngIf="loading" class="spinner-border spinner-border-sm" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+  <div ngbDropdown class="d-inline-block">
+    <button class="btn btn-outline-secondary" id="optionsDropdown" ngbDropdownToggle>
+      <i class="bi-gear"></i>
+      <span class="sr-only">Options</span>
+    </button>
+    <div ngbDropdownMenu aria-labelledby="optionsDropdown">
+      <ng-container *ngFor="let option of optionItems!; let first=first">
+        <div *ngIf="!first" class="dropdown-divider"></div>
+        <h6 class="dropdown-header">
+          {{ option.title }}
+        </h6>
+        <button
+          *ngFor="let item of option.options"
+          ngbDropdownItem
+          role="check"
+          (click)="setOption(option.key, item[0])"
+          [class.dropdown-item-checked]="options[option.key] === item[0]"
+        >
+          {{ item[1] }}
+        </button>
+      </ng-container>
+    </div>
+  </div>
+  <ng-template #searchHelp>
+    <ul>
+      <li>Search terms are separated by spaces and case sensitive</li>
+      <li>Each search term has to match for a result to be shown</li>
+      <li>To search for terms including spaces, use <code>+</code> in their place<br/>
+          E.g. <code>John+Doe</code>
+      </li>
+      <li>To search for specific attributes, enter <code>attribute:value</code><br/>
+          E.g. <code>studentID:1234</code>, <code>email:@example.org</code>, or <code>assignee:John+Doe</code><br/>
+          Supported attribute names (case sensitive):
+        <ul>
+          <li *ngFor="let propertyName of searchableProperties">
+            <code>{{propertyName}}</code>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </ng-template>
+</div>
+<table class="table table-bordered table-hover table-sm table-centered" *ngIf="solutions">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>Student ID</th>
+    <th>E-Mail</th>
+    <th>GitHub Username</th>
+    <th>Submitted</th>
+    <th>Points</th>
+    <th>Assignee</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let solution of solutions; trackBy: solutionId">
+    <td>{{solution.author.name}}</td>
+    <td>{{solution.author.studentId}}</td>
+    <td><a href="mailto:{{solution.author.email}}">{{solution.author.email}}</a></td>
+    <td>{{solution.author.github}}</td>
+    <td>
+        <span
+          *ngIf="assignment && assignment.deadline && solution.timestamp && assignment.deadline < solution.timestamp else timestamp"
+          class="text-danger" ngbTooltip="Submitted after Deadline">
+          {{solution.timestamp | date:'medium'}}
+        </span>
+      <ng-template #timestamp>
+        {{solution.timestamp | date:'medium'}}
+      </ng-template>
+    </td>
+    <td>
+      <span
+        class="badge badge-pill"
+        [class.badge-secondary]="solution.points === undefined"
+        [class.badge-primary]="solution.points !== undefined"
+      >
+        {{ solution.points ?? '?' }} / {{ totalPoints }}
+      </span>
+    </td>
+    <td>
+      <input
+        #assigneeInput
+        type="text"
+        class="form-control"
+        [ngModel]="assignees?.[solution._id!]?.assignee"
+        (change)="setAssignee(solution, assigneeInput)"
+        [ngbTypeahead]="assigneeTypeahead"
+      >
+    </td>
+    <td>
+      <a
+        class="btn btn-primary mr-1"
+        routerLink="/assignments/{{assignment?._id}}/solutions/{{solution._id}}"
+        queryParamsHandling="merge"
+        ngbTooltip="View Solution"
+      >
+        <i class="bi-eye-fill"></i>
+      </a>
+      <div
+        *ngIf="assignment?.classroom?.org && assignment?.classroom?.prefix && solution.author.github"
+        class="btn-group mr-1"
+      >
+        <a
+          class="btn btn-secondary"
+          href="https://github.com/{{assignment?.classroom?.org}}/{{assignment?.classroom?.prefix}}-{{solution.author.github}}{{solution.commit ? '/tree/' + solution.commit : ''}}"
+          target="_blank"
+          ngbTooltip="View {{solution.commit ? 'Commit' : 'Repository'}} on GitHub"
+        >
+          <i class="bi-github"></i>
+        </a>
+        <a
+          class="btn btn-secondary"
+          ngbTooltip="Clone in IDE"
+          [href]="options.ide + '://vscode.git/clone?url=' + clonePrefix[options.clone] + assignment?.classroom?.org + '%2F' + assignment?.classroom?.prefix + '-' + solution.author.github + cloneSuffix[options.clone] | safeUrl"
+        >
+          <i class="bi-code-square"></i>
+        </a>
+      </div>
+      <a
+        class="btn btn-primary mr-1"
+        ngbTooltip="Submit Feedback"
+        [routerLink]="['../submit', solution._id]"
+        queryParamsHandling="preserve"
+      >
+        <i class="bi-check-circle"></i>
+      </a>
+    </td>
+  </tr>
+  </tbody>
+</table>

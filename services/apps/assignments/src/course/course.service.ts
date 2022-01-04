@@ -1,6 +1,6 @@
 import {Injectable} from '@nestjs/common';
-import {InjectConnection, InjectModel} from '@nestjs/mongoose';
-import {Connection, Model} from 'mongoose';
+import {InjectModel} from '@nestjs/mongoose';
+import {Model} from 'mongoose';
 import {idFilter} from '../utils';
 import {CreateCourseDto, UpdateCourseDto} from './course.dto';
 import {Course, CourseDocument} from './course.schema';
@@ -9,9 +9,8 @@ import {Course, CourseDocument} from './course.schema';
 export class CourseService {
   constructor(
     @InjectModel('courses') private model: Model<Course>,
-    @InjectConnection() connection: Connection,
   ) {
-    connection.once('connected', () => this.migrate());
+    this.migrate();
   }
 
   async migrate() {

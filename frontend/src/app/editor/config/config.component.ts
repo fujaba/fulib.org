@@ -49,6 +49,7 @@ export class ConfigComponent implements OnInit {
 
   constructor(
     private ngbModal: NgbModal,
+    public route: ActivatedRoute,
     private router: Router,
     private configService: ConfigService,
     private privacyService: PrivacyService,
