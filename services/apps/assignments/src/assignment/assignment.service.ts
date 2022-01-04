@@ -121,8 +121,8 @@ export class AssignmentService {
     return assignment.token === token || !!user && user.sub === assignment.createdBy;
   }
 
-  private emit(action: string, id: string, assignment: Assignment) {
+  private emit(event: string, id: string, assignment: Assignment) {
     const users = [assignment.token, assignment.createdBy].filter((i): i is string => !!i);
-    this.eventService.emit(`assignment.${id}.${action}`, assignment, users);
+    this.eventService.emit(`assignment.${id}.${event}`, {event, data: assignment, users});
   }
 }

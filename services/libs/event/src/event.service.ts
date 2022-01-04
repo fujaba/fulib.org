@@ -1,3 +1,4 @@
+import {EventPayload} from '@app/event/event.interface';
 import {Inject, Injectable} from '@nestjs/common';
 import {EventEmitter2} from '@nestjs/event-emitter';
 import {ClientProxy} from '@nestjs/microservices';
@@ -10,8 +11,9 @@ export class EventService {
   ) {
   }
 
-  emit<T>(event: string, data: T, users?: string[]) {
-    this.eventEmitter2.emit(event, data, users);
-    this.client.emit(event, {data, users}).subscribe();
+  emit<T>(pattern: string, message: EventPayload<T>) {
+    const {event, data, users} = message;
+    this.eventEmitter2.emit(pattern, event, data, users);
+    this.client.emit(pattern, message).subscribe();
   }
 }
