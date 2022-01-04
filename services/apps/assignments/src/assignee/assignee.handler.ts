@@ -1,3 +1,4 @@
+import {EventPayload} from '@app/event/event.interface';
 import {Injectable} from '@nestjs/common';
 import {OnEvent} from '@nestjs/event-emitter';
 import {SolutionDocument} from '../solution/solution.schema';
@@ -11,7 +12,7 @@ export class AssigneeHandler {
   }
 
   @OnEvent('solution.*.deleted')
-  async onSolutionDeleted(solution: SolutionDocument) {
+  async onSolutionDeleted({data: solution}: EventPayload<SolutionDocument>) {
     await this.assigneeService.remove(solution.assignment, solution._id);
   }
 }

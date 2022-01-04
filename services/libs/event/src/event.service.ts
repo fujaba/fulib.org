@@ -12,8 +12,7 @@ export class EventService {
   }
 
   emit<T>(pattern: string, message: EventPayload<T>) {
-    const {event, data, users} = message;
-    this.eventEmitter2.emit(pattern, event, data, users);
+    this.eventEmitter2.emit(pattern, message);
     this.client.emit(pattern, message).subscribe();
   }
 }
