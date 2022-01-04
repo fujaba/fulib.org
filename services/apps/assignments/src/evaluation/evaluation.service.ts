@@ -1,7 +1,7 @@
-import {Injectable, MessageEvent} from '@nestjs/common';
+import {EventService} from '@app/event';
+import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model, UpdateQuery} from 'mongoose';
-import {filter, Observable, Subject} from 'rxjs';
 import {AssignmentService} from '../assignment/assignment.service';
 import {SearchService} from '../search/search.service';
 import {CreateEvaluationDto, UpdateEvaluationDto} from './evaluation.dto';
@@ -9,24 +9,16 @@ import {CodeSearchInfo, Evaluation, EvaluationDocument, Snippet} from './evaluat
 
 @Injectable()
 export class EvaluationService {
-  private events = new Subject<MessageEvent>();
-
   constructor(
     @InjectModel('evaluations') public model: Model<Evaluation>,
+    private eventService: EventService,
     private searchService: SearchService,
     private assignmentService: AssignmentService,
   ) {
   }
 
-  stream(assignment: string, solution: string): Observable<MessageEvent> {
-    return this.events.pipe(filter(e => {
-      const evaluation: Evaluation = (e.data as any).evaluation;
-      return evaluation.assignment === assignment && evaluation.solution === solution;
-    }));
-  }
-
-  private fire(event: string, evaluation: EvaluationDocument) {
-    this.events.next({data: {event, evaluation}});
+  private emit(event: string, evaluation: EvaluationDocument) {
+    this.eventService.emit(`evaluation.${evaluation.id}.${event}`, {event, data: evaluation});
   }
 
   async create(assignment: string, solution: string, dto: CreateEvaluationDto, createdBy?: string): Promise<Evaluation> {
@@ -37,7 +29,7 @@ export class EvaluationService {
       createdBy,
       ...rest,
     });
-    this.fire('created', evaluation);
+    this.emit('created', evaluation);
     if (codeSearch && dto.snippets.length) {
       evaluation.codeSearch = await this.codeSearchCreate(assignment, evaluation._id, dto);
     }
@@ -59,7 +51,7 @@ export class EvaluationService {
       return null;
     }
 
-    this.fire('updated', evaluation);
+    this.emit('updated', evaluation);
     if (codeSearch && dto.snippets && dto.snippets.length) {
       evaluation.codeSearch = {
         ...evaluation.codeSearch,
@@ -75,7 +67,7 @@ export class EvaluationService {
       return null;
     }
 
-    this.fire('deleted', deleted);
+    this.emit('deleted', deleted);
     deleted.codeSearch = await this.codeSearchDelete(deleted);
     return deleted;
   }
@@ -108,7 +100,7 @@ export class EvaluationService {
         }
         return [solution, solutionSnippets[solution]];
       })
-    ;
+      ;
   }
 
   private async codeSearchCreate(assignment: string, origin: any, dto: CreateEvaluationDto): Promise<CodeSearchInfo> {
@@ -136,7 +128,7 @@ export class EvaluationService {
       };
     }));
     for await (const solution of this.model.find({_id: {$in: Object.values(result.upsertedIds)}})) {
-      this.fire('created', solution);
+      this.emit('created', solution);
     }
     return {created: result.upsertedCount};
   }
@@ -162,13 +154,13 @@ export class EvaluationService {
           snippets,
         }, {new: true}).exec();
         if (updatedEval) {
-          this.fire('updated', updatedEval);
+          this.emit('updated', updatedEval);
           updated++;
         }
       } else {
         const deletedEval = await this.model.findOneAndDelete(filter).exec();
         if (deletedEval) {
-          this.fire('deleted', deletedEval);
+          this.emit('deleted', deletedEval);
           deleted++;
         }
       }
@@ -184,7 +176,7 @@ export class EvaluationService {
       codeSearch: {origin: evaluation._id},
     }).exec();
     for (let solution of solutions) {
-      this.fire('deleted', solution);
+      this.emit('deleted', solution);
     }
     await this.model.deleteMany({_id: {$in: solutions.map(s => s._id)}});
     return {deleted: solutions.length};
