@@ -74,7 +74,7 @@ export class EvaluationService {
 
   async removeAll(where: FilterQuery<Evaluation>): Promise<EvaluationDocument[]> {
     const evaluations = await this.findAll(where);
-    this.model.deleteMany({_id: {$in: evaluations.map(a => a._id)}});
+    await this.model.deleteMany({_id: {$in: evaluations.map(a => a._id)}}).exec();
     for (let evaluation of evaluations) {
       this.emit('deleted', evaluation);
     }

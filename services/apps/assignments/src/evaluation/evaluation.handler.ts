@@ -13,6 +13,6 @@ export class EvaluationHandler {
 
   @OnEvent('solution.*.deleted')
   async onSolutionDeleted({data: solution}: EventPayload<SolutionDocument>) {
-    await this.evaluationService.removeAll({assignment: solution.assignment, solution: solution._id});
+    await this.evaluationService.removeAll({assignment: solution.assignment, solution: solution.id});
   }
 }

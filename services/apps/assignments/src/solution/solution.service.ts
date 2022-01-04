@@ -119,7 +119,7 @@ export class SolutionService {
 
   async removeAll(where: FilterQuery<Solution>): Promise<SolutionDocument[]> {
     const solutions = await this.model.find(where).exec();
-    this.model.deleteMany({_id: {$in: solutions.map(a => a._id)}});
+    await this.model.deleteMany({_id: {$in: solutions.map(a => a._id)}}).exec();
     for (let solution of solutions) {
       this.emit('deleted', solution);
     }

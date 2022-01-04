@@ -69,7 +69,7 @@ export class CommentService {
 
   async removeAll(where: FilterQuery<Comment>): Promise<CommentDocument[]> {
     const comments = await this.findAll(where);
-    this.model.deleteMany({_id: {$in: comments.map(a => a._id)}});
+    await this.model.deleteMany({_id: {$in: comments.map(a => a._id)}}).exec();
     for (let comment of comments) {
       this.emit('deleted', comment);
     }

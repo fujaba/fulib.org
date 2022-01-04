@@ -13,6 +13,6 @@ export class AssigneeHandler {
 
   @OnEvent('solution.*.deleted')
   async onSolutionDeleted({data: solution}: EventPayload<SolutionDocument>) {
-    await this.assigneeService.remove(solution.assignment, solution._id);
+    await this.assigneeService.remove(solution.assignment, solution.id);
   }
 }
