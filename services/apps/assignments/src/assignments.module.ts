@@ -1,3 +1,4 @@
+import {EventModule} from '@app/event';
 import {AuthModule} from '@app/keycloak-auth';
 import {Module} from '@nestjs/common';
 import {ElasticsearchModule} from '@nestjs/elasticsearch';
@@ -20,6 +21,7 @@ import { SelectionModule } from './selection/selection.module';
   imports: [
     MongooseModule.forRoot(environment.mongo.uri, environment.mongo.options),
     AuthModule.register(environment.auth),
+    EventModule.forRoot({nats: environment.nats}),
     ScheduleModule.forRoot(),
     AssignmentModule,
     SolutionModule,

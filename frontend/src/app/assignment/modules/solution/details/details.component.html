@@ -54,4 +54,19 @@
   <button type="button" class="btn btn-primary" (click)="save()" [disabled]="saving">
     {{ saving ? 'Saving...' : 'Save' }}
   </button>
+  <hr/>
+  <h4>Danger Zone</h4>
+  <div class="list-group">
+    <div class="list-group-item border-danger d-flex align-items-center">
+      <div class="flex-grow-1">
+        <h6>
+          Delete Solution
+        </h6>
+        This will also remove all comments and evaluations.
+      </div>
+      <button class="btn btn-danger" (click)="delete()">
+        Delete
+      </button>
+    </div>
+  </div>
 </div>

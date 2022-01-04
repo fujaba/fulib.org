@@ -1,8 +1,10 @@
+import {EventService} from '@app/event';
 import {UserToken} from '@app/keycloak-auth';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model} from 'mongoose';
 import {AssignmentService} from '../assignment/assignment.service';
+import {Comment, CommentDocument} from '../comment/comment.schema';
 import {CreateEvaluationDto} from '../evaluation/evaluation.dto';
 import {Evaluation} from '../evaluation/evaluation.schema';
 import {EvaluationService} from '../evaluation/evaluation.service';
@@ -16,6 +18,7 @@ export class SolutionService {
     @InjectModel('solutions') public model: Model<Solution>,
     private assignmentService: AssignmentService,
     private evaluationService: EvaluationService,
+    private eventService: EventService,
   ) {
     this.migrate();
   }
@@ -69,13 +72,15 @@ export class SolutionService {
   }
 
   async create(assignment: string, dto: CreateSolutionDto, createdBy?: string): Promise<SolutionDocument> {
-    return this.model.create({
+    const created = await this.model.create({
       ...dto,
       assignment,
       createdBy,
       token: generateToken(),
       timestamp: new Date(),
     });
+    this.emit('created', created);
+    return created;
   }
 
   async autoGrade(solution: SolutionDocument): Promise<void> {
@@ -101,11 +106,24 @@ export class SolutionService {
   }
 
   async update(id: string, dto: UpdateSolutionDto): Promise<SolutionDocument | null> {
-    return this.model.findOneAndUpdate(idFilter(id), dto, {new: true}).exec();
+    const updated = await this.model.findOneAndUpdate(idFilter(id), dto, {new: true}).exec();
+    updated && this.emit('updated', updated);
+    return updated;
   }
 
   async remove(id: string): Promise<SolutionDocument | null> {
-    return this.model.findOneAndDelete(idFilter(id)).exec();
+    const deleted = await this.model.findOneAndDelete(idFilter(id)).exec();
+    deleted && this.emit('deleted', deleted);
+    return deleted;
+  }
+
+  async removeAll(where: FilterQuery<Solution>): Promise<SolutionDocument[]> {
+    const solutions = await this.model.find(where).exec();
+    await this.model.deleteMany({_id: {$in: solutions.map(a => a._id)}}).exec();
+    for (let solution of solutions) {
+      this.emit('deleted', solution);
+    }
+    return solutions;
   }
 
   isAuthorized(solution: Solution, user?: UserToken, token?: string): boolean {
@@ -114,5 +132,9 @@ export class SolutionService {
 
   bulkWrite(map: any) {
     return this.model.bulkWrite(map);
+  }
+
+  private emit(event: string, solution: SolutionDocument) {
+    this.eventService.emit(`solution.${solution.id}.${event}`, {event, data: solution});
   }
 }

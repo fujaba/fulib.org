@@ -5,6 +5,7 @@ import {AssignmentModule} from '../assignment/assignment.module';
 import {EvaluationModule} from '../evaluation/evaluation.module';
 import {SolutionAuthGuard} from './solution-auth.guard';
 import {SolutionController} from './solution.controller';
+import {SolutionHandler} from './solution.handler';
 import {SolutionSchema} from './solution.schema';
 import {SolutionService} from './solution.service';
 
@@ -23,6 +24,7 @@ import {SolutionService} from './solution.service';
   controllers: [SolutionController],
   providers: [
     SolutionService,
+    SolutionHandler,
     SolutionAuthGuard,
   ],
   exports: [

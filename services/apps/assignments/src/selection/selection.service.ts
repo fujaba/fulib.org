@@ -1,11 +1,15 @@
+import {EventService} from '@app/event';
 import {Injectable} from '@nestjs/common';
-import {filter, Observable, Subject} from 'rxjs';
 import {CreateSelectionDto, SelectionDto} from './selection.dto';
 
 @Injectable()
 export class SelectionService {
-  private selections$ = new Subject<SelectionDto>();
   private selections = new Map<string, SelectionDto[]>();
+
+  constructor(
+    private eventService: EventService,
+  ) {
+  }
 
   private getKey(assignment: string, solution: string) {
     return `${assignment}/${solution}`;
@@ -25,7 +29,7 @@ export class SelectionService {
   create(assignment: string, solution: string, dto: CreateSelectionDto): SelectionDto {
     const selection: SelectionDto = {...dto, assignment, solution};
     this.save(selection);
-    this.selections$.next(selection);
+    this.eventService.emit(`selection.${assignment}.${solution}.created`, {event: 'created', data: selection});
     return selection;
   }
 
@@ -42,9 +46,5 @@ export class SelectionService {
     } else {
       this.selections.set(key, [selection]);
     }
-  }
-
-  stream(assignment: string, solution: string, author?: string): Observable<SelectionDto> {
-    return this.selections$.pipe(filter(s => s.assignment === assignment && s.solution === solution && (!author || s.author === author)));
   }
 }

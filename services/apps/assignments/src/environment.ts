@@ -23,4 +23,7 @@ export const environment = {
   github: {
     token: process.env.GITHUB_TOKEN,
   },
+  nats: {
+    url: process.env.NATS_URL || 'nats://localhost:4222',
+  },
 };

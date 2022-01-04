@@ -1,3 +1,4 @@
+import {EventService} from '@app/event';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model} from 'mongoose';
@@ -9,6 +10,7 @@ import {Assignee, AssigneeDocument} from './assignee.schema';
 export class AssigneeService {
   constructor(
     @InjectModel('assignee') private model: Model<Assignee>,
+    private eventService: EventService,
   ) {
     this.migrate();
   }
@@ -31,14 +33,22 @@ export class AssigneeService {
   }
 
   async update(assignment: string, solution: string, dto: UpdateAssigneeDto): Promise<AssigneeDocument | null> {
-    return this.model.findOneAndReplace({assignment, solution}, {
+    const updated = await this.model.findOneAndReplace({assignment, solution}, {
       ...dto,
       assignment,
       solution,
     }, {new: true, upsert: true}).exec();
+    this.emit('updated', updated);
+    return updated;
   }
 
   async remove(assignment: string, solution: string): Promise<AssigneeDocument | null> {
-    return this.model.findOneAndDelete({assignment, solution}).exec();
+    const deleted = await this.model.findOneAndDelete({assignment, solution}).exec();
+    deleted && this.emit('deleted', deleted);
+    return deleted;
+  }
+
+  private emit(event: string, assignee: AssigneeDocument) {
+    this.eventService.emit(`assignee.${assignee.id}.${event}`, {event, data: assignee});
   }
 }

@@ -4,6 +4,7 @@ import {AssignmentModule} from '../assignment/assignment.module';
 import {SolutionModule} from '../solution/solution.module';
 import {CommentAuthGuard} from './comment-auth.guard';
 import {CommentController} from './comment.controller';
+import {CommentHandler} from './comment.handler';
 import {CommentSchema} from './comment.schema';
 import {CommentService} from './comment.service';
 
@@ -22,6 +23,7 @@ import {CommentService} from './comment.service';
   providers: [
     CommentService,
     CommentAuthGuard,
+    CommentHandler,
   ],
   exports: [
     CommentService,

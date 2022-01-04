@@ -1,5 +1,6 @@
 import {ValidationPipe} from '@nestjs/common';
 import {NestFactory} from '@nestjs/core';
+import {Transport} from '@nestjs/microservices';
 import {DocumentBuilder, SwaggerModule} from '@nestjs/swagger';
 import {AssignmentsModule} from './assignments.module';
 import {environment} from './environment';
@@ -10,6 +11,11 @@ async function bootstrap() {
   app.enableCors();
   app.setGlobalPrefix(prefix);
   app.useGlobalPipes(new ValidationPipe({whitelist: true}));
+
+  app.connectMicroservice({
+    transport: Transport.NATS,
+    options: environment.nats,
+  });
 
   const config = new DocumentBuilder()
     .setTitle('Assignments')
@@ -28,6 +34,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup(prefix, app, document);
 
+  await app.startAllMicroservices();
   await app.listen(environment.port);
 }
 

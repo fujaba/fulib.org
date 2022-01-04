@@ -1,7 +1,10 @@
+import {EventPayload} from '@app/event/event.interface';
 import {Body, Controller, Get, MessageEvent, Param, Post, Query, Sse} from '@nestjs/common';
+import {EventPattern, Payload} from '@nestjs/microservices';
 import {ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
-import {interval, map, mapTo, merge, Observable} from 'rxjs';
+import {Observable, Subject} from 'rxjs';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
+import {eventStream} from '../utils';
 import {CreateSelectionDto, SelectionDto} from './selection.dto';
 import {SelectionService} from './selection.service';
 
@@ -10,9 +13,16 @@ const forbiddenResponse = 'Not owner of assignment, or invalid Assignment-Token.
 @Controller('assignments/:assignment/solutions/:solution/selections')
 @ApiTags('Selections')
 export class SelectionController {
+  private events$ = new Subject<EventPayload<SelectionDto>>();
+
   constructor(
     private selectionService: SelectionService,
   ) {
+  }
+
+  @EventPattern('selection.*.*')
+  onEvent(@Payload() payload: EventPayload<SelectionDto>) {
+    this.events$.next(payload);
   }
 
   @Post()
@@ -45,9 +55,6 @@ export class SelectionController {
     @Param('solution') solution: string,
     @Query('author') author?: string,
   ): Observable<MessageEvent> {
-    return merge(
-      this.selectionService.stream(assignment, solution, author).pipe(map(data => ({data}))),
-      interval(15000).pipe(mapTo({data: ''})),
-    );
+    return eventStream(this.events$, 'selection', s => s.assignment === assignment && s.solution === solution && (!author || s.author === author));
   }
 }

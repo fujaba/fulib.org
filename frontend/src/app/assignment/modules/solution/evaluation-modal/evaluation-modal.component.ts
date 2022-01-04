@@ -128,7 +128,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     const selectionSubscription = this.route.params.pipe(
       switchMap(({aid, sid}) => concat(
         this.selectionService.getAll(aid, sid).pipe(concatMap(from)),
-        this.selectionService.stream(aid, sid),
+        this.selectionService.stream(aid, sid).pipe(map(({selection}) => selection)),
       )),
     ).subscribe(({author, snippet}) => {
       if (author !== this.dto.author) {

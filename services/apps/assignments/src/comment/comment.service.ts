@@ -1,18 +1,18 @@
+import {EventService} from '@app/event';
 import {UserToken} from '@app/keycloak-auth';
-import {Injectable, MessageEvent} from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model} from 'mongoose';
-import {filter, Observable, Subject} from 'rxjs';
+import {Assignee, AssigneeDocument} from '../assignee/assignee.schema';
 import {idFilter} from '../utils';
 import {CreateCommentDto, UpdateCommentDto} from './comment.dto';
 import {Comment, CommentDocument} from './comment.schema';
 
 @Injectable()
 export class CommentService {
-  private events$ = new Subject<MessageEvent>();
-
   constructor(
     @InjectModel('comments') private model: Model<Comment>,
+    private eventService: EventService,
   ) {
     this.migrate();
   }
@@ -31,14 +31,6 @@ export class CommentService {
       },
     });
     console.info('Migrated', result.modifiedCount, 'comments');
-  }
-
-  stream(assignment: string, solution: string): Observable<MessageEvent> {
-    return this.events$.pipe(filter(({data}) => {
-      console.log(data);
-      const comment = (data as any).comment as Comment;
-      return comment.assignment === assignment && comment.solution === solution;
-    }));
   }
 
   async create(assignment: string, solution: string, dto: CreateCommentDto, distinguished: boolean, createdBy?: string): Promise<CommentDocument> {
@@ -75,11 +67,20 @@ export class CommentService {
     return deleted;
   }
 
+  async removeAll(where: FilterQuery<Comment>): Promise<CommentDocument[]> {
+    const comments = await this.findAll(where);
+    await this.model.deleteMany({_id: {$in: comments.map(a => a._id)}}).exec();
+    for (let comment of comments) {
+      this.emit('deleted', comment);
+    }
+    return comments;
+  }
+
   isAuthorized(comment: Comment, bearerToken: UserToken) {
     return bearerToken.sub === comment.createdBy;
   }
 
   private emit(event: string, comment: CommentDocument) {
-    this.events$.next({data: {event, comment}});
+    this.eventService.emit(`comment.${comment.id}.${event}`, {event, data: comment});
   }
 }

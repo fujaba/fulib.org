@@ -191,6 +191,14 @@ export class SolutionService {
     return this.http.patch<Solution>(url, dto, {headers});
   }
 
+  delete(assignment: string, solution: string): Observable<Solution> {
+    const headers = {};
+    this.addSolutionToken(headers, assignment, solution);
+    this.addAssignmentToken(headers, assignment);
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}`;
+    return this.http.delete<Solution>(url, {headers});
+  }
+
   getComments(assignment: string, solution: string): Observable<Comment[]> {
     const headers = {};
     this.addSolutionToken(headers, assignment, solution);

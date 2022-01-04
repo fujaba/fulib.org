@@ -1,11 +1,14 @@
+import {EventPayload} from '@app/event/event.interface';
 import {AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound} from '@app/not-found';
 import {Body, Controller, Delete, Get, MessageEvent, Param, Patch, Post, Query, Sse} from '@nestjs/common';
+import {EventPattern, Payload} from '@nestjs/microservices';
 import {ApiCreatedResponse, ApiOkResponse, ApiQuery, ApiTags} from '@nestjs/swagger';
 import {FilterQuery} from 'mongoose';
-import {interval, mapTo, merge, Observable} from 'rxjs';
+import {Observable, Subject} from 'rxjs';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {SolutionAuth} from '../solution/solution-auth.decorator';
+import {eventStream} from '../utils';
 import {CreateEvaluationDto, UpdateEvaluationDto} from './evaluation.dto';
 import {Evaluation} from './evaluation.schema';
 import {EvaluationService} from './evaluation.service';
@@ -16,10 +19,16 @@ const forbiddenAssignmentResponse = 'Not owner of assignment, or invalid Assignm
 @Controller('assignments/:assignment')
 @ApiTags('Evaluations')
 export class EvaluationController {
+  private events$ = new Subject<EventPayload<Evaluation>>();
 
   constructor(
     private readonly evaluationService: EvaluationService,
   ) {
+  }
+
+  @EventPattern('evaluation.*.*')
+  onEvent(@Payload() payload: EventPayload<Evaluation>) {
+    this.events$.next(payload);
   }
 
   @Get('evaluations')
@@ -85,10 +94,7 @@ export class EvaluationController {
     @Param('assignment') assignment: string,
     @Param('solution') solution: string,
   ): Observable<MessageEvent> {
-    return merge(
-      this.evaluationService.stream(assignment, solution),
-      interval(15000).pipe(mapTo({data: ''})),
-    );
+    return eventStream(this.events$, 'evaluation', e => e.assignment === assignment && e.solution === solution);
   }
 
   @Get('solutions/:solution/evaluations/:id')

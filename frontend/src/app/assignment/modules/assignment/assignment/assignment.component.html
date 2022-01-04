@@ -7,6 +7,9 @@
     <a class="btn btn-primary bi-download mr-2" routerLink="import">
       Import Solutions
     </a>
+    <button class="btn btn-danger bi-trash mr-2" (click)="delete()">
+      Delete Assignment
+    </button>
   </div>
   <app-route-tabs [routes]="routes"></app-route-tabs>
 </div>
