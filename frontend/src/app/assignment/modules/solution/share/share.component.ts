@@ -22,7 +22,7 @@ export class SolutionShareComponent implements OnInit {
   ide = this.configService.get('ide');
 
   readonly origin: string;
-  readonly encodedApiServer = encodeURIComponent(new URL(environment.assignmentsApiUrl).origin);
+  readonly encodedApiServer = encodeURIComponent(new URL(environment.assignmentsApiUrl, location.origin).origin);
   readonly ideOption = CONFIG_OPTIONS.find(o => o.key === 'ide')!;
 
   constructor(

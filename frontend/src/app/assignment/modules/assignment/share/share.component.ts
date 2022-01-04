@@ -22,7 +22,7 @@ export class ShareComponent implements OnInit {
   ide = this.configService.get('ide');
 
   readonly origin: string;
-  readonly encodedApiServer = encodeURIComponent(new URL(environment.assignmentsApiUrl).origin);
+  readonly encodedApiServer = encodeURIComponent(new URL(environment.assignmentsApiUrl, location.origin).origin);
 
   constructor(
     private assignmentService: AssignmentService,
