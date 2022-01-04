@@ -36,7 +36,7 @@ export class EvaluationService {
     return evaluation;
   }
 
-  async findAll(where: FilterQuery<Evaluation> = {}): Promise<Evaluation[]> {
+  async findAll(where: FilterQuery<Evaluation> = {}): Promise<EvaluationDocument[]> {
     return this.model.find(where).exec();
   }
 
@@ -70,6 +70,15 @@ export class EvaluationService {
     this.emit('deleted', deleted);
     deleted.codeSearch = await this.codeSearchDelete(deleted);
     return deleted;
+  }
+
+  async removeAll(where: FilterQuery<Evaluation>): Promise<EvaluationDocument[]> {
+    const evaluations = await this.findAll(where);
+    this.model.deleteMany({_id: {$in: evaluations.map(a => a._id)}});
+    for (let evaluation of evaluations) {
+      this.emit('deleted', evaluation);
+    }
+    return evaluations;
   }
 
   private async codeSearch(assignmentId: string, taskId: string, snippets: Snippet[]): Promise<[string, Snippet[] | undefined][]> {

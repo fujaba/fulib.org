@@ -4,6 +4,7 @@ import {AssignmentModule} from '../assignment/assignment.module';
 import {SearchModule} from '../search/search.module';
 import {SolutionModule} from '../solution/solution.module';
 import {EvaluationController} from './evaluation.controller';
+import {EvaluationHandler} from './evaluation.handler';
 import {EvaluationSchema} from './evaluation.schema';
 import {EvaluationService} from './evaluation.service';
 
@@ -20,6 +21,7 @@ import {EvaluationService} from './evaluation.service';
   controllers: [EvaluationController],
   providers: [
     EvaluationService,
+    EvaluationHandler,
   ],
   exports: [
     EvaluationService,

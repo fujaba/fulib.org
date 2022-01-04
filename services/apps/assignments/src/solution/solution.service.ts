@@ -4,6 +4,7 @@ import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model} from 'mongoose';
 import {AssignmentService} from '../assignment/assignment.service';
+import {Comment, CommentDocument} from '../comment/comment.schema';
 import {CreateEvaluationDto} from '../evaluation/evaluation.dto';
 import {Evaluation} from '../evaluation/evaluation.schema';
 import {EvaluationService} from '../evaluation/evaluation.service';
@@ -114,6 +115,15 @@ export class SolutionService {
     const deleted = await this.model.findOneAndDelete(idFilter(id)).exec();
     deleted && this.emit('deleted', deleted);
     return deleted;
+  }
+
+  async removeAll(where: FilterQuery<Solution>): Promise<SolutionDocument[]> {
+    const solutions = await this.model.find(where).exec();
+    this.model.deleteMany({_id: {$in: solutions.map(a => a._id)}});
+    for (let solution of solutions) {
+      this.emit('deleted', solution);
+    }
+    return solutions;
   }
 
   isAuthorized(solution: Solution, user?: UserToken, token?: string): boolean {
