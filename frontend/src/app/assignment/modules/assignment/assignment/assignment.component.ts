@@ -5,7 +5,6 @@ import {switchMap} from 'rxjs/operators';
 import {ToastService} from '../../../../toast.service';
 import Assignment from '../../../model/assignment';
 import {AssignmentService} from '../../../services/assignment.service';
-import {SolutionService} from '../../../services/solution.service';
 import {assignmentChildRoutes} from '../assignment-routing.module';
 
 @Component({
@@ -15,14 +14,12 @@ import {assignmentChildRoutes} from '../assignment-routing.module';
 })
 export class AssignmentComponent implements OnInit {
   assignment?: Assignment;
-  importing = false;
   routes = assignmentChildRoutes;
 
   constructor(
     public route: ActivatedRoute,
     private router: Router,
     private assignmentService: AssignmentService,
-    private solutionService: SolutionService,
     private toastService: ToastService,
   ) {
   }
@@ -40,6 +37,18 @@ export class AssignmentComponent implements OnInit {
       if (error.status === 401 || error.status === 403) {
         this.router.navigate(['token'], {relativeTo: this.route});
       }
+    });
+  }
+
+  delete() {
+    if (!confirm('Are you sure you want to delete this assignment and all solutions, comments and evaluations? This action cannot be undone.')) {
+      return;
+    }
+    this.assignmentService.delete(this.assignment!._id!).subscribe(() => {
+      this.toastService.warn('Assignment', 'Successfully deleted assignment');
+      this.router.navigate(['..'], {relativeTo: this.route});
+    }, error => {
+      this.toastService.error('Assignment', 'Failed to delete assignment', error);
     });
   }
 }

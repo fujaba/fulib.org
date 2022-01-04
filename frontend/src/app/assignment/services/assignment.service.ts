@@ -182,6 +182,16 @@ export class AssignmentService {
     );
   }
 
+  delete(assignment: string): Observable<Assignment> {
+    const headers = this.getHeaders(this.getToken(assignment));
+    return this.http.delete<Assignment>(`${environment.assignmentsApiUrl}/assignments/${assignment}`, {headers}).pipe(
+      tap(() => {
+        this.setToken(assignment, null);
+        this.saveDraft(assignment);
+      }),
+    );
+  }
+
   get(id: string): Observable<Assignment> {
     const cached = this._cache.get(id);
     if (cached) {
