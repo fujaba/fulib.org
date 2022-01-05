@@ -40,6 +40,10 @@ export class EvaluationService {
     return this.model.find(where).exec();
   }
 
+  async findUnique(field: keyof Evaluation | string, where: FilterQuery<Evaluation> = {}): Promise<unknown[]> {
+    return this.model.find(where).sort(field).distinct(field).exec();
+  }
+
   async findOne(id: string): Promise<Evaluation | null> {
     return this.model.findById(id).exec();
   }
