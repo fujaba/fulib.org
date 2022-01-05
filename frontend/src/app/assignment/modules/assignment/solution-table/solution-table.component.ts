@@ -29,6 +29,7 @@ export class SolutionTableComponent implements OnInit {
   totalPoints?: number;
   solutions: Solution[] = [];
   assignees?: Record<string, Assignee>;
+  evaluated: Record<string, true> = {};
 
   loading = false;
 
@@ -70,6 +71,15 @@ export class SolutionTableComponent implements OnInit {
       this.assignees = {};
       for (let assignee of assignees) {
         this.assignees[assignee.solution] = assignee;
+      }
+    });
+
+    this.activatedRoute.params.pipe(
+      switchMap(({aid}) => this.solutionService.getEvaluationValues<string>(aid, 'solution')),
+    ).subscribe(solutions => {
+      this.evaluated = {};
+      for (let id of solutions) {
+        this.evaluated[id] = true;
       }
     });
 

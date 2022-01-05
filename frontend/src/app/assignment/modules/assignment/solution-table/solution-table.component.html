@@ -88,9 +88,7 @@
     </td>
     <td>
       <span
-        class="badge badge-pill"
-        [class.badge-secondary]="solution.points === undefined"
-        [class.badge-primary]="solution.points !== undefined"
+        class="badge badge-pill badge-{{ solution.points !== undefined ? 'primary' : evaluated[solution._id!] ? 'warning' : 'secondary'}}"
       >
         {{ solution.points ?? '?' }} / {{ totalPoints }}
       </span>
