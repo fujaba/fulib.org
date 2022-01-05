@@ -27,7 +27,17 @@ interface SearchResult {
   items: RepositoryInfo[];
 }
 
-const MAX_FILE_SIZE = 50 * 1024;
+/**
+ * This is the Lucene term byte length limit.
+ * In the pathological case, a file could start with a ' or " that never closes.
+ * If we allowed a greater file size, it could produce a term bigger than this limit,
+ * which will be rejected by Elasticsearch.
+ * Few source code files are longer than this in the academic world.
+ * This repository contains only three such files that are not in .gitignore -
+ * the PNPM lockfiles and gradle-wrapper.jar.
+ * Neither is useful in Code Search.
+ */
+const MAX_FILE_SIZE = 32766;
 
 @Injectable()
 export class ClassroomService {
