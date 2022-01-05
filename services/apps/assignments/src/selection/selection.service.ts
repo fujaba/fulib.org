@@ -29,7 +29,7 @@ export class SelectionService {
   create(assignment: string, solution: string, dto: CreateSelectionDto): SelectionDto {
     const selection: SelectionDto = {...dto, assignment, solution};
     this.save(selection);
-    this.eventService.emit(`selection.${assignment}.${solution}.created`, {event: 'created', data: selection});
+    this.eventService.emit(`selection.${assignment}:${solution}.created`, {event: 'created', data: selection});
     return selection;
   }
 
