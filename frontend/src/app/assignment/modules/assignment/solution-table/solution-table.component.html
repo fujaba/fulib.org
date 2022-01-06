@@ -91,7 +91,11 @@
   <tr *ngFor="let solution of solutions; trackBy: solutionId">
     <td>{{solution.author.name}}</td>
     <td>{{solution.author.studentId}}</td>
-    <td><a href="mailto:{{solution.author.email}}">{{solution.author.email}}</a></td>
+    <td>
+      <a *ngIf="solution.author.email" href="mailto:{{solution.author.email}}">
+        {{solution.author.email}}
+      </a>
+    </td>
     <td>{{solution.author.github}}</td>
     <td>
         <span
@@ -127,41 +131,33 @@
     </td>
     <td>
       <a
-        class="btn btn-primary mr-1"
+        class="btn btn-primary mr-1 bi-eye-fill"
         routerLink="/assignments/{{assignment?._id}}/solutions/{{solution._id}}"
         queryParamsHandling="merge"
         ngbTooltip="View Solution"
-      >
-        <i class="bi-eye-fill"></i>
-      </a>
+      ></a>
       <div
         *ngIf="assignment?.classroom?.org && assignment?.classroom?.prefix && solution.author.github"
         class="btn-group mr-1"
       >
         <a
-          class="btn btn-secondary"
+          class="btn btn-secondary bi-github"
           href="https://github.com/{{assignment?.classroom?.org}}/{{assignment?.classroom?.prefix}}-{{solution.author.github}}{{solution.commit ? '/tree/' + solution.commit : ''}}"
           target="_blank"
           ngbTooltip="View {{solution.commit ? 'Commit' : 'Repository'}} on GitHub"
-        >
-          <i class="bi-github"></i>
-        </a>
+        ></a>
         <a
-          class="btn btn-secondary"
+          class="btn btn-secondary bi-code-square"
           ngbTooltip="Clone in IDE"
           [href]="options.ide + '://vscode.git/clone?url=' + clonePrefix[options.clone] + assignment?.classroom?.org + '%2F' + assignment?.classroom?.prefix + '-' + solution.author.github + cloneSuffix[options.clone] | safeUrl"
-        >
-          <i class="bi-code-square"></i>
-        </a>
+        ></a>
       </div>
       <a
-        class="btn btn-primary mr-1"
+        class="btn btn-primary mr-1 bi-check-circle"
         ngbTooltip="Submit Feedback"
         [routerLink]="['../submit', solution._id]"
         queryParamsHandling="preserve"
-      >
-        <i class="bi-check-circle"></i>
-      </a>
+      ></a>
     </td>
   </tr>
   </tbody>
