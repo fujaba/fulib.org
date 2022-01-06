@@ -1,6 +1,6 @@
 import {Component, OnInit, TrackByFunction} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
+import {BehaviorSubject, combineLatest, forkJoin, Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 import {ToastService} from '../../../../toast.service';
 import {Assignee} from '../../../model/assignee';
@@ -29,7 +29,7 @@ export class SolutionTableComponent implements OnInit {
   totalPoints?: number;
   solutions: Solution[] = [];
   assignees?: Record<string, Assignee>;
-  evaluated: Record<string, true> = {};
+  evaluated: Record<string, boolean> = {};
 
   loading = false;
 
@@ -75,11 +75,17 @@ export class SolutionTableComponent implements OnInit {
     });
 
     this.activatedRoute.params.pipe(
-      switchMap(({aid}) => this.solutionService.getEvaluationValues<string>(aid, 'solution')),
-    ).subscribe(solutions => {
+      switchMap(({aid}) => forkJoin([
+        this.solutionService.getEvaluationValues<string>(aid, 'solution', undefined, false),
+        this.solutionService.getEvaluationValues<string>(aid, 'solution', undefined, true),
+      ])),
+    ).subscribe(([manual, codeSearch]) => {
       this.evaluated = {};
-      for (let id of solutions) {
+      for (let id of manual) {
         this.evaluated[id] = true;
+      }
+      for (let id of codeSearch) {
+        this.evaluated[id] = false;
       }
     });
 

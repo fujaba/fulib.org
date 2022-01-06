@@ -65,7 +65,24 @@
     <th>E-Mail</th>
     <th>GitHub Username</th>
     <th>Submitted</th>
-    <th>Points</th>
+    <th>
+      Points
+      <i class="bi-question-circle" ngbTooltip="View Color Legend" [ngbPopover]="pointsPopover"></i>
+    </th>
+    <ng-template #pointsPopover>
+      <div>
+        <span class="badge badge-primary">{{ totalPoints }} / {{ totalPoints }}</span> - Graded
+      </div>
+      <div>
+        <span class="badge badge-warning">? / {{ totalPoints }}</span> - Partially Evaluated manually
+      </div>
+      <div>
+        <span class="badge badge-info">? / {{ totalPoints }}</span> - Partially Evaluated by Code Search
+      </div>
+      <div>
+        <span class="badge badge-secondary">? / {{ totalPoints }}</span> - Not Evaluated
+      </div>
+    </ng-template>
     <th>Assignee</th>
     <th>Actions</th>
   </tr>
@@ -88,7 +105,12 @@
     </td>
     <td>
       <span
-        class="badge badge-pill badge-{{ solution.points !== undefined ? 'primary' : evaluated[solution._id!] ? 'warning' : 'secondary'}}"
+        class="badge badge-pill badge-{{
+          solution.points !== undefined ? 'primary'
+          : evaluated[solution._id!] === true ? 'warning'
+          : evaluated[solution._id!] === false ? 'info'
+          : 'secondary'
+        }}"
       >
         {{ solution.points ?? '?' }} / {{ totalPoints }}
       </span>
