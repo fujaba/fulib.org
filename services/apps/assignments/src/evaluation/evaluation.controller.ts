@@ -55,9 +55,13 @@ export class EvaluationController {
     @Param('assignment') assignment: string,
     @Param('field') field: string,
     @Query('task') task?: string,
+    @Query('codeSearch') codeSearch?: string,
   ): Promise<unknown[]> {
     const where: FilterQuery<Evaluation> = {assignment};
     task && (where.task = task);
+    if (codeSearch !== undefined) {
+      where.author = codeSearch === 'true' ? 'Code Search' : {$ne: 'Code Search'};
+    }
     return this.evaluationService.findUnique(field, where);
   }
 
