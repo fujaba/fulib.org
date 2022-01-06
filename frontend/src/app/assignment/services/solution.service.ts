@@ -240,6 +240,16 @@ export class SolutionService {
     return this.http.get<Evaluation[]>(url, {headers, params});
   }
 
+  getEvaluationValues<T>(assignment: string, field: keyof Evaluation | string, task?: string, codeSearch?: boolean): Observable<T[]> {
+    const headers = {};
+    this.addAssignmentToken(headers, assignment);
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/evaluations/unique/${field}`;
+    const params: Record<string, any> = {};
+    task && (params.task = task);
+    codeSearch !== undefined && (params.codeSearch = codeSearch);
+    return this.http.get<T[]>(url, {headers, params});
+  }
+
   streamEvaluations(assignment: string, solution: string): Observable<{ event: string, evaluation: Evaluation }> {
     const token = this.assignmentService.getToken(assignment);
     const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/evaluations/events?token=${token}`;

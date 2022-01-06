@@ -106,17 +106,12 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     ).subscribe();
 
     this.route.params.pipe(
-      switchMap(({aid, task}) => this.solutionService.getEvaluations(aid, undefined, task)),
-    ).subscribe(evaluations => {
-      this.remarks = [...new Set(evaluations.map(e => e.remark).filter(x => x))].sort();
-      const comments = new Set<string>();
-      for (const {snippets} of evaluations) {
-        for (const {comment} of snippets) {
-          comment && comments.add(comment);
-        }
-      }
-      this.comments = [...comments].sort();
-    });
+      switchMap(({aid, task}) => this.solutionService.getEvaluationValues<string>(aid, 'remark', task)),
+    ).subscribe(remarks => this.remarks = remarks);
+
+    this.route.params.pipe(
+      switchMap(({aid, task}) => this.solutionService.getEvaluationValues<string>(aid, 'snippets.comment', task)),
+    ).subscribe(comments => this.comments = comments);
 
     this.userSubscription = this.users.current$.subscribe(user => {
       if (user) {

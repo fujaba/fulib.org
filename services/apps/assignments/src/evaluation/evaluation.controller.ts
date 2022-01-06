@@ -47,6 +47,24 @@ export class EvaluationController {
     return this.evaluationService.findAll(where);
   }
 
+  @Get('evaluations/unique/:field')
+  @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
+  @ApiOkResponse({isArray: true})
+  @ApiQuery({name: 'task', required: false})
+  async findUnique(
+    @Param('assignment') assignment: string,
+    @Param('field') field: string,
+    @Query('task') task?: string,
+    @Query('codeSearch') codeSearch?: string,
+  ): Promise<unknown[]> {
+    const where: FilterQuery<Evaluation> = {assignment};
+    task && (where.task = task);
+    if (codeSearch !== undefined) {
+      where.author = codeSearch === 'true' ? 'Code Search' : {$ne: 'Code Search'};
+    }
+    return this.evaluationService.findUnique(field, where);
+  }
+
   @Get('evaluations/:id')
   @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
   @ApiOkResponse({type: Evaluation})
