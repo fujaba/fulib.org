@@ -171,6 +171,7 @@ export class SubmitService {
       'fulibFeedback.solution.id': solution._id,
       'fulibFeedback.solution.token': solution.token,
     };
+    const commitInfo = solution.commit ? ` for commit ${solution.commit}` : '';
     return `\
 ---
 <details>
@@ -185,7 +186,7 @@ ${JSON.stringify(settings, null, 2)}
 
 </details>
 
-<sub>*This issue was created with [fulib.org](https://fulib.org/assignments) on ${timestamp.toLocaleDateString()} at ${timestamp.toLocaleTimeString()} for commit ${solution.commit}.*</sub>
+<sub>*This issue was created with [fulib.org](https://fulib.org/assignments) on ${timestamp.toLocaleDateString()} at ${timestamp.toLocaleTimeString()}${commitInfo}.*</sub>
 `;
   }
 }
