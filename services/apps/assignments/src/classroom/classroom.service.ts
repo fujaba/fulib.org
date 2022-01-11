@@ -102,11 +102,15 @@ export class ClassroomService {
 
   private importZipStream(stream: Stream, assignment: string, solution: string, commit?: string) {
     stream.pipe(unzip()).on('entry', (entry: ZipEntry) => {
-      if (entry.type !== 'File' || entry.extra.uncompressedSize > MAX_FILE_SIZE) {
+      // Using vars.uncompressedSize because entry.extra.* and entry.size are unavailable before parsing for some reason
+      if (entry.type !== 'File' || (entry.vars as any).uncompressedSize > MAX_FILE_SIZE) {
         entry.autodrain();
         return;
       }
       entry.buffer().then(buffer => {
+        if (buffer.length > MAX_FILE_SIZE) {
+          return;
+        }
         const content = buffer.toString('utf-8');
         let index: number;
         const path = commit && (index = entry.path.indexOf(commit)) >= 0 ? entry.path.substring(index + commit.length + 1) : entry.path;
