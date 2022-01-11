@@ -3,6 +3,7 @@ import {ElasticsearchService} from '@nestjs/elasticsearch';
 import {randomUUID} from 'crypto';
 import {isDeepStrictEqual} from 'util';
 import {Location} from '../evaluation/evaluation.schema';
+import {PreprocessorService} from './preprocessor.service';
 import {SearchResult, SearchSnippet} from './search.dto';
 
 interface FileDocument {
@@ -16,6 +17,7 @@ interface FileDocument {
 export class SearchService implements OnModuleInit {
   constructor(
     private elasticsearchService: ElasticsearchService,
+    private preprocessorService: PreprocessorService,
   ) {
   }
 
@@ -70,7 +72,7 @@ export class SearchService implements OnModuleInit {
           },
         },
         settings: {
-          analysis: expectedAnalysis
+          analysis: expectedAnalysis,
         },
       },
     });
@@ -95,6 +97,7 @@ export class SearchService implements OnModuleInit {
   }
 
   async addFile(assignment: string, solution: string, file: string, content: string) {
+    content = this.preprocessorService.preprocess(content);
     const body: FileDocument = {
       assignment,
       solution,
@@ -109,6 +112,7 @@ export class SearchService implements OnModuleInit {
   }
 
   async find(assignment: string, snippet: string, context?: number, glob?: string): Promise<SearchResult[]> {
+    snippet = this.preprocessorService.preprocess(snippet);
     const uniqueId = randomUUID();
     const regex = glob && this.glob2RegExp(glob);
     const result = await this.elasticsearchService.search({

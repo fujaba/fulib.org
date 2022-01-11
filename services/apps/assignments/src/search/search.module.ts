@@ -2,6 +2,7 @@ import {Module} from '@nestjs/common';
 import {ElasticsearchModule} from '@nestjs/elasticsearch';
 import {AssignmentModule} from '../assignment/assignment.module';
 import {environment} from '../environment';
+import {PreprocessorService} from './preprocessor.service';
 import {SearchController} from './search.controller';
 import {SearchHandler} from './search.handler';
 import {SearchService} from './search.service';
@@ -14,6 +15,7 @@ import {SearchService} from './search.service';
   providers: [
     SearchService,
     SearchHandler,
+    PreprocessorService,
   ],
   controllers: [
     SearchController,
