@@ -154,6 +154,23 @@ export class SearchService implements OnModuleInit {
     return [...grouped.values()];
   }
 
+  async deleteAll(assignment: string, solution?: string): Promise<number> {
+    const result = await this.elasticsearchService.deleteByQuery({
+      index: 'files',
+      body: {
+        query: {
+          bool: {
+            filter: [
+              {term: {assignment}},
+              ...(solution ? [{term: {solution}}] : []),
+            ],
+          },
+        },
+      },
+    });
+    return result.body.deleted;
+  }
+
   private glob2RegExp(glob: string): string {
     return glob.replace(/\*\*|[.?+*|{}()"\\]/g, match => {
       switch (match) {

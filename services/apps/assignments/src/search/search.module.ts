@@ -3,6 +3,7 @@ import {ElasticsearchModule} from '@nestjs/elasticsearch';
 import {AssignmentModule} from '../assignment/assignment.module';
 import {environment} from '../environment';
 import {SearchController} from './search.controller';
+import {SearchHandler} from './search.handler';
 import {SearchService} from './search.service';
 
 @Module({
@@ -12,6 +13,7 @@ import {SearchService} from './search.service';
   ],
   providers: [
     SearchService,
+    SearchHandler,
   ],
   controllers: [
     SearchController,
