@@ -148,8 +148,17 @@ export class SubmitService {
   }
 
   private renderSnippet(assignment: Assignment, solution: Solution, snippet: Snippet) {
-    const link = `https://github.com/${assignment.classroom!.org}/${assignment.classroom!.prefix}-${solution.author.github}/blob/${solution.commit}/${snippet.file}#L${snippet.from.line + 1}-L${snippet.to.line + 1}`;
-    return `  * ${snippet.comment}: ${link}\n`;
+    const {org, prefix} = assignment.classroom ?? {};
+    const {author: {github: username}, commit} = solution;
+    if (org && prefix && username && commit) {
+      const link = `https://github.com/${org}/${prefix}-${username}/blob/${commit}/${snippet.file}#L${snippet.from.line + 1}-L${snippet.to.line + 1}`;
+      return `  * ${snippet.comment}: ${link}\n`;
+    } else {
+      const position = `${snippet.file}:${snippet.from.line + 1}:${snippet.from.character + 1}-${snippet.to.line + 1}:${snippet.to.character + 1}`;
+      const dotIndex = snippet.file.lastIndexOf('.');
+      const language = dotIndex >= 0 ? snippet.file.substring(dotIndex + 1) : '';
+      return `  * ${snippet.comment}: ${position}:\n    \`\`\`${language}\n    ${snippet.code.replace(/\r?\n/g, '\n    ')}\n    \`\`\`\n`;
+    }
   }
 
   private renderFooter(assignment: Assignment, solution: Solution) {

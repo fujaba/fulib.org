@@ -1,7 +1,7 @@
 export class Snippet {
   file: string;
-  from: { line: number; };
-  to: { line: number; };
+  from: { line: number; character: number; };
+  to: { line: number; character: number; };
   comment: string;
   code: string;
   context?: string;
