@@ -15,23 +15,27 @@ describe('PreprocessorService', () => {
   });
 
   it('should replace line comments', () => {
-    expect(service.stripLineComments(`
+    const original = `
     Test code
     // some comment
     Important
     More code # end of line comment
     Remaining code
-    `)).toEqual(`
+    `;
+    const actual = service.stripLineComments(original);
+    const expected = `
     Test code
-    
+                   
     Important
-    More code 
+    More code                      
     Remaining code
-    `);
+    `;
+    expect(actual).toEqual(expected);
+    expect(actual.length).toEqual(original.length);
   });
 
   it('should replace block comments', () => {
-    expect(service.stripBlockComments(`
+    const original = `
     Test code
     /*
      * some comment
@@ -40,7 +44,9 @@ describe('PreprocessorService', () => {
     sneaky /* inline comment */ code
     Code /* that is
     interrupted */ ends here
-    `)).toEqual(`
+    `;
+    const actual = service.stripBlockComments(original);
+    const expected = `
     Test code
       
                    
@@ -49,6 +55,8 @@ describe('PreprocessorService', () => {
     sneaky                      code
     Code           
                    ends here
-    `);
+    `;
+    expect(actual).toEqual(expected);
+    expect(actual.length).toEqual(original.length);
   })
 });

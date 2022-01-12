@@ -9,12 +9,14 @@ export class PreprocessorService {
   }
 
   stripBlockComments(code: string): string {
-    return code.replace(/\/\*.*?\*\//gs, comment => {
-      return comment.replace(/[^\t\r\n]/g, ' ');
-    });
+    return code.replace(/\/\*.*?\*\//gs, comment => this.blankify(comment));
   }
 
   stripLineComments(code: string): string {
-    return code.replace(/(\/\/|#).*\n/g, '\n');
+    return code.replace(/(\/\/|#).*\n/g, comment => this.blankify(comment));
+  }
+
+  private blankify(comment: string) {
+    return comment.replace(/[^\t\r\n]/g, ' ');
   }
 }
