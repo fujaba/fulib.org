@@ -50,27 +50,5 @@ describe('PreprocessorService', () => {
     Code           
                    ends here
     `);
-  });
-
-  it('should rename Java variables', () => {
-    expect(service.renameJavaVariables(`
-    public static void main(String[] args) {
-      int i = 6;
-      int j = 7;
-      int answer = i * j;
-      String greeting = "Hello";
-      System.out.println(greeting);
-      System.out.println("Answer: " + answer);
-    }
-    `)).toEqual(`
-    public static void main(String[] s0  ) {
-      int i = 6;
-      int j = 7;
-      int i0     = i * j;
-      String s1       = "Hello";
-      System.out.println(s1      );
-      System.out.println("Answer: " + i0    );
-    }
-    `);
-  });
+  })
 });
