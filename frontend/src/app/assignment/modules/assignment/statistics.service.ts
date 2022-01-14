@@ -23,7 +23,10 @@ interface TaskStatistics {
   task: string;
   points: EvaluationStatistics
   count: EvaluationStatistics;
-  resolved: Task[];
+
+  _tasks: Task[];
+  _task: Task;
+  _score: number;
 }
 
 export interface AssignmentStatistics {

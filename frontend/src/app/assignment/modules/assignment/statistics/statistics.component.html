@@ -89,7 +89,7 @@
         <div class="d-flex align-items-center">
           <button ngbPanelToggle class="btn btn-link p-0 mr-auto">
             <ol class="breadcrumb mb-0 bg-transparent">
-              <li *ngFor="let task of taskStats.resolved; let last=last" class="breadcrumb-item" [class.text-muted]="!last">
+              <li *ngFor="let task of taskStats._tasks; let last=last" class="breadcrumb-item" [class.text-muted]="!last">
                 {{ task.description }}
                 <span *ngIf="last" class="badge badge-secondary">
                 {{ task.points }}
@@ -99,14 +99,14 @@
           </button>
           <app-statistic-value [value]="taskStats.points.total / taskStats.count.total | number:'0.0-2'" label="Points on Average"></app-statistic-value>
           <div class="border-right mx-3 align-self-stretch"></div>
-          <app-statistic-value [value]="taskStats.points.total / (taskStats.resolved[taskStats.resolved.length - 1].points * taskStats.count.total) | percent:'0.0-2'" label="of Points on Average"></app-statistic-value>
+          <app-statistic-value [value]="taskStats._score | percent:'0.0-2'" label="of Points on Average"></app-statistic-value>
         </div>
       </ng-template>
       <ng-template ngbPanelContent>
         <ul>
           <li>
             The Task
-            <b>{{ taskStats.resolved[taskStats.resolved.length - 1].description }}</b>
+            <b>{{ taskStats._task.description }}</b>
             was evaluated
             <b>{{ taskStats.count.total }}</b>
             times.
@@ -115,7 +115,7 @@
             A total of
             <b>{{ taskStats.points.total }}</b>
             points was
-            {{ taskStats.resolved[taskStats.resolved.length - 1].points < 0 ? 'deducted' : 'given' }}
+            {{ taskStats._task.points < 0 ? 'deducted' : 'given' }}
             across all submissions.
           </li>
           <li>
@@ -125,9 +125,9 @@
           </li>
           <li>
             This results in a
-            {{ taskStats.resolved[taskStats.resolved.length - 1].points < 0 ? 'failure' : 'success' }}
+            {{ taskStats._task.points < 0 ? 'failure' : 'success' }}
             rate of
-            <b>{{ taskStats.points.total / (taskStats.resolved[taskStats.resolved.length - 1].points * taskStats.count.total) | percent:'0.0-2' }}</b>.
+            <b>{{ taskStats._score | percent:'0.0-2' }}</b>.
           </li>
           <li>
             Of the {{ taskStats.count.total }} evaluations for this task,

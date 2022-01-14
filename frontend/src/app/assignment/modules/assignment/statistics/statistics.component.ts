@@ -33,8 +33,11 @@ export class StatisticsComponent implements OnInit {
     ).subscribe(([assignment, statistics]) => {
       this.maxPoints = this.taskService.sumPositivePoints(assignment.tasks);
       this.stats = statistics;
-      for (let task of statistics.tasks) {
-        task.resolved = this.taskService.findWithParents(assignment.tasks, task.task);
+      for (let taskStats of statistics.tasks) {
+        const tasks = this.taskService.findWithParents(assignment.tasks, taskStats.task);
+        taskStats._tasks = tasks;
+        taskStats._task = tasks[tasks.length - 1];
+        taskStats._score = taskStats.points.total / (taskStats._task.points * taskStats.count.total);
       }
     });
   }
