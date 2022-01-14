@@ -2,11 +2,12 @@ import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {
-  NgbDropdownModule,
-  NgbNavModule,
-  NgbPopoverModule,
-  NgbTooltipModule,
-  NgbTypeaheadModule,
+    NgbAccordionModule,
+    NgbDropdownModule,
+    NgbNavModule,
+    NgbPopoverModule,
+    NgbTooltipModule,
+    NgbTypeaheadModule,
 } from '@ng-bootstrap/ng-bootstrap';
 import {ClipboardModule} from 'ngx-clipboard';
 import {SharedModule} from '../../../shared/shared.module';
@@ -36,19 +37,20 @@ import {AssignmentTasksComponent} from './tasks/tasks.component';
     StatisticValueComponent,
     ImportModalComponent,
   ],
-  imports: [
-    CommonModule,
-    SharedModule,
-    FormsModule,
-    ClipboardModule,
-    NgbTypeaheadModule,
-    NgbPopoverModule,
-    NgbTooltipModule,
-    AssignmentSharedModule,
-    AssignmentRoutingModule,
-    NgbDropdownModule,
-    NgbNavModule,
-  ],
+    imports: [
+        CommonModule,
+        SharedModule,
+        FormsModule,
+        ClipboardModule,
+        NgbTypeaheadModule,
+        NgbPopoverModule,
+        NgbTooltipModule,
+        AssignmentSharedModule,
+        AssignmentRoutingModule,
+        NgbDropdownModule,
+        NgbNavModule,
+        NgbAccordionModule,
+    ],
 })
 export class AssignmentModule {
 }
