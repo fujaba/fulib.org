@@ -21,9 +21,8 @@ interface EvaluationStatistics {
 
 interface TaskStatistics {
   task: string;
-  totalPoints: number;
-  totalCount: number;
-
+  points: EvaluationStatistics
+  count: EvaluationStatistics;
   resolved: Task[];
 }
 

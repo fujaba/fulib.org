@@ -2,7 +2,7 @@ import {Injectable} from '@nestjs/common';
 import {AssignmentService} from '../assignment/assignment.service';
 import {EvaluationService} from '../evaluation/evaluation.service';
 import {SolutionService} from '../solution/solution.service';
-import {AssignmentStatistics, TaskStatistics} from './statistics.dto';
+import {AssignmentStatistics, EvaluationStatistics, TaskStatistics} from './statistics.dto';
 
 @Injectable()
 export class StatisticsService {
@@ -29,9 +29,10 @@ export class StatisticsService {
 
     const evaluatedSolutions = new Set<string>();
     const tasks = new Map<string, TaskStatistics>();
-    let codeSearchEvaluations = 0;
-    let editedCodeSearchEvaluations = 0;
-    let manualEvaluations = 0;
+    const evaluationStatistics: EvaluationStatistics = {
+      codeSearch: 0, editedCodeSearch: 0, manual: 0,
+      total: evaluations.length,
+    };
     for await (const {
       codeSearch,
       points,
@@ -41,28 +42,32 @@ export class StatisticsService {
     } of this.evaluationService.model.find({assignment}).select('solution task points codeSearch author')) {
       evaluatedSolutions.add(solution);
 
-      if (codeSearch?.origin) {
-        if (author === 'Code Search') {
-          codeSearchEvaluations++;
-        } else {
-          editedCodeSearchEvaluations++;
-        }
-      } else {
-        manualEvaluations++;
-      }
-
       let item = tasks.get(task);
       if (!item) {
         item = {
           task,
-          totalPoints: 0,
-          totalCount: 0,
+          points: {codeSearch: 0, editedCodeSearch: 0, manual: 0, total: 0},
+          count: {codeSearch: 0, editedCodeSearch: 0, manual: 0, total: 0},
         };
         tasks.set(task, item);
       }
 
-      item.totalPoints += points;
-      item.totalCount++;
+      let key: keyof EvaluationStatistics;
+      if (codeSearch?.origin) {
+        if (author === 'Code Search') {
+          key = 'codeSearch';
+        } else {
+          key = 'editedCodeSearch';
+        }
+      } else {
+        key = 'manual'
+      }
+
+      evaluationStatistics[key]++;
+      item.points[key] += points;
+      item.points.total += points;
+      item.count[key]++;
+      item.count.total++;
     }
 
     return {
@@ -72,13 +77,8 @@ export class StatisticsService {
         total: totalSolutions,
         pointsAvg: totalPoints / gradedSolutions,
       },
-      evaluations: {
-        codeSearch: codeSearchEvaluations,
-        editedCodeSearch: editedCodeSearchEvaluations,
-        manual: manualEvaluations,
-        total: evaluations.length,
-      },
-      tasks: Array.from(tasks.values()).sort((a, b) => b.totalPoints - a.totalPoints),
+      evaluations: evaluationStatistics,
+      tasks: Array.from(tasks.values()).sort((a, b) => b.points.total - a.points.total),
     };
   }
 }
