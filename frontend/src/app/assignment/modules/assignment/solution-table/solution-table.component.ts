@@ -81,11 +81,11 @@ export class SolutionTableComponent implements OnInit {
       ])),
     ).subscribe(([manual, codeSearch]) => {
       this.evaluated = {};
-      for (let id of manual) {
-        this.evaluated[id] = true;
-      }
       for (let id of codeSearch) {
         this.evaluated[id] = false;
+      }
+      for (let id of manual) {
+        this.evaluated[id] = true;
       }
     });
 
