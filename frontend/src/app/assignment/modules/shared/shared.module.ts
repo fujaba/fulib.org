@@ -9,6 +9,7 @@ import {ImportExportComponent} from './import-export/import-export.component';
 import {TaskColorPipe} from './pipes/task-color.pipe';
 import {SnippetComponent} from './snippet/snippet.component';
 import {TaskListComponent} from './task-list/task-list.component';
+import { SolutionNamePipe } from './pipes/solution-name.pipe';
 
 
 @NgModule({
@@ -25,6 +26,7 @@ import {TaskListComponent} from './task-list/task-list.component';
     SnippetComponent,
     TaskListComponent,
     TaskColorPipe,
+    SolutionNamePipe,
   ],
   exports: [
     AssignmentInfoComponent,
@@ -33,6 +35,7 @@ import {TaskListComponent} from './task-list/task-list.component';
     SnippetComponent,
     TaskListComponent,
     TaskColorPipe,
+    SolutionNamePipe,
   ],
 })
 export class AssignmentSharedModule {

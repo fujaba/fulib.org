@@ -17,7 +17,7 @@
               </a>
               for the
               <a [routerLink]="['../../..', originSolution._id]">
-                Solution by {{ originSolution.author.name || originSolution.author.github }}
+                Solution by {{ originSolution | solutionName }}
               </a>
               .
             </div>
