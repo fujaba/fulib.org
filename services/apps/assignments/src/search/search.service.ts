@@ -172,8 +172,9 @@ export class SearchService implements OnModuleInit {
   }
 
   private glob2RegExp(glob: string): string {
-    return glob.replace(/\*\*|[.?+*|{}()"\\]/g, match => {
+    return glob.replace(/\*\*\/?|[.?+*|{}()"\\]/g, match => {
       switch (match) {
+        case '**/':
         case '**':
           return '.*';
         case '*':
