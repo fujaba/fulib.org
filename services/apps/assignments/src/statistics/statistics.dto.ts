@@ -14,8 +14,8 @@ export class EvaluationStatistics {
 
 export class TaskStatistics {
   task: string;
-  totalPoints: number;
-  totalCount: number;
+  points: EvaluationStatistics;
+  count: EvaluationStatistics;
 }
 
 export class AssignmentStatistics {
