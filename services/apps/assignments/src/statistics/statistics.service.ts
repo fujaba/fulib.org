@@ -1,4 +1,5 @@
-import {Injectable} from '@nestjs/common';
+import {Injectable, NotFoundException} from '@nestjs/common';
+import {Task} from '../assignment/assignment.schema';
 import {AssignmentService} from '../assignment/assignment.service';
 import {EvaluationService} from '../evaluation/evaluation.service';
 import {SolutionService} from '../solution/solution.service';
@@ -13,7 +14,22 @@ export class StatisticsService {
   ) {
   }
 
+  private buildTaskMap(tasks: Task[], map: Map<string, Task>): void {
+    for (let task of tasks) {
+      map.set(task._id, task);
+      this.buildTaskMap(task.children, map);
+    }
+  }
+
   async getAssignmentStatistics(assignment: string): Promise<AssignmentStatistics> {
+    const assignmentDoc = await this.assignmentService.findOne(assignment);
+    if (!assignmentDoc) {
+      throw new NotFoundException(assignment);
+    }
+
+    const tasks = new Map<string, Task>();
+    this.buildTaskMap(assignmentDoc.tasks, tasks);
+
     let totalPoints = 0;
     let gradedSolutions = 0;
     let totalSolutions = 0;
@@ -28,28 +44,31 @@ export class StatisticsService {
     const evaluations = await this.evaluationService.findAll({assignment});
 
     const evaluatedSolutions = new Set<string>();
-    const tasks = new Map<string, TaskStatistics>();
+    const taskStats = new Map<string, TaskStatistics>();
     const evaluationStatistics: EvaluationStatistics = {
       codeSearch: 0, editedCodeSearch: 0, manual: 0,
       total: evaluations.length,
     };
-    for await (const {
+    const weightedEvaluationStatistics: EvaluationStatistics = {
+      codeSearch: 0, editedCodeSearch: 0, manual: 0, total: 0,
+    };
+    for (const {
       codeSearch,
       points,
       solution,
       task,
       author,
-    } of this.evaluationService.model.find({assignment}).select('solution task points codeSearch author')) {
+    } of evaluations) {
       evaluatedSolutions.add(solution);
 
-      let item = tasks.get(task);
-      if (!item) {
-        item = {
+      let taskStat = taskStats.get(task);
+      if (!taskStat) {
+        taskStat = {
           task,
           points: {codeSearch: 0, editedCodeSearch: 0, manual: 0, total: 0},
           count: {codeSearch: 0, editedCodeSearch: 0, manual: 0, total: 0},
         };
-        tasks.set(task, item);
+        taskStats.set(task, taskStat);
       }
 
       let key: keyof EvaluationStatistics;
@@ -63,11 +82,14 @@ export class StatisticsService {
         key = 'manual'
       }
 
+      const pointsWeight = Math.abs(tasks.get(task)?.points ?? 0);
       evaluationStatistics[key]++;
-      item.points[key] += points;
-      item.points.total += points;
-      item.count[key]++;
-      item.count.total++;
+      weightedEvaluationStatistics[key] += pointsWeight;
+      weightedEvaluationStatistics.total += pointsWeight;
+      taskStat.points[key] += points;
+      taskStat.points.total += points;
+      taskStat.count[key]++;
+      taskStat.count.total++;
     }
 
     return {
@@ -78,7 +100,8 @@ export class StatisticsService {
         pointsAvg: totalPoints / gradedSolutions,
       },
       evaluations: evaluationStatistics,
-      tasks: Array.from(tasks.values()).sort((a, b) => b.points.total - a.points.total),
+      weightedEvaluations: weightedEvaluationStatistics,
+      tasks: Array.from(taskStats.values()).sort((a, b) => b.points.total - a.points.total),
     };
   }
 }

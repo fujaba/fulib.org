@@ -21,5 +21,6 @@ export class TaskStatistics {
 export class AssignmentStatistics {
   solutions: SolutionStatistics;
   evaluations: EvaluationStatistics;
+  weightedEvaluations: EvaluationStatistics;
   tasks: TaskStatistics[];
 }
