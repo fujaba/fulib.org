@@ -112,6 +112,13 @@ a[href^="http"]::after {
   backdrop-filter: blur(10px);
 }
 
+@each $name, $value in $colors {
+  .bg-progress-#{$name} {
+    $color: rgba($value, 0.1);
+    background-image: linear-gradient(to right, $color 0, $color var(--percentage), transparent var(--percentage));
+  }
+}
+
 /* --------------- Timelines --------------- */
 
 $outline-color: #777;
