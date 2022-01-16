@@ -12,7 +12,7 @@ interface SolutionStatistics {
   total: number;
 }
 
-interface EvaluationStatistics {
+export interface EvaluationStatistics {
   codeSearch: number;
   editedCodeSearch: number;
   manual: number;
@@ -32,6 +32,7 @@ interface TaskStatistics {
 export interface AssignmentStatistics {
   solutions: SolutionStatistics;
   evaluations: EvaluationStatistics;
+  weightedEvaluations: EvaluationStatistics;
   tasks: TaskStatistics[];
 }
 

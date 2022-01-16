@@ -15,6 +15,7 @@ import {AssignmentStatistics, StatisticsService} from '../statistics.service';
 export class StatisticsComponent implements OnInit {
   stats?: AssignmentStatistics;
   maxPoints = 0;
+  weightedEvaluations = false;
 
   constructor(
     private assignmentService: AssignmentService,
