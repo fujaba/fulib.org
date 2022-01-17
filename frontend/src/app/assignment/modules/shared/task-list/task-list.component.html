@@ -7,9 +7,10 @@
     </span>
     <a
       *ngIf="evaluations"
-      [routerLink]="[task._id]"
       [class.text-primary]="!evaluations[task._id]"
       [class.text-secondary]="evaluations[task._id]"
+      [routerLink]="[task._id]"
+      (click)="openTelemetry(task)"
     >
       {{ evaluations[task._id] ? '&check; Graded by ' + evaluations[task._id].author : 'Grade' }}
     </a>
