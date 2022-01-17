@@ -135,6 +135,7 @@
         routerLink="/assignments/{{assignment?._id}}/solutions/{{solution._id}}"
         queryParamsHandling="merge"
         ngbTooltip="View Solution"
+        (click)="telemetry(solution, 'openSolution')"
       ></a>
       <div
         *ngIf="assignment?.classroom?.org && assignment?.classroom?.prefix && solution.author.github"
@@ -145,11 +146,13 @@
           href="https://github.com/{{assignment?.classroom?.org}}/{{assignment?.classroom?.prefix}}-{{solution.author.github}}{{solution.commit ? '/tree/' + solution.commit : ''}}"
           target="_blank"
           ngbTooltip="View {{solution.commit ? 'Commit' : 'Repository'}} on GitHub"
+          (click)="telemetry(solution, 'showGithub')"
         ></a>
         <a
           class="btn btn-secondary bi-code-square"
           ngbTooltip="Clone in IDE"
           [href]="options.ide + '://vscode.git/clone?url=' + clonePrefix[options.clone] + assignment?.classroom?.org + '%2F' + assignment?.classroom?.prefix + '-' + solution.author.github + cloneSuffix[options.clone] | safeUrl"
+          (click)="telemetry(solution, 'clone')"
         ></a>
       </div>
       <a
@@ -157,6 +160,7 @@
         ngbTooltip="Submit Feedback"
         [routerLink]="['../submit', solution._id]"
         queryParamsHandling="preserve"
+        (click)="telemetry(solution, 'openFeedback')"
       ></a>
     </td>
   </tr>
