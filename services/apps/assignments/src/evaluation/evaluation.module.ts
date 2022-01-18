@@ -15,8 +15,8 @@ import {EvaluationService} from './evaluation.service';
       schema: EvaluationSchema,
     }]),
     AssignmentModule,
+    SolutionModule,
     SearchModule,
-    forwardRef(() => SolutionModule),
   ],
   controllers: [EvaluationController],
   providers: [

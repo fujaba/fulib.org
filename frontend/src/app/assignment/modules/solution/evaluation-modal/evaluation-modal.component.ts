@@ -11,6 +11,7 @@ import Task from '../../../model/task';
 import {AssignmentService} from '../../../services/assignment.service';
 import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
+import {TelemetryService} from '../../../services/telemetry.service';
 import {SelectionService} from '../selection.service';
 
 export const selectionComment = '(fulibFeedback Selection)';
@@ -64,6 +65,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     private selectionService: SelectionService,
     private users: UserService,
     private toastService: ToastService,
+    private telemetryService: TelemetryService,
     public route: ActivatedRoute,
   ) {
   }
@@ -178,6 +180,13 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     this.dto.task = task;
 
     this.dto.snippets.removeFirst(s => s.comment === this.selectionComment);
+
+    this.telemetryService.create(aid, sid, {
+      timestamp: new Date(),
+      task,
+      author: this.dto.author,
+      action: 'submitEvaluation',
+    }).subscribe();
 
     const op = this.evaluation
       ? this.solutionService.updateEvaluation(aid, sid, this.evaluation._id, this.dto)

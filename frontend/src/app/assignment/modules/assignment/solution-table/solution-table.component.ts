@@ -10,6 +10,7 @@ import {AssignmentService} from '../../../services/assignment.service';
 import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
 import {CONFIG_OPTIONS, ConfigKey, ConfigService} from '../../../services/config.service';
+import {TelemetryService} from '../../../services/telemetry.service';
 
 @Component({
   selector: 'app-solution-table',
@@ -51,6 +52,7 @@ export class SolutionTableComponent implements OnInit {
     private solutionService: SolutionService,
     private configService: ConfigService,
     private router: Router,
+    private telemetryService: TelemetryService,
     private activatedRoute: ActivatedRoute,
     private toastService: ToastService,
     private taskService: TaskService,
@@ -196,5 +198,12 @@ export class SolutionTableComponent implements OnInit {
       }
     }
     return [...valueSet].sort();
+  }
+
+  telemetry(solution: Solution, action: string) {
+    this.telemetryService.create(solution.assignment, solution._id!, {
+      action,
+      timestamp: new Date(),
+    }).subscribe();
   }
 }
