@@ -5,14 +5,14 @@
            [(ngModel)]="assignment.title" (change)="saveDraft()">
   </div>
   <div class="form-group">
-    <label for="authorInput">Your Name</label>
+    <label for="authorInput">Contact Name</label>
     <input type="text" class="form-control" id="authorInput" placeholder="John Doe"
-           [(ngModel)]="assignment.author" (change)="saveDraft()" [disabled]="loggedIn">
+           [(ngModel)]="assignment.author" (change)="saveDraft()">
   </div>
   <div class="form-group">
-    <label for="emailInput">Your E-Mail</label>
+    <label for="emailInput">Contact E-Mail</label>
     <input type="text" class="form-control" id="emailInput" placeholder="jdoe@example.com"
-           [(ngModel)]="assignment.email" (change)="saveDraft()" [disabled]="loggedIn">
+           [(ngModel)]="assignment.email" (change)="saveDraft()">
   </div>
   <div class="form-group">
     <label for="deadlineDateInput">Deadline</label>

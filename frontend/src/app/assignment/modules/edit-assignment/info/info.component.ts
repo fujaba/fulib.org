@@ -15,7 +15,6 @@ export class InfoComponent implements OnInit {
   deadlineDate?: string;
   deadlineTime?: string;
 
-  loggedIn = false;
   private userSubscription: Subscription;
 
   constructor(
@@ -47,12 +46,11 @@ export class InfoComponent implements OnInit {
         return;
       }
 
-      this.loggedIn = true;
       if (user.firstName && user.lastName) {
-        this.assignment.author = `${user.firstName} ${user.lastName}`;
+        this.assignment.author ||= `${user.firstName} ${user.lastName}`;
       }
       if (user.email) {
-        this.assignment.email = user.email;
+        this.assignment.email ||= user.email;
       }
     });
   }
@@ -60,7 +58,6 @@ export class InfoComponent implements OnInit {
   ngOnDestroy(): void {
     this.userSubscription.unsubscribe();
   }
-
 
   saveDraft(): void {
     this.assignment.deadline = this.getDeadline();
@@ -70,5 +67,4 @@ export class InfoComponent implements OnInit {
   getDeadline(): Date | undefined {
     return this.deadlineDate ? new Date(this.deadlineDate + ' ' + (this.deadlineTime ?? '00:00')) : undefined;
   }
-
 }
