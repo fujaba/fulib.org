@@ -134,7 +134,7 @@ export class StatisticsService {
         graded++;
       }
     }
-    const evaluated = (await this.evaluationService.findUnique('solution')).length;
+    const evaluated = (await this.evaluationService.findUnique('solution', {assignment})).length;
     return {
       total,
       evaluated,
