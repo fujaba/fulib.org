@@ -98,6 +98,7 @@ export class StatisticsService {
     let eventCount = 0;
     let totalTime = 0;
     let weightedTime = 0;
+    let codeSearchSavings = 0;
     for (const result of await this.telemetryService.model.aggregate([
       {$match: {assignment, action: {$in: ['openEvaluation', 'submitEvaluation']}}},
       {$sort: {timestamp: 1}},
@@ -115,6 +116,7 @@ export class StatisticsService {
       const taskStat = taskStats.get(_id);
       if (taskStat) {
         taskStat.timeAvg = time / count;
+        codeSearchSavings += taskStat.count.codeSearch * taskStat.timeAvg;
       }
       eventCount += count;
       totalTime += time;
@@ -134,6 +136,7 @@ export class StatisticsService {
         evaluationTotal: totalTime,
         evaluationAvg: totalTime / eventCount,
         pointsAvg: weightedTime,
+        codeSearchSavings,
       },
       tasks: Array.from(taskStats.values()).sort((a, b) => b.points.total - a.points.total),
     };

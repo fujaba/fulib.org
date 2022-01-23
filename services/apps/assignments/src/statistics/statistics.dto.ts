@@ -23,6 +23,7 @@ export class TimeStatistics {
   evaluationTotal: number;
   evaluationAvg: number;
   pointsAvg: number;
+  codeSearchSavings: number;
 }
 
 export class AssignmentStatistics {
