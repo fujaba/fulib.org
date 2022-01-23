@@ -3,6 +3,7 @@ import {Task} from '../assignment/assignment.schema';
 import {AssignmentService} from '../assignment/assignment.service';
 import {EvaluationService} from '../evaluation/evaluation.service';
 import {SolutionService} from '../solution/solution.service';
+import {TelemetryService} from '../telemetry/telemetry.service';
 import {AssignmentStatistics, EvaluationStatistics, TaskStatistics} from './statistics.dto';
 
 @Injectable()
@@ -11,6 +12,7 @@ export class StatisticsService {
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
     private evaluationService: EvaluationService,
+    private telemetryService: TelemetryService,
   ) {
   }
 
@@ -67,6 +69,7 @@ export class StatisticsService {
           task,
           points: {codeSearch: 0, editedCodeSearch: 0, manual: 0, total: 0},
           count: {codeSearch: 0, editedCodeSearch: 0, manual: 0, total: 0},
+          timeAvg: 0,
         };
         taskStats.set(task, taskStat);
       }
@@ -92,6 +95,32 @@ export class StatisticsService {
       taskStat.count.total++;
     }
 
+    let eventCount = 0;
+    let totalTime = 0;
+    let weightedTime = 0;
+    for (const result of await this.telemetryService.model.aggregate([
+      {$match: {assignment, action: {$in: ['openEvaluation', 'submitEvaluation']}}},
+      {$sort: {timestamp: 1}},
+      {$group: {_id: {s: '$solution', t: '$task', c: '$createdBy'} as any, events: {$push: '$$ROOT'}}},
+      {
+        $project: {
+          start: {$last: {$filter: {input: '$events', cond: {$eq: ['$$this.action', 'openEvaluation']}}}},
+          end: {$last: {$filter: {input: '$events', cond: {$eq: ['$$this.action', 'submitEvaluation']}}}},
+        },
+      },
+      {$project: {duration: {$subtract: ['$end.timestamp', '$start.timestamp']}}},
+      {$group: {_id: '$_id.t' as any, time: {$sum: '$duration'}, count: {$sum: 1}}},
+    ])) {
+      const {_id, time, count} = result;
+      const taskStat = taskStats.get(_id);
+      if (taskStat) {
+        taskStat.timeAvg = time / count;
+      }
+      eventCount += count;
+      totalTime += time;
+      weightedTime += time / Math.abs(tasks.get(_id)?.points ?? 1);
+    }
+
     return {
       solutions: {
         evaluated: evaluatedSolutions.size,
@@ -101,6 +130,11 @@ export class StatisticsService {
       },
       evaluations: evaluationStatistics,
       weightedEvaluations: weightedEvaluationStatistics,
+      time: {
+        evaluationTotal: totalTime,
+        evaluationAvg: totalTime / eventCount,
+        pointsAvg: weightedTime,
+      },
       tasks: Array.from(taskStats.values()).sort((a, b) => b.points.total - a.points.total),
     };
   }
