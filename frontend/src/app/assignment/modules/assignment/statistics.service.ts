@@ -23,16 +23,25 @@ interface TaskStatistics {
   task: string;
   points: EvaluationStatistics
   count: EvaluationStatistics;
+  timeAvg: number;
 
   _tasks: Task[];
   _task: Task;
   _score: number;
 }
 
+export interface TimeStatistics {
+  evaluationTotal: number;
+  evaluationAvg: number;
+  pointsAvg: number;
+  codeSearchSavings: number;
+}
+
 export interface AssignmentStatistics {
   solutions: SolutionStatistics;
   evaluations: EvaluationStatistics;
   weightedEvaluations: EvaluationStatistics;
+  time: TimeStatistics;
   tasks: TaskStatistics[];
 }
 

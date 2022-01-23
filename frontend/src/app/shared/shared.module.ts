@@ -19,6 +19,7 @@ import {ScenarioCodemirrorComponent} from './scenario-codemirror/scenario-codemi
 import {TabsComponent} from './tabs/tabs.component';
 import { ProTipComponent } from './pro-tip/pro-tip.component';
 import { RouteTabsComponent } from './route-tabs/route-tabs.component';
+import { DurationPipe } from './duration.pipe';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { RouteTabsComponent } from './route-tabs/route-tabs.component';
     TabsComponent,
     ProTipComponent,
     RouteTabsComponent,
+    DurationPipe,
   ],
   imports: [
     FormsModule,
@@ -61,6 +63,7 @@ import { RouteTabsComponent } from './route-tabs/route-tabs.component';
     TabsComponent,
     ProTipComponent,
     RouteTabsComponent,
+    DurationPipe,
   ],
 })
 export class SharedModule {
