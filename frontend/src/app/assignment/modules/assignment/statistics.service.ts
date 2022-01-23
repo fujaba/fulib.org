@@ -34,6 +34,7 @@ export interface TimeStatistics {
   evaluationTotal: number;
   evaluationAvg: number;
   pointsAvg: number;
+  codeSearchSavings: number;
 }
 
 export interface AssignmentStatistics {

@@ -55,6 +55,9 @@
         [label]="weightedEvaluations ? 'Points' : 'Evaluations'"
         [stats]="weightedEvaluations ? stats.weightedEvaluations : stats.evaluations"
       ></app-statistics-block>
+      <h2>
+        Time Tracking
+      </h2>
       <ul class="list-group">
         <li class="list-group-item d-flex align-items-center">
           <div class="mr-auto">
@@ -66,6 +69,13 @@
             [label]="weightedEvaluations ? 'Average per Point' : 'Average per Evaluation'"
             [value]="(weightedEvaluations ? stats.time.pointsAvg : stats.time.evaluationAvg) / 1000 | duration"
           ></app-statistic-value>
+        </li>
+        <li class="list-group-item d-flex align-items-center">
+          <div class="mr-auto">
+            Time saved by Code Search
+            <i class="bi-info-circle" ngbTooltip="Approximately"></i>
+          </div>
+          <app-statistic-value class="text-gradient" label="Total" [value]="stats.time.codeSearchSavings / 1000 | duration"></app-statistic-value>
         </li>
       </ul>
     </div>
@@ -149,7 +159,7 @@
           </li>
           <li>
             Code Search saved approximately
-            <b>{{ taskStats.timeAvg * taskStats.count.codeSearch / 1000 | duration }}</b>
+            <b class="text-gradient">{{ taskStats.timeAvg * taskStats.count.codeSearch / 1000 | duration }}</b>
             of grading time for this task.
           </li>
         </ul>
