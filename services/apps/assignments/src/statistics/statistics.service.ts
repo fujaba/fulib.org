@@ -4,7 +4,7 @@ import {AssignmentService} from '../assignment/assignment.service';
 import {EvaluationService} from '../evaluation/evaluation.service';
 import {SolutionService} from '../solution/solution.service';
 import {TelemetryService} from '../telemetry/telemetry.service';
-import {AssignmentStatistics, EvaluationStatistics, TaskStatistics} from './statistics.dto';
+import {AssignmentStatistics, EvaluationStatistics, SolutionStatistics, TaskStatistics} from './statistics.dto';
 
 @Injectable()
 export class StatisticsService {
@@ -32,46 +32,27 @@ export class StatisticsService {
     const tasks = new Map<string, Task>();
     this.buildTaskMap(assignmentDoc.tasks, tasks);
 
-    let totalPoints = 0;
-    let gradedSolutions = 0;
-    let totalSolutions = 0;
-    for await (const {points} of this.solutionService.model.find({assignment}).select('points')) {
-      totalSolutions++;
-      if (points !== undefined) {
-        totalPoints += points;
-        gradedSolutions++;
-      }
+    const taskStats = new Map<string, TaskStatistics>();
+    for (let task of tasks.keys()) {
+      taskStats.set(task, {
+        task,
+        points: this.createEmptyEvaluationStatistics(),
+        count: this.createEmptyEvaluationStatistics(),
+        timeAvg: 0,
+      });
     }
 
-    const evaluations = await this.evaluationService.findAll({assignment});
-
-    const evaluatedSolutions = new Set<string>();
-    const taskStats = new Map<string, TaskStatistics>();
-    const evaluationStatistics: EvaluationStatistics = {
-      codeSearch: 0, editedCodeSearch: 0, manual: 0,
-      total: evaluations.length,
-    };
-    const weightedEvaluationStatistics: EvaluationStatistics = {
-      codeSearch: 0, editedCodeSearch: 0, manual: 0, total: 0,
-    };
-    for (const {
+    const evaluationStatistics = this.createEmptyEvaluationStatistics();
+    const weightedEvaluationStatistics = this.createEmptyEvaluationStatistics();
+    for await (const {
       codeSearch,
       points,
-      solution,
       task,
       author,
-    } of evaluations) {
-      evaluatedSolutions.add(solution);
-
+    } of this.evaluationService.model.find({assignment}).select('codeSearch points task author')) {
       let taskStat = taskStats.get(task);
-      if (!taskStat) {
-        taskStat = {
-          task,
-          points: {codeSearch: 0, editedCodeSearch: 0, manual: 0, total: 0},
-          count: {codeSearch: 0, editedCodeSearch: 0, manual: 0, total: 0},
-          timeAvg: 0,
-        };
-        taskStats.set(task, taskStat);
+      if (!taskStat) { // orphaned, ignore
+        continue;
       }
 
       let key: keyof EvaluationStatistics;
@@ -82,11 +63,12 @@ export class StatisticsService {
           key = 'editedCodeSearch';
         }
       } else {
-        key = 'manual'
+        key = 'manual';
       }
 
       const pointsWeight = Math.abs(tasks.get(task)?.points ?? 0);
       evaluationStatistics[key]++;
+      evaluationStatistics.total++;
       weightedEvaluationStatistics[key] += pointsWeight;
       weightedEvaluationStatistics.total += pointsWeight;
       taskStat.points[key] += points;
@@ -124,12 +106,7 @@ export class StatisticsService {
     }
 
     return {
-      solutions: {
-        evaluated: evaluatedSolutions.size,
-        graded: gradedSolutions,
-        total: totalSolutions,
-        pointsAvg: totalPoints / gradedSolutions,
-      },
+      solutions: await this.solutionStatistics(assignment),
       evaluations: evaluationStatistics,
       weightedEvaluations: weightedEvaluationStatistics,
       time: {
@@ -139,6 +116,30 @@ export class StatisticsService {
         codeSearchSavings,
       },
       tasks: Array.from(taskStats.values()).sort((a, b) => b.points.total - a.points.total),
+    };
+  }
+
+  private createEmptyEvaluationStatistics() {
+    return {codeSearch: 0, editedCodeSearch: 0, manual: 0, total: 0};
+  }
+
+  private async solutionStatistics(assignment: string): Promise<SolutionStatistics> {
+    let pointsTotal = 0;
+    let graded = 0;
+    let total = 0;
+    for await (const {points} of this.solutionService.model.find({assignment}).select('points')) {
+      total++;
+      if (points !== undefined) {
+        pointsTotal += points;
+        graded++;
+      }
+    }
+    const evaluated = (await this.evaluationService.findUnique('solution')).length;
+    return {
+      total,
+      evaluated,
+      graded,
+      pointsAvg: pointsTotal / graded,
     };
   }
 }
