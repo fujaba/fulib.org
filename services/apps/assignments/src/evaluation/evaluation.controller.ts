@@ -32,7 +32,8 @@ export class EvaluationController {
   }
 
   private toQuery(assignment: string, solution?: string, params: FilterEvaluationParams = {}): FilterQuery<Evaluation> {
-    const query: FilterQuery<Evaluation> = {assignment, solution};
+    const query: FilterQuery<Evaluation> = {assignment};
+    solution && (query.solution = solution);
     params.file && (query['snippets.file'] = params.file);
     params.task && (query.task = params.task);
     params.origin && (query['codeSearch.origin'] = params.origin);

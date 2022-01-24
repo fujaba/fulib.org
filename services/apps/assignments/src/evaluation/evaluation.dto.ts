@@ -1,4 +1,5 @@
 import {ApiPropertyOptional, OmitType, PartialType} from '@nestjs/swagger';
+import {Transform} from 'class-transformer';
 import {IsAlphanumeric, IsBoolean, IsMongoId, IsOptional, IsString} from 'class-validator';
 import {Evaluation} from './evaluation.schema';
 
@@ -28,6 +29,7 @@ export class FilterEvaluationParams {
   @ApiPropertyOptional()
   @IsOptional()
   @IsBoolean()
+  @Transform(({value}) => value === true || value === 'true')
   codeSearch?: boolean;
 
   @ApiPropertyOptional()
