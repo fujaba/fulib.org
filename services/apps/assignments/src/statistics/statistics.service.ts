@@ -86,9 +86,27 @@ export class StatisticsService {
       {$sort: {timestamp: 1}},
       {$group: {_id: {s: '$solution', t: '$task', c: '$createdBy'} as any, events: {$push: '$$ROOT'}}},
       {
-        $project: {
-          start: {$last: {$filter: {input: '$events', cond: {$eq: ['$$this.action', 'openEvaluation']}}}},
+        // end = events.filter(e => e.action === 'submitEvaluation')
+        $addFields: {
           end: {$last: {$filter: {input: '$events', cond: {$eq: ['$$this.action', 'submitEvaluation']}}}},
+        },
+      },
+      {
+        // start = events.filter(e => e.action === 'openEvaluation' && e.timestamp < end.timestamp)
+        $addFields: {
+          start: {
+            $last: {
+              $filter: {
+                input: '$events',
+                cond: {
+                  $and: [
+                    {$eq: ['$$this.action', 'openEvaluation']},
+                    {$lt: ['$$this.timestamp', '$end.timestamp']},
+                  ],
+                },
+              },
+            },
+          },
         },
       },
       {$project: {duration: {$subtract: ['$end.timestamp', '$start.timestamp']}}},
