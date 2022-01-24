@@ -87,7 +87,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     });
 
     this.route.params.pipe(
-      switchMap(({aid, sid, task}) => this.solutionService.getEvaluations(aid, sid, task)),
+      switchMap(({aid, sid, task}) => this.solutionService.getEvaluations(aid, sid, {task})),
       map(([evaluation]) => evaluation),
       tap(evaluation => {
         this.evaluation = evaluation;
@@ -108,11 +108,11 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     ).subscribe();
 
     this.route.params.pipe(
-      switchMap(({aid, task}) => this.solutionService.getEvaluationValues<string>(aid, 'remark', task)),
+      switchMap(({aid, task}) => this.solutionService.getEvaluationValues<string>(aid, 'remark', {task})),
     ).subscribe(remarks => this.remarks = remarks);
 
     this.route.params.pipe(
-      switchMap(({aid, task}) => this.solutionService.getEvaluationValues<string>(aid, 'snippets.comment', task)),
+      switchMap(({aid, task}) => this.solutionService.getEvaluationValues<string>(aid, 'snippets.comment', {task})),
     ).subscribe(comments => this.comments = comments);
 
     this.userSubscription = this.users.current$.subscribe(user => {

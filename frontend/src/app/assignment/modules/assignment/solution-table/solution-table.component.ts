@@ -78,8 +78,8 @@ export class SolutionTableComponent implements OnInit {
 
     this.activatedRoute.params.pipe(
       switchMap(({aid}) => forkJoin([
-        this.solutionService.getEvaluationValues<string>(aid, 'solution', undefined, false),
-        this.solutionService.getEvaluationValues<string>(aid, 'solution', undefined, true),
+        this.solutionService.getEvaluationValues<string>(aid, 'solution', {codeSearch: false}),
+        this.solutionService.getEvaluationValues<string>(aid, 'solution', {codeSearch: true}),
       ])),
     ).subscribe(([manual, codeSearch]) => {
       this.evaluated = {};

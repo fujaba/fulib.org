@@ -11,7 +11,7 @@ import {Assignee} from '../model/assignee';
 import Assignment from '../model/assignment';
 import {CheckResult, CheckSolution} from '../model/check';
 import Comment from '../model/comment';
-import {CreateEvaluationDto, Evaluation, UpdateEvaluationDto} from '../model/evaluation';
+import {CreateEvaluationDto, Evaluation, FilterEvaluationParams, UpdateEvaluationDto} from '../model/evaluation';
 
 import Solution, {AuthorInfo} from '../model/solution';
 
@@ -228,7 +228,7 @@ export class SolutionService {
     return this.stream<Comment, 'comment'>(url);
   }
 
-  getEvaluations(assignment: Assignment | string, id?: string, task?: string): Observable<Evaluation[]> {
+  getEvaluations(assignment: Assignment | string, id?: string, params: FilterEvaluationParams = {}): Observable<Evaluation[]> {
     const assignmentID = asID(assignment);
     const headers = {};
     if (id) {
@@ -236,18 +236,14 @@ export class SolutionService {
     }
     this.addAssignmentToken(headers, assignmentID);
     const url = `${environment.assignmentsApiUrl}/assignments/${assignmentID}/${id ? `solutions/${id}/` : ''}evaluations`;
-    const params: Record<string, string> = task ? {task} : {};
-    return this.http.get<Evaluation[]>(url, {headers, params});
+    return this.http.get<Evaluation[]>(url, {headers, params: params as any});
   }
 
-  getEvaluationValues<T>(assignment: string, field: keyof Evaluation | string, task?: string, codeSearch?: boolean): Observable<T[]> {
+  getEvaluationValues<T>(assignment: string, field: keyof Evaluation | string, params: FilterEvaluationParams = {}): Observable<T[]> {
     const headers = {};
     this.addAssignmentToken(headers, assignment);
     const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/evaluations/unique/${field}`;
-    const params: Record<string, any> = {};
-    task && (params.task = task);
-    codeSearch !== undefined && (params.codeSearch = codeSearch);
-    return this.http.get<T[]>(url, {headers, params});
+    return this.http.get<T[]>(url, {headers, params: params as any});
   }
 
   streamEvaluations(assignment: string, solution: string): Observable<{ event: string, evaluation: Evaluation }> {
