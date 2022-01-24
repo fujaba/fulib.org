@@ -35,6 +35,7 @@ export class EvaluationController {
     const query: FilterQuery<Evaluation> = {assignment, solution};
     params.file && (query['snippets.file'] = params.file);
     params.task && (query.task = params.task);
+    params.origin && (query['codeSearch.origin'] = params.origin);
     if (params.codeSearch !== undefined) {
       query.author = params.codeSearch ? 'Code Search' : {$ne: 'Code Search'};
     }

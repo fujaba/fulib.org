@@ -32,6 +32,11 @@ export class FilterEvaluationParams {
 
   @ApiPropertyOptional()
   @IsOptional()
+  @IsMongoId()
+  origin?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
   file?: string;
 }
