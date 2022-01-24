@@ -84,7 +84,7 @@ export class StatisticsService {
     for (const result of await this.telemetryService.model.aggregate([
       {$match: {assignment, action: {$in: ['openEvaluation', 'submitEvaluation']}}},
       {$sort: {timestamp: 1}},
-      {$group: {_id: {s: '$solution', t: '$task', c: '$createdBy'} as any, events: {$push: '$$ROOT'}}},
+      {$group: {_id: {s: '$solution', t: '$task'} as any, events: {$push: '$$ROOT'}}},
       {
         // end = events.filter(e => e.action === 'submitEvaluation')
         $addFields: {
