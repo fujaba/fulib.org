@@ -133,7 +133,7 @@ export class StatisticsService {
         pointsAvg: weightedTime / eventCount,
         codeSearchSavings,
       },
-      tasks: Array.from(taskStats.values()).sort((a, b) => b.points.total - a.points.total),
+      tasks: Array.from(taskStats.values()),
     };
   }
 
