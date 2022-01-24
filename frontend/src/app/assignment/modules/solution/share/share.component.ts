@@ -1,7 +1,6 @@
 import {DOCUMENT} from '@angular/common';
-import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import hljs from 'highlight.js/lib/core';
 import {of} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
 import {SolutionService} from 'src/app/assignment/services/solution.service';
@@ -14,8 +13,6 @@ import {CONFIG_OPTIONS, ConfigService} from '../../../services/config.service';
   styleUrls: ['./share.component.scss'],
 })
 export class SolutionShareComponent implements OnInit {
-  @ViewChild('fulibFeedbackSettings') settings: ElementRef<HTMLElement>;
-
   assignmentId: string;
   solutionId: string;
   token?: string;
@@ -49,7 +46,6 @@ export class SolutionShareComponent implements OnInit {
       }),
     ).subscribe(token => {
       this.token = token;
-      setTimeout(() => hljs.highlightElement(this.settings.nativeElement));
     });
   }
 
