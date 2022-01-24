@@ -20,8 +20,6 @@ import {SearchResult} from '../model/search-result';
   providedIn: 'root',
 })
 export class AssignmentService {
-  private _cache = new Map<string, Assignment>();
-
   constructor(
     private http: HttpClient,
     private storage: StorageService,
@@ -57,8 +55,6 @@ export class AssignmentService {
   }
 
   setToken(id: string, token: string | null): void {
-    // changing the token invalidates the cache because it changes the response
-    this._cache.delete(id);
     this.storage.set(`assignmentToken/${id}`, token);
   }
 
@@ -120,7 +116,6 @@ export class AssignmentService {
       map(results => {
         for (const result of results) {
           result.token = this.getToken(result._id!) ?? undefined;
-          this._cache.set(result._id!, result);
         }
         return results;
       }),
@@ -166,7 +161,6 @@ export class AssignmentService {
     return this.http.post<Assignment>(`${environment.assignmentsApiUrl}/assignments`, assignment).pipe(
       map(response => {
         this.setToken(response._id!, response.token!);
-        this._cache.set(response._id!, response);
         return response;
       }),
     );
@@ -177,7 +171,6 @@ export class AssignmentService {
     return this.http.patch<Assignment>(`${environment.assignmentsApiUrl}/assignments/${assignment._id}`, assignment, {headers}).pipe(
       tap(response => {
         response.token = assignment.token;
-        this._cache.set(assignment._id!, response);
       }),
     );
   }
@@ -193,16 +186,10 @@ export class AssignmentService {
   }
 
   get(id: string): Observable<Assignment> {
-    const cached = this._cache.get(id);
-    if (cached) {
-      return of(cached);
-    }
-
     const headers = this.getHeaders(this.getToken(id));
     return this.http.get<Assignment>(`${environment.assignmentsApiUrl}/assignments/${id}`, {headers}).pipe(
       map(a => {
         a.token ??= this.getToken(id) ?? undefined;
-        this._cache.set(id, a);
         return a;
       }),
     );
