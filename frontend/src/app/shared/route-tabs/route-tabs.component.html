@@ -3,9 +3,7 @@
     <a ngbNavLink [routerLink]="step.path">
       <i *ngIf="step.data?.icon" class="bi-{{ step.data!.icon }}"></i>
       {{ step.data?.title }}
-      <span *ngIf="step.data?.new" class="badge badge-primary">
-          New
-        </span>
+      <span *ngIf="step.data?.new" class="badge text-white bg-gradient-primary">New</span>
     </a>
   </li>
 </ul>
