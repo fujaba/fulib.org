@@ -3,8 +3,8 @@ import {AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound} from '@app/not-found';
 import {Body, Controller, Delete, Get, MessageEvent, Param, Patch, Post, Query, Sse} from '@nestjs/common';
 import {EventPattern, Payload} from '@nestjs/microservices';
-import {ApiCreatedResponse, ApiOkResponse, ApiQuery, ApiTags} from '@nestjs/swagger';
-import {FilterQuery} from 'mongoose';
+import {ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
+import {FilterQuery, Types} from 'mongoose';
 import {Observable, Subject} from 'rxjs';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {SolutionAuth} from '../solution/solution-auth.decorator';
@@ -36,7 +36,7 @@ export class EvaluationController {
     solution && (query.solution = solution);
     params.file && (query['snippets.file'] = params.file);
     params.task && (query.task = params.task);
-    params.origin && (query['codeSearch.origin'] = params.origin);
+    params.origin && (query['codeSearch.origin'] = new Types.ObjectId(params.origin));
     if (params.codeSearch !== undefined) {
       query.author = params.codeSearch ? 'Code Search' : {$ne: 'Code Search'};
     }

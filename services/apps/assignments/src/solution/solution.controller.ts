@@ -2,10 +2,11 @@ import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound} from '@app/not-found';
 import {Body, Controller, Delete, Get, Param, Patch, Post, Query} from '@nestjs/common';
 import {ApiCreatedResponse, ApiOkResponse, ApiQuery, ApiTags} from '@nestjs/swagger';
-import {FilterQuery} from 'mongoose';
+import {FilterQuery, Types} from 'mongoose';
 import {AssigneeService} from '../assignee/assignee.service';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {AssignmentService} from '../assignment/assignment.service';
+import {EvaluationService} from '../evaluation/evaluation.service';
 import {SolutionAuth} from './solution-auth.decorator';
 import {CreateSolutionDto, ReadSolutionDto, UpdateSolutionDto} from './solution.dto';
 import {Solution} from './solution.schema';
@@ -20,6 +21,7 @@ const searchFields = [
   'github',
   'email',
   'assignee',
+  'origin',
 ];
 
 @Controller()
@@ -29,6 +31,7 @@ export class SolutionController {
     private readonly assignmentService: AssignmentService,
     private readonly solutionService: SolutionService,
     private readonly assigneeService: AssigneeService,
+    private readonly evaluationService: EvaluationService,
   ) {
   }
 
@@ -89,6 +92,12 @@ export class SolutionController {
     const regex = new RegExp(term, 'i');
     if (field === 'assignee') {
       return this.assigneeFilter(assignment, regex);
+    } else if (field === 'origin') {
+      const ids = await this.evaluationService.findUnique('solution', {
+        assignment,
+        'codeSearch.origin': new Types.ObjectId(term),
+      });
+      return {_id: {$in: ids}};
     } else {
       return {['author.' + field]: regex};
     }
