@@ -21,6 +21,12 @@
               </a>
               .
             </div>
+            <div class="alert alert-info" *ngIf="evaluation && derivedSolutionCount">
+              Code Search derived {{ derivedSolutionCount }} evaluations from this.
+              <a routerLink="../../.." [queryParams]="{q: 'origin:' + evaluation._id}">
+                View in Table
+              </a>
+            </div>
             <label for="snippets">
               Snippets
             </label>

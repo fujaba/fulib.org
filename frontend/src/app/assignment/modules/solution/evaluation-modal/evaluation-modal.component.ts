@@ -1,7 +1,7 @@
 import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {concat, from, merge, Observable, of, Subject, Subscription} from 'rxjs';
-import {concatMap, debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
+import {concatMap, debounceTime, distinctUntilChanged, map, share, switchMap, tap} from 'rxjs/operators';
 import {ModalComponent} from '../../../../shared/modal/modal.component';
 import {ToastService} from '../../../../toast.service';
 import {UserService} from '../../../../user/user.service';
@@ -46,6 +46,8 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
   originEvaluation?: Evaluation;
   originSolution?: Solution;
 
+  derivedSolutionCount?: number;
+
   private userSubscription: Subscription;
 
   remarkFocus$ = new Subject<string>();
@@ -86,18 +88,23 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.route.params.pipe(
+    const evaluation$ = this.route.params.pipe(
       switchMap(({aid, sid, task}) => this.solutionService.getEvaluations(aid, sid, {task})),
       map(([evaluation]) => evaluation),
-      tap(evaluation => {
-        this.evaluation = evaluation;
-        if (evaluation) {
-          this.dto.points = evaluation.points;
-          this.dto.remark = evaluation.remark;
-          this.dto.snippets = evaluation.snippets;
-          this.multilineRemark = evaluation.remark.split('\n').length;
-        }
-      }),
+      share(),
+    );
+
+    evaluation$.subscribe(evaluation => {
+      this.evaluation = evaluation;
+      if (evaluation) {
+        this.dto.points = evaluation.points;
+        this.dto.remark = evaluation.remark;
+        this.dto.snippets = evaluation.snippets;
+        this.multilineRemark = evaluation.remark.split('\n').length;
+      }
+    });
+
+    evaluation$.pipe(
       switchMap(evaluation => {
         const origin = evaluation?.codeSearch?.origin;
         return origin ? this.solutionService.getEvaluation(evaluation.assignment, undefined, origin) : of(undefined);
@@ -106,6 +113,13 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       switchMap(originEvaluation => originEvaluation ? this.solutionService.get(originEvaluation.assignment, originEvaluation.solution) : of(undefined)),
       tap(originSolution => this.originSolution = originSolution),
     ).subscribe();
+
+    evaluation$.pipe(
+      switchMap(evaluation => this.solutionService.getEvaluationValues<string>(evaluation.assignment, 'solution', {
+        origin: evaluation._id,
+        task: evaluation.task,
+      })),
+    ).subscribe(solutionIds => this.derivedSolutionCount = solutionIds.length);
 
     this.route.params.pipe(
       switchMap(({aid, task}) => this.solutionService.getEvaluationValues<string>(aid, 'remark', {task})),
