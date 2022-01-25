@@ -36,3 +36,10 @@ export interface CreateEvaluationDto extends Omit<Evaluation, '_id' | 'assignmen
 }
 
 export type UpdateEvaluationDto = Partial<CreateEvaluationDto>;
+
+export interface FilterEvaluationParams {
+  task?: string;
+  file?: string;
+  codeSearch?: boolean;
+  origin?: string;
+}

@@ -3,13 +3,13 @@ import {AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound} from '@app/not-found';
 import {Body, Controller, Delete, Get, MessageEvent, Param, Patch, Post, Query, Sse} from '@nestjs/common';
 import {EventPattern, Payload} from '@nestjs/microservices';
-import {ApiCreatedResponse, ApiOkResponse, ApiQuery, ApiTags} from '@nestjs/swagger';
-import {FilterQuery} from 'mongoose';
+import {ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
+import {FilterQuery, Types} from 'mongoose';
 import {Observable, Subject} from 'rxjs';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {SolutionAuth} from '../solution/solution-auth.decorator';
 import {eventStream} from '../utils';
-import {CreateEvaluationDto, UpdateEvaluationDto} from './evaluation.dto';
+import {CreateEvaluationDto, FilterEvaluationParams, UpdateEvaluationDto} from './evaluation.dto';
 import {Evaluation} from './evaluation.schema';
 import {EvaluationService} from './evaluation.service';
 
@@ -31,38 +31,37 @@ export class EvaluationController {
     this.events$.next(payload);
   }
 
+  private toQuery(assignment: string, solution?: string, params: FilterEvaluationParams = {}): FilterQuery<Evaluation> {
+    const query: FilterQuery<Evaluation> = {assignment};
+    solution && (query.solution = solution);
+    params.file && (query['snippets.file'] = params.file);
+    params.task && (query.task = params.task);
+    params.origin && (query['codeSearch.origin'] = new Types.ObjectId(params.origin));
+    if (params.codeSearch !== undefined) {
+      query.author = params.codeSearch ? 'Code Search' : {$ne: 'Code Search'};
+    }
+    return query;
+  }
+
   @Get('evaluations')
   @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
   @ApiOkResponse({type: [Evaluation]})
-  @ApiQuery({name: 'file', required: false})
-  @ApiQuery({name: 'task', required: false})
   async findByAssignment(
     @Param('assignment') assignment: string,
-    @Query('file') file?: string,
-    @Query('task') task?: string,
+    @Query() params?: FilterEvaluationParams,
   ): Promise<Evaluation[]> {
-    const where: FilterQuery<Evaluation> = {assignment};
-    file && (where['snippets.file'] = file);
-    task && (where.task = task);
-    return this.evaluationService.findAll(where);
+    return this.evaluationService.findAll(this.toQuery(assignment, undefined, params));
   }
 
   @Get('evaluations/unique/:field')
   @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
   @ApiOkResponse({isArray: true})
-  @ApiQuery({name: 'task', required: false})
   async findUnique(
     @Param('assignment') assignment: string,
     @Param('field') field: string,
-    @Query('task') task?: string,
-    @Query('codeSearch') codeSearch?: string,
+    @Query() params?: FilterEvaluationParams,
   ): Promise<unknown[]> {
-    const where: FilterQuery<Evaluation> = {assignment};
-    task && (where.task = task);
-    if (codeSearch !== undefined) {
-      where.author = codeSearch === 'true' ? 'Code Search' : {$ne: 'Code Search'};
-    }
-    return this.evaluationService.findUnique(field, where);
+    return this.evaluationService.findUnique(field, this.toQuery(assignment, undefined, params));
   }
 
   @Get('evaluations/:id')
@@ -91,18 +90,12 @@ export class EvaluationController {
   @Get('solutions/:solution/evaluations')
   @SolutionAuth({forbiddenResponse})
   @ApiOkResponse({type: [Evaluation]})
-  @ApiQuery({name: 'file', required: false})
-  @ApiQuery({name: 'task', required: false})
   async findAll(
     @Param('assignment') assignment: string,
     @Param('solution') solution: string,
-    @Query('file') file?: string,
-    @Query('task') task?: string,
+    @Query() params?: FilterEvaluationParams,
   ): Promise<Evaluation[]> {
-    const where: FilterQuery<Evaluation> = {assignment, solution};
-    file && (where['snippets.file'] = file);
-    task && (where.task = task);
-    return this.evaluationService.findAll(where);
+    return this.evaluationService.findAll(this.toQuery(assignment, solution, params));
   }
 
   @Sse('solutions/:solution/evaluations/events')

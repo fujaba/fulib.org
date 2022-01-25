@@ -145,5 +145,6 @@ export type EvaluationDocument = Evaluation & Document;
 export const EvaluationSchema = SchemaFactory.createForClass(Evaluation)
   .index({assignment: 1, solution: 1})
   .index({assignment: 1, solution: 1, 'snippets.file': 1})
+  .index({assignment: 1, solution: 1, 'codeSearch.origin': 1})
   .index({assignment: 1, solution: 1, task: 1}, {unique: true})
 ;

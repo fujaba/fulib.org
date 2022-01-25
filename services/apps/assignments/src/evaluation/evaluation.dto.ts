@@ -1,5 +1,6 @@
 import {ApiPropertyOptional, OmitType, PartialType} from '@nestjs/swagger';
-import {IsBoolean, IsOptional} from 'class-validator';
+import {Transform} from 'class-transformer';
+import {IsAlphanumeric, IsBoolean, IsMongoId, IsOptional, IsString} from 'class-validator';
 import {Evaluation} from './evaluation.schema';
 
 export class CreateEvaluationDto extends OmitType(Evaluation, [
@@ -17,4 +18,27 @@ export class CreateEvaluationDto extends OmitType(Evaluation, [
 }
 
 export class UpdateEvaluationDto extends PartialType(CreateEvaluationDto) {
+}
+
+export class FilterEvaluationParams {
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsAlphanumeric()
+  task?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  @Transform(({value}) => value === true || value === 'true')
+  codeSearch?: boolean;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsMongoId()
+  origin?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  file?: string;
 }
