@@ -3,7 +3,7 @@ import {UserToken} from '@app/keycloak-auth';
 import {HttpService} from '@nestjs/axios';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
-import {FilterQuery, Model} from 'mongoose';
+import {FilterQuery, Model, UpdateQuery} from 'mongoose';
 import {environment} from '../environment';
 import {CreateEvaluationDto} from '../evaluation/evaluation.dto';
 import {generateToken, idFilter} from '../utils';
@@ -106,7 +106,13 @@ export class AssignmentService {
   }
 
   async update(id: string, dto: UpdateAssignmentDto): Promise<Assignment | null> {
-    const updated = await this.model.findOneAndUpdate(idFilter(id), dto, {new: true}).exec();
+    const update: UpdateQuery<Assignment> = dto;
+    if (dto.token) {
+      update.token = generateToken();
+    } else {
+      delete update.token;
+    }
+    const updated = await this.model.findOneAndUpdate(idFilter(id), update, {new: true}).exec();
     updated && this.emit('updated', id, updated);
     return updated;
   }
