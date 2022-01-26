@@ -72,7 +72,7 @@ export class CreateCourseComponent implements OnInit {
     return {
       title: this.title,
       description: this.description,
-      assignments: this.assignments.map(a => a._id!),
+      assignments: this.assignments.map(a => a._id),
     };
   }
 

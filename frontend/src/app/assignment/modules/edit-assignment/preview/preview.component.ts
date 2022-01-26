@@ -35,7 +35,7 @@ export class PreviewComponent implements OnInit {
   submit(): void {
     this.submitting = true;
     const assignment = this.getAssignment();
-    const operation = assignment._id ? this.assignmentService.update(assignment) : this.assignmentService.create(assignment);
+    const operation = assignment._id ? this.assignmentService.update(assignment._id, assignment) : this.assignmentService.create(assignment);
     operation.subscribe(result => {
       this.submitting = false
       this.toastService.success('Assignment', `Successfully ${assignment._id ? 'updated' : 'created'} assignment`);

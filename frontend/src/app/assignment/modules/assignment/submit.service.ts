@@ -56,7 +56,7 @@ export class SubmitService {
       },
     }));
 
-    const existing = issues.find(i => i.body?.includes(assignment._id!));
+    const existing = issues.find(i => i.body?.includes(assignment._id));
     if (existing) {
       return firstValueFrom(this.http.patch<Issue>(`${baseUrl}/${existing.number}`, issue, {
         headers: {
@@ -84,7 +84,7 @@ export class SubmitService {
   }
 
   private async renderTasks(assignment: Assignment, solution: Solution) {
-    const evaluations = await firstValueFrom(this.solutionService.getEvaluations(assignment._id!, solution._id!));
+    const evaluations = await firstValueFrom(this.solutionService.getEvaluations(assignment._id, solution._id!));
     const evaluationRecord: Record<string, Evaluation> = {};
     for (let evaluation of evaluations) {
       evaluationRecord[evaluation.task] = evaluation;

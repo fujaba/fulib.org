@@ -11,7 +11,7 @@ import {LintService} from '../../shared/lint.service';
 import {Marker} from '../../shared/model/marker';
 import {StorageService} from '../../storage.service';
 import {UserService} from '../../user/user.service';
-import Assignment from '../model/assignment';
+import Assignment, {CreateAssignmentDto, UpdateAssignmentDto} from '../model/assignment';
 import {CheckAssignment, CheckResult} from '../model/check';
 import Course from '../model/course';
 import {SearchResult} from '../model/search-result';
@@ -115,7 +115,7 @@ export class AssignmentService {
     return this.http.get<Assignment[]>(`${environment.assignmentsApiUrl}/assignments`, {params: {createdBy: userId}}).pipe(
       map(results => {
         for (const result of results) {
-          result.token = this.getToken(result._id!) ?? undefined;
+          result.token = this.getToken(result._id) ?? undefined;
         }
         return results;
       }),
@@ -157,22 +157,19 @@ export class AssignmentService {
     return markers;
   }
 
-  create(assignment: Assignment): Observable<Assignment> {
-    return this.http.post<Assignment>(`${environment.assignmentsApiUrl}/assignments`, assignment).pipe(
+  create(dto: CreateAssignmentDto): Observable<Assignment> {
+    return this.http.post<Assignment>(`${environment.assignmentsApiUrl}/assignments`, dto).pipe(
       map(response => {
-        this.setToken(response._id!, response.token!);
+        this.setToken(response._id, response.token!);
         return response;
       }),
     );
   }
 
-  update(assignment: Assignment): Observable<Assignment> {
-    const headers = this.getHeaders(assignment.token);
-    return this.http.patch<Assignment>(`${environment.assignmentsApiUrl}/assignments/${assignment._id}`, assignment, {headers}).pipe(
-      tap(response => {
-        response.token = assignment.token;
-      }),
-    );
+  update(id: string, dto: UpdateAssignmentDto): Observable<Assignment> {
+    const token = this.getToken(id);
+    const headers = this.getHeaders(token);
+    return this.http.patch<Assignment>(`${environment.assignmentsApiUrl}/assignments/${id}`, dto, {headers});
   }
 
   delete(assignment: string): Observable<Assignment> {
@@ -213,7 +210,7 @@ export class AssignmentService {
 
   getNext(course: Course, assignment: Assignment): Observable<Assignment | undefined> {
     const ids = course.assignments!;
-    const index = ids.indexOf(assignment._id!);
+    const index = ids.indexOf(assignment._id);
     if (index < 0 || index + 1 >= ids.length) {
       return of(undefined);
     }

@@ -25,7 +25,7 @@ export class MySolutionsComponent implements OnInit {
       this.solutions = new Map<string, Solution[]>();
 
       for (const assignment of this.assignments) {
-        this.solutions.set(assignment._id!, []);
+        this.solutions.set(assignment._id, []);
       }
 
       for (const solution of solutions) {

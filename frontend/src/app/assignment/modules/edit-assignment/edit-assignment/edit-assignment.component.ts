@@ -43,6 +43,7 @@ export class EditAssignmentComponent implements OnInit {
 
   private createNew(): Assignment {
     return {
+      _id: undefined!,
       title: '',
       author: '',
       email: '',

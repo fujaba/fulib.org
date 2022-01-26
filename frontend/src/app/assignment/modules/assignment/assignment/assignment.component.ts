@@ -44,7 +44,7 @@ export class AssignmentComponent implements OnInit {
     if (!confirm('Are you sure you want to delete this assignment and all solutions, comments and evaluations? This action cannot be undone.')) {
       return;
     }
-    this.assignmentService.delete(this.assignment!._id!).subscribe(() => {
+    this.assignmentService.delete(this.assignment!._id).subscribe(() => {
       this.toastService.warn('Assignment', 'Successfully deleted assignment');
       this.router.navigate(['..'], {relativeTo: this.route});
     }, error => {
