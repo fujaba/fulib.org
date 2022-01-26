@@ -32,9 +32,9 @@ export class SelectionService {
     return this.http.get<SelectionDto[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/selections`, {headers, params});
   }
 
-  stream(assignment: string, solution: string): Observable<{ event: string, selection: SelectionDto }> {
+  stream(assignment: string, solution?: string): Observable<{ event: string, selection: SelectionDto }> {
     const token = this.assignmentService.getToken(assignment);
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/selections/events?token=${token}`;
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}${solution ? '/solutions/' + solution : ''}/selections/events?token=${token}`;
     return new Observable(observer => {
       const eventSource = new EventSource(url);
       eventSource.addEventListener('message', event => observer.next(JSON.parse(event.data)));
