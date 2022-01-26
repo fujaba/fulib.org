@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, TrackByFunction} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {BehaviorSubject, combineLatest, forkJoin} from 'rxjs';
 import {debounceTime, distinctUntilChanged, switchMap} from 'rxjs/operators';
@@ -20,6 +20,9 @@ export class SearchComponent implements OnInit {
   results: SearchResult[] = [];
   assignment?: Assignment;
   solutions: Record<string, Solution> = {};
+
+  trackResult: TrackByFunction<SearchResult> = (index, result) => result.solution;
+  trackSnippet: TrackByFunction<Snippet> = (index, snippet) => snippet.code;
 
   constructor(
     private solutionService: SolutionService,

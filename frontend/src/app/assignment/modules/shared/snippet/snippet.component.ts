@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import hljs from 'highlight.js/lib/core';
 import {Snippet} from '../../../model/evaluation';
 
@@ -7,7 +7,7 @@ import {Snippet} from '../../../model/evaluation';
   templateUrl: './snippet.component.html',
   styleUrls: ['./snippet.component.scss'],
 })
-export class SnippetComponent implements OnInit {
+export class SnippetComponent implements OnChanges {
   @ViewChild('code') code: ElementRef<HTMLElement>;
 
   @Input() snippet: Snippet;
@@ -18,12 +18,15 @@ export class SnippetComponent implements OnInit {
   constructor() {
   }
 
-  ngOnInit(): void {
-    const lang = this.snippet.file.substring(this.snippet.file.lastIndexOf('.') + 1);
-    this.fileType = lang;
-    if (this.snippet.context) {
-      this.contextLines = 2;
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!changes.snippet) {
+      return;
     }
+
+    const snippet = changes.snippet.currentValue;
+    const lang = snippet.file.substring(snippet.file.lastIndexOf('.') + 1);
+    this.fileType = lang;
+    this.contextLines = snippet.context ? 2 : 0;
 
     if (lang && hljs.getLanguage(lang)) {
       setTimeout(() => {
