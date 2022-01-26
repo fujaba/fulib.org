@@ -55,7 +55,7 @@
       </h4>
       <ul class="list-group">
         <li *ngFor="let snippet of result.snippets; trackBy: trackSnippet" class="list-group-item">
-          <app-snippet [snippet]="snippet"></app-snippet>
+          <app-snippet [snippet]="snippet" [expanded]="results.length < 10 && result.snippets.length < 10"></app-snippet>
         </li>
       </ul>
     </li>
