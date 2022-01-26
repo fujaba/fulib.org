@@ -90,8 +90,9 @@ export class SubmitService {
       evaluationRecord[evaluation.task] = evaluation;
     }
     const points = this.taskService.createPointsCache(assignment.tasks, evaluationRecord);
-    const total = assignment.tasks.reduce((a, c) => c.points > 0 ? a + c.points : 0, 0);
-    const sum = assignment.tasks.reduce((a, c) => a + points[c._id], 0);
+    const total = this.taskService.sumPositivePoints(assignment.tasks);
+    // Cannot grade negative points
+    const sum = Math.max(assignment.tasks.reduce((a, c) => a + points[c._id], 0), 0);
 
     const renderTask = (task: Task, depth: number): string => {
       const point = points[task._id];
