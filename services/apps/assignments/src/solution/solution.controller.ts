@@ -2,6 +2,7 @@ import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound} from '@app/not-found';
 import {Body, Controller, Delete, Get, Param, Patch, Post, Query} from '@nestjs/common';
 import {ApiCreatedResponse, ApiOkResponse, ApiQuery, ApiTags} from '@nestjs/swagger';
+import {isMongoId} from 'class-validator';
 import {FilterQuery, Types} from 'mongoose';
 import {AssigneeService} from '../assignee/assignee.service';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
@@ -93,14 +94,19 @@ export class SolutionController {
     if (field === 'assignee') {
       return this.assigneeFilter(assignment, regex);
     } else if (field === 'origin') {
-      const ids = await this.evaluationService.findUnique('solution', {
-        assignment,
-        'codeSearch.origin': new Types.ObjectId(term),
-      });
-      return {_id: {$in: ids}};
+      return this.originFilter(assignment, term, regex);
     } else {
       return {['author.' + field]: regex};
     }
+  }
+
+  private async originFilter(assignment: string, term: string, regex: RegExp) {
+    const ids = await this.evaluationService.findUnique('solution', {
+      assignment,
+      // TODO regex does not work on ObjectIds, for now this does not matter because who searches for partial IDs?
+      'codeSearch.origin': isMongoId(term) ? new Types.ObjectId(term) : regex,
+    });
+    return {_id: {$in: ids}};
   }
 
   private async assigneeFilter(assignment: string, regex: RegExp): Promise<FilterQuery<Solution>> {
