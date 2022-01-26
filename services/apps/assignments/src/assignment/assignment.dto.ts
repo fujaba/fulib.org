@@ -1,4 +1,4 @@
-import {ApiProperty, OmitType, PartialType, PickType} from '@nestjs/swagger';
+import {ApiProperty, ApiPropertyOptional, OmitType, PartialType, PickType} from '@nestjs/swagger';
 import {Equals, IsOptional} from 'class-validator';
 import {CreateEvaluationDto} from '../evaluation/evaluation.dto';
 import {Solution} from '../solution/solution.schema';
@@ -22,7 +22,7 @@ export class UpdateAssignmentDto extends PartialType(OmitType(Assignment, [
   'token',
   'createdBy',
 ] as const)) {
-  @ApiProperty({description: 'If true, a new token is generated that replaces the old token.'})
+  @ApiPropertyOptional({description: 'If true, a new token is generated that replaces the old token.'})
   @IsOptional()
   @Equals(true)
   token?: true;
