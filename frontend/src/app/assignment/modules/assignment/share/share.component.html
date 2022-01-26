@@ -14,15 +14,19 @@
     </div>
   </div>
   <hr/>
+  <div class="alert alert-warning">
+    The following fields contain the assignment token, a secret key that can be used to access and grade all submissions.
+    Make sure to keep this token secret!
+    Most importantly, <strong>do not share it with students</strong>.
+    Teaching Assistants need the token to help with grading.
+    If you suspect this token may have leaked, you can
+    <a routerLink="." (click)="regenerateToken()">generate a new token</a>.
+  </div>
   <h5>
     Access Token
   </h5>
   <p>
     To view submissions on other devices, you may be asked for the following token.
-    Please save it or write it down somewhere.
-    <span class="text-danger">
-              Keep this token secret, do not share it with students!
-            </span>
   </p>
   <div class="input-group">
     <input #tokenInput type="text" class="form-control text-monospace" readonly [value]="token">
@@ -38,9 +42,6 @@
   </h5>
   <p>
     You can invite Teaching Assistants by giving them the following link.
-    <span class="text-danger">
-              It includes the Access Token, so keep the link secret and do not share it with students!
-            </span>
   </p>
   <div class="input-group">
     <input #taLinkInput type="text" class="form-control" readonly

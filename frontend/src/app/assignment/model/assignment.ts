@@ -1,7 +1,7 @@
 import Task from './task';
 
 export default class Assignment {
-  _id?: string;
+  _id: string;
   token?: string;
 
   title: string;
@@ -21,5 +21,11 @@ export default class Assignment {
   solution: string;
   templateSolution: string;
 
-  static comparator = (a: Assignment, b: Assignment) => a.title.localeCompare(b.title) || a._id!.localeCompare(b._id!);
+  static comparator = (a: Assignment, b: Assignment) => a.title.localeCompare(b.title) || a._id.localeCompare(b._id);
+}
+
+export type CreateAssignmentDto = Omit<Assignment, '_id' | 'token' | 'createdBy'>;
+
+export interface UpdateAssignmentDto extends Partial<CreateAssignmentDto> {
+  token?: true;
 }

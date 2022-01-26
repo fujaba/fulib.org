@@ -87,7 +87,7 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
 
   getSolution(): Solution {
     return {
-      assignment: this.assignment._id!,
+      assignment: this.assignment._id,
       author: this.author,
       solution: this.solution,
     };
