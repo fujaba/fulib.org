@@ -39,6 +39,8 @@ export class SearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.author = this.solutionService.getAuthor()?.name ?? '';
+
     this.route.params.pipe(
       switchMap(({aid}) => forkJoin([
         this.assignmentService.get(aid),
