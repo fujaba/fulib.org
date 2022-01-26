@@ -14,15 +14,16 @@
   </div>
 </div>
 <hr/>
+<div class="alert alert-warning">
+  The following fields contain the solution token, a secret key that can be used to access your solution, evaluations and comments.
+  Make sure to keep this token secret!
+  Most importantly, <strong>do not share it with other students</strong>.
+</div>
 <h5>
   Access Token
 </h5>
 <p>
   To view your submission on other devices, you may be asked for the following token.
-  Please save it or write it down somewhere.
-  <span class="text-danger">
-            Keep this token secret, do not share it with others!
-          </span>
 </p>
 <div class="input-group">
   <input #tokenInput type="text" class="form-control text-monospace" readonly [value]="token">
@@ -38,9 +39,6 @@
 </h5>
 <p>
   You can view your submission with this link.
-  <span class="text-danger">
-            It includes the Access Token, so keep the link secret and do not share it with others!
-          </span>
 </p>
 <div class="input-group">
   <input #linkWithTokenInput type="text" class="form-control" readonly
