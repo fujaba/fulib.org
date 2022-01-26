@@ -120,7 +120,7 @@ export class SubmitService {
           }
         }
 
-        return `- ${desc} (${point}P)\n${remark}${snippets}`;
+        return `- ${desc}${point ? ` (${point}P)` : ''}\n${remark}${snippets}`;
       }
     };
 
