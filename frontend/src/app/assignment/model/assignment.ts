@@ -27,4 +27,5 @@ export default class Assignment {
 export type CreateAssignmentDto = Omit<Assignment, '_id' | 'token' | 'createdBy'>;
 
 export interface UpdateAssignmentDto extends Partial<CreateAssignmentDto> {
+  token?: true;
 }

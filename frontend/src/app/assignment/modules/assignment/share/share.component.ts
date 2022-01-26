@@ -44,4 +44,14 @@ export class ShareComponent implements OnInit {
       this.token = token;
     });
   }
+
+  regenerateToken() {
+    if (!confirm('Are you sure you want to generate a new token? You will need to re-send the invitation to teaching assistants.')) {
+      return;
+    }
+
+    this.assignmentService.update(this.id, {token: true}).subscribe(assignment => {
+      this.token = assignment.token!;
+    });
+  }
 }
