@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
 import hljs from 'highlight.js/lib/core';
 import {Snippet} from '../../../model/evaluation';
 
@@ -7,9 +7,7 @@ import {Snippet} from '../../../model/evaluation';
   templateUrl: './snippet.component.html',
   styleUrls: ['./snippet.component.scss'],
 })
-export class SnippetComponent implements OnInit, OnDestroy, OnChanges {
-  static totalVisible = 0;
-
+export class SnippetComponent implements OnChanges {
   @ViewChild('code') code: ElementRef<HTMLElement>;
 
   @Input() snippet: Snippet;
@@ -17,17 +15,6 @@ export class SnippetComponent implements OnInit, OnDestroy, OnChanges {
 
   fileType?: string;
   contextLines = 0;
-
-  constructor() {
-  }
-
-  ngOnInit() {
-    SnippetComponent.totalVisible++;
-  }
-
-  ngOnDestroy() {
-    SnippetComponent.totalVisible--;
-  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.snippet) {
@@ -43,7 +30,7 @@ export class SnippetComponent implements OnInit, OnDestroy, OnChanges {
   setExpanded(expanded: boolean) {
     this.expanded = expanded;
     const lang = this.fileType;
-    if (expanded && lang && hljs.getLanguage(lang) && SnippetComponent.totalVisible < 100) {
+    if (expanded && lang && hljs.getLanguage(lang)) {
       setTimeout(() => hljs.highlightElement(this.code.nativeElement));
     }
   }
