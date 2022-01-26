@@ -10,7 +10,7 @@ import {SelectionService} from './selection.service';
 
 const forbiddenResponse = 'Not owner of assignment, or invalid Assignment-Token.';
 
-@Controller('assignments/:assignment/solutions/:solution/selections')
+@Controller('assignments/:assignment')
 @ApiTags('Selections')
 export class SelectionController {
   private events$ = new Subject<EventPayload<SelectionDto>>();
@@ -25,7 +25,7 @@ export class SelectionController {
     this.events$.next(payload);
   }
 
-  @Post()
+  @Post('solutions/:solution/selections')
   @AssignmentAuth({forbiddenResponse})
   @ApiCreatedResponse({type: SelectionDto})
   create(
@@ -36,7 +36,7 @@ export class SelectionController {
     return this.selectionService.create(assignment, solution, dto);
   }
 
-  @Get()
+  @Get('solutions/:solution/selections')
   @AssignmentAuth({forbiddenResponse})
   @ApiCreatedResponse({type: SelectionDto})
   findAll(
@@ -47,7 +47,17 @@ export class SelectionController {
     return this.selectionService.findAll(assignment, solution, author);
   }
 
-  @Sse('events')
+  @Sse('selections/events')
+  @AssignmentAuth({forbiddenResponse})
+  @ApiOkResponse({type: SelectionDto})
+  streamAll(
+    @Param('assignment') assignment: string,
+    @Query('author') author?: string,
+  ): Observable<MessageEvent> {
+    return eventStream(this.events$, 'selection', s => s.assignment === assignment && (!author || s.author === author));
+  }
+
+  @Sse('solutions/:solution/selections/events')
   @AssignmentAuth({forbiddenResponse})
   @ApiOkResponse({type: SelectionDto})
   stream(
