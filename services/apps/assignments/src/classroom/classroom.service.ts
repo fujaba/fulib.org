@@ -1,5 +1,5 @@
 import {HttpService} from '@nestjs/axios';
-import {Injectable} from '@nestjs/common';
+import {Injectable, UnauthorizedException} from '@nestjs/common';
 import axios, {Method} from 'axios';
 import {createReadStream} from 'fs';
 import {firstValueFrom} from 'rxjs';
@@ -126,6 +126,10 @@ export class ClassroomService {
     }
 
     const githubToken = await this.getGithubToken(auth);
+    if (!githubToken) {
+      throw new UnauthorizedException('Not logged in with GitHub');
+    }
+
     const ids = await this.importSolutions2(assignment, githubToken);
     return this.solutionService.findAll({_id: {$in: ids}});
   }
@@ -219,7 +223,10 @@ export class ClassroomService {
     }
   }
 
-  async getGithubToken(auth: string): Promise<string> {
+  async getGithubToken(auth: string): Promise<string | undefined> {
+    if (!auth) {
+      return undefined;
+    }
     const {data} = await firstValueFrom(this.http.get<string>(`${environment.auth.issuer}/broker/github/token`, {
       headers: {
         Authorization: auth,
@@ -228,7 +235,7 @@ export class ClassroomService {
     }));
     const parts = data.split('&');
     const paramName = 'access_token=';
-    return parts.filter(s => s.startsWith(paramName))[0].substring(paramName.length);
+    return parts.filter(s => s.startsWith(paramName))[0]?.substring(paramName.length);
   }
 
   private async github<T>(method: Method, url: string, token: string, params: Record<string, any> = {}, body?: any): Promise<T> {
