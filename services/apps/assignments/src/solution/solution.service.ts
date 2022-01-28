@@ -25,12 +25,10 @@ export class SolutionService {
 
   async migrate() {
     const solutions: Pick<SolutionDocument, 'assignment' | '_id' | 'results'>[] = await this.model
-      .find({results: {$type: 4}})
-      .select('assignment _id results')
+      .find({results: {$exists: true}})
       .exec();
     await Promise.all(solutions.map(async ({assignment, _id, results}) => {
       if (!results) {
-        // TODO why does this even happen
         return;
       }
       await Promise.all(results.map(result => {

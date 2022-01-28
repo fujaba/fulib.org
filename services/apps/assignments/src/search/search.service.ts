@@ -228,7 +228,6 @@ export class SearchService implements OnModuleInit {
   }
 
   _findLocation(lineStarts: number[], start: number): Location {
-    // TODO may have off-by-one-errors
     let line = lineStarts.findIndex(c => c > start) - 1;
     if (line < 0) {
       line = lineStarts.length - 1;

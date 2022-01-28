@@ -95,6 +95,7 @@ export class Solution {
   @IsNumber()
   points?: number;
 
+  @Prop({required: false})
   results?: TaskResult[];
 }
 
