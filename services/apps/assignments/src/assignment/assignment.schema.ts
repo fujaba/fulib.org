@@ -68,6 +68,12 @@ export class ClassroomInfo {
   @Prop()
   @ApiPropertyOptional()
   @IsOptional()
+  @IsString()
+  token?: string;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsBoolean()
   codeSearch?: boolean;
 }

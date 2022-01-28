@@ -20,9 +20,6 @@ export const environment = {
   compiler: {
     apiUrl: process.env.COMPILER_API_URL || 'http://localhost:4567/api',
   },
-  github: {
-    token: process.env.GITHUB_TOKEN,
-  },
   nats: {
     servers: process.env.NATS_URL || 'nats://localhost:4222',
   },

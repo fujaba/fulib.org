@@ -1,4 +1,4 @@
-import {Controller, Headers, Param, Post, UploadedFiles, UseInterceptors} from '@nestjs/common';
+import {Controller, Param, Post, UploadedFiles, UseInterceptors} from '@nestjs/common';
 import {FilesInterceptor} from '@nestjs/platform-express';
 import {ApiCreatedResponse, ApiTags} from '@nestjs/swagger';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
@@ -21,9 +21,8 @@ export class ClassroomController {
   @ApiCreatedResponse({type: [ReadSolutionDto]})
   async importSolutions(
     @Param('assignment') assignment: string,
-    @Headers('Authorization') auth: string,
     @UploadedFiles() files?: Express.Multer.File[],
   ): Promise<ReadSolutionDto[]> {
-    return files ? this.classroomService.importFiles(assignment, files) : this.classroomService.importSolutions(assignment, auth);
+    return files ? this.classroomService.importFiles(assignment, files) : this.classroomService.importSolutions(assignment);
   }
 }
