@@ -11,7 +11,6 @@ import {
   IsNumber,
   IsOptional,
   IsString,
-  IsUrl,
   ValidateNested,
 } from 'class-validator';
 import {Document} from 'mongoose';
@@ -78,7 +77,14 @@ export class ClassroomInfo {
   codeSearch?: boolean;
 }
 
-@Schema()
+@Schema({
+  toJSON: {
+    transform: (doc, ret) => {
+      delete ret.classroom?.token;
+      return ret;
+    },
+  },
+})
 export class Assignment {
   @Prop()
   @ApiProperty()
