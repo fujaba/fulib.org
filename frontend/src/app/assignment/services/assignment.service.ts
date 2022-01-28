@@ -169,7 +169,9 @@ export class AssignmentService {
   update(id: string, dto: UpdateAssignmentDto): Observable<Assignment> {
     const token = this.getToken(id);
     const headers = this.getHeaders(token);
-    return this.http.patch<Assignment>(`${environment.assignmentsApiUrl}/assignments/${id}`, dto, {headers});
+    return this.http.patch<Assignment>(`${environment.assignmentsApiUrl}/assignments/${id}`, dto, {headers}).pipe(
+      tap(({token}) => token && this.setToken(id, token)),
+    );
   }
 
   delete(assignment: string): Observable<Assignment> {
