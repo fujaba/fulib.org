@@ -14,6 +14,7 @@ export default class Assignment {
   classroom?: {
     org?: string;
     prefix?: string;
+    token?: string;
     codeSearch?: boolean;
   };
 

@@ -2,7 +2,6 @@ import {Injectable} from '@nestjs/common';
 import {Cron, CronExpression} from '@nestjs/schedule';
 import {AssignmentDocument} from '../assignment/assignment.schema';
 import {AssignmentService} from '../assignment/assignment.service';
-import {environment} from '../environment';
 import {ClassroomService} from './classroom.service';
 
 @Injectable()
@@ -15,11 +14,6 @@ export class ClassroomScheduler {
 
   @Cron(CronExpression.EVERY_MINUTE)
   async autoImport() {
-    const {token} = environment.github;
-    if (!token) {
-      return;
-    }
-
     const startDate = new Date();
     startDate.setUTCSeconds(0, 0);
     const endDate = new Date(+startDate + 60 * 1000);
@@ -36,7 +30,7 @@ export class ClassroomScheduler {
     }
 
     const results = await Promise.all(assignments.map(async a => {
-      const ids = await this.classroomService.importSolutions2(a as AssignmentDocument, token);
+      const ids = await this.classroomService.importSolutions2(a as AssignmentDocument);
       return ids.length;
     }));
     const total = results.reduce((a, c) => a + c, 0);

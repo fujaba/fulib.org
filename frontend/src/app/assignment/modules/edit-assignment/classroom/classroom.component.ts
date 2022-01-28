@@ -11,6 +11,8 @@ export class ClassroomComponent {
   assignment: Assignment;
   saveDraft: () => void;
 
+  encodeURIComponent = encodeURIComponent;
+
   constructor(
     context: AssignmentContext,
   ) {

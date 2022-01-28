@@ -119,27 +119,23 @@ export class ClassroomService {
     });
   }
 
-  async importSolutions(id: string, auth: string): Promise<ReadSolutionDto[]> {
+  async importSolutions(id: string): Promise<ReadSolutionDto[]> {
     const assignment = await this.assignmentService.findOne(id);
-    if (!assignment || !assignment.classroom || !assignment.classroom.org || !assignment.classroom.prefix) {
+    if (!assignment || !assignment.classroom || !assignment.classroom.org || !assignment.classroom.prefix || !assignment.classroom.token) {
       return [];
     }
 
-    const githubToken = await this.getGithubToken(auth);
-    if (!githubToken) {
-      throw new UnauthorizedException('Not logged in with GitHub');
-    }
-
-    const ids = await this.importSolutions2(assignment, githubToken);
+    const ids = await this.importSolutions2(assignment);
     return this.solutionService.findAll({_id: {$in: ids}});
   }
 
-  async importSolutions2(assignment: AssignmentDocument, githubToken: string): Promise<string[]> {
-    const query = `org:${assignment.classroom!.org} "${assignment.classroom!.prefix}-" in:name`;
+  async importSolutions2(assignment: AssignmentDocument): Promise<string[]> {
+    const {org, prefix, token, codeSearch} = assignment.classroom!;
+    const query = `org:${org} "${prefix}-" in:name`;
     const repositories: RepositoryInfo[] = [];
     let total = Number.MAX_SAFE_INTEGER;
     for (let page = 1; repositories.length < total; page++) {
-      const result = await this.github<SearchResult>('GET', 'https://api.github.com/search/repositories', githubToken, {
+      const result = await this.github<SearchResult>('GET', 'https://api.github.com/search/repositories', token!, {
         q: query,
         per_page: 100,
         page,
@@ -149,7 +145,7 @@ export class ClassroomService {
     }
 
     const writes = await Promise.all(repositories.map(async repo => {
-      const solution = await this.createSolution(assignment, repo, githubToken);
+      const solution = await this.createSolution(assignment, repo);
       return {
         updateOne: {
           filter: {
@@ -163,17 +159,17 @@ export class ClassroomService {
     }));
     const result = await this.solutionService.bulkWrite(writes);
 
-    if (assignment.classroom?.codeSearch) {
+    if (codeSearch) {
       const solutions = await this.solutionService.findAll({assignment: assignment.id});
       for (let solution of solutions) {
-        this.addContentsToIndex(assignment, solution as SolutionDocument, githubToken);
+        this.addContentsToIndex(assignment, solution as SolutionDocument);
       }
     }
 
     return Object.values(result.upsertedIds);
   }
 
-  private addContentsToIndex(assignment: AssignmentDocument, solution: SolutionDocument, githubToken: string) {
+  private addContentsToIndex(assignment: AssignmentDocument, solution: SolutionDocument) {
     const {org, prefix} = assignment.classroom!;
     const {author: {github}, commit} = solution;
     if (!github) {
@@ -182,7 +178,7 @@ export class ClassroomService {
 
     this.http.get<Stream>(`https://api.github.com/repos/${org}/${prefix}-${github}/zipball/${commit}`, {
       headers: {
-        Authorization: 'Bearer ' + githubToken,
+        Authorization: 'Bearer ' + assignment.classroom!.token!,
       },
       responseType: 'stream',
     }).subscribe(response => {
@@ -192,9 +188,9 @@ export class ClassroomService {
     });
   }
 
-  private async createSolution(assignment: AssignmentDocument, repo: RepositoryInfo, token: string): Promise<Solution> {
+  private async createSolution(assignment: AssignmentDocument, repo: RepositoryInfo): Promise<Solution> {
     const githubName = repo.name.substring(assignment.classroom!.prefix!.length + 1);
-    const commit = await this.getMainCommitSHA(repo, token);
+    const commit = await this.getMainCommitSHA(repo, assignment.classroom!.token!);
     return {
       assignment: assignment._id,
       author: {
@@ -221,21 +217,6 @@ export class ClassroomService {
       }
       throw error;
     }
-  }
-
-  async getGithubToken(auth: string): Promise<string | undefined> {
-    if (!auth) {
-      return undefined;
-    }
-    const {data} = await firstValueFrom(this.http.get<string>(`${environment.auth.issuer}/broker/github/token`, {
-      headers: {
-        Authorization: auth,
-      },
-      responseType: 'text',
-    }));
-    const parts = data.split('&');
-    const paramName = 'access_token=';
-    return parts.filter(s => s.startsWith(paramName))[0]?.substring(paramName.length);
   }
 
   private async github<T>(method: Method, url: string, token: string, params: Record<string, any> = {}, body?: any): Promise<T> {
