@@ -70,7 +70,7 @@
           </div>
           <div class="form-group">
             <label for="remarkInput">Remark</label>
-            <div class="input-group" *ngIf="!multilineRemark">
+            <div class="input-group" *ngIf="remarkLines <= 1">
               <input
                 type="text" class="form-control" id="remarkInput"
                 ngbAutofocus
@@ -83,17 +83,17 @@
                 <button
                   type="button"
                   class="btn btn-outline-secondary bi-arrows-expand"
-                  (click)="multilineRemark = 3"
+                  (click)="remarkLines = 3"
                   ngbTooltip="Expand"
                 ></button>
               </div>
             </div>
             <textarea
-              *ngIf="multilineRemark"
+              *ngIf="remarkLines > 1"
               class="form-control" id="remarkInput"
               ngbAutofocus
               [(ngModel)]="dto.remark"
-              [rows]="multilineRemark"
+              [rows]="remarkLines"
             ></textarea>
             <small class="form-text text-muted">
               <a href="https://commonmark.org/help/">Markdown Syntax</a> is supported.
