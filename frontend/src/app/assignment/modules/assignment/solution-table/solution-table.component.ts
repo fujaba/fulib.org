@@ -35,9 +35,9 @@ export class SolutionTableComponent implements OnInit {
   loading = false;
 
   optionItems = CONFIG_OPTIONS;
-  options = {
+  options: Record<ConfigKey, string> = {
     ide: this.configService.get('ide'),
-    clone: this.configService.get('cloneProtocol'),
+    cloneProtocol: this.configService.get('cloneProtocol'),
   };
 
   readonly clonePrefix = {https: 'https://github.com/', ssh: 'git@github.com:'} as const;
