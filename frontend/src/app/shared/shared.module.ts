@@ -65,6 +65,9 @@ import { DurationPipe } from './duration.pipe';
     RouteTabsComponent,
     DurationPipe,
   ],
+  providers: [
+    DurationPipe,
+  ],
 })
 export class SharedModule {
 }
