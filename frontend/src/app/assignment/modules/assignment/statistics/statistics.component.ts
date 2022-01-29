@@ -53,6 +53,7 @@ export class StatisticsComponent implements OnInit {
     },
   } as const;
   visibleProps = new Set<TaskStatisticsKey>();
+  sortProp?: TaskStatisticsKey;
 
   constructor(
     private assignmentService: AssignmentService,
@@ -90,7 +91,14 @@ export class StatisticsComponent implements OnInit {
   }
 
   sortTasks(key: TaskStatisticsKey) {
+    let order = 1;
+    if (key === this.sortProp) {
+      order = -1;
+      this.sortProp = undefined;
+    } else {
+      this.sortProp = key;
+    }
     const prop = this.taskProps[key];
-    this.stats?.tasks.sort((a, b) => prop.get(a) - prop.get(b));
+    this.stats?.tasks.sort((a, b) => order * (prop.get(a) - prop.get(b)));
   }
 }

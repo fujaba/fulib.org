@@ -100,9 +100,11 @@
             {{ taskProp.value.title }}
           </div>
           <a
-            class="bi-sort-numeric-up ml-2"
+            class="ml-2"
+            [class.bi-sort-numeric-up]="sortProp !== taskProp.key"
+            [class.bi-sort-numeric-down]="sortProp === taskProp.key"
             routerLink="."
-            ngbTooltip="Sort ascending"
+            [ngbTooltip]="sortProp === taskProp.key ? 'Sort descending' : 'Sort ascending'"
             (click)="sortTasks($any(taskProp.key)); $event.stopPropagation()"
           ></a>
         </button>
