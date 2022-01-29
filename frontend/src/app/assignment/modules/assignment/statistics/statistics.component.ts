@@ -30,7 +30,7 @@ export class StatisticsComponent implements OnInit {
     pointsAvg: {
       title: 'Average Points',
       label: 'Points',
-      get: t => (t.points.total / t.count.total),
+      get: t => (t.points.total / t.count.total) || 0,
       render: n => n.toFixed(2),
     },
     timeAvg: {
@@ -42,7 +42,7 @@ export class StatisticsComponent implements OnInit {
     codeSearchEffectiveness: {
       title: 'Code Search Effectiveness',
       label: 'of Evaluations by Code Search',
-      get: t => t.count.codeSearch / t.count.total,
+      get: t => (t.count.codeSearch / t.count.total) || 0,
       render: n => (n * 100).toFixed(0) + '%',
     },
     codeSearchTimeSavings: {
@@ -77,7 +77,7 @@ export class StatisticsComponent implements OnInit {
         const tasks = this.taskService.findWithParents(assignment.tasks, taskStats.task);
         taskStats._tasks = tasks;
         taskStats._task = tasks[tasks.length - 1];
-        taskStats._score = taskStats.points.total / (taskStats._task.points * taskStats.count.total);
+        taskStats._score = (taskStats.points.total / (taskStats._task.points * taskStats.count.total)) || 0;
       }
     });
   }
