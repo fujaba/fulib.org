@@ -30,26 +30,26 @@ export class StatisticsComponent implements OnInit {
     pointsAvg: {
       title: 'Average Points',
       label: 'Points',
-      get: t => (t.points.total / t.count.total) || 0,
+      get: t => t._pointsAvg,
       render: n => n.toFixed(2),
     },
     timeAvg: {
       title: 'Average Evaluation Time',
       label: 'per Evaluation',
-      get: t => t.timeAvg / 1000,
-      render: n => this.durationPipe.transform(n),
+      get: t => t.timeAvg,
+      render: n => this.durationPipe.transform(n / 1000),
     },
     codeSearchEffectiveness: {
       title: 'Code Search Effectiveness',
       label: 'of Evaluations by Code Search',
-      get: t => (t.count.codeSearch / t.count.total) || 0,
+      get: t => t._codeSearchEffectiveness,
       render: n => (n * 100).toFixed(0) + '%',
     },
     codeSearchTimeSavings: {
       title: 'Code Search Time Savings',
       label: 'Saved by Code Search',
-      get: t => t.timeAvg * t.count.codeSearch / 1000,
-      render: n => this.durationPipe.transform(n),
+      get: t => t._codeSearchTimeSavings,
+      render: n => this.durationPipe.transform(n / 1000),
     },
   } as const;
   visibleProps = new Set<TaskStatisticsKey>();
@@ -78,6 +78,9 @@ export class StatisticsComponent implements OnInit {
         taskStats._tasks = tasks;
         taskStats._task = tasks[tasks.length - 1];
         taskStats._score = (taskStats.points.total / (taskStats._task.points * taskStats.count.total)) || 0;
+        taskStats._codeSearchEffectiveness = (taskStats.count.codeSearch / taskStats.count.total) || 0;
+        taskStats._codeSearchTimeSavings = taskStats.timeAvg * taskStats.count.codeSearch;
+        taskStats._pointsAvg = (taskStats.points.total / taskStats.count.total) || 0;
       }
     });
   }

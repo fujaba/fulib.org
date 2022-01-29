@@ -28,6 +28,9 @@ export interface TaskStatistics {
   _tasks: Task[];
   _task: Task;
   _score: number;
+  _pointsAvg: number;
+  _codeSearchEffectiveness: number;
+  _codeSearchTimeSavings: number;
 }
 
 export interface TimeStatistics {

@@ -157,7 +157,7 @@
           </li>
           <li>
             On average, that is
-            <b>{{ taskStats.points.total / taskStats.count.total | number:'0.0-2' }}</b>
+            <b>{{ taskStats._pointsAvg | number:'0.0-2' }}</b>
             points across evaluated submissions.
           </li>
           <li>
@@ -182,7 +182,7 @@
           </li>
           <li>
             This makes Code Search
-            <b>{{ taskStats.count.codeSearch / taskStats.count.total | percent:'0.0' }}</b>
+            <b>{{ taskStats._codeSearchEffectiveness | percent:'0.0' }}</b>
             <ng-container *ngIf="taskStats.count.editedCodeSearch">
               -
               <b>{{ (taskStats.count.codeSearch + taskStats.count.editedCodeSearch) / taskStats.count.total | percent:'0.0' }}</b>
@@ -191,7 +191,7 @@
           </li>
           <li>
             Code Search saved approximately
-            <b class="text-gradient">{{ taskStats.timeAvg * taskStats.count.codeSearch / 1000 | duration }}</b>
+            <b class="text-gradient">{{ taskStats._codeSearchTimeSavings / 1000 | duration }}</b>
             of grading time for this task.
           </li>
         </ul>
