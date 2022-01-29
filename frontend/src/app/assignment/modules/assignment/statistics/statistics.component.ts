@@ -52,7 +52,7 @@ export class StatisticsComponent implements OnInit {
       render: n => this.durationPipe.transform(n / 1000),
     },
   } as const;
-  visibleProps = new Set<TaskStatisticsKey>();
+  visibleProps = new Set<TaskStatisticsKey>(['score', 'codeSearchTimeSavings']);
   sortProp?: TaskStatisticsKey;
 
   constructor(
