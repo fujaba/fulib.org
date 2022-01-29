@@ -5,7 +5,7 @@ import {environment} from '../../../../environments/environment';
 import Task from '../../model/task';
 
 
-interface SolutionStatistics {
+export interface SolutionStatistics {
   evaluated: number;
   graded: number;
   pointsAvg: number;
@@ -19,7 +19,7 @@ export interface EvaluationStatistics {
   total: number;
 }
 
-interface TaskStatistics {
+export interface TaskStatistics {
   task: string;
   points: EvaluationStatistics
   count: EvaluationStatistics;
@@ -28,6 +28,9 @@ interface TaskStatistics {
   _tasks: Task[];
   _task: Task;
   _score: number;
+  _pointsAvg: number;
+  _codeSearchEffectiveness: number;
+  _codeSearchTimeSavings: number;
 }
 
 export interface TimeStatistics {

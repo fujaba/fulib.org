@@ -58,7 +58,7 @@
       <h2>
         Time Tracking
       </h2>
-      <ul class="list-group">
+      <ul class="list-group mb-3">
         <li class="list-group-item d-flex align-items-center">
           <div class="mr-auto">
             Time spent Evaluating
@@ -80,9 +80,37 @@
       </ul>
     </div>
   </div>
-  <h2>
-    Tasks
-  </h2>
+  <div class="d-flex">
+    <h2 class="mr-auto">
+      Tasks
+    </h2>
+    <div ngbDropdown class="d-inline-block" autoClose="outside">
+      <button class="btn btn-outline-secondary" id="tasksDropdown" ngbDropdownToggle>
+        Options
+      </button>
+      <div ngbDropdownMenu aria-labelledby="tasksDropdown">
+        <button
+          *ngFor="let taskProp of taskProps | keyvalue"
+          ngbDropdownItem
+          class="d-flex align-items-center"
+          [class.dropdown-item-checked]="visibleProps.has($any(taskProp.key))"
+          (click)="toggleVisibility($any(taskProp.key))"
+        >
+          <div class="mr-auto">
+            {{ taskProp.value.title }}
+          </div>
+          <a
+            class="ml-2"
+            [class.bi-sort-numeric-up]="sortProp !== taskProp.key"
+            [class.bi-sort-numeric-down]="sortProp === taskProp.key"
+            routerLink="."
+            [ngbTooltip]="sortProp === taskProp.key ? 'Sort descending' : 'Sort ascending'"
+            (click)="sortTasks($any(taskProp.key)); $event.stopPropagation()"
+          ></a>
+        </button>
+      </div>
+    </div>
+  </div>
   <ngb-accordion [closeOthers]="false">
     <ngb-panel *ngFor="let taskStats of stats.tasks">
       <ng-template ngbPanelHeader>
@@ -97,9 +125,13 @@
               </li>
             </ol>
           </button>
-          <app-statistic-value [value]="taskStats.points.total / taskStats.count.total | number:'0.0-2'" label="Points on Average"></app-statistic-value>
-          <div class="border-right mx-3 align-self-stretch"></div>
-          <app-statistic-value [value]="taskStats._score | percent:'0.0-2'" label="of Points on Average"></app-statistic-value>
+          <ng-container *ngFor="let prop of visibleProps; let last = last">
+            <app-statistic-value
+              *ngIf="taskProps[prop] as taskProp"
+              [value]="taskProp.render(taskProp.get(taskStats))" [label]="taskProp.label"
+            ></app-statistic-value>
+            <div *ngIf="!last" class="border-right mx-3 align-self-stretch"></div>
+          </ng-container>
         </div>
       </ng-template>
       <ng-template ngbPanelContent>
@@ -125,7 +157,7 @@
           </li>
           <li>
             On average, that is
-            <b>{{ taskStats.points.total / taskStats.count.total | number:'0.0-2' }}</b>
+            <b>{{ taskStats._pointsAvg | number:'0.0-2' }}</b>
             points across evaluated submissions.
           </li>
           <li>
@@ -150,7 +182,7 @@
           </li>
           <li>
             This makes Code Search
-            <b>{{ taskStats.count.codeSearch / taskStats.count.total | percent:'0.0' }}</b>
+            <b>{{ taskStats._codeSearchEffectiveness | percent:'0.0' }}</b>
             <ng-container *ngIf="taskStats.count.editedCodeSearch">
               -
               <b>{{ (taskStats.count.codeSearch + taskStats.count.editedCodeSearch) / taskStats.count.total | percent:'0.0' }}</b>
@@ -159,7 +191,7 @@
           </li>
           <li>
             Code Search saved approximately
-            <b class="text-gradient">{{ taskStats.timeAvg * taskStats.count.codeSearch / 1000 | duration }}</b>
+            <b class="text-gradient">{{ taskStats._codeSearchTimeSavings / 1000 | duration }}</b>
             of grading time for this task.
           </li>
         </ul>
