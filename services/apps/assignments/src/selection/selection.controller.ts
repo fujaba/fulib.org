@@ -1,5 +1,5 @@
 import {EventPayload} from '@app/event/event.interface';
-import {Body, Controller, Get, MessageEvent, Param, Post, Query, Sse} from '@nestjs/common';
+import {Body, Controller, MessageEvent, Param, Post, Query, Sse} from '@nestjs/common';
 import {EventPattern, Payload} from '@nestjs/microservices';
 import {ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {Observable, Subject} from 'rxjs';
@@ -34,17 +34,6 @@ export class SelectionController {
     @Body() dto: CreateSelectionDto,
   ): SelectionDto {
     return this.selectionService.create(assignment, solution, dto);
-  }
-
-  @Get('solutions/:solution/selections')
-  @AssignmentAuth({forbiddenResponse})
-  @ApiCreatedResponse({type: SelectionDto})
-  findAll(
-    @Param('assignment') assignment: string,
-    @Param('solution') solution: string,
-    @Query('author') author?: string,
-  ): SelectionDto[] {
-    return this.selectionService.findAll(assignment, solution, author);
   }
 
   @Sse('selections/events')

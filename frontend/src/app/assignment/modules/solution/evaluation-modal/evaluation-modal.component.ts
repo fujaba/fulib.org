@@ -1,7 +1,7 @@
 import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {concat, from, merge, Observable, of, Subject, Subscription} from 'rxjs';
-import {concatMap, debounceTime, distinctUntilChanged, map, share, switchMap, tap} from 'rxjs/operators';
+import {merge, Observable, of, Subject, Subscription} from 'rxjs';
+import {debounceTime, distinctUntilChanged, map, share, switchMap, tap} from 'rxjs/operators';
 import {ModalComponent} from '../../../../shared/modal/modal.component';
 import {ToastService} from '../../../../toast.service';
 import {UserService} from '../../../../user/user.service';
@@ -137,11 +137,8 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     });
 
     const selectionSubscription = this.route.params.pipe(
-      switchMap(({aid, sid}) => concat(
-        this.selectionService.getAll(aid, sid).pipe(concatMap(from)),
-        this.selectionService.stream(aid, sid).pipe(map(({selection}) => selection)),
-      )),
-    ).subscribe(({author, snippet}) => {
+      switchMap(({aid, sid}) => this.selectionService.stream(aid, sid)),
+    ).subscribe(({selection: {author, snippet}}) => {
       if (author !== this.dto.author) {
         return;
       }
