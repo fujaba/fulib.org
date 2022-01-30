@@ -10,7 +10,13 @@ async function bootstrap() {
   const prefix = `/api/${environment.version}`;
   app.enableCors();
   app.setGlobalPrefix(prefix);
-  app.useGlobalPipes(new ValidationPipe({whitelist: true}));
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
+    transform: true,
+    transformOptions: {
+      enableImplicitConversion: true,
+    },
+  }));
 
   app.connectMicroservice({
     transport: Transport.NATS,

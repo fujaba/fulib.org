@@ -3,7 +3,7 @@ import {ElasticsearchService} from '@nestjs/elasticsearch';
 import {randomUUID} from 'crypto';
 import {isDeepStrictEqual} from 'util';
 import {Location} from '../evaluation/evaluation.schema';
-import {QuickSearchResult, SearchParams, SearchResult, SearchSnippet} from './search.dto';
+import {SearchSummary, SearchParams, SearchResult, SearchSnippet} from './search.dto';
 
 interface FileDocument {
   assignment: string;
@@ -108,7 +108,7 @@ export class SearchService implements OnModuleInit {
     });
   }
 
-  async findQuick(assignment: string, params: SearchParams): Promise<QuickSearchResult> {
+  async findSummary(assignment: string, params: SearchParams): Promise<SearchSummary> {
     const {uniqueId, result} = await this._search(assignment, params);
     const hitsContainer = result.body.hits;
     const solutions = new Set(hitsContainer.hits.map((h: any) => h._source.solution)).size;
@@ -141,13 +141,14 @@ export class SearchService implements OnModuleInit {
     return [...grouped.values()];
   }
 
-  private async _search(assignment: string, {q: snippet, glob}: SearchParams) {
+  private async _search(assignment: string, {q: snippet, glob}: SearchParams, fields?: (keyof FileDocument)[]) {
     const uniqueId = randomUUID();
     const regex = glob && this.glob2RegExp(glob);
     const result = await this.elasticsearchService.search({
       index: 'files',
       body: {
         size: 10000,
+        fields,
         query: {
           bool: {
             must: {

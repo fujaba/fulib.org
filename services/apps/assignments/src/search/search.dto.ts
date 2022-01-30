@@ -26,7 +26,7 @@ export class SearchResult {
   snippets: SearchSnippet[];
 }
 
-export class QuickSearchResult {
+export class SearchSummary {
   @ApiProperty()
   @IsNumber()
   solutions: number;
