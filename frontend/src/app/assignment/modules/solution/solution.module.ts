@@ -8,12 +8,13 @@ import {AssignmentSharedModule} from '../shared/shared.module';
 
 import {CommentListComponent} from './comment-list/comment-list.component';
 import {SolutionDetailsComponent} from './details/details.component';
+import {EditSnippetComponent} from './edit-snippet/edit-snippet.component';
+import {EvaluationFormComponent} from './evaluation-form/evaluation-form.component';
 import {EvaluationModalComponent} from './evaluation-modal/evaluation-modal.component';
 import {SolutionShareComponent} from './share/share.component';
 import {SolutionRoutingModule} from './solution-routing.module';
 import {SolutionComponent} from './solution/solution.component';
 import {SolutionTasksComponent} from './tasks/tasks.component';
-import { EditSnippetComponent } from './edit-snippet/edit-snippet.component';
 
 
 @NgModule({
@@ -25,6 +26,7 @@ import { EditSnippetComponent } from './edit-snippet/edit-snippet.component';
     SolutionShareComponent,
     SolutionTasksComponent,
     EditSnippetComponent,
+    EvaluationFormComponent,
   ],
   imports: [
     CommonModule,

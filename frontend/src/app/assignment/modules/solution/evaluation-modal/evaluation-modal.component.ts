@@ -1,7 +1,7 @@
 import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {merge, Observable, of, Subject, Subscription} from 'rxjs';
-import {debounceTime, distinctUntilChanged, map, share, switchMap, tap} from 'rxjs/operators';
+import {of} from 'rxjs';
+import {map, share, switchMap, tap} from 'rxjs/operators';
 import {ModalComponent} from '../../../../shared/modal/modal.component';
 import {ToastService} from '../../../../toast.service';
 import {UserService} from '../../../../user/user.service';
@@ -27,7 +27,6 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
   readonly selectionComment = selectionComment;
 
   task?: Task;
-  remarks: string[] = [];
   comments: string[] = [];
   evaluation?: Evaluation;
   dto: CreateEvaluationDto = {
@@ -38,27 +37,10 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     snippets: [],
   };
 
-  loggedIn = false;
-  min?: number;
-  max?: number;
-  remarkLines = 0;
-
   originEvaluation?: Evaluation;
   originSolution?: Solution;
 
   derivedSolutionCount?: number;
-
-  private userSubscription: Subscription;
-
-  remarkFocus$ = new Subject<string>();
-
-  remarkTypeahead = (text$: Observable<string>): Observable<string[]> => merge(
-    this.remarkFocus$,
-    text$.pipe(debounceTime(200)),
-  ).pipe(
-    distinctUntilChanged(),
-    map(searchInput => this.remarks.filter(r => r.includes(searchInput))),
-  );
 
   constructor(
     private assignmentService: AssignmentService,
@@ -73,8 +55,6 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.dto.author = this.solutionService.commentName || '';
-
     this.route.params.pipe(
       switchMap(({aid, task}) => this.assignmentService.get(aid).pipe(
         tap(assignment => this.dto.codeSearch = !!assignment.classroom?.codeSearch),
@@ -82,10 +62,6 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       )),
     ).subscribe(task => {
       this.task = task;
-      if (task) {
-        this.min = Math.min(task.points, 0);
-        this.max = Math.max(task.points, 0);
-      }
     });
 
     const evaluation$ = this.route.params.pipe(
@@ -97,10 +73,8 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     evaluation$.subscribe(evaluation => {
       this.evaluation = evaluation;
       if (evaluation) {
-        this.dto.points = evaluation.points;
-        this.dto.remark = evaluation.remark;
-        this.dto.snippets = evaluation.snippets;
-        this.remarkLines = evaluation.remark.split('\n').length;
+        const {points, remark, snippets} = evaluation;
+        this.dto = {...this.dto, points, remark, snippets};
       }
     });
 
@@ -122,21 +96,10 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     ).subscribe(solutionIds => this.derivedSolutionCount = solutionIds.length);
 
     this.route.params.pipe(
-      switchMap(({aid, task}) => this.solutionService.getEvaluationValues<string>(aid, 'remark', {task})),
-    ).subscribe(remarks => this.remarks = remarks);
-
-    this.route.params.pipe(
       switchMap(({aid, task}) => this.solutionService.getEvaluationValues<string>(aid, 'snippets.comment', {task})),
     ).subscribe(comments => this.comments = comments);
 
-    this.userSubscription = this.users.current$.subscribe(user => {
-      if (user) {
-        this.loggedIn = true;
-        this.dto.author = `${user.firstName} ${user.lastName}`;
-      }
-    });
-
-    const selectionSubscription = this.route.params.pipe(
+    this.route.params.pipe(
       switchMap(({aid, sid}) => this.selectionService.stream(aid, sid)),
     ).subscribe(({selection: {author, snippet}}) => {
       if (author !== this.dto.author) {
@@ -150,36 +113,17 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       }
       setTimeout(() => document.getElementById('snippet-' + index)?.focus());
     });
-    this.userSubscription.add(selectionSubscription);
   }
 
   ngOnDestroy(): void {
-    this.userSubscription.unsubscribe();
   }
 
   @HostListener('document:keyup', ['$event'])
   onKeyUp(event: KeyboardEvent) {
-    if (!event.ctrlKey) {
-      return;
+    if (event.ctrlKey && event.key === 'Enter') {
+      this.doSubmit();
+      this.modal.close();
     }
-
-    switch (event.key) {
-      case '0':
-        this.setPoints(0);
-        return;
-      case 'Enter':
-        this.doSubmit();
-        this.modal.close();
-        return;
-    }
-  }
-
-  setPoints(points?: number) {
-    this.dto.points = points ?? 0;
-  }
-
-  saveDraft(): void {
-    this.solutionService.commentName = this.dto.author;
   }
 
   deleteSnippet(index: number) {
