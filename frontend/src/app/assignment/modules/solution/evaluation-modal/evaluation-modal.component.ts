@@ -1,6 +1,6 @@
 import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {EMPTY, of} from 'rxjs';
+import {EMPTY, of, Subscription} from 'rxjs';
 import {debounceTime, distinctUntilChanged, filter, map, share, switchMap, tap} from 'rxjs/operators';
 import {ModalComponent} from '../../../../shared/modal/modal.component';
 import {ToastService} from '../../../../toast.service';
@@ -45,6 +45,8 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
 
   searchSummary?: SearchSummary;
 
+  subscriptions = new Subscription();
+
   constructor(
     private assignmentService: AssignmentService,
     private taskService: TaskService,
@@ -73,15 +75,15 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       share(),
     );
 
-    evaluation$.subscribe(evaluation => {
+    this.subscriptions.add(evaluation$.subscribe(evaluation => {
       this.evaluation = evaluation;
       if (evaluation) {
         const {points, remark, snippets} = evaluation;
         this.dto = {...this.dto, points, remark, snippets};
       }
-    });
+    }));
 
-    evaluation$.pipe(
+    this.subscriptions.add(evaluation$.pipe(
       switchMap(evaluation => {
         const origin = evaluation?.codeSearch?.origin;
         return origin ? this.solutionService.getEvaluation(evaluation.assignment, undefined, origin) : of(undefined);
@@ -89,14 +91,14 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       tap(originEvaluation => this.originEvaluation = originEvaluation),
       switchMap(originEvaluation => originEvaluation ? this.solutionService.get(originEvaluation.assignment, originEvaluation.solution) : of(undefined)),
       tap(originSolution => this.originSolution = originSolution),
-    ).subscribe();
+    ).subscribe());
 
-    evaluation$.pipe(
+    this.subscriptions.add(evaluation$.pipe(
       switchMap(evaluation => evaluation ? this.solutionService.getEvaluationValues<string>(evaluation.assignment, 'solution', {
         origin: evaluation._id,
         task: evaluation.task,
       }) : EMPTY),
-    ).subscribe(solutionIds => this.derivedSolutionCount = solutionIds.length);
+    ).subscribe(solutionIds => this.derivedSolutionCount = solutionIds.length));
 
     this.route.params.pipe(
       switchMap(({aid, task}) => this.solutionService.getEvaluationValues<string>(aid, 'snippets.comment', {task})),
@@ -109,7 +111,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       share(),
     );
 
-    selection$.subscribe(({author, snippet}) => {
+    this.subscriptions.add(selection$.subscribe(({author, snippet}) => {
       let index = this.dto.snippets.findIndex(s => s.comment === this.selectionComment);
       if (index >= 0) {
         this.dto.snippets[index] = snippet;
@@ -117,19 +119,20 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
         index = this.dto.snippets.push(snippet) - 1;
       }
       setTimeout(() => document.getElementById('snippet-' + index)?.focus());
-    });
+    }));
 
-    selection$.pipe(
+    this.subscriptions.add(selection$.pipe(
       map(({snippet: {code}}) => code),
       debounceTime(200),
       distinctUntilChanged(),
       switchMap(code => this.assignmentService.searchSummary(this.route.snapshot.params.aid, code, this.task?.glob)),
     ).subscribe(summary => {
       this.searchSummary = summary;
-    });
+    }));
   }
 
   ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   @HostListener('document:keyup', ['$event'])
