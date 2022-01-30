@@ -1,4 +1,4 @@
-import {Component, OnInit, TrackByFunction} from '@angular/core';
+import {Component, OnDestroy, OnInit, TrackByFunction} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {BehaviorSubject, combineLatest, EMPTY, forkJoin} from 'rxjs';
 import {debounceTime, distinctUntilChanged, switchMap} from 'rxjs/operators';
@@ -15,7 +15,7 @@ import {SelectionService} from '../../solution/selection.service';
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
 })
-export class SearchComponent implements OnInit {
+export class SearchComponent implements OnInit, OnDestroy {
   search$ = new BehaviorSubject<string>(this.route.snapshot.queryParams.q);
   glob$ = new BehaviorSubject<string>(this.route.snapshot.queryParams.glob);
 
@@ -82,5 +82,11 @@ export class SearchComponent implements OnInit {
         this.search$.next(event.selection.snippet.code);
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.syncSelection$.complete();
+    this.search$.complete();
+    this.glob$.complete();
   }
 }
