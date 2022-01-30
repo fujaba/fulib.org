@@ -3,7 +3,7 @@ import {ElasticsearchService} from '@nestjs/elasticsearch';
 import {randomUUID} from 'crypto';
 import {isDeepStrictEqual} from 'util';
 import {Location} from '../evaluation/evaluation.schema';
-import {SearchResult, SearchSnippet} from './search.dto';
+import {SearchParams, SearchResult, SearchSnippet} from './search.dto';
 
 interface FileDocument {
   assignment: string;
@@ -108,7 +108,7 @@ export class SearchService implements OnModuleInit {
     });
   }
 
-  async find(assignment: string, snippet: string, context?: number, glob?: string): Promise<SearchResult[]> {
+  async find(assignment: string, {q: snippet, context, glob}: SearchParams): Promise<SearchResult[]> {
     const uniqueId = randomUUID();
     const regex = glob && this.glob2RegExp(glob);
     const result = await this.elasticsearchService.search({
