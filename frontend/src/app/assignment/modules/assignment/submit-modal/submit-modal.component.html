@@ -15,7 +15,7 @@
     </button>
     <button
       class="btn btn-primary"
-      *ngxClipboardIfSupported ngxClipboard [cbContent]="issue!.title + issue!.body"
+      *ngxClipboardIfSupported ngxClipboard [cbContent]="issue ? issue.title + issue.body : undefined"
       (click)="saveAndClose(modal)"
     >
       Copy Markdown
