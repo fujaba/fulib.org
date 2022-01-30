@@ -3,7 +3,7 @@ import {ElasticsearchService} from '@nestjs/elasticsearch';
 import {randomUUID} from 'crypto';
 import {isDeepStrictEqual} from 'util';
 import {Location} from '../evaluation/evaluation.schema';
-import {SearchParams, SearchResult, SearchSnippet} from './search.dto';
+import {QuickSearchResult, SearchParams, SearchResult, SearchSnippet} from './search.dto';
 
 interface FileDocument {
   assignment: string;
@@ -108,7 +108,40 @@ export class SearchService implements OnModuleInit {
     });
   }
 
-  async find(assignment: string, {q: snippet, context, glob}: SearchParams): Promise<SearchResult[]> {
+  async findQuick(assignment: string, params: SearchParams): Promise<QuickSearchResult> {
+    const {uniqueId, result} = await this._search(assignment, params);
+    const hitsContainer = result.body.hits;
+    const solutions = new Set(hitsContainer.hits.map((h: any) => h._source.solution)).size;
+    const files = hitsContainer.total.value;
+    let hits = 0;
+    for (let hit of hitsContainer.hits) {
+      const content: string = hit.highlight.content[0];
+      let lastIndex = -1;
+      let occurrences = 0;
+      while ((lastIndex = content.indexOf(uniqueId, lastIndex + uniqueId.length)) >= 0) {
+        occurrences++;
+      }
+      hits += occurrences / 2;
+    }
+    return {solutions, files, hits};
+  }
+
+  async find(assignment: string, params: SearchParams): Promise<SearchResult[]> {
+    const {uniqueId, result} = await this._search(assignment, params);
+    const grouped = new Map<string, SearchResult>();
+    for (let hit of result.body.hits.hits) {
+      const result = this._convertHit(hit, uniqueId, params.context);
+      const existing = grouped.get(result.solution);
+      if (existing) {
+        existing.snippets.push(...result.snippets);
+      } else {
+        grouped.set(result.solution, result);
+      }
+    }
+    return [...grouped.values()];
+  }
+
+  private async _search(assignment: string, {q: snippet, glob}: SearchParams) {
     const uniqueId = randomUUID();
     const regex = glob && this.glob2RegExp(glob);
     const result = await this.elasticsearchService.search({
@@ -141,17 +174,7 @@ export class SearchService implements OnModuleInit {
         },
       },
     });
-    const grouped = new Map<string, SearchResult>();
-    for (let hit of result.body.hits.hits) {
-      const result = this._convertHit(hit, uniqueId, context);
-      const existing = grouped.get(result.solution);
-      if (existing) {
-        existing.snippets.push(...result.snippets);
-      } else {
-        grouped.set(result.solution, result);
-      }
-    }
-    return [...grouped.values()];
+    return {uniqueId, result};
   }
 
   async deleteAll(assignment: string, solution?: string): Promise<number> {

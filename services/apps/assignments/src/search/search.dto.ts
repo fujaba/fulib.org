@@ -26,6 +26,20 @@ export class SearchResult {
   snippets: SearchSnippet[];
 }
 
+export class QuickSearchResult {
+  @ApiProperty()
+  @IsNumber()
+  solutions: number;
+
+  @ApiProperty()
+  @IsNumber()
+  files: number;
+
+  @ApiProperty()
+  @IsNumber()
+  hits: number;
+}
+
 export class SearchParams {
   @ApiProperty({description: 'Code snippet to search for'})
   @IsString()
