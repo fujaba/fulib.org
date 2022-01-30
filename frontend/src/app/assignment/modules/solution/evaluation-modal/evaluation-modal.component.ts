@@ -1,6 +1,6 @@
 import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {of} from 'rxjs';
+import {EMPTY, of} from 'rxjs';
 import {map, share, switchMap, tap} from 'rxjs/operators';
 import {ModalComponent} from '../../../../shared/modal/modal.component';
 import {ToastService} from '../../../../toast.service';
@@ -89,10 +89,10 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     ).subscribe();
 
     evaluation$.pipe(
-      switchMap(evaluation => this.solutionService.getEvaluationValues<string>(evaluation.assignment, 'solution', {
+      switchMap(evaluation => evaluation ? this.solutionService.getEvaluationValues<string>(evaluation.assignment, 'solution', {
         origin: evaluation._id,
         task: evaluation.task,
-      })),
+      }) : EMPTY),
     ).subscribe(solutionIds => this.derivedSolutionCount = solutionIds.length);
 
     this.route.params.pipe(
