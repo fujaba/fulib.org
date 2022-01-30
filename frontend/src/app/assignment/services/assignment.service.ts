@@ -14,7 +14,7 @@ import {UserService} from '../../user/user.service';
 import Assignment, {CreateAssignmentDto, UpdateAssignmentDto} from '../model/assignment';
 import {CheckAssignment, CheckResult} from '../model/check';
 import Course from '../model/course';
-import {SearchResult} from '../model/search-result';
+import {SearchResult, SearchSummary} from '../model/search-result';
 
 @Injectable({
   providedIn: 'root',
@@ -199,6 +199,16 @@ export class AssignmentService {
     const params: Params = {q, context};
     glob && (params.glob = glob);
     return this.http.get<SearchResult[]>(`${environment.assignmentsApiUrl}/assignments/${id}/search`, {
+      params,
+      headers,
+    });
+  }
+
+  searchSummary(id: string, q: string, glob?: string): Observable<SearchSummary> {
+    const headers = this.getHeaders(this.getToken(id));
+    const params: Params = {q};
+    glob && (params.glob = glob);
+    return this.http.get<SearchSummary>(`${environment.assignmentsApiUrl}/assignments/${id}/search/summary`, {
       params,
       headers,
     });

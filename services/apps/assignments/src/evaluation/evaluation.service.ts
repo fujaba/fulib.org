@@ -89,7 +89,7 @@ export class EvaluationService {
     const assignment = await this.assignmentService.findOne(assignmentId);
     const task = assignment && this.assignmentService.findTask(assignment.tasks, taskId);
     const resultsBySnippet = await Promise.all(snippets.map(async snippet => {
-      const results = await this.searchService.find(assignmentId, snippet.code, undefined, task?.glob);
+      const results = await this.searchService.find(assignmentId, {q: snippet.code, glob: task?.glob});
       for (let result of results) {
         for (let snippet2 of result.snippets) {
           snippet2.comment = snippet.comment;

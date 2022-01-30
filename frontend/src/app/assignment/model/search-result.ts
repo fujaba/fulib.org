@@ -5,3 +5,9 @@ export interface SearchResult {
   solution: string;
   snippets: Snippet[];
 }
+
+export interface SearchSummary {
+  solutions: number;
+  files: number;
+  hits: number;
+}
