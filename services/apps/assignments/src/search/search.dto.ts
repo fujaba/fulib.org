@@ -1,5 +1,5 @@
 import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
-import {Type} from 'class-transformer';
+import {Transform, Type} from 'class-transformer';
 import {IsArray, IsMongoId, IsNumber, IsOptional, IsString, ValidateNested} from 'class-validator';
 import {Snippet} from '../evaluation/evaluation.schema';
 
@@ -53,6 +53,7 @@ export class SearchParams {
   })
   @IsOptional()
   @IsNumber()
+  @Transform(({value}) => value !== undefined ? +value : undefined)
   context?: number;
 
   @ApiProperty()
