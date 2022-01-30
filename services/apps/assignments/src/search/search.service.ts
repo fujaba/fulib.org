@@ -109,9 +109,9 @@ export class SearchService implements OnModuleInit {
   }
 
   async findSummary(assignment: string, params: SearchParams): Promise<SearchSummary> {
-    const {uniqueId, result} = await this._search(assignment, params);
+    const {uniqueId, result} = await this._search(assignment, params, ['solution']);
     const hitsContainer = result.body.hits;
-    const solutions = new Set(hitsContainer.hits.map((h: any) => h._source.solution)).size;
+    const solutions = new Set(hitsContainer.hits.map((h: any) => h.fields.solution[0])).size;
     const files = hitsContainer.total.value;
     let hits = 0;
     for (let hit of hitsContainer.hits) {
@@ -149,6 +149,7 @@ export class SearchService implements OnModuleInit {
       body: {
         size: 10000,
         fields,
+        _source: !fields,
         query: {
           bool: {
             must: {
