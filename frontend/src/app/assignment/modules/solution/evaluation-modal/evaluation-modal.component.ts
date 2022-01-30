@@ -1,11 +1,12 @@
 import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {EMPTY, of} from 'rxjs';
-import {map, share, switchMap, tap} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, filter, map, share, switchMap, tap} from 'rxjs/operators';
 import {ModalComponent} from '../../../../shared/modal/modal.component';
 import {ToastService} from '../../../../toast.service';
 import {UserService} from '../../../../user/user.service';
 import {CodeSearchInfo, CreateEvaluationDto, Evaluation} from '../../../model/evaluation';
+import {SearchSummary} from '../../../model/search-result';
 import Solution from '../../../model/solution';
 import Task from '../../../model/task';
 import {AssignmentService} from '../../../services/assignment.service';
@@ -41,6 +42,8 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
   originSolution?: Solution;
 
   derivedSolutionCount?: number;
+
+  searchSummary?: SearchSummary;
 
   constructor(
     private assignmentService: AssignmentService,
@@ -99,12 +102,14 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       switchMap(({aid, task}) => this.solutionService.getEvaluationValues<string>(aid, 'snippets.comment', {task})),
     ).subscribe(comments => this.comments = comments);
 
-    this.route.params.pipe(
+    const selection$ = this.route.params.pipe(
       switchMap(({aid, sid}) => this.selectionService.stream(aid, sid)),
-    ).subscribe(({selection: {author, snippet}}) => {
-      if (author !== this.dto.author) {
-        return;
-      }
+      filter(({selection: {author}}) => author === this.dto.author),
+      map(({selection}) => selection),
+      share(),
+    );
+
+    selection$.subscribe(({author, snippet}) => {
       let index = this.dto.snippets.findIndex(s => s.comment === this.selectionComment);
       if (index >= 0) {
         this.dto.snippets[index] = snippet;
@@ -112,6 +117,15 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
         index = this.dto.snippets.push(snippet) - 1;
       }
       setTimeout(() => document.getElementById('snippet-' + index)?.focus());
+    });
+
+    selection$.pipe(
+      map(({snippet: {code}}) => code),
+      debounceTime(200),
+      distinctUntilChanged(),
+      switchMap(code => this.assignmentService.searchSummary(this.route.snapshot.params.aid, code, this.task?.glob)),
+    ).subscribe(summary => {
+      this.searchSummary = summary;
     });
   }
 
