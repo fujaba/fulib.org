@@ -5,7 +5,7 @@ import {
   IsAlphanumeric,
   IsArray,
   IsBoolean,
-  IsDateString,
+  IsDate,
   IsEmail,
   IsNotEmpty,
   IsNumber,
@@ -119,7 +119,7 @@ export class Assignment {
   @Prop({index: 1})
   @ApiProperty({required: false})
   @IsOptional()
-  @IsDateString()
+  @IsDate()
   deadline?: Date;
 
   @Prop()
