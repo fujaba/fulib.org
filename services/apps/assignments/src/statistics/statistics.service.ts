@@ -6,6 +6,8 @@ import {SolutionService} from '../solution/solution.service';
 import {TelemetryService} from '../telemetry/telemetry.service';
 import {AssignmentStatistics, EvaluationStatistics, SolutionStatistics, TaskStatistics} from './statistics.dto';
 
+const outlierDurationMillis = 60 * 1000;
+
 @Injectable()
 export class StatisticsService {
   constructor(
@@ -110,6 +112,7 @@ export class StatisticsService {
         },
       },
       {$project: {duration: {$subtract: ['$end.timestamp', '$start.timestamp']}}},
+      {$match: {duration: {$lt: outlierDurationMillis}}},
       {$group: {_id: '$_id.t' as any, time: {$sum: '$duration'}, count: {$sum: 1}}},
     ])) {
       const {_id, time, count} = result;
