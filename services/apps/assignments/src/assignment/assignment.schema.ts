@@ -1,6 +1,6 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
-import {Type} from 'class-transformer';
+import {Transform, Type} from 'class-transformer';
 import {
   IsAlphanumeric,
   IsArray,
@@ -120,6 +120,7 @@ export class Assignment {
   @ApiProperty({required: false})
   @IsOptional()
   @IsDate()
+  @Transform(({value}) => typeof value === 'string' ? new Date(value) : value)
   deadline?: Date;
 
   @Prop()
