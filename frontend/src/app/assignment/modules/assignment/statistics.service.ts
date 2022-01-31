@@ -3,6 +3,7 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {environment} from '../../../../environments/environment';
 import Task from '../../model/task';
+import {AssignmentService} from '../../services/assignment.service';
 
 
 export interface SolutionStatistics {
@@ -21,7 +22,7 @@ export interface EvaluationStatistics {
 
 export interface TaskStatistics {
   task: string;
-  points: EvaluationStatistics
+  points: EvaluationStatistics;
   count: EvaluationStatistics;
   timeAvg: number;
 
@@ -54,10 +55,13 @@ export interface AssignmentStatistics {
 export class StatisticsService {
   constructor(
     private http: HttpClient,
+    private assignmentService: AssignmentService,
   ) {
   }
 
   getAssignmentStatistics(assignment: string): Observable<AssignmentStatistics> {
-    return this.http.get<AssignmentStatistics>(`${environment.assignmentsApiUrl}/assignments/${assignment}/statistics`);
+    const token = this.assignmentService.getToken(assignment);
+    const headers: Record<string, string> = token ? {'Assignment-Token': token} : {};
+    return this.http.get<AssignmentStatistics>(`${environment.assignmentsApiUrl}/assignments/${assignment}/statistics`, {headers});
   }
 }
