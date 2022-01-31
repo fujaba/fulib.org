@@ -1,5 +1,6 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
+import {Transform} from 'class-transformer';
 import {IsAlphanumeric, IsDate, IsMongoId, IsNotEmpty, IsOptional, IsString} from 'class-validator';
 import {Document} from 'mongoose';
 
@@ -31,6 +32,7 @@ export class Telemetry {
   @Prop()
   @ApiProperty()
   @IsDate()
+  @Transform(({value}) => typeof value === 'string' ? new Date(value) : value)
   timestamp: Date;
 
   @Prop()
