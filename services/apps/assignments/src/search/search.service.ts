@@ -116,7 +116,7 @@ export class SearchService implements OnModuleInit {
     let hits = 0;
     for (let hit of hitsContainer.hits) {
       const content: string = hit.highlight.content[0];
-      let lastIndex = -1;
+      let lastIndex = -uniqueId.length;
       let occurrences = 0;
       while ((lastIndex = content.indexOf(uniqueId, lastIndex + uniqueId.length)) >= 0) {
         occurrences++;
