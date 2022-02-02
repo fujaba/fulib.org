@@ -27,20 +27,15 @@
                 View in Table
               </a>
             </div>
-            <div
-              *ngIf="searchSummary && searchSummary.hits"
-              class="alert alert-{{
-              searchSummary.files > searchSummary.solutions ? 'danger' :
-              searchSummary.hits > searchSummary.files ? 'warning' :
-              'success'}}"
-            >
-              Code Search will find
+            <div *ngIf="searchSummary" class="alert alert-{{searchSummary.level}}">
+              Code Search found
               <b>{{ searchSummary.hits }}</b>
               hits in
               <b>{{ searchSummary.files }}</b>
               files from
               <b>{{ searchSummary.solutions }}</b>
-              solutions.
+              solutions for this snippet.
+              {{ searchSummary.message }}
             </div>
             <label for="snippets">
               Snippets

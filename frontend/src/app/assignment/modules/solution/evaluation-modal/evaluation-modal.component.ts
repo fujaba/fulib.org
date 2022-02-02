@@ -43,7 +43,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
 
   derivedSolutionCount?: number;
 
-  searchSummary?: SearchSummary;
+  searchSummary?: SearchSummary & {level: string, message?: string};
 
   subscriptions = new Subscription();
 
@@ -108,6 +108,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       switchMap(({aid, sid}) => this.selectionService.stream(aid, sid)),
       filter(({selection: {author}}) => author === this.dto.author),
       map(({selection}) => selection),
+      filter(({snippet}) => !!snippet.code.trim()),
       share(),
     );
 
@@ -127,7 +128,26 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       distinctUntilChanged(),
       switchMap(code => this.assignmentService.searchSummary(this.route.snapshot.params.aid, code, this.task?.glob)),
     ).subscribe(summary => {
-      this.searchSummary = summary;
+      let level: string;
+      let message: string | undefined;
+      if (!summary.hits) {
+        level = 'warning';
+        message = 'No result indicates the snippet is not part of the submitted code for this solution. Please make sure you checked out the correct commit.';
+      } else if (summary.files > summary.solutions) {
+        level = 'danger';
+        message = 'The snippet was found in multiple files per solution. It most likely does not provide enough context.';
+      } else if (summary.hits > summary.files) {
+        level = 'warning';
+        message = 'The snippet was found in multiple places per file. It probably does not provide enough context.';
+      } else {
+        level = 'success';
+      }
+
+      this.searchSummary = {
+        ...summary,
+        level,
+        message,
+      };
     }));
   }
 
