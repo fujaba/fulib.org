@@ -1,0 +1,28 @@
+plugins {
+    id 'org.springframework.boot' version '2.5.6'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+}
+
+group = 'de.uniks'
+version = '0.0.0'
+sourceCompatibility = '17'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // https://mvnrepository.com/artifact/org.fulib/fulibWorkflows
+    implementation group: 'org.fulib', name: 'fulibWorkflows', version: '0.3.6'
+
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.6.3'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.3'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+task stage(dependsOn: ['build', 'clean'])
+build.mustRunAfter clean
