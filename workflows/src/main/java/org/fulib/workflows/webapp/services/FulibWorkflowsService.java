@@ -1,10 +1,8 @@
 package org.fulib.workflows.webapp.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.fulib.workflows.webapp.model.GenerateResult;
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.fulib.workflows.generators.BoardGenerator;
+import org.fulib.workflows.webapp.model.GenerateResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,27 +16,17 @@ import java.util.zip.ZipOutputStream;
 public class FulibWorkflowsService {
     Logger logger = LoggerFactory.getLogger(FulibWorkflowsService.class);
 
-    public String generate(String yamlData) {
-        GenerateResult generateResult = generateFromYaml(yamlData, true);
-
-        String answer = "";
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            answer = objectMapper.writeValueAsString(generateResult);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
-        return answer;
+    public GenerateResult generate(String yamlData) {
+        return generateFromYaml(yamlData, true);
     }
 
 
     public byte[] createZip(String yamlData, Map<String, String> queryParams) {
         GenerateResult generateResult = generateFromYaml(yamlData, false);
 
-        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
-            ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream);
+
+        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+             ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream)) {
 
             // Yaml file
             if (queryParams.get("exportYaml").equals("true")) {

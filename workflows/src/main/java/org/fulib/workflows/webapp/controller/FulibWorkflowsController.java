@@ -1,5 +1,6 @@
 package org.fulib.workflows.webapp.controller;
 
+import org.fulib.workflows.webapp.model.GenerateResult;
 import org.fulib.workflows.webapp.services.FulibWorkflowsService;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -14,7 +15,7 @@ public class FulibWorkflowsController {
 
     @PostMapping(path = "/generate", consumes = MediaType.ALL_VALUE)
     @ResponseBody
-    public String generate(@RequestBody String yamlData) {
+    public GenerateResult generate(@RequestBody String yamlData) {
         return fulibWorkflowsService.generate(yamlData);
     }
 
