@@ -1,4 +1,4 @@
-package de.uniks.backend.model;
+package org.fulib.workflows.webapp.model;
 
 import java.util.Map;
 

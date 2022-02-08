@@ -1,6 +1,6 @@
-package de.uniks.backend.controller;
+package org.fulib.workflows.webapp.controller;
 
-import de.uniks.backend.services.FulibWorkflowsService;
+import org.fulib.workflows.webapp.services.FulibWorkflowsService;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;

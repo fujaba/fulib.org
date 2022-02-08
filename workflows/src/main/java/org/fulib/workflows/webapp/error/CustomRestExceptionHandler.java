@@ -1,4 +1,4 @@
-package de.uniks.backend.error;
+package org.fulib.workflows.webapp.error;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

@@ -1,8 +1,8 @@
-package de.uniks.backend.services;
+package org.fulib.workflows.webapp.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.uniks.backend.model.GenerateResult;
+import org.fulib.workflows.webapp.model.GenerateResult;
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.fulib.workflows.generators.BoardGenerator;
 import org.slf4j.Logger;

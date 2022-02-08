@@ -4,7 +4,7 @@ plugins {
     id 'java'
 }
 
-group = 'de.uniks'
+group = 'org.fulib'
 version = '0.0.0'
 sourceCompatibility = '17'
 
@@ -23,6 +23,3 @@ dependencies {
 test {
     useJUnitPlatform()
 }
-
-task stage(dependsOn: ['build', 'clean'])
-build.mustRunAfter clean
