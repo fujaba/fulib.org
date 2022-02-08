@@ -14,6 +14,12 @@ export class HomeComponent implements OnInit {
       link: '/scenarios',
     },
     {
+      icon: 'diagram-3',
+      title: 'Workflows',
+      description: 'A Web-Editor for tool assisted Event Storming.',
+      link: '/workflows',
+    },
+    {
       icon: 'book',
       title: 'Docs',
       description: 'Clearly structured and easy-to-understand documentation for all fulib tools and libraries.',

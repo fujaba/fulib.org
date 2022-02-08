@@ -10,6 +10,7 @@ import {PrivacyComponent} from './privacy/privacy.component';
 
 const routes: Routes = [
   {path: 'scenarios', loadChildren: () => import('./editor/editor.module').then(m => m.EditorModule)},
+  {path: 'workflows', loadChildren: () => import('./workflows/workflows.module').then(m => m.WorkflowsModule)},
   {path: 'assignments', loadChildren: () => import('./assignment/assignment.module').then(m => m.AssignmentModule)},
   {path: 'docs', loadChildren: () => import('./docs/docs.module').then(m => m.DocsModule)},
   {path: 'projects', loadChildren: () => import('./projects/projects.module').then(m => m.ProjectsModule)},
