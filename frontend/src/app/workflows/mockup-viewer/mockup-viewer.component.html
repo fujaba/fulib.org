@@ -1,0 +1,46 @@
+<div class="h-100">
+  <div class="row">
+    <div class="col align-self-start">
+      <button type="button" class="btn btn-secondary btn-sm m-1"
+              (click)="setFirst()"
+              [disabled]="currentDisplay === 'class'">
+        First
+      </button>
+      <button type="button" class="btn btn-secondary btn-sm m-1"
+              (click)="previous()"
+              [disabled]="currentDisplay === 'class'">
+        Previous
+
+      </button>
+      <button type="button" class="btn btn-secondary btn-sm m-1"
+              (click)="next()"
+              [disabled]="currentDisplay === 'class'">
+        Next
+      </button>
+      <button type="button" class="btn btn-secondary btn-sm m-1"
+              (click)="setLast()"
+              [disabled]="currentDisplay === 'class'">
+        Last
+      </button>
+    </div>
+
+    <div class="mr-3">
+      <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic" [(ngModel)]="currentDisplay">
+        <label ngbButtonLabel class="btn btn-info btn-sm mt-1 mb-1">
+          <input ngbButton type="radio" [value]="'pages'"> Pages
+        </label>
+        <label ngbButtonLabel class="btn btn-info btn-sm mt-1 mb-1">
+          <input ngbButton type="radio" [value]="'objects'"> Objects
+        </label>
+        <label ngbButtonLabel class="btn btn-info btn-sm mt-1 mb-1">
+          <input ngbButton type="radio" [value]="'class'"> Class
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="h-100">
+    <iframe title="Mockups" [srcdoc]="getCurrentIFrameContent() | safeHtml"
+            height="100%" width="100%"></iframe>
+  </div>
+</div>
