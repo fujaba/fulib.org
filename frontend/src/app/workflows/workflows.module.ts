@@ -1,14 +1,29 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {NgbDropdownModule} from '@ng-bootstrap/ng-bootstrap';
 
-import { WorkflowsRoutingModule } from './workflows-routing.module';
+import {AngularSplitModule} from 'angular-split';
+import {WorkflowsService} from './workflows.service';
+import {SharedModule} from '../shared/shared.module';
+import {WorkflowsComponent} from './workflows.component';
+import {WorkflowsRoutingModule} from './workflows-routing.module';
+import {DownloadESComponent} from './download-es/download-es.component';
+import {FormsModule} from '@angular/forms';
 
 
 @NgModule({
-  declarations: [],
+  declarations: [WorkflowsComponent, DownloadESComponent],
   imports: [
     CommonModule,
-    WorkflowsRoutingModule
+    WorkflowsRoutingModule,
+    AngularSplitModule,
+    SharedModule,
+    NgbDropdownModule,
+    FormsModule
+  ],
+  providers: [
+    WorkflowsService
   ]
 })
-export class WorkflowsModule { }
+export class WorkflowsModule {
+}

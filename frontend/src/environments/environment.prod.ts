@@ -3,6 +3,7 @@ export const environment = {
   apiURL: '/api',
   assignmentsApiUrl: '/api/v1',
   projectsApiUrl: '/api/v1',
+  workflowsUrl: '', // TODO
   auth: {
     url: 'https://se.uniks.de/auth',
     realm: 'fulib.org',

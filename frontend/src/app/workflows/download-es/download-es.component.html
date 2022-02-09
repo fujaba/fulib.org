@@ -1,0 +1,45 @@
+<ng-template #download let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Configure and Download</h4>
+  </div>
+
+  <div class="modal-body">
+    <div class="col">
+      <div class="form-group form-check">
+        <input type="checkbox" class="form-check-input" id="yamlCheck" [(ngModel)]="exportOptions.exportYaml">
+        <label class="form-check-label" for="yamlCheck">YAML (Codemirror Content)</label>
+      </div>
+      <div class="form-group form-check">
+        <input type="checkbox" class="form-check-input" id="boardCheck" [(ngModel)]="exportOptions.exportBoard">
+        <label class="form-check-label" for="boardCheck">Board</label>
+      </div>
+      <div class="form-group form-check">
+        <input type="checkbox" class="form-check-input" id="pagesCheck" [(ngModel)]="exportOptions.exportPages">
+        <label class="form-check-label" for="pagesCheck">Pages</label>
+      </div>
+      <div class="form-group form-check">
+        <input type="checkbox" class="form-check-input" id="objectsCheck" [(ngModel)]="exportOptions.exportObjects">
+        <label class="form-check-label" for="objectsCheck">Objects</label>
+      </div>
+      <div class="form-group form-check">
+        <input type="checkbox" class="form-check-input" id="classCheck" [(ngModel)]="exportOptions.exportClass">
+        <label class="form-check-label" for="classCheck">Class</label>
+      </div>
+      <div class="form-group form-check">
+        <input type="checkbox" class="form-check-input" id="fxmlsCheck" [(ngModel)]="exportOptions.exportFxmls">
+        <label class="form-check-label" for="fxmlsCheck">Fxmls</label>
+      </div>
+      <div class="row">
+        <button type="button" class="btn btn-outline-secondary m-1" (click)="deselectAll()">Deselect All</button>
+        <button type="button" class="btn btn-outline-success m-1" (click)="selectAll()">Select All</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary"
+            (click)="modal.close('Dismiss')">Dismiss
+    </button>
+    <button type="button" class="btn btn-success" (click)="modal.close()">Download</button>
+  </div>
+</ng-template>
