@@ -6,27 +6,27 @@
   <div class="modal-body">
     <div class="col">
       <div class="form-group form-check">
-        <input type="checkbox" class="form-check-input" id="yamlCheck" [(ngModel)]="exportOptions.exportYaml">
+        <input type="checkbox" class="form-check-input" id="yamlCheck" [(ngModel)]="exportOptions.yaml">
         <label class="form-check-label" for="yamlCheck">YAML (Codemirror Content)</label>
       </div>
       <div class="form-group form-check">
-        <input type="checkbox" class="form-check-input" id="boardCheck" [(ngModel)]="exportOptions.exportBoard">
+        <input type="checkbox" class="form-check-input" id="boardCheck" [(ngModel)]="exportOptions.board">
         <label class="form-check-label" for="boardCheck">Board</label>
       </div>
       <div class="form-group form-check">
-        <input type="checkbox" class="form-check-input" id="pagesCheck" [(ngModel)]="exportOptions.exportPages">
+        <input type="checkbox" class="form-check-input" id="pagesCheck" [(ngModel)]="exportOptions.pages">
         <label class="form-check-label" for="pagesCheck">Pages</label>
       </div>
       <div class="form-group form-check">
-        <input type="checkbox" class="form-check-input" id="objectsCheck" [(ngModel)]="exportOptions.exportObjects">
+        <input type="checkbox" class="form-check-input" id="objectsCheck" [(ngModel)]="exportOptions.objects">
         <label class="form-check-label" for="objectsCheck">Objects</label>
       </div>
       <div class="form-group form-check">
-        <input type="checkbox" class="form-check-input" id="classCheck" [(ngModel)]="exportOptions.exportClass">
+        <input type="checkbox" class="form-check-input" id="classCheck" [(ngModel)]="exportOptions.class">
         <label class="form-check-label" for="classCheck">Class</label>
       </div>
       <div class="form-group form-check">
-        <input type="checkbox" class="form-check-input" id="fxmlsCheck" [(ngModel)]="exportOptions.exportFxmls">
+        <input type="checkbox" class="form-check-input" id="fxmlsCheck" [(ngModel)]="exportOptions.fxmls">
         <label class="form-check-label" for="fxmlsCheck">Fxmls</label>
       </div>
       <div class="row">
@@ -37,9 +37,7 @@
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-secondary"
-            (click)="modal.close('Dismiss')">Dismiss
-    </button>
+    <button type="button" class="btn btn-secondary" (click)="modal.close('Cancel')">Cancel</button>
     <button type="button" class="btn btn-success" (click)="modal.close()">Download</button>
   </div>
 </ng-template>

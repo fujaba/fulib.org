@@ -8,7 +8,7 @@ import {YamlHelper} from './model/helper/yaml.helper';
 import {IOutputData, SplitComponent} from 'angular-split';
 import {createMapFromAnswer} from './model/helper/map.helper';
 import {workflowsSchema} from './model/helper/workflows.schema';
-import {msExample, newWorkflowExample, pagesExample, pmExample} from './model/examples';
+import {msExample, newWorkflowExample, pagesExample, pmExample} from '../../assets/examples/workflows';
 
 @Component({
   selector: 'app-workflows',
@@ -35,9 +35,11 @@ export class WorkflowsComponent implements OnInit {
   private yamlHelper!: YamlHelper;
   private loading: boolean = false;
 
-  constructor(private toastService: ToastService,
-              private zone: NgZone,
-              private fulibWorkflowsService: WorkflowsService) {
+  constructor(
+    private toastService: ToastService,
+    private zone: NgZone,
+    private fulibWorkflowsService: WorkflowsService
+  ) {
     // https://angular.io/api/core/NgZone
     const generateHandler = () => this.zone.run(() => this.generate());
 

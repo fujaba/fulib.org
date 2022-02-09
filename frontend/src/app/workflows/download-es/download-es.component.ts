@@ -17,16 +17,18 @@ export class DownloadESComponent {
   @Input() public cmContent!: string;
 
   public exportOptions: ExportOptions = {
-    exportYaml: false,
-    exportBoard: true,
-    exportPages: false,
-    exportObjects: false,
-    exportClass: false,
-    exportFxmls: false,
+    yaml: false,
+    board: true,
+    pages: false,
+    objects: false,
+    class: false,
+    fxmls: false,
   };
 
-  constructor(private modalService: NgbModal,
-              private workflowsService: WorkflowsService) {
+  constructor(
+    private modalService: NgbModal,
+    private workflowsService: WorkflowsService
+  ) {
   }
 
   public open() {
@@ -40,23 +42,23 @@ export class DownloadESComponent {
 
   selectAll() {
     this.exportOptions = {
-      exportYaml: true,
-      exportBoard: true,
-      exportPages: true,
-      exportObjects: true,
-      exportClass: true,
-      exportFxmls: true,
+      yaml: true,
+      board: true,
+      pages: true,
+      objects: true,
+      class: true,
+      fxmls: true,
     };
   }
 
   deselectAll() {
     this.exportOptions = {
-      exportYaml: false,
-      exportBoard: false,
-      exportPages: false,
-      exportObjects: false,
-      exportClass: false,
-      exportFxmls: false,
+      yaml: false,
+      board: false,
+      pages: false,
+      objects: false,
+      class: false,
+      fxmls: false,
     };
   }
 }

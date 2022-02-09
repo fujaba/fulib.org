@@ -52,7 +52,7 @@
             <iframe *ngIf="generateResult" title="Boards" [srcdoc]="generateResult.board | safeHtml"
                     height="100%" width="100%">
             </iframe>
-            <div [hidden]="showIframeHider === false" class="hack-iframe-hider"></div>
+            <div [hidden]="showIframeHider === false" class="iframe-hider"></div>
           </div>
         </as-split-area>
         <as-split-area [size]="65">
@@ -61,7 +61,7 @@
             <!--            <app-mockup-viewer [generateResult]="generateResult"-->
             <!--                               [index]="newPageIndex"-->
             <!--                               [currentDisplay]="currentDisplay"></app-mockup-viewer>-->
-            <div [hidden]="showIframeHider === false" class="hack-iframe-hider"></div>
+            <div [hidden]="showIframeHider === false" class="iframe-hider"></div>
           </div>
         </as-split-area>
       </as-split>
