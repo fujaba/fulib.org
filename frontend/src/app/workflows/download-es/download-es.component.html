@@ -1,9 +1,8 @@
-<ng-template #download let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title">Configure and Download</h4>
-  </div>
-
-  <div class="modal-body">
+<app-modal #modal="modal" [back]="['..']" [backOptions]="{relativeTo: route}">
+  <ng-container modal-header>
+    Configure and Download
+  </ng-container>
+  <ng-container modal-body>
     <div class="col">
       <div class="form-group form-check">
         <input type="checkbox" class="form-check-input" id="yamlCheck" [(ngModel)]="exportOptions.yaml">
@@ -34,10 +33,13 @@
         <button type="button" class="btn btn-outline-success m-1" (click)="selectAll()">Select All</button>
       </div>
     </div>
-  </div>
-
-  <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="modal.close('Cancel')">Cancel</button>
-    <button type="button" class="btn btn-success" (click)="modal.close()">Download</button>
-  </div>
-</ng-template>
+  </ng-container>
+  <ng-container modal-footer>
+    <button type="button" class="btn btn-secondary" (click)="modal.close()">
+      Cancel
+    </button>
+    <button type="button" class="btn btn-primary" (click)="download(); modal.close()">
+      Save
+    </button>
+  </ng-container>
+</app-modal>

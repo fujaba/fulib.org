@@ -23,10 +23,9 @@
   </div>
 
   <div>
-    <button class="btn btn-success m-1"
-            (click)="download.open()">
-      Download
-    </button>
+    <a role="button" class="btn btn-success m-1" routerLink="download">
+      Configure and Download
+    </a>
   </div>
 </div>
 
@@ -67,5 +66,3 @@
     </as-split-area>
   </as-split>
 </div>
-
-<app-download-es #download [data]="generateResult" [cmContent]="content"></app-download-es>

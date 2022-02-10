@@ -9,6 +9,7 @@ import {createMapFromAnswer} from './model/helper/map.helper';
 import {workflowsSchema} from './model/helper/workflows.schema';
 import {msExample, newWorkflowExample, pagesExample, pmExample} from '../../assets/examples/workflows';
 import * as Yaml from 'js-yaml';
+import {PrivacyService} from '../privacy.service';
 
 @Component({
   selector: 'app-workflows',
@@ -37,7 +38,8 @@ export class WorkflowsComponent implements OnInit {
   constructor(
     private toastService: ToastService,
     private zone: NgZone,
-    private fulibWorkflowsService: WorkflowsService
+    private fulibWorkflowsService: WorkflowsService,
+    private privacyService: PrivacyService,
   ) {
     // https://angular.io/api/core/NgZone
     const generateHandler = () => this.zone.run(() => this.generate());
@@ -91,6 +93,8 @@ export class WorkflowsComponent implements OnInit {
   }
 
   generate() {
+    this.privacyService.setStorage('workflows', this.content);
+
     if (this.isLoading()) return;
 
     if (!this.content.includes('- workflow: ')) {

@@ -1,8 +1,10 @@
-import {Component, Input, ViewChild} from '@angular/core';
-import {NgbActiveModal, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
+import {ToastService} from '../../toast.service';
 import {ExportOptions} from '../model/ExportOptions';
-import {GenerateResult} from '../model/GenerateResult';
+import {PrivacyService} from '../../privacy.service';
 import {WorkflowsService} from '../workflows.service';
 
 @Component({
@@ -10,11 +12,8 @@ import {WorkflowsService} from '../workflows.service';
   templateUrl: './download-es.component.html',
   styleUrls: ['./download-es.component.scss']
 })
-export class DownloadESComponent {
-  @ViewChild('download') private downloadModal!: NgbActiveModal;
-
-  @Input() public data!: GenerateResult;
-  @Input() public cmContent!: string;
+export class DownloadESComponent implements OnInit {
+  private yamlContent!: string | null;
 
   public exportOptions: ExportOptions = {
     yaml: false,
@@ -27,17 +26,15 @@ export class DownloadESComponent {
 
   constructor(
     private modalService: NgbModal,
-    private workflowsService: WorkflowsService
+    public route: ActivatedRoute,
+    private workflowsService: WorkflowsService,
+    private privacyService: PrivacyService,
+    private toastService: ToastService,
   ) {
   }
 
-  public open() {
-    this.modalService.open(this.downloadModal, {centered: true}).result.then((reason) => {
-      if (!reason) {
-        this.workflowsService.downloadZip(this.cmContent, this.exportOptions);
-      }
-    }).catch(() => {
-    });
+  ngOnInit() {
+    this.yamlContent = this.privacyService.getStorage('workflows');
   }
 
   selectAll() {
@@ -60,5 +57,13 @@ export class DownloadESComponent {
       class: false,
       fxmls: false,
     };
+  }
+
+  download() {
+    if (this.yamlContent) {
+      this.workflowsService.downloadZip(this.yamlContent, this.exportOptions);
+    } else {
+      this.toastService.error('Download Files', 'Editor Content does not exist');
+    }
   }
 }
