@@ -1,5 +1,4 @@
-export const msExample =
-  `- workflow: smooth case
+- workflow: smooth case
 
 - user: Peter Picker
 
@@ -350,5 +349,3 @@ export const msExample =
 
 - event: order rejected
   message: out of stock
-
-`;

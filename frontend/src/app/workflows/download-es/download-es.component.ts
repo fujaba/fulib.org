@@ -25,7 +25,6 @@ export class DownloadESComponent implements OnInit {
   };
 
   constructor(
-    private modalService: NgbModal,
     public route: ActivatedRoute,
     private workflowsService: WorkflowsService,
     private privacyService: PrivacyService,

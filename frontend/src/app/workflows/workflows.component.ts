@@ -1,15 +1,15 @@
+import {HttpClient} from '@angular/common/http';
 import {Component, NgZone, OnInit, ViewChild} from '@angular/core';
 
 import Ajv from 'ajv';
+import * as Yaml from 'js-yaml';
 import {ToastService} from '../toast.service';
+import {PrivacyService} from '../privacy.service';
 import {WorkflowsService} from './workflows.service';
 import {GenerateResult} from './model/GenerateResult';
 import {IOutputData, SplitComponent} from 'angular-split';
 import {createMapFromAnswer} from './model/helper/map.helper';
 import {workflowsSchema} from './model/helper/workflows.schema';
-import {msExample, newWorkflowExample, pagesExample, pmExample} from '../../assets/examples/workflows';
-import * as Yaml from 'js-yaml';
-import {PrivacyService} from '../privacy.service';
 
 @Component({
   selector: 'app-workflows',
@@ -25,7 +25,8 @@ export class WorkflowsComponent implements OnInit {
   public generateResult!: GenerateResult;
 
   public currentExampleDesc: string = 'Select example';
-  public examplesList = ['Empty workflow', 'Data Modelling', 'Microservices', 'Pages'];
+  public examplesList = ['New Workflow', 'Data Modelling', 'Microservices', 'Pages'];
+  private examplesMap!: Map<string, string>;
 
   public showIframeHider = false;
   public newPageIndex!: number;
@@ -40,6 +41,7 @@ export class WorkflowsComponent implements OnInit {
     private zone: NgZone,
     private fulibWorkflowsService: WorkflowsService,
     private privacyService: PrivacyService,
+    private http: HttpClient,
   ) {
     // https://angular.io/api/core/NgZone
     const generateHandler = () => this.zone.run(() => this.generate());
@@ -59,11 +61,10 @@ export class WorkflowsComponent implements OnInit {
     (<any>window).changeFrameWithToast = this.changeFrameWithToast.bind(this);
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
+    this.getExamples();
     this.ajv = new Ajv();
     this.validate = this.ajv.compile(workflowsSchema);
-    this.content = newWorkflowExample;
-    this.generate();
   }
 
   changeExampleContent(index: number) {
@@ -73,19 +74,19 @@ export class WorkflowsComponent implements OnInit {
     let newContent;
     switch (this.examplesList.indexOf(this.currentExampleDesc)) {
       case 0:
-        newContent = newWorkflowExample;
+        newContent = this.examplesMap.get(this.examplesList[0]);
         break;
       case 1:
-        newContent = pmExample;
+        newContent = this.examplesMap.get(this.examplesList[1]);
         break;
       case 2:
-        newContent = msExample;
+        newContent = this.examplesMap.get(this.examplesList[2]);
         break;
       case 3:
-        newContent = pagesExample;
+        newContent = this.examplesMap.get(this.examplesList[3]);
         break;
       default:
-        newContent = newWorkflowExample;
+        newContent = this.examplesMap.get(this.examplesList[0]);
         this.toastService.warn('Warning', 'Unknown Example. Using new workflow template');
     }
     this.content = newContent;
@@ -214,5 +215,21 @@ export class WorkflowsComponent implements OnInit {
     const yaml = Yaml.load(this.content);
 
     return this.validate(yaml);
+  }
+
+  private getExamples() {
+    this.examplesMap = new Map<string, string>();
+    for (const example of this.examplesList) {
+      const url = `/assets/examples/workflows/${example.replace(' ', '')}.es.yaml`;
+      let exampleString;
+      this.http.get(url, {responseType: 'text'}).subscribe((value => {
+        exampleString = value;
+        this.examplesMap.set(example, exampleString);
+        if (this.examplesMap.get('New Workflow')) {
+          this.content = this.examplesMap.get('New Workflow');
+          this.generate();
+        }
+      }));
+    }
   }
 }

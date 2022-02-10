@@ -1,5 +1,4 @@
-export const pmExample =
-  `- workflow: Study Right
+- workflow: Study Right
 
 - service: StudyGuide
 
@@ -45,4 +44,3 @@ export const pmExample =
 
 - data: Student carli
   route: "[math, calculus, math, modeling, exam]"
-`;

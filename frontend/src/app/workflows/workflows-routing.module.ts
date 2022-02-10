@@ -13,7 +13,7 @@ const routes: Routes = [
       {
         path: 'download',
         component: DownloadESComponent,
-        data: {title: 'Configure and Download'}
+        data: {title: 'Download'}
       },
     ],
   },

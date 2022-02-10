@@ -1,5 +1,4 @@
-export const pagesExample =
-  `- workflow: Pages
+- workflow: Pages
 
 - page:
     - pageName: Register
@@ -110,4 +109,3 @@ export const pagesExample =
     - text: See you soon
     - button: Back to login
       targetPage: Login
-`;
