@@ -55,8 +55,8 @@ export class WorkflowsComponent implements OnInit {
       tabSize: 2,
     };
     // https://stackoverflow.com/questions/41616112/calling-components-function-from-iframe
-    (<any>window).setIndexFromIframe = this.setIndexFromIframe.bind(this);
-    (<any>window).changeFrameWithToast = this.changeFrameWithToast.bind(this);
+    window.__fulib_org_setIndexFromIframe = this.setIndexFromIframe.bind(this);
+    window.__fulib_org_changeFrameWithToast = this.changeFrameWithToast.bind(this);
   }
 
   ngOnInit() {
