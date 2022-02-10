@@ -8,7 +8,7 @@ import {GenerateResult} from '../model/GenerateResult';
 })
 export class MockupViewerComponent {
   @Input() generateResult!: GenerateResult;
-  @Input() index!: number | undefined;
+  @Input() index?: number;
   @Input() currentDisplay!: 'pages' | 'objects' | 'class';
 
   public currentIndex = 1;
@@ -46,9 +46,6 @@ export class MockupViewerComponent {
         this.currentIndex = 1;
         result = this.generateResult.classDiagram;
         break;
-      default:
-        result = '';
-        console.log('Unknown type');
     }
 
     return result;

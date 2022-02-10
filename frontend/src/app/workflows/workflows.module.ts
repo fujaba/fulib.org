@@ -16,7 +16,7 @@ import {MockupViewerComponent} from './mockup-viewer/mockup-viewer.component';
   declarations: [
     WorkflowsComponent,
     DownloadESComponent,
-    MockupViewerComponent
+    MockupViewerComponent,
   ],
   imports: [
     CommonModule,
@@ -25,10 +25,10 @@ import {MockupViewerComponent} from './mockup-viewer/mockup-viewer.component';
     SharedModule,
     NgbDropdownModule,
     FormsModule,
-    NgbButtonsModule
+    NgbButtonsModule,
   ],
   providers: [
-    WorkflowsService
+    WorkflowsService,
   ]
 })
 export class WorkflowsModule {

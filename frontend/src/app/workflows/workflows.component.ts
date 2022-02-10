@@ -33,7 +33,7 @@ export class WorkflowsComponent implements OnInit {
 
   private ajv!: Ajv;
   private validate!: any;
-  private loading: boolean = false;
+  public loading: boolean = false;
 
   constructor(
     private toastService: ToastService,
@@ -95,7 +95,7 @@ export class WorkflowsComponent implements OnInit {
   generate() {
     this.privacyService.setStorage('workflows', this.content);
 
-    if (this.isLoading()) return;
+    if (this.loading) return;
 
     if (!this.content.includes('- workflow: ')) {
       this.toastService.error('Lint Error', 'Needs at least one workflow note (best at the beginning)');
@@ -143,10 +143,6 @@ export class WorkflowsComponent implements OnInit {
         this.toastService.error('Parse Error', errorMessage);
       }
     );
-  }
-
-  isLoading(): boolean {
-    return this.loading;
   }
 
   setIndexFromIframe(index: number, diagramType: 'pages' | 'objects' | 'class') {
