@@ -34,7 +34,7 @@ public class FulibWorkflowsService {
             }
 
             // Board file
-            if (queryParams.get("board").equals("true")) {
+            if (queryParams.get("board").equals("true") && generateResult.getBoard() != null) {
                 createZipEntry(zipOutputStream, "board.html", generateResult.getBoard());
             }
 
@@ -135,7 +135,7 @@ public class FulibWorkflowsService {
                 return htmls.get(key);
             }
         }
-        return "Nothing found";
+        return null;
     }
 
     private Map<Integer, String> getMultipleViews(Map<String, String> views, String type) {
