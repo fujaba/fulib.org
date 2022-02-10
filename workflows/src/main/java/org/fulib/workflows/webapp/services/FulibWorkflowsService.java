@@ -29,17 +29,17 @@ public class FulibWorkflowsService {
              ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream)) {
 
             // Yaml file
-            if (queryParams.get("exportYaml").equals("true")) {
+            if (queryParams.get("yaml").equals("true")) {
                 createZipEntry(zipOutputStream, "workflow.es.yaml", yamlData);
             }
 
             // Board file
-            if (queryParams.get("exportBoard").equals("true")) {
+            if (queryParams.get("board").equals("true")) {
                 createZipEntry(zipOutputStream, "board.html", generateResult.getBoard());
             }
 
             // Mockup Directory
-            if (queryParams.get("exportPages").equals("true") && generateResult.getNumberOfPages() > 0) {
+            if (queryParams.get("pages").equals("true") && generateResult.getNumberOfPages() > 0) {
                 zipOutputStream.putNextEntry(new ZipEntry("mockups/"));
 
                 // Mockup files
@@ -50,7 +50,7 @@ public class FulibWorkflowsService {
             }
 
             // Diagram Directory
-            if (queryParams.get("exportObjects").equals("true") && generateResult.getNumberOfDiagrams() > 0) {
+            if (queryParams.get("objects").equals("true") && generateResult.getNumberOfDiagrams() > 0) {
                 zipOutputStream.putNextEntry(new ZipEntry("diagrams/"));
 
                 // Diagram files
@@ -61,12 +61,12 @@ public class FulibWorkflowsService {
             }
 
             // Class Directory
-            if (queryParams.get("exportClass").equals("true") && generateResult.getClassDiagram() != null) {
+            if (queryParams.get("class").equals("true") && generateResult.getClassDiagram() != null) {
                 createZipEntry(zipOutputStream, "class/classdiagram.svg", generateResult.getClassDiagram());
             }
 
             // Fxml Directory
-            if (queryParams.get("exportFxmls").equals("true") && generateResult.getNumberOfFxmls() > 0) {
+            if (queryParams.get("fxmls").equals("true") && generateResult.getNumberOfFxmls() > 0) {
                 zipOutputStream.putNextEntry(new ZipEntry("fxmls/"));
 
                 // Diagram files
