@@ -10,18 +10,14 @@
       </div>
     </div>
 
-    <div>
-      <button class="btn btn-primary m-1" (click)="generate()" [disabled]="loading">
-        <span *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-        {{ loading ? 'Generating...' : 'Generate' }}
-      </button>
-    </div>
+    <button class="btn btn-primary m-1" (click)="generate()" [disabled]="loading">
+      <span *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      {{ loading ? 'Generating...' : 'Generate' }}
+    </button>
 
-    <div>
-      <a role="button" class="btn btn-success m-1" routerLink="download">
-        Configure and Download
-      </a>
-    </div>
+    <a role="button" class="btn btn-success m-1" routerLink="download">
+      Configure and Download
+    </a>
   </div>
 
   <!-- Main Content Area -->
