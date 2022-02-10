@@ -2,8 +2,8 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 import {Observable} from 'rxjs';
+import {saveAs} from 'file-saver';
 import {environment} from '../../environments/environment';
-import {FileExportHelper, MIME_TYPES} from './model/helper/file-export.helper';
 
 @Injectable()
 export class WorkflowsService {
@@ -22,7 +22,9 @@ export class WorkflowsService {
 
     this.http.post(url, cmContent, {headers: headers, params: options, responseType: 'arraybuffer'}).subscribe(
       (res) => {
-        FileExportHelper.resToFileDownload(res, "Workflow.zip", MIME_TYPES.zip);
+        const blob = new Blob([res], {type: 'application/zip'});
+        const file = new File([blob], 'Workflows.zip', {type: 'application/zip'});
+        saveAs(file);
       }
     );
   }
