@@ -52,7 +52,4 @@ src/assets/examples/**/*.png
 src/assets/examples/**/*.svg
 src/assets/examples/**/*.txt
 src/assets/examples/**/*.yaml
-!src/assets/examples/workflows/DataModelling.es.yaml
-!src/assets/examples/workflows/Microservices.es.yaml
-!src/assets/examples/workflows/NewWorkflow.es.yaml
-!src/assets/examples/workflows/Pages.es.yaml
+!src/assets/examples/workflows/*.es.yaml

@@ -4,16 +4,21 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {saveAs} from 'file-saver';
 import {environment} from '../../environments/environment';
+import {map} from 'rxjs/operators';
+import {GenerateResult} from './model/GenerateResult';
+import {createMapFromAnswer} from './model/helper/map.helper';
 
 @Injectable()
 export class WorkflowsService {
 
-  constructor(private http: HttpClient,) {
+  constructor(
+    private http: HttpClient,
+  ) {
   }
 
-  public generate(data: string): Observable<any> {
+  public generate(data: string): Observable<GenerateResult> {
     const url = environment.workflowsUrl + '/generate';
-    return this.http.post(url, data);
+    return this.http.post<any>(url, data).pipe(map(result => WorkflowsService.toGenerateResult(result)));
   }
 
   public downloadZip(cmContent: string, options: any) {
@@ -27,5 +32,21 @@ export class WorkflowsService {
         saveAs(file);
       }
     );
+  }
+
+  private static toGenerateResult(result: any): GenerateResult {
+    const pages = createMapFromAnswer(result.pages, result.numberOfPages);
+    const diagrams = createMapFromAnswer(result.diagrams, result.numberOfDiagrams);
+    const fxmls = createMapFromAnswer(result.fxmls, result.numberOfFxmls);
+    return {
+      board: result.board,
+      pages: pages,
+      numberOfPages: result.numberOfPages,
+      diagrams: diagrams,
+      numberOfDiagrams: result.numberOfDiagrams,
+      fxmls: fxmls,
+      numberOfFxmls: result.numberOfFxmls,
+      classDiagram: result.classDiagram,
+    }
   }
 }

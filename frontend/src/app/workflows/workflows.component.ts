@@ -8,7 +8,6 @@ import {PrivacyService} from '../privacy.service';
 import {WorkflowsService} from './workflows.service';
 import {GenerateResult} from './model/GenerateResult';
 import {IOutputData, SplitComponent} from 'angular-split';
-import {createMapFromAnswer} from './model/helper/map.helper';
 import {workflowsSchema} from './model/helper/workflows.schema';
 
 @Component({
@@ -26,7 +25,6 @@ export class WorkflowsComponent implements OnInit {
 
   public currentExampleDesc: string = 'Select example';
   public examplesList = ['New Workflow', 'Data Modelling', 'Microservices', 'Pages'];
-  private examplesMap!: Map<string, string>;
 
   public showIframeHider = false;
   public newPageIndex!: number;
@@ -62,35 +60,14 @@ export class WorkflowsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getExamples();
+    this.setExample(this.examplesList[0]);
     this.ajv = new Ajv();
     this.validate = this.ajv.compile(workflowsSchema);
   }
 
   changeExampleContent(index: number) {
     this.currentExampleDesc = this.examplesList[index];
-
-    // Change content
-    let newContent;
-    switch (this.examplesList.indexOf(this.currentExampleDesc)) {
-      case 0:
-        newContent = this.examplesMap.get(this.examplesList[0]);
-        break;
-      case 1:
-        newContent = this.examplesMap.get(this.examplesList[1]);
-        break;
-      case 2:
-        newContent = this.examplesMap.get(this.examplesList[2]);
-        break;
-      case 3:
-        newContent = this.examplesMap.get(this.examplesList[3]);
-        break;
-      default:
-        newContent = this.examplesMap.get(this.examplesList[0]);
-        this.toastService.warn('Warning', 'Unknown Example. Using new workflow template');
-    }
-    this.content = newContent;
-    this.generate();
+    this.setExample(this.currentExampleDesc);
   }
 
   generate() {
@@ -117,23 +94,9 @@ export class WorkflowsComponent implements OnInit {
     this.loading = true;
 
     this.fulibWorkflowsService.generate(this.content).subscribe(
-      (answer: GenerateResult) => {
-        const pages = createMapFromAnswer(answer.pages, answer.numberOfPages);
-        const diagrams = createMapFromAnswer(answer.diagrams, answer.numberOfDiagrams);
-        const fxmls = createMapFromAnswer(answer.fxmls, answer.numberOfFxmls);
-
+      (answer) => {
+        this.generateResult = answer
         this.loading = false;
-
-        this.generateResult = {
-          board: answer.board,
-          pages: pages,
-          numberOfPages: answer.numberOfPages,
-          diagrams: diagrams,
-          numberOfDiagrams: answer.numberOfDiagrams,
-          fxmls: fxmls,
-          numberOfFxmls: answer.numberOfFxmls,
-          classDiagram: answer.classDiagram,
-        };
       },
       (error: any) => {
         this.loading = false;
@@ -217,19 +180,15 @@ export class WorkflowsComponent implements OnInit {
     return this.validate(yaml);
   }
 
-  private getExamples() {
-    this.examplesMap = new Map<string, string>();
-    for (const example of this.examplesList) {
-      const url = `/assets/examples/workflows/${example.replace(' ', '')}.es.yaml`;
-      let exampleString;
-      this.http.get(url, {responseType: 'text'}).subscribe((value => {
-        exampleString = value;
-        this.examplesMap.set(example, exampleString);
-        if (this.examplesMap.get('New Workflow')) {
-          this.content = this.examplesMap.get('New Workflow');
-          this.generate();
-        }
-      }));
-    }
+  private setExample(exampleName: string) {
+    const url = `/assets/examples/workflows/${exampleName.replace(' ', '')}.es.yaml`;
+    this.http.get(url, {responseType: 'text'}).subscribe((value => {
+      if (value) {
+        this.content = value;
+        this.generate();
+      } else {
+        this.toastService.warn('Warning', 'Unknown Example.');
+      }
+    }));
   }
 }
