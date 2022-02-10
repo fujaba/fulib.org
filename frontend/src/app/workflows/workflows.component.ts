@@ -4,11 +4,11 @@ import Ajv from 'ajv';
 import {ToastService} from '../toast.service';
 import {WorkflowsService} from './workflows.service';
 import {GenerateResult} from './model/GenerateResult';
-import {YamlHelper} from './model/helper/yaml.helper';
 import {IOutputData, SplitComponent} from 'angular-split';
 import {createMapFromAnswer} from './model/helper/map.helper';
 import {workflowsSchema} from './model/helper/workflows.schema';
 import {msExample, newWorkflowExample, pagesExample, pmExample} from '../../assets/examples/workflows';
+import * as Yaml from 'js-yaml';
 
 @Component({
   selector: 'app-workflows',
@@ -32,7 +32,6 @@ export class WorkflowsComponent implements OnInit {
 
   private ajv!: Ajv;
   private validate!: any;
-  private yamlHelper!: YamlHelper;
   private loading: boolean = false;
 
   constructor(
@@ -61,7 +60,6 @@ export class WorkflowsComponent implements OnInit {
   ngOnInit(): void {
     this.ajv = new Ajv();
     this.validate = this.ajv.compile(workflowsSchema);
-    this.yamlHelper = new YamlHelper(this.ajv, this.validate);
     this.content = newWorkflowExample;
     this.generate();
   }
@@ -103,7 +101,7 @@ export class WorkflowsComponent implements OnInit {
     // Replace tabs with two spaces for js-yaml and snakeyaml parser
     this.content = this.content.replace(/\t/g, '  ');
 
-    const validYaml = this.yamlHelper.lintYamlString(this.content);
+    const validYaml = this.lintYamlString();
 
     if (!validYaml) {
       const errorMessage = this.evaluateErrorMessage();
@@ -210,5 +208,11 @@ export class WorkflowsComponent implements OnInit {
     }
 
     return result;
+  }
+
+  private lintYamlString(): boolean {
+    const yaml = Yaml.load(this.content);
+
+    return this.validate(yaml);
   }
 }
