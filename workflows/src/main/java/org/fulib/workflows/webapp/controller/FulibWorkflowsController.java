@@ -15,13 +15,13 @@ public class FulibWorkflowsController {
 
     @PostMapping(path = "/generate", consumes = MediaType.ALL_VALUE)
     @ResponseBody
-    public GenerateResult generate(@RequestBody String yamlData) {
+    public GenerateResult generate(@RequestBody String yamlData) throws Exception {
         return fulibWorkflowsService.generate(yamlData);
     }
 
     @PostMapping(path = "/download", consumes = MediaType.ALL_VALUE, produces = "application/zip")
     @ResponseBody
-    public byte[] download(@RequestBody String yamlData, @RequestParam Map<String, String> queryParams) {
+    public byte[] download(@RequestBody String yamlData, @RequestParam Map<String, String> queryParams) throws Exception {
         return fulibWorkflowsService.createZip(yamlData, queryParams);
     }
 }

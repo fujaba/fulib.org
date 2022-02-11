@@ -15,15 +15,17 @@ import java.util.zip.ZipOutputStream;
 
 public class FulibWorkflowsService {
     Logger logger = LoggerFactory.getLogger(FulibWorkflowsService.class);
+    WorkflowsGenService workflowsGenService = new WorkflowsGenService();
 
-    public GenerateResult generate(String yamlData) {
-        return generateFromYaml(yamlData, true);
+    public GenerateResult generate(String yamlData) throws Exception {
+        return workflowsGenService.run(yamlData, true);
     }
 
 
-    public byte[] createZip(String yamlData, Map<String, String> queryParams) {
-        GenerateResult generateResult = generateFromYaml(yamlData, false);
+    public byte[] createZip(String yamlData, Map<String, String> queryParams) throws Exception {
+        GenerateResult generateResult = workflowsGenService.run(yamlData, false);
 
+        // TODO Get the file content from the links instead of getBoard()
 
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
              ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream)) {
@@ -95,59 +97,5 @@ public class FulibWorkflowsService {
         zipOutputStream.putNextEntry(zipEntry);
         zipOutputStream.write(data.getBytes(StandardCharsets.UTF_8));
         zipOutputStream.closeEntry();
-    }
-
-
-    private GenerateResult generateFromYaml(String yamlData, boolean webGeneration) {
-        GenerateResult generateResult = new GenerateResult();
-        BoardGenerator boardGenerator = new BoardGenerator();
-        boardGenerator.setWebGeneration(webGeneration);
-
-        Map<String, String> htmls = boardGenerator.generateAndReturnHTMLsFromString(yamlData);
-
-        // Add Board
-        generateResult.setBoard(getSingleView(htmls, "Board"));
-
-        // Add Pages
-        generateResult.setPages(getMultipleViews(htmls, "page"));
-
-        generateResult.setNumberOfPages(generateResult.getPages().size());
-
-        // Add Objects
-        generateResult.setDiagrams(getMultipleViews(htmls, "diagram"));
-
-        generateResult.setNumberOfDiagrams(generateResult.getDiagrams().size());
-
-        // Add Class
-        generateResult.setClassDiagram(getSingleView(htmls, "class"));
-
-        // Add fxmls
-        generateResult.setFxmls(getMultipleViews(htmls, "fxml"));
-
-        generateResult.setNumberOfFxmls(generateResult.getFxmls().size());
-
-        return generateResult;
-    }
-
-    private String getSingleView(Map<String, String> htmls, String type) {
-        for (String key : htmls.keySet()) {
-            if (key.contains(type)) {
-                return htmls.get(key);
-            }
-        }
-        return null;
-    }
-
-    private Map<Integer, String> getMultipleViews(Map<String, String> views, String type) {
-        Map<Integer, String> result = new HashMap<>();
-
-        for (String key : views.keySet()) {
-            if (key.contains(type)) {
-                int index = Integer.parseInt(key.substring(0, key.indexOf("_")));
-                result.put(index + 1, views.get(key));
-            }
-        }
-
-        return result;
     }
 }
