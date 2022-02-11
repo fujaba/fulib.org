@@ -7,6 +7,7 @@ import {environment} from '../../environments/environment';
 import {map} from 'rxjs/operators';
 import {GenerateResult} from './model/GenerateResult';
 import {createMapFromAnswer} from './model/helper/map.helper';
+import {ExportOptions} from './model/ExportOptions';
 
 @Injectable()
 export class WorkflowsService {
@@ -21,11 +22,22 @@ export class WorkflowsService {
     return this.http.post<any>(url, data).pipe(map(result => WorkflowsService.toGenerateResult(result)));
   }
 
-  public downloadZip(cmContent: string, options: any) {
+  public downloadZip(cmContent: string, options: ExportOptions) {
     const url = environment.workflowsUrl + '/download';
     const headers: HttpHeaders = new HttpHeaders();
 
-    this.http.post(url, cmContent, {headers: headers, params: options, responseType: 'arraybuffer'}).subscribe(
+    this.http.post(url, cmContent, {
+      headers: headers,
+      params: {
+        yaml: options.yaml,
+        board: options.board,
+        pages: options.pages,
+        objects: options.objects,
+        class: options.class,
+        fxmls: options.fxmls,
+      },
+      responseType: 'arraybuffer'
+    }).subscribe(
       (res) => {
         const blob = new Blob([res], {type: 'application/zip'});
         const file = new File([blob], 'Workflows.zip', {type: 'application/zip'});
