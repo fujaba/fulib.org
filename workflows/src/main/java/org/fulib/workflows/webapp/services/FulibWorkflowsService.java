@@ -1,20 +1,19 @@
 package org.fulib.workflows.webapp.services;
 
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
-import org.fulib.workflows.generators.BoardGenerator;
 import org.fulib.workflows.webapp.model.GenerateResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class FulibWorkflowsService {
-    Logger logger = LoggerFactory.getLogger(FulibWorkflowsService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FulibWorkflowsService.class);
+
     WorkflowsGenService workflowsGenService = new WorkflowsGenService();
 
     public GenerateResult generate(String yamlData) throws Exception {
@@ -86,7 +85,7 @@ public class FulibWorkflowsService {
         } catch (
                 IOException ioe) {
             ioe.printStackTrace();
-            logger.error(ioe.getMessage());
+            LOGGER.error(ioe.getMessage());
         }
 
         return null;

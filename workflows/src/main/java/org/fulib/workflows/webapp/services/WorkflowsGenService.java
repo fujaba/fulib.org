@@ -42,25 +42,11 @@ public class WorkflowsGenService {
         try {
             // Generate everything
             GenerateResult generateResult = new GenerateResult();
-            BoardGenerator boardGenerator = new BoardGenerator();
-            boardGenerator.setWebGeneration(webGeneration);
+            BoardGenerator boardGenerator = new BoardGenerator().setWebGeneration(webGeneration).setGenDir(genDir.toString());
             boardGenerator.generateBoardFromString(yamlData);
 
-            // TODO Build proper generate Result
-            // create gen directories
-            Files.createDirectories(genDir);
+            // TODO Get urls to generated files and put it into generateResult
 
-            // create classDir and files
-            Files.createDirectories(classDir);
-
-            // create diagramsDir and files
-            Files.createDirectories(diagramsDir);
-
-            // create fxmlsDir and files
-            Files.createDirectories(fxmlsDir);
-
-            // create mockupsDir and files
-            Files.createDirectories(mockupsDir);
 
             return generateResult;
         } finally {
