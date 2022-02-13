@@ -1,4 +1,5 @@
 import {Component, Input} from '@angular/core';
+
 import {GenerateResult} from '../model/GenerateResult';
 import {environment} from '../../../environments/environment';
 
@@ -12,7 +13,7 @@ export class MockupViewerComponent {
   @Input() index?: number;
   @Input() currentDisplay!: 'pages' | 'objects' | 'class';
 
-  public currentIndex = 1;
+  public currentIndex = 0;
   private maxIndex!: number;
 
   constructor() {
@@ -35,7 +36,7 @@ export class MockupViewerComponent {
       return;
     }
 
-    if (this.currentIndex === 1) {
+    if (this.currentIndex === 0) {
       return;
     }
 
@@ -43,7 +44,7 @@ export class MockupViewerComponent {
   }
 
   setFirst() {
-    this.currentIndex = 1;
+    this.currentIndex = 0;
   }
 
   setLast() {
@@ -56,7 +57,6 @@ export class MockupViewerComponent {
     }
 
     const fileUrl = this.getCurrentIFrameContent();
-    console.log(fileUrl)
     return environment.workflowsUrl + '/workflows' + fileUrl;
   }
 

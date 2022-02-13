@@ -113,7 +113,7 @@ export class WorkflowsComponent implements OnInit {
   setIndexFromIframe(index: number, diagramType: 'pages' | 'objects' | 'class') {
     // It needs to be run in the NgZone because only then angular change detection gets a grip on the change
     this.zone.run(() => {
-      this.newPageIndex = index + 1; // +1 because map is 1 based and the generated fulibWorkflows is 0 based right now
+      this.newPageIndex = index;
       this.currentDisplay = diagramType;
     });
   }
