@@ -9,6 +9,7 @@ import {WorkflowsService} from './workflows.service';
 import {GenerateResult} from './model/GenerateResult';
 import {IOutputData, SplitComponent} from 'angular-split';
 import {workflowsSchema} from './model/helper/workflows.schema';
+import {environment} from '../../environments/environment';
 
 @Component({
   selector: 'app-workflows',
@@ -142,6 +143,13 @@ export class WorkflowsComponent implements OnInit {
 
   openDocs() {
     window.open('https://fujaba.github.io/fulibWorkflows/docs/definitions/', '_blank')
+  }
+
+  get url(): string {
+    if (!this.generateResult || !this.generateResult.board) {
+      return "";
+    }
+    return environment.workflowsUrl + '/workflows' + this.generateResult.board;
   }
 
   private evaluateErrorMessage(): string {

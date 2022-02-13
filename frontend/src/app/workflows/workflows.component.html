@@ -39,7 +39,7 @@
           (gutterClick)="splitGutterClick($event)">
           <as-split-area [size]="35">
             <div class="h-100">
-              <iframe *ngIf="generateResult" title="Boards" [srcdoc]="generateResult.board | safeHtml"
+              <iframe *ngIf="generateResult" title="Boards" [src]="url | safeResourceUrl"
                       class="w-100 h-100">
               </iframe>
               <div [hidden]="showIframeHider === false" class="iframe-hider"></div>
