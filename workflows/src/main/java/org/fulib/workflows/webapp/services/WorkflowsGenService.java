@@ -2,8 +2,6 @@ package org.fulib.workflows.webapp.services;
 
 import org.fulib.workflows.generators.BoardGenerator;
 import org.fulib.workflows.webapp.model.GenerateResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,10 +17,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class WorkflowsGenService {
-    // =============== Constants ===============
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(WorkflowsGenService.class);
-
     // =============== Fields ===============
     private final String tempDir = System.getProperty("java.io.tmpdir") + "/fulib.org/workflows/";
     private final ScheduledExecutorService deleter = Executors.newScheduledThreadPool(1);
