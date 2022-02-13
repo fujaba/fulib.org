@@ -67,7 +67,7 @@ public class WorkflowsGenService {
             }
 
             if (Files.exists(classDir)) {
-                String classDiagramUrl = "/" + tempDir.relativize(genDir) + "/classDiagram.svg";
+                String classDiagramUrl = "/" + tempDir.relativize(genDir) + "/class/classDiagram.svg";
                 generateResult.setClassDiagram(classDiagramUrl);
             }
 

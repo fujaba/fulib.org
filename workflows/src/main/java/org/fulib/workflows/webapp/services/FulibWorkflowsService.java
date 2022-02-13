@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -24,8 +26,6 @@ public class FulibWorkflowsService {
     public byte[] createZip(String yamlData, Map<String, String> queryParams) throws Exception {
         GenerateResult generateResult = workflowsGenService.run(yamlData, false);
 
-        // TODO Get the file content from the links instead of getBoard()
-
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
              ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream)) {
 
@@ -36,17 +36,19 @@ public class FulibWorkflowsService {
 
             // Board file
             if (queryParams.get("board").equals("true") && generateResult.getBoard() != null) {
-                createZipEntry(zipOutputStream, "board.html", generateResult.getBoard());
+                String board = Files.readString(Path.of(workflowsGenService.getTempDir() + generateResult.getBoard()));
+                createZipEntry(zipOutputStream, "Board.html", board);
             }
 
-            // Mockup Directory
+            // Page Directory
             if (queryParams.get("pages").equals("true") && generateResult.getNumberOfPages() > 0) {
-                zipOutputStream.putNextEntry(new ZipEntry("mockups/"));
+                zipOutputStream.putNextEntry(new ZipEntry("pages/"));
 
-                // Mockup files
-                for (int i = 1; i <= generateResult.getNumberOfPages(); i++) {
-                    String fileName = "mockups/" + i + "_mockup.html";
-                    createZipEntry(zipOutputStream, fileName, generateResult.getPages().get(i));
+                // Page files
+                for (int i = 0; i < generateResult.getNumberOfPages(); i++) {
+                    String fileName = "pages/" + i + "_page.html";
+                    String page = Files.readString(Path.of(workflowsGenService.getTempDir() + generateResult.getPages().get(i)));
+                    createZipEntry(zipOutputStream, fileName, page);
                 }
             }
 
@@ -55,15 +57,18 @@ public class FulibWorkflowsService {
                 zipOutputStream.putNextEntry(new ZipEntry("diagrams/"));
 
                 // Diagram files
-                for (int i = 1; i <= generateResult.getNumberOfDiagrams(); i++) {
+                for (int i = 0; i < generateResult.getNumberOfDiagrams(); i++) {
                     String fileName = "diagrams/" + i + "_diagram.svg";
-                    createZipEntry(zipOutputStream, fileName, generateResult.getDiagrams().get(i));
+                    String diagram = Files.readString(Path.of(workflowsGenService.getTempDir() + generateResult.getDiagrams().get(i)));
+                    createZipEntry(zipOutputStream, fileName, diagram);
                 }
             }
 
             // Class Directory
             if (queryParams.get("class").equals("true") && generateResult.getClassDiagram() != null) {
-                createZipEntry(zipOutputStream, "class/classdiagram.svg", generateResult.getClassDiagram());
+                zipOutputStream.putNextEntry(new ZipEntry("class/"));
+                String classDiagram = Files.readString(Path.of(workflowsGenService.getTempDir() + generateResult.getClassDiagram()));
+                createZipEntry(zipOutputStream, "class/classDiagram.svg", classDiagram);
             }
 
             // Fxml Directory
@@ -71,9 +76,10 @@ public class FulibWorkflowsService {
                 zipOutputStream.putNextEntry(new ZipEntry("fxmls/"));
 
                 // Diagram files
-                for (int i = 1; i <= generateResult.getNumberOfFxmls(); i++) {
+                for (int i = 0; i < generateResult.getNumberOfFxmls(); i++) {
                     String fileName = "fxmls/" + i + "_fxml.fxml";
-                    createZipEntry(zipOutputStream, fileName, generateResult.getFxmls().get(i));
+                    String fxml = Files.readString(Path.of(workflowsGenService.getTempDir() + generateResult.getFxmls().get(i)));
+                    createZipEntry(zipOutputStream, fileName, fxml);
                 }
             }
 
