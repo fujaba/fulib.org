@@ -1,5 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {GenerateResult} from '../model/GenerateResult';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-mockup-viewer',
@@ -15,40 +16,6 @@ export class MockupViewerComponent {
   private maxIndex!: number;
 
   constructor() {
-  }
-
-  getCurrentIFrameContent(): string {
-    if (!this.currentDisplay || !this.generateResult) {
-      return '';
-    }
-
-    let result;
-    switch (this.currentDisplay) {
-      case 'pages':
-        this.maxIndex = this.generateResult.numberOfPages;
-
-        if (this.maxIndex && this.currentIndex > this.maxIndex) {
-          this.currentIndex = this.maxIndex;
-        }
-
-        result = this.getCurrentContent(this.generateResult.pages);
-        break;
-      case 'objects':
-        this.maxIndex = this.generateResult.numberOfDiagrams;
-
-        if (this.maxIndex && this.currentIndex > this.maxIndex) {
-          this.currentIndex = this.maxIndex;
-        }
-
-        result = this.getCurrentContent(this.generateResult.diagrams);
-        break;
-      case 'class':
-        this.currentIndex = 1;
-        result = this.generateResult.classDiagram;
-        break;
-    }
-
-    return result;
   }
 
   next() {
@@ -81,6 +48,50 @@ export class MockupViewerComponent {
 
   setLast() {
     this.currentIndex = this.maxIndex;
+  }
+
+  get url(): string {
+    if (!this.generateResult) {
+      return '';
+    }
+
+    const fileUrl = this.getCurrentIFrameContent();
+    console.log(fileUrl)
+    return environment.workflowsUrl + '/workflows' + fileUrl;
+  }
+
+  private getCurrentIFrameContent(): string {
+    if (!this.currentDisplay || !this.generateResult) {
+      return '';
+    }
+
+    let result;
+    switch (this.currentDisplay) {
+      case 'pages':
+        this.maxIndex = this.generateResult.numberOfPages;
+
+        if (this.maxIndex && this.currentIndex > this.maxIndex) {
+          this.currentIndex = this.maxIndex;
+        }
+
+        result = this.getCurrentContent(this.generateResult.pages);
+        break;
+      case 'objects':
+        this.maxIndex = this.generateResult.numberOfDiagrams;
+
+        if (this.maxIndex && this.currentIndex > this.maxIndex) {
+          this.currentIndex = this.maxIndex;
+        }
+
+        result = this.getCurrentContent(this.generateResult.diagrams);
+        break;
+      case 'class':
+        this.currentIndex = 1;
+        result = this.generateResult.classDiagram;
+        break;
+    }
+
+    return result;
   }
 
   private getCurrentContent(generateMap: Map<number, string>): string {

@@ -40,7 +40,7 @@
   </div>
 
   <div class="h-100">
-    <iframe title="Mockups" [srcdoc]="getCurrentIFrameContent() | safeHtml"
+    <iframe title="Mockups" [src]="url | safeResourceUrl"
             height="100%" width="100%"></iframe>
   </div>
 </div>
