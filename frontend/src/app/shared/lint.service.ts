@@ -1,5 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Marker} from './model/marker';
+import * as Yaml from 'js-yaml';
+import {ValidateFunction} from 'ajv';
 
 @Injectable({providedIn: 'root'})
 export class LintService {
@@ -48,5 +50,45 @@ export class LintService {
       }
     }
     return result;
+  }
+
+  evaluateErrorMessage(validate: ValidateFunction): string {
+    const errors = validate.errors;
+
+    let result: string = 'Description: \n';
+
+    if (!errors) {
+      return result;
+    }
+
+    // Wrong Item Index
+    let index = errors[0].instancePath;
+
+    // Cleanup Index
+    index = index.replace("/", "")
+
+    result += 'Error at entry: ' + index + '\n';
+
+    // Evaluate correct error
+    for (const error of errors) {
+      if (error.keyword !== 'required') {
+        const elementReference = error.params.additionalProperty;
+
+        if (elementReference) {
+          result += 'Wrong element: "' + elementReference + '"\n';
+        }
+
+        result += error.message;
+        break;
+      }
+    }
+
+    return result;
+  }
+
+  lintYamlString(content: string, validate: ValidateFunction): boolean {
+    const yaml = Yaml.load(content);
+
+    return validate(yaml);
   }
 }

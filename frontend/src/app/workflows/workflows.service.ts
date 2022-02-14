@@ -36,7 +36,7 @@ export class WorkflowsService {
         class: options.class,
         fxmls: options.fxmls,
       },
-      responseType: 'arraybuffer'
+      responseType: 'arraybuffer',
     }).subscribe(
       (res) => {
         const blob = new Blob([res], {type: 'application/zip'});

@@ -1,8 +1,7 @@
 import {HttpClient} from '@angular/common/http';
 import {Component, NgZone, OnInit, ViewChild} from '@angular/core';
 
-import Ajv from 'ajv';
-import * as Yaml from 'js-yaml';
+import Ajv, {ValidateFunction} from 'ajv';
 import {ToastService} from '../toast.service';
 import {PrivacyService} from '../privacy.service';
 import {WorkflowsService} from './workflows.service';
@@ -10,6 +9,7 @@ import {GenerateResult} from './model/GenerateResult';
 import {IOutputData, SplitComponent} from 'angular-split';
 import {workflowsSchema} from './model/helper/workflows.schema';
 import {environment} from '../../environments/environment';
+import {LintService} from '../shared/lint.service';
 
 @Component({
   selector: 'app-workflows',
@@ -32,7 +32,7 @@ export class WorkflowsComponent implements OnInit {
   public currentDisplay: 'pages' | 'objects' | 'class' = 'pages';
 
   private ajv!: Ajv;
-  private validate!: any;
+  private validate!: ValidateFunction;
   public loading: boolean = false;
 
   constructor(
@@ -41,6 +41,7 @@ export class WorkflowsComponent implements OnInit {
     private fulibWorkflowsService: WorkflowsService,
     private privacyService: PrivacyService,
     private http: HttpClient,
+    private lintService: LintService,
   ) {
     // https://angular.io/api/core/NgZone
     const generateHandler = () => this.zone.run(() => this.generate());
@@ -51,6 +52,7 @@ export class WorkflowsComponent implements OnInit {
       extraKeys: {
         'Ctrl-Space': 'autocomplete',
         'Ctrl-S': generateHandler,
+        'Cmd-S': generateHandler,
       },
       autofocus: true,
       tabSize: 2,
@@ -84,10 +86,10 @@ export class WorkflowsComponent implements OnInit {
     // Replace tabs with two spaces for js-yaml and snakeyaml parser
     this.content = this.content.replace(/\t/g, '  ');
 
-    const validYaml = this.lintYamlString();
+    const validYaml = this.lintService.lintYamlString(this.content, this.validate);
 
     if (!validYaml) {
-      const errorMessage = this.evaluateErrorMessage();
+      const errorMessage = this.lintService.evaluateErrorMessage(this.validate);
       this.toastService.error('Lint Error', errorMessage);
       return;
     }
@@ -150,42 +152,6 @@ export class WorkflowsComponent implements OnInit {
       return "";
     }
     return environment.workflowsUrl + '/workflows' + this.generateResult.board;
-  }
-
-  private evaluateErrorMessage(): string {
-    const errors = this.validate.errors;
-
-    let result: string = 'Description: \n';
-
-    // Wrong Item Index
-    let index = errors[0].instancePath;
-
-    // Cleanup Index
-    index = index.replace("/", "")
-
-    result += 'Error at entry: ' + index + '\n';
-
-    // Evaluate correct error
-    for (const error of errors) {
-      if (error.keyword !== 'required') {
-        const elementReference = error.params.additionalProperty;
-
-        if (elementReference) {
-          result += 'Wrong element: "' + elementReference + '"\n';
-        }
-
-        result += error.message;
-        break;
-      }
-    }
-
-    return result;
-  }
-
-  private lintYamlString(): boolean {
-    const yaml = Yaml.load(this.content);
-
-    return this.validate(yaml);
   }
 
   private setExample(exampleName: string) {

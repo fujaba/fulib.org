@@ -68,7 +68,7 @@ export class MockupViewerComponent {
     let result;
     switch (this.currentDisplay) {
       case 'pages':
-        this.maxIndex = this.generateResult.numberOfPages;
+        this.maxIndex = this.generateResult.numberOfPages - 1;
 
         if (this.maxIndex && this.currentIndex > this.maxIndex) {
           this.currentIndex = this.maxIndex;
@@ -77,7 +77,7 @@ export class MockupViewerComponent {
         result = this.getCurrentContent(this.generateResult.pages);
         break;
       case 'objects':
-        this.maxIndex = this.generateResult.numberOfDiagrams;
+        this.maxIndex = this.generateResult.numberOfDiagrams - 1;
 
         if (this.maxIndex && this.currentIndex > this.maxIndex) {
           this.currentIndex = this.maxIndex;
@@ -86,7 +86,7 @@ export class MockupViewerComponent {
         result = this.getCurrentContent(this.generateResult.diagrams);
         break;
       case 'class':
-        this.currentIndex = 1;
+        this.currentIndex = 0;
         result = this.generateResult.classDiagram;
         break;
     }

@@ -28,7 +28,7 @@
               (dragEnd)="dragEndHandler()"
               (gutterClick)="splitGutterClick($event)">
       <as-split-area [size]="30">
-        <app-autotheme-codemirror [(content)]="content" [options]="codemirrorOptions"></app-autotheme-codemirror>
+        <app-autotheme-codemirror class="cm-h-100" [(content)]="content" [options]="codemirrorOptions"></app-autotheme-codemirror>
       </as-split-area>
 
       <as-split-area [size]="70">
