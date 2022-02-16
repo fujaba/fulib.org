@@ -76,19 +76,23 @@
           <div class="mr-auto">
             Time spent Evaluating
           </div>
-          <app-statistic-value label="Total" [value]="stats.time.evaluationTotal / 1000 | duration"></app-statistic-value>
-          <div class="border-right mx-3 align-self-stretch"></div>
           <app-statistic-value
-            [label]="weightedEvaluations ? 'Average per Point' : 'Average per Evaluation'"
+            [label]="weightedEvaluations ? '∅ per Point' : '∅ per Evaluation'"
             [value]="(weightedEvaluations ? stats.time.pointsAvg : stats.time.evaluationAvg) / 1000 | duration"
           ></app-statistic-value>
+          <div class="border-right mx-3 align-self-stretch"></div>
+          <app-statistic-value label="Spent" [value]="stats.time.evaluationTotal / 1000 | duration"></app-statistic-value>
+          <div class="border-right mx-3 align-self-stretch"></div>
+          <app-statistic-value label="of Total" [value]="(stats.time.evaluationTotal / (stats.time.codeSearchSavings + stats.time.evaluationTotal)) | percent:'0.0'"></app-statistic-value>
         </li>
         <li class="list-group-item d-flex align-items-center">
           <div class="mr-auto">
             Time saved by Code Search
             <i class="bi-info-circle" ngbTooltip="Approximately"></i>
           </div>
-          <app-statistic-value label="Total" [value]="stats.time.codeSearchSavings / 1000 | duration"></app-statistic-value>
+          <app-statistic-value label="Saved" [value]="stats.time.codeSearchSavings / 1000 | duration"></app-statistic-value>
+          <div class="border-right mx-3 align-self-stretch"></div>
+          <app-statistic-value label="of Total" [value]="(stats.time.codeSearchSavings / (stats.time.codeSearchSavings + stats.time.evaluationTotal)) | percent:'0.0'"></app-statistic-value>
         </li>
       </ul>
     </div>
