@@ -1,5 +1,5 @@
 import {Injectable, NotFoundException} from '@nestjs/common';
-import {Task} from '../assignment/assignment.schema';
+import {AssignmentDocument, Task} from '../assignment/assignment.schema';
 import {AssignmentService} from '../assignment/assignment.service';
 import {EvaluationService} from '../evaluation/evaluation.service';
 import {SolutionService} from '../solution/solution.service';
@@ -127,7 +127,7 @@ export class StatisticsService {
     }
 
     return {
-      solutions: await this.solutionStatistics(assignment),
+      solutions: await this.solutionStatistics(assignmentDoc),
       evaluations: evaluationStatistics,
       weightedEvaluations: weightedEvaluationStatistics,
       time: {
@@ -144,22 +144,33 @@ export class StatisticsService {
     return {codeSearch: 0, editedCodeSearch: 0, manual: 0, total: 0};
   }
 
-  private async solutionStatistics(assignment: string): Promise<SolutionStatistics> {
+  private async solutionStatistics(assignment: AssignmentDocument): Promise<SolutionStatistics> {
+    let passingMin = assignment.tasks.reduce((a, c) => c.points > 0 ? a + c.points : a, 0) / 2;
     let pointsTotal = 0;
     let graded = 0;
     let total = 0;
-    for await (const {points} of this.solutionService.model.find({assignment}).select('points')) {
+    let passed = 0;
+    for await (const {points} of this.solutionService.model.find({assignment: assignment.id}).select('points')) {
       total++;
-      if (points !== undefined) {
-        pointsTotal += points;
-        graded++;
+
+      if (points === undefined) {
+        continue;
       }
+
+      pointsTotal += points;
+      graded++;
+
+      if (points < passingMin) {
+        continue;
+      }
+      passed++;
     }
-    const evaluated = (await this.evaluationService.findUnique('solution', {assignment})).length;
+    const evaluated = (await this.evaluationService.findUnique('solution', {assignment: assignment.id})).length;
     return {
       total,
       evaluated,
       graded,
+      passed,
       pointsAvg: pointsTotal / graded,
     };
   }

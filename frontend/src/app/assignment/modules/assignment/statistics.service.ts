@@ -9,6 +9,7 @@ import {AssignmentService} from '../../services/assignment.service';
 export interface SolutionStatistics {
   evaluated: number;
   graded: number;
+  passed: number;
   pointsAvg: number;
   total: number;
 }
