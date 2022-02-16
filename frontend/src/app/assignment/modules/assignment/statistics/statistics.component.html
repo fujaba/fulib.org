@@ -72,7 +72,7 @@
         Time Tracking
       </h2>
       <ul class="list-group mb-3">
-        <li class="list-group-item d-flex align-items-center">
+        <li class="list-group-item d-flex align-items-center bg-progress-purple" [style.--percentage.%]="stats.time.evaluationTotal / (stats.time.codeSearchSavings + stats.time.evaluationTotal) * 100">
           <div class="mr-auto">
             Time spent Evaluating
           </div>
@@ -85,7 +85,7 @@
           <div class="border-right mx-3 align-self-stretch"></div>
           <app-statistic-value label="of Total" [value]="(stats.time.evaluationTotal / (stats.time.codeSearchSavings + stats.time.evaluationTotal)) | percent:'0.0'"></app-statistic-value>
         </li>
-        <li class="list-group-item d-flex align-items-center">
+        <li class="list-group-item d-flex align-items-center bg-progress-teal" [style.--percentage.%]="stats.time.codeSearchSavings / (stats.time.codeSearchSavings + stats.time.evaluationTotal) * 100">
           <div class="mr-auto">
             Time saved by Code Search
             <i class="bi-info-circle" ngbTooltip="Approximately"></i>
