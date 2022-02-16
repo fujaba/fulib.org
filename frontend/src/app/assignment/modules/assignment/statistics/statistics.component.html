@@ -88,7 +88,14 @@
         <li class="list-group-item d-flex align-items-center bg-progress-teal" [style.--percentage.%]="stats.time.codeSearchSavings / (stats.time.codeSearchSavings + stats.time.evaluationTotal) * 100">
           <div class="mr-auto">
             Time saved by Code Search
-            <i class="bi-info-circle" ngbTooltip="Approximately"></i>
+            <i
+              class="bi-info-circle"
+              ngbTooltip="Approximately. Click for more info."
+              ngbPopover="The time saved by Code Search is approximately calculated as a sum of each task's time savings.
+                The time taken to manually evaluate a task is multiplied by the number of automatic evaluations created by Code Search.
+                You can view the time savings for each task in the list below."
+              popoverTitle="Code Search Time Savings Explained"
+            ></i>
           </div>
           <app-statistic-value label="Saved" [value]="stats.time.codeSearchSavings / 1000 | duration"></app-statistic-value>
           <div class="border-right mx-3 align-self-stretch"></div>
