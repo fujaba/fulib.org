@@ -149,7 +149,7 @@ export const workflowsSchema =
                       "input": {
                         "type": "string"
                       },
-                      "fill": {
+                      "value": {
                         anyOf: [
                           {
                             "type": "string",
@@ -171,7 +171,7 @@ export const workflowsSchema =
                       "password": {
                         "type": "string"
                       },
-                      "fill": {
+                      "value": {
                         anyOf: [
                           {
                             "type": "string",

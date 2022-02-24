@@ -14,13 +14,13 @@
     - pageName: RegisterFilled
     - text: Please register yourself
     - input: E-Mail
-      fill: test@test.com
+      value: test@test.com
     - input: Username
-      fill: Carli
+      value: Carli
     - password: Password
-      fill: 1234
+      value: 1234
     - password: Repeat Password
-      fill: 1234
+      value: 1234
     - button: Register
       targetPage: Login
 
@@ -36,9 +36,9 @@
     - pageName: LoginFilled
     - text: Welcome back
     - input: Username/E-Mail
-      fill: Carli
+      value: Carli
     - password: Password
-      fill: 1234
+      value: 1234
     - button: Login
       targetPage: Overview1
 
@@ -62,9 +62,9 @@
     - pageName: AddPurchase1Filled
     - text: New Purchase
     - input: Item
-      fill: T-Shirt
+      value: T-Shirt
     - input: Amount
-      fill: 100
+      value: 100
     - button: Buy
       targetPage: Overview2
 
@@ -89,9 +89,9 @@
     - pageName: AddPurchase2Filled
     - text: New Purchase
     - input: Item
-      fill: Jeans
+      value: Jeans
     - input: Amount
-      fill: 50
+      value: 50
     - button: Buy
       targetPage: Overview3
 
