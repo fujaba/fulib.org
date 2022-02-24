@@ -53,16 +53,21 @@ export class MockupViewerComponent {
 
   get url(): string {
     if (!this.generateResult) {
-      return '';
+      return environment.workflowsUrl + '/fallback';
     }
 
     const fileUrl = this.getCurrentIFrameContent();
+
+    if (!fileUrl) {
+      return environment.workflowsUrl + '/fallback';
+    }
+
     return environment.workflowsUrl + '/workflows' + fileUrl;
   }
 
-  private getCurrentIFrameContent(): string {
+  private getCurrentIFrameContent(): string | null {
     if (!this.currentDisplay || !this.generateResult) {
-      return '';
+      return null;
     }
 
     let result;
@@ -94,9 +99,9 @@ export class MockupViewerComponent {
     return result;
   }
 
-  private getCurrentContent(generateMap: Map<number, string>): string {
+  private getCurrentContent(generateMap: Map<number, string>): string | null {
     if (!generateMap) {
-      return '<h1>Nothing generated yet to display</h1>'
+      return null;
     }
 
     if (this.index) {
@@ -107,7 +112,7 @@ export class MockupViewerComponent {
     const currentContent = generateMap.get(this.currentIndex);
 
     if (!currentContent) {
-      return '';
+      return null;
     }
 
     return currentContent;
