@@ -31,7 +31,7 @@ export class ConfigComponent implements OnInit {
       name: 'Local Project',
       description: 'Create a new local Project from the scenario and config. ' +
         'The Project will appear in the Projects tab and is stored in your browser. ' +
-        '<span class="badge badge-primary">New</span>',
+        '<span class="badge bg-primary">New</span>',
     },
     {
       id: 'persistent',
@@ -39,7 +39,7 @@ export class ConfigComponent implements OnInit {
       description: 'Create a new persistent Project from the scenario and config. ' +
         'The Project will appear in the Projects tab and is bound to your user account. ' +
         'You will be able to access it from anywhere just by logging in. ' +
-        '<span class="badge badge-primary">New</span>',
+        '<span class="badge bg-primary">New</span>',
     },
   ];
 

@@ -6,12 +6,12 @@
     <app-project-config-form [config]="config"></app-project-config-form>
     <hr/>
     <h4>Export Project</h4>
-    <div class="form">
-      <div class="form-group">
-        <label for="formatSelect">
+    <div class="mb-3">
+      <div class="mb-3">
+        <label class="form-label" for="formatSelect">
           Format
         </label>
-        <select class="custom-select" id="formatSelect" [(ngModel)]="format">
+        <select class="form-select" id="formatSelect" [(ngModel)]="format">
           <option *ngFor="let format of formats" [ngValue]="format.id">{{ format.name }}</option>
         </select>
       </div>
