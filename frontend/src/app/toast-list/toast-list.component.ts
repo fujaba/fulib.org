@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {ToastService} from '../toast.service';
 
 @Component({
@@ -6,14 +6,9 @@ import {ToastService} from '../toast.service';
   templateUrl: './toast-list.component.html',
   styleUrls: ['./toast-list.component.scss'],
 })
-export class ToastListComponent implements OnInit {
-
+export class ToastListComponent {
   constructor(
     public toastService: ToastService,
   ) {
   }
-
-  ngOnInit(): void {
-  }
-
 }

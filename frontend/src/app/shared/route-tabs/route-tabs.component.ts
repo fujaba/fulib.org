@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {ActivatedRoute, Route} from '@angular/router';
 
 @Component({
@@ -6,14 +6,11 @@ import {ActivatedRoute, Route} from '@angular/router';
   templateUrl: './route-tabs.component.html',
   styleUrls: ['./route-tabs.component.scss'],
 })
-export class RouteTabsComponent implements OnInit {
+export class RouteTabsComponent {
   @Input() routes: Route[];
 
   constructor(
     public route: ActivatedRoute,
   ) {
-  }
-
-  ngOnInit(): void {
   }
 }

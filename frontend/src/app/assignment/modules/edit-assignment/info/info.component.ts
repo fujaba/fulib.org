@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {UserService} from '../../../../user/user.service';
 import Assignment from '../../../model/assignment';
@@ -9,7 +9,7 @@ import {AssignmentContext} from '../../../services/assignment.context';
   templateUrl: './info.component.html',
   styleUrls: ['./info.component.scss'],
 })
-export class InfoComponent implements OnInit {
+export class InfoComponent implements OnInit, OnDestroy {
   assignment: Assignment;
 
   deadlineDate?: string;

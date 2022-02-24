@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {Observable, OperatorFunction} from 'rxjs';
 import {debounceTime, distinctUntilChanged, filter, switchMap} from 'rxjs/operators';
 import {User} from '../user';
@@ -9,7 +9,7 @@ import {UserService} from '../user.service';
   templateUrl: './user-typeahead.component.html',
   styleUrls: ['./user-typeahead.component.scss'],
 })
-export class UserTypeaheadComponent implements OnInit {
+export class UserTypeaheadComponent {
   @Input() label: string;
 
   @Input() user?: User;
@@ -28,8 +28,4 @@ export class UserTypeaheadComponent implements OnInit {
     private userService: UserService,
   ) {
   }
-
-  ngOnInit(): void {
-  }
-
 }
