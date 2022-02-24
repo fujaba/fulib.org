@@ -25,7 +25,8 @@
     </div>
 
     <div class="mr-3">
-      <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic" [(ngModel)]="currentDisplay">
+      <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic" [(ngModel)]="currentDisplay"
+           (ngModelChange)="evaluateUrl()">
         <label ngbButtonLabel class="btn-info btn-sm mt-1 mb-1">
           <input ngbButton type="radio" [value]="'pages'"> Pages
         </label>

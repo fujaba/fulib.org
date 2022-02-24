@@ -28,7 +28,7 @@ export class WorkflowsComponent implements OnInit {
   public examplesList = ['New Workflow', 'Data Modelling', 'Microservices', 'Pages'];
 
   public showIframeHider = false;
-  public newPageIndex!: number;
+  public newPageIndex: number = 0;
   public currentDisplay: 'pages' | 'objects' | 'class' = 'pages';
 
   private ajv!: Ajv;

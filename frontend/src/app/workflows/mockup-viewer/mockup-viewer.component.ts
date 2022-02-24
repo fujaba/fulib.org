@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnChanges, OnInit} from '@angular/core';
 
 import {GenerateResult} from '../model/GenerateResult';
 import {environment} from '../../../environments/environment';
@@ -8,15 +8,20 @@ import {environment} from '../../../environments/environment';
   templateUrl: './mockup-viewer.component.html',
   styleUrls: ['./mockup-viewer.component.scss']
 })
-export class MockupViewerComponent {
+export class MockupViewerComponent implements OnChanges {
   @Input() generateResult!: GenerateResult;
-  @Input() index?: number;
+  @Input() index: number;
   @Input() currentDisplay!: 'pages' | 'objects' | 'class';
 
-  public currentIndex = 0;
+  public url!: string;
+
   private maxIndex!: number;
 
   constructor() {
+  }
+
+  ngOnChanges(): void {
+    this.evaluateUrl();
   }
 
   next() {
@@ -24,11 +29,12 @@ export class MockupViewerComponent {
       return;
     }
 
-    if (this.currentIndex === this.maxIndex) {
+    if (this.index === this.maxIndex) {
       return;
     }
 
-    this.currentIndex += 1;
+    this.index += 1;
+    this.evaluateUrl();
   }
 
   previous() {
@@ -36,33 +42,38 @@ export class MockupViewerComponent {
       return;
     }
 
-    if (this.currentIndex === 0) {
+    if (this.index === 0) {
       return;
     }
 
-    this.currentIndex -= 1;
+    this.index -= 1;
+    this.evaluateUrl();
   }
 
   setFirst() {
-    this.currentIndex = 0;
+    this.index = 0;
+    this.evaluateUrl();
   }
 
   setLast() {
-    this.currentIndex = this.maxIndex;
+    this.index = this.maxIndex;
+    this.evaluateUrl();
   }
 
-  get url(): string {
+  evaluateUrl(): void {
     if (!this.generateResult) {
-      return environment.workflowsUrl + '/fallback';
+      this.url = environment.workflowsUrl + '/fallback';
+      return;
     }
 
     const fileUrl = this.getCurrentIFrameContent();
 
     if (!fileUrl) {
-      return environment.workflowsUrl + '/fallback';
+      this.url = environment.workflowsUrl + '/fallback';
+      return;
     }
 
-    return environment.workflowsUrl + '/workflows' + fileUrl;
+    this.url = environment.workflowsUrl + '/workflows' + fileUrl;
   }
 
   private getCurrentIFrameContent(): string | null {
@@ -75,8 +86,8 @@ export class MockupViewerComponent {
       case 'pages':
         this.maxIndex = this.generateResult.numberOfPages - 1;
 
-        if (this.maxIndex && this.currentIndex > this.maxIndex) {
-          this.currentIndex = this.maxIndex;
+        if (this.maxIndex && (this.index > this.maxIndex)) {
+          this.index = this.maxIndex;
         }
 
         result = this.getCurrentContent(this.generateResult.pages);
@@ -84,14 +95,14 @@ export class MockupViewerComponent {
       case 'objects':
         this.maxIndex = this.generateResult.numberOfDiagrams - 1;
 
-        if (this.maxIndex && this.currentIndex > this.maxIndex) {
-          this.currentIndex = this.maxIndex;
+        if (this.maxIndex && (this.index > this.maxIndex)) {
+          this.index = this.maxIndex;
         }
 
         result = this.getCurrentContent(this.generateResult.diagrams);
         break;
       case 'class':
-        this.currentIndex = 0;
+        this.index = 0;
         result = this.generateResult.classDiagram;
         break;
     }
@@ -104,12 +115,7 @@ export class MockupViewerComponent {
       return null;
     }
 
-    if (this.index) {
-      this.currentIndex = this.index;
-      this.index = undefined;
-    }
-
-    const currentContent = generateMap.get(this.currentIndex);
+    const currentContent = generateMap.get(this.index);
 
     if (!currentContent) {
       return null;
