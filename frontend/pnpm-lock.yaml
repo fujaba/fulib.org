@@ -50,7 +50,7 @@ specifiers:
   keycloak-angular: ^9.1.0
   keycloak-js: 15.1.0
   ng-bootstrap-darkmode: ^0.5.0
-  ng-terminal: ^4.0.1
+  ng-terminal: ^5.0.0-beta.2
   ngx-clipboard: ^15.0.1
   ngx-drag-drop: ^13.1.0-alpha.1
   protractor: ~7.0.0
@@ -86,7 +86,7 @@ dependencies:
   keycloak-angular: 9.1.0_176c3d9d6111b10f4c6a7b0b3e09238d
   keycloak-js: 15.1.0
   ng-bootstrap-darkmode: 0.5.0_4fcf17067784a3717479d8f2c5634aa0
-  ng-terminal: 4.0.1_916208d3fdf5898e77c73227fd357437
+  ng-terminal: 5.0.0-beta.2_916208d3fdf5898e77c73227fd357437
   ngx-clipboard: 15.0.1_916208d3fdf5898e77c73227fd357437
   ngx-drag-drop: 13.1.0-alpha.1_916208d3fdf5898e77c73227fd357437
   rxjs: 7.4.0
@@ -2781,13 +2781,13 @@ packages:
       tslib: 2.3.1
     dev: false
 
-  /angular-resizable-element/3.4.0_@angular+core@13.2.4:
-    resolution: {integrity: sha512-xL5a8FmghzrZmHPy7uwWz98m91gRXgAcdeCRYcK/nD7psXMTYNk5EPmHA0qZTDCIYljhT4h0OKWLvx56NQGfDA==}
+  /angular-resizable-element/5.0.0_@angular+core@13.2.4:
+    resolution: {integrity: sha512-GbV8myA2x8aUU8CK7siTi1QMjtilzQzIgClqUVpE/YM1WAp0/OnioBV12oLcOT24eEwP3zDqPTHL+D1Kv2rNAw==}
     peerDependencies:
-      '@angular/core': '>=6.0.0'
+      '@angular/core': '>=10.0.0'
     dependencies:
       '@angular/core': 13.2.4_rxjs@7.4.0+zone.js@0.11.4
-      tslib: 1.14.1
+      tslib: 2.3.1
     dev: false
 
   /angular-split/13.2.0_a1d0c198915c7a5f4ad6786571313a48:
@@ -6125,16 +6125,16 @@ packages:
       tslib: 2.3.1
     dev: false
 
-  /ng-terminal/4.0.1_916208d3fdf5898e77c73227fd357437:
-    resolution: {integrity: sha512-5nVRcft1TGNBlBDALnsRqaeMxVMJ82hZC3znAVuysKP7AJ/hrGu9MQkYbGPvHeFw+gtpurQRiLQ8NebnQCikWg==}
+  /ng-terminal/5.0.0-beta.2_916208d3fdf5898e77c73227fd357437:
+    resolution: {integrity: sha512-gHDrMiN8twpQD/o39/icFoABuewgWaDgSfXYFF43g7kRTak7qgIOk66nqVvwd7urzwRDFO/KOwCkq9QwBA0O3A==}
     peerDependencies:
-      '@angular/common': ^13.0.0 || ^12.0.0 || ^11.2.14 || ^10.0.0
-      '@angular/core': ^13.0.0 || ^12.0.0 || ^11.2.14 || ^10.0.0
+      '@angular/common': ^13.0.0 || ^12.0.0
+      '@angular/core': ^13.0.0 || ^12.0.0
     dependencies:
       '@angular/common': 13.2.4_@angular+core@13.2.4+rxjs@7.4.0
       '@angular/core': 13.2.4_rxjs@7.4.0+zone.js@0.11.4
       '@juggle/resize-observer': 3.3.1
-      angular-resizable-element: 3.4.0_@angular+core@13.2.4
+      angular-resizable-element: 5.0.0_@angular+core@13.2.4
       tslib: 2.3.1
       xterm: 4.17.0
       xterm-addon-fit: 0.5.0_xterm@4.17.0
@@ -8084,6 +8084,7 @@ packages:
 
   /tslib/1.14.1:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
+    dev: true
 
   /tslib/2.1.0:
     resolution: {integrity: sha512-hcVC3wYEziELGGmEEXue7D75zbwIIVUMWAVbHItGPx0ziyXxrOMQx4rQEVEV45Ut/1IotuEvwqPopzIOkDMf0A==}
