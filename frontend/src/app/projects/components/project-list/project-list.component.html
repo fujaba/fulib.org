@@ -1,7 +1,7 @@
 <div class="container">
   <h1 class="d-flex align-items-center">
     My Projects
-    <div class="btn-group ml-auto">
+    <div class="btn-group ms-auto">
       <a class="btn btn-success" routerLink="new/edit" [queryParams]="{local: currentUser ? null : true}">
         <i class="bi-folder-plus"></i>
         New
@@ -54,9 +54,9 @@
 
   <ul class="list-group">
     <li *ngFor="let project of projects" class="list-group-item">
-      <div class="media align-items-center">
+      <div class="d-flex align-items-center">
         <i class="{{ project.local ? 'bi-hdd' : 'bi-server' }} feature-icon" [ngbTooltip]="project.local ? 'Local' : 'Persistent'"></i>
-        <div class="media-body">
+        <div class="me-auto">
           <h3>
             {{project.name}}
           </h3>
@@ -67,7 +67,7 @@
             Created {{project.created | date:'medium'}}
           </small>
         </div>
-        <div class="btn-group ml-auto">
+        <div class="btn-group">
           <a class="btn btn-primary" [routerLink]="['/projects', project.id, {outlets: {panel: 'project', docs: 'home'}}]">
             Open
           </a>
