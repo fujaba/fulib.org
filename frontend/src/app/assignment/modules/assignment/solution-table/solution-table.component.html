@@ -31,7 +31,8 @@
           ngbDropdownItem
           role="check"
           (click)="setOption(option.key, item[0])"
-          [class.dropdown-item-checked]="options[option.key] === item[0]"
+          class="dropdown-item-check"
+          [class.checked]="options[option.key] === item[0]"
         >
           {{ item[1] }}
         </button>

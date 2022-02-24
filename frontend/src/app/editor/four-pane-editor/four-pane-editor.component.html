@@ -142,7 +142,8 @@
         <button *ngFor="let panel of items"
                 ngbDropdownItem
                 (click)="setPanelClosed(panel.id, !panels[panel.id].closed)"
-                [class.dropdown-item-checked]="!panels[panel.id].closed"
+                class="dropdown-item-check"
+                [class.checked]="!panels[panel.id].closed"
         >
           {{panel.title}}
         </button>
@@ -165,7 +166,7 @@
         <div class="btn-group" ngbDropdown role="group" aria-label="Compile and Run Options">
           <button class="btn btn-outline-primary dropdown-toggle-split" ngbDropdownToggle></button>
           <div class="dropdown-menu" ngbDropdownMenu>
-            <button ngbDropdownItem (click)="autoSubmit = !autoSubmit" [class.dropdown-item-checked]="autoSubmit">
+            <button ngbDropdownItem (click)="autoSubmit = !autoSubmit" class="dropdown-item-check" [class.checked]="autoSubmit">
               Automatically Compile and Run
               <br/>
               when the scenario changes

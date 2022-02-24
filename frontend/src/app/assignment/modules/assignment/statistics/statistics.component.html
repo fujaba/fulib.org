@@ -116,8 +116,8 @@
         <button
           *ngFor="let taskProp of taskProps | keyvalue"
           ngbDropdownItem
-          class="d-flex align-items-center"
-          [class.dropdown-item-checked]="visibleProps.has($any(taskProp.key))"
+          class="d-flex align-items-center dropdown-item-check"
+          [class.checked]="visibleProps.has($any(taskProp.key))"
           (click)="toggleVisibility($any(taskProp.key))"
         >
           <div class="mr-auto">
