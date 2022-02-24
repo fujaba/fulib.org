@@ -8,7 +8,7 @@
         <li *ngIf="changelogs[repo]" [ngbNavItem]="repo">
           <a ngbNavLink>
             {{repo}}
-            <span class="badge badge-secondary">
+            <span class="badge bg-secondary">
               <ng-container *ngIf="lastUsedVersions && lastUsedVersions[repo] !== currentVersions[repo]">
                 v{{lastUsedVersions[repo]}} &rarr;
               </ng-container>
@@ -19,7 +19,7 @@
             <details *ngFor="let release of changelogs[repo]" (toggle)="render(repo, release)">
               <summary class="h4">
                 {{ release.name }}
-                <span class="badge badge-secondary">
+                <span class="badge bg-secondary">
                   {{ release.tag_name }}
                 </span>
                 <span class="text-muted" [ngbTooltip]="release.created_at | date:'medium'">
