@@ -85,7 +85,7 @@ export class AssignmentService {
       token,
       createdBy: userId,
     });
-    created && this.emit('created', created._id, created);
+    created && this.emit('created', created.id, created);
     return created;
   }
 
