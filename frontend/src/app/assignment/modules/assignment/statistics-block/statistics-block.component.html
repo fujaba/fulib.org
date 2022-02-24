@@ -1,4 +1,12 @@
 <ul class="list-group mb-3">
+  <li class="list-group-item d-flex align-items-center bg-progress-purple" [style.--percentage.%]="stats.manual / stats.total * 100">
+    <div class="mr-auto">
+      Manually Added
+    </div>
+    <app-statistic-value [value]="stats.manual" [label]="label"></app-statistic-value>
+    <div class="border-right mx-3 align-self-stretch"></div>
+    <app-statistic-value [value]="(stats.manual / stats.total) | percent:'0.0'" label="of All"></app-statistic-value>
+  </li>
   <li class="list-group-item d-flex align-items-center bg-progress-teal" [style.--percentage.%]="stats.codeSearch / stats.total * 100">
     <div class="mr-auto">
       Automatically Found by Code Search
@@ -14,14 +22,6 @@
     <app-statistic-value [value]="stats.editedCodeSearch" [label]="label"></app-statistic-value>
     <div class="border-right mx-3 align-self-stretch"></div>
     <app-statistic-value [value]="(stats.editedCodeSearch / stats.total) | percent:'0.0'" label="of All"></app-statistic-value>
-  </li>
-  <li class="list-group-item d-flex align-items-center bg-progress-purple" [style.--percentage.%]="stats.manual / stats.total * 100">
-    <div class="mr-auto">
-      Manually Added
-    </div>
-    <app-statistic-value [value]="stats.manual" [label]="label"></app-statistic-value>
-    <div class="border-right mx-3 align-self-stretch"></div>
-    <app-statistic-value [value]="(stats.manual / stats.total) | percent:'0.0'" label="of All"></app-statistic-value>
   </li>
   <div class="my-1"></div>
   <li class="list-group-item d-flex align-items-center">

@@ -1,6 +1,7 @@
 export class SolutionStatistics {
   evaluated: number;
   graded: number;
+  passed: number;
   total: number;
   pointsAvg: number;
 }

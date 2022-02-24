@@ -1,6 +1,5 @@
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParameterCodec, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {Params} from '@angular/router';
 
 import {saveAs} from 'file-saver';
 import {forkJoin, Observable, of} from 'rxjs';
@@ -15,6 +14,13 @@ import Assignment, {CreateAssignmentDto, UpdateAssignmentDto} from '../model/ass
 import {CheckAssignment, CheckResult} from '../model/check';
 import Course from '../model/course';
 import {SearchResult, SearchSummary} from '../model/search-result';
+
+const plusEncoder: HttpParameterCodec = {
+  encodeKey: encodeURIComponent,
+  encodeValue: encodeURIComponent,
+  decodeKey: decodeURIComponent,
+  decodeValue: decodeURIComponent,
+};
 
 @Injectable({
   providedIn: 'root',
@@ -196,8 +202,8 @@ export class AssignmentService {
 
   search(id: string, q: string, context = 2, glob?: string): Observable<SearchResult[]> {
     const headers = this.getHeaders(this.getToken(id));
-    const params: Params = {q, context};
-    glob && (params.glob = glob);
+    let params = new HttpParams({encoder: plusEncoder, fromObject: {q, context}});
+    glob && (params = params.set('glob', glob));
     return this.http.get<SearchResult[]>(`${environment.assignmentsApiUrl}/assignments/${id}/search`, {
       params,
       headers,
@@ -206,8 +212,8 @@ export class AssignmentService {
 
   searchSummary(id: string, q: string, glob?: string): Observable<SearchSummary> {
     const headers = this.getHeaders(this.getToken(id));
-    const params: Params = {q};
-    glob && (params.glob = glob);
+    let params = new HttpParams({encoder: plusEncoder, fromObject: {q}});
+    glob && (params = params.set('glob', glob));
     return this.http.get<SearchSummary>(`${environment.assignmentsApiUrl}/assignments/${id}/search/summary`, {
       params,
       headers,
