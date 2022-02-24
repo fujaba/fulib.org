@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output, TemplateRef} from '@angular/core';
+import {Component, EventEmitter, Input, Output, TemplateRef} from '@angular/core';
 import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -6,7 +6,7 @@ import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
   templateUrl: './tabs.component.html',
   styleUrls: ['./tabs.component.scss'],
 })
-export class TabsComponent<E> implements OnInit {
+export class TabsComponent<E> {
   @Input() header: TemplateRef<any>;
   @Input() content: TemplateRef<any>;
   @Input() fallback: TemplateRef<any> | null = null;
@@ -17,12 +17,6 @@ export class TabsComponent<E> implements OnInit {
 
   @Input() current?: E;
   @Output() currentChange = new EventEmitter<E | undefined>();
-
-  constructor() {
-  }
-
-  ngOnInit() {
-  }
 
   private setCurrent(current: E | undefined) {
     this.current = current;

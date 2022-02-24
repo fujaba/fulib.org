@@ -1,7 +1,7 @@
 <div class="form-group">
   <label for="pointsInput">Points</label>
   <div class="input-group">
-    <input type="number" class="form-control" id="pointsInput" [min]="min ?? ''" [max]="max ?? ''"
+    <input type="number" class="form-control" id="pointsInput" [min]="min" [max]="max"
            [(ngModel)]="dto.points">
     <div class="input-group-append">
       <button class="btn btn-outline-secondary text-danger" ngbTooltip="Keyboard Shortcut: Ctrl--"

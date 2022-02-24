@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {of, OperatorFunction} from 'rxjs';
 import {debounceTime, distinctUntilChanged, switchMap} from 'rxjs/operators';
@@ -12,7 +12,7 @@ import {SearchService} from '../../services/search.service';
   templateUrl: './search-everywhere.component.html',
   styleUrls: ['./search-everywhere.component.scss'],
 })
-export class SearchEverywhereComponent implements OnInit {
+export class SearchEverywhereComponent {
   search: OperatorFunction<string, SearchResult[]> = (text$) => text$.pipe(
     debounceTime(200),
     distinctUntilChanged(),
@@ -30,9 +30,6 @@ export class SearchEverywhereComponent implements OnInit {
     private projectManager: ProjectManager,
     private fileService: FileService,
   ) {
-  }
-
-  ngOnInit(): void {
   }
 
   open(searchResult: SearchResult) {
