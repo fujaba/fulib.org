@@ -1,6 +1,6 @@
 @import "~bootstrap/scss/bootstrap";
 @import "~bootstrap-icons/font/bootstrap-icons";
-@import "~bootstrap-darkmode/scss/darktheme";
+@import "./node_modules/bootstrap-darkmode/scss/darktheme";
 
 @import "~codemirror/lib/codemirror";
 @import "~codemirror/theme/idea";
