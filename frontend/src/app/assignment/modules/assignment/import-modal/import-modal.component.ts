@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ModalComponent} from '../../../../shared/modal/modal.component';
 import {ToastService} from '../../../../toast.service';
@@ -9,7 +9,7 @@ import {SolutionService} from '../../../services/solution.service';
   templateUrl: './import-modal.component.html',
   styleUrls: ['./import-modal.component.scss'],
 })
-export class ImportModalComponent implements OnInit {
+export class ImportModalComponent {
   mode = 'github';
   importing = false;
   files: File[] = [];
@@ -19,9 +19,6 @@ export class ImportModalComponent implements OnInit {
     private toastService: ToastService,
     public route: ActivatedRoute,
   ) {
-  }
-
-  ngOnInit(): void {
   }
 
   import(modal: ModalComponent) {

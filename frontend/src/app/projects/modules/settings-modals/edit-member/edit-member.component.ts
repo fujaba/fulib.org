@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {User} from '../../../../user/user';
 import {MemberService} from '../../../services/member.service';
@@ -8,16 +8,13 @@ import {MemberService} from '../../../services/member.service';
   templateUrl: './edit-member.component.html',
   styleUrls: ['./edit-member.component.scss'],
 })
-export class EditMemberComponent implements OnInit {
+export class EditMemberComponent {
   user?: User;
 
   constructor(
     public route: ActivatedRoute,
     private memberService: MemberService,
   ) {
-  }
-
-  ngOnInit(): void {
   }
 
   addMember() {

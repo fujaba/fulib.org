@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ProjectManager} from '../../services/project.manager';
 
@@ -7,15 +7,12 @@ import {ProjectManager} from '../../services/project.manager';
   templateUrl: './run-anything.component.html',
   styleUrls: ['./run-anything.component.scss'],
 })
-export class RunAnythingComponent implements OnInit {
+export class RunAnythingComponent {
 
   constructor(
     public route: ActivatedRoute,
     private projectManager: ProjectManager,
   ) {
-  }
-
-  ngOnInit(): void {
   }
 
   run(value: string) {
