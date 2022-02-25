@@ -1,24 +1,22 @@
-<div class="form-inline p-3 d-flex position-sticky bg-light bg-darkmode-dark" style="top: 3.5rem; z-index: 1">
-  <label for="searchInput" class="mr-sm-2">
+<div class="p-3 d-flex align-items-center position-sticky bg-light bg-darkmode-dark" style="top: 3.5rem; z-index: 1">
+  <label for="searchInput" class="me-sm-2">
     Search
-    <a [ngbPopover]="searchHelp" popoverTitle="Search Help" placement="bottom-left">
-      <i class="bi-question-circle" ngbTooltip="View Search Help"></i>
-    </a>
   </label>
-  <input type="search" class="form-control mr-sm-2 flex-grow-1" id="searchInput"
+  <i class="bi-question-circle me-sm-2" ngbTooltip="View Search Help" [ngbPopover]="searchHelp" popoverTitle="Search Help" placement="bottom-left">
+  </i>
+  <input type="search" class="form-control me-sm-2 flex-grow-1" id="searchInput"
          placeholder="Name, Student ID, E-Mail, GitHub Username, Assignee"
          [ngModel]="search$.value" (ngModelChange)="search$.next($event)"
          [ngbTypeahead]="typeahead" [resultFormatter]="formatTypeahead">
-  <div style="width: 8rem">
+  <div style="width: 10rem">
     {{ solutions.length }} Solutions
-    <div *ngIf="loading" class="spinner-border spinner-border-sm" role="status">
-      <span class="sr-only">Loading...</span>
+    <div *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-label="Loading...">
     </div>
   </div>
   <div ngbDropdown class="d-inline-block">
     <button class="btn btn-outline-secondary" id="optionsDropdown" ngbDropdownToggle>
       <i class="bi-gear"></i>
-      <span class="sr-only">Options</span>
+      <span class="visually-hidden">Options</span>
     </button>
     <div ngbDropdownMenu aria-labelledby="optionsDropdown">
       <ng-container *ngFor="let option of optionItems!; let first=first">
@@ -72,16 +70,16 @@
     </th>
     <ng-template #pointsPopover>
       <div>
-        <span class="badge badge-primary">{{ totalPoints }} / {{ totalPoints }}</span> - Graded
+        <span class="badge bg-primary">{{ totalPoints }} / {{ totalPoints }}</span> - Graded
       </div>
       <div>
-        <span class="badge badge-warning">? / {{ totalPoints }}</span> - Partially Evaluated manually
+        <span class="badge bg-warning">? / {{ totalPoints }}</span> - Partially Evaluated manually
       </div>
       <div>
-        <span class="badge badge-info">? / {{ totalPoints }}</span> - Partially Evaluated by Code Search
+        <span class="badge bg-info">? / {{ totalPoints }}</span> - Partially Evaluated by Code Search
       </div>
       <div>
-        <span class="badge badge-secondary">? / {{ totalPoints }}</span> - Not Evaluated
+        <span class="badge bg-secondary">? / {{ totalPoints }}</span> - Not Evaluated
       </div>
     </ng-template>
     <th>Assignee</th>
@@ -110,7 +108,7 @@
     </td>
     <td>
       <span
-        class="badge badge-pill badge-{{
+        class="badge bg-{{
           solution.points !== undefined ? 'primary'
           : evaluated[solution._id!] === true ? 'warning'
           : evaluated[solution._id!] === false ? 'info'
@@ -132,7 +130,7 @@
     </td>
     <td>
       <a
-        class="btn btn-primary mr-1 bi-eye-fill"
+        class="btn btn-primary me-1 bi-eye-fill"
         routerLink="/assignments/{{assignment?._id}}/solutions/{{solution._id}}"
         queryParamsHandling="merge"
         ngbTooltip="View Solution"
@@ -140,7 +138,7 @@
       ></a>
       <div
         *ngIf="assignment?.classroom?.org && assignment?.classroom?.prefix && solution.author.github"
-        class="btn-group mr-1"
+        class="btn-group me-1"
       >
         <a
           class="btn btn-secondary bi-github"
@@ -157,7 +155,7 @@
         ></a>
       </div>
       <a
-        class="btn btn-primary mr-1 bi-check-circle"
+        class="btn btn-primary me-1 bi-check-circle"
         ngbTooltip="Submit Feedback"
         [routerLink]="['../submit', solution._id]"
         queryParamsHandling="preserve"
