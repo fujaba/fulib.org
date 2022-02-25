@@ -1,8 +1,8 @@
 <div class="row">
   <div class="col-md-6">
-    <div class="form">
-      <div class="form-group">
-        <label for="solutionInput">
+    <div class="mb-3">
+      <div class="mb-3">
+        <label class="form-label" for="solutionInput">
           Sample Solution
         </label>
         <app-scenario-codemirror
@@ -12,19 +12,17 @@
           [markers]="markers"
           (save)="check()"
         ></app-scenario-codemirror>
-        <small class="text-muted">
+        <div class="form-text">
           You can provide a sample solution to ensure your assignment is solvable.
           Students cannot see this.
           <br/>
           {{ status }}
-        </small>
+        </div>
       </div>
     </div>
   </div>
   <div class="col-md-6">
-    <label>
-      Tasks
-    </label>
+    Tasks
     <app-task-list [tasks]="assignment.tasks" [evaluations]="evaluations" [points]="points"></app-task-list>
   </div>
 </div>
