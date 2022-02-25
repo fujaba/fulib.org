@@ -7,11 +7,9 @@
   </p>
   <div class="input-group">
     <input #linkInput type="text" class="form-control" readonly [value]="origin + '/assignments/' + id">
-    <div class="input-group-append" *ngxClipboardIfSupported>
-      <button type="button" class="btn btn-outline-secondary" [ngxClipboard]="linkInput">
-        Copy
-      </button>
-    </div>
+    <button *ngxClipboardIfSupported type="button" class="btn btn-outline-secondary" [ngxClipboard]="linkInput">
+      Copy
+    </button>
   </div>
   <hr/>
   <div class="alert alert-warning">
@@ -30,11 +28,9 @@
   </p>
   <div class="input-group">
     <input #tokenInput type="text" class="form-control text-monospace" readonly [value]="token">
-    <div class="input-group-append" *ngxClipboardIfSupported>
-      <button type="button" class="btn btn-outline-secondary" [ngxClipboard]="tokenInput">
-        Copy
-      </button>
-    </div>
+    <button *ngxClipboardIfSupported type="button" class="btn btn-outline-secondary" [ngxClipboard]="tokenInput">
+      Copy
+    </button>
   </div>
   <hr/>
   <h5>
@@ -46,11 +42,9 @@
   <div class="input-group">
     <input #taLinkInput type="text" class="form-control" readonly
            [value]="origin + '/assignments/' + id + '/solutions?atok=' + token">
-    <div class="input-group-append" *ngxClipboardIfSupported>
-      <button type="button" class="btn btn-outline-secondary" [ngxClipboard]="taLinkInput">
-        Copy
-      </button>
-    </div>
+    <button *ngxClipboardIfSupported type="button" class="btn btn-outline-secondary" [ngxClipboard]="taLinkInput">
+      Copy
+    </button>
   </div>
   <hr/>
   <h5>
