@@ -10,16 +10,16 @@
     .
     Code will be indexed when importing new solutions.
   </div>
-  <div class="form">
-    <div class="form-group">
-      <label for="searchArea">Search for Code Snippet</label>
+  <div class="mb-3">
+    <div class="mb-3">
+      <label class="form-label" for="searchArea">Search for Code Snippet</label>
       <textarea class="form-control text-monospace" id="searchArea"
                 [ngModel]="search$.value" (ngModelChange)="search$.next($event)"
                 [disabled]="!assignment?.classroom?.codeSearch || syncSelection$.value"
       ></textarea>
     </div>
-    <div class="form-group">
-      <label for="globInput">Filename Glob</label>
+    <div class="mb-3">
+      <label class="form-label" for="globInput">Filename Glob</label>
       <input type="text" class="form-control" id="globInput" [ngModel]="glob$.value"
              (ngModelChange)="glob$.next($event)">
     </div>
@@ -31,8 +31,8 @@
       >
       <label class="form-check-label" for="syncCheck">Sync with Selection</label>
     </div>
-    <div class="form-group" *ngIf="syncSelection$.value">
-      <label for="authorInput">Author</label>
+    <div class="mb-3" *ngIf="syncSelection$.value">
+      <label class="form-label" for="authorInput">Author</label>
       <input type="text" class="form-control" id="authorInput" [(ngModel)]="author">
     </div>
   </div>
