@@ -1,10 +1,13 @@
 import {Injectable} from '@angular/core';
 import {Marker} from './model/marker';
 import * as Yaml from 'js-yaml';
-import {ValidateFunction} from 'ajv';
+import Ajv, {ValidateFunction} from 'ajv';
+import {workflowsSchema} from '../workflows/model/helper/workflows.schema';
 
 @Injectable({providedIn: 'root'})
 export class LintService {
+  private ajv!: Ajv;
+  private validate!: ValidateFunction;
 
   lint(output: string): Marker[] {
     const result: Marker[] = [];
@@ -52,8 +55,14 @@ export class LintService {
     return result;
   }
 
-  evaluateErrorMessage(validate: ValidateFunction): string {
-    const errors = validate.errors;
+  lintYamlString(content: string): boolean {
+    this.ajv = new Ajv();
+    this.validate = this.ajv.compile(workflowsSchema);
+    return this.validate(Yaml.load(content));
+  }
+
+  evaluateErrorMessage(): string {
+    const errors = this.validate.errors;
 
     let result: string = 'Description: \n';
 
@@ -84,11 +93,5 @@ export class LintService {
     }
 
     return result;
-  }
-
-  lintYamlString(content: string, validate: ValidateFunction): boolean {
-    const yaml = Yaml.load(content);
-
-    return validate(yaml);
   }
 }

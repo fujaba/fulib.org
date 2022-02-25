@@ -1,15 +1,13 @@
 import {HttpClient} from '@angular/common/http';
 import {Component, HostListener, NgZone, OnInit, ViewChild} from '@angular/core';
 
-import Ajv, {ValidateFunction} from 'ajv';
 import {ToastService} from '../toast.service';
 import {PrivacyService} from '../privacy.service';
+import {LintService} from '../shared/lint.service';
 import {WorkflowsService} from './workflows.service';
 import {GenerateResult} from './model/GenerateResult';
 import {IOutputData, SplitComponent} from 'angular-split';
-import {workflowsSchema} from './model/helper/workflows.schema';
 import {environment} from '../../environments/environment';
-import {LintService} from '../shared/lint.service';
 
 @Component({
   selector: 'app-workflows',
@@ -31,8 +29,6 @@ export class WorkflowsComponent implements OnInit {
   public newPageIndex: number = 0;
   public currentDisplay: 'pages' | 'objects' | 'class' = 'pages';
 
-  private ajv!: Ajv;
-  private validate!: ValidateFunction;
   public loading: boolean = false;
 
   constructor(
@@ -61,8 +57,6 @@ export class WorkflowsComponent implements OnInit {
 
   ngOnInit() {
     this.setExample(this.examplesList[0]);
-    this.ajv = new Ajv();
-    this.validate = this.ajv.compile(workflowsSchema);
   }
 
   changeExampleContent(index: number) {
@@ -83,10 +77,10 @@ export class WorkflowsComponent implements OnInit {
     // Replace tabs with two spaces for js-yaml and snakeyaml parser
     this.content = this.content.replace(/\t/g, '  ');
 
-    const validYaml = this.lintService.lintYamlString(this.content, this.validate);
+    const validYaml = this.lintService.lintYamlString(this.content);
 
     if (!validYaml) {
-      const errorMessage = this.lintService.evaluateErrorMessage(this.validate);
+      const errorMessage = this.lintService.evaluateErrorMessage();
       this.toastService.error('Lint Error', errorMessage);
       return;
     }
@@ -100,28 +94,22 @@ export class WorkflowsComponent implements OnInit {
       },
       (error: any) => {
         this.loading = false;
-
-        let errorMessage = error.error.status + '\n';
-        errorMessage += error.error.message;
-
-        this.toastService.error('Parse Error', errorMessage);
+        this.toastService.error('Parse Error', error.error.status + '\n' + error.error.message);
       }
     );
   }
 
   @HostListener('window:message', ['$event'])
   handleGlobalMessages(event: MessageEvent) {
-    const messageData = JSON.parse(event.data);
-    // It needs to be run in the NgZone because only then angular change detection gets a grip on the change
-    this.zone.run(() => {
-      this.newPageIndex = messageData.index;
-      this.currentDisplay = messageData.diagramType;
-    });
+    if (event.data.type !== 'setIndexFromIframe' && event.data.type !== 'changeFrameWithToast') {
+      return;
+    }
 
-    if (messageData.type === 'changeFrameWithToast') {
-      this.zone.run(() => {
-        this.toastService.success('Page Action', messageData.toastContent);
-      });
+    this.newPageIndex = event.data.index;
+    this.currentDisplay = event.data.diagramType;
+
+    if (event.data.type === 'changeFrameWithToast') {
+      this.toastService.success('Page Action', event.data.toastContent);
     }
   }
 
@@ -141,10 +129,6 @@ export class WorkflowsComponent implements OnInit {
     this.split.notify('end', gutterNum)
   }
 
-  openDocs() {
-    window.open('https://fujaba.github.io/fulibWorkflows/docs/definitions/', '_blank')
-  }
-
   get url(): string {
     if (!this.generateResult || !this.generateResult.board) {
       return "";
@@ -154,13 +138,11 @@ export class WorkflowsComponent implements OnInit {
 
   private setExample(exampleName: string) {
     const url = `/assets/examples/workflows/${exampleName.replace(' ', '')}.es.yaml`;
-    this.http.get(url, {responseType: 'text'}).subscribe((value => {
-      if (value) {
+    this.http.get(url, {responseType: 'text'}).subscribe(
+      (value) => {
         this.content = value;
         this.generate();
-      } else {
-        this.toastService.warn('Warning', 'Unknown Example.');
-      }
-    }));
+      },
+      () => this.toastService.warn('Warning', 'Unknown Example.'));
   }
 }
