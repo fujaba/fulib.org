@@ -3,7 +3,7 @@
     Import Solutions
   </ng-container>
   <ng-container modal-body>
-    <ul ngbNav #nav="ngbNav" [(activeId)]="mode" class="nav-tabs mx-n3 px-3 mb-3">
+    <ul ngbNav #nav="ngbNav" [(activeId)]="mode" class="nav-tabs mb-3">
       <li ngbNavItem="github">
         <a ngbNavLink>
           GitHub
@@ -36,12 +36,7 @@
               Anything else, with the file name without extension becoming the student name.
             </li>
           </ul>
-          <div class="custom-file">
-            <input type="file" class="custom-file-input" id="files" multiple accept="application/zip" #input (change)="setFiles(input.files!)">
-            <label class="custom-file-label" for="files">
-              {{ files.length ? files.length + ' files' : 'Choose files' }}
-            </label>
-          </div>
+          <input type="file" class="form-control" id="files" multiple accept="application/zip" #input (change)="setFiles(input.files!)">
         </ng-template>
       </li>
     </ul>
