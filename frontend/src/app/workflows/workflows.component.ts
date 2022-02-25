@@ -1,5 +1,5 @@
 import {HttpClient} from '@angular/common/http';
-import {Component, NgZone, OnInit, ViewChild} from '@angular/core';
+import {Component, HostListener, NgZone, OnInit, ViewChild} from '@angular/core';
 
 import Ajv, {ValidateFunction} from 'ajv';
 import {ToastService} from '../toast.service';
@@ -57,9 +57,6 @@ export class WorkflowsComponent implements OnInit {
       autofocus: true,
       tabSize: 2,
     };
-    // https://stackoverflow.com/questions/41616112/calling-components-function-from-iframe
-    window.__fulib_org_setIndexFromIframe = this.setIndexFromIframe.bind(this);
-    window.__fulib_org_changeFrameWithToast = this.changeFrameWithToast.bind(this);
   }
 
   ngOnInit() {
@@ -112,19 +109,20 @@ export class WorkflowsComponent implements OnInit {
     );
   }
 
-  setIndexFromIframe(index: number, diagramType: 'pages' | 'objects' | 'class') {
+  @HostListener('window:message', ['$event'])
+  handleGlobalMessages(event: MessageEvent) {
+    const messageData = JSON.parse(event.data);
     // It needs to be run in the NgZone because only then angular change detection gets a grip on the change
     this.zone.run(() => {
-      this.newPageIndex = index;
-      this.currentDisplay = diagramType;
+      this.newPageIndex = messageData.index;
+      this.currentDisplay = messageData.diagramType;
     });
-  }
 
-  changeFrameWithToast(toastContent: string, index: number) {
-    this.setIndexFromIframe(index, 'pages');
-    this.zone.run(() => {
-      this.toastService.success('Page Action', toastContent);
-    });
+    if (messageData.type === 'changeFrameWithToast') {
+      this.zone.run(() => {
+        this.toastService.success('Page Action', messageData.toastContent);
+      });
+    }
   }
 
   // Source: https://github.com/angular-split/angular-split/blob/main/src/app/examples/iframes/iframes.component.ts

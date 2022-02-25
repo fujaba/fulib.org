@@ -59,17 +59,6 @@ import 'zone.js'; // Included with Angular CLI.
 (window as any).global = window;
 
 /***************************************************************************************************
- * WORKFLOWS METHODS
- */
-
-declare global {
-  interface Window {
-    __fulib_org_setIndexFromIframe;
-    __fulib_org_changeFrameWithToast;
-  }
-}
-
-/***************************************************************************************************
  * EXTENSION METHODS
  */
 
