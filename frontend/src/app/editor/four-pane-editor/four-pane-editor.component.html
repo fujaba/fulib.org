@@ -71,10 +71,9 @@
 <ng-template #classDiagram>
   <ng-container *ngIf="response else loading">
     <div *ngIf="response.classDiagram else emptyClassDiagram" class="h-100 overflow-auto">
-     <app-preview title="Class Diagram">
-       <img preview class="diagram w-100 h-100" [src]="classDiagramUrl" alt="Class Diagram">
-       <img full class="diagram w-100 h-100" [src]="classDiagramUrl" alt="Class Diagram">
-     </app-preview>
+     <a routerLink="preview" [queryParams]="{url: classDiagramUrl}" queryParamsHandling="merge">
+       <img class="diagram w-100 h-100" [src]="classDiagramUrl" alt="Class Diagram">
+     </a>
     </div>
     <ng-template #emptyClassDiagram>
       No model classes to display.
@@ -90,10 +89,13 @@
             [ngbNavItem]="diagramIndex + 1">
           <a ngbNavLink>{{diagram.name}}</a>
           <ng-template ngbNavContent>
-            <app-preview [title]="diagram.name">
-              <app-diagram-view preview [response]="response" [diagram]="diagram"></app-diagram-view>
-              <app-diagram-view full [response]="response" [diagram]="diagram"></app-diagram-view>
-            </app-preview>
+            <a
+              routerLink="preview"
+              [queryParams]="{url: apiUrl + '/runcodegen/' + response.id + '/' + diagram.path}"
+              queryParamsHandling="merge"
+            >
+              <app-diagram-view [url]="apiUrl + '/runcodegen/' + response.id + '/' + diagram.path"></app-diagram-view>
+            </a>
           </ng-template>
         </li>
       </ul>

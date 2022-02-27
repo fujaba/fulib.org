@@ -1,17 +1,11 @@
-<a (click)="open(modal)" style="cursor: pointer">
-  <ng-content select="[preview]"></ng-content>
-</a>
-
-<ng-template #modal let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" id="diagram-modal-title">{{title}}</h4>
-    <button class="btn-close" aria-label="Close" (click)="modal.close()">
-    </button>
-  </div>
-  <div class="modal-body">
-    <ng-content select="[full]"></ng-content>
-  </div>
-  <div class="modal-footer">
+<app-modal #modal [back]="['..']" [backOptions]="{relativeTo: route, queryParams: {url: null}, queryParamsHandling: 'merge'}">
+  <ng-container modal-header>
+    {{title}}
+  </ng-container>
+  <ng-container modal-body>
+    <app-diagram-view [url]="url"></app-diagram-view>
+  </ng-container>
+  <ng-container modal-footer>
     <button class="btn btn-secondary" (click)="modal.close()">Close</button>
-  </div>
-</ng-template>
+  </ng-container>
+</app-modal>
