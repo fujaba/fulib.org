@@ -1,54 +1,45 @@
-<div class="form" *ngIf="solution">
-  <div class="form-group">
-    <label for="nameInput">Name</label>
+<div class="mb-3" *ngIf="solution">
+  <div class="mb-3">
+    <label class="form-label" for="nameInput">Name</label>
     <input type="text" class="form-control" id="nameInput" [(ngModel)]="solution.author.name">
   </div>
-  <div class="form-group">
-    <label for="studentIDInput">Student ID</label>
+  <div class="mb-3">
+    <label class="form-label" for="studentIDInput">Student ID</label>
     <input type="text" class="form-control" id="studentIDInput" [(ngModel)]="solution.author.studentId">
   </div>
-  <div class="form-group">
-    <label for="emailInput">E-Mail</label>
+  <div class="mb-3">
+    <label class="form-label" for="emailInput">E-Mail</label>
     <div class="input-group">
       <input type="text" class="form-control" id="emailInput" [(ngModel)]="solution.author.email">
-      <div class="input-group-append" *ngIf="solution.author.email">
-        <a class="btn btn-primary"
-           href="mailto:{{solution.author.email}}"
-           ngbTooltip="Compose Mail"
-        >
-          <i class="bi-envelope"></i>
-        </a>
-      </div>
+      <a
+        *ngIf="solution.author.email"
+        class="btn btn-primary bi-envelope"
+        href="mailto:{{solution.author.email}}"
+        ngbTooltip="Compose Mail"
+      ></a>
     </div>
   </div>
-  <div class="form-group">
-    <label for="githubInput">GitHub Username</label>
+  <div class="mb-3">
+    <label class="form-label" for="githubInput">GitHub Username</label>
     <div class="input-group">
       <input type="text" class="form-control" id="githubInput" [(ngModel)]="solution.author.github">
-      <div class="input-group-append" *ngIf="solution && solution.author.github">
-        <a class="btn btn-primary"
-           href="https://github.com/{{solution.author.github}}"
-           target="_blank"
-           ngbTooltip="Open on GitHub"
-        >
-          <i class="bi-github"></i>
-        </a>
-      </div>
+      <a *ngIf="solution && solution.author.github"
+         class="btn btn-primary bi-github"
+         href="https://github.com/{{solution.author.github}}"
+         target="_blank"
+         ngbTooltip="Open on GitHub"
+      ></a>
     </div>
   </div>
-  <div class="form-group" *ngIf="solution.commit">
-    <label for="commitInput">Git Commit</label>
+  <div class="mb-3" *ngIf="solution.commit">
+    <label class="form-label" for="commitInput">Git Commit</label>
     <div class="input-group">
       <input type="text" class="form-control text-monospace" id="commitInput" readonly [ngModel]="solution.commit">
-      <div class="input-group-append">
-        <a class="btn btn-primary"
-           href="https://github.com/{{assignment?.classroom?.org}}/{{assignment?.classroom?.prefix}}-{{solution.author.github}}/tree/{{solution.commit}}"
-           target="_blank"
-           ngbTooltip="Open on GitHub"
-        >
-          <i class="bi-github"></i>
-        </a>
-      </div>
+      <a class="btn btn-primary bi-github"
+         href="https://github.com/{{assignment?.classroom?.org}}/{{assignment?.classroom?.prefix}}-{{solution.author.github}}/tree/{{solution.commit}}"
+         target="_blank"
+         ngbTooltip="Open on GitHub"
+      ></a>
     </div>
   </div>
   <button type="button" class="btn btn-primary" (click)="save()" [disabled]="saving">
@@ -58,7 +49,7 @@
   <h4>Danger Zone</h4>
   <div class="list-group">
     <div class="list-group-item border-danger d-flex align-items-center">
-      <div class="flex-grow-1">
+      <div class="me-auto">
         <h6>
           Delete Solution
         </h6>
