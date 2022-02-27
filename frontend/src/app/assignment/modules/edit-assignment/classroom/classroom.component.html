@@ -1,35 +1,31 @@
-<div class="form">
-  <div class="form-group">
-    GitHub
-    <label for="classroomOrgInput">Organization</label>
-    and
-    <label for="classroomPrefixInput">Prefix</label>
+<div class="mb-3">
+  <div class="mb-3">
+    <label class="form-label">
+      GitHub
+      <label for="classroomOrgInput">Organization</label>
+      and
+      <label for="classroomPrefixInput">Prefix</label>
+    </label>
     <div class="input-group">
-      <div class="input-group-prepend">
-        <span class="input-group-text">https://github.com/</span>
-      </div>
+      <span class="input-group-text">https://github.com/</span>
       <input type="text" class="form-control" id="classroomOrgInput" placeholder="my-awesome-org"
              [(ngModel)]="assignment.classroom!.org" (change)="saveDraft()">
-      <div class="input-group-prepend input-group-append">
-        <span class="input-group-text">/</span>
-      </div>
+      <span class="input-group-text">/</span>
       <input type="text" class="form-control" id="classroomPrefixInput" placeholder="prefix"
              [(ngModel)]="assignment.classroom!.prefix" (change)="saveDraft()">
-      <div class="input-group-append">
-        <span class="input-group-text">-Student</span>
-      </div>
+      <span class="input-group-text">-Student</span>
     </div>
-    <div class="form-text small text-muted">
+    <div class="form-text">
       Allows importing solutions from Classroom Submissions.
     </div>
   </div>
-  <div class="form-group">
-    <label for="tokenInput">GitHub Token</label>
+  <div class="mb-3">
+    <label class="form-label" for="tokenInput">GitHub Token</label>
     <input
       type="password" class="form-control" id="tokenInput" placeholder="ghp_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
       [(ngModel)]="assignment.classroom!.token" (change)="saveDraft()"
     >
-    <div class="form-text small text-muted">
+    <div class="form-text">
       Required for importing solutions from GitHub Classroom.
       You can generate a token in the
       <a
@@ -44,16 +40,16 @@
       scope.
     </div>
   </div>
-  <div class="form-group">
-    <label for="codeSearchCheck">Code Search</label>
+  <div class="mb-3">
+    <label class="form-label" for="codeSearchCheck">Code Search</label>
     <div class="form-check">
       <input type="checkbox" class="form-check-input" id="codeSearchCheck"
              [(ngModel)]="assignment.classroom!.codeSearch" (change)="saveDraft()">
       <label class="form-check-label" for="codeSearchCheck">Enable Code Search</label>
     </div>
-    <small class="form-text text-muted">
+    <div class="form-text">
       Code Search will import the source code from Classroom repositories and index it.
       It can be used to find code duplicates across submissions and allows grading multiple students at the same time.
-    </small>
+    </div>
   </div>
 </div>

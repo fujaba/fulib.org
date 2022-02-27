@@ -1,121 +1,123 @@
 <header class="fixed-top">
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" routerLink="/">fulib.org</a>
-  <button class="navbar-toggler" type="button" (click)="menuCollapsed = !menuCollapsed">
-    &#9776;
-  </button>
-  <div [ngbCollapse]="menuCollapsed" class="collapse navbar-collapse">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" routerLink="/scenarios">
-          Scenarios
-        </a>
-      </li>
-      <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" routerLink="/workflows">
-          Workflows
-          <span class="badge text-white bg-gradient-primary">New</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLinkActive="active" routerLink="/docs">
-          Docs
-        </a>
-      </li>
-      <li class="nav-item" routerLinkActive="active">
-        <a class="nav-link" routerLink="/projects">
-          Projects
-        </a>
-      </li>
-      <li class="nav-item" routerLinkActive="active" ngbDropdown>
-        <a tabindex="0" class="nav-link" ngbDropdownToggle id="assignmentsDropdown" role="button">
-          Assignments
-        </a>
-        <div ngbDropdownMenu aria-labelledby="assignmentsDropdown">
-          <a ngbDropdownItem routerLink="/assignments/solutions">
-            My Solutions
+  <div class="container-fluid">
+    <a class="navbar-brand" routerLink="/">fulib.org</a>
+    <button class="navbar-toggler" type="button" (click)="menuCollapsed = !menuCollapsed">
+      &#9776;
+    </button>
+    <div [ngbCollapse]="menuCollapsed" class="collapse navbar-collapse">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="/scenarios">
+            Scenarios
           </a>
-          <a ngbDropdownItem routerLink="/assignments">
-            My Assignments
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="/workflows">
+            Workflows
+            <span class="badge text-white bg-gradient-primary">New</span>
           </a>
-          <a ngbDropdownItem routerLink="/assignments/courses">
-            My Courses
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLinkActive="active" routerLink="/docs">
+            Docs
           </a>
-          <div class="dropdown-divider"></div>
-          <a ngbDropdownItem routerLink="/assignments/create">
-            Create Assignment
+        </li>
+        <li class="nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="/projects">
+            Projects
           </a>
-          <a ngbDropdownItem routerLink="/assignments/courses/create">
-            Create Course
+        </li>
+        <li class="nav-item" routerLinkActive="active" ngbDropdown>
+          <a tabindex="0" class="nav-link" ngbDropdownToggle id="assignmentsDropdown" role="button">
+            Assignments
           </a>
-        </div>
-      </li>
-      <li class="nav-item" ngbDropdown>
-        <a tabindex="0" class="nav-link" ngbDropdownToggle id="githubDropdown" role="button">
-          GitHub
-        </a>
-        <div ngbDropdownMenu aria-labelledby="githubDropdown">
-          <a *ngFor="let repo of repos"
-             ngbDropdownItem href="https://github.com/fujaba/{{repo}}">
-            {{repo}}
-            <span class="text-muted" *ngIf="versions && versions[repo]"> (v{{versions[repo]}})</span>
+          <div ngbDropdownMenu aria-labelledby="assignmentsDropdown">
+            <a ngbDropdownItem routerLink="/assignments/solutions">
+              My Solutions
+            </a>
+            <a ngbDropdownItem routerLink="/assignments">
+              My Assignments
+            </a>
+            <a ngbDropdownItem routerLink="/assignments/courses">
+              My Courses
+            </a>
+            <div class="dropdown-divider"></div>
+            <a ngbDropdownItem routerLink="/assignments/create">
+              Create Assignment
+            </a>
+            <a ngbDropdownItem routerLink="/assignments/courses/create">
+              Create Course
+            </a>
+          </div>
+        </li>
+        <li class="nav-item" ngbDropdown>
+          <a tabindex="0" class="nav-link" ngbDropdownToggle id="githubDropdown" role="button">
+            GitHub
           </a>
-        </div>
-      </li>
-      <li class="nav-item" ngbDropdown>
-        <a tabindex="0" class="nav-link" ngbDropdownToggle id="legalDropdown" role="button">
-          Legal
-        </a>
-        <div ngbDropdownMenu aria-labelledby="legalDropdown">
-          <a ngbDropdownItem [routerLink]="[{outlets: {modal: 'about'}}]">
-            About
+          <div ngbDropdownMenu aria-labelledby="githubDropdown">
+            <a *ngFor="let repo of repos"
+               ngbDropdownItem href="https://github.com/fujaba/{{repo}}">
+              {{repo}}
+              <span class="text-muted" *ngIf="versions && versions[repo]"> (v{{versions[repo]}})</span>
+            </a>
+          </div>
+        </li>
+        <li class="nav-item" ngbDropdown>
+          <a tabindex="0" class="nav-link" ngbDropdownToggle id="legalDropdown" role="button">
+            Legal
           </a>
-          <a ngbDropdownItem href="https://www.uni-kassel.de/uni/impressum">
-            Imprint
+          <div ngbDropdownMenu aria-labelledby="legalDropdown">
+            <a ngbDropdownItem [routerLink]="[{outlets: {modal: 'about'}}]">
+              About
+            </a>
+            <a ngbDropdownItem href="https://www.uni-kassel.de/uni/impressum">
+              Imprint
+            </a>
+            <a ngbDropdownItem href="https://www.uni-kassel.de/uni/datenschutz">
+              Privacy Policy
+            </a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="[{outlets: {modal: 'feedback'}}]">
+            Feedback
           </a>
-          <a ngbDropdownItem href="https://www.uni-kassel.de/uni/datenschutz">
-            Privacy Policy
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="[{outlets: {modal: 'changelog'}}]">
+            What's New
           </a>
-        </div>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" [routerLink]="[{outlets: {modal: 'feedback'}}]">
-          Feedback
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" [routerLink]="[{outlets: {modal: 'changelog'}}]">
-          What's New
-        </a>
-      </li>
-      <li class="nav-item" ngbDropdown>
-        <a tabindex="0" class="nav-link" ngbDropdownToggle id="accountDropdown" role="button">
-          <i class="bi-person-circle"></i>
-          <span class="sr-only">Account</span>
-        </a>
-        <div ngbDropdownMenu aria-labelledby="accountDropdown">
-          <h6 class="dropdown-header">Account</h6>
-          <span class="dropdown-item-text text-muted">
+        </li>
+        <li class="nav-item" ngbDropdown>
+          <a tabindex="0" class="nav-link" ngbDropdownToggle id="accountDropdown" role="button">
+            <i class="bi-person-circle"></i>
+            <span class="visually-hidden">Account</span>
+          </a>
+          <div ngbDropdownMenu aria-labelledby="accountDropdown">
+            <h6 class="dropdown-header">Account</h6>
+            <span class="dropdown-item-text text-muted">
             {{username ? 'Logged in as ' : 'Not logged in'}}<b *ngIf="username">{{username}}</b>.
           </span>
-          <a *ngIf="username" ngbDropdownItem [href]="accountUrl" target="_blank">
-            Edit Account
-          </a>
-          <button ngbDropdownItem (click)="username ? logout() : login()">
-            {{username ? 'Logout' : 'Login'}}
-          </button>
-          <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header">Settings</h6>
-          <a ngbDropdownItem [routerLink]="[{outlets: {modal: 'privacy'}}]">
-            Edit Privacy Preferences
-          </a>
-          <div ngbDropdownItem>
-            <ngbd-theme-switch></ngbd-theme-switch>
+            <a *ngIf="username" ngbDropdownItem [href]="accountUrl" target="_blank">
+              Edit Account
+            </a>
+            <button ngbDropdownItem (click)="username ? logout() : login()">
+              {{username ? 'Logout' : 'Login'}}
+            </button>
+            <div class="dropdown-divider"></div>
+            <h6 class="dropdown-header">Settings</h6>
+            <a ngbDropdownItem [routerLink]="[{outlets: {modal: 'privacy'}}]">
+              Edit Privacy Preferences
+            </a>
+            <div ngbDropdownItem>
+              <ngbd-theme-switch></ngbd-theme-switch>
+            </div>
           </div>
-        </div>
-      </li>
-    </ul>
+        </li>
+      </ul>
+    </div>
   </div>
 </nav>
 

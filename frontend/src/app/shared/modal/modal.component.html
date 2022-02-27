@@ -3,9 +3,7 @@
     <h4 class="modal-title" id="title">
       <ng-content select="[modal-header]"></ng-content>
     </h4>
-    <button type="button" class="close" aria-label="Close" (click)="close()">
-      <span aria-hidden="true">&times;</span>
-    </button>
+    <button class="btn-close" aria-label="Close" (click)="close()"></button>
   </div>
   <div class="modal-body">
     <ng-content select="[modal-body]"></ng-content>

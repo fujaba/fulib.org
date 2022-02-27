@@ -1,6 +1,6 @@
-<div class="form">
-  <div class="form-group">
-    <label for="packageNameField">Package/Group Name</label>
+<div class="mb-3">
+  <div class="mb-3">
+    <label class="form-label" for="packageNameField">Package/Group Name</label>
     <input type="text" class="form-control" id="packageNameField" placeholder="org.example"
            pattern="^\w+(\.\w+)*$"
            [(ngModel)]="config.packageName" #packageNameModel="ngModel"
@@ -11,8 +11,8 @@
       Package Name must be one or more Java identifiers separated by dots.
     </div>
   </div>
-  <div class="form-group">
-    <label for="projectNameField">Project Name</label>
+  <div class="mb-3">
+    <label class="form-label" for="projectNameField">Project Name</label>
     <input type="text" class="form-control" id="projectNameField" placeholder="scenario"
            pattern="^[\w._\-]*$"
            [(ngModel)]="config.projectName" #projectNameModel="ngModel"
@@ -23,8 +23,8 @@
       Project Name must be an Java identifier that may contain dots, underscores and dashes.
     </div>
   </div>
-  <div class="form-group">
-    <label for="projectVersionField">Version</label>
+  <div class="mb-3">
+    <label class="form-label" for="projectVersionField">Version</label>
     <!-- pattern from https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string -->
     <input type="text" class="form-control" id="projectVersionField" placeholder="0.1.0"
            pattern="^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
@@ -36,8 +36,8 @@
       Version must be a valid <a href="https://semver.org/">Semantic Version</a> string.
     </div>
   </div>
-  <div class="form-group">
-    <label for="scenarioFileNameField">Scenario File Name</label>
+  <div class="mb-3">
+    <label class="form-label" for="scenarioFileNameField">Scenario File Name</label>
     <input type="text" class="form-control" id="scenarioFileNameField" placeholder="Scenario.md"
            pattern="^[\w._\-]+\.md$"
            [(ngModel)]="config.scenarioFileName" #scenarioFileNameModel="ngModel"
@@ -49,8 +49,8 @@
       and ends with <code>.md</code>.
     </div>
   </div>
-  <div class="form-group">
-    <label for="decoratorClassNameField">Decorator Class Name</label>
+  <div class="mb-3">
+    <label class="form-label" for="decoratorClassNameField">Decorator Class Name</label>
     <input type="text" class="form-control" id="decoratorClassNameField"
            pattern="^[\w_]*$"
            [(ngModel)]="config.decoratorClassName" #decoratorClassNameModel="ngModel"
@@ -60,6 +60,8 @@
          [class.d-block]="decoratorClassNameModel.invalid && (decoratorClassNameModel.touched || decoratorClassNameModel.dirty)">
       Decorator Class Name must be either empty or a valid Java identifier.
     </div>
-    <small class="form-text text-muted">Optional. If empty, no decorator class will be generated.</small>
+    <div class="form-text">
+      Optional. If empty, no decorator class will be generated.
+    </div>
   </div>
 </div>

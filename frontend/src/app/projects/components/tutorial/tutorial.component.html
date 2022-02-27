@@ -11,11 +11,10 @@
      [style.height.px]="targetPosition.height"
 ></div>
 <ng-template #title>
-  {{ steps[index].title }}
-  ({{ index + 1 }} / {{ steps.length }})
-  <a class="close" routerLink="../..">
-    &times;
-  </a>
+  <div class="d-flex align-items-center">
+    {{ steps[index].title }} ({{ index + 1 }} / {{ steps.length }})
+    <a class="btn-close ms-auto" routerLink="../.."></a>
+  </div>
 </ng-template>
 <ng-template #body>
   <p>
@@ -23,25 +22,25 @@
   </p>
   <div class="btn-toolbar">
     <a *ngIf="index >= 1"
-       class="btn btn-sm btn-primary mr-1"
+       class="btn btn-sm btn-primary me-1"
        [routerLink]="['..', index - 1]"
     >
       Previous
     </a>
     <a *ngIf="index + 1 < steps.length"
-       class="btn btn-sm btn-primary mr-1"
+       class="btn btn-sm btn-primary me-1"
        [routerLink]="['..', index + 1]"
     >
       Next
     </a>
     <a *ngIf="index + 1 === steps.length"
-       class="btn btn-sm btn-secondary mr-1"
+       class="btn btn-sm btn-secondary me-1"
        routerLink="../.."
     >
       Finish
     </a>
     <a *ngIf="steps[index].skip"
-       class="btn btn-sm btn-secondary mr-1"
+       class="btn btn-sm btn-secondary me-1"
        [routerLink]="['..', index + steps[index].skip!]"
     >
       Skip ({{ steps[index].skip }} Steps)
