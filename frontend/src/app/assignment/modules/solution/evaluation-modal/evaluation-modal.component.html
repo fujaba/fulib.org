@@ -9,7 +9,7 @@
     <div class="form">
       <div class="row">
         <div class="col-md-8" *ngIf="dto.snippets.length">
-          <div class="form-group">
+          <div class="mb-3">
             <div class="alert alert-info" id="codeSearchOrigin" *ngIf="originEvaluation && originSolution">
               This evaluation was initially created by Code Search based on the original
               <a [routerLink]="['../../..', originSolution._id, 'tasks', originEvaluation.task]">
@@ -37,7 +37,7 @@
               solutions for this snippet.
               {{ searchSummary.message }}
             </div>
-            <label for="snippets">
+            <label class="form-label" for="snippets">
               Snippets
             </label>
             <ul class="list-group" id="snippets">
@@ -48,7 +48,7 @@
                 ></app-edit-snippet>
               </li>
             </ul>
-            <div class="form-text text-muted">
+            <div class="form-text">
               Use
               <a href="https://marketplace.visualstudio.com/items?itemName=fulib.fulibFeedback" target="_blank">
                 fulibFeedback
