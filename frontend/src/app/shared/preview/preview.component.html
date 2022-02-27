@@ -5,14 +5,13 @@
 <ng-template #modal let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="diagram-modal-title">{{title}}</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.close()">
-      <span aria-hidden="true">&times;</span>
+    <button class="btn-close" aria-label="Close" (click)="modal.close()">
     </button>
   </div>
   <div class="modal-body">
     <ng-content select="[full]"></ng-content>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-primary" (click)="modal.close()">Close</button>
+    <button class="btn btn-secondary" (click)="modal.close()">Close</button>
   </div>
 </ng-template>
