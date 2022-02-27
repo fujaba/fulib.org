@@ -116,28 +116,21 @@
   {id: 'classDiagram', title: 'Class Diagram', template: classDiagram},
   {id: 'objectDiagrams', title: 'Object Diagrams', template: objectDiagrams}
 ] as items">
-  <div class="btn-toolbar mb-3 mx-2" role="toolbar" aria-label="Toolbar">
-    <div class="input-group mx-1">
-      <div class="input-group-text">
-        Load Example:
-      </div>
-      <select class="form-select" aria-label="Selected Example"
-              [ngModel]="selectedExample" (ngModelChange)="selectExample($event)">
-        <option [ngValue]="null">-</option>
-        <optgroup *ngFor="let category of exampleCategories; index as categoryIndex"
-                  label="{{categoryIndex + 1}}. {{category.name}}">
-          <option *ngFor="let example of category.examples; index as exampleIndex"
-                  label="{{categoryIndex + 1}}.{{exampleIndex + 1}}. {{example.name}}"
-                  [ngValue]="example"></option>
-        </optgroup>
-      </select>
-      <div class="input-group-append" *ngIf="selectedExample">
-        <div class="input-group-text text-warning" ngbTooltip="Changes to the example will not be saved!">
-          &#9888;
-        </div>
-      </div>
-    </div>
-    <div ngbDropdown class="d-inline-block mx-1" autoClose="outside">
+  <div class="btn-toolbar align-items-center p-3" role="toolbar" aria-label="Toolbar">
+    <select
+      class="form-select w-auto me-2"
+      aria-label="Selected Example"
+      [ngModel]="selectedExample" (ngModelChange)="selectExample($event)"
+    >
+      <option [ngValue]="null">Select Example...</option>
+      <optgroup *ngFor="let category of exampleCategories; index as categoryIndex"
+                label="{{categoryIndex + 1}}. {{category.name}}">
+        <option *ngFor="let example of category.examples; index as exampleIndex"
+                label="{{categoryIndex + 1}}.{{exampleIndex + 1}}. {{example.name}}"
+                [ngValue]="example"></option>
+      </optgroup>
+    </select>
+    <div ngbDropdown class="d-inline-block me-2" autoClose="outside">
       <button class="btn btn-outline-secondary" id="panelsDropdown" ngbDropdownToggle>View</button>
       <div ngbDropdownMenu aria-labelledby="panelsDropdown">
         <h6 class="dropdown-header">Editor Panels</h6>
@@ -155,25 +148,23 @@
         </button>
       </div>
     </div>
-    <div class="ms-auto" role="group">
-      <a role="button" class="btn btn-outline-secondary mx-1" routerLink="config">
-        Configure or Export
-      </a>
-      <div class="btn-group mx-1" role="group">
-        <button type="button" class="btn btn-outline-primary"
-                ngbTooltip="Keyboard Shortcuts: Ctrl-&#9166;, &#8984;&#9166;, Ctrl-S, &#8984;S"
-                (click)="submit()" [disabled]="submitting">
-          Compile and Run
-        </button>
-        <div class="btn-group" ngbDropdown role="group" aria-label="Compile and Run Options">
-          <button class="btn btn-outline-primary dropdown-toggle-split" ngbDropdownToggle></button>
-          <div class="dropdown-menu" ngbDropdownMenu>
-            <button ngbDropdownItem (click)="autoSubmit = !autoSubmit" class="dropdown-item-check" [class.checked]="autoSubmit">
-              Automatically Compile and Run
-              <br/>
-              when the scenario changes
-            </button>
-          </div>
+    <a role="button" class="btn btn-outline-secondary me-2" routerLink="config">
+      Configure or Export
+    </a>
+    <div class="btn-group" role="group">
+      <button type="button" class="btn btn-outline-primary"
+              ngbTooltip="Keyboard Shortcuts: Ctrl-&#9166;, &#8984;&#9166;, Ctrl-S, &#8984;S"
+              (click)="submit()" [disabled]="submitting">
+        Compile and Run
+      </button>
+      <div class="btn-group" ngbDropdown role="group" aria-label="Compile and Run Options">
+        <button class="btn btn-outline-primary dropdown-toggle-split" ngbDropdownToggle></button>
+        <div class="dropdown-menu" ngbDropdownMenu>
+          <button ngbDropdownItem (click)="autoSubmit = !autoSubmit" class="dropdown-item-check" [class.checked]="autoSubmit">
+            Automatically Compile and Run
+            <br/>
+            when the scenario changes
+          </button>
         </div>
       </div>
     </div>
