@@ -1,18 +1,18 @@
 <div class="row">
   <div class="col-md-6" *ngIf="solution && solution.solution">
-    <div class="form position-sticky" style="top: 4rem">
-      <div class="form-group">
-        <label for="solutionInput">Solution</label>
+    <div class="position-sticky" style="top: 4rem">
+      <div class="mb-3">
+        <label class="form-label" for="solutionInput">Solution</label>
         <app-scenario-codemirror
           id="solutionInput"
           [content]="solution ? solution.solution : 'Loading...'"
           [markers]="markers"
           [readOnly]="true"
         ></app-scenario-codemirror>
+        <div class="form-text">
+          Submitted <b>{{solution.timestamp | date:'medium'}}</b>.
+        </div>
       </div>
-      <p class="text-center">
-        Submitted <b>{{solution.timestamp | date:'medium'}}</b>.
-      </p>
     </div>
   </div>
   <div class="col-12" [class.col-md-6]="solution && solution.solution">
