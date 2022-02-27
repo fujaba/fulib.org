@@ -1,6 +1,6 @@
 <div class="h-100">
   <div class="row">
-    <div class="col align-self-start">
+    <div class="col start">
       <button type="button" class="btn btn-secondary btn-sm m-1"
               (click)="setFirst()"
               [disabled]="currentDisplay === 'class'">
@@ -24,17 +24,17 @@
       </button>
     </div>
 
-    <div class="mr-3">
+    <div class="col-auto">
       <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic" [(ngModel)]="currentDisplay"
            (ngModelChange)="evaluateUrl()">
         <label ngbButtonLabel class="btn-info btn-sm mt-1 mb-1">
-          <input ngbButton type="radio" [value]="'pages'"> Pages
+          <input ngbButton type="radio" class="btn-check" [value]="'pages'"> Pages
         </label>
         <label ngbButtonLabel class="btn-info btn-sm mt-1 mb-1">
-          <input ngbButton type="radio" [value]="'objects'"> Objects
+          <input ngbButton type="radio" class="btn-check" [value]="'objects'"> Objects
         </label>
         <label ngbButtonLabel class="btn-info btn-sm mt-1 mb-1">
-          <input ngbButton type="radio" [value]="'class'"> Class
+          <input ngbButton type="radio" class="btn-check" [value]="'class'"> Class
         </label>
       </div>
     </div>
