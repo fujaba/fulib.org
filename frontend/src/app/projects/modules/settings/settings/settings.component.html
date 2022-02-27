@@ -11,14 +11,13 @@
     <hr/>
     <h4 class="d-flex align-items-center">
       Members
-      <a class="btn btn-sm btn-success ml-auto" routerLink="edit-member">
-        <i class="bi-person-plus"></i>
+      <a class="btn btn-sm btn-success bi-person-plus ms-auto" routerLink="edit-member">
         Add
       </a>
     </h4>
     <ul class="list-group">
       <li *ngFor="let member of members" class="list-group-item d-flex align-items-center">
-        <div class="flex-grow-1">
+        <div class="me-auto">
           {{ member.user
           ? member.user.firstName + ' ' + member.user.lastName + ' (' + member.user.username + ')'
           : 'Loading...' }}
@@ -41,7 +40,7 @@
     <h4>Danger Zone</h4>
     <div class="list-group">
       <div class="list-group-item border-danger d-flex align-items-center" *ngIf="projectManager">
-        <div class="flex-grow-1">
+        <div class="me-auto">
           <h6>
             Re-run Setup
           </h6>
@@ -52,7 +51,7 @@
         </a>
       </div>
       <div class="list-group-item border-danger d-flex align-items-center" *ngIf="!project.local">
-        <div class="flex-grow-1">
+        <div class="me-auto">
           <h6>
             Transfer Ownership
           </h6>
@@ -63,7 +62,7 @@
         </a>
       </div>
       <div class="list-group-item border-danger d-flex align-items-center">
-        <div class="flex-grow-1">
+        <div class="me-auto">
           <h6>
             Delete Project
           </h6>

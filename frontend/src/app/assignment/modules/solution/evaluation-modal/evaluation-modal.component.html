@@ -9,76 +9,74 @@
     <div class="form">
       <div class="row">
         <div class="col-md-8" *ngIf="dto.snippets.length">
-          <div class="form-group">
-            <div class="alert alert-info" id="codeSearchOrigin" *ngIf="originEvaluation && originSolution">
-              This evaluation was initially created by Code Search based on the original
-              <a [routerLink]="['../../..', originSolution._id, 'tasks', originEvaluation.task]">
-                Evaluation by {{ originEvaluation.author }}
-              </a>
-              for the
-              <a [routerLink]="['../../..', originSolution._id]">
-                Solution by {{ originSolution | solutionName }}
-              </a>
-              .
-            </div>
-            <div class="alert alert-info" *ngIf="evaluation && derivedSolutionCount">
-              Code Search derived {{ derivedSolutionCount }} evaluations from this.
-              <a routerLink="../../.." [queryParams]="{q: 'origin:' + evaluation._id}">
-                View in Table
-              </a>
-            </div>
-            <div *ngIf="searchSummary" class="alert alert-{{searchSummary.level}}">
-              Code Search found
-              <b>{{ searchSummary.hits }}</b>
-              hits in
-              <b>{{ searchSummary.files }}</b>
-              files from
-              <b>{{ searchSummary.solutions }}</b>
-              solutions for this snippet.
-              {{ searchSummary.message }}
-            </div>
-            <label for="snippets">
-              Snippets
-            </label>
-            <ul class="list-group" id="snippets">
-              <li *ngFor="let snippet of dto.snippets; let index=index" class="list-group-item" [class.list-group-item-warning]="snippet.comment === selectionComment">
-                <app-edit-snippet
-                  [snippet]="snippet" [index]="index" [comments]="comments"
-                  (deleted)="deleteSnippet(index)"
-                ></app-edit-snippet>
-              </li>
-            </ul>
-            <div class="form-text text-muted">
-              Use
-              <a href="https://marketplace.visualstudio.com/items?itemName=fulib.fulibFeedback" target="_blank">
-                fulibFeedback
-              </a>
-              to add code snippets from within your IDE.
-              <span *ngIf="task && task.glob" class="text-info">
-                Code Search will only look for files matching the glob pattern <code>{{ task.glob }}</code>.
-              </span>
-            </div>
+          <div class="alert alert-info" id="codeSearchOrigin" *ngIf="originEvaluation && originSolution">
+            This evaluation was initially created by Code Search based on the original
+            <a [routerLink]="['../../..', originSolution._id, 'tasks', originEvaluation.task]">
+              Evaluation by {{ originEvaluation.author }}
+            </a>
+            for the
+            <a [routerLink]="['../../..', originSolution._id]">
+              Solution by {{ originSolution | solutionName }}
+            </a>
+            .
+          </div>
+          <div class="alert alert-info" *ngIf="evaluation && derivedSolutionCount">
+            Code Search derived {{ derivedSolutionCount }} evaluations from this.
+            <a routerLink="../../.." [queryParams]="{q: 'origin:' + evaluation._id}">
+              View in Table
+            </a>
+          </div>
+          <div *ngIf="searchSummary" class="alert alert-{{searchSummary.level}}">
+            Code Search found
+            <b>{{ searchSummary.hits }}</b>
+            hits in
+            <b>{{ searchSummary.files }}</b>
+            files from
+            <b>{{ searchSummary.solutions }}</b>
+            solutions for this snippet.
+            {{ searchSummary.message }}
+          </div>
+          <label class="form-label" for="snippets">
+            Snippets
+          </label>
+          <ul class="list-group" id="snippets">
+            <li *ngFor="let snippet of dto.snippets; let index=index" class="list-group-item" [class.list-group-item-warning]="snippet.comment === selectionComment">
+              <app-edit-snippet
+                [snippet]="snippet" [index]="index" [comments]="comments"
+                (deleted)="deleteSnippet(index)"
+              ></app-edit-snippet>
+            </li>
+          </ul>
+          <div class="form-text">
+            Use
+            <a href="https://marketplace.visualstudio.com/items?itemName=fulib.fulibFeedback" target="_blank">
+              fulibFeedback
+            </a>
+            to add code snippets from within your IDE.
+            <span *ngIf="task && task.glob" class="text-info">
+              Code Search will only look for files matching the glob pattern <code>{{ task.glob }}</code>.
+            </span>
           </div>
         </div>
         <div class="col" [class.col-md-4]="dto.snippets.length">
           <app-evaluation-form [dto]="dto" [task]="task"></app-evaluation-form>
+          <div class="alert alert-info" *ngIf="!dto.snippets.length">
+            <span class="badge text-white bg-gradient-primary">New</span>
+            <a href="https://marketplace.visualstudio.com/items?itemName=fulib.fulibFeedback" target="_blank">
+              fulibFeedback
+            </a>
+            can be used to add code snippets from within your IDE.
+            If Code Search is enabled,
+            it will automatically look for similar code in other solutions and transfer your evaluation,
+            allowing you to grade multiple students at once.
+          </div>
+          <app-pro-tip [tips]="[
+            'Press Ctrl-Enter to quickly submit your evaluation',
+            'Press Ctrl-0 to give zero points',
+          ]"></app-pro-tip>
         </div>
       </div>
     </div>
-    <div class="alert alert-info" *ngIf="!dto.snippets.length">
-      <span class="badge text-white bg-gradient-primary">New</span>
-      <a href="https://marketplace.visualstudio.com/items?itemName=fulib.fulibFeedback" target="_blank">
-        fulibFeedback
-      </a>
-      can be used to add code snippets from within your IDE.
-      If Code Search is enabled,
-      it will automatically look for similar code in other solutions and transfer your evaluation,
-      allowing you to grade multiple students at once.
-    </div>
-    <app-pro-tip [tips]="[
-      'Press Ctrl-Enter to quickly submit your evaluation',
-      'Press Ctrl-0 to give zero points',
-    ]"></app-pro-tip>
   </ng-container>
   <ng-container modal-footer>
     <div class="form-check">

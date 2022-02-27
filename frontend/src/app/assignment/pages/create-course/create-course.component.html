@@ -1,43 +1,43 @@
 <div class="container">
   <h1>Create Course</h1>
 
-  <app-import-export (import)="onImport($event)" (export)="onExport()"></app-import-export>
+  <div class="mb-3">
+    <app-import-export (import)="onImport($event)" (export)="onExport()"></app-import-export>
+  </div>
 
   <h2>General Info</h2>
 
-  <div class="form">
-    <div class="form-group row">
-      <label for="titleInput" class="col-sm-2 col-form-label">Title</label>
-      <div class="col-sm-10">
-        <input type="text" class="form-control" id="titleInput" placeholder="My Course"
-               [(ngModel)]="title" (change)="saveDraft()">
-      </div>
+  <div class="mb-3">
+    <div class="mb-3">
+      <label for="titleInput" class="form-label">Title</label>
+      <input type="text" class="form-control" id="titleInput" placeholder="My Course"
+             [(ngModel)]="title" (change)="saveDraft()">
     </div>
-    <div class="form-group row">
-      <label for="descriptionInput" class="col-sm-2 col-form-label">Description</label>
-      <div class="col-sm-10">
-        <textarea id="descriptionInput" class="form-control" rows="6"
-                  placeholder="A short description for this course..."
-                  [(ngModel)]="description" (change)="saveDraft()">
+    <div class="mb-3">
+      <label for="descriptionInput" class="form-label">Description</label>
+      <textarea id="descriptionInput" class="form-control" rows="6"
+                placeholder="A short description for this course..."
+                [(ngModel)]="description" (change)="saveDraft()">
         </textarea>
-        <small class="text-muted">
-          <a href="https://commonmark.org/help/">Markdown syntax</a> is supported.
-        </small>
+      <div class="form-text">
+        <a href="https://commonmark.org/help/">Markdown syntax</a> is supported.
       </div>
     </div>
   </div>
 
   <h2>Assignments</h2>
   <div class="input-group mb-3">
+    <label class="visually-hidden" for="assignmentInput">Search Assignment</label>
     <input type="text" class="form-control" id="assignmentInput"
            placeholder="Start typing to search your assignments or paste ID or URL"
            [(ngModel)]="newAssignment" [ngbTypeahead]="search"
            (change)="saveDraft()" (keyup.enter)="addAssignment()">
-    <div class="input-group-append">
-      <button type="button" class="btn btn-success" ngbTooltip="Keyboard Shortcut: &#9166;" (click)="addAssignment()">
-        <i class="bi-plus"></i>
-      </button>
-    </div>
+    <button
+      type="button"
+      class="btn btn-success bi-plus"
+      ngbTooltip="Keyboard Shortcut: &#9166;"
+      (click)="addAssignment()"
+    ></button>
   </div>
   <ul class="timeline-list" [dndDropzone]="['assignment']" (dndDrop)="drop($event)">
     <li dndPlaceholderRef>
@@ -58,18 +58,17 @@
       <span class="timeline-item-body" dndDragImageRef>
         {{assignment?.title || 'Loading...'}}
       </span>
-      <div class="btn btn-secondary ml-auto handle" aria-label="Reorder" ngbTooltip="Drag to Reorder" dndHandle>
-        <i class="bi-grip-horizontal handle"></i>
+      <div class="btn btn-secondary ms-auto bi-grip-horizontal" aria-label="Reorder" ngbTooltip="Drag to Reorder" dndHandle>
       </div>
-      <button type="button" class="btn btn-danger ml-2" aria-label="Remove" ngbTooltip="Remove"
+      <button type="button" class="btn btn-danger ms-2" aria-label="Remove" ngbTooltip="Remove"
               (click)="removeAssignment(i)">
         <i class="bi-trash"></i>
       </button>
     </li>
   </ul>
-  <small class="text-muted">
+  <div class="form-text">
     Drag and Drop the "&equiv;" boxes to change the order.
-  </small>
+  </div>
 
   <div class="text-center">
     <p>
@@ -85,8 +84,7 @@
 <ng-template #successModal let-modal>
   <div class="modal-header">
     <h5 class="modal-title" id="successModalLabel">Course Created</h5>
-    <button type="button" class="close" aria-label="Close" (click)="modal.close()">
-      <span aria-hidden="true">&times;</span>
+    <button class="btn-close" aria-label="Close" (click)="modal.close()">
     </button>
   </div>
   <div class="modal-body">
@@ -97,7 +95,7 @@
       You can now give your students the following link:
     </p>
     <p>
-      <a class="text-monospace" [routerLink]="getLink(false)" (click)="modal.close()">
+      <a class="font-monospace" [routerLink]="getLink(false)" (click)="modal.close()">
         {{getLink(true)}}
       </a>
       <button type="button" class="btn btn-sm btn-outline-primary"
@@ -111,6 +109,6 @@
     </p>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="modal.close()">Close</button>
+    <button class="btn btn-secondary" (click)="modal.close()">Close</button>
   </div>
 </ng-template>

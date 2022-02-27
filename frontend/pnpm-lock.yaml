@@ -22,7 +22,8 @@ specifiers:
   '@angular/router': ~13.2.4
   '@angular/service-worker': ~13.2.4
   '@ctrl/ngx-codemirror': ~5.1.1
-  '@ng-bootstrap/ng-bootstrap': ^11.0.0
+  '@ng-bootstrap/ng-bootstrap': ^12.0.0
+  '@popperjs/core': ^2.11.2
   '@types/codemirror': ^5.60.5
   '@types/file-saver': ^2.0.5
   '@types/jasmine': ~3.6.11
@@ -32,8 +33,8 @@ specifiers:
   '@typescript-eslint/parser': ^5.12.1
   angular-gridster2: ^13.1.1
   angular-split: ^13.2.0
-  bootstrap: ~4.6.1
-  bootstrap-darkmode: ^0.9.1
+  bootstrap: ~5.1.3
+  bootstrap-darkmode: ^5.0.0-beta.1
   bootstrap-icons: ^1.8.1
   bson-objectid: ^2.0.2
   codemirror: ^5.65.2
@@ -73,11 +74,12 @@ dependencies:
   '@angular/router': 13.2.4_06831d463319b639d7e00cba67be3b32
   '@angular/service-worker': 13.2.4_916208d3fdf5898e77c73227fd357437
   '@ctrl/ngx-codemirror': 5.1.1_954b6d5dea7003642eba8dba2d0fd6ac
-  '@ng-bootstrap/ng-bootstrap': 11.0.0_a734ebb2d461bcb9edc69d4c4aaabff1
+  '@ng-bootstrap/ng-bootstrap': 12.0.0_040e4f373c14b34374759f5a763107a2
+  '@popperjs/core': 2.11.2
   angular-gridster2: 13.1.1_916208d3fdf5898e77c73227fd357437
   angular-split: 13.2.0_d853a069baa83d89a517a098298b5715
-  bootstrap: 4.6.1
-  bootstrap-darkmode: 0.9.1_bootstrap@4.6.1
+  bootstrap: 5.1.3_@popperjs+core@2.11.2
+  bootstrap-darkmode: 5.0.0-beta.1_bootstrap@5.1.3
   bootstrap-icons: 1.8.1
   bson-objectid: 2.0.2
   codemirror: 5.65.2
@@ -85,7 +87,7 @@ dependencies:
   highlight.js: 11.4.0
   keycloak-angular: 9.1.0_176c3d9d6111b10f4c6a7b0b3e09238d
   keycloak-js: 15.1.0
-  ng-bootstrap-darkmode: 0.5.0_4fcf17067784a3717479d8f2c5634aa0
+  ng-bootstrap-darkmode: 0.5.0_b0d8ebfdcb8d90f41367b0cfcf7dcda9
   ng-terminal: 5.0.0-beta.2_916208d3fdf5898e77c73227fd357437
   ngx-clipboard: 15.0.1_916208d3fdf5898e77c73227fd357437
   ngx-drag-drop: 13.1.0-alpha.1_916208d3fdf5898e77c73227fd357437
@@ -1933,19 +1935,21 @@ packages:
     resolution: {integrity: sha512-zMM9Ds+SawiUkakS7y94Ymqx+S0ORzpG3frZirN3l+UlXUmSUR7hF4wxCVqW+ei94JzV5kt0uXBcoOEAuiydrw==}
     dev: false
 
-  /@ng-bootstrap/ng-bootstrap/11.0.0_a734ebb2d461bcb9edc69d4c4aaabff1:
-    resolution: {integrity: sha512-qDnB0+jbpQ4wjXpM4NPRAtwmgTDUCjGavoeRDZHOvFfYvx/MBf1RTjZEqTJ1Yqq1pKP4BWpzxCgVTunfnpmsjA==}
+  /@ng-bootstrap/ng-bootstrap/12.0.0_040e4f373c14b34374759f5a763107a2:
+    resolution: {integrity: sha512-XWf/CsP1gH0aev7Mtsldtj0DPPFdTrJpSiyjzLFS29gU1ZuDlJz6OKthgUDxZoua6uNPAzaGMc0A20T+reMfRw==}
     peerDependencies:
       '@angular/common': ^13.0.0
       '@angular/core': ^13.0.0
       '@angular/forms': ^13.0.0
       '@angular/localize': ^13.0.0
+      '@popperjs/core': ^2.10.2
       rxjs: ^6.5.3 || ^7.4.0
     dependencies:
       '@angular/common': 13.2.4_@angular+core@13.2.4+rxjs@7.5.4
       '@angular/core': 13.2.4_rxjs@7.5.4+zone.js@0.11.4
       '@angular/forms': 13.2.4_06831d463319b639d7e00cba67be3b32
       '@angular/localize': 13.2.4_ceb231e9fac57869c99e1c448ab8c7bb
+      '@popperjs/core': 2.11.2
       rxjs: 7.5.4
       tslib: 2.3.1
     dev: false
@@ -2099,6 +2103,10 @@ packages:
       tslib: 2.3.1
       yargs-parser: 20.0.0
     dev: true
+
+  /@popperjs/core/2.11.2:
+    resolution: {integrity: sha512-92FRmppjjqz29VMJ2dn+xdyXZBrMlE42AV6Kq6BwjWV7CNUW1hs2FtxSNLQE+gJhaZ6AAmYuO9y8dshhcBl7vA==}
+    dev: false
 
   /@schematics/angular/13.2.5:
     resolution: {integrity: sha512-pUaTwyMZRy7laV9RQozREomiUKi7Tn4wdyyuCUSqVvaiLI+DKvWE4vJXA2+/ketfzRjx6xIaCEexjsHJ+2FNtg==}
@@ -3145,12 +3153,12 @@ packages:
     resolution: {integrity: sha1-aN/1++YMUes3cl6p4+0xDcwed24=}
     dev: true
 
-  /bootstrap-darkmode/0.9.1_bootstrap@4.6.1:
-    resolution: {integrity: sha512-uoJEo8jpi0bpNyHRmQ0dmDJUNYsTFSnqEJZikqGrLUDRomcVcgh4qF6WC3lU8nMyH0hAzxlzU2Xzn0NjSXMlCA==}
+  /bootstrap-darkmode/5.0.0-beta.1_bootstrap@5.1.3:
+    resolution: {integrity: sha512-jAZYUlq+CpzckJqj8NdNIfz9Qy/KcATG5GDDoKKmOcW6h9xFQv2ptbEcjEnXHjWGX21Ilum2N+Z0GU48GUpSDA==}
     peerDependencies:
-      bootstrap: '>=4.6'
+      bootstrap: '>=5'
     dependencies:
-      bootstrap: 4.6.1
+      bootstrap: 5.1.3_@popperjs+core@2.11.2
       tslib: 2.3.1
     dev: false
 
@@ -3159,11 +3167,12 @@ packages:
     engines: {node: '>=10'}
     dev: false
 
-  /bootstrap/4.6.1:
-    resolution: {integrity: sha512-0dj+VgI9Ecom+rvvpNZ4MUZJz8dcX7WCX+eTID9+/8HgOkv3dsRzi8BGeZJCQU6flWQVYxwTQnEZFrmJSEO7og==}
+  /bootstrap/5.1.3_@popperjs+core@2.11.2:
+    resolution: {integrity: sha512-fcQztozJ8jToQWXxVuEyXWW+dSo8AiXWKwiSSrKWsRB/Qt+Ewwza+JWoLKiTuQLaEPhdNAJ7+Dosc9DOIqNy7Q==}
     peerDependencies:
-      jquery: 1.9.1 - 3
-      popper.js: ^1.16.1
+      '@popperjs/core': ^2.10.2
+    dependencies:
+      '@popperjs/core': 2.11.2
     dev: false
 
   /brace-expansion/1.1.11:
@@ -6110,7 +6119,7 @@ packages:
     resolution: {integrity: sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==}
     dev: true
 
-  /ng-bootstrap-darkmode/0.5.0_4fcf17067784a3717479d8f2c5634aa0:
+  /ng-bootstrap-darkmode/0.5.0_b0d8ebfdcb8d90f41367b0cfcf7dcda9:
     resolution: {integrity: sha512-HmdPg5rYAIDZvKFtMrMnXXeazfhm3D3weM8jrqdEQFy7R7gDrEXCKfQolq604xBNOgESb1xxIayRoD8+1IGHHA==}
     peerDependencies:
       '@angular/common': ^12.1.1
@@ -6121,7 +6130,7 @@ packages:
       '@angular/common': 13.2.4_@angular+core@13.2.4+rxjs@7.5.4
       '@angular/core': 13.2.4_rxjs@7.5.4+zone.js@0.11.4
       '@angular/forms': 13.2.4_06831d463319b639d7e00cba67be3b32
-      bootstrap-darkmode: 0.9.1_bootstrap@4.6.1
+      bootstrap-darkmode: 5.0.0-beta.1_bootstrap@5.1.3
       tslib: 2.3.1
     dev: false
 

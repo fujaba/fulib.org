@@ -1,11 +1,11 @@
-<div class="btn-group btn-group-toggle mb-3"
-     ngbRadioGroup name="radioBasic" [ngModel]="markdown !== undefined" (ngModelChange)="switchMarkdown($event)">
+<div class="btn-group mb-3"
+     ngbRadioGroup [ngModel]="markdown !== undefined" (ngModelChange)="switchMarkdown($event)">
   <label ngbButtonLabel class="btn-secondary">
-    <input ngbButton type="radio" [value]="true">
+    <input ngbButton type="radio" class="btn-check" [value]="true">
     Markdown
   </label>
   <label ngbButtonLabel class="btn-secondary">
-    <input ngbButton type="radio" [value]="false">
+    <input ngbButton type="radio" class="btn-check" [value]="false">
     List
   </label>
 </div>

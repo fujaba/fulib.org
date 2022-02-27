@@ -3,7 +3,7 @@
     Run Anything
   </ng-container>
   <ng-container modal-body>
-    <input #input type="text" class="form-control text-monospace" ngbAutofocus (keyup.enter)="run(input.value); modal.close()">
+    <input #input type="text" class="form-control font-monospace" ngbAutofocus (keyup.enter)="run(input.value); modal.close()">
   </ng-container>
   <ng-container modal-footer>
     <button class="btn btn-secondary" (click)="modal.close()">

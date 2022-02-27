@@ -5,6 +5,6 @@
    routerLinkActive="active"
 >
   {{ page.title }}
-  <span *ngIf="page.wip" class="badge badge-secondary">WIP</span>
+  <span *ngIf="page.wip" class="badge bg-secondary">WIP</span>
 </a>
 <app-page-navigation *ngFor="let subPage of page.children; trackBy: pageUrl" [page]="subPage"></app-page-navigation>
