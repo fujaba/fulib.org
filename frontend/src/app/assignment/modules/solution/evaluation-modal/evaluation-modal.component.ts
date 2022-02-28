@@ -1,9 +1,9 @@
 import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import {ToastService} from 'ng-bootstrap-ext';
 import {EMPTY, of, Subscription} from 'rxjs';
 import {debounceTime, distinctUntilChanged, filter, map, share, switchMap, tap} from 'rxjs/operators';
 import {ModalComponent} from '../../../../shared/modal/modal.component';
-import {ToastService} from '../../../../toast.service';
 import {UserService} from '../../../../user/user.service';
 import {CodeSearchInfo, CreateEvaluationDto, Evaluation} from '../../../model/evaluation';
 import {SearchSummary} from '../../../model/search-result';
@@ -43,7 +43,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
 
   derivedSolutionCount?: number;
 
-  searchSummary?: SearchSummary & {level: string, message?: string};
+  searchSummary?: SearchSummary & { level: string, message?: string };
 
   subscriptions = new Subscription();
 

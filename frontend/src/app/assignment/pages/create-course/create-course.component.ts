@@ -1,16 +1,15 @@
-import {Component, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {DOCUMENT} from '@angular/common';
+import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+
+import {ToastService} from 'ng-bootstrap-ext';
 import {DndDropEvent} from 'ngx-drag-drop';
 import {forkJoin, Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 
-import {ToastService} from '../../../toast.service';
-
 import Assignment from '../../model/assignment';
-import Task from '../../model/task';
-import {AssignmentService} from '../../services/assignment.service';
 import Course from '../../model/course';
+import {AssignmentService} from '../../services/assignment.service';
 import {CourseService} from '../../services/course.service';
 
 @Component({

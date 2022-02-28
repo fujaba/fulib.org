@@ -54,6 +54,7 @@ specifiers:
   keycloak-angular: ^9.1.0
   keycloak-js: 15.1.0
   ng-bootstrap-darkmode: ^0.5.0
+  ng-bootstrap-ext: ^0.3.0-beta.2
   ng-terminal: ^5.0.0-beta.2
   ngx-clipboard: ^15.0.1
   ngx-drag-drop: ^13.1.0-alpha.1
@@ -93,6 +94,7 @@ dependencies:
   keycloak-angular: 9.1.0_176c3d9d6111b10f4c6a7b0b3e09238d
   keycloak-js: 15.1.0
   ng-bootstrap-darkmode: 0.5.0_b0d8ebfdcb8d90f41367b0cfcf7dcda9
+  ng-bootstrap-ext: 0.3.0-beta.2_478c777ba504f3dabd1ed533e8efa1fa
   ng-terminal: 5.0.0-beta.2_916208d3fdf5898e77c73227fd357437
   ngx-clipboard: 15.0.1_916208d3fdf5898e77c73227fd357437
   ngx-drag-drop: 13.1.0-alpha.1_916208d3fdf5898e77c73227fd357437
@@ -6136,6 +6138,19 @@ packages:
       '@angular/core': 13.2.4_rxjs@7.5.4+zone.js@0.11.4
       '@angular/forms': 13.2.4_06831d463319b639d7e00cba67be3b32
       bootstrap-darkmode: 5.0.0-beta.1_bootstrap@5.1.3
+      tslib: 2.3.1
+    dev: false
+
+  /ng-bootstrap-ext/0.3.0-beta.2_478c777ba504f3dabd1ed533e8efa1fa:
+    resolution: {integrity: sha512-2fBfs6LCFttyTso7900Gj+u6GOKbM38N3kqV6dr1gBU1SgTViSWH3nxnYhC8PEzTdHcmJ62Vs+NEPMTSIpl5mw==}
+    peerDependencies:
+      '@angular/common': ^13.0.0
+      '@angular/core': ^13.0.0
+      '@ng-bootstrap/ng-bootstrap': ^12.0.0
+    dependencies:
+      '@angular/common': 13.2.4_@angular+core@13.2.4+rxjs@7.5.4
+      '@angular/core': 13.2.4_rxjs@7.5.4+zone.js@0.11.4
+      '@ng-bootstrap/ng-bootstrap': 12.0.0_040e4f373c14b34374759f5a763107a2
       tslib: 2.3.1
     dev: false
 
