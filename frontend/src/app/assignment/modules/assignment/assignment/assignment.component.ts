@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {ToastService} from 'ng-bootstrap-ext';
 import {combineLatest} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
-import {ToastService} from '../../../../toast.service';
 import Assignment from '../../../model/assignment';
 import {AssignmentService} from '../../../services/assignment.service';
 import {assignmentChildRoutes} from '../assignment-routing.module';

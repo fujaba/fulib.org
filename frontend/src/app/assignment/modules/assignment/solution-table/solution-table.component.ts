@@ -1,15 +1,15 @@
 import {Component, OnInit, TrackByFunction} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {ToastService} from 'ng-bootstrap-ext';
 import {BehaviorSubject, combineLatest, forkJoin, Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
-import {ToastService} from '../../../../toast.service';
 import {Assignee} from '../../../model/assignee';
 import Assignment from '../../../model/assignment';
 import Solution, {AuthorInfo} from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
+import {CONFIG_OPTIONS, ConfigKey, ConfigService} from '../../../services/config.service';
 import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
-import {CONFIG_OPTIONS, ConfigKey, ConfigService} from '../../../services/config.service';
 import {TelemetryService} from '../../../services/telemetry.service';
 
 @Component({

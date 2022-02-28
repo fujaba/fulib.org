@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import {ToastService} from 'ng-bootstrap-ext';
 import {forkJoin} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import {ModalComponent} from '../../../../shared/modal/modal.component';
-import {ToastService} from '../../../../toast.service';
 import Assignment from '../../../model/assignment';
 import Solution from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';

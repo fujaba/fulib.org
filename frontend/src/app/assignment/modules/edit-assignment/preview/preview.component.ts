@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {KeycloakService} from 'keycloak-angular';
-import {ToastService} from '../../../../toast.service';
+import {ToastService} from 'ng-bootstrap-ext';
 import Assignment from '../../../model/assignment';
 import Task from '../../../model/task';
 import {AssignmentContext} from '../../../services/assignment.context';
@@ -40,12 +40,12 @@ export class PreviewComponent implements OnInit {
       token: undefined,
     }) : this.assignmentService.create(assignment);
     operation.subscribe(result => {
-      this.submitting = false
+      this.submitting = false;
       this.toastService.success('Assignment', `Successfully ${assignment._id ? 'updated' : 'created'} assignment`);
       this.assignmentService.saveDraft(assignment._id);
       this.router.navigate(['/assignments', result._id, 'share']);
     }, error => {
-      this.submitting = false
+      this.submitting = false;
       this.toastService.error('Assignment', `Failed to ${assignment._id ? 'update' : 'create'} assignment`, error);
     });
   }

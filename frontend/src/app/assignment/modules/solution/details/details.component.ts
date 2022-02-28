@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {ToastService} from 'ng-bootstrap-ext';
 import {forkJoin} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
-import {ToastService} from '../../../../toast.service';
 import Assignment from '../../../model/assignment';
 import Solution from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
@@ -66,6 +66,6 @@ export class SolutionDetailsComponent implements OnInit {
       this.router.navigate(['../..'], {relativeTo: this.route});
     }, error => {
       this.toastService.error('Solution', 'Failed to delete solution', error);
-    })
+    });
   }
 }

@@ -1,10 +1,10 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {ToastService} from 'ng-bootstrap-ext';
 import {forkJoin, of, Subscription} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
 
 import {Marker} from '../../../shared/model/marker';
-import {ToastService} from '../../../toast.service';
 import {UserService} from '../../../user/user.service';
 import Assignment from '../../model/assignment';
 import Course from '../../model/course';
