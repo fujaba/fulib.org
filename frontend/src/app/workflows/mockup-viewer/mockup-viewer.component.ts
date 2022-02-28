@@ -86,6 +86,10 @@ export class MockupViewerComponent implements OnChanges {
       case 'pages':
         this.maxIndex = this.generateResult.numberOfPages - 1;
 
+        if (this.maxIndex < 0) {
+          this.maxIndex = 0;
+        }
+
         if (this.maxIndex && (this.index > this.maxIndex)) {
           this.index = this.maxIndex;
         }
@@ -94,6 +98,10 @@ export class MockupViewerComponent implements OnChanges {
         break;
       case 'objects':
         this.maxIndex = this.generateResult.numberOfDiagrams - 1;
+
+        if (this.maxIndex < 0) {
+          this.maxIndex = 0;
+        }
 
         if (this.maxIndex && (this.index > this.maxIndex)) {
           this.index = this.maxIndex;
