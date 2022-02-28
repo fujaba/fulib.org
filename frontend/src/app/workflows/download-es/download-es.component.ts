@@ -1,8 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
-import {ToastService} from '../../toast.service';
+import {ToastService} from 'ng-bootstrap-ext';
 import {ExportOptions} from '../model/ExportOptions';
 import {PrivacyService} from '../../privacy.service';
 import {WorkflowsService} from '../workflows.service';

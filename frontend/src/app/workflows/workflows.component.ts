@@ -1,14 +1,14 @@
 import {HttpClient} from '@angular/common/http';
 import {Component, HostListener, NgZone, OnInit, ViewChild} from '@angular/core';
 
-import {ToastService} from '../toast.service';
+import {ToastService} from 'ng-bootstrap-ext';
+import {EditorConfiguration} from 'codemirror';
 import {PrivacyService} from '../privacy.service';
 import {LintService} from '../shared/lint.service';
 import {WorkflowsService} from './workflows.service';
 import {GenerateResult} from './model/GenerateResult';
 import {IOutputData, SplitComponent} from 'angular-split';
 import {environment} from '../../environments/environment';
-import {EditorConfiguration} from 'codemirror';
 import {cmWorkflowsHint} from './model/helper/workflows-hint';
 
 @Component({
