@@ -8,6 +8,8 @@ import {WorkflowsService} from './workflows.service';
 import {GenerateResult} from './model/GenerateResult';
 import {IOutputData, SplitComponent} from 'angular-split';
 import {environment} from '../../environments/environment';
+import {EditorConfiguration} from 'codemirror';
+import {cmWorkflowsHint} from './model/helper/workflows-hint';
 
 @Component({
   selector: 'app-workflows',
@@ -18,7 +20,7 @@ export class WorkflowsComponent implements OnInit {
   @ViewChild('split') split!: SplitComponent;
 
   public content!: any;
-  public codemirrorOptions: any;
+  public codemirrorOptions: EditorConfiguration | Record<string, any>;
 
   public generateResult!: GenerateResult;
 
@@ -52,6 +54,9 @@ export class WorkflowsComponent implements OnInit {
       },
       autofocus: true,
       tabSize: 2,
+      hintOptions: {
+        hint: cmWorkflowsHint,
+      },
     };
   }
 
