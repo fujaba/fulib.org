@@ -8,7 +8,28 @@ import {ProjectConfig} from '../../shared/model/project-config';
 import {ProjectZipRequest} from '../../shared/model/project-zip-request';
 import {ConfigService} from '../config.service';
 
-type Format = 'gradle' | 'local' | 'persistent';
+const formats = [
+  {
+    id: 'gradle',
+    name: 'Gradle Project',
+    description: 'You can download your scenario prepared as a Gradle project. ' +
+      'Just extract the downloaded Zip file to a folder and open it with your favorite IDE. ' +
+      'Make sure to run the <code>check</code> task afterwards to generate Java classes and execute the tests. ',
+  },
+  {
+    id: 'local',
+    name: 'Local Project',
+    description: 'Create a new local Project from the scenario and config. ' +
+      'The Project will appear in the Projects tab and is stored in your browser. ',
+  },
+  {
+    id: 'persistent',
+    name: 'Persistent Project',
+    description: 'Create a new persistent Project from the scenario and config. ' +
+      'The Project will appear in the Projects tab and is bound to your user account. ' +
+      'You will be able to access it from anywhere just by logging in. ',
+  },
+] as const;
 
 @Component({
   selector: 'app-config',
@@ -18,34 +39,9 @@ type Format = 'gradle' | 'local' | 'persistent';
 export class ConfigComponent implements OnInit {
   config: ProjectConfig;
 
-  formats = [
-    {
-      id: 'gradle',
-      name: 'Gradle Project',
-      description: 'You can download your scenario prepared as a Gradle project. ' +
-        'Just extract the downloaded Zip file to a folder and open it with your favorite IDE. ' +
-        'Make sure to run the <code>check</code> task afterwards to generate Java classes and execute the tests. ',
-    },
-    {
-      id: 'local',
-      name: 'Local Project',
-      description: 'Create a new local Project from the scenario and config. ' +
-        'The Project will appear in the Projects tab and is stored in your browser. ' +
-        '<span class="badge bg-primary">New</span>',
-    },
-    {
-      id: 'persistent',
-      name: 'Persistent Project',
-      description: 'Create a new persistent Project from the scenario and config. ' +
-        'The Project will appear in the Projects tab and is bound to your user account. ' +
-        'You will be able to access it from anywhere just by logging in. ' +
-        '<span class="badge bg-primary">New</span>',
-    },
-  ];
+  formats = formats;
 
-  format?: Format;
-
-  formatMatcher = ({id}) => id === this.format;
+  format?: (typeof formats)[number];
 
   constructor(
     private ngbModal: NgbModal,
@@ -75,7 +71,7 @@ export class ConfigComponent implements OnInit {
   }
 
   export(): void {
-    switch (this.format) {
+    switch (this.format?.id) {
       case 'gradle':
         return this.downloadProjectZip();
       case 'local':
