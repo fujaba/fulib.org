@@ -13,8 +13,7 @@ repositories {
 }
 
 dependencies {
-    // https://mvnrepository.com/artifact/org.fulib/fulibWorkflows
-    implementation group: 'org.fulib', name: 'fulibWorkflows', version: '0.4.1'
+    implementation fulibWorkflowsDependency
 
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version: '2.6.3'
