@@ -1,7 +1,7 @@
 <div class="h-100 d-flex flex-column">
-  <div class="btn-toolbar mb-3 mx-2" role="toolbar" aria-label="Toolbar">
-    <div ngbDropdown>
-      <button class="btn btn-primary m-1" id="exampleSelection"
+  <div class="btn-toolbar align-items-center p-3" role="toolbar" aria-label="Toolbar">
+    <div ngbDropdown class="d-inline-block me-2">
+      <button class="btn btn-primary" id="exampleSelection"
               ngbDropdownToggle [disabled]="loading">{{currentExampleDesc}}</button>
       <div ngbDropdownMenu aria-labelledby="exampleSelection">
         <ng-container *ngFor="let example of examplesList; index as i">
@@ -9,13 +9,11 @@
         </ng-container>
       </div>
     </div>
-
-    <button class="btn btn-primary m-1" (click)="generate()" [disabled]="loading">
+    <button class="btn btn-primary me-2" (click)="generate()" [disabled]="loading">
       <span *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
       {{ loading ? 'Generating...' : 'Generate' }}
     </button>
-
-    <a role="button" class="btn btn-success m-1" routerLink="download">
+    <a role="button" class="btn btn-success me-2" routerLink="download">
       Download
     </a>
   </div>
