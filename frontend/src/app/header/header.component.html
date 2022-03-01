@@ -8,8 +8,8 @@
     </button>
     <div [ngbCollapse]="menuCollapsed" class="collapse navbar-collapse">
       <ul class="navbar-nav me-auto">
-        <li class="nav-item" routerLinkActive="active">
-          <a class="nav-link" routerLink="/scenarios">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/scenarios" routerLinkActive="active">
             Scenarios
           </a>
         </li>
@@ -20,17 +20,17 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" routerLink="/docs">
+          <a class="nav-link" routerLink="/docs" routerLinkActive="active">
             Docs
           </a>
         </li>
-        <li class="nav-item" routerLinkActive="active">
-          <a class="nav-link" routerLink="/projects">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/projects" routerLinkActive="active">
             Projects
           </a>
         </li>
-        <li class="nav-item" routerLinkActive="active" ngbDropdown>
-          <a tabindex="0" class="nav-link" ngbDropdownToggle id="assignmentsDropdown" role="button">
+        <li class="nav-item" [routerLinkActive]="[]" #rla="routerLinkActive" ngbDropdown>
+          <a tabindex="0" class="nav-link" [class.active]="rla.isActive" ngbDropdownToggle id="assignmentsDropdown" role="button">
             Assignments
           </a>
           <div ngbDropdownMenu aria-labelledby="assignmentsDropdown">
@@ -81,12 +81,12 @@
           </div>
         </li>
         <li class="nav-item">
-          <a class="nav-link" [routerLink]="[{outlets: {modal: 'feedback'}}]">
+          <a class="nav-link" [routerLink]="[{outlets: {modal: 'feedback'}}]" routerLinkActive="active">
             Feedback
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" [routerLink]="[{outlets: {modal: 'changelog'}}]">
+          <a class="nav-link" [routerLink]="[{outlets: {modal: 'changelog'}}]" routerLinkActive="active">
             What's New
           </a>
         </li>

@@ -12,11 +12,11 @@
           Format
         </label>
         <select class="form-select" id="formatSelect" [(ngModel)]="format">
-          <option *ngFor="let format of formats" [ngValue]="format.id">{{ format.name }}</option>
+          <option *ngFor="let format of formats" [ngValue]="format">{{ format.name }}</option>
         </select>
       </div>
     </div>
-    <p *ngIf="format" [innerHTML]="formats.find(formatMatcher)!.description! | safeHtml">
+    <p *ngIf="format" [innerHTML]="format.description | safeHtml">
     </p>
   </ng-container>
   <ng-container modal-footer>
