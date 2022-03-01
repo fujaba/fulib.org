@@ -1,13 +1,26 @@
 import {Injectable} from '@angular/core';
-import {Marker} from './model/marker';
+import {HttpClient} from '@angular/common/http';
+
 import * as Yaml from 'js-yaml';
+import {Marker} from './model/marker';
 import Ajv, {ValidateFunction} from 'ajv';
-import {workflowsSchema} from '../workflows/model/helper/workflows.schema';
 
 @Injectable({providedIn: 'root'})
 export class LintService {
   private ajv!: Ajv;
   private validate!: ValidateFunction;
+
+  constructor(
+    private http: HttpClient,
+  ) {
+    this.ajv = new Ajv({strict: false, strictSchema: false});
+    this.http.get('https://raw.githubusercontent.com/fujaba/fulibWorkflows/main/schemas/fulibWorkflows.schema.json').subscribe((schema) => {
+      this.ajv.addSchema(schema, 'fulibWorkflows');
+    });
+    this.http.get('https://raw.githubusercontent.com/fujaba/fulibWorkflows/main/schemas/page.schema.json').subscribe((schema) => {
+      this.ajv.addSchema(schema, 'page.schema.json');
+    });
+  }
 
   lint(output: string): Marker[] {
     const result: Marker[] = [];
@@ -56,12 +69,21 @@ export class LintService {
   }
 
   lintYamlString(content: string): boolean {
-    this.ajv = new Ajv();
-    this.validate = this.ajv.compile(workflowsSchema);
-    return this.validate(Yaml.load(content));
+    const workflowsSchema = this.ajv.getSchema('fulibWorkflows')?.schema;
+
+    if (workflowsSchema) {
+      this.validate = this.ajv.compile(workflowsSchema);
+      return this.validate(Yaml.load(content));
+    } else {
+      return false;
+    }
   }
 
   evaluateErrorMessage(): string {
+    if (!this.validate) {
+      return 'Schema could not be loaded';
+    }
+
     const errors = this.validate.errors;
 
     let result: string = 'Description: \n';
