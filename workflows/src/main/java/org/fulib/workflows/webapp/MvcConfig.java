@@ -9,7 +9,7 @@ public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/workflows/**")
-                .addResourceLocations("file:/" + System.getProperty("java.io.tmpdir") + "/fulib.org/workflows/")
+                .addResourceLocations("file://" + System.getProperty("java.io.tmpdir") + "/fulib.org/workflows/")
                 .setCachePeriod(60 * 60);
     }
 }
