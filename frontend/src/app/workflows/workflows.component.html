@@ -17,44 +17,37 @@
       Download
     </a>
   </div>
-
-  <!-- Main Content Area -->
-  <div class="h-100">
-    <as-split #split
-              direction="horizontal"
-              (dragStart)="dragStartHandler()"
-              (dragEnd)="dragEndHandler()"
-              (gutterClick)="splitGutterClick($event)">
-      <as-split-area [size]="30">
-        <app-autotheme-codemirror class="cm-h-100" [(content)]="content" [options]="codemirrorOptions"></app-autotheme-codemirror>
-      </as-split-area>
-
-      <as-split-area [size]="70">
-        <as-split
-          direction="vertical"
-          (dragStart)="dragStartHandler()"
-          (dragEnd)="dragEndHandler()"
-          (gutterClick)="splitGutterClick($event)">
-          <as-split-area [size]="35">
-            <div class="h-100">
-              <iframe *ngIf="generateResult" title="Boards" [src]="url | safeResourceUrl"
-                      class="w-100 h-100">
-              </iframe>
-              <div [hidden]="showIframeHider === false" class="iframe-hider"></div>
-            </div>
-          </as-split-area>
-          <as-split-area [size]="65">
-            <div class="h-100">
-              <app-mockup-viewer [generateResult]="generateResult"
-                                 [index]="newPageIndex"
-                                 [currentDisplay]="currentDisplay"></app-mockup-viewer>
-              <div [hidden]="showIframeHider === false" class="iframe-hider"></div>
-            </div>
-          </as-split-area>
-        </as-split>
-      </as-split-area>
-    </as-split>
-  </div>
+  <as-split #split
+            class="flex-grow-1"
+            direction="horizontal"
+            (dragStart)="dragStartHandler()"
+            (dragEnd)="dragEndHandler()"
+            (gutterClick)="splitGutterClick($event)">
+    <as-split-area [size]="30">
+      <app-autotheme-codemirror class="cm-h-100" [(content)]="content"
+                                [options]="codemirrorOptions"></app-autotheme-codemirror>
+    </as-split-area>
+    <as-split-area [size]="70">
+      <as-split
+        direction="vertical"
+        (dragStart)="dragStartHandler()"
+        (dragEnd)="dragEndHandler()"
+        (gutterClick)="splitGutterClick($event)">
+        <as-split-area [size]="35">
+          <iframe *ngIf="generateResult" title="Boards" [src]="url | safeResourceUrl"
+                  class="w-100 h-100">
+          </iframe>
+          <div [hidden]="showIframeHider === false" class="iframe-hider"></div>
+        </as-split-area>
+        <as-split-area [size]="65">
+          <app-mockup-viewer [generateResult]="generateResult"
+                             [index]="newPageIndex"
+                             [currentDisplay]="currentDisplay"></app-mockup-viewer>
+          <div [hidden]="showIframeHider === false" class="iframe-hider"></div>
+        </as-split-area>
+      </as-split>
+    </as-split-area>
+  </as-split>
 </div>
 
 <router-outlet></router-outlet>

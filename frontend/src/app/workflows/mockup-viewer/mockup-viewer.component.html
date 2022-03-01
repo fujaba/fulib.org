@@ -1,4 +1,4 @@
-<div class="h-100">
+<div class="h-100 d-flex flex-column">
   <div class="btn-toolbar align-items-center p-2" role="toolbar" aria-label="Toolbar">
     <div class="btn-group btn-group-sm me-auto" role="group" aria-label="Page controls">
       <button type="button" class="btn btn-secondary btn-sm"
@@ -35,9 +35,7 @@
       </label>
     </div>
   </div>
-
-  <div class="h-100">
-    <iframe title="Mockups" [src]="url | safeResourceUrl"
-            height="100%" width="100%"></iframe>
+  <div class="flex-grow-1">
+    <iframe class="w-100 h-100" title="Mockups" [src]="url | safeResourceUrl"></iframe>
   </div>
 </div>
