@@ -67,12 +67,12 @@ export class WorkflowsComponent implements OnInit {
   private checkForStoredContent() {
     const storage = this.privacyService.getStorage('workflows');
 
-    if (storage) {
+    if (storage && !this.currentExampleDesc) {
       this.content = storage;
       this.generate();
+    } else {
+      this.setExample(this.currentExampleDesc);
     }
-
-    this.setExample(this.currentExampleDesc);
   }
 
   changeExampleContent(newExample: string | null) {
@@ -87,7 +87,13 @@ export class WorkflowsComponent implements OnInit {
 
     if (this.loading) return;
 
-    this.lintService.lintYamlString(this.content);
+    const newContent = this.lintService.lintYamlString(this.content);
+
+    if (!newContent) {
+      return;
+    } else {
+      this.content = newContent;
+    }
 
     this.loading = true;
 

@@ -56,10 +56,10 @@ export class LintService {
     return result;
   }
 
-  lintYamlString(content: string): string {
+  lintYamlString(content: string): string | null {
     if (!content.includes('- workflow: ')) {
       this.toastService.error('Lint Error', 'Needs at least one workflow note (best at the beginning)');
-      return content;
+      return null;
     }
 
     // Replace tabs with two spaces for snakeyaml parser
