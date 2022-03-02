@@ -1,6 +1,6 @@
 <div class="h-100 d-flex flex-column">
-  <div class="btn-toolbar align-items-center p-2" role="toolbar" aria-label="Toolbar">
-    <div class="btn-group btn-group-sm me-auto" role="group" aria-label="Page controls">
+  <div class="d-flex align-items-center" role="toolbar" aria-label="Toolbar">
+    <div class="btn-group btn-group-sm m-2" role="group" aria-label="Page controls">
       <button type="button" class="btn btn-secondary btn-sm"
               (click)="setFirst()"
               [disabled]="currentDisplay === 'class'">
@@ -23,7 +23,7 @@
       </button>
     </div>
 
-    <ul ngbNav #nav="ngbNav" class="nav-tabs nav" role="tablist" [(activeId)]="index">
+    <ul ngbNav #nav="ngbNav" class="nav-tabs nav flex-shrink-1 overflow-auto me-auto" role="tablist" [(activeId)]="index" style="flex-wrap: nowrap">
       <li *ngFor="let tab of currentTabs" [ngbNavItem]="tab.index">
         <a ngbNavLink>
           {{tab.name}}
@@ -34,7 +34,7 @@
       </li>
     </ul>
 
-    <div class="btn-group btn-group-sm btn-group-toggle" ngbRadioGroup name="radioBasic" [(ngModel)]="currentDisplay"
+    <div class="btn-group btn-group-sm btn-group-toggle m-2" ngbRadioGroup name="radioBasic" [(ngModel)]="currentDisplay"
          (ngModelChange)="evaluateTabs()">
       <label ngbButtonLabel class="btn-info btn-sm">
         <input ngbButton type="radio" class="btn-check" [value]="'pages'"> Pages
