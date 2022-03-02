@@ -1,5 +1,6 @@
 import {Component, Input, OnChanges} from '@angular/core';
 
+import {WorkflowTab} from '../model/WorkflowTab';
 import {GenerateResult} from '../model/GenerateResult';
 import {environment} from '../../../environments/environment';
 
@@ -13,7 +14,7 @@ export class MockupViewerComponent implements OnChanges {
   @Input() index: number;
   @Input() currentDisplay!: 'pages' | 'objects' | 'class';
 
-  public url!: string;
+  public currentTabs!: WorkflowTab[];
 
   private maxIndex!: number;
 
@@ -21,10 +22,10 @@ export class MockupViewerComponent implements OnChanges {
   }
 
   ngOnChanges(): void {
-    this.evaluateUrl();
+    this.evaluateTabs();
   }
 
-  next() {
+  next(): void {
     if (!this.generateResult) {
       return;
     }
@@ -34,10 +35,9 @@ export class MockupViewerComponent implements OnChanges {
     }
 
     this.index += 1;
-    this.evaluateUrl();
   }
 
-  previous() {
+  previous(): void {
     if (!this.generateResult) {
       return;
     }
@@ -47,99 +47,64 @@ export class MockupViewerComponent implements OnChanges {
     }
 
     this.index -= 1;
-    this.evaluateUrl();
   }
 
-  setFirst() {
+  setFirst(): void {
     this.index = 0;
-    this.evaluateUrl();
   }
 
-  setLast() {
+  setLast(): void {
     this.index = this.maxIndex;
-    this.evaluateUrl();
   }
 
-  evaluateUrl(): void {
+  evaluateTabs(): void {
     if (!this.generateResult) {
-      this.url = environment.workflowsUrl + '/notYetGenerated';
       return;
     }
-
-    const elementCouldExist = this.checkForContent();
-
-    if (!elementCouldExist) {
-      return;
-    }
-
-    const fileUrl = this.getCurrentIFrameContent();
-
-    this.url = environment.workflowsUrl + '/workflows' + fileUrl;
+    this.index = 0;
+    this.currentTabs = this.getCurrentTabs();
   }
 
-  private getCurrentIFrameContent(): string {
-    let result;
+  private getCurrentTabs(): WorkflowTab[] {
+    const result: WorkflowTab[] = [];
+
     switch (this.currentDisplay) {
       case 'pages':
+        this.generateResult.pages.forEach((value, key) => {
+          const newTab = this.createTab(key, value);
+          result.push(newTab);
+        });
         this.maxIndex = this.generateResult.numberOfPages - 1;
-
-        if (this.maxIndex < 0) {
-          this.maxIndex = 0;
-        }
-
-        if (this.maxIndex && (this.index > this.maxIndex)) {
-          this.index = this.maxIndex;
-        }
-
-        result = this.getCurrentContent(this.generateResult.pages);
         break;
       case 'objects':
+        this.generateResult.diagrams.forEach((value, key) => {
+          const newTab = this.createTab(key, value);
+          result.push(newTab);
+        });
         this.maxIndex = this.generateResult.numberOfDiagrams - 1;
-
-        if (this.maxIndex < 0) {
-          this.maxIndex = 0;
-        }
-
-        if (this.maxIndex && (this.index > this.maxIndex)) {
-          this.index = this.maxIndex;
-        }
-
-        result = this.getCurrentContent(this.generateResult.diagrams);
         break;
       case 'class':
-        this.index = 0;
-        result = this.generateResult.classDiagram;
+        if (this.generateResult.classDiagram) {
+          const newTab = this.createTab(0, this.generateResult.classDiagram);
+          result.push(newTab);
+        }
+        this.maxIndex = 0;
         break;
     }
 
     return result;
   }
 
-  private getCurrentContent(generateMap: Map<number, string>): string | null {
-    if (!generateMap) {
-      return null;
-    }
+  private createTab(index: number, value: string): WorkflowTab {
+    const url = environment.workflowsUrl + '/workflows/' + value;
 
-    const currentContent = generateMap.get(this.index);
+    const lastSlash = value.lastIndexOf('/');
+    const name = value.slice(lastSlash + 1, value.length);
 
-    if (!currentContent) {
-      return null;
-    }
-
-    return currentContent;
-  }
-
-  private checkForContent(): boolean {
-    if (this.generateResult.numberOfPages === 0 && this.currentDisplay === 'pages') {
-      this.url = environment.workflowsUrl + '/pagesFallback';
-      return false;
-    } else if (this.generateResult.numberOfDiagrams === 0 && this.currentDisplay === 'objects') {
-      this.url = environment.workflowsUrl + '/objectsFallback';
-      return false;
-    } else if (!this.generateResult.classDiagram && this.currentDisplay === 'class') {
-      this.url = environment.workflowsUrl + '/classFallback';
-      return false;
-    }
-    return true;
+    return {
+      index: index,
+      name: name,
+      url: url,
+    };
   }
 }

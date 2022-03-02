@@ -22,8 +22,20 @@
         Last
       </button>
     </div>
+
+    <ul ngbNav #nav="ngbNav" class="nav-tabs nav" role="tablist" [(activeId)]="index">
+      <li *ngFor="let tab of currentTabs" [ngbNavItem]="tab.index">
+        <a ngbNavLink>
+          {{tab.name}}
+        </a>
+        <ng-template ngbNavContent>
+          <iframe class="w-100 h-100" title="Mockups" [src]="tab.url | safeResourceUrl"></iframe>
+        </ng-template>
+      </li>
+    </ul>
+
     <div class="btn-group btn-group-sm btn-group-toggle" ngbRadioGroup name="radioBasic" [(ngModel)]="currentDisplay"
-         (ngModelChange)="evaluateUrl()">
+         (ngModelChange)="evaluateTabs()">
       <label ngbButtonLabel class="btn-info btn-sm">
         <input ngbButton type="radio" class="btn-check" [value]="'pages'"> Pages
       </label>
@@ -35,7 +47,5 @@
       </label>
     </div>
   </div>
-  <div class="flex-grow-1">
-    <iframe class="w-100 h-100" title="Mockups" [src]="url | safeResourceUrl"></iframe>
-  </div>
+  <div [ngbNavOutlet]="nav" class="flex-grow-1"></div>
 </div>

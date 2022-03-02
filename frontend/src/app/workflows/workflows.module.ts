@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
-import {NgbButtonsModule, NgbDropdownModule} from '@ng-bootstrap/ng-bootstrap';
+import {NgbButtonsModule, NgbDropdownModule, NgbNavModule} from '@ng-bootstrap/ng-bootstrap';
 
 import {AngularSplitModule} from 'angular-split';
 import {WorkflowsService} from './workflows.service';
@@ -26,6 +26,7 @@ import {MockupViewerComponent} from './mockup-viewer/mockup-viewer.component';
     NgbDropdownModule,
     FormsModule,
     NgbButtonsModule,
+    NgbNavModule,
   ],
   providers: [
     WorkflowsService,
