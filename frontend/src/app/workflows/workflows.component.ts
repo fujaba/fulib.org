@@ -24,8 +24,8 @@ export class WorkflowsComponent implements OnInit {
 
   public generateResult!: GenerateResult;
 
-  public currentExampleDesc: string = 'Select example';
-  public examplesList = ['New Workflow', 'Data Modelling', 'Microservices', 'Pages'];
+  public currentExampleDesc: string | null = null;
+  public examplesList = ['Data Modelling', 'Microservices', 'Pages'];
 
   public showIframeHider = false;
   public newPageIndex: number = 0;
@@ -61,16 +61,29 @@ export class WorkflowsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.setExample(this.examplesList[0]);
+    this.checkForStoredContent();
   }
 
-  changeExampleContent(index: number) {
-    this.currentExampleDesc = this.examplesList[index];
+  private checkForStoredContent() {
+    const storage = this.privacyService.getStorage('workflows');
+
+    if (storage) {
+      this.content = storage;
+      this.generate();
+    }
+
     this.setExample(this.currentExampleDesc);
   }
 
+  changeExampleContent(newExample: string | null) {
+    this.currentExampleDesc = newExample;
+    this.checkForStoredContent();
+  }
+
   generate() {
-    this.privacyService.setStorage('workflows', this.content);
+    if (!this.currentExampleDesc) {
+      this.privacyService.setStorage('workflows', this.content);
+    }
 
     if (this.loading) return;
 
@@ -141,8 +154,13 @@ export class WorkflowsComponent implements OnInit {
     return environment.workflowsUrl + '/workflows' + this.generateResult.board;
   }
 
-  private setExample(exampleName: string) {
+  private setExample(exampleName: string | null) {
+    if (!exampleName) {
+      exampleName = 'New Workflow';
+    }
+
     const url = `/assets/examples/workflows/${exampleName.replace(' ', '')}.es.yaml`;
+
     this.http.get(url, {responseType: 'text'}).subscribe(
       (value) => {
         this.content = value;

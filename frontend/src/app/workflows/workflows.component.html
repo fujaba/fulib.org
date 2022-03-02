@@ -1,14 +1,12 @@
 <div class="h-100 d-flex flex-column">
   <div class="btn-toolbar align-items-center p-3" role="toolbar" aria-label="Toolbar">
-    <div ngbDropdown class="d-inline-block me-2">
-      <button class="btn btn-primary" id="exampleSelection"
-              ngbDropdownToggle [disabled]="loading">{{currentExampleDesc}}</button>
-      <div ngbDropdownMenu aria-labelledby="exampleSelection">
-        <ng-container *ngFor="let example of examplesList; index as i">
-          <button ngbDropdownItem (click)="changeExampleContent(i)">{{example}}</button>
-        </ng-container>
-      </div>
-    </div>
+    <select  class="form-select w-auto me-2"
+             [disabled]="loading"
+             [ngModel]="currentExampleDesc"
+             (ngModelChange)="changeExampleContent($event)">
+      <option [ngValue]="null">Select Example...</option>
+      <option *ngFor="let example of examplesList" label="{{example}}" [ngValue]="example"></option>
+    </select>
     <button class="btn btn-primary me-2" (click)="generate()" [disabled]="loading">
       <span *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
       {{ loading ? 'Generating...' : 'Generate' }}
