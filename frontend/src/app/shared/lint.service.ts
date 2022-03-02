@@ -1,25 +1,13 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-
-import * as Yaml from 'js-yaml';
 import {Marker} from './model/marker';
-import Ajv, {ValidateFunction} from 'ajv';
+import {ToastService} from 'ng-bootstrap-ext';
 
 @Injectable({providedIn: 'root'})
 export class LintService {
-  private ajv!: Ajv;
-  private validate!: ValidateFunction;
 
   constructor(
-    private http: HttpClient,
+    private toastService: ToastService,
   ) {
-    this.ajv = new Ajv({strict: false, strictSchema: false});
-    this.http.get('https://raw.githubusercontent.com/fujaba/fulibWorkflows/main/schemas/fulibWorkflows.schema.json').subscribe((schema) => {
-      this.ajv.addSchema(schema, 'fulibWorkflows');
-    });
-    this.http.get('https://raw.githubusercontent.com/fujaba/fulibWorkflows/main/schemas/page.schema.json').subscribe((schema) => {
-      this.ajv.addSchema(schema, 'page.schema.json');
-    });
   }
 
   lint(output: string): Marker[] {
@@ -68,52 +56,13 @@ export class LintService {
     return result;
   }
 
-  lintYamlString(content: string): boolean {
-    const workflowsSchema = this.ajv.getSchema('fulibWorkflows')?.schema;
-
-    if (workflowsSchema) {
-      this.validate = this.ajv.compile(workflowsSchema);
-      return this.validate(Yaml.load(content));
-    } else {
-      return false;
-    }
-  }
-
-  evaluateErrorMessage(): string {
-    if (!this.validate) {
-      return 'Schema could not be loaded';
+  lintYamlString(content: string): string {
+    if (!content.includes('- workflow: ')) {
+      this.toastService.error('Lint Error', 'Needs at least one workflow note (best at the beginning)');
+      return content;
     }
 
-    const errors = this.validate.errors;
-
-    let result: string = 'Description: \n';
-
-    if (!errors) {
-      return result;
-    }
-
-    // Wrong Item Index
-    let index = errors[0].instancePath;
-
-    // Cleanup Index
-    index = index.replace("/", "")
-
-    result += 'Error at entry: ' + index + '\n';
-
-    // Evaluate correct error
-    for (const error of errors) {
-      if (error.keyword !== 'required') {
-        const elementReference = error.params.additionalProperty;
-
-        if (elementReference) {
-          result += 'Wrong element: "' + elementReference + '"\n';
-        }
-
-        result += error.message;
-        break;
-      }
-    }
-
-    return result;
+    // Replace tabs with two spaces for snakeyaml parser
+    return content.replace(/\t/g, '  ');
   }
 }

@@ -87,21 +87,7 @@ export class WorkflowsComponent implements OnInit {
 
     if (this.loading) return;
 
-    if (!this.content.includes('- workflow: ')) {
-      this.toastService.error('Lint Error', 'Needs at least one workflow note (best at the beginning)');
-      return;
-    }
-
-    // Replace tabs with two spaces for js-yaml and snakeyaml parser
-    this.content = this.content.replace(/\t/g, '  ');
-
-    const validYaml = this.lintService.lintYamlString(this.content);
-
-    if (!validYaml) {
-      const errorMessage = this.lintService.evaluateErrorMessage();
-      this.toastService.error('Lint Error', errorMessage);
-      return;
-    }
+    this.lintService.lintYamlString(this.content);
 
     this.loading = true;
 

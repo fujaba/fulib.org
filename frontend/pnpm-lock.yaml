@@ -28,11 +28,9 @@ specifiers:
   '@types/file-saver': ^2.0.5
   '@types/jasmine': ~3.6.11
   '@types/jasminewd2': ~2.0.10
-  '@types/js-yaml': ^4.0.5
   '@types/node': ^16.11.25
   '@typescript-eslint/eslint-plugin': ^5.12.1
   '@typescript-eslint/parser': ^5.12.1
-  ajv: ^8.10.0
   angular-gridster2: ^13.1.1
   angular-split: ^13.2.0
   bootstrap: ~5.1.3
@@ -45,7 +43,6 @@ specifiers:
   highlight.js: ^11.4.0
   jasmine-core: ~3.6.0
   jasmine-spec-reporter: ~5.0.2
-  js-yaml: ^4.1.0
   karma: ~6.3.16
   karma-chrome-launcher: ~3.1.0
   karma-coverage-istanbul-reporter: ~3.0.3
@@ -80,7 +77,6 @@ dependencies:
   '@ctrl/ngx-codemirror': 5.1.1_954b6d5dea7003642eba8dba2d0fd6ac
   '@ng-bootstrap/ng-bootstrap': 12.0.0_040e4f373c14b34374759f5a763107a2
   '@popperjs/core': 2.11.2
-  ajv: 8.10.0
   angular-gridster2: 13.1.1_916208d3fdf5898e77c73227fd357437
   angular-split: 13.2.0_d853a069baa83d89a517a098298b5715
   bootstrap: 5.1.3_@popperjs+core@2.11.2
@@ -90,7 +86,6 @@ dependencies:
   codemirror: 5.65.2
   file-saver: 2.0.5
   highlight.js: 11.4.0
-  js-yaml: 4.1.0
   keycloak-angular: 9.1.0_176c3d9d6111b10f4c6a7b0b3e09238d
   keycloak-js: 15.1.0
   ng-bootstrap-darkmode: 0.5.0_b0d8ebfdcb8d90f41367b0cfcf7dcda9
@@ -116,7 +111,6 @@ devDependencies:
   '@types/file-saver': 2.0.5
   '@types/jasmine': 3.6.11
   '@types/jasminewd2': 2.0.10
-  '@types/js-yaml': 4.0.5
   '@types/node': 16.11.26
   '@typescript-eslint/eslint-plugin': 5.12.1_27a0c788acac7d65514027b167e3b3f6
   '@typescript-eslint/parser': 5.12.1_eslint@8.10.0+typescript@4.5.5
@@ -2259,10 +2253,6 @@ packages:
       '@types/jasmine': 3.6.11
     dev: true
 
-  /@types/js-yaml/4.0.5:
-    resolution: {integrity: sha512-FhpRzf927MNQdRZP0J5DLIdTXhjLYzeUTmLAu69mnVksLH9CJY3IuSeEgbKUki7GQZm0WqDkGzyxju2EZGD2wA==}
-    dev: true
-
   /@types/json-schema/7.0.9:
     resolution: {integrity: sha512-qcUXuemtEu+E5wZSJHNxUXeCZhAfXKQ41D+duX+VYPde7xyEVZci+/oXKJL13tnRs9lR2pr4fod59GT6/X1/yQ==}
     dev: true
@@ -2779,6 +2769,7 @@ packages:
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
       uri-js: 4.4.1
+    dev: true
 
   /ajv/8.9.0:
     resolution: {integrity: sha512-qOKJyNj/h+OWx7s5DePL6Zu1KeM9jPZhwBqs+7DzP6bGOvqzVCSf0xueYmVuaC/oQ/VtS2zLMLHdQFbkka+XDQ==}
@@ -2903,6 +2894,7 @@ packages:
 
   /argparse/2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
+    dev: true
 
   /aria-query/4.2.2:
     resolution: {integrity: sha512-o/HelwhuKpTj/frsOsbNLNgnNGVIFsVP/SW2BSF14gVl7kAfMOJ6/8wUAUvG1R1NHKrfG+2sHZTu0yauT1qBrA==}
@@ -4506,6 +4498,7 @@ packages:
 
   /fast-deep-equal/3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
+    dev: true
 
   /fast-glob/3.2.11:
     resolution: {integrity: sha512-xrO3+1bxSo3ZVHAnqzyuewYT6aMFHRAd4Kcs92MAonjwQZLsK9d0SF1IyQ3k5PoirxTW0Oe/RqFgMQ6TcNE5Ew==}
@@ -5474,6 +5467,7 @@ packages:
     hasBin: true
     dependencies:
       argparse: 2.0.1
+    dev: true
 
   /jsbn/0.1.1:
     resolution: {integrity: sha1-peZUwuWi3rXyAdls77yoDA7y9RM=}
@@ -5503,6 +5497,7 @@ packages:
 
   /json-schema-traverse/1.0.0:
     resolution: {integrity: sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==}
+    dev: true
 
   /json-schema/0.4.0:
     resolution: {integrity: sha512-es94M3nTIfsEPisRafak+HDLfHXnKBhV3vU5eqPcS3flIWqcxJWgXHXiey3YrpaNsanY5ei1VoYEbOzijuq9BA==}
@@ -7129,6 +7124,7 @@ packages:
   /punycode/2.1.1:
     resolution: {integrity: sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==}
     engines: {node: '>=6'}
+    dev: true
 
   /q/1.4.1:
     resolution: {integrity: sha1-VXBbzZPF82c1MMLCy8DCs63cKG4=}
@@ -7316,6 +7312,7 @@ packages:
   /require-from-string/2.0.2:
     resolution: {integrity: sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==}
     engines: {node: '>=0.10.0'}
+    dev: true
 
   /require-main-filename/2.0.0:
     resolution: {integrity: sha512-NKN5kMDylKuldxYLSUfrbo5Tuzh4hd+2E8NPPX02mZtn1VuREQToYe/ZdlJy+J3uCpfaiGF05e7B8W0iXbQHmg==}
@@ -8226,6 +8223,7 @@ packages:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
     dependencies:
       punycode: 2.1.1
+    dev: true
 
   /util-deprecate/1.0.2:
     resolution: {integrity: sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8=}
