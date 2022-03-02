@@ -62,25 +62,22 @@ export class MockupViewerComponent implements OnChanges {
 
   evaluateUrl(): void {
     if (!this.generateResult) {
-      this.url = environment.workflowsUrl + '/fallback';
+      this.url = environment.workflowsUrl + '/notYetGenerated';
+      return;
+    }
+
+    const elementCouldExist = this.checkForContent();
+
+    if (!elementCouldExist) {
       return;
     }
 
     const fileUrl = this.getCurrentIFrameContent();
 
-    if (!fileUrl) {
-      this.url = environment.workflowsUrl + '/fallback';
-      return;
-    }
-
     this.url = environment.workflowsUrl + '/workflows' + fileUrl;
   }
 
-  private getCurrentIFrameContent(): string | null {
-    if (!this.currentDisplay || !this.generateResult) {
-      return null;
-    }
-
+  private getCurrentIFrameContent(): string {
     let result;
     switch (this.currentDisplay) {
       case 'pages':
@@ -130,5 +127,19 @@ export class MockupViewerComponent implements OnChanges {
     }
 
     return currentContent;
+  }
+
+  private checkForContent(): boolean {
+    if (this.generateResult.numberOfPages === 0 && this.currentDisplay === 'pages') {
+      this.url = environment.workflowsUrl + '/pagesFallback';
+      return false;
+    } else if (this.generateResult.numberOfDiagrams === 0 && this.currentDisplay === 'objects') {
+      this.url = environment.workflowsUrl + '/objectsFallback';
+      return false;
+    } else if (!this.generateResult.classDiagram && this.currentDisplay === 'class') {
+      this.url = environment.workflowsUrl + '/classFallback';
+      return false;
+    }
+    return true;
   }
 }

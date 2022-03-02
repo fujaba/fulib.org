@@ -11,8 +11,23 @@ public class CustomErrorController implements ErrorController {
         return "error";
     }
 
-    @RequestMapping("/fallback")
-    public String fallback() {
-        return "fallback";
+    @RequestMapping("/notYetGenerated")
+    public String handleNotYetGenerated() {
+        return "notYetGenerated";
+    }
+
+    @RequestMapping("/pagesFallback")
+    public String handlePageFallback() {
+        return "pages";
+    }
+
+    @RequestMapping("/objectsFallback")
+    public String handleObject() {
+        return "objects";
+    }
+
+    @RequestMapping("/classFallback")
+    public String handleClassFallback() {
+        return "class";
     }
 }
