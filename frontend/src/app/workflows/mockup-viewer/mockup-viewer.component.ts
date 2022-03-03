@@ -69,25 +69,23 @@ export class MockupViewerComponent implements OnChanges {
   }
 
   private getCurrentTabs(): WorkflowTab[] {
-    const result: WorkflowTab[] = [];
+    let result: WorkflowTab[] = [];
     if (!this.generateResult) {
       return result;
     }
 
     switch (this.currentDisplay) {
       case 'pages':
-        this.generateResult.pages.forEach((value, key) => {
-          const newTab = this.createTab(key, value);
-          result.push(newTab);
-        });
-        this.maxIndex = this.generateResult.pages.size - 1;
+        if (this.generateResult.pages) {
+          result = Object.entries(this.generateResult.pages).map(([key, value]) => this.createTab(parseInt(key), value));
+          this.maxIndex = result.length - 1;
+        }
         break;
       case 'objects':
-        this.generateResult.diagrams.forEach((value, key) => {
-          const newTab = this.createTab(key, value);
-          result.push(newTab);
-        });
-        this.maxIndex = this.generateResult.diagrams.size - 1;
+        if (this.generateResult.diagrams) {
+          result = Object.entries(this.generateResult.diagrams).map(([key, value]) => this.createTab(parseInt(key), value));
+          this.maxIndex = result.length - 1;
+        }
         break;
       case 'class':
         if (this.generateResult.classDiagram) {

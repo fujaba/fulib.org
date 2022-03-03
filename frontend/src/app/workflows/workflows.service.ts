@@ -3,11 +3,9 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 import {Observable} from 'rxjs';
 import {saveAs} from 'file-saver';
-import {environment} from '../../environments/environment';
-import {map} from 'rxjs/operators';
-import {GenerateResult} from './model/GenerateResult';
-import {createMapFromAnswer} from './model/helper/map.helper';
 import {ExportOptions} from './model/ExportOptions';
+import {GenerateResult} from './model/GenerateResult';
+import {environment} from '../../environments/environment';
 
 @Injectable()
 export class WorkflowsService {
@@ -19,7 +17,7 @@ export class WorkflowsService {
 
   public generate(data: string): Observable<GenerateResult> {
     const url = environment.workflowsUrl + '/generate';
-    return this.http.post<any>(url, data).pipe(map(result => WorkflowsService.toGenerateResult(result)));
+    return this.http.post<GenerateResult>(url, data);
   }
 
   public downloadZip(cmContent: string, options: ExportOptions) {
@@ -44,16 +42,5 @@ export class WorkflowsService {
         saveAs(file);
       }
     );
-  }
-
-  private static toGenerateResult(result: any): GenerateResult {
-    const pages = createMapFromAnswer(result.pages, result.numberOfPages);
-    const diagrams = createMapFromAnswer(result.diagrams, result.numberOfDiagrams);
-    return {
-      board: result.board,
-      pages: pages,
-      diagrams: diagrams,
-      classDiagram: result.classDiagram,
-    }
   }
 }
