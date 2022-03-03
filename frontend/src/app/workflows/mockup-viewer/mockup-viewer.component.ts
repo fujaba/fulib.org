@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 
 import {WorkflowTab} from '../model/WorkflowTab';
 import {GenerateResult} from '../model/GenerateResult';
@@ -21,8 +21,14 @@ export class MockupViewerComponent implements OnChanges {
   constructor() {
   }
 
-  ngOnChanges(): void {
-    this.evaluateTabs();
+  ngOnChanges(changes: SimpleChanges): void {
+    const indexChange = changes.index;
+
+    if (indexChange) {
+      this.evaluateTabs(indexChange.currentValue);
+    } else {
+      this.evaluateTabs();
+    }
   }
 
   next(): void {
@@ -57,11 +63,12 @@ export class MockupViewerComponent implements OnChanges {
     this.index = this.maxIndex;
   }
 
-  evaluateTabs(): void {
+  evaluateTabs(index?: number): void {
     if (!this.generateResult) {
       return;
     }
-    this.index = 0;
+
+    this.index = index ? index : 0;
     this.currentTabs = this.getCurrentTabs();
   }
 
