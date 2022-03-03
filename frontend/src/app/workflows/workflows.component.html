@@ -32,10 +32,14 @@
         (dragEnd)="this.showIframeHider = false"
         (gutterClick)="split.notify('end', $event.gutterNum)">
         <as-split-area [size]="35">
-          <iframe *ngIf="generateResult" title="Boards"
-                  [src]="workflowsUrl + '/workflows' + this.generateResult.board | safeResourceUrl"
-                  class="w-100 h-100">
-          </iframe>
+          <ng-container *ngIf="generateResult">
+            <a routerLink="preview"
+               [queryParams]="{url: workflowsUrl + '/workflows' + this.generateResult.board}"
+               queryParamsHandling="merge"
+            >
+              <app-diagram-view [url]="workflowsUrl + '/workflows' + this.generateResult.board"></app-diagram-view>
+            </a>
+          </ng-container>
           <div [hidden]="showIframeHider === false" class="iframe-hider"></div>
         </as-split-area>
         <as-split-area [size]="65">

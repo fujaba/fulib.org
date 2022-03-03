@@ -3,6 +3,7 @@ import {RouterModule, Routes} from '@angular/router';
 
 import {WorkflowsComponent} from './workflows.component';
 import {DownloadESComponent} from './download-es/download-es.component';
+import {PreviewComponent} from '../shared/preview/preview.component';
 
 const routes: Routes = [
   {
@@ -15,6 +16,11 @@ const routes: Routes = [
         component: DownloadESComponent,
         data: {title: 'Download'}
       },
+      {
+        path: 'preview',
+        component: PreviewComponent,
+        data: {title: 'Preview'},
+      }
     ],
   },
 ];

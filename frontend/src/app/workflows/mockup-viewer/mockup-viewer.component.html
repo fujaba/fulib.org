@@ -29,7 +29,12 @@
           {{tab.name}}
         </a>
         <ng-template ngbNavContent>
-          <iframe class="w-100 h-100" title="Mockups" [src]="tab.url | safeResourceUrl"></iframe>
+          <a routerLink="preview"
+             [queryParams]="{url: tab.url}"
+             queryParamsHandling="merge"
+          >
+            <app-diagram-view [url]="tab.url"></app-diagram-view>
+          </a>
         </ng-template>
       </li>
     </ul>
