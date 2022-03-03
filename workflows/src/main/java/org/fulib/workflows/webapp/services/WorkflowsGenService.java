@@ -41,12 +41,21 @@ public class WorkflowsGenService {
             GenerateResult generateResult = new GenerateResult();
             BoardGenerator boardGenerator = new BoardGenerator().setWebGeneration(webGeneration).setGenDir(genDir.toString());
             boardGenerator.generateBoardFromString(yamlData);
-            
+
             String boardUrl = "/" + tempDir.relativize(genDir) + "/Board.html";
             generateResult.setBoard(boardUrl);
+
             generateResult.setPages(getUrls(tempDir, pagesDir, "_page.html"));
+            if (generateResult.getPages() != null) {
+                generateResult.setNumberOfPages(generateResult.getPages().size());
+            }
+
             generateResult.setFxmls(getUrls(tempDir, fxmlsDir, "_fxml.fxml"));
+
             generateResult.setDiagrams(getUrls(tempDir, diagramsDir, "_diagram.svg"));
+            if (generateResult.getDiagrams() != null) {
+                generateResult.setNumberOfDiagrams(generateResult.getDiagrams().size());
+            }
 
             if (Files.exists(classDir)) {
                 String classDiagramUrl = "/" + tempDir.relativize(genDir) + "/class/classDiagram.svg";

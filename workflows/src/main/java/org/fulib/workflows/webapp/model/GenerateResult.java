@@ -5,7 +5,9 @@ import java.util.Map;
 public class GenerateResult {
     private String board;
     private Map<Integer, String> pages;
+    private int numberOfPages = 0;
     private Map<Integer, String> diagrams;
+    private int numberOfDiagrams = 0;
     private Map<Integer, String> fxmls;
     private String classDiagram;
 
@@ -47,5 +49,21 @@ public class GenerateResult {
 
     public void setClassDiagram(String classDiagram) {
         this.classDiagram = classDiagram;
+    }
+
+    public int getNumberOfPages() {
+        return numberOfPages;
+    }
+
+    public void setNumberOfPages(int numberOfPages) {
+        this.numberOfPages = numberOfPages;
+    }
+
+    public int getNumberOfDiagrams() {
+        return numberOfDiagrams;
+    }
+
+    public void setNumberOfDiagrams(int numberOfDiagrams) {
+        this.numberOfDiagrams = numberOfDiagrams;
     }
 }
