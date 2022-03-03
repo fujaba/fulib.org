@@ -1,11 +1,11 @@
 <div class="h-100 d-flex flex-column">
   <div class="btn-toolbar align-items-center p-3" role="toolbar" aria-label="Toolbar">
-    <select  class="form-select w-auto me-2"
-             [disabled]="loading"
-             [ngModel]="currentExampleDesc"
-             (ngModelChange)="changeExampleContent($event)">
+    <select class="form-select w-auto me-2"
+            [disabled]="loading"
+            [ngModel]="currentExample"
+            (ngModelChange)="changeExampleContent($event)">
       <option [ngValue]="null">Select Example...</option>
-      <option *ngFor="let example of examplesList" label="{{example}}" [ngValue]="example"></option>
+      <option *ngFor="let example of examples" label="{{example}}" [ngValue]="example"></option>
     </select>
     <button class="btn btn-primary me-2" (click)="generate()" [disabled]="loading">
       <span *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -18,9 +18,9 @@
   <as-split #split
             class="flex-grow-1"
             direction="horizontal"
-            (dragStart)="dragStartHandler()"
-            (dragEnd)="dragEndHandler()"
-            (gutterClick)="splitGutterClick($event)">
+            (dragStart)="this.showIframeHider = true"
+            (dragEnd)="this.showIframeHider = false"
+            (gutterClick)="split.notify('end', $event.gutterNum)">
     <as-split-area [size]="30">
       <app-autotheme-codemirror class="cm-h-100" [(content)]="content"
                                 [options]="codemirrorOptions"></app-autotheme-codemirror>
@@ -28,11 +28,12 @@
     <as-split-area [size]="70">
       <as-split
         direction="vertical"
-        (dragStart)="dragStartHandler()"
-        (dragEnd)="dragEndHandler()"
-        (gutterClick)="splitGutterClick($event)">
+        (dragStart)="this.showIframeHider = true"
+        (dragEnd)="this.showIframeHider = false"
+        (gutterClick)="split.notify('end', $event.gutterNum)">
         <as-split-area [size]="35">
-          <iframe *ngIf="generateResult" title="Boards" [src]="url | safeResourceUrl"
+          <iframe *ngIf="generateResult" title="Boards"
+                  [src]="workflowsUrl + '/workflows' + this.generateResult.board | safeResourceUrl"
                   class="w-100 h-100">
           </iframe>
           <div [hidden]="showIframeHider === false" class="iframe-hider"></div>

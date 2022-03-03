@@ -14,7 +14,7 @@ import {WorkflowsService} from '../workflows.service';
 export class DownloadESComponent implements OnInit {
   private yamlContent!: string | null;
 
-  public exportOptions: ExportOptions = {
+  exportOptions: ExportOptions = {
     yaml: false,
     board: true,
     pages: false,
@@ -32,6 +32,7 @@ export class DownloadESComponent implements OnInit {
   }
 
   ngOnInit() {
+    // TODO doesn't download examples if selected
     this.yamlContent = this.privacyService.getStorage('workflows');
   }
 

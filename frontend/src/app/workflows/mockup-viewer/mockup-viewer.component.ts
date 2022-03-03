@@ -10,16 +10,12 @@ import {environment} from '../../../environments/environment';
   styleUrls: ['./mockup-viewer.component.scss']
 })
 export class MockupViewerComponent implements OnChanges {
-  @Input() generateResult!: GenerateResult;
+  @Input() generateResult?: GenerateResult;
   @Input() index: number;
   @Input() currentDisplay!: 'pages' | 'objects' | 'class';
 
-  public currentTabs!: WorkflowTab[];
-
-  private maxIndex!: number;
-
-  constructor() {
-  }
+  currentTabs!: WorkflowTab[];
+  maxIndex!: number;
 
   ngOnChanges(changes: SimpleChanges): void {
     const indexChange = changes.index;
@@ -74,6 +70,9 @@ export class MockupViewerComponent implements OnChanges {
 
   private getCurrentTabs(): WorkflowTab[] {
     const result: WorkflowTab[] = [];
+    if (!this.generateResult) {
+      return result;
+    }
 
     switch (this.currentDisplay) {
       case 'pages':
@@ -81,14 +80,14 @@ export class MockupViewerComponent implements OnChanges {
           const newTab = this.createTab(key, value);
           result.push(newTab);
         });
-        this.maxIndex = this.generateResult.numberOfPages - 1;
+        this.maxIndex = this.generateResult.pages.size - 1;
         break;
       case 'objects':
         this.generateResult.diagrams.forEach((value, key) => {
           const newTab = this.createTab(key, value);
           result.push(newTab);
         });
-        this.maxIndex = this.generateResult.numberOfDiagrams - 1;
+        this.maxIndex = this.generateResult.diagrams.size - 1;
         break;
       case 'class':
         if (this.generateResult.classDiagram) {
@@ -106,12 +105,8 @@ export class MockupViewerComponent implements OnChanges {
     const url = environment.workflowsUrl + '/workflows/' + value;
 
     const lastSlash = value.lastIndexOf('/');
-    const name = value.slice(lastSlash + 1, value.length);
+    const name = value.substring(lastSlash + 1);
 
-    return {
-      index: index,
-      name: name,
-      url: url,
-    };
+    return {index, name, url};
   }
 }

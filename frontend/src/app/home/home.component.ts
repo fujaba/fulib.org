@@ -16,7 +16,7 @@ export class HomeComponent {
     {
       icon: 'diagram-3',
       title: 'Workflows',
-      description: 'A Web-Editor for tool assisted Event Storming.',
+      description: 'A web editor for tool assisted Event Storming.',
       link: '/workflows',
     },
     {

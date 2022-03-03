@@ -1,13 +1,11 @@
 import {HttpClient} from '@angular/common/http';
-import {Component, HostListener, NgZone, OnInit, ViewChild} from '@angular/core';
+import {Component, HostListener, NgZone, OnInit} from '@angular/core';
 
 import {ToastService} from 'ng-bootstrap-ext';
 import {EditorConfiguration} from 'codemirror';
 import {PrivacyService} from '../privacy.service';
-import {LintService} from '../shared/lint.service';
 import {WorkflowsService} from './workflows.service';
 import {GenerateResult} from './model/GenerateResult';
-import {IOutputData, SplitComponent} from 'angular-split';
 import {environment} from '../../environments/environment';
 import {cmWorkflowsHint} from './model/helper/workflows-hint';
 
@@ -17,21 +15,20 @@ import {cmWorkflowsHint} from './model/helper/workflows-hint';
   styleUrls: ['./workflows.component.scss']
 })
 export class WorkflowsComponent implements OnInit {
-  @ViewChild('split') split!: SplitComponent;
+  content!: string;
+  codemirrorOptions: EditorConfiguration | Record<string, any>;
 
-  public content!: any;
-  public codemirrorOptions: EditorConfiguration | Record<string, any>;
+  generateResult?: GenerateResult;
+  workflowsUrl = environment.workflowsUrl;
 
-  public generateResult!: GenerateResult;
+  currentExample: string | null = null;
+  examples = ['Data Modelling', 'Microservices', 'Pages'];
 
-  public currentExampleDesc: string | null = null;
-  public examplesList = ['Data Modelling', 'Microservices', 'Pages'];
+  showIframeHider = false;
+  newPageIndex: number = 0;
+  currentDisplay: 'pages' | 'objects' | 'class' = 'pages';
 
-  public showIframeHider = false;
-  public newPageIndex: number = 0;
-  public currentDisplay: 'pages' | 'objects' | 'class' = 'pages';
-
-  public loading: boolean = false;
+  loading: boolean = false;
 
   constructor(
     private toastService: ToastService,
@@ -39,7 +36,6 @@ export class WorkflowsComponent implements OnInit {
     private fulibWorkflowsService: WorkflowsService,
     private privacyService: PrivacyService,
     private http: HttpClient,
-    private lintService: LintService,
   ) {
     // https://angular.io/api/core/NgZone
     const generateHandler = () => this.zone.run(() => this.generate());
@@ -64,42 +60,25 @@ export class WorkflowsComponent implements OnInit {
     this.checkForStoredContent();
   }
 
-  private checkForStoredContent() {
-    const storage = this.privacyService.getStorage('workflows');
-
-    if (storage && !this.currentExampleDesc) {
-      this.content = storage;
-      this.generate();
-    } else {
-      this.setExample(this.currentExampleDesc);
-    }
-  }
-
   changeExampleContent(newExample: string | null) {
-    this.currentExampleDesc = newExample;
+    this.currentExample = newExample;
     this.checkForStoredContent();
   }
 
   generate() {
-    if (!this.currentExampleDesc) {
+    if (!this.currentExample) {
       this.privacyService.setStorage('workflows', this.content);
     }
 
-    if (this.loading) return;
-
-    const newContent = this.lintService.lintYamlString(this.content);
-
-    if (!newContent) {
+    if (this.loading) {
       return;
-    } else {
-      this.content = newContent;
     }
 
     this.loading = true;
 
     this.fulibWorkflowsService.generate(this.content).subscribe(
       (answer) => {
-        this.generateResult = answer
+        this.generateResult = answer;
         this.loading = false;
       },
       (error: any) => {
@@ -123,27 +102,16 @@ export class WorkflowsComponent implements OnInit {
     }
   }
 
-  // Source: https://github.com/angular-split/angular-split/blob/main/src/app/examples/iframes/iframes.component.ts
-  dragStartHandler() {
-    this.showIframeHider = true
-  }
-
-  dragEndHandler() {
-    this.showIframeHider = false
-  }
-
-  splitGutterClick({gutterNum}: IOutputData) {
-    // By default, clicking the gutter without changing position does not trigger the 'dragEnd' event
-    // This can be fixed by manually notifying the component
-    // See issue: https://github.com/angular-split/angular-split/issues/186
-    this.split.notify('end', gutterNum)
-  }
-
-  get url(): string {
-    if (!this.generateResult || !this.generateResult.board) {
-      return "";
+  private checkForStoredContent() {
+    if (this.currentExample) {
+      this.setExample(this.currentExample);
+    } else {
+      const storage = this.privacyService.getStorage('workflows');
+      if (storage) {
+        this.content = storage;
+        this.generate();
+      }
     }
-    return environment.workflowsUrl + '/workflows' + this.generateResult.board;
   }
 
   private setExample(exampleName: string | null) {

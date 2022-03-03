@@ -41,11 +41,11 @@ public class FulibWorkflowsService {
             }
 
             // Page Directory
-            if (queryParams.get("pages").equals("true") && generateResult.getNumberOfPages() > 0) {
+            if (queryParams.get("pages").equals("true") && generateResult.getPages().size() > 0) {
                 zipOutputStream.putNextEntry(new ZipEntry("pages/"));
 
                 // Page files
-                for (int i = 0; i < generateResult.getNumberOfPages(); i++) {
+                for (int i = 0; i < generateResult.getPages().size(); i++) {
                     String fileName = "pages/" + i + "_page.html";
                     String page = Files.readString(Path.of(workflowsGenService.getTempDir() + generateResult.getPages().get(i)));
                     createZipEntry(zipOutputStream, fileName, page);
@@ -53,11 +53,11 @@ public class FulibWorkflowsService {
             }
 
             // Diagram Directory
-            if (queryParams.get("objects").equals("true") && generateResult.getNumberOfDiagrams() > 0) {
+            if (queryParams.get("objects").equals("true") && generateResult.getDiagrams().size() > 0) {
                 zipOutputStream.putNextEntry(new ZipEntry("diagrams/"));
 
                 // Diagram files
-                for (int i = 0; i < generateResult.getNumberOfDiagrams(); i++) {
+                for (int i = 0; i < generateResult.getDiagrams().size(); i++) {
                     String fileName = "diagrams/" + i + "_diagram.svg";
                     String diagram = Files.readString(Path.of(workflowsGenService.getTempDir() + generateResult.getDiagrams().get(i)));
                     createZipEntry(zipOutputStream, fileName, diagram);
@@ -72,11 +72,11 @@ public class FulibWorkflowsService {
             }
 
             // Fxml Directory
-            if (queryParams.get("fxmls").equals("true") && generateResult.getNumberOfFxmls() > 0) {
+            if (queryParams.get("fxmls").equals("true") && generateResult.getFxmls().size() > 0) {
                 zipOutputStream.putNextEntry(new ZipEntry("fxmls/"));
 
                 // Diagram files
-                for (int i = 0; i < generateResult.getNumberOfFxmls(); i++) {
+                for (int i = 0; i < generateResult.getFxmls().size(); i++) {
                     String fileName = "fxmls/" + i + "_fxml.fxml";
                     String fxml = Files.readString(Path.of(workflowsGenService.getTempDir() + generateResult.getFxmls().get(i)));
                     createZipEntry(zipOutputStream, fileName, fxml);

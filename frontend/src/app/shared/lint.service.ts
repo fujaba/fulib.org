@@ -1,15 +1,8 @@
 import {Injectable} from '@angular/core';
 import {Marker} from './model/marker';
-import {ToastService} from 'ng-bootstrap-ext';
 
 @Injectable({providedIn: 'root'})
 export class LintService {
-
-  constructor(
-    private toastService: ToastService,
-  ) {
-  }
-
   lint(output: string): Marker[] {
     const result: Marker[] = [];
 
@@ -54,15 +47,5 @@ export class LintService {
       }
     }
     return result;
-  }
-
-  lintYamlString(content: string): string | null {
-    if (!content.includes('- workflow: ')) {
-      this.toastService.error('Lint Error', 'Needs at least one workflow note (best at the beginning)');
-      return null;
-    }
-
-    // Replace tabs with two spaces for snakeyaml parser
-    return content.replace(/\t/g, '  ');
   }
 }

@@ -49,15 +49,10 @@ export class WorkflowsService {
   private static toGenerateResult(result: any): GenerateResult {
     const pages = createMapFromAnswer(result.pages, result.numberOfPages);
     const diagrams = createMapFromAnswer(result.diagrams, result.numberOfDiagrams);
-    const fxmls = createMapFromAnswer(result.fxmls, result.numberOfFxmls);
     return {
       board: result.board,
       pages: pages,
-      numberOfPages: result.numberOfPages,
       diagrams: diagrams,
-      numberOfDiagrams: result.numberOfDiagrams,
-      fxmls: fxmls,
-      numberOfFxmls: result.numberOfFxmls,
       classDiagram: result.classDiagram,
     }
   }
