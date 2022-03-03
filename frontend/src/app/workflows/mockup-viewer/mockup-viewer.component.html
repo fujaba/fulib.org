@@ -1,22 +1,22 @@
 <div class="h-100 d-flex flex-column">
   <div class="d-flex align-items-center" role="toolbar" aria-label="Toolbar">
-    <div class="btn-group btn-group-sm m-2" role="group" aria-label="Page controls">
-      <button type="button" class="btn btn-secondary btn-sm"
+    <div class="btn-group" role="group" aria-label="Page controls">
+      <button type="button" class="btn btn-secondary"
               (click)="setFirst()"
               [disabled]="currentDisplay === 'class'">
         First
       </button>
-      <button type="button" class="btn btn-secondary btn-sm"
+      <button type="button" class="btn btn-secondary"
               (click)="previous()"
               [disabled]="currentDisplay === 'class'">
         Previous
       </button>
-      <button type="button" class="btn btn-secondary btn-sm"
+      <button type="button" class="btn btn-secondary"
               (click)="next()"
               [disabled]="currentDisplay === 'class'">
         Next
       </button>
-      <button type="button" class="btn btn-secondary btn-sm"
+      <button type="button" class="btn btn-secondary"
               (click)="setLast()"
               [disabled]="currentDisplay === 'class'">
         Last
@@ -34,15 +34,15 @@
       </li>
     </ul>
 
-    <div class="btn-group btn-group-sm btn-group-toggle m-2" ngbRadioGroup name="radioBasic" [(ngModel)]="currentDisplay"
+    <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic" [(ngModel)]="currentDisplay"
          (ngModelChange)="evaluateTabs()">
-      <label ngbButtonLabel class="btn-info btn-sm">
+      <label ngbButtonLabel class="btn-info">
         <input ngbButton type="radio" class="btn-check" [value]="'pages'"> Pages
       </label>
-      <label ngbButtonLabel class="btn-info btn-sm">
+      <label ngbButtonLabel class="btn-info">
         <input ngbButton type="radio" class="btn-check" [value]="'objects'"> Objects
       </label>
-      <label ngbButtonLabel class="btn-info btn-sm">
+      <label ngbButtonLabel class="btn-info">
         <input ngbButton type="radio" class="btn-check" [value]="'class'"> Class
       </label>
     </div>
