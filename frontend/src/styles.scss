@@ -122,6 +122,10 @@ a[href^="http"]::after {
   }
 }
 
+.tab-content > .active {
+  display: contents;
+}
+
 /* --------------- Gradients --------------- */
 
 $gradient-angle: 135deg;
