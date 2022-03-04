@@ -1,6 +1,6 @@
 export interface GenerateResult {
   board: string,
-  pages: Record<number, string>,
-  diagrams: Record<number, string>,
+  pages: string[],
+  diagrams: string[],
   classDiagram: string,
 }

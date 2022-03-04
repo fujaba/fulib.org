@@ -77,14 +77,18 @@ export class MockupViewerComponent implements OnChanges {
     switch (this.currentDisplay) {
       case 'pages':
         if (this.generateResult.pages) {
-          result = Object.entries(this.generateResult.pages).map(([key, value]) => this.createTab(parseInt(key), value));
-          this.maxIndex = result.length - 1;
+          this.maxIndex = this.generateResult.pages.length - 1;
+          for (let i = 0; i < this.generateResult.pages.length; i++) {
+            result.push(this.createTab(i, this.generateResult.pages[i]));
+          }
         }
         break;
       case 'objects':
         if (this.generateResult.diagrams) {
-          result = Object.entries(this.generateResult.diagrams).map(([key, value]) => this.createTab(parseInt(key), value));
-          this.maxIndex = result.length - 1;
+          this.maxIndex = this.generateResult.diagrams.length - 1;
+          for (let i = 0; i < this.generateResult.diagrams.length; i++) {
+            result.push(this.createTab(i, this.generateResult.diagrams[i]));
+          }
         }
         break;
       case 'class':
@@ -95,7 +99,6 @@ export class MockupViewerComponent implements OnChanges {
         this.maxIndex = 0;
         break;
     }
-
     return result;
   }
 

@@ -8,10 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -44,9 +41,9 @@ public class WorkflowsGenService {
 
             String boardUrl = "/" + tempDir.relativize(genDir) + "/Board.html";
             generateResult.setBoard(boardUrl);
-            generateResult.setPages(getUrls(tempDir, pagesDir, "_page.html"));
-            generateResult.setFxmls(getUrls(tempDir, fxmlsDir, "_fxml.fxml"));
-            generateResult.setDiagrams(getUrls(tempDir, diagramsDir, "_diagram.svg"));
+            generateResult.setPages(getUrls(tempDir, pagesDir));
+            generateResult.setFxmls(getUrls(tempDir, fxmlsDir));
+            generateResult.setDiagrams(getUrls(tempDir, diagramsDir));
 
             if (Files.exists(classDir)) {
                 String classDiagramUrl = "/" + tempDir.relativize(genDir) + "/class/classDiagram.svg";
@@ -59,21 +56,36 @@ public class WorkflowsGenService {
         }
     }
 
-    private Map<Integer, String> getUrls(Path tempDir, Path searchDir, String fileName) {
+    private List<String> getUrls(Path tempDir, Path searchDir) {
         if (Files.exists(searchDir)) {
-            File[] allFiles = searchDir.toFile().listFiles();
-            if (allFiles != null) {
-                Map<Integer, String> result = new HashMap<>();
-
-                for (int i = 0; i < allFiles.length; i++) {
-                    String cmpFileName = i + fileName;
-                    String fileUrl = "/" + tempDir.relativize(searchDir) + "/" + cmpFileName;
-                    result.put(i, fileUrl);
-                }
-                return result;
+            File[] fileArray = searchDir.toFile().listFiles();
+            List<File> allFiles = new ArrayList<>();
+            if (fileArray != null) {
+                allFiles = Arrays.asList(fileArray);
             }
+            List<String> result = new ArrayList<>();
+
+            // Sort allFiles
+            allFiles.sort((o1, o2) -> {
+                int o1Number = evalFileNumber(o1.getName());
+                int o2Number = evalFileNumber(o2.getName());
+                return Integer.compare(o1Number, o2Number);
+            });
+
+            for (File allFile : allFiles) {
+                String cmpFileName = allFile.getName();
+                String fileUrl = "/" + tempDir.relativize(searchDir) + "/" + cmpFileName;
+                result.add(fileUrl);
+            }
+            return result;
         }
         return null;
+    }
+
+    private int evalFileNumber(String name) {
+        int lowIndex = name.indexOf("_");
+        String numberAsString = name.substring(0, lowIndex);
+        return Integer.parseInt(numberAsString);
     }
 
     public static void deleteRecursively(Path dir) {
