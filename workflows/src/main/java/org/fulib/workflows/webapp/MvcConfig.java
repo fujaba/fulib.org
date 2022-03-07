@@ -9,14 +9,9 @@ public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         String osName = System.getProperty("os.name");
-        if (osName.contains("Windows") || osName.contains("windows")) {
-            registry.addResourceHandler("/workflows/**")
-                    .addResourceLocations("file:/" + System.getProperty("java.io.tmpdir") + "/fulib.org/workflows/")
-                    .setCachePeriod(60 * 60);
-        } else {
-            registry.addResourceHandler("/workflows/**")
-                    .addResourceLocations("file://" + System.getProperty("java.io.tmpdir") + "/fulib.org/workflows/")
-                    .setCachePeriod(60 * 60);
-        }
+        String prefix = osName.contains("Windows") || osName.contains("windows") ? "file:/" : "file://"; // important
+        registry.addResourceHandler("/api/v1/workflows/**")
+            .addResourceLocations(prefix + System.getProperty("java.io.tmpdir") + "/fulib.org/workflows/")
+            .setCachePeriod(60 * 60);
     }
 }
