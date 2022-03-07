@@ -1,5 +1,5 @@
 import {HttpClient} from '@angular/common/http';
-import {Component, HostListener, NgZone, OnDestroy, OnInit} from '@angular/core';
+import {Component, HostListener, NgZone, OnInit} from '@angular/core';
 
 import {ToastService} from 'ng-bootstrap-ext';
 import {EditorConfiguration} from 'codemirror';
@@ -15,7 +15,7 @@ import {cmWorkflowsHint} from './model/helper/workflows-hint';
   templateUrl: './workflows.component.html',
   styleUrls: ['./workflows.component.scss']
 })
-export class WorkflowsComponent implements OnInit, OnDestroy {
+export class WorkflowsComponent implements OnInit {
   content!: string;
   codemirrorOptions: EditorConfiguration | Record<string, any>;
 
@@ -60,21 +60,6 @@ export class WorkflowsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.checkForStoredContent();
-    this.themeService.theme$.subscribe(
-      (theme) => {
-        if (theme) {
-          const iframes = document.getElementsByTagName("iframe");
-
-          // @ts-ignore
-          for (const iframe of iframes) {
-            iframe.contentWindow.postMessage({type: 'setTheme', theme: theme}, '*');
-          }
-        }
-      });
-  }
-
-  ngOnDestroy() {
-    this.themeService.theme$.unsubscribe();
   }
 
   changeExampleContent(newExample: string | null) {
