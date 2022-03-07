@@ -41,7 +41,8 @@ public class FulibWorkflowsService {
             }
 
             // Page Directory
-            if (queryParams.get("pages").equals("true") && generateResult.getPages().size() > 0) {
+            if (queryParams.get("pages").equals("true") && generateResult.getPages() != null
+                    && generateResult.getPages().size() > 0) {
                 zipOutputStream.putNextEntry(new ZipEntry("pages/"));
 
                 // Page files
@@ -53,7 +54,8 @@ public class FulibWorkflowsService {
             }
 
             // Diagram Directory
-            if (queryParams.get("objects").equals("true") && generateResult.getDiagrams().size() > 0) {
+            if (queryParams.get("objects").equals("true") && generateResult.getDiagrams() != null
+                    && generateResult.getDiagrams().size() > 0) {
                 zipOutputStream.putNextEntry(new ZipEntry("diagrams/"));
 
                 // Diagram files
@@ -72,7 +74,7 @@ public class FulibWorkflowsService {
             }
 
             // Fxml Directory
-            if (queryParams.get("fxmls").equals("true") && generateResult.getFxmls().size() > 0) {
+            if (queryParams.get("fxmls").equals("true") && generateResult.getFxmls() != null && generateResult.getFxmls().size() > 0) {
                 zipOutputStream.putNextEntry(new ZipEntry("fxmls/"));
 
                 // Diagram files
