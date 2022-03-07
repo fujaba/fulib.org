@@ -1,0 +1,27 @@
+plugins {
+    id 'org.springframework.boot' version '2.5.6'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+}
+
+group = 'org.fulib'
+version = '0.0.0'
+sourceCompatibility = '17'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation fulibWorkflowsDependency
+
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version: '2.6.3'
+
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.6.3'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.3'
+}
+
+test {
+    useJUnitPlatform()
+}

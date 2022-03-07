@@ -52,3 +52,4 @@ src/assets/examples/**/*.png
 src/assets/examples/**/*.svg
 src/assets/examples/**/*.txt
 src/assets/examples/**/*.yaml
+!src/assets/examples/workflows/*.es.yaml

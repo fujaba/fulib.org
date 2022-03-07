@@ -6,7 +6,9 @@
   >
   <pre *ngSwitchCase="'text'">TODO</pre>
   <iframe *ngSwitchCase="'frame'"
+          #diagramIFrame
           width="100%" height="500px"
           [src]="url | safeResourceUrl"
+          (load)="iframe$.next(diagramIFrame)"
   ></iframe>
 </ng-container>

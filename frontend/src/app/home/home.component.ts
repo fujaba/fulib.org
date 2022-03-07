@@ -14,6 +14,12 @@ export class HomeComponent {
       link: '/scenarios',
     },
     {
+      icon: 'diagram-3',
+      title: 'Workflows',
+      description: 'A web editor for tool assisted Event Storming.',
+      link: '/workflows',
+    },
+    {
       icon: 'book',
       title: 'Docs',
       description: 'Clearly structured and easy-to-understand documentation for all fulib tools and libraries.',
