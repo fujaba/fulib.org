@@ -132,7 +132,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.gradle/caches
-          key: gradle-${{ runner.os }}-${{ hashFiles('backend/*.gradle') }}
+          key: gradle-${{ runner.os }}-${{ hashFiles('workflows/*.gradle') }}
           restore-keys: gradle-${{ runner.os }}-
       - name: Build with Gradle
         run: ./gradlew :workflows:build && ./gradlew --stop
