@@ -59,12 +59,18 @@ export class WorkflowsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.checkForStoredContent();
+    const storage = this.privacyService.getStorage('workflows');
+    if (storage) {
+      this.content = storage;
+      this.generate();
+    } else {
+      this.setExample(null);
+    }
   }
 
   changeExampleContent(newExample: string | null) {
     this.currentExample = newExample;
-    this.checkForStoredContent();
+    this.setExample(this.currentExample);
   }
 
   generate() {
@@ -101,18 +107,6 @@ export class WorkflowsComponent implements OnInit {
 
     if (event.data.type === 'changeFrameWithToast') {
       this.toastService.success('Page Action', event.data.toastContent);
-    }
-  }
-
-  private checkForStoredContent() {
-    if (this.currentExample) {
-      this.setExample(this.currentExample);
-    } else {
-      const storage = this.privacyService.getStorage('workflows');
-      if (storage) {
-        this.content = storage;
-        this.generate();
-      }
     }
   }
 
