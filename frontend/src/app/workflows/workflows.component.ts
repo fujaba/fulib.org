@@ -1,9 +1,10 @@
 import {HttpClient} from '@angular/common/http';
-import {Component, HostListener, NgZone, OnInit} from '@angular/core';
+import {Component, HostListener, NgZone, OnDestroy, OnInit} from '@angular/core';
 
 import {ToastService} from 'ng-bootstrap-ext';
 import {EditorConfiguration} from 'codemirror';
 import {PrivacyService} from '../privacy.service';
+import {ThemeService} from 'ng-bootstrap-darkmode';
 import {WorkflowsService} from './workflows.service';
 import {GenerateResult} from './model/GenerateResult';
 import {environment} from '../../environments/environment';
@@ -14,7 +15,7 @@ import {cmWorkflowsHint} from './model/helper/workflows-hint';
   templateUrl: './workflows.component.html',
   styleUrls: ['./workflows.component.scss']
 })
-export class WorkflowsComponent implements OnInit {
+export class WorkflowsComponent implements OnInit, OnDestroy {
   content!: string;
   codemirrorOptions: EditorConfiguration | Record<string, any>;
 
@@ -36,6 +37,7 @@ export class WorkflowsComponent implements OnInit {
     private fulibWorkflowsService: WorkflowsService,
     private privacyService: PrivacyService,
     private http: HttpClient,
+    private themeService: ThemeService,
   ) {
     // https://angular.io/api/core/NgZone
     const generateHandler = () => this.zone.run(() => this.generate());
@@ -58,6 +60,21 @@ export class WorkflowsComponent implements OnInit {
 
   ngOnInit() {
     this.checkForStoredContent();
+    this.themeService.theme$.subscribe(
+      (theme) => {
+        if (theme) {
+          const iframes = document.getElementsByTagName("iframe");
+
+          // @ts-ignore
+          for (const iframe of iframes) {
+            iframe.contentWindow.postMessage({type: 'setTheme', theme: theme}, '*');
+          }
+        }
+      });
+  }
+
+  ngOnDestroy() {
+    this.themeService.theme$.unsubscribe();
   }
 
   changeExampleContent(newExample: string | null) {
