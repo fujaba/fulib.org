@@ -1,29 +1,34 @@
-import {AfterViewInit, Component, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild} from '@angular/core';
+import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import {ThemeService} from 'ng-bootstrap-darkmode';
+import {combineLatest, Subject, Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-diagram-view',
   templateUrl: './diagram-view.component.html',
   styleUrls: ['./diagram-view.component.scss'],
 })
-export class DiagramViewComponent implements AfterViewInit, OnChanges, OnDestroy {
-  @ViewChild('diagramIFrame') diagramIFrame: HTMLIFrameElement;
+export class DiagramViewComponent implements OnInit, OnChanges, OnDestroy {
   @Input() url: string;
 
   type!: 'frame' | 'text' | 'image';
+
+  iframe$ = new Subject<HTMLIFrameElement>();
+  subscription!: Subscription;
 
   constructor(
     private themeService: ThemeService,
   ) {
   }
 
-  ngAfterViewInit() {
-    this.themeService.theme$.subscribe(
-      (theme) => {
-        if (theme) {
-          this.diagramIFrame.contentWindow?.postMessage({type: 'setTheme', theme: theme}, '*');
-        }
-      });
+  ngOnInit() {
+    this.subscription = combineLatest([
+      this.iframe$,
+      this.themeService.theme$,
+    ]).subscribe(([frame, theme]) => {
+      if (frame && theme) {
+        frame.contentWindow?.postMessage({type: 'setTheme', theme}, '*');
+      }
+    });
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -39,6 +44,6 @@ export class DiagramViewComponent implements AfterViewInit, OnChanges, OnDestroy
   }
 
   ngOnDestroy() {
-    this.themeService.theme$.unsubscribe();
+    this.subscription.unsubscribe();
   }
 }
