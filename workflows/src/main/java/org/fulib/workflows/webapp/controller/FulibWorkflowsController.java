@@ -13,13 +13,13 @@ import java.util.Map;
 public class FulibWorkflowsController {
     FulibWorkflowsService fulibWorkflowsService = new FulibWorkflowsService();
 
-    @PostMapping(path = "/generate", consumes = MediaType.ALL_VALUE)
+    @PostMapping(path = "/api/v1/generate", consumes = MediaType.ALL_VALUE)
     @ResponseBody
     public GenerateResult generate(@RequestBody String yamlData) throws Exception {
         return fulibWorkflowsService.generate(yamlData);
     }
 
-    @PostMapping(path = "/download", consumes = MediaType.ALL_VALUE, produces = "application/zip")
+    @PostMapping(path = "/api/v1/download", consumes = MediaType.ALL_VALUE, produces = "application/zip")
     @ResponseBody
     public byte[] download(@RequestBody String yamlData, @RequestParam Map<String, String> queryParams) throws Exception {
         return fulibWorkflowsService.createZip(yamlData, queryParams);
