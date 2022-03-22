@@ -16,6 +16,7 @@ export const REPOS = [
   'fulibScenarios',
   'fulibMockups',
   'fulibGradle',
+  'fulibWorkflows'
 ] as const;
 
 export type Repository = (typeof REPOS)[number];
