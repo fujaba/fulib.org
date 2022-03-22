@@ -119,6 +119,7 @@ processResources {
 			it = it.replace('$$fulibScenariosVersion$$', fulibScenariosVersion)
 			it = it.replace('$$fulibMockupsVersion$$', fulibMockupsVersion)
 			it = it.replace('$$fulibGradleVersion$$', fulibGradleVersion)
+			it = it.replace('$$fulibWorkflowsVersion$$', fulibWorkflowsDependency.version)
 			it = it.replace('$$junitVersion$$', junitVersion)
 			it = it.replace('$$slf4jVersion$$', slf4jVersion)
 			it
