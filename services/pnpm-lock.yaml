@@ -2,7 +2,7 @@ lockfileVersion: 5.3
 
 specifiers:
   '@elastic/elasticsearch': ~7.13.0
-  '@nestjs/axios': ^0.0.6
+  '@nestjs/axios': ^0.0.7
   '@nestjs/cli': ^8.2.5
   '@nestjs/common': ^8.4.3
   '@nestjs/core': ^8.4.3
@@ -59,7 +59,7 @@ specifiers:
 
 dependencies:
   '@elastic/elasticsearch': 7.13.0
-  '@nestjs/axios': 0.0.6_00edab75de3d00160109b98add317aa9
+  '@nestjs/axios': 0.0.7_00edab75de3d00160109b98add317aa9
   '@nestjs/common': 8.4.3_5199533202e21c7185c9d97f881e2827
   '@nestjs/core': 8.4.3_12b5959a8a9625c08eb37a494e05b536
   '@nestjs/elasticsearch': 8.1.0_4d5ea69647e7f0ef4144deb619d1bae1
@@ -795,8 +795,8 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.11
     dev: true
 
-  /@nestjs/axios/0.0.6_00edab75de3d00160109b98add317aa9:
-    resolution: {integrity: sha512-RgtKUziiEPRtWS3KJNDqq0Epw9ffFdIKAtcj6cXnWeJvgHLwnDkw2rUsmHpDYrhszG+8bc4H8sDygRKwNPPAQA==}
+  /@nestjs/axios/0.0.7_00edab75de3d00160109b98add317aa9:
+    resolution: {integrity: sha512-at8nj+1Nb8UleHcIN5QqZYeWX54m4m9s9gxzVE1qWy00neX2rg0+h2TfbWsnDi2tc23zIxqexanxMOJZbzO0CA==}
     peerDependencies:
       '@nestjs/common': ^7.0.0 || ^8.0.0
       reflect-metadata: ^0.1.12
