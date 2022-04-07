@@ -30,8 +30,8 @@ dependencies {
 	// --------------- Dagger (Dependency Injection) ---------------
 
 	// https://mvnrepository.com/artifact/com.google.dagger/dagger
-	implementation 'com.google.dagger:dagger:2.40.5'
-	annotationProcessor 'com.google.dagger:dagger-compiler:2.40.5'
+	implementation 'com.google.dagger:dagger:2.41'
+	annotationProcessor 'com.google.dagger:dagger-compiler:2.41'
 
 	// --------------- Fulib Libraries ---------------
 
@@ -51,13 +51,13 @@ dependencies {
 	implementation group: 'com.sparkjava', name: 'spark-core', version: '2.9.3'
 
 	// https://mvnrepository.com/artifact/org.json/json
-	implementation group: 'org.json', name: 'json', version: '20211205'
+	implementation group: 'org.json', name: 'json', version: '20220320'
 
 	// https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync
-	implementation group: 'org.mongodb', name: 'mongodb-driver-sync', version: '4.5.0'
+	implementation group: 'org.mongodb', name: 'mongodb-driver-sync', version: '4.5.1'
 
 	// https://mvnrepository.com/artifact/com.auth0/java-jwt
-	implementation group: 'com.auth0', name: 'java-jwt', version: '3.18.3'
+	implementation group: 'com.auth0', name: 'java-jwt', version: '3.19.0'
 
 	// compile instead of testCompile because the web service uses it
 	implementation junitDependency
@@ -70,19 +70,19 @@ dependencies {
 	// --------------- CommonMark ---------------
 
 	// https://mvnrepository.com/artifact/org.commonmark/commonmark
-	implementation group: 'org.commonmark', name: 'commonmark', version: '0.18.1'
+	implementation group: 'org.commonmark', name: 'commonmark', version: '0.18.2'
 
 	// https://mvnrepository.com/artifact/org.commonmark/commonmark-ext-gfm-tables
-	implementation group: 'org.commonmark', name: 'commonmark-ext-gfm-tables', version: '0.18.1'
+	implementation group: 'org.commonmark', name: 'commonmark-ext-gfm-tables', version: '0.18.2'
 
 	// https://mvnrepository.com/artifact/org.commonmark/commonmark-ext-autolink
-	implementation group: 'org.commonmark', name: 'commonmark-ext-autolink', version: '0.18.1'
+	implementation group: 'org.commonmark', name: 'commonmark-ext-autolink', version: '0.18.2'
 
 	// https://mvnrepository.com/artifact/org.commonmark/commonmark-ext-gfm-strikethrough
-	implementation group: 'org.commonmark', name: 'commonmark-ext-gfm-strikethrough', version: '0.18.1'
+	implementation group: 'org.commonmark', name: 'commonmark-ext-gfm-strikethrough', version: '0.18.2'
 
 	// https://mvnrepository.com/artifact/org.commonmark/commonmark-ext-task-list-items
-	implementation group: 'org.commonmark', name: 'commonmark-ext-task-list-items', version: '0.18.1'
+	implementation group: 'org.commonmark', name: 'commonmark-ext-task-list-items', version: '0.18.2'
 }
 
 // --------------- Version Injection ---------------
