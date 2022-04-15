@@ -70,6 +70,9 @@ export class AssignmentStatistics {
   weightedEvaluations: EvaluationStatistics;
 
   @ApiProperty()
+  comments: number;
+
+  @ApiProperty()
   time: TimeStatistics;
 
   @ApiProperty({type: [TaskStatistics]})

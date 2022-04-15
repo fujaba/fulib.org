@@ -1,6 +1,7 @@
 import {Injectable, NotFoundException} from '@nestjs/common';
 import {AssignmentDocument, Task} from '../assignment/assignment.schema';
 import {AssignmentService} from '../assignment/assignment.service';
+import {CommentService} from '../comment/comment.service';
 import {EvaluationService} from '../evaluation/evaluation.service';
 import {SolutionService} from '../solution/solution.service';
 import {TelemetryService} from '../telemetry/telemetry.service';
@@ -14,6 +15,7 @@ export class StatisticsService {
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
     private evaluationService: EvaluationService,
+    private commentService: CommentService,
     private telemetryService: TelemetryService,
   ) {
   }
@@ -126,6 +128,10 @@ export class StatisticsService {
       weightedTime += time / Math.abs(tasks.get(_id)?.points ?? 1);
     }
 
+    const comments = await this.commentService.model.find({
+      assignment,
+    }).count().exec();
+
     return {
       solutions: await this.solutionStatistics(assignmentDoc),
       evaluations: evaluationStatistics,
@@ -136,6 +142,7 @@ export class StatisticsService {
         pointsAvg: weightedTime / eventCount,
         codeSearchSavings,
       },
+      comments,
       tasks: Array.from(taskStats.values()),
     };
   }
