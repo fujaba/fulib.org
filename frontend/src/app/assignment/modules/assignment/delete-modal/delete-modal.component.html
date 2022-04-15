@@ -1,0 +1,36 @@
+<app-modal #modal [back]="['../share']" [backOptions]="{relativeTo: route}">s
+  <ng-container modal-header>
+    Delete Assignment
+  </ng-container>
+  <ng-container modal-body>
+    <p>
+      Are you sure you want to delete this assignment?
+      This action cannot be undone.
+    </p>
+    <ng-container *ngIf="statistics?.solutions?.total as solutions">
+      <p>
+        In addition to the assignment, you will also permanently delete:
+      </p>
+      <div class="d-flex justify-content-center mb-3">
+        <app-statistic-value [standalone]="true" label="Solutions" [value]="solutions"></app-statistic-value>
+        <app-statistic-value *ngIf="statistics?.comments as comments" [standalone]="true" label="Comments" [value]="comments"></app-statistic-value>
+        <app-statistic-value *ngIf="statistics?.evaluations?.total as evaluations" [standalone]="true" label="Evaluations" [value]="evaluations"></app-statistic-value>
+        <app-statistic-value *ngIf="statistics?.time?.evaluationTotal as time" [standalone]="true" label="of Work" [value]="time/1000|duration:true"></app-statistic-value>
+      </div>
+    </ng-container>
+    <div>
+      <label class="form-label" for="titleInput">
+        Please type <b>{{ assignment?.title }}</b> to confirm:
+      </label>
+      <input type="text" class="form-control" id="titleInput" [(ngModel)]="title">
+    </div>
+  </ng-container>
+  <ng-container modal-footer>
+    <button class="btn btn-secondary" (click)="modal.close()">
+      Cancel
+    </button>
+    <button class="btn btn-danger" [disabled]="title !== assignment?.title" (click)="delete()" routerLink="/assignments">
+      Delete
+    </button>
+  </ng-container>
+</app-modal>

@@ -24,6 +24,7 @@ import {StatisticsBlockComponent} from './statistics-block/statistics-block.comp
 import {StatisticsComponent} from './statistics/statistics.component';
 import {SubmitModalComponent} from './submit-modal/submit-modal.component';
 import {AssignmentTasksComponent} from './tasks/tasks.component';
+import { DeleteModalComponent } from './delete-modal/delete-modal.component';
 
 
 @NgModule({
@@ -38,6 +39,7 @@ import {AssignmentTasksComponent} from './tasks/tasks.component';
     StatisticValueComponent,
     ImportModalComponent,
     StatisticsBlockComponent,
+    DeleteModalComponent,
   ],
     imports: [
         CommonModule,
