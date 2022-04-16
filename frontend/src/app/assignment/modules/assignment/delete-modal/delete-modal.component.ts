@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {ToastService} from 'ng-bootstrap-ext';
 import {switchMap} from 'rxjs/operators';
 import Assignment from '../../../model/assignment';
@@ -21,7 +21,6 @@ export class DeleteModalComponent implements OnInit {
     private assignmentService: AssignmentService,
     private statisticsService: StatisticsService,
     private toastService: ToastService,
-    private router: Router,
   ) {
   }
 
@@ -36,10 +35,9 @@ export class DeleteModalComponent implements OnInit {
   }
 
   delete() {
-    const id = this.route.snapshot.params.aid;
-    this.assignmentService.delete(id).subscribe(() => {
+    const {aid} = this.route.snapshot.params;
+    this.assignmentService.delete(aid).subscribe(() => {
       this.toastService.warn('Assignment', 'Successfully deleted assignment');
-      this.router.navigate(['..'], {relativeTo: this.route});
     }, error => {
       this.toastService.error('Assignment', 'Failed to delete assignment', error);
     });
