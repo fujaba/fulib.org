@@ -8,6 +8,7 @@ import {AuthorNameComponent} from './author-name/author-name.component';
 import {ImportExportComponent} from './import-export/import-export.component';
 import {TaskColorPipe} from './pipes/task-color.pipe';
 import {SnippetComponent} from './snippet/snippet.component';
+import {StatisticValueComponent} from './statistic-value/statistic-value.component';
 import {TaskListComponent} from './task-list/task-list.component';
 import { SolutionNamePipe } from './pipes/solution-name.pipe';
 
@@ -27,6 +28,7 @@ import { SolutionNamePipe } from './pipes/solution-name.pipe';
     TaskListComponent,
     TaskColorPipe,
     SolutionNamePipe,
+    StatisticValueComponent,
   ],
   exports: [
     AssignmentInfoComponent,
@@ -36,6 +38,7 @@ import { SolutionNamePipe } from './pipes/solution-name.pipe';
     TaskListComponent,
     TaskColorPipe,
     SolutionNamePipe,
+    StatisticValueComponent,
   ],
 })
 export class AssignmentSharedModule {
