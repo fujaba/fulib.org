@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {ToastService} from 'ng-bootstrap-ext';
 import {forkJoin} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
@@ -24,7 +24,6 @@ export class SolutionDetailsComponent implements OnInit {
     private solutionService: SolutionService,
     private toastService: ToastService,
     private route: ActivatedRoute,
-    private router: Router,
   ) {
   }
 
@@ -52,20 +51,6 @@ export class SolutionDetailsComponent implements OnInit {
     }, error => {
       this.toastService.error('Solution', 'Failed to update student details');
       this.saving = false;
-    });
-  }
-
-  delete() {
-    if (!confirm('Are you sure you want to delete this solution and all related comments and evaluations? This action cannot be undone.')) {
-      return;
-    }
-
-    const {assignment, _id} = this.solution!;
-    this.solutionService.delete(assignment, _id!).subscribe(() => {
-      this.toastService.warn('Solution', 'Successfully deleted solution');
-      this.router.navigate(['../..'], {relativeTo: this.route});
-    }, error => {
-      this.toastService.error('Solution', 'Failed to delete solution', error);
     });
   }
 }

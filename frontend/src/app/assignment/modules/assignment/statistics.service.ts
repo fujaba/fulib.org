@@ -47,6 +47,7 @@ export interface AssignmentStatistics {
   evaluations: EvaluationStatistics;
   weightedEvaluations: EvaluationStatistics;
   time: TimeStatistics;
+  comments: number;
   tasks: TaskStatistics[];
 }
 

@@ -11,7 +11,7 @@ import {Comment, CommentDocument} from './comment.schema';
 @Injectable()
 export class CommentService {
   constructor(
-    @InjectModel('comments') private model: Model<Comment>,
+    @InjectModel('comments') public model: Model<Comment>,
     private eventService: EventService,
   ) {
     this.migrate();

@@ -15,6 +15,7 @@ import {SolutionShareComponent} from './share/share.component';
 import {SolutionRoutingModule} from './solution-routing.module';
 import {SolutionComponent} from './solution/solution.component';
 import {SolutionTasksComponent} from './tasks/tasks.component';
+import {DeleteModalComponent} from './delete-modal/delete-modal.component';
 
 
 @NgModule({
@@ -27,6 +28,7 @@ import {SolutionTasksComponent} from './tasks/tasks.component';
     SolutionTasksComponent,
     EditSnippetComponent,
     EvaluationFormComponent,
+    DeleteModalComponent,
   ],
   imports: [
     CommonModule,

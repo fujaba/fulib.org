@@ -8,4 +8,5 @@ import {Component, Input} from '@angular/core';
 export class StatisticValueComponent {
   @Input() value?: unknown;
   @Input() label?: string;
+  @Input() standalone = false;
 }

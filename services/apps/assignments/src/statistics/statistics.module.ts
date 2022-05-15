@@ -1,5 +1,6 @@
 import {Module} from '@nestjs/common';
 import {AssignmentModule} from '../assignment/assignment.module';
+import {CommentModule} from '../comment/comment.module';
 import {EvaluationModule} from '../evaluation/evaluation.module';
 import {SolutionModule} from '../solution/solution.module';
 import {TelemetryModule} from '../telemetry/telemetry.module';
@@ -11,6 +12,7 @@ import {StatisticsService} from './statistics.service';
     AssignmentModule,
     EvaluationModule,
     SolutionModule,
+    CommentModule,
     TelemetryModule,
   ],
   controllers: [StatisticsController],
