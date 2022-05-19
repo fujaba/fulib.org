@@ -1,0 +1,114 @@
+<div class="container">
+  <h1>Create Course</h1>
+
+  <div class="mb-3">
+    <app-import-export (import)="onImport($event)" (export)="onExport()"></app-import-export>
+  </div>
+
+  <h2>General Info</h2>
+
+  <div class="mb-3">
+    <div class="mb-3">
+      <label for="titleInput" class="form-label">Title</label>
+      <input type="text" class="form-control" id="titleInput" placeholder="My Course"
+             [(ngModel)]="title" (change)="saveDraft()">
+    </div>
+    <div class="mb-3">
+      <label for="descriptionInput" class="form-label">Description</label>
+      <textarea id="descriptionInput" class="form-control" rows="6"
+                placeholder="A short description for this course..."
+                [(ngModel)]="description" (change)="saveDraft()">
+        </textarea>
+      <div class="form-text">
+        <a href="https://commonmark.org/help/">Markdown syntax</a> is supported.
+      </div>
+    </div>
+  </div>
+
+  <h2>Assignments</h2>
+  <div class="input-group mb-3">
+    <label class="visually-hidden" for="assignmentInput">Search Assignment</label>
+    <input type="text" class="form-control" id="assignmentInput"
+           placeholder="Start typing to search your assignments or paste ID or URL"
+           [(ngModel)]="newAssignment" [ngbTypeahead]="search"
+           (change)="saveDraft()" (keyup.enter)="addAssignment()">
+    <button
+      type="button"
+      class="btn btn-success bi-plus"
+      ngbTooltip="Keyboard Shortcut: &#9166;"
+      (click)="addAssignment()"
+    ></button>
+  </div>
+  <ul class="timeline-list" [dndDropzone]="['assignment']" (dndDrop)="drop($event)">
+    <li dndPlaceholderRef>
+      <hr class="border-success">
+    </li>
+    <li
+      *ngFor="let assignment of assignments; let i=index"
+      class="timeline-item"
+      dndType="assignment"
+      [dndDraggable]="assignment"
+      dndEffectAllowed="move"
+      (dndMoved)="dragged(assignment)"
+      (dndEnd)="saveDraft()"
+    >
+      <span class="timeline-item-badge bg-secondary">
+        {{i + 1}}
+      </span>
+      <span class="timeline-item-body" dndDragImageRef>
+        {{assignment?.title || 'Loading...'}}
+      </span>
+      <div class="btn btn-secondary ms-auto bi-grip-horizontal" aria-label="Reorder" ngbTooltip="Drag to Reorder" dndHandle>
+      </div>
+      <button type="button" class="btn btn-danger ms-2" aria-label="Remove" ngbTooltip="Remove"
+              (click)="removeAssignment(i)">
+        <i class="bi-trash"></i>
+      </button>
+    </li>
+  </ul>
+  <div class="form-text">
+    Drag and Drop the "&equiv;" boxes to change the order.
+  </div>
+
+  <div class="text-center">
+    <p>
+      Click "Submit" to finalize your course and generate a link.
+    </p>
+    <button type="button" class="btn btn-primary btn-lg" id="submitButton" (click)="submit()"
+            [disabled]="submitting">
+      {{submitting ? 'Submitting...' : 'Submit'}}
+    </button>
+  </div>
+</div>
+
+<ng-template #successModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title" id="successModalLabel">Course Created</h5>
+    <button class="btn-close" aria-label="Close" (click)="modal.close()">
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>
+      Congratulations! Your course titled <b>{{title}}</b> has been created!
+    </p>
+    <p>
+      You can now give your students the following link:
+    </p>
+    <p>
+      <a class="font-monospace" [routerLink]="getLink(false)" (click)="modal.close()">
+        {{getLink(true)}}
+      </a>
+      <button type="button" class="btn btn-sm btn-outline-primary"
+              ngxClipboard *ngxClipboardIfSupported [cbContent]="getLink(true)">
+        Copy
+      </button>
+    </p>
+    <p>
+      Note that this course can no longer be edited.
+      If you want to make changes, submit a new course and give your students the new link.
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-secondary" (click)="modal.close()">Close</button>
+  </div>
+</ng-template>

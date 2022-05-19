@@ -5,7 +5,7 @@ import {Document} from 'mongoose';
 
 @Schema({id: false, _id: false})
 export class Assignee {
-  @Prop()
+  @Prop({index: 1})
   @ApiProperty()
   @IsMongoId()
   assignment: string;
@@ -15,7 +15,7 @@ export class Assignee {
   @IsMongoId()
   solution: string;
 
-  @Prop({index: 1})
+  @Prop()
   @ApiProperty()
   @IsString()
   assignee: string;

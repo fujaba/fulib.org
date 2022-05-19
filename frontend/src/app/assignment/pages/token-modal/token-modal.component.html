@@ -1,0 +1,36 @@
+<app-modal #modal [back]="['..']" [backOptions]="{relativeTo: route}">
+  <ng-container modal-header>
+    Authorization Required
+  </ng-container>
+  <ng-container modal-body>
+    <ng-container *ngIf="solution">
+      <p>
+        Please enter the token for this solution to view it:
+      </p>
+      <div class="mb-3">
+        <label class="form-label" for="solutionTokenInput">Solution Token</label>
+        <input type="text" class="form-control font-monospace" id="solutionTokenInput"
+               placeholder="XXXX-XXXX-XXXX-XXXX" [(ngModel)]="solutionToken">
+      </div>
+      <p>
+        If you are the assignment administrator or tutor, enter the assignment token here:
+      </p>
+    </ng-container>
+    <p *ngIf="!solution">
+      Please enter the token for this assignment to view solutions:
+    </p>
+    <div class="mb-3">
+      <label class="form-label" for="assignmentTokenInput">Assignment Token</label>
+      <input type="text" class="form-control font-monospace" id="assignmentTokenInput"
+             placeholder="XXXX-XXXX-XXXX-XXXX" [(ngModel)]="assignmentToken">
+    </div>
+  </ng-container>
+  <ng-container modal-footer>
+    <button type="button" class="btn btn-secondary" (click)="modal.close()">
+      Cancel
+    </button>
+    <button type="button" class="btn btn-primary" (click)="save(); modal.close()">
+      Submit
+    </button>
+  </ng-container>
+</app-modal>

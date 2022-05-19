@@ -1,0 +1,66 @@
+<ol class="timeline-list">
+  <li *ngFor="let comment of comments" class="timeline-item">
+    <div class="timeline-item-badge bg-secondary">
+      {{comment.author.charAt(0)}}
+    </div>
+    <div class="timeline-item-body">
+      <div class="card">
+        <div class="card-header">
+          <app-author-name [name]="comment.author" [email]="comment.email"></app-author-name>
+          <i *ngIf="comment.distinguished" class="text-info bi-patch-check-fill" ngbTooltip="Assignment Authority"></i>
+          <span class="text-muted">
+            &#8226;
+            {{comment.timestamp | date:'medium'}}
+            &#8226;
+          </span>
+          <a
+            *ngIf="userId && comment.createdBy === userId"
+            class="text-danger bi-trash"
+            routerLink="."
+            ngbTooltip="Delete"
+            (click)="delete(comment)"
+          ></a>
+        </div>
+        <div class="card-body">
+          <div class="card-text mb-n3">
+            <app-markdown [markdown]="comment.body"></app-markdown>
+          </div>
+        </div>
+      </div>
+    </div>
+  </li>
+  <li class="timeline-item">
+    <div class="timeline-item-badge bg-secondary">
+      +
+    </div>
+    <div class="timeline-item-body">
+      <div class="card">
+        <div class="card-header">
+          <div class="d-flex align-items-center">
+            <span class="visually-hidden">New Comment</span>
+            <input type="text" class="form-control w-auto me-2" placeholder="John Doe" aria-label="Name"
+                   [(ngModel)]="commentName" (change)="saveCommentDraft()" [disabled]="!!userId">
+            <input type="text" class="form-control w-auto me-2" placeholder="jdoe@example.com" aria-label="Email"
+                   [(ngModel)]="commentEmail" (change)="saveCommentDraft()" [disabled]="!!userId">
+            <button class="btn btn-primary me-2"
+                    ngbTooltip="Keyboard Shortcuts: Ctrl-&#9166;"
+                    (click)="submitComment()" [disabled]="submitting">
+              {{submitting ? 'Submitting...' : 'Submit'}}
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <textarea
+            class="form-control"
+            aria-label="Comment Body"
+            [(ngModel)]="commentBody"
+            (change)="saveCommentDraft()"
+            (keyup.control.enter)="submitComment()"></textarea>
+          <div class="form-text">
+            <a href="https://commonmark.org/help/">Markdown syntax</a> is supported.
+          </div>
+        </div>
+      </div>
+    </div>
+  </li>
+</ol>

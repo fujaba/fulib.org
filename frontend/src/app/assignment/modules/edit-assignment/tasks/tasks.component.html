@@ -1,0 +1,50 @@
+<div class="btn-group mb-3"
+     ngbRadioGroup [ngModel]="markdown !== undefined" (ngModelChange)="switchMarkdown($event)">
+  <label ngbButtonLabel class="btn-secondary">
+    <input ngbButton type="radio" class="btn-check" [value]="true">
+    Markdown
+  </label>
+  <label ngbButtonLabel class="btn-secondary">
+    <input ngbButton type="radio" class="btn-check" [value]="false">
+    List
+  </label>
+</div>
+<app-edit-task-list
+  *ngIf="markdown === undefined"
+  [tasks]="context.assignment.tasks"
+></app-edit-task-list>
+<app-autotheme-codemirror
+  *ngIf="markdown !== undefined"
+  [(content)]="markdown"
+  [options]="{
+            mode: 'task-list',
+            autoRefresh: true,
+            lineNumbers: true
+          }"
+></app-autotheme-codemirror>
+<div class="alert alert-info mt-3" *ngIf="markdown !== undefined">
+  <h4 class="alert-heading">
+    Syntax Help
+  </h4>
+  <ul>
+    <li>
+      Write each task on a new line.
+    </li>
+    <li>
+      Write parent tasks using Markdown headers:
+      <code>## Task 1 (15P)</code>
+    </li>
+    <li>
+      Use <code>###</code>, <code>####</code>, etc. for nesting.
+      The top level must use <code class="text-success">##</code> instead of <code class="text-danger">#</code>.
+    </li>
+    <li>
+      Write child tasks and deductions using Markdown list items:
+      <code>- Wrong format (-1P)</code>
+    </li>
+    <li>
+      (Optional) Specify a Task ID: <code>## Task 2 (10P) &lt;!--123abc--&gt;</code>
+    </li>
+  </ul>
+</div>
+<router-outlet></router-outlet>

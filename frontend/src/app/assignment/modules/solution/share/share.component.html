@@ -1,0 +1,63 @@
+<h5>
+  Submission Link
+</h5>
+<p>
+  You can view your submission with this link.
+</p>
+<div class="input-group">
+  <input #linkInput type="text" class="form-control" readonly
+         [value]="origin + '/assignments/' + assignmentId + '/solutions/' + solutionId">
+  <button *ngxClipboardIfSupported class="btn btn-outline-secondary" [ngxClipboard]="linkInput">
+    Copy
+  </button>
+</div>
+<hr/>
+<div class="alert alert-warning">
+  The following fields contain the solution token, a secret key that can be used to access your solution, evaluations
+  and comments.
+  Make sure to keep this token secret!
+  Most importantly, <strong>do not share it with other students</strong>.
+</div>
+<h5>
+  Access Token
+</h5>
+<p>
+  To view your submission on other devices, you may be asked for the following token.
+</p>
+<div class="input-group">
+  <input #tokenInput type="text" class="form-control font-monospace" readonly [value]="token">
+  <button *ngxClipboardIfSupported class="btn btn-outline-secondary" [ngxClipboard]="tokenInput">
+    Copy
+  </button>
+</div>
+<hr/>
+<h5>
+  Submission Link with Token
+</h5>
+<p>
+  You can view your submission with this link.
+</p>
+<div class="input-group">
+  <input #linkWithTokenInput type="text" class="form-control" readonly
+         [value]="origin + '/assignments/' + assignmentId + '/solutions/' + solutionId + '/?stok=' + token">
+  <button *ngxClipboardIfSupported class="btn btn-outline-secondary" [ngxClipboard]="linkWithTokenInput">
+    Copy
+  </button>
+</div>
+<hr/>
+<h5>
+  fulibFeedback Settings
+  <span class="badge text-white bg-gradient-primary">New</span>
+</h5>
+<p>
+  Use the button below to configure fulibFeedback and view evaluations for this submission in
+  <select class="form-control form-control-sm d-inline-block w-auto" [(ngModel)]="ide"
+          (ngModelChange)="saveIde($event)">
+    <option *ngFor="let option of ideOption.options" [value]="option[0]">{{ option[1] }}</option>
+  </select>
+  .
+</p>
+<a class="btn btn-primary bi-magic"
+   [href]="ide + '://fulib.fulibfeedback/configure?api_server=' + encodedApiServer + '&assignment=' + assignmentId + '&solution=' + solutionId + '&token=' + token | safeUrl">
+  Configure
+</a>

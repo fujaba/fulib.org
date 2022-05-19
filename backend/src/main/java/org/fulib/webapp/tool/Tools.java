@@ -74,7 +74,7 @@ public class Tools
 	public static int scenarioc(OutputStream out, OutputStream err, Path scenarioSrcDir, Path modelSrcDir,
 		Path testSrcDir, String... args)
 	{
-		final List<String> finalArgs = new ArrayList<>(5 + args.length);
+		final List<String> finalArgs = new ArrayList<>(8 + args.length);
 		finalArgs.add("--classpath");
 		finalArgs.add(FulibMockups.class.getProtectionDomain().getCodeSource().getLocation().getPath());
 		finalArgs.add("-m");
@@ -82,6 +82,7 @@ public class Tools
 		finalArgs.add("-t");
 		finalArgs.add(testSrcDir.toString());
 		finalArgs.add(scenarioSrcDir.toString());
+		finalArgs.add("--diagram-handlers=.html.png=import(org.fulib.FulibTools).objectDiagrams().dumpPng(%s, %s)");
 		Collections.addAll(finalArgs, args);
 		return new ScenarioCompiler().run(null, out, err, finalArgs.toArray(new String[0]));
 	}

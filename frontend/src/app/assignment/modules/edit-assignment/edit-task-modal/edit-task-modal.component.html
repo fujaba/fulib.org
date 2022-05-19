@@ -1,0 +1,64 @@
+<app-modal #modal [back]="['.']" [backOptions]="{relativeTo: route.parent, queryParams: {parent: null}}">
+  <ng-container modal-header>
+    Edit Task
+  </ng-container>
+  <ng-container modal-body>
+    <div class="mb-3">
+      <div class="mb-3">
+        <label for="descriptionInput" class="form-label">Description</label>
+        <input type="text" class="form-control" id="descriptionInput" [(ngModel)]="task.description">
+      </div>
+      <div class="mb-3">
+        <label for="pointsInput" class="form-label">Points</label>
+        <div class="input-group">
+          <input type="number" class="form-control" id="pointsInput" min="0" [(ngModel)]="task.points">
+          <button
+            *ngIf="task.children.length"
+            class="btn btn-outline-secondary bi-magic"
+            ngbTooltip="Calculate Automatically"
+            (click)="calcPoints(task)"
+          ></button>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="globInput" class="form-label">
+          Filename Glob
+          <span class="badge text-white bg-gradient-primary">New</span>
+        </label>
+        <div [ngbTooltip]="context.assignment.classroom?.codeSearch ? null : 'Code Search must be enabled.'">
+          <input type="text" class="form-control" id="globInput" [(ngModel)]="task.glob"
+                 [disabled]="!context.assignment.classroom?.codeSearch">
+        </div>
+        <div class="form-text">
+          Optional.
+          Use a glob pattern to restrict Code Search to matching filenames.
+          Example: <code>src/**/model/*.java</code>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="verificationInput" class="form-label">Verification</label>
+        <app-scenario-codemirror
+          id="verificationInput"
+          [content]="task.verification"
+          [autoSubmit]="true"
+        ></app-scenario-codemirror>
+      </div>
+      <div class="mb-3" *ngIf="context.evaluations?.[task._id]?.remark as remark">
+        <label for="output" class="form-label">Output</label>
+        <app-autotheme-codemirror id="output" [content]="remark" [options]="{
+          autoRefresh: true,
+          lineNumbers: true,
+          styleActiveLine: true
+        }"></app-autotheme-codemirror>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container modal-footer>
+    <button type="button" class="btn btn-secondary" (click)="modal.close()">
+      Cancel
+    </button>
+    <button type="button" class="btn btn-primary" (click)="save(); modal.close()">
+      Save
+    </button>
+  </ng-container>
+</app-modal>

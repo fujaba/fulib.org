@@ -1,0 +1,16 @@
+<div class="row g-2">
+  <div class="col-auto">
+    <div class="input-group">
+      <label class="visually-hidden" for="fileInput">Import File</label>
+      <input #fileInput type="file" class="form-control" id="fileInput"
+             (change)="fileInput.files && (importFile = fileInput.files[0])">
+      <button type="button" class="btn btn-primary" [class.disabled]="!importFile"
+              (click)="onImport()" [ngbTooltip]="importFile ? null : 'Choose a file to import first'">
+        Import
+      </button>
+    </div>
+  </div>
+  <div class="col-auto">
+    <button type="button" class="btn btn-primary" (click)="export.emit()">Export</button>
+  </div>
+</div>

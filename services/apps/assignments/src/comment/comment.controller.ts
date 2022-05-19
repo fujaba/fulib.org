@@ -1,9 +1,13 @@
+import {EventPayload} from '@app/event/event.interface';
 import {AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound, notFound} from '@app/not-found';
-import {Body, Controller, Delete, Get, Headers, Param, Patch, Post} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Headers, MessageEvent, Param, Patch, Post, Sse} from '@nestjs/common';
+import {EventPattern, Payload} from '@nestjs/microservices';
 import {ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
+import {Observable, Subject} from 'rxjs';
 import {AssignmentService} from '../assignment/assignment.service';
 import {SolutionAuth} from '../solution/solution-auth.decorator';
+import {eventStream} from '../utils';
 import {CommentAuth} from './comment-auth.decorator';
 import {CreateCommentDto, UpdateCommentDto} from './comment.dto';
 import {Comment} from './comment.schema';
@@ -15,10 +19,17 @@ const forbiddenCommentResponse = 'Not owner of comment.';
 @Controller('assignments/:assignment/solutions/:solution/comments')
 @ApiTags('Comments')
 export class CommentController {
+  private stream$ = new Subject<EventPayload<Comment>>();
+
   constructor(
     private readonly assignmentService: AssignmentService,
     private readonly commentService: CommentService,
   ) {
+  }
+
+  @EventPattern('comment.*.*')
+  onEvent(@Payload() payload: EventPayload<Comment>) {
+    this.stream$.next(payload);
   }
 
   @Post()
@@ -34,6 +45,15 @@ export class CommentController {
     const assignment = await this.assignmentService.findOne(assignmentId) ?? notFound(assignmentId);
     const distinguished = this.assignmentService.isAuthorized(assignment, user, assignmentToken);
     return this.commentService.create(assignmentId, solution, dto, distinguished, user?.sub);
+  }
+
+  @Sse('events')
+  @SolutionAuth({forbiddenResponse})
+  events(
+    @Param('assignment') assignment: string,
+    @Param('solution') solution: string,
+  ): Observable<MessageEvent> {
+    return eventStream(this.stream$, 'comment', c => c.assignment === assignment && c.solution === solution);
   }
 
   @Get()

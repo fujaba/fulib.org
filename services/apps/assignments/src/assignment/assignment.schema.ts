@@ -1,15 +1,16 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
-import {ApiProperty} from '@nestjs/swagger';
-import {Type} from 'class-transformer';
+import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
+import {Transform, Type} from 'class-transformer';
 import {
+  IsAlphanumeric,
   IsArray,
-  IsDateString,
+  IsBoolean,
+  IsDate,
   IsEmail,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
-  Min,
   ValidateNested,
 } from 'class-validator';
 import {Document} from 'mongoose';
@@ -17,23 +18,73 @@ import {Document} from 'mongoose';
 export class Task {
   @Prop()
   @ApiProperty()
-  @IsString()
+  @IsAlphanumeric()
   @IsNotEmpty()
-  description: string;
-
-  @Prop()
-  @ApiProperty({minimum: 0})
-  @IsNumber()
-  @Min(0)
-  points: number;
+  _id: string;
 
   @Prop()
   @ApiProperty()
   @IsString()
-  verification: string;
+  description: string;
+
+  @Prop()
+  @ApiProperty()
+  @IsNumber()
+  points: number;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  verification?: string;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  glob?: string;
+
+  @Prop({default: []})
+  @ApiProperty({type: [Task]})
+  @ValidateNested({each: true})
+  @Type(() => Task)
+  children: Task[];
 }
 
-@Schema()
+export class ClassroomInfo {
+  @Prop()
+  @ApiProperty({required: false})
+  @IsOptional()
+  @IsString()
+  org?: string;
+
+  @Prop()
+  @ApiProperty({required: false})
+  @IsOptional()
+  @IsString()
+  prefix?: string;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  token?: string;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  codeSearch?: boolean;
+}
+
+@Schema({
+  toJSON: {
+    transform: (doc, ret) => {
+      delete ret.classroom?.token;
+      return ret;
+    },
+  },
+})
 export class Assignment {
   @Prop()
   @ApiProperty()
@@ -50,9 +101,9 @@ export class Assignment {
   @IsString()
   description: string;
 
-  @Prop()
-  @ApiProperty()
-  createdBy: string;
+  @Prop({index: 1})
+  @ApiPropertyOptional()
+  createdBy?: string;
 
   @Prop()
   @ApiProperty()
@@ -65,11 +116,19 @@ export class Assignment {
   @IsEmail()
   email: string;
 
+  @Prop({index: 1})
+  @ApiProperty({required: false})
+  @IsOptional()
+  @IsDate()
+  @Transform(({value}) => typeof value === 'string' ? new Date(value) : value)
+  deadline?: Date;
+
   @Prop()
   @ApiProperty({required: false})
   @IsOptional()
-  @IsDateString()
-  deadline?: Date;
+  @ValidateNested()
+  @Type(() => ClassroomInfo)
+  classroom?: ClassroomInfo;
 
   @Prop()
   @ApiProperty({type: [Task]})

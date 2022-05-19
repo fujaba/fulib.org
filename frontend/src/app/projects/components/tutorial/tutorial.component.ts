@@ -100,7 +100,7 @@ export class TutorialComponent implements OnInit, AfterViewInit {
       description: 'This is where files appear when you select them in the Project Tree.',
     },
     {
-      selector: 'app-file-tabs a.nav-link.close',
+      selector: 'app-file-tabs a.nav-link.new-tab',
       title: 'New Scratch File',
       description: 'Use this button to create a new scratch file for writing down ideas or saving code for later.',
     },
@@ -119,7 +119,7 @@ export class TutorialComponent implements OnInit, AfterViewInit {
       description: 'The Terminal allows you to execute commands on the Project Container.',
     },
     {
-      selector: 'app-terminal-tabs a.nav-link.close',
+      selector: 'app-terminal-tabs a.nav-link.new-tab',
       title: 'New Terminal',
       description: 'Use this button to open a new shell.',
     },

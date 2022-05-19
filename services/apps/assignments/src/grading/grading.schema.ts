@@ -1,6 +1,15 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {ApiProperty} from '@nestjs/swagger';
-import {IsDateString, IsInt, IsMongoId, IsNotEmpty, IsNumber, IsOptional, IsString, Min} from 'class-validator';
+import {
+  IsAlphanumeric,
+  IsDateString,
+  IsMongoId,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Min,
+} from 'class-validator';
 import {Document} from 'mongoose';
 
 @Schema({id: false, _id: false})
@@ -17,9 +26,9 @@ export class Grading {
 
   @Prop()
   @ApiProperty({type: 'integer'})
-  @IsInt()
-  @Min(0)
-  task: number;
+  @IsAlphanumeric()
+  @IsNotEmpty()
+  task: string;
 
   @Prop()
   @ApiProperty()

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {TerminalLaunchConfig} from '../model/launch-config';
 
 @Component({
@@ -6,14 +6,8 @@ import {TerminalLaunchConfig} from '../model/launch-config';
   templateUrl: './command-form.component.html',
   styleUrls: ['./command-form.component.scss'],
 })
-export class CommandFormComponent implements OnInit {
+export class CommandFormComponent {
   @Input() config: TerminalLaunchConfig;
-
-  constructor() {
-  }
-
-  ngOnInit(): void {
-  }
 
   get arguments(): string {
     return this.config.terminal.arguments?.join('\n') ?? '';

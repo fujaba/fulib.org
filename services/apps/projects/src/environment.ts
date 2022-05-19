@@ -2,7 +2,7 @@ export const environment = {
   version: 'v1',
   port: +(process.env.PORT || 6266),
   mongo: {
-    uri: process.env.MONGO_URI || 'mongodb://fulibDotOrg:fulibDotOrg@localhost:27017/fulib-org',
+    uri: process.env.MONGO_URI || 'mongodb://localhost:27017/fulib-org',
     options: {
     },
   },
@@ -14,7 +14,7 @@ export const environment = {
     bindPrefix: process.env.FULIB_PROJECTS_DATA_DIR || 'data',
     containerImage: process.env.FULIB_PROJECTS_CONTAINER_IMAGE || 'codercom/code-server:latest',
     proxyHost: process.env.FULIB_PROJECTS_PROXY_URL || 'http://localhost:8080',
-    network: process.env.FULIB_PROJECTS_NETWORK || 'fulib_projects',
+    network: process.env.FULIB_PROJECTS_NETWORK || 'fuliborg_projects',
   },
   auth: {
     publicKey: `-----BEGIN PUBLIC KEY-----\n${

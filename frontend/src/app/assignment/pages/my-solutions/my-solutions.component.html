@@ -1,0 +1,56 @@
+<div class="container">
+  <h1>My Solutions</h1>
+
+  <ul class="list-group" *ngIf="assignments?.length">
+    <li *ngFor="let assignment of assignments"
+        class="list-group-item"
+    >
+      <h3>
+        {{assignment.title}}
+      </h3>
+      <p class="text-muted">
+        by
+        <app-author-name [name]="assignment.author" [email]="assignment.email"></app-author-name>
+        <ng-container *ngIf="assignment.deadline">
+          &mdash;
+          Deadline: {{assignment.deadline | date:'medium'}}
+        </ng-container>
+      </p>
+      <p>
+
+      </p>
+      <div class="list-group">
+        <a *ngFor="let solution of solutions!.get(assignment._id)"
+           class="list-group-item list-group-item-action"
+           routerLink="/assignments/{{assignment._id}}/solutions/{{solution._id}}">
+          by
+          <app-author-name [name]="solution.author.name" [email]="solution.author.email"></app-author-name>
+          &mdash;
+          {{solution.author.studentId}}
+          &mdash;
+          Submitted: {{solution.timestamp | date:'medium'}}
+        </a>
+        <a class="list-group-item list-group-item-action"
+           routerLink="/assignments/{{assignment._id}}">
+          by
+          <app-author-name [name]="author?.name ?? ''" [email]="author?.email ?? ''"></app-author-name>
+          &mdash;
+          {{author?.studentId}}
+          &mdash;
+          <span class="text-success">Current Draft</span>
+        </a>
+      </div>
+    </li>
+  </ul>
+
+  <div class="card" *ngIf="!assignments?.length">
+    <div class="card-body">
+      <h5 class="card-title">
+        No Solutions yet!
+      </h5>
+      <p class="card-text">
+        Solutions will appear here once you accept an assignment via a link.
+      </p>
+    </div>
+  </div>
+</div>

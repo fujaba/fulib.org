@@ -1,0 +1,55 @@
+<div class="mb-3">
+  <div class="mb-3">
+    <label class="form-label">
+      GitHub
+      <label for="classroomOrgInput">Organization</label>
+      and
+      <label for="classroomPrefixInput">Prefix</label>
+    </label>
+    <div class="input-group">
+      <span class="input-group-text">https://github.com/</span>
+      <input type="text" class="form-control" id="classroomOrgInput" placeholder="my-awesome-org"
+             [(ngModel)]="assignment.classroom!.org" (change)="saveDraft()">
+      <span class="input-group-text">/</span>
+      <input type="text" class="form-control" id="classroomPrefixInput" placeholder="prefix"
+             [(ngModel)]="assignment.classroom!.prefix" (change)="saveDraft()">
+      <span class="input-group-text">-Student</span>
+    </div>
+    <div class="form-text">
+      Allows importing solutions from Classroom Submissions.
+    </div>
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="tokenInput">GitHub Token</label>
+    <input
+      type="password" class="form-control" id="tokenInput" placeholder="ghp_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+      [(ngModel)]="assignment.classroom!.token" (change)="saveDraft()"
+    >
+    <div class="form-text">
+      Required for importing solutions from GitHub Classroom.
+      You can generate a token in the
+      <a
+        href="https://github.com/settings/tokens/new?description={{encodeURIComponent(assignment.title)}}&scopes=repo"
+        target="_blank">
+        GitHub Settings
+      </a>.
+      Make sure your account has access to the
+      <b>{{ assignment.classroom!.org }}</b>
+      organisation and select the
+      <code>repo</code>
+      scope.
+    </div>
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="codeSearchCheck">Code Search</label>
+    <div class="form-check">
+      <input type="checkbox" class="form-check-input" id="codeSearchCheck"
+             [(ngModel)]="assignment.classroom!.codeSearch" (change)="saveDraft()">
+      <label class="form-check-label" for="codeSearchCheck">Enable Code Search</label>
+    </div>
+    <div class="form-text">
+      Code Search will import the source code from Classroom repositories and index it.
+      It can be used to find code duplicates across submissions and allows grading multiple students at the same time.
+    </div>
+  </div>
+</div>

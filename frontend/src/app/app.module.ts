@@ -2,12 +2,13 @@ import {HttpClientModule} from '@angular/common/http';
 import {APP_INITIALIZER, NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ServiceWorkerModule} from '@angular/service-worker';
 
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {KeycloakAngularModule, KeycloakService} from 'keycloak-angular';
 import {NgBootstrapDarkmodeModule, THEME_LOADER, THEME_SAVER, ThemeLoader, ThemeSaver} from 'ng-bootstrap-darkmode';
-import {DragulaModule} from 'ng2-dragula';
+import {ToastModule} from 'ng-bootstrap-ext';
 import {of} from 'rxjs';
 
 import {environment} from '../environments/environment';
@@ -18,6 +19,7 @@ import {AppComponent} from './app.component';
 import {ChangelogComponent} from './changelog/changelog.component';
 import {FeedbackComponent} from './feedback/feedback.component';
 import {HeaderComponent} from './header/header.component';
+import {HomeComponent} from './home/home.component';
 import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
 import {PrivacyService} from './privacy.service';
 import {PrivacyComponent} from './privacy/privacy.component';
@@ -52,18 +54,20 @@ function initializeKeycloak(keycloak: KeycloakService) {
     FeedbackComponent,
     PrivacyComponent,
     AboutComponent,
+    HomeComponent,
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpClientModule,
+    BrowserAnimationsModule,
     NgbModule,
     NgBootstrapDarkmodeModule,
-    DragulaModule.forRoot(),
     KeycloakAngularModule,
     SharedModule,
     AppRoutingModule,
     UserModule,
+    ToastModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production,
       // Register the ServiceWorker as soon as the app is stable

@@ -1,0 +1,57 @@
+<div class="container">
+  <app-assignment-info [assignment]="assignment"></app-assignment-info>
+
+  <h2>Tasks</h2>
+  <app-task-list [tasks]="assignment?.tasks"></app-task-list>
+
+  <h2><label for="solutionInput">Your Solution</label></h2>
+  <div class="mb-3">
+    <app-scenario-codemirror
+      id="solutionInput"
+      [(content)]="solution"
+      [autoSubmit]="true"
+      [markers]="markers"
+      (save)="check()"
+    ></app-scenario-codemirror>
+    <div class="form-text">
+      {{ status }}
+    </div>
+  </div>
+
+  <h2>Your Info</h2>
+
+  <div class="mb-3">
+    <div class="mb-3">
+      <label for="nameInput" class="form-label">Name</label>
+      <input type="text" class="form-control" id="nameInput" placeholder="John Doe"
+             [(ngModel)]="author.name" (change)="saveDraft()" [disabled]="loggedIn">
+    </div>
+    <div class="mb-3">
+      <label for="studentIDInput" class="form-label">Student ID</label>
+      <input type="text" class="form-control" id="studentIDInput" placeholder="12345678"
+             [(ngModel)]="author.studentId" (change)="saveDraft()">
+    </div>
+    <div class="mb-3">
+      <label for="emailInput" class="form-label">E-Mail</label>
+      <input type="text" class="form-control" id="emailInput" placeholder="jdoe@example.com"
+             [(ngModel)]="author.email" (change)="saveDraft()" [disabled]="loggedIn">
+    </div>
+    <div class="mb-3">
+      <label for="githubInput" class="form-label">GitHub Username</label>
+      <input type="text" class="form-control" id="githubInput" placeholder="JohnDoe"
+             [(ngModel)]="author.github" (change)="saveDraft()">
+    </div>
+  </div>
+
+  <div class="text-center">
+    <p>
+      When you are done with your solution, click "Submit".
+      You can still make changes afterwards.
+    </p>
+    <button type="button" class="btn btn-primary btn-lg"
+            [disabled]="submitting"
+            (click)="submit()">
+      {{submitting ? 'Submitting...' : 'Submit'}}
+    </button>
+  </div>
+</div>

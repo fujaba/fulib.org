@@ -3,7 +3,6 @@ import {Marker} from './model/marker';
 
 @Injectable({providedIn: 'root'})
 export class LintService {
-
   lint(output: string): Marker[] {
     const result: Marker[] = [];
 

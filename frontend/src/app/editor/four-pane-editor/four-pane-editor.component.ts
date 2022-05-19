@@ -27,6 +27,7 @@ export class FourPaneEditorComponent implements OnInit {
 
   selectedExample: Example | null;
   scenarioText: string;
+  apiUrl = environment.apiURL;
   response: Response | null;
   markers: Marker[] = [];
   javaCode = '// Loading...';

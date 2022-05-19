@@ -1,0 +1,29 @@
+<div class="row">
+  <div class="col-md-6">
+    <div class="mb-3">
+      <div class="mb-3">
+        <label class="form-label" for="solutionInput">
+          Sample Solution
+        </label>
+        <app-scenario-codemirror
+          id="solutionInput"
+          [(content)]="assignment.solution"
+          [autoSubmit]="true"
+          [markers]="markers"
+          (save)="check()"
+        ></app-scenario-codemirror>
+        <div class="form-text">
+          You can provide a sample solution to ensure your assignment is solvable.
+          Students cannot see this.
+          <br/>
+          {{ status }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    Tasks
+    <app-task-list [tasks]="assignment.tasks" [evaluations]="evaluations" [points]="points"></app-task-list>
+  </div>
+</div>
+<router-outlet></router-outlet>

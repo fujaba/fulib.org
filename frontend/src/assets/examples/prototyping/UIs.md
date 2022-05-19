@@ -10,9 +10,9 @@ There is a UI with id loginPage.
 
 There is a UI with id title and with description "login page" and with parent loginPage.
 
-> To generate the HTML file gui01.html and a screenshot guiO1.html.png (for the loginPage) write:
+> To generate the HTML file gui01.html and a screenshot guiO1.html (for the loginPage) write:
 
-![loginPage](gui01.html.png)
+![loginPage](gui01.html)
 
 > A simple description like "login page" becomes a label, i.e. a text centered in a line.
 > To create an input field, use a description like "input <name> <prompt text>".
@@ -21,14 +21,14 @@ There is a UI with id inputField and with description "input userName name?" and
 
 > "userName" is the key that will allow you to read and write the text within that input field.
 
-![loginPage](gui02.html.png)
+![loginPage](gui02.html)
 
 > Finally, there is a description like "button ok gui04.html" that creates a button
 > with text "ok" and on click loads "gui04.html".
 
 There is a UI with id button and with description "button ok gui04.html" and with parent loginPage.
 
-![loginPage](gui03.html.png)
+![loginPage](gui03.html)
 
 > Let us have gui04.html
 
@@ -36,7 +36,7 @@ There is a UI with id helloPage.
 There is a UI with id greetings and with description "hello world" and with parent helloPage.
 There is a UI with id backButton and with description "button back gui05.html" and with parent helloPage.
 
-![helloPage](gui04.html.png)
+![helloPage](gui04.html)
 
 > A page may have parameters which are key value pairs.
 > If the key refers to an input field, we write the value into that field.
@@ -52,7 +52,7 @@ Button has description "button ok gui06.html".
 
 Button has description "button ok gui06.html | or | button restart gui03.html".
 
-![loginPage](gui05.html.png)
+![loginPage](gui05.html)
 
 > To see the object structure of our login page write:
 
@@ -62,6 +62,6 @@ Button has description "button ok gui06.html | or | button restart gui03.html".
 
 Greetings has description "hello Bob".
 
-![helloPage](gui06.html.png)
+![helloPage](gui06.html)
 
 > Overall you may create a sequence of pages that serve as a small slide show or mockup for your application.

@@ -32,6 +32,7 @@ speed-measure-plugin*.json
 .history/*
 
 # misc
+/.angular/cache
 /.sass-cache
 /connect.lock
 /coverage
@@ -51,3 +52,4 @@ src/assets/examples/**/*.png
 src/assets/examples/**/*.svg
 src/assets/examples/**/*.txt
 src/assets/examples/**/*.yaml
+!src/assets/examples/workflows/*.es.yaml

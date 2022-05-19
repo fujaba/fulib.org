@@ -3,12 +3,12 @@
     What's New on fulib.org
   </ng-container>
   <ng-container modal-body>
-    <ul ngbNav #nav="ngbNav" [(activeId)]="activeRepo" class="nav-tabs">
+    <ul ngbNav #nav="ngbNav" [(activeId)]="activeRepo" class="nav-tabs mx-n3 px-3">
       <ng-container *ngFor="let repo of repos">
         <li *ngIf="changelogs[repo]" [ngbNavItem]="repo">
           <a ngbNavLink>
             {{repo}}
-            <span class="badge badge-secondary">
+            <span class="badge bg-secondary">
               <ng-container *ngIf="lastUsedVersions && lastUsedVersions[repo] !== currentVersions[repo]">
                 v{{lastUsedVersions[repo]}} &rarr;
               </ng-container>
@@ -16,7 +16,18 @@
             </span>
           </a>
           <ng-template ngbNavContent>
-            <app-markdown [html]="changelogs[repo]!"></app-markdown>
+            <details *ngFor="let release of changelogs[repo]" (toggle)="render(repo, release)">
+              <summary class="h4">
+                {{ release.name }}
+                <span class="badge bg-secondary">
+                  {{ release.tag_name }}
+                </span>
+                <span class="text-muted" [ngbTooltip]="release.created_at | date:'medium'">
+                  {{ release.created_at | date:'shortDate' }}
+                </span>
+              </summary>
+              <app-markdown [html]="release.bodyHtml ?? 'Loading...'"></app-markdown>
+            </details>
           </ng-template>
         </li>
       </ng-container>
@@ -28,6 +39,8 @@
       <input class="form-check-input" type="checkbox" id="autoShowCheckbox" [(ngModel)]="autoShow">
       <label class="form-check-label" for="autoShowCheckbox">Automatically show this window</label>
     </div>
-    <button type="button" class="btn btn-primary" (click)="modal.close()">Close</button>
+    <button type="button" class="btn btn-secondary" (click)="modal.close()">
+      Close
+    </button>
   </ng-container>
 </app-modal>

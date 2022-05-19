@@ -1,0 +1,223 @@
+<div class="container" *ngIf="stats">
+  <div class="row">
+    <div class="col-md-6">
+      <h2>
+        Solutions
+      </h2>
+      <ul class="list-group mb-3">
+        <li class="list-group-item d-flex align-items-center">
+          <div class="me-auto">
+            Total
+          </div>
+          <app-statistic-value [value]="stats.solutions.total" label="Solutions"></app-statistic-value>
+        </li>
+        <div class="text-center h1 bi-chevron-compact-down"></div>
+        <li class="list-group-item d-flex align-items-center bg-progress-blue" [style.--percentage.%]="stats.solutions.evaluated / stats.solutions.total * 100">
+          <div class="me-auto">
+            Evaluated
+          </div>
+          <app-statistic-value [value]="stats.solutions.evaluated" label="Solutions"></app-statistic-value>
+          <div class="border-end mx-3 align-self-stretch"></div>
+          <app-statistic-value [value]="(stats.solutions.evaluated / stats.solutions.total) | percent:'0.0'" label="of All"></app-statistic-value>
+        </li>
+        <div class="text-center h1 bi-chevron-compact-down"></div>
+        <li class="list-group-item d-flex align-items-center bg-progress-green" [style.--percentage.%]="stats.solutions.graded / stats.solutions.total * 100">
+          <div class="me-auto">
+            Graded
+          </div>
+          <app-statistic-value [value]="stats.solutions.graded" label="Solutions"></app-statistic-value>
+          <div class="border-end mx-3 align-self-stretch"></div>
+          <app-statistic-value [value]="(stats.solutions.graded / stats.solutions.total) | percent:'0.0'" label="of All"></app-statistic-value>
+        </li>
+      </ul>
+      <h2>
+        Students
+      </h2>
+      <ul class="list-group mb-3">
+        <li class="list-group-item d-flex align-items-center bg-progress-green" [style.--percentage.%]="stats.solutions.passed / stats.solutions.graded * 100">
+          <div class="me-auto">
+            Passing
+          </div>
+          <app-statistic-value [value]="stats.solutions.passed | number:'1.0'" label="Students"></app-statistic-value>
+          <div class="border-end mx-3 align-self-stretch"></div>
+          <app-statistic-value [value]="(stats.solutions.passed / stats.solutions.graded) | percent:'0.0'" label="of Graded"></app-statistic-value>
+        </li>
+        <li class="list-group-item d-flex align-items-center bg-progress-green" [style.--percentage.%]="stats.solutions.pointsAvg / maxPoints * 100">
+          <div class="me-auto">
+            Average Grade
+          </div>
+          <app-statistic-value [value]="stats.solutions.pointsAvg | number:'1.0-2'" label="Average Points"></app-statistic-value>
+          <div class="border-end mx-3 align-self-stretch"></div>
+          <app-statistic-value [value]="maxPoints" label="Total Points"></app-statistic-value>
+          <div class="border-end mx-3 align-self-stretch"></div>
+          <app-statistic-value [value]="(stats.solutions.pointsAvg / maxPoints) | percent:'0.0'" label="of Total"></app-statistic-value>
+        </li>
+      </ul>
+    </div>
+    <div class="col-md-6">
+      <div class="d-flex align-items-center">
+        <h2 class="me-auto">
+          Evaluations
+        </h2>
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="weightedEvaluationsCheck" [(ngModel)]="weightedEvaluations">
+          <label class="form-check-label" for="weightedEvaluationsCheck">Weighted by Points</label>
+        </div>
+      </div>
+      <app-statistics-block
+        [label]="weightedEvaluations ? 'Points' : 'Evaluations'"
+        [stats]="weightedEvaluations ? stats.weightedEvaluations : stats.evaluations"
+      ></app-statistics-block>
+      <h2>
+        Time Tracking
+      </h2>
+      <ul class="list-group mb-3">
+        <li class="list-group-item d-flex align-items-center bg-progress-purple" [style.--percentage.%]="stats.time.evaluationTotal / (stats.time.codeSearchSavings + stats.time.evaluationTotal) * 100">
+          <div class="me-auto">
+            Time spent Evaluating
+          </div>
+          <app-statistic-value
+            [label]="weightedEvaluations ? '∅ per Point' : '∅ per Evaluation'"
+            [value]="(weightedEvaluations ? stats.time.pointsAvg : stats.time.evaluationAvg) / 1000 | duration"
+          ></app-statistic-value>
+          <div class="border-end mx-3 align-self-stretch"></div>
+          <app-statistic-value label="Spent" [value]="stats.time.evaluationTotal / 1000 | duration"></app-statistic-value>
+          <div class="border-end mx-3 align-self-stretch"></div>
+          <app-statistic-value label="of Total" [value]="(stats.time.evaluationTotal / (stats.time.codeSearchSavings + stats.time.evaluationTotal)) | percent:'0.0'"></app-statistic-value>
+        </li>
+        <li class="list-group-item d-flex align-items-center bg-progress-teal" [style.--percentage.%]="stats.time.codeSearchSavings / (stats.time.codeSearchSavings + stats.time.evaluationTotal) * 100">
+          <div class="me-auto">
+            Time saved by Code Search
+            <i
+              class="bi-info-circle"
+              ngbTooltip="Approximately. Click for more info."
+              ngbPopover="The time saved by Code Search is approximately calculated as a sum of each task's time savings.
+                The time taken to manually evaluate a task is multiplied by the number of automatic evaluations created by Code Search.
+                You can view the time savings for each task in the list below."
+              popoverTitle="Code Search Time Savings Explained"
+            ></i>
+          </div>
+          <app-statistic-value label="Saved" [value]="stats.time.codeSearchSavings / 1000 | duration"></app-statistic-value>
+          <div class="border-end mx-3 align-self-stretch"></div>
+          <app-statistic-value label="of Total" [value]="(stats.time.codeSearchSavings / (stats.time.codeSearchSavings + stats.time.evaluationTotal)) | percent:'0.0'"></app-statistic-value>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="d-flex">
+    <h2 class="me-auto">
+      Tasks
+    </h2>
+    <div ngbDropdown class="d-inline-block" autoClose="outside">
+      <button class="btn btn-outline-secondary" id="tasksDropdown" ngbDropdownToggle>
+        Options
+      </button>
+      <div ngbDropdownMenu aria-labelledby="tasksDropdown">
+        <button
+          *ngFor="let taskProp of taskProps | keyvalue"
+          ngbDropdownItem
+          class="d-flex align-items-center dropdown-item-check"
+          [class.checked]="visibleProps.has($any(taskProp.key))"
+          (click)="toggleVisibility($any(taskProp.key))"
+        >
+          <div class="me-auto">
+            {{ taskProp.value.title }}
+          </div>
+          <a
+            class="ms-2"
+            [class.bi-sort-numeric-up]="sortProp !== taskProp.key"
+            [class.bi-sort-numeric-down]="sortProp === taskProp.key"
+            routerLink="."
+            [ngbTooltip]="sortProp === taskProp.key ? 'Sort descending' : 'Sort ascending'"
+            (click)="sortTasks($any(taskProp.key)); $event.stopPropagation()"
+          ></a>
+        </button>
+      </div>
+    </div>
+  </div>
+  <ngb-accordion [closeOthers]="false">
+    <ngb-panel *ngFor="let taskStats of stats.tasks">
+      <ng-template ngbPanelHeader>
+        <button ngbPanelToggle class="accordion-button">
+          <ol class="breadcrumb mb-0 flex-grow-1 bg-transparent">
+            <li *ngFor="let task of taskStats._tasks; let last=last" class="breadcrumb-item" [class.text-muted]="!last">
+              {{ task.description }}
+              <span *ngIf="last" class="badge bg-secondary">
+                {{ task.points }}
+              </span>
+            </li>
+          </ol>
+          <ng-container *ngFor="let prop of visibleProps; let last = last">
+            <app-statistic-value
+              *ngIf="taskProps[prop] as taskProp"
+              [value]="taskProp.render(taskProp.get(taskStats))" [label]="taskProp.label"
+            ></app-statistic-value>
+            <div *ngIf="!last" class="border-end mx-3 align-self-stretch"></div>
+          </ng-container>
+        </button>
+      </ng-template>
+      <ng-template ngbPanelContent>
+        <ul>
+          <li>
+            The Task
+            <b>{{ taskStats._task.description }}</b>
+            was evaluated
+            <b>{{ taskStats.count.total }}</b>
+            times.
+          </li>
+          <li>
+            The task took
+            <b>{{ taskStats.timeAvg / 1000 | duration }}</b>
+            on average to evaluate.
+          </li>
+          <li>
+            A total of
+            <b>{{ taskStats.points.total }}</b>
+            points was
+            {{ taskStats._task.points < 0 ? 'deducted' : 'given' }}
+            across all submissions.
+          </li>
+          <li>
+            On average, that is
+            <b>{{ taskStats._pointsAvg | number:'0.0-2' }}</b>
+            points across evaluated submissions.
+          </li>
+          <li>
+            This results in a
+            {{ taskStats._task.points < 0 ? 'failure' : 'success' }}
+            rate of
+            <b>{{ taskStats._score | percent:'0.0-2' }}</b>.
+          </li>
+          <li>
+            Of the {{ taskStats.count.total }} evaluations for this task,
+            <ul>
+              <li>
+                <b>{{ taskStats.count.codeSearch }}</b> were found by Code Search and unedited,
+              </li>
+              <li>
+                <b>{{ taskStats.count.editedCodeSearch }}</b> were found by Code Search and manually edited, and
+              </li>
+              <li>
+                <b>{{ taskStats.count.manual }}</b> were added manually.
+              </li>
+            </ul>
+          </li>
+          <li>
+            This makes Code Search
+            <b>{{ taskStats._codeSearchEffectiveness | percent:'0.0' }}</b>
+            <ng-container *ngIf="taskStats.count.editedCodeSearch">
+              -
+              <b>{{ (taskStats.count.codeSearch + taskStats.count.editedCodeSearch) / taskStats.count.total | percent:'0.0' }}</b>
+            </ng-container>
+            effective for this task.
+          </li>
+          <li>
+            Code Search saved approximately
+            <b>{{ taskStats._codeSearchTimeSavings / 1000 | duration }}</b>
+            of grading time for this task.
+          </li>
+        </ul>
+      </ng-template>
+    </ngb-panel>
+  </ngb-accordion>
+</div>

@@ -1,19 +1,54 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
-import {ApiProperty} from '@nestjs/swagger';
+import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
 import {Type} from 'class-transformer';
-import {IsArray, IsDateString, IsEmail, IsMongoId, IsNotEmpty, IsString, Min, ValidateNested} from 'class-validator';
+import {
+  IsDateString,
+  IsEmail,
+  IsHash,
+  IsMongoId,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
+  ValidateNested,
+} from 'class-validator';
 import {Document} from 'mongoose';
 
 export class TaskResult {
   @Prop()
-  @ApiProperty()
-  @Min(0)
+  task: string;
+
+  @Prop()
   points: number;
+
+  @Prop()
+  output: string;
+}
+
+export class AuthorInfo {
+  @Prop()
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  name: string;
 
   @Prop()
   @ApiProperty()
   @IsString()
-  output: string;
+  @IsNotEmpty()
+  studentId: string;
+
+  @Prop()
+  @ApiProperty()
+  @IsEmail()
+  email: string;
+
+  @Prop()
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  github?: string;
 }
 
 @Schema()
@@ -27,26 +62,17 @@ export class Solution {
   @IsMongoId()
   assignment: string;
 
-  @Prop()
-  @ApiProperty()
-  createdBy: string;
-
   @Prop({index: 1})
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  name: string;
+  @ApiProperty({required: false})
+  @IsOptional()
+  @IsUUID()
+  createdBy?: string;
 
   @Prop()
   @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  studentID: string;
-
-  @Prop()
-  @ApiProperty()
-  @IsEmail()
-  email: string;
+  @ValidateNested()
+  @Type(() => AuthorInfo)
+  author: AuthorInfo;
 
   @Prop()
   @ApiProperty()
@@ -54,18 +80,29 @@ export class Solution {
   solution: string;
 
   @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsHash('sha1')
+  commit?: string;
+
+  @Prop()
   @ApiProperty()
   @IsDateString()
   timestamp?: Date;
 
   @Prop()
-  @ApiProperty({type: [TaskResult]})
-  @IsArray()
-  @ValidateNested({each: true})
-  @Type(() => TaskResult)
-  results: TaskResult[];
+  @ApiPropertyOptional({description: ''})
+  @IsNumber()
+  points?: number;
+
+  @Prop({required: false})
+  results?: TaskResult[];
 }
 
 export type SolutionDocument = Solution & Document;
 
-export const SolutionSchema = SchemaFactory.createForClass(Solution);
+export const SolutionSchema = SchemaFactory.createForClass(Solution)
+  .index({assignment: 1, 'author.name': 1})
+  .index({assignment: 1, 'author.github': 1})
+  .index({assignment: 1, 'timestamp': 1})
+;

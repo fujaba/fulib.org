@@ -1,0 +1,12 @@
+<div class="container">
+  <h1>
+    {{context.assignment._id ? 'Edit' : 'Create'}}
+    Assignment
+  </h1>
+
+  <div class="mb-3">
+    <app-import-export (import)="onImport($event)" (export)="onExport()"></app-import-export>
+  </div>
+  <app-route-tabs [routes]="steps"></app-route-tabs>
+  <router-outlet *ngIf="context.assignment"></router-outlet>
+</div>

@@ -1,4 +1,4 @@
-<app-modal #modal="modal" [back]="['/editor']">
+<app-modal #modal="modal" [back]="['..']" [backOptions]="{relativeTo: route}">
   <ng-container modal-header>
     Configure Project
   </ng-container>
@@ -6,17 +6,17 @@
     <app-project-config-form [config]="config"></app-project-config-form>
     <hr/>
     <h4>Export Project</h4>
-    <div class="form">
-      <div class="form-group">
-        <label for="formatSelect">
+    <div class="mb-3">
+      <div class="mb-3">
+        <label class="form-label" for="formatSelect">
           Format
         </label>
-        <select class="custom-select" id="formatSelect" [(ngModel)]="format">
-          <option *ngFor="let format of formats" [ngValue]="format.id">{{ format.name }}</option>
+        <select class="form-select" id="formatSelect" [(ngModel)]="format">
+          <option *ngFor="let format of formats" [ngValue]="format">{{ format.name }}</option>
         </select>
       </div>
     </div>
-    <p *ngIf="format" [innerHTML]="formats.find(formatMatcher)!.description! | safeHtml">
+    <p *ngIf="format" [innerHTML]="format.description | safeHtml">
     </p>
   </ng-container>
   <ng-container modal-footer>

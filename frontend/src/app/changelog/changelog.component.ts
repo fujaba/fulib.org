@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
-import {ChangelogService, Versions} from '../changelog.service';
+import {ChangelogService, Release, REPOS, Repository, Versions} from '../changelog.service';
 
 @Component({
   selector: 'app-changelog',
@@ -9,10 +9,10 @@ import {ChangelogService, Versions} from '../changelog.service';
   styleUrls: ['./changelog.component.scss'],
 })
 export class ChangelogComponent implements OnInit {
-  repos: (keyof Versions)[] = [];
+  readonly repos = REPOS;
   currentVersions: Versions;
   lastUsedVersions: Versions | null;
-  changelogs: Versions;
+  changelogs: Partial<Record<Repository, Release[]>> = {};
 
   activeRepo: string;
 
@@ -31,9 +31,7 @@ export class ChangelogComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.repos = this.changelogService.repos;
     this.lastUsedVersions = this.changelogService.lastUsedVersions;
-    this.changelogs = new Versions();
 
     this.changelogService.getCurrentVersions().subscribe(currentVersions => {
       this.currentVersions = currentVersions;
@@ -58,7 +56,7 @@ export class ChangelogComponent implements OnInit {
   private showAll() {
     this.activeRepo = this.repos[0];
     for (const repo of this.repos) {
-      this.changelogs[repo] = 'Loading...';
+      this.changelogs[repo] = [];
       this.changelogService.getChangelog(repo).subscribe(changelog => {
         this.changelogs[repo] = changelog;
       });
@@ -68,10 +66,18 @@ export class ChangelogComponent implements OnInit {
   private showNewVersions(newRepos: (keyof Versions)[]) {
     this.activeRepo = newRepos[0];
     for (const repo of newRepos) {
-      this.changelogs[repo] = 'Loading...';
+      this.changelogs[repo] = [];
       this.changelogService.getChangelog(repo, this.lastUsedVersions![repo], this.currentVersions[repo]).subscribe(changelog => {
         this.changelogs[repo] = changelog;
       });
     }
+  }
+
+  render(repo: Repository, release: Release) {
+    if (release.bodyHtml) {
+      return;
+    }
+
+    this.changelogService.renderChangelog(repo, release).subscribe();
   }
 }

@@ -16,7 +16,7 @@ export class SolutionAuthGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     const req = context.switchToHttp().getRequest() as Request;
-    const assignmentToken = req.header('assignment-token');
+    const assignmentToken = req.header('assignment-token') ?? req.query.token?.toString();
     const solutionToken = req.header('solution-token');
     const assignmentId = req.params.assignment;
     const solutionId = req.params.solution ?? req.params.id;

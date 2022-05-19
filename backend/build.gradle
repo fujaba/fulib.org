@@ -30,8 +30,8 @@ dependencies {
 	// --------------- Dagger (Dependency Injection) ---------------
 
 	// https://mvnrepository.com/artifact/com.google.dagger/dagger
-	implementation 'com.google.dagger:dagger:2.37'
-	annotationProcessor 'com.google.dagger:dagger-compiler:2.37'
+	implementation 'com.google.dagger:dagger:2.41'
+	annotationProcessor 'com.google.dagger:dagger-compiler:2.41'
 
 	// --------------- Fulib Libraries ---------------
 
@@ -42,46 +42,47 @@ dependencies {
 
 	// --------------- Other Libraries ---------------
 
+	implementation slf4jDependency
+
 	// https://mvnrepository.com/artifact/commons-io/commons-io
 	implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
-
-	// https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
-	implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.32'
 
 	// https://mvnrepository.com/artifact/com.sparkjava/spark-core
 	implementation group: 'com.sparkjava', name: 'spark-core', version: '2.9.3'
 
 	// https://mvnrepository.com/artifact/org.json/json
-	implementation group: 'org.json', name: 'json', version: '20210307'
+	implementation group: 'org.json', name: 'json', version: '20220320'
 
 	// https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync
-	implementation group: 'org.mongodb', name: 'mongodb-driver-sync', version: '4.3.0'
+	implementation group: 'org.mongodb', name: 'mongodb-driver-sync', version: '4.5.1'
 
 	// https://mvnrepository.com/artifact/com.auth0/java-jwt
-	implementation group: 'com.auth0', name: 'java-jwt', version: '3.18.1'
+	implementation group: 'com.auth0', name: 'java-jwt', version: '3.19.0'
 
 	// compile instead of testCompile because the web service uses it
 	implementation junitDependency
 
+	testImplementation slf4jDependency
+
 	// https://mvnrepository.com/artifact/org.mockito/mockito-core
-	testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.11.2'
+	testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.3.1'
 
 	// --------------- CommonMark ---------------
 
 	// https://mvnrepository.com/artifact/org.commonmark/commonmark
-	implementation group: 'org.commonmark', name: 'commonmark', version: '0.18.0'
+	implementation group: 'org.commonmark', name: 'commonmark', version: '0.18.2'
 
 	// https://mvnrepository.com/artifact/org.commonmark/commonmark-ext-gfm-tables
-	implementation group: 'org.commonmark', name: 'commonmark-ext-gfm-tables', version: '0.18.0'
+	implementation group: 'org.commonmark', name: 'commonmark-ext-gfm-tables', version: '0.18.2'
 
 	// https://mvnrepository.com/artifact/org.commonmark/commonmark-ext-autolink
-	implementation group: 'org.commonmark', name: 'commonmark-ext-autolink', version: '0.18.0'
+	implementation group: 'org.commonmark', name: 'commonmark-ext-autolink', version: '0.18.2'
 
 	// https://mvnrepository.com/artifact/org.commonmark/commonmark-ext-gfm-strikethrough
-	implementation group: 'org.commonmark', name: 'commonmark-ext-gfm-strikethrough', version: '0.18.0'
+	implementation group: 'org.commonmark', name: 'commonmark-ext-gfm-strikethrough', version: '0.18.2'
 
 	// https://mvnrepository.com/artifact/org.commonmark/commonmark-ext-task-list-items
-	implementation group: 'org.commonmark', name: 'commonmark-ext-task-list-items', version: '0.18.0'
+	implementation group: 'org.commonmark', name: 'commonmark-ext-task-list-items', version: '0.18.2'
 }
 
 // --------------- Version Injection ---------------
@@ -96,6 +97,8 @@ processResources {
 	def fulibScenariosVersion = getDependencyVersion(config, 'org.fulib', 'fulibScenarios')
 	def fulibGradleVersion = getDependencyVersion(rootProject.buildscript.configurations.classpath, 'org.fulib', 'fulibGradle')
 	def fulibMockupsVersion = getDependencyVersion(config, 'org.fulib', 'fulibMockups')
+	def junitVersion = getDependencyVersion(config, 'junit', 'junit')
+	def slf4jVersion = getDependencyVersion(config, 'org.slf4j', 'slf4j-simple')
 
 	from(rootProject.rootDir) {
 		include 'gradle/wrapper/**', 'gradlew', 'gradlew.bat'
@@ -106,9 +109,7 @@ processResources {
 		rename 'gradle-wrapper.jar', 'gradle-wrapper.jar.zip'
 	}
 
-	filesMatching([
-			'org/fulib/webapp/version.properties',
-	]) {
+	filesMatching(['**/*.gradle', '**/*.properties']) {
 		filter {
 			it = it.replace('$$version$$', version)
 			it = it.replace('$$fulibVersion$$', fulibVersion)
@@ -118,6 +119,9 @@ processResources {
 			it = it.replace('$$fulibScenariosVersion$$', fulibScenariosVersion)
 			it = it.replace('$$fulibMockupsVersion$$', fulibMockupsVersion)
 			it = it.replace('$$fulibGradleVersion$$', fulibGradleVersion)
+			it = it.replace('$$fulibWorkflowsVersion$$', fulibWorkflowsDependency.version)
+			it = it.replace('$$junitVersion$$', junitVersion)
+			it = it.replace('$$slf4jVersion$$', slf4jVersion)
 			it
 		}
 	}

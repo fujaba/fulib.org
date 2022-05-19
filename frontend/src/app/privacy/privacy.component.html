@@ -40,14 +40,17 @@
     <p>
       You can show this popup again and edit your preferences at any time by selecting
       <i class="bi-person-circle"></i>
-      <span class="sr-only">Account</span>
+      <span class="visually-hidden">Account</span>
       &rarr;
       <b>Edit Privacy Preferences</b> in the top navigation bar.
     </p>
   </ng-container>
   <ng-container modal-footer>
-    <button type="button" class="btn btn-primary" (click)="modal.close(); savePrivacy()">
-      Save & Close
+    <button type="button" class="btn btn-secondary" (click)="modal.close()">
+      Cancel
+    </button>
+    <button type="button" class="btn btn-primary" (click)="modal.close(); savePrivacy()" [disabled]="!privacy">
+      Save
     </button>
   </ng-container>
 </app-modal>

@@ -3,7 +3,6 @@
     class="cm-h-100"
     [(content)]="scenarioText"
     [autoSubmit]="autoSubmit"
-    [autoRefresh]="true"
     [markers]="markers"
     (save)="submit()"
   ></app-scenario-codemirror>
@@ -72,10 +71,9 @@
 <ng-template #classDiagram>
   <ng-container *ngIf="response else loading">
     <div *ngIf="response.classDiagram else emptyClassDiagram" class="h-100 overflow-auto">
-     <app-preview title="Class Diagram">
-       <img preview class="diagram w-100 h-100" [src]="classDiagramUrl" alt="Class Diagram">
-       <img full class="diagram w-100 h-100" [src]="classDiagramUrl" alt="Class Diagram">
-     </app-preview>
+     <a routerLink="preview" [queryParams]="{url: classDiagramUrl}" queryParamsHandling="merge">
+       <img class="diagram w-100 h-100" [src]="classDiagramUrl" alt="Class Diagram">
+     </a>
     </div>
     <ng-template #emptyClassDiagram>
       No model classes to display.
@@ -91,10 +89,13 @@
             [ngbNavItem]="diagramIndex + 1">
           <a ngbNavLink>{{diagram.name}}</a>
           <ng-template ngbNavContent>
-            <app-preview [title]="diagram.name">
-              <app-diagram-view preview [response]="response" [diagram]="diagram"></app-diagram-view>
-              <app-diagram-view full [response]="response" [diagram]="diagram"></app-diagram-view>
-            </app-preview>
+            <a
+              routerLink="preview"
+              [queryParams]="{url: apiUrl + '/runcodegen/' + response.id + '/' + diagram.path}"
+              queryParamsHandling="merge"
+            >
+              <app-diagram-view [url]="apiUrl + '/runcodegen/' + response.id + '/' + diagram.path"></app-diagram-view>
+            </a>
           </ng-template>
         </li>
       </ul>
@@ -115,37 +116,29 @@
   {id: 'classDiagram', title: 'Class Diagram', template: classDiagram},
   {id: 'objectDiagrams', title: 'Object Diagrams', template: objectDiagrams}
 ] as items">
-  <div class="btn-toolbar mb-3 mx-2" role="toolbar" aria-label="Toolbar">
-    <div class="input-group mx-1">
-      <div class="input-group-prepend">
-        <div class="input-group-text">
-          Load Example:
-        </div>
-      </div>
-      <select class="custom-select" aria-label="Selected Example"
-              [ngModel]="selectedExample" (ngModelChange)="selectExample($event)">
-        <option [ngValue]="null">-</option>
-        <optgroup *ngFor="let category of exampleCategories; index as categoryIndex"
-                  label="{{categoryIndex + 1}}. {{category.name}}">
-          <option *ngFor="let example of category.examples; index as exampleIndex"
-                  label="{{categoryIndex + 1}}.{{exampleIndex + 1}}. {{example.name}}"
-                  [ngValue]="example"></option>
-        </optgroup>
-      </select>
-      <div class="input-group-append" *ngIf="selectedExample">
-        <div class="input-group-text text-warning" ngbTooltip="Changes to the example will not be saved!">
-          &#9888;
-        </div>
-      </div>
-    </div>
-    <div ngbDropdown class="d-inline-block mx-1" autoClose="outside">
+  <div class="btn-toolbar align-items-center p-3" role="toolbar" aria-label="Toolbar">
+    <select
+      class="form-select w-auto me-2"
+      aria-label="Selected Example"
+      [ngModel]="selectedExample" (ngModelChange)="selectExample($event)"
+    >
+      <option [ngValue]="null">Select Example...</option>
+      <optgroup *ngFor="let category of exampleCategories; index as categoryIndex"
+                label="{{categoryIndex + 1}}. {{category.name}}">
+        <option *ngFor="let example of category.examples; index as exampleIndex"
+                label="{{categoryIndex + 1}}.{{exampleIndex + 1}}. {{example.name}}"
+                [ngValue]="example"></option>
+      </optgroup>
+    </select>
+    <div ngbDropdown class="d-inline-block me-2" autoClose="outside">
       <button class="btn btn-outline-secondary" id="panelsDropdown" ngbDropdownToggle>View</button>
       <div ngbDropdownMenu aria-labelledby="panelsDropdown">
         <h6 class="dropdown-header">Editor Panels</h6>
         <button *ngFor="let panel of items"
                 ngbDropdownItem
                 (click)="setPanelClosed(panel.id, !panels[panel.id].closed)"
-                [class.dropdown-item-checked]="!panels[panel.id].closed"
+                class="dropdown-item-check"
+                [class.checked]="!panels[panel.id].closed"
         >
           {{panel.title}}
         </button>
@@ -155,25 +148,23 @@
         </button>
       </div>
     </div>
-    <div class="ml-auto" role="group">
-      <a role="button" class="btn btn-outline-secondary mx-1" routerLink="config">
-        Configure or Export
-      </a>
-      <div class="btn-group mx-1" role="group">
-        <button type="button" class="btn btn-outline-primary"
-                ngbTooltip="Keyboard Shortcuts: Ctrl-&#9166;, &#8984;&#9166;, Ctrl-S, &#8984;S"
-                (click)="submit()" [disabled]="submitting">
-          Compile and Run
-        </button>
-        <div class="btn-group" ngbDropdown role="group" aria-label="Compile and Run Options">
-          <button class="btn btn-outline-primary dropdown-toggle-split" ngbDropdownToggle></button>
-          <div class="dropdown-menu" ngbDropdownMenu>
-            <button ngbDropdownItem (click)="autoSubmit = !autoSubmit" [class.dropdown-item-checked]="autoSubmit">
-              Automatically Compile and Run
-              <br/>
-              when the scenario changes
-            </button>
-          </div>
+    <a role="button" class="btn btn-outline-secondary me-2" routerLink="config">
+      Configure or Export
+    </a>
+    <div class="btn-group" role="group">
+      <button type="button" class="btn btn-outline-primary"
+              ngbTooltip="Keyboard Shortcuts: Ctrl-&#9166;, &#8984;&#9166;, Ctrl-S, &#8984;S"
+              (click)="submit()" [disabled]="submitting">
+        Compile and Run
+      </button>
+      <div class="btn-group" ngbDropdown role="group" aria-label="Compile and Run Options">
+        <button class="btn btn-outline-primary dropdown-toggle-split" ngbDropdownToggle></button>
+        <div class="dropdown-menu" ngbDropdownMenu>
+          <button ngbDropdownItem (click)="autoSubmit = !autoSubmit" class="dropdown-item-check" [class.checked]="autoSubmit">
+            Automatically Compile and Run
+            <br/>
+            when the scenario changes
+          </button>
         </div>
       </div>
     </div>
@@ -194,12 +185,13 @@
     }">
       <ng-container *ngFor="let item of items; trackBy: itemId">
         <gridster-item *ngIf="!panels[item.id].closed" [item]="panels[item.id]" class="p-3">
-          <h2>
-            {{item.title}}
-            <button type="button" class="close text-right" aria-label="Close" (click)="setPanelClosed(item.id, true)">
-              <span aria-hidden="true">&times;</span>
+          <div class="d-flex align-items-center">
+            <h2 class="me-auto">
+              {{item.title}}
+            </h2>
+            <button class="btn-close" aria-label="Close" (click)="setPanelClosed(item.id, true)">
             </button>
-          </h2>
+          </div>
           <hr class="m-2"/>
           <div class="gridster-item-content">
             <ng-container [ngTemplateOutlet]="item.template"></ng-container>
