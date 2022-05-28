@@ -7,6 +7,6 @@
   <div class="mb-3">
     <app-import-export (import)="onImport($event)" (export)="onExport()"></app-import-export>
   </div>
-  <app-route-tabs [routes]="steps"></app-route-tabs>
+  <ngbx-route-tabs [routes]="steps"></ngbx-route-tabs>
   <router-outlet *ngIf="context.assignment"></router-outlet>
 </div>

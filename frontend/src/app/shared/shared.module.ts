@@ -18,7 +18,6 @@ import {SafeUrlPipe} from './pipes/safe-url.pipe';
 import {PreviewComponent} from './preview/preview.component';
 import {ProTipComponent} from './pro-tip/pro-tip.component';
 import {ProjectConfigFormComponent} from './project-config-form/project-config-form.component';
-import {RouteTabsComponent} from './route-tabs/route-tabs.component';
 import {ScenarioCodemirrorComponent} from './scenario-codemirror/scenario-codemirror.component';
 import {TabsComponent} from './tabs/tabs.component';
 
@@ -37,7 +36,6 @@ import {TabsComponent} from './tabs/tabs.component';
     ProjectConfigFormComponent,
     TabsComponent,
     ProTipComponent,
-    RouteTabsComponent,
     DurationPipe,
     DiagramViewComponent,
   ],
@@ -64,7 +62,6 @@ import {TabsComponent} from './tabs/tabs.component';
     ProjectConfigFormComponent,
     TabsComponent,
     ProTipComponent,
-    RouteTabsComponent,
     DurationPipe,
     DiagramViewComponent,
   ],

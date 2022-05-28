@@ -9,12 +9,14 @@ import {
   NgbTooltipModule,
   NgbTypeaheadModule,
 } from '@ng-bootstrap/ng-bootstrap';
+import {RouteTabsModule} from 'ng-bootstrap-ext';
 import {ClipboardModule} from 'ngx-clipboard';
 import {SharedModule} from '../../../shared/shared.module';
 import {AssignmentSharedModule} from '../shared/shared.module';
 
 import {AssignmentRoutingModule} from './assignment-routing.module';
 import {AssignmentComponent} from './assignment/assignment.component';
+import {DeleteModalComponent} from './delete-modal/delete-modal.component';
 import {ImportModalComponent} from './import-modal/import-modal.component';
 import {SearchComponent} from './search/search.component';
 import {ShareComponent} from './share/share.component';
@@ -23,7 +25,6 @@ import {StatisticsBlockComponent} from './statistics-block/statistics-block.comp
 import {StatisticsComponent} from './statistics/statistics.component';
 import {SubmitModalComponent} from './submit-modal/submit-modal.component';
 import {AssignmentTasksComponent} from './tasks/tasks.component';
-import { DeleteModalComponent } from './delete-modal/delete-modal.component';
 
 
 @NgModule({
@@ -39,20 +40,21 @@ import { DeleteModalComponent } from './delete-modal/delete-modal.component';
     StatisticsBlockComponent,
     DeleteModalComponent,
   ],
-    imports: [
-        CommonModule,
-        SharedModule,
-        FormsModule,
-        ClipboardModule,
-        NgbTypeaheadModule,
-        NgbPopoverModule,
-        NgbTooltipModule,
-        AssignmentSharedModule,
-        AssignmentRoutingModule,
-        NgbDropdownModule,
-        NgbNavModule,
-        NgbAccordionModule,
-    ],
+  imports: [
+    CommonModule,
+    SharedModule,
+    FormsModule,
+    ClipboardModule,
+    NgbTypeaheadModule,
+    NgbPopoverModule,
+    NgbTooltipModule,
+    AssignmentSharedModule,
+    AssignmentRoutingModule,
+    NgbDropdownModule,
+    NgbNavModule,
+    NgbAccordionModule,
+    RouteTabsModule,
+  ],
 })
 export class AssignmentModule {
 }
