@@ -1,15 +1,16 @@
+import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {CommonModule} from '@angular/common';
 import {NgbButtonsModule, NgbDropdownModule, NgbNavModule} from '@ng-bootstrap/ng-bootstrap';
 
 import {AngularSplitModule} from 'angular-split';
-import {WorkflowsService} from './workflows.service';
+import {ModalModule} from 'ng-bootstrap-ext';
 import {SharedModule} from '../shared/shared.module';
-import {WorkflowsComponent} from './workflows.component';
-import {WorkflowsRoutingModule} from './workflows-routing.module';
 import {DownloadESComponent} from './download-es/download-es.component';
 import {MockupViewerComponent} from './mockup-viewer/mockup-viewer.component';
+import {WorkflowsRoutingModule} from './workflows-routing.module';
+import {WorkflowsComponent} from './workflows.component';
+import {WorkflowsService} from './workflows.service';
 
 
 @NgModule({
@@ -27,10 +28,11 @@ import {MockupViewerComponent} from './mockup-viewer/mockup-viewer.component';
     FormsModule,
     NgbButtonsModule,
     NgbNavModule,
+    ModalModule,
   ],
   providers: [
     WorkflowsService,
-  ]
+  ],
 })
 export class WorkflowsModule {
 }

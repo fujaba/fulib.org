@@ -1,5 +1,5 @@
-<app-modal #modal [back]="['.']" [backOptions]="{relativeTo: route.parent, queryParams: {parent: null}}">
-  <ng-container modal-header>
+<ngbx-modal #modal [back]="['.']" [backOptions]="{relativeTo: route.parent, queryParams: {parent: null}}">
+  <ng-container modal-title>
     Edit Task
   </ng-container>
   <ng-container modal-body>
@@ -61,4 +61,4 @@
       Save
     </button>
   </ng-container>
-</app-modal>
+</ngbx-modal>

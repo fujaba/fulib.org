@@ -5,13 +5,13 @@ import {RouterModule} from '@angular/router';
 
 import {CodemirrorModule} from '@ctrl/ngx-codemirror';
 import {NgbDropdownModule, NgbNavModule, NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
+import {ModalModule} from 'ng-bootstrap-ext';
 
 import {AutothemeCodemirrorComponent} from './autotheme-codemirror/autotheme-codemirror.component';
 import {CollapseButtonComponent} from './collapse-button/collapse-button.component';
 import {DiagramViewComponent} from './diagram-view/diagram-view.component';
 import {DurationPipe} from './duration.pipe';
 import {MarkdownComponent} from './markdown/markdown.component';
-import {ModalComponent} from './modal/modal.component';
 import {SafeHtmlPipe} from './pipes/safe-html.pipe';
 import {SafeResourceUrlPipe} from './pipes/safe-resource-url.pipe';
 import {SafeUrlPipe} from './pipes/safe-url.pipe';
@@ -32,7 +32,6 @@ import {TabsComponent} from './tabs/tabs.component';
     PreviewComponent,
     MarkdownComponent,
     ProjectConfigFormComponent,
-    ModalComponent,
     ProjectConfigFormComponent,
     TabsComponent,
     ProTipComponent,
@@ -47,6 +46,7 @@ import {TabsComponent} from './tabs/tabs.component';
     NgbDropdownModule,
     NgbNavModule,
     RouterModule,
+    ModalModule,
   ],
   exports: [
     SafeHtmlPipe,
@@ -58,7 +58,6 @@ import {TabsComponent} from './tabs/tabs.component';
     PreviewComponent,
     MarkdownComponent,
     ProjectConfigFormComponent,
-    ModalComponent,
     ProjectConfigFormComponent,
     TabsComponent,
     ProTipComponent,

@@ -4,6 +4,7 @@ import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgbDropdownModule, NgbNavModule, NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
 import {GridsterModule} from 'angular-gridster2';
+import {ModalModule} from 'ng-bootstrap-ext';
 
 import {SharedModule} from '../shared/shared.module';
 import {ConfigComponent} from './config/config.component';
@@ -28,6 +29,7 @@ import {FourPaneEditorComponent} from './four-pane-editor/four-pane-editor.compo
     GridsterModule,
     EditorRoutingModule,
     SharedModule,
+    ModalModule,
   ],
 })
 export class EditorModule {

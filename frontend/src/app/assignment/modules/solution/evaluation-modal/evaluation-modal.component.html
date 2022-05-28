@@ -1,5 +1,5 @@
-<app-modal #modal size="lg" [back]="['../..']" [backOptions]="{relativeTo: route}">
-  <ng-container modal-header>
+<ngbx-modal #modal size="lg" [back]="['../..']">
+  <ng-container modal-title>
     Evaluation
     <span class="text-muted">
       {{ task?.description }}
@@ -40,7 +40,8 @@
             Snippets
           </label>
           <ul class="list-group" id="snippets">
-            <li *ngFor="let snippet of dto.snippets; let index=index" class="list-group-item" [class.list-group-item-warning]="snippet.comment === selectionComment">
+            <li *ngFor="let snippet of dto.snippets; let index=index" class="list-group-item"
+                [class.list-group-item-warning]="snippet.comment === selectionComment">
               <app-edit-snippet
                 [snippet]="snippet" [index]="index" [comments]="comments"
                 (deleted)="deleteSnippet(index)"
@@ -81,7 +82,8 @@
   <ng-container modal-footer>
     <div class="form-check">
       <input type="checkbox" class="form-check-input" id="codeSearchCheck" [(ngModel)]="dto.codeSearch">
-      <label for="codeSearchCheck" class="form-check-label" ngbTooltip="Use Code Search to create or update derived evaluations in other solutions">
+      <label for="codeSearchCheck" class="form-check-label"
+             ngbTooltip="Use Code Search to create or update derived evaluations in other solutions">
         Code Search
       </label>
     </div>
@@ -96,4 +98,4 @@
       Submit
     </button>
   </ng-container>
-</app-modal>
+</ngbx-modal>

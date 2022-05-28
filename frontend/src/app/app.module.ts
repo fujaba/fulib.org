@@ -8,7 +8,7 @@ import {ServiceWorkerModule} from '@angular/service-worker';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {KeycloakAngularModule, KeycloakService} from 'keycloak-angular';
 import {NgBootstrapDarkmodeModule, THEME_LOADER, THEME_SAVER, ThemeLoader, ThemeSaver} from 'ng-bootstrap-darkmode';
-import {ToastModule} from 'ng-bootstrap-ext';
+import {ModalModule, ToastModule} from 'ng-bootstrap-ext';
 import {of} from 'rxjs';
 
 import {environment} from '../environments/environment';
@@ -74,6 +74,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
       // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerWhenStable:30000',
     }),
+    ModalModule,
   ],
   providers: [
     {

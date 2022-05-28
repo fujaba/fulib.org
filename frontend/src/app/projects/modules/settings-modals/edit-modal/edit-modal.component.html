@@ -1,5 +1,5 @@
-<app-modal #modal="modal" [back]="['/projects']">
-  <ng-container modal-header>
+<ngbx-modal #modal="modal" [back]="['/projects']">
+  <ng-container modal-title>
     {{ editing['id'] ? 'Edit' : 'New' }} {{editing.local ? 'Local' : '' }} Project
   </ng-container>
   <ng-container modal-body>
@@ -25,4 +25,4 @@
       Save
     </button>
   </ng-container>
-</app-modal>
+</ngbx-modal>

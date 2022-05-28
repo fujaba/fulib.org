@@ -1,5 +1,5 @@
-<app-modal #modal [back]="['..']" [backOptions]="{relativeTo: route}">s
-  <ng-container modal-header>
+<ngbx-modal #modal [back]="['..']">
+  <ng-container modal-title>
     Delete Solution
   </ng-container>
   <ng-container modal-body>
@@ -12,8 +12,10 @@
         In addition to the solution, you will also permanently delete:
       </p>
       <div class="d-flex justify-content-center mb-3">
-        <app-statistic-value *ngIf="comments" [standalone]="true" label="Comments" [value]="comments"></app-statistic-value>
-        <app-statistic-value *ngIf="evaluations" [standalone]="true" label="Evaluations" [value]="evaluations"></app-statistic-value>
+        <app-statistic-value *ngIf="comments" [standalone]="true" label="Comments"
+                             [value]="comments"></app-statistic-value>
+        <app-statistic-value *ngIf="evaluations" [standalone]="true" label="Evaluations"
+                             [value]="evaluations"></app-statistic-value>
       </div>
     </ng-container>
     <div>
@@ -31,4 +33,4 @@
       Delete
     </button>
   </ng-container>
-</app-modal>
+</ngbx-modal>

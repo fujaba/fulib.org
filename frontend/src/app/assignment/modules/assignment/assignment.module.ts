@@ -9,7 +9,7 @@ import {
   NgbTooltipModule,
   NgbTypeaheadModule,
 } from '@ng-bootstrap/ng-bootstrap';
-import {RouteTabsModule} from 'ng-bootstrap-ext';
+import {ModalModule, RouteTabsModule} from 'ng-bootstrap-ext';
 import {ClipboardModule} from 'ngx-clipboard';
 import {SharedModule} from '../../../shared/shared.module';
 import {AssignmentSharedModule} from '../shared/shared.module';
@@ -54,6 +54,7 @@ import {AssignmentTasksComponent} from './tasks/tasks.component';
     NgbNavModule,
     NgbAccordionModule,
     RouteTabsModule,
+    ModalModule,
   ],
 })
 export class AssignmentModule {
