@@ -1,3 +1,4 @@
+<!--
 <ngb-alert *ngIf="container && showAlert" type="success" class="m-3" (closed)="showAlert = false">
   <h4>
     Your container is now ready!
@@ -12,6 +13,7 @@
     </button>
   </p>
 </ngb-alert>
+-->
 <iframe *ngIf="container" [src]="container.url | safeResourceUrl" class="w-100 h-100 border-0"></iframe>
 <ng-template #loadingModal let-modal>
   <div class="modal-header">

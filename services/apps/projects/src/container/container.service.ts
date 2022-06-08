@@ -5,20 +5,24 @@ import * as path from 'path';
 import {environment} from '../environment';
 import {ContainerDto} from './container.dto';
 import * as fs from 'fs';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { setTimeout } from "timers/promises";
 
-// when there is no connection to a code-server container, it will be closed after this time passed (in ms)
+// when there is no connection for at least IDLE_TIME (ms) to a code-server container,
+// the container will stop
 // 300.000ms = 5min
 const IDLE_TIME = 300_000
 
-// Every CHECK_INTERVAL ms the bound heartbeat file will be checked for modification
-// the heartbeat file is modified by code-server every minute if there's an active connection
-const CHECK_INTERVAL = 30_000
 
 @Injectable()
 export class ContainerService {
 
   private codeWorkspace: string = '/home/coder/project';
-  private timersMap = new Map<string, NodeJS.Timer>();
+
+  @Cron(CronExpression.EVERY_5_MINUTES)
+  handleCron() {
+    this.checkAllHeartbeats();
+  }
 
   docker = new Dockerode({
     host: environment.docker.host,
@@ -26,6 +30,7 @@ export class ContainerService {
     socketPath: environment.docker.socket,
     version: environment.docker.version,
   });
+
 
   async create(projectId: string): Promise<ContainerDto> {
     return await this.findOne(projectId) ?? await this.start(projectId);
@@ -46,8 +51,9 @@ export class ContainerService {
       HostConfig: {
         AutoRemove: true,
         Binds: [
-
           `${bindPrefix}/projects/${this.idBin(projectId)}/${projectId}:${this.codeWorkspace}`,
+
+          // heartbeatfile - file is modified by code-server every minute if there's an active connection
           `${bindPrefix}/heartbeats/${this.idBin(projectId)}/${projectId}:/home/coder/.local/share/code-server`,
         ],
       },
@@ -65,11 +71,12 @@ export class ContainerService {
 
     await container.start();
 
-    let timer = setInterval(() => {
-      this.checkHeartbeat(projectId);
-    }, CHECK_INTERVAL)
-    this.timersMap.set(projectId, timer);
-
+    // wait 1s for container startup
+    // without waiting we're getting 502 - Bad Gateway Error on the code server iframe on first loading
+    const wait = async () => {
+      await setTimeout(1000);
+    };
+    await wait();
     return this.toContainer(container.id, token, projectId);
   }
 
@@ -116,27 +123,50 @@ export class ContainerService {
     return projectId.slice(-2); // last 2 hex chars
   }
 
-  private checkHeartbeat(projectId: string) {
+  private checkAllHeartbeats() {
     const bindPrefix = path.resolve(environment.docker.bindPrefix);
-    const p = path.resolve(`${bindPrefix}/heartbeats/${this.idBin(projectId)}/${projectId}/heartbeat`);
+
+    this.docker.listContainers({
+      filters: {
+        label: [`org.fulib.project`],
+        status: ['created', 'running'],
+      },
+    },
+       (err, containers) => {
+      if (err) {
+        console.log('something went wrong');
+      } else {
+        if(containers?.length) {
+          // loop over all containers, get ProjectId, check heartbeat and remove if needed
+          for(let i = 0; i < containers.length; i++) {
+            let container = containers[i];
+            let projectId = container['Labels']['org.fulib.project'];
+            let p = path.resolve(`${bindPrefix}/heartbeats/${this.idBin(projectId)}/${projectId}/heartbeat`);
+            let check = this.checkHeartbeatMTime(p, projectId);
+
+            if(check == true) {
+              console.log(`trying to stop container with Project ID: ${projectId}`)
+              this.remove(projectId);
+            }
+          }
+        }
+      }
+
+    });
+  }
+
+  private checkHeartbeatMTime(path: string, projectId: string ) : boolean {
 
     // fetch file details
-    fs.stat(p, (err, stats) => {
-      if(err) {
-        throw err;
-      }
-      let heartbeatTime = stats.mtime.getTime();
-      let currentTime = Date.now();
+    let heartbeatTime = fs.statSync(path).mtime.getTime();
+    let currentTime = Date.now();
 
-      console.log(`${projectId} idle: ${currentTime - heartbeatTime} ms`);
-      if (currentTime - heartbeatTime >= IDLE_TIME) {
-        console.log(`try to stop container with Project ID: ${projectId}`)
-        this.remove(projectId);
+    if (currentTime - heartbeatTime >= IDLE_TIME) {
+      return true;
+    } else {
+      return false;
+    }
 
-        // stop the setInterval()
-        clearInterval(this.timersMap.get(projectId));
-      }
-    });
   }
 
 }
