@@ -4,8 +4,6 @@ plugins {
     id 'java'
 }
 
-group = 'org.fulib'
-version = '0.0.0'
 sourceCompatibility = '17'
 
 repositories {

@@ -36,6 +36,14 @@ ext {
 	slf4jDependency = [ group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.36' ]
 }
 
+def tagOutput = 'git describe --tags'.execute([ ], rootDir).text
+version = tagOutput.length() > 2 ? tagOutput[1..-2] : '0.0.0'
+
+allprojects {
+	group = 'org.fulib'
+	version = rootProject.version
+}
+
 // --------------- Dependencies ---------------
 
 repositories {
