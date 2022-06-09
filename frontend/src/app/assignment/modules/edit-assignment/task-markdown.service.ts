@@ -53,17 +53,17 @@ export class TaskMarkdownService {
     return tasks.map(t => this.renderTask(t, depth)).join('');
   }
 
-  private renderTask(t: Task, depth: number) {
-    if (t.deleted) {
+  private renderTask(task: Task, depth: number) {
+    const {children, deleted, description, points, ...rest} = task;
+    if (deleted) {
       return '';
     }
-    const {_id, glob} = t;
-    const extra = JSON.stringify({_id, glob});
-    if (t.points < 0) {
-      return `- ${t.description} (${t.points}P)<!--${extra}-->\n`;
+    const extra = JSON.stringify(rest);
+    if (points < 0 || !children || children.length === 0) {
+      return `- ${description} (${points}P)<!--${extra}-->\n`;
     }
-    const children = this.renderTasks(t.children, depth + 1);
+    const childrenMd = this.renderTasks(children, depth + 1);
     const headlinePrefix = '#'.repeat(depth + 2);
-    return `${headlinePrefix} ${t.description} (x/${t.points}P)<!--${extra}-->\n${children}`;
+    return `${headlinePrefix} ${description} (x/${points}P)<!--${extra}-->\n${childrenMd}`;
   }
 }
