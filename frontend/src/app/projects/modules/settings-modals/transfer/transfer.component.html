@@ -1,5 +1,5 @@
-<app-modal #modal="modal" [locked]="transfering" [back]="[back]" [backOptions]="{relativeTo: activatedRoute}">
-  <ng-container modal-header>
+<ngbx-modal #modal="modal" [locked]="transfering" [back]="[back]">
+  <ng-container modal-title>
     Transfer Project Ownership
   </ng-container>
   <ng-container modal-body>
@@ -19,4 +19,4 @@
       Transfer
     </button>
   </ng-container>
-</app-modal>
+</ngbx-modal>

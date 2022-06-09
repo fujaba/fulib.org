@@ -2,11 +2,13 @@ import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgbTooltipModule, NgbTypeaheadModule} from '@ng-bootstrap/ng-bootstrap';
+import {ModalModule, RouteTabsModule} from 'ng-bootstrap-ext';
 import {ClipboardModule} from 'ngx-clipboard';
 import {SharedModule} from '../../../shared/shared.module';
 import {AssignmentSharedModule} from '../shared/shared.module';
 
 import {CommentListComponent} from './comment-list/comment-list.component';
+import {DeleteModalComponent} from './delete-modal/delete-modal.component';
 import {SolutionDetailsComponent} from './details/details.component';
 import {EditSnippetComponent} from './edit-snippet/edit-snippet.component';
 import {EvaluationFormComponent} from './evaluation-form/evaluation-form.component';
@@ -15,7 +17,6 @@ import {SolutionShareComponent} from './share/share.component';
 import {SolutionRoutingModule} from './solution-routing.module';
 import {SolutionComponent} from './solution/solution.component';
 import {SolutionTasksComponent} from './tasks/tasks.component';
-import {DeleteModalComponent} from './delete-modal/delete-modal.component';
 
 
 @NgModule({
@@ -39,6 +40,8 @@ import {DeleteModalComponent} from './delete-modal/delete-modal.component';
     SolutionRoutingModule,
     AssignmentSharedModule,
     NgbTypeaheadModule,
+    RouteTabsModule,
+    ModalModule,
   ],
 })
 export class SolutionModule {

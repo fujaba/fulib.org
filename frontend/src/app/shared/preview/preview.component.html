@@ -1,5 +1,6 @@
-<app-modal #modal size="xl" [back]="['..']" [backOptions]="{relativeTo: route, queryParams: {url: null}, queryParamsHandling: 'merge'}">
-  <ng-container modal-header>
+<ngbx-modal #modal size="xl" [back]="['..']"
+            [backOptions]="{relativeTo: route, queryParams: {url: null}, queryParamsHandling: 'merge'}">
+  <ng-container modal-title>
     {{title}}
   </ng-container>
   <ng-container modal-body>
@@ -8,4 +9,4 @@
   <ng-container modal-footer>
     <button class="btn btn-secondary" (click)="modal.close()">Close</button>
   </ng-container>
-</app-modal>
+</ngbx-modal>

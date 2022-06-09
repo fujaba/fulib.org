@@ -32,7 +32,7 @@ const routes: Routes = [
     children: [
       ...solutionChildRoutes,
       {path: 'token', component: TokenModalComponent, data: {title: 'Authorization Required'}},
-      {path: '', redirectTo: 'tasks'},
+      {path: '', redirectTo: 'tasks', pathMatch: 'full'},
     ],
   },
 ];

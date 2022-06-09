@@ -2,6 +2,7 @@ import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgbDropdownModule, NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
+import {ModalModule} from 'ng-bootstrap-ext';
 import {SharedModule} from '../../../shared/shared.module';
 import {CommandFormComponent} from './command-form/command-form.component';
 import {EditModalComponent} from './edit-modal/edit-modal.component';
@@ -23,6 +24,7 @@ import {LaunchService} from './launch.service';
     NgbTooltipModule,
     NgbDropdownModule,
     SharedModule,
+    ModalModule,
   ],
   providers: [
     LaunchService,
