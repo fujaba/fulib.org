@@ -177,7 +177,7 @@ jobs:
           image_tag: ${{ needs.deployment.outputs.version }}
           build_extra_args: "--build-arg=SERVICE=assignments"
           context: services/
-          push_image_and_stages: ${{ if(needs.deployment.outputs.namespace, true, false) }}
+          push_image_and_stages: ${{ !!needs.deployment.outputs.namespace }}
       - name: Deploy to Rancher
         if: needs.deployment.outputs.namespace
         uses: sekassel-research/actions-rancher-update@2.0.2
@@ -209,7 +209,7 @@ jobs:
           image_tag: ${{ needs.deployment.outputs.version }}
           build_extra_args: "--build-arg=SERVICE=projects"
           context: services/
-          push_image_and_stages: ${{ if(needs.deployment.outputs.namespace, true, false) }}
+          push_image_and_stages: ${{ !!needs.deployment.outputs.namespace }}
       - name: Deploy to Rancher
         if: needs.deployment.outputs.namespace
         uses: sekassel-research/actions-rancher-update@2.0.2
@@ -269,7 +269,7 @@ jobs:
           image_name: fulib/fulib.org-projects-proxy
           image_tag: ${{ needs.deployment.outputs.version }}
           context: projects-proxy/
-          push_image_and_stages: ${{ if(needs.deployment.outputs.namespace, true, false) }}
+          push_image_and_stages: ${{ !!needs.deployment.outputs.namespace }}
       - name: Build the Projects Runtime Docker Image
         uses: whoan/docker-build-with-cache-action@v5
         with:
@@ -279,7 +279,7 @@ jobs:
           image_name: fulib/fulib.org-projects-runtime
           image_tag: ${{ needs.deployment.outputs.version }}
           context: projects-runtime/
-          push_image_and_stages: ${{ if(needs.deployment.outputs.namespace, true, false) }}
+          push_image_and_stages: ${{ !!needs.deployment.outputs.namespace }}
       - name: Deploy the Projects Runtime to Rancher
         uses: sekassel-research/actions-rancher-update@2.0.2
         with:
