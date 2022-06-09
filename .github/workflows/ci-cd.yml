@@ -1,7 +1,12 @@
 name: CI/CD
 
 on:
-  - push
+  pull_request:
+  push:
+    branches:
+      - master
+      - develop
+      - bugfix
 
 jobs:
   deployment:
@@ -25,7 +30,7 @@ jobs:
   frontend:
     name: Frontend
     runs-on: ubuntu-latest
-    needs: [deployment]
+    needs: [ deployment ]
     defaults:
       run:
         working-directory: frontend
@@ -74,7 +79,7 @@ jobs:
   backend:
     name: Backend
     runs-on: ubuntu-latest
-    needs: [deployment]
+    needs: [ deployment ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -117,7 +122,7 @@ jobs:
   workflows:
     name: Workflows
     runs-on: ubuntu-latest
-    needs: [deployment]
+    needs: [ deployment ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -160,7 +165,7 @@ jobs:
   assignments-service:
     name: Assignments Service
     runs-on: ubuntu-latest
-    needs: [deployment]
+    needs: [ deployment ]
     defaults:
       run:
         working-directory: services
@@ -191,7 +196,7 @@ jobs:
   projects-service:
     name: Projects Service
     runs-on: ubuntu-latest
-    needs: [deployment]
+    needs: [ deployment ]
     defaults:
       run:
         working-directory: services
@@ -222,7 +227,7 @@ jobs:
   projects-container:
     name: Projects Container
     runs-on: ubuntu-latest
-    needs: [deployment]
+    needs: [ deployment ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -254,7 +259,7 @@ jobs:
   projects-runtime:
     name: Projects Runtime
     runs-on: ubuntu-latest
-    needs: [deployment, projects-container]
+    needs: [ deployment, projects-container ]
     if: needs.deployment.outputs.namespace
     steps:
       - name: Checkout
