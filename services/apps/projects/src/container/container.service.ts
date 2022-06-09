@@ -123,50 +123,38 @@ export class ContainerService {
     return projectId.slice(-2); // last 2 hex chars
   }
 
-  private checkAllHeartbeats() {
-    const bindPrefix = path.resolve(environment.docker.bindPrefix);
-
-    this.docker.listContainers({
+  private async checkAllHeartbeats() {
+    const containers = await this.docker.listContainers({
       filters: {
         label: [`org.fulib.project`],
         status: ['created', 'running'],
       },
-    },
-       (err, containers) => {
-      if (err) {
-        console.log('something went wrong');
-      } else {
-        if(containers?.length) {
-          // loop over all containers, get ProjectId, check heartbeat and remove if needed
-          for(let i = 0; i < containers.length; i++) {
-            let container = containers[i];
-            let projectId = container['Labels']['org.fulib.project'];
-            let p = path.resolve(`${bindPrefix}/heartbeats/${this.idBin(projectId)}/${projectId}/heartbeat`);
-            let check = this.checkHeartbeatMTime(p, projectId);
-
-            if(check == true) {
-              console.log(`trying to stop container with Project ID: ${projectId}`)
-              this.remove(projectId);
-            }
-          }
-        }
-      }
-
     });
-  }
 
-  private checkHeartbeatMTime(path: string, projectId: string ) : boolean {
+    // loop over all containers, get ProjectId, check heartbeat and remove if needed
+    for(let i = 0; i < containers.length; i++) {
+      let container = containers[i];
+      let projectId = container['Labels']['org.fulib.project'];
+      let p = this.getHeartbeatPath(projectId);
 
-    // fetch file details
-    let heartbeatTime = fs.statSync(path).mtime.getTime();
-    let currentTime = Date.now();
-
-    if (currentTime - heartbeatTime >= IDLE_TIME) {
-      return true;
-    } else {
-      return false;
+      if(await this.isHeartbeatExpired(p)) {
+        this.remove(projectId);
+      }
     }
 
+  }
+
+  private getHeartbeatPath(projectId: string) {
+    const bindPrefix = path.resolve(environment.docker.bindPrefix);
+    return path.resolve(`${bindPrefix}/heartbeats/${this.idBin(projectId)}/${projectId}/heartbeat`);
+  }
+
+  private async isHeartbeatExpired(path: string) : Promise<boolean> {
+    // fetch file details
+    const stat = await fs.promises.stat(path);
+    let heartbeatTime = stat.mtime.getTime();
+    let currentTime = Date.now();
+    return currentTime - heartbeatTime >= IDLE_TIME;
   }
 
 }
