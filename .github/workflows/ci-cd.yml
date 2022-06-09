@@ -281,6 +281,7 @@ jobs:
           context: projects-runtime/
           push_image_and_stages: ${{ !!needs.deployment.outputs.namespace }}
       - name: Deploy the Projects Runtime to Rancher
+        if: needs.deployment.outputs.namespace
         uses: sekassel-research/actions-rancher-update@2.0.2
         with:
           rancher_url: ${{ secrets.RANCHER_URL }}
