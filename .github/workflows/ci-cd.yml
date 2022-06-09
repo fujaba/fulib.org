@@ -19,7 +19,6 @@ jobs:
           VERSION="${GITHUB_REF##*/}"
           case "$GITHUB_REF" in
             refs/heads/develop) NAMESPACE=dev ;;
-            refs/heads/feat/projects) NAMESPACE=fulib-projects ;;
             refs/tags/v*) NAMESPACE=prod ;;
           esac
           echo "::set-output name=version::$VERSION"
