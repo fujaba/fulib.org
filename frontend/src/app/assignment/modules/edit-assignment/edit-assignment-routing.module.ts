@@ -39,7 +39,7 @@ const routes: Routes = [
     data: {title: 'Edit Assignment'},
     children: [
       ...editAssignmentChildRoutes,
-      {path: '', redirectTo: 'info'},
+      {path: '', redirectTo: 'info', pathMatch: 'full'},
     ],
   },
 ];
