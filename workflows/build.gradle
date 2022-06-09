@@ -16,10 +16,10 @@ dependencies {
     implementation fulibWorkflowsDependency
 
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf
-    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version: '2.6.5'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version: '2.6.7'
 
-    implementation 'org.springframework.boot:spring-boot-starter-web:2.6.5'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.5'
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.6.7'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.6.7'
 }
 
 test {

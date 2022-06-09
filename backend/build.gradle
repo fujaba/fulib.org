@@ -30,8 +30,8 @@ dependencies {
 	// --------------- Dagger (Dependency Injection) ---------------
 
 	// https://mvnrepository.com/artifact/com.google.dagger/dagger
-	implementation 'com.google.dagger:dagger:2.41'
-	annotationProcessor 'com.google.dagger:dagger-compiler:2.41'
+	implementation 'com.google.dagger:dagger:2.42'
+	annotationProcessor 'com.google.dagger:dagger-compiler:2.42'
 
 	// --------------- Fulib Libraries ---------------
 
@@ -54,10 +54,10 @@ dependencies {
 	implementation group: 'org.json', name: 'json', version: '20220320'
 
 	// https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync
-	implementation group: 'org.mongodb', name: 'mongodb-driver-sync', version: '4.5.1'
+	implementation group: 'org.mongodb', name: 'mongodb-driver-sync', version: '4.6.0'
 
 	// https://mvnrepository.com/artifact/com.auth0/java-jwt
-	implementation group: 'com.auth0', name: 'java-jwt', version: '3.19.0'
+	implementation group: 'com.auth0', name: 'java-jwt', version: '3.19.2'
 
 	// compile instead of testCompile because the web service uses it
 	implementation junitDependency
@@ -65,7 +65,7 @@ dependencies {
 	testImplementation slf4jDependency
 
 	// https://mvnrepository.com/artifact/org.mockito/mockito-core
-	testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.3.1'
+	testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.5.1'
 
 	// --------------- CommonMark ---------------
 
