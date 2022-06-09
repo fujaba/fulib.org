@@ -59,7 +59,7 @@ export class TaskMarkdownService {
     }
     const {_id, glob} = t;
     const extra = JSON.stringify({_id, glob});
-    if (t.points < 0) {
+    if (t.points < 0 || !t.children || t.children.length === 0) {
       return `- ${t.description} (${t.points}P)<!--${extra}-->\n`;
     }
     const children = this.renderTasks(t.children, depth + 1);
