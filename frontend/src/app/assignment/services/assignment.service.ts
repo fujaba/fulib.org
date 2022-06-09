@@ -15,13 +15,6 @@ import {CheckAssignment, CheckResult} from '../model/check';
 import Course from '../model/course';
 import {SearchResult, SearchSummary} from '../model/search-result';
 
-const plusEncoder: HttpParameterCodec = {
-  encodeKey: encodeURIComponent,
-  encodeValue: encodeURIComponent,
-  decodeKey: decodeURIComponent,
-  decodeValue: decodeURIComponent,
-};
-
 @Injectable({
   providedIn: 'root',
 })
@@ -202,8 +195,8 @@ export class AssignmentService {
 
   search(id: string, q: string, context = 2, glob?: string): Observable<SearchResult[]> {
     const headers = this.getHeaders(this.getToken(id));
-    let params = new HttpParams({encoder: plusEncoder, fromObject: {q, context}});
-    glob && (params = params.set('glob', glob));
+    const params: Record<string, string | number> = {q, context};
+    glob && (params.glob = glob);
     return this.http.get<SearchResult[]>(`${environment.assignmentsApiUrl}/assignments/${id}/search`, {
       params,
       headers,
@@ -212,8 +205,8 @@ export class AssignmentService {
 
   searchSummary(id: string, q: string, glob?: string): Observable<SearchSummary> {
     const headers = this.getHeaders(this.getToken(id));
-    let params = new HttpParams({encoder: plusEncoder, fromObject: {q}});
-    glob && (params = params.set('glob', glob));
+    const params: Record<string, string> = {q};
+    glob && (params.glob = glob);
     return this.http.get<SearchSummary>(`${environment.assignmentsApiUrl}/assignments/${id}/search/summary`, {
       params,
       headers,
