@@ -73,7 +73,9 @@ export class ContainerService {
       Cmd: ['--auth','none'], //no password for code-server required
     });
 
+
     await container.start();
+    await this.preinstallExtension(projectId, 'redhat.java-1.7.0');
 
     // wait 1s for container startup
     // without waiting we're getting 502 - Bad Gateway Error on the code server iframe on first loading
@@ -159,6 +161,16 @@ export class ContainerService {
     let heartbeatTime = stat.mtime.getTime();
     let currentTime = Date.now();
     return currentTime - heartbeatTime >= IDLE_TIME;
+  }
+
+
+  //install a vs code extension by simply copy the extension folder in the related directory
+  private async preinstallExtension(projectId: string, extension: string) {
+    const bindPrefix = path.resolve(environment.docker.bindPrefix);
+    const fse = require('fs-extra');
+    let srcDir = `${bindPrefix}/preinstall/${extension}`;
+    let destDir = `${bindPrefix}/config/${this.idBin(projectId)}/${projectId}/extensions/${extension}`;
+    await fse.copy(srcDir, destDir);
   }
 
 }
