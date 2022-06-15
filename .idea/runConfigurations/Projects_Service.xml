@@ -12,7 +12,7 @@
       <env name="FULIB_MONGO_URL" value="mongodb://localhost:27017/fulib.org" />
       <env name="FULIB_PROJECTS_DATA_DIR" value="data" />
       <env name="FULIB_PROJECTS_PROXY_URL" value="http://localhost:8080" />
-      <env name="FULIB_PROJECTS_CONTAINER_IMAGE" value="codercom/code-server" />
+      <env name="FULIB_PROJECTS_CONTAINER_IMAGE" value="fulib/fulib.org-code-server" />
     </envs>
     <method v="2" />
   </configuration>

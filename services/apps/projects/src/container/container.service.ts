@@ -53,8 +53,12 @@ export class ContainerService {
         Binds: [
           `${bindPrefix}/projects/${this.idBin(projectId)}/${projectId}:${this.codeWorkspace}`,
 
-          // heartbeatfile - file is modified by code-server every minute if there's an active connection
-          `${bindPrefix}/heartbeats/${this.idBin(projectId)}/${projectId}:/home/coder/.local/share/code-server`,
+
+          // bind configuration files (for example extensions and user settings can be found in here)
+          // the heartbeat file is also included there (/home/coder/.local/share/code-server/heartbeat)
+          // heartbeatfile: is modified by code-server every minute if there's an active connection
+          `${bindPrefix}/config/${this.idBin(projectId)}/${projectId}:/home/coder/.local/share/code-server`,
+
         ],
       },
       Env: [
@@ -146,7 +150,7 @@ export class ContainerService {
 
   private getHeartbeatPath(projectId: string) {
     const bindPrefix = path.resolve(environment.docker.bindPrefix);
-    return path.resolve(`${bindPrefix}/heartbeats/${this.idBin(projectId)}/${projectId}/heartbeat`);
+    return path.resolve(`${bindPrefix}/config/${this.idBin(projectId)}/${projectId}/heartbeat`);
   }
 
   private async isHeartbeatExpired(path: string) : Promise<boolean> {
