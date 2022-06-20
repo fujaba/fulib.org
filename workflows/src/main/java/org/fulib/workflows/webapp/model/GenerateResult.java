@@ -7,7 +7,7 @@ public class GenerateResult {
     private List<String> pages;
     private List<String> diagrams;
     private List<String> fxmls;
-    private String classDiagram;
+    private List<String> classDiagrams;
 
     public String getBoard() {
         return board;
@@ -17,21 +17,20 @@ public class GenerateResult {
         this.board = board;
     }
 
-
-    public String getClassDiagram() {
-        return classDiagram;
-    }
-
-    public void setClassDiagram(String classDiagram) {
-        this.classDiagram = classDiagram;
-    }
-
     public List<String> getPages() {
         return pages;
     }
 
     public void setPages(List<String> pages) {
         this.pages = pages;
+    }
+
+    public List<String> getClassDiagrams() {
+        return classDiagrams;
+    }
+
+    public void setClassDiagrams(List<String> classDiagrams) {
+        this.classDiagrams = classDiagrams;
     }
 
     public List<String> getDiagrams() {

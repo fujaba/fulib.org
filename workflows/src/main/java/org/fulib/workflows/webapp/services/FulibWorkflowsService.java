@@ -67,10 +67,17 @@ public class FulibWorkflowsService {
             }
 
             // Class Directory
-            if (queryParams.get("class").equals("true") && generateResult.getClassDiagram() != null) {
+            if (queryParams.get("class").equals("true") && generateResult.getClassDiagrams() != null
+                    && generateResult.getClassDiagrams().size() > 0) {
                 zipOutputStream.putNextEntry(new ZipEntry("class/"));
-                String classDiagram = Files.readString(Path.of(workflowsGenService.getTempDir() + generateResult.getClassDiagram()));
-                createZipEntry(zipOutputStream, "class/classDiagram.svg", classDiagram);
+
+                for (int i = 0; i < generateResult.getClassDiagrams().size(); i++) {
+                    String diagramName = generateResult.getClassDiagrams().get(i);
+                    String classDiagram = Files.readString(Path.of(workflowsGenService.getTempDir() + diagramName));
+
+                    String fileName = "class/" + diagramName.substring(diagramName.indexOf("classDiagram_"));
+                    createZipEntry(zipOutputStream, fileName, classDiagram);
+                }
             }
 
             // Fxml Directory

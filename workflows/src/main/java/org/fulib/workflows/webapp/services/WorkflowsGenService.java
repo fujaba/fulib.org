@@ -28,7 +28,7 @@ public class WorkflowsGenService {
         final String id = UUID.randomUUID().toString();
         final Path tempDir = Paths.get(this.getTempDir());
         final Path genDir = tempDir.resolve(id).resolve("tmp");
-        final Path classDir = genDir.resolve("class");
+        final Path classDiagamsDir = genDir.resolve("class");
         final Path diagramsDir = genDir.resolve("diagrams");
         final Path fxmlsDir = genDir.resolve("fxmls");
         final Path pagesDir = genDir.resolve("pages");
@@ -41,14 +41,10 @@ public class WorkflowsGenService {
 
             String boardUrl = "/" + tempDir.relativize(genDir) + "/Board.html";
             generateResult.setBoard(boardUrl);
-            generateResult.setPages(getUrls(tempDir, pagesDir));
-            generateResult.setFxmls(getUrls(tempDir, fxmlsDir));
-            generateResult.setDiagrams(getUrls(tempDir, diagramsDir));
-
-            if (Files.exists(classDir)) {
-                String classDiagramUrl = "/" + tempDir.relativize(genDir) + "/class/classDiagram.svg";
-                generateResult.setClassDiagram(classDiagramUrl);
-            }
+            generateResult.setPages(getUrls(tempDir, pagesDir, false));
+            generateResult.setFxmls(getUrls(tempDir, fxmlsDir, false));
+            generateResult.setDiagrams(getUrls(tempDir, diagramsDir, false));
+            generateResult.setClassDiagrams(getUrls(tempDir, classDiagamsDir, true));
 
             return generateResult;
         } finally {
@@ -56,7 +52,7 @@ public class WorkflowsGenService {
         }
     }
 
-    private List<String> getUrls(Path tempDir, Path searchDir) {
+    private List<String> getUrls(Path tempDir, Path searchDir, boolean isClass) {
         if (Files.exists(searchDir)) {
             File[] fileArray = searchDir.toFile().listFiles();
             List<File> allFiles = new ArrayList<>();
@@ -65,12 +61,14 @@ public class WorkflowsGenService {
             }
             List<String> result = new ArrayList<>();
 
-            // Sort allFiles
-            allFiles.sort((o1, o2) -> {
-                int o1Number = evalFileNumber(o1.getName());
-                int o2Number = evalFileNumber(o2.getName());
-                return Integer.compare(o1Number, o2Number);
-            });
+            if (!isClass) {
+                // Sort allFiles
+                allFiles.sort((o1, o2) -> {
+                    int o1Number = evalFileNumber(o1.getName());
+                    int o2Number = evalFileNumber(o2.getName());
+                    return Integer.compare(o1Number, o2Number);
+                });
+            }
 
             for (File allFile : allFiles) {
                 String cmpFileName = allFile.getName();

@@ -7,6 +7,7 @@
 /out/
 /temp/
 /data/
+/tmp/
 
 hs_err_pid*
 
