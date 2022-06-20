@@ -11,3 +11,5 @@
 hs_err_pid*
 
 *.iml
+.vscode/settings.json
+workflows/tmp/
