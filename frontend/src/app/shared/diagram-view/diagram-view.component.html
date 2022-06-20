@@ -1,6 +1,6 @@
 <ng-container [ngSwitch]="type">
   <img *ngSwitchCase="'image'"
-       class="diagram w-100 h-100"
+       class="diagram"
        [src]="url | safeResourceUrl"
        [alt]="type"
   >
