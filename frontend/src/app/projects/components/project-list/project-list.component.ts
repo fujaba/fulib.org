@@ -20,7 +20,7 @@ import {ProjectService} from '../../services/project.service';
 export class ProjectListComponent implements OnInit, OnDestroy {
   @ViewChild('editModal', {static: true}) editModal: TemplateRef<any>;
 
-  currentUser?: User;
+  currentUser?: User | null;
 
   projects: Project[] = [];
   containers: (Container | null)[] = [];
@@ -40,7 +40,6 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.userService.current$.subscribe(user => user && (this.currentUser = user));
 
     this.subscription = this.router.events.pipe(
       filter(e => e instanceof NavigationEnd && e.urlAfterRedirects === '/projects'),
@@ -52,6 +51,10 @@ export class ProjectListComponent implements OnInit, OnDestroy {
       )))),
       tap(containers => this.containers = containers),
     ).subscribe();
+
+    this.subscription.add(
+      this.userService.current$.subscribe(user => this.currentUser = user),
+    );
   }
 
   ngOnDestroy() {
