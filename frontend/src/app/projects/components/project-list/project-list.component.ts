@@ -1,6 +1,7 @@
 import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {KeycloakService} from 'keycloak-angular';
+import { ToastService } from 'ng-bootstrap-ext';
 import {forkJoin, of, Subscription} from 'rxjs';
 import {catchError, filter, startWith, switchMap, tap} from 'rxjs/operators';
 import {User} from '../../../user/user';
@@ -34,6 +35,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     private memberService: MemberService,
     private keycloak: KeycloakService,
     private containerService: ContainerService,
+    private toastService: ToastService,
   ) {
   }
 
@@ -66,6 +68,9 @@ export class ProjectListComponent implements OnInit, OnDestroy {
       if (index >= 0) {
         this.projects[index] = persistentProject;
       }
+      this.toastService.success('Convert Project', 'Successfully converted project to persistent.');
+    }, error => {
+      this.toastService.error('Convert Project', 'Failed to convert project', error);
     });
   }
 
@@ -76,6 +81,9 @@ export class ProjectListComponent implements OnInit, OnDestroy {
 
     this.memberService.delete({projectId: project.id, userId: this.currentUser!.id!}).subscribe(() => {
       this.projects.removeFirst(p => p === project);
+      this.toastService.warn('Leave Project', 'Successfully left project.');
+    }, error => {
+      this.toastService.error('Leave Project', 'Failed to leave project', error);
     });
   }
 }
