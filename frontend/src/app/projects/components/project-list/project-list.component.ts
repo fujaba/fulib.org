@@ -1,11 +1,13 @@
 import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {KeycloakService} from 'keycloak-angular';
-import {Subscription} from 'rxjs';
-import {filter, startWith, switchMap} from 'rxjs/operators';
+import {forkJoin, of, Subscription} from 'rxjs';
+import {catchError, filter, startWith, switchMap, tap} from 'rxjs/operators';
 import {User} from '../../../user/user';
 import {UserService} from '../../../user/user.service';
+import {Container} from '../../model/container';
 import {LocalProject, Project} from '../../model/project';
+import { ContainerService } from '../../services/container.service';
 import {MemberService} from '../../services/member.service';
 import {ProjectService} from '../../services/project.service';
 
@@ -20,6 +22,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
   currentUser?: User;
 
   projects: Project[] = [];
+  containers: (Container | null)[] = [];
 
   private subscription: Subscription;
 
@@ -30,6 +33,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private memberService: MemberService,
     private keycloak: KeycloakService,
+    private containerService: ContainerService,
   ) {
   }
 
@@ -40,9 +44,12 @@ export class ProjectListComponent implements OnInit, OnDestroy {
       filter(e => e instanceof NavigationEnd && e.urlAfterRedirects === '/projects'),
       startWith(undefined),
       switchMap(() => this.projectService.getOwn()),
-    ).subscribe(projects => {
-      this.projects = projects;
-    });
+      tap(projects => this.projects = projects),
+      switchMap(projects => forkJoin(projects.map(project => this.containerService.get(project.id).pipe(
+        catchError(() => of(null)),
+      )))),
+      tap(containers => this.containers = containers),
+    ).subscribe();
   }
 
   ngOnDestroy() {
