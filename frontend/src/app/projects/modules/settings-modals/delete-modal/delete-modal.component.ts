@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {ModalComponent, ToastService} from 'ng-bootstrap-ext';
 import {switchMap} from 'rxjs/operators';
 import {Project} from '../../../model/project';
 import {ProjectService} from '../../../services/project.service';
@@ -18,6 +19,7 @@ export class DeleteModalComponent implements OnInit {
   constructor(
     public activatedRoute: ActivatedRoute,
     private projectService: ProjectService,
+    private toastService: ToastService,
     private router: Router,
   ) {
   }
@@ -31,11 +33,20 @@ export class DeleteModalComponent implements OnInit {
     });
   }
 
-  delete(): void {
+  delete(modal: ModalComponent): void {
+    if (!this.project) {
+      return;
+    }
+
     this.deleting = true;
-    this.projectService.delete(this.project!).subscribe(() => {
+    this.projectService.delete(this.project).subscribe(() => {
       this.deleting = false;
+      modal.close();
       this.router.navigate(['/projects']);
+      this.toastService.warn('Delete Project', 'Successfully deleted project');
+    }, error => {
+      this.deleting = false;
+      this.toastService.error('Delete Project', 'Failed to delete project', error);
     });
   }
 }
