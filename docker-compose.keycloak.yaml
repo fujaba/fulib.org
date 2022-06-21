@@ -1,0 +1,13 @@
+services:
+  keycloak:
+    image: jboss/keycloak:12.0.4
+    restart: on-failure
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+    ports:
+      - "24785:8080"
+    volumes:
+      - 'keycloak-data:/opt/jboss/keycloak/standalone/data/'
+volumes:
+  keycloak-data:
