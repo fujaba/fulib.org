@@ -12,6 +12,14 @@ interface FileDocument {
   content: string;
 }
 
+const TOKEN_PATTERN = new RegExp(Object.values({
+  number: /[+-]?[0-9]+(\.[0-9]+)?/,
+  string: /["](\\\\|\\["]|[^"])*["]/,
+  char: /'(\\\\|\\'|[^'])*'/,
+  identifier: /[a-zA-Z$_][a-zA-Z0-9$_]*/,
+  symbol: /[(){}<>\[\].,;+\-*/%|&=!?:@^]/,
+}).map(r => r.source).join('|'));
+
 @Injectable()
 export class SearchService implements OnModuleInit {
   constructor(
@@ -25,14 +33,6 @@ export class SearchService implements OnModuleInit {
     });
     const {0: oldName, 1: oldData} = Object.entries(files.body)[0];
 
-    const pattern = Object.values({
-      number: /[+-]?[0-9]+(\.[0-9]+)?/,
-      string: /["](\\\\|\\["]|[^"])*["]/,
-      char: /'(\\\\|\\'|[^'])*'/,
-      identifier: /[a-zA-Z$_][a-zA-Z0-9$_]*/,
-      symbol: /[(){}<>\[\].,;+\-*/%|&=!?:@^]/,
-    }).map(r => r.source).join('|');
-
     const expectedAnalysis = {
       analyzer: {
         code: {
@@ -42,7 +42,7 @@ export class SearchService implements OnModuleInit {
       tokenizer: {
         code: {
           type: 'simple_pattern',
-          pattern,
+          pattern: TOKEN_PATTERN.source,
         },
       },
     };
