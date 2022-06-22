@@ -18,6 +18,7 @@ import {SelectionService} from '../../solution/selection.service';
 export class SearchComponent implements OnInit, OnDestroy {
   search$ = new BehaviorSubject<string>(this.route.snapshot.queryParams.q);
   glob$ = new BehaviorSubject<string>(this.route.snapshot.queryParams.glob);
+  wildcard$ = new BehaviorSubject<string>(this.route.snapshot.queryParams.wildcard || '***');
 
   results: SearchResult[] = [];
   assignment?: Assignment;
@@ -58,7 +59,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.route.params,
       this.route.queryParams,
     ]).pipe(
-      switchMap(([{aid}, {q, glob}]) => this.assignmentService.search(aid, q, 2, glob)),
+      switchMap(([{aid}, {q, glob, wildcard}]) => this.assignmentService.search(aid, q, 2, glob, wildcard)),
     ).subscribe(results => {
       this.results = results;
     });
@@ -66,10 +67,11 @@ export class SearchComponent implements OnInit, OnDestroy {
     combineLatest([
       this.search$.pipe(debounceTime(200), distinctUntilChanged()),
       this.glob$.pipe(debounceTime(200), distinctUntilChanged()),
-    ]).subscribe(([q, glob]) => {
+      this.wildcard$.pipe(debounceTime(200), distinctUntilChanged()),
+    ]).subscribe(([q, glob, wildcard]) => {
       this.router.navigate([], {
         relativeTo: this.route,
-        queryParams: {q, glob},
+        queryParams: {q, glob, wildcard},
         queryParamsHandling: 'merge',
       });
     });
@@ -88,5 +90,6 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.syncSelection$.complete();
     this.search$.complete();
     this.glob$.complete();
+    this.wildcard$.complete();
   }
 }
