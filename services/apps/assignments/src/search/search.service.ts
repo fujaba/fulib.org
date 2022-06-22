@@ -247,9 +247,14 @@ export class SearchService implements OnModuleInit {
     });
   }
 
-  _convertHit(hit: { _source: FileDocument, highlight: { content: string[] } }, uniqueId: string, contextLines?: number): SearchResult {
-    const {assignment, solution, file, content} = hit._source;
+  _convertHit(hit: Hit<FileDocument>, uniqueId: string, contextLines?: number): SearchResult {
+    const {assignment, solution, file, content} = hit._source!;
     const lineStartIndices = this._buildLineStartList(content);
+    if (!hit.highlight) {
+      console.error('Failed to highlight', hit);
+      return {assignment, solution, snippets: []};
+    }
+
     const highlightContent = hit.highlight.content[0];
     const split = highlightContent.split(uniqueId);
 
