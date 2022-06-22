@@ -70,6 +70,30 @@ describe('SearchService', () => {
     });
   })
 
+  it('should create wildcard queries', () => {
+    const query = service._createWildcardQuery('Hello there, ## Kenobi', '##');
+    expect(query).toStrictEqual({
+      span_near: {
+        in_order: true,
+        slop: 1,
+        clauses: [
+          {
+            span_near: {
+              in_order: true,
+              slop: 0,
+              clauses: [
+                {span_term: {content: 'Hello'}},
+                {span_term: {content: 'there'}},
+                {span_term: {content: ','}},
+              ],
+            },
+          },
+          {span_term: {content: 'Kenobi'}},
+        ],
+      },
+    });
+  });
+
   it('should be defined', () => {
     expect(service).toBeDefined();
   });

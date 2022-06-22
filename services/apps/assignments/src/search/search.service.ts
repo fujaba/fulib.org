@@ -1,9 +1,10 @@
+import {Hit, QueryContainer, SpanNearQuery} from '@elastic/elasticsearch/api/types';
 import {Injectable, OnModuleInit} from '@nestjs/common';
 import {ElasticsearchService} from '@nestjs/elasticsearch';
 import {randomUUID} from 'crypto';
 import {isDeepStrictEqual} from 'util';
 import {Location} from '../evaluation/evaluation.schema';
-import {SearchSummary, SearchParams, SearchResult, SearchSnippet} from './search.dto';
+import {SearchParams, SearchResult, SearchSnippet, SearchSummary} from './search.dto';
 
 export interface FileDocument {
   assignment: string;
@@ -18,7 +19,7 @@ const TOKEN_PATTERN = new RegExp(Object.values({
   char: /'(\\\\|\\'|[^'])*'/,
   identifier: /[a-zA-Z$_][a-zA-Z0-9$_]*/,
   symbol: /[(){}<>\[\].,;+\-*/%|&=!?:@^]/,
-}).map(r => r.source).join('|'));
+}).map(r => r.source).join('|'), 'g');
 
 @Injectable()
 export class SearchService implements OnModuleInit {
@@ -168,9 +169,20 @@ export class SearchService implements OnModuleInit {
     return [...grouped.values()];
   }
 
-  private async _search(assignment: string, {q: snippet, glob}: SearchParams, fields?: (keyof FileDocument)[]) {
+  private async _search(assignment: string, {
+    q: snippet,
+    glob,
+    wildcard,
+  }: SearchParams, fields?: (keyof FileDocument)[]) {
     const uniqueId = randomUUID();
     const regex = glob && this.glob2RegExp(glob);
+    const query: QueryContainer = wildcard ? this._createWildcardQuery(snippet, wildcard) : {
+      match_phrase: {
+        content: {
+          query: snippet,
+        },
+      },
+    };
     const result = await this.elasticsearchService.search({
       index: 'files',
       body: {
@@ -179,13 +191,7 @@ export class SearchService implements OnModuleInit {
         _source: !fields,
         query: {
           bool: {
-            must: {
-              match_phrase: {
-                content: {
-                  query: snippet,
-                },
-              },
-            },
+            must: query,
             filter: [
               {term: {assignment}},
               ...(regex ? [{regexp: {'file.keyword': {value: regex, flags: '', case_insensitive: true}}}] : []),
@@ -298,5 +304,38 @@ export class SearchService implements OnModuleInit {
       result.push(index + 1);
     }
     return result;
+  }
+
+  _createWildcardQuery(snippet: string, wildcard: string): QueryContainer {
+    const split = snippet.split(wildcard);
+
+    // https://www.paulbutcher.space/blog/2021/01/23/wildcards-in-elasticsearch-phrases#:~:text=%E2%80%9Cthe%20casbah%20*%20a%20hurricane%E2%80%9D%20becomes%3A
+    return {
+      span_near: {
+        slop: 1,
+        in_order: true,
+        clauses: split.map(part => {
+          const tokens = [...part.matchAll(TOKEN_PATTERN)];
+          if (tokens.length === 1) {
+            return {
+              span_term: {
+                content: tokens[0][0],
+              },
+            };
+          }
+
+          const span_near: SpanNearQuery = {
+            in_order: true,
+            slop: 0,
+            clauses: tokens.map(([token]) => ({
+              span_term: {
+                content: token,
+              },
+            })),
+          };
+          return {span_near};
+        }),
+      },
+    };
   }
 }
