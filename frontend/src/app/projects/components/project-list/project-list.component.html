@@ -53,7 +53,7 @@
   </div>
 
   <ul class="list-group">
-    <li *ngFor="let project of projects" class="list-group-item">
+    <li *ngFor="let project of projects; let index = index" class="list-group-item">
       <div class="d-flex align-items-center">
         <i class="{{ project.local ? 'bi-hdd' : 'bi-server' }} feature-icon" [ngbTooltip]="project.local ? 'Local' : 'Persistent'"></i>
         <div class="me-auto">
@@ -66,6 +66,8 @@
           <small class="text-muted">
             Created {{project.created | date:'medium'}}
           </small>
+        </div>
+        <div *ngIf="containers[index]" class="h1 bi-play text-success me-2 mb-0" ngbTooltip="Container already running">
         </div>
         <div class="btn-group">
           <a class="btn btn-primary" [routerLink]="['/projects', project.id, {outlets: {panel: 'project', docs: 'home'}}]">
