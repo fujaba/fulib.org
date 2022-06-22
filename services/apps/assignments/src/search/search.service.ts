@@ -30,8 +30,7 @@ export class SearchService implements OnModuleInit {
   async onModuleInit() {
     const files = await this.elasticsearchService.indices.get({
       index: 'files',
-    });
-    const {0: oldName, 1: oldData} = Object.entries(files.body)[0];
+    }).catch(() => null);
 
     const expectedAnalysis = {
       analyzer: {
@@ -52,15 +51,61 @@ export class SearchService implements OnModuleInit {
       analyzer: 'code',
       term_vector: 'with_positions_offsets',
     };
-    const actualContent = oldData.mappings?.properties?.content;
-    const actualAnalysis = oldData.settings?.index?.analysis;
-    if (isDeepStrictEqual(expectedContent, actualContent) && isDeepStrictEqual(actualAnalysis, expectedAnalysis)) {
-      return;
-    }
 
     const newName = 'files-' + Date.now();
-    console.info('Migrating file index:', oldName, '->', newName);
 
+    if (files) {
+      const {0: oldName, 1: oldData} = Object.entries(files.body)[0];
+
+      const actualContent = oldData.mappings?.properties?.content;
+      const actualAnalysis = oldData.settings?.index?.analysis;
+      if (isDeepStrictEqual(expectedContent, actualContent) && isDeepStrictEqual(actualAnalysis, expectedAnalysis)) {
+        return;
+      }
+
+      console.info('Migrating file index:', oldName, '->', newName);
+
+      await this.createIndex(newName, expectedContent, expectedAnalysis);
+
+      // transfer data from old index to new index
+      await this.elasticsearchService.reindex({
+        body: {
+          source: {
+            index: oldName,
+          },
+          dest: {
+            index: newName,
+          },
+        },
+      });
+
+      // add alias from 'files' to newName
+      await this.elasticsearchService.indices.updateAliases({
+        body: {
+          actions: [
+            {remove_index: {index: oldName}},
+            {add: {index: newName, alias: 'files'}},
+          ],
+        },
+      });
+
+      // delete old index
+      await this.elasticsearchService.indices.delete({
+        index: oldName,
+      });
+    } else {
+      console.info('Creating file index:', newName);
+      await this.createIndex(newName, expectedContent, expectedAnalysis);
+
+      // add alias 'files' -> newName
+      await this.elasticsearchService.indices.putAlias({
+        name: 'files',
+        index: newName,
+      });
+    }
+  }
+
+  private async createIndex(newName: string, expectedContent: any, expectedAnalysis: any) {
     await this.elasticsearchService.indices.create({
       index: newName,
       body: {
@@ -70,26 +115,8 @@ export class SearchService implements OnModuleInit {
           },
         },
         settings: {
-          analysis: expectedAnalysis
+          analysis: expectedAnalysis,
         },
-      },
-    });
-    await this.elasticsearchService.reindex({
-      body: {
-        source: {
-          index: oldName,
-        },
-        dest: {
-          index: newName,
-        },
-      },
-    });
-    await this.elasticsearchService.indices.updateAliases({
-      body: {
-        actions: [
-          {remove_index: {index: oldName}},
-          {add: {index: newName, alias: 'files'}},
-        ],
       },
     });
   }
