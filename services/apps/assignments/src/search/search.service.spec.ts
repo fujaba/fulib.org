@@ -1,7 +1,8 @@
+import {Hit} from '@elastic/elasticsearch/api/types';
 import {ElasticsearchService} from '@nestjs/elasticsearch';
 import {Test, TestingModule} from '@nestjs/testing';
 import {mocked} from 'ts-jest/utils';
-import {SearchService} from './search.service';
+import {FileDocument, SearchService} from './search.service';
 
 describe('SearchService', () => {
   let service: SearchService;
@@ -37,9 +38,11 @@ describe('SearchService', () => {
   })
 
   it('should convert hits', () => {
-    const hit = {
+    const hit: Hit<FileDocument> = {
+      _index: 'files',
+      _id: '0',
       _source: {assignment: 'a1', solution: 's1', file: 'test.java', content: content},
-      highlight,
+      highlight: {content: [highlight]},
     };
     const result = service._convertHit(hit, '##');
     expect(result.assignment).toBe('a1');

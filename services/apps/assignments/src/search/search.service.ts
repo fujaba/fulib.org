@@ -5,7 +5,7 @@ import {isDeepStrictEqual} from 'util';
 import {Location} from '../evaluation/evaluation.schema';
 import {SearchSummary, SearchParams, SearchResult, SearchSnippet} from './search.dto';
 
-interface FileDocument {
+export interface FileDocument {
   assignment: string;
   solution: string;
   file: string;
