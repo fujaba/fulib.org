@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="All" type="CompoundRunConfigurationType">
-    <toRun name="Backend" type="GradleRunConfiguration" />
-    <toRun name="Assignments Service" type="js.build_tools.npm" />
+  <configuration default="false" name="Projects" type="CompoundRunConfigurationType">
+    <toRun name="Basic Services" type="docker-deploy" />
+    <toRun name="Projects Services" type="docker-deploy" />
     <toRun name="Frontend" type="js.build_tools.npm" />
     <toRun name="Projects Service" type="js.build_tools.npm" />
     <method v="2" />
