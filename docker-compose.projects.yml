@@ -1,0 +1,11 @@
+services:
+  proxy:
+    build: projects-proxy
+    image: fulib/fulib.org-projects-proxy
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    networks:
+      - projects
+networks:
+  projects:

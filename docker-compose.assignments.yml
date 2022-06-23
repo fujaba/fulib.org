@@ -1,12 +1,4 @@
 services:
-  frontend:
-    image: fulib/fulib.org-frontend
-    build:
-      context: frontend/
-      args:
-        CONFIGURATION: development
-    ports:
-      - '11340:80'
   assignments:
     image: fulib/fulib.org-assignments-service
     depends_on:
@@ -23,5 +15,11 @@ services:
       ELASTIC_NODES: http://elasticsearch:9200
     ports:
       - '21318:3000'
-  database:
-    image: mongo:4
+  elasticsearch:
+    image: elasticsearch:7.13.4
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+    ports:
+      - '9200:9200'
+      - '9300:9300'
