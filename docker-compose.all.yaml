@@ -1,0 +1,27 @@
+services:
+  frontend:
+    image: fulib/fulib.org-frontend
+    build:
+      context: frontend/
+      args:
+        CONFIGURATION: development
+    ports:
+      - '11340:80'
+  assignments:
+    image: fulib/fulib.org-assignments-service
+    depends_on:
+      - database
+      - elasticsearch
+      - nats
+    build:
+      context: services/
+      args:
+        SERVICE: assignments
+    environment:
+      MONGO_URI: mongodb://database:27017/fulib-org
+      NATS_URL: nats://nats:4222
+      ELASTIC_NODES: http://elasticsearch:9200
+    ports:
+      - '21318:3000'
+  database:
+    image: mongo:4
