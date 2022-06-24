@@ -13,16 +13,16 @@ import {of} from 'rxjs';
 
 import {environment} from '../environments/environment';
 
-import {AboutComponent} from './about/about.component';
+import {AboutComponent} from './components/about/about.component';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {ChangelogComponent} from './changelog/changelog.component';
-import {FeedbackComponent} from './feedback/feedback.component';
-import {HeaderComponent} from './header/header.component';
-import {HomeComponent} from './home/home.component';
-import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
+import {ChangelogComponent} from './components/changelog/changelog.component';
+import {FeedbackComponent} from './components/feedback/feedback.component';
+import {HeaderComponent} from './components/header/header.component';
+import {HomeComponent} from './components/home/home.component';
+import {PageNotFoundComponent} from './components/page-not-found/page-not-found.component';
 import {PrivacyService} from './privacy.service';
-import {PrivacyComponent} from './privacy/privacy.component';
+import {PrivacyComponent} from './components/privacy/privacy.component';
 import {SharedModule} from './shared/shared.module';
 import {UserModule} from './user/user.module';
 

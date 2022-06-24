@@ -1,10 +1,10 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {KeycloakService} from 'keycloak-angular';
-import {environment} from '../../environments/environment';
-import {ChangelogService, REPOS, Versions} from '../changelog.service';
+import {environment} from '../../../environments/environment';
+import {ChangelogService, REPOS, Versions} from '../../changelog.service';
 
-import {PrivacyService} from '../privacy.service';
+import {PrivacyService} from '../../privacy.service';
 
 @Component({
   selector: 'app-header',
