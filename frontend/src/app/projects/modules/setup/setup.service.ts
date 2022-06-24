@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {ProjectConfig} from '../../../model/project-config';
+import {ProjectConfig} from '../../../shared/model/project-config';
 import {Project} from '../../model/project';
 
 @Injectable()

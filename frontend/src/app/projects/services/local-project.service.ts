@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import ObjectID from 'bson-objectid';
-import {ProjectConfig} from '../../model/project-config';
+import {ProjectConfig} from '../../shared/model/project-config';
 import {StorageService} from '../../storage.service';
 import {LocalProject, ProjectStub} from '../model/project';
 
