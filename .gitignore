@@ -1,13 +1,19 @@
+# IntelliJ
 .idea/*
 !.idea/runConfigurations
-
-/.gradle/
-
-/build/
-/out/
-/temp/
-/data/
-
-hs_err_pid*
-
 *.iml
+
+# VSCode
+.vscode/
+
+# Temp files
+.gradle/
+bin/
+build/
+data/
+out/
+temp/
+tmp/
+
+# Hotspot Errors
+hs_err_pid*
