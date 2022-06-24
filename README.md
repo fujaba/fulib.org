@@ -60,21 +60,6 @@ FULIB_MONGO_URL=mongodb://localhost:27017/fulib-org
 
 IntelliJ users can use the predefined run configuration with the above environment variables already set.
 
-<details>
-  <summary>🔬 Advanced</summary>
-
-To run the Projects backend, you need to set the following environment variables:
-
-```
-FULIB_CORS=true
-FULIB_MONGO_URL=mongodb://localhost:27017/fulib-org
-FULIB_PROJECTS_DATA_DIR=data
-FULIB_PROJECTS_PROXY_URL=http://localhost:8080
-FULIB_PROJECTS_CONTAINER_IMAGE=fulib/fulib.org-projects
-```
-
-</details>
-
 ### Projects Proxy
 
 You can start the Project Proxy by running `docker compose up` in the `projects-proxy` directory.
