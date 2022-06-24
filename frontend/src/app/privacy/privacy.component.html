@@ -1,4 +1,4 @@
-<ngbx-modal #modal="modal">
+<ngbx-modal #modal="modal" [back]="[{outlets: {modal: null}}]" [backOptions]="{relativeTo: route.parent}">
   <ng-container modal-title>
     We value your privacy!
   </ng-container>

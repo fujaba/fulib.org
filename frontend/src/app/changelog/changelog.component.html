@@ -1,4 +1,4 @@
-<ngbx-modal #modal size="xl">
+<ngbx-modal #modal size="xl" [back]="[{outlets: {modal: null}}]" [backOptions]="{relativeTo: route.parent}">
   <ng-container modal-title>
     What's New on fulib.org
   </ng-container>

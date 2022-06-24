@@ -1,4 +1,4 @@
-<ngbx-modal #modal size="lg" [scrollable]="true">
+<ngbx-modal #modal size="lg" [scrollable]="true" [back]="[{outlets: {modal: null}}]" [backOptions]="{relativeTo: route.parent}">
   <ng-container modal-title>
     About
   </ng-container>

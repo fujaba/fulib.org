@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 import {Privacy, PrivacyService} from '../privacy.service';
 
 @Component({
@@ -11,6 +12,7 @@ export class PrivacyComponent implements OnInit {
 
   constructor(
     private privacyService: PrivacyService,
+    public route: ActivatedRoute,
   ) {
   }
 

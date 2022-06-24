@@ -1,5 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-about',
@@ -12,6 +13,7 @@ export class AboutComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
+    public route: ActivatedRoute,
   ) {
   }
 
