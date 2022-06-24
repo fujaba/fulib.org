@@ -1,7 +1,6 @@
 import {Component} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {ToastService} from 'ng-bootstrap-ext';
-import {ModalComponent} from '../../../../shared/modal/modal.component';
+import {ModalComponent, ToastService} from 'ng-bootstrap-ext';
 import {SolutionService} from '../../../services/solution.service';
 
 @Component({

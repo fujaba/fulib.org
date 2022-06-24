@@ -27,13 +27,21 @@ ext {
 	fulibTablesDependency = [ group: 'org.fulib', name: 'fulibTables', version: '1.4.0' ]
 
 	// https://mvnrepository.com/artifact/org.fulib/fulibWorkflows
-	fulibWorkflowsDependency = [ group: 'org.fulib', name: 'fulibWorkflows', version: '0.4.4' ]
+	fulibWorkflowsDependency = [ group: 'org.fulib', name: 'fulibWorkflows', version: '0.5.6' ]
 
 	// https://mvnrepository.com/artifact/junit/junit
 	junitDependency = [ group: 'junit', name: 'junit', version: '4.13.2' ]
 
 	// https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
 	slf4jDependency = [ group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.36' ]
+}
+
+def tagOutput = 'git describe --tags'.execute([ ], rootDir).text
+version = tagOutput.length() > 2 ? tagOutput[1..-2] : '0.0.0'
+
+allprojects {
+	group = 'org.fulib'
+	version = rootProject.version
 }
 
 // --------------- Dependencies ---------------

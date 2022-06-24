@@ -4,8 +4,8 @@ import {Observable, of} from 'rxjs';
 import {distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 
 import {environment} from '../../../environments/environment';
-import {MarkdownService} from '../../markdown.service';
-import {PrivacyService} from '../../privacy.service';
+import {MarkdownService} from '../../services/markdown.service';
+import {PrivacyService} from '../../services/privacy.service';
 import {LintService} from '../../shared/lint.service';
 import {Marker} from '../../shared/model/marker';
 import {ConfigService} from '../config.service';

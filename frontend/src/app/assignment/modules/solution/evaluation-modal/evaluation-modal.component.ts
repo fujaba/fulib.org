@@ -1,9 +1,8 @@
 import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {ToastService} from 'ng-bootstrap-ext';
+import {ModalComponent, ToastService} from 'ng-bootstrap-ext';
 import {EMPTY, of, Subscription} from 'rxjs';
 import {debounceTime, distinctUntilChanged, filter, map, share, switchMap, tap} from 'rxjs/operators';
-import {ModalComponent} from '../../../../shared/modal/modal.component';
 import {UserService} from '../../../../user/user.service';
 import {CodeSearchInfo, CreateEvaluationDto, Evaluation} from '../../../model/evaluation';
 import {SearchSummary} from '../../../model/search-result';

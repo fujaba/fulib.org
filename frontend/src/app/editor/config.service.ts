@@ -2,7 +2,7 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
-import {PrivacyService} from '../privacy.service';
+import {PrivacyService} from '../services/privacy.service';
 import {ProjectZipRequest} from '../shared/model/project-zip-request';
 
 @Injectable({providedIn: 'root'})

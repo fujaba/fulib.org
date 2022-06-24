@@ -3,7 +3,7 @@ import {Component, HostListener, NgZone, OnInit} from '@angular/core';
 
 import {ToastService} from 'ng-bootstrap-ext';
 import {EditorConfiguration} from 'codemirror';
-import {PrivacyService} from '../privacy.service';
+import {PrivacyService} from '../services/privacy.service';
 import {ThemeService} from 'ng-bootstrap-darkmode';
 import {WorkflowsService} from './workflows.service';
 import {GenerateResult} from './model/GenerateResult';

@@ -5,20 +5,19 @@ import {RouterModule} from '@angular/router';
 
 import {CodemirrorModule} from '@ctrl/ngx-codemirror';
 import {NgbDropdownModule, NgbNavModule, NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
+import {ModalModule} from 'ng-bootstrap-ext';
 
 import {AutothemeCodemirrorComponent} from './autotheme-codemirror/autotheme-codemirror.component';
 import {CollapseButtonComponent} from './collapse-button/collapse-button.component';
 import {DiagramViewComponent} from './diagram-view/diagram-view.component';
 import {DurationPipe} from './duration.pipe';
 import {MarkdownComponent} from './markdown/markdown.component';
-import {ModalComponent} from './modal/modal.component';
 import {SafeHtmlPipe} from './pipes/safe-html.pipe';
 import {SafeResourceUrlPipe} from './pipes/safe-resource-url.pipe';
 import {SafeUrlPipe} from './pipes/safe-url.pipe';
 import {PreviewComponent} from './preview/preview.component';
 import {ProTipComponent} from './pro-tip/pro-tip.component';
 import {ProjectConfigFormComponent} from './project-config-form/project-config-form.component';
-import {RouteTabsComponent} from './route-tabs/route-tabs.component';
 import {ScenarioCodemirrorComponent} from './scenario-codemirror/scenario-codemirror.component';
 import {TabsComponent} from './tabs/tabs.component';
 
@@ -33,11 +32,9 @@ import {TabsComponent} from './tabs/tabs.component';
     PreviewComponent,
     MarkdownComponent,
     ProjectConfigFormComponent,
-    ModalComponent,
     ProjectConfigFormComponent,
     TabsComponent,
     ProTipComponent,
-    RouteTabsComponent,
     DurationPipe,
     DiagramViewComponent,
   ],
@@ -49,6 +46,7 @@ import {TabsComponent} from './tabs/tabs.component';
     NgbDropdownModule,
     NgbNavModule,
     RouterModule,
+    ModalModule,
   ],
   exports: [
     SafeHtmlPipe,
@@ -60,11 +58,9 @@ import {TabsComponent} from './tabs/tabs.component';
     PreviewComponent,
     MarkdownComponent,
     ProjectConfigFormComponent,
-    ModalComponent,
     ProjectConfigFormComponent,
     TabsComponent,
     ProTipComponent,
-    RouteTabsComponent,
     DurationPipe,
     DiagramViewComponent,
   ],

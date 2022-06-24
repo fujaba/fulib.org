@@ -1,7 +1,12 @@
 name: CI/CD
 
 on:
-  - push
+  pull_request:
+  push:
+    branches:
+      - master
+      - develop
+      - bugfix
 
 jobs:
   deployment:
@@ -14,7 +19,6 @@ jobs:
           VERSION="${GITHUB_REF##*/}"
           case "$GITHUB_REF" in
             refs/heads/develop) NAMESPACE=dev ;;
-            refs/heads/feat/projects) NAMESPACE=fulib-projects ;;
             refs/tags/v*) NAMESPACE=prod ;;
           esac
           echo "::set-output name=version::$VERSION"
@@ -25,29 +29,25 @@ jobs:
   frontend:
     name: Frontend
     runs-on: ubuntu-latest
-    needs: [deployment]
+    needs: [ deployment ]
     defaults:
       run:
         working-directory: frontend
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Set up Node
-        uses: actions/setup-node@v1
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v2
         with:
-          node-version: 16
-      - name: Install PNPM
-        run: npm install -g pnpm
-      - name: Cache PNPM Store
-        uses: actions/cache@v2
+          version: 7
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
-          path: |
-            ~/.pnpm-store
-            /.pnpm-store
-          key: pnpm-${{ runner.os }}-${{ hashFiles('frontend/pnpm-lock.yaml') }}
-          restore-keys: pnpm-${{ runner.os }}-
-      - name: Install packages
-        run: pnpm install
+          node-version: '16'
+          cache: 'pnpm'
+          cache-dependency-path: frontend/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
       - name: Build Angular
         run: pnpm build
       - name: Build the Docker Image
@@ -74,23 +74,19 @@ jobs:
   backend:
     name: Backend
     runs-on: ubuntu-latest
-    needs: [deployment]
+    needs: [ deployment ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Set up JDK
-        uses: actions/setup-java@v1
+      - name: Setup Java
+        uses: actions/setup-java@v3
         with:
+          distribution: adopt
           java-version: 17
-          java-package: jdk
-      - name: Cache Gradle packages
-        uses: actions/cache@v2
-        with:
-          path: ~/.gradle/caches
-          key: gradle-${{ runner.os }}-${{ hashFiles('backend/*.gradle') }}
-          restore-keys: gradle-${{ runner.os }}-
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
       - name: Build with Gradle
         run: ./gradlew :backend:build && ./gradlew --stop
       - name: Build the Backend Docker Image
@@ -114,53 +110,10 @@ jobs:
           namespace: ${{ needs.deployment.outputs.namespace }}
           deployment: fulib-backend
           docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-backend:${{ needs.deployment.outputs.version }}
-  workflows:
-    name: Workflows
-    runs-on: ubuntu-latest
-    needs: [deployment]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - name: Set up JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: 17
-          java-package: jdk
-      - name: Cache Gradle packages
-        uses: actions/cache@v2
-        with:
-          path: ~/.gradle/caches
-          key: gradle-${{ runner.os }}-${{ hashFiles('workflows/*.gradle') }}
-          restore-keys: gradle-${{ runner.os }}-
-      - name: Build with Gradle
-        run: ./gradlew :workflows:build && ./gradlew --stop
-      - name: Build the Workflows Docker Image
-        if: needs.deployment.outputs.namespace
-        uses: whoan/docker-build-with-cache-action@v5
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          registry: ${{ secrets.DOCKER_REGISTRY }}
-          image_name: fulib/fulib.org-workflows
-          image_tag: ${{ needs.deployment.outputs.version }}
-          context: workflows/
-      - name: Deploy the Workflows Backend to Rancher
-        if: needs.deployment.outputs.namespace
-        uses: sekassel-research/actions-rancher-update@2.0.2
-        with:
-          rancher_url: ${{ secrets.RANCHER_URL }}
-          rancher_token: ${{ secrets.RANCHER_TOKEN }}
-          cluster_id: ${{ secrets.RANCHER_CLUSTER }}
-          project_id: ${{ secrets.RANCHER_PROJECT }}
-          namespace: ${{ needs.deployment.outputs.namespace }}
-          deployment: workflows-backend
-          docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-workflows:${{ needs.deployment.outputs.version }}
   assignments-service:
     name: Assignments Service
     runs-on: ubuntu-latest
-    needs: [deployment]
+    needs: [ deployment ]
     defaults:
       run:
         working-directory: services
@@ -177,6 +130,7 @@ jobs:
           image_tag: ${{ needs.deployment.outputs.version }}
           build_extra_args: "--build-arg=SERVICE=assignments"
           context: services/
+          push_image_and_stages: ${{ !!needs.deployment.outputs.namespace }}
       - name: Deploy to Rancher
         if: needs.deployment.outputs.namespace
         uses: sekassel-research/actions-rancher-update@2.0.2
@@ -191,7 +145,7 @@ jobs:
   projects-service:
     name: Projects Service
     runs-on: ubuntu-latest
-    needs: [deployment]
+    needs: [ deployment ]
     defaults:
       run:
         working-directory: services
@@ -208,6 +162,7 @@ jobs:
           image_tag: ${{ needs.deployment.outputs.version }}
           build_extra_args: "--build-arg=SERVICE=projects"
           context: services/
+          push_image_and_stages: ${{ !!needs.deployment.outputs.namespace }}
       - name: Deploy to Rancher
         if: needs.deployment.outputs.namespace
         uses: sekassel-research/actions-rancher-update@2.0.2
@@ -222,23 +177,19 @@ jobs:
   projects-container:
     name: Projects Container
     runs-on: ubuntu-latest
-    needs: [deployment]
+    needs: [ deployment ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Set up JDK
-        uses: actions/setup-java@v1
+      - name: Setup Java
+        uses: actions/setup-java@v3
         with:
+          distribution: adopt
           java-version: 17
-          java-package: jdk
-      - name: Cache Gradle packages
-        uses: actions/cache@v2
-        with:
-          path: ~/.gradle/caches
-          key: gradle-${{ runner.os }}-${{ hashFiles('projects/*.gradle') }}
-          restore-keys: gradle-${{ runner.os }}-
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
       - name: Build with Gradle
         run: ./gradlew :projects:build && ./gradlew --stop
       - name: Build the Project Container Docker Image
@@ -254,8 +205,7 @@ jobs:
   projects-runtime:
     name: Projects Runtime
     runs-on: ubuntu-latest
-    needs: [deployment, projects-container]
-    if: needs.deployment.outputs.namespace
+    needs: [ deployment, projects-container ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -268,6 +218,7 @@ jobs:
           image_name: fulib/fulib.org-projects-proxy
           image_tag: ${{ needs.deployment.outputs.version }}
           context: projects-proxy/
+          push_image_and_stages: ${{ !!needs.deployment.outputs.namespace }}
       - name: Build the Projects Runtime Docker Image
         uses: whoan/docker-build-with-cache-action@v5
         with:
@@ -277,7 +228,9 @@ jobs:
           image_name: fulib/fulib.org-projects-runtime
           image_tag: ${{ needs.deployment.outputs.version }}
           context: projects-runtime/
+          push_image_and_stages: ${{ !!needs.deployment.outputs.namespace }}
       - name: Deploy the Projects Runtime to Rancher
+        if: needs.deployment.outputs.namespace
         uses: sekassel-research/actions-rancher-update@2.0.2
         with:
           rancher_url: ${{ secrets.RANCHER_URL }}

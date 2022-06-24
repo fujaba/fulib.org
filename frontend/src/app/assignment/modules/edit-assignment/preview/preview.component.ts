@@ -14,6 +14,7 @@ import {AssignmentService} from '../../../services/assignment.service';
 })
 export class PreviewComponent implements OnInit {
   assignment: Assignment;
+  tasks: Task[];
 
   loggedIn = false;
   submitting = false;
@@ -26,6 +27,7 @@ export class PreviewComponent implements OnInit {
     context: AssignmentContext,
   ) {
     this.assignment = context.assignment;
+    this.tasks = this.assignment.tasks.filter(t => !t.deleted);
   }
 
   ngOnInit(): void {

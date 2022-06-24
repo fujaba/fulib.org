@@ -92,7 +92,15 @@ export class StatisticsService {
       {
         // end = events.filter(e => e.action === 'submitEvaluation')
         $addFields: {
-          end: {$last: {$filter: {input: '$events', cond: {$eq: ['$$this.action', 'submitEvaluation']}}}},
+          end: {
+            $last: {
+              $filter: {
+                input: '$events', cond: {
+                  $eq: ['$$this.action', 'submitEvaluation'],
+                },
+              },
+            } as any, // TODO rejected by Mongoose types for some reason
+          },
         },
       },
       {
@@ -109,7 +117,7 @@ export class StatisticsService {
                   ],
                 },
               },
-            },
+            } as any, // TODO rejected by Mongoose types for some reason
           },
         },
       },

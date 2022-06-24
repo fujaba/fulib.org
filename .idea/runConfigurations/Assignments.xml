@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Assignments" type="CompoundRunConfigurationType">
+    <toRun name="Assignments Services" type="docker-deploy" />
+    <toRun name="Basic Services" type="docker-deploy" />
+    <toRun name="Assignments Service" type="js.build_tools.npm" />
+    <toRun name="Frontend" type="js.build_tools.npm" />
+    <method v="2" />
+  </configuration>
+</component>

@@ -3,14 +3,17 @@ import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {AngularSplitModule} from 'angular-split';
-import {ClipboardModule} from 'ngx-clipboard';
+import {ModalModule} from 'ng-bootstrap-ext';
 import {DndModule} from 'ngx-drag-drop';
 
 import {SharedModule} from '../shared/shared.module';
 import {FileTabsComponent} from './components/file-tabs/file-tabs.component';
 import {ProjectListComponent} from './components/project-list/project-list.component';
 import {ProjectWorkspaceComponent} from './components/project-workspace/project-workspace.component';
+import {RunAnythingComponent} from './components/run-anything/run-anything.component';
+import {SearchEverywhereComponent} from './components/search-everywhere/search-everywhere.component';
 import {SplitPanelComponent} from './components/split-panel/split-panel.component';
+import {TutorialComponent} from './components/tutorial/tutorial.component';
 import {EditorModule} from './modules/editor/editor.module';
 import {SetupModule} from './modules/setup/setup.module';
 import {TerminalModule} from './modules/terminal/terminal.module';
@@ -24,10 +27,7 @@ import {FileService} from './services/file.service';
 import {LocalProjectService} from './services/local-project.service';
 import {MemberService} from './services/member.service';
 import {ProjectService} from './services/project.service';
-import { SearchEverywhereComponent } from './components/search-everywhere/search-everywhere.component';
 import {SearchService} from './services/search.service';
-import { RunAnythingComponent } from './components/run-anything/run-anything.component';
-import { TutorialComponent } from './components/tutorial/tutorial.component';
 
 @NgModule({
   declarations: [
@@ -39,24 +39,24 @@ import { TutorialComponent } from './components/tutorial/tutorial.component';
     RunAnythingComponent,
     TutorialComponent,
   ],
-    imports: [
-        // Angular
-        CommonModule,
-        FormsModule,
-        // 3rd Party
-        DndModule,
-        NgbModule,
-        AngularSplitModule,
-        // Shared
-        SharedModule,
-        // Routing
-        ProjectsRoutingModule,
-        // Submodules
-        EditorModule,
-        SetupModule,
-        TerminalModule,
-        ClipboardModule,
-    ],
+  imports: [
+    // Angular
+    CommonModule,
+    FormsModule,
+    // 3rd Party
+    DndModule,
+    NgbModule,
+    AngularSplitModule,
+    // Shared
+    SharedModule,
+    // Routing
+    ProjectsRoutingModule,
+    // Submodules
+    EditorModule,
+    SetupModule,
+    TerminalModule,
+    ModalModule,
+  ],
   providers: [
     ConfigService,
     ContainerService,

@@ -4,21 +4,18 @@
 
 - data: Student carli
   motivation: 83
-  stops: [stop1]
-  stops.back: student
+  stop: stop1
 
 - data: Stop stop1
   motivation: 66
   student: carli
   room: r1
-  room.back: [stops]
 
 - data: Room r1
   topic: math
   credits: 17
-  stop: stop1
+  stops: [stop1]
   neighbors: [r2, r4]
-  neighbors.back: [neighbors]
 
 - data: Room r2
   topic: calculus
@@ -37,10 +34,21 @@
 - command: findRoute
 
 - data: Stop stop2
-  room: calculus
-  motivation: 56
+  room: r2
+  motivation: 46
   prev: stop1
-  prev.back: [next]
 
-- data: Student carli
-  route: [math, calculus, math, modeling, exam]
+- data: Stop stop3
+  room: r1
+  motivation: 29
+  prev: stop2
+
+- data: Stop stop4
+  room: r4
+  motivation: 0
+  prev: stop3
+
+- data: Stop stop5
+  room: r3
+  motivation: 0
+  prev: stop4

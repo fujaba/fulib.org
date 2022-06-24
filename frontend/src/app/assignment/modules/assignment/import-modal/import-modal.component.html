@@ -1,5 +1,5 @@
-<app-modal #modal [back]="['../solutions']" [backOptions]="{relativeTo: route}">
-  <ng-container modal-header>
+<ngbx-modal #modal [back]="['../solutions']">
+  <ng-container modal-title>
     Import Solutions
   </ng-container>
   <ng-container modal-body>
@@ -36,7 +36,8 @@
               Anything else, with the file name without extension becoming the student name.
             </li>
           </ul>
-          <input type="file" class="form-control" id="files" multiple accept="application/zip" #input (change)="setFiles(input.files!)">
+          <input type="file" class="form-control" id="files" multiple accept="application/zip" #input
+                 (change)="setFiles(input.files!)">
         </ng-template>
       </li>
     </ul>
@@ -51,4 +52,4 @@
       {{ importing ? 'Importing...' : 'Import' }}
     </button>
   </ng-container>
-</app-modal>
+</ngbx-modal>

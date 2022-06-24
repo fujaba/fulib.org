@@ -1,5 +1,5 @@
-<app-modal #modal [back]="['../..']" [backOptions]="{relativeTo: activatedRoute}">
-  <ng-container modal-header>
+<ngbx-modal #modal [back]="['../..']">
+  <ng-container modal-title>
     {{ editing.id ? 'Edit' : 'New' }} Launch Config
   </ng-container>
   <ng-container modal-body>
@@ -9,4 +9,4 @@
     <button type="button" class="btn btn-secondary" (click)="modal.close()">Cancel</button>
     <button type="button" class="btn btn-primary" (click)="save()">Save</button>
   </ng-container>
-</app-modal>
+</ngbx-modal>

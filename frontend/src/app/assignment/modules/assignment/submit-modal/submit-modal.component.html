@@ -1,6 +1,6 @@
-<app-modal #modal size="lg" [back]="['../../solutions']"
-           [backOptions]="{relativeTo: route, queryParamsHandling: 'preserve'}">
-  <ng-container modal-header>
+<ngbx-modal #modal size="lg" [back]="['../../solutions']"
+            [backOptions]="{relativeTo: route, queryParamsHandling: 'preserve'}">
+  <ng-container modal-title>
     Submit Feedback
   </ng-container>
   <ng-container modal-body>
@@ -31,7 +31,8 @@
       Draft Mail
     </a>
     <span class="d-inline-block" [ngbTooltip]="draftLink ? undefined : draftIssueTooltip">
-      <a class="btn btn-primary bi-github" [href]="draftLink" target="_blank" [class.disabled]="!draftLink" (click)="saveAndClose(modal)">
+      <a class="btn btn-primary bi-github" [href]="draftLink" target="_blank" [class.disabled]="!draftLink"
+         (click)="saveAndClose(modal)">
         Draft Issue
       </a>
     </span>
@@ -61,4 +62,4 @@
       </ul>
     </ng-template>
   </ng-container>
-</app-modal>
+</ngbx-modal>

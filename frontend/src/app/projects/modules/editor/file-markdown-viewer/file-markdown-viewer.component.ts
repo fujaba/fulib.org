@@ -1,7 +1,7 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {BehaviorSubject, EMPTY} from 'rxjs';
 import {map, mapTo, startWith, switchMap} from 'rxjs/operators';
-import {MarkdownService} from '../../../../markdown.service';
+import {MarkdownService} from '../../../../services/markdown.service';
 import {FileChangeService} from '../../../services/file-change.service';
 import {FileService} from '../../../services/file.service';
 import {File} from '../../../model/file';

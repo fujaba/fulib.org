@@ -5,6 +5,18 @@
 A web app for [fulibScenarios](https://github.com/fujaba/fulibScenarios).
 Available at https://www.fulib.org.
 
+## Running with Docker-Compose
+
+### Assignments
+
+To run a local semi-production Assignment/fulibFeedback environment in a docker-compose environment, use the following command:
+
+```shell
+docker compose -f docker-compose.yml -f docker-compose.assignments.yml up -d
+```
+
+The frontend will be available at http://localhost:11340.
+
 ## Building & Running
 
 You can mostly set up this project after cloning using the Gradle import feature of your IDE.
@@ -47,21 +59,6 @@ FULIB_MONGO_URL=mongodb://localhost:27017/fulib-org
 ### Projects Backend
 
 IntelliJ users can use the predefined run configuration with the above environment variables already set.
-
-<details>
-  <summary>🔬 Advanced</summary>
-
-To run the Projects backend, you need to set the following environment variables:
-
-```
-FULIB_CORS=true
-FULIB_MONGO_URL=mongodb://localhost:27017/fulib-org
-FULIB_PROJECTS_DATA_DIR=data
-FULIB_PROJECTS_PROXY_URL=http://localhost:8080
-FULIB_PROJECTS_CONTAINER_IMAGE=fulib/fulib.org-projects
-```
-
-</details>
 
 ### Projects Proxy
 

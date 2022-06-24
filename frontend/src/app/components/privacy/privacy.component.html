@@ -1,0 +1,56 @@
+<ngbx-modal #modal="modal" [back]="[{outlets: {modal: null}}]" [backOptions]="{relativeTo: route.parent}">
+  <ng-container modal-title>
+    We value your privacy!
+  </ng-container>
+  <ng-container modal-body>
+    <p>
+      This website uses cookies and other local data storage technology to make your experience more
+      pleasant.
+      Remote data is stored anonymously and used only for scientific and analytic purposes.
+    </p>
+    <p>
+      Please select your preferred privacy option below:
+    </p>
+    <div class="form-check">
+      <label class="form-check-label">
+        <input class="form-check-input" type="radio" value="all" [(ngModel)]="privacy">
+        I agree to the use of local and remote data storage.
+      </label>
+    </div>
+    <div class="form-check">
+      <label class="form-check-label">
+        <input class="form-check-input" type="radio" value="local" [(ngModel)]="privacy">
+        I agree to the use of local data storage, but not remote.
+      </label>
+    </div>
+    <div class="form-check">
+      <label class="form-check-label">
+        <input class="form-check-input" type="radio" value="none" [(ngModel)]="privacy">
+        I do not agree to the use of local or remote data storage.
+      </label>
+    </div>
+    <div class="form-check">
+      <label class="form-check-label">
+        <input class="form-check-input" type="radio" value="nobanner" [(ngModel)]="privacy">
+        I do not agree to the use of local or remote data storage,
+        except for the use of local storage to hide this popup in the future.
+      </label>
+    </div>
+    <hr>
+    <p>
+      You can show this popup again and edit your preferences at any time by selecting
+      <i class="bi-person-circle"></i>
+      <span class="visually-hidden">Account</span>
+      &rarr;
+      <b>Edit Privacy Preferences</b> in the top navigation bar.
+    </p>
+  </ng-container>
+  <ng-container modal-footer>
+    <button type="button" class="btn btn-secondary" (click)="modal.close()">
+      Cancel
+    </button>
+    <button type="button" class="btn btn-primary" (click)="modal.close(); savePrivacy()" [disabled]="!privacy">
+      Save
+    </button>
+  </ng-container>
+</ngbx-modal>

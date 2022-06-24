@@ -1,7 +1,7 @@
 import {Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
 import hljs from 'highlight.js/lib/core';
-import {MarkdownService} from '../../markdown.service';
+import {MarkdownService} from '../../services/markdown.service';
 
 @Component({
   selector: 'app-markdown',

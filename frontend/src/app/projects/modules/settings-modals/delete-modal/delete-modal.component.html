@@ -1,5 +1,5 @@
-<app-modal #modal="modal" [locked]="deleting" [back]="[back]" [backOptions]="{relativeTo: activatedRoute}">
-  <ng-container modal-header>
+<ngbx-modal #modal="modal" [locked]="deleting" [back]="[back]">
+  <ng-container modal-title>
     Delete Project
   </ng-container>
   <ng-container modal-body>
@@ -10,9 +10,9 @@
     <button *ngIf="!deleting" type="button" class="btn btn-secondary" (click)="modal.close()">
       Cancel
     </button>
-    <button type="button" class="btn btn-danger" (click)="delete()" [disabled]="deleting">
+    <button type="button" class="btn btn-danger" (click)="delete(modal)" [disabled]="deleting">
       <span *ngIf="deleting" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
       {{deleting ? 'Deleting...' : 'Delete'}}
     </button>
   </ng-container>
-</app-modal>
+</ngbx-modal>
