@@ -21,8 +21,8 @@ export class ContainerService {
   }
 
   createLocal(localProject: LocalProject): Observable<Container> {
-    const {id} = localProject;
-    return this.http.post<Container>(`${environment.projectsApiUrl}/container`, {id});
+    const {id: projectId, dockerImage} = localProject;
+    return this.http.post<Container>(`${environment.projectsApiUrl}/container`, {projectId, dockerImage});
   }
 
   delete(projectId: string): Observable<void> {
