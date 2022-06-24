@@ -5,6 +5,18 @@
 A web app for [fulibScenarios](https://github.com/fujaba/fulibScenarios).
 Available at https://www.fulib.org.
 
+## Running with Docker-Compose
+
+### Assignments
+
+To run a local semi-production Assignment/fulibFeedback environment in a docker-compose environment, use the following command:
+
+```shell
+docker compose -f docker-compose.yml -f docker-compose.assignments.yml up -d
+```
+
+The frontend will be available at http://localhost:11340.
+
 ## Building & Running
 
 You can mostly set up this project after cloning using the Gradle import feature of your IDE.
