@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import ObjectID from 'bson-objectid';
 import {ProjectConfig} from '../../shared/model/project-config';
-import {StorageService} from '../../storage.service';
+import {StorageService} from '../../services/storage.service';
 import {LocalProject, ProjectStub} from '../model/project';
 
 @Injectable()

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {PrivacyService} from '../../privacy.service';
+import {PrivacyService} from '../../services/privacy.service';
 
 export type ConfigKey =
   | 'ide'

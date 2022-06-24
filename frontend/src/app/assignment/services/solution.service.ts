@@ -4,7 +4,7 @@ import {Params} from '@angular/router';
 import {forkJoin, Observable, of} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
 import {environment} from '../../../environments/environment';
-import {StorageService} from '../../storage.service';
+import {StorageService} from '../../services/storage.service';
 import {UserService} from '../../user/user.service';
 import {AssignmentService} from './assignment.service';
 import {Assignee} from '../model/assignee';

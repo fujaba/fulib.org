@@ -21,7 +21,7 @@ import {FeedbackComponent} from './components/feedback/feedback.component';
 import {HeaderComponent} from './components/header/header.component';
 import {HomeComponent} from './components/home/home.component';
 import {PageNotFoundComponent} from './components/page-not-found/page-not-found.component';
-import {PrivacyService} from './privacy.service';
+import {PrivacyService} from './services/privacy.service';
 import {PrivacyComponent} from './components/privacy/privacy.component';
 import {SharedModule} from './shared/shared.module';
 import {UserModule} from './user/user.module';

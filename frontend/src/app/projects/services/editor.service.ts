@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {from} from 'rxjs';
 import {concatMap, filter, map} from 'rxjs/operators';
-import {PrivacyService} from '../../privacy.service';
+import {PrivacyService} from '../../services/privacy.service';
 import {File} from '../model/file';
 import {FileEditor} from '../model/file-editor';
 import {DEFAULT} from '../model/file-type.constants';
