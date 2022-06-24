@@ -18,12 +18,12 @@ services:
   #      - '6266:3000'
   #    volumes:
   #      - '/var/run/docker.sock:/var/run/docker.sock'
-  proxy:
+  projects-proxy:
     build: projects-proxy
     image: fulib/fulib.org-projects-proxy
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - "13147:80"
     networks:
       - projects
   # TODO

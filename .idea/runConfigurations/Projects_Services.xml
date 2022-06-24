@@ -5,7 +5,7 @@
         <option name="envFilePath" value="" />
         <option name="services">
           <list>
-            <option value="proxy" />
+            <option value="projects-proxy" />
           </list>
         </option>
         <option name="sourceFilePath" value="docker-compose.projects.yml" />
