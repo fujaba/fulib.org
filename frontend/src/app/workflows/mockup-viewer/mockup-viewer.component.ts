@@ -87,8 +87,11 @@ export class MockupViewerComponent implements OnChanges {
         }
         return [];
       case 'class':
-        this.maxIndex = 0;
-        return this.generateResult.classDiagram ? [this.createTab(0, this.generateResult.classDiagram)] : [];
+        if (this.generateResult.classDiagrams) {
+          this.maxIndex = this.generateResult.classDiagrams.length - 1;
+          return this.generateResult.classDiagrams.map((page, index) => this.createTab(index, page));
+        }
+        return [];
     }
   }
 

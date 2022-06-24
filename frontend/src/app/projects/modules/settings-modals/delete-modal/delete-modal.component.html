@@ -10,7 +10,7 @@
     <button *ngIf="!deleting" type="button" class="btn btn-secondary" (click)="modal.close()">
       Cancel
     </button>
-    <button type="button" class="btn btn-danger" (click)="delete()" [disabled]="deleting">
+    <button type="button" class="btn btn-danger" (click)="delete(modal)" [disabled]="deleting">
       <span *ngIf="deleting" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
       {{deleting ? 'Deleting...' : 'Delete'}}
     </button>
