@@ -1,4 +1,4 @@
-<ngbx-modal #modal>
+<ngbx-modal #modal [back]="[{outlets: {modal: null}}]" [backOptions]="{relativeTo: route.parent}">
   <ng-container modal-title>
     Submit Feedback
   </ng-container>

@@ -6,7 +6,7 @@ import {map, switchMap, tap} from 'rxjs/operators';
 
 import {environment} from '../../../environments/environment';
 import {ConfigService as EditorConfigService} from '../../editor/config.service';
-import {ProjectConfig} from '../../model/project-config';
+import {ProjectConfig} from '../../shared/model/project-config';
 import {UserService} from '../../user/user.service';
 import {DavClient} from './dav-client';
 import {LocalProjectService} from './local-project.service';

@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {Privacy, PrivacyService} from '../privacy.service';
+import {ActivatedRoute} from '@angular/router';
+import {Privacy, PrivacyService} from '../../services/privacy.service';
 
 @Component({
   selector: 'app-privacy',
@@ -11,6 +12,7 @@ export class PrivacyComponent implements OnInit {
 
   constructor(
     private privacyService: PrivacyService,
+    public route: ActivatedRoute,
   ) {
   }
 

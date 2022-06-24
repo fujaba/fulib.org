@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
-import {ChangelogService, Release, REPOS, Repository, Versions} from '../changelog.service';
+import {ChangelogService, Release, REPOS, Repository, Versions} from '../../services/changelog.service';
 
 @Component({
   selector: 'app-changelog',
@@ -19,6 +20,7 @@ export class ChangelogComponent implements OnInit {
   constructor(
     private modalService: NgbModal,
     private changelogService: ChangelogService,
+    public route: ActivatedRoute,
   ) {
   }
 

@@ -3,7 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 
 import {ToastService} from 'ng-bootstrap-ext';
 import {ExportOptions} from '../model/ExportOptions';
-import {PrivacyService} from '../../privacy.service';
+import {PrivacyService} from '../../services/privacy.service';
 import {WorkflowsService} from '../workflows.service';
 
 @Component({
