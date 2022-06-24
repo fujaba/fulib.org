@@ -1,0 +1,25 @@
+services:
+  assignments:
+    image: fulib/fulib.org-assignments-service
+    depends_on:
+      - database
+      - elasticsearch
+      - nats
+    build:
+      context: services/
+      args:
+        SERVICE: assignments
+    environment:
+      MONGO_URI: mongodb://database:27017/fulib-org
+      NATS_URL: nats://nats:4222
+      ELASTIC_NODES: http://elasticsearch:9200
+    ports:
+      - '21318:3000'
+  elasticsearch:
+    image: elasticsearch:7.13.4
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+    ports:
+      - '9200:9200'
+      - '9300:9300'
