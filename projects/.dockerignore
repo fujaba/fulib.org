@@ -1,4 +1,2 @@
 **
-!/build/libs/projects-*-all.jar
-!/webdav.yaml
 !preload.build.gradle
