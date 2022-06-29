@@ -40,18 +40,17 @@ export class ContainerService {
     const bindPrefix = path.resolve(environment.docker.bindPrefix);
     const token = randomBytes(10).toString('base64');
 
-    /* create 'settings.json' file if it doesn't exist already
-    code server will write the user settings there
-    if we won't create the file, docker will automatically
-    create a directory instead, which will lead to an error
-    when code server is trying to write on the bind mount
+    /* create 'settings.json' files if they don't exist already
+    code server will write the user/machine settings there
+    if we won't create the file manually, docker will automatically
+    create a directory instead when binding it. This will
+    lead to an error when code server is trying to write on the bind mount
      */
-    const settingsFile = `${bindPrefix}/config/${this.idBin(projectId)}/${projectId}/User/settings.json`
-    const settingsDir = `${bindPrefix}/config/${this.idBin(projectId)}/${projectId}/User/`
-    await fs.promises.readFile(settingsFile).catch( async () => {
-      await fs.promises.mkdir(settingsDir, {recursive: true});
-      await fs.promises.writeFile(settingsFile, "");
-    });
+
+    const userSettingsFile = `${bindPrefix}/config/${this.idBin(projectId)}/${projectId}/User/settings.json`;
+    const machineSettingsFile = `${bindPrefix}/config/${this.idBin(projectId)}/${projectId}/Machine/settings.json`;
+    await this.createFile(userSettingsFile);
+    await this.createFile(machineSettingsFile);
 
 
     const container = await this.docker.createContainer({
@@ -69,8 +68,11 @@ export class ContainerService {
           //workspace bind
           `${bindPrefix}/projects/${this.idBin(projectId)}/${projectId}:${this.codeWorkspace}`,
 
-          // vs code settings bind
+          // vs code User settings bind
           `${bindPrefix}/config/${this.idBin(projectId)}/${projectId}/User/settings.json:/home/coder/.local/share/code-server/User/settings.json`,
+
+          //vs code Machine settings bind
+          `${bindPrefix}/config/${this.idBin(projectId)}/${projectId}/Machine/settings.json:/home/coder/.local/share/code-server/Machine/settings.json`,
         ],
       },
       Env: [
@@ -95,7 +97,7 @@ export class ContainerService {
     await wait();
 
     // loop over extensions list and install all extensions
-    await this.installExtensions(container, projectId);
+    this.installExtensions(container, projectId);
 
     return this.toContainer(container.id, token, projectId);
   }
@@ -244,6 +246,14 @@ export class ContainerService {
         stream.pipe(process.stdout);
       }
     }
+  }
+
+  /* creates file with given path only when the file doesn't exist */
+  private async createFile(p: string) {
+    await fs.promises.readFile(p).catch( async() => {
+      await fs.promises.mkdir(path.dirname(p), {recursive: true});
+      await fs.promises.writeFile(p, "");
+    });
   }
 
 }
