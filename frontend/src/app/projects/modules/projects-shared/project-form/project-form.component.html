@@ -10,7 +10,7 @@
   <div class="mb-3">
     <label class="form-label" for="dockerImageInput">Docker Image</label>
     <select class="form-select" id="dockerImageInput" [(ngModel)]="project.dockerImage">
-      <option *ngFor="let image of dockerImages" [value]="image.image">
+      <option *ngFor="let image of dockerImages" [value]="image.tag">
         {{image.name}}
         —
         {{image.desc}}
