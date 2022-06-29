@@ -1,20 +1,15 @@
-FROM gradle:7.4.2-jdk17-alpine as preload
+FROM gradle as preload
 WORKDIR /opt/preload
-COPY preload.build.gradle build.gradle
+ARG BUILD_GRADLE
+COPY $BUILD_GRADLE build.gradle
 RUN gradle wrapper && ./gradlew downloadDependencies && ./gradlew --stop
 
-
 FROM codercom/code-server
-
+ARG APT_DEPENDENCIES
 RUN sudo apt-get update -y \
     && sudo apt-get install -y \
-        openjdk-17-jdk-headless # OpenJDK 17, 430 MB \
+        $APT_DEPENDENCIES \
     && sudo apt-get clean
-
-#Gradle
 COPY --from=preload --chown=coder /root/.gradle /home/coder/.gradle
-
-RUN code-server --install-extension redhat.java
-
-
-
+ARG EXTENSION
+RUN code-server --install-extension $EXTENSION
