@@ -88,17 +88,24 @@ export class ContainerService {
 
     await container.start();
 
-    // wait 1s for container startup
-    // without waiting we're getting 502 - Bad Gateway Error on the code server iframe on first loading
-    const wait = async () => {
-      await setTimeout(1000);
-    };
-    await wait();
+    /*
+    when using the 'codercom/code-server:latest' Image, the settings bind mount breaks the permissions
+    on '/home/coder/.local'. It is owned by root (but should be owned by 'coder' user).
+    So nobody (except root) can write there, which will lead to errors when for example trying to install extensions.
+    So we'll change the ownership back to 'coder' to prevent that
+     */
+    await this.containerExec(container,['sudo', 'chown', '-R', 'coder:coder', '/home/coder']);
 
     // loop over extensions list and install all extensions
     this.installExtensions(container, projectId);
 
-    return this.toContainer(container.id, token, projectId);
+    let containerDto = this.toContainer(container.id, token, projectId);
+    let containerURL = containerDto.url;
+    while (!(await this.isContainerReady(containerURL))) {
+      //wait 200ms and try again
+      await setTimeout(200);
+    }
+    return containerDto;
   }
 
   async findOne(projectId: string): Promise<ContainerDto | null> {
@@ -253,6 +260,16 @@ export class ContainerService {
       await fs.promises.mkdir(path.dirname(p), {recursive: true});
       await fs.promises.writeFile(p, "");
     });
+  }
+
+  private async isContainerReady(containerURL: string): Promise<boolean> {
+    try {
+      let res = await firstValueFrom(this.httpService.get(containerURL));
+      return res.status == 200
+    } catch (e) {
+      // 502 Bad Gateway
+      return false;
+    }
   }
 
 }
