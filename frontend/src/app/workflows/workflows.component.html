@@ -2,8 +2,8 @@
   <div class="btn-toolbar align-items-center p-3" role="toolbar" aria-label="Toolbar">
     <select class="form-select w-auto me-2"
             [disabled]="loading"
-            [ngModel]="currentExample"
-            (ngModelChange)="changeExampleContent($event)">
+            [(ngModel)]="currentExample"
+            (ngModelChange)="setExample($event)">
       <option [ngValue]="null">Select Example...</option>
       <option *ngFor="let example of examples" [ngValue]="example">{{ example.name }}</option>
     </select>

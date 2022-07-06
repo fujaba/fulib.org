@@ -42,7 +42,6 @@ export class WorkflowsComponent implements OnInit {
     private fulibWorkflowsService: WorkflowsService,
     private privacyService: PrivacyService,
     private http: HttpClient,
-    private themeService: ThemeService,
   ) {
     // https://angular.io/api/core/NgZone
     const generateHandler = () => this.zone.run(() => this.generate());
@@ -69,11 +68,6 @@ export class WorkflowsComponent implements OnInit {
     });
 
     this.setExample(null);
-  }
-
-  changeExampleContent(newExample: Example | null) {
-    this.currentExample = newExample;
-    this.setExample(this.currentExample);
   }
 
   generate() {
@@ -113,7 +107,7 @@ export class WorkflowsComponent implements OnInit {
     }
   }
 
-  private setExample(example: Example | null) {
+  setExample(example: Example | null) {
     if (!example) {
       const storage = this.privacyService.getStorage('workflows');
       if (storage) {
