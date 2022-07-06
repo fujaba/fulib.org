@@ -68,13 +68,7 @@ export class WorkflowsComponent implements OnInit {
       this.examples = examples;
     });
 
-    const storage = this.privacyService.getStorage('workflows');
-    if (storage) {
-      this.content = storage;
-      this.generate();
-    } else {
-      this.setExample(null);
-    }
+    this.setExample(null);
   }
 
   changeExampleContent(newExample: Example | null) {
@@ -120,7 +114,16 @@ export class WorkflowsComponent implements OnInit {
   }
 
   private setExample(example: Example | null) {
-    const url = `${environment.workflowsUrl}/examples/${example?.path ?? 'NewWorkflow.es.yaml'}`;
+    if (!example) {
+      const storage = this.privacyService.getStorage('workflows');
+      if (storage) {
+        this.content = storage;
+        this.generate();
+      }
+      return;
+    }
+
+    const url = `${environment.workflowsUrl}/examples/${example.path}`;
 
     this.http.get(url, {responseType: 'text'}).subscribe(
       (value) => {
