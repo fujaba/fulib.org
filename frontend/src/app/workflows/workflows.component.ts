@@ -10,6 +10,11 @@ import {GenerateResult} from './model/GenerateResult';
 import {environment} from '../../environments/environment';
 import {cmWorkflowsHint} from './model/helper/workflows-hint';
 
+interface Example {
+  name: string;
+  path: string;
+}
+
 @Component({
   selector: 'app-workflows',
   templateUrl: './workflows.component.html',
@@ -22,8 +27,8 @@ export class WorkflowsComponent implements OnInit {
   generateResult?: GenerateResult;
   workflowsUrl = environment.workflowsUrl;
 
-  currentExample: string | null = null;
-  examples = ['Data Modelling', 'Microservices', 'Pages'];
+  currentExample: Example | null = null;
+  examples: Example[] = [];
 
   showIframeHider = false;
   newPageIndex: number = 0;
@@ -59,6 +64,10 @@ export class WorkflowsComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.http.get<Example[]>(environment.workflowsUrl + '/examples').subscribe(examples => {
+      this.examples = examples;
+    });
+
     const storage = this.privacyService.getStorage('workflows');
     if (storage) {
       this.content = storage;
@@ -68,7 +77,7 @@ export class WorkflowsComponent implements OnInit {
     }
   }
 
-  changeExampleContent(newExample: string | null) {
+  changeExampleContent(newExample: Example | null) {
     this.currentExample = newExample;
     this.setExample(this.currentExample);
   }
@@ -110,12 +119,8 @@ export class WorkflowsComponent implements OnInit {
     }
   }
 
-  private setExample(exampleName: string | null) {
-    if (!exampleName) {
-      exampleName = 'New Workflow';
-    }
-
-    const url = `/assets/examples/workflows/${exampleName.replace(' ', '')}.es.yaml`;
+  private setExample(example: Example | null) {
+    const url = `${environment.workflowsUrl}/examples/${example?.path ?? 'NewWorkflow.es.yaml'}`;
 
     this.http.get(url, {responseType: 'text'}).subscribe(
       (value) => {
