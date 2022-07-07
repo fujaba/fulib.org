@@ -5,6 +5,7 @@ import {Subscription} from 'rxjs';
 import {mapTo, switchMap, tap} from 'rxjs/operators';
 import {UserService} from '../../../../user/user.service';
 import Comment from '../../../model/comment';
+import {CommentRepo} from '../../../services/comment-repo';
 import {SolutionService} from '../../../services/solution.service';
 
 @Component({
@@ -26,6 +27,7 @@ export class CommentListComponent implements OnInit, OnDestroy {
   constructor(
     private userService: UserService,
     private solutionService: SolutionService,
+    private commentRepo: CommentRepo,
     private toastService: ToastService,
     private route: ActivatedRoute,
   ) {
@@ -34,7 +36,7 @@ export class CommentListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const eventSub = this.route.params.pipe(
       tap(({sid}) => this.loadCommentDraft(sid)),
-      switchMap(params => this.solutionService.getComments(params.aid, params.sid).pipe(
+      switchMap(params => this.commentRepo.findAll({assignment: params.aid, solution: params.sid}).pipe(
         tap(comments => this.comments = comments),
         mapTo(params),
       )),
@@ -94,15 +96,15 @@ export class CommentListComponent implements OnInit, OnDestroy {
   submitComment(): void {
     this.submitting = true;
 
-    const {sid, aid} = this.route.snapshot.params;
+    const {sid: solution, aid: assignment} = this.route.snapshot.params;
     const comment: Comment = {
-      assignment: aid,
-      solution: sid,
+      assignment,
+      solution,
       author: this.commentName,
       email: this.commentEmail,
       body: this.commentBody,
     };
-    this.solutionService.postComment(aid, sid, comment).subscribe(result => {
+    this.commentRepo.create({assignment, solution}, comment).subscribe(result => {
       this.safeApply(result._id!, result);
       this.commentBody = '';
       this.saveCommentDraft();
@@ -118,8 +120,8 @@ export class CommentListComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const {sid, aid} = this.route.snapshot.params;
-    this.solutionService.deleteComment(aid, sid, comment._id!).subscribe(result => {
+    const {sid: solution, aid: assignment} = this.route.snapshot.params;
+    this.commentRepo.delete({solution, assignment}, comment._id!).subscribe(result => {
       this.safeApply(result._id!, undefined);
       this.toastService.warn('Comment', 'Successfully deleted comment');
     }, error => {

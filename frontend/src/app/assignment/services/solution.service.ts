@@ -199,29 +199,6 @@ export class SolutionService {
     return this.http.delete<Solution>(url, {headers});
   }
 
-  getComments(assignment: string, solution: string): Observable<Comment[]> {
-    const headers = {};
-    this.addSolutionToken(headers, assignment, solution);
-    this.addAssignmentToken(headers, assignment);
-
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/comments`;
-    return this.http.get<Comment[]>(url, {headers});
-  }
-
-  postComment(assignment: string, solution: string, comment: Comment): Observable<Comment> {
-    const headers = {};
-    this.addSolutionToken(headers, assignment, solution);
-    this.addAssignmentToken(headers, assignment);
-
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/comments`;
-    return this.http.post<Comment>(url, comment, {headers});
-  }
-
-  deleteComment(assignment: string, solution: string, comment: string): Observable<Comment> {
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/comments/${comment}`;
-    return this.http.delete<Comment>(url);
-  }
-
   streamComments(assignment: string, solution: string): Observable<{ event: string, comment: Comment }> {
     const token = this.getToken(assignment, solution) || this.assignmentService.getToken(assignment);
     const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/comments/events?token=${token}`;
@@ -311,14 +288,14 @@ export class SolutionService {
     return this.http.put<Assignee>(`${environment.assignmentsApiUrl}/assignments/${assignmentID}/solutions/${solution._id}/assignee`, body, {headers});
   }
 
-  private addAssignmentToken(headers: any, assignmentID: string) {
+  addAssignmentToken(headers: any, assignmentID: string) {
     const assignmentToken = this.assignmentService.getToken(assignmentID);
     if (assignmentToken) {
       headers['Assignment-Token'] = assignmentToken;
     }
   }
 
-  private addSolutionToken(headers: any, assignmentID: string, solutionID: string): string | null {
+  addSolutionToken(headers: any, assignmentID: string, solutionID: string): string | null {
     const token = this.getToken(assignmentID, solutionID);
     if (token) {
       headers['Solution-Token'] = token;

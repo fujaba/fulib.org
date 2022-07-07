@@ -3,6 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {ToastService} from 'ng-bootstrap-ext';
 import {switchMap} from 'rxjs/operators';
 import Solution from '../../../model/solution';
+import {CommentRepo} from '../../../services/comment-repo';
 import {SolutionService} from '../../../services/solution.service';
 import {SolutionNamePipe} from '../../shared/pipes/solution-name.pipe';
 
@@ -22,6 +23,7 @@ export class DeleteModalComponent implements OnInit {
   constructor(
     public route: ActivatedRoute,
     private solutionService: SolutionService,
+    private commentRepo: CommentRepo,
     private toastService: ToastService,
   ) {
   }
@@ -35,7 +37,7 @@ export class DeleteModalComponent implements OnInit {
     });
 
     this.route.params.pipe(
-      switchMap(({aid, sid}) => this.solutionService.getComments(aid, sid)),
+      switchMap(({aid, sid}) => this.commentRepo.findAll({assignment: aid, solution: sid})),
     ).subscribe(comments => this.comments = comments.length);
 
     this.route.params.pipe(
