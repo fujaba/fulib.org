@@ -101,9 +101,11 @@ export class ContainerService {
 
     let containerDto = this.toContainer(container.id, token, projectId);
     let containerURL = containerDto.url;
-    while (!(await this.isContainerReady(containerURL))) {
-      //wait 200ms and try again
-      await setTimeout(200);
+    let retries = 0;
+    while (!(await this.isContainerReady(containerURL)) && (retries <= 10) ) {
+      //wait 400ms and try again
+      await setTimeout(400);
+      retries++;
     }
     return containerDto;
   }
@@ -182,8 +184,15 @@ export class ContainerService {
 
   private async isHeartbeatExpired(containerId: string) : Promise<boolean> {
     const url = `${environment.docker.proxyHost}/containers/${containerId.substring(0, 12)}`;
-    const res =  await firstValueFrom(this.httpService.get(`${url}/healthz`));
-    return (res.data.status === 'expired');
+
+    try {
+      const res =  await firstValueFrom(this.httpService.get(`${url}/healthz`));
+      // res.data.lastHeartbeat is 0, when container has just started
+      return ( res.data.status === 'expired' && res.data.lastHeartbeat);
+    } catch (e) {
+      //container is in creating phase right now, /healthz endpoint isn't ready yet
+      return false;
+    }
   }
 
   //executes command in container and returns the output stream
