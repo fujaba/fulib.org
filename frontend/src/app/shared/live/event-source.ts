@@ -9,11 +9,12 @@ export interface EventSource {
   listen<T>(): Observable<Event<T>>;
 }
 
-export class ServerSentEventSource {
+export class ServerSentEventSource implements EventSource {
   constructor(
     private url: string,
     private parser: (message: string) => any = JSON.parse,
     private extractor: (obj: any) => Event<any> = identity,
+    private selector: (event: Event<any>) => boolean = () => true,
   ) {
   }
 
@@ -23,7 +24,9 @@ export class ServerSentEventSource {
       eventSource.onmessage = message => {
         const obj = this.parser(message.data);
         const event = this.extractor(obj);
-        subscriber.next(event);
+        if (this.selector(event)) {
+          subscriber.next(event);
+        }
       };
       eventSource.onerror = err => subscriber.error(err);
       return () => eventSource.close();
