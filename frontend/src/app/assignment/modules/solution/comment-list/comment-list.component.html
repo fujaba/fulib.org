@@ -1,5 +1,5 @@
 <ol class="timeline-list">
-  <li *ngFor="let comment of comments" class="timeline-item">
+  <li *ngFor="let comment of liveList.items" class="timeline-item">
     <div class="timeline-item-badge bg-secondary">
       {{comment.author.charAt(0)}}
     </div>

@@ -13,3 +13,5 @@ export default class Comment {
 
   distinguished?: boolean;
 }
+
+export type CommentParent = Pick<Comment, 'assignment' | 'solution'>;

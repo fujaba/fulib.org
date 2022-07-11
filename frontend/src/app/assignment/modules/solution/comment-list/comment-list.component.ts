@@ -2,9 +2,10 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ToastService} from 'ng-bootstrap-ext';
 import {Subscription} from 'rxjs';
-import {mapTo, switchMap, tap} from 'rxjs/operators';
+import {switchMap} from 'rxjs/operators';
+import {LiveList} from '../../../../shared/live/live-list';
 import {UserService} from '../../../../user/user.service';
-import Comment from '../../../model/comment';
+import Comment, {CommentParent} from '../../../model/comment';
 import {CommentRepo} from '../../../services/comment-repo';
 import {SolutionService} from '../../../services/solution.service';
 
@@ -14,8 +15,6 @@ import {SolutionService} from '../../../services/solution.service';
   styleUrls: ['./comment-list.component.scss'],
 })
 export class CommentListComponent implements OnInit, OnDestroy {
-  comments: Comment[] = [];
-
   userId?: string;
   commentName = '';
   commentEmail = '';
@@ -23,6 +22,7 @@ export class CommentListComponent implements OnInit, OnDestroy {
   submitting = false;
 
   private subscription = new Subscription();
+  liveList: LiveList<Comment, CommentParent>;
 
   constructor(
     private userService: UserService,
@@ -34,17 +34,10 @@ export class CommentListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const eventSub = this.route.params.pipe(
-      tap(({sid}) => this.loadCommentDraft(sid)),
-      switchMap(params => this.commentRepo.findAll({assignment: params.aid, solution: params.sid}).pipe(
-        tap(comments => this.comments = comments),
-        mapTo(params),
-      )),
-      switchMap(({aid, sid}) => this.solutionService.streamComments(aid, sid)),
-    ).subscribe(({event, comment}) => {
-      this.safeApply(comment._id!, event === 'deleted' ? undefined : comment);
-    });
-    this.subscription.add(eventSub);
+    this.route.params.subscribe(({sid}) => this.loadCommentDraft(sid));
+    this.subscription.add(this.route.params.pipe(
+      switchMap(({aid: assignment, sid: solution}) => (this.liveList = this.commentRepo.liveList({assignment, solution})).load()),
+    ).subscribe());
 
     const userSub = this.userService.current$.subscribe(user => {
       if (!user) {
@@ -61,19 +54,6 @@ export class CommentListComponent implements OnInit, OnDestroy {
       }
     });
     this.subscription.add(userSub);
-  }
-
-  private safeApply(id: string, comment: Comment | undefined) {
-    const index = this.comments.findIndex(c => c._id === id);
-    if (index >= 0) {
-      if (comment) {
-        this.comments[index] = comment;
-      } else {
-        this.comments.splice(index, 1);
-      }
-    } else if (comment) {
-      this.comments.push(comment);
-    }
   }
 
   ngOnDestroy(): void {
@@ -105,7 +85,7 @@ export class CommentListComponent implements OnInit, OnDestroy {
       body: this.commentBody,
     };
     this.commentRepo.create({assignment, solution}, comment).subscribe(result => {
-      this.safeApply(result._id!, result);
+      this.liveList.safeApply(result._id!, result);
       this.commentBody = '';
       this.saveCommentDraft();
       this.submitting = false;
@@ -122,7 +102,7 @@ export class CommentListComponent implements OnInit, OnDestroy {
 
     const {sid: solution, aid: assignment} = this.route.snapshot.params;
     this.commentRepo.delete({solution, assignment}, comment._id!).subscribe(result => {
-      this.safeApply(result._id!, undefined);
+      this.liveList.safeApply(result._id!, null);
       this.toastService.warn('Comment', 'Successfully deleted comment');
     }, error => {
       this.toastService.error('Comment', 'Failed to delete comment', error);
