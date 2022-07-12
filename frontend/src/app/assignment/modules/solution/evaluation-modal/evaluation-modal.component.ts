@@ -9,6 +9,7 @@ import {SearchSummary} from '../../../model/search-result';
 import Solution from '../../../model/solution';
 import Task from '../../../model/task';
 import {AssignmentService} from '../../../services/assignment.service';
+import {EvaluationRepo} from '../../../services/evaluation-repo';
 import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
 import {TelemetryService} from '../../../services/telemetry.service';
@@ -51,6 +52,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     private taskService: TaskService,
     private solutionService: SolutionService,
     private selectionService: SelectionService,
+    private evaluationRepo: EvaluationRepo,
     private users: UserService,
     private toastService: ToastService,
     private telemetryService: TelemetryService,
@@ -85,7 +87,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     this.subscriptions.add(evaluation$.pipe(
       switchMap(evaluation => {
         const origin = evaluation?.codeSearch?.origin;
-        return origin ? this.solutionService.getEvaluation(evaluation.assignment, undefined, origin) : of(undefined);
+        return origin ? this.evaluationRepo.findInAssignment(evaluation.assignment, origin) : of(undefined);
       }),
       tap(originEvaluation => this.originEvaluation = originEvaluation),
       switchMap(originEvaluation => originEvaluation ? this.solutionService.get(originEvaluation.assignment, originEvaluation.solution) : of(undefined)),
@@ -93,14 +95,14 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     ).subscribe());
 
     this.subscriptions.add(evaluation$.pipe(
-      switchMap(evaluation => evaluation ? this.solutionService.getEvaluationValues<string>(evaluation.assignment, 'solution', {
+      switchMap(evaluation => evaluation ? this.evaluationRepo.unique(evaluation.assignment, 'solution', {
         origin: evaluation._id,
         task: evaluation.task,
       }) : EMPTY),
     ).subscribe(solutionIds => this.derivedSolutionCount = solutionIds.length));
 
     this.route.params.pipe(
-      switchMap(({aid, task}) => this.solutionService.getEvaluationValues<string>(aid, 'snippets.comment', {task})),
+      switchMap(({aid, task}) => this.evaluationRepo.unique<string, string>(aid, 'snippets.comment', {task})),
     ).subscribe(comments => this.comments = comments);
 
     const selection$ = this.route.params.pipe(
@@ -167,21 +169,22 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
   }
 
   doSubmit(): void {
-    const {aid, sid, task} = this.route.snapshot.params;
+    const {aid: assignment, sid: solution, task} = this.route.snapshot.params;
     this.dto.task = task;
 
     this.dto.snippets.removeFirst(s => s.comment === this.selectionComment);
 
-    this.telemetryService.create(aid, sid, {
+    this.telemetryService.create(assignment, solution, {
       timestamp: new Date(),
       task,
       author: this.dto.author,
       action: 'submitEvaluation',
     }).subscribe();
 
+    const parent = {assignment, solution};
     const op = this.evaluation
-      ? this.solutionService.updateEvaluation(aid, sid, this.evaluation._id, this.dto)
-      : this.solutionService.createEvaluation(aid, sid, this.dto);
+      ? this.evaluationRepo.update(parent, this.evaluation._id, this.dto)
+      : this.evaluationRepo.create(parent, this.dto);
     op.subscribe(result => {
       const op = this.evaluation ? 'updated' : 'created';
       this.toastService.success('Evaluation', `Successfully ${op} evaluation${this.codeSearchInfo(result.codeSearch)}`);
@@ -196,8 +199,8 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    const {aid, sid} = this.route.snapshot.params;
-    this.solutionService.deleteEvaluation(aid, sid, this.evaluation._id).subscribe(result => {
+    const {aid: assignment, sid: solution} = this.route.snapshot.params;
+    this.evaluationRepo.delete({assignment, solution}, this.evaluation._id).subscribe(result => {
       this.toastService.warn('Evaluation', `Successfully deleted evaluation${this.codeSearchInfo(result.codeSearch)}`);
     }, error => {
       this.toastService.error('Evaluation', 'Failed to delete evaluation', error);

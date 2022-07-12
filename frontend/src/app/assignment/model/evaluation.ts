@@ -37,6 +37,8 @@ export interface CreateEvaluationDto extends Omit<Evaluation, '_id' | 'assignmen
 
 export type UpdateEvaluationDto = Partial<CreateEvaluationDto>;
 
+export type EvaluationParent = Pick<Evaluation, 'assignment' | 'solution'>;
+
 export interface FilterEvaluationParams {
   task?: string;
   file?: string;

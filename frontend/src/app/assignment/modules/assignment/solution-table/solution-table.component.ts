@@ -5,9 +5,11 @@ import {BehaviorSubject, combineLatest, forkJoin, Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 import {Assignee} from '../../../model/assignee';
 import Assignment from '../../../model/assignment';
+import {Evaluation} from '../../../model/evaluation';
 import Solution, {AuthorInfo} from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
 import {CONFIG_OPTIONS, ConfigKey, ConfigService} from '../../../services/config.service';
+import {EvaluationRepo} from '../../../services/evaluation-repo';
 import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
 import {TelemetryService} from '../../../services/telemetry.service';
@@ -50,6 +52,7 @@ export class SolutionTableComponent implements OnInit {
   constructor(
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
+    private evaluationRepo: EvaluationRepo,
     private configService: ConfigService,
     private router: Router,
     private telemetryService: TelemetryService,
@@ -78,8 +81,8 @@ export class SolutionTableComponent implements OnInit {
 
     this.activatedRoute.params.pipe(
       switchMap(({aid}) => forkJoin([
-        this.solutionService.getEvaluationValues<string>(aid, 'solution', {codeSearch: false}),
-        this.solutionService.getEvaluationValues<string>(aid, 'solution', {codeSearch: true}),
+        this.evaluationRepo.unique(aid, 'solution', {codeSearch: false}),
+        this.evaluationRepo.unique(aid, 'solution', {codeSearch: true}),
       ])),
     ).subscribe(([manual, codeSearch]) => {
       this.evaluated = {};

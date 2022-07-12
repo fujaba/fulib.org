@@ -5,6 +5,7 @@ import {debounceTime, distinctUntilChanged, map, switchMap, take} from 'rxjs/ope
 import {UserService} from '../../../../user/user.service';
 import {CreateEvaluationDto} from '../../../model/evaluation';
 import Task from '../../../model/task';
+import {EvaluationRepo} from '../../../services/evaluation-repo';
 import {SolutionService} from '../../../services/solution.service';
 
 @Component({
@@ -35,6 +36,7 @@ export class EvaluationFormComponent implements OnInit, OnChanges {
 
   constructor(
     private solutionService: SolutionService,
+    private evaluationRepo: EvaluationRepo,
     private users: UserService,
     private route: ActivatedRoute,
   ) {
@@ -42,7 +44,7 @@ export class EvaluationFormComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.route.params.pipe(
-      switchMap(({aid, task}) => this.solutionService.getEvaluationValues<string>(aid, 'remark', {task})),
+      switchMap(({aid, task}) => this.evaluationRepo.unique(aid, 'remark', {task})),
     ).subscribe(remarks => this.remarks = remarks);
 
     this.users.current$.pipe(take(1)).subscribe(user => {
