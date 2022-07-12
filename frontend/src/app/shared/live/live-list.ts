@@ -18,7 +18,7 @@ export class LiveList<R extends Resource> {
   load(): Observable<R['type'][]> {
     return this.repo.findAll(this.parent).pipe(
       tap(items => this.items = items),
-      switchMap(() => this.eventSource.listen<R['type']>()),
+      switchMap(() => this.eventSource.listen()),
       tap(event => {
         const {desc, data} = this.eventExtractor(event);
         this.safeApply(this.idExtractor(data), desc.endsWith('deleted') ? null : data);

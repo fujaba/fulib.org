@@ -1,7 +1,7 @@
 import {identity, Observable} from 'rxjs';
 
 export interface EventSource<E> {
-  listen<T>(): Observable<E>;
+  listen(): Observable<E>;
 }
 
 export class ServerSentEventSource<E> implements EventSource<E> {
@@ -13,7 +13,7 @@ export class ServerSentEventSource<E> implements EventSource<E> {
   ) {
   }
 
-  listen<T>(): Observable<E> {
+  listen(): Observable<E> {
     return new Observable<E>(subscriber => {
       const eventSource = new EventSource(this.url);
       eventSource.onmessage = message => {

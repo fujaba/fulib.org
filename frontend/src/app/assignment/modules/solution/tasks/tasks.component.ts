@@ -59,7 +59,7 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
     });
 
     this.subscription = this.route.params.pipe(
-      switchMap(({aid, sid}) => this.solutionService.streamEvaluations(aid, sid)),
+      switchMap(({aid: assignment, sid: solution}) => this.evaluationRepo.stream({assignment, solution})),
     ).subscribe(({event, evaluation}) => {
       if (!this.assignment || !this.evaluations) {
         return;
