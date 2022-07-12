@@ -1,3 +1,6 @@
+import {Resource} from '../../shared/live/repository';
+import Comment, {CommentEvent, CommentParent, CreateCommentDto, UpdateCommentDto} from './comment';
+
 export class Snippet {
   file: string;
   from: { line: number; character: number; };
@@ -44,4 +47,20 @@ export interface FilterEvaluationParams {
   file?: string;
   codeSearch?: boolean;
   origin?: string;
+}
+
+export interface EvaluationEvent {
+  event: string;
+  evaluation: Evaluation;
+}
+
+export interface EvaluationType extends Resource {
+  parent: EvaluationParent;
+  id: string;
+  type: Evaluation;
+  filter: FilterEvaluationParams;
+  create: CreateEvaluationDto;
+  update: UpdateEvaluationDto;
+  patch: UpdateEvaluationDto;
+  event: EvaluationEvent;
 }

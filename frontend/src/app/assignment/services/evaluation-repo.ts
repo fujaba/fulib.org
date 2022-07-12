@@ -3,19 +3,13 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {environment} from '../../../environments/environment';
 import {HttpRepository} from '../../shared/live/repository';
-import {
-  CreateEvaluationDto,
-  Evaluation,
-  EvaluationParent,
-  FilterEvaluationParams,
-  UpdateEvaluationDto,
-} from '../model/evaluation';
+import {Evaluation, EvaluationParent, EvaluationType, FilterEvaluationParams} from '../model/evaluation';
 import {SolutionService} from './solution.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class EvaluationRepo extends HttpRepository<Evaluation, EvaluationParent, string, FilterEvaluationParams, CreateEvaluationDto, UpdateEvaluationDto> {
+export class EvaluationRepo extends HttpRepository<EvaluationType> {
   constructor(
     http: HttpClient,
     private solutionService: SolutionService,
