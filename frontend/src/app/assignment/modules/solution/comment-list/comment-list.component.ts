@@ -5,7 +5,7 @@ import {Subscription} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import {LiveList} from '../../../../shared/live/live-list';
 import {UserService} from '../../../../user/user.service';
-import Comment, {CommentEvent, CommentParent, CommentType} from '../../../model/comment';
+import Comment, {CommentType, CreateCommentDto} from '../../../model/comment';
 import {CommentRepo} from '../../../services/comment-repo';
 import {SolutionService} from '../../../services/solution.service';
 
@@ -36,7 +36,10 @@ export class CommentListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.route.params.subscribe(({sid}) => this.loadCommentDraft(sid));
     this.subscription.add(this.route.params.pipe(
-      switchMap(({aid: assignment, sid: solution}) => (this.liveList = this.commentRepo.liveList({assignment, solution})).load()),
+      switchMap(({aid: assignment, sid: solution}) => (this.liveList = this.commentRepo.liveList({
+        assignment,
+        solution,
+      })).load()),
     ).subscribe());
 
     const userSub = this.userService.current$.subscribe(user => {
@@ -77,15 +80,13 @@ export class CommentListComponent implements OnInit, OnDestroy {
     this.submitting = true;
 
     const {sid: solution, aid: assignment} = this.route.snapshot.params;
-    const comment: Comment = {
-      assignment,
-      solution,
+    const comment: CreateCommentDto = {
       author: this.commentName,
       email: this.commentEmail,
       body: this.commentBody,
     };
     this.commentRepo.create({assignment, solution}, comment).subscribe(result => {
-      this.liveList.safeApply(result._id!, result);
+      this.liveList.safeApply(result._id, result);
       this.commentBody = '';
       this.saveCommentDraft();
       this.submitting = false;
@@ -102,7 +103,7 @@ export class CommentListComponent implements OnInit, OnDestroy {
 
     const {sid: solution, aid: assignment} = this.route.snapshot.params;
     this.commentRepo.delete({solution, assignment}, comment._id!).subscribe(result => {
-      this.liveList.safeApply(result._id!, null);
+      this.liveList.safeApply(result._id, null);
       this.toastService.warn('Comment', 'Successfully deleted comment');
     }, error => {
       this.toastService.error('Comment', 'Failed to delete comment', error);

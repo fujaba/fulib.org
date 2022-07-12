@@ -1,22 +1,20 @@
 import {Resource} from '../../shared/live/repository';
 
 export default class Comment {
-  _id?: string;
+  _id: string;
   assignment: string;
   solution: string;
 
-  timestamp?: Date;
+  timestamp: Date;
+  createdBy: string;
+  distinguished: boolean;
 
-  createdBy?: string;
   author: string;
   email: string;
-
-  body?: string;
-
-  distinguished?: boolean;
+  body: string;
 }
 
-export type CreateCommentDto = Omit<Comment, 'assignment' | 'solution' | 'createdBy' | 'timestamp' |'distinguished'>;
+export type CreateCommentDto = Omit<Comment, '_id' | 'assignment' | 'solution' | 'createdBy' | 'timestamp' | 'distinguished'>;
 export type UpdateCommentDto = Partial<CreateCommentDto>;
 
 export type CommentParent = Pick<Comment, 'assignment' | 'solution'>;

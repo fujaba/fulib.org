@@ -30,7 +30,7 @@ export class CommentRepo extends HttpRepository<CommentType> {
       this,
       parent,
       new ServerSentEventSource<CommentEvent>(url),
-      c => c._id!,
+      c => c._id,
       e => ({desc: e.event, data: e.comment}),
     );
   }
