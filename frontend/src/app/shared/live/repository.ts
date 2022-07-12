@@ -8,6 +8,8 @@ export interface Repository<//
   PARENTID = never,
   /** unique ID */
   ID = string,
+  /** filter */
+  FILTER = never,
   /** create DTO */
   CDTO = T,
   /** update DTO */
@@ -15,7 +17,7 @@ export interface Repository<//
   /** patch DTO */
   PDTO = Partial<UDTO>,
   > {
-  findAll(parent: PARENTID): Observable<T[]>; // TODO filter
+  findAll(parent: PARENTID, filter?: FILTER): Observable<T[]>; // TODO filter
 
   findOne(parent: PARENTID, id: ID): Observable<T>;
 
@@ -28,7 +30,7 @@ export interface Repository<//
   delete(parent: PARENTID, id: ID): Observable<T>;
 }
 
-export class HttpRepository<T, PARENTID, ID = string, CDTO = T, UDTO = CDTO, PDTO = Partial<UDTO>> implements Repository<T, PARENTID, ID, CDTO, UDTO, PDTO> {
+export class HttpRepository<T, PARENTID, ID = string, FILTER = never, CDTO = T, UDTO = CDTO, PDTO = Partial<UDTO>> implements Repository<T, PARENTID, ID, FILTER, CDTO, UDTO, PDTO> {
   constructor(
     protected http: HttpClient,
     protected urlBuilder: (parent: PARENTID, id?: ID) => string,
@@ -43,8 +45,8 @@ export class HttpRepository<T, PARENTID, ID = string, CDTO = T, UDTO = CDTO, PDT
     return this.http.post<T>(this.urlBuilder(parent), item, {headers: this.getHeaders(parent)});
   }
 
-  findAll(parent: PARENTID): Observable<T[]> {
-    return this.http.get<T[]>(this.urlBuilder(parent), {headers: this.getHeaders(parent)});
+  findAll(parent: PARENTID, filter?: FILTER): Observable<T[]> {
+    return this.http.get<T[]>(this.urlBuilder(parent), {headers: this.getHeaders(parent), params: filter as any});
   }
 
   findOne(parent: PARENTID, id: ID): Observable<T> {

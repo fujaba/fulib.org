@@ -15,7 +15,7 @@ import {SolutionService} from './solution.service';
 @Injectable({
   providedIn: 'root',
 })
-export class EvaluationRepo extends HttpRepository<Evaluation, EvaluationParent, string, CreateEvaluationDto, UpdateEvaluationDto> {
+export class EvaluationRepo extends HttpRepository<Evaluation, EvaluationParent, string, FilterEvaluationParams, CreateEvaluationDto, UpdateEvaluationDto> {
   constructor(
     http: HttpClient,
     private solutionService: SolutionService,

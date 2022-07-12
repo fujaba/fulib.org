@@ -7,6 +7,7 @@ import Assignment from '../../../model/assignment';
 import {Evaluation} from '../../../model/evaluation';
 import Solution from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
+import {EvaluationRepo} from '../../../services/evaluation-repo';
 import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
 
@@ -27,6 +28,7 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
   constructor(
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
+    private evaluationRepo: EvaluationRepo,
     private taskService: TaskService,
     private router: Router,
     private route: ActivatedRoute,
@@ -35,12 +37,10 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.route.params.pipe(
-      switchMap(({aid: assignmentId, sid: solutionId}) => forkJoin([
-        this.assignmentService.get(assignmentId).pipe(tap(assignment => this.assignment = assignment)),
-        this.solutionService.get(assignmentId, solutionId).pipe(tap(solution => {
-          this.solution = solution;
-        })),
-        this.solutionService.getEvaluations(assignmentId, solutionId).pipe(tap(evaluations => {
+      switchMap(({aid: assignment, sid: solution}) => forkJoin([
+        this.assignmentService.get(assignment).pipe(tap(assignment => this.assignment = assignment)),
+        this.solutionService.get(assignment, solution).pipe(tap(solution => this.solution = solution)),
+        this.evaluationRepo.findAll({assignment, solution}).pipe(tap(evaluations => {
           this.evaluations = {};
           for (const evaluation of evaluations) {
             this.evaluations[evaluation.task] = evaluation;

@@ -71,7 +71,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     });
 
     const evaluation$ = this.route.params.pipe(
-      switchMap(({aid, sid, task}) => this.solutionService.getEvaluations(aid, sid, {task})),
+      switchMap(({aid: assignment, sid: solution, task}) => this.evaluationRepo.findAll({assignment, solution}, {task})),
       map(([evaluation]) => evaluation),
       share(),
     );

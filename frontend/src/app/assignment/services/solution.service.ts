@@ -199,17 +199,6 @@ export class SolutionService {
     return this.http.delete<Solution>(url, {headers});
   }
 
-  getEvaluations(assignment: Assignment | string, id?: string, params: FilterEvaluationParams = {}): Observable<Evaluation[]> {
-    const assignmentID = asID(assignment);
-    const headers = {};
-    if (id) {
-      this.addSolutionToken(headers, assignmentID, id);
-    }
-    this.addAssignmentToken(headers, assignmentID);
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignmentID}/${id ? `solutions/${id}/` : ''}evaluations`;
-    return this.http.get<Evaluation[]>(url, {headers, params: params as any});
-  }
-
   streamEvaluations(assignment: string, solution: string): Observable<{ event: string, evaluation: Evaluation }> {
     const token = this.assignmentService.getToken(assignment);
     const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/evaluations/events?token=${token}`;

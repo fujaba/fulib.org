@@ -7,6 +7,7 @@ import {Evaluation, Snippet} from '../../model/evaluation';
 import Solution from '../../model/solution';
 import Task from '../../model/task';
 import {AssignmentService} from '../../services/assignment.service';
+import {EvaluationRepo} from '../../services/evaluation-repo';
 import {SolutionService} from '../../services/solution.service';
 import {TaskService} from '../../services/task.service';
 
@@ -27,6 +28,7 @@ export class SubmitService {
   constructor(
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
+    private evaluationRepo: EvaluationRepo,
     private taskService: TaskService,
     private http: HttpClient,
   ) {
@@ -84,7 +86,7 @@ export class SubmitService {
   }
 
   private async renderTasks(assignment: Assignment, solution: Solution) {
-    const evaluations = await firstValueFrom(this.solutionService.getEvaluations(assignment._id, solution._id!));
+    const evaluations = await firstValueFrom(this.evaluationRepo.findAll({assignment: assignment._id, solution: solution._id!}));
     const evaluationRecord: Record<string, Evaluation> = {};
     for (let evaluation of evaluations) {
       evaluationRecord[evaluation.task] = evaluation;
