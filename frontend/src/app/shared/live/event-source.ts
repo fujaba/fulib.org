@@ -1,25 +1,20 @@
 import {identity, Observable} from 'rxjs';
 
-export interface Event<T> {
-  event: string;
-  data: T;
+export interface EventSource<E> {
+  listen<T>(): Observable<E>;
 }
 
-export interface EventSource {
-  listen<T>(): Observable<Event<T>>;
-}
-
-export class ServerSentEventSource implements EventSource {
+export class ServerSentEventSource<E> implements EventSource<E> {
   constructor(
     private url: string,
     private parser: (message: string) => any = JSON.parse,
-    private extractor: (obj: any) => Event<any> = identity,
-    private selector: (event: Event<any>) => boolean = () => true,
+    private extractor: (obj: any) => E = identity,
+    private selector: (event: E) => boolean = () => true,
   ) {
   }
 
-  listen<T>(): Observable<Event<T>> {
-    return new Observable<Event<T>>(subscriber => {
+  listen<T>(): Observable<E> {
+    return new Observable<E>(subscriber => {
       const eventSource = new EventSource(this.url);
       eventSource.onmessage = message => {
         const obj = this.parser(message.data);

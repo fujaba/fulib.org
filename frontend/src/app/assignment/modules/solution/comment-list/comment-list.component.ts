@@ -5,7 +5,7 @@ import {Subscription} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import {LiveList} from '../../../../shared/live/live-list';
 import {UserService} from '../../../../user/user.service';
-import Comment, {CommentParent} from '../../../model/comment';
+import Comment, {CommentEvent, CommentParent} from '../../../model/comment';
 import {CommentRepo} from '../../../services/comment-repo';
 import {SolutionService} from '../../../services/solution.service';
 
@@ -22,7 +22,7 @@ export class CommentListComponent implements OnInit, OnDestroy {
   submitting = false;
 
   private subscription = new Subscription();
-  liveList: LiveList<Comment, CommentParent>;
+  liveList: LiveList<Comment, CommentParent, string, CommentEvent>;
 
   constructor(
     private userService: UserService,

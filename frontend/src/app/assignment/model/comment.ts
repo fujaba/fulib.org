@@ -15,3 +15,8 @@ export default class Comment {
 }
 
 export type CommentParent = Pick<Comment, 'assignment' | 'solution'>;
+
+export interface CommentEvent {
+  event: string;
+  comment: Comment;
+}

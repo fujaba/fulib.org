@@ -3,14 +3,15 @@ import {mapTo, switchMap, tap} from 'rxjs/operators';
 import {EventSource} from './event-source';
 import {Repository} from './repository';
 
-export class LiveList<T, PARENTID, ID = string> {
+export class LiveList<T, PARENTID, ID = string, E = {event: string, data: T}> {
   items: T[] = [];
 
   constructor(
     private repo: Repository<T, PARENTID, ID>,
     private parent: PARENTID,
-    private eventSource: EventSource,
+    private eventSource: EventSource<E>,
     private idExtractor: (item: T) => ID,
+    private eventExtractor: (event: E) => {desc: string, data: T},
   ) {
   }
 
@@ -19,7 +20,8 @@ export class LiveList<T, PARENTID, ID = string> {
       tap(items => this.items = items),
       switchMap(() => this.eventSource.listen<T>()),
       tap(event => {
-        this.safeApply(this.idExtractor(event.data), event.event.endsWith('deleted') ? null : event.data);
+        const {desc, data} = this.eventExtractor(event);
+        this.safeApply(this.idExtractor(data), desc.endsWith('deleted') ? null : data);
       }),
       mapTo(this.items),
     );
