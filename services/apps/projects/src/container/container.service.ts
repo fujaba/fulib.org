@@ -82,8 +82,6 @@ export class ContainerService {
         'org.fulib.project': projectId,
         'org.fulib.token': token,
       },
-      // docker run params
-      Cmd: ['--auth','none'], //no password for code-server required
     });
 
     await container.start();
@@ -94,7 +92,7 @@ export class ContainerService {
     So nobody (except root) can write there, which will lead to errors when for example trying to install extensions.
     So we'll change the ownership back to 'coder' to prevent that
      */
-    await this.containerExec(container,['sudo', 'chown', '-R', 'coder:coder', '/home/coder']);
+    //await this.containerExec(container,['sudo', 'chown', '-R', 'coder:coder', '/home/coder']);
 
     // loop over extensions list and install all extensions
     this.installExtensions(container, projectId);
@@ -150,6 +148,7 @@ export class ContainerService {
       projectId,
       token,
       url: this.containerUrl(id),
+      vncUrl: this.vncURL(id),
     };
   }
 
@@ -279,6 +278,13 @@ export class ContainerService {
       // 502 Bad Gateway
       return false;
     }
+  }
+
+  private vncURL(id: string): string {
+    const suffix = `containers-vnc/${id.substring(0, 12)}`;
+    const vncURL = `${environment.docker.proxyHost}/${suffix}/vnc.html?path=${suffix}/`;
+    console.log(`VNC URL: ${vncURL}`);
+    return vncURL;
   }
 
 }
