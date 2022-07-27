@@ -283,7 +283,6 @@ export class ContainerService {
   private vncURL(id: string): string {
     const suffix = `containers-vnc/${id.substring(0, 12)}`;
     const vncURL = `${environment.docker.proxyHost}/${suffix}/vnc.html?path=${suffix}/`;
-    console.log(`VNC URL: ${vncURL}`);
     return vncURL;
   }
 

@@ -17,6 +17,10 @@ export class ContainerDto {
   @ApiProperty()
   @IsAlphanumeric()
   token: string;
+
+  @ApiProperty({format: 'url'})
+  @IsUrl()
+  vncUrl: string;
 }
 
 export class CreateContainerDto {

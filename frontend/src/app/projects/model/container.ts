@@ -3,4 +3,5 @@ export class Container {
   url: string;
   projectId: string;
   token: string;
+  vncUrl: string;
 }
