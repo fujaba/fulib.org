@@ -3,6 +3,7 @@ import {randomBytes} from 'crypto';
 import * as Dockerode from 'dockerode';
 import * as path from 'path';
 import {environment} from '../environment';
+import {Project} from '../project/project.schema';
 import {ContainerDto} from './container.dto';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { setTimeout } from 'timers/promises';
@@ -31,11 +32,11 @@ export class ContainerService {
   });
 
 
-  async create(projectId: string): Promise<ContainerDto> {
-    return await this.findOne(projectId) ?? await this.start(projectId);
+  async create(projectId: string, image?: string): Promise<ContainerDto> {
+    return await this.findOne(projectId) ?? await this.start(projectId, image);
   }
 
-  async start(projectId: string): Promise<ContainerDto> {
+  async start(projectId: string, image?: string): Promise<ContainerDto> {
     const bindPrefix = path.resolve(environment.docker.bindPrefix);
     const token = randomBytes(10).toString('base64');
 
@@ -53,7 +54,7 @@ export class ContainerService {
 
 
     const container = await this.docker.createContainer({
-      Image: environment.docker.containerImage,
+      Image: image || environment.docker.containerImage,
       Tty: true,
       NetworkingConfig: {
         EndpointsConfig: {

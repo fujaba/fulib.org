@@ -64,11 +64,11 @@ export class ProjectService {
       this.localProjectService.update(project);
       return of(project);
     }
-    return this.http.put<Project>(`${environment.projectsApiUrl}/projects/${project.id}`, project);
+    return this.http.patch<Project>(`${environment.projectsApiUrl}/projects/${project.id}`, project);
   }
 
   transfer(id: string, userId: string): Observable<void> {
-    return this.http.put<void>(`${environment.projectsApiUrl}/projects/${id}`, {userId});
+    return this.http.patch<void>(`${environment.projectsApiUrl}/projects/${id}`, {userId});
   }
 
   delete({id, local}: { id: string, local?: boolean }): Observable<void> {

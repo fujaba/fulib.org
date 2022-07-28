@@ -1,3 +1,3 @@
-**
-!preload.build.gradle
-!supervisor.conf
+*Dockerfile
+code-server-images.json
+build-all.mjs

@@ -1,5 +1,6 @@
-import {ApiProperty} from '@nestjs/swagger';
+import {ApiProperty, PickType} from '@nestjs/swagger';
 import {IsAlphanumeric, IsMongoId, IsUrl} from 'class-validator';
+import {Project} from '../project/project.schema';
 
 export class ContainerDto {
   @ApiProperty()
@@ -23,8 +24,10 @@ export class ContainerDto {
   vncUrl: string;
 }
 
-export class CreateContainerDto {
+export class CreateContainerDto extends PickType(Project, [
+  'dockerImage',
+] as const) {
   @ApiProperty()
   @IsMongoId()
-  id: string;
+  projectId: string;
 }

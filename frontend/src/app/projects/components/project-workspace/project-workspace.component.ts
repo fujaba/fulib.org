@@ -1,9 +1,7 @@
-import {HttpClient} from '@angular/common/http';
-import {Component, ElementRef, OnDestroy, OnInit, TemplateRef, Type, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
-import {forkJoin, Subscription} from 'rxjs';
-import {map, switchMap, tap} from 'rxjs/operators';
+import {switchMap, tap} from 'rxjs/operators';
 import {Container} from '../../model/container';
 
 import {Project} from '../../model/project';
@@ -67,31 +65,17 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
         });
         this.progress = {};
       }),
-      switchMap(({id}) => {
-        const localProject = this.localProjectService.get(id);
-        if (localProject) {
-          this.project = localProject;
-          this.progress.metadata = true;
-          return this.containerService.createLocal(localProject).pipe(map(container => {
-            this.container = container;
-            this.progress.container = true;
+      switchMap(({id}) => this.projectService.get(id)),
+      tap(project => {
+        this.project = project;
+        this.progress.metadata = true;
+      }),
+      switchMap(project => project.local ? this.containerService.createLocal(project) : this.containerService.create(project.id)),
+      tap(container => {
+        this.container = container;
+        this.progress.container = true;
 
-            this.startVncClient(container.vncUrl);
-
-            return [localProject, container] as const;
-          }));
-        } else {
-          return forkJoin([
-            this.projectService.get(id).pipe(tap(project => {
-              this.project = project;
-              this.progress.metadata = true;
-            })),
-            this.containerService.create(id).pipe(tap(container => {
-              this.container = container;
-              this.progress.container = true;
-            })),
-          ]);
-        }
+        this.startVncClient(container.vncUrl);
       }),
     ).subscribe(() => {
       this.openModal?.close();

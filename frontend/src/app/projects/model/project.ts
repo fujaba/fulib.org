@@ -3,6 +3,7 @@ export type Project = UserProject | LocalProject;
 export interface ProjectStub {
   name: string;
   description: string;
+  dockerImage?: string;
   local?: boolean;
 }
 
