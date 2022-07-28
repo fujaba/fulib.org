@@ -83,8 +83,6 @@ export class ContainerService {
         'org.fulib.project': projectId,
         'org.fulib.token': token,
       },
-      // docker run params
-      Cmd: ['--auth','none'], //no password for code-server required
     });
 
     await container.start();
@@ -95,16 +93,18 @@ export class ContainerService {
     So nobody (except root) can write there, which will lead to errors when for example trying to install extensions.
     So we'll change the ownership back to 'coder' to prevent that
      */
-    await this.containerExec(container,['sudo', 'chown', '-R', 'coder:coder', '/home/coder']);
+    //await this.containerExec(container,['sudo', 'chown', '-R', 'coder:coder', '/home/coder']);
 
     // loop over extensions list and install all extensions
     this.installExtensions(container, projectId);
 
     let containerDto = this.toContainer(container.id, token, projectId);
     let containerURL = containerDto.url;
-    while (!(await this.isContainerReady(containerURL))) {
-      //wait 200ms and try again
-      await setTimeout(200);
+    let retries = 0;
+    while (!(await this.isContainerReady(containerURL)) && (retries <= 10) ) {
+      //wait 400ms and try again
+      await setTimeout(400);
+      retries++;
     }
     return containerDto;
   }
@@ -149,6 +149,7 @@ export class ContainerService {
       projectId,
       token,
       url: this.containerUrl(id),
+      vncUrl: this.vncURL(id),
     };
   }
 
@@ -183,8 +184,15 @@ export class ContainerService {
 
   private async isHeartbeatExpired(containerId: string) : Promise<boolean> {
     const url = `${environment.docker.proxyHost}/containers/${containerId.substring(0, 12)}`;
-    const res =  await firstValueFrom(this.httpService.get(`${url}/healthz`));
-    return (res.data.status === 'expired');
+
+    try {
+      const res =  await firstValueFrom(this.httpService.get(`${url}/healthz`));
+      // res.data.lastHeartbeat is 0, when container has just started
+      return ( res.data.status === 'expired' && res.data.lastHeartbeat);
+    } catch (e) {
+      //container is in creating phase right now, /healthz endpoint isn't ready yet
+      return false;
+    }
   }
 
   //executes command in container and returns the output stream
@@ -271,6 +279,12 @@ export class ContainerService {
       // 502 Bad Gateway
       return false;
     }
+  }
+
+  private vncURL(id: string): string {
+    const suffix = `containers-vnc/${id.substring(0, 12)}`;
+    const vncURL = `${environment.docker.proxyHost}/${suffix}/vnc.html?path=${suffix}/`;
+    return vncURL;
   }
 
 }

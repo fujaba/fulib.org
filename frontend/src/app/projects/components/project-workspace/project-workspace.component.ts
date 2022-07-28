@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {switchMap, tap} from 'rxjs/operators';
@@ -8,6 +8,8 @@ import {Project} from '../../model/project';
 import {ContainerService} from '../../services/container.service';
 import {LocalProjectService} from '../../services/local-project.service';
 import {ProjectService} from '../../services/project.service';
+import RFB from '@novnc/novnc/core/rfb.js';
+
 
 const progressLabels = {
   metadata: 'Loading Project Metadata',
@@ -26,6 +28,7 @@ const progressOrder: (keyof typeof progressLabels)[] = [
 })
 export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
   @ViewChild('loadingModal', {static: true}) loadingModal: TemplateRef<any>;
+  @ViewChild('screen') vncScreen : ElementRef;
 
   progressLabels = progressLabels;
   progressOrder = progressOrder;
@@ -37,6 +40,8 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
   container?: Container;
 
   showAlert = true;
+
+  rfb: RFB;
 
   constructor(
     private route: ActivatedRoute,
@@ -69,6 +74,8 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
       tap(container => {
         this.container = container;
         this.progress.container = true;
+
+        this.startVncClient(container.vncUrl);
       }),
     ).subscribe(() => {
       this.openModal?.close();
@@ -79,4 +86,10 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.openModal?.close();
   }
+
+  private startVncClient(vncUrl: string) {
+    vncUrl = vncUrl.replace('http', 'ws');
+    this.rfb = new RFB(this.vncScreen.nativeElement, vncUrl);
+  }
+
 }
