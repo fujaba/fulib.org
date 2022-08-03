@@ -6,8 +6,10 @@
     "dockerfile": "gradle/Dockerfile",
     "args": {
       "BUILD_GRADLE": "fulib/build.gradle",
-      "APT_DEPENDENCIES": "openjdk-17-jdk-headless",
-      "EXTENSION": "redhat.java"
+      "APT_DEPENDENCIES": "openjdk-17-jdk",
+      "EXTENSION": "redhat.java",
+      "CONF_SUPERVISOR": "supervisor.conf",
+      "CUSTOM_VNC_HTML": "vnc_lite.html"
     }
   },
   {

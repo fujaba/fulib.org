@@ -1,3 +1,7 @@
+<div style="display: flex">
+  <button routerLink="/projects" (click)="stopContainer(container?.projectId)">Stop Container</button>
+  <button (click)="openVNCWindow()">Open noVNC</button>
+</div>
 <iframe *ngIf="container" [src]="container.url | safeResourceUrl" class="w-100 h-100 border-0"></iframe>
 <ng-template #loadingModal let-modal>
   <div class="modal-header">
@@ -21,6 +25,3 @@
     </a>
   </div>
 </ng-template>
-<div #screen>
-  <!-- This is where the remote screen will appear -->
-</div>

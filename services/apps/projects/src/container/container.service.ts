@@ -105,6 +105,9 @@ export class ContainerService {
       //wait 400ms and try again
       await setTimeout(400);
       retries++;
+      if(retries >= 11) {
+        console.log("timeout: couldn't reach vs code UI after 4 seconds. Maybe try a reload.");
+      }
     }
     return containerDto;
   }
@@ -283,7 +286,7 @@ export class ContainerService {
 
   private vncURL(id: string): string {
     const suffix = `containers-vnc/${id.substring(0, 12)}`;
-    const vncURL = `${environment.docker.proxyHost}/${suffix}/vnc.html?path=${suffix}/`;
+    const vncURL = `${environment.docker.proxyHost}/${suffix}/vnc_lite.html?path=${suffix}&resize=remote`;
     return vncURL;
   }
 

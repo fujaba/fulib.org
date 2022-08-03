@@ -5,25 +5,24 @@ COPY $BUILD_GRADLE build.gradle
 RUN gradle wrapper && ./gradlew downloadDependencies && ./gradlew --stop
 
 FROM codercom/code-server
-ARG APT_DEPENDENCIES
-RUN sudo apt-get update -y \
-    && sudo apt-get install -y \
-        $APT_DEPENDENCIES \
-    && sudo apt-get clean
-COPY --from=preload --chown=coder /root/.gradle /home/coder/.gradle
-
+ARG EXTENSION
 RUN code-server --install-extension $EXTENSION
 
 USER root
-ENV USER=root
+ARG APT_DEPENDENCIES
+RUN apt-get update -y \
+    && apt-get install -y \
+        $APT_DEPENDENCIES \
+    && apt-get clean
+COPY --from=preload --chown=coder /root/.gradle /home/coder/.gradle
+
+
 ENV DEBIAN_FRONTEND=noninteractive
 ENV DEBCONF_NONINTERACTIVE_SEEN=true
-RUN apt-get update
 RUN echo "tzdata tzdata/Areas select America" > ~/tx.txt && \
 	echo "tzdata tzdata/Zones/America select New York" >> ~/tx.txt && \
 	debconf-set-selections ~/tx.txt
 RUN apt-get install -y abiword gnupg apt-transport-https wget software-properties-common ratpoison novnc websockify libxv1 libglu1-mesa xauth x11-utils xorg tightvncserver
-RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && apt install -y ./google-chrome-stable_current_amd64.deb && rm ./google-chrome-stable_current_amd64.deb
 RUN wget https://kumisystems.dl.sourceforge.net/project/virtualgl/2.6.5/virtualgl_2.6.5_amd64.deb && dpkg -i virtualgl_*.deb && rm virtualgl_*.deb
 RUN wget https://kumisystems.dl.sourceforge.net/project/turbovnc/2.2.7/turbovnc_2.2.7_amd64.deb && dpkg -i turbovnc_*.deb && rm turbovnc_*.deb
 RUN mkdir ~/.vnc/ && \
@@ -35,10 +34,13 @@ EXPOSE 80
 
 #using supervisor for process management (code-server and vnc-server)
 RUN apt-get -y install supervisor
-COPY supervisor.conf /etc/supervisor.conf
+ARG CONF_SUPERVISOR
+COPY $CONF_SUPERVISOR /etc/supervisor.conf
 
-USER coder
-ENV USER=coder
+#custom vnc client.html
+ARG CUSTOM_VNC_HTML
+COPY $CUSTOM_VNC_HTML /usr/share/novnc/vnc_lite.html
+
 ENV DISPLAY=:1
-
+USER coder
 ENTRYPOINT ["supervisord" , "-c" , "/etc/supervisor.conf"]

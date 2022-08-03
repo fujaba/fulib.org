@@ -8,7 +8,6 @@ import {Project} from '../../model/project';
 import {ContainerService} from '../../services/container.service';
 import {LocalProjectService} from '../../services/local-project.service';
 import {ProjectService} from '../../services/project.service';
-import RFB from '@novnc/novnc/core/rfb.js';
 
 
 const progressLabels = {
@@ -28,7 +27,6 @@ const progressOrder: (keyof typeof progressLabels)[] = [
 })
 export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
   @ViewChild('loadingModal', {static: true}) loadingModal: TemplateRef<any>;
-  @ViewChild('screen') vncScreen : ElementRef;
 
   progressLabels = progressLabels;
   progressOrder = progressOrder;
@@ -41,7 +39,6 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
 
   showAlert = true;
 
-  rfb: RFB;
 
   constructor(
     private route: ActivatedRoute,
@@ -74,8 +71,6 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
       tap(container => {
         this.container = container;
         this.progress.container = true;
-
-        this.startVncClient(container.vncUrl);
       }),
     ).subscribe(() => {
       this.openModal?.close();
@@ -87,9 +82,13 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
     this.openModal?.close();
   }
 
-  private startVncClient(vncUrl: string) {
-    vncUrl = vncUrl.replace('http', 'ws');
-    this.rfb = new RFB(this.vncScreen.nativeElement, vncUrl);
+  /* opens vnc url in a new browser window*/
+  openVNCWindow() {
+    window.open(this.container?.vncUrl, "_blank",
+      "width=800,height=600");
   }
 
+  stopContainer(projectId) {
+    this.containerService.delete(projectId);
+  }
 }
