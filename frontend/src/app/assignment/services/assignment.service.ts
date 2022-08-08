@@ -8,7 +8,7 @@ import {catchError, map, switchMap, take, tap} from 'rxjs/operators';
 import {environment} from '../../../environments/environment';
 import {LintService} from '../../shared/lint.service';
 import {Marker} from '../../shared/model/marker';
-import {StorageService} from '../../storage.service';
+import {StorageService} from '../../services/storage.service';
 import {UserService} from '../../user/user.service';
 import Assignment, {CreateAssignmentDto, UpdateAssignmentDto} from '../model/assignment';
 import {CheckAssignment, CheckResult} from '../model/check';

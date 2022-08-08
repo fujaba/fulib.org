@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {saveAs} from 'file-saver';
 
-import {PrivacyService} from '../../privacy.service';
+import {PrivacyService} from '../../services/privacy.service';
 import {ProjectConfig} from '../../shared/model/project-config';
 import {ProjectZipRequest} from '../../shared/model/project-zip-request';
 import {ConfigService} from '../config.service';

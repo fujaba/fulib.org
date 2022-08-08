@@ -1,0 +1,20 @@
+<ngbx-modal #modal size="lg" [scrollable]="true" [back]="[{outlets: {modal: null}}]" [backOptions]="{relativeTo: route.parent}">
+  <ng-container modal-title>
+    About
+  </ng-container>
+  <ng-container modal-body>
+    <h2>License</h2>
+    <pre class="ws-pre-line">
+      {{license}}
+    </pre>
+    <h2>Third-Party Licenses</h2>
+    <pre class="ws-pre-line">
+      {{thirdPartyLicenses}}
+    </pre>
+  </ng-container>
+  <ng-container modal-footer>
+    <button type="button" class="btn btn-secondary" (click)="modal.close()">
+      Close
+    </button>
+  </ng-container>
+</ngbx-modal>

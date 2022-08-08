@@ -1,37 +1,16 @@
-version: '3.9'
 services:
+  frontend:
+    image: fulib/fulib.org-frontend
+    build:
+      context: frontend/
+      args:
+        CONFIGURATION: development
+    ports:
+      - '11340:80'
   nats:
-    image: nats:1.4.1
+    image: nats:2
     restart: unless-stopped
     ports:
       - "4222:4222"
-  proxy:
-    build: projects-proxy
-    image: fulib/fulib.org-projects-proxy
-    restart: unless-stopped
-    ports:
-      - "8080:80"
-    networks:
-      - projects
-  keycloak:
-    image: jboss/keycloak:12.0.4
-    restart: on-failure
-    environment:
-      KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: admin
-    ports:
-      - "24785:8080"
-    volumes:
-      - 'keycloak-data:/opt/jboss/keycloak/standalone/data/'
-  elasticsearch:
-    image: elasticsearch:7.13.4
-    restart: unless-stopped
-    environment:
-      - discovery.type=single-node
-    ports:
-      - '9200:9200'
-      - '9300:9300'
-volumes:
-  keycloak-data:
-networks:
-  projects:
+  database:
+    image: mongo:4
