@@ -8,7 +8,16 @@ FROM codercom/code-server
 ARG EXTENSION
 RUN code-server --install-extension $EXTENSION
 
+#COPY only works with root
 USER root
+COPY --chown=coder vnc-viewer-0.0.1.vsix /home/coder/vnc-viewer.vsix
+#install-extension command must be executed by coder user
+USER coder
+RUN code-server --install-extension /home/coder/vnc-viewer.vsix
+USER root
+RUN rm /home/coder/vnc-viewer.vsix
+
+
 ARG APT_DEPENDENCIES
 RUN apt-get update -y \
     && apt-get install -y \
@@ -29,8 +38,7 @@ RUN mkdir -p /root/.config/i3 && touch $CONF_I3 && \
     cp /etc/i3/config $CONF_I3 && \
     echo "workspace_layout tabbed" >> $CONF_I3 && \
     echo "exec --no-startup-id i3-sensible-terminal" >> $CONF_I3  && \
-    echo "bar { mode invisible }" >> $CONF_I3  && \
-    sed -i '192,194 {s/^/#/}' $CONF_I3
+    sed -i 's/status_command i3status/mode invisible/' $CONF_I3
 
 
 #using supervisor for process management (code-server and vnc-server)

@@ -54,6 +54,98 @@
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="app/styles/lite.css">
+    <style>
+        #controlCenterButton {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin-top: 0;
+            width: 24px;
+        }
+
+        #modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        #modalContent {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 0px 20px 0px 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        #closeModal {
+            color: black;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #controlFieldset {
+            padding: 0;
+            margin: 0;
+            border: 0;
+        }
+
+        #controlWindow {
+            position: absolute;
+            width: 200px;
+            z-index: 2;
+            display: none;
+            top: 25%;
+            left: 25%;
+            border: 1px solid gray;
+            text-align: center;
+            background-color: #252526;
+        }
+
+        #controlWindowBar {
+            cursor: move;
+            background-color: #0e639c;
+            color: white;
+            text-align: center;
+            font-size: 14pt;
+        }
+
+        #controlClose {
+            cursor: pointer;
+            float: right;
+            width: 16px;
+        }
+
+        #controlClose:hover {
+            background-color: red;
+        }
+
+        button {
+            color: white;
+            background-color: #0e639c;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #208dd6;
+        }
+
+        .controlButtons:last-child {
+            margin-bottom: 10px;
+        }
+        #noVNC_status_bar {
+            display: none;
+            background: red
+        }
+    </style>
 
     <!-- promise polyfills promises for IE11 -->
     <script src="vendor/promise.js"></script>
@@ -140,6 +232,62 @@
             rfb.resizeSession = WebUtil.getConfigVar('resize', false);
         })();
 
+        /* Algorithmus von: https://www.w3schools.com/howto/howto_js_draggable.asp
+       modifiziert
+       element - element which should be moved
+       optional: recognitionElement - element which should be the "moving zone"
+       "moving zone": zone where you drag with your mouse to move the whole element (for example a window bar)
+       if not given, the whole element is the "moving zone"
+       element position must be 'absolute' !! */
+        function dragElement(element, recognitionElement = element) {
+            let pos1 = 0;
+            let pos2 = 0;
+            let pos3 = 0;
+            let pos4 = 0;
+
+            recognitionElement.addEventListener('mousedown', dragMouseDown);
+
+            function dragMouseDown(e) {
+                e.preventDefault();
+                // get the mouse cursor position at startup:
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.addEventListener('mouseup', closeDragElement);
+                // call a function whenever the cursor moves:
+                document.addEventListener('mousemove', elementDrag);
+            }
+
+            function elementDrag(e) {
+                e.preventDefault();
+                // calculate the new cursor position:
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                // set the element's new position:
+                element.style.top = (element.offsetTop - pos2) + "px";
+                element.style.left = (element.offsetLeft - pos1) + "px";
+            }
+
+            function closeDragElement() {
+                // stop moving when mouse button is released:
+                document.removeEventListener('mouseup', closeDragElement);
+                document.removeEventListener('mousemove', elementDrag);
+            }
+        }
+
+        let controlWindow = document.getElementById('controlWindow');
+        let controlWindowBar = document.getElementById('controlWindowBar');
+        dragElement(controlWindow, controlWindowBar);
+        document.getElementById('controlClose').onclick = () => {
+            controlWindow.style.display = 'none';
+        };
+        let controlCenterButton = document.getElementById('controlCenterButton');
+        controlCenterButton.onclick = () => {
+            controlWindow.style.top = controlCenterButton.clientHeight + 'px';
+            controlWindow.style.left = window.innerWidth - 202 + 'px'; //200px default width of the control window
+            controlWindow.style.display = 'block';
+        };
 
         //button clicks
         document.getElementById('previousWindow').onclick = () => {
@@ -174,12 +322,12 @@
             }
         };
 
-        //help button and modal
+        // modal
         let modal = document.getElementById('modal');
-        let helpButton = document.getElementById('helpButton');
+        let showHotkeys = document.getElementById('showHotkeys');
         let closeSpan = document.getElementById('closeModal');
-        helpButton.onclick = () => { modal.style.display = "block" };
-        closeSpan.onclick = () => { modal.style.display = "none"};
+        showHotkeys.onclick = () => { modal.style.display = "block" };
+        closeSpan.onclick = () => { modal.style.display = "none" };
         // When the user clicks anywhere outside of the modal, close it
         window.addEventListener('click', (event) => {
             if (event.target == modal) {
@@ -190,35 +338,53 @@
 </head>
 
 <body>
-<div style="display: flex;">
-    <div>
-        <button id="helpButton">?</button>
-        <div id="modal" style="display: none; position: fixed; z-index: 1; left: 0; top: 0;
-        width: 100%; height: 100%; background-color: rgba(0,0,0,0.4)">
-            <div id="modalContent" style="background-color: #fefefe; margin: 15% auto; padding: 0px 20px 0px 20px;
-            border: 1px solid #888; width: 80%">
-                <div id="modalHeader">
-                <span id="closeModal" style="color: black; float: right; font-size: 28px; font-weight: bold;
-                    cursor: pointer">&times;</span>
-                    <h1>Basic Hotkeys</h1>
-                </div>
-                <div id="modalBody">
-                    <p>Next Window: Alt + Arrow Right</p>
-                    <p>Previous Window: Alt + Arrow Left</p>
-                    <p>Open new Terminal: Alt + Enter</p>
-                    <p>Close current window: Alt + Shift + Q</p>
-                </div>
-            </div>
+<button id="controlCenterButton">?</button>
+
+<div id="modal">
+    <div id="modalContent">
+        <div id="modalHeader">
+            <span id="closeModal">&times;</span>
+            <h1>Basic Hotkeys</h1>
+        </div>
+        <div id="modalBody">
+            <p>Next Window: Alt + Arrow Right</p>
+            <p>Previous Window: Alt + Arrow Left</p>
+            <p>Open new Terminal: Alt + Enter</p>
+            <p>Close current window: Alt + Shift + Q</p>
         </div>
     </div>
-    <fieldset id="controlFieldset" style="padding: 0; margin: 0; border: 0;">
-        <button id="previousWindow">previous window</button><button id="nextWindow">next window</button>
-    </fieldset>
-    <button id="catchRemote">Toggle STRG Mode</button>
 </div>
 
-<div id="noVNC_status_bar" style="display: none; background: red">
+<div id="noVNC_status_bar">
     <div id="noVNC_status">Loading</div>
+</div>
+
+
+<div id="controlWindow">
+    <div id="controlWindowBar">
+        control buttons
+        <span id="controlClose">&times;</span>
+    </div>
+
+    <div class="controlButtons">
+        <div>
+            <button id="catchRemote">toggle STRG mode</button>
+        </div>
+
+        <fieldset id="controlFieldset">
+            <div>
+                <button id="previousWindow">previous window</button>
+            </div>
+
+            <div>
+                <button id="nextWindow">next window</button>
+            </div>
+        </fieldset>
+
+        <div>
+            <button id="showHotkeys">show hotkeys</button>
+        </div>
+    </div>
 </div>
 </body>
 </html>

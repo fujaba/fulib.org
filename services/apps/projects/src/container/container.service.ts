@@ -109,6 +109,12 @@ export class ContainerService {
         console.log("timeout: couldn't reach vs code UI after 4 seconds. Maybe try a reload.");
       }
     }
+    // write vnc url in a file (the vnc extension will read the file)
+    // maybe there is a more elegant way for passing the vnc url into the extension ?
+    let p: string = `${bindPrefix}/projects/${this.idBin(projectId)}/${projectId}/.vnc/vncUrl`;
+    await this.createFile(p);
+    await fs.promises.writeFile(p, containerDto.vncUrl);
+
     return containerDto;
   }
 
