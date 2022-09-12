@@ -64,23 +64,6 @@ dependencies {
 
 	// https://mvnrepository.com/artifact/org.mockito/mockito-core
 	testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.6.1'
-
-	// --------------- CommonMark ---------------
-
-	// https://mvnrepository.com/artifact/org.commonmark/commonmark
-	implementation group: 'org.commonmark', name: 'commonmark', version: '0.19.0'
-
-	// https://mvnrepository.com/artifact/org.commonmark/commonmark-ext-gfm-tables
-	implementation group: 'org.commonmark', name: 'commonmark-ext-gfm-tables', version: '0.19.0'
-
-	// https://mvnrepository.com/artifact/org.commonmark/commonmark-ext-autolink
-	implementation group: 'org.commonmark', name: 'commonmark-ext-autolink', version: '0.19.0'
-
-	// https://mvnrepository.com/artifact/org.commonmark/commonmark-ext-gfm-strikethrough
-	implementation group: 'org.commonmark', name: 'commonmark-ext-gfm-strikethrough', version: '0.19.0'
-
-	// https://mvnrepository.com/artifact/org.commonmark/commonmark-ext-task-list-items
-	implementation group: 'org.commonmark', name: 'commonmark-ext-task-list-items', version: '0.19.0'
 }
 
 // --------------- Version Injection ---------------

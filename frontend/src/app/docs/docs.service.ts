@@ -2,7 +2,7 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {map, switchMap} from 'rxjs/operators';
-import {environment} from '../../environments/environment';
+import {MarkdownService} from '../services/markdown.service';
 import {Page, ParsedPage, RenderedPage, Repository} from './docs.interface';
 
 @Injectable({
@@ -11,6 +11,7 @@ import {Page, ParsedPage, RenderedPage, Repository} from './docs.interface';
 export class DocsService {
   constructor(
     private http: HttpClient,
+    private markdownService: MarkdownService,
   ) {
   }
 
@@ -44,12 +45,9 @@ export class DocsService {
 
   private render(page: ParsedPage): Observable<RenderedPage> {
     const parent = page.url.substring(0, page.url.lastIndexOf('/') + 1);
-    return this.http.post(environment.apiURL + '/rendermarkdown', page.markdown, {
-      responseType: 'text',
-      params: {
-        image_base_url: `https://github.com/fujaba/${page.repo}/raw/master/docs/${parent}`,
-        link_base_url: `/docs/${page.repo}/${parent}`,
-      },
+    return this.markdownService.renderMarkdown(page.markdown, {
+      imageBaseUrl: `https://github.com/fujaba/${page.repo}/raw/master/docs/${parent}`,
+      linkBaseUrl: `/docs/${page.repo}/${parent}`,
     }).pipe(map(html => ({...page, html})));
   }
 

@@ -17,5 +17,4 @@ export class Response {
   testMethods?: TestMethod[];
   classDiagram?: string;
   objectDiagrams?: Diagram[];
-  html: string;
 }
