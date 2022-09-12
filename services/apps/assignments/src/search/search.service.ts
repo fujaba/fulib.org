@@ -1,4 +1,4 @@
-import {Hit, QueryContainer, SpanNearQuery} from '@elastic/elasticsearch/api/types';
+import {Hit, QueryContainer, SpanNearQuery, SpanQuery} from '@elastic/elasticsearch/api/types';
 import {Injectable, OnModuleInit} from '@nestjs/common';
 import {ElasticsearchService} from '@nestjs/elasticsearch';
 import {randomUUID} from 'crypto';
@@ -137,6 +137,7 @@ export class SearchService implements OnModuleInit {
   }
 
   async findSummary(assignment: string, params: SearchParams): Promise<SearchSummary> {
+    // TODO tokens
     const {uniqueId, result} = await this._search(assignment, params, ['solution']);
     const hitsContainer = result.body.hits;
     const solutions = new Set(hitsContainer.hits.map((h: any) => h.fields.solution[0])).size;
@@ -155,10 +156,10 @@ export class SearchService implements OnModuleInit {
   }
 
   async find(assignment: string, params: SearchParams): Promise<SearchResult[]> {
-    const {uniqueId, result} = await this._search(assignment, params);
+    const {uniqueId, result, tokens} = await this._search(assignment, params);
     const grouped = new Map<string, SearchResult>();
     for (let hit of result.body.hits.hits) {
-      const result = this._convertHit(hit, uniqueId, params.context);
+      const result = this._convertHit(hit, uniqueId, params.context, tokens);
       const existing = grouped.get(result.solution);
       if (existing) {
         existing.snippets.push(...result.snippets);
@@ -176,13 +177,7 @@ export class SearchService implements OnModuleInit {
   }: SearchParams, fields?: (keyof FileDocument)[]) {
     const uniqueId = randomUUID();
     const regex = glob && this.glob2RegExp(glob);
-    const query: QueryContainer = wildcard ? this._createWildcardQuery(snippet, wildcard) : {
-      match_phrase: {
-        content: {
-          query: snippet,
-        },
-      },
-    };
+    const {tokens, ...query} = this._createQuery(snippet, wildcard);
     const result = await this.elasticsearchService.search({
       index: 'files',
       body: {
@@ -209,7 +204,7 @@ export class SearchService implements OnModuleInit {
         },
       },
     });
-    return {uniqueId, result};
+    return {uniqueId, result, tokens};
   }
 
   async deleteAll(assignment: string, solution?: string): Promise<number> {
@@ -247,14 +242,14 @@ export class SearchService implements OnModuleInit {
     });
   }
 
-  _convertHit(hit: Hit<FileDocument>, uniqueId: string, contextLines?: number): SearchResult {
+  _convertHit(hit: Hit<FileDocument>, uniqueId: string, contextLines?: number, tokens = 1): SearchResult {
     const {assignment, solution, file, content} = hit._source!;
     const lineStartIndices = this._buildLineStartList(content);
     if (!hit.highlight) {
       return {assignment, solution, snippets: []};
     }
 
-    const snippets: SearchSnippet[] = [];
+    const tokenSnippets: SearchSnippet[] = [];
     let i = -1;
     for (const match of hit.highlight.content[0].matchAll(new RegExp(`<${uniqueId}>(.*?)</${uniqueId}>`, 'gs'))) {
       i++;
@@ -271,13 +266,29 @@ export class SearchService implements OnModuleInit {
         comment: '',
       };
 
-      if (contextLines !== undefined) {
-        const contextStart = lineStartIndices[from.line < contextLines ? 0 : from.line - contextLines];
-        const contextEnd = to.line + contextLines + 1 >= lineStartIndices.length ? code.length : lineStartIndices[to.line + contextLines + 1];
+      tokenSnippets.push(snippet);
+    }
+
+    const snippets: SearchSnippet[] = [];
+    for (let i = 0; i < tokenSnippets.length; i += tokens) {
+      const from = tokenSnippets[i].from;
+      const to = tokenSnippets[i + tokens - 1].to;
+      const code = content.substring(lineStartIndices[from.line] + from.character, lineStartIndices[to.line] + to.character);
+      snippets.push({
+        file,
+        from,
+        to,
+        code,
+        comment: '',
+      });
+    }
+
+    if (contextLines !== undefined) {
+      for (const snippet of snippets) {
+        const contextStart = lineStartIndices[snippet.from.line < contextLines ? 0 : snippet.from.line - contextLines];
+        const contextEnd = snippet.to.line + contextLines + 1 >= lineStartIndices.length ? content.length : lineStartIndices[snippet.to.line + contextLines + 1];
         snippet.context = content.substring(contextStart, contextEnd);
       }
-
-      snippets.push(snippet);
     }
 
     return {assignment, solution, snippets};
@@ -304,35 +315,53 @@ export class SearchService implements OnModuleInit {
     return result;
   }
 
-  _createWildcardQuery(snippet: string, wildcard: string): QueryContainer {
-    const split = snippet.split(wildcard);
+  _createQuery(snippet: string, wildcard?: string): QueryContainer & {tokens: number} {
+    if (!wildcard) {
+      let tokens = 0;
+      for (const token of snippet.matchAll(TOKEN_PATTERN)) {
+        tokens++;
+      }
+      return {
+        tokens,
+        match_phrase: {
+          content: {
+            query: snippet,
+          },
+        },
+      };
+    }
 
-    // https://www.paulbutcher.space/blog/2021/01/23/wildcards-in-elasticsearch-phrases#:~:text=%E2%80%9Cthe%20casbah%20*%20a%20hurricane%E2%80%9D%20becomes%3A
+    let tokenCount = 0;
+    const split = snippet.split(wildcard);
+    const clauses: SpanQuery[] = split.map(part => {
+      const tokens = [...part.matchAll(TOKEN_PATTERN)];
+      tokenCount += tokens.length;
+      if (tokens.length === 1) {
+        return {
+          span_term: {
+            content: tokens[0][0],
+          },
+        };
+      }
+
+      const span_near: SpanNearQuery = {
+        in_order: true,
+        slop: 0,
+        clauses: tokens.map(([token]) => ({
+          span_term: {
+            content: token,
+          },
+        })),
+      };
+      return {span_near};
+    }).filter(a => 'span_term' in a || a.span_near?.clauses?.length);
     return {
+      tokens: tokenCount,
+      // https://www.paulbutcher.space/blog/2021/01/23/wildcards-in-elasticsearch-phrases#:~:text=%E2%80%9Cthe%20casbah%20*%20a%20hurricane%E2%80%9D%20becomes%3A
       span_near: {
         slop: 1,
         in_order: true,
-        clauses: split.map(part => {
-          const tokens = [...part.matchAll(TOKEN_PATTERN)];
-          if (tokens.length === 1) {
-            return {
-              span_term: {
-                content: tokens[0][0],
-              },
-            };
-          }
-
-          const span_near: SpanNearQuery = {
-            in_order: true,
-            slop: 0,
-            clauses: tokens.map(([token]) => ({
-              span_term: {
-                content: token,
-              },
-            })),
-          };
-          return {span_near};
-        }),
+        clauses,
       },
     };
   }

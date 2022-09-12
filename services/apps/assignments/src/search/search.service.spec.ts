@@ -70,8 +70,28 @@ describe('SearchService', () => {
     });
   });
 
+  it('should convert wildcard hits', () => {
+    const highlight = 'Hello World\n<b>This</b> is a <b>World</b>!\nWorld be greeted.';
+    const hit: Hit<FileDocument> = {
+      _index: 'files',
+      _id: '0',
+      _source: {assignment: 'a1', solution: 's1', file: 'test.java', content},
+      highlight: {content: [highlight]},
+    };
+    const result = service._convertHit(hit, 'b', undefined, 2);
+    expect(result.assignment).toBe('a1');
+    expect(result.solution).toBe('s1');
+    expect(result.snippets[0]).toStrictEqual({
+      file: 'test.java',
+      code: 'This is a World',
+      comment: '',
+      from: {line: 1, character: 0},
+      to: {line: 1, character: 15},
+    });
+  })
+
   it('should create wildcard queries', () => {
-    const query = service._createWildcardQuery('Hello there, ## Kenobi', '##');
+    const query = service._createQuery('Hello there, ## Kenobi', '##');
     expect(query).toStrictEqual({
       span_near: {
         in_order: true,
