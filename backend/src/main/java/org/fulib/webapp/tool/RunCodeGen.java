@@ -1,7 +1,6 @@
 package org.fulib.webapp.tool;
 
 import org.fulib.StrUtil;
-import org.fulib.webapp.markdown.MarkdownRenderer;
 import org.fulib.webapp.mongo.Mongo;
 import org.fulib.webapp.tool.model.CodeGenData;
 import org.fulib.webapp.tool.model.Diagram;
@@ -117,8 +116,6 @@ public class RunCodeGen
 		// TODO use Result.PROPERTY_methods (renaming testMethods -> methods)
 		resultObj.put("testMethods", methodsArray);
 
-		resultObj.put(Result.PROPERTY_html, result.getHtml());
-
 		return resultObj;
 	}
 
@@ -176,11 +173,6 @@ public class RunCodeGen
 
 			final Result result = new Result(id);
 			result.setExitCode(exitCode);
-
-			final MarkdownRenderer renderer = new MarkdownRenderer();
-			renderer.setImageBaseUrl("/" + tempDir.relativize(packagePath).toString() + "/");
-			final String html = renderer.renderHtml(bodyText);
-			result.setHtml(html);
 
 			final String output = new String(out.toByteArray(), StandardCharsets.UTF_8);
 			final String sanitizedOutput = output.replace(projectDir.toString(), ".");

@@ -1,6 +1,5 @@
 package org.fulib.webapp;
 
-import org.fulib.webapp.markdown.MarkdownController;
 import org.fulib.webapp.projectzip.ProjectZipController;
 import org.fulib.webapp.tool.RunCodeGen;
 import org.junit.AfterClass;
@@ -20,8 +19,7 @@ public class MainTest
 {
 	private static final RunCodeGen runCodeGen = mock(RunCodeGen.class);
 	private static final ProjectZipController projectZipController = mock(ProjectZipController.class);
-	private static final MarkdownController markdownController = mock(MarkdownController.class);
-	private static final Main service = new Main(runCodeGen, projectZipController, markdownController);
+	private static final Main service = new Main(runCodeGen, projectZipController);
 
 	@BeforeClass
 	public static void setup()
@@ -56,14 +54,6 @@ public class MainTest
 		checkRoute("POST", "/api/projectzip");
 
 		verify(projectZipController).handle(any(), any());
-	}
-
-	@Test
-	public void markdown() throws IOException
-	{
-		when(markdownController.render(any(), any())).thenReturn("");
-		checkRoute("POST", "/rendermarkdown");
-		verify(markdownController).render(any(), any());
 	}
 
 	@Test

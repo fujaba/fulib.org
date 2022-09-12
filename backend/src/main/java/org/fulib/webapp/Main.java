@@ -1,6 +1,5 @@
 package org.fulib.webapp;
 
-import org.fulib.webapp.markdown.MarkdownController;
 import org.fulib.webapp.projectzip.ProjectZipController;
 import org.fulib.webapp.tool.RunCodeGen;
 import org.json.JSONObject;
@@ -37,16 +36,14 @@ public class Main
 	private Service service;
 	private final RunCodeGen runCodeGen;
 	private final ProjectZipController projectZipController;
-	private final MarkdownController markdownController;
 
 	// =============== Constructors ===============
 
 	@Inject
-	Main(RunCodeGen runCodeGen, ProjectZipController projectZipController, MarkdownController markdownController)
+	Main(RunCodeGen runCodeGen, ProjectZipController projectZipController)
 	{
 		this.runCodeGen = runCodeGen;
 		this.projectZipController = projectZipController;
-		this.markdownController = markdownController;
 	}
 
 	// =============== Static Methods ===============
@@ -89,7 +86,6 @@ public class Main
 		service.post("/runcodegen", runCodeGen::handle);
 		service.get("/versions", (req, res) -> new JSONObject(VERSIONS).toString(2));
 		service.post("/projectzip", projectZipController::handle);
-		service.post("/rendermarkdown", markdownController::render);
 	}
 
 	void awaitStart()
