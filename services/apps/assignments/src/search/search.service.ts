@@ -359,7 +359,7 @@ export class SearchService implements OnModuleInit {
       tokens: tokenCount,
       // https://www.paulbutcher.space/blog/2021/01/23/wildcards-in-elasticsearch-phrases#:~:text=%E2%80%9Cthe%20casbah%20*%20a%20hurricane%E2%80%9D%20becomes%3A
       span_near: {
-        slop: 1,
+        slop: 100,
         in_order: true,
         clauses,
       },
