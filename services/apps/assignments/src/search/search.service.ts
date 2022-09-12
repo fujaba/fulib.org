@@ -202,10 +202,10 @@ export class SearchService implements OnModuleInit {
           fields: {
             content: {},
           },
-          pre_tags: [uniqueId],
-          post_tags: [uniqueId],
+          pre_tags: [`<${uniqueId}>`],
+          post_tags: [`</${uniqueId}>`],
+          type: 'unified',
           number_of_fragments: 0,
-          type: 'fvh',
         },
       },
     });
@@ -251,20 +251,15 @@ export class SearchService implements OnModuleInit {
     const {assignment, solution, file, content} = hit._source!;
     const lineStartIndices = this._buildLineStartList(content);
     if (!hit.highlight) {
-      console.error('Failed to highlight', hit);
       return {assignment, solution, snippets: []};
     }
 
-    const highlightContent = hit.highlight.content[0];
-    const split = highlightContent.split(uniqueId);
-
-    let start = 0;
     const snippets: SearchSnippet[] = [];
-
-    for (let i = 1; i < split.length; i += 2) {
-      start += split[i - 1].length;
-
-      const code = split[i];
+    let i = -1;
+    for (const match of hit.highlight.content[0].matchAll(new RegExp(`<${uniqueId}>(.*?)</${uniqueId}>`, 'gs'))) {
+      i++;
+      const {1: code, index} = match;
+      const start = index! - i * (uniqueId.length * 2 + 5);
       const end = start + code.length;
       const from = this._findLocation(lineStartIndices, start);
       const to = this._findLocation(lineStartIndices, end);
@@ -283,8 +278,6 @@ export class SearchService implements OnModuleInit {
       }
 
       snippets.push(snippet);
-
-      start = end;
     }
 
     return {assignment, solution, snippets};

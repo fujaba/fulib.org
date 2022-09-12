@@ -20,7 +20,7 @@ describe('SearchService', () => {
   });
 
   const content = 'Hello World\nThis is a World!\nWorld be greeted.';
-  const highlight = 'Hello ##World##\nThis is a ##World##!\n##World## be greeted.';
+  const highlight = 'Hello <b>World</b>\nThis is a <b>World</b>!\n<b>World</b> be greeted.';
 
   it('should build line start list', () => {
     const lineStarts = service._buildLineStartList(content);
@@ -44,7 +44,7 @@ describe('SearchService', () => {
       _source: {assignment: 'a1', solution: 's1', file: 'test.java', content: content},
       highlight: {content: [highlight]},
     };
-    const result = service._convertHit(hit, '##');
+    const result = service._convertHit(hit, 'b');
     expect(result.assignment).toBe('a1');
     expect(result.solution).toBe('s1');
     expect(result.snippets[0]).toStrictEqual({
@@ -68,7 +68,7 @@ describe('SearchService', () => {
       from: {line: 2, character: 0},
       to: {line: 2, character: 5},
     });
-  })
+  });
 
   it('should create wildcard queries', () => {
     const query = service._createWildcardQuery('Hello there, ## Kenobi', '##');
