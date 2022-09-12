@@ -102,7 +102,8 @@ export class FourPaneEditorComponent implements OnInit {
         this.submitting = false;
         this.response = response;
         this.javaCode = this.renderJavaCode();
-        this.markdownHtml = response.html.replace(new RegExp(`/api/runcodegen/${response.id}`, 'g'),
+        this.markdownHtml = this.markdownService.renderMarkdownSync(this.scenarioText, {})
+          .replace(new RegExp(`/api/runcodegen/${response.id}`, 'g'),
           match => environment.apiURL + match.substring(4));
         this.classDiagramUrl = `${environment.apiURL}/runcodegen/${response.id}/model_src/${packageName.replace(/\./g, '/')}/classDiagram.svg`;
 
