@@ -35,8 +35,9 @@
     <label class="form-label" for="commitInput">Git Commit</label>
     <div class="input-group">
       <input type="text" class="form-control font-monospace" id="commitInput" readonly [ngModel]="solution.commit">
-      <a class="btn btn-primary bi-github"
-         href="https://github.com/{{assignment?.classroom?.org}}/{{assignment?.classroom?.prefix}}-{{solution.author.github}}/tree/{{solution.commit}}"
+      <a *ngIf="assignment && solution.commit"
+         class="btn btn-primary bi-github"
+         [href]="assignment|githubLink:solution:true"
          target="_blank"
          ngbTooltip="Open on GitHub"
       ></a>
