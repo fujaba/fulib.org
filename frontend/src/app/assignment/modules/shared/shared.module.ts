@@ -12,6 +12,7 @@ import {StatisticValueComponent} from './statistic-value/statistic-value.compone
 import {TaskListComponent} from './task-list/task-list.component';
 import { SolutionNamePipe } from './pipes/solution-name.pipe';
 import { GithubLinkPipe } from './pipes/github-link.pipe';
+import { CloneLinkPipe } from './pipes/clone-link.pipe';
 
 
 @NgModule({
@@ -31,6 +32,7 @@ import { GithubLinkPipe } from './pipes/github-link.pipe';
     SolutionNamePipe,
     StatisticValueComponent,
     GithubLinkPipe,
+    CloneLinkPipe,
   ],
   exports: [
     AssignmentInfoComponent,
@@ -42,6 +44,7 @@ import { GithubLinkPipe } from './pipes/github-link.pipe';
     SolutionNamePipe,
     StatisticValueComponent,
     GithubLinkPipe,
+    CloneLinkPipe,
   ],
 })
 export class AssignmentSharedModule {

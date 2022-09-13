@@ -150,7 +150,7 @@
         <a
           class="btn btn-secondary bi-code-square"
           ngbTooltip="Clone in IDE"
-          [href]="options.ide + '://vscode.git/clone?url=' + clonePrefix[options.cloneProtocol] + assignment?.classroom?.org + '%2F' + assignment?.classroom?.prefix + '-' + solution.author.github + cloneSuffix[options.cloneProtocol] | safeUrl"
+          [href]="assignment|cloneLink:solution:options | safeUrl"
           (click)="telemetry(solution, 'clone')"
         ></a>
       </div>
