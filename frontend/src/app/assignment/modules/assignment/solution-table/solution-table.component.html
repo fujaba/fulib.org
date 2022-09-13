@@ -23,7 +23,11 @@
         <div *ngIf="!first" class="dropdown-divider"></div>
         <h6 class="dropdown-header">
           {{ option.title }}
+          <i class="bi-info-circle" [ngbTooltip]="option.description"></i>
         </h6>
+        <div class="dropdown-item-text" *ngIf="!option.options">
+          <input #input class="form-control" [value]="options[option.key]" (change)="setOption(option.key, input.value)">
+        </div>
         <button
           *ngFor="let item of option.options"
           ngbDropdownItem

@@ -52,22 +52,6 @@ export class SolutionService {
 
   // --------------- Comment Drafts ---------------
 
-  get commentName(): string | null {
-    return this.storageService.get('commentName');
-  }
-
-  set commentName(value: string | null) {
-    this.storageService.set('commentName', value);
-  }
-
-  get commentEmail(): string | null {
-    return this.storageService.get('commentEmail');
-  }
-
-  set commentEmail(value: string | null) {
-    this.storageService.set('commentEmail', value);
-  }
-
   getCommentDraft(solution: Solution | string): string | null {
     const solutionID = asID(solution);
     return this.storageService.get(`commentDraft/${solutionID}`);
