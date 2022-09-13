@@ -22,8 +22,8 @@ export const assignmentChildRoutes = [
       {path: 'submit/:sid', component: SubmitModalComponent, data: {title: 'Submit Feedback'}},
     ],
   },
-  {path: 'statistics', component: StatisticsComponent, data: {title: 'Statistics', new: true}},
-  {path: 'search', component: SearchComponent, data: {title: 'Code Search', new: true}},
+  {path: 'statistics', component: StatisticsComponent, data: {title: 'Statistics'}},
+  {path: 'search', component: SearchComponent, data: {title: 'Code Search'}},
 ];
 
 const routes: Routes = [
