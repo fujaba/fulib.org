@@ -4,17 +4,15 @@ import {RouterModule, Routes} from '@angular/router';
 import {CourseComponent} from './pages/course/course.component';
 import {CreateCourseComponent} from './pages/create-course/create-course.component';
 import {CreateSolutionComponent} from './pages/create-solution/create-solution.component';
-import {MyAssignmentsComponent} from './pages/my-assignments/my-assignments.component';
-import {MyCoursesComponent} from './pages/my-courses/my-courses.component';
-import {MySolutionsComponent} from './pages/my-solutions/my-solutions.component';
+import {OverviewComponent} from './pages/overview/overview.component';
 
 const routes: Routes = [
-  {path: '', component: MyAssignmentsComponent, data: {title: 'My Assignments'}},
-  {path: 'solutions', component: MySolutionsComponent, data: {title: 'My Solutions'}},
-  {path: 'courses', component: MyCoursesComponent, data: {title: 'My Courses'}},
+  {path: '', component: OverviewComponent, data: {title: 'Assignments'}},
+  {path: 'solutions', redirectTo: ''},
   {path: 'courses/create', component: CreateCourseComponent, data: {title: 'Create Course'}},
   {path: 'courses/:cid', component: CourseComponent, data: {title: 'Course'}},
   {path: 'courses/:cid/assignments/:aid', component: CourseComponent, data: {title: 'Course'}},
+  {path: 'courses', redirectTo: ''},
   {
     path: 'create',
     loadChildren: () => import('./modules/edit-assignment/edit-assignment.module').then(m => m.EditAssignmentModule),

@@ -1,56 +1,54 @@
-<div class="container">
-  <h1 class="d-flex align-items-center">
-    My Assignments
-    <a class="btn btn-success ms-auto" routerLink="/assignments/create">
-      <i class="bi-clipboard-check"></i>
-      New Assignment
-    </a>
-  </h1>
+<h1 class="d-flex align-items-center">
+  My Assignments
+  <a class="btn btn-success ms-auto" routerLink="/assignments/create">
+    <i class="bi-clipboard-check"></i>
+    New Assignment
+  </a>
+</h1>
 
-  <div class="list-group" *ngIf="assignments?.length">
-    <a *ngFor="let assignment of assignments"
-       class="list-group-item list-group-item-action"
-       routerLink="/assignments/{{assignment._id}}/solutions"
-    >
-      <h3>
-        {{assignment.title}}
-      </h3>
-      <p class="text-muted">
-        by
-        <app-author-name [name]="assignment.author" [email]="assignment.email"></app-author-name>
-        <ng-container *ngIf="assignment.deadline">
-          &mdash;
-          Deadline: {{assignment.deadline | date:'medium'}}
-        </ng-container>
-      </p>
-    </a>
-  </div>
+<div class="list-group" *ngIf="assignments?.length">
+  <a *ngFor="let assignment of assignments"
+     class="list-group-item list-group-item-action"
+     routerLink="/assignments/{{assignment._id}}/solutions"
+  >
+    <h3>
+      {{assignment.title}}
+    </h3>
+    <p class="text-muted">
+      by
+      <app-author-name [name]="assignment.author" [email]="assignment.email"></app-author-name>
+      <ng-container *ngIf="assignment.deadline">
+        &mdash;
+        Deadline: {{assignment.deadline | date:'medium'}}
+      </ng-container>
+    </p>
+  </a>
+</div>
 
-  <div class="card" *ngIf="!assignments?.length">
-    <div class="card-body">
-      <h5 class="card-title">
-        Welcome to Assignments!
-      </h5>
-      <p class="card-text">
-        Assignments allow you to:
-      </p>
-      <div class="d-flex align-items-center">
-        <i class="bi-clipboard-check feature-icon"></i>
-        <div class="flex-grow-1 ms-3">
-          Create interactive exercises for your students.
-        </div>
+<div class="card" *ngIf="!assignments?.length">
+  <div class="card-body">
+    <h5 class="card-title">
+      Welcome to Assignments!
+    </h5>
+    <p class="card-text">
+      Assignments allow you to:
+    </p>
+    <div class="d-flex align-items-center">
+      <i class="bi-clipboard-check feature-icon"></i>
+      <div class="flex-grow-1 ms-3">
+        Create interactive exercises for your students.
       </div>
-      <div class="d-flex align-items-center">
-        <i class="bi-list-check feature-icon"></i>
-        <div class="flex-grow-1 ms-3">
-          Automatically and manually grade submissions.
-        </div>
+    </div>
+    <div class="d-flex align-items-center">
+      <i class="bi-list-check feature-icon"></i>
+      <div class="flex-grow-1 ms-3">
+        Automatically and manually grade submissions.
       </div>
-      <div class="d-flex align-items-center">
-        <i class="bi-chat-left-text feature-icon"></i>
-        <div class="flex-grow-1 ms-3">
-          Discuss submissions and grades.
-        </div>
+    </div>
+    <div class="d-flex align-items-center">
+      <i class="bi-chat-left-text feature-icon"></i>
+      <div class="flex-grow-1 ms-3">
+        Discuss submissions and grades.
       </div>
     </div>
   </div>
