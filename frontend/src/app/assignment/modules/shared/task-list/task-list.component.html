@@ -1,14 +1,19 @@
 <ol *ngIf="tasks else loading">
   <li *ngFor="let task of tasks" [class]="points && evaluations?.[task._id] ? 'text-' + (task | taskColor:points[task._id]) : undefined">
+    <input
+      #check
+      type="checkbox"
+      class="form-check-input"
+      [checked]="evaluations?.[task._id] && points?.[task._id] !== 0"
+      [indeterminate]="!evaluations?.[task._id]"
+      (change)="givePoints(task, check.checked ? task.points : 0)"
+      [ngbTooltip]="'Click to give ' + (check.checked ? 0 : task.points) + ' points'"
+    >
     {{task.description}}
     <span class="badge bg-{{task | taskColor:points?.[task._id]}}">
       <ng-container *ngIf="points">{{points[task._id]}} / </ng-container>
       {{task.points}}
     </span>
-    <a class="bi-circle link-{{task|taskColor:0}} ms-1" role="button" (click)="givePoints(task, 0)" ngbTooltip="Give 0 points">
-    </a>
-    <a class="bi-check-circle link-{{task|taskColor:task.points}} ms-1" role="button" (click)="givePoints(task, task.points)" ngbTooltip="Give {{task.points}} points">
-    </a>
     <a
       *ngIf="evaluations && evaluations[task._id] as evaluation; else createEvaluation"
       [ngbTooltip]="'View Evaluation by ' + evaluation.author"
