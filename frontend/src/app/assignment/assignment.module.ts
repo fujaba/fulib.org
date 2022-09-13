@@ -18,6 +18,7 @@ import {CreateSolutionComponent} from './pages/create-solution/create-solution.c
 import {MyAssignmentsComponent} from './pages/my-assignments/my-assignments.component';
 import {MyCoursesComponent} from './pages/my-courses/my-courses.component';
 import {MySolutionsComponent} from './pages/my-solutions/my-solutions.component';
+import {OverviewComponent} from './pages/overview/overview.component';
 import {TokenModalComponent} from './pages/token-modal/token-modal.component';
 import {ConfigService} from './services/config.service';
 
@@ -30,6 +31,7 @@ import {ConfigService} from './services/config.service';
     MyCoursesComponent,
     MySolutionsComponent,
     TokenModalComponent,
+    OverviewComponent,
   ],
   imports: [
     CommonModule,
