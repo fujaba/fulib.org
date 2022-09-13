@@ -137,12 +137,12 @@
         (click)="telemetry(solution, 'openSolution')"
       ></a>
       <div
-        *ngIf="assignment?.classroom?.org && assignment?.classroom?.prefix && solution.author.github"
+        *ngIf="assignment && assignment?.classroom?.org && assignment?.classroom?.prefix && solution.author.github"
         class="btn-group me-1"
       >
         <a
           class="btn btn-secondary bi-github"
-          href="https://github.com/{{assignment?.classroom?.org}}/{{assignment?.classroom?.prefix}}-{{solution.author.github}}{{solution.commit ? '/tree/' + solution.commit : ''}}"
+          [href]="assignment|githubLink:solution:true"
           target="_blank"
           ngbTooltip="View {{solution.commit ? 'Commit' : 'Repository'}} on GitHub"
           (click)="telemetry(solution, 'showGithub')"
