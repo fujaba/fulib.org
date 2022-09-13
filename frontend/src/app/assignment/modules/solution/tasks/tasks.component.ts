@@ -66,10 +66,13 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
       }
 
       const task = evaluation.task;
-      const newEvaluation = event === 'deleted' ? undefined : evaluation;
-      const oldEvaluation = this.evaluations[task];
-      this.evaluations[task] = newEvaluation!;
-      if (!this.points || newEvaluation?.points === oldEvaluation?.points) {
+      if (event === 'deleted') {
+        delete this.evaluations[task];
+      } else {
+        this.evaluations[task] = evaluation;
+      }
+
+      if (!this.points) {
         return;
       }
 
