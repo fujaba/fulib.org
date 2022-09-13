@@ -35,6 +35,14 @@ export class ConfigService {
   ) {
   }
 
+  getAll(): Record<ConfigKey, string> {
+    const options = {} as Record<ConfigKey, string>;
+    for (const option of CONFIG_OPTIONS) {
+      options[option.key] = this.get(option.key);
+    }
+    return options;
+  }
+
   get(key: ConfigKey): string {
     const option = CONFIG_OPTIONS.find(o => o.key === key);
     return this.privacyService.getStorage('assignments/' + key) || option?.default || '';
