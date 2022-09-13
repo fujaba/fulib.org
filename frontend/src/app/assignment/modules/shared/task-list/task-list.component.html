@@ -1,5 +1,5 @@
 <ol *ngIf="tasks else loading">
-  <li *ngFor="let task of tasks" [class]="points ? 'text-' + (task | taskColor:points[task._id]) : undefined">
+  <li *ngFor="let task of tasks" [class]="points && evaluations?.[task._id] ? 'text-' + (task | taskColor:points[task._id]) : undefined">
     {{task.description}}
     <span class="badge bg-{{task | taskColor:points?.[task._id]}}">
       <ng-container *ngIf="points">{{points[task._id]}} / </ng-container>
