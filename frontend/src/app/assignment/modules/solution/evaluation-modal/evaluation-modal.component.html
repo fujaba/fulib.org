@@ -62,7 +62,6 @@
         <div class="col" [class.col-md-4]="dto.snippets.length">
           <app-evaluation-form [dto]="dto" [task]="task"></app-evaluation-form>
           <div class="alert alert-info" *ngIf="!dto.snippets.length">
-            <span class="badge text-white bg-gradient-primary">New</span>
             <a href="https://marketplace.visualstudio.com/items?itemName=fulib.fulibFeedback" target="_blank">
               fulibFeedback
             </a>

@@ -23,7 +23,6 @@
       <div class="mb-3">
         <label for="globInput" class="form-label">
           Filename Glob
-          <span class="badge text-white bg-gradient-primary">New</span>
         </label>
         <div [ngbTooltip]="context.assignment.classroom?.codeSearch ? null : 'Code Search must be enabled.'">
           <input type="text" class="form-control" id="globInput" [(ngModel)]="task.glob"

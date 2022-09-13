@@ -11,6 +11,8 @@ import {SnippetComponent} from './snippet/snippet.component';
 import {StatisticValueComponent} from './statistic-value/statistic-value.component';
 import {TaskListComponent} from './task-list/task-list.component';
 import { SolutionNamePipe } from './pipes/solution-name.pipe';
+import { GithubLinkPipe } from './pipes/github-link.pipe';
+import { CloneLinkPipe } from './pipes/clone-link.pipe';
 
 
 @NgModule({
@@ -29,6 +31,8 @@ import { SolutionNamePipe } from './pipes/solution-name.pipe';
     TaskColorPipe,
     SolutionNamePipe,
     StatisticValueComponent,
+    GithubLinkPipe,
+    CloneLinkPipe,
   ],
   exports: [
     AssignmentInfoComponent,
@@ -39,6 +43,8 @@ import { SolutionNamePipe } from './pipes/solution-name.pipe';
     TaskColorPipe,
     SolutionNamePipe,
     StatisticValueComponent,
+    GithubLinkPipe,
+    CloneLinkPipe,
   ],
 })
 export class AssignmentSharedModule {
