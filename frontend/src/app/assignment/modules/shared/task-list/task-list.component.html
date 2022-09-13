@@ -5,15 +5,29 @@
       <ng-container *ngIf="points">{{points[task._id]}} / </ng-container>
       {{task.points}}
     </span>
+    <a class="bi-circle link-{{task|taskColor:0}} ms-1" role="button" (click)="givePoints(task, 0)" ngbTooltip="Give 0 points">
+    </a>
+    <a class="bi-check-circle link-{{task|taskColor:task.points}} ms-1" role="button" (click)="givePoints(task, task.points)" ngbTooltip="Give {{task.points}} points">
+    </a>
     <a
-      *ngIf="evaluations"
-      [class.text-primary]="!evaluations[task._id]"
-      [class.text-secondary]="evaluations[task._id]"
+      *ngIf="evaluations && evaluations[task._id] as evaluation; else createEvaluation"
+      [ngbTooltip]="'View Evaluation by ' + evaluation.author"
+      role="button"
+      class="link-secondary ms-1"
+      [class.bi-person]="evaluation.author !== 'Code Search'"
+      [class.bi-robot]="evaluation.author === 'Code Search'"
       [routerLink]="[task._id]"
       (click)="openTelemetry(task)"
-    >
-      {{ evaluations[task._id] ? '&check; Graded by ' + evaluations[task._id].author : 'Grade' }}
-    </a>
+    ></a>
+    <ng-template #createEvaluation>
+      <a
+        ngbTooltip="Create Evaluation"
+        role="button"
+        class="bi-plus-circle link-primary ms-1"
+        [routerLink]="[task._id]"
+        (click)="openTelemetry(task)"
+      ></a>
+    </ng-template>
     <app-task-list
       *ngIf="task.children.length"
       [tasks]="task.children"
