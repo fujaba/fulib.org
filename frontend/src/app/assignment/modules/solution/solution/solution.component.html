@@ -16,10 +16,14 @@
         {{assignment.classroom?.prefix}}-{{ solution.author.github }}
       </a>
       &bull;
-    </ng-container>
-    <ng-container *ngIf="assignment && solution.author.github && solution.commit">
-      <a class="bi-node-plus" [href]="assignment|githubLink:solution:true" target="_blank">
-        {{ solution.commit | slice:0:7 }}
+      <ng-container *ngIf="solution.commit">
+        <a class="bi-node-plus" [href]="assignment|githubLink:solution:true" target="_blank">
+          {{ solution.commit | slice:0:7 }}
+        </a>
+        &bull;
+      </ng-container>
+      <a class="bi-code" [href]="assignment|cloneLink:solution:options" target="_blank">
+        Clone in IDE
       </a>
       &bull;
     </ng-container>
