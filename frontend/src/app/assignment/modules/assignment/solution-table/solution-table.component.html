@@ -157,7 +157,7 @@
       <a
         class="btn btn-primary me-1 bi-check-circle"
         ngbTooltip="Submit Feedback"
-        [routerLink]="['../submit', solution._id]"
+        [routerLink]="['submit', solution._id]"
         queryParamsHandling="preserve"
         (click)="telemetry(solution, 'openFeedback')"
       ></a>
@@ -165,3 +165,4 @@
   </tr>
   </tbody>
 </table>
+<router-outlet></router-outlet>
