@@ -5,6 +5,7 @@ import {debounceTime, distinctUntilChanged, map, switchMap, take} from 'rxjs/ope
 import {UserService} from '../../../../user/user.service';
 import {CreateEvaluationDto} from '../../../model/evaluation';
 import Task from '../../../model/task';
+import {ConfigService} from '../../../services/config.service';
 import {SolutionService} from '../../../services/solution.service';
 
 @Component({
@@ -35,6 +36,7 @@ export class EvaluationFormComponent implements OnInit, OnChanges {
 
   constructor(
     private solutionService: SolutionService,
+    private configService: ConfigService,
     private users: UserService,
     private route: ActivatedRoute,
   ) {
@@ -50,7 +52,7 @@ export class EvaluationFormComponent implements OnInit, OnChanges {
         this.loggedIn = true;
         this.dto.author = `${user.firstName} ${user.lastName}`;
       } else {
-        this.dto.author = this.solutionService.commentName || '';
+        this.dto.author = this.configService.get('name');
       }
     });
   }
@@ -81,6 +83,6 @@ export class EvaluationFormComponent implements OnInit, OnChanges {
   }
 
   saveDraft(): void {
-    this.solutionService.commentName = this.dto.author;
+    this.configService.set('name', this.dto.author);
   }
 }

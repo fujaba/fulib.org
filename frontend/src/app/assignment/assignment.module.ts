@@ -21,6 +21,7 @@ import {MySolutionsComponent} from './pages/my-solutions/my-solutions.component'
 import {OverviewComponent} from './pages/overview/overview.component';
 import {TokenModalComponent} from './pages/token-modal/token-modal.component';
 import {ConfigService} from './services/config.service';
+import { SettingsComponent } from './pages/settings/settings.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import {ConfigService} from './services/config.service';
     MySolutionsComponent,
     TokenModalComponent,
     OverviewComponent,
+    SettingsComponent,
   ],
   imports: [
     CommonModule,

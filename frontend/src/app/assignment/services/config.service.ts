@@ -2,6 +2,8 @@ import {Injectable} from '@angular/core';
 import {PrivacyService} from '../../services/privacy.service';
 
 export type ConfigKey =
+  | 'name'
+  | 'email'
   | 'ide'
   | 'cloneProtocol'
   ;
@@ -9,20 +11,33 @@ export type ConfigKey =
 export interface ConfigOption {
   key: ConfigKey;
   title: string;
-  options: [string, string][];
-  default: string;
+  description: string;
+  options?: [string, string][];
+  default?: string;
 }
 
 export const CONFIG_OPTIONS: ConfigOption[] = [
   {
+    key: 'name',
+    title: 'Name',
+    description: 'Your full name for use in assignments, solutions, comments and evaluations.',
+  },
+  {
+    key: 'email',
+    title: 'E-Mail Address',
+    description: 'Your email address for use in assignments, solutions, comments and evaluations.',
+  },
+  {
     key: 'ide',
     title: 'IDE',
+    description: 'Your preferred IDE for cloning repositories.',
     options: [['vscode', 'VSCode'], ['code-oss', 'Code - OSS'], ['vscodium', 'VSCodium']],
     default: 'vscode',
   },
   {
     key: 'cloneProtocol',
     title: 'Git Clone Protocol',
+    description: 'The protocol to use when cloning a repository.',
     options: [['https', 'HTTPS'], ['ssh', 'SSH']],
     default: 'https',
   },
@@ -41,6 +56,12 @@ export class ConfigService {
       options[option.key] = this.get(option.key);
     }
     return options;
+  }
+
+  setAll(options: Record<ConfigKey, string>) {
+    for (const key of Object.keys(options) as ConfigKey[]) {
+      this.set(key, options[key]);
+    }
   }
 
   get(key: ConfigKey): string {

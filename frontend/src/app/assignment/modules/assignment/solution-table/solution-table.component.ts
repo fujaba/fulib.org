@@ -34,7 +34,7 @@ export class SolutionTableComponent implements OnInit {
 
   loading = false;
 
-  optionItems = CONFIG_OPTIONS;
+  optionItems = CONFIG_OPTIONS.filter(o => o.options);
   options = this.configService.getAll();
 
   search$ = new BehaviorSubject<string>('');
@@ -108,7 +108,8 @@ export class SolutionTableComponent implements OnInit {
   }
 
   setOption(key: ConfigKey, value: string) {
-    this.options[key] = value;
+    // copy is necessary to re-evaluate link pipes
+    this.options = {...this.options, [key]: value};
     this.configService.set(key, value);
   }
 
