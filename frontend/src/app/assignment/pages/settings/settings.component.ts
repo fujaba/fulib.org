@@ -1,4 +1,5 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
+import {ToastService} from 'ng-bootstrap-ext';
 import {CONFIG_OPTIONS, ConfigService} from '../../services/config.service';
 
 @Component({
@@ -6,19 +7,18 @@ import {CONFIG_OPTIONS, ConfigService} from '../../services/config.service';
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent {
   options = CONFIG_OPTIONS;
   optionValues = this.configService.getAll();
 
   constructor(
     private configService: ConfigService,
+    private toastService: ToastService,
   ) {
-  }
-
-  ngOnInit(): void {
   }
 
   save() {
     this.configService.setAll(this.optionValues);
+    this.toastService.success('Settings', 'Successfully saved settings');
   }
 }
