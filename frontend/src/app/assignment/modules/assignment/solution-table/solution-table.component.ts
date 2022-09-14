@@ -34,7 +34,7 @@ export class SolutionTableComponent implements OnInit {
 
   loading = false;
 
-  optionItems = CONFIG_OPTIONS;
+  optionItems = CONFIG_OPTIONS.filter(o => o.options);
   options = this.configService.getAll();
 
   search$ = new BehaviorSubject<string>('');
