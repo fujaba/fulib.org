@@ -108,7 +108,8 @@ export class SolutionTableComponent implements OnInit {
   }
 
   setOption(key: ConfigKey, value: string) {
-    this.options[key] = value;
+    // copy is necessary to re-evaluate link pipes
+    this.options = {...this.options, [key]: value};
     this.configService.set(key, value);
   }
 
