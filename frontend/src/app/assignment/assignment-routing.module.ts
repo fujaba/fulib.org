@@ -5,10 +5,12 @@ import {CourseComponent} from './pages/course/course.component';
 import {CreateCourseComponent} from './pages/create-course/create-course.component';
 import {CreateSolutionComponent} from './pages/create-solution/create-solution.component';
 import {OverviewComponent} from './pages/overview/overview.component';
+import {SettingsComponent} from './pages/settings/settings.component';
 
 const routes: Routes = [
   {path: '', component: OverviewComponent, data: {title: 'Assignments'}},
   {path: 'solutions', redirectTo: ''},
+  {path: 'settings', component: SettingsComponent, data: {title: 'Settings'}},
   {path: 'courses/create', component: CreateCourseComponent, data: {title: 'Create Course'}},
   {path: 'courses/:cid', component: CourseComponent, data: {title: 'Course'}},
   {path: 'courses/:cid/assignments/:aid', component: CourseComponent, data: {title: 'Course'}},

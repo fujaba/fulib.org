@@ -58,6 +58,12 @@ export class ConfigService {
     return options;
   }
 
+  setAll(options: Record<ConfigKey, string>) {
+    for (const key of Object.keys(options) as ConfigKey[]) {
+      this.set(key, options[key]);
+    }
+  }
+
   get(key: ConfigKey): string {
     const option = CONFIG_OPTIONS.find(o => o.key === key);
     return this.privacyService.getStorage('assignments/' + key) || option?.default || '';
