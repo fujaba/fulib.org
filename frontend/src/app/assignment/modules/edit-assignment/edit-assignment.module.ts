@@ -1,7 +1,7 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {NgbButtonsModule, NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
+import {NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
 import {ModalModule, RouteTabsModule} from 'ng-bootstrap-ext';
 import {DndModule} from 'ngx-drag-drop';
 import {SharedModule} from '../../../shared/shared.module';
@@ -38,7 +38,6 @@ import {TemplateComponent} from './template/template.component';
     DndModule,
     AssignmentSharedModule,
     EditAssignmentRoutingModule,
-    NgbButtonsModule,
     NgbTooltipModule,
     RouteTabsModule,
     ModalModule,
