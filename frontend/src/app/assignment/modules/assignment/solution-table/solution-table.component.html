@@ -19,8 +19,7 @@
       <span class="visually-hidden">Options</span>
     </button>
     <div ngbDropdownMenu aria-labelledby="optionsDropdown">
-      <ng-container *ngFor="let option of optionItems!; let first=first">
-        <div *ngIf="!first" class="dropdown-divider"></div>
+      <ng-container *ngFor="let option of optionItems!">
         <h6 class="dropdown-header">
           {{ option.title }}
           <i class="bi-info-circle" [ngbTooltip]="option.description"></i>
@@ -35,7 +34,11 @@
         >
           {{ item[1] }}
         </button>
+        <div class="dropdown-divider"></div>
       </ng-container>
+      <a ngbDropdownItem routerLink="/assignments/settings">
+        All Settings...
+      </a>
     </div>
   </div>
   <ng-template #searchHelp>
