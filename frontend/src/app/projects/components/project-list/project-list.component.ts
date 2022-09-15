@@ -89,4 +89,11 @@ export class ProjectListComponent implements OnInit, OnDestroy {
       this.toastService.error('Leave Project', 'Failed to leave project', error);
     });
   }
+
+  stop(project: Project) {
+    this.containerService.delete(project.id).subscribe(() => {
+      this.containers[this.projects.indexOf(project)] = null;
+      this.toastService.warn('Stop Container', 'Successfully stopped container.');
+    });
+  }
 }

@@ -90,6 +90,9 @@
                 Convert to Persistent
               </button>
               <div class="dropdown-divider"></div>
+              <button *ngIf="containers[index]" class="text-warning" ngbDropdownItem (click)="stop(project)">
+                Stop Container
+              </button>
               <a *ngIf="!project.local && currentUser && currentUser.id === project.userId"
                  class="text-danger" ngbDropdownItem [routerLink]="[project.id, 'transfer']">
                 Transfer
