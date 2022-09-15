@@ -1,5 +1,6 @@
 import {Component, OnInit, Optional} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import {ToastService} from 'ng-bootstrap-ext';
 import {forkJoin, of} from 'rxjs';
 import {mapTo, switchMap, tap} from 'rxjs/operators';
 import {User} from '../../../../user/user';
@@ -27,6 +28,7 @@ export class SettingsComponent implements OnInit {
     private projectService: ProjectService,
     private memberService: MemberService,
     private userService: UserService,
+    private toastService: ToastService,
   ) {
   }
 
@@ -57,7 +59,10 @@ export class SettingsComponent implements OnInit {
   }
 
   save(): void {
-    this.projectService.update(this.project!).subscribe(result => this.project = result);
+    this.projectService.update(this.project!).subscribe(result => {
+      this.project = result;
+      this.toastService.success('Update Project', 'Successfully updated project');
+    });
   }
 
   delete(member: Member) {
@@ -67,6 +72,7 @@ export class SettingsComponent implements OnInit {
 
     this.memberService.delete(member).subscribe(() => {
       this.members.removeFirst(m => m === member);
+      this.toastService.warn('Remove Collaborator', 'Successfully removed collaborator');
     });
   }
 }
