@@ -137,20 +137,19 @@ export class SearchService implements OnModuleInit {
   }
 
   async findSummary(assignment: string, params: SearchParams): Promise<SearchSummary> {
-    // TODO tokens
-    const {uniqueId, result} = await this._search(assignment, params, ['solution']);
+    const {uniqueId, result, tokens} = await this._search(assignment, params, ['solution']);
+    const pattern = this.createPattern(uniqueId);
     const hitsContainer = result.body.hits;
     const solutions = new Set(hitsContainer.hits.map((h: any) => h.fields.solution[0])).size;
     const files = hitsContainer.total.value;
     let hits = 0;
     for (let hit of hitsContainer.hits) {
       const content: string = hit.highlight.content[0];
-      let lastIndex = -uniqueId.length;
       let occurrences = 0;
-      while ((lastIndex = content.indexOf(uniqueId, lastIndex + uniqueId.length)) >= 0) {
+      for (const match of content.matchAll(pattern)) {
         occurrences++;
       }
-      hits += occurrences / 2;
+      hits += occurrences / tokens;
     }
     return {solutions, files, hits};
   }
@@ -251,7 +250,7 @@ export class SearchService implements OnModuleInit {
 
     const tokenSnippets: SearchSnippet[] = [];
     let i = -1;
-    for (const match of hit.highlight.content[0].matchAll(new RegExp(`<${uniqueId}>(.*?)</${uniqueId}>`, 'gs'))) {
+    for (const match of hit.highlight.content[0].matchAll(this.createPattern(uniqueId))) {
       i++;
       const {1: code, index} = match;
       const start = index! - i * (uniqueId.length * 2 + 5);
@@ -292,6 +291,10 @@ export class SearchService implements OnModuleInit {
     }
 
     return {assignment, solution, snippets};
+  }
+
+  private createPattern(uniqueId: string) {
+    return new RegExp(`<${uniqueId}>(.*?)</${uniqueId}>`, 'g');
   }
 
   _findLocation(lineStarts: number[], start: number): Location {
