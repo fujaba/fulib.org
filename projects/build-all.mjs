@@ -3,8 +3,13 @@ import child_process from 'child_process';
 
 const text = await fs.readFile('../frontend/src/assets/projects/code-server-images.json', 'utf8');
 const images = JSON.parse(text);
+const argv = new Set(process.argv.slice(2));
 
 for (let image of images) {
+  if (argv.size && !argv.has(image.name)) {
+    continue;
+  }
+
   let args = [
     'build',
     '-t',
