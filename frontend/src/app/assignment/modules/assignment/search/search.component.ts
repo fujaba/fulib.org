@@ -7,6 +7,7 @@ import {Snippet} from '../../../model/evaluation';
 import {SearchResult} from '../../../model/search-result';
 import Solution from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
+import {ConfigService} from '../../../services/config.service';
 import {SolutionService} from '../../../services/solution.service';
 import {SelectionService} from '../../solution/selection.service';
 
@@ -34,13 +35,14 @@ export class SearchComponent implements OnInit, OnDestroy {
     private solutionService: SolutionService,
     private assignmentService: AssignmentService,
     private selectionService: SelectionService,
+    private configService: ConfigService,
     private route: ActivatedRoute,
     private router: Router,
   ) {
   }
 
   ngOnInit(): void {
-    this.author = this.solutionService.getAuthor()?.name ?? '';
+    this.author = this.configService.get('name');
 
     this.route.params.pipe(
       switchMap(({aid}) => forkJoin([

@@ -5,6 +5,7 @@ import {Subscription} from 'rxjs';
 import {mapTo, switchMap, tap} from 'rxjs/operators';
 import {UserService} from '../../../../user/user.service';
 import Comment from '../../../model/comment';
+import {ConfigService} from '../../../services/config.service';
 import {SolutionService} from '../../../services/solution.service';
 
 @Component({
@@ -26,6 +27,7 @@ export class CommentListComponent implements OnInit, OnDestroy {
   constructor(
     private userService: UserService,
     private solutionService: SolutionService,
+    private configService: ConfigService,
     private toastService: ToastService,
     private route: ActivatedRoute,
   ) {
@@ -79,15 +81,15 @@ export class CommentListComponent implements OnInit, OnDestroy {
   }
 
   loadCommentDraft(solution: string): void {
-    this.commentName = this.solutionService.commentName || '';
-    this.commentEmail = this.solutionService.commentEmail || '';
+    this.commentName = this.configService.get('name');
+    this.commentEmail = this.configService.get('email');
     this.commentBody = this.solutionService.getCommentDraft(solution) || '';
   }
 
   saveCommentDraft(): void {
     const solution = this.route.snapshot.params.sid;
-    this.solutionService.commentName = this.commentName;
-    this.solutionService.commentEmail = this.commentEmail;
+    this.configService.set('name', this.commentName);
+    this.configService.set('email', this.commentEmail);
     this.solutionService.setCommentDraft(solution, this.commentBody);
   }
 

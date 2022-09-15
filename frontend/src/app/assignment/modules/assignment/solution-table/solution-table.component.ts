@@ -34,14 +34,8 @@ export class SolutionTableComponent implements OnInit {
 
   loading = false;
 
-  optionItems = CONFIG_OPTIONS;
-  options: Record<ConfigKey, string> = {
-    ide: this.configService.get('ide'),
-    cloneProtocol: this.configService.get('cloneProtocol'),
-  };
-
-  readonly clonePrefix = {https: 'https://github.com/', ssh: 'git@github.com:'} as const;
-  readonly cloneSuffix = {https: '', ssh: '.git'} as const;
+  optionItems = CONFIG_OPTIONS.filter(o => o.options);
+  options = this.configService.getAll();
 
   search$ = new BehaviorSubject<string>('');
 
@@ -114,7 +108,8 @@ export class SolutionTableComponent implements OnInit {
   }
 
   setOption(key: ConfigKey, value: string) {
-    this.options[key] = value;
+    // copy is necessary to re-evaluate link pipes
+    this.options = {...this.options, [key]: value};
     this.configService.set(key, value);
   }
 

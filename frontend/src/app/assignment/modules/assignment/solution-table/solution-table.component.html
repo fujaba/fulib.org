@@ -19,10 +19,10 @@
       <span class="visually-hidden">Options</span>
     </button>
     <div ngbDropdownMenu aria-labelledby="optionsDropdown">
-      <ng-container *ngFor="let option of optionItems!; let first=first">
-        <div *ngIf="!first" class="dropdown-divider"></div>
+      <ng-container *ngFor="let option of optionItems!">
         <h6 class="dropdown-header">
           {{ option.title }}
+          <i class="bi-info-circle" [ngbTooltip]="option.description"></i>
         </h6>
         <button
           *ngFor="let item of option.options"
@@ -34,7 +34,11 @@
         >
           {{ item[1] }}
         </button>
+        <div class="dropdown-divider"></div>
       </ng-container>
+      <a ngbDropdownItem routerLink="/assignments/settings">
+        All Settings...
+      </a>
     </div>
   </div>
   <ng-template #searchHelp>
@@ -137,12 +141,12 @@
         (click)="telemetry(solution, 'openSolution')"
       ></a>
       <div
-        *ngIf="assignment?.classroom?.org && assignment?.classroom?.prefix && solution.author.github"
+        *ngIf="assignment && assignment?.classroom?.org && assignment?.classroom?.prefix && solution.author.github"
         class="btn-group me-1"
       >
         <a
           class="btn btn-secondary bi-github"
-          href="https://github.com/{{assignment?.classroom?.org}}/{{assignment?.classroom?.prefix}}-{{solution.author.github}}{{solution.commit ? '/tree/' + solution.commit : ''}}"
+          [href]="assignment|githubLink:solution:true"
           target="_blank"
           ngbTooltip="View {{solution.commit ? 'Commit' : 'Repository'}} on GitHub"
           (click)="telemetry(solution, 'showGithub')"
@@ -150,14 +154,14 @@
         <a
           class="btn btn-secondary bi-code-square"
           ngbTooltip="Clone in IDE"
-          [href]="options.ide + '://vscode.git/clone?url=' + clonePrefix[options.cloneProtocol] + assignment?.classroom?.org + '%2F' + assignment?.classroom?.prefix + '-' + solution.author.github + cloneSuffix[options.cloneProtocol] | safeUrl"
+          [href]="assignment|cloneLink:solution:options | safeUrl"
           (click)="telemetry(solution, 'clone')"
         ></a>
       </div>
       <a
         class="btn btn-primary me-1 bi-check-circle"
         ngbTooltip="Submit Feedback"
-        [routerLink]="['../submit', solution._id]"
+        [routerLink]="['submit', solution._id]"
         queryParamsHandling="preserve"
         (click)="telemetry(solution, 'openFeedback')"
       ></a>
@@ -165,3 +169,4 @@
   </tr>
   </tbody>
 </table>
+<router-outlet></router-outlet>

@@ -5,6 +5,7 @@ import {switchMap} from 'rxjs/operators';
 import Assignment from '../../../model/assignment';
 import Solution from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
+import {ConfigService} from '../../../services/config.service';
 import {SolutionService} from '../../../services/solution.service';
 import {solutionChildRoutes} from '../solution-routing.module';
 
@@ -18,10 +19,12 @@ export class SolutionComponent implements OnInit {
   solution?: Solution;
 
   routes = solutionChildRoutes;
+  options = this.configService.getAll();
 
   constructor(
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
+    private configService: ConfigService,
     public route: ActivatedRoute,
   ) {
   }
