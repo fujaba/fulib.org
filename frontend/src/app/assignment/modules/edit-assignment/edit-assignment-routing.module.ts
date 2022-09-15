@@ -11,7 +11,7 @@ import {TemplateComponent} from './template/template.component';
 
 export const editAssignmentChildRoutes: Routes = [
   {path: 'info', component: InfoComponent, data: {title: 'Info'}},
-  {path: 'classroom', component: ClassroomComponent, data: {icon: 'github', title: 'Classroom', new: true}},
+  {path: 'classroom', component: ClassroomComponent, data: {icon: 'github', title: 'Classroom'}},
   {
     path: 'tasks',
     component: TasksComponent,

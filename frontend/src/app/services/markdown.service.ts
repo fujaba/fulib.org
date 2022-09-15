@@ -1,29 +1,45 @@
-import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+import MarkdownIt from 'markdown-it';
 import {Observable} from 'rxjs';
-import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MarkdownService {
-  constructor(
-    private http: HttpClient,
-  ) {
-  }
+  private readonly parser = new MarkdownIt({
+    linkify: true,
+    html: true,
+  });
 
   renderMarkdown(md: string, options: { imageBaseUrl?: string; linkBaseUrl?: string; } = {}): Observable<string> {
-    const {imageBaseUrl, linkBaseUrl} = options;
-    const params: Record<string, string> = {};
-    if (imageBaseUrl) {
-      params.image_base_url = imageBaseUrl;
-    }
-    if (linkBaseUrl) {
-      params.link_base_url = linkBaseUrl;
-    }
-    return this.http.post(`${environment.apiURL}/rendermarkdown`, md, {
-      responseType: 'text',
-      params,
+    return new Observable(subscriber => {
+      subscriber.next(this.renderMarkdownSync(md, options));
+      subscriber.complete();
     });
+  }
+
+  renderMarkdownSync(md: string, options: { imageBaseUrl?: string; linkBaseUrl?: string }): string {
+    const {imageBaseUrl, linkBaseUrl} = options;
+    const tokens = this.parser.parse(md, {});
+    for (let token of tokens) {
+      if (token.type === 'inline') {
+        for (let child of (token.children || [])) {
+          switch (child.type) {
+            case 'link_open':
+              const href = child.attrGet('href');
+              linkBaseUrl && href && child.attrSet('href', linkBaseUrl + href);
+              break;
+            case 'image':
+              const src = child.attrGet('src');
+              imageBaseUrl && src && child.attrSet('src', imageBaseUrl + src);
+              break;
+          }
+        }
+      } else if (token.type === 'table_open') {
+        token.attrSet('class', 'table table-bordered');
+      }
+    }
+    const html = this.parser.renderer.render(tokens, {}, {});
+    return html;
   }
 }

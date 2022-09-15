@@ -1,10 +1,11 @@
 <div class="container">
-  <h1>My Solutions</h1>
+  <h1>
+    <a class="bi-chevron-left" routerLink=".."></a>
+    My Solutions
+  </h1>
 
   <ul class="list-group" *ngIf="assignments?.length">
-    <li *ngFor="let assignment of assignments"
-        class="list-group-item"
-    >
+    <li *ngFor="let assignment of assignments" class="list-group-item">
       <h3>
         {{assignment.title}}
       </h3>

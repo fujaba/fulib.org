@@ -6,8 +6,24 @@
   </h1>
   <p class="text-muted" *ngIf="solution">
     <ng-container *ngIf="solution.author.github">
-      <a class="bi-github" href="https://github.com/{{solution.author.github}}">
+      <a class="bi-github" href="https://github.com/{{solution.author.github}}" target="_blank">
         {{ solution.author.github }}
+      </a>
+      &bull;
+    </ng-container>
+    <ng-container *ngIf="assignment && assignment.classroom?.org && assignment.classroom?.prefix && solution.author.github">
+      <a class="bi-server" [href]="assignment|githubLink:solution" target="_blank">
+        {{assignment.classroom?.prefix}}-{{ solution.author.github }}
+      </a>
+      &bull;
+      <ng-container *ngIf="solution.commit">
+        <a class="bi-node-plus" [href]="assignment|githubLink:solution:true" target="_blank">
+          {{ solution.commit | slice:0:7 }}
+        </a>
+        &bull;
+      </ng-container>
+      <a class="bi-code" [href]="assignment|cloneLink:solution:options|safeUrl" target="_blank">
+        Clone in IDE
       </a>
       &bull;
     </ng-container>

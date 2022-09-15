@@ -10,6 +10,11 @@ import {GenerateResult} from './model/GenerateResult';
 import {environment} from '../../environments/environment';
 import {cmWorkflowsHint} from './model/helper/workflows-hint';
 
+interface Example {
+  name: string;
+  path: string;
+}
+
 @Component({
   selector: 'app-workflows',
   templateUrl: './workflows.component.html',
@@ -22,8 +27,8 @@ export class WorkflowsComponent implements OnInit {
   generateResult?: GenerateResult;
   workflowsUrl = environment.workflowsUrl;
 
-  currentExample: string | null = null;
-  examples = ['Data Modelling', 'Microservices', 'Pages'];
+  currentExample: Example | null = null;
+  examples: Example[] = [];
 
   showIframeHider = false;
   newPageIndex: number = 0;
@@ -37,7 +42,6 @@ export class WorkflowsComponent implements OnInit {
     private fulibWorkflowsService: WorkflowsService,
     private privacyService: PrivacyService,
     private http: HttpClient,
-    private themeService: ThemeService,
   ) {
     // https://angular.io/api/core/NgZone
     const generateHandler = () => this.zone.run(() => this.generate());
@@ -59,18 +63,11 @@ export class WorkflowsComponent implements OnInit {
   }
 
   ngOnInit() {
-    const storage = this.privacyService.getStorage('workflows');
-    if (storage) {
-      this.content = storage;
-      this.generate();
-    } else {
-      this.setExample(null);
-    }
-  }
+    this.http.get<Example[]>(environment.workflowsUrl + '/examples').subscribe(examples => {
+      this.examples = examples;
+    });
 
-  changeExampleContent(newExample: string | null) {
-    this.currentExample = newExample;
-    this.setExample(this.currentExample);
+    this.setExample(null);
   }
 
   generate() {
@@ -110,12 +107,17 @@ export class WorkflowsComponent implements OnInit {
     }
   }
 
-  private setExample(exampleName: string | null) {
-    if (!exampleName) {
-      exampleName = 'New Workflow';
+  setExample(example: Example | null) {
+    if (!example) {
+      const storage = this.privacyService.getStorage('workflows');
+      if (storage) {
+        this.content = storage;
+        this.generate();
+      }
+      return;
     }
 
-    const url = `/assets/examples/workflows/${exampleName.replace(' ', '')}.es.yaml`;
+    const url = `${environment.workflowsUrl}/examples/${example.path}`;
 
     this.http.get(url, {responseType: 'text'}).subscribe(
       (value) => {

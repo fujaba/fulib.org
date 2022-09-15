@@ -1,5 +1,6 @@
 <div class="container">
   <h1 class="d-flex align-items-center">
+    <a class="bi-chevron-left" routerLink=".."></a>
     My Courses
     <a class="btn btn-success ms-auto" routerLink="/assignments/courses/create">
       <i class="bi-list-ol"></i>
@@ -24,7 +25,7 @@
   <div class="card" *ngIf="!courses?.length">
     <div class="card-body">
       <h5 class="card-title">
-        Welcome to Courses!
+        No Courses yet!
       </h5>
       <p class="card-text">
         Courses allow you to:
