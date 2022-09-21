@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild} from '@angular/core';
 import hljs from 'highlight.js/lib/core';
 import {Snippet} from '../../../model/evaluation';
 
@@ -13,6 +13,7 @@ export class SnippetComponent implements OnChanges {
   @Input() snippet: Snippet;
   @Input() expanded = true;
   @Input() wildcard?: string;
+  @Output() updated = new EventEmitter<Snippet>();
 
   fileType?: string;
   contextLines = 0;
@@ -71,5 +72,6 @@ export class SnippetComponent implements OnChanges {
 
   updateWildcardSnippet() {
     this.snippet.pattern = this.code.nativeElement.textContent!;
+    this.updated.next(this.snippet);
   }
 }
