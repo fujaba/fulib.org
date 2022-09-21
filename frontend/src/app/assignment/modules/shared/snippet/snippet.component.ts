@@ -12,6 +12,7 @@ export class SnippetComponent implements OnChanges {
 
   @Input() snippet: Snippet;
   @Input() expanded = true;
+  @Input() wildcard?: string;
 
   fileType?: string;
   contextLines = 0;
@@ -33,5 +34,42 @@ export class SnippetComponent implements OnChanges {
     if (expanded && lang && hljs.getLanguage(lang)) {
       setTimeout(() => hljs.highlightElement(this.code.nativeElement));
     }
+  }
+
+  onSelectionChange() {
+    if (!this.wildcard) {
+      return;
+    }
+
+    const sel = document.getSelection();
+    if (!sel || !sel.rangeCount) {
+      return;
+    }
+
+    const range = sel.getRangeAt(0);
+    if (!this.code.nativeElement.contains(range.commonAncestorContainer)) {
+      return;
+    }
+
+    const selectedText = range.extractContents();
+    const textContent = selectedText.textContent;
+    if (!textContent || textContent.includes(this.wildcard)) {
+      return;
+    }
+
+    const mark = document.createElement('mark');
+    mark.textContent = this.wildcard;
+    range.insertNode(mark);
+    sel.removeAllRanges();
+    this.updateWildcardSnippet();
+
+    mark.onauxclick = () => {
+      mark.replaceWith(textContent);
+      this.updateWildcardSnippet();
+    };
+  }
+
+  updateWildcardSnippet() {
+    this.snippet.pattern = this.code.nativeElement.textContent!;
   }
 }

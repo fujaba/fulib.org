@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {merge, OperatorFunction, Subject} from 'rxjs';
-import {debounceTime, distinctUntilChanged, map, tap} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 import {Snippet} from '../../../model/evaluation';
 import {selectionComment} from '../evaluation-modal/evaluation-modal.component';
 
