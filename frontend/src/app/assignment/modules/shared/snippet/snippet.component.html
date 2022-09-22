@@ -3,6 +3,6 @@
     {{ snippet.file }} lines {{ snippet.from.line - contextLines + 1 }} to {{ snippet.to.line + contextLines + 1 }}:
   </summary>
   <div class="markdown">
-    <pre><code #code class="hljs language-{{fileType}}" [lang]="fileType">{{snippet.context ?? snippet.code}}</code></pre>
+    <pre><code #code class="hljs language-{{fileType}}" [lang]="fileType" (mouseup)="onSelectionChange()">{{snippet.context ?? snippet.code}}</code></pre>
   </div>
 </details>

@@ -1,10 +1,10 @@
 import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ModalComponent, ToastService} from 'ng-bootstrap-ext';
-import {EMPTY, of, Subscription} from 'rxjs';
+import {EMPTY, merge, of, Subject, Subscription} from 'rxjs';
 import {debounceTime, distinctUntilChanged, filter, map, share, switchMap, tap} from 'rxjs/operators';
 import {UserService} from '../../../../user/user.service';
-import {CodeSearchInfo, CreateEvaluationDto, Evaluation} from '../../../model/evaluation';
+import {CodeSearchInfo, CreateEvaluationDto, Evaluation, Snippet} from '../../../model/evaluation';
 import {SearchSummary} from '../../../model/search-result';
 import Solution from '../../../model/solution';
 import Task from '../../../model/task';
@@ -42,6 +42,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
 
   derivedSolutionCount?: number;
 
+  snippetUpdates$ = new Subject<Snippet>();
   searchSummary?: SearchSummary & { level: string, message?: string };
 
   subscriptions = new Subscription();
@@ -121,11 +122,13 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       setTimeout(() => document.getElementById('snippet-' + index)?.focus());
     }));
 
-    this.subscriptions.add(selection$.pipe(
-      map(({snippet: {code}}) => code),
+    this.subscriptions.add(merge(
+      selection$.pipe(map(sel => sel.snippet.code)),
+      this.snippetUpdates$.pipe(map(snippet => snippet.pattern || snippet.code)),
+    ).pipe(
       debounceTime(200),
       distinctUntilChanged(),
-      switchMap(code => this.assignmentService.searchSummary(this.route.snapshot.params.aid, code, this.task?.glob)),
+      switchMap(code => this.assignmentService.searchSummary(this.route.snapshot.params.aid, code, this.task?.glob, '***')),
     ).subscribe(summary => {
       let level: string;
       let message: string | undefined;

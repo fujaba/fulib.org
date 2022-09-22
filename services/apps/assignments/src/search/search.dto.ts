@@ -1,6 +1,6 @@
 import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
 import {Transform, Type} from 'class-transformer';
-import {IsArray, IsMongoId, IsNumber, IsOptional, IsString, ValidateNested} from 'class-validator';
+import {IsArray, IsMongoId, IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested} from 'class-validator';
 import {Snippet} from '../evaluation/evaluation.schema';
 
 export class SearchSnippet extends Snippet {
@@ -60,4 +60,10 @@ export class SearchParams {
   @IsOptional()
   @IsString()
   glob?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  wildcard?: string;
 }

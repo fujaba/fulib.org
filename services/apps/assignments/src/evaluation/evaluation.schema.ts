@@ -52,6 +52,12 @@ export class Snippet {
   code: string;
 
   @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  pattern?: string;
+
+  @Prop()
   @ApiProperty()
   @IsString()
   comment: string;

@@ -45,6 +45,7 @@
               <app-edit-snippet
                 [snippet]="snippet" [index]="index" [comments]="comments"
                 (deleted)="deleteSnippet(index)"
+                (updated)="snippetUpdates$.next($event)"
               ></app-edit-snippet>
             </li>
           </ul>
