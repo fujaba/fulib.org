@@ -43,7 +43,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
   derivedSolutionCount?: number;
 
   snippetUpdates$ = new Subject<Snippet>();
-  searchSummary?: SearchSummary & { level: string, message?: string };
+  searchSummary?: SearchSummary & { level: string, message?: string, code: string };
 
   subscriptions = new Subscription();
 
@@ -128,7 +128,9 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     ).pipe(
       debounceTime(200),
       distinctUntilChanged(),
-      switchMap(code => this.assignmentService.searchSummary(this.route.snapshot.params.aid, code, this.task?.glob, '***')),
+      switchMap(code => this.assignmentService.searchSummary(this.route.snapshot.params.aid, code, this.task?.glob, '***').pipe(
+        map(searchSummary => ({...searchSummary, code})),
+      )),
     ).subscribe(summary => {
       let level: string;
       let message: string | undefined;

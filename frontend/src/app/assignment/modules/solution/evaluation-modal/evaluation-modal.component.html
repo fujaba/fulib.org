@@ -35,6 +35,9 @@
             <b>{{ searchSummary.solutions }}</b>
             solutions for this snippet.
             {{ searchSummary.message }}
+            <a [routerLink]="['/assignments', route.snapshot.params.aid, 'search']" [queryParams]="{q: searchSummary.code, glob: task?.glob}">
+              View Results
+            </a>
           </div>
           <label class="form-label" for="snippets">
             Snippets
