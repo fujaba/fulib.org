@@ -15,10 +15,10 @@ export interface FileDocument {
 
 const TOKEN_PATTERN = new RegExp(Object.values({
   number: /[+-]?[0-9]+(\.[0-9]+)?/,
-  string: /"(\\.|[^"\\])*"/,
+  string: /["](\\.|[^"\\])*["]/, // NB double quotes must be escaped in Lucene RegExp
   char: /'(\\.|[^'\\])*'/,
   identifier: /[a-zA-Z$_][a-zA-Z0-9$_]*/,
-  symbol: /[(){}<>\[\].,;+\-*/%|&=!?:@^]/,
+  symbol: /[(){}<>\[\].,;+\-*/%|&=!?:@^\\]/,
 }).map(r => r.source).join('|'), 'g');
 
 @Injectable()
