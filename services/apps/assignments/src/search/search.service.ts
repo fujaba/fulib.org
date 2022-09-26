@@ -78,6 +78,8 @@ export class SearchService implements OnModuleInit {
             index: newName,
           },
         },
+      }, {
+        requestTimeout: '600s',
       });
 
       // add alias from 'files' to newName
