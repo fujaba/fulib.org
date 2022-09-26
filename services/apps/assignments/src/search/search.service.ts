@@ -15,8 +15,8 @@ export interface FileDocument {
 
 const TOKEN_PATTERN = new RegExp(Object.values({
   number: /[+-]?[0-9]+(\.[0-9]+)?/,
-  string: /"(\\.|[^"\\])*("|$)/,
-  char: /'(\\.|[^'\\])*('|$)/,
+  string: /"(\\.|[^"\\])*"/,
+  char: /'(\\.|[^'\\])*'/,
   identifier: /[a-zA-Z$_][a-zA-Z0-9$_]*/,
   symbol: /[(){}<>\[\].,;+\-*/%|&=!?:@^]/,
 }).map(r => r.source).join('|'), 'g');
