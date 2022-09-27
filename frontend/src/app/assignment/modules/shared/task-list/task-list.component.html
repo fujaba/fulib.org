@@ -1,11 +1,12 @@
-<ol *ngIf="tasks else loading">
-  <li *ngFor="let task of tasks" [class]="points && evaluations?.[task._id] ? 'text-' + (task | taskColor:points[task._id]) : undefined">
+<ul *ngIf="tasks else loading">
+  <li *ngFor="let task of tasks" [class]="points && evaluations?.[task._id] ? 'list-unstyled text-' + (task | taskColor:points[task._id]) : evaluations ? 'list-unstyled' : undefined">
     <input
+      *ngIf="evaluations"
       #check
       type="checkbox"
       class="form-check-input"
-      [checked]="evaluations?.[task._id] && points?.[task._id] !== 0"
-      [indeterminate]="!evaluations?.[task._id]"
+      [checked]="evaluations[task._id] && points?.[task._id] !== 0"
+      [indeterminate]="!evaluations[task._id]"
       (change)="givePoints(task, check.checked ? task.points : 0)"
       [ngbTooltip]="'Click to give ' + (check.checked ? 0 : task.points) + ' points'"
     >
@@ -14,25 +15,27 @@
       <ng-container *ngIf="points">{{points[task._id]}} / </ng-container>
       {{task.points}}
     </span>
-    <a
-      *ngIf="evaluations && evaluations[task._id] as evaluation; else createEvaluation"
-      [ngbTooltip]="'View Evaluation by ' + evaluation.author"
-      role="button"
-      class="link-secondary ms-1"
-      [class.bi-person]="evaluation.author !== 'Code Search'"
-      [class.bi-robot]="evaluation.author === 'Code Search'"
-      [routerLink]="[task._id]"
-      (click)="openTelemetry(task)"
-    ></a>
-    <ng-template #createEvaluation>
+    <ng-container *ngIf="evaluations">
       <a
-        ngbTooltip="Create Evaluation"
+        *ngIf="evaluations[task._id] as evaluation; else createEvaluation"
+        [ngbTooltip]="'View Evaluation by ' + evaluation.author"
         role="button"
-        class="bi-plus-circle link-primary ms-1"
+        class="link-secondary ms-1"
+        [class.bi-person]="evaluation.author !== 'Code Search'"
+        [class.bi-robot]="evaluation.author === 'Code Search'"
         [routerLink]="[task._id]"
         (click)="openTelemetry(task)"
       ></a>
-    </ng-template>
+      <ng-template #createEvaluation>
+        <a
+          ngbTooltip="Create Evaluation"
+          role="button"
+          class="bi-plus-circle link-primary ms-1"
+          [routerLink]="[task._id]"
+          (click)="openTelemetry(task)"
+        ></a>
+      </ng-template>
+    </ng-container>
     <app-task-list
       *ngIf="task.children.length"
       [tasks]="task.children"
@@ -40,7 +43,7 @@
       [points]="points"
     ></app-task-list>
   </li>
-</ol>
+</ul>
 <ng-template #loading>
-  Loading Tasks...
+  Loading...
 </ng-template>

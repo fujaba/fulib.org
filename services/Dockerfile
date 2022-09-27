@@ -1,4 +1,4 @@
-FROM node:14-slim as builder
+FROM node:16-slim as builder
 RUN npm install -g pnpm
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
@@ -7,7 +7,7 @@ COPY . .
 ARG SERVICE
 RUN pnpm build $SERVICE
 
-FROM node:14-slim
+FROM node:16-slim
 RUN npm install -g pnpm
 WORKDIR /app
 ENV NODE_ENV=production
