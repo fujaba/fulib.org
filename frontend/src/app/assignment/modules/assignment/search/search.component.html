@@ -23,6 +23,14 @@
       <input type="text" class="form-control" id="globInput" [ngModel]="glob$.value"
              (ngModelChange)="glob$.next($event)">
     </div>
+    <div class="mb-3">
+      <label class="form-label" for="wildcardInput">Wildcard</label>
+      <input type="text" class="form-control" id="wildcardInput" [ngModel]="wildcard$.value"
+             (ngModelChange)="wildcard$.next($event)">
+      <div class="form-text">
+        Occurrences of this string will be treated as a wildcard in the search query.
+      </div>
+    </div>
     <div class="form-check">
       <input
         type="checkbox" class="form-check-input" id="syncCheck"

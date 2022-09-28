@@ -5,6 +5,7 @@ export class Snippet {
   comment: string;
   code: string;
   context?: string;
+  pattern?: string;
 }
 
 export interface CodeSearchInfo {

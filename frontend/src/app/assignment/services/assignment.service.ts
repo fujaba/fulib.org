@@ -193,20 +193,22 @@ export class AssignmentService {
     );
   }
 
-  search(id: string, q: string, context = 2, glob?: string): Observable<SearchResult[]> {
+  search(id: string, q: string, context = 2, glob?: string, wildcard?: string): Observable<SearchResult[]> {
     const headers = this.getHeaders(this.getToken(id));
     const params: Record<string, string | number> = {q, context};
     glob && (params.glob = glob);
+    wildcard && (params.wildcard = wildcard);
     return this.http.get<SearchResult[]>(`${environment.assignmentsApiUrl}/assignments/${id}/search`, {
       params,
       headers,
     });
   }
 
-  searchSummary(id: string, q: string, glob?: string): Observable<SearchSummary> {
+  searchSummary(id: string, q: string, glob?: string, wildcard?: string): Observable<SearchSummary> {
     const headers = this.getHeaders(this.getToken(id));
     const params: Record<string, string> = {q};
     glob && (params.glob = glob);
+    wildcard && (params.wildcard = wildcard);
     return this.http.get<SearchSummary>(`${environment.assignmentsApiUrl}/assignments/${id}/search/summary`, {
       params,
       headers,
