@@ -81,14 +81,4 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.openModal?.close();
   }
-
-  /* opens vnc url in a new browser window*/
-  openVNCWindow() {
-    window.open(this.container?.vncUrl, "_blank",
-      "width=800,height=600");
-  }
-
-  stopContainer(projectId) {
-    this.containerService.delete(projectId);
-  }
 }

@@ -1,11 +1,15 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {switchMap} from 'rxjs/operators';
+import {switchMap, tap} from 'rxjs/operators';
 import {ProjectConfig} from '../../../../shared/model/project-config';
 import {FileService} from '../../../services/file.service';
 import {ProjectManager} from '../../../services/project.manager';
 import {ProjectService} from '../../../services/project.service';
 import {SetupService} from '../setup.service';
+
+import {Project} from "../../../model/project";
+import {Container} from "../../../model/container";
+import {ContainerService} from "../../../services/container.service";
 
 @Component({
   selector: 'app-project-setup',
@@ -15,37 +19,35 @@ import {SetupService} from '../setup.service';
 export class SetupComponent implements OnInit {
   config: ProjectConfig;
 
+  project: Project;
+  container: Container;
+
   constructor(
     public activatedRoute: ActivatedRoute,
     private router: Router,
     private projectService: ProjectService,
-    private projectManager: ProjectManager,
+    private containerService: ContainerService,
     private setupService: SetupService,
-    private fileService: FileService,
+
   ) {
   }
 
   ngOnInit(): void {
-    this.config = this.setupService.getDefaultConfig(this.projectManager.project);
+    this.activatedRoute.params.pipe(
+      switchMap(({id}) => this.projectService.get(id)),
+      tap(project => {
+        this.project = project;
+      }),
+      switchMap(project => project.local ? this.containerService.createLocal(project) : this.containerService.create(project.id)),
+      tap(container => {
+        this.container = container;
+      }),
+    ).subscribe();
+    this.config = this.setupService.getDefaultConfig(this.project);
   }
 
   save(): void {
-    this.projectService.saveConfig(this.projectManager.project, this.config);
-    this.projectService.generateFiles(this.projectManager.container, this.config).pipe(
-      switchMap(() => {
-        const {container, fileRoot} = this.projectManager;
-        const path = `${fileRoot.path}src/main/scenarios/${this.config.packageName.replace('.', '/')}/${this.config.scenarioFileName}`;
-        return this.fileService.resolveAsync(container, fileRoot, path);
-      }),
-    ).subscribe(file => {
-      if (!file) {
-        return;
-      }
-      this.projectManager.openEditor({
-        file,
-        preview: false,
-        temporary: false,
-      });
-    });
+    this.projectService.saveConfig(this.project, this.config);
+    this.projectService.generateFiles(this.container, this.config).subscribe();
   }
 }

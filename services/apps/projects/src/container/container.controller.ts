@@ -1,10 +1,11 @@
 import {NotFound} from '@app/not-found';
-import {Body, Controller, Delete, Get, NotFoundException, Param, Post} from '@nestjs/common';
+import {Body, Controller, Delete, Get, NotFoundException, Param, Post, UploadedFile, UseInterceptors} from '@nestjs/common';
 import {ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {MemberAuth} from '../member/member-auth.decorator';
 import {ProjectService} from '../project/project.service';
 import {ContainerDto, CreateContainerDto} from './container.dto';
 import {ContainerService} from './container.service';
+import {FileInterceptor} from '@nestjs/platform-express';
 
 const forbiddenResponse = 'Not member of project.';
 
@@ -49,5 +50,11 @@ export class ContainerController {
   @ApiOkResponse({type: ContainerDto})
   async remove(@Param('id') id: string): Promise<ContainerDto | null> {
     return this.containerService.remove(id);
+  }
+
+  @Post('projects/zip/:id')
+  @UseInterceptors(FileInterceptor('file'))
+  async unzip(@Param('id') id: string, @UploadedFile() file: Express.Multer.File): Promise<any | null> {
+    return this.containerService.unzip(id, file);
   }
 }

@@ -10,6 +10,7 @@ import { setTimeout } from 'timers/promises';
 import {HttpService} from '@nestjs/axios';
 import {firstValueFrom} from 'rxjs';
 import * as fs from 'fs';
+import * as AdmZip from 'adm-zip';
 
 
 @Injectable()
@@ -114,6 +115,15 @@ export class ContainerService {
     let p: string = `${bindPrefix}/projects/${this.idBin(projectId)}/${projectId}/.vnc/vncUrl`;
     await this.createFile(p);
     await fs.promises.writeFile(p, containerDto.vncUrl);
+
+    //TODO: ====================
+    // check if 'build.gradle' already exists. if not, then tell frontend to run /setup, else skip
+    let buildGradlePath = `${bindPrefix}/projects/${this.idBin(projectId)}/${projectId}/build.gradle`;
+    await fs.promises.readFile(buildGradlePath).catch( () => {
+      //catch will trigger only if file doesn't exist, this means we have to run the /setup
+      //route to http://localhost:11340/projects/${projectId}/setup
+    });
+    //TODO: ===================
 
     return containerDto;
   }
@@ -294,6 +304,13 @@ export class ContainerService {
     const suffix = `containers-vnc/${id.substring(0, 12)}`;
     const vncURL = `${environment.docker.proxyHost}/${suffix}/vnc_lite.html?path=${suffix}&resize=remote`;
     return vncURL;
+  }
+
+  async unzip(projectId: string, zip: Express.Multer.File): Promise<void> {
+    const bindPrefix = path.resolve(environment.docker.bindPrefix);
+    let targetPath: string = `${bindPrefix}/projects/${this.idBin(projectId)}/${projectId}/`;
+    let admZip = new AdmZip(zip.buffer);
+    admZip.extractAllTo(targetPath, /*overwrite*/ true);
   }
 
 }
