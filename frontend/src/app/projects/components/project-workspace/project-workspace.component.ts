@@ -8,7 +8,6 @@ import {Project} from '../../model/project';
 import {ContainerService} from '../../services/container.service';
 import {LocalProjectService} from '../../services/local-project.service';
 import {ProjectService} from '../../services/project.service';
-import {relative} from "@angular/compiler-cli";
 
 
 const progressLabels = {
