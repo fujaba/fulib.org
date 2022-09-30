@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {switchMap, tap} from 'rxjs/operators';
 import {Container} from '../../model/container';
@@ -8,6 +8,7 @@ import {Project} from '../../model/project';
 import {ContainerService} from '../../services/container.service';
 import {LocalProjectService} from '../../services/local-project.service';
 import {ProjectService} from '../../services/project.service';
+import {relative} from "@angular/compiler-cli";
 
 
 const progressLabels = {
@@ -42,6 +43,7 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private localProjectService: LocalProjectService,
     private projectService: ProjectService,
     private containerService: ContainerService,
@@ -75,6 +77,9 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
     ).subscribe(() => {
       this.openModal?.close();
       this.showAlert = true;
+      if (this.container?.isNew) {
+        this.router.navigate(['setup'], {relativeTo: this.route})
+      }
     });
   }
 

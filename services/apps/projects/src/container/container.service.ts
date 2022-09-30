@@ -116,14 +116,12 @@ export class ContainerService {
     await this.createFile(p);
     await fs.promises.writeFile(p, containerDto.vncUrl);
 
-    //TODO: ====================
-    // check if 'build.gradle' already exists. if not, then tell frontend to run /setup, else skip
+
     let buildGradlePath = `${bindPrefix}/projects/${this.idBin(projectId)}/${projectId}/build.gradle`;
     await fs.promises.readFile(buildGradlePath).catch( () => {
       //catch will trigger only if file doesn't exist, this means we have to run the /setup
-      //route to http://localhost:11340/projects/${projectId}/setup
+      containerDto.isNew = true;
     });
-    //TODO: ===================
 
     return containerDto;
   }
@@ -169,6 +167,7 @@ export class ContainerService {
       token,
       url: this.containerUrl(id),
       vncUrl: this.vncURL(id),
+      isNew: false,
     };
   }
 

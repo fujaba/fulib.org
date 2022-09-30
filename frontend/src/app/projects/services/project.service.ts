@@ -101,7 +101,7 @@ export class ProjectService {
         const formData = new FormData();
         const blob = new Blob([zipBlob]);
         formData.append('file', blob);
-        return this.http.post<void>(`${environment.projectsApiUrl}/projects/zip/${container.projectId}`, formData)
+        return this.http.post<void>(`${environment.projectsApiUrl}/projects/${container.projectId}/zip`, formData)
       }),
     );
   }

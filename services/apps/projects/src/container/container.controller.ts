@@ -52,7 +52,7 @@ export class ContainerController {
     return this.containerService.remove(id);
   }
 
-  @Post('projects/zip/:id')
+  @Post('projects/:id/zip')
   @UseInterceptors(FileInterceptor('file'))
   async unzip(@Param('id') id: string, @UploadedFile() file: Express.Multer.File): Promise<any | null> {
     return this.containerService.unzip(id, file);

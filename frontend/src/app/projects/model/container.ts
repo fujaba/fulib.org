@@ -4,4 +4,5 @@ export class Container {
   projectId: string;
   token: string;
   vncUrl: string;
+  isNew: boolean;
 }
