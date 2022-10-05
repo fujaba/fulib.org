@@ -18,16 +18,10 @@ import {SettingsComponent} from './components/settings/settings.component';
 import {SetupComponent} from './components/setup/setup.component';
 import {TransferComponent} from './components/transfer/transfer.component';
 import {ProjectsRoutingModule} from './projects-routing.module';
-import {ConfigService} from './services/config.service';
 import {ContainerService} from './services/container.service';
-import {DavClient} from './services/dav-client';
-import {FileChangeService} from './services/file-change.service';
-import {FileTypeService} from './services/file-type.service';
-import {FileService} from './services/file.service';
 import {LocalProjectService} from './services/local-project.service';
 import {MemberService} from './services/member.service';
 import {ProjectService} from './services/project.service';
-import {SearchService} from './services/search.service';
 
 @NgModule({
   declarations: [
@@ -58,16 +52,10 @@ import {SearchService} from './services/search.service';
     UserModule,
   ],
   providers: [
-    ConfigService,
     ContainerService,
-    DavClient,
-    FileService,
-    FileChangeService,
-    FileTypeService,
     LocalProjectService,
     ProjectService,
     MemberService,
-    SearchService,
   ],
 })
 export class ProjectsModule {

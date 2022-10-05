@@ -1,17 +1,16 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 
-import {forkJoin, Observable, of} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
 
 import {environment} from '../../../environments/environment';
 import {ConfigService as EditorConfigService} from '../../editor/config.service';
 import {ProjectConfig} from '../../shared/model/project-config';
 import {UserService} from '../../user/user.service';
-import {DavClient} from './dav-client';
-import {LocalProjectService} from './local-project.service';
 import {Container} from '../model/container';
 import {LocalProject, Project, ProjectStub, UserProject} from '../model/project';
+import {LocalProjectService} from './local-project.service';
 
 @Injectable()
 export class ProjectService {
@@ -20,7 +19,6 @@ export class ProjectService {
     private users: UserService,
     private http: HttpClient,
     private localProjectService: LocalProjectService,
-    private davClient: DavClient,
     private configService: EditorConfigService,
   ) {
   }
@@ -38,7 +36,14 @@ export class ProjectService {
   }
 
   setupFromEditor(id: string) {
-    const { packageName, projectName, projectVersion, scenarioFileName, decoratorClassName, storedScenario } = this.configService;
+    const {
+      packageName,
+      projectName,
+      projectVersion,
+      scenarioFileName,
+      decoratorClassName,
+      storedScenario,
+    } = this.configService;
     this.localProjectService.saveConfig(id, {
       packageName,
       projectName,
@@ -101,44 +106,7 @@ export class ProjectService {
         const formData = new FormData();
         const blob = new Blob([zipBlob]);
         formData.append('file', blob);
-        return this.http.post<void>(`${environment.projectsApiUrl}/projects/${container.projectId}/zip`, formData)
-      }),
-    );
-  }
-
-  restoreSetupAndFiles(container: Container, project: Project): Observable<any> {
-    const config = this.localProjectService.getConfig(project.id);
-    if (config) {
-      return this.generateFiles(container, config).pipe(
-        tap(() => {
-          if (!project.local) {
-            this.localProjectService.deleteConfig(project.id);
-          }
-        }),
-        switchMap(() => this.restoreFiles(project, container)),
-      );
-    }
-    return this.restoreFiles(project, container);
-  }
-
-  private restoreFiles(project: Project, container: Container): Observable<any> {
-    const files = this.localProjectService.getFiles(project.id);
-    if (files.length === 0) {
-      return of(undefined);
-    }
-    return forkJoin(files.map(path => this.restoreFile(project, container, path)));
-  }
-
-  private restoreFile(project: Project, container: Container, path: string): Observable<any> {
-    const content = this.localProjectService.getFile(project.id, path);
-    if (content === null) {
-      return of(undefined);
-    }
-    return this.davClient.put(`${container.url}/dav/${path}`, content).pipe(
-      tap(() => {
-        if (!project.local) {
-          this.localProjectService.deleteFile(project.id, path);
-        }
+        return this.http.post<void>(`${environment.projectsApiUrl}/projects/${container.projectId}/zip`, formData);
       }),
     );
   }

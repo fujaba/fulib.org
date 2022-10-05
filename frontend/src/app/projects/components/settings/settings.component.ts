@@ -1,4 +1,4 @@
-import {Component, OnInit, Optional} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ToastService} from 'ng-bootstrap-ext';
 import {forkJoin, of} from 'rxjs';
@@ -8,7 +8,6 @@ import {UserService} from '../../../user/user.service';
 import {Member} from '../../model/member';
 import {Project} from '../../model/project';
 import {MemberService} from '../../services/member.service';
-import {ProjectManager} from '../../services/project.manager';
 import {ProjectService} from '../../services/project.service';
 
 @Component({
@@ -24,7 +23,6 @@ export class SettingsComponent implements OnInit {
 
   constructor(
     public activatedRoute: ActivatedRoute,
-    @Optional() public projectManager: ProjectManager | null,
     private projectService: ProjectService,
     private memberService: MemberService,
     private userService: UserService,
