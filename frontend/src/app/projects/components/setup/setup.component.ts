@@ -1,12 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {map, switchMap} from 'rxjs/operators';
-import {ProjectConfig} from '../../../../shared/model/project-config';
-import {Container} from '../../../model/container';
+import {ProjectConfig} from '../../../shared/model/project-config';
+import {Container} from '../../model/container';
 
-import {Project} from '../../../model/project';
-import {ContainerService} from '../../../services/container.service';
-import {ProjectService} from '../../../services/project.service';
+import {Project} from '../../model/project';
+import {ContainerService} from '../../services/container.service';
+import {ProjectService} from '../../services/project.service';
 
 @Component({
   selector: 'app-project-setup',

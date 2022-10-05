@@ -2,8 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ModalComponent, ToastService} from 'ng-bootstrap-ext';
 import {switchMap} from 'rxjs/operators';
-import {Project} from '../../../model/project';
-import {ProjectService} from '../../../services/project.service';
+import {Project} from '../../model/project';
+import {ProjectService} from '../../services/project.service';
+
 
 @Component({
   selector: 'app-delete-modal',

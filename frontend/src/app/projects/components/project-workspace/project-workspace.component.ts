@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
 import {switchMap, tap} from 'rxjs/operators';
@@ -77,7 +77,7 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
       this.openModal?.close();
       this.showAlert = true;
       if (this.container?.isNew) {
-        this.router.navigate(['setup'], {relativeTo: this.route})
+        this.router.navigate(['setup'], {relativeTo: this.route});
       }
     });
   }

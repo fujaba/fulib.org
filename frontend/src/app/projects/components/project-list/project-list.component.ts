@@ -1,14 +1,14 @@
 import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {KeycloakService} from 'keycloak-angular';
-import { ToastService } from 'ng-bootstrap-ext';
+import {ToastService} from 'ng-bootstrap-ext';
 import {forkJoin, of, Subscription} from 'rxjs';
 import {catchError, filter, startWith, switchMap, tap} from 'rxjs/operators';
 import {User} from '../../../user/user';
 import {UserService} from '../../../user/user.service';
 import {Container} from '../../model/container';
 import {LocalProject, Project} from '../../model/project';
-import { ContainerService } from '../../services/container.service';
+import {ContainerService} from '../../services/container.service';
 import {MemberService} from '../../services/member.service';
 import {ProjectService} from '../../services/project.service';
 

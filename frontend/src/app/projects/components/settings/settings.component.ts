@@ -3,13 +3,13 @@ import {ActivatedRoute} from '@angular/router';
 import {ToastService} from 'ng-bootstrap-ext';
 import {forkJoin, of} from 'rxjs';
 import {mapTo, switchMap, tap} from 'rxjs/operators';
-import {User} from '../../../../user/user';
-import {UserService} from '../../../../user/user.service';
-import {Member} from '../../../model/member';
-import {Project} from '../../../model/project';
-import {MemberService} from '../../../services/member.service';
-import {ProjectManager} from '../../../services/project.manager';
-import {ProjectService} from '../../../services/project.service';
+import {User} from '../../../user/user';
+import {UserService} from '../../../user/user.service';
+import {Member} from '../../model/member';
+import {Project} from '../../model/project';
+import {MemberService} from '../../services/member.service';
+import {ProjectManager} from '../../services/project.manager';
+import {ProjectService} from '../../services/project.service';
 
 @Component({
   selector: 'app-settings',

@@ -1,6 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {Component, Input, OnInit} from '@angular/core';
-import {ProjectStub} from '../../../model/project';
+import {ProjectStub} from '../../model/project';
 
 interface Image {
   tag: string;
