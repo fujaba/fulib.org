@@ -1,6 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {Component, Input, OnInit} from '@angular/core';
-import {ProjectStub} from '../../model/project';
+import {CreateProjectDto} from '../../model/project';
 
 interface Image {
   tag: string;
@@ -14,7 +14,7 @@ interface Image {
   styleUrls: ['./project-form.component.scss'],
 })
 export class ProjectFormComponent implements OnInit {
-  @Input() project: ProjectStub;
+  @Input() project: CreateProjectDto;
 
   dockerImages: Image[] = [];
 

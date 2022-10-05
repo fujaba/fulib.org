@@ -8,7 +8,7 @@
   <button type="button" class="btn btn-primary" (click)="save()">
     Save
   </button>
-  <ng-container *ngIf="project && !project.local">
+  <ng-container *ngIf="project">
     <hr/>
     <h4 class="d-flex align-items-center">
       Members
@@ -36,7 +36,7 @@
       </li>
     </ul>
   </ng-container>
-  <ng-container *ngIf="project && (project.local || currentUser && currentUser.id === project.userId)">
+  <ng-container *ngIf="project && (currentUser && currentUser.id === project.userId)">
     <hr/>
     <h4>Danger Zone</h4>
     <div class="list-group">
@@ -51,7 +51,7 @@
           Setup
         </a>
       </div>
-      <div class="list-group-item border-danger d-flex align-items-center" *ngIf="!project.local">
+      <div class="list-group-item border-danger d-flex align-items-center">
         <div class="me-auto">
           <h6>
             Transfer Ownership

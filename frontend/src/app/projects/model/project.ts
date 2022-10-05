@@ -1,22 +1,10 @@
-export type Project = UserProject | LocalProject;
-
-export interface ProjectStub {
+export interface Project {
+  id: string;
+  userId: string;
+  created: string;
   name: string;
   description: string;
   dockerImage?: string;
-  local?: boolean;
 }
 
-export interface BaseProject extends ProjectStub {
-  id: string;
-  created: Date;
-}
-
-export interface UserProject extends BaseProject {
-  userId: string;
-  local?: false;
-}
-
-export interface LocalProject extends BaseProject {
-  local: true;
-}
+export type CreateProjectDto = Omit<Project, 'id' | 'userId' | 'created'>;

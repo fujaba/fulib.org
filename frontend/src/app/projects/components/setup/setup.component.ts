@@ -48,7 +48,6 @@ export class SetupComponent implements OnInit {
   }
 
   save(): void {
-    this.projectService.saveConfig(this.project, this.config);
     this.projectService.generateFiles(this.container, this.config).subscribe();
   }
 }

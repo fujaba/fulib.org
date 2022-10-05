@@ -1,20 +1,9 @@
 <div class="container">
   <h1 class="d-flex align-items-center">
     My Projects
-    <div class="btn-group ms-auto">
-      <a class="btn btn-success" routerLink="new/edit" [queryParams]="{local: currentUser ? null : true}">
-        <i class="bi-folder-plus"></i>
-        New
-      </a>
-      <div *ngIf="currentUser" class="btn-group" ngbDropdown role="group" aria-label="Actions">
-        <button class="btn btn-success dropdown-toggle-split" ngbDropdownToggle></button>
-        <div class="dropdown-menu" ngbDropdownMenu>
-          <a ngbDropdownItem routerLink="new/edit" [queryParams]="{local: true}">
-            New Local Project
-          </a>
-        </div>
-      </div>
-    </div>
+    <a class="btn btn-success ms-auto bi-folder-plus" routerLink="new/edit">
+      New
+    </a>
   </h1>
 
   <div *ngIf="projects.length === 0" class="card">
@@ -55,7 +44,7 @@
   <ul class="list-group">
     <li *ngFor="let project of projects; let index = index" class="list-group-item">
       <div class="d-flex align-items-center">
-        <i class="{{ project.local ? 'bi-hdd' : 'bi-server' }} feature-icon" [ngbTooltip]="project.local ? 'Local' : 'Persistent'"></i>
+        <i class="bi-server feature-icon"></i>
         <div class="me-auto">
           <h3>
             {{project.name}}
@@ -83,25 +72,22 @@
               <a ngbDropdownItem [routerLink]="[project.id, 'settings']">
                 Settings
               </a>
-              <a *ngIf="!project.local" ngbDropdownItem [routerLink]="[project.id, 'edit-member']">
+              <a ngbDropdownItem [routerLink]="[project.id, 'edit-member']">
                 Add Collaborator
               </a>
-              <button *ngIf="currentUser && project.local" ngbDropdownItem (click)="convert(project)">
-                Convert to Persistent
-              </button>
               <div class="dropdown-divider"></div>
               <button *ngIf="containers[index]" class="text-warning" ngbDropdownItem (click)="stop(project)">
                 Stop Container
               </button>
-              <a *ngIf="!project.local && currentUser && currentUser.id === project.userId"
+              <a *ngIf="currentUser && currentUser.id === project.userId"
                  class="text-danger" ngbDropdownItem [routerLink]="[project.id, 'transfer']">
                 Transfer
               </a>
-              <a *ngIf="project.local || currentUser && currentUser.id === project.userId"
+              <a *ngIf="currentUser && currentUser.id === project.userId"
                 ngbDropdownItem class="text-danger" [routerLink]="[project.id, 'delete']">
                 Delete
               </a>
-              <button *ngIf="!project.local && currentUser && currentUser.id !== project.userId"
+              <button *ngIf="currentUser && currentUser.id !== project.userId"
                  ngbDropdownItem class="text-danger" (click)="leave(project)"
               >
                 Leave

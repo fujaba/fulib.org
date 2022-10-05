@@ -40,7 +40,7 @@ export class DeleteModalComponent implements OnInit {
     }
 
     this.deleting = true;
-    this.projectService.delete(this.project).subscribe(() => {
+    this.projectService.delete(this.project.id).subscribe(() => {
       this.deleting = false;
       modal.close();
       this.router.navigate(['/projects']);

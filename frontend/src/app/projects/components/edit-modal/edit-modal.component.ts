@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {KeycloakService} from 'keycloak-angular';
-import {map, switchMap} from 'rxjs/operators';
-import {Project, ProjectStub} from '../../model/project';
+import {of} from 'rxjs';
+import {switchMap} from 'rxjs/operators';
+import {CreateProjectDto, Project} from '../../model/project';
 import {ProjectService} from '../../services/project.service';
 
 @Component({
@@ -12,7 +13,7 @@ import {ProjectService} from '../../services/project.service';
 })
 export class EditModalComponent implements OnInit {
 
-  editing: Project | ProjectStub = this.createNew();
+  editing: Project | CreateProjectDto = this.createNew();
   creatingFromEditor = false;
   loggedIn = false;
 
@@ -31,21 +32,21 @@ export class EditModalComponent implements OnInit {
         if (id !== 'new') {
           return this.projectService.get(id);
         }
-        return this.activatedRoute.queryParams.pipe(map(({editor, local}) => {
-          this.creatingFromEditor = !!editor;
-          return this.createNew(!!local);
-        }));
+        return of(this.createNew());
       }),
     ).subscribe(project => {
       this.editing = project;
     });
+
+    this.activatedRoute.queryParams.subscribe(({editor}) => {
+      this.creatingFromEditor = !!editor;
+    });
   }
 
-  private createNew(local?: boolean): ProjectStub {
+  private createNew(): CreateProjectDto {
     return {
       name: '',
       description: '',
-      local,
     };
   }
 
@@ -64,7 +65,7 @@ export class EditModalComponent implements OnInit {
 
     this.projectService.create(this.editing).subscribe(created => {
       if (this.creatingFromEditor) {
-        this.projectService.setupFromEditor(created.id);
+        // TODO
       }
       this.router.navigate(['/projects']);
     });

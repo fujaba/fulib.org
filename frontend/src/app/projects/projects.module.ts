@@ -19,7 +19,6 @@ import {SetupComponent} from './components/setup/setup.component';
 import {TransferComponent} from './components/transfer/transfer.component';
 import {ProjectsRoutingModule} from './projects-routing.module';
 import {ContainerService} from './services/container.service';
-import {LocalProjectService} from './services/local-project.service';
 import {MemberService} from './services/member.service';
 import {ProjectService} from './services/project.service';
 
@@ -53,7 +52,6 @@ import {ProjectService} from './services/project.service';
   ],
   providers: [
     ContainerService,
-    LocalProjectService,
     ProjectService,
     MemberService,
   ],

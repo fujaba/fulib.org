@@ -7,7 +7,7 @@ import {catchError, filter, startWith, switchMap, tap} from 'rxjs/operators';
 import {User} from '../../../user/user';
 import {UserService} from '../../../user/user.service';
 import {Container} from '../../model/container';
-import {LocalProject, Project} from '../../model/project';
+import {Project} from '../../model/project';
 import {ContainerService} from '../../services/container.service';
 import {MemberService} from '../../services/member.service';
 import {ProjectService} from '../../services/project.service';
@@ -63,18 +63,6 @@ export class ProjectListComponent implements OnInit, OnDestroy {
 
   login(): void {
     this.keycloak.login();
-  }
-
-  convert(localProject: LocalProject) {
-    this.projectService.convert(localProject).subscribe(persistentProject => {
-      const index = this.projects.indexOf(localProject);
-      if (index >= 0) {
-        this.projects[index] = persistentProject;
-      }
-      this.toastService.success('Convert Project', 'Successfully converted project to persistent.');
-    }, error => {
-      this.toastService.error('Convert Project', 'Failed to convert project', error);
-    });
   }
 
   leave(project: Project) {

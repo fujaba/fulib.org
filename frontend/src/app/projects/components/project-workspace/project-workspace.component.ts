@@ -6,7 +6,6 @@ import {Container} from '../../model/container';
 
 import {Project} from '../../model/project';
 import {ContainerService} from '../../services/container.service';
-import {LocalProjectService} from '../../services/local-project.service';
 import {ProjectService} from '../../services/project.service';
 
 
@@ -43,7 +42,6 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private localProjectService: LocalProjectService,
     private projectService: ProjectService,
     private containerService: ContainerService,
     private ngbModal: NgbModal,
@@ -68,7 +66,7 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
         this.project = project;
         this.progress.metadata = true;
       }),
-      switchMap(project => project.local ? this.containerService.createLocal(project) : this.containerService.create(project.id)),
+      switchMap(project => this.containerService.create(project.id)),
       tap(container => {
         this.container = container;
         this.progress.container = true;
