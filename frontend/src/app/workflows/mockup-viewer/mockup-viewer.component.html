@@ -28,17 +28,10 @@
       </li>
     </ul>
 
-    <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic" [(ngModel)]="currentDisplay"
-         (ngModelChange)="evaluateTabs()">
-      <label ngbButtonLabel class="btn-info">
-        <input ngbButton type="radio" class="btn-check" [value]="'pages'"> Pages
-      </label>
-      <label ngbButtonLabel class="btn-info">
-        <input ngbButton type="radio" class="btn-check" [value]="'objects'"> Objects
-      </label>
-      <label ngbButtonLabel class="btn-info">
-        <input ngbButton type="radio" class="btn-check" [value]="'class'"> Class
-      </label>
+    <div class="btn-group" role="group">
+      <button class="btn btn-primary" [class.active]="currentDisplay === 'pages'" (click)="currentDisplay = 'pages'; evaluateTabs()">Pages</button>
+      <button class="btn btn-primary" [class.active]="currentDisplay === 'objects'" (click)="currentDisplay = 'objects'; evaluateTabs()">Objects</button>
+      <button class="btn btn-primary" [class.active]="currentDisplay === 'class'" (click)="currentDisplay = 'class'; evaluateTabs()">Class</button>
     </div>
   </div>
   <ng-container *ngIf="currentTabs && currentTabs[index]">

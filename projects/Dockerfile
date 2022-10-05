@@ -1,4 +1,4 @@
-FROM gradle:7.4.2-jdk17-alpine as preload
+FROM gradle:7.5.1-jdk17-alpine as preload
 WORKDIR /opt/preload
 COPY preload.build.gradle build.gradle
 RUN gradle wrapper && ./gradlew downloadDependencies && ./gradlew --stop

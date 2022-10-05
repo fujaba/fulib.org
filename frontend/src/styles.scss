@@ -48,6 +48,25 @@
 /* --------------- Dark Mode Overrides --------------- */
 
 @mixin darkmode-ext {
+  // TODO: Remove this once Bootstrap Darkmode supports this
+  .navbar-brand {
+    color: $navbar-dark-brand-color;
+    &:hover {
+      color: $navbar-dark-brand-hover-color;
+    }
+  }
+
+  .navbar-nav .nav-link {
+    color: $navbar-dark-color;
+    &:hover {
+      color: $navbar-dark-hover-color;
+    }
+    &.active {
+      color: $navbar-dark-active-color;
+    }
+  }
+  // End TODO
+
   .CodeMirror {
     border-color: $dark-border-color;
   }

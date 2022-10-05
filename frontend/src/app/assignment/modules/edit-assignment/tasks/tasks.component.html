@@ -1,13 +1,6 @@
-<div class="btn-group mb-3"
-     ngbRadioGroup [ngModel]="markdown !== undefined" (ngModelChange)="switchMarkdown($event)">
-  <label ngbButtonLabel class="btn-secondary">
-    <input ngbButton type="radio" class="btn-check" [value]="true">
-    Markdown
-  </label>
-  <label ngbButtonLabel class="btn-secondary">
-    <input ngbButton type="radio" class="btn-check" [value]="false">
-    List
-  </label>
+<div class="btn-group" role="group">
+  <button class="btn btn-primary" [class.active]="markdown !== undefined" (click)="switchMarkdown(true)">Markdown</button>
+  <button class="btn btn-primary" [class.active]="markdown === undefined" (click)="switchMarkdown(false)">List</button>
 </div>
 <app-edit-task-list
   *ngIf="markdown === undefined"

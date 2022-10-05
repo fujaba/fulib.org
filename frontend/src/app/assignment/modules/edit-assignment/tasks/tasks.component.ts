@@ -21,6 +21,9 @@ export class TasksComponent implements OnDestroy {
   }
 
   switchMarkdown(markdown: boolean) {
+    if (markdown === (this.markdown !== undefined)) {
+      return;
+    }
     if (markdown) {
       this.markdown = this.taskMarkdownService.renderTasks(this.context.assignment.tasks);
     } else if (this.markdown !== undefined) {

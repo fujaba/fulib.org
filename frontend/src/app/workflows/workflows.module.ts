@@ -1,7 +1,7 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {NgbButtonsModule, NgbDropdownModule, NgbNavModule} from '@ng-bootstrap/ng-bootstrap';
+import {NgbDropdownModule, NgbNavModule} from '@ng-bootstrap/ng-bootstrap';
 
 import {AngularSplitModule} from 'angular-split';
 import {ModalModule} from 'ng-bootstrap-ext';
@@ -26,7 +26,6 @@ import {WorkflowsService} from './workflows.service';
     SharedModule,
     NgbDropdownModule,
     FormsModule,
-    NgbButtonsModule,
     NgbNavModule,
     ModalModule,
   ],
