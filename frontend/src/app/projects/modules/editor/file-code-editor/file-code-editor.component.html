@@ -1,9 +1,0 @@
-<app-autotheme-codemirror #codeMirror
-  class="cm-h-100"
-  [content]="content"
-  (contentChange)="setContent($event)"
-  (changes)="changeEvents$.next($event)"
-  (cursorActivity)="cursorEvents$.next($event)"
-  [options]="options"
-  [markers]="markers"
-></app-autotheme-codemirror>

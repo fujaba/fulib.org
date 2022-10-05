@@ -7,16 +7,9 @@ import {ModalModule} from 'ng-bootstrap-ext';
 import {DndModule} from 'ngx-drag-drop';
 
 import {SharedModule} from '../shared/shared.module';
-import {FileTabsComponent} from './components/file-tabs/file-tabs.component';
 import {ProjectListComponent} from './components/project-list/project-list.component';
 import {ProjectWorkspaceComponent} from './components/project-workspace/project-workspace.component';
-import {RunAnythingComponent} from './components/run-anything/run-anything.component';
-import {SearchEverywhereComponent} from './components/search-everywhere/search-everywhere.component';
-import {SplitPanelComponent} from './components/split-panel/split-panel.component';
-import {TutorialComponent} from './components/tutorial/tutorial.component';
-import {EditorModule} from './modules/editor/editor.module';
 import {SetupModule} from './modules/setup/setup.module';
-import {TerminalModule} from './modules/terminal/terminal.module';
 import {ProjectsRoutingModule} from './projects-routing.module';
 import {ConfigService} from './services/config.service';
 import {ContainerService} from './services/container.service';
@@ -31,13 +24,8 @@ import {SearchService} from './services/search.service';
 
 @NgModule({
   declarations: [
-    FileTabsComponent,
     ProjectListComponent,
     ProjectWorkspaceComponent,
-    SplitPanelComponent,
-    SearchEverywhereComponent,
-    RunAnythingComponent,
-    TutorialComponent,
   ],
   imports: [
     // Angular
@@ -52,9 +40,7 @@ import {SearchService} from './services/search.service';
     // Routing
     ProjectsRoutingModule,
     // Submodules
-    EditorModule,
     SetupModule,
-    TerminalModule,
     ModalModule,
   ],
   providers: [
