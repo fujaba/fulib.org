@@ -23,12 +23,6 @@ export class Task {
   _id: string;
 
   @Prop()
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsBoolean()
-  archived?: boolean;
-
-  @Prop()
   @ApiProperty()
   @IsString()
   description: string;
@@ -92,6 +86,12 @@ export class ClassroomInfo {
   },
 })
 export class Assignment {
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  archived?: boolean;
+
   @Prop()
   @ApiProperty()
   token: string;
