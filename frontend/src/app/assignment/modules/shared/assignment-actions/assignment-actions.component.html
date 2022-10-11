@@ -1,0 +1,23 @@
+<div ngbDropdown role="group" aria-label="Actions">
+  <button class="btn btn-secondary dropdown-toggle-split bi-gear" ngbDropdownToggle>
+    Options
+  </button>
+  <div class="dropdown-menu" ngbDropdownMenu>
+    <a ngbDropdownItem [routerLink]="[assignment._id, 'edit']" class="bi-pencil">
+      Edit
+    </a>
+    <a ngbDropdownItem [routerLink]="assignment._id" class="bi-clipboard-data">
+      View as Student
+    </a>
+    <a ngbDropdownItem [routerLink]="[assignment._id, 'import']" class="bi-download">
+      Import Solutions
+    </a>
+    <div class="dropdown-divider"></div>
+    <button ngbDropdownItem class="text-warning bi-archive" (click)="archive()">
+      {{ assignment.archived ? 'Unarchive' : 'Archive' }}
+    </button>
+    <a ngbDropdownItem [routerLink]="[assignment._id, 'delete']" class="text-danger bi-trash">
+      Delete
+    </a>
+  </div>
+</div>

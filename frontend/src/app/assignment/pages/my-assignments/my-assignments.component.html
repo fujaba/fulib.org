@@ -12,33 +12,10 @@
       <div class="me-auto">
         <app-assignment-info [assignment]="assignment"></app-assignment-info>
       </div>
-      <div class="btn-group">
-        <a class="btn btn-primary" [routerLink]="[assignment._id, 'solutions']">
-          Open
-        </a>
-        <div class="btn-group" ngbDropdown role="group" aria-label="Actions">
-          <button class="btn btn-primary dropdown-toggle-split" ngbDropdownToggle>
-          </button>
-          <div class="dropdown-menu" ngbDropdownMenu>
-            <a ngbDropdownItem [routerLink]="[assignment._id, 'edit']" class="bi-pencil">
-              Edit
-            </a>
-            <a ngbDropdownItem [routerLink]="assignment._id" class="bi-clipboard-data">
-              View as Student
-            </a>
-            <a ngbDropdownItem [routerLink]="[assignment._id, 'import']" class="bi-download">
-              Import Solutions
-            </a>
-            <div class="dropdown-divider"></div>
-            <button ngbDropdownItem class="text-warning bi-archive" (click)="archive(assignment)">
-              {{ assignment.archived ? 'Unarchive' : 'Archive' }}
-            </button>
-            <a ngbDropdownItem [routerLink]="[assignment._id, 'delete']" class="text-danger bi-trash">
-              Delete
-            </a>
-          </div>
-        </div>
-      </div>
+      <a class="btn btn-primary me-2" [routerLink]="[assignment._id, 'solutions']">
+        Open
+      </a>
+      <app-assignment-actions [assignment]="assignment" (removed)="remove(assignment)"></app-assignment-actions>
     </div>
   </li>
 </ul>
