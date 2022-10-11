@@ -23,6 +23,12 @@ export class Task {
   _id: string;
 
   @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  archived?: boolean;
+
+  @Prop()
   @ApiProperty()
   @IsString()
   description: string;
