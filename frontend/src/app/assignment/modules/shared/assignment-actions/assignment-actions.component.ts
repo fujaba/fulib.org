@@ -25,7 +25,8 @@ export class AssignmentActionsComponent implements OnInit {
     const {_id, archived} = this.assignment;
     this.assignmentService.update(_id, {
       archived: !archived,
-    }).subscribe(() => {
+    }).subscribe(result => {
+      this.assignment.archived = result.archived;
       this.removed.next();
       this.toastService.warn('Archive Assignment', `Successfully ${archived ? 'un' : ''}archived assignment`);
     }, error => {
