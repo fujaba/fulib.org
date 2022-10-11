@@ -2,6 +2,7 @@ import Task from './task';
 
 export default class Assignment {
   _id: string;
+  archived?: boolean;
   token?: string;
 
   title: string;

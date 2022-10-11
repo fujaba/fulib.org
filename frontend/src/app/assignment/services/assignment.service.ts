@@ -95,23 +95,23 @@ export class AssignmentService {
     return ids;
   }
 
-  getOwn(): Observable<Assignment[]> {
+  getOwn(archived = false): Observable<Assignment[]> {
     return this.users.current$.pipe(
       take(1),
-      switchMap(user => user && user.id ? this.getByUserId(user.id) : this.getOwnLocal()),
+      switchMap(user => user && user.id ? this.getByUserId(user.id, archived) : this.getOwnLocal(archived)),
     );
   }
 
-  private getOwnLocal(): Observable<Assignment[]> {
+  private getOwnLocal(archived = false): Observable<Assignment[]> {
     return forkJoin(this.getOwnIds().map(id => this.get(id).pipe(
       catchError(() => of(undefined)),
     ))).pipe(
-      map(assignments => assignments.filter((a): a is Assignment => !!a)),
+      map(assignments => assignments.filter((a): a is Assignment => !!a && (!!a.archived === archived)).sort(Assignment.comparator)),
     );
   }
 
-  getByUserId(userId: string): Observable<Assignment[]> {
-    return this.http.get<Assignment[]>(`${environment.assignmentsApiUrl}/assignments`, {params: {createdBy: userId}}).pipe(
+  getByUserId(userId: string, archived = false): Observable<Assignment[]> {
+    return this.http.get<Assignment[]>(`${environment.assignmentsApiUrl}/assignments`, {params: {createdBy: userId, archived}}).pipe(
       map(results => {
         for (const result of results) {
           result.token = this.getToken(result._id) ?? undefined;
