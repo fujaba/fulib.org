@@ -1,14 +1,14 @@
-import {HttpClient, HttpParameterCodec, HttpParams} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 
 import {saveAs} from 'file-saver';
-import {forkJoin, Observable, of} from 'rxjs';
-import {catchError, map, switchMap, take, tap} from 'rxjs/operators';
+import {Observable, of} from 'rxjs';
+import {map, switchMap, tap} from 'rxjs/operators';
 
 import {environment} from '../../../environments/environment';
+import {StorageService} from '../../services/storage.service';
 import {LintService} from '../../shared/lint.service';
 import {Marker} from '../../shared/model/marker';
-import {StorageService} from '../../services/storage.service';
 import {UserService} from '../../user/user.service';
 import Assignment, {CreateAssignmentDto, UpdateAssignmentDto} from '../model/assignment';
 import {CheckAssignment, CheckResult} from '../model/check';
@@ -95,23 +95,19 @@ export class AssignmentService {
     return ids;
   }
 
-  getOwn(archived = false): Observable<Assignment[]> {
-    return this.users.current$.pipe(
-      take(1),
-      switchMap(user => user && user.id ? this.getByUserId(user.id, archived) : this.getOwnLocal(archived)),
-    );
+  findOwn(archived = false): Observable<Assignment[]> {
+    const ownIds = this.getOwnIds();
+    return this.users.current$.pipe(switchMap(user => this.findAll(ownIds, user?.id, archived)));
   }
 
-  private getOwnLocal(archived = false): Observable<Assignment[]> {
-    return forkJoin(this.getOwnIds().map(id => this.get(id).pipe(
-      catchError(() => of(undefined)),
-    ))).pipe(
-      map(assignments => assignments.filter((a): a is Assignment => !!a && (!!a.archived === archived)).sort(Assignment.comparator)),
-    );
-  }
-
-  getByUserId(userId: string, archived = false): Observable<Assignment[]> {
-    return this.http.get<Assignment[]>(`${environment.assignmentsApiUrl}/assignments`, {params: {createdBy: userId, archived}}).pipe(
+  findAll(ids?: string[], createdBy?: string, archived = false): Observable<Assignment[]> {
+    return this.http.get<Assignment[]>(`${environment.assignmentsApiUrl}/assignments`, {
+      params: {
+        ...(ids ? {ids: ids.join(',')} : {}),
+        ...(createdBy ? {createdBy} : {}),
+        archived,
+      },
+    }).pipe(
       map(results => {
         for (const result of results) {
           result.token = this.getToken(result._id) ?? undefined;
