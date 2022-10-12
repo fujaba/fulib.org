@@ -16,6 +16,7 @@ export default class Assignment {
     org?: string;
     prefix?: string;
     token?: string;
+    webhook?: string;
     codeSearch?: boolean;
   };
 
