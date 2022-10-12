@@ -1,3 +1,4 @@
+import {HttpService} from '@nestjs/axios';
 import {Injectable} from '@nestjs/common';
 import {Cron, CronExpression} from '@nestjs/schedule';
 import {AssignmentDocument} from '../assignment/assignment.schema';
@@ -9,6 +10,7 @@ export class ClassroomScheduler {
   constructor(
     private assignmentService: AssignmentService,
     private classroomService: ClassroomService,
+    private http: HttpService,
   ) {
   }
 
@@ -29,11 +31,15 @@ export class ClassroomScheduler {
       return;
     }
 
-    const results = await Promise.all(assignments.map(async a => {
+    await Promise.all(assignments.map(async a => {
       const ids = await this.classroomService.importSolutions2(a as AssignmentDocument);
+      const webhook = a.classroom?.webhook;
+      if (webhook) {
+        this.http.post(webhook, {
+          content: `The deadline for **${a.title}** is over. I imported **${ids.length}** Solutions.`,
+        }).subscribe();
+      }
       return ids.length;
     }));
-    const total = results.reduce((a, c) => a + c, 0);
-    console.info('Imported', total, 'Solutions for', results.length, 'Assignments with Deadline', startDate);
   }
 }
