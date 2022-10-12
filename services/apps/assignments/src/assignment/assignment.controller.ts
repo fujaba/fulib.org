@@ -54,14 +54,14 @@ export class AssignmentController {
     @Query('createdBy') createdBy?: string,
     @Query('ids') ids?: string,
   ) {
-    const $or: FilterQuery<Assignment>[] = [];
+    const filter: FilterQuery<Assignment> = {archived: archived ? true : {$ne: true}};
     if (createdBy) {
-      $or.push({createdBy});
+      (filter.$or ||= []).push({createdBy});
     }
     if (ids) {
-      $or.push({_id: {$in: ids.split(',')}});
+      (filter.$or ||= []).push({_id: {$in: ids.split(',')}});
     }
-    return this.assignmentService.findAll({$or, archived: archived ? true : {$ne: true}});
+    return this.assignmentService.findAll(filter);
   }
 
   @Get(':id')
