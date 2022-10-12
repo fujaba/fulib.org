@@ -62,7 +62,7 @@ export class CreateCourseComponent implements OnInit {
 
   ngOnInit() {
     this.loadDraft();
-    this.assignmentService.getOwn().subscribe(assignments => {
+    this.assignmentService.findOwn().subscribe(assignments => {
       this.ownAssignments = assignments;
     });
   }

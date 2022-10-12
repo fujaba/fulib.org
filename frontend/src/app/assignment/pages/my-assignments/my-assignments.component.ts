@@ -23,7 +23,7 @@ export class MyAssignmentsComponent implements OnInit {
     this.route.queryParams.pipe(
       map(({archived}) => archived === 'true'),
       tap(archived => this.archived = archived),
-      switchMap(archived => this.assignmentService.getOwn(archived)),
+      switchMap(archived => this.assignmentService.findOwn(archived)),
     ).subscribe(assignments => this.assignments = assignments);
   }
 
