@@ -22,8 +22,6 @@ export default class Assignment {
   tasks: Task[];
   solution: string;
   templateSolution: string;
-
-  static comparator = (a: Assignment, b: Assignment) => a.title.localeCompare(b.title) || a._id.localeCompare(b._id);
 }
 
 export type CreateAssignmentDto = Omit<Assignment, '_id' | 'token' | 'createdBy'>;
