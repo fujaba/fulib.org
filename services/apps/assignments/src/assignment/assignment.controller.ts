@@ -14,6 +14,7 @@ import {
   Query,
 } from '@nestjs/common';
 import {ApiCreatedResponse, ApiHeader, ApiOkResponse, ApiTags, getSchemaPath} from '@nestjs/swagger';
+import {FilterQuery} from 'mongoose';
 import {AssignmentAuth} from './assignment-auth.decorator';
 import {
   CheckNewRequestDto,
@@ -51,8 +52,16 @@ export class AssignmentController {
   async findAll(
     @Query('archived', new DefaultValuePipe(false), ParseBoolPipe) archived: boolean,
     @Query('createdBy') createdBy?: string,
+    @Query('ids') ids?: string,
   ) {
-    return this.assignmentService.findAll({createdBy, archived: archived ? true : {$ne: true}});
+    const $or: FilterQuery<Assignment>[] = [];
+    if (createdBy) {
+      $or.push({createdBy});
+    }
+    if (ids) {
+      $or.push({_id: {$in: ids.split(',')}});
+    }
+    return this.assignmentService.findAll({$or, archived: archived ? true : {$ne: true}});
   }
 
   @Get(':id')
