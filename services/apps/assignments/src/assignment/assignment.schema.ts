@@ -87,6 +87,12 @@ export class ClassroomInfo {
 })
 export class Assignment {
   @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  archived?: boolean;
+
+  @Prop()
   @ApiProperty()
   token: string;
 

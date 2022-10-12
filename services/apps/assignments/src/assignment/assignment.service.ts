@@ -90,7 +90,7 @@ export class AssignmentService {
   }
 
   async findAll(where: FilterQuery<Assignment> = {}): Promise<ReadAssignmentDto[]> {
-    return this.model.find(where).select(['-token', '-solution', '-tasks.verification']).exec();
+    return this.model.find(where).select(['-token', '-solution', '-tasks.verification']).sort({title: 1}).exec();
   }
 
   async findOne(id: string): Promise<AssignmentDocument | null> {

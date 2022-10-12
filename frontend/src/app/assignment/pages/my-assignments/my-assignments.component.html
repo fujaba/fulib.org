@@ -6,26 +6,21 @@
   </a>
 </h1>
 
-<div class="list-group" *ngIf="assignments?.length">
-  <a *ngFor="let assignment of assignments"
-     class="list-group-item list-group-item-action"
-     routerLink="/assignments/{{assignment._id}}/solutions"
-  >
-    <h3>
-      {{assignment.title}}
-    </h3>
-    <p class="text-muted">
-      by
-      <app-author-name [name]="assignment.author" [email]="assignment.email"></app-author-name>
-      <ng-container *ngIf="assignment.deadline">
-        &mdash;
-        Deadline: {{assignment.deadline | date:'medium'}}
-      </ng-container>
-    </p>
-  </a>
-</div>
+<ul class="list-group">
+  <li *ngFor="let assignment of assignments; let index = index" class="list-group-item">
+    <div class="d-flex align-items-center">
+      <div class="me-auto">
+        <app-assignment-info [assignment]="assignment"></app-assignment-info>
+      </div>
+      <a class="btn btn-primary bi-table me-2" [routerLink]="[assignment._id, 'solutions']">
+        View Solutions
+      </a>
+      <app-assignment-actions [assignment]="assignment" (removed)="remove(assignment)"></app-assignment-actions>
+    </div>
+  </li>
+</ul>
 
-<div class="card" *ngIf="!assignments?.length">
+<div class="card" *ngIf="!assignments?.length && !archived">
   <div class="card-body">
     <h5 class="card-title">
       Welcome to Assignments!
@@ -53,3 +48,7 @@
     </div>
   </div>
 </div>
+
+<a routerLink="." [queryParams]="{archived: !archived}">
+  View {{ archived ? 'Active' : 'Archived'}} Assignments
+</a>
