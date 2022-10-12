@@ -12,8 +12,8 @@
       <div class="me-auto">
         <app-assignment-info [assignment]="assignment"></app-assignment-info>
       </div>
-      <a class="btn btn-primary me-2" [routerLink]="[assignment._id, 'solutions']">
-        Open
+      <a class="btn btn-primary bi-table me-2" [routerLink]="[assignment._id, 'solutions']">
+        View Solutions
       </a>
       <app-assignment-actions [assignment]="assignment" (removed)="remove(assignment)"></app-assignment-actions>
     </div>
