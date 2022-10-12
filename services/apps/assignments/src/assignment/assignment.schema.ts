@@ -10,7 +10,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
-  IsString,
+  IsString, IsUrl,
   ValidateNested,
 } from 'class-validator';
 import {Document} from 'mongoose';
@@ -69,6 +69,12 @@ export class ClassroomInfo {
   @IsOptional()
   @IsString()
   token?: string;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsUrl()
+  webhook?: string;
 
   @Prop()
   @ApiPropertyOptional()
