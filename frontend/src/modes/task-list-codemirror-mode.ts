@@ -1,6 +1,6 @@
 import {Rule} from 'codemirror';
 
-export const TASK_ITEM_PATTERN = /(#{2,}|-)(\s+)(.*)(\s+\((?:[x\d]+P?\/)?)(-?\d+)(P?\))(\s*<!--.*?-->)?/;
+export const TASK_ITEM_PATTERN = /(#{2,}|-)(\s+)(.*)(\s+\(.*?)(-?\d+(?:\.\d+)?)(P?\))(\s*<!--.*?-->)?/;
 
 export function extractTaskItem([_line, prefix, _1, description, _3, points, _4, extra]: string[]) {
   const extraData = extra ? parseExtra(extra.trim().slice(4, -3)) : {};
