@@ -33,18 +33,17 @@ export class AssignmentService {
     return id ? `assignments/${id}/draft` : 'assignmentDraft';
   }
 
-  loadDraft(id?: string): Assignment | undefined {
+  loadDraft(id: string | undefined): Assignment | undefined {
     const stored = localStorage.getItem(this.getDraftKey(id));
     return stored ? JSON.parse(stored) : undefined;
   }
 
-  saveDraft(id?: string, value?: Assignment) {
-    const key = this.getDraftKey(id);
-    if (value) {
-      localStorage.setItem(key, JSON.stringify(value));
-    } else {
-      localStorage.removeItem(key);
-    }
+  saveDraft(id: string | undefined, value: Assignment) {
+    localStorage.setItem(this.getDraftKey(id), JSON.stringify(value));
+  }
+
+  deleteDraft(id: string | undefined) {
+    localStorage.removeItem(this.getDraftKey(id));
   }
 
   // --------------- Tokens ---------------
@@ -174,7 +173,7 @@ export class AssignmentService {
     return this.http.delete<Assignment>(`${environment.assignmentsApiUrl}/assignments/${assignment}`, {headers}).pipe(
       tap(() => {
         this.setToken(assignment, null);
-        this.saveDraft(assignment);
+        this.deleteDraft(assignment);
       }),
     );
   }

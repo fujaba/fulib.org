@@ -85,19 +85,16 @@ export class EditAssignmentComponent implements OnInit {
 
   submit(): void {
     this.submitting = true;
-    const assignment = this.getAssignment();
-    const operation = assignment._id ? this.assignmentService.update(assignment._id, {
-      ...assignment,
-      token: undefined,
-    }) : this.assignmentService.create(assignment);
+    const {_id, token, ...dto} = this.getAssignment();
+    const operation = _id ? this.assignmentService.update(_id, dto) : this.assignmentService.create(dto);
     operation.subscribe(result => {
       this.submitting = false;
-      this.toastService.success('Assignment', `Successfully ${assignment._id ? 'updated' : 'created'} assignment`);
-      this.assignmentService.saveDraft(assignment._id);
+      this.toastService.success('Assignment', `Successfully ${_id ? 'updated' : 'created'} assignment`);
+      this.assignmentService.deleteDraft(_id);
       this.router.navigate(['/assignments', result._id, 'share']);
     }, error => {
       this.submitting = false;
-      this.toastService.error('Assignment', `Failed to ${assignment._id ? 'update' : 'create'} assignment`, error);
+      this.toastService.error('Assignment', `Failed to ${_id ? 'update' : 'create'} assignment`, error);
     });
   }
 
@@ -120,7 +117,7 @@ export class EditAssignmentComponent implements OnInit {
       return;
     }
 
-    this.assignmentService.saveDraft(this.context.assignment._id);
+    this.assignmentService.deleteDraft(this.context.assignment._id);
     this.router.navigate(['/assignments']);
   }
 }
