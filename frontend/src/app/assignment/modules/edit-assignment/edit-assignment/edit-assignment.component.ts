@@ -19,6 +19,7 @@ export class EditAssignmentComponent implements OnInit {
   steps = editAssignmentChildRoutes;
 
   submitting = false;
+  draft = false;
 
   constructor(
     private assignmentService: AssignmentService,
@@ -36,6 +37,7 @@ export class EditAssignmentComponent implements OnInit {
       switchMap(({aid}) => {
         const draft = this.assignmentService.loadDraft(aid);
         if (draft) {
+          this.draft = true;
           return of(draft);
         }
         if (aid) {
@@ -68,6 +70,7 @@ export class EditAssignmentComponent implements OnInit {
 
   saveDraft(): void {
     this.assignmentService.saveDraft(this.context.assignment._id, this.getAssignment());
+    this.draft = true;
   }
 
   onImport(file: File): void {

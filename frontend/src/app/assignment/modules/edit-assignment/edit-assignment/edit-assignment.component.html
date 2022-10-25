@@ -5,13 +5,13 @@
   </h1>
   <div class="d-flex align-items-center mb-3">
     <app-import-export class="me-auto" (import)="onImport($event)" (export)="onExport()"></app-import-export>
-    <a class="btn btn-secondary me-2" routerLink="/assignments">
+    <a class="btn btn-secondary ms-2" routerLink="/assignments">
       Cancel
     </a>
-    <button class="btn btn-warning me-2" (click)="deleteDraft()">
+    <button *ngIf="draft" class="btn btn-warning ms-2" (click)="deleteDraft()">
       Delete Draft
     </button>
-    <button class="btn btn-primary" (click)="submit()" [disabled]="submitting">
+    <button class="btn btn-primary ms-2" (click)="submit()" [disabled]="submitting">
       {{context.assignment._id ? (submitting ? 'Saving...' : 'Save') : (submitting ? 'Submitting...' : 'Submit')}}
     </button>
   </div>
