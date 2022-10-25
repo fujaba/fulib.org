@@ -114,4 +114,13 @@ export class EditAssignmentComponent implements OnInit {
       children: this.getTasks(children),
     }));
   }
+
+  deleteDraft() {
+    if (!confirm('Are you sure you want to delete this draft? This action cannot be undone.')) {
+      return;
+    }
+
+    this.assignmentService.saveDraft(this.context.assignment._id);
+    this.router.navigate(['/assignments']);
+  }
 }
