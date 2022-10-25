@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
+import {ToastService} from 'ng-bootstrap-ext';
 import {of} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import Assignment from '../../../model/assignment';
@@ -17,10 +18,14 @@ import {editAssignmentChildRoutes} from '../edit-assignment-routing.module';
 export class EditAssignmentComponent implements OnInit {
   steps = editAssignmentChildRoutes;
 
+  submitting = false;
+
   constructor(
     private assignmentService: AssignmentService,
     public context: AssignmentContext,
     private route: ActivatedRoute,
+    private router: Router,
+    private toastService: ToastService,
   ) {
   }
 
@@ -56,20 +61,6 @@ export class EditAssignmentComponent implements OnInit {
     };
   }
 
-  private getAssignment(): Assignment {
-    return {
-      ...this.context.assignment,
-      tasks: this.getTasks(this.context.assignment.tasks),
-    };
-  }
-
-  private getTasks(tasks: Task[]): Task[] {
-    return tasks.filter(t => !t.deleted).map(({deleted, children, ...rest}) => ({
-      ...rest,
-      children: this.getTasks(children),
-    }));
-  }
-
   setAssignment(a: Assignment): void {
     this.context.assignment = a;
     a.classroom ??= {};
@@ -92,4 +83,35 @@ export class EditAssignmentComponent implements OnInit {
     this.assignmentService.download(assignment);
   }
 
+  submit(): void {
+    this.submitting = true;
+    const assignment = this.getAssignment();
+    const operation = assignment._id ? this.assignmentService.update(assignment._id, {
+      ...assignment,
+      token: undefined,
+    }) : this.assignmentService.create(assignment);
+    operation.subscribe(result => {
+      this.submitting = false;
+      this.toastService.success('Assignment', `Successfully ${assignment._id ? 'updated' : 'created'} assignment`);
+      this.assignmentService.saveDraft(assignment._id);
+      this.router.navigate(['/assignments', result._id, 'share']);
+    }, error => {
+      this.submitting = false;
+      this.toastService.error('Assignment', `Failed to ${assignment._id ? 'update' : 'create'} assignment`, error);
+    });
+  }
+
+  private getAssignment(): Assignment {
+    return {
+      ...this.context.assignment,
+      tasks: this.getTasks(this.context.assignment.tasks),
+    };
+  }
+
+  private getTasks(tasks: Task[]): Task[] {
+    return tasks.filter(t => !t.deleted).map(({deleted, collapsed, children, ...rest}) => ({
+      ...rest,
+      children: this.getTasks(children),
+    }));
+  }
 }

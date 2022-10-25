@@ -34,9 +34,3 @@
     </li>
   </ul>
 </div>
-
-<div class="text-center">
-  <button type="button" class="btn btn-primary btn-lg" (click)="submit()" [disabled]="submitting">
-    {{assignment._id ? (submitting ? 'Saving...' : 'Save') : (submitting ? 'Submitting...' : 'Submit')}}
-  </button>
-</div>
