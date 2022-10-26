@@ -17,9 +17,9 @@ const formats = [
       'Make sure to run the <code>check</code> task afterwards to generate Java classes and execute the tests. ',
   },
   {
-    id: 'persistent',
-    name: 'Project',
-    description: 'Create a new persistent Project from the scenario and config. ' +
+    id: 'project',
+    name: 'Online Project',
+    description: 'Create a new Online Project from the scenario and configuration. ' +
       'The Project will appear in the Projects tab and is bound to your user account. ' +
       'You will be able to access it from anywhere just by logging in. ',
   },
@@ -35,7 +35,7 @@ export class ConfigComponent implements OnInit {
 
   formats = formats;
 
-  format?: (typeof formats)[number];
+  format: (typeof formats)[number] = formats[0];
 
   constructor(
     private ngbModal: NgbModal,
@@ -58,7 +58,7 @@ export class ConfigComponent implements OnInit {
     switch (this.format?.id) {
       case 'gradle':
         return this.downloadProjectZip();
-      case 'persistent':
+      case 'project':
         return this.createProject();
     }
   }
