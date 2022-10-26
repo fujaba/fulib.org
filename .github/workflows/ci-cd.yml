@@ -7,6 +7,8 @@ on:
       - master
       - develop
       - bugfix
+    tags:
+      - v*
 
 jobs:
   deployment:

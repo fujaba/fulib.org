@@ -90,7 +90,7 @@ export class AssignmentService {
   }
 
   async findAll(where: FilterQuery<Assignment> = {}): Promise<ReadAssignmentDto[]> {
-    return this.model.find(where).select(['-token', '-solution', '-tasks.verification']).exec();
+    return this.model.find(where).select(['-token', '-solution', '-tasks.verification']).sort({title: 1}).exec();
   }
 
   async findOne(id: string): Promise<AssignmentDocument | null> {
@@ -106,11 +106,16 @@ export class AssignmentService {
   }
 
   async update(id: string, dto: UpdateAssignmentDto): Promise<Assignment | null> {
-    const update: UpdateQuery<Assignment> = dto;
-    if (dto.token) {
+    const {token, classroom, ...rest} = dto;
+    const update: UpdateQuery<Assignment> = rest;
+    if (token) {
       update.token = generateToken();
-    } else {
-      delete update.token;
+    }
+    if (classroom) {
+      // need to flatten the classroom object to prevent deleting the GitHub token all the time
+      for (const [key, value] of Object.entries(classroom)) {
+        update[`classroom.${key}`] = value;
+      }
     }
     const updated = await this.model.findOneAndUpdate(idFilter(id), update, {new: true}).exec();
     updated && this.emit('updated', id, updated);

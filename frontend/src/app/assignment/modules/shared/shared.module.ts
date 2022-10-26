@@ -1,7 +1,7 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {RouterModule} from '@angular/router';
-import {NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
+import {NgbDropdownModule, NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
 import {SharedModule} from '../../../shared/shared.module';
 import {AssignmentInfoComponent} from './assignment-info/assignment-info.component';
 import {AuthorNameComponent} from './author-name/author-name.component';
@@ -13,6 +13,7 @@ import {TaskListComponent} from './task-list/task-list.component';
 import { SolutionNamePipe } from './pipes/solution-name.pipe';
 import { GithubLinkPipe } from './pipes/github-link.pipe';
 import { CloneLinkPipe } from './pipes/clone-link.pipe';
+import { AssignmentActionsComponent } from './assignment-actions/assignment-actions.component';
 
 
 @NgModule({
@@ -21,6 +22,7 @@ import { CloneLinkPipe } from './pipes/clone-link.pipe';
     RouterModule,
     NgbTooltipModule,
     SharedModule,
+    NgbDropdownModule,
   ],
   declarations: [
     AssignmentInfoComponent,
@@ -33,6 +35,7 @@ import { CloneLinkPipe } from './pipes/clone-link.pipe';
     StatisticValueComponent,
     GithubLinkPipe,
     CloneLinkPipe,
+    AssignmentActionsComponent,
   ],
   exports: [
     AssignmentInfoComponent,
@@ -45,6 +48,7 @@ import { CloneLinkPipe } from './pipes/clone-link.pipe';
     StatisticValueComponent,
     GithubLinkPipe,
     CloneLinkPipe,
+    AssignmentActionsComponent,
   ],
 })
 export class AssignmentSharedModule {

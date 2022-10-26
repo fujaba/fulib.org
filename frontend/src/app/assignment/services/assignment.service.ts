@@ -1,14 +1,14 @@
-import {HttpClient, HttpParameterCodec, HttpParams} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 
 import {saveAs} from 'file-saver';
-import {forkJoin, Observable, of} from 'rxjs';
-import {catchError, map, switchMap, take, tap} from 'rxjs/operators';
+import {Observable, of} from 'rxjs';
+import {map, switchMap, tap} from 'rxjs/operators';
 
 import {environment} from '../../../environments/environment';
+import {StorageService} from '../../services/storage.service';
 import {LintService} from '../../shared/lint.service';
 import {Marker} from '../../shared/model/marker';
-import {StorageService} from '../../services/storage.service';
 import {UserService} from '../../user/user.service';
 import Assignment, {CreateAssignmentDto, UpdateAssignmentDto} from '../model/assignment';
 import {CheckAssignment, CheckResult} from '../model/check';
@@ -33,18 +33,17 @@ export class AssignmentService {
     return id ? `assignments/${id}/draft` : 'assignmentDraft';
   }
 
-  loadDraft(id?: string): Assignment | undefined {
+  loadDraft(id: string | undefined): Assignment | undefined {
     const stored = localStorage.getItem(this.getDraftKey(id));
     return stored ? JSON.parse(stored) : undefined;
   }
 
-  saveDraft(id?: string, value?: Assignment) {
-    const key = this.getDraftKey(id);
-    if (value) {
-      localStorage.setItem(key, JSON.stringify(value));
-    } else {
-      localStorage.removeItem(key);
-    }
+  saveDraft(id: string | undefined, value: Assignment) {
+    localStorage.setItem(this.getDraftKey(id), JSON.stringify(value));
+  }
+
+  deleteDraft(id: string | undefined) {
+    localStorage.removeItem(this.getDraftKey(id));
   }
 
   // --------------- Tokens ---------------
@@ -95,23 +94,19 @@ export class AssignmentService {
     return ids;
   }
 
-  getOwn(): Observable<Assignment[]> {
-    return this.users.current$.pipe(
-      take(1),
-      switchMap(user => user && user.id ? this.getByUserId(user.id) : this.getOwnLocal()),
-    );
+  findOwn(archived = false): Observable<Assignment[]> {
+    const ownIds = this.getOwnIds();
+    return this.users.current$.pipe(switchMap(user => this.findAll(ownIds, user?.id, archived)));
   }
 
-  private getOwnLocal(): Observable<Assignment[]> {
-    return forkJoin(this.getOwnIds().map(id => this.get(id).pipe(
-      catchError(() => of(undefined)),
-    ))).pipe(
-      map(assignments => assignments.filter((a): a is Assignment => !!a)),
-    );
-  }
-
-  getByUserId(userId: string): Observable<Assignment[]> {
-    return this.http.get<Assignment[]>(`${environment.assignmentsApiUrl}/assignments`, {params: {createdBy: userId}}).pipe(
+  findAll(ids?: string[], createdBy?: string, archived = false): Observable<Assignment[]> {
+    return this.http.get<Assignment[]>(`${environment.assignmentsApiUrl}/assignments`, {
+      params: {
+        ...(ids ? {ids: ids.join(',')} : {}),
+        ...(createdBy ? {createdBy} : {}),
+        archived,
+      },
+    }).pipe(
       map(results => {
         for (const result of results) {
           result.token = this.getToken(result._id) ?? undefined;
@@ -178,7 +173,7 @@ export class AssignmentService {
     return this.http.delete<Assignment>(`${environment.assignmentsApiUrl}/assignments/${assignment}`, {headers}).pipe(
       tap(() => {
         this.setToken(assignment, null);
-        this.saveDraft(assignment);
+        this.deleteDraft(assignment);
       }),
     );
   }

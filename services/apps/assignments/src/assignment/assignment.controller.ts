@@ -1,7 +1,20 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound, notFound} from '@app/not-found';
-import {Body, Controller, Delete, Get, Headers, Param, Patch, Post, Query} from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  DefaultValuePipe,
+  Delete,
+  Get,
+  Headers,
+  Param,
+  ParseBoolPipe,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import {ApiCreatedResponse, ApiHeader, ApiOkResponse, ApiTags, getSchemaPath} from '@nestjs/swagger';
+import {FilterQuery} from 'mongoose';
 import {AssignmentAuth} from './assignment-auth.decorator';
 import {
   CheckNewRequestDto,
@@ -37,9 +50,18 @@ export class AssignmentController {
   @Get()
   @ApiOkResponse({type: [ReadAssignmentDto]})
   async findAll(
+    @Query('archived', new DefaultValuePipe(false), ParseBoolPipe) archived: boolean,
     @Query('createdBy') createdBy?: string,
+    @Query('ids') ids?: string,
   ) {
-    return this.assignmentService.findAll({createdBy});
+    const filter: FilterQuery<Assignment> = {archived: archived ? true : {$ne: true}};
+    if (createdBy) {
+      (filter.$or ||= []).push({createdBy});
+    }
+    if (ids) {
+      (filter.$or ||= []).push({_id: {$in: ids.split(',')}});
+    }
+    return this.assignmentService.findAll(filter);
   }
 
   @Get(':id')

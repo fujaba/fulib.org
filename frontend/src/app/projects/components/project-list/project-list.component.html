@@ -58,41 +58,41 @@
         </div>
         <div *ngIf="containers[index]" class="h1 bi-play text-success me-2 mb-0" ngbTooltip="Container already running">
         </div>
-        <div class="btn-group">
-          <a class="btn btn-primary" [routerLink]="['/projects', project.id, {outlets: {panel: 'project', docs: 'home'}}]">
-            Open
-          </a>
-          <div class="btn-group" ngbDropdown role="group" aria-label="Actions">
-            <button class="btn btn-primary dropdown-toggle-split" ngbDropdownToggle>
+        <a class="btn btn-primary bi-play-circle me-2"
+           [routerLink]="['/projects', project.id, {outlets: {panel: 'project', docs: 'home'}}]">
+          Open
+        </a>
+        <div ngbDropdown role="group">
+          <button class="btn btn-secondary bi-gear" ngbDropdownToggle>
+            Options
+          </button>
+          <div class="dropdown-menu" ngbDropdownMenu>
+            <a ngbDropdownItem class="bi-pencil" [routerLink]="[project.id, 'edit']">
+              Edit
+            </a>
+            <a ngbDropdownItem class="bi-gear" [routerLink]="[project.id, 'settings']">
+              Settings
+            </a>
+            <a ngbDropdownItem class="bi-person-plus" [routerLink]="[project.id, 'edit-member']">
+              Add Collaborator
+            </a>
+            <div class="dropdown-divider"></div>
+              <button *ngIf="containers[index]" class="text-warning" ngbDropdownItem class="bi-server" (click)="stop(project)">
+              Stop Container
+              </button>
+            <a *ngIf="currentUser && currentUser.id === project.userId"
+                ngbDropdownItem class="text-danger bi-folder-symlink" [routerLink]="[project.id, 'transfer']">
+              Transfer
+            </a>
+            <a *ngIf="currentUser && currentUser.id === project.userId"
+                ngbDropdownItem class="text-dangerbi-trash" [routerLink]="[project.id, 'delete']">
+              Delete
+            </a>
+            <button *ngIf="currentUser && currentUser.id !== project.userId"
+                 ngbDropdownItem class="text-dangerbi-person-x" (click)="leave(project)"
+            >
+              Leave
             </button>
-            <div class="dropdown-menu" ngbDropdownMenu>
-              <a ngbDropdownItem [routerLink]="[project.id, 'edit']">
-                Edit
-              </a>
-              <a ngbDropdownItem [routerLink]="[project.id, 'settings']">
-                Settings
-              </a>
-              <a ngbDropdownItem [routerLink]="[project.id, 'edit-member']">
-                Add Collaborator
-              </a>
-              <div class="dropdown-divider"></div>
-              <button *ngIf="containers[index]" class="text-warning" ngbDropdownItem (click)="stop(project)">
-                Stop Container
-              </button>
-              <a *ngIf="currentUser && currentUser.id === project.userId"
-                 class="text-danger" ngbDropdownItem [routerLink]="[project.id, 'transfer']">
-                Transfer
-              </a>
-              <a *ngIf="currentUser && currentUser.id === project.userId"
-                ngbDropdownItem class="text-danger" [routerLink]="[project.id, 'delete']">
-                Delete
-              </a>
-              <button *ngIf="currentUser && currentUser.id !== project.userId"
-                 ngbDropdownItem class="text-danger" (click)="leave(project)"
-              >
-                Leave
-              </button>
-            </div>
           </div>
         </div>
       </div>

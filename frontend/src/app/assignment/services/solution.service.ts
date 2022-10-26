@@ -104,15 +104,14 @@ export class SolutionService {
         if (user && user.id) {
           return this.getOwn().pipe(switchMap(solutions => {
             const assignmentIds = [...new Set<string>(solutions.map(s => s.assignment))];
-            const assignments = forkJoin(assignmentIds.map(aid => this.assignmentService.get(aid)));
+            const assignments = this.assignmentService.findAll(assignmentIds);
 
             return forkJoin([assignments, of(solutions)]);
           }));
         } else {
           const compoundIds = this.getOwnIds();
           const assignmentIds = [...new Set<string>(compoundIds.map(id => id.assignment))];
-
-          const assignments = forkJoin(assignmentIds.map(aid => this.assignmentService.get(aid)));
+          const assignments = this.assignmentService.findAll(assignmentIds);
           const solutions = forkJoin(compoundIds.map(cid => this.get(cid.assignment, cid.id)));
 
           return forkJoin([assignments, solutions]);

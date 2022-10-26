@@ -2,6 +2,7 @@ import Task from './task';
 
 export default class Assignment {
   _id: string;
+  archived?: boolean;
   token?: string;
 
   title: string;
@@ -15,14 +16,13 @@ export default class Assignment {
     org?: string;
     prefix?: string;
     token?: string;
+    webhook?: string;
     codeSearch?: boolean;
   };
 
   tasks: Task[];
   solution: string;
   templateSolution: string;
-
-  static comparator = (a: Assignment, b: Assignment) => a.title.localeCompare(b.title) || a._id.localeCompare(b._id);
 }
 
 export type CreateAssignmentDto = Omit<Assignment, '_id' | 'token' | 'createdBy'>;

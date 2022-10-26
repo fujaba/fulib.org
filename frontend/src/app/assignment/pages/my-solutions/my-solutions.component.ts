@@ -21,7 +21,7 @@ export class MySolutionsComponent implements OnInit {
   ngOnInit() {
     this.author = this.solutionService.getAuthor();
     this.solutionService.getOwnWithAssignments().subscribe(([assignments, solutions]) => {
-      this.assignments = assignments.sort(Assignment.comparator);
+      this.assignments = assignments;
       this.solutions = new Map<string, Solution[]>();
 
       for (const assignment of this.assignments) {
