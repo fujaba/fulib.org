@@ -77,20 +77,19 @@
               Add Collaborator
             </a>
             <div class="dropdown-divider"></div>
-              <button *ngIf="containers[index]" class="text-warning" ngbDropdownItem class="bi-server" (click)="stop(project)">
+            <button *ngIf="containers[index]" ngbDropdownItem class="text-warning bi-stop-circle" (click)="stop(project)">
               Stop Container
-              </button>
+            </button>
             <a *ngIf="currentUser && currentUser.id === project.userId"
-                ngbDropdownItem class="text-danger bi-folder-symlink" [routerLink]="[project.id, 'transfer']">
+               ngbDropdownItem class="text-danger bi-folder-symlink" [routerLink]="[project.id, 'transfer']">
               Transfer
             </a>
             <a *ngIf="currentUser && currentUser.id === project.userId"
-                ngbDropdownItem class="text-dangerbi-trash" [routerLink]="[project.id, 'delete']">
+               ngbDropdownItem class="text-danger bi-trash" [routerLink]="[project.id, 'delete']">
               Delete
             </a>
             <button *ngIf="currentUser && currentUser.id !== project.userId"
-                 ngbDropdownItem class="text-dangerbi-person-x" (click)="leave(project)"
-            >
+                    ngbDropdownItem class="text-dangerbi-person-x" (click)="leave(project)">
               Leave
             </button>
           </div>
