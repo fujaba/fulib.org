@@ -65,9 +65,10 @@ export class EditModalComponent implements OnInit {
 
     this.projectService.create(this.editing).subscribe(created => {
       if (this.creatingFromEditor) {
-        // TODO
+        this.router.navigate(['/projects', created.id, 'setup'], {queryParams: {editor: true}});
+      } else {
+        this.router.navigate(['/projects']);
       }
-      this.router.navigate(['/projects']);
     });
   }
 }

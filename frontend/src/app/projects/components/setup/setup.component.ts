@@ -1,8 +1,13 @@
+import {HttpClient} from '@angular/common/http';
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {map, switchMap} from 'rxjs/operators';
+import {ModalComponent, ToastService} from 'ng-bootstrap-ext';
+import {forkJoin} from 'rxjs';
+import {switchMap} from 'rxjs/operators';
+import {environment} from '../../../../environments/environment';
+import {ConfigService} from '../../../editor/config.service';
 import {ProjectConfig} from '../../../shared/model/project-config';
-import {Container} from '../../model/container';
+import {ProjectZipRequest} from '../../../shared/model/project-zip-request';
 
 import {Project} from '../../model/project';
 import {ContainerService} from '../../services/container.service';
@@ -23,31 +28,60 @@ export class SetupComponent implements OnInit {
   };
 
   project: Project;
-  container: Container;
+
+  editor = false;
+  generating = false;
 
   constructor(
     public activatedRoute: ActivatedRoute,
     private router: Router,
     private projectService: ProjectService,
     private containerService: ContainerService,
+    private configService: ConfigService,
+    private http: HttpClient,
+    private toastService: ToastService,
   ) {
   }
 
   ngOnInit(): void {
-    const id$ = this.activatedRoute.params.pipe(map(({id}) => id));
-    id$.pipe(
-      switchMap(id => this.projectService.get(id)),
+    this.activatedRoute.params.pipe(
+      switchMap(({id}) => this.projectService.get(id)),
     ).subscribe(project => {
       this.project = project;
-      this.config.projectName = project.name.replace(/\W+/, '-').toLowerCase();
+      this.config.projectName ||= project.name.replace(/\W+/, '-').toLowerCase();
     });
 
-    id$.pipe(
-      switchMap(id => this.containerService.get(id)),
-    ).subscribe(container => this.container = container);
+    this.activatedRoute.queryParams.subscribe(({editor}) => {
+      this.editor = !!editor;
+      if (editor) {
+        this.config = this.configService.getConfig();
+      }
+    });
   }
 
-  save(): void {
-    this.projectService.generateFiles(this.container, this.config).subscribe();
+  generate(modal: ModalComponent): void {
+    this.generating = true;
+    const request: ProjectZipRequest = {
+      ...this.config,
+      scenarioText: this.editor ? this.configService.storedScenario : '',
+      privacy: 'none',
+    };
+    forkJoin([
+      this.configService.downloadZip(request),
+      this.containerService.get(this.project.id),
+    ]).pipe(
+      switchMap(([zipBlob, container]) => {
+        const formData = new FormData();
+        formData.append('file', zipBlob);
+        return this.http.post<void>(`${environment.projectsApiUrl}/projects/${container.projectId}/zip`, formData);
+      }),
+    ).subscribe(() => {
+      this.generating = false;
+      this.toastService.success('Setup Project', 'Successfully generated project');
+      modal.close();
+    }, error => {
+      this.generating = false;
+      this.toastService.error('Setup Project', 'Failed to generate project', error);
+    });
   }
 }

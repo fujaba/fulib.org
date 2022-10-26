@@ -17,14 +17,8 @@ const formats = [
       'Make sure to run the <code>check</code> task afterwards to generate Java classes and execute the tests. ',
   },
   {
-    id: 'local',
-    name: 'Local Project',
-    description: 'Create a new local Project from the scenario and config. ' +
-      'The Project will appear in the Projects tab and is stored in your browser. ',
-  },
-  {
     id: 'persistent',
-    name: 'Persistent Project',
+    name: 'Project',
     description: 'Create a new persistent Project from the scenario and config. ' +
       'The Project will appear in the Projects tab and is bound to your user account. ' +
       'You will be able to access it from anywhere just by logging in. ',
@@ -53,31 +47,19 @@ export class ConfigComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.config = {
-      packageName: this.configService.packageName,
-      projectName: this.configService.projectName,
-      projectVersion: this.configService.projectVersion,
-      scenarioFileName: this.configService.scenarioFileName,
-      decoratorClassName: this.configService.decoratorClassName,
-    };
+    this.config = this.configService.getConfig();
   }
 
   save(): void {
-    this.configService.packageName = this.config.packageName;
-    this.configService.projectName = this.config.projectName;
-    this.configService.projectVersion = this.config.projectVersion;
-    this.configService.scenarioFileName = this.config.scenarioFileName;
-    this.configService.decoratorClassName = this.config.decoratorClassName || '';
+    this.configService.saveConfig(this.config);
   }
 
   export(): void {
     switch (this.format?.id) {
       case 'gradle':
         return this.downloadProjectZip();
-      case 'local':
-        return this.createProject(true);
       case 'persistent':
-        return this.createProject(false);
+        return this.createProject();
     }
   }
 
@@ -92,11 +74,10 @@ export class ConfigComponent implements OnInit {
     });
   }
 
-  private createProject(local: boolean) {
+  private createProject() {
     this.save();
     this.router.navigate(['/projects/new/edit'], {
       queryParams: {
-        local: local ? true : undefined,
         editor: true,
       },
     });
