@@ -1,28 +1,28 @@
+import {HttpService} from '@nestjs/axios';
 import {Injectable} from '@nestjs/common';
+import {Cron, CronExpression} from '@nestjs/schedule';
+import * as AdmZip from 'adm-zip';
 import {randomBytes} from 'crypto';
 import * as Dockerode from 'dockerode';
-import * as path from 'path';
-import {environment} from '../environment';
-import {Project} from '../project/project.schema';
-import {ContainerDto} from './container.dto';
-import { Cron, CronExpression } from '@nestjs/schedule';
-import { setTimeout } from 'timers/promises';
-import {HttpService} from '@nestjs/axios';
-import {firstValueFrom} from 'rxjs';
 import * as fs from 'fs';
-import * as AdmZip from 'adm-zip';
+import * as path from 'path';
+import {firstValueFrom} from 'rxjs';
+import {setTimeout} from 'timers/promises';
+import {environment} from '../environment';
+import {ContainerDto} from './container.dto';
 
 
 @Injectable()
 export class ContainerService {
 
-  constructor(private readonly httpService: HttpService) {}
+  constructor(private readonly httpService: HttpService) {
+  }
 
   private codeWorkspace: string = '/home/coder/project';
 
   @Cron(CronExpression.EVERY_5_MINUTES)
-  handleCron() {
-    this.checkAllHeartbeats();
+  async handleCron() {
+    await this.checkAllHeartbeats();
   }
 
   docker = new Dockerode({
@@ -59,8 +59,7 @@ export class ContainerService {
       Tty: true,
       NetworkingConfig: {
         EndpointsConfig: {
-          [environment.docker.network]: {
-          },
+          [environment.docker.network]: {},
         },
       },
       HostConfig: {
@@ -99,26 +98,26 @@ export class ContainerService {
     // loop over extensions list and install all extensions
     this.installExtensions(container, projectId);
 
-    let containerDto = this.toContainer(container.id, token, projectId);
-    let containerURL = containerDto.url;
+    const containerDto = this.toContainer(container.id, token, projectId);
+    const containerURL = containerDto.url;
     let retries = 0;
-    while (!(await this.isContainerReady(containerURL)) && (retries <= 10) ) {
+    while (!(await this.isContainerReady(containerURL)) && (retries <= 10)) {
       //wait 400ms and try again
       await setTimeout(400);
       retries++;
-      if(retries >= 11) {
-        console.log("timeout: couldn't reach vs code UI after 4 seconds. Maybe try a reload.");
+      if (retries >= 11) {
+        console.log('timeout: couldn\'t reach vs code UI after 4 seconds. Maybe try a reload.');
       }
     }
     // write vnc url in a file (the vnc extension will read the file)
     // maybe there is a more elegant way for passing the vnc url into the extension ?
-    let p: string = `${bindPrefix}/projects/${this.idBin(projectId)}/${projectId}/.vnc/vncUrl`;
+    const p: string = `${bindPrefix}/projects/${this.idBin(projectId)}/${projectId}/.vnc/vncUrl`;
     await this.createFile(p);
     await fs.promises.writeFile(p, containerDto.vncUrl);
 
 
-    let buildGradlePath = `${bindPrefix}/projects/${this.idBin(projectId)}/${projectId}/build.gradle`;
-    await fs.promises.readFile(buildGradlePath).catch( () => {
+    const buildGradlePath = `${bindPrefix}/projects/${this.idBin(projectId)}/${projectId}/build.gradle`;
+    await fs.promises.readFile(buildGradlePath).catch(() => {
       //catch will trigger only if file doesn't exist, this means we have to run the /setup
       containerDto.isNew = true;
     });
@@ -149,10 +148,10 @@ export class ContainerService {
     const container = this.docker.getContainer(existing.id);
 
     // get extensions and write in list, before stopping the container
-    const stream = await this.containerExec(container,['code-server', '--list-extensions']);
+    const stream = await this.containerExec(container, ['code-server', '--list-extensions']);
     const bindPrefix = path.resolve(environment.docker.bindPrefix);
     const extensionsList = `${bindPrefix}/config/${this.idBin(projectId)}/${projectId}/User/extensions.txt`;
-    let writeStream = fs.createWriteStream(extensionsList);
+    const writeStream = fs.createWriteStream(extensionsList);
     stream.pipe(writeStream);
 
     await container.stop();
@@ -189,24 +188,24 @@ export class ContainerService {
     });
 
     // loop over all containers, get ProjectId, check heartbeat and remove if needed
-    for(let i = 0; i < containers.length; i++) {
-      let container = containers[i];
-      let projectId = container['Labels']['org.fulib.project'];
+    for (let i = 0; i < containers.length; i++) {
+      const container = containers[i];
+      const projectId = container['Labels']['org.fulib.project'];
 
-      if(await this.isHeartbeatExpired(container.Id)) {
-        this.remove(projectId);
-      }
+      this.isHeartbeatExpired(container.Id).then(expired => {
+        expired && this.remove(projectId);
+      });
     }
 
   }
 
-  private async isHeartbeatExpired(containerId: string) : Promise<boolean> {
+  private async isHeartbeatExpired(containerId: string): Promise<boolean> {
     const url = `${environment.docker.proxyHost}/containers/${containerId.substring(0, 12)}`;
 
     try {
-      const res =  await firstValueFrom(this.httpService.get(`${url}/healthz`));
+      const res = await firstValueFrom(this.httpService.get(`${url}/healthz`));
       // res.data.lastHeartbeat is 0, when container has just started
-      return ( res.data.status === 'expired' && res.data.lastHeartbeat);
+      return (res.data.status === 'expired' && res.data.lastHeartbeat);
     } catch (e) {
       //container is in creating phase right now, /healthz endpoint isn't ready yet
       return false;
@@ -237,8 +236,8 @@ export class ContainerService {
   /* https://github.com/apocas/dockerode/issues/534
   stream.on("end", resolve)
   workaround */
-  private streamOnEndWorkaround(exec: Dockerode.Exec, stream: any): Promise<void>{
-    const finish = new Promise<void>((resolve) => {
+  private streamOnEndWorkaround(exec: Dockerode.Exec, stream: any): Promise<void> {
+    return new Promise<void>((resolve) => {
       // stream.on("end", resolve)
       // workaround
       const timer = setInterval(async () => {
@@ -250,7 +249,6 @@ export class ContainerService {
         }
       }, 1e3);
     });
-    return finish;
   }
 
 
@@ -258,23 +256,23 @@ export class ContainerService {
     const bindPrefix = path.resolve(environment.docker.bindPrefix);
     const extensionsListPath = `${bindPrefix}/config/${this.idBin(projectId)}/${projectId}/User/extensions.txt`;
 
-    let fileBuffer = await fs.promises.readFile(extensionsListPath).catch( async() => {
+    const fileBuffer = await fs.promises.readFile(extensionsListPath).catch(async () => {
       //create extensions.txt if not exists
-      await fs.promises.writeFile(extensionsListPath, "");
+      await fs.promises.writeFile(extensionsListPath, '');
     });
 
-    if(fileBuffer) {
-      let fileText = fileBuffer.toString('utf-8');
-      let array = fileText.split(/\r?\n/);
-      for(let i=0; i < array.length; ++i) {
+    if (fileBuffer) {
+      const fileText = fileBuffer.toString('utf-8');
+      const array = fileText.split(/\r?\n/);
+      for (let i = 0; i < array.length; ++i) {
         array[i] = array[i].replace(/[^\w\d\s\\.\-]/g, '');
         array[i] = array[i].trim();
       }
       // filter array for empty or undefined values
-      let cleanArr = array.filter(Boolean);
-      for(let i=0; i < cleanArr.length; ++i) {
+      const cleanArr = array.filter(Boolean);
+      for (let i = 0; i < cleanArr.length; ++i) {
         //install
-        let stream = await this.containerExec(container,['code-server', '--install-extension', cleanArr[i]]);
+        const stream = await this.containerExec(container, ['code-server', '--install-extension', cleanArr[i]]);
         //output to console
         stream.pipe(process.stdout);
       }
@@ -283,16 +281,16 @@ export class ContainerService {
 
   /* creates file with given path only when the file doesn't exist */
   private async createFile(p: string) {
-    await fs.promises.readFile(p).catch( async() => {
+    await fs.promises.readFile(p).catch(async () => {
       await fs.promises.mkdir(path.dirname(p), {recursive: true});
-      await fs.promises.writeFile(p, "");
+      await fs.promises.writeFile(p, '');
     });
   }
 
   private async isContainerReady(containerURL: string): Promise<boolean> {
     try {
-      let res = await firstValueFrom(this.httpService.get(containerURL));
-      return res.status == 200
+      const res = await firstValueFrom(this.httpService.get(containerURL));
+      return res.status == 200;
     } catch (e) {
       // 502 Bad Gateway
       return false;
@@ -301,15 +299,13 @@ export class ContainerService {
 
   private vncURL(id: string): string {
     const suffix = `containers-vnc/${id.substring(0, 12)}`;
-    const vncURL = `${environment.docker.proxyHost}/${suffix}/vnc_lite.html?path=${suffix}&resize=remote`;
-    return vncURL;
+    return `${environment.docker.proxyHost}/${suffix}/vnc_lite.html?path=${suffix}&resize=remote`;
   }
 
   async unzip(projectId: string, zip: Express.Multer.File): Promise<void> {
     const bindPrefix = path.resolve(environment.docker.bindPrefix);
-    let targetPath: string = `${bindPrefix}/projects/${this.idBin(projectId)}/${projectId}/`;
-    let admZip = new AdmZip(zip.buffer);
-    admZip.extractAllTo(targetPath, /*overwrite*/ true);
+    const targetPath: string = `${bindPrefix}/projects/${this.idBin(projectId)}/${projectId}/`;
+    const admZip = new AdmZip(zip.buffer);
+    admZip.extractAllTo(targetPath, true);
   }
-
 }
