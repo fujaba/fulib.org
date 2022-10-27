@@ -58,8 +58,7 @@
         </div>
         <div *ngIf="containers[index]" class="h1 bi-play text-success me-2 mb-0" ngbTooltip="Container already running">
         </div>
-        <a class="btn btn-primary bi-play-circle me-2"
-           [routerLink]="['/projects', project.id, {outlets: {panel: 'project', docs: 'home'}}]">
+        <a class="btn btn-primary bi-play-circle me-2" [routerLink]="project.id">
           Open
         </a>
         <div ngbDropdown role="group">
