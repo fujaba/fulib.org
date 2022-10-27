@@ -11,20 +11,10 @@ import {setTimeout} from 'timers/promises';
 import {environment} from '../environment';
 import {ContainerDto} from './container.dto';
 
+const CODE_WORKSPACE = '/home/coder/project';
 
 @Injectable()
 export class ContainerService {
-
-  constructor(private readonly httpService: HttpService) {
-  }
-
-  private codeWorkspace: string = '/home/coder/project';
-
-  @Cron(CronExpression.EVERY_5_MINUTES)
-  async handleCron() {
-    await this.checkAllHeartbeats();
-  }
-
   docker = new Dockerode({
     host: environment.docker.host,
     port: environment.docker.port,
@@ -32,6 +22,13 @@ export class ContainerService {
     version: environment.docker.version,
   });
 
+  constructor(private readonly httpService: HttpService) {
+  }
+
+  @Cron(CronExpression.EVERY_5_MINUTES)
+  async handleCron() {
+    await this.checkAllHeartbeats();
+  }
 
   async create(projectId: string, image?: string): Promise<ContainerDto> {
     return await this.findOne(projectId) ?? await this.start(projectId, image);
@@ -63,7 +60,7 @@ export class ContainerService {
       HostConfig: {
         AutoRemove: true,
         Binds: [
-          `${projectPath}:${this.codeWorkspace}`,
+          `${projectPath}:${CODE_WORKSPACE}`,
           `${configPath}/User/settings.json:/home/coder/.local/share/code-server/User/settings.json`,
           `${configPath}/Machine/settings.json:/home/coder/.local/share/code-server/Machine/settings.json`,
         ],
@@ -156,7 +153,7 @@ export class ContainerService {
       projectId,
       token,
       // define workspace through folder query parameter /?folder=...
-      url: `${this.containerUrl(id)}/?folder=${this.codeWorkspace}`,
+      url: `${this.containerUrl(id)}/?folder=${CODE_WORKSPACE}`,
       vncUrl: this.vncURL(id),
       isNew: false,
     };
