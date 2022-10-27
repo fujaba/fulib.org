@@ -203,9 +203,9 @@ export class ContainerService {
     const url = `${environment.docker.proxyHost}/containers/${containerId.substring(0, 12)}`;
 
     try {
-      const res = await firstValueFrom(this.httpService.get(`${url}/healthz`));
+      const {data} = await firstValueFrom(this.httpService.get(`${url}/healthz`));
       // res.data.lastHeartbeat is 0, when container has just started
-      return (res.data.status === 'expired' && res.data.lastHeartbeat);
+      return data.status === 'expired' && data.lastHeartbeat && data.lastHeartbeat < Date.now() - environment.docker.heartbeatTimeout;
     } catch (e) {
       //container is in creating phase right now, /healthz endpoint isn't ready yet
       return false;
