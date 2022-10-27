@@ -77,30 +77,21 @@ export class ContainerService {
 
     await container.start();
 
-    /*
-    when using the 'codercom/code-server:latest' Image, the settings bind mount breaks the permissions
-    on '/home/coder/.local'. It is owned by root (but should be owned by 'coder' user).
-    So nobody (except root) can write there, which will lead to errors when for example trying to install extensions.
-    So we'll change the ownership back to 'coder' to prevent that
-     */
-    //await this.containerExec(container,['sudo', 'chown', '-R', 'coder:coder', '/home/coder']);
-
-    // loop over extensions list and install all extensions
     this.installExtensions(container, projectId);
 
     const containerDto = this.toContainer(container.id, token, projectId);
     const containerURL = containerDto.url;
     let retries = 0;
     while (!(await this.isContainerReady(containerURL)) && (retries <= 10)) {
-      //wait 400ms and try again
       await setTimeout(400);
       retries++;
       if (retries >= 11) {
         console.log('timeout: couldn\'t reach vs code UI after 4 seconds. Maybe try a reload.');
       }
     }
+
     // write vnc url in a file (the vnc extension will read the file)
-    // maybe there is a more elegant way for passing the vnc url into the extension ?
+    // TODO maybe there is a more elegant way for passing the vnc url into the extension ?
     const p: string = `${projectPath}/.vnc/vncUrl`;
     await this.createFile(p);
     await fs.promises.writeFile(p, containerDto.vncUrl);
@@ -136,7 +127,6 @@ export class ContainerService {
     }
     const container = this.docker.getContainer(existing.id);
 
-    // get extensions and write in list, before stopping the container
     const stream = await this.containerExec(container, ['code-server', '--list-extensions']);
     const extensionsList = `${this.projectPath('config', projectId)}/User/extensions.txt`;
     const writeStream = fs.createWriteStream(extensionsList);
@@ -152,7 +142,6 @@ export class ContainerService {
       id,
       projectId,
       token,
-      // define workspace through folder query parameter /?folder=...
       url: `${this.containerUrl(id)}/?folder=${CODE_WORKSPACE}`,
       vncUrl: this.vncURL(id),
       isNew: false,
@@ -167,7 +156,6 @@ export class ContainerService {
       },
     });
 
-    // loop over all containers, get ProjectId, check heartbeat and remove if needed
     for (let i = 0; i < containers.length; i++) {
       const container = containers[i];
       const projectId = container['Labels']['org.fulib.project'];
@@ -202,22 +190,13 @@ export class ContainerService {
     });
 
     const stream = await exec.start({stdin: true});
-    //output on console
-    //stream.pipe(process.stdout);
-    //container.modem.demuxStream(stream, process.stdout, process.stderr);
-    //stream.on('end', ()=> {});
     await this.streamOnEndWorkaround(exec, stream);
     return stream;
   }
 
-
-  /* https://github.com/apocas/dockerode/issues/534
-  stream.on("end", resolve)
-  workaround */
+  /** https://github.com/apocas/dockerode/issues/534 stream.on("end", resolve) workaround */
   private streamOnEndWorkaround(exec: Dockerode.Exec, stream: any): Promise<void> {
     return new Promise<void>((resolve) => {
-      // stream.on("end", resolve)
-      // workaround
       const timer = setInterval(async () => {
         const r = await exec.inspect();
         if (!r.Running) {
@@ -245,18 +224,15 @@ export class ContainerService {
         array[i] = array[i].replace(/[^\w\d\s\\.\-]/g, '');
         array[i] = array[i].trim();
       }
-      // filter array for empty or undefined values
       const cleanArr = array.filter(Boolean);
       for (let i = 0; i < cleanArr.length; ++i) {
-        //install
         const stream = await this.containerExec(container, ['code-server', '--install-extension', cleanArr[i]]);
-        //output to console
         stream.pipe(process.stdout);
       }
     }
   }
 
-  /* creates file with given path only when the file doesn't exist */
+  /** creates file with given path only when the file doesn't exist */
   private async createFile(p: string) {
     await fs.promises.readFile(p).catch(async () => {
       await fs.promises.mkdir(path.dirname(p), {recursive: true});
