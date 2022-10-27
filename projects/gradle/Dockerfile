@@ -7,17 +7,9 @@ RUN gradle wrapper && ./gradlew downloadDependencies && ./gradlew --stop
 FROM codercom/code-server
 ARG EXTENSION
 RUN code-server --install-extension $EXTENSION
+RUN code-server --install-extension fulib.vnc-viewer
 
-#COPY only works with root
 USER root
-COPY --chown=coder vnc-viewer-0.0.1.vsix /home/coder/vnc-viewer.vsix
-#install-extension command must be executed by coder user
-USER coder
-RUN code-server --install-extension /home/coder/vnc-viewer.vsix
-USER root
-RUN rm /home/coder/vnc-viewer.vsix
-
-
 ARG APT_DEPENDENCIES
 RUN apt-get update -y \
     && apt-get install -y \
