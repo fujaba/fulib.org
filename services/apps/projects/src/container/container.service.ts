@@ -38,7 +38,8 @@ export class ContainerService {
   }
 
   async start(projectId: string, image?: string): Promise<ContainerDto> {
-    const bindPrefix = path.resolve(environment.docker.bindPrefix);
+    const projectPath = this.projectPath('projects', projectId);
+    const configPath = this.projectPath('config', projectId);
     const token = randomBytes(10).toString('base64');
 
     /* create 'settings.json' files if they don't exist already
@@ -48,11 +49,8 @@ export class ContainerService {
     lead to an error when code server is trying to write on the bind mount
      */
 
-    const userSettingsFile = `${bindPrefix}/config/${this.idBin(projectId)}/${projectId}/User/settings.json`;
-    const machineSettingsFile = `${bindPrefix}/config/${this.idBin(projectId)}/${projectId}/Machine/settings.json`;
-    await this.createFile(userSettingsFile);
-    await this.createFile(machineSettingsFile);
-
+    await this.createFile(`${configPath}/User/settings.json`);
+    await this.createFile(`${configPath}/Machine/settings.json`);
 
     const container = await this.docker.createContainer({
       Image: image || environment.docker.containerImage,
@@ -65,14 +63,9 @@ export class ContainerService {
       HostConfig: {
         AutoRemove: true,
         Binds: [
-          //workspace bind
-          `${bindPrefix}/projects/${this.idBin(projectId)}/${projectId}:${this.codeWorkspace}`,
-
-          // vs code User settings bind
-          `${bindPrefix}/config/${this.idBin(projectId)}/${projectId}/User/settings.json:/home/coder/.local/share/code-server/User/settings.json`,
-
-          //vs code Machine settings bind
-          `${bindPrefix}/config/${this.idBin(projectId)}/${projectId}/Machine/settings.json:/home/coder/.local/share/code-server/Machine/settings.json`,
+          `${projectPath}:${this.codeWorkspace}`,
+          `${configPath}/User/settings.json:/home/coder/.local/share/code-server/User/settings.json`,
+          `${configPath}/Machine/settings.json:/home/coder/.local/share/code-server/Machine/settings.json`,
         ],
       },
       Env: [
@@ -111,12 +104,11 @@ export class ContainerService {
     }
     // write vnc url in a file (the vnc extension will read the file)
     // maybe there is a more elegant way for passing the vnc url into the extension ?
-    const p: string = `${bindPrefix}/projects/${this.idBin(projectId)}/${projectId}/.vnc/vncUrl`;
+    const p: string = `${projectPath}/.vnc/vncUrl`;
     await this.createFile(p);
     await fs.promises.writeFile(p, containerDto.vncUrl);
 
-
-    const buildGradlePath = `${bindPrefix}/projects/${this.idBin(projectId)}/${projectId}/build.gradle`;
+    const buildGradlePath = `${projectPath}/build.gradle`;
     await fs.promises.readFile(buildGradlePath).catch(() => {
       //catch will trigger only if file doesn't exist, this means we have to run the /setup
       containerDto.isNew = true;
@@ -149,8 +141,7 @@ export class ContainerService {
 
     // get extensions and write in list, before stopping the container
     const stream = await this.containerExec(container, ['code-server', '--list-extensions']);
-    const bindPrefix = path.resolve(environment.docker.bindPrefix);
-    const extensionsList = `${bindPrefix}/config/${this.idBin(projectId)}/${projectId}/User/extensions.txt`;
+    const extensionsList = `${this.projectPath('config', projectId)}/User/extensions.txt`;
     const writeStream = fs.createWriteStream(extensionsList);
     stream.pipe(writeStream);
 
@@ -164,19 +155,11 @@ export class ContainerService {
       id,
       projectId,
       token,
-      url: this.containerUrl(id),
+      // define workspace through folder query parameter /?folder=...
+      url: `${this.containerUrl(id)}/?folder=${this.codeWorkspace}`,
       vncUrl: this.vncURL(id),
       isNew: false,
     };
-  }
-
-  private containerUrl(id: string): string {
-    // define workspace through folder query parameter /?folder=...
-    return `${environment.docker.proxyHost}/containers/${id.substring(0, 12)}/?folder=${this.codeWorkspace}`;
-  }
-
-  private idBin(projectId: string) {
-    return projectId.slice(-2); // last 2 hex chars
   }
 
   private async checkAllHeartbeats() {
@@ -200,10 +183,8 @@ export class ContainerService {
   }
 
   private async isHeartbeatExpired(containerId: string): Promise<boolean> {
-    const url = `${environment.docker.proxyHost}/containers/${containerId.substring(0, 12)}`;
-
     try {
-      const {data} = await firstValueFrom(this.httpService.get(`${url}/healthz`));
+      const {data} = await firstValueFrom(this.httpService.get(`${this.containerUrl(containerId)}/healthz`));
       // res.data.lastHeartbeat is 0, when container has just started
       return data.status === 'expired' && data.lastHeartbeat && data.lastHeartbeat < Date.now() - environment.docker.heartbeatTimeout;
     } catch (e) {
@@ -253,8 +234,7 @@ export class ContainerService {
 
 
   private async installExtensions(container: Dockerode.Container, projectId: string) {
-    const bindPrefix = path.resolve(environment.docker.bindPrefix);
-    const extensionsListPath = `${bindPrefix}/config/${this.idBin(projectId)}/${projectId}/User/extensions.txt`;
+    const extensionsListPath = `${this.projectPath('config', projectId)}/User/extensions.txt`;
 
     const fileBuffer = await fs.promises.readFile(extensionsListPath).catch(async () => {
       //create extensions.txt if not exists
@@ -297,15 +277,26 @@ export class ContainerService {
     }
   }
 
+  async unzip(projectId: string, zip: Express.Multer.File): Promise<void> {
+    const admZip = new AdmZip(zip.buffer);
+    admZip.extractAllTo(this.projectPath('projects', projectId), true);
+  }
+
+  private projectPath(type: string, projectId: string): string {
+    const bindPrefix = path.resolve(environment.docker.bindPrefix);
+    return `${bindPrefix}/${type}/${this.idBin(projectId)}/${projectId}/`;
+  }
+
+  private containerUrl(id: string): string {
+    return `${environment.docker.proxyHost}/containers/${id.substring(0, 12)}`;
+  }
+
   private vncURL(id: string): string {
     const suffix = `containers-vnc/${id.substring(0, 12)}`;
     return `${environment.docker.proxyHost}/${suffix}/vnc_lite.html?path=${suffix}&resize=remote`;
   }
 
-  async unzip(projectId: string, zip: Express.Multer.File): Promise<void> {
-    const bindPrefix = path.resolve(environment.docker.bindPrefix);
-    const targetPath: string = `${bindPrefix}/projects/${this.idBin(projectId)}/${projectId}/`;
-    const admZip = new AdmZip(zip.buffer);
-    admZip.extractAllTo(targetPath, true);
+  private idBin(projectId: string) {
+    return projectId.slice(-2); // last 2 hex chars
   }
 }
