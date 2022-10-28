@@ -1,35 +1,30 @@
 [
   {
-    "tag": "fulib/code-server-fulib",
+    "tag": "fulib/code-server-fulib:17",
     "name": "fulib",
     "desc": "code-server + JDK + Gradle + fulib dependencies (default)",
     "dockerfile": "gradle/Dockerfile",
     "args": {
       "BUILD_GRADLE": "fulib/build.gradle",
-      "APT_DEPENDENCIES": "openjdk-17-jdk",
-      "EXTENSION": "redhat.java",
-      "CONF_SUPERVISOR": "supervisor.conf",
-      "CUSTOM_VNC_HTML": "vnc_lite.html"
+      "APT_DEPENDENCIES": "openjdk-17-jdk"
     }
   },
   {
-    "tag": "fulib/code-server-java",
+    "tag": "fulib/code-server-java:17",
     "name": "Java",
     "desc": "code-server + JDK + Gradle",
     "dockerfile": "gradle/Dockerfile",
     "args": {
-      "BUILD_GRADLE": "generic/build.gradle",
-      "APT_DEPENDENCIES": "openjdk-17-jdk-headless",
-      "EXTENSION": "redhat.java"
+      "BUILD_GRADLE": "gradle/build.gradle",
+      "APT_DEPENDENCIES": "openjdk-17-jdk-headless"
     }
   },
   {
-    "tag": "fulib/code-server-node",
+    "tag": "fulib/code-server-node:18",
     "name": "Node",
-    "desc": "code-server + Node.js",
+    "desc": "code-server + Node.js 18",
     "dockerfile": "nodejs/Dockerfile",
     "args": {
-      "APT_DEPENDENCIES": "nodejs",
       "NODE_VERSION": "18"
     }
   },

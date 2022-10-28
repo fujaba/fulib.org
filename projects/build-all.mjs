@@ -5,22 +5,35 @@ const text = await fs.readFile('../frontend/src/assets/projects/code-server-imag
 const images = JSON.parse(text);
 const argv = new Set(process.argv.slice(2));
 
-for (let image of images) {
-  if (argv.size && !argv.has(image.name)) {
-    continue;
-  }
-
-  let args = [
+async function build({tag, dockerfile, args}) {
+  let cmdArgs = [
     'build',
     '-t',
-    image.tag,
+    tag,
     '-f',
-    image.dockerfile,
-    ...Object.entries(image.args).filter(([, v]) => v).flatMap(([k, v]) => ['--build-arg', `${k}=${v}`]),
+    dockerfile,
+    ...Object.entries(args).filter(([, v]) => v).flatMap(([k, v]) => ['--build-arg', `${k}=${v}`]),
     '.',
   ];
-  console.log('docker', ...args);
-  let child = child_process.execFile('docker', args);
+  console.log('docker', ...cmdArgs);
+  const child = child_process.execFile('docker', cmdArgs);
   child.stdout.pipe(process.stdout);
   child.stderr.pipe(process.stderr);
+  return new Promise((resolve, reject) => {
+
+    child.on('exit', (code) => {
+      if (code === 0) {
+        resolve();
+      } else {
+        reject(new Error(`docker exited with code ${code}`));
+      }
+    });
+  });
 }
+
+await build({
+  tag: 'fulib/code-server-base',
+  dockerfile: 'base/Dockerfile',
+  args: {},
+});
+await Promise.all(images.filter((image) => image.dockerfile && (argv.size === 0 || argv.has(image.tag))).map(build));
