@@ -7,23 +7,20 @@
     <hr/>
     <h4>Export Project</h4>
     <div class="mb-3">
-      <div class="mb-3">
-        <label class="form-label" for="formatSelect">
-          Format
-        </label>
-        <select class="form-select" id="formatSelect" [(ngModel)]="format">
-          <option *ngFor="let format of formats" [ngValue]="format">{{ format.name }}</option>
-        </select>
-      </div>
+      <label class="form-label" for="formatSelect">
+        Format
+      </label>
+      <select class="form-select" id="formatSelect" [(ngModel)]="format">
+        <option *ngFor="let format of formats" [ngValue]="format">{{ format.name }}</option>
+      </select>
+      <div class="form-text" [innerHTML]="format.description | safeHtml"></div>
     </div>
-    <p *ngIf="format" [innerHTML]="format.description | safeHtml">
-    </p>
   </ng-container>
   <ng-container modal-footer>
     <button type="button" class="btn btn-secondary" (click)="modal.close()">
       Cancel
     </button>
-    <button type="button" class="btn btn-success" [disabled]="!format" (click)="export()">
+    <button type="button" class="btn btn-success" (click)="export()">
       Export
     </button>
     <button type="button" class="btn btn-primary" (click)="save(); modal.close()">

@@ -1,0 +1,19 @@
+<ngbx-modal #modal="modal" [back]="['/projects']">
+  <ng-container modal-title>
+    {{ editing['id'] ? 'Edit' : 'New' }} Project
+  </ng-container>
+  <ng-container modal-body>
+    <app-project-form [project]="editing"></app-project-form>
+    <div class="alert alert-success" *ngIf="creatingFromEditor">
+      This Project will be created with the configuration and scenario from the Scenario editor.
+    </div>
+  </ng-container>
+  <ng-container modal-footer>
+    <button type="button" class="btn btn-secondary" (click)="modal.close()">
+      Cancel
+    </button>
+    <button class="btn btn-primary" (click)="save(); modal.close()">
+      Save
+    </button>
+  </ng-container>
+</ngbx-modal>

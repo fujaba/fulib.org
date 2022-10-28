@@ -1,0 +1,56 @@
+[
+  {
+    "tag": "fulib/code-server-fulib",
+    "name": "fulib",
+    "desc": "code-server + JDK + Gradle + fulib dependencies (default)",
+    "dockerfile": "gradle/Dockerfile",
+    "args": {
+      "BUILD_GRADLE": "fulib/build.gradle",
+      "APT_DEPENDENCIES": "openjdk-17-jdk",
+      "EXTENSION": "redhat.java",
+      "CONF_SUPERVISOR": "supervisor.conf",
+      "CUSTOM_VNC_HTML": "vnc_lite.html"
+    }
+  },
+  {
+    "tag": "fulib/code-server-java",
+    "name": "Java",
+    "desc": "code-server + JDK + Gradle",
+    "dockerfile": "gradle/Dockerfile",
+    "args": {
+      "BUILD_GRADLE": "generic/build.gradle",
+      "APT_DEPENDENCIES": "openjdk-17-jdk-headless",
+      "EXTENSION": "redhat.java"
+    }
+  },
+  {
+    "tag": "fulib/code-server-node",
+    "name": "Node",
+    "desc": "code-server + Node.js",
+    "dockerfile": "nodejs/Dockerfile",
+    "args": {
+      "APT_DEPENDENCIES": "nodejs",
+      "NODE_VERSION": "18"
+    }
+  },
+  {
+    "tag": "fulib/code-server-latex",
+    "name": "LaTeX",
+    "desc": "code-server + LaTeX",
+    "dockerfile": "generic/Dockerfile",
+    "args": {
+      "APT_DEPENDENCIES": "texlive",
+      "EXTENSION": "James-Yu.latex-workshop"
+    }
+  },
+  {
+    "tag": "fulib/code-server-python",
+    "name": "Python",
+    "desc": "code-server + Python",
+    "dockerfile": "generic/Dockerfile",
+    "args": {
+      "APT_DEPENDENCIES": "python3",
+      "EXTENSION": "ms-python.python"
+    }
+  }
+]

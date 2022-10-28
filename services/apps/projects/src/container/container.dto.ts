@@ -1,5 +1,6 @@
-import {ApiProperty} from '@nestjs/swagger';
-import {IsMongoId, IsUrl} from 'class-validator';
+import {ApiProperty, PickType} from '@nestjs/swagger';
+import {IsAlphanumeric, IsBoolean, IsMongoId, IsUrl} from 'class-validator';
+import {Project} from '../project/project.schema';
 
 export class ContainerDto {
   @ApiProperty()
@@ -13,10 +14,24 @@ export class ContainerDto {
   @ApiProperty()
   @IsMongoId()
   projectId: string;
+
+  @ApiProperty()
+  @IsAlphanumeric()
+  token: string;
+
+  @ApiProperty({format: 'url'})
+  @IsUrl()
+  vncUrl: string;
+
+  @ApiProperty()
+  @IsBoolean()
+  isNew: boolean;
 }
 
-export class CreateContainerDto {
+export class CreateContainerDto extends PickType(Project, [
+  'dockerImage',
+] as const) {
   @ApiProperty()
   @IsMongoId()
-  id: string;
+  projectId: string;
 }

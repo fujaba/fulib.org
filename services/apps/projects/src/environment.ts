@@ -9,12 +9,13 @@ export const environment = {
   docker: {
     host: process.env.DOCKER_HOST,
     port: process.env.DOCKER_PORT,
-    socket: process.env.DOCKER_HOST ? undefined : '/var/run/docker.sock',
+    socket: process.env.DOCKER_HOST ? undefined : process.platform !== 'win32' ? '/var/run/docker.sock' : '//./pipe/docker_engine',
     version: process.env.DOCKER_VERSION || 'v1.41',
     bindPrefix: process.env.FULIB_PROJECTS_DATA_DIR || 'data',
-    containerImage: process.env.FULIB_PROJECTS_CONTAINER_IMAGE || 'fulib/fulib.org-projects',
+    containerImage: process.env.FULIB_PROJECTS_CONTAINER_IMAGE || 'fulib/code-server-fulib',
     proxyHost: process.env.FULIB_PROJECTS_PROXY_URL || 'http://localhost:13147',
     network: process.env.FULIB_PROJECTS_NETWORK || 'fuliborg_projects',
+    heartbeatTimeout: +(process.env.FULIB_PROJECTS_HEARTBEAT_TIMEOUT || 15) * 60 * 1000,
   },
   auth: {
     publicKey: `-----BEGIN PUBLIC KEY-----\n${

@@ -1,14 +1,14 @@
 import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {KeycloakService} from 'keycloak-angular';
-import { ToastService } from 'ng-bootstrap-ext';
+import {ToastService} from 'ng-bootstrap-ext';
 import {forkJoin, of, Subscription} from 'rxjs';
 import {catchError, filter, startWith, switchMap, tap} from 'rxjs/operators';
 import {User} from '../../../user/user';
 import {UserService} from '../../../user/user.service';
 import {Container} from '../../model/container';
-import {LocalProject, Project} from '../../model/project';
-import { ContainerService } from '../../services/container.service';
+import {Project} from '../../model/project';
+import {ContainerService} from '../../services/container.service';
 import {MemberService} from '../../services/member.service';
 import {ProjectService} from '../../services/project.service';
 
@@ -65,18 +65,6 @@ export class ProjectListComponent implements OnInit, OnDestroy {
     this.keycloak.login();
   }
 
-  convert(localProject: LocalProject) {
-    this.projectService.convert(localProject).subscribe(persistentProject => {
-      const index = this.projects.indexOf(localProject);
-      if (index >= 0) {
-        this.projects[index] = persistentProject;
-      }
-      this.toastService.success('Convert Project', 'Successfully converted project to persistent.');
-    }, error => {
-      this.toastService.error('Convert Project', 'Failed to convert project', error);
-    });
-  }
-
   leave(project: Project) {
     if (!confirm('Are you sure you want to leave this project as collaborator? This can only be undone by the owner.')) {
       return;
@@ -87,6 +75,13 @@ export class ProjectListComponent implements OnInit, OnDestroy {
       this.toastService.warn('Leave Project', 'Successfully left project.');
     }, error => {
       this.toastService.error('Leave Project', 'Failed to leave project', error);
+    });
+  }
+
+  stop(project: Project) {
+    this.containerService.delete(project.id).subscribe(() => {
+      this.containers[this.projects.indexOf(project)] = null;
+      this.toastService.warn('Stop Container', 'Successfully stopped container.');
     });
   }
 }

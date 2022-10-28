@@ -1,4 +1,3 @@
-**
-!/build/libs/projects-*-all.jar
-!/webdav.yaml
-!preload.build.gradle
+*Dockerfile
+code-server-images.json
+build-all.mjs

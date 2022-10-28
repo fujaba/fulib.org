@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <!--
+    noVNC example: lightweight example using minimal UI and features
+    Copyright (C) 2012 Joel Martin
+    Copyright (C) 2017 Samuel Mannehed for Cendio AB
+    noVNC is licensed under the MPL 2.0 (see LICENSE.txt)
+    This file is licensed under the 2-Clause BSD license (see LICENSE.txt).
+
+    Connect parameters are provided in query string:
+        http://example.com/?host=HOST&port=PORT&encrypt=1
+    or the fragment:
+        http://example.com/#host=HOST&port=PORT&encrypt=1
+    -->
+    <title>noVNC</title>
+
+    <meta charset="utf-8">
+
+    <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
+                Remove this if you use the .htaccess -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <!-- Icons (see Makefile for what the sizes are for) -->
+    <link rel="icon" sizes="16x16" type="image/png" href="app/images/icons/novnc-16x16.png">
+    <link rel="icon" sizes="24x24" type="image/png" href="app/images/icons/novnc-24x24.png">
+    <link rel="icon" sizes="32x32" type="image/png" href="app/images/icons/novnc-32x32.png">
+    <link rel="icon" sizes="48x48" type="image/png" href="app/images/icons/novnc-48x48.png">
+    <link rel="icon" sizes="60x60" type="image/png" href="app/images/icons/novnc-60x60.png">
+    <link rel="icon" sizes="64x64" type="image/png" href="app/images/icons/novnc-64x64.png">
+    <link rel="icon" sizes="72x72" type="image/png" href="app/images/icons/novnc-72x72.png">
+    <link rel="icon" sizes="76x76" type="image/png" href="app/images/icons/novnc-76x76.png">
+    <link rel="icon" sizes="96x96" type="image/png" href="app/images/icons/novnc-96x96.png">
+    <link rel="icon" sizes="120x120" type="image/png" href="app/images/icons/novnc-120x120.png">
+    <link rel="icon" sizes="144x144" type="image/png" href="app/images/icons/novnc-144x144.png">
+    <link rel="icon" sizes="152x152" type="image/png" href="app/images/icons/novnc-152x152.png">
+    <link rel="icon" sizes="192x192" type="image/png" href="app/images/icons/novnc-192x192.png">
+    <!-- Firefox currently mishandles SVG, see #1419039
+    <link rel="icon" sizes="any" type="image/svg+xml" href="app/images/icons/novnc-icon.svg">
+    -->
+    <!-- Repeated last so that legacy handling will pick this -->
+    <link rel="icon" sizes="16x16" type="image/png" href="app/images/icons/novnc-16x16.png">
+
+    <!-- Apple iOS Safari settings -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <!-- Home Screen Icons (favourites and bookmarks use the normal icons) -->
+    <link rel="apple-touch-icon" sizes="60x60" type="image/png" href="app/images/icons/novnc-60x60.png">
+    <link rel="apple-touch-icon" sizes="76x76" type="image/png" href="app/images/icons/novnc-76x76.png">
+    <link rel="apple-touch-icon" sizes="120x120" type="image/png" href="app/images/icons/novnc-120x120.png">
+	    <link rel="apple-touch-icon" sizes="152x152" type="image/png" href="app/images/icons/novnc-152x152.png">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="app/styles/lite.css">
+    <style>
+        #controlCenterButton {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin-top: 0;
+            width: 24px;
+        }
+
+        #modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        #modalContent {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 0px 20px 0px 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        #closeModal {
+            color: black;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #controlFieldset {
+            padding: 0;
+            margin: 0;
+            border: 0;
+        }
+
+        #controlWindow {
+            position: absolute;
+            width: 200px;
+            z-index: 2;
+            display: none;
+            top: 25%;
+            left: 25%;
+            border: 1px solid gray;
+            text-align: center;
+            background-color: #252526;
+        }
+
+        #controlWindowBar {
+            cursor: move;
+            background-color: #0e639c;
+            color: white;
+            text-align: center;
+            font-size: 14pt;
+        }
+
+        #controlClose {
+            cursor: pointer;
+            float: right;
+            width: 16px;
+        }
+
+        #controlClose:hover {
+            background-color: red;
+        }
+
+        button {
+            color: white;
+            background-color: #0e639c;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #208dd6;
+        }
+
+        .controlButtons:last-child {
+            margin-bottom: 10px;
+        }
+        #noVNC_status_bar {
+            display: none;
+            background: red
+        }
+    </style>
+
+    <!-- promise polyfills promises for IE11 -->
+    <script src="vendor/promise.js"></script>
+    <!-- ES2015/ES6 modules polyfill -->
+    <script type="module">
+        window._noVNC_has_module_support = true;
+    </script>
+    <script>
+        window.addEventListener("load", function() {
+            if (window._noVNC_has_module_support) return;
+            var loader = document.createElement("script");
+            loader.src = "vendor/browser-es-module-loader/dist/browser-es-module-loader.js";
+            document.head.appendChild(loader);
+        });
+    </script>
+
+    <!-- actual script modules -->
+    <script type="module" crossorigin="anonymous">
+        // Load supporting scripts
+        import * as WebUtil from './app/webutil.js';
+        import RFB from './core/rfb.js';
+
+        var rfb;
+
+        function status(text, level) {
+            switch (level) {
+                case 'normal':
+                case 'warn':
+                case 'error':
+                    break;
+                default:
+                    level = "warn";
+            }
+            document.getElementById('noVNC_status_bar').className = "noVNC_status_" + level;
+            document.getElementById('noVNC_status').textContent = text;
+        }
+
+
+        WebUtil.init_logging(WebUtil.getConfigVar('logging', 'warn'));
+        document.title = WebUtil.getConfigVar('title', 'noVNC');
+        // By default, use the host and port of server that served this file
+        var host = WebUtil.getConfigVar('host', window.location.hostname);
+        var port = WebUtil.getConfigVar('port', window.location.port);
+
+        // if port == 80 (or 443) then it won't be present and should be
+        // set manually
+        if (!port) {
+            if (window.location.protocol.substring(0,5) == 'https') {
+                port = 443;
+            }
+            else if (window.location.protocol.substring(0,4) == 'http') {
+                port = 80;
+            }
+        }
+
+        var path = WebUtil.getConfigVar('path', 'websockify');
+
+        (function() {
+
+            status("Connecting", "normal");
+
+            if ((!host) || (!port)) {
+                status('Must specify host and port in URL', 'error');
+				            }
+
+            var url;
+
+            if (WebUtil.getConfigVar('encrypt',
+                                     (window.location.protocol === "https:"))) {
+                url = 'wss';
+            } else {
+                url = 'ws';
+            }
+
+            url += '://' + host;
+            if(port) {
+                url += ':' + port;
+            }
+            url += '/' + path;
+
+            rfb = new RFB(document.body, url);
+            rfb.viewOnly = WebUtil.getConfigVar('view_only', false);
+            rfb.scaleViewport = WebUtil.getConfigVar('scale', false);
+            rfb.resizeSession = WebUtil.getConfigVar('resize', false);
+        })();
+
+        /* Algorithmus von: https://www.w3schools.com/howto/howto_js_draggable.asp
+       modifiziert
+       element - element which should be moved
+       optional: recognitionElement - element which should be the "moving zone"
+       "moving zone": zone where you drag with your mouse to move the whole element (for example a window bar)
+       if not given, the whole element is the "moving zone"
+       element position must be 'absolute' !! */
+        function dragElement(element, recognitionElement = element) {
+            let pos1 = 0;
+            let pos2 = 0;
+            let pos3 = 0;
+            let pos4 = 0;
+
+            recognitionElement.addEventListener('mousedown', dragMouseDown);
+
+            function dragMouseDown(e) {
+                e.preventDefault();
+                // get the mouse cursor position at startup:
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.addEventListener('mouseup', closeDragElement);
+                // call a function whenever the cursor moves:
+                document.addEventListener('mousemove', elementDrag);
+            }
+
+            function elementDrag(e) {
+                e.preventDefault();
+                // calculate the new cursor position:
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                // set the element's new position:
+                element.style.top = (element.offsetTop - pos2) + "px";
+                element.style.left = (element.offsetLeft - pos1) + "px";
+            }
+
+            function closeDragElement() {
+                // stop moving when mouse button is released:
+                document.removeEventListener('mouseup', closeDragElement);
+                document.removeEventListener('mousemove', elementDrag);
+            }
+        }
+
+        let controlWindow = document.getElementById('controlWindow');
+        let controlWindowBar = document.getElementById('controlWindowBar');
+        dragElement(controlWindow, controlWindowBar);
+        document.getElementById('controlClose').onclick = () => {
+            controlWindow.style.display = 'none';
+        };
+        let controlCenterButton = document.getElementById('controlCenterButton');
+        controlCenterButton.onclick = () => {
+            controlWindow.style.top = controlCenterButton.clientHeight + 'px';
+            controlWindow.style.left = window.innerWidth - 202 + 'px'; //200px default width of the control window
+            controlWindow.style.display = 'block';
+        };
+
+        //button clicks
+        document.getElementById('previousWindow').onclick = () => {
+            rfb.sendKey(0xffe9, 'AltLeft', true);
+            rfb.sendKey(0xff51, 'ArrowLeft', true);
+            rfb.sendKey(0xff51, 'ArrowLeft', false);
+            rfb.sendKey(0xffe9, 'AltLeft', false);
+
+        };
+        document.getElementById('nextWindow').onclick = () => {
+            rfb.sendKey(0xffe9, 'AltLeft', true);
+            rfb.sendKey(0xff53, 'ArrowRight', true);
+            rfb.sendKey(0xff53, 'ArrowRight', false);
+            rfb.sendKey(0xffe9, 'AltLeft', false);
+        };
+
+        document.getElementById('catchRemote').onclick = () => {
+            let controlFieldset = document.getElementById('controlFieldset');
+            if(!(controlFieldset.disabled)) {
+                rfb.focus();
+                rfb.sendKey(0xffe3, 'ControlLeft', true);
+                status('STRG aktiv! Kommandos werden an die Remote Sitzung gesendet.', 'normal');
+                document.getElementById('noVNC_status_bar').style.display = 'flex';
+                // disable all other buttons while 'catchRemote' is active
+                controlFieldset.disabled = true;
+            } else {
+                rfb.focus();
+                rfb.sendKey(0xffe3, 'ControlLeft', false);
+                document.getElementById('noVNC_status_bar').style.display = 'none';
+                // enable buttons again
+                controlFieldset.disabled = false;
+            }
+        };
+
+        // modal
+        let modal = document.getElementById('modal');
+        let showHotkeys = document.getElementById('showHotkeys');
+        let closeSpan = document.getElementById('closeModal');
+        showHotkeys.onclick = () => { modal.style.display = "block" };
+        closeSpan.onclick = () => { modal.style.display = "none" };
+        // When the user clicks anywhere outside of the modal, close it
+        window.addEventListener('click', (event) => {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        });
+    </script>
+</head>
+
+<body>
+<button id="controlCenterButton">?</button>
+
+<div id="modal">
+    <div id="modalContent">
+        <div id="modalHeader">
+            <span id="closeModal">&times;</span>
+            <h1>Basic Hotkeys</h1>
+        </div>
+        <div id="modalBody">
+            <p>Next Window: Alt + Arrow Right</p>
+            <p>Previous Window: Alt + Arrow Left</p>
+            <p>Open new Terminal: Alt + Enter</p>
+            <p>Close current window: Alt + Shift + Q</p>
+        </div>
+    </div>
+</div>
+
+<div id="noVNC_status_bar">
+    <div id="noVNC_status">Loading</div>
+</div>
+
+
+<div id="controlWindow">
+    <div id="controlWindowBar">
+        control buttons
+        <span id="controlClose">&times;</span>
+    </div>
+
+    <div class="controlButtons">
+        <div>
+            <button id="catchRemote">toggle STRG mode</button>
+        </div>
+
+        <fieldset id="controlFieldset">
+            <div>
+                <button id="previousWindow">previous window</button>
+            </div>
+
+            <div>
+                <button id="nextWindow">next window</button>
+            </div>
+        </fieldset>
+
+        <div>
+            <button id="showHotkeys">show hotkeys</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

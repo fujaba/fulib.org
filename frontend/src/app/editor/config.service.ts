@@ -3,6 +3,7 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
 import {PrivacyService} from '../services/privacy.service';
+import {ProjectConfig} from '../shared/model/project-config';
 import {ProjectZipRequest} from '../shared/model/project-zip-request';
 
 @Injectable({providedIn: 'root'})
@@ -96,6 +97,24 @@ There is a Car with name Herbie.
       this._storedScenario = value;
       this.privacyService.setStorage('storedScenario', value);
     }
+  }
+
+  getConfig(): ProjectConfig {
+    return {
+      packageName: this.packageName,
+      projectName: this.projectName,
+      projectVersion: this.projectVersion,
+      scenarioFileName: this.scenarioFileName,
+      decoratorClassName: this.decoratorClassName,
+    };
+  }
+
+  saveConfig(projectConfig: ProjectConfig): void {
+    this.packageName = projectConfig.packageName;
+    this.projectName = projectConfig.projectName;
+    this.projectVersion = projectConfig.projectVersion;
+    this.scenarioFileName = projectConfig.scenarioFileName;
+    this.decoratorClassName = projectConfig.decoratorClassName || '';
   }
 
   downloadZip(projectZipRequest: ProjectZipRequest): Observable<Blob> {
