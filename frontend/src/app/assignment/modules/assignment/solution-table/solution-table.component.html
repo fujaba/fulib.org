@@ -63,14 +63,15 @@
 <table class="table table-bordered table-hover table-sm table-centered" *ngIf="solutions">
   <thead>
   <tr>
-    <th>Name</th>
-    <th>Student ID</th>
-    <th>E-Mail</th>
-    <th>GitHub Username</th>
+    <th *ngFor="let prop of authorProperties">
+      {{ prop[0] }}
+      <button class="btn btn-sm p-1 bi-clipboard" ngbTooltip="Copy Column as Text" (click)="copyAuthor(prop[0], prop[1])"></button>
+    </th>
     <th>Submitted</th>
     <th>
       Points
-      <i class="bi-question-circle" ngbTooltip="View Color Legend" [ngbPopover]="pointsPopover"></i>
+      <button class="btn btn-sm p-1 bi-question-circle" ngbTooltip="View Color Legend" [ngbPopover]="pointsPopover" placement="bottom-left"></button>
+      <button class="btn btn-sm p-1 bi-clipboard" ngbTooltip="Copy Column as Text" (click)="copyPoints()"></button>
     </th>
     <ng-template #pointsPopover>
       <div>
@@ -92,14 +93,7 @@
   </thead>
   <tbody>
   <tr *ngFor="let solution of solutions; trackBy: solutionId">
-    <td>{{solution.author.name}}</td>
-    <td>{{solution.author.studentId}}</td>
-    <td>
-      <a *ngIf="solution.author.email" href="mailto:{{solution.author.email}}">
-        {{solution.author.email}}
-      </a>
-    </td>
-    <td>{{solution.author.github}}</td>
+    <td *ngFor="let prop of authorProperties">{{solution.author[prop[1]]}}</td>
     <td>
         <span
           *ngIf="assignment && assignment.deadline && solution.timestamp && assignment.deadline < solution.timestamp else timestamp"

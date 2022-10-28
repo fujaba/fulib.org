@@ -1,6 +1,7 @@
 import {Component, OnInit, TrackByFunction} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ToastService} from 'ng-bootstrap-ext';
+import {ClipboardService} from 'ngx-clipboard';
 import {BehaviorSubject, combineLatest, forkJoin, Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 import {Assignee} from '../../../model/assignee';
@@ -24,6 +25,13 @@ export class SolutionTableComponent implements OnInit {
     'email',
     'github',
     'assignee',
+  ];
+
+  readonly authorProperties: [string, keyof AuthorInfo][] = [
+    ['Name', 'name'],
+    ['Student ID', 'studentId'],
+    ['E-Mail', 'email'],
+    ['GitHub Username', 'github'],
   ];
 
   assignment?: Assignment;
@@ -50,6 +58,7 @@ export class SolutionTableComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private toastService: ToastService,
     private taskService: TaskService,
+    private clipboardService: ClipboardService,
   ) {
   }
 
@@ -200,5 +209,15 @@ export class SolutionTableComponent implements OnInit {
       action,
       timestamp: new Date(),
     }).subscribe();
+  }
+
+  copyPoints() {
+    this.clipboardService.copy(this.solutions!.map(s => s.points ?? '').join('\n'));
+    this.toastService.success('Copy Points', `Copied ${this.solutions.length} rows to clipboard`);
+  }
+
+  copyAuthor(name: string, key: keyof AuthorInfo) {
+    this.clipboardService.copy(this.solutions!.map(s => s.author[key] ?? '').join('\n'));
+    this.toastService.success(`Copy ${name}`, `Copied ${this.solutions.length} rows to clipboard`);
   }
 }
