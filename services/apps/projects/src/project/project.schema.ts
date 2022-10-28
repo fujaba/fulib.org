@@ -1,6 +1,6 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
-import {IsDateString, IsNotEmpty, IsOptional, IsString} from 'class-validator';
+import {IsDateString, IsNotEmpty, IsOptional, IsString, Matches} from 'class-validator';
 import {Document} from 'mongoose';
 
 @Schema()
@@ -20,6 +20,7 @@ export class Project {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
+  @Matches(/^(fulib|codercom)\/code-server(?:-[a-zA-Z0-9-]+)?(?::[a-zA-Z0-9.-]+)?$/)
   dockerImage?: string;
 
   @Prop({index: 1})
