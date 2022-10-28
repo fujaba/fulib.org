@@ -47,5 +47,15 @@
       "APT_DEPENDENCIES": "python3",
       "EXTENSION": "ms-python.python"
     }
+  },
+  {
+    "tag": "fulib/code-server-base",
+    "name": "Basic",
+    "desc": "code-server + VNC"
+  },
+  {
+    "tag": "codercom/code-server",
+    "name": "Code Server",
+    "desc": "code-server (no VNC)"
   }
 ]
