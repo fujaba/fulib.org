@@ -1,6 +1,8 @@
 import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
+import {Toast, ToastService} from 'ng-bootstrap-ext';
+import {ClipboardService} from 'ngx-clipboard';
 import {switchMap, tap} from 'rxjs/operators';
 import {Container} from '../../model/container';
 
@@ -36,22 +38,20 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
   project?: Project;
   container?: Container;
 
-  showAlert = true;
-
-
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private projectService: ProjectService,
     private containerService: ContainerService,
     private ngbModal: NgbModal,
+    private toastService: ToastService,
+    private clipboardService: ClipboardService,
   ) {
   }
 
   ngOnInit(): void {
     this.route.params.pipe(
       tap(() => {
-        this.showAlert = false;
         this.openModal = this.ngbModal.open(this.loadingModal, {
           ariaLabelledBy: 'loading-modal-title',
           centered: true,
@@ -71,9 +71,19 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
         this.container = container;
         this.progress.container = true;
       }),
-    ).subscribe(() => {
+    ).subscribe(container => {
       this.openModal?.close();
-      this.showAlert = true;
+      const toast: Toast = {
+        class: 'bg-primary',
+        title: 'Container Launched',
+        delay: 20000,
+        body: `Your container is ready to use. If prompted for a password, use the token: ${container.token}`,
+        actions: [
+          {name: 'Copy', run: () => this.clipboardService.copy(container.token)},
+          {name: 'Close', run: () => this.toastService.remove(toast)},
+        ],
+      };
+      this.toastService.add(toast);
       if (this.container?.isNew) {
         this.router.navigate(['setup'], {relativeTo: this.route});
       }

@@ -37,7 +37,7 @@ export class ContainerService {
   async start(projectId: string, image?: string): Promise<ContainerDto> {
     const projectPath = this.projectPath('projects', projectId);
     const configPath = this.projectPath('config', projectId);
-    const token = randomBytes(10).toString('base64');
+    const token = randomBytes(12).toString('base64');
 
     /* create 'settings.json' files if they don't exist already
     code server will write the user/machine settings there
