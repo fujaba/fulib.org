@@ -2,7 +2,7 @@
   {
     "tag": "fulib/code-server-fulib:17",
     "name": "fulib",
-    "desc": "code-server + JDK + Gradle + fulib dependencies (default)",
+    "desc": "JDK 17 + Gradle + latest fulib (default)",
     "dockerfile": "gradle/Dockerfile",
     "args": {
       "BUILD_GRADLE": "fulib/build.gradle",
@@ -12,7 +12,7 @@
   {
     "tag": "fulib/code-server-java:17",
     "name": "Java",
-    "desc": "code-server + JDK + Gradle",
+    "desc": "JDK 17 + Gradle",
     "dockerfile": "gradle/Dockerfile",
     "args": {
       "BUILD_GRADLE": "gradle/build.gradle",
@@ -22,7 +22,7 @@
   {
     "tag": "fulib/code-server-node:18",
     "name": "Node",
-    "desc": "code-server + Node.js 18",
+    "desc": "Node.js 18",
     "dockerfile": "nodejs/Dockerfile",
     "args": {
       "NODE_VERSION": "18"
@@ -31,7 +31,7 @@
   {
     "tag": "fulib/code-server-latex",
     "name": "LaTeX",
-    "desc": "code-server + LaTeX",
+    "desc": "LaTeX/TeXLive",
     "dockerfile": "generic/Dockerfile",
     "args": {
       "APT_DEPENDENCIES": "texlive",
@@ -41,7 +41,7 @@
   {
     "tag": "fulib/code-server-python",
     "name": "Python",
-    "desc": "code-server + Python",
+    "desc": "Python 3",
     "dockerfile": "generic/Dockerfile",
     "args": {
       "APT_DEPENDENCIES": "python3",
@@ -51,11 +51,11 @@
   {
     "tag": "fulib/code-server-base",
     "name": "Basic",
-    "desc": "code-server + VNC"
+    "desc": "No specific programming language. VNC is enabled."
   },
   {
     "tag": "codercom/code-server",
     "name": "Code Server",
-    "desc": "code-server (no VNC)"
+    "desc": "Plain code-server. VNC is disabled. Most light-weight."
   }
 ]
