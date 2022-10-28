@@ -1,13 +1,12 @@
 import {HttpService} from '@nestjs/axios';
-import {Injectable, UnauthorizedException} from '@nestjs/common';
-import axios, {Method} from 'axios';
+import {Injectable} from '@nestjs/common';
+import {Method} from 'axios';
 import {createReadStream} from 'fs';
 import {firstValueFrom} from 'rxjs';
 import {Stream} from 'stream';
 import {Entry as ZipEntry, Parse as unzip} from 'unzipper';
 import {AssignmentDocument} from '../assignment/assignment.schema';
 import {AssignmentService} from '../assignment/assignment.service';
-import {environment} from '../environment';
 import {SearchService} from '../search/search.service';
 import {ReadSolutionDto} from '../solution/solution.dto';
 import {AuthorInfo, Solution, SolutionDocument} from '../solution/solution.schema';
@@ -209,10 +208,11 @@ export class ClassroomService {
   private async getMainCommitSHA(repo: RepositoryInfo, token: string): Promise<string | undefined> {
     const url = `https://api.github.com/repos/${repo.full_name}/branches/${repo.default_branch}`;
     try {
-      const branch = await this.github<{ commit: { sha: string }; }>('GET', url, token);
-      return branch.commit.sha;
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 404) {
+      const branch = await this.github<{ commit?: { sha: string }; }>('GET', url, token);
+      return branch.commit?.sha;
+    } catch (error: any) {
+      if (error.response?.status === 404) {
+        console.warn(`${repo.full_name} has no default branch ${repo.default_branch}`);
         return undefined;
       }
       throw error;
