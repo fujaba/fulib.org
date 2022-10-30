@@ -6,6 +6,7 @@ import {RouterModule} from '@angular/router';
 import {CodemirrorModule} from '@ctrl/ngx-codemirror';
 import {NgbDropdownModule, NgbNavModule, NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
 import {ModalModule} from 'ng-bootstrap-ext';
+import {ClipboardModule} from 'ngx-clipboard';
 
 import {AutothemeCodemirrorComponent} from './autotheme-codemirror/autotheme-codemirror.component';
 import {CollapseButtonComponent} from './collapse-button/collapse-button.component';
@@ -20,6 +21,7 @@ import {ProTipComponent} from './pro-tip/pro-tip.component';
 import {ProjectConfigFormComponent} from './project-config-form/project-config-form.component';
 import {ScenarioCodemirrorComponent} from './scenario-codemirror/scenario-codemirror.component';
 import {TabsComponent} from './tabs/tabs.component';
+import { TokenInputComponent } from './token-input/token-input.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +39,7 @@ import {TabsComponent} from './tabs/tabs.component';
     ProTipComponent,
     DurationPipe,
     DiagramViewComponent,
+    TokenInputComponent,
   ],
   imports: [
     FormsModule,
@@ -47,6 +50,7 @@ import {TabsComponent} from './tabs/tabs.component';
     NgbNavModule,
     RouterModule,
     ModalModule,
+    ClipboardModule,
   ],
   exports: [
     SafeHtmlPipe,
@@ -63,6 +67,7 @@ import {TabsComponent} from './tabs/tabs.component';
     ProTipComponent,
     DurationPipe,
     DiagramViewComponent,
+    TokenInputComponent,
   ],
   providers: [
     DurationPipe,

@@ -7,8 +7,7 @@
 <div class="input-group">
   <input #linkInput type="text" class="form-control" readonly
          [value]="origin + '/assignments/' + assignmentId + '/solutions/' + solutionId">
-  <button *ngxClipboardIfSupported class="btn btn-outline-secondary" [ngxClipboard]="linkInput">
-    Copy
+  <button *ngxClipboardIfSupported class="btn btn-outline-secondary bi-clipboard" ngbTooltip="Copy" [ngxClipboard]="linkInput">
   </button>
 </div>
 <hr/>
@@ -24,12 +23,7 @@
 <p>
   To view your submission on other devices, you may be asked for the following token.
 </p>
-<div class="input-group">
-  <input #tokenInput type="text" class="form-control font-monospace" readonly [value]="token">
-  <button *ngxClipboardIfSupported class="btn btn-outline-secondary" [ngxClipboard]="tokenInput">
-    Copy
-  </button>
-</div>
+<app-token-input [value]="token || ''"></app-token-input>
 <hr/>
 <h5>
   Submission Link with Token
@@ -37,13 +31,7 @@
 <p>
   You can view your submission with this link.
 </p>
-<div class="input-group">
-  <input #linkWithTokenInput type="text" class="form-control" readonly
-         [value]="origin + '/assignments/' + assignmentId + '/solutions/' + solutionId + '/?stok=' + token">
-  <button *ngxClipboardIfSupported class="btn btn-outline-secondary" [ngxClipboard]="linkWithTokenInput">
-    Copy
-  </button>
-</div>
+<app-token-input [value]="origin + '/assignments/' + assignmentId + '/solutions/' + solutionId + '/?stok=' + token"></app-token-input>
 <hr/>
 <h5>
   fulibFeedback Settings

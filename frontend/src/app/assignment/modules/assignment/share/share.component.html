@@ -7,8 +7,7 @@
   </p>
   <div class="input-group">
     <input #linkInput type="text" class="form-control" readonly [value]="origin + '/assignments/' + id">
-    <button *ngxClipboardIfSupported type="button" class="btn btn-outline-secondary" [ngxClipboard]="linkInput">
-      Copy
+    <button *ngxClipboardIfSupported type="button" class="btn btn-outline-secondary bi-clipboard" ngbTooltip="Copy" [ngxClipboard]="linkInput">
     </button>
   </div>
   <hr/>
@@ -26,12 +25,7 @@
   <p>
     To view submissions on other devices, you may be asked for the following token.
   </p>
-  <div class="input-group">
-    <input #tokenInput type="text" class="form-control font-monospace" readonly [value]="token">
-    <button *ngxClipboardIfSupported type="button" class="btn btn-outline-secondary" [ngxClipboard]="tokenInput">
-      Copy
-    </button>
-  </div>
+  <app-token-input [value]="token || ''"></app-token-input>
   <hr/>
   <h5>
     Teaching Assistant Invitation
@@ -39,13 +33,7 @@
   <p>
     You can invite Teaching Assistants by giving them the following link.
   </p>
-  <div class="input-group">
-    <input #taLinkInput type="text" class="form-control" readonly
-           [value]="origin + '/assignments/' + id + '/solutions?atok=' + token">
-    <button *ngxClipboardIfSupported type="button" class="btn btn-outline-secondary" [ngxClipboard]="taLinkInput">
-      Copy
-    </button>
-  </div>
+  <app-token-input [value]="origin + '/assignments/' + id + '/solutions?atok=' + token"></app-token-input>
   <hr/>
   <h5>
     fulibFeedback Settings
