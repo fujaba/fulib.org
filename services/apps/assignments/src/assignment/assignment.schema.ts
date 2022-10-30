@@ -86,7 +86,8 @@ export class ClassroomInfo {
 @Schema({
   toJSON: {
     transform: (doc, ret) => {
-      delete ret.classroom?.token;
+      const {classroom} = ret;
+      classroom && (classroom.token = classroom.token ? '***' : undefined);
       return ret;
     },
   },

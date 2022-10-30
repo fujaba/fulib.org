@@ -114,6 +114,9 @@ export class AssignmentService {
     if (classroom) {
       // need to flatten the classroom object to prevent deleting the GitHub token all the time
       for (const [key, value] of Object.entries(classroom)) {
+        if (key === 'token' && value === '***') {
+          continue;
+        }
         update[`classroom.${key}`] = value;
       }
     }
