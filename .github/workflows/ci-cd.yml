@@ -192,7 +192,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Build the Projects code-server Images
         working-directory: projects
-        run: ./build-all.mjs
+        run: node build-all.mjs
   projects-proxy:
     name: Projects Proxy
     runs-on: ubuntu-latest
