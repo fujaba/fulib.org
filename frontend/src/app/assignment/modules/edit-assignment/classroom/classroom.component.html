@@ -21,10 +21,30 @@
   </div>
   <div class="mb-3">
     <label class="form-label" for="tokenInput">GitHub Token</label>
-    <input
-      type="password" class="form-control" id="tokenInput" placeholder="ghp_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-      [(ngModel)]="assignment.classroom!.token" (change)="saveDraft()"
-    >
+    <div *ngIf="assignment.classroom!.token === '***' else tokenInput" class="input-group">
+      <input
+        type="text"
+        class="form-control fst-italic text-blur"
+        id="tokenInput"
+        readonly
+        value="ghp_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+      >
+      <button
+        class="btn btn-outline-secondary bi-pencil"
+        ngbTooltip="Edit"
+        (click)="assignment.classroom!.token = ''"
+      ></button>
+    </div>
+    <ng-template #tokenInput>
+      <input
+        type="password"
+        class="form-control"
+        id="tokenInput"
+        placeholder="ghp_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+        [(ngModel)]="assignment.classroom!.token"
+        (change)="saveDraft()"
+      >
+    </ng-template>
     <div class="form-text">
       Required for importing solutions from GitHub Classroom.
       You can generate a token in the

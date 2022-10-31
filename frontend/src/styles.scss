@@ -82,6 +82,10 @@
   .as-split-gutter {
     background-color: $gray-900 !important;
   }
+
+  .text-blur {
+    text-shadow: 0 0 8px $gray-100 !important;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -128,6 +132,11 @@ a[href^="http"]::after {
 
 .feature-icon {
   font-size: xxx-large;
+}
+
+.text-blur {
+  color: transparent !important;
+  text-shadow: 0 0 8px $gray-900 !important;
 }
 
 .backdrop-blur {

@@ -1,0 +1,23 @@
+<div class="input-group">
+  <input
+    #input
+    type="text"
+    class="form-control"
+    readonly
+    [value]="value"
+    [class.text-blur]="blurred"
+  >
+  <button
+    class="btn btn-outline-secondary"
+    [ngbTooltip]="blurred ? 'Reveal' : 'Hide'"
+    [class.bi-eye]="blurred"
+    [class.bi-eye-slash]="!blurred"
+    (click)="blurred = !blurred"
+  ></button>
+  <button
+    *ngxClipboardIfSupported
+    class="btn btn-outline-secondary bi-clipboard"
+    ngbTooltip="Copy"
+    [ngxClipboard]="input"
+  ></button>
+</div>
