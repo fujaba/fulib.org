@@ -9,6 +9,5 @@ then
 	docker login "$DOCKER_REGISTRY" -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
 fi
 
-docker pull "$FULIB_PROJECTS_CONTAINER_IMAGE" &
 docker run -p 8080:80 --network="$FULIB_PROJECTS_NETWORK" "$FULIB_PROJECTS_PROXY_IMAGE" &
 wait

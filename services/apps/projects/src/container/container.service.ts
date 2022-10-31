@@ -49,8 +49,10 @@ export class ContainerService {
     await this.createFile(`${configPath}/User/settings.json`);
     await this.createFile(`${configPath}/Machine/settings.json`);
 
+    image ||= environment.docker.containerImage;
+    await this.docker.pull(image);
     const container = await this.docker.createContainer({
-      Image: image || environment.docker.containerImage,
+      Image: image,
       Tty: true,
       NetworkingConfig: {
         EndpointsConfig: {
