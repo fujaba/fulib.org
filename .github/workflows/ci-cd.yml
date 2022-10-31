@@ -176,38 +176,28 @@ jobs:
           namespace: ${{ needs.deployment.outputs.namespace }}
           deployment: fulib-projects-service
           docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-projects-service:${{ needs.deployment.outputs.version }}
-  projects-container:
-    name: Projects Container
+  projects-images:
+    name: Projects Images
     runs-on: ubuntu-latest
     needs: [ deployment ]
+    if: needs.deployment.outputs.namespace
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Log in to Docker
+        uses: docker/login-action@v2
         with:
-          fetch-depth: 0
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: adopt
-          java-version: 17
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-      - name: Build with Gradle
-        run: ./gradlew :projects:build && ./gradlew --stop
-      - name: Build the Project Container Docker Image
-        if: needs.deployment.outputs.namespace
-        uses: whoan/docker-build-with-cache-action@v5
-        with:
+          registry: ${{ secrets.DOCKER_REGISTRY }}
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          registry: ${{ secrets.DOCKER_REGISTRY }}
-          image_name: fulib/fulib.org-projects
-          image_tag: ${{ needs.deployment.outputs.version }}
-          context: projects/
-  projects-runtime:
-    name: Projects Runtime
+      - name: Build the Projects code-server Images
+        working-directory: projects
+        run: ./build-all.mjs
+  projects-proxy:
+    name: Projects Proxy
     runs-on: ubuntu-latest
-    needs: [ deployment, projects-container ]
+    needs: [ deployment ]
+    if: needs.deployment.outputs.namespace
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -221,6 +211,14 @@ jobs:
           image_tag: ${{ needs.deployment.outputs.version }}
           context: projects-proxy/
           push_image_and_stages: ${{ !!needs.deployment.outputs.namespace }}
+  projects-runtime:
+    name: Projects Proxy
+    runs-on: ubuntu-latest
+    needs: [ deployment ]
+    if: needs.deployment.outputs.namespace
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Build the Projects Runtime Docker Image
         uses: whoan/docker-build-with-cache-action@v5
         with:
@@ -231,8 +229,13 @@ jobs:
           image_tag: ${{ needs.deployment.outputs.version }}
           context: projects-runtime/
           push_image_and_stages: ${{ !!needs.deployment.outputs.namespace }}
+  projects-deploy:
+    name: Projects Deployment
+    runs-on: ubuntu-latest
+    needs: [ deployment, projects-images, projects-proxy, projects-runtime ]
+    if: needs.deployment.outputs.namespace
+    steps:
       - name: Deploy the Projects Runtime to Rancher
-        if: needs.deployment.outputs.namespace
         uses: sekassel-research/actions-rancher-update@2.0.2
         with:
           rancher_url: ${{ secrets.RANCHER_URL }}
