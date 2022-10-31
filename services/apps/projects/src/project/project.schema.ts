@@ -20,7 +20,7 @@ export class Project {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  @Matches(/^(fulib|codercom)\/code-server(?:-[a-zA-Z0-9-]+)?(?::[a-zA-Z0-9.-]+)?$/)
+  @Matches(/^(?:registry\.uniks\.de\/)?(fulib|codercom)\/code-server(?:-[a-zA-Z0-9-]+)?(?::[a-zA-Z0-9.-]+)?$/)
   dockerImage?: string;
 
   @Prop({index: 1})
