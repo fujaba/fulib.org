@@ -5,8 +5,24 @@ const text = await fs.readFile('../frontend/src/assets/projects/code-server-imag
 const images = JSON.parse(text);
 const argv = new Set(process.argv.slice(2));
 
+async function run(cmd, ...args) {
+  console.log(cmd, ...args);
+  const child = child_process.execFile(cmd, args);
+  child.stdout.pipe(process.stdout);
+  child.stderr.pipe(process.stderr);
+  return new Promise((resolve, reject) => {
+    child.on('exit', (code) => {
+      if (code === 0) {
+        resolve();
+      } else {
+        reject(new Error(`${cmd} exited with code ${code}`));
+      }
+    });
+  });
+}
+
 async function build({tag, dockerfile, args}) {
-  let cmdArgs = [
+  await run('docker',
     'build',
     '-t',
     tag,
@@ -14,25 +30,12 @@ async function build({tag, dockerfile, args}) {
     dockerfile,
     ...Object.entries(args).filter(([, v]) => v).flatMap(([k, v]) => ['--build-arg', `${k}=${v}`]),
     '.',
-  ];
-  console.log('docker', ...cmdArgs);
-  const child = child_process.execFile('docker', cmdArgs);
-  child.stdout.pipe(process.stdout);
-  child.stderr.pipe(process.stderr);
-  return new Promise((resolve, reject) => {
-
-    child.on('exit', (code) => {
-      if (code === 0) {
-        resolve();
-      } else {
-        reject(new Error(`docker exited with code ${code}`));
-      }
-    });
-  });
+  );
+  await run('docker', 'push', tag);
 }
 
 await build({
-  tag: 'fulib/code-server-base',
+  tag: 'registry.uniks.de/fulib/code-server-base',
   dockerfile: 'base/Dockerfile',
   args: {},
 });
