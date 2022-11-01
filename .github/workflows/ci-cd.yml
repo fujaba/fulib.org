@@ -227,7 +227,8 @@ jobs:
           registry: ${{ secrets.DOCKER_REGISTRY }}
           image_name: fulib/fulib.org-projects-runtime
           image_tag: ${{ needs.deployment.outputs.version }}
-          context: projects-runtime/
+          context: projects/
+          dockerfile: projects/runtime/Dockerfile
           push_image_and_stages: ${{ !!needs.deployment.outputs.namespace }}
   projects-deploy:
     name: Projects Deployment
