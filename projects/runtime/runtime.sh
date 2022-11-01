@@ -1,5 +1,5 @@
 #!/bin/sh
-dockerd --host tcp://0.0.0.0:2376 --tls=false &
+dockerd --host tcp://0.0.0.0:2376 --tls=false || exit &
 export DOCKER_HOST=localhost:2376
 
 # wait for docker
