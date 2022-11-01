@@ -1,4 +1,4 @@
-FROM fulib/code-server-base
+FROM registry.uniks.de/fulib/code-server-base
 
 ARG APT_DEPENDENCIES
 RUN sudo apt-get update -y \
