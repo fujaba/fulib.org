@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import child_process from 'child_process';
 
-const text = await fs.readFile('../frontend/src/assets/projects/code-server-images.json', 'utf8');
+const text = await fs.readFile('images.json', 'utf8');
 const images = JSON.parse(text);
 const argv = new Set(process.argv.slice(2));
 
