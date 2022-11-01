@@ -1,5 +1,6 @@
-import {Component, Input} from '@angular/core';
-import images from '../../../../../../projects/images.json';
+import {HttpClient} from '@angular/common/http';
+import {Component, Input, OnInit} from '@angular/core';
+import {environment} from '../../../../environments/environment';
 import {CreateProjectDto} from '../../model/project';
 
 interface Image {
@@ -13,8 +14,19 @@ interface Image {
   templateUrl: './project-form.component.html',
   styleUrls: ['./project-form.component.scss'],
 })
-export class ProjectFormComponent {
+export class ProjectFormComponent implements OnInit {
   @Input() project: CreateProjectDto;
 
-  dockerImages: Image[] = images;
+  dockerImages: Image[];
+
+  constructor(
+    private http: HttpClient,
+  ) {
+  }
+
+  ngOnInit(): void {
+    this.http.get(environment.projectsProxyUrl + '/images').subscribe((images: Image[]) => {
+      this.dockerImages = images;
+    });
+  }
 }
