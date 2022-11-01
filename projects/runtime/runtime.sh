@@ -1,8 +1,12 @@
 #!/bin/sh
 dockerd --host tcp://0.0.0.0:2376 --tls=false &
-sleep 20
-
 export DOCKER_HOST=localhost:2376
+
+# wait for docker
+while ! docker info > /dev/null 2>&1; do
+		sleep 1
+done
+
 docker network create "$FULIB_PROJECTS_NETWORK"
 
 if [ -n "$DOCKER_REGISTRY" ]; then
