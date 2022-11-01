@@ -190,6 +190,16 @@ jobs:
           registry: ${{ secrets.DOCKER_REGISTRY }}
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build the Projects Proxy Docker Image
+        uses: whoan/docker-build-with-cache-action@v5
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: ${{ secrets.DOCKER_REGISTRY }}
+          image_name: registry.uniks.de/fulib/code-server-base
+          context: projects/
+          dockerfile: base/Dockerfile
+          push_image_and_stages: ${{ !!needs.deployment.outputs.namespace }}
       - name: Build the Projects code-server Images
         working-directory: projects
         run: node build-all.mjs

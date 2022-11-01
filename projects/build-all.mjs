@@ -34,9 +34,4 @@ async function build({tag, dockerfile, args}) {
   await run('docker', 'push', tag);
 }
 
-await build({
-  tag: 'registry.uniks.de/fulib/code-server-base',
-  dockerfile: 'base/Dockerfile',
-  args: {},
-});
 await Promise.all(images.filter((image) => image.dockerfile && (argv.size === 0 || argv.has(image.tag))).map(build));
