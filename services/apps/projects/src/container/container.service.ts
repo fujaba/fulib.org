@@ -90,7 +90,7 @@ export class ContainerService {
       }
     }
 
-    const files = await fs.promises.readdir(projectPath);
+    const files = await fs.promises.readdir(projectPath).catch(() => []);
     if (!files.length) {
       containerDto.isNew = true;
     }
