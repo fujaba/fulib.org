@@ -90,17 +90,16 @@ export class ContainerService {
       }
     }
 
+    const files = await fs.promises.readdir(projectPath);
+    if (!files.length) {
+      containerDto.isNew = true;
+    }
+
     // write vnc url in a file (the vnc extension will read the file)
     // TODO maybe there is a more elegant way for passing the vnc url into the extension ?
     const p: string = `${projectPath}/.vnc/vncUrl`;
     await this.createFile(p);
     await fs.promises.writeFile(p, containerDto.vncUrl);
-
-    const buildGradlePath = `${projectPath}/build.gradle`;
-    await fs.promises.readFile(buildGradlePath).catch(() => {
-      //catch will trigger only if file doesn't exist, this means we have to run the /setup
-      containerDto.isNew = true;
-    });
 
     return containerDto;
   }
