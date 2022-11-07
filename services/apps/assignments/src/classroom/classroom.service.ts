@@ -1,5 +1,5 @@
 import {HttpService} from '@nestjs/axios';
-import {Injectable} from '@nestjs/common';
+import {Injectable, UnauthorizedException} from '@nestjs/common';
 import {Method} from 'axios';
 import {createReadStream} from 'fs';
 import {firstValueFrom} from 'rxjs';
@@ -134,13 +134,21 @@ export class ClassroomService {
     const repositories: RepositoryInfo[] = [];
     let total = Number.MAX_SAFE_INTEGER;
     for (let page = 1; repositories.length < total; page++) {
-      const result = await this.github<SearchResult>('GET', 'https://api.github.com/search/repositories', token!, {
-        q: query,
-        per_page: 100,
-        page,
-      });
-      total = result.total_count;
-      repositories.push(...result.items);
+      try {
+        const result = await this.github<SearchResult>('GET', 'https://api.github.com/search/repositories', token!, {
+          q: query,
+          per_page: 100,
+          page,
+        });
+        total = result.total_count;
+        repositories.push(...result.items);
+      } catch (err: any) {
+        if (err.response?.status === 401) {
+          throw new UnauthorizedException('Invalid GitHub token');
+        }
+        console.error(err);
+        break;
+      }
     }
 
     const writes = await Promise.all(repositories.map(async repo => {
@@ -213,9 +221,8 @@ export class ClassroomService {
     } catch (error: any) {
       if (error.response?.status === 404) {
         console.warn(`${repo.full_name} has no default branch ${repo.default_branch}`);
-        return undefined;
       }
-      throw error;
+      console.error(error);
     }
   }
 
