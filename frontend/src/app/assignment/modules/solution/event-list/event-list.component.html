@@ -1,0 +1,42 @@
+<ol class="timeline-list">
+  <li *ngFor="let event of events" class="timeline-item">
+    <div class="timeline-item-badge bg-secondary bi-cloud-upload">
+    </div>
+    <div class="timeline-item-body">
+      <div class="card">
+        <div class="card-header">
+          <a href="https://github.com/{{event.actor.login}}">
+            {{ event.actor.login }}
+          </a>
+          <span class="text-muted">
+            &bull;
+            {{event.created_at | date:'medium'}}
+          </span>
+        </div>
+        <div class="card-body">
+          <div class="card-text">
+            Pushed {{ event.payload.commits.length }} commits to
+            <span class="badge bg-secondary" [ngbTooltip]="event.payload.ref">
+              {{ event.payload.ref | slice:event.payload.ref.lastIndexOf('/') + 1 }}
+            </span>
+            <ul class="list-unstyled">
+              <li *ngFor="let commit of event.payload.commits" class="bi-node-plus">
+                <a [href]="assignment!|githubLink:solution!:true" target="_blank">
+                  {{ commit.sha | slice:0:7 }}
+                </a>
+                {{ commit.message }}
+                <span class="text-muted">
+                  {{ commit.author.name }}
+                </span>
+                <span *ngIf="commit.sha === solution?.commit" class="badge bg-primary"
+                      ngbTooltip="This commit was used during import">
+                  Imported
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </li>
+</ol>
