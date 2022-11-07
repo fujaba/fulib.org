@@ -11,7 +11,8 @@
       </a>
       &bull;
     </ng-container>
-    <ng-container *ngIf="assignment && assignment.classroom?.org && assignment.classroom?.prefix && solution.author.github">
+    <ng-container
+      *ngIf="assignment && assignment.classroom?.org && assignment.classroom?.prefix && solution.author.github">
       <a class="bi-server" [href]="assignment|githubLink:solution" target="_blank">
         {{assignment.classroom?.prefix}}-{{ solution.author.github }}
       </a>

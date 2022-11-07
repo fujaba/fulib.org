@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {combineLatest, forkJoin} from 'rxjs';
+import {combineLatest} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import Assignment from '../../../model/assignment';
 import Solution from '../../../model/solution';
@@ -8,6 +8,7 @@ import {AssignmentService} from '../../../services/assignment.service';
 import {ConfigService} from '../../../services/config.service';
 import {SolutionService} from '../../../services/solution.service';
 import {solutionChildRoutes} from '../solution-routing.module';
+
 
 @Component({
   selector: 'app-solution',
@@ -36,14 +37,12 @@ export class SolutionComponent implements OnInit {
     });
 
     this.route.params.pipe(
-      switchMap(({aid, sid}) => forkJoin([
-        this.assignmentService.get(aid),
-        this.solutionService.get(aid, sid),
-      ])),
-    ).subscribe(([assignment, solution]) => {
-      this.assignment = assignment;
-      this.solution = solution;
-    });
+      switchMap(({aid}) => this.assignmentService.get(aid)),
+    ).subscribe(assignment => this.assignment = assignment);
+
+    this.route.params.pipe(
+      switchMap(({aid, sid}) => this.solutionService.get(aid, sid)),
+    ).subscribe(solution => this.solution = solution);
   }
 
 }

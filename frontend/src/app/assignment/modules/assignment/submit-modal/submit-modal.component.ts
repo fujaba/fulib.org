@@ -3,6 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {ModalComponent, ToastService} from 'ng-bootstrap-ext';
 import {forkJoin} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
+import {UserService} from '../../../../user/user.service';
 import Assignment from '../../../model/assignment';
 import Solution from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
@@ -33,6 +34,7 @@ export class SubmitModalComponent implements OnInit {
     private solutionService: SolutionService,
     private submitService: SubmitService,
     private toastService: ToastService,
+    private userService: UserService,
   ) {
   }
 
@@ -45,9 +47,9 @@ export class SubmitModalComponent implements OnInit {
     ).subscribe(([assignment, solution]) => {
       this.assignment = assignment;
       this.solution = solution;
-      this.submitService.getGitHubToken().then(token => this.githubToken = token);
       this.submitService.createIssue(assignment, solution).then(issue => this.setIssue(issue));
     });
+    this.userService.getGitHubToken().subscribe(token => this.githubToken = token);
   }
 
   private setIssue(issue: IssueDto) {

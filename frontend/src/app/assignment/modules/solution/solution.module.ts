@@ -1,7 +1,7 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {NgbTooltipModule, NgbTypeaheadModule} from '@ng-bootstrap/ng-bootstrap';
+import {NgbPopoverModule, NgbTooltipModule, NgbTypeaheadModule} from '@ng-bootstrap/ng-bootstrap';
 import {ModalModule, RouteTabsModule} from 'ng-bootstrap-ext';
 import {ClipboardModule} from 'ngx-clipboard';
 import {SharedModule} from '../../../shared/shared.module';
@@ -13,6 +13,7 @@ import {SolutionDetailsComponent} from './details/details.component';
 import {EditSnippetComponent} from './edit-snippet/edit-snippet.component';
 import {EvaluationFormComponent} from './evaluation-form/evaluation-form.component';
 import {EvaluationModalComponent} from './evaluation-modal/evaluation-modal.component';
+import {EventListComponent} from './event-list/event-list.component';
 import {SolutionShareComponent} from './share/share.component';
 import {SolutionRoutingModule} from './solution-routing.module';
 import {SolutionComponent} from './solution/solution.component';
@@ -30,6 +31,7 @@ import {SolutionTasksComponent} from './tasks/tasks.component';
     EditSnippetComponent,
     EvaluationFormComponent,
     DeleteModalComponent,
+    EventListComponent,
   ],
   imports: [
     CommonModule,
@@ -42,6 +44,7 @@ import {SolutionTasksComponent} from './tasks/tasks.component';
     NgbTypeaheadModule,
     RouteTabsModule,
     ModalModule,
+    NgbPopoverModule,
   ],
 })
 export class SolutionModule {
