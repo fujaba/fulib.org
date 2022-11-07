@@ -2,6 +2,7 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {firstValueFrom} from 'rxjs';
 import {environment} from '../../../../environments/environment';
+import {UserService} from '../../../user/user.service';
 import Assignment from '../../model/assignment';
 import {Evaluation, Snippet} from '../../model/evaluation';
 import Solution from '../../model/solution';
@@ -28,21 +29,9 @@ export class SubmitService {
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
     private taskService: TaskService,
+    private userService: UserService,
     private http: HttpClient,
   ) {
-  }
-
-  async getGitHubToken(): Promise<string | undefined> {
-    try {
-      const data = await firstValueFrom(this.http.get(`${environment.auth.url}/realms/${environment.auth.realm}/broker/github/token`, {
-        responseType: 'text',
-      }));
-      const parts = data.split('&');
-      const paramName = 'access_token=';
-      return parts.filter(s => s.startsWith(paramName))[0]?.substring(paramName.length);
-    } catch (error) {
-      return undefined;
-    }
   }
 
   async postIssueToGitHub(assignment: Assignment, solution: Solution, issue: IssueDto, githubToken: string): Promise<Issue> {

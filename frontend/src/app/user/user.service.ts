@@ -1,12 +1,13 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+import {KeycloakService} from 'keycloak-angular';
 import {BehaviorSubject, Observable} from 'rxjs';
+import {catchError, map} from 'rxjs/operators';
 import {environment} from '../../environments/environment';
 import {User} from './user';
-import {KeycloakService} from 'keycloak-angular';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
   private readonly _current = new BehaviorSubject<User | null>(null);
@@ -33,6 +34,16 @@ export class UserService {
 
   findOne(id: string): Observable<User> {
     return this.http.get<User>(`${environment.auth.url}/admin/realms/${environment.auth.realm}/users/${id}`);
+  }
+
+  getGitHubToken(): Observable<string | undefined> {
+    const paramName = 'access_token=';
+    return this.http.get(`${environment.auth.url}/realms/${environment.auth.realm}/broker/github/token`, {
+      responseType: 'text',
+    }).pipe(
+      catchError(() => ''),
+      map(data => data.split('&').filter(s => s.startsWith(paramName))[0]?.substring(paramName.length)),
+    );
   }
 
   private init(): void {
