@@ -17,6 +17,6 @@ export class CloneLinkPipe implements PipeTransform {
     const user = solution.author.github;
     const org = assignment.classroom?.org;
     const prefix = assignment.classroom?.prefix;
-    return `${ide}://vscode.git/clone?url=${clonePrefix[protocol]}${org}%2F${prefix}-${user}${cloneSuffix[protocol]}${solution.commit ? '&ref=' + solution.commit : ''}`;
+    return `${ide}://vscode.git/clone?url=${clonePrefix[protocol]}${org}%2F${prefix}-${user}${cloneSuffix[protocol]}`;
   }
 }
