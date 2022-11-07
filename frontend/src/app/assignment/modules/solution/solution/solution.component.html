@@ -11,7 +11,8 @@
       </a>
       &bull;
     </ng-container>
-    <ng-container *ngIf="assignment && assignment.classroom?.org && assignment.classroom?.prefix && solution.author.github">
+    <ng-container
+      *ngIf="assignment && assignment.classroom?.org && assignment.classroom?.prefix && solution.author.github">
       <a class="bi-server" [href]="assignment|githubLink:solution" target="_blank">
         {{assignment.classroom?.prefix}}-{{ solution.author.github }}
       </a>
@@ -45,6 +46,34 @@
       Submitted:
       {{solution?.timestamp | date:'medium'}}
     </ng-template>
+    <ng-container *ngIf="pushedAt || pushEvents.length">
+      &bull;
+      <a class="bi-arrow-up-circle" [ngbPopover]="pushEventList">
+        Pushed:
+        {{ pushedAt | date:'medium' }}
+      </a>
+      <ng-template #pushEventList>
+        <ul>
+          <li *ngFor="let event of pushEvents" [class.text-primary]="event.created_at === pushedAt">
+            {{ event.created_at | date:'medium' }}
+            <span class="text-muted">
+              {{ event.actor.login }}
+            </span>
+            <ul>
+              <li *ngFor="let commit of event.payload.commits">
+                <a [href]="assignment!|githubLink:solution:true" target="_blank">
+                  {{ commit.sha | slice:0:7 }}
+                </a>
+                {{ commit.message }}
+                <span class="text-muted">
+                  {{ commit.author.name }}
+                </span>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </ng-template>
+    </ng-container>
   </p>
 
   <ngbx-route-tabs [routes]="routes"></ngbx-route-tabs>
