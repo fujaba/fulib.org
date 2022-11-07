@@ -23,7 +23,7 @@ export const solutionChildRoutes: Routes = [
   },
   {path: 'share', component: SolutionShareComponent, data: {title: 'Sharing'}},
   {path: 'comments', component: CommentListComponent, data: {title: 'Comments'}},
-  {path: 'events', component: EventListComponent, data: {title: 'Events'}},
+  {path: 'events', component: EventListComponent, data: {title: 'Events', new: true}},
 ];
 
 const routes: Routes = [
