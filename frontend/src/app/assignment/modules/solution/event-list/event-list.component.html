@@ -1,3 +1,11 @@
+<div class="alert alert-warning" *ngIf="reasons.length">
+  The push event log is not available due to the following reasons:
+  <ul>
+    <li *ngFor="let reason of reasons">
+      {{ reason }}
+    </li>
+  </ul>
+</div>
 <ol class="timeline-list">
   <li *ngFor="let event of events" class="timeline-item">
     <div class="timeline-item-badge bg-secondary bi-cloud-upload">
