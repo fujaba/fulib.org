@@ -12,6 +12,12 @@ export class Project {
   name: string;
 
   @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  icon: string;
+
+  @Prop()
   @ApiProperty()
   @IsString()
   description: string;
