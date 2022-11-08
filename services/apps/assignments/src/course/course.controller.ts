@@ -2,7 +2,7 @@ import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound, notFound} from '@app/not-found';
 import {Body, Controller, Delete, ForbiddenException, Get, Param, Patch, Post} from '@nestjs/common';
 import {ApiCreatedResponse, ApiForbiddenResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
-import {CreateCourseDto, UpdateCourseDto} from './course.dto';
+import {CourseStudent, CreateCourseDto, UpdateCourseDto} from './course.dto';
 import {Course} from './course.schema';
 import {CourseService} from './course.service';
 
@@ -37,6 +37,13 @@ export class CourseController {
   @ApiOkResponse({type: Course})
   async findOne(@Param('id') id: string): Promise<Course | null> {
     return this.courseService.findOne(id);
+  }
+
+  @Get(':id/students')
+  @NotFound()
+  @ApiOkResponse({type: [CourseStudent]})
+  async getStudents(@Param('id') id: string): Promise<CourseStudent[]> {
+    return this.courseService.getStudents(id);
   }
 
   @Patch(':id')

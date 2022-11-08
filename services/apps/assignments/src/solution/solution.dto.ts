@@ -1,4 +1,5 @@
 import {OmitType, PartialType} from '@nestjs/swagger';
+import {Types} from 'mongoose';
 import {Solution} from './solution.schema';
 
 const excluded = [
@@ -24,6 +25,7 @@ export class UpdateSolutionDto extends PartialType(OmitType(Solution, [
 export class ReadSolutionDto extends OmitType(Solution, [
   'token',
 ]) {
+  _id: Types.ObjectId;
   /*
   @Prop()
   @ApiProperty()
