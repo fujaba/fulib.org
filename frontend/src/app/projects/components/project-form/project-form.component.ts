@@ -1,5 +1,8 @@
 import {HttpClient} from '@angular/common/http';
 import {Component, Input, OnInit} from '@angular/core';
+import * as icons from 'bootstrap-icons/font/bootstrap-icons.json';
+import {Observable, OperatorFunction} from 'rxjs';
+import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 import {environment} from '../../../../environments/environment';
 import {CreateProjectDto} from '../../model/project';
 
@@ -18,6 +21,15 @@ export class ProjectFormComponent implements OnInit {
   @Input() project: CreateProjectDto;
 
   dockerImages: Image[];
+  icons = Object.keys(icons).filter(key => !['-fill', '-alt', '1', '2', '3', '4'].find(s => key.endsWith(s)));
+
+  search: OperatorFunction<string, readonly string[]> = (text$: Observable<string>) => text$.pipe(
+    debounceTime(200),
+    distinctUntilChanged(),
+    map(term => term.length < 2 ? []
+      : this.icons.filter(v => v.includes(term.toLowerCase())).slice(0, 10)),
+  );
+  icon = '';
 
   constructor(
     private http: HttpClient,
