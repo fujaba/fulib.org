@@ -14,6 +14,7 @@ import {CreateCourseComponent} from './create-course/create-course.component';
 import {MyCoursesComponent} from './my-courses/my-courses.component';
 import { CourseComponent } from './course/course.component';
 import { ShareComponent } from './share/share.component';
+import { StudentsComponent } from './students/students.component';
 
 
 @NgModule({
@@ -23,6 +24,7 @@ import { ShareComponent } from './share/share.component';
     MyCoursesComponent,
     CourseComponent,
     ShareComponent,
+    StudentsComponent,
   ],
   imports: [
     CommonModule,

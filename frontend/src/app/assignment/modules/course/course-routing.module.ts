@@ -6,9 +6,11 @@ import {CreateCourseSolutionsComponent} from './create-course-solutions/create-c
 import {CreateCourseComponent} from './create-course/create-course.component';
 import {MyCoursesComponent} from './my-courses/my-courses.component';
 import {ShareComponent} from './share/share.component';
+import {StudentsComponent} from './students/students.component';
 
 export const courseChildren = [
   {path: 'share', component: ShareComponent, data: {title: 'Share'}},
+  {path: 'students', component: StudentsComponent, data: {title: 'Students'}},
 ];
 const routes: Routes = [
   {path: 'create', component: CreateCourseComponent, data: {title: 'Create Course'}},
