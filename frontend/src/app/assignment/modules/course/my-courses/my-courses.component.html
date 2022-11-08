@@ -8,19 +8,19 @@
     </a>
   </h1>
 
-  <div class="list-group" *ngIf="courses?.length">
-    <a *ngFor="let course of courses"
-       class="list-group-item list-group-item-action"
-       routerLink="/assignments/courses/{{course._id}}"
-    >
-      <h3>
-        {{course.title}}
-      </h3>
-      <div class="text-muted text-truncate">
-        {{course.description}}
+  <ul class="list-group" *ngIf="courses?.length">
+    <li *ngFor="let course of courses" class="list-group-item d-flex align-items-center">
+      <div class="me-auto">
+        <h3>
+          {{course.title}}
+        </h3>
+        <app-markdown [markdown]="course.description"></app-markdown>
       </div>
-    </a>
-  </div>
+      <a class="btn btn-primary" [routerLink]="[course._id, 'share']">
+        Open
+      </a>
+    </li>
+  </ul>
 
   <div class="card" *ngIf="!courses?.length">
     <div class="card-body">
