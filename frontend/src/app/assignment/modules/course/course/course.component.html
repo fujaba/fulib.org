@@ -3,25 +3,28 @@
     <div class="container" style="position: sticky; top: 0">
       <h1>{{course?.title || 'Loading Title...'}}</h1>
       <app-markdown [markdown]="course?.description"></app-markdown>
-      <ol class="timeline-list">
-        <li *ngFor="let assignment of course?.assignments; let i=index" class="timeline-item">
-          <div class="timeline-item-badge bg-{{getBadgeColor(i, assignment)}}">
+      <div class="timeline-list">
+        <a
+          *ngFor="let assignment of course?.assignments; let i = index"
+          class="timeline-item text-body text-decoration-none"
+          [routerLink]="['assignments', assignment]"
+          routerLinkActive="timeline-item-active"
+        >
+          <div class="timeline-item-badge bg-secondary">
             {{i + 1}}
           </div>
           <div class="timeline-item-body">
-            <a routerLink="/assignments/courses/{{courseID}}/assignments/{{assignment}}">
-              {{assignments?.[i]?.title || 'Loading...'}}
-            </a>
-            <ng-container *ngIf="latestSolutionIDs && latestSolutionIDs[i]">
+            {{assignments?.[assignment]?.title || 'Loading...'}}
+            <span class="text-muted" *ngIf="latestSolutionIDs?.[assignment]">
               &#8226;
               Done!
-            </ng-container>
+            </span>
           </div>
-        </li>
-      </ol>
+        </a>
+      </div>
     </div>
   </div>
   <div class="col-md-9">
-    <!-- TODO <app-create-solution *ngIf="assignmentID"></app-create-solution> -->
+    <router-outlet></router-outlet>
   </div>
 </div>

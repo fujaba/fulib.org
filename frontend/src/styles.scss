@@ -230,3 +230,7 @@ $badge-color: #fff;
   margin-top: 4px;
   flex: auto;
 }
+
+.timeline-item-active > .timeline-item-badge {
+  background-color: $primary !important;
+}

@@ -14,17 +14,14 @@ import {SolutionService} from '../../../services/solution.service';
   styleUrls: ['./course.component.scss'],
 })
 export class CourseComponent implements OnInit {
-  courseID?: string;
   course?: Course;
-  assignments?: (Assignment | undefined)[];
+  assignments?: Record<string, Assignment>;
 
-  latestSolutionIDs?: (string | undefined)[];
-
-  assignmentID?: string;
+  latestSolutionIDs?: Record<string, string>;
 
   constructor(
     private router: Router,
-    private activatedRoute: ActivatedRoute,
+    private route: ActivatedRoute,
     private solutionService: SolutionService,
     private assignmentService: AssignmentService,
     private courseService: CourseService,
@@ -32,36 +29,34 @@ export class CourseComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.activatedRoute.params.pipe(
-      tap(params => {
-        this.assignmentID = params.aid;
-        this.courseID = params.cid;
-      }),
-      switchMap(params => this.courseService.get(params.cid)),
+    this.route.params.pipe(
+      switchMap(({cid}) => this.courseService.get(cid)),
       switchMap(course => {
         this.course = course;
-        if (!this.assignmentID) {
+        if (!this.route.firstChild?.snapshot.params.aid) {
           const firstAssignment = course.assignments[0];
-          this.router.navigate(['assignments', 'courses', course._id, 'assignments', firstAssignment], {skipLocationChange: true});
+          this.router.navigate(['assignments', firstAssignment], {relativeTo: this.route});
           return EMPTY;
         }
 
         const solutions = this.solutionService.getOwnIds();
-        this.latestSolutionIDs = course.assignments.map(a => solutions.find(({assignment}) => a === assignment)?.id);
-        this.assignments = course.assignments.map(() => undefined);
-        return forkJoin(course.assignments.map((id, index) => this.assignmentService.get(id).pipe(tap(a => this.assignments![index] = a))));
+        this.latestSolutionIDs = {};
+        for (const {assignment, id: solution} of solutions) {
+          if (course.assignments.includes(assignment)) {
+            this.latestSolutionIDs[assignment] = solution;
+          }
+        }
+        this.assignments = {};
+        return forkJoin(course.assignments.map(id => this.assignmentService.get(id).pipe(tap(a => this.assignments![id] = a))));
       }),
     ).subscribe();
   }
 
-  getBadgeColor(index: number, assignment: string) {
+  getBadgeColor(assignment: string) {
     if (!assignment) {
       return 'secondary';
     }
-    if (assignment === this.assignmentID) {
-      return 'primary';
-    }
-    if (this.latestSolutionIDs && this.latestSolutionIDs[index]) {
+    if (this.latestSolutionIDs && this.latestSolutionIDs[assignment]) {
       return 'success';
     }
     return 'secondary';
