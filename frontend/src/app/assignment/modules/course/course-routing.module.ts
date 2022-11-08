@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {CreateSolutionComponent} from '../../pages/create-solution/create-solution.component';
-import {CourseComponent} from './course/course.component';
+import {CreateCourseSolutionsComponent} from './create-course-solutions/create-course-solutions.component';
 import {CreateCourseComponent} from './create-course/create-course.component';
 import {MyCoursesComponent} from './my-courses/my-courses.component';
 
@@ -9,7 +9,7 @@ const routes: Routes = [
   {path: 'create', component: CreateCourseComponent, data: {title: 'Create Course'}},
   {
     path: ':cid',
-    component: CourseComponent,
+    component: CreateCourseSolutionsComponent,
     data: {title: 'Course'},
     children: [
       {path: 'assignments/:aid', component: CreateSolutionComponent},

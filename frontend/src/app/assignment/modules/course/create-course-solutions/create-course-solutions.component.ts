@@ -9,11 +9,11 @@ import {CourseService} from '../../../services/course.service';
 import {SolutionService} from '../../../services/solution.service';
 
 @Component({
-  selector: 'app-course',
-  templateUrl: './course.component.html',
-  styleUrls: ['./course.component.scss'],
+  selector: 'app-create-course-solutions',
+  templateUrl: './create-course-solutions.component.html',
+  styleUrls: ['./create-course-solutions.component.scss'],
 })
-export class CourseComponent implements OnInit {
+export class CreateCourseSolutionsComponent implements OnInit {
   course?: Course;
   assignments?: Record<string, Assignment>;
 
