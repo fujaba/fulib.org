@@ -1,5 +1,6 @@
 import {DOCUMENT} from '@angular/common';
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
+import {Router} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 import {ToastService} from 'ng-bootstrap-ext';
@@ -27,10 +28,6 @@ export class CreateCourseComponent implements OnInit {
 
   submitting = false;
 
-  id?: string;
-
-  private readonly origin: string;
-
   private ownAssignments: Assignment[] = [];
 
   search = (text$: Observable<string>): Observable<string[]> => {
@@ -54,9 +51,8 @@ export class CreateCourseComponent implements OnInit {
     private courseService: CourseService,
     private modalService: NgbModal,
     private toastService: ToastService,
-    @Inject(DOCUMENT) document: Document,
+    private router: Router,
   ) {
-    this.origin = document.location.origin;
   }
 
   ngOnInit() {
@@ -132,17 +128,12 @@ export class CreateCourseComponent implements OnInit {
   submit(): void {
     this.submitting = true;
     this.courseService.create(this.getCourse()).subscribe(course => {
-      this.id = course._id;
       this.submitting = false;
-      this.modalService.open(this.successModal, {ariaLabelledBy: 'successModalLabel', size: 'xl'});
+      this.router.navigate(['/assignments/courses', course._id, 'share']);
     }, error => {
       this.toastService.error('Course', 'Failed to create course', error);
       this.submitting = false;
     });
-  }
-
-  getLink(origin: boolean): string {
-    return `${origin ? this.origin : ''}/assignments/courses/${this.id}`;
   }
 
   dragged(assignment: Assignment) {

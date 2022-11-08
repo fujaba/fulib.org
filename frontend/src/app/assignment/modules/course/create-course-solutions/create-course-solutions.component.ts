@@ -35,7 +35,7 @@ export class CreateCourseSolutionsComponent implements OnInit {
         this.course = course;
         if (!this.route.firstChild?.snapshot.params.aid) {
           const firstAssignment = course.assignments[0];
-          this.router.navigate(['assignments', firstAssignment], {relativeTo: this.route});
+          this.router.navigate([firstAssignment], {relativeTo: this.route});
           return EMPTY;
         }
 
@@ -50,15 +50,5 @@ export class CreateCourseSolutionsComponent implements OnInit {
         return forkJoin(course.assignments.map(id => this.assignmentService.get(id).pipe(tap(a => this.assignments![id] = a))));
       }),
     ).subscribe();
-  }
-
-  getBadgeColor(assignment: string) {
-    if (!assignment) {
-      return 'secondary';
-    }
-    if (this.latestSolutionIDs && this.latestSolutionIDs[assignment]) {
-      return 'success';
-    }
-    return 'secondary';
   }
 }

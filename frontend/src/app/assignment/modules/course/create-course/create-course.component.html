@@ -80,35 +80,3 @@
     </button>
   </div>
 </div>
-
-<ng-template #successModal let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title" id="successModalLabel">Course Created</h5>
-    <button class="btn-close" aria-label="Close" (click)="modal.close()">
-    </button>
-  </div>
-  <div class="modal-body">
-    <p>
-      Congratulations! Your course titled <b>{{title}}</b> has been created!
-    </p>
-    <p>
-      You can now give your students the following link:
-    </p>
-    <p>
-      <a class="font-monospace" [routerLink]="getLink(false)" (click)="modal.close()">
-        {{getLink(true)}}
-      </a>
-      <button type="button" class="btn btn-sm btn-outline-primary"
-              ngxClipboard *ngxClipboardIfSupported [cbContent]="getLink(true)">
-        Copy
-      </button>
-    </p>
-    <p>
-      Note that this course can no longer be edited.
-      If you want to make changes, submit a new course and give your students the new link.
-    </p>
-  </div>
-  <div class="modal-footer">
-    <button class="btn btn-secondary" (click)="modal.close()">Close</button>
-  </div>
-</ng-template>

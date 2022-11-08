@@ -7,7 +7,7 @@
         <a
           *ngFor="let assignment of course?.assignments; let i = index"
           class="timeline-item text-body text-decoration-none"
-          [routerLink]="['assignments', assignment]"
+          [routerLink]="[assignment]"
           routerLinkActive="timeline-item-active"
         >
           <div class="timeline-item-badge bg-secondary">
