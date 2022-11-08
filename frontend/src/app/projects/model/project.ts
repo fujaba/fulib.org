@@ -3,6 +3,7 @@ export interface Project {
   userId: string;
   created: string;
   name: string;
+  icon?: string;
   description: string;
   dockerImage?: string;
 }

@@ -2,16 +2,16 @@
   <div class="mb-3 d-flex">
     <div class="flex-fill">
       <label class="form-label" for="iconInput">Icon</label>
-      <input type="text" class="form-control" id="iconInput" [ngbTypeahead]="search" [resultTemplate]="rt" [(ngModel)]="icon">
+      <input type="text" class="form-control" id="iconInput" [ngbTypeahead]="search" [resultTemplate]="rt" [(ngModel)]="project.icon">
       <ng-template #rt let-result="result" let-term="term">
         <i class="bi-{{result}}"></i>
         <ngb-highlight [result]="result" [term]="term"></ngb-highlight>
       </ng-template>
     </div>
-    <button class="btn btn-outline-secondary bi-{{icon || 'server'}} feature-icon ms-3" [ngbPopover]="iconSelect" placement="bottom-right"></button>
+    <button class="btn btn-outline-secondary bi-{{project.icon || 'server'}} feature-icon ms-3" [ngbPopover]="iconSelect" placement="bottom-right"></button>
     <ng-template #iconSelect>
       <div class="d-flex flex-wrap overflow-scroll" style="max-height: 30rem">
-        <button *ngFor="let i of icons" class="btn btn-outline-secondary bi-{{i}}" (click)="icon = i">
+        <button *ngFor="let i of icons" class="btn btn-outline-secondary bi-{{i}}" (click)="project.icon = i">
         </button>
       </div>
     </ng-template>

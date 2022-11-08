@@ -29,7 +29,6 @@ export class ProjectFormComponent implements OnInit {
     map(term => term.length < 2 ? []
       : this.icons.filter(v => v.includes(term.toLowerCase())).slice(0, 10)),
   );
-  icon = '';
 
   constructor(
     private http: HttpClient,

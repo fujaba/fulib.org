@@ -44,7 +44,7 @@
   <ul class="list-group">
     <li *ngFor="let project of projects; let index = index" class="list-group-item">
       <div class="d-flex align-items-center">
-        <i class="bi-server feature-icon"></i>
+        <i class="bi-{{ project.icon || 'server'}} feature-icon"></i>
         <div class="me-auto">
           <h3>
             {{project.name}}
