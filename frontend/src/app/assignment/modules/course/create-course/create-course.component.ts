@@ -6,11 +6,10 @@ import {ToastService} from 'ng-bootstrap-ext';
 import {DndDropEvent} from 'ngx-drag-drop';
 import {forkJoin, Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
-
-import Assignment from '../../model/assignment';
-import Course from '../../model/course';
-import {AssignmentService} from '../../services/assignment.service';
-import {CourseService} from '../../services/course.service';
+import Assignment from '../../../model/assignment';
+import Course from '../../../model/course';
+import {AssignmentService} from '../../../services/assignment.service';
+import {CourseService} from '../../../services/course.service';
 
 @Component({
   selector: 'app-create-course',

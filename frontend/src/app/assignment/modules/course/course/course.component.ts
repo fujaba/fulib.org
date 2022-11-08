@@ -1,12 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {EMPTY, forkJoin} from 'rxjs';
-import Course from '../../model/course';
-import {CourseService} from '../../services/course.service';
-import Assignment from '../../model/assignment';
-import {AssignmentService} from '../../services/assignment.service';
-import {SolutionService} from '../../services/solution.service';
 import {switchMap, tap} from 'rxjs/operators';
+import Assignment from '../../../model/assignment';
+import Course from '../../../model/course';
+import {AssignmentService} from '../../../services/assignment.service';
+import {CourseService} from '../../../services/course.service';
+import {SolutionService} from '../../../services/solution.service';
 
 @Component({
   selector: 'app-course',
