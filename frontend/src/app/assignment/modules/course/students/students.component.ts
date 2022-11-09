@@ -31,4 +31,8 @@ export class StudentsComponent implements OnInit {
       switchMap(({cid}) => this.courseService.getStudents(cid)),
     ).subscribe(students => this.students = students);
   }
+
+  saveAssignee(value: string, student: CourseStudent) {
+
+  }
 }

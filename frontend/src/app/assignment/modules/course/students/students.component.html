@@ -20,14 +20,25 @@
         <div ngbDropdown>
           <button ngbDropdownToggle class="btn p-0 font-monospace text-white text-shadow">{{ (solution?.assignee || '-')|slice:0:1 }}</button>
           <div ngbDropdownMenu>
-            <a
-              *ngIf="solution as solution else noSolution"
-              ngbDropdownItem
-              class="bi-list-check"
-              [routerLink]="['/assignments', course?.assignments?.[i], 'solutions', solution]"
-            >
-              View Solution
-            </a>
+            <ng-container *ngIf="solution as solution else noSolution">
+              <a
+                ngbDropdownItem
+                class="bi-list-check"
+                [routerLink]="['/assignments', course?.assignments?.[i], 'solutions', solution?._id]"
+              >
+                View Solution
+              </a>
+              <div class="dropdown-item-text">
+                <label class="form-label bi-person-check">
+                  Assignee
+                </label>
+                <app-assignee-input
+                  [assignment]="course?.assignments?.[i]!"
+                  [solution]="solution._id!"
+                  [(assignee)]="solution.assignee"
+                ></app-assignee-input>
+              </div>
+            </ng-container>
             <ng-template #noSolution>
               <div class="dropdown-item-text text-muted">
                 No Solution
