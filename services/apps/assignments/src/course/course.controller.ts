@@ -40,9 +40,15 @@ export class CourseController {
   }
 
   @Get(':id/students')
+  @Auth()
   @NotFound()
   @ApiOkResponse({type: [CourseStudent]})
-  async getStudents(@Param('id') id: string): Promise<CourseStudent[]> {
+  @ApiForbiddenResponse({description: forbiddenResponse})
+  async getStudents(
+    @Param('id') id: string,
+    @AuthUser() user: UserToken,
+  ): Promise<CourseStudent[]> {
+    await this.checkAuth(id, user);
     return this.courseService.getStudents(id);
   }
 
