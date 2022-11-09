@@ -7,7 +7,9 @@ export default class Course {
   assignments: string[];
 }
 
-export type SolutionInfo = Required<Pick<Solution, '_id' | 'points'>>;
+export interface SolutionInfo extends Required<Pick<Solution, '_id' | 'points'>> {
+  assignee: string;
+}
 
 export interface CourseStudent {
   author: AuthorInfo;
