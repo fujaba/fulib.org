@@ -7,7 +7,7 @@ import {switchMap, tap} from 'rxjs/operators';
 
 import {environment} from '../../../environments/environment';
 import {UserService} from '../../user/user.service';
-import Course from '../model/course';
+import Course, {CourseStudent} from '../model/course';
 
 @Injectable({
   providedIn: 'root',
@@ -71,6 +71,10 @@ export class CourseService {
     return this.http.get<Course>(`${environment.assignmentsApiUrl}/courses/${id}`).pipe(
       tap(response => this._cache.set(id, response)),
     );
+  }
+
+  getStudents(id: string): Observable<CourseStudent[]> {
+    return this.http.get<CourseStudent[]>(`${environment.assignmentsApiUrl}/courses/${id}/students`);
   }
 
   public create(course: Course): Observable<Course> {

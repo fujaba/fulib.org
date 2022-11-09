@@ -1,0 +1,13 @@
+<div class="container">
+  <h5>
+    Student Link
+  </h5>
+  <p>
+    You can now give your students the following link:
+  </p>
+  <div class="input-group">
+    <input #linkInput type="text" class="form-control" readonly [value]="origin + '/assignments/courses/' + route.snapshot.params.cid">
+    <button *ngxClipboardIfSupported type="button" class="btn btn-outline-secondary bi-clipboard" ngbTooltip="Copy" [ngxClipboard]="linkInput">
+    </button>
+  </div>
+</div>

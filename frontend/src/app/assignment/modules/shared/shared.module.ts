@@ -1,7 +1,8 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
+import {FormsModule} from '@angular/forms';
 import {RouterModule} from '@angular/router';
-import {NgbDropdownModule, NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
+import {NgbDropdownModule, NgbTooltipModule, NgbTypeaheadModule} from '@ng-bootstrap/ng-bootstrap';
 import {SharedModule} from '../../../shared/shared.module';
 import {AssignmentInfoComponent} from './assignment-info/assignment-info.component';
 import {AuthorNameComponent} from './author-name/author-name.component';
@@ -14,6 +15,7 @@ import { SolutionNamePipe } from './pipes/solution-name.pipe';
 import { GithubLinkPipe } from './pipes/github-link.pipe';
 import { CloneLinkPipe } from './pipes/clone-link.pipe';
 import { AssignmentActionsComponent } from './assignment-actions/assignment-actions.component';
+import { AssigneeInputComponent } from './assignee-input/assignee-input.component';
 
 
 @NgModule({
@@ -23,6 +25,8 @@ import { AssignmentActionsComponent } from './assignment-actions/assignment-acti
     NgbTooltipModule,
     SharedModule,
     NgbDropdownModule,
+    NgbTypeaheadModule,
+    FormsModule,
   ],
   declarations: [
     AssignmentInfoComponent,
@@ -36,6 +40,7 @@ import { AssignmentActionsComponent } from './assignment-actions/assignment-acti
     GithubLinkPipe,
     CloneLinkPipe,
     AssignmentActionsComponent,
+    AssigneeInputComponent,
   ],
   exports: [
     AssignmentInfoComponent,
@@ -49,6 +54,7 @@ import { AssignmentActionsComponent } from './assignment-actions/assignment-acti
     GithubLinkPipe,
     CloneLinkPipe,
     AssignmentActionsComponent,
+    AssigneeInputComponent,
   ],
 })
 export class AssignmentSharedModule {
