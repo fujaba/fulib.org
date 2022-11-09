@@ -13,6 +13,7 @@ import {authorInfoProperties} from '../../../model/solution';
 export class StudentsComponent implements OnInit {
   course?: Course;
   students: CourseStudent[] = [];
+  assignees: string[] = [];
 
   readonly authorProperties = authorInfoProperties;
 
@@ -29,10 +30,9 @@ export class StudentsComponent implements OnInit {
 
     this.route.params.pipe(
       switchMap(({cid}) => this.courseService.getStudents(cid)),
-    ).subscribe(students => this.students = students);
-  }
-
-  saveAssignee(value: string, student: CourseStudent) {
-
+    ).subscribe(students => {
+      this.students = students;
+      this.assignees = [...new Set(students.flatMap(s => s.solutions.map(s => s?.assignee).filter(x => x)))].sort();
+    });
   }
 }

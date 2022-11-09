@@ -18,7 +18,7 @@
       </td>
       <td [style.background-color]="solution?.assignee | assigneeColor">
         <div ngbDropdown>
-          <button ngbDropdownToggle class="btn p-0 font-monospace text-white text-shadow">{{ (solution?.assignee || '-')|slice:0:1 }}</button>
+          <button ngbDropdownToggle class="btn p-0 text-white text-shadow">{{ (solution?.assignee || '-')|slice:0:1 }}</button>
           <div ngbDropdownMenu>
             <ng-container *ngIf="solution as solution else noSolution">
               <a
@@ -33,10 +33,17 @@
                   Assignee
                 </label>
                 <app-assignee-input
+                  #assigneeInput
                   [assignment]="course?.assignments?.[i]!"
                   [solution]="solution._id!"
+                  [assignees]="assignees"
                   [(assignee)]="solution.assignee"
                 ></app-assignee-input>
+                <div class="btn-group">
+                  <button class="btn btn-sm text-white text-shadow" *ngFor="let assignee of assignees" [style.background-color]="assignee | assigneeColor" (click)="assigneeInput.assignee = assignee; assigneeInput.save()">
+                    {{ assignee | slice:0:1 }}
+                  </button>
+                </div>
               </div>
             </ng-container>
             <ng-template #noSolution>
