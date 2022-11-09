@@ -1,4 +1,4 @@
-import {AuthorInfo} from './solution';
+import Solution, {AuthorInfo} from './solution';
 
 export default class Course {
   _id?: string;
@@ -7,8 +7,9 @@ export default class Course {
   assignments: string[];
 }
 
+export type SolutionInfo = Required<Pick<Solution, '_id' | 'points'>>;
+
 export interface CourseStudent {
   author: AuthorInfo;
-  points: number[];
-  solutions: string[];
+  solutions: SolutionInfo[];
 }
