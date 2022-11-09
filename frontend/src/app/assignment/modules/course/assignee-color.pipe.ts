@@ -11,6 +11,6 @@ export class AssigneeColorPipe implements PipeTransform {
     }
     const hash = value.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
     const hue = (hash % 30) * 12;
-    return `hsl(${hue}, 100%, 50%)`;
+    return `hsl(${hue}, 50%, 50%)`;
   }
 }
