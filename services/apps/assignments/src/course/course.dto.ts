@@ -1,5 +1,5 @@
-import {ApiProperty, OmitType, PartialType} from '@nestjs/swagger';
-import {AuthorInfo} from '../solution/solution.schema';
+import {ApiProperty, ApiPropertyOptional, OmitType, PartialType, PickType} from '@nestjs/swagger';
+import {AuthorInfo, Solution} from '../solution/solution.schema';
 import {Course} from './course.schema';
 
 export class CreateCourseDto extends OmitType(Course, [
@@ -12,13 +12,20 @@ export class UpdateCourseDto extends PartialType(OmitType(Course, [
 ] as const)) {
 }
 
+export class SolutionSummary extends PickType(Solution, [
+  'points',
+] as const) {
+  @ApiProperty()
+  _id: string;
+
+  @ApiPropertyOptional()
+  assignee?: string;
+}
+
 export class CourseStudent {
   @ApiProperty()
   author: AuthorInfo;
 
-  @ApiProperty()
-  points: number[];
-
-  @ApiProperty()
-  solutions: string[];
+  @ApiProperty({type: [SolutionSummary]})
+  solutions: (SolutionSummary | null)[];
 }

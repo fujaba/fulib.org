@@ -2,6 +2,7 @@ import {EventService} from '@app/event';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {Model} from 'mongoose';
+import {AssigneeService} from '../assignee/assignee.service';
 import {ReadSolutionDto} from '../solution/solution.dto';
 import {AuthorInfo} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
@@ -14,6 +15,7 @@ export class CourseService {
   constructor(
     @InjectModel('courses') private model: Model<Course>,
     private solutionService: SolutionService,
+    private assigneeService: AssigneeService,
     private eventService: EventService,
   ) {
     this.migrate();
@@ -50,12 +52,16 @@ export class CourseService {
   }
 
   async getStudents(id: string): Promise<CourseStudent[]> {
-    const course = await this.findOne(id);
+    const [course] = await Promise.all([this.findOne(id)]);
     if (!course) {
       return [];
     }
     const students = new Map<string, CourseStudent>();
-    const solutions = await this.solutionService.findAll({assignment: {$in: course.assignments}});
+    const [solutions, assignees] = await Promise.all([
+      this.solutionService.findAll({assignment: {$in: course.assignments}}),
+      this.assigneeService.findAll({assignment: {$in: course.assignments}}),
+    ]);
+
     const keys: (keyof AuthorInfo)[] = ['studentId', 'email', 'github', 'name'];
     for (const solution of solutions) {
       const {assignment, _id, author, points} = solution;
@@ -69,8 +75,7 @@ export class CourseService {
       if (!student) {
         student = {
           author,
-          solutions: Array(course.assignments.length).fill(''),
-          points: Array(course.assignments.length).fill(0),
+          solutions: Array(course.assignments.length).fill(null),
         };
       }
       for (const key of keys) {
@@ -80,9 +85,14 @@ export class CourseService {
         }
       }
 
+      const id = _id.toString();
+      const assignee = assignees.find(a => a.solution === id)?.assignee;
       let index = course.assignments.indexOf(assignment);
-      student.solutions[index] = _id.toString();
-      student.points[index] = points || 0;
+      student.solutions[index] = {
+        _id: id,
+        points,
+        assignee,
+      };
     }
     return Array.from(students.values());
   }
