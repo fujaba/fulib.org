@@ -14,13 +14,23 @@
     </td>
     <td *ngFor="let assignment of course?.assignments; let i = index">
       <div ngbDropdown>
-        <button ngbDropdownToggle class="btn p-0">
+        <button ngbDropdownToggle class="btn p-0" [class.text-danger]="!student.solutions[i]">
           {{ student.points[i] }}
         </button>
         <div ngbDropdownMenu>
-          <a ngbDropdownItem class="bi-list-check" [routerLink]="['/assignments', assignment, 'solutions', student.solutions[i]]">
+          <a
+            *ngIf="student.solutions[i] as solution else noSolution"
+            ngbDropdownItem
+            class="bi-list-check"
+            [routerLink]="['/assignments', assignment, 'solutions', solution]"
+          >
             View Solution
           </a>
+          <ng-template #noSolution>
+            <div class="dropdown-item-text text-muted">
+              No Solution
+            </div>
+          </ng-template>
         </div>
       </div>
     </td>
