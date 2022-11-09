@@ -32,7 +32,8 @@ export class SolutionTableComponent implements OnInit {
   assignment?: Assignment;
   totalPoints?: number;
   solutions: Solution[] = [];
-  assignees?: Record<string, Assignee>;
+  assignees: Record<string, Assignee> = {};
+  assigneeNames: string[] = [];
   evaluated: Record<string, boolean> = {};
 
   loading = false;
@@ -69,9 +70,12 @@ export class SolutionTableComponent implements OnInit {
       switchMap(({aid}) => this.solutionService.getAssignees(aid)),
     ).subscribe(assignees => {
       this.assignees = {};
+      const names = new Set<string>();
       for (let assignee of assignees) {
+        names.add(assignee.assignee);
         this.assignees[assignee.solution] = assignee;
       }
+      this.assigneeNames = [...names].sort();
     });
 
     this.activatedRoute.params.pipe(
@@ -117,24 +121,7 @@ export class SolutionTableComponent implements OnInit {
     this.configService.set(key, value);
   }
 
-  setAssignee(solution: Solution, input: HTMLInputElement): void {
-    input.disabled = true;
-    this.solutionService.setAssignee(solution, input.value).subscribe(result => {
-      if (this.assignees) {
-        this.assignees[solution._id!] = result;
-      }
-      input.disabled = false;
-      this.toastService.success('Assignee', input.value ? `Successfully assigned to ${input.value}` : 'Successfully de-assigned');
-    }, error => {
-      input.disabled = false;
-      this.toastService.error('Assignee', 'Failed to assign', error);
-    });
-  }
-
   private getProperty(solution: Solution, property: string): string | undefined {
-    if (property === 'assignee') {
-      return this.assignees?.[solution._id!]?.assignee;
-    }
     if (typeof solution.author[property] === 'string') {
       return solution.author[property];
     }
@@ -175,18 +162,6 @@ export class SolutionTableComponent implements OnInit {
     }
     return results;
   }
-
-  assigneeTypeahead = (text$: Observable<string>): Observable<string[]> => {
-    return text$.pipe(
-      debounceTime(200),
-      distinctUntilChanged(),
-      map(searchInput => {
-        const assignees = this.collectAllValues('assignee');
-        return assignees.filter(a => a.startsWith(searchInput)).slice(0, 10);
-      }),
-    );
-  };
-
 
   private collectAllValues(propertyName: string): string[] {
     const valueSet = new Set<string>();

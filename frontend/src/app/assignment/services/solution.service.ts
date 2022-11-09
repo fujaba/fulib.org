@@ -284,14 +284,13 @@ export class SolutionService {
     return this.http.get<Assignee[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/assignees`, {headers});
   }
 
-  setAssignee(solution: Solution, assignee: string): Observable<Assignee> {
+  setAssignee(assignment: string, solution: string, assignee: string): Observable<Assignee> {
     const body = {
       assignee,
     };
     const headers = {};
-    const assignmentID = solution.assignment;
-    this.addAssignmentToken(headers, assignmentID);
-    return this.http.put<Assignee>(`${environment.assignmentsApiUrl}/assignments/${assignmentID}/solutions/${solution._id}/assignee`, body, {headers});
+    this.addAssignmentToken(headers, assignment);
+    return this.http.put<Assignee>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/assignee`, body, {headers});
   }
 
   private addAssignmentToken(headers: any, assignmentID: string) {
