@@ -1,7 +1,7 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {NgbTooltipModule, NgbTypeaheadModule} from '@ng-bootstrap/ng-bootstrap';
+import {NgbDropdownModule, NgbTooltipModule, NgbTypeaheadModule} from '@ng-bootstrap/ng-bootstrap';
 import {RouteTabsModule} from 'ng-bootstrap-ext';
 import {ClipboardModule} from 'ngx-clipboard';
 import {DndModule} from 'ngx-drag-drop';
@@ -37,6 +37,7 @@ import { StudentsComponent } from './students/students.component';
     ClipboardModule,
     NgbTooltipModule,
     RouteTabsModule,
+    NgbDropdownModule,
   ],
 })
 export class CourseModule {

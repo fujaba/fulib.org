@@ -1,4 +1,4 @@
-<table class="table table-hover table-bordered table-sm">
+<table class="table table-hover table-bordered table-sm table-responsive">
   <thead>
   <th *ngFor="let prop of authorProperties">
     {{ prop[0] }}
@@ -13,7 +13,16 @@
       {{ student.author[prop[1]] }}
     </td>
     <td *ngFor="let assignment of course?.assignments; let i = index">
-      {{ student.points[i] }}
+      <div ngbDropdown>
+        <button ngbDropdownToggle class="btn p-0">
+          {{ student.points[i] }}
+        </button>
+        <div ngbDropdownMenu>
+          <a ngbDropdownItem class="bi-list-check" [routerLink]="['/assignments', assignment, 'solutions', student.solutions[i]]">
+            View Solution
+          </a>
+        </div>
+      </div>
     </td>
   </tr>
   </tbody>
