@@ -5,6 +5,13 @@ export class AuthorInfo {
   github: string;
 }
 
+export const authorInfoProperties = [
+  ['Name', 'name'],
+  ['Student ID', 'studentId'],
+  ['E-Mail', 'email'],
+  ['GitHub Username', 'github'],
+] as const;
+
 export default class Solution {
   _id?: string;
   token?: string;

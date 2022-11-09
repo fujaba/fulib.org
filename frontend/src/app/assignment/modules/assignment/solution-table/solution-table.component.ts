@@ -6,7 +6,7 @@ import {BehaviorSubject, combineLatest, forkJoin, Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 import {Assignee} from '../../../model/assignee';
 import Assignment from '../../../model/assignment';
-import Solution, {AuthorInfo} from '../../../model/solution';
+import Solution, {AuthorInfo, authorInfoProperties} from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
 import {CONFIG_OPTIONS, ConfigKey, ConfigService} from '../../../services/config.service';
 import {SolutionService} from '../../../services/solution.service';
@@ -27,12 +27,7 @@ export class SolutionTableComponent implements OnInit {
     'assignee',
   ];
 
-  readonly authorProperties: [string, keyof AuthorInfo][] = [
-    ['Name', 'name'],
-    ['Student ID', 'studentId'],
-    ['E-Mail', 'email'],
-    ['GitHub Username', 'github'],
-  ];
+  readonly authorProperties = authorInfoProperties;
 
   assignment?: Assignment;
   totalPoints?: number;

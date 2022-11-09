@@ -1,1 +1,20 @@
-<p>students works!</p>
+<table class="table table-hover table-bordered table-sm">
+  <thead>
+  <th *ngFor="let prop of authorProperties">
+    {{ prop[0] }}
+  </th>
+  <th *ngFor="let assignment of course?.assignments; let i = index">
+    {{ i + 1 }}
+  </th>
+  </thead>
+  <tbody>
+  <tr *ngFor="let student of students">
+    <td *ngFor="let prop of authorProperties">
+      {{ student.author[prop[1]] }}
+    </td>
+    <td *ngFor="let assignment of course?.assignments; let i = index">
+      {{ student.points[i] }}
+    </td>
+  </tr>
+  </tbody>
+</table>
