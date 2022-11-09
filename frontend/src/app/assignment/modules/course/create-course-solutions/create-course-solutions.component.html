@@ -5,17 +5,17 @@
       <app-markdown [markdown]="course?.description"></app-markdown>
       <div class="timeline-list">
         <a
-          *ngFor="let assignment of course?.assignments; let i = index"
+          *ngFor="let assignment of assignments; let i = index"
           class="timeline-item text-body text-decoration-none"
-          [routerLink]="[assignment]"
+          [routerLink]="[assignment._id]"
           routerLinkActive="timeline-item-active"
         >
           <div class="timeline-item-badge bg-secondary">
             {{i + 1}}
           </div>
           <div class="timeline-item-body">
-            {{assignments?.[assignment]?.title || 'Loading...'}}
-            <span class="text-muted" *ngIf="latestSolutionIDs?.[assignment]">
+            {{assignment.title}}
+            <span class="text-muted" *ngIf="solutions[i]">
               &#8226;
               Done!
             </span>

@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {EMPTY, forkJoin} from 'rxjs';
-import {switchMap, tap} from 'rxjs/operators';
+import {switchMap} from 'rxjs/operators';
 import Assignment from '../../../model/assignment';
 import Course from '../../../model/course';
 import {AssignmentService} from '../../../services/assignment.service';
@@ -15,9 +14,8 @@ import {SolutionService} from '../../../services/solution.service';
 })
 export class CreateCourseSolutionsComponent implements OnInit {
   course?: Course;
-  assignments?: Record<string, Assignment>;
-
-  latestSolutionIDs?: Record<string, string>;
+  assignments: Assignment[] = [];
+  solutions: (string | undefined)[] = [];
 
   constructor(
     private router: Router,
@@ -36,19 +34,20 @@ export class CreateCourseSolutionsComponent implements OnInit {
         if (!this.route.firstChild?.snapshot.params.aid) {
           const firstAssignment = course.assignments[0];
           this.router.navigate([firstAssignment], {relativeTo: this.route});
-          return EMPTY;
         }
 
         const solutions = this.solutionService.getOwnIds();
-        this.latestSolutionIDs = {};
+        this.solutions = Array(course.assignments.length).fill(undefined);
         for (const {assignment, id: solution} of solutions) {
-          if (course.assignments.includes(assignment)) {
-            this.latestSolutionIDs[assignment] = solution;
+          const index = course.assignments.indexOf(assignment);
+          if (index >= 0) {
+            this.solutions[index] = solution;
           }
         }
-        this.assignments = {};
-        return forkJoin(course.assignments.map(id => this.assignmentService.get(id).pipe(tap(a => this.assignments![id] = a))));
+        return this.assignmentService.findAll(course.assignments);
       }),
-    ).subscribe();
+    ).subscribe(assignments => {
+      this.assignments = assignments;
+    });
   }
 }

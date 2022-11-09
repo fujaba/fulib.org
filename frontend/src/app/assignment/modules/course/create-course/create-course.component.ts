@@ -1,11 +1,10 @@
-import {DOCUMENT} from '@angular/common';
-import {Component, Inject, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 import {ToastService} from 'ng-bootstrap-ext';
 import {DndDropEvent} from 'ngx-drag-drop';
-import {forkJoin, Observable} from 'rxjs';
+import {Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 import Assignment from '../../../model/assignment';
 import Course from '../../../model/course';
@@ -74,7 +73,7 @@ export class CreateCourseComponent implements OnInit {
     this.title = course.title;
     this.description = course.description;
 
-    forkJoin(course.assignments.map(id => this.assignmentService.get(id))).subscribe(assignments => {
+    this.assignmentService.findAll(course.assignments).subscribe(assignments => {
       this.assignments = assignments;
     });
   }
