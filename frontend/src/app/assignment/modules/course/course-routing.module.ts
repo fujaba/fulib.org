@@ -14,6 +14,7 @@ export const courseChildren = [
 ];
 const routes: Routes = [
   {path: 'create', component: CreateCourseComponent, data: {title: 'Create Course'}},
+  {path: ':cid/edit', component: CreateCourseComponent, data: {title: 'Edit Course'}},
   {path: ':cid', pathMatch: 'full', redirectTo: ':cid/assignments'},
   {
     path: ':cid',
