@@ -3,12 +3,17 @@
     <deployment type="docker-compose.yml">
       <settings>
         <option name="envFilePath" value="" />
+        <option name="secondarySourceFiles">
+          <list>
+            <option value="docker-compose.assignments.yml" />
+          </list>
+        </option>
         <option name="services">
           <list>
             <option value="elasticsearch" />
           </list>
         </option>
-        <option name="sourceFilePath" value="docker-compose.assignments.yml" />
+        <option name="sourceFilePath" value="docker-compose.yml" />
       </settings>
     </deployment>
     <method v="2" />
