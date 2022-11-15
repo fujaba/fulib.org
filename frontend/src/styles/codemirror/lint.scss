@@ -1,4 +1,4 @@
-@import "~codemirror/addon/lint/lint";
+@import "node_modules/codemirror/addon/lint/lint";
 
 .CodeMirror-lint-tooltip {
   @extend .tooltip;
