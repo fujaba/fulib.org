@@ -34,9 +34,9 @@ export class TaskListComponent {
 
   givePoints(task: Task, points: number) {
     const {aid, sid} = this.route.snapshot.params;
-    this.solutionService.getEvaluations(aid, sid, {task: task._id}).pipe(
-      switchMap(evaluations => evaluations.length ?
-        this.solutionService.updateEvaluation(aid, sid, evaluations[0]._id, {points}) :
+    this.solutionService.getEvaluationByTask(aid, sid, task._id).pipe(
+      switchMap(evaluation => evaluation ?
+        this.solutionService.updateEvaluation(aid, sid, evaluation._id, {points}) :
         this.solutionService.createEvaluation(aid, sid, {
           task: task._id,
           points,

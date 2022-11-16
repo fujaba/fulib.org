@@ -9,6 +9,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  IsUUID,
   Min,
   ValidateNested,
 } from 'class-validator';
@@ -113,13 +114,13 @@ export class Evaluation {
   @Prop()
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
-  @IsNotEmpty()
+  @IsUUID()
   createdBy?: string;
 
   @Prop()
-  @ApiProperty()
+  @ApiProperty({minLength: 1})
   @IsString()
+  @IsNotEmpty()
   author: string;
 
   @Prop()

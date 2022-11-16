@@ -1,5 +1,6 @@
 <ul *ngIf="tasks else loading">
-  <li *ngFor="let task of tasks" [class]="points && evaluations?.[task._id] ? 'list-unstyled text-' + (task | taskColor:points[task._id]) : evaluations ? 'list-unstyled' : undefined">
+  <li *ngFor="let task of tasks"
+      [class]="points && evaluations?.[task._id] ? 'list-unstyled text-' + (task | taskColor:points[task._id]) : evaluations ? 'list-unstyled' : undefined">
     <input
       *ngIf="evaluations"
       #check
@@ -18,11 +19,12 @@
     <ng-container *ngIf="evaluations">
       <a
         *ngIf="evaluations[task._id] as evaluation; else createEvaluation"
-        [ngbTooltip]="'View Evaluation by ' + evaluation.author"
-        role="button"
-        class="link-secondary ms-1"
+        class="ms-1"
+        [class.link-info]="evaluation.remark"
+        [class.link-secondary]="!evaluation.remark"
         [class.bi-person]="evaluation.author !== 'Code Search'"
         [class.bi-robot]="evaluation.author === 'Code Search'"
+        [ngbTooltip]="evaluation.remark + ' ~ ' + evaluation.author"
         [routerLink]="[task._id]"
         (click)="openTelemetry(task)"
       ></a>

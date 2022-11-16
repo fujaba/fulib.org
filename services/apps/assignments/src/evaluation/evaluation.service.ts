@@ -23,12 +23,16 @@ export class EvaluationService {
 
   async create(assignment: string, solution: string, dto: CreateEvaluationDto, createdBy?: string): Promise<Evaluation> {
     const {codeSearch, ...rest} = dto;
-    const evaluation = await this.model.create({
+    const evaluation = await this.model.findOneAndUpdate({
+      assignment,
+      solution,
+      task: dto.task,
+    }, {
+      ...rest,
       assignment,
       solution,
       createdBy,
-      ...rest,
-    });
+    }, {upsert: true, new: true}).exec();
     this.emit('created', evaluation);
     if (codeSearch && dto.snippets.length) {
       evaluation.codeSearch = await this.codeSearchCreate(assignment, evaluation._id, dto);
