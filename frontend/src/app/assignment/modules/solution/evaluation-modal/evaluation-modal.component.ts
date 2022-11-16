@@ -70,8 +70,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     });
 
     const evaluation$ = this.route.params.pipe(
-      switchMap(({aid, sid, task}) => this.solutionService.getEvaluations(aid, sid, {task})),
-      map(([evaluation]) => evaluation),
+      switchMap(({aid, sid, task}) => this.solutionService.getEvaluationByTask(aid, sid, task)),
       share(),
     );
 

@@ -2,7 +2,7 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Params} from '@angular/router';
 import {forkJoin, Observable, of} from 'rxjs';
-import {switchMap, tap} from 'rxjs/operators';
+import {map, switchMap, tap} from 'rxjs/operators';
 import {environment} from '../../../environments/environment';
 import {StorageService} from '../../services/storage.service';
 import {UserService} from '../../user/user.service';
@@ -242,6 +242,10 @@ export class SolutionService {
       eventSource.addEventListener('error', (error) => observer.error(error));
       return () => eventSource.close();
     });
+  }
+
+  getEvaluationByTask(assignent: string, solution: string, task: string): Observable<Evaluation | undefined> {
+    return this.getEvaluations(assignent, solution, {task}).pipe(map(([first]) => first));
   }
 
   getEvaluation(assignment: string, solution: string | undefined, evaluation: string): Observable<Evaluation> {
