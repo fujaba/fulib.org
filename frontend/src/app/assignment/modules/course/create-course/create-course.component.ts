@@ -110,6 +110,7 @@ export class CreateCourseComponent implements OnInit {
 
   submit(): void {
     this.submitting = true;
+    this.course.assignments = this.assignments.map(a => a._id);
     const id = '_id' in this.course ? this.course._id : undefined;
     (id ? this.courseService.update(id, this.course) : this.courseService.create(this.course)).subscribe(course => {
       this.submitting = false;
