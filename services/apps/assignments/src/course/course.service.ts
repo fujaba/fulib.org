@@ -3,7 +3,6 @@ import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {Model} from 'mongoose';
 import {AssigneeService} from '../assignee/assignee.service';
-import {ReadSolutionDto} from '../solution/solution.dto';
 import {AuthorInfo} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {idFilter} from '../utils';
@@ -52,19 +51,38 @@ export class CourseService {
   }
 
   async getStudents(id: string): Promise<CourseStudent[]> {
-    const [course] = await Promise.all([this.findOne(id)]);
+    const course = await this.findOne(id);
     if (!course) {
       return [];
     }
     const students = new Map<string, CourseStudent>();
-    const [solutions, assignees] = await Promise.all([
-      this.solutionService.findAll({assignment: {$in: course.assignments}}),
-      this.assigneeService.findAll({assignment: {$in: course.assignments}}),
+    const solutions = await this.solutionService.model.aggregate([
+      {$match: {assignment: {$in: course.assignments}}},
+      {$addFields: {id: {$toString: '$_id'}}},
+      {
+        $lookup: {
+          from: 'assignees',
+          localField: 'id',
+          foreignField: 'solution',
+          as: '_assignees',
+        },
+      },
+      {$addFields: {assignee: {$first: '$_assignees.assignee'}}},
+      {
+        $project: {
+          assignment: 1,
+          _id: 1,
+          assignee: 1,
+          author: 1,
+          points: 1,
+        },
+      },
+      {$sort: {'author.name': 1, 'author.github': 1}},
     ]);
 
     const keys: (keyof AuthorInfo)[] = ['studentId', 'email', 'github', 'name'];
     for (const solution of solutions) {
-      const {assignment, _id, author, points} = solution;
+      const {assignment, _id, assignee, author, points} = solution;
       let student: CourseStudent | undefined = undefined;
       for (const key of keys) {
         const value = author[key];
@@ -85,11 +103,9 @@ export class CourseService {
         }
       }
 
-      const id = _id.toString();
-      const assignee = assignees.find(a => a.solution === id)?.assignee;
       let index = course.assignments.indexOf(assignment);
       student.solutions[index] = {
-        _id: id,
+        _id: _id.toString(),
         points,
         assignee,
       };
