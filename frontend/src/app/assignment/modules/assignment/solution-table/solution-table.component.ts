@@ -13,20 +13,22 @@ import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
 import {TelemetryService} from '../../../services/telemetry.service';
 
+type SearchKey = keyof AuthorInfo | 'assignee';
+const searchKeys: readonly SearchKey[] = [
+  'name',
+  'studentId',
+  'email',
+  'github',
+  'assignee',
+];
+
 @Component({
   selector: 'app-solution-table',
   templateUrl: './solution-table.component.html',
   styleUrls: ['./solution-table.component.scss'],
 })
 export class SolutionTableComponent implements OnInit {
-  readonly searchableProperties: readonly (keyof AuthorInfo | 'assignee')[] = [
-    'name',
-    'studentId',
-    'email',
-    'github',
-    'assignee',
-  ];
-
+  readonly searchableProperties = searchKeys;
   readonly authorProperties = authorInfoProperties;
 
   assignment?: Assignment;
@@ -121,13 +123,6 @@ export class SolutionTableComponent implements OnInit {
     this.configService.set(key, value);
   }
 
-  private getProperty(solution: Solution, property: string): string | undefined {
-    if (typeof solution.author[property] === 'string') {
-      return solution.author[property];
-    }
-    return undefined;
-  }
-
   typeahead = (text$: Observable<string>): Observable<string[]> => {
     return text$.pipe(
       debounceTime(200),
@@ -163,10 +158,13 @@ export class SolutionTableComponent implements OnInit {
     return results;
   }
 
-  private collectAllValues(propertyName: string): string[] {
+  private collectAllValues(key: SearchKey): string[] {
+    if (key === 'assignee') {
+      return this.assigneeNames;
+    }
     const valueSet = new Set<string>();
     for (const solution of this.solutions!) {
-      const propertyValue = this.getProperty(solution, propertyName);
+      const propertyValue = solution.author[key];
       if (propertyValue) {
         valueSet.add(propertyValue);
       }
