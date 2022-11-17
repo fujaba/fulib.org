@@ -16,8 +16,11 @@
         </h3>
         <app-markdown [markdown]="course.description"></app-markdown>
       </div>
-      <a class="btn btn-primary" [routerLink]="[course._id, 'share']">
-        Open
+      <a class="btn btn-primary bi-table me-2" [routerLink]="[course._id, 'students']">
+        View
+      </a>
+      <a class="btn btn-secondary bi-pencil" [routerLink]="[course._id, 'edit']">
+        Edit
       </a>
     </li>
   </ul>

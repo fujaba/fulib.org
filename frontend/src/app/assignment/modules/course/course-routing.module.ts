@@ -9,11 +9,12 @@ import {ShareComponent} from './share/share.component';
 import {StudentsComponent} from './students/students.component';
 
 export const courseChildren = [
-  {path: 'share', component: ShareComponent, data: {title: 'Share'}},
   {path: 'students', component: StudentsComponent, data: {title: 'Students'}},
+  {path: 'share', component: ShareComponent, data: {title: 'Share'}},
 ];
 const routes: Routes = [
   {path: 'create', component: CreateCourseComponent, data: {title: 'Create Course'}},
+  {path: ':cid/edit', component: CreateCourseComponent, data: {title: 'Edit Course'}},
   {path: ':cid', pathMatch: 'full', redirectTo: ':cid/assignments'},
   {
     path: ':cid',

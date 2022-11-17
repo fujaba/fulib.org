@@ -1,5 +1,5 @@
 <div class="container">
-  <h1>Create Course</h1>
+  <h1>{{course['_id'] ? 'Edit' : 'Create'}} Course</h1>
 
   <div class="mb-3">
     <app-import-export (import)="onImport($event)" (export)="onExport()"></app-import-export>
@@ -11,13 +11,13 @@
     <div class="mb-3">
       <label for="titleInput" class="form-label">Title</label>
       <input type="text" class="form-control" id="titleInput" placeholder="My Course"
-             [(ngModel)]="title" (change)="saveDraft()">
+             [(ngModel)]="course.title" (change)="saveDraft()">
     </div>
     <div class="mb-3">
       <label for="descriptionInput" class="form-label">Description</label>
       <textarea id="descriptionInput" class="form-control" rows="6"
                 placeholder="A short description for this course..."
-                [(ngModel)]="description" (change)="saveDraft()">
+                [(ngModel)]="course.description" (change)="saveDraft()">
         </textarea>
       <div class="form-text">
         <a href="https://commonmark.org/help/">Markdown syntax</a> is supported.

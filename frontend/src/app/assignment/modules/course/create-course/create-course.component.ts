@@ -1,13 +1,13 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 import {ToastService} from 'ng-bootstrap-ext';
 import {DndDropEvent} from 'ngx-drag-drop';
-import {Observable} from 'rxjs';
-import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
+import {EMPTY, Observable, of} from 'rxjs';
+import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 import Assignment from '../../../model/assignment';
-import Course from '../../../model/course';
+import Course, {CreateCourseDto} from '../../../model/course';
 import {AssignmentService} from '../../../services/assignment.service';
 import {CourseService} from '../../../services/course.service';
 
@@ -19,8 +19,7 @@ import {CourseService} from '../../../services/course.service';
 export class CreateCourseComponent implements OnInit {
   @ViewChild('successModal', {static: true}) successModal;
 
-  title: string;
-  description: string;
+  course: Course | CreateCourseDto;
   assignments: Assignment[] = [];
 
   newAssignment: string;
@@ -51,54 +50,39 @@ export class CreateCourseComponent implements OnInit {
     private modalService: NgbModal,
     private toastService: ToastService,
     private router: Router,
+    private route: ActivatedRoute,
   ) {
   }
 
   ngOnInit() {
-    this.loadDraft();
     this.assignmentService.findOwn().subscribe(assignments => {
       this.ownAssignments = assignments;
     });
-  }
-
-  getCourse(): Course {
-    return {
-      title: this.title,
-      description: this.description,
-      assignments: this.assignments.map(a => a._id),
-    };
-  }
-
-  setCourse(course: Course): void {
-    this.title = course.title;
-    this.description = course.description;
-
-    this.assignmentService.findAll(course.assignments).subscribe(assignments => {
-      this.assignments = assignments;
-    });
-  }
-
-  loadDraft(): void {
-    const draft = this.courseService.draft;
-    if (draft) {
-      this.setCourse(draft);
-    }
+    this.route.params.pipe(
+      switchMap(({cid}) => cid ? this.courseService.get(cid) : of(this.courseService.draft || {
+        title: '',
+        assignments: [],
+        description: '',
+      })),
+      tap(course => this.course = course),
+      switchMap(course => this.assignmentService.findAll(course.assignments)),
+    ).subscribe(assignments => this.assignments = assignments);
   }
 
   saveDraft(): void {
-    this.courseService.draft = this.getCourse();
+    this.courseService.draft = this.course;
   }
 
   onImport(file: File): void {
     this.courseService.upload(file).subscribe(result => {
-      this.setCourse(result);
+      this.course = result;
+      this.assignmentService.findAll(result.assignments).subscribe(assignments => this.assignments = assignments);
       this.saveDraft();
     });
   }
 
   onExport(): void {
-    const course = this.getCourse();
-    this.courseService.download(course);
+    this.courseService.download(this.course);
   }
 
   addAssignment() {
@@ -126,11 +110,13 @@ export class CreateCourseComponent implements OnInit {
 
   submit(): void {
     this.submitting = true;
-    this.courseService.create(this.getCourse()).subscribe(course => {
+    this.course.assignments = this.assignments.map(a => a._id);
+    const id = '_id' in this.course ? this.course._id : undefined;
+    (id ? this.courseService.update(id, this.course) : this.courseService.create(this.course)).subscribe(course => {
       this.submitting = false;
       this.router.navigate(['/assignments/courses', course._id, 'share']);
     }, error => {
-      this.toastService.error('Course', 'Failed to create course', error);
+      this.toastService.error('Course', `Failed to ${id ? 'update' : 'create'} course`, error);
       this.submitting = false;
     });
   }

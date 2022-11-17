@@ -7,15 +7,13 @@ import {switchMap, tap} from 'rxjs/operators';
 
 import {environment} from '../../../environments/environment';
 import {UserService} from '../../user/user.service';
-import Course, {CourseStudent} from '../model/course';
+import Course, {CourseStudent, CreateCourseDto, UpdateCourseDto} from '../model/course';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CourseService {
-  private _draft?: Course | null;
-
-  private _cache = new Map<string, Course>();
+  private _draft?: Course | CreateCourseDto | null;
 
   constructor(
     private http: HttpClient,
@@ -25,7 +23,7 @@ export class CourseService {
 
   // --------------- Draft ---------------
 
-  public get draft(): Course | null {
+  get draft(): Course | CreateCourseDto | null {
     if (typeof this._draft !== 'undefined') {
       return this._draft;
     }
@@ -33,7 +31,7 @@ export class CourseService {
     return this._draft = json ? JSON.parse(json) : null;
   }
 
-  public set draft(value: Course | null) {
+  set draft(value: Course | CreateCourseDto | null) {
     this._draft = value;
     if (value) {
       localStorage.setItem('courseDraft', JSON.stringify(value));
@@ -44,7 +42,7 @@ export class CourseService {
 
   // --------------- Import/Export ---------------
 
-  download(course: Course): void {
+  download(course: Course | CreateCourseDto): void {
     const json = JSON.stringify(course, undefined, '  ');
     saveAs(new Blob([json], {type: 'application/json'}), course.title + '.json');
   }
@@ -63,24 +61,20 @@ export class CourseService {
 
   // --------------- HTTP Methods ---------------
 
-  public get(id: string): Observable<Course> {
-    const cached = this._cache.get(id);
-    if (cached) {
-      return of(cached);
-    }
-    return this.http.get<Course>(`${environment.assignmentsApiUrl}/courses/${id}`).pipe(
-      tap(response => this._cache.set(id, response)),
-    );
+  get(id: string): Observable<Course> {
+    return this.http.get<Course>(`${environment.assignmentsApiUrl}/courses/${id}`);
   }
 
   getStudents(id: string): Observable<CourseStudent[]> {
     return this.http.get<CourseStudent[]>(`${environment.assignmentsApiUrl}/courses/${id}/students`);
   }
 
-  public create(course: Course): Observable<Course> {
-    return this.http.post<Course>(`${environment.assignmentsApiUrl}/courses`, course).pipe(
-      tap(response => this._cache.set(response._id!, response)),
-    );
+  create(course: CreateCourseDto): Observable<Course> {
+    return this.http.post<Course>(`${environment.assignmentsApiUrl}/courses`, course);
+  }
+
+  update(id: string, update: UpdateCourseDto): Observable<Course> {
+    return this.http.patch<Course>(`${environment.assignmentsApiUrl}/courses/${id}`, update);
   }
 
   getOwn(): Observable<Course[]> {
