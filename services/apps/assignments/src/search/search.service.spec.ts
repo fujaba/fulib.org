@@ -1,18 +1,16 @@
 import {Hit} from '@elastic/elasticsearch/api/types';
 import {ElasticsearchService} from '@nestjs/elasticsearch';
 import {Test, TestingModule} from '@nestjs/testing';
-import {mocked} from 'ts-jest/utils';
 import {FileDocument, SearchService} from './search.service';
 
 describe('SearchService', () => {
   let service: SearchService;
 
   beforeEach(async () => {
-    const elasticsearchService = mocked(ElasticsearchService);
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         SearchService,
-        {provide: ElasticsearchService, useValue: elasticsearchService},
+        {provide: ElasticsearchService, useValue: null},
       ],
     }).compile();
 
@@ -93,9 +91,10 @@ describe('SearchService', () => {
   it('should create wildcard queries', () => {
     const query = service._createQuery('Hello there, ## Kenobi', '##');
     expect(query).toStrictEqual({
+      tokens: 4,
       span_near: {
         in_order: true,
-        slop: 1,
+        slop: 100,
         clauses: [
           {
             span_near: {
