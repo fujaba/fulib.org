@@ -13,6 +13,12 @@ export interface FileDocument {
   content: string;
 }
 
+interface QueryPlan {
+  query: QueryContainer;
+  tokens: number;
+  highlighter: 'fvh' | 'unified';
+}
+
 const TOKEN_PATTERN = new RegExp(Object.values({
   number: /[+-]?[0-9]+(\.[0-9]+)?/,
   string: /["](\\.|[^"\\])*["]/, // NB double quotes must be escaped in Lucene RegExp
@@ -178,7 +184,7 @@ export class SearchService implements OnModuleInit {
   }: SearchParams, fields?: (keyof FileDocument)[]) {
     const uniqueId = randomUUID();
     const regex = glob && this.glob2RegExp(glob);
-    const {tokens, ...query} = this._createQuery(snippet, wildcard);
+    const {tokens, highlighter, query} = this._createQuery(snippet, wildcard);
     const result = await this.elasticsearchService.search({
       index: 'files',
       body: {
@@ -200,7 +206,7 @@ export class SearchService implements OnModuleInit {
           },
           pre_tags: [`<${uniqueId}>`],
           post_tags: [`</${uniqueId}>`],
-          type: 'unified',
+          type: highlighter,
           number_of_fragments: 0,
         },
       },
@@ -296,7 +302,7 @@ export class SearchService implements OnModuleInit {
   }
 
   private createPattern(uniqueId: string) {
-    return new RegExp(`<${uniqueId}>(.*?)</${uniqueId}>`, 'g');
+    return new RegExp(`<${uniqueId}>(.*?)</${uniqueId}>`, 'gs');
   }
 
   _findLocation(lineStarts: number[], start: number): Location {
@@ -320,7 +326,7 @@ export class SearchService implements OnModuleInit {
     return result;
   }
 
-  _createQuery(snippet: string, wildcard?: string): QueryContainer & {tokens: number} {
+  _createQuery(snippet: string, wildcard?: string): QueryPlan {
     if (!wildcard) {
       return this.createPhraseQuery(snippet);
     }
@@ -358,25 +364,27 @@ export class SearchService implements OnModuleInit {
     }
     return {
       tokens: tokenCount,
+      highlighter: 'unified',
       // https://www.paulbutcher.space/blog/2021/01/23/wildcards-in-elasticsearch-phrases#:~:text=%E2%80%9Cthe%20casbah%20*%20a%20hurricane%E2%80%9D%20becomes%3A
-      span_near: {
-        slop: 100,
-        in_order: true,
-        clauses,
+      query: {
+        span_near: {
+          slop: 100,
+          in_order: true,
+          clauses,
+        },
       },
     };
   }
 
-  private createPhraseQuery(snippet: string): QueryContainer & {tokens: number} {
-    let tokens = 0;
-    for (const token of snippet.matchAll(TOKEN_PATTERN)) {
-      tokens++;
-    }
+  private createPhraseQuery(snippet: string): QueryPlan {
     return {
-      tokens,
-      match_phrase: {
-        content: {
-          query: snippet,
+      tokens: 1, // fvh highlights the entire phrase thankfully, so this is simple
+      highlighter: 'fvh',
+      query: {
+        match_phrase: {
+          content: {
+            query: snippet,
+          },
         },
       },
     };

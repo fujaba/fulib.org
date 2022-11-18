@@ -33,7 +33,7 @@ describe('SearchService', () => {
     expect(service._findLocation(lineStarts, 27)).toEqual({line: 1, character: 15});
     expect(service._findLocation(lineStarts, 29)).toEqual({line: 2, character: 0});
     expect(service._findLocation(lineStarts, 34)).toEqual({line: 2, character: 5});
-  })
+  });
 
   it('should convert hits', () => {
     const hit: Hit<FileDocument> = {
@@ -86,29 +86,47 @@ describe('SearchService', () => {
       from: {line: 1, character: 0},
       to: {line: 1, character: 15},
     });
-  })
+  });
+
+  it('should create phrase queries', () => {
+    const query = service._createQuery('Hello there, General Kenobi');
+    expect(query).toStrictEqual({
+      tokens: 1,
+      highlighter: 'fvh',
+      query: {
+        match_phrase: {
+          content: {
+            query: 'Hello there, General Kenobi',
+          },
+        },
+      },
+    });
+  });
 
   it('should create wildcard queries', () => {
     const query = service._createQuery('Hello there, ## Kenobi', '##');
     expect(query).toStrictEqual({
       tokens: 4,
-      span_near: {
-        in_order: true,
-        slop: 100,
-        clauses: [
-          {
-            span_near: {
-              in_order: true,
-              slop: 0,
-              clauses: [
-                {span_term: {content: 'Hello'}},
-                {span_term: {content: 'there'}},
-                {span_term: {content: ','}},
-              ],
+      highlighter: 'unified',
+      query: {
+        span_near: {
+          in_order: true,
+          slop: 100,
+          clauses: [
+            {
+              span_near: {
+                in_order: true,
+                slop: 0,
+                clauses: [
+                  {span_term: {content: 'Hello'}},
+                  {span_term: {content: 'there'}},
+                  {span_term: {content: ','}},
+                ],
+              },
             },
-          },
-          {span_term: {content: 'Kenobi'}},
-        ],
+            {span_term: {content: 'Kenobi'}},
+          ],
+        },
       },
     });
   });
