@@ -46,7 +46,7 @@ export class CommentListComponent implements OnInit, OnDestroy {
     });
     this.subscription.add(eventSub);
 
-    this.userService.current$.pipe(take(1)).subscribe(user => {
+    this.userService.getCurrent().subscribe(user => {
       this.userId = user?.id;
     });
   }

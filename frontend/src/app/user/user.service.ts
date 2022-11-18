@@ -2,7 +2,7 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {KeycloakService} from 'keycloak-angular';
 import {BehaviorSubject, Observable} from 'rxjs';
-import {catchError, map} from 'rxjs/operators';
+import {catchError, map, take} from 'rxjs/operators';
 import {environment} from '../../environments/environment';
 import {User} from './user';
 
@@ -21,6 +21,10 @@ export class UserService {
 
   get current$(): Observable<User | null> {
     return this._current;
+  }
+
+  getCurrent(): Observable<User | null> {
+    return this._current.pipe(take(1));
   }
 
   findAll(search?: string): Observable<User[]> {

@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 
 import {saveAs} from 'file-saver';
 import {Observable, of} from 'rxjs';
-import {switchMap, tap} from 'rxjs/operators';
+import {switchMap, take, tap} from 'rxjs/operators';
 
 import {environment} from '../../../environments/environment';
 import {UserService} from '../../user/user.service';
@@ -78,7 +78,7 @@ export class CourseService {
   }
 
   getOwn(): Observable<Course[]> {
-    return this.userService.current$.pipe(
+    return this.userService.getCurrent().pipe(
       switchMap(user => user ? this.http.get<Course[]>(`${environment.assignmentsApiUrl}/courses`, {params: {createdBy: user.id!}}) : of([])),
     );
   }

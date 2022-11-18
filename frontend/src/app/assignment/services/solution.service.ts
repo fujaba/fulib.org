@@ -2,7 +2,7 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Params} from '@angular/router';
 import {forkJoin, Observable, of} from 'rxjs';
-import {map, switchMap, tap} from 'rxjs/operators';
+import {map, switchMap, take, tap} from 'rxjs/operators';
 import {environment} from '../../../environments/environment';
 import {StorageService} from '../../services/storage.service';
 import {UserService} from '../../user/user.service';
@@ -99,7 +99,7 @@ export class SolutionService {
   }
 
   getOwnWithAssignments(): Observable<[Assignment[], Solution[]]> {
-    return this.users.current$.pipe(
+    return this.users.getCurrent().pipe(
       switchMap(user => {
         if (user && user.id) {
           return this.getOwn().pipe(switchMap(solutions => {

@@ -69,7 +69,7 @@ export class CreateSolutionComponent implements OnInit {
       this.nextAssignment = next;
     });
 
-    this.users.current$.pipe(take(1)).subscribe(user => {
+    this.users.getCurrent().subscribe(user => {
       this.loggedIn = !!user;
     });
   }

@@ -31,7 +31,7 @@ export class SettingsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.userService.current$.subscribe(user => {
+    this.userService.getCurrent().subscribe(user => {
       if (user) {
         this.currentUser = user;
       }

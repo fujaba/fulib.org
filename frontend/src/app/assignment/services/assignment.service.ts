@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 
 import {saveAs} from 'file-saver';
 import {Observable, of} from 'rxjs';
-import {map, switchMap, tap} from 'rxjs/operators';
+import {map, switchMap, take, tap} from 'rxjs/operators';
 
 import {environment} from '../../../environments/environment';
 import {StorageService} from '../../services/storage.service';
@@ -96,7 +96,9 @@ export class AssignmentService {
 
   findOwn(archived = false): Observable<Assignment[]> {
     const ownIds = this.getOwnIds();
-    return this.users.current$.pipe(switchMap(user => this.findAll(ownIds, user?.id, archived)));
+    return this.users.getCurrent().pipe(
+      switchMap(user => this.findAll(ownIds, user?.id, archived)),
+    );
   }
 
   findAll(ids?: string[], createdBy?: string, archived = false): Observable<Assignment[]> {

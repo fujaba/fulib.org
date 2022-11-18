@@ -52,9 +52,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
       tap(containers => this.containers = containers),
     ).subscribe();
 
-    this.subscription.add(
-      this.userService.current$.subscribe(user => this.currentUser = user),
-    );
+    this.userService.getCurrent().subscribe(user => this.currentUser = user);
   }
 
   ngOnDestroy() {
