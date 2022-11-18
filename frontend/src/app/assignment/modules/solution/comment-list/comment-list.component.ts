@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ToastService} from 'ng-bootstrap-ext';
 import {Subscription} from 'rxjs';
-import {mapTo, switchMap, tap} from 'rxjs/operators';
+import {mapTo, switchMap, take, tap} from 'rxjs/operators';
 import {UserService} from '../../../../user/user.service';
 import Comment from '../../../model/comment';
 import {ConfigService} from '../../../services/config.service';
@@ -17,8 +17,8 @@ export class CommentListComponent implements OnInit, OnDestroy {
   comments: Comment[] = [];
 
   userId?: string;
-  commentName = '';
-  commentEmail = '';
+  commentName = this.configService.get('name');
+  commentEmail = this.configService.get('email');
   commentBody = '';
   submitting = false;
 
@@ -46,21 +46,9 @@ export class CommentListComponent implements OnInit, OnDestroy {
     });
     this.subscription.add(eventSub);
 
-    const userSub = this.userService.current$.subscribe(user => {
-      if (!user) {
-        this.userId = undefined;
-        return;
-      }
-
-      this.userId = user.id;
-      if (user.firstName && user.lastName) {
-        this.commentName = `${user.firstName} ${user.lastName}`;
-      }
-      if (user.email) {
-        this.commentEmail = user.email;
-      }
+    this.userService.current$.pipe(take(1)).subscribe(user => {
+      this.userId = user?.id;
     });
-    this.subscription.add(userSub);
   }
 
   private safeApply(id: string, comment: Comment | undefined) {

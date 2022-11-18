@@ -19,7 +19,6 @@ export class InfoComponent implements OnInit, OnDestroy {
 
   constructor(
     private context: AssignmentContext,
-    private userService: UserService,
   ) {
     this.assignment = context.assignment;
   }
@@ -40,19 +39,6 @@ export class InfoComponent implements OnInit, OnDestroy {
       this.deadlineDate = undefined;
       this.deadlineTime = undefined;
     }
-
-    this.userSubscription = this.userService.current$.subscribe(user => {
-      if (!user) {
-        return;
-      }
-
-      if (user.firstName && user.lastName) {
-        this.assignment.author ||= `${user.firstName} ${user.lastName}`;
-      }
-      if (user.email) {
-        this.assignment.email ||= user.email;
-      }
-    });
   }
 
   ngOnDestroy(): void {

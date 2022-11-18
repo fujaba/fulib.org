@@ -3,6 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {switchMap} from 'rxjs/operators';
 import {CreateEvaluationDto, Evaluation} from '../../../model/evaluation';
 import Task from '../../../model/task';
+import {ConfigService} from '../../../services/config.service';
 import {SolutionService} from '../../../services/solution.service';
 import {TelemetryService} from '../../../services/telemetry.service';
 
@@ -19,6 +20,7 @@ export class TaskListComponent {
   constructor(
     private telemetryService: TelemetryService,
     private solutionService: SolutionService,
+    private configService: ConfigService,
     private route: ActivatedRoute,
   ) {
   }
@@ -40,7 +42,7 @@ export class TaskListComponent {
         this.solutionService.createEvaluation(aid, sid, {
           task: task._id,
           points,
-          author: this.solutionService.getAuthor()?.name ?? '',
+          author: this.configService.get('name'),
           remark: '',
           snippets: [],
         })),

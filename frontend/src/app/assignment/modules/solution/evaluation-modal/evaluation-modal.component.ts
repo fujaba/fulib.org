@@ -9,6 +9,7 @@ import {SearchSummary} from '../../../model/search-result';
 import Solution from '../../../model/solution';
 import Task from '../../../model/task';
 import {AssignmentService} from '../../../services/assignment.service';
+import {ConfigService} from '../../../services/config.service';
 import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
 import {TelemetryService} from '../../../services/telemetry.service';
@@ -31,7 +32,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
   evaluation?: Evaluation;
   dto: CreateEvaluationDto = {
     task: '',
-    author: '',
+    author: this.configService.get('name'),
     remark: '',
     points: 0,
     snippets: [],
@@ -52,7 +53,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     private taskService: TaskService,
     private solutionService: SolutionService,
     private selectionService: SelectionService,
-    private users: UserService,
+    private configService: ConfigService,
     private toastService: ToastService,
     private telemetryService: TelemetryService,
     public route: ActivatedRoute,

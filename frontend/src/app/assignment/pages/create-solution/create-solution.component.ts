@@ -1,8 +1,8 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ToastService} from 'ng-bootstrap-ext';
-import {forkJoin, of, Subscription} from 'rxjs';
-import {switchMap, tap} from 'rxjs/operators';
+import {forkJoin, of} from 'rxjs';
+import {switchMap, take, tap} from 'rxjs/operators';
 
 import {Marker} from '../../../shared/model/marker';
 import {UserService} from '../../../user/user.service';
@@ -10,6 +10,7 @@ import Assignment from '../../model/assignment';
 import Course from '../../model/course';
 import Solution, {AuthorInfo} from '../../model/solution';
 import {AssignmentService} from '../../services/assignment.service';
+import {ConfigService} from '../../services/config.service';
 import {CourseService} from '../../services/course.service';
 import {SolutionService} from '../../services/solution.service';
 
@@ -18,7 +19,7 @@ import {SolutionService} from '../../services/solution.service';
   templateUrl: './create-solution.component.html',
   styleUrls: ['./create-solution.component.scss'],
 })
-export class CreateSolutionComponent implements OnInit, OnDestroy {
+export class CreateSolutionComponent implements OnInit {
   course?: Course;
   assignment: Assignment;
   solution: string;
@@ -32,12 +33,11 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
 
   nextAssignment?: Assignment;
 
-  private userSubscription: Subscription;
-
   constructor(
     private courseService: CourseService,
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
+    private configService: ConfigService,
     private router: Router,
     private route: ActivatedRoute,
     private users: UserService,
@@ -47,9 +47,9 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.author = this.solutionService.getAuthor() ?? {
-      name: '',
+      name: this.configService.get('name'),
       studentId: '',
-      email: '',
+      email: this.configService.get('email'),
       github: '',
     };
 
@@ -61,28 +61,17 @@ export class CreateSolutionComponent implements OnInit, OnDestroy {
         })),
         course: params.cid ? this.courseService.get(params.cid).pipe(tap(course => this.course = course)) : of(undefined),
       })),
-      switchMap(({assignment, course}) => assignment && course ? this.assignmentService.getNext(course, assignment) : of(undefined)),
+      switchMap(({
+                   assignment,
+                   course,
+                 }) => assignment && course ? this.assignmentService.getNext(course, assignment) : of(undefined)),
     ).subscribe(next => {
       this.nextAssignment = next;
     });
 
-    this.userSubscription = this.users.current$.subscribe(user => {
-      if (!user) {
-        return;
-      }
-
-      this.loggedIn = true;
-      if (user.firstName && user.lastName) {
-        this.author.name = `${user.firstName} ${user.lastName}`;
-      }
-      if (user.email) {
-        this.author.email = user.email;
-      }
+    this.users.current$.pipe(take(1)).subscribe(user => {
+      this.loggedIn = !!user;
     });
-  }
-
-  ngOnDestroy(): void {
-    this.userSubscription.unsubscribe();
   }
 
   getSolution(): Solution {

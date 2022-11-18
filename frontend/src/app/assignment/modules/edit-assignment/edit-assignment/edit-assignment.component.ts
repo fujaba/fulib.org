@@ -7,6 +7,7 @@ import Assignment from '../../../model/assignment';
 import Task from '../../../model/task';
 import {AssignmentContext} from '../../../services/assignment.context';
 import {AssignmentService} from '../../../services/assignment.service';
+import {ConfigService} from '../../../services/config.service';
 import {editAssignmentChildRoutes} from '../edit-assignment-routing.module';
 
 @Component({
@@ -27,6 +28,7 @@ export class EditAssignmentComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private toastService: ToastService,
+    private configService: ConfigService,
   ) {
   }
 
@@ -52,8 +54,8 @@ export class EditAssignmentComponent implements OnInit {
     return {
       _id: undefined!,
       title: '',
-      author: '',
-      email: '',
+      author: this.configService.get('name'),
+      email: this.configService.get('email'),
       deadline: new Date(),
       description: '',
       tasks: [],

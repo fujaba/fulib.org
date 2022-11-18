@@ -1,8 +1,7 @@
 import {Component, HostListener, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {merge, Observable, Subject} from 'rxjs';
-import {debounceTime, distinctUntilChanged, map, switchMap, take} from 'rxjs/operators';
-import {UserService} from '../../../../user/user.service';
+import {debounceTime, distinctUntilChanged, map, switchMap} from 'rxjs/operators';
 import {CreateEvaluationDto} from '../../../model/evaluation';
 import Task from '../../../model/task';
 import {ConfigService} from '../../../services/config.service';
@@ -37,7 +36,6 @@ export class EvaluationFormComponent implements OnInit, OnChanges {
   constructor(
     private solutionService: SolutionService,
     private configService: ConfigService,
-    private users: UserService,
     private route: ActivatedRoute,
   ) {
   }
@@ -46,15 +44,6 @@ export class EvaluationFormComponent implements OnInit, OnChanges {
     this.route.params.pipe(
       switchMap(({aid, task}) => this.solutionService.getEvaluationValues<string>(aid, 'remark', {task})),
     ).subscribe(remarks => this.remarks = remarks);
-
-    this.users.current$.pipe(take(1)).subscribe(user => {
-      if (user) {
-        this.loggedIn = true;
-        this.dto.author = `${user.firstName} ${user.lastName}`;
-      } else {
-        this.dto.author = this.configService.get('name');
-      }
-    });
   }
 
   ngOnChanges(changes: SimpleChanges) {
