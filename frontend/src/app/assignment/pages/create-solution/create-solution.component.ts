@@ -21,7 +21,7 @@ import {SolutionService} from '../../services/solution.service';
 })
 export class CreateSolutionComponent implements OnInit {
   course?: Course;
-  assignment: Assignment;
+  assignment?: Assignment;
   solution: string;
   loggedIn = false;
   author: AuthorInfo;
@@ -57,7 +57,7 @@ export class CreateSolutionComponent implements OnInit {
       switchMap(params => forkJoin({
         assignment: this.assignmentService.get(params.aid).pipe(tap(assignment => {
           this.assignment = assignment;
-          this.loadDraft();
+          this.solution = this.solutionService.getDraft(this.assignment) ?? this.assignment.templateSolution;
         })),
         course: params.cid ? this.courseService.get(params.cid).pipe(tap(course => this.course = course)) : of(undefined),
       })),
@@ -74,24 +74,15 @@ export class CreateSolutionComponent implements OnInit {
     });
   }
 
-  getSolution(): Solution {
-    return {
-      assignment: this.assignment._id,
-      author: this.author,
-      solution: this.solution,
-    };
-  }
-
-  loadDraft(): void {
-    this.solution = this.solutionService.getDraft(this.assignment) ?? this.assignment.templateSolution;
-  }
-
   saveDraft(): void {
     this.solutionService.setAuthor(this.author);
-    this.solutionService.setDraft(this.assignment, this.solution);
+    this.assignment && this.solutionService.setDraft(this.assignment, this.solution);
   }
 
   check(): void {
+    if (!this.assignment) {
+      return;
+    }
     this.saveDraft();
     this.status = 'Checking...';
     this.solutionService.check({assignment: this.assignment, solution: this.solution}).subscribe(response => {
@@ -103,8 +94,16 @@ export class CreateSolutionComponent implements OnInit {
   }
 
   submit(): void {
+    if (!this.assignment) {
+      return;
+    }
+
     this.submitting = true;
-    this.solutionService.submit(this.getSolution()).subscribe(result => {
+    this.solutionService.submit({
+      assignment: this.assignment?._id,
+      author: this.author,
+      solution: this.solution,
+    }).subscribe(result => {
       this.submitting = false;
       this.toastService.success('Solution', 'Successfully submitted solution');
       if (this.course && this.nextAssignment) {
