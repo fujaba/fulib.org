@@ -3,7 +3,6 @@ import {ActivatedRoute} from '@angular/router';
 import {ModalComponent, ToastService} from 'ng-bootstrap-ext';
 import {EMPTY, merge, of, Subject, Subscription} from 'rxjs';
 import {debounceTime, distinctUntilChanged, filter, map, share, switchMap, tap} from 'rxjs/operators';
-import {UserService} from '../../../../user/user.service';
 import {CodeSearchInfo, CreateEvaluationDto, Evaluation, Snippet} from '../../../model/evaluation';
 import {SearchSummary} from '../../../model/search-result';
 import Solution from '../../../model/solution';

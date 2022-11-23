@@ -9,7 +9,7 @@ import {Observable, Subject} from 'rxjs';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {SolutionAuth} from '../solution/solution-auth.decorator';
 import {eventStream} from '../utils';
-import {CreateEvaluationDto, FilterEvaluationParams, UpdateEvaluationDto} from './evaluation.dto';
+import {CreateEvaluationDto, FilterEvaluationParams, RemarkDto, UpdateEvaluationDto} from './evaluation.dto';
 import {Evaluation} from './evaluation.schema';
 import {EvaluationService} from './evaluation.service';
 
@@ -62,6 +62,16 @@ export class EvaluationController {
     @Query() params?: FilterEvaluationParams,
   ): Promise<unknown[]> {
     return this.evaluationService.findUnique(field, this.toQuery(assignment, undefined, params));
+  }
+
+  @Get('evaluations/remarks')
+  @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
+  @ApiOkResponse({type: [RemarkDto]})
+  async findRemarks(
+    @Param('assignment') assignment: string,
+    @Query() params?: FilterEvaluationParams,
+  ): Promise<RemarkDto[]> {
+    return this.evaluationService.findRemarks(this.toQuery(assignment, undefined, params));
   }
 
   @Get('evaluations/:id')

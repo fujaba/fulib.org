@@ -89,6 +89,9 @@ export class CodeSearchInfo {
 
 @Schema({timestamps: true})
 export class Evaluation {
+  @ApiProperty()
+  _id: string;
+
   @Prop()
   @ApiProperty()
   @IsMongoId()
