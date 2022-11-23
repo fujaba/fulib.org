@@ -44,3 +44,7 @@ export interface FilterEvaluationParams {
   codeSearch?: boolean;
   origin?: string;
 }
+
+export interface RemarkDto extends Pick<Evaluation, 'remark' | 'points'> {
+  count: number;
+}

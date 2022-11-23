@@ -11,7 +11,13 @@ import {Assignee} from '../model/assignee';
 import Assignment from '../model/assignment';
 import {CheckResult, CheckSolution} from '../model/check';
 import Comment from '../model/comment';
-import {CreateEvaluationDto, Evaluation, FilterEvaluationParams, UpdateEvaluationDto} from '../model/evaluation';
+import {
+  CreateEvaluationDto,
+  Evaluation,
+  FilterEvaluationParams,
+  RemarkDto,
+  UpdateEvaluationDto,
+} from '../model/evaluation';
 
 import Solution, {AuthorInfo} from '../model/solution';
 
@@ -227,6 +233,13 @@ export class SolutionService {
     this.addAssignmentToken(headers, assignment);
     const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/evaluations/unique/${field}`;
     return this.http.get<T[]>(url, {headers, params: params as any});
+  }
+
+  getEvaluationRemarks(assignment: string, params: FilterEvaluationParams = {}): Observable<RemarkDto[]> {
+    const headers = {};
+    this.addAssignmentToken(headers, assignment);
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/evaluations/remarks`;
+    return this.http.get<RemarkDto[]>(url, {headers, params: params as any});
   }
 
   streamEvaluations(assignment: string, solution: string): Observable<{ event: string, evaluation: Evaluation }> {

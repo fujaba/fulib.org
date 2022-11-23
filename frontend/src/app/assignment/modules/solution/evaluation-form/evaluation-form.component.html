@@ -1,49 +1,56 @@
-<div class="mb-3">
-  <label class="form-label" for="pointsInput">Points</label>
-  <div class="input-group">
-    <input type="number" class="form-control" id="pointsInput" [min]="min" [max]="max"
-           [(ngModel)]="dto.points">
-    <button class="btn btn-outline-secondary text-danger" ngbTooltip="Keyboard Shortcut: Ctrl--"
-            (click)="setPoints(min)">
-      {{ min }}
-    </button>
-    <button class="btn btn-outline-secondary text-success" ngbTooltip="Keyboard Shortcut: Ctrl-+"
-            (click)="setPoints(max)">
-      {{ max }}
-    </button>
+<div class="row">
+  <div class="col col-lg-6">
+    <div class="mb-3">
+      <label class="form-label" for="pointsInput">Points</label>
+      <div class="input-group">
+        <input type="number" class="form-control" id="pointsInput" [min]="min" [max]="max"
+               [(ngModel)]="dto.points">
+        <button class="btn btn-outline-secondary text-danger" ngbTooltip="Keyboard Shortcut: Ctrl--"
+                (click)="setPoints(min)">
+          {{ min }}
+        </button>
+        <button class="btn btn-outline-secondary text-success" ngbTooltip="Keyboard Shortcut: Ctrl-+"
+                (click)="setPoints(max)">
+          {{ max }}
+        </button>
+      </div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="remarkInput">Remark</label>
+      <textarea
+        class="form-control" id="remarkInput"
+        ngbAutofocus
+        [(ngModel)]="dto.remark"
+        [rows]="remarkLines"
+      ></textarea>
+      <div class="form-text">
+        <a href="https://commonmark.org/help/">Markdown Syntax</a> is supported.
+      </div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="nameInput">Name</label>
+      <input type="text" class="form-control" id="nameInput" [(ngModel)]="dto.author" (change)="saveDraft()"
+             [disabled]="loggedIn">
+    </div>
   </div>
-</div>
-<div class="mb-3">
-  <label class="form-label" for="remarkInput">Remark</label>
-  <div class="input-group" *ngIf="remarkLines <= 1">
-    <input
-      type="text" class="form-control" id="remarkInput"
-      ngbAutofocus
-      [ngbTypeahead]="remarkTypeahead"
-      (focus)="remarkFocus$.next('')"
-      (click)="remarkFocus$.next('')"
-      [(ngModel)]="dto.remark"
-    >
-    <button
-      type="button"
-      class="btn btn-outline-secondary bi-arrows-expand"
-      (click)="remarkLines = 3"
-      ngbTooltip="Expand"
-    ></button>
+  <div class="col col-lg-6">
+    <label class="form-label">Suggestions</label>
+    <div class="list-group">
+      <button *ngFor="let remark of remarks" class="list-group-item list-group-item-action d-flex"
+              (click)="setRemark(remark)">
+        <span class="text-muted me-1">
+          {{ remark.count }}x
+        </span>
+        <ngb-highlight
+          class="text-truncate me-auto"
+          [ngbTooltip]="remark.remark"
+          [result]="remark.remark"
+          [term]="dto.remark"
+        ></ngb-highlight>
+        <span class="badge bg-secondary ms-1">
+          {{ remark.points }}P
+        </span>
+      </button>
+    </div>
   </div>
-  <textarea
-    *ngIf="remarkLines > 1"
-    class="form-control" id="remarkInput"
-    ngbAutofocus
-    [(ngModel)]="dto.remark"
-    [rows]="remarkLines"
-  ></textarea>
-  <div class="form-text">
-    <a href="https://commonmark.org/help/">Markdown Syntax</a> is supported.
-  </div>
-</div>
-<div class="mb-3">
-  <label class="form-label" for="nameInput">Name</label>
-  <input type="text" class="form-control" id="nameInput" [(ngModel)]="dto.author" (change)="saveDraft()"
-         [disabled]="loggedIn">
 </div>

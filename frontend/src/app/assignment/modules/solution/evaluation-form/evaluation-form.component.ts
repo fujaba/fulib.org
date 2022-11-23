@@ -2,7 +2,7 @@ import {Component, HostListener, Input, OnChanges, OnInit, SimpleChanges} from '
 import {ActivatedRoute} from '@angular/router';
 import {merge, Observable, Subject} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap} from 'rxjs/operators';
-import {CreateEvaluationDto} from '../../../model/evaluation';
+import {CreateEvaluationDto, RemarkDto} from '../../../model/evaluation';
 import Task from '../../../model/task';
 import {ConfigService} from '../../../services/config.service';
 import {SolutionService} from '../../../services/solution.service';
@@ -19,19 +19,9 @@ export class EvaluationFormComponent implements OnInit, OnChanges {
   loggedIn = false;
   min = 0;
   max = 0;
-  remarkLines = 0;
+  remarkLines = 1;
 
-  remarks: string[] = [];
-
-  remarkFocus$ = new Subject<string>();
-
-  remarkTypeahead = (text$: Observable<string>): Observable<string[]> => merge(
-    this.remarkFocus$,
-    text$.pipe(debounceTime(200)),
-  ).pipe(
-    distinctUntilChanged(),
-    map(searchInput => this.remarks.filter(r => r.includes(searchInput))),
-  );
+  remarks: RemarkDto[] = [];
 
   constructor(
     private solutionService: SolutionService,
@@ -42,7 +32,7 @@ export class EvaluationFormComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.route.params.pipe(
-      switchMap(({aid, task}) => this.solutionService.getEvaluationValues<string>(aid, 'remark', {task})),
+      switchMap(({aid, task}) => this.solutionService.getEvaluationRemarks(aid, {task})),
     ).subscribe(remarks => this.remarks = remarks);
   }
 
@@ -73,5 +63,10 @@ export class EvaluationFormComponent implements OnInit, OnChanges {
 
   saveDraft(): void {
     this.configService.set('name', this.dto.author);
+  }
+
+  setRemark(remark: RemarkDto) {
+    this.dto.remark = remark.remark;
+    this.dto.points = remark.points;
   }
 }
