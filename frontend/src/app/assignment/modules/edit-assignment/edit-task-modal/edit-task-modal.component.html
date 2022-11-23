@@ -21,6 +21,17 @@
         </div>
       </div>
       <div class="mb-3">
+        <label for="noteInput" class="form-label">
+          Evaluation Note
+        </label>
+        <textarea class="form-control" [(ngModel)]="task.note" id="noteInput" rows="3"></textarea>
+        <div class="form-text">
+          Optional.
+          Explain how to evaluate this task.
+          Will only be visible to teaching assistants.
+        </div>
+      </div>
+      <div class="mb-3">
         <label for="globInput" class="form-label">
           Filename Glob
         </label>
