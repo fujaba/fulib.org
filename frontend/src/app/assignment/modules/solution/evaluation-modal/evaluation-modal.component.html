@@ -65,19 +65,6 @@
         </div>
         <div class="col" [class.col-md-4]="dto.snippets.length">
           <app-evaluation-form [dto]="dto" [task]="task"></app-evaluation-form>
-          <div class="alert alert-info" *ngIf="!dto.snippets.length">
-            <a href="https://marketplace.visualstudio.com/items?itemName=fulib.fulibFeedback" target="_blank">
-              fulibFeedback
-            </a>
-            can be used to add code snippets from within your IDE.
-            If Code Search is enabled,
-            it will automatically look for similar code in other solutions and transfer your evaluation,
-            allowing you to grade multiple students at once.
-          </div>
-          <app-pro-tip [tips]="[
-            'Press Ctrl-Enter to quickly submit your evaluation',
-            'Press Ctrl-0 to give zero points',
-          ]"></app-pro-tip>
         </div>
       </div>
     </div>
