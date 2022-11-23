@@ -10,7 +10,7 @@ export class CreateAssignmentDto extends OmitType(Assignment, [
 ] as const) {
 }
 
-export class ReadTaskDto extends OmitType(Task, ['verification'] as const) {
+export class ReadTaskDto extends OmitType(Task, ['verification', 'note'] as const) {
 }
 
 export class ReadAssignmentDto extends OmitType(Assignment, ['token', 'solution', 'tasks'] as const) {

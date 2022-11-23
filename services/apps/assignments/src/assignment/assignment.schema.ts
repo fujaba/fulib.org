@@ -36,6 +36,12 @@ export class Task {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
+  note?: string;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
   verification?: string;
 
   @Prop()
