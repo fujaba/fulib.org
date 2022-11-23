@@ -1,6 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Subscription} from 'rxjs';
-import {UserService} from '../../../../user/user.service';
+import {Component, OnInit} from '@angular/core';
 import Assignment from '../../../model/assignment';
 import {AssignmentContext} from '../../../services/assignment.context';
 
@@ -9,13 +7,11 @@ import {AssignmentContext} from '../../../services/assignment.context';
   templateUrl: './info.component.html',
   styleUrls: ['./info.component.scss'],
 })
-export class InfoComponent implements OnInit, OnDestroy {
+export class InfoComponent implements OnInit {
   assignment: Assignment;
 
   deadlineDate?: string;
   deadlineTime?: string;
-
-  private userSubscription: Subscription;
 
   constructor(
     private context: AssignmentContext,
@@ -39,10 +35,6 @@ export class InfoComponent implements OnInit, OnDestroy {
       this.deadlineDate = undefined;
       this.deadlineTime = undefined;
     }
-  }
-
-  ngOnDestroy(): void {
-    this.userSubscription.unsubscribe();
   }
 
   saveDraft(): void {
