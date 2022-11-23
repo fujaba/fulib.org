@@ -1,5 +1,33 @@
-<div class="row">
-  <div class="col col-lg-6">
+<div class="row flex-row-reverse">
+  <div class="col-lg" *ngIf="task?.note || remarks.length">
+    <ng-container *ngIf="task?.note as note">
+      <label class="form-label">Evaluation Note</label>
+      <div class="alert alert-info">
+        {{ note }}
+      </div>
+    </ng-container>
+    <ng-container *ngIf="remarks.length">
+      <label class="form-label">Suggestions</label>
+      <div class="list-group mb-3">
+        <button *ngFor="let remark of remarks" class="list-group-item list-group-item-action d-flex"
+                (click)="setRemark(remark)">
+        <span class="text-muted me-1">
+          {{ remark.count }}x
+        </span>
+          <ngb-highlight
+            class="text-truncate me-auto"
+            [ngbTooltip]="remark.remark"
+            [result]="remark.remark"
+            [term]="dto.remark"
+          ></ngb-highlight>
+          <span class="badge bg-secondary ms-1">
+          {{ remark.points }}P
+        </span>
+        </button>
+      </div>
+    </ng-container>
+  </div>
+  <div class="col-lg">
     <div class="mb-3">
       <label class="form-label" for="pointsInput">Points</label>
       <div class="input-group">
@@ -31,32 +59,6 @@
       <label class="form-label" for="nameInput">Name</label>
       <input type="text" class="form-control" id="nameInput" [(ngModel)]="dto.author" (change)="saveDraft()"
              [disabled]="loggedIn">
-    </div>
-  </div>
-  <div class="col col-lg-6">
-    <ng-container *ngIf="task?.note as note">
-      <label class="form-label">Evaluation Note</label>
-      <div class="alert alert-info">
-        {{ note }}
-      </div>
-    </ng-container>
-    <label class="form-label">Suggestions</label>
-    <div class="list-group mb-3">
-      <button *ngFor="let remark of remarks" class="list-group-item list-group-item-action d-flex"
-              (click)="setRemark(remark)">
-        <span class="text-muted me-1">
-          {{ remark.count }}x
-        </span>
-        <ngb-highlight
-          class="text-truncate me-auto"
-          [ngbTooltip]="remark.remark"
-          [result]="remark.remark"
-          [term]="dto.remark"
-        ></ngb-highlight>
-        <span class="badge bg-secondary ms-1">
-          {{ remark.points }}P
-        </span>
-      </button>
     </div>
   </div>
 </div>
