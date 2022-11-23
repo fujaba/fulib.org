@@ -1,7 +1,6 @@
 import {Component, HostListener, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {merge, Observable, Subject} from 'rxjs';
-import {debounceTime, distinctUntilChanged, map, switchMap} from 'rxjs/operators';
+import {switchMap} from 'rxjs/operators';
 import {CreateEvaluationDto, RemarkDto} from '../../../model/evaluation';
 import Task from '../../../model/task';
 import {ConfigService} from '../../../services/config.service';
