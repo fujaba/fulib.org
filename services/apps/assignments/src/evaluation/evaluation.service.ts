@@ -4,7 +4,7 @@ import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model, UpdateQuery} from 'mongoose';
 import {AssignmentService} from '../assignment/assignment.service';
 import {SearchService} from '../search/search.service';
-import {CreateEvaluationDto, UpdateEvaluationDto} from './evaluation.dto';
+import {CreateEvaluationDto, RemarkDto, UpdateEvaluationDto} from './evaluation.dto';
 import {CodeSearchInfo, Evaluation, EvaluationDocument, Snippet} from './evaluation.schema';
 
 @Injectable()
@@ -46,6 +46,33 @@ export class EvaluationService {
 
   async findUnique(field: keyof Evaluation | string, where: FilterQuery<Evaluation> = {}): Promise<unknown[]> {
     return this.model.find(where).sort(field).distinct(field).exec();
+  }
+
+  async findRemarks(where: FilterQuery<Evaluation> = {}): Promise<RemarkDto[]> {
+    return this.model.aggregate([
+      {$match: where},
+      {
+        $group: {
+          _id: {remark: '$remark', points: '$points'},
+          count: {$sum: 1},
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          remark: '$_id.remark',
+          points: '$_id.points',
+          count: 1,
+        },
+      },
+      {
+        $sort: {
+          count: -1,
+          remark: 1,
+          points: 1,
+        },
+      },
+    ]).exec();
   }
 
   async findOne(id: string): Promise<Evaluation | null> {
@@ -93,7 +120,11 @@ export class EvaluationService {
     const assignment = await this.assignmentService.findOne(assignmentId);
     const task = assignment && this.assignmentService.findTask(assignment.tasks, taskId);
     const resultsBySnippet = await Promise.all(snippets.map(async snippet => {
-      const results = await this.searchService.find(assignmentId, {q: snippet.pattern || snippet.code, glob: task?.glob, wildcard: '***'});
+      const results = await this.searchService.find(assignmentId, {
+        q: snippet.pattern || snippet.code,
+        glob: task?.glob,
+        wildcard: '***',
+      });
       for (let result of results) {
         for (let snippet2 of result.snippets) {
           snippet2.comment = snippet.comment;

@@ -1,4 +1,4 @@
-import {ApiPropertyOptional, OmitType, PartialType} from '@nestjs/swagger';
+import {ApiProperty, ApiPropertyOptional, OmitType, PartialType, PickType} from '@nestjs/swagger';
 import {Transform} from 'class-transformer';
 import {IsAlphanumeric, IsBoolean, IsMongoId, IsOptional, IsString} from 'class-validator';
 import {Evaluation} from './evaluation.schema';
@@ -6,6 +6,7 @@ import {Evaluation} from './evaluation.schema';
 export class CreateEvaluationDto extends OmitType(Evaluation, [
   'assignment',
   'solution',
+  '_id',
   'createdAt',
   'createdBy',
   'updatedAt',
@@ -41,4 +42,9 @@ export class FilterEvaluationParams {
   @IsOptional()
   @IsString()
   file?: string;
+}
+
+export class RemarkDto extends PickType(Evaluation, ['remark', 'points'] as const) {
+  @ApiProperty()
+  count: number;
 }
