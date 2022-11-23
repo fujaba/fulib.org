@@ -11,7 +11,7 @@
       <div class="mb-3">
         <label for="pointsInput" class="form-label">Points</label>
         <div class="input-group">
-          <input type="number" class="form-control" id="pointsInput" min="0" [(ngModel)]="task.points">
+          <input type="number" class="form-control" id="pointsInput" [(ngModel)]="task.points">
           <button
             *ngIf="task.children.length"
             class="btn btn-outline-secondary bi-magic"
