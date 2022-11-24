@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import {SwUpdate} from '@angular/service-worker';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 import {ChangelogService, Release, REPOS, Repository, Versions} from '../../services/changelog.service';
@@ -15,11 +16,14 @@ export class ChangelogComponent implements OnInit {
   lastUsedVersions: Versions | null;
   changelogs: Partial<Record<Repository, Release[]>> = {};
 
+  pwaUpdate = false;
+
   activeRepo: string;
 
   constructor(
     private modalService: NgbModal,
     private changelogService: ChangelogService,
+    private swUpdate: SwUpdate,
     public route: ActivatedRoute,
   ) {
   }
@@ -33,6 +37,8 @@ export class ChangelogComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.swUpdate.checkForUpdate().then(update => this.pwaUpdate = update);
+
     this.lastUsedVersions = this.changelogService.lastUsedVersions;
 
     this.changelogService.getCurrentVersions().subscribe(currentVersions => {
@@ -81,5 +87,9 @@ export class ChangelogComponent implements OnInit {
     }
 
     this.changelogService.renderChangelog(repo, release).subscribe();
+  }
+
+  reload() {
+    document.location.reload();
   }
 }

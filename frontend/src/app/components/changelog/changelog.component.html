@@ -42,5 +42,8 @@
     <button type="button" class="btn btn-secondary" (click)="modal.close()">
       Close
     </button>
+    <button *ngIf="pwaUpdate" type="button" class="btn btn-primary" (click)="reload()">
+      Reload
+    </button>
   </ng-container>
 </ngbx-modal>
