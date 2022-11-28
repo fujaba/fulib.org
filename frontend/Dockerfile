@@ -1,4 +1,4 @@
-FROM node:16-alpine as builder
+FROM node:lts-slim as builder
 WORKDIR /frontend
 RUN npm install -g pnpm
 COPY package.json pnpm-lock.yaml ./
