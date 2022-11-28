@@ -26,7 +26,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Test Angular
-        run: pnpm test
+        run: pnpm test:ci
   backend:
     name: Backend
     runs-on: ubuntu-latest
