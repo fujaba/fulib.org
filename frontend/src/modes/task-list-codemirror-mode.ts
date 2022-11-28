@@ -1,4 +1,6 @@
-import {Rule} from 'codemirror';
+import type {Rule} from 'codemirror';
+// noinspection ES6UnusedImports
+import type {} from 'codemirror/addon/mode/simple';
 
 export const TASK_ITEM_PATTERN = /(#{2,}|-)(\s+)(.*)(\s+\(.*?)(-?\d+(?:\.\d+)?)(P?\))(\s*<!--.*?-->)?/;
 
