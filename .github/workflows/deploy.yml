@@ -20,8 +20,8 @@ jobs:
             refs/heads/develop) NAMESPACE=dev ;;
             refs/tags/v*) NAMESPACE=prod ;;
           esac
-          echo "::set-output name=version::$VERSION"
-          echo "::set-output name=namespace::$NAMESPACE"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "namespace=$NAMESPACE" >> $GITHUB_OUTPUT
     outputs:
       version: ${{ steps.deployment.outputs.version }}
       namespace: ${{ steps.deployment.outputs.namespace }}
