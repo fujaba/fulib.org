@@ -21,30 +21,12 @@
   </div>
   <div class="mb-3">
     <label class="form-label" for="tokenInput">GitHub Token</label>
-    <div *ngIf="assignment.classroom!.token === '***' else tokenInput" class="input-group">
-      <input
-        type="text"
-        class="form-control fst-italic text-blur"
-        id="tokenInput"
-        readonly
-        value="ghp_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-      >
-      <button
-        class="btn btn-outline-secondary bi-pencil"
-        ngbTooltip="Edit"
-        (click)="assignment.classroom!.token = ''"
-      ></button>
-    </div>
-    <ng-template #tokenInput>
-      <input
-        type="password"
-        class="form-control"
-        id="tokenInput"
-        placeholder="ghp_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-        [(ngModel)]="assignment.classroom!.token"
-        (change)="saveDraft()"
-      >
-    </ng-template>
+    <app-masked-input
+      id="tokenInput"
+      type="password"
+      [(value)]="assignment.classroom!.token"
+      placeholder="ghp_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+    ></app-masked-input>
     <div class="form-text">
       Required for importing solutions from GitHub Classroom.
       You can generate a token in the
@@ -62,10 +44,12 @@
   </div>
   <div class="mb-3">
     <label class="form-label" for="webhookInput">Webhook</label>
-    <input
-      type="url" class="form-control" id="webhookInput"
-      [(ngModel)]="assignment.classroom!.webhook" (change)="saveDraft()"
-    >
+    <app-masked-input
+      id="webhookInput"
+      type="url"
+      [(value)]="assignment.classroom!.webhook"
+      placeholder="https://discord.com/api/webhooks/XXXXXXXXXXXXXXXXXXX"
+    ></app-masked-input>
     <div class="form-text">
       Notify a webhook when solutions are automatically imported at the deadline.
     </div>

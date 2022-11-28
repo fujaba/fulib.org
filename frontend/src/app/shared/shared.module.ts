@@ -22,6 +22,7 @@ import {ProjectConfigFormComponent} from './project-config-form/project-config-f
 import {ScenarioCodemirrorComponent} from './scenario-codemirror/scenario-codemirror.component';
 import {TabsComponent} from './tabs/tabs.component';
 import { TokenInputComponent } from './token-input/token-input.component';
+import { MaskedInputComponent } from './masked-input/masked-input.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { TokenInputComponent } from './token-input/token-input.component';
     DurationPipe,
     DiagramViewComponent,
     TokenInputComponent,
+    MaskedInputComponent,
   ],
   imports: [
     FormsModule,
@@ -68,6 +70,7 @@ import { TokenInputComponent } from './token-input/token-input.component';
     DurationPipe,
     DiagramViewComponent,
     TokenInputComponent,
+    MaskedInputComponent,
   ],
   providers: [
     DurationPipe,
