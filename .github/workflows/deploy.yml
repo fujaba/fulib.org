@@ -91,13 +91,18 @@ jobs:
           namespace: ${{ needs.deployment.outputs.namespace }}
           deployment: fulib-backend
           docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-backend:${{ needs.deployment.outputs.version }}
-  assignments-service:
-    name: Assignments Service
+  services:
+    name: ${{ matrix.service}} Service
     runs-on: ubuntu-latest
     needs: [ deployment ]
     defaults:
       run:
         working-directory: services
+    strategy:
+      matrix:
+        service:
+          - projects
+          - assignments
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -107,9 +112,9 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           registry: ${{ secrets.DOCKER_REGISTRY }}
-          image_name: fulib/fulib.org-assignments-service
+          image_name: fulib/fulib.org-${{ matrix.service }}-service
           image_tag: ${{ needs.deployment.outputs.version }}
-          build_extra_args: "--build-arg=SERVICE=assignments"
+          build_extra_args: --build-arg=SERVICE=${{ matrix.service }}
           context: services/
           push_image_and_stages: ${{ !!needs.deployment.outputs.namespace }}
       - name: Deploy to Rancher
@@ -120,39 +125,8 @@ jobs:
           cluster_id: ${{ secrets.RANCHER_CLUSTER }}
           project_id: ${{ secrets.RANCHER_PROJECT }}
           namespace: ${{ needs.deployment.outputs.namespace }}
-          deployment: fulib-assignments-service
-          docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-assignments-service:${{ needs.deployment.outputs.version }}
-  projects-service:
-    name: Projects Service
-    runs-on: ubuntu-latest
-    needs: [ deployment ]
-    defaults:
-      run:
-        working-directory: services
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Build the Docker Image
-        uses: whoan/docker-build-with-cache-action@v5
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          registry: ${{ secrets.DOCKER_REGISTRY }}
-          image_name: fulib/fulib.org-projects-service
-          image_tag: ${{ needs.deployment.outputs.version }}
-          build_extra_args: "--build-arg=SERVICE=projects"
-          context: services/
-          push_image_and_stages: ${{ !!needs.deployment.outputs.namespace }}
-      - name: Deploy to Rancher
-        uses: sekassel-research/actions-rancher-update@2.0.2
-        with:
-          rancher_url: ${{ secrets.RANCHER_URL }}
-          rancher_token: ${{ secrets.RANCHER_TOKEN }}
-          cluster_id: ${{ secrets.RANCHER_CLUSTER }}
-          project_id: ${{ secrets.RANCHER_PROJECT }}
-          namespace: ${{ needs.deployment.outputs.namespace }}
-          deployment: fulib-projects-service
-          docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-projects-service:${{ needs.deployment.outputs.version }}
+          deployment: fulib-${{ matrix.service }}-service
+          docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-${{ matrix.service }}-service:${{ needs.deployment.outputs.version }}
   projects-images:
     name: Projects Images
     runs-on: ubuntu-latest
