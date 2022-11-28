@@ -34,7 +34,7 @@ jobs:
         working-directory: frontend
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Build the Docker Image
         uses: whoan/docker-build-with-cache-action@v5
         with:
@@ -60,7 +60,7 @@ jobs:
     needs: [ deployment ]
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Setup Java
@@ -105,7 +105,7 @@ jobs:
           - assignments
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Build the Docker Image
         uses: whoan/docker-build-with-cache-action@v5
         with:
@@ -133,7 +133,7 @@ jobs:
     needs: [ deployment ]
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Log in to Docker
         uses: docker/login-action@v2
         with:
@@ -159,7 +159,7 @@ jobs:
     needs: [ deployment ]
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Build the Projects Proxy Docker Image
         uses: whoan/docker-build-with-cache-action@v5
         with:
@@ -177,7 +177,7 @@ jobs:
     needs: [ deployment ]
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Build the Projects Runtime Docker Image
         uses: whoan/docker-build-with-cache-action@v5
         with:
@@ -195,7 +195,7 @@ jobs:
     needs: [ deployment, projects-images, projects-proxy, projects-runtime ]
     steps:
       - name: Deploy the Projects Runtime to Rancher
-        uses: sekassel-research/actions-rancher-update@2.0.2
+        uses: sekassel-research/actions-rancher-update@v3.0.0
         with:
           rancher_url: ${{ secrets.RANCHER_URL }}
           rancher_token: ${{ secrets.RANCHER_TOKEN }}
