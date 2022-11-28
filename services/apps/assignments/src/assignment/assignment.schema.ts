@@ -15,6 +15,7 @@ import {
 } from 'class-validator';
 import {Document} from 'mongoose';
 
+@Schema({id: false, _id: false})
 export class Task {
   @Prop()
   @ApiProperty()
@@ -57,6 +58,7 @@ export class Task {
   children: Task[];
 }
 
+@Schema({id: false, _id: false})
 export class ClassroomInfo {
   @Prop()
   @ApiProperty({required: false})
@@ -70,16 +72,18 @@ export class ClassroomInfo {
   @IsString()
   prefix?: string;
 
-  @Prop()
+  @Prop({transform: (v?: string) => v && '***'})
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
+  @Transform(({value}) => value === '***' ? undefined : value)
   token?: string;
 
-  @Prop()
+  @Prop({transform: (v?: string) => v ? '***' : undefined})
   @ApiPropertyOptional()
   @IsOptional()
   @IsUrl()
+  @Transform(({value}) => value === '***' ? undefined : value)
   webhook?: string;
 
   @Prop()
@@ -89,15 +93,7 @@ export class ClassroomInfo {
   codeSearch?: boolean;
 }
 
-@Schema({
-  toJSON: {
-    transform: (doc, ret) => {
-      const {classroom} = ret;
-      classroom && (classroom.token = classroom.token ? '***' : undefined);
-      return ret;
-    },
-  },
-})
+@Schema()
 export class Assignment {
   @Prop()
   @ApiPropertyOptional()
@@ -142,7 +138,7 @@ export class Assignment {
   @Transform(({value}) => typeof value === 'string' ? new Date(value) : value)
   deadline?: Date;
 
-  @Prop()
+  @Prop({type: ClassroomInfo})
   @ApiProperty({required: false})
   @IsOptional()
   @ValidateNested()
