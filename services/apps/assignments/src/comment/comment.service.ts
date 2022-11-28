@@ -3,7 +3,6 @@ import {UserToken} from '@app/keycloak-auth';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model} from 'mongoose';
-import {Assignee, AssigneeDocument} from '../assignee/assignee.schema';
 import {idFilter} from '../utils';
 import {CreateCommentDto, UpdateCommentDto} from './comment.dto';
 import {Comment, CommentDocument} from './comment.schema';
@@ -70,7 +69,7 @@ export class CommentService {
   async removeAll(where: FilterQuery<Comment>): Promise<CommentDocument[]> {
     const comments = await this.findAll(where);
     await this.model.deleteMany({_id: {$in: comments.map(a => a._id)}}).exec();
-    for (let comment of comments) {
+    for (const comment of comments) {
       this.emit('deleted', comment);
     }
     return comments;

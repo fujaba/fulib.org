@@ -1,4 +1,4 @@
-import {forwardRef, Module} from '@nestjs/common';
+import {Module} from '@nestjs/common';
 import {MongooseModule} from '@nestjs/mongoose';
 import {AssignmentModule} from '../assignment/assignment.module';
 import {SearchModule} from '../search/search.module';

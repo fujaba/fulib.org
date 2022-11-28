@@ -103,7 +103,7 @@ export class CourseService {
         }
       }
 
-      let index = course.assignments.indexOf(assignment);
+      const index = course.assignments.indexOf(assignment);
       student.solutions[index] = {
         _id: _id.toString(),
         points,

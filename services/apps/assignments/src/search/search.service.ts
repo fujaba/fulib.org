@@ -151,10 +151,10 @@ export class SearchService implements OnModuleInit {
     const solutions = new Set(hitsContainer.hits.map((h: any) => h.fields.solution[0])).size;
     const files = hitsContainer.total.value;
     let hits = 0;
-    for (let hit of hitsContainer.hits) {
+    for (const hit of hitsContainer.hits) {
       const content: string = hit.highlight.content[0];
       let occurrences = 0;
-      for (const match of content.matchAll(pattern)) {
+      for (const {} of content.matchAll(pattern)) {
         occurrences++;
       }
       hits += occurrences / tokens;
@@ -165,7 +165,7 @@ export class SearchService implements OnModuleInit {
   async find(assignment: string, params: SearchParams): Promise<SearchResult[]> {
     const {uniqueId, result, tokens} = await this._search(assignment, params);
     const grouped = new Map<string, SearchResult>();
-    for (let hit of result.body.hits.hits) {
+    for (const hit of result.body.hits.hits) {
       const result = this._convertHit(hit, uniqueId, params.context, tokens);
       const existing = grouped.get(result.solution);
       if (existing) {

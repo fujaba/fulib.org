@@ -49,7 +49,6 @@ export class ProjectController {
   @ApiOkResponse({type: Project})
   async findOne(
     @Param('id') id: string,
-    @AuthUser() user: UserToken,
   ): Promise<Project | null> {
     return this.projectService.findOne(id);
   }
@@ -61,7 +60,6 @@ export class ProjectController {
   async update(
     @Param('id') id: string,
     @Body() dto: UpdateProjectDto,
-    @AuthUser() user: UserToken,
   ): Promise<Project | null> {
     const project = await this.projectService.update(id, dto);
     if (project && dto.userId) {

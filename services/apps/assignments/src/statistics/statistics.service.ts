@@ -21,7 +21,7 @@ export class StatisticsService {
   }
 
   private buildTaskMap(tasks: Task[], map: Map<string, Task>): void {
-    for (let task of tasks) {
+    for (const task of tasks) {
       map.set(task._id, task);
       this.buildTaskMap(task.children, map);
     }
@@ -37,7 +37,7 @@ export class StatisticsService {
     this.buildTaskMap(assignmentDoc.tasks, tasks);
 
     const taskStats = new Map<string, TaskStatistics>();
-    for (let task of tasks.keys()) {
+    for (const task of tasks.keys()) {
       taskStats.set(task, {
         task,
         points: this.createEmptyEvaluationStatistics(),
@@ -54,7 +54,7 @@ export class StatisticsService {
       task,
       author,
     } of this.evaluationService.model.find({assignment}).select('codeSearch points task author')) {
-      let taskStat = taskStats.get(task);
+      const taskStat = taskStats.get(task);
       if (!taskStat) { // orphaned, ignore
         continue;
       }
@@ -160,7 +160,7 @@ export class StatisticsService {
   }
 
   private async solutionStatistics(assignment: AssignmentDocument): Promise<SolutionStatistics> {
-    let passingMin = assignment.tasks.reduce((a, c) => c.points > 0 ? a + c.points : a, 0) / 2;
+    const passingMin = assignment.tasks.reduce((a, c) => c.points > 0 ? a + c.points : a, 0) / 2;
     let pointsTotal = 0;
     let graded = 0;
     let total = 0;

@@ -1,4 +1,3 @@
-import {UserToken} from '@app/keycloak-auth/auth.interface';
 import {Injectable} from '@nestjs/common';
 import {AuthGuard} from '@nestjs/passport';
 

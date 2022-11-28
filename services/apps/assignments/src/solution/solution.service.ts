@@ -4,7 +4,6 @@ import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model} from 'mongoose';
 import {AssignmentService} from '../assignment/assignment.service';
-import {Comment, CommentDocument} from '../comment/comment.schema';
 import {CreateEvaluationDto} from '../evaluation/evaluation.dto';
 import {Evaluation} from '../evaluation/evaluation.schema';
 import {EvaluationService} from '../evaluation/evaluation.service';
@@ -118,7 +117,7 @@ export class SolutionService {
   async removeAll(where: FilterQuery<Solution>): Promise<SolutionDocument[]> {
     const solutions = await this.model.find(where).exec();
     await this.model.deleteMany({_id: {$in: solutions.map(a => a._id)}}).exec();
-    for (let solution of solutions) {
+    for (const solution of solutions) {
       this.emit('deleted', solution);
     }
     return solutions;

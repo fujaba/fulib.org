@@ -168,7 +168,7 @@ export class ClassroomService {
 
     if (codeSearch) {
       const solutions = await this.solutionService.findAll({assignment: assignment.id});
-      for (let solution of solutions) {
+      for (const solution of solutions) {
         this.addContentsToIndex(assignment, solution as SolutionDocument);
       }
     }

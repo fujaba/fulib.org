@@ -110,7 +110,7 @@ export class EvaluationService {
   async removeAll(where: FilterQuery<Evaluation>): Promise<EvaluationDocument[]> {
     const evaluations = await this.findAll(where);
     await this.model.deleteMany({_id: {$in: evaluations.map(a => a._id)}}).exec();
-    for (let evaluation of evaluations) {
+    for (const evaluation of evaluations) {
       this.emit('deleted', evaluation);
     }
     return evaluations;
@@ -125,8 +125,8 @@ export class EvaluationService {
         glob: task?.glob,
         wildcard: '***',
       });
-      for (let result of results) {
-        for (let snippet2 of result.snippets) {
+      for (const result of results) {
+        for (const snippet2 of result.snippets) {
           snippet2.comment = snippet.comment;
         }
       }
@@ -134,8 +134,8 @@ export class EvaluationService {
     }));
     const solutionMatches: Record<string, number> = {};
     const solutionSnippets: Record<string, Snippet[]> = {};
-    for (let results of resultsBySnippet) {
-      for (let {solution, snippets} of results) {
+    for (const results of resultsBySnippet) {
+      for (const {solution, snippets} of results) {
         solutionMatches[solution] = (solutionMatches[solution] || 0) + 1;
         (solutionSnippets[solution] ??= []).push(...snippets);
       }
@@ -223,7 +223,7 @@ export class EvaluationService {
       author: 'Code Search',
       codeSearch: {origin: evaluation._id},
     }).exec();
-    for (let solution of solutions) {
+    for (const solution of solutions) {
       this.emit('deleted', solution);
     }
     await this.model.deleteMany({_id: {$in: solutions.map(s => s._id)}});
