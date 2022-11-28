@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {ToastService} from 'ng-bootstrap-ext';
 import Assignment from '../../../model/assignment';
 import {AssignmentService} from '../../../services/assignment.service';
@@ -6,9 +6,9 @@ import {AssignmentService} from '../../../services/assignment.service';
 @Component({
   selector: 'app-assignment-actions',
   templateUrl: './assignment-actions.component.html',
-  styleUrls: ['./assignment-actions.component.scss']
+  styleUrls: ['./assignment-actions.component.scss'],
 })
-export class AssignmentActionsComponent implements OnInit {
+export class AssignmentActionsComponent {
   @Input() assignment: Assignment;
   @Output() removed = new EventEmitter<void>();
 
@@ -16,9 +16,6 @@ export class AssignmentActionsComponent implements OnInit {
     private assignmentService: AssignmentService,
     private toastService: ToastService,
   ) {
-  }
-
-  ngOnInit(): void {
   }
 
   archive() {

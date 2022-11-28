@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {ToastService} from 'ng-bootstrap-ext';
 import {Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
@@ -10,7 +10,7 @@ import {SolutionService} from '../../../services/solution.service';
   templateUrl: './assignee-input.component.html',
   styleUrls: ['./assignee-input.component.scss'],
 })
-export class AssigneeInputComponent implements OnInit {
+export class AssigneeInputComponent {
   @Input() assignment: string;
   @Input() solution: string;
   @Input() assignee: string = '';
@@ -32,9 +32,6 @@ export class AssigneeInputComponent implements OnInit {
     private solutionService: SolutionService,
     private toastService: ToastService,
   ) {
-  }
-
-  ngOnInit(): void {
   }
 
   save(): void {
