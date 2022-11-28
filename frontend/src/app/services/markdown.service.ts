@@ -9,6 +9,7 @@ export class MarkdownService {
   private readonly parser = new MarkdownIt({
     linkify: true,
     html: true,
+    langPrefix: 'language-',
   });
 
   renderMarkdown(md: string, options: { imageBaseUrl?: string; linkBaseUrl?: string; } = {}): Observable<string> {
@@ -39,7 +40,7 @@ export class MarkdownService {
         token.attrSet('class', 'table table-bordered');
       }
     }
-    const html = this.parser.renderer.render(tokens, {}, {});
+    const html = this.parser.renderer.render(tokens, this.parser.options, {});
     return html;
   }
 }
