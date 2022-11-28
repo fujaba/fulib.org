@@ -1,12 +1,9 @@
-name: CI/CD
+name: Deploy
 
 on:
-  pull_request:
   push:
     branches:
-      - master
       - develop
-      - bugfix
     tags:
       - v*
 
@@ -38,22 +35,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Set up pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 7
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-          cache: 'pnpm'
-          cache-dependency-path: frontend/pnpm-lock.yaml
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-      - name: Build Angular
-        run: pnpm build
       - name: Build the Docker Image
-        if: needs.deployment.outputs.namespace
         uses: whoan/docker-build-with-cache-action@v5
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -63,7 +45,6 @@ jobs:
           image_tag: ${{ needs.deployment.outputs.version }}
           context: frontend/
       - name: Deploy to Rancher
-        if: needs.deployment.outputs.namespace
         uses: sekassel-research/actions-rancher-update@2.0.2
         with:
           rancher_url: ${{ secrets.RANCHER_URL }}
@@ -92,7 +73,6 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew :backend:build && ./gradlew --stop
       - name: Build the Backend Docker Image
-        if: needs.deployment.outputs.namespace
         uses: whoan/docker-build-with-cache-action@v5
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -102,7 +82,6 @@ jobs:
           image_tag: ${{ needs.deployment.outputs.version }}
           context: backend/
       - name: Deploy the Backend to Rancher
-        if: needs.deployment.outputs.namespace
         uses: sekassel-research/actions-rancher-update@2.0.2
         with:
           rancher_url: ${{ secrets.RANCHER_URL }}
@@ -134,7 +113,6 @@ jobs:
           context: services/
           push_image_and_stages: ${{ !!needs.deployment.outputs.namespace }}
       - name: Deploy to Rancher
-        if: needs.deployment.outputs.namespace
         uses: sekassel-research/actions-rancher-update@2.0.2
         with:
           rancher_url: ${{ secrets.RANCHER_URL }}
@@ -166,7 +144,6 @@ jobs:
           context: services/
           push_image_and_stages: ${{ !!needs.deployment.outputs.namespace }}
       - name: Deploy to Rancher
-        if: needs.deployment.outputs.namespace
         uses: sekassel-research/actions-rancher-update@2.0.2
         with:
           rancher_url: ${{ secrets.RANCHER_URL }}
@@ -180,7 +157,6 @@ jobs:
     name: Projects Images
     runs-on: ubuntu-latest
     needs: [ deployment ]
-    if: needs.deployment.outputs.namespace
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -207,7 +183,6 @@ jobs:
     name: Projects Proxy
     runs-on: ubuntu-latest
     needs: [ deployment ]
-    if: needs.deployment.outputs.namespace
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -226,7 +201,6 @@ jobs:
     name: Projects Runtime
     runs-on: ubuntu-latest
     needs: [ deployment ]
-    if: needs.deployment.outputs.namespace
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -245,7 +219,6 @@ jobs:
     name: Projects Deployment
     runs-on: ubuntu-latest
     needs: [ deployment, projects-images, projects-proxy, projects-runtime ]
-    if: needs.deployment.outputs.namespace
     steps:
       - name: Deploy the Projects Runtime to Rancher
         uses: sekassel-research/actions-rancher-update@2.0.2
