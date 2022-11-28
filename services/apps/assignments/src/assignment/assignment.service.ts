@@ -7,7 +7,7 @@ import {FilterQuery, Model, UpdateQuery} from 'mongoose';
 import {environment} from '../environment';
 import {CreateEvaluationDto} from '../evaluation/evaluation.dto';
 import {generateToken, idFilter} from '../utils';
-import {CreateAssignmentDto, ReadAssignmentDto, UpdateAssignmentDto} from './assignment.dto';
+import {CreateAssignmentDto, ReadAssignmentDto, ReadTaskDto, UpdateAssignmentDto} from './assignment.dto';
 import {Assignment, AssignmentDocument, Task} from './assignment.schema';
 
 @Injectable()
@@ -90,7 +90,8 @@ export class AssignmentService {
   }
 
   async findAll(where: FilterQuery<Assignment> = {}): Promise<ReadAssignmentDto[]> {
-    return this.model.find(where).select(['-token', '-solution', '-tasks.verification']).sort({title: 1}).exec();
+    const assignments = await this.model.find(where).sort({title: 1}).exec();
+    return assignments.map(a => this.mask(a.toObject()));
   }
 
   async findOne(id: string): Promise<AssignmentDocument | null> {
@@ -101,8 +102,16 @@ export class AssignmentService {
     const {token, solution, tasks, ...rest} = assignment;
     return {
       ...rest,
-      tasks: assignment.tasks.map(({verification, ...rest}) => rest),
-    } as ReadAssignmentDto;
+      tasks: assignment.tasks.map(t => this.maskTask(t)),
+    };
+  }
+
+  private maskTask(task: Task): ReadTaskDto {
+    const {verification, note, children, ...rest} = task;
+    return {
+      ...rest,
+      children: children.map(t => this.maskTask(t)),
+    };
   }
 
   async update(id: string, dto: UpdateAssignmentDto): Promise<Assignment | null> {

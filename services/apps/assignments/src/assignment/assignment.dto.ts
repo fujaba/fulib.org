@@ -10,7 +10,9 @@ export class CreateAssignmentDto extends OmitType(Assignment, [
 ] as const) {
 }
 
-export class ReadTaskDto extends OmitType(Task, ['verification', 'note'] as const) {
+export class ReadTaskDto extends OmitType(Task, ['verification', 'note', 'children'] as const) {
+  @ApiProperty()
+  children: ReadTaskDto[];
 }
 
 export class ReadAssignmentDto extends OmitType(Assignment, ['token', 'solution', 'tasks'] as const) {
