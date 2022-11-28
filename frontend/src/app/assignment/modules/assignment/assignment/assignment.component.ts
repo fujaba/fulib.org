@@ -4,7 +4,7 @@ import {combineLatest} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import Assignment from '../../../model/assignment';
 import {AssignmentService} from '../../../services/assignment.service';
-import {assignmentChildRoutes} from '../assignment-routing.module';
+import {assignmentChildRoutes} from '../assignment-routes';
 
 @Component({
   selector: 'app-assignment',
