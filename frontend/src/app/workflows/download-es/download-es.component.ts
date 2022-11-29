@@ -59,7 +59,9 @@ export class DownloadESComponent implements OnInit {
   }
 
   download() {
-    if (this.yamlContent) {
+    if (!this.privacyService.allowLocalStorage) {
+      this.toastService.error('Could not download files', 'Please allow the use of local data storage in your Privacy Preferences.');
+    } else if (this.yamlContent) {
       this.workflowsService.downloadZip(this.yamlContent, this.exportOptions);
     } else {
       this.toastService.error('Download Files', 'Editor Content does not exist');
