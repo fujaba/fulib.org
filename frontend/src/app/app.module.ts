@@ -57,7 +57,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
     HomeComponent,
   ],
   imports: [
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: 'serverApp' }),
     FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
