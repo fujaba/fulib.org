@@ -1,11 +1,15 @@
 #!/bin/sh
-dockerd --host tcp://0.0.0.0:2376 --tls=false || exit &
-export DOCKER_HOST=localhost:2376
-
-# wait for docker
-while ! docker info > /dev/null 2>&1; do
+wait_for_docker() {
+	for _ in $(seq 1 20); do
+		docker info >/dev/null 2>&1 && return 0
 		sleep 1
-done
+	done
+	return 1
+}
+
+dockerd --host tcp://0.0.0.0:2376 --tls=false || exit 1 &
+export DOCKER_HOST=localhost:2376
+wait_for_docker || exit 1
 
 docker network create "$FULIB_PROJECTS_NETWORK"
 
