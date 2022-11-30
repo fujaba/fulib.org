@@ -20,7 +20,7 @@
     <button type="button" class="btn btn-secondary" (click)="modal.close()">
       Cancel
     </button>
-    <button type="button" class="btn btn-primary" (click)="generate(modal)">
+    <button type="button" class="btn btn-primary" [disabled]="generating" (click)="generate(modal)">
       {{ generating ? 'Generating...' : 'Generate' }}
     </button>
   </ng-container>
