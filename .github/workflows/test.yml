@@ -26,7 +26,11 @@ jobs:
           cache-dependency-path: frontend/pnpm-lock.yaml
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Test Angular
+      - name: Audit
+        run: pnpm audit
+      - name: Lint
+        run: pnpm lint
+      - name: Test
         run: pnpm test:ci
   backend:
     name: Backend
@@ -66,5 +70,9 @@ jobs:
           cache-dependency-path: services/pnpm-lock.yaml
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Test Services
+      - name: Audit
+        run: pnpm audit
+      - name: Lint
+        run: pnpm lint
+      - name: Test
         run: pnpm test
