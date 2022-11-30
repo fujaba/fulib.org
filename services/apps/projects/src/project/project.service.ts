@@ -49,7 +49,8 @@ export class ProjectService {
 
   private removeStorage(id: string) {
     for (let type of storageTypes) {
-      fs.promises.rm(this.getStoragePath(type, id), {recursive: true}).catch(() => {
+      fs.promises.rm(this.getStoragePath(type, id), {recursive: true}).catch(e => {
+        console.error(`Failed to remove project '${id}' storage '${type}': ${e.message}`);
       });
     }
   }
