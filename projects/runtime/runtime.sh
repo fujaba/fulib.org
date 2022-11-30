@@ -17,5 +17,5 @@ for tag in $(jq -r '.[].tag' <images.json); do
 	docker pull "$tag" &
 done
 
-docker pull "$DOCKER_PROJECTS_PROXY_IMAGE" && docker run -p 8080:80 --network="$FULIB_PROJECTS_NETWORK" "$FULIB_PROJECTS_PROXY_IMAGE" &
+docker pull "$FULIB_PROJECTS_PROXY_IMAGE" && docker run -p 8080:80 --network="$FULIB_PROJECTS_NETWORK" "$FULIB_PROJECTS_PROXY_IMAGE" &
 wait
