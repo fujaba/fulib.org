@@ -1,11 +1,15 @@
 import {UserToken} from '@app/keycloak-auth';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
+import * as fs from 'fs';
 import {FilterQuery, Model} from 'mongoose';
-import path from 'path';
+import * as path from 'path';
 import {environment} from '../environment';
 import {CreateProjectDto, UpdateProjectDto} from './project.dto';
 import {Project, ProjectDocument} from './project.schema';
+
+const storageTypes = ['projects', 'config'] as const;
+const bindPrefix = path.resolve(environment.docker.bindPrefix);
 
 @Injectable()
 export class ProjectService {
@@ -36,15 +40,25 @@ export class ProjectService {
   }
 
   async remove(id: string): Promise<ProjectDocument | null> {
-    return this.model.findByIdAndDelete(id).exec();
+    const project = await this.model.findByIdAndDelete(id).exec();
+    if (project) {
+      this.removeStorage(id);
+    }
+    return project;
+  }
+
+  private removeStorage(id: string) {
+    for (let type of storageTypes) {
+      fs.promises.rm(this.getStoragePath(type, id), {recursive: true}).catch(() => {
+      });
+    }
   }
 
   isAuthorized(project: Project, user: UserToken) {
     return project.userId === user.sub;
   }
 
-  getStoragePath(type: string, projectId: string): string {
-    const bindPrefix = path.resolve(environment.docker.bindPrefix);
+  getStoragePath(type: (typeof storageTypes)[number], projectId: string): string {
     return `${bindPrefix}/${type}/${this.idBin(projectId)}/${projectId}/`;
   }
 
