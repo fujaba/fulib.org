@@ -12,5 +12,6 @@ RUN sudo apt-get update -y \
     && sudo apt-get clean
 
 RUN code-server --install-extension redhat.java
+RUN code-server --install-extension richardwillis.vscode-gradle
 
 COPY --from=preload --chown=coder /root/.gradle /home/coder/.gradle
