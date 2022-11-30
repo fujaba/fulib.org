@@ -1,13 +1,14 @@
 import {HttpService} from '@nestjs/axios';
 import {Injectable} from '@nestjs/common';
 import {Cron, CronExpression} from '@nestjs/schedule';
-import * as AdmZip from 'adm-zip';
 import {randomBytes} from 'crypto';
 import * as Dockerode from 'dockerode';
 import * as fs from 'fs';
 import * as path from 'path';
 import {firstValueFrom} from 'rxjs';
+import {Readable} from 'stream';
 import {setTimeout} from 'timers/promises';
+import {Extract} from 'unzipper';
 import {environment} from '../environment';
 import {ProjectService} from '../project/project.service';
 import {ContainerDto} from './container.dto';
@@ -26,7 +27,7 @@ export class ContainerService {
   constructor(
     private readonly httpService: HttpService,
     private readonly projectService: ProjectService,
-    ) {
+  ) {
   }
 
   @Cron(CronExpression.EVERY_5_MINUTES)
@@ -253,9 +254,12 @@ export class ContainerService {
     }
   }
 
-  async unzip(projectId: string, zip: Express.Multer.File): Promise<void> {
-    const admZip = new AdmZip(zip.buffer);
-    admZip.extractAllTo(this.projectService.getStoragePath('projects', projectId), true);
+  unzip(projectId: string, zip: Express.Multer.File): Promise<void> {
+    const storagePath = this.projectService.getStoragePath('projects', projectId);
+    const stream = new Readable();
+    stream.push(zip.buffer);
+    stream.push(null);
+    return stream.pipe(Extract({path: storagePath})).promise();
   }
 
   private containerUrl(id: string): string {
