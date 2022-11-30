@@ -30,10 +30,6 @@ public class ProjectZipControllerTest
 		"gradle/wrapper/gradle-wrapper.properties",
 		"src/gen/java/org/example/MyDecorator.java",
 		"src/main/scenarios/org/example/Scenario.md",
-		".fulib/launch/shell.json",
-		".fulib/launch/gradle-build.json",
-		".fulib/launch/continuous-compile.json",
-		".fulib/launch/continuous-test.json",
 	};
 
 	@Test
