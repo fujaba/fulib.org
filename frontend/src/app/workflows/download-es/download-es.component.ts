@@ -1,18 +1,17 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-
-import {ToastService} from 'ng-bootstrap-ext';
-import {ExportOptions} from '../model/ExportOptions';
 import {PrivacyService} from '../../services/privacy.service';
+import {ExportOptions} from '../model/ExportOptions';
 import {WorkflowsService} from '../workflows.service';
 
 @Component({
   selector: 'app-download-es',
   templateUrl: './download-es.component.html',
-  styleUrls: ['./download-es.component.scss']
+  styleUrls: ['./download-es.component.scss'],
 })
 export class DownloadESComponent implements OnInit {
-  private yamlContent!: string | null;
+  yamlContent?: string | null;
+  localStorageAllowed = this.privacyService.allowLocalStorage;
 
   exportOptions: ExportOptions = {
     yaml: false,
@@ -27,7 +26,6 @@ export class DownloadESComponent implements OnInit {
     public route: ActivatedRoute,
     private workflowsService: WorkflowsService,
     private privacyService: PrivacyService,
-    private toastService: ToastService,
   ) {
   }
 
@@ -59,12 +57,8 @@ export class DownloadESComponent implements OnInit {
   }
 
   download() {
-    if (!this.privacyService.allowLocalStorage) {
-      this.toastService.error('Could not download files', 'Please allow the use of local data storage in your Privacy Preferences.');
-    } else if (this.yamlContent) {
+    if (this.yamlContent) {
       this.workflowsService.downloadZip(this.yamlContent, this.exportOptions);
-    } else {
-      this.toastService.error('Download Files', 'Editor Content does not exist');
     }
   }
 }

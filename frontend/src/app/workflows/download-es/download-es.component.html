@@ -3,6 +3,16 @@
     Configure and Download
   </ng-container>
   <ng-container modal-body>
+    <div *ngIf="!yamlContent" class="alert alert-danger">
+      Cannot download files.
+      <ng-container *ngIf="!localStorageAllowed else emptyEditor">
+        Please allow the use of local data storage in your
+        <a [routerLink]="[{outlets: {modal: 'privacy'}}]" [relativeTo]="route.root">Privacy Preferences</a>.
+      </ng-container>
+      <ng-template #emptyEditor>
+        Editor content is empty.
+      </ng-template>
+    </div>
     <div class="col">
       <div class="mb-3 form-check">
         <input type="checkbox" class="form-check-input" id="yamlCheck" [(ngModel)]="exportOptions.yaml">
@@ -38,7 +48,7 @@
     <button type="button" class="btn btn-secondary" (click)="modal.close()">
       Cancel
     </button>
-    <button type="button" class="btn btn-primary" (click)="download(); modal.close()">
+    <button type="button" class="btn btn-primary" [disabled]="!yamlContent" (click)="download(); modal.close()">
       Download
     </button>
   </ng-container>
