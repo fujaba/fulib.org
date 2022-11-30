@@ -2,6 +2,8 @@ import {UserToken} from '@app/keycloak-auth';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model} from 'mongoose';
+import path from 'path';
+import {environment} from '../environment';
 import {CreateProjectDto, UpdateProjectDto} from './project.dto';
 import {Project, ProjectDocument} from './project.schema';
 
@@ -39,5 +41,14 @@ export class ProjectService {
 
   isAuthorized(project: Project, user: UserToken) {
     return project.userId === user.sub;
+  }
+
+  getStoragePath(type: string, projectId: string): string {
+    const bindPrefix = path.resolve(environment.docker.bindPrefix);
+    return `${bindPrefix}/${type}/${this.idBin(projectId)}/${projectId}/`;
+  }
+
+  private idBin(projectId: string) {
+    return projectId.slice(-2); // last 2 hex chars
   }
 }

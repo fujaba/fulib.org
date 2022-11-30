@@ -9,6 +9,7 @@ import * as path from 'path';
 import {firstValueFrom} from 'rxjs';
 import {setTimeout} from 'timers/promises';
 import {environment} from '../environment';
+import {ProjectService} from '../project/project.service';
 import {ContainerDto} from './container.dto';
 
 const CODE_WORKSPACE = '/home/coder/project';
@@ -22,7 +23,10 @@ export class ContainerService {
     version: environment.docker.version,
   });
 
-  constructor(private readonly httpService: HttpService) {
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly projectService: ProjectService,
+    ) {
   }
 
   @Cron(CronExpression.EVERY_5_MINUTES)
@@ -35,8 +39,8 @@ export class ContainerService {
   }
 
   async start(projectId: string, image?: string): Promise<ContainerDto> {
-    const projectPath = this.projectPath('projects', projectId);
-    const configPath = this.projectPath('config', projectId);
+    const projectPath = this.projectService.getStoragePath('projects', projectId);
+    const configPath = this.projectService.getStoragePath('config', projectId);
     const token = randomBytes(12).toString('base64');
 
     /* create 'settings.json' files if they don't exist already
@@ -127,7 +131,7 @@ export class ContainerService {
     const container = this.docker.getContainer(existing.id);
 
     const stream = await this.containerExec(container, ['code-server', '--list-extensions']);
-    const extensionsList = `${this.projectPath('config', projectId)}/User/extensions.txt`;
+    const extensionsList = `${this.projectService.getStoragePath('config', projectId)}/User/extensions.txt`;
     const writeStream = fs.createWriteStream(extensionsList);
     stream.pipe(writeStream);
 
@@ -209,7 +213,7 @@ export class ContainerService {
 
 
   private async installExtensions(container: Dockerode.Container, projectId: string) {
-    const extensionsListPath = `${this.projectPath('config', projectId)}/User/extensions.txt`;
+    const extensionsListPath = `${this.projectService.getStoragePath('config', projectId)}/User/extensions.txt`;
 
     const fileBuffer = await fs.promises.readFile(extensionsListPath).catch(async () => {
       //create extensions.txt if not exists
@@ -251,12 +255,7 @@ export class ContainerService {
 
   async unzip(projectId: string, zip: Express.Multer.File): Promise<void> {
     const admZip = new AdmZip(zip.buffer);
-    admZip.extractAllTo(this.projectPath('projects', projectId), true);
-  }
-
-  private projectPath(type: string, projectId: string): string {
-    const bindPrefix = path.resolve(environment.docker.bindPrefix);
-    return `${bindPrefix}/${type}/${this.idBin(projectId)}/${projectId}/`;
+    admZip.extractAllTo(this.projectService.getStoragePath('projects', projectId), true);
   }
 
   private containerUrl(id: string): string {
@@ -266,9 +265,5 @@ export class ContainerService {
   private vncURL(id: string): string {
     const suffix = `containers-vnc/${id.substring(0, 12)}`;
     return `${environment.docker.proxyHost}/${suffix}/vnc_lite.html?path=${suffix}&resize=remote`;
-  }
-
-  private idBin(projectId: string) {
-    return projectId.slice(-2); // last 2 hex chars
   }
 }
