@@ -141,7 +141,7 @@ export class ContainerService {
       id,
       projectId,
       token,
-      url: `${this.containerUrl(id)}/?folder=${CODE_WORKSPACE}`,
+      url: `${this.containerUrl(id)}/?folder=${CODE_WORKSPACE}&ngsw-bypass`,
       vncUrl: this.vncURL(id),
       isNew: false,
     };
