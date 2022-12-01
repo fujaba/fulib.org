@@ -134,24 +134,18 @@ export class ContainerService {
   private async installExtensions(container: Dockerode.Container, projectId: string) {
     const extensionsListPath = `${this.projectService.getStoragePath('config', projectId)}/extensions.txt`;
 
-    const fileBuffer = await fs.promises.readFile(extensionsListPath).catch(async () => {
-      //create extensions.txt if not exists
-      await fs.promises.writeFile(extensionsListPath, '');
-    });
-
-    if (fileBuffer) {
-      const fileText = fileBuffer.toString('utf-8');
-      const array = fileText.split(/\r?\n/);
-      for (let i = 0; i < array.length; ++i) {
-        array[i] = array[i].replace(/[^\w\d\s\\.\-]/g, '');
-        array[i] = array[i].trim();
-      }
-      const cleanArr = array.filter(Boolean);
-      for (let i = 0; i < cleanArr.length; ++i) {
-        const stream = await this.containerExec(container, ['code-server', '--install-extension', cleanArr[i]]);
-        stream.pipe(process.stdout);
-      }
+    const fileBuffer = await fs.promises.readFile(extensionsListPath).catch(() => '');
+    if (!fileBuffer) {
+      return;
     }
+
+    const fileText = fileBuffer.toString('utf-8');
+    await Promise.all(fileText.split(/\r?\n/).map(async line => {
+      const extension = line.replace(/[^\w\d\s\\.\-]/g, '').trim();
+      if (extension) {
+        await this.containerExec(container, ['code-server', '--install-extension', extension]);
+      }
+    }));
   }
 
   private async containerExec(container: Dockerode.Container, command: string[]) {
