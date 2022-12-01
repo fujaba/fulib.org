@@ -1,3 +1,4 @@
+import {UserToken} from '@app/keycloak-auth';
 import {HttpService} from '@nestjs/axios';
 import {Injectable} from '@nestjs/common';
 import {Cron, CronExpression} from '@nestjs/schedule';
@@ -5,7 +6,7 @@ import {randomBytes} from 'crypto';
 import * as Dockerode from 'dockerode';
 import * as fs from 'fs';
 import * as path from 'path';
-import {firstValueFrom} from 'rxjs';
+import {firstValueFrom, map} from 'rxjs';
 import {Readable} from 'stream';
 import {setTimeout} from 'timers/promises';
 import {Extract} from 'unzipper';
@@ -35,11 +36,23 @@ export class ContainerService {
     await this.checkAllHeartbeats();
   }
 
-  async create(projectId: string, image?: string): Promise<ContainerDto> {
-    return await this.findOne(projectId) ?? await this.start(projectId, image);
+  private async getGitHubToken(auth: string): Promise<string | undefined> {
+    const paramName = 'access_token=';
+    return firstValueFrom(this.httpService.get<string>(`${environment.auth.url}/realms/${environment.auth.realm}/broker/github/token`, {
+      responseType: 'text',
+      headers: {
+        Authorization: auth,
+      },
+    }).pipe(
+      map(({data}) => data.split('&').filter(s => s.startsWith(paramName))[0]?.substring(paramName.length)),
+    ));
   }
 
-  async start(projectId: string, image?: string): Promise<ContainerDto> {
+  async create(projectId: string, image?: string, user?: UserToken, auth?: string): Promise<ContainerDto> {
+    return await this.findOne(projectId) ?? await this.start(projectId, image, user, auth);
+  }
+
+  async start(projectId: string, image?: string, user?: UserToken, auth?: string): Promise<ContainerDto> {
     const projectPath = this.projectService.getStoragePath('projects', projectId);
     const configPath = this.projectService.getStoragePath('config', projectId);
     const token = randomBytes(12).toString('base64');
@@ -53,6 +66,7 @@ export class ContainerService {
 
     await this.createFile(`${configPath}/User/settings.json`);
     await this.createFile(`${configPath}/Machine/settings.json`);
+    await this.createFile(`${configPath}/.gitconfig`);
 
     const container = await this.docker.createContainer({
       Image: image || environment.docker.containerImage,
@@ -68,6 +82,7 @@ export class ContainerService {
           `${projectPath}:${CODE_WORKSPACE}`,
           `${configPath}/User/settings.json:/home/coder/.local/share/code-server/User/settings.json`,
           `${configPath}/Machine/settings.json:/home/coder/.local/share/code-server/Machine/settings.json`,
+          `${configPath}/.gitconfig:/home/coder/.gitconfig`,
         ],
       },
       Env: [
@@ -106,7 +121,19 @@ export class ContainerService {
     await this.createFile(p);
     await fs.promises.writeFile(p, containerDto.vncUrl);
 
+    await fs.promises.writeFile(`${configPath}/.gitconfig`, await this.generateGitConfig(user, auth));
+
     return containerDto;
+  }
+
+  private async generateGitConfig(user: UserToken | undefined, auth: string | undefined): Promise<string> {
+    let config = '[user]\n';
+    const name = user?.name || user?.preferred_username;
+    name && (config += `name = ${name}\n`);
+    user?.email && (config += `email = ${user.email}\n`);
+    const token = auth && await this.getGitHubToken(auth);
+    token && (config += `[url "https://${token}@github.com"]\ninsteadOf = https://github.com\n`);
+    return config;
   }
 
   async findOne(projectId: string): Promise<ContainerDto | null> {
