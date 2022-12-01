@@ -8,7 +8,10 @@ import {environment} from '../environment';
 import {CreateProjectDto, UpdateProjectDto} from './project.dto';
 import {Project, ProjectDocument} from './project.schema';
 
-const storageTypes = ['projects', 'config'] as const;
+const projectStorageTypes = ['projects', 'config'] as const;
+type ProjectStorageType = typeof projectStorageTypes[number];
+const userStorageTypes = ['users'] as const;
+type UserStorageType = typeof userStorageTypes[number];
 const bindPrefix = path.resolve(environment.docker.bindPrefix);
 
 @Injectable()
@@ -48,7 +51,7 @@ export class ProjectService {
   }
 
   private removeStorage(id: string) {
-    for (let type of storageTypes) {
+    for (let type of projectStorageTypes) {
       fs.promises.rm(this.getStoragePath(type, id), {recursive: true}).catch(e => {
         console.error(`Failed to remove project '${id}' storage '${type}': ${e.message}`);
       });
@@ -59,7 +62,7 @@ export class ProjectService {
     return project.userId === user.sub;
   }
 
-  getStoragePath(type: (typeof storageTypes)[number], projectId: string): string {
+  getStoragePath(type: ProjectStorageType | UserStorageType, projectId: string): string {
     return `${bindPrefix}/${type}/${this.idBin(projectId)}/${projectId}/`;
   }
 

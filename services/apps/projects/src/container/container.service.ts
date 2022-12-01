@@ -48,13 +48,13 @@ export class ContainerService {
     ));
   }
 
-  async create(projectId: string, image?: string, user?: UserToken, auth?: string): Promise<ContainerDto> {
-    return await this.findOne(projectId) ?? await this.start(projectId, image, user, auth);
+  async create(projectId: string, user: UserToken, auth: string, image?: string): Promise<ContainerDto> {
+    return await this.findOne(projectId, user.sub) ?? await this.start(projectId, user, auth, image);
   }
 
-  async start(projectId: string, image?: string, user?: UserToken, auth?: string): Promise<ContainerDto> {
+  async start(projectId: string, user: UserToken, auth: string, image?: string): Promise<ContainerDto> {
     const projectPath = this.projectService.getStoragePath('projects', projectId);
-    const configPath = this.projectService.getStoragePath('config', projectId);
+    const usersPath = this.projectService.getStoragePath('users', user.sub);
     const token = randomBytes(12).toString('base64');
 
     /* create 'settings.json' files if they don't exist already
@@ -64,9 +64,8 @@ export class ContainerService {
     lead to an error when code server is trying to write on the bind mount
      */
 
-    await this.createFile(`${configPath}/User/settings.json`);
-    await this.createFile(`${configPath}/Machine/settings.json`);
-    await this.createFile(`${configPath}/.gitconfig`);
+    await this.createFile(`${usersPath}/settings.json`);
+    await this.createFile(`${usersPath}/.gitconfig`);
 
     const container = await this.docker.createContainer({
       Image: image || environment.docker.containerImage,
@@ -80,9 +79,8 @@ export class ContainerService {
         AutoRemove: true,
         Binds: [
           `${projectPath}:${CODE_WORKSPACE}`,
-          `${configPath}/User/settings.json:/home/coder/.local/share/code-server/User/settings.json`,
-          `${configPath}/Machine/settings.json:/home/coder/.local/share/code-server/Machine/settings.json`,
-          `${configPath}/.gitconfig:/home/coder/.gitconfig`,
+          `${usersPath}/settings.json:/home/coder/.local/share/code-server/User/settings.json`,
+          `${usersPath}/.gitconfig:/home/coder/.gitconfig`,
         ],
       },
       Env: [
@@ -91,6 +89,7 @@ export class ContainerService {
       ],
       Labels: {
         'org.fulib.project': projectId,
+        'org.fulib.user': user.sub,
         'org.fulib.token': token,
       },
     });
@@ -121,7 +120,7 @@ export class ContainerService {
     await this.createFile(p);
     await fs.promises.writeFile(p, containerDto.vncUrl);
 
-    await fs.promises.writeFile(`${configPath}/.gitconfig`, await this.generateGitConfig(user, auth));
+    await fs.promises.writeFile(`${usersPath}/.gitconfig`, await this.generateGitConfig(user, auth));
 
     return containerDto;
   }
@@ -136,13 +135,13 @@ export class ContainerService {
     return config;
   }
 
-  async findOne(projectId: string): Promise<ContainerDto | null> {
+  async findOne(projectId: string, userId: string): Promise<ContainerDto | null> {
     const containers = await this.docker.listContainers({
       all: 1,
       limit: 1,
       filters: {
         status: ['created', 'running'],
-        label: [`org.fulib.project=${projectId}`],
+        label: [`org.fulib.project=${projectId}`, `org.fulib.user=${userId}`],
       },
     });
     if (containers.length === 0) {
@@ -151,15 +150,15 @@ export class ContainerService {
     return this.toContainer(containers[0].Id, projectId, containers[0].Labels['org.fulib.token']);
   }
 
-  async remove(projectId: string): Promise<ContainerDto | null> {
-    const existing = await this.findOne(projectId);
+  async remove(projectId: string, userId: string): Promise<ContainerDto | null> {
+    const existing = await this.findOne(projectId, userId);
     if (!existing) {
       return null;
     }
     const container = this.docker.getContainer(existing.id);
 
     const stream = await this.containerExec(container, ['code-server', '--list-extensions']);
-    const extensionsList = `${this.projectService.getStoragePath('config', projectId)}/User/extensions.txt`;
+    const extensionsList = `${this.projectService.getStoragePath('config', projectId)}/extensions.txt`;
     const writeStream = fs.createWriteStream(extensionsList);
     stream.pipe(writeStream);
 
@@ -189,10 +188,8 @@ export class ContainerService {
 
     for (let i = 0; i < containers.length; i++) {
       const container = containers[i];
-      const projectId = container['Labels']['org.fulib.project'];
-
       this.isHeartbeatExpired(container.Id).then(expired => {
-        expired && this.remove(projectId);
+        expired && this.remove(container.Labels['org.fulib.project'], container.Labels['org.fulib.user']);
       });
     }
 
@@ -241,7 +238,7 @@ export class ContainerService {
 
 
   private async installExtensions(container: Dockerode.Container, projectId: string) {
-    const extensionsListPath = `${this.projectService.getStoragePath('config', projectId)}/User/extensions.txt`;
+    const extensionsListPath = `${this.projectService.getStoragePath('config', projectId)}/extensions.txt`;
 
     const fileBuffer = await fs.promises.readFile(extensionsListPath).catch(async () => {
       //create extensions.txt if not exists
