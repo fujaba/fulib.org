@@ -31,23 +31,6 @@ export class ContainerService {
   ) {
   }
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
-  async handleCron() {
-    await this.checkAllHeartbeats();
-  }
-
-  private async getGitHubToken(auth: string): Promise<string | undefined> {
-    const paramName = 'access_token=';
-    return firstValueFrom(this.httpService.get<string>(`${environment.auth.url}/realms/${environment.auth.realm}/broker/github/token`, {
-      responseType: 'text',
-      headers: {
-        Authorization: auth,
-      },
-    }).pipe(
-      map(({data}) => data.split('&').filter(s => s.startsWith(paramName))[0]?.substring(paramName.length)),
-    ));
-  }
-
   async create(projectId: string, user: UserToken, auth: string, image?: string): Promise<ContainerDto> {
     return await this.findOne(projectId, user.sub) ?? await this.start(projectId, user, auth, image);
   }
@@ -64,8 +47,8 @@ export class ContainerService {
     lead to an error when code server is trying to write on the bind mount
      */
 
-    await this.createFile(`${usersPath}/settings.json`);
-    await this.createFile(`${usersPath}/.gitconfig`, async () => await this.generateGitConfig(user, auth));
+    await createFile(`${usersPath}/settings.json`);
+    await createFile(`${usersPath}/.gitconfig`, async () => await this.generateGitConfig(user, auth));
 
     const container = await this.docker.createContainer({
       Image: image || environment.docker.containerImage,
@@ -99,26 +82,9 @@ export class ContainerService {
     this.installExtensions(container, projectId);
 
     const containerDto = this.toContainer(container.id, token, projectId);
-    const containerURL = containerDto.url;
-    let retries = 0;
-    while (!(await this.isContainerReady(containerURL)) && (retries <= 10)) {
-      await setTimeout(400);
-      retries++;
-      if (retries >= 11) {
-        console.log('timeout: couldn\'t reach vs code UI after 4 seconds. Maybe try a reload.');
-      }
-    }
-
-    const files = await fs.promises.readdir(projectPath).catch(() => []);
-    if (!files.length) {
-      containerDto.isNew = true;
-    }
-
-    // write vnc url in a file (the vnc extension will read the file)
-    // TODO maybe there is a more elegant way for passing the vnc url into the extension ?
-    const p = `${projectPath}/.vnc/vncUrl`;
-    await this.createFile(p);
-    await fs.promises.writeFile(p, containerDto.vncUrl);
+    await this.waitForContainer(containerDto);
+    await this.checkIsNew(projectPath, containerDto);
+    await this.writeVncUrl(projectPath, containerDto);
 
     return containerDto;
   }
@@ -131,6 +97,112 @@ export class ContainerService {
     const token = auth && await this.getGitHubToken(auth);
     token && (config += `[url "https://${token}@github.com"]\ninsteadOf = https://github.com\n`);
     return config;
+  }
+
+  private async getGitHubToken(auth: string): Promise<string | undefined> {
+    const paramName = 'access_token=';
+    return firstValueFrom(this.httpService.get<string>(`${environment.auth.url}/realms/${environment.auth.realm}/broker/github/token`, {
+      responseType: 'text',
+      headers: {
+        Authorization: auth,
+      },
+    }).pipe(
+      map(({data}) => data.split('&').filter(s => s.startsWith(paramName))[0]?.substring(paramName.length)),
+    ));
+  }
+
+  private toContainer(id: string, projectId: string, token: string): ContainerDto {
+    return {
+      id,
+      projectId,
+      token,
+      url: `${this.containerUrl(id)}/?folder=${CODE_WORKSPACE}&ngsw-bypass`,
+      vncUrl: this.vncURL(id),
+      isNew: false,
+    };
+  }
+
+  private containerUrl(id: string): string {
+    return `${environment.docker.proxyHost}/containers/${id.substring(0, 12)}`;
+  }
+
+  private vncURL(id: string): string {
+    const suffix = `containers-vnc/${id.substring(0, 12)}`;
+    return `${environment.docker.proxyHost}/${suffix}/vnc_lite.html?path=${suffix}&resize=remote`;
+  }
+
+  private async installExtensions(container: Dockerode.Container, projectId: string) {
+    const extensionsListPath = `${this.projectService.getStoragePath('config', projectId)}/extensions.txt`;
+
+    const fileBuffer = await fs.promises.readFile(extensionsListPath).catch(async () => {
+      //create extensions.txt if not exists
+      await fs.promises.writeFile(extensionsListPath, '');
+    });
+
+    if (fileBuffer) {
+      const fileText = fileBuffer.toString('utf-8');
+      const array = fileText.split(/\r?\n/);
+      for (let i = 0; i < array.length; ++i) {
+        array[i] = array[i].replace(/[^\w\d\s\\.\-]/g, '');
+        array[i] = array[i].trim();
+      }
+      const cleanArr = array.filter(Boolean);
+      for (let i = 0; i < cleanArr.length; ++i) {
+        const stream = await this.containerExec(container, ['code-server', '--install-extension', cleanArr[i]]);
+        stream.pipe(process.stdout);
+      }
+    }
+  }
+
+  private async containerExec(container: Dockerode.Container, command: string[]) {
+
+    const exec = await container.exec({
+      Cmd: command,
+      AttachStderr: true,
+      AttachStdout: true,
+      AttachStdin: true,
+      Tty: true,
+    });
+
+    const stream = await exec.start({stdin: true});
+    await streamOnEndWorkaround(exec, stream);
+    return stream;
+  }
+
+  private async writeVncUrl(projectPath: string, containerDto: ContainerDto) {
+    // TODO maybe there is a more elegant way for passing the vnc url into the extension ?
+    const p = `${projectPath}/.vnc/vncUrl`;
+    await createFile(p);
+    await fs.promises.writeFile(p, containerDto.vncUrl);
+  }
+
+  private async checkIsNew(projectPath: string, containerDto: ContainerDto) {
+    const files = await fs.promises.readdir(projectPath).catch(() => []);
+    if (!files.length) {
+      containerDto.isNew = true;
+    }
+  }
+
+  private async waitForContainer(containerDto: ContainerDto) {
+    const containerURL = containerDto.url;
+    let retries = 0;
+    while (!(await this.isContainerReady(containerURL)) && (retries <= 10)) {
+      await setTimeout(400);
+      retries++;
+      if (retries >= 11) {
+        console.log('timeout: couldn\'t reach vs code UI after 4 seconds. Maybe try a reload.');
+      }
+    }
+  }
+
+  private async isContainerReady(containerURL: string): Promise<boolean> {
+    try {
+      const res = await firstValueFrom(this.httpService.get(containerURL));
+      return res.status == 200;
+    } catch (e) {
+      // 502 Bad Gateway
+      return false;
+    }
   }
 
   async findOne(projectId: string, userId: string): Promise<ContainerDto | null> {
@@ -164,19 +236,8 @@ export class ContainerService {
     return existing;
   }
 
-
-  private toContainer(id: string, projectId: string, token: string): ContainerDto {
-    return {
-      id,
-      projectId,
-      token,
-      url: `${this.containerUrl(id)}/?folder=${CODE_WORKSPACE}&ngsw-bypass`,
-      vncUrl: this.vncURL(id),
-      isNew: false,
-    };
-  }
-
-  private async checkAllHeartbeats() {
+  @Cron(CronExpression.EVERY_5_MINUTES)
+  async checkAllHeartbeats() {
     const containers = await this.docker.listContainers({
       filters: {
         label: [`org.fulib.project`],
@@ -204,78 +265,6 @@ export class ContainerService {
     }
   }
 
-  //executes command in container and returns the output stream
-  private async containerExec(container: Dockerode.Container, command: string[]) {
-
-    const exec = await container.exec({
-      Cmd: command,
-      AttachStderr: true,
-      AttachStdout: true,
-      AttachStdin: true,
-      Tty: true,
-    });
-
-    const stream = await exec.start({stdin: true});
-    await this.streamOnEndWorkaround(exec, stream);
-    return stream;
-  }
-
-  /** https://github.com/apocas/dockerode/issues/534 stream.on("end", resolve) workaround */
-  private streamOnEndWorkaround(exec: Dockerode.Exec, stream: any): Promise<void> {
-    return new Promise<void>((resolve) => {
-      const timer = setInterval(async () => {
-        const r = await exec.inspect();
-        if (!r.Running) {
-          clearInterval(timer);
-          stream.destroy();
-          resolve();
-        }
-      }, 1e3);
-    });
-  }
-
-
-  private async installExtensions(container: Dockerode.Container, projectId: string) {
-    const extensionsListPath = `${this.projectService.getStoragePath('config', projectId)}/extensions.txt`;
-
-    const fileBuffer = await fs.promises.readFile(extensionsListPath).catch(async () => {
-      //create extensions.txt if not exists
-      await fs.promises.writeFile(extensionsListPath, '');
-    });
-
-    if (fileBuffer) {
-      const fileText = fileBuffer.toString('utf-8');
-      const array = fileText.split(/\r?\n/);
-      for (let i = 0; i < array.length; ++i) {
-        array[i] = array[i].replace(/[^\w\d\s\\.\-]/g, '');
-        array[i] = array[i].trim();
-      }
-      const cleanArr = array.filter(Boolean);
-      for (let i = 0; i < cleanArr.length; ++i) {
-        const stream = await this.containerExec(container, ['code-server', '--install-extension', cleanArr[i]]);
-        stream.pipe(process.stdout);
-      }
-    }
-  }
-
-  /** creates file with given path only when the file doesn't exist */
-  private async createFile(p: string, content: () => string | Promise<string> = () => '') {
-    await fs.promises.readFile(p).catch(async () => {
-      await fs.promises.mkdir(path.dirname(p), {recursive: true});
-      await fs.promises.writeFile(p, await content());
-    });
-  }
-
-  private async isContainerReady(containerURL: string): Promise<boolean> {
-    try {
-      const res = await firstValueFrom(this.httpService.get(containerURL));
-      return res.status == 200;
-    } catch (e) {
-      // 502 Bad Gateway
-      return false;
-    }
-  }
-
   unzip(projectId: string, zip: Express.Multer.File): Promise<void> {
     const storagePath = this.projectService.getStoragePath('projects', projectId);
     const stream = new Readable();
@@ -283,13 +272,26 @@ export class ContainerService {
     stream.push(null);
     return stream.pipe(Extract({path: storagePath})).promise();
   }
+}
 
-  private containerUrl(id: string): string {
-    return `${environment.docker.proxyHost}/containers/${id.substring(0, 12)}`;
-  }
+/** https://github.com/apocas/dockerode/issues/534 stream.on("end", resolve) workaround */
+function streamOnEndWorkaround(exec: Dockerode.Exec, stream: any): Promise<void> {
+  return new Promise<void>((resolve) => {
+    const timer = setInterval(async () => {
+      const r = await exec.inspect();
+      if (!r.Running) {
+        clearInterval(timer);
+        stream.destroy();
+        resolve();
+      }
+    }, 1e3);
+  });
+}
 
-  private vncURL(id: string): string {
-    const suffix = `containers-vnc/${id.substring(0, 12)}`;
-    return `${environment.docker.proxyHost}/${suffix}/vnc_lite.html?path=${suffix}&resize=remote`;
-  }
+/** creates file with given path only when the file doesn't exist */
+async function createFile(p: string, content: () => string | Promise<string> = () => '') {
+  await fs.promises.readFile(p).catch(async () => {
+    await fs.promises.mkdir(path.dirname(p), {recursive: true});
+    await fs.promises.writeFile(p, await content());
+  });
 }
