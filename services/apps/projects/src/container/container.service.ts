@@ -65,7 +65,7 @@ export class ContainerService {
      */
 
     await this.createFile(`${usersPath}/settings.json`);
-    await this.createFile(`${usersPath}/.gitconfig`);
+    await this.createFile(`${usersPath}/.gitconfig`, async () => await this.generateGitConfig(user, auth));
 
     const container = await this.docker.createContainer({
       Image: image || environment.docker.containerImage,
@@ -119,8 +119,6 @@ export class ContainerService {
     const p = `${projectPath}/.vnc/vncUrl`;
     await this.createFile(p);
     await fs.promises.writeFile(p, containerDto.vncUrl);
-
-    await fs.promises.writeFile(`${usersPath}/.gitconfig`, await this.generateGitConfig(user, auth));
 
     return containerDto;
   }
@@ -261,10 +259,10 @@ export class ContainerService {
   }
 
   /** creates file with given path only when the file doesn't exist */
-  private async createFile(p: string) {
+  private async createFile(p: string, content: () => string | Promise<string> = () => '') {
     await fs.promises.readFile(p).catch(async () => {
       await fs.promises.mkdir(path.dirname(p), {recursive: true});
-      await fs.promises.writeFile(p, '');
+      await fs.promises.writeFile(p, await content());
     });
   }
 
