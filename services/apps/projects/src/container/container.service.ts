@@ -141,7 +141,7 @@ export class ContainerService {
 
     const fileText = fileBuffer.toString('utf-8');
     await Promise.all(fileText.split(/\r?\n/).map(async line => {
-      const extension = line.replace(/[^\w\d\s\\.\-]/g, '').trim();
+      const extension = line.trim();
       if (extension) {
         await this.containerExec(container, ['code-server', '--install-extension', extension]);
       }
@@ -154,11 +154,9 @@ export class ContainerService {
       Cmd: command,
       AttachStderr: true,
       AttachStdout: true,
-      AttachStdin: true,
-      Tty: true,
     });
 
-    const stream = await exec.start({stdin: true});
+    const stream = await exec.start({});
     await streamOnEndWorkaround(exec, stream);
     return stream;
   }
@@ -221,10 +219,10 @@ export class ContainerService {
     }
     const container = this.docker.getContainer(existing.id);
 
-    const stream = await this.containerExec(container, ['code-server', '--list-extensions']);
+    const stream = await this.containerExec(container, ['code-server', '--list-extensions', '--show-versions']);
     const extensionsList = `${this.projectService.getStoragePath('config', projectId)}/extensions.txt`;
     const writeStream = fs.createWriteStream(extensionsList);
-    stream.pipe(writeStream);
+    container.modem.demuxStream(stream, writeStream, process.stderr);
 
     await container.stop();
     return existing;
