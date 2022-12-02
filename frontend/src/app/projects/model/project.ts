@@ -6,6 +6,7 @@ export interface Project {
   icon?: string;
   description: string;
   dockerImage?: string;
+  repository?: string;
 }
 
 export type CreateProjectDto = Omit<Project, 'id' | 'userId' | 'created'>;
