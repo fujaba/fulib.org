@@ -30,6 +30,12 @@ export class ContainerController {
   ) {
   }
 
+  @Post('container')
+  @ApiCreatedResponse({type: ContainerDto})
+  async createTemp(@Body() dto: CreateContainerDto): Promise<ContainerDto> {
+    return this.containerService.start(dto);
+  }
+
   @Post('projects/:id/container')
   @MemberAuth({forbiddenResponse})
   @ApiCreatedResponse({type: ContainerDto})

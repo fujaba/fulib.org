@@ -5,6 +5,7 @@ import {Cron, CronExpression} from '@nestjs/schedule';
 import * as chownr from 'chownr';
 import {randomBytes} from 'crypto';
 import * as Dockerode from 'dockerode';
+import {ContainerCreateOptions} from 'dockerode';
 import * as fs from 'fs';
 import * as path from 'path';
 import {firstValueFrom, map} from 'rxjs';
@@ -42,23 +43,12 @@ export class ContainerService {
     }, user, auth);
   }
 
-  async start(dto: CreateContainerDto, user: UserToken, auth: string): Promise<ContainerDto> {
+  async start(dto: CreateContainerDto, user?: UserToken, auth?: string): Promise<ContainerDto> {
     const projectId = dto.projectId;
     const projectPath = this.projectService.getStoragePath('projects', projectId);
-    const usersPath = this.projectService.getStoragePath('users', user.sub);
     const token = randomBytes(12).toString('base64');
 
-    /* create 'settings.json' files if they don't exist already
-    code server will write the user/machine settings there
-    if we won't create the file manually, docker will automatically
-    create a directory instead when binding it. This will
-    lead to an error when code server is trying to write on the bind mount
-     */
-
-    await createFile(`${usersPath}/settings.json`);
-    await createFile(`${usersPath}/.gitconfig`, async () => await this.generateGitConfig(user, auth));
-
-    const container = await this.docker.createContainer({
+    const options: ContainerCreateOptions = {
       Image: dto.dockerImage || environment.docker.containerImage,
       Tty: true,
       NetworkingConfig: {
@@ -70,8 +60,6 @@ export class ContainerService {
         AutoRemove: true,
         Binds: [
           `${projectPath}:${CODE_WORKSPACE}`,
-          `${usersPath}/settings.json:/home/coder/.local/share/code-server/User/settings.json`,
-          `${usersPath}/.gitconfig:/home/coder/.gitconfig`,
         ],
       },
       Env: [
@@ -80,10 +68,29 @@ export class ContainerService {
       ],
       Labels: {
         'org.fulib.project': projectId,
-        'org.fulib.user': user.sub,
         'org.fulib.token': token,
       },
-    });
+    };
+
+    if (user) {
+      const usersPath = this.projectService.getStoragePath('users', user.sub);
+
+      /* create 'settings.json' files if they don't exist already
+      code server will write the user/machine settings there
+      if we won't create the file manually, docker will automatically
+      create a directory instead when binding it. This will
+      lead to an error when code server is trying to write on the bind mount
+       */
+      await createFile(`${usersPath}/settings.json`);
+      await createFile(`${usersPath}/.gitconfig`, async () => await this.generateGitConfig(user, auth));
+      options.Labels!['org.fulib.user'] = user.sub;
+      options.HostConfig!.Binds!.push(
+        `${usersPath}/settings.json:/home/coder/.local/share/code-server/User/settings.json`,
+        `${usersPath}/.gitconfig:/home/coder/.gitconfig`,
+      );
+    }
+
+    const container = await this.docker.createContainer(options);
 
     await container.start();
 
