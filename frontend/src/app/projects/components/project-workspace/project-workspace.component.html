@@ -9,12 +9,14 @@
     </a>
   </div>
   <div class="modal-body">
-    Please hang tight while we set things up for you...
-    <ul>
-      <li *ngFor="let progressItem of progressOrder" [class.text-success]="progress[progressItem]">
-        {{ progressLabels[progressItem] }}
-      </li>
-    </ul>
+    <p>
+      Please hang tight while we set things up for you...
+    </p>
+    <div class="progress">
+      <div class="progress-bar progress-bar-striped progress-bar-animated w-100" role="progressbar">
+        Launching container...
+      </div>
+    </div>
   </div>
   <div class="modal-footer">
     <a class="btn btn-secondary" (click)="modal.close()" routerLink="/projects">
