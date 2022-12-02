@@ -111,6 +111,10 @@ export class ContainerService {
     // FIXME VNC should work for temporary containers as well
     projectPath && await this.writeVncUrl(projectPath, containerDto);
 
+    if (dto.machineSettings) {
+      await this.setMachineSettings(container, dto.machineSettings);
+    }
+
     await this.waitForContainer(containerDto);
     return containerDto;
   }
@@ -206,6 +210,13 @@ export class ContainerService {
     const p = `${projectPath}/.vnc/vncUrl`;
     await createFile(p);
     await fs.promises.writeFile(p, containerDto.vncUrl);
+  }
+
+  private async setMachineSettings(container: Dockerode.Container, settings: object) {
+    const eofMarker = randomBytes(16).toString('hex');
+    await this.containerExec(container, ['sh', '-c', `cat > /home/coder/.local/share/code-server/Machine/settings.json <<${eofMarker}
+${JSON.stringify(settings)}
+${eofMarker}`]);
   }
 
   private async checkIsNew(projectPath: string, containerDto: ContainerDto) {
