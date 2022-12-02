@@ -27,11 +27,17 @@
   <div class="mb-3">
     <label class="form-label" for="dockerImageInput">Docker Image</label>
     <select class="form-select" id="dockerImageInput" [(ngModel)]="project.dockerImage">
+      <option [value]="undefined">Use Default</option>
       <option *ngFor="let image of dockerImages" [value]="image.tag">
         {{image.name}}
         —
         {{image.desc}}
       </option>
     </select>
+    <div class="form-text">
+      Select a matching Docker image for your use case.
+      The default provides optimal performance for fulib projects.
+      Other options include pre-installed extensions for other languages.
+    </div>
   </div>
 </div>
