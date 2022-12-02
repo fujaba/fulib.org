@@ -222,6 +222,8 @@ export class ContainerService {
 
     const stream = await this.containerExec(container, ['code-server', '--list-extensions', '--show-versions']);
     const extensionsList = `${this.projectService.getStoragePath('config', projectId)}/extensions.txt`;
+    await createFile(extensionsList);
+
     const writeStream = fs.createWriteStream(extensionsList);
     container.modem.demuxStream(stream, writeStream, process.stderr);
 

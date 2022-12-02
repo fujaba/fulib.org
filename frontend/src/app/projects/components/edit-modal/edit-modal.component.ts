@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {KeycloakService} from 'keycloak-angular';
+import {ToastService} from 'ng-bootstrap-ext';
 import {of} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import {CreateProjectDto, Project} from '../../model/project';
@@ -16,12 +17,14 @@ export class EditModalComponent implements OnInit {
   editing: Project | CreateProjectDto = this.createNew();
   creatingFromEditor = false;
   loggedIn = false;
+  saving = false;
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private projectService: ProjectService,
     private keycloakService: KeycloakService,
+    private toastService: ToastService,
   ) {
   }
 
@@ -58,17 +61,18 @@ export class EditModalComponent implements OnInit {
     if (!this.editing) {
       return;
     }
-    if ('id' in this.editing) {
-      this.projectService.update(this.editing).subscribe();
-      return;
-    }
 
-    this.projectService.create(this.editing).subscribe(created => {
+    this.saving = true;
+    ('id' in this.editing ? this.projectService.update(this.editing) : this.projectService.create(this.editing)).subscribe(created => {
+      this.saving = false;
       if (this.creatingFromEditor) {
         this.router.navigate(['/projects', created.id, 'setup'], {queryParams: {editor: true}});
       } else {
         this.router.navigate(['/projects']);
       }
+    }, error => {
+      this.saving = false;
+      this.toastService.error(`${'id' in this.editing ? 'Update' : 'Create'} Project`, `Failed to ${'id' in this.editing ? 'update' : 'create'} project`, error);
     });
   }
 }
