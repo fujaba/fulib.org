@@ -1,11 +1,11 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
 import {IsDateString, IsNotEmpty, IsOptional, IsString, IsUrl, Matches} from 'class-validator';
-import {Document} from 'mongoose';
+import {Document, Types} from 'mongoose';
 
 @Schema()
 export class Project {
-  _id!: string;
+  _id!: Types.ObjectId;
 
   @Prop({index: 1})
   @ApiProperty()
