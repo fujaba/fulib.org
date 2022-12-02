@@ -47,18 +47,16 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
     ).subscribe(container => {
       this.container = container;
       this.openModal?.close();
-      const toast: Toast = {
+      this.toastService.add({
         class: 'bg-primary',
         title: 'Container Launched',
         delay: 20000,
-        body: `Your container is ready to use. If prompted for a password, use the token: ${container.token}`,
+        body: `Your container is ready to use. If prompted for a password, use this token: ${container.token}`,
         actions: [
           {name: 'Copy', run: () => this.clipboardService.copy(container.token)},
-          {name: 'Close', run: () => this.toastService.remove(toast)},
         ],
-      };
-      this.toastService.add(toast);
-      if (this.container?.isNew) {
+      });
+      if (container.isNew) {
         this.router.navigate(['setup'], {relativeTo: this.route});
       }
     });
