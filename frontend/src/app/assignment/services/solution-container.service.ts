@@ -20,9 +20,11 @@ export class SolutionContainerService {
 
   launch(assignment: Assignment, solution: Solution): Observable<Container> {
     return this.userService.getCurrent().pipe(switchMap(user => {
+      const repo = `${assignment.classroom?.prefix}-${solution.author.github}`;
       const dto: CreateContainerDto = {
         dockerImage: 'registry.uniks.de/fulib/code-server-fulib:17',
-        repository: `https://github.com/${assignment.classroom?.org}/${assignment.classroom?.prefix}-${solution.author.github}.git#${solution.commit}`,
+        repository: `https://github.com/${assignment.classroom?.org}/${repo}.git#${solution.commit}`,
+        folderName: repo,
         machineSettings: {
           'fulibFeedback.apiServer': new URL(environment.assignmentsApiUrl, location.origin).origin,
           'fulibFeedback.assignment.id': assignment._id,

@@ -11,6 +11,7 @@ export class Container {
 
 export interface CreateContainerDto extends Pick<Project, 'dockerImage' | 'repository'> {
   projectId?: string;
+  folderName?: string;
   machineSettings?: object;
   extensions?: string[];
 }
