@@ -43,7 +43,7 @@ export class ContainerController {
     if (!project) {
       throw new NotFoundException(id);
     }
-    return this.containerService.create(id, user, authorization, project.dockerImage);
+    return this.containerService.create(project, user, authorization);
   }
 
   @Get('projects/:id/container')

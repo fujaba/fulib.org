@@ -22,12 +22,11 @@ export class ProjectService {
   }
 
   async create(dto: CreateProjectDto, userId: string): Promise<ProjectDocument> {
-    const project: Project = {
+    return this.model.create({
       ...dto,
       userId,
       created: new Date(),
-    };
-    return this.model.create(project);
+    });
   }
 
   async findAll(where: FilterQuery<Project> = {}): Promise<Project[]> {

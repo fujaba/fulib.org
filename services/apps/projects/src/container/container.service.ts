@@ -12,6 +12,7 @@ import {Readable} from 'stream';
 import {setTimeout} from 'timers/promises';
 import {Extract} from 'unzipper';
 import {environment} from '../environment';
+import {Project} from '../project/project.schema';
 import {ProjectService} from '../project/project.service';
 import {ContainerDto} from './container.dto';
 
@@ -32,11 +33,12 @@ export class ContainerService {
   ) {
   }
 
-  async create(projectId: string, user: UserToken, auth: string, image?: string): Promise<ContainerDto> {
-    return await this.findOne(projectId, user.sub) ?? await this.start(projectId, user, auth, image);
+  async create(project: Project, user: UserToken, auth: string): Promise<ContainerDto> {
+    return await this.findOne(project._id.toString(), user.sub) ?? await this.start(project, user, auth);
   }
 
-  async start(projectId: string, user: UserToken, auth: string, image?: string): Promise<ContainerDto> {
+  async start(project: Project, user: UserToken, auth: string): Promise<ContainerDto> {
+    const projectId = project._id.toString();
     const projectPath = this.projectService.getStoragePath('projects', projectId);
     const usersPath = this.projectService.getStoragePath('users', user.sub);
     const token = randomBytes(12).toString('base64');
@@ -52,7 +54,7 @@ export class ContainerService {
     await createFile(`${usersPath}/.gitconfig`, async () => await this.generateGitConfig(user, auth));
 
     const container = await this.docker.createContainer({
-      Image: image || environment.docker.containerImage,
+      Image: project.dockerImage || environment.docker.containerImage,
       Tty: true,
       NetworkingConfig: {
         EndpointsConfig: {

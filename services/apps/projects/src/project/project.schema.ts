@@ -5,6 +5,8 @@ import {Document} from 'mongoose';
 
 @Schema()
 export class Project {
+  _id!: string;
+
   @Prop({index: 1})
   @ApiProperty()
   @IsString()
