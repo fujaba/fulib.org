@@ -57,6 +57,8 @@ export class ContainerService {
       HostConfig: {
         AutoRemove: true,
         Binds: [],
+        CpuCount: 2,
+        Memory: 2 * 1024 ** 3,
       },
       Env: [
         `PASSWORD=${token}`,
