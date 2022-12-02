@@ -270,35 +270,43 @@ ${eofMarker}`]);
     if (!existing) {
       return null;
     }
-    const container = this.docker.getContainer(existing.id);
+    await this.stop(existing.id, projectId);
 
+    return existing;
+  }
+
+  private async stop(containerId: string, projectId?: string) {
+    const container = this.docker.getContainer(containerId);
+    projectId && await this.saveExtensions(container, projectId);
+    await container.stop();
+  }
+
+  private async saveExtensions(container: Dockerode.Container, projectId: string) {
     const stream = await this.containerExec(container, ['code-server', '--list-extensions', '--show-versions']);
     const extensionsList = `${this.projectService.getStoragePath('config', projectId)}/extensions.txt`;
     await createFile(extensionsList);
 
     const writeStream = fs.createWriteStream(extensionsList);
     container.modem.demuxStream(stream, writeStream, process.stderr);
-
-    await container.stop();
-    return existing;
   }
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
+  @Cron(CronExpression.EVERY_10_SECONDS)
   async checkAllHeartbeats() {
     const containers = await this.docker.listContainers({
       filters: {
-        label: [`org.fulib.project`],
+        label: ['org.fulib.token'],
         status: ['created', 'running'],
       },
     });
 
-    for (let i = 0; i < containers.length; i++) {
-      const container = containers[i];
-      this.isHeartbeatExpired(container.Id).then(expired => {
-        expired && this.remove(container.Labels['org.fulib.project'], container.Labels['org.fulib.user']);
-      });
-    }
+    await Promise.all(containers.map(async info => {
+      const expired = await this.isHeartbeatExpired(info.Id);
+      if (!expired) {
+        return;
+      }
 
+      await this.stop(info.Id, info.Labels['org.fulib.project']);
+    }));
   }
 
   private async isHeartbeatExpired(containerId: string): Promise<boolean> {
