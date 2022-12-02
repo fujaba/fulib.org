@@ -27,6 +27,10 @@
         Clone in IDE
       </a>
       &bull;
+      <button class="btn btn-link p-0" [disabled]="launching" (click)="launch()">
+        {{ launching ? 'Launching...' : 'Launch in Projects' }}
+      </button>
+      &bull;
     </ng-container>
     <ng-container *ngIf="solution.author.email">
       <a class="bi-envelope" href="mailto:{{solution.author.email}}">
