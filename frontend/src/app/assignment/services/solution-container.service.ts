@@ -24,6 +24,7 @@ export class SolutionContainerService {
       const dto: CreateContainerDto = {
         dockerImage: 'registry.uniks.de/fulib/code-server-fulib:17',
         repository: `https://github.com/${assignment.classroom?.org}/${repo}.git#${solution.commit}`,
+        idleTimeout: 5 * 60,
         folderName: repo,
         machineSettings: {
           'fulibFeedback.apiServer': new URL(environment.assignmentsApiUrl, location.origin).origin,
