@@ -2,6 +2,7 @@ import {UserToken} from '@app/keycloak-auth';
 import {HttpService} from '@nestjs/axios';
 import {Injectable} from '@nestjs/common';
 import {Cron, CronExpression} from '@nestjs/schedule';
+import * as chownr from 'chownr';
 import {randomBytes} from 'crypto';
 import * as Dockerode from 'dockerode';
 import * as fs from 'fs';
@@ -257,12 +258,13 @@ export class ContainerService {
     }
   }
 
-  unzip(projectId: string, zip: Express.Multer.File): Promise<void> {
+  async unzip(projectId: string, zip: Express.Multer.File): Promise<void> {
     const storagePath = this.projectService.getStoragePath('projects', projectId);
     const stream = new Readable();
     stream.push(zip.buffer);
     stream.push(null);
-    return stream.pipe(Extract({path: storagePath})).promise();
+    await stream.pipe(Extract({path: storagePath})).promise();
+    await new Promise((resolve, reject) => chownr(storagePath, 1000, 1000, err => err ? reject(err) : resolve(undefined)));
   }
 }
 
@@ -285,5 +287,6 @@ async function createFile(p: string, content: () => string | Promise<string> = (
   await fs.promises.readFile(p).catch(async () => {
     await fs.promises.mkdir(path.dirname(p), {recursive: true});
     await fs.promises.writeFile(p, await content());
+    await fs.promises.chown(p, 1000, 1000);
   });
 }
