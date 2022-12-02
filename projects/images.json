@@ -2,7 +2,7 @@
   {
     "tag": "registry.uniks.de/fulib/code-server-fulib:17",
     "name": "fulib",
-    "desc": "JDK 17 + Gradle + latest fulib (default)",
+    "desc": "JDK 17 + Gradle + latest fulib",
     "dockerfile": "gradle/Dockerfile",
     "args": {
       "BUILD_GRADLE": "fulib/build.gradle",

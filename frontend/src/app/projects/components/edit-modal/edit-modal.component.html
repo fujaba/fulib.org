@@ -12,8 +12,8 @@
     <button type="button" class="btn btn-secondary" (click)="modal.close()">
       Cancel
     </button>
-    <button class="btn btn-primary" (click)="save(); modal.close()">
-      Save
+    <button class="btn btn-primary" [disabled]="saving" (click)="save()">
+      {{ saving ? 'Saving...' : 'Save' }}
     </button>
   </ng-container>
 </ngbx-modal>
