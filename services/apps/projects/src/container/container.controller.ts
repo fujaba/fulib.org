@@ -1,4 +1,4 @@
-import {AuthUser, UserToken} from '@app/keycloak-auth';
+import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound} from '@app/not-found';
 import {
   Body,
@@ -32,8 +32,13 @@ export class ContainerController {
 
   @Post('container')
   @ApiCreatedResponse({type: ContainerDto})
-  async createTemp(@Body() dto: CreateContainerDto): Promise<ContainerDto> {
-    return this.containerService.start(dto);
+  @Auth({optional: true})
+  async createTemp(
+    @Body() dto: CreateContainerDto,
+    @Headers('Authorization') authorization?: string,
+    @AuthUser() user?: UserToken,
+  ): Promise<ContainerDto> {
+    return this.containerService.start(dto, user, authorization);
   }
 
   @Post('projects/:id/container')

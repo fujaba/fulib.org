@@ -183,6 +183,7 @@ export class ContainerService {
     });
 
     const stream = await exec.start({});
+    container.modem.demuxStream(stream, process.stdout, process.stderr);
     await streamOnEndWorkaround(exec, stream);
     return stream;
   }
