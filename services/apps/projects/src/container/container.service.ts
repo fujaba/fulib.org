@@ -15,9 +15,7 @@ import {Extract} from 'unzipper';
 import {environment} from '../environment';
 import {Project} from '../project/project.schema';
 import {ProjectService} from '../project/project.service';
-import {ContainerDto, CreateContainerDto} from './container.dto';
-
-const CODE_WORKSPACE = '/home/coder/project';
+import {allowedFilenameCharacters, ContainerDto, CreateContainerDto} from './container.dto';
 
 @Injectable()
 export class ContainerService {
@@ -40,12 +38,14 @@ export class ContainerService {
       projectId: _id.toString(),
       dockerImage,
       repository,
+      folderName: project.name.replace(new RegExp(`[^${allowedFilenameCharacters}]+`, 'g'), '-'),
     }, user, auth);
   }
 
   async start(dto: CreateContainerDto, user?: UserToken, auth?: string): Promise<ContainerDto> {
     const token = randomBytes(12).toString('base64');
 
+    const workspace = `/home/coder/${dto.folderName || 'project'}`;
     const options: ContainerCreateOptions = {
       Image: dto.dockerImage || environment.docker.containerImage,
       Tty: true,
@@ -69,7 +69,7 @@ export class ContainerService {
     let projectPath: string | undefined;
     if (dto.projectId) {
       projectPath = this.projectService.getStoragePath('projects', dto.projectId);
-      options.HostConfig!.Binds!.push(`${projectPath}:${CODE_WORKSPACE}`);
+      options.HostConfig!.Binds!.push(`${projectPath}:${workspace}`);
       options.Env!.push(`PROJECT_ID=${dto.projectId}`);
       options.Labels!['org.fulib.project'] = dto.projectId;
     }
@@ -101,10 +101,10 @@ export class ContainerService {
       ...(dto.extensions || []),
     ]);
 
-    const containerDto = this.toContainer(container.id, token, dto.projectId);
+    const containerDto = this.toContainer(container.id, token, workspace, dto.projectId);
 
     if (dto.repository) {
-      await this.cloneRepository(container, dto.repository);
+      await this.cloneRepository(container, dto.repository, workspace);
     } else if (projectPath) {
       await this.checkIsNew(projectPath, containerDto);
     } else {
@@ -144,12 +144,12 @@ export class ContainerService {
     ));
   }
 
-  private toContainer(id: string, token: string, projectId?: string): ContainerDto {
+  private toContainer(id: string, token: string, workspace: string, projectId?: string): ContainerDto {
     return {
       id,
       projectId,
       token,
-      url: `${this.containerUrl(id)}/?folder=${CODE_WORKSPACE}&ngsw-bypass`,
+      url: `${this.containerUrl(id)}/?folder=${workspace}&ngsw-bypass`,
       vncUrl: this.vncURL(id),
       isNew: false,
     };
@@ -194,16 +194,16 @@ export class ContainerService {
     return stream;
   }
 
-  private async cloneRepository(container: Dockerode.Container, repository: string) {
+  private async cloneRepository(container: Dockerode.Container, repository: string, directory: string) {
     const hashIndex = repository.indexOf('#');
     let ref: string | undefined;
     if (hashIndex >= 0) {
       ref = repository.substring(hashIndex + 1);
       repository = repository.substring(0, hashIndex);
     }
-    await this.containerExec(container, ['git', 'clone', repository, CODE_WORKSPACE]);
+    await this.containerExec(container, ['git', 'clone', repository, directory]);
     if (ref) {
-      await this.containerExec(container, ['git', '-C', CODE_WORKSPACE, 'checkout', ref]);
+      await this.containerExec(container, ['git', '-C', directory, 'checkout', ref]);
     }
   }
 

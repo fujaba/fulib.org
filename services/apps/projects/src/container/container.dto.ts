@@ -1,5 +1,5 @@
 import {ApiProperty, PickType} from '@nestjs/swagger';
-import {IsAlphanumeric, IsBoolean, IsMongoId, IsObject, IsOptional, IsString, IsUrl} from 'class-validator';
+import {IsAlphanumeric, IsBoolean, IsMongoId, IsObject, IsOptional, IsString, IsUrl, Matches} from 'class-validator';
 import {Project} from '../project/project.schema';
 
 export class ContainerDto {
@@ -29,6 +29,8 @@ export class ContainerDto {
   isNew: boolean;
 }
 
+export const allowedFilenameCharacters = 'a-zA-Z0-9_.-';
+
 export class CreateContainerDto extends PickType(Project, [
   'dockerImage',
   'repository',
@@ -37,6 +39,12 @@ export class CreateContainerDto extends PickType(Project, [
   @IsOptional()
   @IsMongoId()
   projectId?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  @Matches(new RegExp(`^[${allowedFilenameCharacters}]+$`))
+  folderName?: string;
 
   @ApiProperty()
   @IsOptional()
