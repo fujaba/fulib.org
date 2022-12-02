@@ -86,7 +86,11 @@ export class ContainerService {
 
     const containerDto = this.toContainer(container.id, token, projectId);
     await this.waitForContainer(containerDto);
-    await this.checkIsNew(projectPath, containerDto);
+    if (project.repository) {
+      await this.cloneRepository(container, project.repository);
+    } else {
+      await this.checkIsNew(projectPath, containerDto);
+    }
     await this.writeVncUrl(projectPath, containerDto);
 
     return containerDto;
@@ -162,6 +166,10 @@ export class ContainerService {
     const stream = await exec.start({});
     await streamOnEndWorkaround(exec, stream);
     return stream;
+  }
+
+  private async cloneRepository(container: Dockerode.Container, repository: string) {
+    await this.containerExec(container, ['git', 'clone', repository, CODE_WORKSPACE]);
   }
 
   private async writeVncUrl(projectPath: string, containerDto: ContainerDto) {
