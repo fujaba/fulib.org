@@ -19,6 +19,11 @@ export class SolutionContainerService {
     const dto: CreateContainerDto = {
       dockerImage: 'registry.uniks.de/fulib/code-server-fulib:17',
       repository: `https://github.com/${assignment.classroom?.org}/${assignment.classroom?.prefix}-${solution.author.github}.git#${solution.commit}`,
+      machineSettings: {
+        'fulibFeedback.apiServer': new URL(environment.assignmentsApiUrl, location.origin).origin,
+        'fulibFeedback.assignment.id': assignment._id,
+        'fulibFeedback.assignment.token': assignment.token,
+      },
     };
     return this.http.post<Container>(`${environment.projectsApiUrl}/container`, dto);
   }
