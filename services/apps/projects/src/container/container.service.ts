@@ -44,8 +44,6 @@ export class ContainerService {
   }
 
   async start(dto: CreateContainerDto, user?: UserToken, auth?: string): Promise<ContainerDto> {
-    const projectId = dto.projectId;
-    const projectPath = this.projectService.getStoragePath('projects', projectId);
     const token = randomBytes(12).toString('base64');
 
     const options: ContainerCreateOptions = {
@@ -58,19 +56,23 @@ export class ContainerService {
       },
       HostConfig: {
         AutoRemove: true,
-        Binds: [
-          `${projectPath}:${CODE_WORKSPACE}`,
-        ],
+        Binds: [],
       },
       Env: [
-        `PROJECT_ID=${projectId}`,
         `PASSWORD=${token}`,
       ],
       Labels: {
-        'org.fulib.project': projectId,
         'org.fulib.token': token,
       },
     };
+
+    let projectPath: string | undefined;
+    if (dto.projectId) {
+      projectPath = this.projectService.getStoragePath('projects', dto.projectId);
+      options.HostConfig!.Binds!.push(`${projectPath}:${CODE_WORKSPACE}`);
+      options.Env!.push(`PROJECT_ID=${dto.projectId}`);
+      options.Labels!['org.fulib.project'] = dto.projectId;
+    }
 
     if (user) {
       const usersPath = this.projectService.getStoragePath('users', user.sub);
@@ -94,16 +96,20 @@ export class ContainerService {
 
     await container.start();
 
-    this.installExtensions(container, projectId);
+    dto.projectId && this.installExtensions(container, dto.projectId);
 
-    const containerDto = this.toContainer(container.id, token, projectId);
+    const containerDto = this.toContainer(container.id, token, dto.projectId);
     await this.waitForContainer(containerDto);
     if (dto.repository) {
       await this.cloneRepository(container, dto.repository);
-    } else {
+    } else if (projectPath) {
       await this.checkIsNew(projectPath, containerDto);
+    } else {
+      containerDto.isNew = true;
     }
-    await this.writeVncUrl(projectPath, containerDto);
+
+    // FIXME VNC should work for temporary containers as well
+    projectPath && await this.writeVncUrl(projectPath, containerDto);
 
     return containerDto;
   }
@@ -130,7 +136,7 @@ export class ContainerService {
     ));
   }
 
-  private toContainer(id: string, projectId: string, token: string): ContainerDto {
+  private toContainer(id: string, token: string, projectId?: string): ContainerDto {
     return {
       id,
       projectId,
