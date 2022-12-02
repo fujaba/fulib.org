@@ -8,7 +8,7 @@ import {
   IsOptional,
   IsString,
   IsUrl,
-  Matches, Max,
+  Matches, Max, Min,
 } from 'class-validator';
 import {environment} from '../environment';
 import {Project} from '../project/project.schema';
@@ -51,9 +51,10 @@ export class CreateContainerDto extends PickType(Project, [
   @IsMongoId()
   projectId?: string;
 
-  @ApiProperty({description: 'Idle timeout in milliseconds', maximum: environment.docker.heartbeatTimeout})
+  @ApiProperty({description: 'Idle timeout in seconds', minimum: 0, maximum: environment.docker.heartbeatTimeout})
   @IsOptional()
   @IsNumber()
+  @Min(0)
   @Max(environment.docker.heartbeatTimeout)
   idleTimeout?: number;
 

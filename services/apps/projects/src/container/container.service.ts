@@ -193,7 +193,6 @@ export class ContainerService {
     });
 
     const stream = await exec.start({});
-    container.modem.demuxStream(stream, process.stdout, process.stderr);
     await streamOnEndWorkaround(exec, stream);
     return stream;
   }
@@ -294,7 +293,7 @@ ${eofMarker}`]);
     container.modem.demuxStream(stream, writeStream, process.stderr);
   }
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
+  @Cron(CronExpression.EVERY_MINUTE)
   async checkAllHeartbeats() {
     const containers = await this.docker.listContainers({
       filters: {
@@ -313,11 +312,11 @@ ${eofMarker}`]);
     }));
   }
 
-  private async isHeartbeatExpired(containerId: string, timeoutMs?: number): Promise<boolean> {
+  private async isHeartbeatExpired(containerId: string, timeoutSeconds?: number): Promise<boolean> {
     try {
       const {data} = await firstValueFrom(this.httpService.get(`${this.containerUrl(containerId)}/healthz`));
       // res.data.lastHeartbeat is 0, when container has just started
-      return data.status === 'expired' && data.lastHeartbeat && data.lastHeartbeat < Date.now() - (timeoutMs || environment.docker.heartbeatTimeout);
+      return data.status === 'expired' && data.lastHeartbeat && data.lastHeartbeat < Date.now() - (timeoutSeconds || environment.docker.heartbeatTimeout) * 1000;
     } catch (e) {
       //container is in creating phase right now, /healthz endpoint isn't ready yet
       return false;
