@@ -316,7 +316,12 @@ ${eofMarker}`]);
     try {
       const {data} = await firstValueFrom(this.httpService.get(`${this.containerUrl(containerId)}/healthz`));
       // res.data.lastHeartbeat is 0, when container has just started
-      return data.status === 'expired' && data.lastHeartbeat && data.lastHeartbeat < Date.now() - (timeoutSeconds || environment.docker.heartbeatTimeout) * 1000;
+      if (data.status !== 'expired' || !data.lastHeartbeat) {
+        return false;
+      }
+      const msSinceLastHeartbeat = Date.now() - data.lastHeartbeat;
+      const timeoutMs = (timeoutSeconds || environment.docker.heartbeatTimeout) * 1000;
+      return msSinceLastHeartbeat > timeoutMs;
     } catch (e) {
       //container is in creating phase right now, /healthz endpoint isn't ready yet
       return false;
