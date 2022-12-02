@@ -34,4 +34,4 @@ async function build({tag, dockerfile, args}) {
   await run('docker', 'push', tag);
 }
 
-await Promise.all(images.filter((image) => image.dockerfile && (argv.size === 0 || argv.has(image.tag))).map(build));
+await Promise.all(images.filter((image) => image.dockerfile && (argv.size === 0 || argv.has(image.name))).map(build));

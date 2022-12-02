@@ -1,5 +1,17 @@
+import {AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound} from '@app/not-found';
-import {Body, Controller, Delete, Get, NotFoundException, Param, Post, UploadedFile, UseInterceptors} from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Header, Headers,
+  NotFoundException,
+  Param,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import {ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {MemberAuth} from '../member/member-auth.decorator';
 import {ProjectService} from '../project/project.service';
@@ -18,38 +30,42 @@ export class ContainerController {
   ) {
   }
 
-  @Post('container')
-  @ApiCreatedResponse({type: ContainerDto})
-  async createTemp(@Body() dto: CreateContainerDto): Promise<ContainerDto> {
-    return this.containerService.create(dto.projectId, dto.dockerImage);
-  }
-
   @Post('projects/:id/container')
   @MemberAuth({forbiddenResponse})
   @ApiCreatedResponse({type: ContainerDto})
   @ApiNotFoundResponse({description: 'Project not found'})
-  async create(@Param('id') id: string): Promise<ContainerDto> {
+  async create(
+    @Param('id') id: string,
+    @Headers('Authorization') authorization: string,
+    @AuthUser() user: UserToken,
+  ): Promise<ContainerDto> {
     const project = await this.projectService.findOne(id);
     if (!project) {
       throw new NotFoundException(id);
     }
-    return this.containerService.create(id, project.dockerImage);
+    return this.containerService.create(id, user, authorization, project.dockerImage);
   }
 
   @Get('projects/:id/container')
   @MemberAuth({forbiddenResponse})
   @NotFound()
   @ApiOkResponse({type: ContainerDto})
-  async findOne(@Param('id') id: string): Promise<ContainerDto | null> {
-    return this.containerService.findOne(id);
+  async findOne(
+    @Param('id') id: string,
+    @AuthUser() user: UserToken,
+  ): Promise<ContainerDto | null> {
+    return this.containerService.findOne(id, user.sub);
   }
 
   @Delete('projects/:id/container')
   @MemberAuth({forbiddenResponse})
   @NotFound()
   @ApiOkResponse({type: ContainerDto})
-  async remove(@Param('id') id: string): Promise<ContainerDto | null> {
-    return this.containerService.remove(id);
+  async remove(
+    @Param('id') id: string,
+    @AuthUser() user: UserToken,
+  ): Promise<ContainerDto | null> {
+    return this.containerService.remove(id, user.sub);
   }
 
   @Post('projects/:id/zip')

@@ -5,8 +5,3 @@ plugins {
 repositories {
 	mavenCentral()
 }
-
-task 'downloadDependencies' {
-	configurations.runtimeClasspath.files
-	configurations.testRuntimeClasspath.files
-}
