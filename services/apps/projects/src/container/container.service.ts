@@ -96,7 +96,10 @@ export class ContainerService {
 
     await container.start();
 
-    dto.projectId && this.installExtensions(container, dto.projectId);
+    this.installExtensions(container, [
+      ...(dto.projectId ? await this.getProjectExtensions(dto.projectId) : []),
+      ...(dto.extensions || []),
+    ]);
 
     const containerDto = this.toContainer(container.id, token, dto.projectId);
 
@@ -161,21 +164,20 @@ export class ContainerService {
     return `${environment.docker.proxyHost}/${suffix}/vnc_lite.html?path=${suffix}&resize=remote`;
   }
 
-  private async installExtensions(container: Dockerode.Container, projectId: string) {
+  private async getProjectExtensions(projectId: string): Promise<string[]> {
     const extensionsListPath = `${this.projectService.getStoragePath('config', projectId)}/extensions.txt`;
 
     const fileBuffer = await fs.promises.readFile(extensionsListPath).catch(() => '');
     if (!fileBuffer) {
-      return;
+      return [];
     }
 
     const fileText = fileBuffer.toString('utf-8');
-    await Promise.all(fileText.split(/\r?\n/).map(async line => {
-      const extension = line.trim();
-      if (extension) {
-        await this.containerExec(container, ['code-server', '--install-extension', extension]);
-      }
-    }));
+    return fileText.split(/\r?\n/).map(s => s.trim()).filter(s => s);
+  }
+
+  private async installExtensions(container: Dockerode.Container, extensions: string[]) {
+    await Promise.all(extensions.map(extension => this.containerExec(container, ['code-server', '--install-extension', extension])));
   }
 
   private async containerExec(container: Dockerode.Container, command: string[]) {

@@ -1,5 +1,5 @@
 import {ApiProperty, PickType} from '@nestjs/swagger';
-import {IsAlphanumeric, IsBoolean, IsMongoId, IsObject, IsOptional, IsUrl} from 'class-validator';
+import {IsAlphanumeric, IsBoolean, IsMongoId, IsObject, IsOptional, IsString, IsUrl} from 'class-validator';
 import {Project} from '../project/project.schema';
 
 export class ContainerDto {
@@ -42,4 +42,9 @@ export class CreateContainerDto extends PickType(Project, [
   @IsOptional()
   @IsObject()
   machineSettings?: object;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString({each: true})
+  extensions?: string[];
 }
