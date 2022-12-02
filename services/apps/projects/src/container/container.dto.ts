@@ -30,6 +30,7 @@ export class ContainerDto {
 
 export class CreateContainerDto extends PickType(Project, [
   'dockerImage',
+  'repository',
 ] as const) {
   @ApiProperty()
   @IsMongoId()
