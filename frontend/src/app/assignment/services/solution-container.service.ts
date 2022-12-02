@@ -29,6 +29,9 @@ export class SolutionContainerService {
           'fulibFeedback.assignment.token': assignment.token,
           'fulibFeedback.user.name': user ? user.firstName + ' ' + user.lastName : undefined,
         },
+        extensions: [
+          'fulib.fulibFeedback',
+        ],
       };
       return this.http.post<Container>(`${environment.projectsApiUrl}/container`, dto);
     }));
