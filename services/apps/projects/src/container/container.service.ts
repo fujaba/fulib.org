@@ -99,7 +99,7 @@ export class ContainerService {
     dto.projectId && this.installExtensions(container, dto.projectId);
 
     const containerDto = this.toContainer(container.id, token, dto.projectId);
-    await this.waitForContainer(containerDto);
+
     if (dto.repository) {
       await this.cloneRepository(container, dto.repository);
     } else if (projectPath) {
@@ -111,6 +111,7 @@ export class ContainerService {
     // FIXME VNC should work for temporary containers as well
     projectPath && await this.writeVncUrl(projectPath, containerDto);
 
+    await this.waitForContainer(containerDto);
     return containerDto;
   }
 
