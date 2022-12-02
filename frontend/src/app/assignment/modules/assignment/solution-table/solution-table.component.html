@@ -150,6 +150,14 @@
           [href]="assignment|cloneLink:solution:options | safeUrl"
           (click)="telemetry(solution, 'clone')"
         ></a>
+        <button
+          #launchButton
+          class="btn btn-secondary"
+          ngbTooltip="Launch in Projects"
+          (click)="telemetry(solution, 'launchProjects'); launch(solution, launchButton)"
+        >
+          <span [class]="launchButton.disabled ? 'spinner-border spinner-border-sm' : 'bi-rocket'"></span>
+        </button>
       </div>
       <a
         class="btn btn-primary me-1 bi-check-circle"
