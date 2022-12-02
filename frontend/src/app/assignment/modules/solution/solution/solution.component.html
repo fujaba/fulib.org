@@ -27,9 +27,9 @@
         Clone in IDE
       </a>
       &bull;
-      <button class="btn btn-link p-0" [disabled]="launching" (click)="launch()">
+      <a class="bi-rocket" [routerLink]="[]" [class.link-secondary]="launching" (click)="launch()">
         {{ launching ? 'Launching...' : 'Launch in Projects' }}
-      </button>
+      </a>
       &bull;
     </ng-container>
     <ng-container *ngIf="solution.author.email">

@@ -52,6 +52,10 @@ export class SolutionComponent implements OnInit {
   }
 
   launch() {
+    if (this.launching) {
+      return;
+    }
+
     this.launching = true;
     this.solutionContainerService.launch(this.assignment!, this.solution!).subscribe(container => {
       this.launching = false;
