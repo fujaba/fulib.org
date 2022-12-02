@@ -169,7 +169,16 @@ export class ContainerService {
   }
 
   private async cloneRepository(container: Dockerode.Container, repository: string) {
+    const hashIndex = repository.indexOf('#');
+    let ref: string | undefined;
+    if (hashIndex >= 0) {
+      ref = repository.substring(hashIndex + 1);
+      repository = repository.substring(0, hashIndex);
+    }
     await this.containerExec(container, ['git', 'clone', repository, CODE_WORKSPACE]);
+    if (ref) {
+      await this.containerExec(container, ['git', '-C', CODE_WORKSPACE, 'checkout', ref]);
+    }
   }
 
   private async writeVncUrl(projectPath: string, containerDto: ContainerDto) {
