@@ -9,6 +9,7 @@ import Assignment from '../../../model/assignment';
 import Solution, {AuthorInfo, authorInfoProperties} from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
 import {CONFIG_OPTIONS, ConfigKey, ConfigService} from '../../../services/config.service';
+import {SolutionContainerService} from '../../../services/solution-container.service';
 import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
 import {TelemetryService} from '../../../services/telemetry.service';
@@ -50,6 +51,7 @@ export class SolutionTableComponent implements OnInit {
   constructor(
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
+    private solutionContainerService: SolutionContainerService,
     private configService: ConfigService,
     private router: Router,
     private telemetryService: TelemetryService,
@@ -187,5 +189,16 @@ export class SolutionTableComponent implements OnInit {
   copyAuthor(name: string, key: keyof AuthorInfo) {
     this.clipboardService.copy(this.solutions!.map(s => s.author[key] ?? '').join('\n'));
     this.toastService.success(`Copy ${name}`, `Copied ${this.solutions.length} rows to clipboard`);
+  }
+
+  launch(solution: Solution, elem: HTMLButtonElement) {
+    elem.disabled = true;
+    this.solutionContainerService.launch(this.assignment!, solution).subscribe(container => {
+      elem.disabled = false;
+      open(container.url, '_blank');
+    }, error => {
+      elem.disabled = false;
+      this.toastService.error('Launch in Projects', 'Failed to launch in Projects', error);
+    });
   }
 }

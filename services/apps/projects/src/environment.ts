@@ -15,7 +15,7 @@ export const environment = {
     containerImage: process.env.FULIB_PROJECTS_CONTAINER_IMAGE || 'registry.uniks.de/fulib/code-server-fulib:17',
     proxyHost: process.env.FULIB_PROJECTS_PROXY_URL || 'http://localhost:13147',
     network: process.env.FULIB_PROJECTS_NETWORK || 'fuliborg_projects',
-    heartbeatTimeout: +(process.env.FULIB_PROJECTS_HEARTBEAT_TIMEOUT || 15) * 60 * 1000,
+    heartbeatTimeout: +(process.env.FULIB_PROJECTS_HEARTBEAT_TIMEOUT || 15) * 60,
   },
   auth: {
     url: 'https://se.uniks.de/auth',

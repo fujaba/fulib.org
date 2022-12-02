@@ -27,6 +27,10 @@
         Clone in IDE
       </a>
       &bull;
+      <a class="bi-rocket" [routerLink]="[]" [class.link-secondary]="launching" (click)="launch()">
+        {{ launching ? 'Launching...' : 'Launch in Projects' }}
+      </a>
+      &bull;
     </ng-container>
     <ng-container *ngIf="solution.author.email">
       <a class="bi-envelope" href="mailto:{{solution.author.email}}">

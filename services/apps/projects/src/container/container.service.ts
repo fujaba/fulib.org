@@ -15,9 +15,7 @@ import {Extract} from 'unzipper';
 import {environment} from '../environment';
 import {Project} from '../project/project.schema';
 import {ProjectService} from '../project/project.service';
-import {ContainerDto, CreateContainerDto} from './container.dto';
-
-const CODE_WORKSPACE = '/home/coder/project';
+import {allowedFilenameCharacters, ContainerDto, CreateContainerDto} from './container.dto';
 
 @Injectable()
 export class ContainerService {
@@ -40,12 +38,14 @@ export class ContainerService {
       projectId: _id.toString(),
       dockerImage,
       repository,
+      folderName: project.name.replace(new RegExp(`[^${allowedFilenameCharacters}]+`, 'g'), '-'),
     }, user, auth);
   }
 
   async start(dto: CreateContainerDto, user?: UserToken, auth?: string): Promise<ContainerDto> {
     const token = randomBytes(12).toString('base64');
 
+    const workspace = `/home/coder/${dto.folderName || 'project'}`;
     const options: ContainerCreateOptions = {
       Image: dto.dockerImage || environment.docker.containerImage,
       Tty: true,
@@ -66,10 +66,14 @@ export class ContainerService {
       },
     };
 
+    if (dto.idleTimeout) {
+      options.Labels!['org.fulib.timeout'] = dto.idleTimeout.toString();
+    }
+
     let projectPath: string | undefined;
     if (dto.projectId) {
       projectPath = this.projectService.getStoragePath('projects', dto.projectId);
-      options.HostConfig!.Binds!.push(`${projectPath}:${CODE_WORKSPACE}`);
+      options.HostConfig!.Binds!.push(`${projectPath}:${workspace}`);
       options.Env!.push(`PROJECT_ID=${dto.projectId}`);
       options.Labels!['org.fulib.project'] = dto.projectId;
     }
@@ -96,12 +100,15 @@ export class ContainerService {
 
     await container.start();
 
-    dto.projectId && this.installExtensions(container, dto.projectId);
+    this.installExtensions(container, [
+      ...(dto.projectId ? await this.getProjectExtensions(dto.projectId) : []),
+      ...(dto.extensions || []),
+    ]);
 
-    const containerDto = this.toContainer(container.id, token, dto.projectId);
+    const containerDto = this.toContainer(container.id, token, workspace, dto.projectId);
 
     if (dto.repository) {
-      await this.cloneRepository(container, dto.repository);
+      await this.cloneRepository(container, dto.repository, workspace);
     } else if (projectPath) {
       await this.checkIsNew(projectPath, containerDto);
     } else {
@@ -110,6 +117,10 @@ export class ContainerService {
 
     // FIXME VNC should work for temporary containers as well
     projectPath && await this.writeVncUrl(projectPath, containerDto);
+
+    if (dto.machineSettings) {
+      await this.setMachineSettings(container, dto.machineSettings);
+    }
 
     await this.waitForContainer(containerDto);
     return containerDto;
@@ -137,12 +148,12 @@ export class ContainerService {
     ));
   }
 
-  private toContainer(id: string, token: string, projectId?: string): ContainerDto {
+  private toContainer(id: string, token: string, workspace: string, projectId?: string): ContainerDto {
     return {
       id,
       projectId,
       token,
-      url: `${this.containerUrl(id)}/?folder=${CODE_WORKSPACE}&ngsw-bypass`,
+      url: `${this.containerUrl(id)}/?folder=${workspace}&ngsw-bypass`,
       vncUrl: this.vncURL(id),
       isNew: false,
     };
@@ -157,21 +168,20 @@ export class ContainerService {
     return `${environment.docker.proxyHost}/${suffix}/vnc_lite.html?path=${suffix}&resize=remote`;
   }
 
-  private async installExtensions(container: Dockerode.Container, projectId: string) {
+  private async getProjectExtensions(projectId: string): Promise<string[]> {
     const extensionsListPath = `${this.projectService.getStoragePath('config', projectId)}/extensions.txt`;
 
     const fileBuffer = await fs.promises.readFile(extensionsListPath).catch(() => '');
     if (!fileBuffer) {
-      return;
+      return [];
     }
 
     const fileText = fileBuffer.toString('utf-8');
-    await Promise.all(fileText.split(/\r?\n/).map(async line => {
-      const extension = line.trim();
-      if (extension) {
-        await this.containerExec(container, ['code-server', '--install-extension', extension]);
-      }
-    }));
+    return fileText.split(/\r?\n/).map(s => s.trim()).filter(s => s);
+  }
+
+  private async installExtensions(container: Dockerode.Container, extensions: string[]) {
+    await Promise.all(extensions.map(extension => this.containerExec(container, ['code-server', '--install-extension', extension])));
   }
 
   private async containerExec(container: Dockerode.Container, command: string[]) {
@@ -183,21 +193,20 @@ export class ContainerService {
     });
 
     const stream = await exec.start({});
-    container.modem.demuxStream(stream, process.stdout, process.stderr);
     await streamOnEndWorkaround(exec, stream);
     return stream;
   }
 
-  private async cloneRepository(container: Dockerode.Container, repository: string) {
+  private async cloneRepository(container: Dockerode.Container, repository: string, directory: string) {
     const hashIndex = repository.indexOf('#');
     let ref: string | undefined;
     if (hashIndex >= 0) {
       ref = repository.substring(hashIndex + 1);
       repository = repository.substring(0, hashIndex);
     }
-    await this.containerExec(container, ['git', 'clone', repository, CODE_WORKSPACE]);
+    await this.containerExec(container, ['git', 'clone', repository, directory]);
     if (ref) {
-      await this.containerExec(container, ['git', '-C', CODE_WORKSPACE, 'checkout', ref]);
+      await this.containerExec(container, ['git', '-C', directory, 'checkout', ref]);
     }
   }
 
@@ -206,6 +215,13 @@ export class ContainerService {
     const p = `${projectPath}/.vnc/vncUrl`;
     await createFile(p);
     await fs.promises.writeFile(p, containerDto.vncUrl);
+  }
+
+  private async setMachineSettings(container: Dockerode.Container, settings: object) {
+    const eofMarker = randomBytes(16).toString('hex');
+    await this.containerExec(container, ['sh', '-c', `cat > /home/coder/.local/share/code-server/Machine/settings.json <<${eofMarker}
+${JSON.stringify(settings)}
+${eofMarker}`]);
   }
 
   private async checkIsNew(projectPath: string, containerDto: ContainerDto) {
@@ -257,42 +273,55 @@ export class ContainerService {
     if (!existing) {
       return null;
     }
-    const container = this.docker.getContainer(existing.id);
+    await this.stop(existing.id, projectId);
 
+    return existing;
+  }
+
+  private async stop(containerId: string, projectId?: string) {
+    const container = this.docker.getContainer(containerId);
+    projectId && await this.saveExtensions(container, projectId);
+    await container.stop();
+  }
+
+  private async saveExtensions(container: Dockerode.Container, projectId: string) {
     const stream = await this.containerExec(container, ['code-server', '--list-extensions', '--show-versions']);
     const extensionsList = `${this.projectService.getStoragePath('config', projectId)}/extensions.txt`;
     await createFile(extensionsList);
 
     const writeStream = fs.createWriteStream(extensionsList);
     container.modem.demuxStream(stream, writeStream, process.stderr);
-
-    await container.stop();
-    return existing;
   }
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
+  @Cron(CronExpression.EVERY_MINUTE)
   async checkAllHeartbeats() {
     const containers = await this.docker.listContainers({
       filters: {
-        label: [`org.fulib.project`],
+        label: ['org.fulib.token'],
         status: ['created', 'running'],
       },
     });
 
-    for (let i = 0; i < containers.length; i++) {
-      const container = containers[i];
-      this.isHeartbeatExpired(container.Id).then(expired => {
-        expired && this.remove(container.Labels['org.fulib.project'], container.Labels['org.fulib.user']);
-      });
-    }
+    await Promise.all(containers.map(async info => {
+      const expired = await this.isHeartbeatExpired(info.Id, +info.Labels['org.fulib.timeout']);
+      if (!expired) {
+        return;
+      }
 
+      await this.stop(info.Id, info.Labels['org.fulib.project']);
+    }));
   }
 
-  private async isHeartbeatExpired(containerId: string): Promise<boolean> {
+  private async isHeartbeatExpired(containerId: string, timeoutSeconds?: number): Promise<boolean> {
     try {
       const {data} = await firstValueFrom(this.httpService.get(`${this.containerUrl(containerId)}/healthz`));
       // res.data.lastHeartbeat is 0, when container has just started
-      return data.status === 'expired' && data.lastHeartbeat && data.lastHeartbeat < Date.now() - environment.docker.heartbeatTimeout;
+      if (data.status !== 'expired' || !data.lastHeartbeat) {
+        return false;
+      }
+      const msSinceLastHeartbeat = Date.now() - data.lastHeartbeat;
+      const timeoutMs = (timeoutSeconds || environment.docker.heartbeatTimeout) * 1000;
+      return msSinceLastHeartbeat > timeoutMs;
     } catch (e) {
       //container is in creating phase right now, /healthz endpoint isn't ready yet
       return false;
