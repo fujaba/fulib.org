@@ -40,4 +40,12 @@
       Other options include pre-installed extensions for other languages.
     </div>
   </div>
+  <div class="mb-3">
+    <label class="form-label" for="repositoryInput">Git Repository</label>
+    <input class="form-control" type="url" id="repositoryInput" [(ngModel)]="project.repository">
+    <div class="form-text">
+      Optional. Initialise the project from a Git repository.
+      To use a private repository, you need to log in or link your fulib.org account with GitHub.
+    </div>
+  </div>
 </div>

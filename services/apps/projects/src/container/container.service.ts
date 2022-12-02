@@ -5,6 +5,7 @@ import {Cron, CronExpression} from '@nestjs/schedule';
 import * as chownr from 'chownr';
 import {randomBytes} from 'crypto';
 import * as Dockerode from 'dockerode';
+import {ContainerCreateOptions} from 'dockerode';
 import * as fs from 'fs';
 import * as path from 'path';
 import {firstValueFrom, map} from 'rxjs';
@@ -12,8 +13,9 @@ import {Readable} from 'stream';
 import {setTimeout} from 'timers/promises';
 import {Extract} from 'unzipper';
 import {environment} from '../environment';
+import {Project} from '../project/project.schema';
 import {ProjectService} from '../project/project.service';
-import {ContainerDto} from './container.dto';
+import {ContainerDto, CreateContainerDto} from './container.dto';
 
 const CODE_WORKSPACE = '/home/coder/project';
 
@@ -32,27 +34,20 @@ export class ContainerService {
   ) {
   }
 
-  async create(projectId: string, user: UserToken, auth: string, image?: string): Promise<ContainerDto> {
-    return await this.findOne(projectId, user.sub) ?? await this.start(projectId, user, auth, image);
+  async create(project: Project, user: UserToken, auth: string): Promise<ContainerDto> {
+    const {_id, dockerImage, repository} = project;
+    return await this.findOne(_id.toString(), user.sub) ?? await this.start({
+      projectId: _id.toString(),
+      dockerImage,
+      repository,
+    }, user, auth);
   }
 
-  async start(projectId: string, user: UserToken, auth: string, image?: string): Promise<ContainerDto> {
-    const projectPath = this.projectService.getStoragePath('projects', projectId);
-    const usersPath = this.projectService.getStoragePath('users', user.sub);
+  async start(dto: CreateContainerDto, user?: UserToken, auth?: string): Promise<ContainerDto> {
     const token = randomBytes(12).toString('base64');
 
-    /* create 'settings.json' files if they don't exist already
-    code server will write the user/machine settings there
-    if we won't create the file manually, docker will automatically
-    create a directory instead when binding it. This will
-    lead to an error when code server is trying to write on the bind mount
-     */
-
-    await createFile(`${usersPath}/settings.json`);
-    await createFile(`${usersPath}/.gitconfig`, async () => await this.generateGitConfig(user, auth));
-
-    const container = await this.docker.createContainer({
-      Image: image || environment.docker.containerImage,
+    const options: ContainerCreateOptions = {
+      Image: dto.dockerImage || environment.docker.containerImage,
       Tty: true,
       NetworkingConfig: {
         EndpointsConfig: {
@@ -61,32 +56,62 @@ export class ContainerService {
       },
       HostConfig: {
         AutoRemove: true,
-        Binds: [
-          `${projectPath}:${CODE_WORKSPACE}`,
-          `${usersPath}/settings.json:/home/coder/.local/share/code-server/User/settings.json`,
-          `${usersPath}/.gitconfig:/home/coder/.gitconfig`,
-        ],
+        Binds: [],
       },
       Env: [
-        `PROJECT_ID=${projectId}`,
         `PASSWORD=${token}`,
       ],
       Labels: {
-        'org.fulib.project': projectId,
-        'org.fulib.user': user.sub,
         'org.fulib.token': token,
       },
-    });
+    };
+
+    let projectPath: string | undefined;
+    if (dto.projectId) {
+      projectPath = this.projectService.getStoragePath('projects', dto.projectId);
+      options.HostConfig!.Binds!.push(`${projectPath}:${CODE_WORKSPACE}`);
+      options.Env!.push(`PROJECT_ID=${dto.projectId}`);
+      options.Labels!['org.fulib.project'] = dto.projectId;
+    }
+
+    if (user) {
+      const usersPath = this.projectService.getStoragePath('users', user.sub);
+
+      /* create 'settings.json' files if they don't exist already
+      code server will write the user/machine settings there
+      if we won't create the file manually, docker will automatically
+      create a directory instead when binding it. This will
+      lead to an error when code server is trying to write on the bind mount
+       */
+      await createFile(`${usersPath}/settings.json`);
+      await createFile(`${usersPath}/.gitconfig`, async () => await this.generateGitConfig(user, auth));
+      options.Labels!['org.fulib.user'] = user.sub;
+      options.HostConfig!.Binds!.push(
+        `${usersPath}/settings.json:/home/coder/.local/share/code-server/User/settings.json`,
+        `${usersPath}/.gitconfig:/home/coder/.gitconfig`,
+      );
+    }
+
+    const container = await this.docker.createContainer(options);
 
     await container.start();
 
-    this.installExtensions(container, projectId);
+    dto.projectId && this.installExtensions(container, dto.projectId);
 
-    const containerDto = this.toContainer(container.id, token, projectId);
+    const containerDto = this.toContainer(container.id, token, dto.projectId);
+
+    if (dto.repository) {
+      await this.cloneRepository(container, dto.repository);
+    } else if (projectPath) {
+      await this.checkIsNew(projectPath, containerDto);
+    } else {
+      containerDto.isNew = true;
+    }
+
+    // FIXME VNC should work for temporary containers as well
+    projectPath && await this.writeVncUrl(projectPath, containerDto);
+
     await this.waitForContainer(containerDto);
-    await this.checkIsNew(projectPath, containerDto);
-    await this.writeVncUrl(projectPath, containerDto);
-
     return containerDto;
   }
 
@@ -112,7 +137,7 @@ export class ContainerService {
     ));
   }
 
-  private toContainer(id: string, projectId: string, token: string): ContainerDto {
+  private toContainer(id: string, token: string, projectId?: string): ContainerDto {
     return {
       id,
       projectId,
@@ -160,6 +185,19 @@ export class ContainerService {
     const stream = await exec.start({});
     await streamOnEndWorkaround(exec, stream);
     return stream;
+  }
+
+  private async cloneRepository(container: Dockerode.Container, repository: string) {
+    const hashIndex = repository.indexOf('#');
+    let ref: string | undefined;
+    if (hashIndex >= 0) {
+      ref = repository.substring(hashIndex + 1);
+      repository = repository.substring(0, hashIndex);
+    }
+    await this.containerExec(container, ['git', 'clone', repository, CODE_WORKSPACE]);
+    if (ref) {
+      await this.containerExec(container, ['git', '-C', CODE_WORKSPACE, 'checkout', ref]);
+    }
   }
 
   private async writeVncUrl(projectPath: string, containerDto: ContainerDto) {

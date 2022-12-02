@@ -30,6 +30,12 @@ export class ContainerController {
   ) {
   }
 
+  @Post('container')
+  @ApiCreatedResponse({type: ContainerDto})
+  async createTemp(@Body() dto: CreateContainerDto): Promise<ContainerDto> {
+    return this.containerService.start(dto);
+  }
+
   @Post('projects/:id/container')
   @MemberAuth({forbiddenResponse})
   @ApiCreatedResponse({type: ContainerDto})
@@ -43,7 +49,7 @@ export class ContainerController {
     if (!project) {
       throw new NotFoundException(id);
     }
-    return this.containerService.create(id, user, authorization, project.dockerImage);
+    return this.containerService.create(project, user, authorization);
   }
 
   @Get('projects/:id/container')
