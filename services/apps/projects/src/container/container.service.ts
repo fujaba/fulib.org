@@ -66,6 +66,10 @@ export class ContainerService {
       },
     };
 
+    if (dto.idleTimeout) {
+      options.Labels!['org.fulib.timeout'] = dto.idleTimeout.toString();
+    }
+
     let projectPath: string | undefined;
     if (dto.projectId) {
       projectPath = this.projectService.getStoragePath('projects', dto.projectId);
@@ -300,7 +304,7 @@ ${eofMarker}`]);
     });
 
     await Promise.all(containers.map(async info => {
-      const expired = await this.isHeartbeatExpired(info.Id);
+      const expired = await this.isHeartbeatExpired(info.Id, +info.Labels['org.fulib.timeout']);
       if (!expired) {
         return;
       }
@@ -309,11 +313,11 @@ ${eofMarker}`]);
     }));
   }
 
-  private async isHeartbeatExpired(containerId: string): Promise<boolean> {
+  private async isHeartbeatExpired(containerId: string, timeoutMs?: number): Promise<boolean> {
     try {
       const {data} = await firstValueFrom(this.httpService.get(`${this.containerUrl(containerId)}/healthz`));
       // res.data.lastHeartbeat is 0, when container has just started
-      return data.status === 'expired' && data.lastHeartbeat && data.lastHeartbeat < Date.now() - environment.docker.heartbeatTimeout;
+      return data.status === 'expired' && data.lastHeartbeat && data.lastHeartbeat < Date.now() - (timeoutMs || environment.docker.heartbeatTimeout);
     } catch (e) {
       //container is in creating phase right now, /healthz endpoint isn't ready yet
       return false;

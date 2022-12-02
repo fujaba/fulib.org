@@ -1,5 +1,16 @@
 import {ApiProperty, PickType} from '@nestjs/swagger';
-import {IsAlphanumeric, IsBoolean, IsMongoId, IsObject, IsOptional, IsString, IsUrl, Matches} from 'class-validator';
+import {
+  IsAlphanumeric,
+  IsBoolean,
+  IsMongoId,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+  IsUrl,
+  Matches, Max,
+} from 'class-validator';
+import {environment} from '../environment';
 import {Project} from '../project/project.schema';
 
 export class ContainerDto {
@@ -39,6 +50,12 @@ export class CreateContainerDto extends PickType(Project, [
   @IsOptional()
   @IsMongoId()
   projectId?: string;
+
+  @ApiProperty({description: 'Idle timeout in milliseconds', maximum: environment.docker.heartbeatTimeout})
+  @IsOptional()
+  @IsNumber()
+  @Max(environment.docker.heartbeatTimeout)
+  idleTimeout?: number;
 
   @ApiProperty()
   @IsOptional()
