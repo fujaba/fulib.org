@@ -1,2 +1,2 @@
-**
-!/build/libs/backend-*-all.jar
+.gradle/
+build/
