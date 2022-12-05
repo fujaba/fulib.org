@@ -27,7 +27,7 @@ import {SharedModule} from './shared/shared.module';
 import {UserModule} from './user/user.module';
 
 function initializeKeycloak(keycloak: KeycloakService) {
-  return () => keycloak.init({
+  return () => environment.auth && keycloak.init({
     config: {
       clientId: environment.auth.clientId,
       realm: environment.auth.realm,

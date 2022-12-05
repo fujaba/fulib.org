@@ -82,7 +82,7 @@
             <span class="dropdown-item-text text-muted">
             {{username ? 'Logged in as ' : 'Not logged in'}}<b *ngIf="username">{{username}}</b>.
           </span>
-            <a *ngIf="username" ngbDropdownItem [href]="accountUrl" target="_blank">
+            <a *ngIf="username && accountUrl" ngbDropdownItem [href]="accountUrl" target="_blank">
               Edit Account
             </a>
             <button ngbDropdownItem (click)="username ? logout() : login()">

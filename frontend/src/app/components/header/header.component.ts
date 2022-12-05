@@ -27,7 +27,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   versions?: Versions;
 
   username?: string;
-  accountUrl: string = environment.auth.url + '/realms/' + environment.auth.realm + '/account';
+  accountUrl?: string = environment.auth ? `${environment.auth.url}/realms/${environment.auth.realm}/account` : undefined;
 
   ngOnInit(): void {
     this.keycloak.isLoggedIn().then(loggedIn => {
