@@ -5,10 +5,15 @@ plugins {
 	id 'application'
 	// https://plugins.gradle.org/plugin/com.github.johnrengelman.shadow
 	id 'com.github.johnrengelman.shadow' version '5.2.0'
+	// https://plugins.gradle.org/plugin/org.fulib.fulibGradle
+	id 'org.fulib.fulibGradle' version '0.5.0'
 }
 
 // --------------- Publication Info ---------------
 
+def tagOutput = 'git describe --tags'.execute([ ], rootDir).text
+version = tagOutput.length() > 2 ? tagOutput[1..-2] : '0.0.0'
+group = 'org.fulib'
 description = 'The fulib.org website and fulibScenarios Web App'
 
 // --------------- General Settings ---------------
@@ -24,6 +29,32 @@ repositories {
 	mavenCentral()
 }
 
+ext {
+	// https://mvnrepository.com/artifact/org.fulib/fulib
+	fulibDependency = [ group: 'org.fulib', name: 'fulib', version: '1.6.1' ]
+
+	// https://mvnrepository.com/artifact/org.fulib/fulibScenarios
+	fulibScenariosDependency = [ group: 'org.fulib', name: 'fulibScenarios', version: '1.7.0' ]
+
+	// https://mvnrepository.com/artifact/org.fulib/fulibTools
+	fulibToolsDependency = [ group: 'org.fulib', name: 'fulibTools', version: '1.5.1' ]
+
+	// https://mvnrepository.com/artifact/org.fulib/fulibMockups
+	fulibMockupsDependency = [ group: 'org.fulib', name: 'fulibMockups', version: '0.4.0' ]
+
+	// https://mvnrepository.com/artifact/org.fulib/fulibTables
+	fulibTablesDependency = [ group: 'org.fulib', name: 'fulibTables', version: '1.4.0' ]
+
+	// https://mvnrepository.com/artifact/org.fulib/fulibWorkflows
+	fulibWorkflowsDependency = [ group: 'org.fulib', name: 'fulibWorkflows', version: '0.5.6' ]
+
+	// https://mvnrepository.com/artifact/junit/junit
+	junitDependency = [ group: 'junit', name: 'junit', version: '4.13.2' ]
+
+	// https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
+	slf4jDependency = [ group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.36' ]
+}
+
 dependencies {
 	// --------------- Dagger (Dependency Injection) ---------------
 
@@ -32,6 +63,10 @@ dependencies {
 	annotationProcessor 'com.google.dagger:dagger-compiler:2.44.2'
 
 	// --------------- Fulib Libraries ---------------
+
+	fulibScenarios fulibDependency
+	fulibScenarios fulibScenariosDependency
+	fulibScenarios slf4jDependency
 
 	implementation fulibDependency
 	implementation fulibScenariosDependency
@@ -113,4 +148,18 @@ String getDependencyVersion(Configuration config, String group, String name) {
 		def id = it.moduleVersion.id
 		id.group == group && id.name == name ? id.version : null
 	}
+}
+
+// --------------- Test Scenarios ---------------
+
+def testScenariosDir = file '../frontend/src/assets/examples'
+def testOutputDir = file "$buildDir/generated/sources/scenarios/java/test"
+
+sourceSets.test.scenarios.srcDir testScenariosDir
+sourceSets.test.java.srcDir testOutputDir
+
+tasks.named('generateTestScenarioSource') {
+	inputDirectory = testScenariosDir
+	modelDirectory = testOutputDir
+	testDirectory = testOutputDir
 }
