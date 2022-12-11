@@ -5,19 +5,19 @@ import {
   Controller,
   Delete,
   Get,
-  Header, Headers,
+  Headers,
   NotFoundException,
   Param,
   Post,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
+import {FileInterceptor} from '@nestjs/platform-express';
 import {ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {MemberAuth} from '../member/member-auth.decorator';
 import {ProjectService} from '../project/project.service';
 import {ContainerDto, CreateContainerDto} from './container.dto';
 import {ContainerService} from './container.service';
-import {FileInterceptor} from '@nestjs/platform-express';
 
 const forbiddenResponse = 'Not member of project.';
 

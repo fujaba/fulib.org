@@ -29,7 +29,7 @@ export class ClassroomScheduler {
     }
 
     await Promise.all(assignments.map(async a => {
-      const webhook = a.classroom?.webhook!;
+      const webhook = a.classroom!.webhook!;
       try {
         const count = await this.classroomService.countSolutions(a as AssignmentDocument);
         this.notify(webhook, `The deadline for **${a.title}** is in ${offset} hours. So far, there are **${count}** Solutions.`);
