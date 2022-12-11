@@ -23,3 +23,7 @@ services:
     ports:
       - '9200:9200'
       - '9300:9300'
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+volumes:
+  elasticsearch-data:
