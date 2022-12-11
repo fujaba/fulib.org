@@ -47,7 +47,7 @@ export class EditAssignmentComponent implements OnInit {
         }
         return of(this.createNew());
       }),
-    ).subscribe(assignment => this.setAssignment(assignment));
+    ).subscribe(assignment => this.context.assignment = assignment);
   }
 
   private createNew(): Assignment {
@@ -65,11 +65,6 @@ export class EditAssignmentComponent implements OnInit {
     };
   }
 
-  setAssignment(a: Assignment): void {
-    this.context.assignment = a;
-    a.classroom ??= {};
-  }
-
   saveDraft(): void {
     this.assignmentService.saveDraft(this.context.assignment._id, this.getAssignment());
     this.draft = true;
@@ -77,15 +72,16 @@ export class EditAssignmentComponent implements OnInit {
 
   onImport(file: File): void {
     this.assignmentService.upload(file).subscribe(result => {
-      this.setAssignment(result);
-      this.saveDraft();
+      const {_id, token, createdBy, ...rest} = result;
+      this.context.assignment = rest as Assignment;
       this.context.evaluations = undefined;
+      this.saveDraft();
     });
   }
 
   onExport(): void {
-    const assignment = this.getAssignment();
-    this.assignmentService.download(assignment);
+    const {_id, token, createdBy, ...rest} = this.getAssignment();
+    this.assignmentService.download(rest);
   }
 
   submit(): void {

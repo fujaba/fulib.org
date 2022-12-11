@@ -118,6 +118,23 @@ export class ClassroomService {
     });
   }
 
+  async countSolutions(assignment: AssignmentDocument): Promise<number> {
+    const token = assignment.classroom?.token;
+    if (!token) {
+      throw new UnauthorizedException('Missing token');
+    }
+    const query = this.getQuery(assignment);
+    try {
+      const result = await this.github<SearchResult>('GET', 'https://api.github.com/search/repositories', token!, {q: query});
+      return result.total_count;
+    } catch (e: any) {
+      if (e.response?.status === 403) {
+        throw new UnauthorizedException('Invalid token');
+      }
+      throw e;
+    }
+  }
+
   async importSolutions(id: string): Promise<ReadSolutionDto[]> {
     const assignment = await this.assignmentService.findOne(id);
     if (!assignment || !assignment.classroom || !assignment.classroom.org || !assignment.classroom.prefix || !assignment.classroom.token) {
@@ -129,8 +146,12 @@ export class ClassroomService {
   }
 
   async importSolutions2(assignment: AssignmentDocument): Promise<string[]> {
-    const {org, prefix, token, codeSearch} = assignment.classroom!;
-    const query = `org:${org} "${prefix}-" in:name`;
+    const {token, codeSearch} = assignment.classroom!;
+    if (!token) {
+      throw new UnauthorizedException('Missing token');
+    }
+
+    const query = this.getQuery(assignment);
     const repositories: RepositoryInfo[] = [];
     let total = Number.MAX_SAFE_INTEGER;
     for (let page = 1; repositories.length < total; page++) {
@@ -146,8 +167,7 @@ export class ClassroomService {
         if (err.response?.status === 401) {
           throw new UnauthorizedException('Invalid GitHub token');
         }
-        console.error(err);
-        break;
+        throw err;
       }
     }
 
@@ -174,6 +194,11 @@ export class ClassroomService {
     }
 
     return Object.values(result.upsertedIds);
+  }
+
+  private getQuery(assignment: AssignmentDocument): string {
+    const {org, prefix} = assignment.classroom!;
+    return `org:${org} "${prefix}-" in:name`;
   }
 
   private addContentsToIndex(assignment: AssignmentDocument, solution: SolutionDocument) {

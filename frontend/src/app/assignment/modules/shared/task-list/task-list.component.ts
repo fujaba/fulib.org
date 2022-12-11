@@ -1,5 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import { ToastService } from 'ng-bootstrap-ext';
 import {switchMap} from 'rxjs/operators';
 import {CreateEvaluationDto, Evaluation} from '../../../model/evaluation';
 import Task from '../../../model/task';
@@ -21,6 +22,7 @@ export class TaskListComponent {
     private telemetryService: TelemetryService,
     private solutionService: SolutionService,
     private configService: ConfigService,
+    private toastService: ToastService,
     private route: ActivatedRoute,
   ) {
   }
@@ -46,6 +48,11 @@ export class TaskListComponent {
           remark: '',
           snippets: [],
         })),
-    ).subscribe(); // updating evaluations and points is handled by the tasks component
+    ).subscribe({
+      // updating evaluations and points is handled by the tasks component
+      error: error => {
+        this.toastService.error('Quick Evaluation', 'Failed to create or update evaluation', error);
+      },
+    });
   }
 }

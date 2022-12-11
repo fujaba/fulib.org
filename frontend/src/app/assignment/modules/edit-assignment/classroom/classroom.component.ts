@@ -17,6 +17,7 @@ export class ClassroomComponent {
     context: AssignmentContext,
   ) {
     this.assignment = context.assignment;
+    this.assignment.classroom ||= {};
     this.saveDraft = context.saveDraft;
   }
 }
