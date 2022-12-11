@@ -32,14 +32,21 @@ export class ClassroomScheduler {
     }
 
     await Promise.all(assignments.map(async a => {
-      const ids = await this.classroomService.importSolutions2(a as AssignmentDocument);
       const webhook = a.classroom?.webhook;
-      if (webhook) {
-        this.http.post(webhook, {
-          content: `The deadline for **${a.title}** is over. I imported **${ids.length}** Solutions.`,
-        }).subscribe();
+      try {
+        const ids = await this.classroomService.importSolutions2(a as AssignmentDocument);
+        if (webhook) {
+          this.http.post(webhook, {
+            content: `The deadline for **${a.title}** is over. I imported **${ids.length}** Solutions.`,
+          }).subscribe();
+        }
+      } catch (e: any) {
+        if (webhook && e.message) {
+          this.http.post(webhook, {
+            content: `The deadline for **${a.title}** is over. I failed to import Solutions: ${e.message}`,
+          }).subscribe();
+        }
       }
-      return ids.length;
     }));
   }
 }

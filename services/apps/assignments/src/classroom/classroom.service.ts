@@ -129,8 +129,12 @@ export class ClassroomService {
   }
 
   async importSolutions2(assignment: AssignmentDocument): Promise<string[]> {
-    const {org, prefix, token, codeSearch} = assignment.classroom!;
-    const query = `org:${org} "${prefix}-" in:name`;
+    const {token, codeSearch} = assignment.classroom!;
+    if (!token) {
+      throw new UnauthorizedException('Missing token');
+    }
+
+    const query = this.getQuery(assignment);
     const repositories: RepositoryInfo[] = [];
     let total = Number.MAX_SAFE_INTEGER;
     for (let page = 1; repositories.length < total; page++) {
@@ -146,8 +150,7 @@ export class ClassroomService {
         if (err.response?.status === 401) {
           throw new UnauthorizedException('Invalid GitHub token');
         }
-        console.error(err);
-        break;
+        throw err;
       }
     }
 
@@ -174,6 +177,11 @@ export class ClassroomService {
     }
 
     return Object.values(result.upsertedIds);
+  }
+
+  private getQuery(assignment: AssignmentDocument): string {
+    const {org, prefix} = assignment.classroom!;
+    return `org:${org} "${prefix}-" in:name`;
   }
 
   private addContentsToIndex(assignment: AssignmentDocument, solution: SolutionDocument) {
