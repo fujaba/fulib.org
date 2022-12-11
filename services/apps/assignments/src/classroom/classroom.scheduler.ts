@@ -1,7 +1,8 @@
 import {HttpService} from '@nestjs/axios';
 import {Injectable} from '@nestjs/common';
 import {Cron, CronExpression} from '@nestjs/schedule';
-import {AssignmentDocument} from '../assignment/assignment.schema';
+import {FilterQuery} from 'mongoose';
+import {Assignment, AssignmentDocument} from '../assignment/assignment.schema';
 import {AssignmentService} from '../assignment/assignment.service';
 import {ClassroomService} from './classroom.service';
 
@@ -20,20 +21,20 @@ export class ClassroomScheduler {
     const offset = 12;
     const startDate = new Date(Date.now() + offset * hour);
     const endDate = new Date(+startDate + hour);
-    const assignments = await this.findAssignmentsBetween(startDate, endDate);
+    const assignments = await this.findAssignmentsBetween(startDate, endDate, {
+      'classroom.webhook': {$exists: true},
+    });
     if (!assignments.length) {
       return;
     }
 
     await Promise.all(assignments.map(async a => {
-      const webhook = a.classroom?.webhook;
+      const webhook = a.classroom?.webhook!;
       try {
         const count = await this.classroomService.countSolutions(a as AssignmentDocument);
-        if (webhook) {
-          this.notify(webhook, `The deadline for **${a.title}** is in ${offset} hours. So far, there are **${count}** Solutions.`);
-        }
+        this.notify(webhook, `The deadline for **${a.title}** is in ${offset} hours. So far, there are **${count}** Solutions.`);
       } catch (e: any) {
-        if (webhook && e.message) {
+        if (e.message) {
           this.notify(webhook, `The deadline for **${a.title}** is in ${offset} hours. I failed to count Solutions: ${e.message}\n**PLEASE REVIEW THE ASSIGNMENT SETTINGS**`);
         } else {
           console.error(a.title, e);
@@ -69,7 +70,7 @@ export class ClassroomScheduler {
     }));
   }
 
-  private async findAssignmentsBetween(startDate: Date, endDate: Date) {
+  private async findAssignmentsBetween(startDate: Date, endDate: Date, filter?: FilterQuery<Assignment>) {
     return await this.assignmentService.findAll({
       'classroom.org': {$exists: true},
       'classroom.prefix': {$exists: true},
@@ -77,6 +78,7 @@ export class ClassroomScheduler {
         $gte: startDate,
         $lt: endDate,
       },
+      ...filter,
     });
   }
 
