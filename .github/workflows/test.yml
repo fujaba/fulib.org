@@ -45,10 +45,11 @@ jobs:
         with:
           distribution: adopt
           java-version: 17
-      - name: Setup Gradle
+      - name: Test Gradle
         uses: gradle/gradle-build-action@v2
-      - name: Build with Gradle
-        run: ./gradlew :backend:test && ./gradlew --stop
+        with:
+          arguments: test
+          build-root-directory: backend/
   services:
     name: Services
     runs-on: ubuntu-latest
