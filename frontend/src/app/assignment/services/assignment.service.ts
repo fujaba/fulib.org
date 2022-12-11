@@ -58,7 +58,7 @@ export class AssignmentService {
 
   // --------------- Import/Export ---------------
 
-  download(assignment: Assignment): void {
+  download(assignment: any): void {
     const json = JSON.stringify(assignment, undefined, '  ');
     saveAs(new Blob([json], {type: 'application/json'}), assignment.title + '.json');
   }
