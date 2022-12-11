@@ -6,6 +6,7 @@
         <option name="services">
           <list>
             <option value="nats" />
+            <option value="database" />
           </list>
         </option>
         <option name="sourceFilePath" value="docker-compose.yml" />
