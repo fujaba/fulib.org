@@ -118,6 +118,23 @@ export class ClassroomService {
     });
   }
 
+  async countSolutions(assignment: AssignmentDocument): Promise<number> {
+    const token = assignment.classroom?.token;
+    if (!token) {
+      throw new UnauthorizedException('Missing token');
+    }
+    const query = this.getQuery(assignment);
+    try {
+      const result = await this.github<SearchResult>('GET', 'https://api.github.com/search/repositories', token!, {q: query});
+      return result.total_count;
+    } catch (e: any) {
+      if (e.response?.status === 403) {
+        throw new UnauthorizedException('Invalid token');
+      }
+      throw e;
+    }
+  }
+
   async importSolutions(id: string): Promise<ReadSolutionDto[]> {
     const assignment = await this.assignmentService.findOne(id);
     if (!assignment || !assignment.classroom || !assignment.classroom.org || !assignment.classroom.prefix || !assignment.classroom.token) {
