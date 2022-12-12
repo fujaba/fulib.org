@@ -35,6 +35,14 @@ export class SearchService implements OnModuleInit {
   }
 
   async onModuleInit() {
+    try {
+      await this.initElasticsearch();
+    } catch (e) {
+      console.error('Failed to initialize Elasticsearch:', e);
+    }
+  }
+
+  async initElasticsearch() {
     const files = await this.elasticsearchService.indices.get({
       index: 'files',
     }).catch(() => null);
