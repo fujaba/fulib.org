@@ -62,9 +62,11 @@ export class ContainerService {
       },
       Env: [
         `PASSWORD=${token}`,
+        `WORKSPACE=${workspace}`,
       ],
       Labels: {
         'org.fulib.token': token,
+        'org.fulib.workspace': workspace,
       },
     };
 
@@ -267,7 +269,8 @@ ${eofMarker}`]);
     if (containers.length === 0) {
       return null;
     }
-    return this.toContainer(containers[0].Id, projectId, containers[0].Labels['org.fulib.token']);
+    const labels = containers[0].Labels;
+    return this.toContainer(containers[0].Id, labels['org.fulib.token'], labels['org.fulib.workspace'], projectId);
   }
 
   async remove(projectId: string, userId: string): Promise<ContainerDto | null> {
