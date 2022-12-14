@@ -197,6 +197,13 @@ export class ClassroomService {
       }
     }
 
+    await Promise.all(repositories.map((repo, i) => {
+      const commit = commits[i];
+      if (commit) {
+        return this.tag(repo, token, assignment, commit);
+      }
+    }));
+
     return Object.values(result.upsertedIds);
   }
 
@@ -221,6 +228,15 @@ export class ClassroomService {
     }, error => {
       console.error(`Failed to index ${org}/${prefix}-${github}: ${error.message}`);
     });
+  }
+
+  private tag(repo: RepositoryInfo, token: string, assignment: AssignmentDocument, commit: string) {
+    return this.github('POST', `https://api.github.com/repos/${repo.full_name}/git/refs`, token!, {},
+      {
+        ref: `refs/tags/assignments/${assignment._id}`,
+        sha: commit,
+      },
+    );
   }
 
   private createSolution(assignment: AssignmentDocument, repo: RepositoryInfo, commit: string | undefined): Solution {
