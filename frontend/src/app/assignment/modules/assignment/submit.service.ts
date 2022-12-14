@@ -86,17 +86,17 @@ export class SubmitService {
     const renderTask = (task: Task, depth: number): string => {
       const point = points[task._id];
       const evaluation = evaluationRecord[task._id];
-      if (task.points < 0 && point === 0 && !this.hasRelevantInfo(evaluation)) {
-        // do not render deductions without relevant information
+      if (!this.hasRelevantInfo(task, point, evaluation, depth)) {
         return '';
       }
 
       const snippets = evaluation ? this.renderSnippets(assignment, solution, evaluation.snippets) : '';
-      if (task.points >= 0) {
+      const pointsString = task.points > 0 ? ` (${point}/${task.points}P)` : point ? ` (${point}P)` : '';
+      if (task.children.length) {
         const headlinePrefix = '#'.repeat(depth + 2);
-        const header = `${headlinePrefix} ${task.description} (${point}/${task.points}P)\n`;
+        const header = `${headlinePrefix} ${task.description}${pointsString}\n`;
         const remark = evaluation && evaluation.remark ? evaluation.remark + '\n' : '';
-        const subTasks = renderSubTasks(task.children, depth + 1);
+        const subTasks = evaluation ? '' : renderSubTasks(task.children, depth + 1);
         return header + remark + snippets + subTasks;
       } else {
         let desc = task.description;
@@ -109,7 +109,7 @@ export class SubmitService {
           }
         }
 
-        return `- ${desc}${point ? ` (${point}P)` : ''}\n${remark}${snippets}`;
+        return `- ${desc}${pointsString}\n${remark}${snippets}`;
       }
     };
 
@@ -119,18 +119,17 @@ export class SubmitService {
     return {total, sum, tasks};
   }
 
-  private hasRelevantInfo(evaluation?: Evaluation): boolean {
-    if (!evaluation) {
-      return false;
-    }
-    if (evaluation.remark) {
-      return true;
-    }
-    if (evaluation.snippets.find(s => s.comment)) {
-      return true;
-    }
-    // No additional information
-    return false;
+  private hasRelevantInfo(task: Task, points: number, evaluation: Evaluation | undefined, depth: number): boolean {
+    return !!(
+      evaluation?.remark
+      || evaluation?.snippets.find(s => s.comment)
+      // always show non-full points
+      || points !== Math.max(task.points, 0)
+      // always show top-level tasks (but not deductions)
+      || depth === 0 && task.points > 0
+      // always show tasks with subtasks
+      || task.children.length
+    );
   }
 
   private renderSnippets(assignment: Assignment, solution: Solution, snippets: Snippet[]) {
