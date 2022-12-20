@@ -9,7 +9,7 @@ import {AssignmentDocument} from '../assignment/assignment.schema';
 import {AssignmentService} from '../assignment/assignment.service';
 import {SearchService} from '../search/search.service';
 import {ReadSolutionDto} from '../solution/solution.dto';
-import {AuthorInfo, Solution, SolutionDocument} from '../solution/solution.schema';
+import {AuthorInfo, Solution} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {generateToken} from '../utils';
 
@@ -171,8 +171,9 @@ export class ClassroomService {
       }
     }
 
-    const writes = await Promise.all(repositories.map(async repo => {
-      const solution = await this.createSolution(assignment, repo);
+    const commits = await Promise.all(repositories.map(async repo => this.getMainCommitSHA(repo, token)));
+    const result = await this.solutionService.bulkWrite(repositories.map((repo, index) => {
+      const solution = this.createSolution(assignment, repo, commits[index]);
       return {
         updateOne: {
           filter: {
@@ -184,14 +185,24 @@ export class ClassroomService {
         },
       };
     }));
-    const result = await this.solutionService.bulkWrite(writes);
 
     if (codeSearch) {
-      const solutions = await this.solutionService.findAll({assignment: assignment.id});
-      for (const solution of solutions) {
-        this.addContentsToIndex(assignment, solution as SolutionDocument);
+      for (let i = 0; i < repositories.length; i++) {
+        const repo = repositories[i];
+        const commit = commits[i];
+        const upsertedId = result.upsertedIds[i];
+        if (commit && upsertedId) {
+          this.addContentsToIndex(assignment, upsertedId.toString(), this.getGithubName(repo, assignment), commit);
+        }
       }
     }
+
+    await Promise.all(repositories.map((repo, i) => {
+      const commit = commits[i];
+      if (commit) {
+        return this.tag(repo, token, assignment, commit);
+      }
+    }));
 
     return Object.values(result.upsertedIds);
   }
@@ -201,9 +212,8 @@ export class ClassroomService {
     return `org:${org} "${prefix}-" in:name`;
   }
 
-  private addContentsToIndex(assignment: AssignmentDocument, solution: SolutionDocument) {
+  private addContentsToIndex(assignment: AssignmentDocument, solution: string, github: string, commit: string) {
     const {org, prefix} = assignment.classroom!;
-    const {author: {github}, commit} = solution;
     if (!github) {
       return;
     }
@@ -214,21 +224,28 @@ export class ClassroomService {
       },
       responseType: 'stream',
     }).subscribe(response => {
-      this.importZipStream(response.data, assignment.id, solution.id, commit);
+      this.importZipStream(response.data, assignment.id, solution, commit);
     }, error => {
       console.error(`Failed to index ${org}/${prefix}-${github}: ${error.message}`);
     });
   }
 
-  private async createSolution(assignment: AssignmentDocument, repo: RepositoryInfo): Promise<Solution> {
-    const githubName = repo.name.substring(assignment.classroom!.prefix!.length + 1);
-    const commit = await this.getMainCommitSHA(repo, assignment.classroom!.token!);
+  private tag(repo: RepositoryInfo, token: string, assignment: AssignmentDocument, commit: string) {
+    return this.github('POST', `https://api.github.com/repos/${repo.full_name}/git/refs`, token!, {},
+      {
+        ref: `refs/tags/assignments/${assignment._id}`,
+        sha: commit,
+      },
+    );
+  }
+
+  private createSolution(assignment: AssignmentDocument, repo: RepositoryInfo, commit: string | undefined): Solution {
     return {
       assignment: assignment._id,
       author: {
         name: '',
         email: '',
-        github: githubName,
+        github: this.getGithubName(repo, assignment),
         studentId: '',
       },
       solution: '',
@@ -236,6 +253,10 @@ export class ClassroomService {
       token: generateToken(),
       timestamp: new Date(repo.pushed_at),
     };
+  }
+
+  private getGithubName(repo: RepositoryInfo, assignment: AssignmentDocument): string {
+    return repo.name.substring(assignment.classroom!.prefix!.length + 1);
   }
 
   private async getMainCommitSHA(repo: RepositoryInfo, token: string): Promise<string | undefined> {
