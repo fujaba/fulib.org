@@ -3,7 +3,8 @@ WORKDIR /fulib.org/backend
 COPY build.gradle settings.gradle ./
 RUN gradle --no-daemon dependencies
 COPY . .
-RUN gradle --no-daemon shadowJar
+ARG VERSION
+RUN gradle --no-daemon -Pversion=$VERSION shadowJar
 
 FROM openjdk:17-slim
 RUN apt-get update -y && apt-get install -y graphviz && apt-get clean

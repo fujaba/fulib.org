@@ -9,7 +9,10 @@ services:
       - '11340:80'
   backend:
     image: fulib/fulib.org-backend
-    build: backend/
+    build:
+      context: backend/
+      args:
+        VERSION: docker
   nats:
     image: nats:2
     restart: unless-stopped

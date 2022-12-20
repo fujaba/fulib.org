@@ -72,6 +72,7 @@ jobs:
           image_name: fulib/fulib.org-backend
           image_tag: ${{ needs.deployment.outputs.version }}
           context: backend/
+          args: --build-arg VERSION=${{ needs.deployment.outputs.version }}
       - name: Deploy the Backend to Rancher
         uses: sekassel-research/actions-rancher-update@2.0.2
         with:

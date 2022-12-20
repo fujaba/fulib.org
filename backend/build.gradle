@@ -11,8 +11,7 @@ plugins {
 
 // --------------- Publication Info ---------------
 
-def tagOutput = 'git describe --tags'.execute([ ], rootDir).text
-version = tagOutput.length() > 2 ? tagOutput[1..-2] : '0.0.0'
+version = property('version', 'local')
 group = 'org.fulib'
 description = 'The fulib.org website and fulibScenarios Web App'
 
