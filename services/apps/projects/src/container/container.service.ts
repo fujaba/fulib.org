@@ -208,10 +208,25 @@ export class ContainerService {
       ref = repository.substring(hashIndex + 1);
       repository = repository.substring(0, hashIndex);
     }
-    await this.containerExec(container, ['git', 'clone', repository, directory]);
-    if (ref) {
+
+    if (!ref) {
+      await this.containerExec(container, ['git', 'clone', repository, directory]);
+    } else if (this.isCommitHash(ref)) {
+      console.time('clone');
+      await this.containerExec(container, ['git', 'clone', repository, directory]);
+      console.timeEnd('clone');
+      console.time('checkout');
       await this.containerExec(container, ['git', '-C', directory, 'checkout', ref]);
+      console.timeEnd('checkout');
+    } else {
+      console.time('clone branch');
+      await this.containerExec(container, ['git', 'clone', '--branch', ref, repository, directory]);
+      console.timeEnd('clone branch');
     }
+  }
+
+  private isCommitHash(ref: string): boolean {
+    return /^[0-9a-f]{7,}$/.test(ref);
   }
 
   private async writeVncUrl(projectPath: string, containerDto: ContainerDto) {
