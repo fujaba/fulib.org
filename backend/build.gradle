@@ -11,7 +11,7 @@ plugins {
 
 // --------------- Publication Info ---------------
 
-version = property('version', 'local')
+version = property('version') ?: 'local'
 group = 'org.fulib'
 description = 'The fulib.org website and fulibScenarios Web App'
 
