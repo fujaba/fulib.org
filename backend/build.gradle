@@ -86,7 +86,7 @@ dependencies {
 	implementation group: 'org.json', name: 'json', version: '20220924'
 
 	// https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync
-	implementation group: 'org.mongodb', name: 'mongodb-driver-sync', version: '4.7.1'
+	implementation group: 'org.mongodb', name: 'mongodb-driver-sync', version: '4.8.1'
 
 	// https://mvnrepository.com/artifact/com.auth0/java-jwt
 	implementation group: 'com.auth0', name: 'java-jwt', version: '4.2.1'
@@ -97,7 +97,7 @@ dependencies {
 	testImplementation slf4jDependency
 
 	// https://mvnrepository.com/artifact/org.mockito/mockito-core
-	testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.8.0'
+	testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.10.0'
 }
 
 // --------------- Version Injection ---------------
