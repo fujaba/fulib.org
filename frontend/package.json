@@ -39,7 +39,6 @@
     "markdown-it": "^13.0.1",
     "ng-bootstrap-darkmode": "^5.0.0",
     "ng-bootstrap-ext": "^0.5.0",
-    "ng-terminal": "^5.4.0",
     "ngx-clipboard": "^15.1.0",
     "ngx-drag-drop": "^14.0.0",
     "rxjs": "~7.5.7",

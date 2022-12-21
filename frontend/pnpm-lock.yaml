@@ -54,7 +54,6 @@ specifiers:
   markdown-it: ^13.0.1
   ng-bootstrap-darkmode: ^5.0.0
   ng-bootstrap-ext: ^0.5.0
-  ng-terminal: ^5.4.0
   ngx-clipboard: ^15.1.0
   ngx-drag-drop: ^14.0.0
   rxjs: ~7.5.7
@@ -92,7 +91,6 @@ dependencies:
   markdown-it: 13.0.1
   ng-bootstrap-darkmode: 5.0.0_dztuyzzojqmiawguhlwdmwsqum
   ng-bootstrap-ext: 0.5.0_6ogbl557yk5qt62525oryqlcfm
-  ng-terminal: 5.4.0_yt6vhfaqrvibeodb6jj2rnj7lm
   ngx-clipboard: 15.1.0_yt6vhfaqrvibeodb6jj2rnj7lm
   ngx-drag-drop: 14.0.0_yt6vhfaqrvibeodb6jj2rnj7lm
   rxjs: 7.5.7
@@ -2120,10 +2118,6 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.14
     dev: true
 
-  /@juggle/resize-observer/3.4.0:
-    resolution: {integrity: sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==}
-    dev: false
-
   /@leichtgewicht/ip-codec/2.0.4:
     resolution: {integrity: sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==}
     dev: true
@@ -2937,15 +2931,6 @@ packages:
       '@angular/common': 14.2.12_mfaua6ist3zuq7ixvpkrdcptfy
       '@angular/core': 14.2.12_rxjs@7.5.7+zone.js@0.12.0
       rxjs: 7.5.7
-      tslib: 2.4.1
-    dev: false
-
-  /angular-resizable-element/5.0.0_@angular+core@14.2.12:
-    resolution: {integrity: sha512-GbV8myA2x8aUU8CK7siTi1QMjtilzQzIgClqUVpE/YM1WAp0/OnioBV12oLcOT24eEwP3zDqPTHL+D1Kv2rNAw==}
-    peerDependencies:
-      '@angular/core': '>=10.0.0'
-    dependencies:
-      '@angular/core': 14.2.12_rxjs@7.5.7+zone.js@0.12.0
       tslib: 2.4.1
     dev: false
 
@@ -6047,21 +6032,6 @@ packages:
       tslib: 2.4.1
     dev: false
 
-  /ng-terminal/5.4.0_yt6vhfaqrvibeodb6jj2rnj7lm:
-    resolution: {integrity: sha512-iP5+HCyZXCiyKf6XXyaPAnu/9UmQFowSK5DBWXBkhFUWxGy9h9MyqFFevgreamO3wyDALakVS33R4kfRN8iZtA==}
-    peerDependencies:
-      '@angular/common': ^15.0.0 || ^14.0.0 || ^13.0.0 || ^12.0.0
-      '@angular/core': ^15.0.0 || ^14.0.0 || ^13.0.0 || ^12.0.0
-    dependencies:
-      '@angular/common': 14.2.12_mfaua6ist3zuq7ixvpkrdcptfy
-      '@angular/core': 14.2.12_rxjs@7.5.7+zone.js@0.12.0
-      '@juggle/resize-observer': 3.4.0
-      angular-resizable-element: 5.0.0_@angular+core@14.2.12
-      tslib: 2.4.1
-      xterm: 5.1.0
-      xterm-addon-fit: 0.6.0_xterm@5.1.0
-    dev: false
-
   /ngx-clipboard/15.1.0_yt6vhfaqrvibeodb6jj2rnj7lm:
     resolution: {integrity: sha512-dUJl1cNtdkCqL953oAhP7wmUPFrqW2aDg5OPhwPU9R3cLEdQgU2NbsHEUz4zaPyEopTXu8SR37onVm1Ep8qOHg==}
     peerDependencies:
@@ -8385,18 +8355,6 @@ packages:
       utf-8-validate:
         optional: true
     dev: true
-
-  /xterm-addon-fit/0.6.0_xterm@5.1.0:
-    resolution: {integrity: sha512-9/7A+1KEjkFam0yxTaHfuk9LEvvTSBi0PZmEkzJqgafXPEXL9pCMAVV7rB09sX6ATRDXAdBpQhZkhKj7CGvYeg==}
-    peerDependencies:
-      xterm: ^5.0.0
-    dependencies:
-      xterm: 5.1.0
-    dev: false
-
-  /xterm/5.1.0:
-    resolution: {integrity: sha512-LovENH4WDzpwynj+OTkLyZgJPeDom9Gra4DMlGAgz6pZhIDCQ+YuO7yfwanY+gVbn/mmZIStNOnVRU/ikQuAEQ==}
-    dev: false
 
   /y18n/5.0.8:
     resolution: {integrity: sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA==}
