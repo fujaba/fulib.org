@@ -20,6 +20,7 @@ export class ClassroomScheduler {
     const hour = 60 * 60 * 1000;
     const offset = 12;
     const startDate = new Date(Date.now() + offset * hour);
+    startDate.setUTCSeconds(0, 0);
     const endDate = new Date(+startDate + hour);
     const assignments = await this.findAssignmentsBetween(startDate, endDate, {
       'classroom.webhook': {$exists: true},
@@ -70,8 +71,8 @@ export class ClassroomScheduler {
     }));
   }
 
-  private async findAssignmentsBetween(startDate: Date, endDate: Date, filter?: FilterQuery<Assignment>) {
-    return await this.assignmentService.findAll({
+  private async findAssignmentsBetween(startDate: Date, endDate: Date, filter: FilterQuery<Assignment> = {}) {
+    return this.assignmentService.findAll({
       'classroom.org': {$exists: true},
       'classroom.prefix': {$exists: true},
       deadline: {
@@ -85,6 +86,6 @@ export class ClassroomScheduler {
   private notify(webhook: string, message: string) {
     this.http.post(webhook, {
       content: message,
-    }).subscribe();
+    }).subscribe(undefined, console.error);
   }
 }

@@ -61,7 +61,7 @@ export class AssignmentController {
     if (ids) {
       (filter.$or ||= []).push({_id: {$in: ids.split(',')}});
     }
-    return this.assignmentService.findAll(filter);
+    return (await this.assignmentService.findAll(filter)).map(a => this.assignmentService.mask(a.toObject()));
   }
 
   @Get(':id')

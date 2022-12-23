@@ -89,9 +89,8 @@ export class AssignmentService {
     return created;
   }
 
-  async findAll(where: FilterQuery<Assignment> = {}): Promise<ReadAssignmentDto[]> {
-    const assignments = await this.model.find(where).sort({title: 1}).exec();
-    return assignments.map(a => this.mask(a.toObject()));
+  async findAll(where: FilterQuery<Assignment> = {}): Promise<AssignmentDocument[]> {
+    return this.model.find(where).sort({title: 1}).exec();
   }
 
   async findOne(id: string): Promise<AssignmentDocument | null> {
