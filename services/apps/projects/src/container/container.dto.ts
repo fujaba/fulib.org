@@ -2,21 +2,28 @@ import {ApiProperty, PickType} from '@nestjs/swagger';
 import {
   IsAlphanumeric,
   IsBoolean,
+  IsHexadecimal,
   IsMongoId,
   IsNumber,
   IsObject,
   IsOptional,
   IsString,
   IsUrl,
-  Matches, Max, Min,
+  Matches,
+  Max,
+  Min,
 } from 'class-validator';
 import {environment} from '../environment';
 import {Project} from '../project/project.schema';
 
 export class ContainerDto {
   @ApiProperty()
-  @IsMongoId()
+  @IsHexadecimal()
   id: string;
+
+  @ApiProperty()
+  @IsHexadecimal()
+  name: string;
 
   @ApiProperty({format: 'url'})
   @IsUrl()
