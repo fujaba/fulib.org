@@ -103,7 +103,7 @@ export class SolutionController {
   private async originFilter(assignment: string, term: string, regex: RegExp) {
     const ids = await this.evaluationService.findUnique('solution', {
       assignment,
-      // TODO regex does not work on ObjectIds, for now this does not matter because who searches for partial IDs?
+      // regex does not work on ObjectIds, for now this does not matter because who searches for partial IDs?
       'codeSearch.origin': isMongoId(term) ? new Types.ObjectId(term) : regex,
     });
     return {_id: {$in: ids}};
