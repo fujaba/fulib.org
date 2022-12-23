@@ -36,25 +36,13 @@ public class Tools
 		return file.toString().endsWith(".class");
 	}
 
-	public static Stream<Path> collectJavaFiles(Path sourceFolder)
-	{
-		try
-		{
-			return Files.walk(sourceFolder).filter(Tools::isJava);
-		}
-		catch (IOException e)
-		{
-			return Stream.empty();
-		}
-	}
-
 	// --------------- File Utilities ---------------
 
 	public static void deleteRecursively(Path dir)
 	{
-		try
+		try (final Stream<Path> stream = Files.walk(dir))
 		{
-			Files.walk(dir).sorted(Comparator.reverseOrder()).forEach(file -> {
+			stream.sorted(Comparator.reverseOrder()).forEach(file -> {
 				try
 				{
 					Files.deleteIfExists(file);
@@ -100,7 +88,17 @@ public class Tools
 
 		ArrayList<String> args = new ArrayList<>();
 
-		Arrays.stream(sourceFolders).flatMap(Tools::collectJavaFiles).map(Path::toString).forEach(args::add);
+		Arrays.stream(sourceFolders).flatMap(sourceFolder -> {
+			try
+			{
+				// noinspection resource
+				return Files.walk(sourceFolder).filter(Tools::isJava);
+			}
+			catch (IOException e)
+			{
+				return Stream.empty();
+			}
+		}).map(Path::toString).forEach(args::add);
 
 		args.add("-d");
 		args.add(outFolder.toString());
@@ -124,11 +122,12 @@ public class Tools
 		{
 			Logger.getGlobal().log(Level.SEVERE, "could not build classpath", e);
 		}
-		try (URLClassLoader classLoader = new URLClassLoader(classPathUrls))
-		{
-			List<Class<?>> testClasses = new ArrayList<>();
 
-			Files.walk(testClassesDir).filter(Tools::isClass).sorted().forEach(path -> {
+		List<Class<?>> testClasses = new ArrayList<>();
+		try (final URLClassLoader classLoader = new URLClassLoader(classPathUrls);
+		     final Stream<Path> stream = Files.walk(testClassesDir))
+		{
+			stream.filter(Tools::isClass).sorted().forEach(path -> {
 				final String relativePath = testClassesDir.relativize(path).toString();
 				final String className = relativePath
 					.substring(0, relativePath.length() - ".class".length())
@@ -161,7 +160,7 @@ public class Tools
 		String... scenariocArgs
 	) throws Exception
 	{
-		final PrintStream printErr = new PrintStream(err, false, StandardCharsets.UTF_8.name());
+		final PrintStream printErr = new PrintStream(err, false, StandardCharsets.UTF_8);
 
 		try
 		{
@@ -173,13 +172,16 @@ public class Tools
 
 			String classPath = System.getProperty("java.class.path");
 
-			if (Files.walk(modelSrcDir).anyMatch(Tools::isJava))
+			try (final Stream<Path> stream = Files.walk(modelSrcDir))
 			{
-				// only compile model folder if there are any java files.
-				final int modelJavac = javac(out, err, classPath, modelClassesDir, modelSrcDir);
-				if (modelJavac != 0)
+				if (stream.anyMatch(Tools::isJava))
 				{
-					return modelJavac << 2 | 1;
+					// only compile model folder if there are any java files.
+					final int modelJavac = javac(out, err, classPath, modelClassesDir, modelSrcDir);
+					if (modelJavac != 0)
+					{
+						return modelJavac << 2 | 1;
+					}
 				}
 			}
 
