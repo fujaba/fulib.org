@@ -48,7 +48,7 @@ export const CONFIG_OPTIONS: ConfigOption[] = [
     description: 'The ref to use when cloning a repository. ' +
       'Tags are only supported in VSCode v1.74+ and Assignments imported after 2022-12-21.',
     options: [['none', 'None'], ['tag', 'Tag']],
-    default: 'none',
+    default: 'tag',
   }
 ];
 
