@@ -71,8 +71,9 @@ public class Tools
 
 	// --------------- Tool Invocation ---------------
 
-	public static int scenarioc(OutputStream out, OutputStream err, Path scenarioSrcDir, Path modelSrcDir,
-		Path testSrcDir, String... args)
+	public static int scenarioc(
+		OutputStream out, OutputStream err, Path scenarioSrcDir, Path modelSrcDir, Path testSrcDir, String... args
+	)
 	{
 		final List<String> finalArgs = new ArrayList<>(8 + args.length);
 		finalArgs.add("--classpath");
@@ -129,8 +130,10 @@ public class Tools
 
 			Files.walk(testClassesDir).filter(Tools::isClass).sorted().forEach(path -> {
 				final String relativePath = testClassesDir.relativize(path).toString();
-				final String className = relativePath.substring(0, relativePath.length() - ".class".length())
-																 .replace('/', '.').replace('\\', '.');
+				final String className = relativePath
+					.substring(0, relativePath.length() - ".class".length())
+					.replace('/', '.')
+					.replace('\\', '.');
 				try
 				{
 					final Class<?> testClass = Class.forName(className, true, classLoader);
@@ -155,12 +158,12 @@ public class Tools
 		Path srcDir, //
 		Path modelSrcDir, Path testSrcDir,//
 		Path modelClassesDir, Path testClassesDir,//
-		String... scenariocArgs) throws Exception
+		String... scenariocArgs
+	) throws Exception
 	{
 		final PrintStream printErr = new PrintStream(err, false, StandardCharsets.UTF_8.name());
 
-		// prevent dock icon on Mac
-		try (FakeProperty ignored = new FakeProperty("apply.awt.UIElement", "true"))
+		try
 		{
 			final int scenarioc = scenarioc(out, err, srcDir, modelSrcDir, testSrcDir, scenariocArgs);
 			if (scenarioc != 0)
@@ -209,35 +212,6 @@ public class Tools
 		finally
 		{
 			printErr.flush();
-		}
-	}
-
-	// =============== Classes ===============
-
-	// TODO move to Dyvil library
-	private static class FakeProperty implements AutoCloseable
-	{
-		private final String key;
-		private final String original;
-
-		public FakeProperty(String key, String newValue)
-		{
-			this.key = key;
-			this.original = System.getProperty(key);
-			System.setProperty(key, newValue);
-		}
-
-		@Override
-		public void close()
-		{
-			if (this.original == null)
-			{
-				System.clearProperty(this.key);
-			}
-			else
-			{
-				System.setProperty(this.key, this.original);
-			}
 		}
 	}
 }
