@@ -42,7 +42,7 @@ dependencies:
     version: 6.1.0(@angular/core@15.2.8)(@angular/forms@15.2.8)(codemirror@5.65.13)
   '@mean-stream/ngbx':
     specifier: ^0.9.0
-    version: 0.9.0(@angular/common@15.2.8)(@angular/core@15.2.8)(@angular/forms@15.2.8)(@angular/router@15.2.8)(@ng-bootstrap/ng-bootstrap@14.1.0)(bootstrap-darkmode@5.0.1)(bootstrap@5.2.3)(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
+    version: 0.9.0(@angular/common@15.2.8)(@angular/core@15.2.8)(@angular/forms@15.2.8)(@angular/router@15.2.8)(@ng-bootstrap/ng-bootstrap@14.1.0)(bootstrap@5.3.0-alpha1)(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
   '@ng-bootstrap/ng-bootstrap':
     specifier: ^14.1.0
     version: 14.1.0(@angular/common@15.2.8)(@angular/core@15.2.8)(@angular/forms@15.2.8)(@angular/localize@15.2.8)(@popperjs/core@2.11.7)(rxjs@7.8.1)
@@ -56,11 +56,8 @@ dependencies:
     specifier: ^15.0.0
     version: 15.0.0(@angular/common@15.2.8)(@angular/core@15.2.8)(rxjs@7.8.1)
   bootstrap:
-    specifier: ~5.2.3
-    version: 5.2.3(@popperjs/core@2.11.7)
-  bootstrap-darkmode:
-    specifier: ^5.0.1
-    version: 5.0.1(bootstrap@5.2.3)
+    specifier: ~5.3.0-alpha1
+    version: 5.3.0-alpha1(@popperjs/core@2.11.7)
   bootstrap-icons:
     specifier: ^1.10.5
     version: 1.10.5
@@ -2222,7 +2219,7 @@ packages:
     resolution: {integrity: sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==}
     dev: true
 
-  /@mean-stream/ngbx@0.9.0(@angular/common@15.2.8)(@angular/core@15.2.8)(@angular/forms@15.2.8)(@angular/router@15.2.8)(@ng-bootstrap/ng-bootstrap@14.1.0)(bootstrap-darkmode@5.0.1)(bootstrap@5.2.3)(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.1):
+  /@mean-stream/ngbx@0.9.0(@angular/common@15.2.8)(@angular/core@15.2.8)(@angular/forms@15.2.8)(@angular/router@15.2.8)(@ng-bootstrap/ng-bootstrap@14.1.0)(bootstrap@5.3.0-alpha1)(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.1):
     resolution: {integrity: sha512-kEmgmsRc0QeImEJUsQGkSegDxwD4TpTyHcdU4y11VJgqAtKfXZYhBrGfbhXxFOGmi50iuwViHX35/IPKssp16w==}
     peerDependencies:
       '@angular/common': ^15.2.0
@@ -2244,8 +2241,7 @@ packages:
       '@angular/forms': 15.2.8(@angular/common@15.2.8)(@angular/core@15.2.8)(@angular/platform-browser@15.2.8)(rxjs@7.8.1)
       '@angular/router': 15.2.8(@angular/common@15.2.8)(@angular/core@15.2.8)(@angular/platform-browser@15.2.8)(rxjs@7.8.1)
       '@ng-bootstrap/ng-bootstrap': 14.1.0(@angular/common@15.2.8)(@angular/core@15.2.8)(@angular/forms@15.2.8)(@angular/localize@15.2.8)(@popperjs/core@2.11.7)(rxjs@7.8.1)
-      bootstrap: 5.2.3(@popperjs/core@2.11.7)
-      bootstrap-darkmode: 5.0.1(bootstrap@5.2.3)
+      bootstrap: 5.3.0-alpha1(@popperjs/core@2.11.7)
       class-validator: 0.14.0
       reflect-metadata: 0.1.13
       rxjs: 7.8.1
@@ -3383,21 +3379,12 @@ packages:
     resolution: {integrity: sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==}
     dev: true
 
-  /bootstrap-darkmode@5.0.1(bootstrap@5.2.3):
-    resolution: {integrity: sha512-jyl507aEItDG7PHVdFgVNZ+qBX+Gffo6uGYOY9waegHcNRqBuajwyfkLpCGczMlhAQiEcms3jdxfhMg3AZJMfA==}
-    peerDependencies:
-      bootstrap: '>=5'
-    dependencies:
-      bootstrap: 5.2.3(@popperjs/core@2.11.7)
-      tslib: 2.5.0
-    dev: false
-
   /bootstrap-icons@1.10.5:
     resolution: {integrity: sha512-oSX26F37V7QV7NCE53PPEL45d7EGXmBgHG3pDpZvcRaKVzWMqIRL9wcqJUyEha1esFtM3NJzvmxFXDxjJYD0jQ==}
     dev: false
 
-  /bootstrap@5.2.3(@popperjs/core@2.11.7):
-    resolution: {integrity: sha512-cEKPM+fwb3cT8NzQZYEu4HilJ3anCrWqh3CHAok1p9jXqMPsPTBhU25fBckEJHJ/p+tTxTFTsFQGM+gaHpi3QQ==}
+  /bootstrap@5.3.0-alpha1(@popperjs/core@2.11.7):
+    resolution: {integrity: sha512-ABZpKK4ObS3kKlIqH+ZVDqoy5t/bhFG0oHTAzByUdon7YIom0lpCeTqRniDzJmbtcWkNe800VVPBiJgxSYTYew==}
     peerDependencies:
       '@popperjs/core': ^2.11.6
     dependencies:

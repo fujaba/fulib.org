@@ -1,6 +1,7 @@
+$color-mode-type: 'media-query';
+
 @import "node_modules/bootstrap/scss/bootstrap";
 @import "node_modules/bootstrap-icons/font/bootstrap-icons";
-@import "node_modules/bootstrap-darkmode/scss/darktheme";
 
 @import "node_modules/codemirror/lib/codemirror";
 @import "node_modules/codemirror/theme/idea";
@@ -48,28 +49,9 @@
 
 /* --------------- Dark Mode Overrides --------------- */
 
-@mixin darkmode-ext {
-  // TODO: Remove this once Bootstrap Darkmode supports this
-  .navbar-brand {
-    color: $navbar-dark-brand-color;
-    &:hover {
-      color: $navbar-dark-brand-hover-color;
-    }
-  }
-
-  .navbar-nav .nav-link {
-    color: $navbar-dark-color;
-    &:hover {
-      color: $navbar-dark-hover-color;
-    }
-    &.active {
-      color: $navbar-dark-active-color;
-    }
-  }
-  // End TODO
-
+@include color-mode(dark) {
   .CodeMirror {
-    border-color: $dark-border-color;
+    border-color: $border-color-dark;
   }
 
   img.diagram, .diagram > svg {
@@ -77,7 +59,7 @@
   }
 
   gridster-item {
-    background-color: $dark-body-bg;
+    background-color: $body-bg-dark;
   }
 
   .as-split-gutter {
@@ -87,16 +69,6 @@
   .text-blur {
     text-shadow: 0 0 8px $gray-100 !important;
   }
-}
-
-@media (prefers-color-scheme: dark) {
-  [data-theme="auto"] {
-    @include darkmode-ext;
-  }
-}
-
-[data-theme="dark"] {
-  @include darkmode-ext;
 }
 
 html {
