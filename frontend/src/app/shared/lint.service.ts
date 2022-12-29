@@ -36,6 +36,7 @@ export class LintService {
     let counter = 0;
     for (const line of outputLines) {
       if (line.startsWith('\tat org.fulib.scenarios.tool.')
+        || line.startsWith('\tat org.fulib.webapp.tool.')
         || line.startsWith('\tat ') && !line.startsWith('\tat org.fulib.') && !line.startsWith(packageNamePrefix)) {
         counter++;
       } else {

@@ -43,10 +43,12 @@ export class ContainerService {
   }
 
   async start(dto: CreateContainerDto, user?: UserToken, auth?: string): Promise<ContainerDto> {
+    const name = randomBytes(8).toString('hex');
     const token = randomBytes(12).toString('base64');
 
     const workspace = `/home/coder/${dto.folderName || 'project'}`;
     const options: ContainerCreateOptions = {
+      Hostname: name,
       Image: dto.dockerImage || environment.docker.containerImage,
       Tty: true,
       NetworkingConfig: {
@@ -63,10 +65,13 @@ export class ContainerService {
       Env: [
         `PASSWORD=${token}`,
         `WORKSPACE=${workspace}`,
+        `HOSTNAME=${name}`,
+        `VNC_URL=${this.vncURL(name)}`,
       ],
       Labels: {
         'org.fulib.token': token,
         'org.fulib.workspace': workspace,
+        'org.fulib.container': name,
       },
     };
 
@@ -109,7 +114,7 @@ export class ContainerService {
       ...(dto.extensions || []),
     ]);
 
-    const containerDto = this.toContainer(container.id, token, workspace, dto.projectId);
+    const containerDto = this.toContainer({id: container.id, name, token, projectId: dto.projectId}, workspace);
 
     if (dto.repository) {
       await this.cloneRepository(container, dto.repository, workspace);
@@ -118,9 +123,6 @@ export class ContainerService {
     } else {
       containerDto.isNew = true;
     }
-
-    // FIXME VNC should work for temporary containers as well
-    projectPath && await this.writeVncUrl(projectPath, containerDto);
 
     if (dto.machineSettings) {
       await this.setMachineSettings(container, dto.machineSettings);
@@ -152,23 +154,21 @@ export class ContainerService {
     ));
   }
 
-  private toContainer(id: string, token: string, workspace: string, projectId?: string): ContainerDto {
+  private toContainer(base: Pick<ContainerDto, 'id' | 'name' | 'projectId' | 'token'>, workspace: string): ContainerDto {
     return {
-      id,
-      projectId,
-      token,
-      url: `${this.containerUrl(id)}/?folder=${workspace}&ngsw-bypass`,
-      vncUrl: this.vncURL(id),
+      ...base,
+      url: `${this.containerUrl(base.name)}/?folder=${workspace}&ngsw-bypass`,
+      vncUrl: this.vncURL(base.name),
       isNew: false,
     };
   }
 
-  private containerUrl(id: string): string {
-    return `${environment.docker.proxyHost}/containers/${id.substring(0, 12)}`;
+  private containerUrl(name: string): string {
+    return `${environment.docker.proxyHost}/containers/${name}`;
   }
 
-  private vncURL(id: string): string {
-    const suffix = `containers-vnc/${id.substring(0, 12)}`;
+  private vncURL(name: string): string {
+    const suffix = `containers-vnc/${name}`;
     return `${environment.docker.proxyHost}/${suffix}/vnc_lite.html?path=${suffix}&resize=remote`;
   }
 
@@ -229,13 +229,6 @@ export class ContainerService {
     return /^[0-9a-f]{7,}$/.test(ref);
   }
 
-  private async writeVncUrl(projectPath: string, containerDto: ContainerDto) {
-    // TODO maybe there is a more elegant way for passing the vnc url into the extension ?
-    const p = `${projectPath}/.vnc/vncUrl`;
-    await createFile(p);
-    await fs.promises.writeFile(p, containerDto.vncUrl);
-  }
-
   private async setMachineSettings(container: Dockerode.Container, settings: object) {
     const eofMarker = randomBytes(16).toString('hex');
     await this.containerExec(container, ['sh', '-c', `cat > /home/coder/.local/share/code-server/Machine/settings.json <<${eofMarker}
@@ -285,7 +278,12 @@ ${eofMarker}`]);
       return null;
     }
     const labels = containers[0].Labels;
-    return this.toContainer(containers[0].Id, labels['org.fulib.token'], labels['org.fulib.workspace'], projectId);
+    return this.toContainer({
+      id: containers[0].Id,
+      name: labels['org.fulib.container'],
+      token: labels['org.fulib.token'],
+      projectId,
+    }, labels['org.fulib.workspace']);
   }
 
   async remove(projectId: string, userId: string): Promise<ContainerDto | null> {
@@ -323,18 +321,20 @@ ${eofMarker}`]);
     });
 
     await Promise.all(containers.map(async info => {
-      const expired = await this.isHeartbeatExpired(info.Id, +info.Labels['org.fulib.timeout']);
+      const labels = info.Labels;
+      const name = labels['org.fulib.container'];
+      const expired = await this.isHeartbeatExpired(name, +labels['org.fulib.timeout']);
       if (!expired) {
         return;
       }
 
-      await this.stop(info.Id, info.Labels['org.fulib.project']);
+      await this.stop(name, labels['org.fulib.project']);
     }));
   }
 
-  private async isHeartbeatExpired(containerId: string, timeoutSeconds?: number): Promise<boolean> {
+  private async isHeartbeatExpired(hostname: string, timeoutSeconds?: number): Promise<boolean> {
     try {
-      const {data} = await firstValueFrom(this.httpService.get(`${this.containerUrl(containerId)}/healthz`));
+      const {data} = await firstValueFrom(this.httpService.get(`${this.containerUrl(hostname)}/healthz`));
       // res.data.lastHeartbeat is 0, when container has just started
       if (data.status !== 'expired' || !data.lastHeartbeat) {
         return false;

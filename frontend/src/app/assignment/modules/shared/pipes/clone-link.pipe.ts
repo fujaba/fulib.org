@@ -12,11 +12,19 @@ const cloneSuffix = {https: '', ssh: '.git'};
 })
 export class CloneLinkPipe implements PipeTransform {
   transform(assignment: Assignment, solution: Solution, options: Record<ConfigKey, string>): string {
-    const ide = options.ide;
-    const protocol = options.cloneProtocol;
+    const {ide, cloneProtocol, cloneRef} = options;
     const user = solution.author.github;
     const org = assignment.classroom?.org;
     const prefix = assignment.classroom?.prefix;
-    return `${ide}://vscode.git/clone?url=${clonePrefix[protocol]}${org}%2F${prefix}-${user}${cloneSuffix[protocol]}&ref=assignments/${assignment._id}`;
+    let ref = '';
+    switch (cloneRef) {
+      case 'commit':
+        ref = `&ref=${solution.commit}`;
+        break;
+      case 'tag':
+        ref = `&ref=assignments/${assignment._id}`;
+        break;
+    }
+    return `${ide}://vscode.git/clone?url=${clonePrefix[cloneProtocol]}${org}%2F${prefix}-${user}${cloneSuffix[cloneProtocol]}${ref}`;
   }
 }

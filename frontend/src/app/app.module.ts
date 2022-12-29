@@ -87,8 +87,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
       provide: THEME_LOADER,
       deps: [PrivacyService],
       useFactory(privacyService: PrivacyService): ThemeLoader {
-        // TODO: Make this an Observable that automatically listens for changes to localStorage
-        return () => of(privacyService.getStorage('theme'));
+        return () => privacyService.getStorage$('theme');
       },
     },
     {

@@ -1,4 +1,5 @@
 import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -31,6 +32,19 @@ export class StorageService {
       this.properties.set(key, value);
     }
     return value;
+  }
+
+  get$(key: string): Observable<string | null> {
+    return new Observable<string | null>(subscriber => {
+      subscriber.next(this.get(key));
+      const listener = (event: StorageEvent) => {
+        if (event.key === key) {
+          subscriber.next(event.newValue);
+        }
+      };
+      window.addEventListener('storage', listener);
+      return () => window.removeEventListener('storage', listener);
+    });
   }
 
   set(key: string, value: string | null) {

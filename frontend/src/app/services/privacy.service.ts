@@ -1,4 +1,5 @@
 import {Injectable} from '@angular/core';
+import {Observable, of} from 'rxjs';
 import {StorageService} from './storage.service';
 
 export type Privacy = 'all' | 'local' | 'none' | 'nobanner';
@@ -27,6 +28,10 @@ export class PrivacyService {
 
   getStorage(key: string): string | null {
     return this.allowLocalStorage ? this.storageService.get(key) : null;
+  }
+
+  getStorage$(key: string): Observable<string | null> {
+    return this.allowLocalStorage ? this.storageService.get$(key) : of(null);
   }
 
   setStorage(key: string, value: string | null): void {

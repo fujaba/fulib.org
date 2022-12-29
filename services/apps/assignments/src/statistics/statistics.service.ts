@@ -99,7 +99,7 @@ export class StatisticsService {
                   $eq: ['$$this.action', 'submitEvaluation'],
                 },
               },
-            } as any, // TODO rejected by Mongoose types for some reason
+            },
           },
         },
       },
@@ -117,7 +117,7 @@ export class StatisticsService {
                   ],
                 },
               },
-            } as any, // TODO rejected by Mongoose types for some reason
+            },
           },
         },
       },
