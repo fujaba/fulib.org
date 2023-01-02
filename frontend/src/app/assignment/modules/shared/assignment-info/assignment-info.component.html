@@ -3,7 +3,7 @@
   <ng-container *ngIf="assignment">
     by
     <app-author-name [name]="assignment.author" [email]="assignment.email"></app-author-name>
-    <i *ngIf="assignment.createdBy" class="text-info bi-patch-check-fill" ngbTooltip="Registered"></i>
+    <i *ngIf="$any(assignment).createdBy" class="text-info bi-patch-check-fill" ngbTooltip="Registered"></i>
     <ng-container *ngIf="assignment.deadline">
       &mdash;
       Deadline: {{assignment.deadline | date:'medium'}}

@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ToastService} from 'ng-bootstrap-ext';
 import {switchMap} from 'rxjs/operators';
-import Assignment from '../../../model/assignment';
+import {ReadAssignmentDto} from '../../../model/assignment';
 import {AssignmentService} from '../../../services/assignment.service';
 import {AssignmentStatistics, StatisticsService} from '../statistics.service';
 
@@ -12,7 +12,7 @@ import {AssignmentStatistics, StatisticsService} from '../statistics.service';
   styleUrls: ['./delete-modal.component.scss'],
 })
 export class DeleteModalComponent implements OnInit {
-  assignment?: Assignment;
+  assignment?: ReadAssignmentDto;
   statistics?: AssignmentStatistics;
   title = '';
 

@@ -3,7 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {forkJoin, of} from 'rxjs';
 import {catchError, switchMap, tap} from 'rxjs/operators';
 import {UserService} from '../../../../user/user.service';
-import Assignment from '../../../model/assignment';
+import {ReadAssignmentDto} from '../../../model/assignment';
 import Solution from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
 import {GithubService, PushEvent} from '../../../services/github.service';
@@ -15,7 +15,7 @@ import {SolutionService} from '../../../services/solution.service';
   styleUrls: ['./event-list.component.scss'],
 })
 export class EventListComponent implements OnInit {
-  assignment?: Assignment;
+  assignment?: ReadAssignmentDto;
   solution?: Solution;
 
   events: PushEvent[] = [];

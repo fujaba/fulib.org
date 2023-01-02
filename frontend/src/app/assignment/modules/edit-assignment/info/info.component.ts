@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import Assignment from '../../../model/assignment';
+import {CreateAssignmentDto} from '../../../model/assignment';
 import {AssignmentContext} from '../../../services/assignment.context';
 
 @Component({
@@ -8,7 +8,7 @@ import {AssignmentContext} from '../../../services/assignment.context';
   styleUrls: ['./info.component.scss'],
 })
 export class InfoComponent implements OnInit {
-  assignment: Assignment;
+  assignment: CreateAssignmentDto;
 
   deadlineDate?: string;
   deadlineTime?: string;

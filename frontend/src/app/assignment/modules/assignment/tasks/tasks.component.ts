@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {switchMap} from 'rxjs/operators';
-import Assignment from '../../../model/assignment';
+import {ReadAssignmentDto} from '../../../model/assignment';
 import {AssignmentService} from '../../../services/assignment.service';
 
 @Component({
@@ -10,7 +10,7 @@ import {AssignmentService} from '../../../services/assignment.service';
   styleUrls: ['./tasks.component.scss'],
 })
 export class AssignmentTasksComponent implements OnInit {
-  assignment?: Assignment;
+  assignment?: ReadAssignmentDto;
 
   constructor(
     private assignmentService: AssignmentService,

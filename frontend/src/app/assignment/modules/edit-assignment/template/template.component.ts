@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import Assignment from '../../../model/assignment';
+import {CreateAssignmentDto} from '../../../model/assignment';
 import {AssignmentContext} from '../../../services/assignment.context';
 
 @Component({
@@ -8,7 +8,7 @@ import {AssignmentContext} from '../../../services/assignment.context';
   styleUrls: ['./template.component.scss'],
 })
 export class TemplateComponent {
-  assignment: Assignment;
+  assignment: CreateAssignmentDto;
   saveDraft: () => void;
 
   constructor(

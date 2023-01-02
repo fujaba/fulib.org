@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {KeycloakService} from 'keycloak-angular';
-import Assignment from '../../../model/assignment';
+import {CreateAssignmentDto} from '../../../model/assignment';
 import Task from '../../../model/task';
 import {AssignmentContext} from '../../../services/assignment.context';
 
@@ -10,7 +10,7 @@ import {AssignmentContext} from '../../../services/assignment.context';
   styleUrls: ['./preview.component.scss'],
 })
 export class PreviewComponent implements OnInit {
-  assignment: Assignment;
+  assignment: CreateAssignmentDto;
   tasks: Task[];
 
   loggedIn = false;

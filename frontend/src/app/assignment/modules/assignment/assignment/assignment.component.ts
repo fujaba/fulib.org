@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {combineLatest} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
-import Assignment from '../../../model/assignment';
+import {ReadAssignmentDto} from '../../../model/assignment';
 import {AssignmentService} from '../../../services/assignment.service';
 import {assignmentChildRoutes} from '../assignment-routes';
 
@@ -12,7 +12,7 @@ import {assignmentChildRoutes} from '../assignment-routes';
   styleUrls: ['./assignment.component.scss'],
 })
 export class AssignmentComponent implements OnInit {
-  assignment?: Assignment;
+  assignment?: ReadAssignmentDto;
   routes = assignmentChildRoutes;
 
   constructor(

@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import Assignment from '../../../model/assignment';
+import {CreateAssignmentDto, ReadAssignmentDto} from '../../../model/assignment';
 
 @Component({
   selector: 'app-assignment-info',
@@ -7,5 +7,5 @@ import Assignment from '../../../model/assignment';
   styleUrls: ['./assignment-info.component.scss'],
 })
 export class AssignmentInfoComponent {
-  @Input() assignment?: Assignment;
+  @Input() assignment?: ReadAssignmentDto | CreateAssignmentDto;
 }

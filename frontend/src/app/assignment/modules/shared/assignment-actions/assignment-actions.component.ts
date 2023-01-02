@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {ToastService} from 'ng-bootstrap-ext';
-import Assignment from '../../../model/assignment';
+import {ReadAssignmentDto} from '../../../model/assignment';
 import {AssignmentService} from '../../../services/assignment.service';
 
 @Component({
@@ -9,7 +9,7 @@ import {AssignmentService} from '../../../services/assignment.service';
   styleUrls: ['./assignment-actions.component.scss'],
 })
 export class AssignmentActionsComponent {
-  @Input() assignment: Assignment;
+  @Input() assignment: ReadAssignmentDto;
   @Output() removed = new EventEmitter<void>();
 
   constructor(

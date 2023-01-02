@@ -3,7 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {ToastService} from 'ng-bootstrap-ext';
 import {combineLatest} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
-import Assignment from '../../../model/assignment';
+import Assignment, {ReadAssignmentDto} from '../../../model/assignment';
 import Solution from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
 import {ConfigService} from '../../../services/config.service';
@@ -18,7 +18,7 @@ import {solutionChildRoutes} from '../solution-routing.module';
   styleUrls: ['./solution.component.scss'],
 })
 export class SolutionComponent implements OnInit {
-  assignment?: Assignment;
+  assignment?: Assignment | ReadAssignmentDto;
   solution?: Solution;
 
   routes = solutionChildRoutes;
@@ -52,12 +52,12 @@ export class SolutionComponent implements OnInit {
   }
 
   launch() {
-    if (this.launching) {
+    if (this.launching || !this.assignment || !('token' in this.assignment)) {
       return;
     }
 
     this.launching = true;
-    this.solutionContainerService.launch(this.assignment!, this.solution!).subscribe(container => {
+    this.solutionContainerService.launch(this.assignment, this.solution!).subscribe(container => {
       this.launching = false;
       open(container.url, '_blank');
     }, error => {

@@ -1,18 +1,18 @@
 <div class="container">
   <div class="row">
-    <div class="col-md-6" *ngIf="assignment?.solution">
+    <div class="col-md-6" *ngIf="$any(assignment)?.solution as solution">
       <div class="position-sticky" style="top: 4rem">
         <div class="mb-3">
           <label class="form-label" for="solutionInput">Sample Solution</label>
           <app-scenario-codemirror
             id="solutionInput"
-            [content]="assignment!.solution"
+            [content]="solution"
             [readOnly]="true"
           ></app-scenario-codemirror>
         </div>
       </div>
     </div>
-    <div class="col-12" [class.col-md-6]="assignment?.solution">
+    <div class="col-12" [class.col-md-6]="$any(assignment)?.solution">
       Tasks
       <app-task-list [tasks]="assignment?.tasks"></app-task-list>
     </div>

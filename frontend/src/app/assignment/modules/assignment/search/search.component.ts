@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit, TrackByFunction} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {BehaviorSubject, combineLatest, EMPTY, forkJoin} from 'rxjs';
 import {debounceTime, distinctUntilChanged, switchMap} from 'rxjs/operators';
-import Assignment from '../../../model/assignment';
+import {ReadAssignmentDto} from '../../../model/assignment';
 import {Snippet} from '../../../model/evaluation';
 import {SearchResult} from '../../../model/search-result';
 import Solution from '../../../model/solution';
@@ -22,7 +22,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   wildcard$ = new BehaviorSubject<string>(this.route.snapshot.queryParams.wildcard || '***');
 
   results: SearchResult[] = [];
-  assignment?: Assignment;
+  assignment?: ReadAssignmentDto;
   solutions: Record<string, Solution> = {};
 
   syncSelection$ = new BehaviorSubject<boolean>(false);

@@ -2,11 +2,11 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ToastService} from 'ng-bootstrap-ext';
 import {forkJoin, of} from 'rxjs';
-import {switchMap, take, tap} from 'rxjs/operators';
+import {switchMap, tap} from 'rxjs/operators';
 
 import {Marker} from '../../../shared/model/marker';
 import {UserService} from '../../../user/user.service';
-import Assignment from '../../model/assignment';
+import {ReadAssignmentDto} from '../../model/assignment';
 import Course from '../../model/course';
 import Solution, {AuthorInfo} from '../../model/solution';
 import {AssignmentService} from '../../services/assignment.service';
@@ -21,7 +21,7 @@ import {SolutionService} from '../../services/solution.service';
 })
 export class CreateSolutionComponent implements OnInit {
   course?: Course;
-  assignment?: Assignment;
+  assignment?: ReadAssignmentDto;
   solution: string;
   loggedIn = false;
   author: AuthorInfo;
@@ -31,7 +31,7 @@ export class CreateSolutionComponent implements OnInit {
 
   submitting: boolean;
 
-  nextAssignment?: Assignment;
+  nextAssignment?: ReadAssignmentDto;
 
   constructor(
     private courseService: CourseService,
@@ -57,7 +57,7 @@ export class CreateSolutionComponent implements OnInit {
       switchMap(params => forkJoin({
         assignment: this.assignmentService.get(params.aid).pipe(tap(assignment => {
           this.assignment = assignment;
-          this.solution = this.solutionService.getDraft(this.assignment) ?? this.assignment.templateSolution;
+          this.solution = this.solutionService.getDraft(this.assignment._id) ?? this.assignment.templateSolution;
         })),
         course: params.cid ? this.courseService.get(params.cid).pipe(tap(course => this.course = course)) : of(undefined),
       })),
@@ -76,7 +76,7 @@ export class CreateSolutionComponent implements OnInit {
 
   saveDraft(): void {
     this.solutionService.setAuthor(this.author);
-    this.assignment && this.solutionService.setDraft(this.assignment, this.solution);
+    this.assignment && this.solutionService.setDraft(this.assignment._id, this.solution);
   }
 
   check(): void {

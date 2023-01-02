@@ -1,8 +1,7 @@
 import {DOCUMENT} from '@angular/common';
 import {Component, Inject, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {of} from 'rxjs';
-import {map, switchMap, tap} from 'rxjs/operators';
+import {switchMap, tap} from 'rxjs/operators';
 import {environment} from '../../../../../environments/environment';
 import {AssignmentService} from '../../../services/assignment.service';
 import {ConfigService} from '../../../services/config.service';
@@ -33,15 +32,11 @@ export class ShareComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.pipe(
       tap(({aid}) => this.id = aid),
-      switchMap(({aid}) => {
-        const token = this.assignmentService.getToken(aid);
-        if (token) {
-          return of(token);
-        }
-        return this.assignmentService.get(aid).pipe(map(a => a.token));
-      }),
-    ).subscribe(token => {
-      this.token = token;
+      switchMap(({aid}) => this.assignmentService.get(aid)),
+    ).subscribe(assignment => {
+      if ('token' in assignment) {
+        this.token = assignment.token;
+      }
     });
   }
 

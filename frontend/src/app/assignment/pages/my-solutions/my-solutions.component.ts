@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import Assignment from '../../model/assignment';
+import {ReadAssignmentDto} from '../../model/assignment';
 import Solution, {AuthorInfo} from '../../model/solution';
 import {SolutionService} from '../../services/solution.service';
 
@@ -10,7 +10,7 @@ import {SolutionService} from '../../services/solution.service';
 })
 export class MySolutionsComponent implements OnInit {
   author?: AuthorInfo;
-  assignments?: Assignment[];
+  assignments?: ReadAssignmentDto[];
   solutions?: Map<string, Solution[]>;
 
   constructor(
