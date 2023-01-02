@@ -108,14 +108,7 @@ export class AssignmentService {
         ...(createdBy ? {createdBy} : {}),
         archived,
       },
-    }).pipe(
-      map(results => {
-        for (const result of results) {
-          result.token = this.getToken(result._id) ?? undefined;
-        }
-        return results;
-      }),
-    );
+    });
   }
 
   check(assignment: CheckAssignment): Observable<CheckResult> {
@@ -182,10 +175,11 @@ export class AssignmentService {
 
   get(id: string): Observable<Assignment | ReadAssignmentDto> {
     const headers = this.getHeaders(this.getToken(id));
-    return this.http.get<Assignment>(`${environment.assignmentsApiUrl}/assignments/${id}`, {headers}).pipe(
-      map(a => {
-        a.token ??= this.getToken(id) ?? undefined;
-        return a;
+    return this.http.get<Assignment | ReadAssignmentDto>(`${environment.assignmentsApiUrl}/assignments/${id}`, {headers}).pipe(
+      tap(a => {
+        if ('token' in a && a.token) {
+          this.setToken(id, a.token);
+        }
       }),
     );
   }
