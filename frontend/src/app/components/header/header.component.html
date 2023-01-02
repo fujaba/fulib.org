@@ -72,16 +72,22 @@
             What's New
           </a>
         </li>
+      </ul>
+      <ul class="navbar-nav">
         <li class="nav-item" ngbDropdown>
-          <a tabindex="0" class="nav-link" ngbDropdownToggle id="accountDropdown" role="button">
-            <i class="bi-person-circle"></i>
-            <span class="visually-hidden">Account</span>
-          </a>
-          <div ngbDropdownMenu aria-labelledby="accountDropdown">
+          <a
+            class="nav-link bi-person-circle"
+            id="accountDropdown"
+            ngbDropdownToggle
+            ngbTooltip="Account"
+            role="button"
+            tabindex="0"
+          ></a>
+          <div ngbDropdownMenu aria-labelledby="accountDropdown" class="dropdown-menu-end">
             <h6 class="dropdown-header">Account</h6>
-            <span class="dropdown-item-text text-muted">
-            {{username ? 'Logged in as ' : 'Not logged in'}}<b *ngIf="username">{{username}}</b>.
-          </span>
+            <div class="dropdown-item-text text-muted">
+              {{username ? 'Logged in as ' : 'Not logged in'}}<b *ngIf="username">{{username}}</b>.
+            </div>
             <a *ngIf="username && accountUrl" ngbDropdownItem [href]="accountUrl" target="_blank">
               Edit Account
             </a>
@@ -93,9 +99,28 @@
             <a ngbDropdownItem [routerLink]="[{outlets: {modal: 'privacy'}}]">
               Edit Privacy Preferences
             </a>
-            <div ngbDropdownItem>
-              <ngbd-theme-switch></ngbd-theme-switch>
-            </div>
+          </div>
+        </li>
+        <li class="nav-item" ngbDropdown>
+          <a
+            class="nav-link bi-moon-stars"
+            id="themeDropdown"
+            ngbDropdownToggle
+            ngbTooltip="Theme"
+            role="button"
+            tabindex="0"
+          ></a>
+          <div ngbDropdownMenu aria-labelledby="accountDropdown" class="dropdown-menu-end">
+            <h6 class="dropdown-header">Theme</h6>
+            <button
+              *ngFor="let theme of themes"
+              ngbDropdownItem
+              class="dropdown-item-check {{ theme.value === selectedTheme ? theme.selectedIcon : theme.icon }}"
+              [disabled]="theme.value === selectedTheme"
+              (click)="selectTheme(theme.value)"
+            >
+              {{ theme.name }}
+            </button>
           </div>
         </li>
       </ul>
