@@ -21,6 +21,7 @@
     "test:e2e": "jest --config ./apps/services/test/jest-e2e.json"
   },
   "dependencies": {
+    "@clashsoft/nestx": "^0.2.0",
     "@elastic/elasticsearch": "~7.13.0",
     "@nestjs/axios": "^2.0.0",
     "@nestjs/common": "^9.3.11",
@@ -111,7 +112,6 @@
     ],
     "moduleNameMapper": {
       "^@app/keycloak-auth(|/.*)$": "<rootDir>/libs/keycloak-auth/src/$1",
-      "^@app/not-found(|/.*)$": "<rootDir>/libs/not-found/src/$1",
       "^@app/event(|/.*)$": "<rootDir>/libs/event/src/$1",
       "^@app/moss(|/.*)$": "<rootDir>/libs/moss/src/$1"
     }

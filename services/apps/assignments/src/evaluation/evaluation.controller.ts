@@ -1,6 +1,6 @@
 import {EventPayload} from '@app/event/event.interface';
 import {AuthUser, UserToken} from '@app/keycloak-auth';
-import {NotFound} from '@app/not-found';
+import {NotFound} from '@clashsoft/nestx';
 import {Body, Controller, Delete, Get, MessageEvent, Param, Patch, Post, Query, Sse} from '@nestjs/common';
 import {EventPattern, Payload} from '@nestjs/microservices';
 import {ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';

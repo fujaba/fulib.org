@@ -21,12 +21,6 @@
       "@app/keycloak-auth/*": [
         "libs/keycloak-auth/src/*"
       ],
-      "@app/not-found": [
-        "libs/not-found/src"
-      ],
-      "@app/not-found/*": [
-        "libs/not-found/src/*"
-      ],
       "@app/event": [
         "libs/event/src"
       ],

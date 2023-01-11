@@ -1,5 +1,5 @@
 import {AuthUser, UserToken} from '@app/keycloak-auth';
-import {NotFound} from '@app/not-found';
+import {NotFound} from '@clashsoft/nestx';
 import {Body, ConflictException, Controller, Delete, Get, Param, Put} from '@nestjs/common';
 import {ApiConflictResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {ProjectAuth} from '../project/project-auth.decorator';
