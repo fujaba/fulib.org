@@ -83,7 +83,8 @@
     "webpack": "^5.75.0"
   },
   "resolutions": {
-    "jsonwebtoken": "^9.0.0"
+    "jsonwebtoken": "^9.0.0",
+    "debug": "^4.3.4"
   },
   "jest": {
     "moduleFileExtensions": [
