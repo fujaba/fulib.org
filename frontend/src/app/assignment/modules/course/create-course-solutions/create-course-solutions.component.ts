@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {switchMap} from 'rxjs/operators';
-import Assignment from '../../../model/assignment';
+import {ReadAssignmentDto} from '../../../model/assignment';
 import Course from '../../../model/course';
 import {AssignmentService} from '../../../services/assignment.service';
 import {CourseService} from '../../../services/course.service';
@@ -14,7 +14,7 @@ import {SolutionService} from '../../../services/solution.service';
 })
 export class CreateCourseSolutionsComponent implements OnInit {
   course?: Course;
-  assignments: Assignment[] = [];
+  assignments: ReadAssignmentDto[] = [];
   solutions: (string | undefined)[] = [];
 
   constructor(

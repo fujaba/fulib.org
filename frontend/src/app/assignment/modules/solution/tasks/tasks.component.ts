@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {forkJoin, Subscription} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
 import {Marker} from '../../../../shared/model/marker';
-import Assignment from '../../../model/assignment';
+import {ReadAssignmentDto} from '../../../model/assignment';
 import {Evaluation} from '../../../model/evaluation';
 import Solution from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
@@ -16,7 +16,7 @@ import {TaskService} from '../../../services/task.service';
   styleUrls: ['./tasks.component.scss'],
 })
 export class SolutionTasksComponent implements OnInit, OnDestroy {
-  assignment?: Assignment;
+  assignment?: ReadAssignmentDto;
   solution?: Solution;
   points?: Record<string, number>;
   evaluations?: Record<string, Evaluation>;

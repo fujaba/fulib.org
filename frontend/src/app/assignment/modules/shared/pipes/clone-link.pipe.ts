@@ -1,5 +1,5 @@
 import {Pipe, PipeTransform} from '@angular/core';
-import Assignment from '../../../model/assignment';
+import {ReadAssignmentDto} from '../../../model/assignment';
 import Solution from '../../../model/solution';
 import {ConfigKey} from '../../../services/config.service';
 
@@ -11,7 +11,7 @@ const cloneSuffix = {https: '', ssh: '.git'};
   name: 'cloneLink',
 })
 export class CloneLinkPipe implements PipeTransform {
-  transform(assignment: Assignment, solution: Solution, options: Record<ConfigKey, string>): string {
+  transform(assignment: ReadAssignmentDto, solution: Solution, options: Record<ConfigKey, string>): string {
     const {ide, cloneProtocol, cloneRef} = options;
     const user = solution.author.github;
     const org = assignment.classroom?.org;

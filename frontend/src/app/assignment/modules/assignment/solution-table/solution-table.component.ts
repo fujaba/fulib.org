@@ -5,7 +5,7 @@ import {ClipboardService} from 'ngx-clipboard';
 import {BehaviorSubject, combineLatest, forkJoin, Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 import {Assignee} from '../../../model/assignee';
-import Assignment from '../../../model/assignment';
+import Assignment, {ReadAssignmentDto} from '../../../model/assignment';
 import Solution, {AuthorInfo, authorInfoProperties} from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
 import {CONFIG_OPTIONS, ConfigKey, ConfigService} from '../../../services/config.service';
@@ -32,7 +32,7 @@ export class SolutionTableComponent implements OnInit {
   readonly searchableProperties = searchKeys;
   readonly authorProperties = authorInfoProperties;
 
-  assignment?: Assignment;
+  assignment?: Assignment | ReadAssignmentDto;
   totalPoints?: number;
   solutions: Solution[] = [];
   assignees: Partial<Record<string, Assignee>> = {};
@@ -192,8 +192,12 @@ export class SolutionTableComponent implements OnInit {
   }
 
   launch(solution: Solution, elem: HTMLButtonElement) {
+    if (!this.assignment || !('token' in this.assignment)) {
+      return;
+    }
+
     elem.disabled = true;
-    this.solutionContainerService.launch(this.assignment!, solution).subscribe(container => {
+    this.solutionContainerService.launch(this.assignment, solution).subscribe(container => {
       elem.disabled = false;
       open(container.url, '_blank');
     }, error => {

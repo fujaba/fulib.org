@@ -3,7 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {ToastService} from 'ng-bootstrap-ext';
 import {forkJoin} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
-import Assignment from '../../../model/assignment';
+import {ReadAssignmentDto} from '../../../model/assignment';
 import Solution from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
 import {SolutionService} from '../../../services/solution.service';
@@ -14,7 +14,7 @@ import {SolutionService} from '../../../services/solution.service';
   styleUrls: ['./details.component.scss'],
 })
 export class SolutionDetailsComponent implements OnInit {
-  assignment?: Assignment;
+  assignment?: ReadAssignmentDto;
   solution?: Solution;
 
   saving = false;

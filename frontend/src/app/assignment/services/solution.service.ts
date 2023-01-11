@@ -2,13 +2,12 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Params} from '@angular/router';
 import {forkJoin, Observable, of} from 'rxjs';
-import {map, switchMap, take, tap} from 'rxjs/operators';
+import {map, switchMap, tap} from 'rxjs/operators';
 import {environment} from '../../../environments/environment';
 import {StorageService} from '../../services/storage.service';
 import {UserService} from '../../user/user.service';
-import {AssignmentService} from './assignment.service';
 import {Assignee} from '../model/assignee';
-import Assignment from '../model/assignment';
+import Assignment, {ReadAssignmentDto} from '../model/assignment';
 import {CheckResult, CheckSolution} from '../model/check';
 import Comment from '../model/comment';
 import {
@@ -20,6 +19,7 @@ import {
 } from '../model/evaluation';
 
 import Solution, {AuthorInfo} from '../model/solution';
+import {AssignmentService} from './assignment.service';
 
 function asID(id: { _id?: string, id?: string } | string): string {
   return typeof id === 'string' ? id : id._id! || id.id!;
@@ -48,12 +48,12 @@ export class SolutionService {
     this.storageService.set('solutionAuthor', JSON.stringify(value));
   }
 
-  getDraft(assignment: Assignment): string | null {
-    return this.storageService.get(`solutionDraft/${assignment._id}`);
+  getDraft(assignment: string): string | null {
+    return this.storageService.get(`solutionDraft/${assignment}`);
   }
 
-  setDraft(assignment: Assignment, solution: string | null): void {
-    this.storageService.set(`solutionDraft/${assignment._id}`, solution);
+  setDraft(assignment: string, solution: string | null): void {
+    this.storageService.set(`solutionDraft/${assignment}`, solution);
   }
 
   // --------------- Comment Drafts ---------------
@@ -104,7 +104,7 @@ export class SolutionService {
     return ids;
   }
 
-  getOwnWithAssignments(): Observable<[Assignment[], Solution[]]> {
+  getOwnWithAssignments(): Observable<[ReadAssignmentDto[], Solution[]]> {
     return this.users.getCurrent().pipe(
       switchMap(user => {
         if (user && user.id) {
@@ -165,7 +165,10 @@ export class SolutionService {
     this.addAssignmentToken(headers, assignment);
     const params: Params = {};
     search && (params.q = search);
-    return this.http.get<Solution[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions`, {headers, params});
+    return this.http.get<Solution[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions`, {
+      headers,
+      params,
+    });
   }
 
   getOwn(): Observable<Solution[]> {

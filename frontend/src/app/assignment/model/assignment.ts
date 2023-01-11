@@ -3,7 +3,7 @@ import Task from './task';
 export default class Assignment {
   _id: string;
   archived?: boolean;
-  token?: string;
+  token: string;
 
   title: string;
   description: string;
@@ -30,3 +30,5 @@ export type CreateAssignmentDto = Omit<Assignment, '_id' | 'token' | 'createdBy'
 export interface UpdateAssignmentDto extends Partial<CreateAssignmentDto> {
   token?: true;
 }
+
+export type ReadAssignmentDto = Omit<Assignment, 'token' | 'solution'>;

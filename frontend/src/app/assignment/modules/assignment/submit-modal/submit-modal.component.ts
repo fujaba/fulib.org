@@ -4,7 +4,7 @@ import {ModalComponent, ToastService} from 'ng-bootstrap-ext';
 import {forkJoin} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import {UserService} from '../../../../user/user.service';
-import Assignment from '../../../model/assignment';
+import {ReadAssignmentDto} from '../../../model/assignment';
 import Solution from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
 import {SolutionService} from '../../../services/solution.service';
@@ -17,7 +17,7 @@ import {IssueDto, SubmitService} from '../submit.service';
   styleUrls: ['./submit-modal.component.scss'],
 })
 export class SubmitModalComponent implements OnInit {
-  assignment?: Assignment;
+  assignment?: ReadAssignmentDto;
   solution?: Solution;
   issue?: IssueDto;
 

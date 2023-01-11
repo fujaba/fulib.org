@@ -1,6 +1,7 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {KeycloakService} from 'keycloak-angular';
+import {ThemeService} from 'ng-bootstrap-darkmode';
 import {environment} from '../../../environments/environment';
 import {ChangelogService, REPOS, Versions} from '../../services/changelog.service';
 
@@ -12,15 +13,6 @@ import {PrivacyService} from '../../services/privacy.service';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit, AfterViewInit {
-  constructor(
-    private privacyService: PrivacyService,
-    private changelogService: ChangelogService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private keycloak: KeycloakService,
-  ) {
-  }
-
   menuCollapsed = true;
 
   readonly repos = REPOS;
@@ -28,6 +20,24 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
   username?: string;
   accountUrl?: string = environment.auth ? `${environment.auth.url}/realms/${environment.auth.realm}/account` : undefined;
+
+  selectedTheme = this.themeService.theme;
+
+  themes = [
+    {name: 'Sync with OS', value: 'auto', icon: 'bi-circle-half', selectedIcon: 'bi-check-circle-fill'},
+    {name: 'Light', value: 'light', icon: 'bi-sun', selectedIcon: 'bi-sun-fill'},
+    {name: 'Dark', value: 'dark', icon: 'bi-moon-stars', selectedIcon: 'bi-moon-stars-fill'},
+  ];
+
+  constructor(
+    private themeService: ThemeService,
+    private privacyService: PrivacyService,
+    private changelogService: ChangelogService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private keycloak: KeycloakService,
+  ) {
+  }
 
   ngOnInit(): void {
     this.keycloak.isLoggedIn().then(loggedIn => {
@@ -68,5 +78,10 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   logout(): void {
     this.keycloak.logout().then(() => {
     });
+  }
+
+  selectTheme(value: string) {
+    this.selectedTheme = value;
+    this.themeService.theme = value;
   }
 }

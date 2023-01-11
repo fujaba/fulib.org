@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 import {firstValueFrom} from 'rxjs';
 import {environment} from '../../../../environments/environment';
 import {UserService} from '../../../user/user.service';
-import Assignment from '../../model/assignment';
+import {ReadAssignmentDto} from '../../model/assignment';
 import {Evaluation, Snippet} from '../../model/evaluation';
 import Solution from '../../model/solution';
 import Task from '../../model/task';
@@ -34,7 +34,7 @@ export class SubmitService {
   ) {
   }
 
-  async postIssueToGitHub(assignment: Assignment, solution: Solution, issue: IssueDto, githubToken: string): Promise<Issue> {
+  async postIssueToGitHub(assignment: ReadAssignmentDto, solution: Solution, issue: IssueDto, githubToken: string): Promise<Issue> {
     const baseUrl = `https://api.github.com/repos/${assignment.classroom!.org}/${assignment.classroom!.prefix}-${solution.author.github}/issues`;
     const issues = await firstValueFrom(this.http.get<Issue[]>(baseUrl, {
       params: {
@@ -61,7 +61,7 @@ export class SubmitService {
     }
   }
 
-  async createIssue(assignment: Assignment, solution: Solution): Promise<IssueDto> {
+  async createIssue(assignment: ReadAssignmentDto, solution: Solution): Promise<IssueDto> {
     const {total, sum, tasks} = await this.renderTasks(assignment, solution);
     const footer = this.renderFooter(assignment, solution);
 
@@ -72,7 +72,7 @@ export class SubmitService {
     };
   }
 
-  private async renderTasks(assignment: Assignment, solution: Solution) {
+  private async renderTasks(assignment: ReadAssignmentDto, solution: Solution) {
     const evaluations = await firstValueFrom(this.solutionService.getEvaluations(assignment._id, solution._id!));
     const evaluationRecord: Record<string, Evaluation> = {};
     for (let evaluation of evaluations) {
@@ -132,11 +132,11 @@ export class SubmitService {
     );
   }
 
-  private renderSnippets(assignment: Assignment, solution: Solution, snippets: Snippet[]) {
+  private renderSnippets(assignment: ReadAssignmentDto, solution: Solution, snippets: Snippet[]) {
     return snippets.map(snippet => this.renderSnippet(assignment, solution, snippet)).join('');
   }
 
-  private renderSnippet(assignment: Assignment, solution: Solution, snippet: Snippet) {
+  private renderSnippet(assignment: ReadAssignmentDto, solution: Solution, snippet: Snippet) {
     const {org, prefix} = assignment.classroom ?? {};
     const {author: {github: username}, commit} = solution;
     if (org && prefix && username && commit) {
@@ -150,7 +150,7 @@ export class SubmitService {
     }
   }
 
-  private renderFooter(assignment: Assignment, solution: Solution) {
+  private renderFooter(assignment: ReadAssignmentDto, solution: Solution) {
     const apiUrl = environment.assignmentsApiUrl;
     const apiServer = new URL(apiUrl, location.origin).origin;
     const timestamp = new Date();

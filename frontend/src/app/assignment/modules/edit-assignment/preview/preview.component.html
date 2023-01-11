@@ -5,7 +5,7 @@
   </div>
 </div>
 
-<p *ngIf="!assignment._id" class="text-center">
+<p *ngIf="!$any(assignment)._id" class="text-center">
   Click "Submit" to finalize your assignment and generate a link.
 </p>
 <div *ngIf="!loggedIn" class="alert alert-warning" role="alert">

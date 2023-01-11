@@ -4,9 +4,9 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 import {ToastService} from 'ng-bootstrap-ext';
 import {DndDropEvent} from 'ngx-drag-drop';
-import {EMPTY, Observable, of} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
-import Assignment from '../../../model/assignment';
+import {ReadAssignmentDto} from '../../../model/assignment';
 import Course, {CreateCourseDto} from '../../../model/course';
 import {AssignmentService} from '../../../services/assignment.service';
 import {CourseService} from '../../../services/course.service';
@@ -20,13 +20,13 @@ export class CreateCourseComponent implements OnInit {
   @ViewChild('successModal', {static: true}) successModal;
 
   course: Course | CreateCourseDto;
-  assignments: Assignment[] = [];
+  assignments: ReadAssignmentDto[] = [];
 
   newAssignment: string;
 
   submitting = false;
 
-  private ownAssignments: Assignment[] = [];
+  private ownAssignments: ReadAssignmentDto[] = [];
 
   search = (text$: Observable<string>): Observable<string[]> => {
     return text$.pipe(
@@ -121,7 +121,7 @@ export class CreateCourseComponent implements OnInit {
     });
   }
 
-  dragged(assignment: Assignment) {
+  dragged(assignment: ReadAssignmentDto) {
     this.assignments.removeFirst(t => t === assignment);
   }
 

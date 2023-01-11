@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ToastService} from 'ng-bootstrap-ext';
 import {of} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
-import Assignment from '../../../model/assignment';
+import Assignment, {CreateAssignmentDto} from '../../../model/assignment';
 import Task from '../../../model/task';
 import {AssignmentContext} from '../../../services/assignment.context';
 import {AssignmentService} from '../../../services/assignment.service';
@@ -47,12 +47,11 @@ export class EditAssignmentComponent implements OnInit {
         }
         return of(this.createNew());
       }),
-    ).subscribe(assignment => this.context.assignment = assignment);
+    ).subscribe((assignment: Assignment | CreateAssignmentDto) => this.context.assignment = assignment);
   }
 
-  private createNew(): Assignment {
+  private createNew(): CreateAssignmentDto {
     return {
-      _id: undefined!,
       title: '',
       author: this.configService.get('name'),
       email: this.configService.get('email'),
@@ -66,7 +65,7 @@ export class EditAssignmentComponent implements OnInit {
   }
 
   saveDraft(): void {
-    this.assignmentService.saveDraft(this.context.assignment._id, this.getAssignment());
+    this.assignmentService.saveDraft('_id' in this.context.assignment ? this.context.assignment._id : undefined, this.getAssignment());
     this.draft = true;
   }
 
@@ -80,14 +79,27 @@ export class EditAssignmentComponent implements OnInit {
   }
 
   onExport(): void {
-    const {_id, token, createdBy, ...rest} = this.getAssignment();
+    const rest: Partial<Assignment> = this.getAssignment();
+    if ('_id' in rest) {
+      delete rest._id;
+    }
+    if ('token' in rest) {
+      delete rest.token;
+    }
+    if ('createdBy' in rest) {
+      delete rest.createdBy;
+    }
     this.assignmentService.download(rest);
   }
 
   submit(): void {
     this.submitting = true;
-    const {_id, token, ...dto} = this.getAssignment();
-    const operation = _id ? this.assignmentService.update(_id, dto) : this.assignmentService.create(dto);
+    const dto = this.getAssignment();
+    const _id = '_id' in dto ? dto._id : undefined;
+    const operation = _id ? this.assignmentService.update(_id, {
+      ...dto,
+      token: undefined,
+    }) : this.assignmentService.create(dto);
     operation.subscribe(result => {
       this.submitting = false;
       this.toastService.success('Assignment', `Successfully ${_id ? 'updated' : 'created'} assignment`);
@@ -99,7 +111,7 @@ export class EditAssignmentComponent implements OnInit {
     });
   }
 
-  private getAssignment(): Assignment {
+  private getAssignment(): Assignment | CreateAssignmentDto {
     return {
       ...this.context.assignment,
       tasks: this.getTasks(this.context.assignment.tasks),
@@ -114,7 +126,7 @@ export class EditAssignmentComponent implements OnInit {
   }
 
   deleteDraft() {
-    if (!confirm('Are you sure you want to delete this draft? This action cannot be undone.')) {
+    if (!('_id' in this.context.assignment) || !confirm('Are you sure you want to delete this draft? This action cannot be undone.')) {
       return;
     }
 

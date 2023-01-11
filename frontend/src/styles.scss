@@ -119,12 +119,11 @@ a[href^="http"]::after {
 .dropdown-item-check::before {
   display: inline-block;
   width: 1rem;
-  content: '';
+  font-weight: 600;
 }
 
 .dropdown-item-check.checked::before {
   content: '✓';
-  font-weight: 600;
 }
 
 .dropdown-toggle.nav-link {

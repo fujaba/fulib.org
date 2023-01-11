@@ -1,6 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {Marker} from '../../../../shared/model/marker';
-import Assignment from '../../../model/assignment';
+import {CreateAssignmentDto} from '../../../model/assignment';
 import {CreateEvaluationDto, Evaluation} from '../../../model/evaluation';
 import {AssignmentContext} from '../../../services/assignment.context';
 import {AssignmentService} from '../../../services/assignment.service';
@@ -12,7 +12,7 @@ import {TaskService} from '../../../services/task.service';
   styleUrls: ['./sample.component.scss'],
 })
 export class SampleComponent {
-  assignment: Assignment;
+  assignment: CreateAssignmentDto;
   saveDraft: () => void;
 
   status = 'The sample solution is checked automatically when you change it.';

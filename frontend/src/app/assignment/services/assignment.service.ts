@@ -3,14 +3,14 @@ import {Injectable} from '@angular/core';
 
 import {saveAs} from 'file-saver';
 import {Observable, of} from 'rxjs';
-import {map, switchMap, take, tap} from 'rxjs/operators';
+import {map, switchMap, tap} from 'rxjs/operators';
 
 import {environment} from '../../../environments/environment';
 import {StorageService} from '../../services/storage.service';
 import {LintService} from '../../shared/lint.service';
 import {Marker} from '../../shared/model/marker';
 import {UserService} from '../../user/user.service';
-import Assignment, {CreateAssignmentDto, UpdateAssignmentDto} from '../model/assignment';
+import Assignment, {CreateAssignmentDto, ReadAssignmentDto, UpdateAssignmentDto} from '../model/assignment';
 import {CheckAssignment, CheckResult} from '../model/check';
 import Course from '../model/course';
 import {SearchResult, SearchSummary} from '../model/search-result';
@@ -33,12 +33,12 @@ export class AssignmentService {
     return id ? `assignments/${id}/draft` : 'assignmentDraft';
   }
 
-  loadDraft(id: string | undefined): Assignment | undefined {
+  loadDraft(id: string | undefined): Assignment | CreateAssignmentDto | undefined {
     const stored = localStorage.getItem(this.getDraftKey(id));
     return stored ? JSON.parse(stored) : undefined;
   }
 
-  saveDraft(id: string | undefined, value: Assignment) {
+  saveDraft(id: string | undefined, value: Assignment | CreateAssignmentDto) {
     localStorage.setItem(this.getDraftKey(id), JSON.stringify(value));
   }
 
@@ -94,28 +94,21 @@ export class AssignmentService {
     return ids;
   }
 
-  findOwn(archived = false): Observable<Assignment[]> {
+  findOwn(archived = false): Observable<ReadAssignmentDto[]> {
     const ownIds = this.getOwnIds();
     return this.users.getCurrent().pipe(
       switchMap(user => this.findAll(ownIds, user?.id, archived)),
     );
   }
 
-  findAll(ids?: string[], createdBy?: string, archived = false): Observable<Assignment[]> {
-    return this.http.get<Assignment[]>(`${environment.assignmentsApiUrl}/assignments`, {
+  findAll(ids?: string[], createdBy?: string, archived = false): Observable<ReadAssignmentDto[]> {
+    return this.http.get<ReadAssignmentDto[]>(`${environment.assignmentsApiUrl}/assignments`, {
       params: {
         ...(ids ? {ids: ids.join(',')} : {}),
         ...(createdBy ? {createdBy} : {}),
         archived,
       },
-    }).pipe(
-      map(results => {
-        for (const result of results) {
-          result.token = this.getToken(result._id) ?? undefined;
-        }
-        return results;
-      }),
-    );
+    });
   }
 
   check(assignment: CheckAssignment): Observable<CheckResult> {
@@ -180,12 +173,13 @@ export class AssignmentService {
     );
   }
 
-  get(id: string): Observable<Assignment> {
+  get(id: string): Observable<Assignment | ReadAssignmentDto> {
     const headers = this.getHeaders(this.getToken(id));
-    return this.http.get<Assignment>(`${environment.assignmentsApiUrl}/assignments/${id}`, {headers}).pipe(
-      map(a => {
-        a.token ??= this.getToken(id) ?? undefined;
-        return a;
+    return this.http.get<Assignment | ReadAssignmentDto>(`${environment.assignmentsApiUrl}/assignments/${id}`, {headers}).pipe(
+      tap(a => {
+        if ('token' in a && a.token) {
+          this.setToken(id, a.token);
+        }
       }),
     );
   }
@@ -218,7 +212,7 @@ export class AssignmentService {
     } : {};
   }
 
-  getNext(course: Course, assignment: Assignment): Observable<Assignment | undefined> {
+  getNext(course: Course, assignment: ReadAssignmentDto): Observable<Assignment | ReadAssignmentDto | undefined> {
     const ids = course.assignments!;
     const index = ids.indexOf(assignment._id);
     if (index < 0 || index + 1 >= ids.length) {

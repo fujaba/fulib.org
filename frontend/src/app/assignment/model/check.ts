@@ -1,9 +1,9 @@
-import Assignment from './assignment';
+import {ReadAssignmentDto} from './assignment';
 import {CreateEvaluationDto, Evaluation} from './evaluation';
 import Task from './task';
 
 export interface CheckSolution {
-  assignment: Assignment;
+  assignment: ReadAssignmentDto;
   solution: string;
 }
 

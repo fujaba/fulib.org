@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {map, switchMap, tap} from 'rxjs/operators';
-import Assignment from '../../model/assignment';
+import {ReadAssignmentDto} from '../../model/assignment';
 import {AssignmentService} from '../../services/assignment.service';
 
 @Component({
@@ -10,7 +10,7 @@ import {AssignmentService} from '../../services/assignment.service';
   styleUrls: ['./my-assignments.component.scss'],
 })
 export class MyAssignmentsComponent implements OnInit {
-  assignments?: Assignment[];
+  assignments?: ReadAssignmentDto[];
   archived = false;
 
   constructor(
@@ -27,7 +27,7 @@ export class MyAssignmentsComponent implements OnInit {
     ).subscribe(assignments => this.assignments = assignments);
   }
 
-  remove(assignment: Assignment) {
+  remove(assignment: ReadAssignmentDto) {
     this.assignments = this.assignments?.filter(a => a._id !== assignment._id);
   }
 }

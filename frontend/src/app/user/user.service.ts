@@ -1,8 +1,9 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {KeycloakService} from 'keycloak-angular';
-import {BehaviorSubject, Observable, of, throwError} from 'rxjs';
-import {catchError, map, take} from 'rxjs/operators';
+import {Observable, of, throwError} from 'rxjs';
+import {fromPromise} from 'rxjs/internal/observable/innerFrom';
+import {catchError, map, startWith, switchMap, tap} from 'rxjs/operators';
 import {environment} from '../../environments/environment';
 import {User} from './user';
 
@@ -10,21 +11,36 @@ import {User} from './user';
   providedIn: 'root',
 })
 export class UserService {
-  private readonly _current = new BehaviorSubject<User | null>(null);
-
   constructor(
     private keycloak: KeycloakService,
     private http: HttpClient,
   ) {
-    this.init();
   }
 
-  get current$(): Observable<User | null> {
-    return this._current;
+  getCurrent$(): Observable<User | null> {
+    return this.keycloak.keycloakEvents$.pipe(
+      tap(console.log),
+      startWith(null),
+      switchMap(() => this.getCurrent()),
+    );
   }
 
   getCurrent(): Observable<User | null> {
-    return this._current.pipe(take(1));
+    return fromPromise(this.getCurrentAsync());
+  }
+
+  async getCurrentAsync(): Promise<User | null> {
+    const loggedIn = await this.keycloak.isLoggedIn();
+    if (!loggedIn) {
+      return null;
+    }
+    const profile = await this.keycloak.loadUserProfile();
+    return {
+      id: this.keycloak.getKeycloakInstance().subject,
+      email: profile.email,
+      firstName: profile.firstName,
+      lastName: profile.lastName,
+    };
   }
 
   findAll(search?: string): Observable<User[]> {
@@ -51,30 +67,5 @@ export class UserService {
       catchError(() => ''),
       map(data => data.split('&').filter(s => s.startsWith(paramName))[0]?.substring(paramName.length)),
     );
-  }
-
-  private init(): void {
-    this.reload();
-    this.keycloak.keycloakEvents$.subscribe(event => {
-      this.reload();
-    });
-  }
-
-  private reload(): void {
-    this.keycloak.isLoggedIn().then(loggedIn => {
-      if (!loggedIn) {
-        this._current.next(null);
-        return;
-      }
-      this.keycloak.loadUserProfile().then(profile => {
-        const user: User = {
-          id: this.keycloak.getKeycloakInstance().subject,
-          email: profile.email,
-          firstName: profile.firstName,
-          lastName: profile.lastName,
-        };
-        this._current.next(user);
-      });
-    });
   }
 }
