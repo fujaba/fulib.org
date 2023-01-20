@@ -71,36 +71,37 @@
       Submitted
       <button class="btn btn-sm p-1 bi-question-circle" ngbTooltip="View Color Legend" [ngbPopover]="timestampPopover" placement="bottom-left"></button>
       <ng-template #timestampPopover>
-        <div *ngIf="assignment && assignment.deadline">
-          <span class="text-danger bi-hourglass-bottom">{{ assignment.deadline | date:'short' }}</span> - Submitted after Deadline
-        </div>
-        <div *ngIf="assignment && assignment.issuance">
-          <span class="text-warning bi-hourglass-top">{{ assignment.issuance | date:'short' }}</span> - No changes since Issuance
-        </div>
-        <div class="bi-check">
-          {{ '2023-01-01T12:00:00Z' | date:'short' }} - Submitted in time
-        </div>
+        <dl>
+          <ng-container *ngIf="assignment && assignment.deadline">
+            <dt class="text-danger bi-hourglass-bottom">{{ assignment.deadline | date:'short' }}</dt>
+            <dd>Submitted after Deadline</dd>
+          </ng-container>
+          <ng-container *ngIf="assignment && assignment.issuance">
+            <dt class="text-warning bi-hourglass-top">{{ assignment.issuance | date:'short' }}</dt>
+            <dd>No changes since Issuance</dd>
+          </ng-container>
+          <dt class="bi-check">{{ assignment?.issuance || assignment?.deadline || '2023-01-01T12:00:00Z' | date:'short' }}</dt>
+          <dd>Submitted in time</dd>
+        </dl>
       </ng-template>
     </th>
     <th>
       Points
       <button class="btn btn-sm p-1 bi-question-circle" ngbTooltip="View Color Legend" [ngbPopover]="pointsPopover" placement="bottom-left"></button>
+      <ng-template #pointsPopover>
+        <dl>
+          <dt class="badge bg-primary">{{ totalPoints }} / {{ totalPoints }}</dt>
+          <dd>Graded</dd>
+          <dt class="badge bg-warning">? / {{ totalPoints }}</dt>
+          <dd>Partially Evaluated manually</dd>
+          <dt class="badge bg-info">? / {{ totalPoints }}</dt>
+          <dd>Partially Evaluated by Code Search</dd>
+          <dt class="badge bg-secondary">? / {{ totalPoints }}</dt>
+          <dd>Not Evaluated</dd>
+        </dl>
+      </ng-template>
       <button class="btn btn-sm p-1 bi-clipboard" ngbTooltip="Copy Column as Text" (click)="copyPoints()"></button>
     </th>
-    <ng-template #pointsPopover>
-      <div>
-        <span class="badge bg-primary">{{ totalPoints }} / {{ totalPoints }}</span> - Graded
-      </div>
-      <div>
-        <span class="badge bg-warning">? / {{ totalPoints }}</span> - Partially Evaluated manually
-      </div>
-      <div>
-        <span class="badge bg-info">? / {{ totalPoints }}</span> - Partially Evaluated by Code Search
-      </div>
-      <div>
-        <span class="badge bg-secondary">? / {{ totalPoints }}</span> - Not Evaluated
-      </div>
-    </ng-template>
     <th>Assignee</th>
     <th>Actions</th>
   </tr>
