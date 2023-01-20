@@ -15,6 +15,22 @@
            [(ngModel)]="assignment.email" (change)="saveDraft()">
   </div>
   <div class="mb-3">
+    <label class="form-label" for="issuanceDateInput">
+      Issuance
+      <span class="badge bg-gradient-primary">New</span>
+    </label>
+    <div class="input-group">
+      <input type="date" class="form-control" id="issuanceDateInput"
+             [(ngModel)]="issuanceDate" (change)="saveDraft()">
+      <label class="visually-hidden" for="issuanceTimeInput">Time</label>
+      <input type="time" class="form-control" id="issuanceTimeInput" [disabled]="!issuanceDate"
+             [(ngModel)]="issuanceTime" (change)="saveDraft()">
+    </div>
+    <div class="form-text">
+      Optional. The date and time the assignment was issued.
+    </div>
+  </div>
+  <div class="mb-3">
     <label class="form-label" for="deadlineDateInput">Deadline</label>
     <div class="input-group">
       <input type="date" class="form-control" id="deadlineDateInput"

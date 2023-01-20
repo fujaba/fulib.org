@@ -67,26 +67,41 @@
       {{ prop[0] }}
       <button class="btn btn-sm p-1 bi-clipboard" ngbTooltip="Copy Column as Text" (click)="copyAuthor(prop[0], prop[1])"></button>
     </th>
-    <th>Submitted</th>
+    <th>
+      Submitted
+      <button class="btn btn-sm p-1 bi-question-circle" ngbTooltip="View Color Legend" [ngbPopover]="timestampPopover" placement="bottom-left"></button>
+      <ng-template #timestampPopover>
+        <dl>
+          <ng-container *ngIf="assignment && assignment.deadline">
+            <dt class="text-danger bi-hourglass-bottom">{{ assignment.deadline | date:'short' }}</dt>
+            <dd>Submitted after Deadline</dd>
+          </ng-container>
+          <ng-container *ngIf="assignment && assignment.issuance">
+            <dt class="text-warning bi-hourglass-top">{{ assignment.issuance | date:'short' }}</dt>
+            <dd>No changes since Issuance</dd>
+          </ng-container>
+          <dt class="bi-check">{{ assignment?.issuance || assignment?.deadline || '2023-01-01T12:00:00Z' | date:'short' }}</dt>
+          <dd>Submitted in time</dd>
+        </dl>
+      </ng-template>
+    </th>
     <th>
       Points
       <button class="btn btn-sm p-1 bi-question-circle" ngbTooltip="View Color Legend" [ngbPopover]="pointsPopover" placement="bottom-left"></button>
+      <ng-template #pointsPopover>
+        <dl>
+          <dt class="badge bg-primary">{{ totalPoints }} / {{ totalPoints }}</dt>
+          <dd>Graded</dd>
+          <dt class="badge bg-warning">? / {{ totalPoints }}</dt>
+          <dd>Partially Evaluated manually</dd>
+          <dt class="badge bg-info">? / {{ totalPoints }}</dt>
+          <dd>Partially Evaluated by Code Search</dd>
+          <dt class="badge bg-secondary">? / {{ totalPoints }}</dt>
+          <dd>Not Evaluated</dd>
+        </dl>
+      </ng-template>
       <button class="btn btn-sm p-1 bi-clipboard" ngbTooltip="Copy Column as Text" (click)="copyPoints()"></button>
     </th>
-    <ng-template #pointsPopover>
-      <div>
-        <span class="badge bg-primary">{{ totalPoints }} / {{ totalPoints }}</span> - Graded
-      </div>
-      <div>
-        <span class="badge bg-warning">? / {{ totalPoints }}</span> - Partially Evaluated manually
-      </div>
-      <div>
-        <span class="badge bg-info">? / {{ totalPoints }}</span> - Partially Evaluated by Code Search
-      </div>
-      <div>
-        <span class="badge bg-secondary">? / {{ totalPoints }}</span> - Not Evaluated
-      </div>
-    </ng-template>
     <th>Assignee</th>
     <th>Actions</th>
   </tr>
@@ -95,14 +110,11 @@
   <tr *ngFor="let solution of solutions; trackBy: solutionId">
     <td *ngFor="let prop of authorProperties">{{solution.author[prop[1]]}}</td>
     <td>
-        <span
-          *ngIf="assignment && assignment.deadline && solution.timestamp && assignment.deadline < solution.timestamp else timestamp"
-          class="text-danger" ngbTooltip="Submitted after Deadline">
-          {{solution.timestamp | date:'medium'}}
-        </span>
-      <ng-template #timestamp>
-        {{solution.timestamp | date:'medium'}}
-      </ng-template>
+      <span *ngIf="solution.timestamp" [class]="
+          assignment && assignment.deadline && assignment.deadline < solution.timestamp ? 'text-danger bi-hourglass-bottom' :
+          assignment && assignment.issuance && solution.timestamp < assignment.issuance ? 'text-warning bi-hourglass-top' :
+          'bi-check'
+       ">{{ solution.timestamp | date:'medium' }}</span>
     </td>
     <td>
       <span
