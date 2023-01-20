@@ -67,7 +67,21 @@
       {{ prop[0] }}
       <button class="btn btn-sm p-1 bi-clipboard" ngbTooltip="Copy Column as Text" (click)="copyAuthor(prop[0], prop[1])"></button>
     </th>
-    <th>Submitted</th>
+    <th>
+      Submitted
+      <button class="btn btn-sm p-1 bi-question-circle" ngbTooltip="View Color Legend" [ngbPopover]="timestampPopover" placement="bottom-left"></button>
+      <ng-template #timestampPopover>
+        <div *ngIf="assignment && assignment.deadline">
+          <span class="text-danger bi-hourglass-bottom">{{ assignment.deadline | date:'short' }}</span> - Submitted after Deadline
+        </div>
+        <div *ngIf="assignment && assignment.issuance">
+          <span class="text-warning bi-hourglass-top">{{ assignment.issuance | date:'short' }}</span> - No changes since Issuance
+        </div>
+        <div class="bi-check">
+          {{ '2023-01-01T12:00:00Z' | date:'short' }} - Submitted in time
+        </div>
+      </ng-template>
+    </th>
     <th>
       Points
       <button class="btn btn-sm p-1 bi-question-circle" ngbTooltip="View Color Legend" [ngbPopover]="pointsPopover" placement="bottom-left"></button>
@@ -95,14 +109,11 @@
   <tr *ngFor="let solution of solutions; trackBy: solutionId">
     <td *ngFor="let prop of authorProperties">{{solution.author[prop[1]]}}</td>
     <td>
-        <span
-          *ngIf="assignment && assignment.deadline && solution.timestamp && assignment.deadline < solution.timestamp else timestamp"
-          class="text-danger" ngbTooltip="Submitted after Deadline">
-          {{solution.timestamp | date:'medium'}}
-        </span>
-      <ng-template #timestamp>
-        {{solution.timestamp | date:'medium'}}
-      </ng-template>
+      <span *ngIf="solution.timestamp" [class]="
+          assignment && assignment.deadline && assignment.deadline < solution.timestamp ? 'text-danger bi-hourglass-bottom' :
+          assignment && assignment.issuance && solution.timestamp < assignment.issuance ? 'text-warning bi-hourglass-top' :
+          'bi-check'
+       ">{{ solution.timestamp | date:'medium' }}</span>
     </td>
     <td>
       <span
