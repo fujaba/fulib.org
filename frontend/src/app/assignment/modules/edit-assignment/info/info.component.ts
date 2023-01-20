@@ -10,6 +10,8 @@ import {AssignmentContext} from '../../../services/assignment.context';
 export class InfoComponent implements OnInit {
   assignment: CreateAssignmentDto;
 
+  issuanceDate?: string;
+  issuanceTime?: string;
   deadlineDate?: string;
   deadlineTime?: string;
 
@@ -20,29 +22,39 @@ export class InfoComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.assignment.deadline) {
-      const deadline = new Date(this.assignment.deadline);
-      const year = deadline.getFullYear();
-      const month = String(deadline.getMonth() + 1).padStart(2, '0');
-      const day = String(deadline.getDate()).padStart(2, '0');
-      this.deadlineDate = `${year}-${month}-${day}`;
-
-      const hour = String(deadline.getHours()).padStart(2, '0');
-      const minute = String(deadline.getMinutes()).padStart(2, '0');
-      const second = String(deadline.getSeconds()).padStart(2, '0');
-      this.deadlineTime = `${hour}:${minute}:${second}`;
-    } else {
-      this.deadlineDate = undefined;
-      this.deadlineTime = undefined;
-    }
+    [this.issuanceDate, this.issuanceTime] = getDateAndTime(this.assignment.issuance);
+    [this.deadlineDate, this.deadlineTime] = getDateAndTime(this.assignment.deadline);
   }
 
   saveDraft(): void {
-    this.assignment.deadline = this.getDeadline();
+    this.assignment.issuance = makeDate(this.issuanceDate, this.issuanceTime);
+    this.assignment.deadline = makeDate(this.deadlineDate, this.deadlineTime);
     this.context.saveDraft();
   }
+}
 
-  getDeadline(): Date | undefined {
-    return this.deadlineDate ? new Date(this.deadlineDate + ' ' + (this.deadlineTime ?? '00:00')) : undefined;
+function getTime(deadline: Date): string {
+  const hour = String(deadline.getHours()).padStart(2, '0');
+  const minute = String(deadline.getMinutes()).padStart(2, '0');
+  const second = String(deadline.getSeconds()).padStart(2, '0');
+  return `${hour}:${minute}:${second}`;
+}
+
+function getDate(deadline: Date): string {
+  const year = deadline.getFullYear();
+  const month = String(deadline.getMonth() + 1).padStart(2, '0');
+  const day = String(deadline.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function getDateAndTime(deadline: Date | string | undefined): [string, string] | [undefined, undefined] {
+  if (!deadline) {
+    return [undefined, undefined];
   }
+  const date = new Date(deadline);
+  return [getDate(date), getTime(date)];
+}
+
+function makeDate(date: string | undefined, time: string | undefined): Date | undefined {
+  return date ? new Date(`${date} ${time || '00:00:00'}`) : undefined;
 }

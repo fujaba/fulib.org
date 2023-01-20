@@ -10,6 +10,7 @@ export default class Assignment {
   createdBy?: string;
   author: string;
   email: string;
+  issuance?: Date | string;
   deadline?: Date | string;
 
   classroom?: {
