@@ -131,6 +131,13 @@ export class Assignment {
   @IsEmail()
   email: string;
 
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsDate()
+  @Transform(({value}) => typeof value === 'string' ? new Date(value) : value)
+  issuance?: Date;
+
   @Prop({index: 1})
   @ApiProperty({required: false})
   @IsOptional()
