@@ -49,6 +49,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/event/tsconfig.lib.json"
       }
+    },
+    "moss": {
+      "type": "library",
+      "root": "libs/moss",
+      "entryFile": "index",
+      "sourceRoot": "libs/moss/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/moss/tsconfig.lib.json"
+      }
     }
   }
 }
