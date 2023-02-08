@@ -11,3 +11,24 @@
     <i class="bi-chevron-right"></i>
   </a>
 </div>
+<ng-template #configModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Complete Setup</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <p>
+      Please enter some information about yourself to begin using Assignments.
+      All data will only be saved locally on your device.
+    </p>
+    <app-config-form #form></app-config-form>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-secondary" (click)="modal.dismiss('Cancel')">
+      Cancel
+    </button>
+    <button class="btn btn-primary" (click)="form.save(); modal.close('Save click')">
+      Save
+    </button>
+  </div>
+</ng-template>
