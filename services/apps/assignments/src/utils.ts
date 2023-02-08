@@ -21,6 +21,6 @@ export function eventStream<T>(source: Observable<EventPayload<T>>, name: string
       filter(({data}) => fltr(data)),
       map(({event, data}) => ({data: {event, [name]: data}})),
     ),
-    interval(15000).pipe(mapTo({data: ''})),
+    interval(15000).pipe(mapTo({type: 'noop', data: 'noop'})),
   );
 }
