@@ -8,17 +8,5 @@ import {CONFIG_OPTIONS, ConfigService} from '../../services/config.service';
   styleUrls: ['./settings.component.scss'],
 })
 export class SettingsComponent {
-  options = CONFIG_OPTIONS;
-  optionValues = this.configService.getAll();
 
-  constructor(
-    private configService: ConfigService,
-    private toastService: ToastService,
-  ) {
-  }
-
-  save() {
-    this.configService.setAll(this.optionValues);
-    this.toastService.success('Settings', 'Successfully saved settings');
-  }
 }

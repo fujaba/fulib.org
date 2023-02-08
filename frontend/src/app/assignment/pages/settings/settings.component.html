@@ -3,19 +3,8 @@
     <a class="bi-chevron-left" routerLink=".."></a>
     Settings
   </h1>
-  <div class="mb-3">
-    <div class="mb-3" *ngFor="let option of options">
-      <label [for]="option.key" class="form-label">{{ option.title }}</label>
-      <input [id]="option.key" *ngIf="!option.options" type="text" class="form-control" [placeholder]="option.default || ''" [(ngModel)]="optionValues[option.key]">
-      <select [id]="option.key" *ngIf="option.options" class="form-select" [(ngModel)]="optionValues[option.key]">
-        <option *ngFor="let option of option.options" [value]="option[0]">{{ option[1] }}</option>
-      </select>
-      <div class="form-text">
-        {{ option.description }}
-      </div>
-    </div>
-  </div>
-  <button type="button" class="btn btn-primary" (click)="save()">
+  <app-config-form #form></app-config-form>
+  <button type="button" class="btn btn-primary" (click)="form.save()">
     Save
   </button>
 </div>

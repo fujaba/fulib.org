@@ -11,6 +11,7 @@ import {DndModule} from 'ngx-drag-drop';
 import {SharedModule} from '../shared/shared.module';
 import {AssignmentRoutingModule} from './assignment-routing.module';
 import {AssignmentSharedModule} from './modules/shared/shared.module';
+import {ConfigFormComponent} from './pages/config-form/config-form.component';
 import {CreateSolutionComponent} from './pages/create-solution/create-solution.component';
 import {MyAssignmentsComponent} from './pages/my-assignments/my-assignments.component';
 import {MySolutionsComponent} from './pages/my-solutions/my-solutions.component';
@@ -27,6 +28,7 @@ import {ConfigService} from './services/config.service';
     TokenModalComponent,
     OverviewComponent,
     SettingsComponent,
+    ConfigFormComponent,
   ],
   imports: [
     CommonModule,
