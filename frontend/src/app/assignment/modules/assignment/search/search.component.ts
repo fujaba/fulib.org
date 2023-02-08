@@ -9,7 +9,7 @@ import Solution from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
 import {ConfigService} from '../../../services/config.service';
 import {SolutionService} from '../../../services/solution.service';
-import {SelectionService} from '../../solution/selection.service';
+import {SelectionService} from '../../../services/selection.service';
 
 @Component({
   selector: 'app-assignment-search',

@@ -20,6 +20,7 @@ import {
 
 import Solution, {AuthorInfo} from '../model/solution';
 import {AssignmentService} from './assignment.service';
+import {observeSSE} from './sse-helper';
 
 function asID(id: { _id?: string, id?: string } | string): string {
   return typeof id === 'string' ? id : id._id! || id.id!;
@@ -217,7 +218,7 @@ export class SolutionService {
   streamComments(assignment: string, solution: string): Observable<{ event: string, comment: Comment }> {
     const token = this.getToken(assignment, solution) || this.assignmentService.getToken(assignment);
     const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/comments/events?token=${token}`;
-    return this.stream<Comment, 'comment'>(url);
+    return observeSSE<Comment, 'comment'>(url);
   }
 
   getEvaluations(assignment: Assignment | string, id?: string, params: FilterEvaluationParams = {}): Observable<Evaluation[]> {
@@ -248,16 +249,7 @@ export class SolutionService {
   streamEvaluations(assignment: string, solution: string): Observable<{ event: string, evaluation: Evaluation }> {
     const token = this.assignmentService.getToken(assignment);
     const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/evaluations/events?token=${token}`;
-    return this.stream<Evaluation, 'evaluation'>(url);
-  }
-
-  private stream<T, K extends string>(url: string): Observable<{ event: string } & Record<K, T>> {
-    return new Observable(observer => {
-      const eventSource = new EventSource(url);
-      eventSource.addEventListener('message', (event: MessageEvent) => observer.next(JSON.parse(event.data)));
-      eventSource.addEventListener('error', (error) => observer.error(error));
-      return () => eventSource.close();
-    });
+    return observeSSE<Evaluation, 'evaluation'>(url);
   }
 
   getEvaluationByTask(assignent: string, solution: string, task: string): Observable<Evaluation | undefined> {

@@ -12,7 +12,7 @@ import {ConfigService} from '../../../services/config.service';
 import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
 import {TelemetryService} from '../../../services/telemetry.service';
-import {SelectionService} from '../selection.service';
+import {SelectionService} from '../../../services/selection.service';
 
 export const selectionComment = '(fulibFeedback Selection)';
 
