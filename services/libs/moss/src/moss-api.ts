@@ -55,7 +55,7 @@ language ${this.language}
     await this.write(socket, 'end\n');
     socket.end();
 
-    return response;
+    return response.trim();
   }
 
   private async upload(socket: Socket, file: File, id: number): Promise<void> {
