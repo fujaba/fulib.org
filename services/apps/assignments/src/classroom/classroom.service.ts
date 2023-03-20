@@ -78,12 +78,11 @@ export class ClassroomService {
     }));
 
     if (assignment.classroom?.codeSearch) {
-      const mossFiles: File[] = (await Promise.all(files.map((file, index) => {
+      Promise.all(files.map((file, index) => {
         const stream = createReadStream(file.path);
         const solution = result.upsertedIds[index];
         return this.importZipStream(stream, id, solution);
-      }))).flat();
-      await this.moss(id, mossFiles);
+      })).then(files => this.moss(id, files.flat()));
     }
 
     return this.solutionService.findAll({_id: {$in: Object.values(result.upsertedIds)}});
@@ -201,7 +200,7 @@ export class ClassroomService {
     }));
 
     if (codeSearch) {
-      const mossFiles: File[] = (await Promise.all(repositories.map((repo, i) => {
+      Promise.all(repositories.map((repo, i) => {
         const commit = commits[i];
         const upsertedId = result.upsertedIds[i];
         if (commit && upsertedId) {
@@ -209,16 +208,15 @@ export class ClassroomService {
         } else {
           return [];
         }
-      }))).flat();
-      await this.moss(assignment._id, mossFiles);
+      })).then(files => this.moss(assignment._id, files.flat()));
     }
 
-    await Promise.all(repositories.map((repo, i) => {
+    repositories.forEach((repo, i) => {
       const commit = commits[i];
       if (commit) {
-        return this.tag(repo, token, assignment, commit);
+        this.tag(repo, token, assignment, commit);
       }
-    }));
+    });
 
     return Object.values(result.upsertedIds);
   }
