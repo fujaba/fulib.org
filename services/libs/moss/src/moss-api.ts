@@ -1,4 +1,5 @@
-import { Socket } from "node:net";
+import {Socket} from 'node:net';
+import {Stream} from 'node:stream';
 
 export interface File {
   name: string;
@@ -21,10 +22,12 @@ export class MossApi {
   baseFiles: File[] = [];
   files: File[] = [];
 
-  async send(): Promise<string> {
-    const socket = new Socket();
-    await new Promise<void>((resolve) => socket.connect(this.port, this.server, resolve));
-    await this.write(socket, `\
+  private socket!: Socket;
+
+  async open() {
+    this.socket = new Socket();
+    await new Promise<void>((resolve) => this.socket.connect(this.port, this.server, resolve));
+    await this.write(`\
 moss ${this.userid}
 directory ${this.directories ? 1 : 0}
 X ${this.experimental ? 1 : 0}
@@ -35,37 +38,53 @@ language ${this.language}
 
     // await socket response
 
-    const langOk = await this.read(socket);
+    const langOk = await this.read();
     if (langOk.includes('no')) {
       throw new Error('Invalid language ' + this.language);
     }
+  }
+
+  async send(): Promise<string> {
+    await this.open();
 
     for (const baseFile of this.baseFiles) {
-      await this.upload(socket, baseFile, 0);
+      const {name, size, content} = baseFile;
+      await this.upload(name, size, content, 0);
     }
 
     for (let i = 0; i < this.files.length; i++) {
-      await this.upload(socket, this.files[i], i + 1);
+      const {name, size, content} = this.files[i];
+      await this.upload(name, size, content, i + 1);
     }
 
-    await this.write(socket, `query 0 ${this.comment}\n`);
+    return this.end();
+  }
 
-    const response = await this.read(socket);
+  async end(): Promise<string> {
+    await this.write(`query 0 ${this.comment}\n`);
 
-    await this.write(socket, 'end\n');
-    socket.end();
+    const response = await this.read();
+
+    await this.write('end\n');
+    this.socket.end();
 
     return response.trim();
   }
 
-  private async upload(socket: Socket, file: File, id: number): Promise<void> {
-    await this.write(socket, `file ${id} ${this.language} ${file.size} ${file.name}\n`);
-    await this.write(socket, file.content);
+  async upload(name: string, size: number, content: string | Uint8Array | Stream, id: number): Promise<void> {
+    await this.write(`file ${id} ${this.language} ${size} ${name}\n`);
+    await this.write(content);
   }
 
-  async write(socket: Socket, data: string | Uint8Array): Promise<void> {
+  async write(data: string | Uint8Array | Stream): Promise<void> {
     return new Promise((resolve, reject) => {
-      socket.write(data, (err) => {
+      if (data instanceof Stream) {
+        data.pipe(this.socket);
+        data.on('error', reject);
+        data.on('end', resolve);
+        return;
+      }
+      this.socket.write(data, (err) => {
         if (err) {
           reject(err);
         } else {
@@ -75,9 +94,9 @@ language ${this.language}
     });
   }
 
-  async read(socket: Socket): Promise<string> {
+  async read(): Promise<string> {
     return new Promise((resolve) => {
-      socket.once('data', (data) => {
+      this.socket.once('data', (data) => {
         resolve(data.toString());
       });
     });
