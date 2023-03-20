@@ -91,6 +91,12 @@ export class ClassroomInfo {
   @IsOptional()
   @IsBoolean()
   codeSearch?: boolean;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsUrl()
+  mossResult?: string;
 }
 
 @Schema()

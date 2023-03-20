@@ -1,3 +1,4 @@
+import {File, MossApi} from '@app/moss/moss-api';
 import {HttpService} from '@nestjs/axios';
 import {Injectable, UnauthorizedException} from '@nestjs/common';
 import {Method} from 'axios';
@@ -77,12 +78,12 @@ export class ClassroomService {
     }));
 
     if (assignment.classroom?.codeSearch) {
-      for (let index = 0; index < files.length; index++) {
-        const file = files[index];
+      const mossFiles: File[] = (await Promise.all(files.map((file, index) => {
         const stream = createReadStream(file.path);
         const solution = result.upsertedIds[index];
-        this.importZipStream(stream, id, solution);
-      }
+        return this.importZipStream(stream, id, solution);
+      }))).flat();
+      await this.moss(id, mossFiles);
     }
 
     return this.solutionService.findAll({_id: {$in: Object.values(result.upsertedIds)}});
@@ -99,8 +100,9 @@ export class ClassroomService {
     }
   }
 
-  private importZipStream(stream: Stream, assignment: string, solution: string, commit?: string) {
-    stream.pipe(unzip()).on('entry', (entry: ZipEntry) => {
+  private async importZipStream(stream: Stream, assignment: string, solution: string, commit?: string): Promise<File[]> {
+    const files: File[] = [];
+    await stream.pipe(unzip()).on('entry', (entry: ZipEntry) => {
       // Using vars.uncompressedSize because entry.extra.* and entry.size are unavailable before parsing for some reason
       if (entry.type !== 'File' || (entry.vars as any).uncompressedSize > MAX_FILE_SIZE) {
         entry.autodrain();
@@ -110,12 +112,24 @@ export class ClassroomService {
         if (buffer.length > MAX_FILE_SIZE) {
           return;
         }
+        if (entry.path.endsWith('.java')) {
+          files.push({name: entry.path, size: buffer.length, content: buffer});
+        }
         const content = buffer.toString('utf-8');
         let index: number;
         const path = commit && (index = entry.path.indexOf(commit)) >= 0 ? entry.path.substring(index + commit.length + 1) : entry.path;
         this.searchService.addFile(assignment, solution, path, content);
       });
-    });
+    }).promise();
+    return files;
+  }
+
+  private async moss(assignment: string, files: File[]) {
+    console.log('uploading', files.length, "files to Moss");
+    const moss = new MossApi();
+    moss.files = files;
+    const result = await moss.send();
+    await this.assignmentService.update(assignment, {'classroom.mossResult': result});
   }
 
   async countSolutions(assignment: AssignmentDocument): Promise<number> {
@@ -187,14 +201,16 @@ export class ClassroomService {
     }));
 
     if (codeSearch) {
-      for (let i = 0; i < repositories.length; i++) {
-        const repo = repositories[i];
+      const mossFiles: File[] = (await Promise.all(repositories.map((repo, i) => {
         const commit = commits[i];
         const upsertedId = result.upsertedIds[i];
         if (commit && upsertedId) {
-          this.addContentsToIndex(assignment, upsertedId.toString(), this.getGithubName(repo, assignment), commit);
+          return this.addContentsToIndex(assignment, upsertedId.toString(), this.getGithubName(repo, assignment), commit);
+        } else {
+          return [];
         }
-      }
+      }))).flat();
+      await this.moss(assignment._id, mossFiles);
     }
 
     await Promise.all(repositories.map((repo, i) => {
@@ -212,22 +228,24 @@ export class ClassroomService {
     return `org:${org} "${prefix}-" in:name`;
   }
 
-  private addContentsToIndex(assignment: AssignmentDocument, solution: string, github: string, commit: string) {
+  private async addContentsToIndex(assignment: AssignmentDocument, solution: string, github: string, commit: string): Promise<File[]> {
     const {org, prefix} = assignment.classroom!;
     if (!github) {
-      return;
+      return [];
     }
 
-    this.http.get<Stream>(`https://api.github.com/repos/${org}/${prefix}-${github}/zipball/${commit}`, {
-      headers: {
-        Authorization: 'Bearer ' + assignment.classroom!.token!,
-      },
-      responseType: 'stream',
-    }).subscribe(response => {
-      this.importZipStream(response.data, assignment.id, solution, commit);
-    }, error => {
+    try {
+      const response = await firstValueFrom(this.http.get<Stream>(`https://api.github.com/repos/${org}/${prefix}-${github}/zipball/${commit}`, {
+        headers: {
+          Authorization: 'Bearer ' + assignment.classroom!.token!,
+        },
+        responseType: 'stream',
+      }));
+      return this.importZipStream(response.data, assignment.id, solution, commit);
+    } catch (error: any) {
       console.error(`Failed to index ${org}/${prefix}-${github}: ${error.message}`);
-    });
+      return [];
+    }
   }
 
   private tag(repo: RepositoryInfo, token: string, assignment: AssignmentDocument, commit: string) {
@@ -236,7 +254,9 @@ export class ClassroomService {
         ref: `refs/tags/assignments/${assignment._id}`,
         sha: commit,
       },
-    );
+    ).catch(err => {
+      console.error(`Failed to tag ${repo.full_name}: ${err.message}`);
+    });
   }
 
   private createSolution(assignment: AssignmentDocument, repo: RepositoryInfo, commit: string | undefined): Solution {

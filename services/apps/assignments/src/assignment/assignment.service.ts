@@ -113,7 +113,7 @@ export class AssignmentService {
     };
   }
 
-  async update(id: string, dto: UpdateAssignmentDto): Promise<Assignment | null> {
+  async update(id: string, dto: UpdateAssignmentDto | UpdateQuery<Assignment>): Promise<Assignment | null> {
     const {token, classroom, ...rest} = dto;
     const update: UpdateQuery<Assignment> = rest;
     if (token) {
