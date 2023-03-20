@@ -124,7 +124,6 @@ export class ClassroomService {
   }
 
   private async moss(assignment: string, files: File[]) {
-    console.log('uploading', files.length, "files to Moss");
     const moss = new MossApi();
     moss.files = files;
     const result = await moss.send();
