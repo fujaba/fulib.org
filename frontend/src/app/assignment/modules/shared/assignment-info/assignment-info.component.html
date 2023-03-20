@@ -14,7 +14,9 @@
     </ng-container>
     <ng-container *ngIf="assignment.classroom && assignment.classroom.mossResult">
       &mdash;
-      <a [href]="assignment.classroom.mossResult">Moss Results</a>
+      <a [href]="assignment.classroom.mossResult" target="_blank">
+        Moss Results
+      </a>
     </ng-container>
   </ng-container>
   <ng-container *ngIf="!assignment">
