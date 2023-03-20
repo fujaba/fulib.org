@@ -15,7 +15,7 @@ export class ReadTaskDto extends OmitType(Task, ['verification', 'note', 'childr
   children: ReadTaskDto[];
 }
 
-export class ReadAssignmentDto extends OmitType(Assignment, ['token', 'solution', 'tasks'] as const) {
+export class ReadAssignmentDto extends OmitType(Assignment, ['token', 'solution', 'tasks', 'classroom'] as const) {
   @ApiProperty({type: [ReadTaskDto]})
   tasks: ReadTaskDto[];
 }
