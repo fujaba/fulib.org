@@ -111,5 +111,12 @@
       "^@app/not-found(|/.*)$": "<rootDir>/libs/not-found/src/$1",
       "^@app/event(|/.*)$": "<rootDir>/libs/event/src/$1"
     }
+  },
+  "pnpm": {
+    "auditConfig": {
+      "ignoreCves": [
+        "CVE-2019-18413"
+      ]
+    }
   }
 }
