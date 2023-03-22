@@ -88,4 +88,13 @@
       Your MOSS ID. See "Registering for Moss" in the MOSS documentation to obtain it.
     </div>
   </div>
+  <div class="mb-3" *ngIf="showMoss">
+    <label class="form-label" for="mossIdInput">MOSS Language</label>
+    <select class="form-control" id="mossLanguageInput" [(ngModel)]="assignment.classroom!.mossLanguage" (change)="saveDraft()">
+      <option *ngFor="let lang of mossLanguages" [value]="lang">{{ lang }}</option>
+    </select>
+    <div class="form-text">
+      Language to use for MOSS duplicate analysis.
+    </div>
+  </div>
 </div>

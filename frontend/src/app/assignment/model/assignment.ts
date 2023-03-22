@@ -20,6 +20,7 @@ export default class Assignment {
     webhook?: string;
     codeSearch?: boolean;
     mossId?: number;
+    mossLanguage?: string;
     mossResult?: string;
   };
 
