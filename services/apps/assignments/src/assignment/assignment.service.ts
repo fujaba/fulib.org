@@ -98,7 +98,7 @@ export class AssignmentService {
   }
 
   mask(assignment: Assignment): ReadAssignmentDto {
-    const {token, solution, tasks, ...rest} = assignment;
+    const {token, solution, tasks, classroom, ...rest} = assignment;
     return {
       ...rest,
       tasks: assignment.tasks.map(t => this.maskTask(t)),
@@ -113,7 +113,7 @@ export class AssignmentService {
     };
   }
 
-  async update(id: string, dto: UpdateAssignmentDto): Promise<Assignment | null> {
+  async update(id: string, dto: UpdateAssignmentDto | UpdateQuery<Assignment>): Promise<Assignment | null> {
     const {token, classroom, ...rest} = dto;
     const update: UpdateQuery<Assignment> = rest;
     if (token) {

@@ -13,6 +13,7 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "moss": "ts-node libs/moss/src/moss.ts",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
@@ -43,6 +44,7 @@
     "dockerode": "^3.3.5",
     "express": "^4.18.2",
     "glob-to-regexp": "^0.4.1",
+    "jsdom": "^21.1.1",
     "mongoose": "^7.0.2",
     "multer": "1.4.5-lts.1",
     "nats": "^2.13.1",
@@ -63,6 +65,7 @@
     "@types/express": "^4.17.17",
     "@types/glob-to-regexp": "^0.4.1",
     "@types/jest": "^29.5.0",
+    "@types/jsdom": "^21.1.0",
     "@types/multer": "^1.4.7",
     "@types/node": "^18.15.5",
     "@types/supertest": "^2.0.12",
@@ -109,7 +112,8 @@
     "moduleNameMapper": {
       "^@app/keycloak-auth(|/.*)$": "<rootDir>/libs/keycloak-auth/src/$1",
       "^@app/not-found(|/.*)$": "<rootDir>/libs/not-found/src/$1",
-      "^@app/event(|/.*)$": "<rootDir>/libs/event/src/$1"
+      "^@app/event(|/.*)$": "<rootDir>/libs/event/src/$1",
+      "^@app/moss(|/.*)$": "<rootDir>/libs/moss/src/$1"
     }
   },
   "pnpm": {

@@ -32,6 +32,12 @@
       ],
       "@app/event/*": [
         "libs/event/src/*"
+      ],
+      "@app/moss": [
+        "libs/moss/src"
+      ],
+      "@app/moss/*": [
+        "libs/moss/src/*"
       ]
     }
   }

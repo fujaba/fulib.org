@@ -19,6 +19,7 @@ export default class Assignment {
     token?: string;
     webhook?: string;
     codeSearch?: boolean;
+    mossResult?: string;
   };
 
   tasks: Task[];
