@@ -14,6 +14,7 @@ import {ReadSolutionDto} from '../solution/solution.dto';
 import {AuthorInfo, Solution} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {generateToken} from '../utils';
+import {MossService} from './moss.service';
 
 interface RepositoryInfo {
   name: string;
@@ -46,6 +47,7 @@ export class ClassroomService {
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
     private searchService: SearchService,
+    private mossService: MossService,
     private http: HttpService,
   ) {
   }
@@ -85,7 +87,7 @@ export class ClassroomService {
         const solution = result.upsertedIds[index];
         return this.importZipFiles(stream, id, solution, !!codeSearch);
       })).then(files => {
-        mossId && this.moss(id, mossId, files.flat());
+        mossId && this.mossService.moss(assignment, files.flat());
       });
     }
 
@@ -134,14 +136,6 @@ export class ClassroomService {
     let index: number;
     const path = commit && (index = file.name.indexOf(commit)) >= 0 ? file.name.substring(index + commit.length + 1) : file.name;
     await this.searchService.addFile(assignment, solution, path, content);
-  }
-
-  private async moss(assignment: string, mossId: number, files: File[]) {
-    const moss = new MossApi();
-    moss.userid = mossId;
-    moss.files = files;
-    const result = await moss.send();
-    await this.assignmentService.update(assignment, {'classroom.mossResult': result});
   }
 
   async countSolutions(assignment: AssignmentDocument): Promise<number> {
@@ -223,7 +217,7 @@ export class ClassroomService {
           return [];
         }
       })).then(files => {
-        mossId && this.moss(assignment._id, mossId, files.flat());
+        mossId && this.mossService.moss(assignment, files.flat());
       });
     }
 
