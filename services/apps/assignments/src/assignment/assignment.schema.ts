@@ -19,12 +19,12 @@ import {
 import {Document} from 'mongoose';
 
 export const MOSS_LANGUAGES = {
-  C: ['.c', '.h'],
-  'C++': ['.cpp', '.cc', '.cxx', '.c++', '.hpp', '.hh', '.hxx', '.h++'],
-  Java: ['.java'],
-  'C#': ['.cs'],
-  Python: ['.py'],
-  JavaScript: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs'],
+  c: ['.c', '.h'],
+  cc: ['.cpp', '.cc', '.cxx', '.c++', '.hpp', '.hh', '.hxx', '.h++'],
+  java: ['.java'],
+  csharp: ['.cs'],
+  python: ['.py'],
+  javascript: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs'],
 } as const;
 
 @Schema({id: false, _id: false})

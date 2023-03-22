@@ -13,14 +13,14 @@ export class ClassroomComponent {
   saveDraft: () => void;
 
   encodeURIComponent = encodeURIComponent;
-  mossLanguages = [
-    'C',
-    'C++',
-    'Java',
-    'C#',
-    'Python',
-    'JavaScript',
-  ].sort();
+  mossLanguages = {
+    java: 'Java',
+    javascript: 'JavaScript',
+    python: 'Python',
+    c: 'C',
+    cc: 'C++',
+    csharp: 'C#',
+  };
 
   constructor(
     context: AssignmentContext,
