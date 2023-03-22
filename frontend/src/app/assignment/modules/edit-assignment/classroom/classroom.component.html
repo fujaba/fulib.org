@@ -68,4 +68,24 @@
       It can be used to find code duplicates across submissions and allows grading multiple students at the same time.
     </div>
   </div>
+  <div class="mb-3">
+    <label class="form-label" for="mossCheck">MOSS</label>
+    <div class="form-check">
+      <input type="checkbox" class="form-check-input" id="mossCheck" [(ngModel)]="showMoss">
+      <label class="form-check-label" for="mossCheck">Enable MOSS Integration</label>
+    </div>
+    <div class="form-text">
+      Use
+      <a href="https://theory.stanford.edu/~aiken/moss/" target="_blank">MOSS</a>
+      to detect code duplicates across submissions.
+    </div>
+  </div>
+  <div class="mb-3" *ngIf="showMoss">
+    <label class="form-label" for="mossIdInput">MOSS ID</label>
+    <input type="number" class="form-control" id="mossIdInput" placeholder="123456789"
+           [(ngModel)]="assignment.classroom!.mossId" (change)="saveDraft()">
+    <div class="form-text">
+      Your MOSS ID. See "Registering for Moss" in the MOSS documentation to obtain it.
+    </div>
+  </div>
 </div>
