@@ -154,11 +154,6 @@ export class EvaluationService {
   private async codeSearchCreate(assignment: string, origin: any, dto: CreateEvaluationDto): Promise<CodeSearchInfo> {
     const solutions = await this.codeSearch(assignment, dto.task, dto.snippets);
     const result = await this.model.bulkWrite(solutions.filter(s => s[1]).map(([solution, snippets]) => {
-      const filter: FilterQuery<Evaluation> = {
-        assignment,
-        solution,
-        task: dto.task,
-      };
       const newEvaluation: UpdateQuery<Evaluation> = {
         ...dto,
         assignment,
@@ -169,7 +164,7 @@ export class EvaluationService {
       };
       return {
         updateOne: {
-          filter,
+          filter: {assignment, solution, task: dto.task},
           update: {$setOnInsert: newEvaluation},
           upsert: true,
         },
