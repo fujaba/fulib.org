@@ -7,10 +7,12 @@ import {
   IsBoolean,
   IsDate,
   IsEmail,
+  IsInt,
   IsNotEmpty,
   IsNumber,
   IsOptional,
-  IsString, IsUrl,
+  IsString,
+  IsUrl,
   ValidateNested,
 } from 'class-validator';
 import {Document} from 'mongoose';
@@ -91,6 +93,12 @@ export class ClassroomInfo {
   @IsOptional()
   @IsBoolean()
   codeSearch?: boolean;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsInt()
+  mossId?: number;
 
   @Prop()
   @ApiPropertyOptional()

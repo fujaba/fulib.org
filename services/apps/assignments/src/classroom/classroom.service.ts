@@ -82,7 +82,7 @@ export class ClassroomService {
         const stream = createReadStream(file.path);
         const solution = result.upsertedIds[index];
         return this.importZipStream(stream, id, solution);
-      })).then(files => this.moss(id, files.flat()));
+      })).then(files => this.moss(assignment, files.flat()));
     }
 
     return this.solutionService.findAll({_id: {$in: Object.values(result.upsertedIds)}});
@@ -123,11 +123,12 @@ export class ClassroomService {
     return files;
   }
 
-  private async moss(assignment: string, files: File[]) {
+  private async moss(assignment: AssignmentDocument, files: File[]) {
     const moss = new MossApi();
+    moss.userid = assignment.classroom?.mossId || 0;
     moss.files = files;
     const result = await moss.send();
-    await this.assignmentService.update(assignment, {'classroom.mossResult': result});
+    await this.assignmentService.update(assignment._id, {'classroom.mossResult': result});
   }
 
   async countSolutions(assignment: AssignmentDocument): Promise<number> {
@@ -207,7 +208,7 @@ export class ClassroomService {
         } else {
           return [];
         }
-      })).then(files => this.moss(assignment._id, files.flat()));
+      })).then(files => this.moss(assignment, files.flat()));
     }
 
     repositories.forEach((repo, i) => {
