@@ -7,13 +7,25 @@ import {
   IsBoolean,
   IsDate,
   IsEmail,
+  IsIn,
+  IsInt,
   IsNotEmpty,
   IsNumber,
   IsOptional,
-  IsString, IsUrl,
+  IsString,
+  IsUrl,
   ValidateNested,
 } from 'class-validator';
 import {Document} from 'mongoose';
+
+export const MOSS_LANGUAGES = {
+  c: ['.c', '.h'],
+  cc: ['.cpp', '.cc', '.cxx', '.c++', '.hpp', '.hh', '.hxx', '.h++'],
+  java: ['.java'],
+  csharp: ['.cs'],
+  python: ['.py'],
+  javascript: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs'],
+} as const;
 
 @Schema({id: false, _id: false})
 export class Task {
@@ -91,6 +103,18 @@ export class ClassroomInfo {
   @IsOptional()
   @IsBoolean()
   codeSearch?: boolean;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsInt()
+  mossId?: number;
+
+  @Prop({type: String})
+  @ApiPropertyOptional({enum: Object.keys(MOSS_LANGUAGES)})
+  @IsOptional()
+  @IsIn(Object.keys(MOSS_LANGUAGES))
+  mossLanguage?: keyof typeof MOSS_LANGUAGES;
 
   @Prop()
   @ApiPropertyOptional()

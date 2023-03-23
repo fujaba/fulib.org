@@ -68,4 +68,33 @@
       It can be used to find code duplicates across submissions and allows grading multiple students at the same time.
     </div>
   </div>
+  <div class="mb-3">
+    <label class="form-label" for="mossCheck">Plagiarism Detection</label>
+    <div class="form-check">
+      <input type="checkbox" class="form-check-input" id="mossCheck" [(ngModel)]="showMoss">
+      <label class="form-check-label" for="mossCheck">Enable Moss Integration</label>
+    </div>
+    <div class="form-text">
+      Use
+      <a href="https://theory.stanford.edu/~aiken/moss/" target="_blank">Moss</a>
+      to detect code duplicates across submissions.
+    </div>
+  </div>
+  <div class="mb-3" *ngIf="showMoss">
+    <label class="form-label" for="mossIdInput">Moss User ID</label>
+    <input type="number" class="form-control" id="mossIdInput" placeholder="123456789"
+           [(ngModel)]="assignment.classroom!.mossId" (change)="saveDraft()">
+    <div class="form-text">
+      Your Moss User ID. See "Registering for Moss" in the Moss documentation to obtain it.
+    </div>
+  </div>
+  <div class="mb-3" *ngIf="showMoss">
+    <label class="form-label" for="mossIdInput">Moss Language</label>
+    <select class="form-control" id="mossLanguageInput" [(ngModel)]="assignment.classroom!.mossLanguage" (change)="saveDraft()">
+      <option *ngFor="let lang of mossLanguages | keyvalue" [value]="lang.key">{{ lang.value }}</option>
+    </select>
+    <div class="form-text">
+      Language to use for Moss duplicate analysis.
+    </div>
+  </div>
 </div>

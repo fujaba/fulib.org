@@ -2,6 +2,7 @@ import {File, MossApi} from '@app/moss/moss-api';
 import {HttpService} from '@nestjs/axios';
 import {Injectable, UnauthorizedException} from '@nestjs/common';
 import {Method} from 'axios';
+import * as Buffer from 'buffer';
 import {createReadStream} from 'fs';
 import {firstValueFrom} from 'rxjs';
 import {Stream} from 'stream';
@@ -13,6 +14,7 @@ import {ReadSolutionDto} from '../solution/solution.dto';
 import {AuthorInfo, Solution} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {generateToken} from '../utils';
+import {MossService} from './moss.service';
 
 interface RepositoryInfo {
   name: string;
@@ -45,6 +47,7 @@ export class ClassroomService {
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
     private searchService: SearchService,
+    private mossService: MossService,
     private http: HttpService,
   ) {
   }
@@ -77,12 +80,15 @@ export class ClassroomService {
       };
     }));
 
-    if (assignment.classroom?.codeSearch) {
-      Promise.all(files.map((file, index) => {
+    const {codeSearch, mossId} = assignment.classroom || {};
+    if (codeSearch || mossId) {
+      Promise.all(files.map(async (file, index) => {
         const stream = createReadStream(file.path);
         const solution = result.upsertedIds[index];
-        return this.importZipStream(stream, id, solution);
-      })).then(files => this.moss(id, files.flat()));
+        return this.importZipFiles(stream, id, solution, !!codeSearch);
+      })).then(files => {
+        mossId && this.mossService.moss(assignment, files.flat());
+      });
     }
 
     return this.solutionService.findAll({_id: {$in: Object.values(result.upsertedIds)}});
@@ -99,6 +105,14 @@ export class ClassroomService {
     }
   }
 
+  private async importZipFiles(stream: Stream, assignment: string, solution: string, codeSearch: boolean, commit?: string): Promise<File[]> {
+    const files = await this.importZipStream(stream, assignment, solution);
+    if (codeSearch) {
+      await Promise.all(files.map(file => this.addContentsToIndex(assignment, solution, file, commit)));
+    }
+    return files;
+  }
+
   private async importZipStream(stream: Stream, assignment: string, solution: string, commit?: string): Promise<File[]> {
     const files: File[] = [];
     await stream.pipe(unzip()).on('entry', (entry: ZipEntry) => {
@@ -111,23 +125,17 @@ export class ClassroomService {
         if (buffer.length > MAX_FILE_SIZE) {
           return;
         }
-        if (entry.path.endsWith('.java')) {
-          files.push({name: entry.path, size: buffer.length, content: buffer});
-        }
-        const content = buffer.toString('utf-8');
-        let index: number;
-        const path = commit && (index = entry.path.indexOf(commit)) >= 0 ? entry.path.substring(index + commit.length + 1) : entry.path;
-        this.searchService.addFile(assignment, solution, path, content);
+        files.push({name: entry.path, size: buffer.length, content: buffer});
       });
     }).promise();
     return files;
   }
 
-  private async moss(assignment: string, files: File[]) {
-    const moss = new MossApi();
-    moss.files = files;
-    const result = await moss.send();
-    await this.assignmentService.update(assignment, {'classroom.mossResult': result});
+  async addContentsToIndex(assignment: string, solution: string, file: File, commit?: string) {
+    const content = (file.content as Buffer).toString('utf-8');
+    let index: number;
+    const path = commit && (index = file.name.indexOf(commit)) >= 0 ? file.name.substring(index + commit.length + 1) : file.name;
+    await this.searchService.addFile(assignment, solution, path, content);
   }
 
   async countSolutions(assignment: AssignmentDocument): Promise<number> {
@@ -158,7 +166,7 @@ export class ClassroomService {
   }
 
   async importSolutions2(assignment: AssignmentDocument): Promise<string[]> {
-    const {token, codeSearch} = assignment.classroom!;
+    const {token, codeSearch, mossId} = assignment.classroom!;
     if (!token) {
       throw new UnauthorizedException('Missing token');
     }
@@ -198,16 +206,19 @@ export class ClassroomService {
       };
     }));
 
-    if (codeSearch) {
-      Promise.all(repositories.map((repo, i) => {
+    if (codeSearch || mossId) {
+      Promise.all(repositories.map(async (repo, i) => {
         const commit = commits[i];
         const upsertedId = result.upsertedIds[i];
         if (commit && upsertedId) {
-          return this.addContentsToIndex(assignment, upsertedId.toString(), this.getGithubName(repo, assignment), commit);
+          const zip = await this.getRepoZip(assignment, this.getGithubName(repo, assignment), commit);
+          return zip ? this.importZipFiles(zip, assignment._id, upsertedId, !!codeSearch, commit) : [];
         } else {
           return [];
         }
-      })).then(files => this.moss(assignment._id, files.flat()));
+      })).then(files => {
+        mossId && this.mossService.moss(assignment, files.flat());
+      });
     }
 
     repositories.forEach((repo, i) => {
@@ -225,23 +236,23 @@ export class ClassroomService {
     return `org:${org} "${prefix}-" in:name`;
   }
 
-  private async addContentsToIndex(assignment: AssignmentDocument, solution: string, github: string, commit: string): Promise<File[]> {
+  private async getRepoZip(assignment: AssignmentDocument, github: string, commit: string): Promise<Stream | undefined> {
     const {org, prefix} = assignment.classroom!;
     if (!github) {
-      return [];
+      return;
     }
 
     try {
-      const response = await firstValueFrom(this.http.get<Stream>(`https://api.github.com/repos/${org}/${prefix}-${github}/zipball/${commit}`, {
+      const {data} = await firstValueFrom(this.http.get<Stream>(`https://api.github.com/repos/${org}/${prefix}-${github}/zipball/${commit}`, {
         headers: {
           Authorization: 'Bearer ' + assignment.classroom!.token!,
         },
         responseType: 'stream',
       }));
-      return this.importZipStream(response.data, assignment.id, solution, commit);
+      return data;
     } catch (error: any) {
-      console.error(`Failed to index ${org}/${prefix}-${github}: ${error.message}`);
-      return [];
+      console.error(`Failed to download ${org}/${prefix}-${github} zip: ${error.message}`);
+      return;
     }
   }
 
