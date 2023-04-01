@@ -64,7 +64,7 @@ export class SettingsComponent implements OnInit {
     }
 
     this.memberService.delete(member).subscribe(() => {
-      this.members.removeFirst(m => m === member);
+      this.members.splice(this.members.indexOf(member), 1);
       this.toastService.warn('Remove Collaborator', 'Successfully removed collaborator');
     });
   }

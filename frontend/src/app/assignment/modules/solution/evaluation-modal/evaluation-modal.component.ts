@@ -174,7 +174,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     const {aid, sid, task} = this.route.snapshot.params;
     this.dto.task = task;
 
-    this.dto.snippets.removeFirst(s => s.comment === this.selectionComment);
+    this.dto.snippets.splice(this.dto.snippets.findIndex(s => s.comment === this.selectionComment), 1);
 
     this.telemetryService.create(aid, sid, {
       timestamp: new Date(),

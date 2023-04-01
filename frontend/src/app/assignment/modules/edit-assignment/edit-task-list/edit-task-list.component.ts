@@ -41,7 +41,7 @@ export class EditTaskListComponent {
   }
 
   dragged(task: Task) {
-    this.tasks.removeFirst(t => t === task);
+    this.tasks.splice(this.tasks.indexOf(task), 1);
   }
 
   drop(event: DndDropEvent) {

@@ -122,7 +122,7 @@ export class CreateCourseComponent implements OnInit {
   }
 
   dragged(assignment: ReadAssignmentDto) {
-    this.assignments.removeFirst(t => t === assignment);
+    this.assignments.splice(this.assignments.indexOf(assignment), 1);
   }
 
   drop(event: DndDropEvent) {
