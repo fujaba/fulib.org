@@ -11,9 +11,12 @@ export class StorageService {
   }
 
   getAllKeys(prefix: RegExp): RegExpExecArray[] {
+    if (!globalThis.localStorage) {
+      return [];
+    }
     const result: RegExpExecArray[] = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
+    for (let i = 0; i < globalThis.localStorage.length; i++) {
+      const key = globalThis.localStorage.key(i);
       if (!key) {
         continue;
       }
@@ -28,7 +31,7 @@ export class StorageService {
   get(key: string): string | null {
     let value: string | null | undefined = this.properties.get(key);
     if (value === undefined) {
-      value = localStorage.getItem(key);
+      value = globalThis.localStorage?.getItem(key);
       this.properties.set(key, value);
     }
     return value;
@@ -42,17 +45,17 @@ export class StorageService {
           subscriber.next(event.newValue);
         }
       };
-      window.addEventListener('storage', listener);
-      return () => window.removeEventListener('storage', listener);
+      globalThis?.addEventListener?.('storage', listener);
+      return () => globalThis?.removeEventListener?.('storage', listener);
     });
   }
 
   set(key: string, value: string | null) {
     this.properties.set(key, value);
     if (value !== null) {
-      localStorage.setItem(key, value);
+      globalThis.localStorage?.setItem(key, value);
     } else {
-      localStorage.removeItem(key);
+      globalThis.localStorage?.removeItem(key);
     }
   }
 }

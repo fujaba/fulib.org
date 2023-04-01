@@ -34,16 +34,16 @@ export class AssignmentService {
   }
 
   loadDraft(id: string | undefined): Assignment | CreateAssignmentDto | undefined {
-    const stored = localStorage.getItem(this.getDraftKey(id));
+    const stored = this.storage.get(this.getDraftKey(id));
     return stored ? JSON.parse(stored) : undefined;
   }
 
   saveDraft(id: string | undefined, value: Assignment | CreateAssignmentDto) {
-    localStorage.setItem(this.getDraftKey(id), JSON.stringify(value));
+    this.storage.set(this.getDraftKey(id), JSON.stringify(value));
   }
 
   deleteDraft(id: string | undefined) {
-    localStorage.removeItem(this.getDraftKey(id));
+    this.storage.set(this.getDraftKey(id), null);
   }
 
   // --------------- Tokens ---------------
@@ -78,20 +78,7 @@ export class AssignmentService {
   // --------------- HTTP Methods ---------------
 
   getOwnIds(): string[] {
-    const pattern = /^assignmentToken\/(.*)$/;
-    const ids: string[] = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i)!;
-      const match = pattern.exec(key);
-      if (!match) {
-        continue;
-      }
-
-      const id = match[1] as string;
-      ids.push(id);
-    }
-
-    return ids;
+    return this.storage.getAllKeys(/^assignmentToken\/(.*)$/).map(([, id]) => id);
   }
 
   findOwn(archived = false): Observable<ReadAssignmentDto[]> {

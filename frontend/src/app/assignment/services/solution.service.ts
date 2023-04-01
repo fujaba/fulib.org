@@ -83,26 +83,8 @@ export class SolutionService {
 
   getOwnIds(assignment?: Assignment | string): { assignment: string, id: string }[] {
     const assignmentID = assignment ? asID(assignment) : null;
-
-    const pattern = /^solutionToken\/(.*)\/(.*)$/;
-    const ids: { assignment: string, id: string; }[] = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i)!;
-      const match = pattern.exec(key);
-      if (!match) {
-        continue;
-      }
-
-      const matchedAssignmentID = match[1] as string;
-      if (assignmentID && matchedAssignmentID !== assignmentID) {
-        continue;
-      }
-
-      const id = match[2] as string;
-      ids.push({assignment: matchedAssignmentID, id});
-    }
-
-    return ids;
+    return this.storageService.getAllKeys(new RegExp(`^solutionToken\/(${assignmentID || '.*'})/(.*)$`))
+      .map(([, assignment, id]) => ({assignment, id}));
   }
 
   getOwnWithAssignments(): Observable<[ReadAssignmentDto[], Solution[]]> {
