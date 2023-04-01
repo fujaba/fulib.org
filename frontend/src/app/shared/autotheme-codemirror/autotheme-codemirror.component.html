@@ -1,4 +1,6 @@
-<ngx-codemirror #ngxCodemirror
+<ngx-codemirror
+  *ngIf="isBrowser"
+  #ngxCodemirror
   [ngModel]="content"
   (ngModelChange)="setContent($event)"
   (cursorActivity)="onCursorActivity($event)"

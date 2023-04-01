@@ -13,7 +13,7 @@ export class DiagramViewComponent implements OnInit, OnChanges, OnDestroy {
   type!: 'frame' | 'text' | 'image';
 
   iframe$ = new Subject<HTMLIFrameElement>();
-  subscription!: Subscription;
+  subscription?: Subscription;
 
   constructor(
     private themeService: ThemeService,
@@ -34,7 +34,7 @@ export class DiagramViewComponent implements OnInit, OnChanges, OnDestroy {
   ngOnChanges(changes: SimpleChanges) {
     if (changes.url) {
       const url = changes.url.currentValue;
-      const {pathname} = new URL(url, location.origin);
+      const {pathname} = new URL(url, globalThis.location?.href);
       this.url = url;
       this.type =
         pathname.endsWith('.yaml') || pathname.endsWith('.txt') ? 'text' :
@@ -44,6 +44,6 @@ export class DiagramViewComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.subscription?.unsubscribe();
   }
 }

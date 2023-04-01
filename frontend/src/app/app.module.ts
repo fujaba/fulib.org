@@ -1,5 +1,5 @@
 import {HttpClientModule} from '@angular/common/http';
-import {APP_INITIALIZER, NgModule} from '@angular/core';
+import {APP_INITIALIZER, NgModule, PlatformRef} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -9,24 +9,27 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {KeycloakAngularModule, KeycloakService} from 'keycloak-angular';
 import {NgBootstrapDarkmodeModule, THEME_LOADER, THEME_SAVER, ThemeLoader, ThemeSaver} from 'ng-bootstrap-darkmode';
 import {ModalModule, ToastModule} from 'ng-bootstrap-ext';
-import {of} from 'rxjs';
 
 import {environment} from '../environments/environment';
-
-import {AboutComponent} from './components/about/about.component';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
+
+import {AboutComponent} from './components/about/about.component';
 import {ChangelogComponent} from './components/changelog/changelog.component';
 import {FeedbackComponent} from './components/feedback/feedback.component';
 import {HeaderComponent} from './components/header/header.component';
 import {HomeComponent} from './components/home/home.component';
 import {PageNotFoundComponent} from './components/page-not-found/page-not-found.component';
-import {PrivacyService} from './services/privacy.service';
 import {PrivacyComponent} from './components/privacy/privacy.component';
+import {PrivacyService} from './services/privacy.service';
 import {SharedModule} from './shared/shared.module';
 import {UserModule} from './user/user.module';
 
-function initializeKeycloak(keycloak: KeycloakService) {
+function initializeKeycloak(keycloak: KeycloakService, platformRef: PlatformRef) {
+  if (!('location' in globalThis)) {
+    return () => {
+    };
+  }
   return () => environment.auth && keycloak.init({
     config: {
       clientId: environment.auth.clientId,
@@ -57,7 +60,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
     HomeComponent,
   ],
   imports: [
-    BrowserModule.withServerTransition({ appId: 'serverApp' }),
+    BrowserModule.withServerTransition({appId: 'serverApp'}),
     FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,

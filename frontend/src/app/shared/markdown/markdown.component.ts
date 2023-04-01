@@ -28,7 +28,7 @@ export class MarkdownComponent implements OnInit, OnChanges {
     if (changes.markdown) {
       this.renderMarkdown();
     }
-    if (!changes.html) {
+    if (!changes.html || !globalThis.document) {
       return;
     }
     // setTimeout is needed because ngOnChanges is called before the view is updated.

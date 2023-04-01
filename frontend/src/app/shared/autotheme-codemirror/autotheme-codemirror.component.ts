@@ -1,6 +1,7 @@
-import {Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, PlatformRef, ViewChild} from '@angular/core';
 import {CodemirrorComponent} from '@ctrl/ngx-codemirror';
-import {Editor, EditorChange, EditorConfiguration, Position} from 'codemirror';
+import type {Editor, EditorChange, EditorConfiguration, Position} from 'codemirror';
+import type {Annotation} from 'codemirror/addon/lint/lint';
 import {ThemeService} from 'ng-bootstrap-darkmode';
 import {interval, of, Subscription} from 'rxjs';
 import {filter, map, switchMap, take} from 'rxjs/operators';
@@ -21,9 +22,11 @@ export class AutothemeCodemirrorComponent implements OnInit, OnDestroy {
 
   private _markers: Marker[] = [];
 
-  @ViewChild('ngxCodemirror') ngxCodemirror: CodemirrorComponent;
+  @ViewChild('ngxCodemirror') ngxCodemirror?: CodemirrorComponent;
 
   private subscription: Subscription;
+
+  isBrowser = !!globalThis.navigator;
 
   constructor(
     private themeService: ThemeService,
@@ -40,7 +43,7 @@ export class AutothemeCodemirrorComponent implements OnInit, OnDestroy {
     this._markers = value;
     this.options.lint ??= {
       lintOnChange: false,
-      getAnnotations: () => this._markers,
+      getAnnotations: (): Annotation[] => this._markers,
     };
     (this.options.gutters ??= []).push('CodeMirror-lint-markers');
     this.performLint();
@@ -51,7 +54,8 @@ export class AutothemeCodemirrorComponent implements OnInit, OnDestroy {
       switchMap(theme => theme === 'auto' ? this.themeService.detectedTheme$ : of(theme)),
     ).subscribe(theme => this.updateEditorThemes(theme));
 
-    interval(50).pipe(
+    interval(20).pipe(
+      take(10),
       map(() => this.ngxCodemirror?.codeMirror),
       filter(x => !!x),
       take(1),
@@ -78,7 +82,7 @@ export class AutothemeCodemirrorComponent implements OnInit, OnDestroy {
 
   private listenForChanges() {
     this.zone.runOutsideAngular(() => {
-      this.ngxCodemirror!.codeMirror!.on('change', (editor, change) => {
+      this.ngxCodemirror?.codeMirror?.on('change', (editor, change) => {
         this.zone.run(() => this.changes.emit(change));
       });
     });
@@ -99,8 +103,7 @@ export class AutothemeCodemirrorComponent implements OnInit, OnDestroy {
 
   signal(change: EditorChange) {
     this.zone.runOutsideAngular(() => {
-      const codeMirror = this.ngxCodemirror!.codeMirror!;
-      codeMirror.replaceRange(change.text, change.from, change.to, change.origin);
+      this.ngxCodemirror?.codeMirror?.replaceRange(change.text, change.from, change.to, change.origin);
     });
   }
 
