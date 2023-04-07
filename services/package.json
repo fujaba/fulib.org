@@ -21,7 +21,7 @@
     "test:e2e": "jest --config ./apps/services/test/jest-e2e.json"
   },
   "dependencies": {
-    "@clashsoft/nestx": "^0.2.0",
+    "@clashsoft/nestx": "^0.3.6",
     "@elastic/elasticsearch": "~7.13.0",
     "@nestjs/axios": "^2.0.0",
     "@nestjs/common": "^9.3.11",

@@ -5,7 +5,7 @@ overrides:
   debug: ^4.3.4
 
 specifiers:
-  '@clashsoft/nestx': ^0.2.0
+  '@clashsoft/nestx': ^0.3.6
   '@elastic/elasticsearch': ~7.13.0
   '@nestjs/axios': ^2.0.0
   '@nestjs/cli': ^9.3.0
@@ -69,7 +69,7 @@ specifiers:
   webpack: ^5.76.2
 
 dependencies:
-  '@clashsoft/nestx': 0.2.0_julm3j7w5b4g4aof5bqmy2uj7u
+  '@clashsoft/nestx': 0.3.6_svmr2afemokwnegkrv6mmvm55y
   '@elastic/elasticsearch': 7.13.0
   '@nestjs/axios': 2.0.0_e2i6uyq222tpj4ovh7ucbq6m5a
   '@nestjs/common': 9.3.11_ufuujcqbszwis444rmt5m3dshy
@@ -585,24 +585,43 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@clashsoft/nestx/0.2.0_julm3j7w5b4g4aof5bqmy2uj7u:
-    resolution: {integrity: sha512-h6Jsa2EiYW8+5yTfiKQhenw+Q0N/4+09vmdFmV5yO3mTNCpITn86UzzvZhJuKX00C3QEgYJw8C05W3R6wOQ32g==}
+  /@clashsoft/nestx/0.3.6_svmr2afemokwnegkrv6mmvm55y:
+    resolution: {integrity: sha512-5DjWwy8GTG8adnHA3mck4EsNmnjPACEge3KMOBNNNaXGZ9rb0H3QIjdEbTjHMDkQ/bpuGailiS+Q+F6MnVFsVQ==}
     peerDependencies:
       '@nestjs/common': ^9.0.0
       '@nestjs/core': ^9.0.0
+      '@nestjs/event-emitter': ^1.0.0
+      '@nestjs/microservices': ^9.0.0
+      '@nestjs/platform-express': ^9.0.0
+      '@nestjs/swagger': ^6.0.0
+      '@nestjs/websockets': ^9.0.0
+      nats: ^2.13.0
+      reflect-metadata: ^0.1.0
       rxjs: ^7.0.0
       tslib: ^2.4.1
+    peerDependenciesMeta:
+      '@nestjs/event-emitter':
+        optional: true
+      '@nestjs/microservices':
+        optional: true
+      '@nestjs/platform-express':
+        optional: true
+      '@nestjs/swagger':
+        optional: true
+      '@nestjs/websockets':
+        optional: true
+      nats:
+        optional: true
     dependencies:
-      '@nestjs/common': 9.2.1_ufuujcqbszwis444rmt5m3dshy
-      '@nestjs/core': 9.2.1_qpblwiuxxxv5ilgjwzmmgbtkcq
+      '@nestjs/common': 9.3.11_ufuujcqbszwis444rmt5m3dshy
+      '@nestjs/core': 9.3.11_6stvbr5zgqrsopoiaj4iiycuye
+      '@nestjs/event-emitter': 1.4.1_hmudkfza6r5qf3fonlx2z4cgkq
+      '@nestjs/microservices': 9.3.11_dapadiexzzgfqr6xoce4lwsnom
+      '@nestjs/platform-express': 9.3.11_xiomoxhobbq2lrbq7qad5cle4i
+      '@nestjs/swagger': 6.2.1_65mbwupop6lcsas7jjug3vu54e
+      nats: 2.13.1
+      reflect-metadata: 0.1.13
       rxjs: 7.8.0
-    optionalDependencies:
-      '@nestjs/swagger': 6.1.4_zvabycmw733xee3ikaxv4c7mny
-    transitivePeerDependencies:
-      - '@fastify/static'
-      - class-transformer
-      - class-validator
-      - reflect-metadata
     dev: false
 
   /@colors/colors/1.5.0:
