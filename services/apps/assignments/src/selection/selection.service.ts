@@ -1,4 +1,4 @@
-import {EventService} from '@app/event';
+import {EventService} from '@clashsoft/nestx';
 import {Injectable} from '@nestjs/common';
 import {CreateSelectionDto, SelectionDto} from './selection.dto';
 
