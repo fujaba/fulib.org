@@ -64,12 +64,13 @@ specifiers:
   ts-loader: ^9.4.2
   ts-node: ^10.9.1
   tsconfig-paths: ^4.1.2
+  tslib: ^2.5.0
   typescript: ^4.9.5
   unzipper: ^0.10.11
   webpack: ^5.76.2
 
 dependencies:
-  '@clashsoft/nestx': 0.3.6_svmr2afemokwnegkrv6mmvm55y
+  '@clashsoft/nestx': 0.3.6_y76btucequd4eikonhmsniyy5y
   '@elastic/elasticsearch': 7.13.0
   '@nestjs/axios': 2.0.0_e2i6uyq222tpj4ovh7ucbq6m5a
   '@nestjs/common': 9.3.11_ufuujcqbszwis444rmt5m3dshy
@@ -103,6 +104,7 @@ dependencies:
   rimraf: 4.4.0
   rxjs: 7.8.0
   swagger-ui-express: 4.6.2_express@4.18.2
+  tslib: 2.5.0
   unzipper: 0.10.11
 
 devDependencies:
@@ -585,7 +587,7 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@clashsoft/nestx/0.3.6_svmr2afemokwnegkrv6mmvm55y:
+  /@clashsoft/nestx/0.3.6_y76btucequd4eikonhmsniyy5y:
     resolution: {integrity: sha512-5DjWwy8GTG8adnHA3mck4EsNmnjPACEge3KMOBNNNaXGZ9rb0H3QIjdEbTjHMDkQ/bpuGailiS+Q+F6MnVFsVQ==}
     peerDependencies:
       '@nestjs/common': ^9.0.0
@@ -622,6 +624,7 @@ packages:
       nats: 2.13.1
       reflect-metadata: 0.1.13
       rxjs: 7.8.0
+      tslib: 2.5.0
     dev: false
 
   /@colors/colors/1.5.0:
