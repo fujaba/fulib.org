@@ -1,4 +1,4 @@
-import {EventModule} from '@clashsoft/nestx';
+import {EventModule} from '@app/event/event.module';
 import {AuthModule} from '@app/keycloak-auth';
 import {Module} from '@nestjs/common';
 import {Transport} from '@nestjs/microservices';
@@ -22,11 +22,7 @@ import {TelemetryModule} from './telemetry/telemetry.module';
   imports: [
     MongooseModule.forRoot(environment.mongo.uri, environment.mongo.options),
     AuthModule.register(environment.auth),
-    EventModule.forRoot({
-      transport: Transport.NATS,
-      transportOptions: environment.nats,
-      userIdProvider: async () => undefined,
-    }),
+    EventModule.forRoot({nats: environment.nats}),
     ScheduleModule.forRoot(),
     AssignmentModule,
     SolutionModule,
