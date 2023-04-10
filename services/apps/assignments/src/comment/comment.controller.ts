@@ -3,6 +3,7 @@ import {AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound, notFound} from '@clashsoft/nestx';
 import {Body, Controller, Delete, Get, Headers, MessageEvent, Param, Patch, Post, Sse} from '@nestjs/common';
 import {EventPattern, Payload} from '@nestjs/microservices';
+import {Client} from '@nestjs/microservices/external/nats-client.interface';
 import {ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {Observable, Subject} from 'rxjs';
 import {AssignmentService} from '../assignment/assignment.service';
