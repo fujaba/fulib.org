@@ -1,11 +1,8 @@
-import {EventPayload} from '@app/event/event.interface';
 import {AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound, notFound} from '@clashsoft/nestx';
 import {Body, Controller, Delete, Get, Headers, MessageEvent, Param, Patch, Post, Sse} from '@nestjs/common';
-import {EventPattern, Payload} from '@nestjs/microservices';
-import {Client} from '@nestjs/microservices/external/nats-client.interface';
 import {ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
-import {Observable, Subject} from 'rxjs';
+import {Observable} from 'rxjs';
 import {AssignmentService} from '../assignment/assignment.service';
 import {SolutionAuth} from '../solution/solution-auth.decorator';
 import {eventStream} from '../utils';
@@ -20,17 +17,10 @@ const forbiddenCommentResponse = 'Not owner of comment.';
 @Controller('assignments/:assignment/solutions/:solution/comments')
 @ApiTags('Comments')
 export class CommentController {
-  private stream$ = new Subject<EventPayload<Comment>>();
-
   constructor(
     private readonly assignmentService: AssignmentService,
     private readonly commentService: CommentService,
   ) {
-  }
-
-  @EventPattern('comment.*.*')
-  onEvent(@Payload() payload: EventPayload<Comment>) {
-    this.stream$.next(payload);
   }
 
   @Post()
@@ -53,8 +43,11 @@ export class CommentController {
   events(
     @Param('assignment') assignment: string,
     @Param('solution') solution: string,
+    @AuthUser() user?: UserToken,
+    @Headers('assignment-token') assignmentToken?: string,
+    @Headers('solution-token') solutionToken?: string,
   ): Observable<MessageEvent> {
-    return eventStream(this.stream$, 'comment', c => c.assignment === assignment && c.solution === solution);
+    return eventStream(this.commentService.subscribe(assignment, solution, '*', '*', assignmentToken || solutionToken || user?.sub), 'comment');
   }
 
   @Get()

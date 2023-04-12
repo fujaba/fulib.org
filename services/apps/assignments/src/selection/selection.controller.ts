@@ -1,8 +1,9 @@
 import {EventPayload} from '@app/event/event.interface';
-import {Body, Controller, MessageEvent, Param, Post, Query, Sse} from '@nestjs/common';
+import {AuthUser, UserToken} from '@app/keycloak-auth';
+import {Body, Controller, Headers, MessageEvent, Param, Post, Query, Sse} from '@nestjs/common';
 import {EventPattern, Payload} from '@nestjs/microservices';
 import {ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
-import {Observable, Subject} from 'rxjs';
+import {filter, Observable, Subject} from 'rxjs';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {eventStream} from '../utils';
 import {CreateSelectionDto, SelectionDto} from './selection.dto';
@@ -13,16 +14,9 @@ const forbiddenResponse = 'Not owner of assignment, or invalid Assignment-Token.
 @Controller('assignments/:assignment')
 @ApiTags('Selections')
 export class SelectionController {
-  private events$ = new Subject<EventPayload<SelectionDto>>();
-
   constructor(
     private selectionService: SelectionService,
   ) {
-  }
-
-  @EventPattern('selection.*.*')
-  onEvent(@Payload() payload: EventPayload<SelectionDto>) {
-    this.events$.next(payload);
   }
 
   @Post('solutions/:solution/selections')
@@ -41,9 +35,11 @@ export class SelectionController {
   @ApiOkResponse({type: SelectionDto})
   streamAll(
     @Param('assignment') assignment: string,
+    @AuthUser() user?: UserToken,
+    @Headers('assignment-token') assignmentToken?: string,
     @Query('author') author?: string,
   ): Observable<MessageEvent> {
-    return eventStream(this.events$, 'selection', s => s.assignment === assignment && (!author || s.author === author));
+    return eventStream(this.selectionService.subscribe(assignment, '*', '*', assignmentToken || user?.sub, author), 'selection');
   }
 
   @Sse('solutions/:solution/selections/events')
@@ -52,8 +48,10 @@ export class SelectionController {
   stream(
     @Param('assignment') assignment: string,
     @Param('solution') solution: string,
+    @AuthUser() user?: UserToken,
+    @Headers('assignment-token') assignmentToken?: string,
     @Query('author') author?: string,
   ): Observable<MessageEvent> {
-    return eventStream(this.events$, 'selection', s => s.assignment === assignment && s.solution === solution && (!author || s.author === author));
+    return eventStream(this.selectionService.subscribe(assignment, '*', '*', assignmentToken || user?.sub, author), 'selection');
   }
 }

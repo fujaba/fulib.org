@@ -2,6 +2,7 @@ import {EventService} from '@clashsoft/nestx';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model, UpdateQuery} from 'mongoose';
+import {tap} from 'rxjs';
 import {AssignmentService} from '../assignment/assignment.service';
 import {SearchService} from '../search/search.service';
 import {CreateEvaluationDto, RemarkDto, UpdateEvaluationDto} from './evaluation.dto';
@@ -18,7 +19,12 @@ export class EvaluationService {
   }
 
   private emit(event: string, evaluation: EvaluationDocument) {
-    this.eventService.emit(`evaluation.${evaluation.id}.${event}`, {event, data: evaluation});
+    this.eventService.emit(`assignments.${evaluation.assignment}.solutions.${evaluation.solution}.evaluations.${evaluation.id}.${event}`, evaluation);
+  }
+
+  subscribe(assignment: string, solution: string, evaluation: string, event: string, user?: string) {
+    // TODO only emit to users that have access to the assignment or solution
+    return this.eventService.subscribe<Evaluation>(`assignments.${assignment}.solutions.${solution}.evaluations.${evaluation}.${event}`, user);
   }
 
   async create(assignment: string, solution: string, dto: CreateEvaluationDto, createdBy?: string): Promise<Evaluation> {
