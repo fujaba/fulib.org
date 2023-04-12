@@ -1,5 +1,5 @@
 import {UserToken} from '@app/keycloak-auth';
-import {notFound} from '@app/not-found';
+import {notFound} from '@clashsoft/nestx';
 import {CanActivate, ExecutionContext, Injectable} from '@nestjs/common';
 import {Request} from 'express';
 import {Observable} from 'rxjs';

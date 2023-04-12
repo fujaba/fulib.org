@@ -3,7 +3,7 @@ import {CanActivate, ExecutionContext, Injectable} from '@nestjs/common';
 import {Request} from 'express';
 import {Observable} from 'rxjs';
 import {AssignmentService} from '../assignment/assignment.service';
-import {notFound} from '@app/not-found';
+import {notFound} from '@clashsoft/nestx';
 import {SolutionService} from './solution.service';
 
 @Injectable()
@@ -16,8 +16,9 @@ export class SolutionAuthGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     const req = context.switchToHttp().getRequest() as Request;
-    const assignmentToken = req.header('assignment-token') ?? req.query.token?.toString();
-    const solutionToken = req.header('solution-token');
+    const queryToken = req.query.token?.toString();
+    const assignmentToken = req.header('assignment-token') ?? queryToken;
+    const solutionToken = req.header('solution-token') ?? queryToken;
     const assignmentId = req.params.assignment;
     const solutionId = req.params.solution ?? req.params.id;
     const user = (req as any).user;

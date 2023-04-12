@@ -1,9 +1,9 @@
-import {EventPayload} from '@app/event/event.interface';
 import {MessageEvent} from '@nestjs/common';
+import {WsResponse} from '@nestjs/websockets';
 import {isUUID} from 'class-validator';
 import {randomBytes} from 'crypto';
 import {FilterQuery} from 'mongoose';
-import {filter, interval, map, mapTo, merge, Observable} from 'rxjs';
+import {interval, map, mapTo, merge, Observable, tap} from 'rxjs';
 
 export function generateToken(): string {
   const bytes = randomBytes(8);
@@ -15,11 +15,11 @@ export function idFilter(id: string): FilterQuery<any> {
   return isUUID(id) ? {id} : {_id: id};
 }
 
-export function eventStream<T>(source: Observable<EventPayload<T>>, name: string, fltr: (data: T) => boolean): Observable<MessageEvent> {
+export function eventStream<T>(source: Observable<WsResponse<T>>, name: string): Observable<MessageEvent> {
   return merge(
     source.pipe(
-      filter(({data}) => fltr(data)),
-      map(({event, data}) => ({data: {event, [name]: data}})),
+      map(({event, data}) => ({data: {event: event.substring(event.lastIndexOf('.') + 1), [name]: data}})),
+      tap(console.log),
     ),
     interval(15000).pipe(mapTo({type: 'noop', data: 'noop'})),
   );
