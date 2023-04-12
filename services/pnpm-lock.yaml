@@ -5,7 +5,7 @@ overrides:
   debug: ^4.3.4
 
 specifiers:
-  '@clashsoft/nestx': ^0.3.6
+  '@clashsoft/nestx': ^0.4.0
   '@elastic/elasticsearch': ~7.13.0
   '@nestjs/axios': ^2.0.0
   '@nestjs/cli': ^9.3.0
@@ -71,7 +71,7 @@ specifiers:
   webpack: ^5.78.0
 
 dependencies:
-  '@clashsoft/nestx': 0.3.6_34wryvybtez6seepzkz3hnihm4
+  '@clashsoft/nestx': 0.4.0_34wryvybtez6seepzkz3hnihm4
   '@elastic/elasticsearch': 7.13.0
   '@nestjs/axios': 2.0.0_jmj56ftrhclijrwp4jo4avbqfa
   '@nestjs/common': 9.4.0_ufuujcqbszwis444rmt5m3dshy
@@ -559,8 +559,8 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@clashsoft/nestx/0.3.6_34wryvybtez6seepzkz3hnihm4:
-    resolution: {integrity: sha512-5DjWwy8GTG8adnHA3mck4EsNmnjPACEge3KMOBNNNaXGZ9rb0H3QIjdEbTjHMDkQ/bpuGailiS+Q+F6MnVFsVQ==}
+  /@clashsoft/nestx/0.4.0_34wryvybtez6seepzkz3hnihm4:
+    resolution: {integrity: sha512-7OXkJQ/Lcq3jUo3CdY962BTLIhi2hlYs6txjgCKSG4D41fgpb8yZMUX0wMrE6bZU8S/oS1F5HMDZBS3E5hQkMQ==}
     peerDependencies:
       '@nestjs/common': ^9.0.0
       '@nestjs/core': ^9.0.0
