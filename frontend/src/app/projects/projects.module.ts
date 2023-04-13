@@ -3,7 +3,7 @@ import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {AngularSplitModule} from 'angular-split';
-import {ModalModule} from 'ng-bootstrap-ext';
+import {ModalModule} from '@mean-stream/ngbx';
 import {DndModule} from 'ngx-drag-drop';
 
 import {SharedModule} from '../shared/shared.module';

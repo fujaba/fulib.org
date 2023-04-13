@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {ToastService} from 'ng-bootstrap-ext';
+import {ToastService} from '@mean-stream/ngbx';
 import {Subscription} from 'rxjs';
 import {mapTo, switchMap, take, tap} from 'rxjs/operators';
 import {UserService} from '../../../../user/user.service';

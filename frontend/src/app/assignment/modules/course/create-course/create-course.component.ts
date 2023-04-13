@@ -2,7 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
-import {ToastService} from 'ng-bootstrap-ext';
+import {ToastService} from '@mean-stream/ngbx';
 import {DndDropEvent} from 'ngx-drag-drop';
 import {Observable, of} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';

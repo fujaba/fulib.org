@@ -4,7 +4,7 @@ import {FormsModule} from '@angular/forms';
 import {NgbDropdownModule, NgbNavModule} from '@ng-bootstrap/ng-bootstrap';
 
 import {AngularSplitModule} from 'angular-split';
-import {ModalModule} from 'ng-bootstrap-ext';
+import {ModalModule} from '@mean-stream/ngbx';
 import {SharedModule} from '../shared/shared.module';
 import {DownloadESComponent} from './download-es/download-es.component';
 import {MockupViewerComponent} from './mockup-viewer/mockup-viewer.component';

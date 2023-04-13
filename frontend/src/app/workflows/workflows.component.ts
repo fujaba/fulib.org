@@ -1,7 +1,7 @@
 import {HttpClient} from '@angular/common/http';
 import {Component, HostListener, NgZone, OnInit} from '@angular/core';
 
-import {ToastService} from 'ng-bootstrap-ext';
+import {ToastService} from '@mean-stream/ngbx';
 import {EditorConfiguration} from 'codemirror';
 import {PrivacyService} from '../services/privacy.service';
 import {ThemeService} from 'ng-bootstrap-darkmode';

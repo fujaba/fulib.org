@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {KeycloakService} from 'keycloak-angular';
-import {ToastService} from 'ng-bootstrap-ext';
+import {ToastService} from '@mean-stream/ngbx';
 import {of} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import {CreateProjectDto, Project} from '../../model/project';

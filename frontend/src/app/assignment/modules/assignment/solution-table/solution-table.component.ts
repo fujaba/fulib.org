@@ -1,6 +1,6 @@
 import {Component, OnInit, TrackByFunction} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ToastService} from 'ng-bootstrap-ext';
+import {ToastService} from '@mean-stream/ngbx';
 import {ClipboardService} from 'ngx-clipboard';
 import {BehaviorSubject, combineLatest, forkJoin, Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';

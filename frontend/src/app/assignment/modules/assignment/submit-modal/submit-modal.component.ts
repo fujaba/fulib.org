@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {ModalComponent, ToastService} from 'ng-bootstrap-ext';
+import {ModalComponent, ToastService} from '@mean-stream/ngbx';
 import {forkJoin} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import {UserService} from '../../../../user/user.service';

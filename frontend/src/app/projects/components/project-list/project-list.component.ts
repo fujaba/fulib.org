@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {KeycloakService} from 'keycloak-angular';
-import {ToastService} from 'ng-bootstrap-ext';
+import {ToastService} from '@mean-stream/ngbx';
 import {forkJoin, of, Subscription} from 'rxjs';
 import {catchError, filter, startWith, switchMap, tap} from 'rxjs/operators';
 import {User} from '../../../user/user';

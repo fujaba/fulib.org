@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {ToastService} from 'ng-bootstrap-ext';
+import {ToastService} from '@mean-stream/ngbx';
 import {ReadAssignmentDto} from '../../../model/assignment';
 import {AssignmentService} from '../../../services/assignment.service';
 

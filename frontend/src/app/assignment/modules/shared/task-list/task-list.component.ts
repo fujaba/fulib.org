@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import { ToastService } from 'ng-bootstrap-ext';
+import { ToastService } from '@mean-stream/ngbx';
 import {switchMap} from 'rxjs/operators';
 import {CreateEvaluationDto, Evaluation} from '../../../model/evaluation';
 import Task from '../../../model/task';

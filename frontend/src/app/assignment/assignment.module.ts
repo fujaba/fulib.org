@@ -4,7 +4,7 @@ import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {ModalModule} from 'ng-bootstrap-ext';
+import {ModalModule} from '@mean-stream/ngbx';
 import {ClipboardModule} from 'ngx-clipboard';
 import {DndModule} from 'ngx-drag-drop';
 

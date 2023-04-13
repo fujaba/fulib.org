@@ -2,7 +2,7 @@ import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgbDropdownModule, NgbTooltipModule, NgbTypeaheadModule} from '@ng-bootstrap/ng-bootstrap';
-import {RouteTabsModule} from 'ng-bootstrap-ext';
+import {RouteTabsModule} from '@mean-stream/ngbx';
 import {ClipboardModule} from 'ngx-clipboard';
 import {DndModule} from 'ngx-drag-drop';
 import {SharedModule} from '../../../shared/shared.module';

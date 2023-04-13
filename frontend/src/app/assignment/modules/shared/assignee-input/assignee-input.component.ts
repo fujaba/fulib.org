@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {ToastService} from 'ng-bootstrap-ext';
+import {ToastService} from '@mean-stream/ngbx';
 import {Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 import {Assignee} from '../../../model/assignee';
