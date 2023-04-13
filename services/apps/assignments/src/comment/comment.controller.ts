@@ -1,5 +1,5 @@
 import {AuthUser, UserToken} from '@app/keycloak-auth';
-import {NotFound, notFound} from '@clashsoft/nestx';
+import {NotFound, notFound} from '@mean-stream/nestx';
 import {Body, Controller, Delete, Get, Headers, MessageEvent, Param, Patch, Post, Sse} from '@nestjs/common';
 import {ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {Observable} from 'rxjs';

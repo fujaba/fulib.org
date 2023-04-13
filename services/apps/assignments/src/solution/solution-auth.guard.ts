@@ -3,7 +3,7 @@ import {CanActivate, ExecutionContext, Injectable} from '@nestjs/common';
 import {Request} from 'express';
 import {Observable} from 'rxjs';
 import {AssignmentService} from '../assignment/assignment.service';
-import {notFound} from '@clashsoft/nestx';
+import {notFound} from '@mean-stream/nestx';
 import {SolutionService} from './solution.service';
 
 @Injectable()

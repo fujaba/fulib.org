@@ -1,5 +1,5 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
-import {NotFound} from '@clashsoft/nestx';
+import {NotFound} from '@mean-stream/nestx';
 import {
   Body,
   Controller,

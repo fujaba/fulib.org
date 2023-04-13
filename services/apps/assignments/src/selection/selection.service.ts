@@ -1,4 +1,4 @@
-import {EventService} from '@clashsoft/nestx';
+import {EventService} from '@mean-stream/nestx';
 import {Injectable} from '@nestjs/common';
 import {filter} from 'rxjs';
 import {CreateSelectionDto, SelectionDto} from './selection.dto';

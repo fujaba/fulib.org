@@ -1,4 +1,4 @@
-import {NotFound} from '@clashsoft/nestx';
+import {NotFound} from '@mean-stream/nestx';
 import {Body, Controller, Delete, Get, Param, Put} from '@nestjs/common';
 import {ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';

@@ -1,6 +1,6 @@
 import {CanActivate, ExecutionContext, Injectable} from '@nestjs/common';
 import {Request} from 'express';
-import {notFound} from '@clashsoft/nestx';
+import {notFound} from '@mean-stream/nestx';
 import {CommentService} from './comment.service';
 
 @Injectable()

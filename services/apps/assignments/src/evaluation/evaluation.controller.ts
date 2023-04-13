@@ -1,5 +1,5 @@
 import {AuthUser, UserToken} from '@app/keycloak-auth';
-import {NotFound} from '@clashsoft/nestx';
+import {NotFound} from '@mean-stream/nestx';
 import {Body, Controller, Delete, Get, Headers, MessageEvent, Param, Patch, Post, Query, Sse} from '@nestjs/common';
 import {ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {FilterQuery, Types} from 'mongoose';

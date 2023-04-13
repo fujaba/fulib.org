@@ -1,4 +1,4 @@
-import {EventService} from '@clashsoft/nestx';
+import {EventService} from '@mean-stream/nestx';
 import {UserToken} from '@app/keycloak-auth';
 import {HttpService} from '@nestjs/axios';
 import {Injectable} from '@nestjs/common';

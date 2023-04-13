@@ -1,5 +1,5 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
-import {NotFound, notFound} from '@clashsoft/nestx';
+import {NotFound, notFound} from '@mean-stream/nestx';
 import {Body, Controller, Delete, ForbiddenException, Get, Param, Patch, Post} from '@nestjs/common';
 import {ApiCreatedResponse, ApiForbiddenResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {CourseStudent, CreateCourseDto, UpdateCourseDto} from './course.dto';

@@ -1,4 +1,4 @@
-import {EventService} from '@clashsoft/nestx';
+import {EventService} from '@mean-stream/nestx';
 import {DynamicModule, Global} from '@nestjs/common';
 import {EventEmitterModule} from '@nestjs/event-emitter';
 import {ClientsModule, NatsOptions, Transport} from '@nestjs/microservices';
