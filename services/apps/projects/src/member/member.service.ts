@@ -1,14 +1,24 @@
-import {Injectable} from '@nestjs/common';
+import {Inject, Injectable, Logger, OnModuleInit, Optional} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model, Types} from 'mongoose';
 import {UpdateMemberDto} from './member.dto';
 import {Member, MemberDocument} from './member.schema';
 
 @Injectable()
-export class MemberService {
+export class MemberService implements OnModuleInit {
   constructor(
     @InjectModel(Member.name) private model: Model<Member>,
+    @Optional() @Inject() private logger = new Logger(MemberService.name),
   ) {
+  }
+
+  async onModuleInit() {
+    const {modifiedCount} = await this.model.updateMany({
+      projectId: {$type: 'string'},
+    }, [{
+      $set: {projectId: {$toObjectId: '$projectId'}},
+    }]);
+    modifiedCount && this.logger.warn(`Migrated ${modifiedCount} members`);
   }
 
   async findAll(where: FilterQuery<Member> = {}): Promise<MemberDocument[]> {
