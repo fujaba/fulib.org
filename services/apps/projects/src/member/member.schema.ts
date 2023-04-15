@@ -1,13 +1,13 @@
+import {Ref} from '@mean-stream/nestx';
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {ApiProperty} from '@nestjs/swagger';
-import {IsMongoId} from 'class-validator';
 import {Document, Types} from 'mongoose';
+import {Project} from '../project/project.schema';
 
 @Schema({_id: false, id: false})
 export class Member {
   @Prop({index: 1})
-  @ApiProperty()
-  @IsMongoId()
+  @Ref(Project.name)
   projectId: string;
 
   @Prop()

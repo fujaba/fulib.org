@@ -1,6 +1,6 @@
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
-import {FilterQuery, Model} from 'mongoose';
+import {FilterQuery, Model, Types} from 'mongoose';
 import {UpdateMemberDto} from './member.dto';
 import {Member, MemberDocument} from './member.schema';
 
@@ -15,18 +15,18 @@ export class MemberService {
     return this.model.find(where).exec();
   }
 
-  async findOne(projectId: string, userId: string): Promise<MemberDocument | null> {
+  async findOne(projectId: Types.ObjectId, userId: string): Promise<MemberDocument | null> {
     return this.model.findOne({projectId, userId}).exec();
   }
 
-  async update(projectId: string, userId: string, dto: UpdateMemberDto): Promise<Member> {
+  async update(projectId: Types.ObjectId, userId: string, dto: UpdateMemberDto): Promise<Member> {
     return this.model.findOneAndReplace({projectId, userId}, {...dto, projectId, userId}, {
       new: true,
       upsert: true,
     }).exec();
   }
 
-  async remove(projectId: string, userId: string): Promise<MemberDocument | null> {
+  async remove(projectId: Types.ObjectId, userId: string): Promise<MemberDocument | null> {
     return this.model.findOneAndDelete({projectId, userId}).exec();
   }
 

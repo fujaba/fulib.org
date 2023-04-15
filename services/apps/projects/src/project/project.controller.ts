@@ -30,7 +30,7 @@ export class ProjectController {
     @AuthUser() user: UserToken,
   ): Promise<Project> {
     const project = await this.projectService.create(dto, user.sub);
-    project && await this.memberService.update(project.id, user.sub, {});
+    project && await this.memberService.update(project._id, user.sub, {});
     return project;
   }
 
@@ -65,7 +65,7 @@ export class ProjectController {
     const project = await this.projectService.update(id, dto);
     if (project && dto.userId) {
       // when changing owner, create a member
-      await this.memberService.update(id.toString(), dto.userId, {});
+      await this.memberService.update(id, dto.userId, {});
     }
     return project;
   }
