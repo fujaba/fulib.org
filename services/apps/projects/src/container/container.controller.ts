@@ -1,5 +1,5 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
-import {NotFound} from '@mean-stream/nestx';
+import {NotFound, ObjectIdPipe} from '@mean-stream/nestx';
 import {
   Body,
   Controller,
@@ -14,6 +14,7 @@ import {
 } from '@nestjs/common';
 import {FileInterceptor} from '@nestjs/platform-express';
 import {ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
+import {Types} from 'mongoose';
 import {MemberAuth} from '../member/member-auth.decorator';
 import {ProjectService} from '../project/project.service';
 import {ContainerDto, CreateContainerDto} from './container.dto';
@@ -46,7 +47,7 @@ export class ContainerController {
   @ApiCreatedResponse({type: ContainerDto})
   @ApiNotFoundResponse({description: 'Project not found'})
   async create(
-    @Param('id') id: string,
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
     @Headers('Authorization') authorization: string,
     @AuthUser() user: UserToken,
   ): Promise<ContainerDto> {
