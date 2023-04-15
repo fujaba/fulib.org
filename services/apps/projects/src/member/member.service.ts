@@ -7,7 +7,7 @@ import {Member, MemberDocument} from './member.schema';
 @Injectable()
 export class MemberService {
   constructor(
-    @InjectModel('members') private model: Model<Member>,
+    @InjectModel(Member.name) private model: Model<Member>,
   ) {
   }
 

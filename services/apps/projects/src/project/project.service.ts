@@ -17,7 +17,7 @@ const bindPrefix = path.resolve(environment.docker.bindPrefix);
 @Injectable()
 export class ProjectService {
   constructor(
-    @InjectModel('projects') private model: Model<Project>,
+    @InjectModel(Project.name) private model: Model<Project>,
   ) {
   }
 
