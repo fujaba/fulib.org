@@ -1,7 +1,8 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
-import {NotFound} from '@mean-stream/nestx';
+import {NotFound, ObjectIdPipe} from '@mean-stream/nestx';
 import {Body, Controller, Delete, Get, Param, Patch, Post} from '@nestjs/common';
 import {ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
+import {Types} from 'mongoose';
 import {MemberAuth} from '../member/member-auth.decorator';
 import {MemberService} from '../member/member.service';
 import {ProjectAuth} from './project-auth.decorator';
@@ -48,7 +49,7 @@ export class ProjectController {
   @NotFound()
   @ApiOkResponse({type: Project})
   async findOne(
-    @Param('id') id: string,
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
   ): Promise<Project | null> {
     return this.projectService.findOne(id);
   }
@@ -58,13 +59,13 @@ export class ProjectController {
   @NotFound()
   @ApiOkResponse({type: Project})
   async update(
-    @Param('id') id: string,
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
     @Body() dto: UpdateProjectDto,
   ): Promise<Project | null> {
     const project = await this.projectService.update(id, dto);
     if (project && dto.userId) {
       // when changing owner, create a member
-      await this.memberService.update(id, dto.userId, {});
+      await this.memberService.update(id.toString(), dto.userId, {});
     }
     return project;
   }
@@ -74,7 +75,7 @@ export class ProjectController {
   @NotFound()
   @ApiOkResponse({type: Project})
   async remove(
-    @Param('id') id: string,
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
   ): Promise<Project | null> {
     await this.memberService.removeAll({projectId: id});
     return this.projectService.remove(id);

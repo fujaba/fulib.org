@@ -2,7 +2,7 @@ import {UserToken} from '@app/keycloak-auth';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import * as fs from 'fs';
-import {FilterQuery, Model} from 'mongoose';
+import {FilterQuery, Model, Types} from 'mongoose';
 import * as path from 'path';
 import {environment} from '../environment';
 import {CreateProjectDto, UpdateProjectDto} from './project.dto';
@@ -33,18 +33,18 @@ export class ProjectService {
     return this.model.find(where).sort('+name').exec();
   }
 
-  async findOne(id: string): Promise<ProjectDocument | null> {
+  async findOne(id: Types.ObjectId): Promise<ProjectDocument | null> {
     return this.model.findById(id).exec();
   }
 
-  async update(id: string, dto: UpdateProjectDto): Promise<Project | null> {
+  async update(id: Types.ObjectId, dto: UpdateProjectDto): Promise<Project | null> {
     return this.model.findByIdAndUpdate(id, dto, {new: true}).exec();
   }
 
-  async remove(id: string): Promise<ProjectDocument | null> {
+  async remove(id: Types.ObjectId): Promise<ProjectDocument | null> {
     const project = await this.model.findByIdAndDelete(id).exec();
     if (project) {
-      this.removeStorage(id);
+      this.removeStorage(id.toString());
     }
     return project;
   }
