@@ -6,9 +6,8 @@ import {Project} from '../project/project.schema';
 
 @Schema({_id: false, id: false})
 export class Member {
-  @Prop({index: 1})
   @Ref(Project.name)
-  projectId: string;
+  projectId: Types.ObjectId;
 
   @Prop()
   @ApiProperty()
@@ -18,4 +17,7 @@ export class Member {
 export type MemberDocument = Member & Document<Types.ObjectId, any, Member>;
 
 export const MemberSchema = SchemaFactory.createForClass(Member)
-  .index({projectId: 1, userId: 1}, {unique: true});
+  .index({projectId: 1})
+  .index({userId: 1})
+  .index({projectId: 1, userId: 1}, {unique: true})
+;
