@@ -79,16 +79,7 @@ export class EditAssignmentComponent implements OnInit {
   }
 
   onExport(): void {
-    const rest: Partial<Assignment> = this.getAssignment();
-    if ('_id' in rest) {
-      delete rest._id;
-    }
-    if ('token' in rest) {
-      delete rest.token;
-    }
-    if ('createdBy' in rest) {
-      delete rest.createdBy;
-    }
+    const {_id, token, createdBy, ...rest} = this.getAssignment() as any;
     this.assignmentService.download(rest);
   }
 
