@@ -32,6 +32,11 @@
             "styles": [
               "src/styles.scss"
             ],
+            "allowedCommonJsDependencies": [
+              "codemirror",
+              "file-saver",
+              "validator"
+            ],
             "serviceWorker": true,
             "ngswConfigPath": "ngsw-config.json",
             "scripts": []
