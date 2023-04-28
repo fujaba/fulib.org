@@ -1,4 +1,3 @@
-import {EventPayload} from '@app/event/event.interface';
 import {Injectable} from '@nestjs/common';
 import {OnEvent} from '@nestjs/event-emitter';
 import {SolutionDocument} from '../solution/solution.schema';
@@ -12,7 +11,7 @@ export class CommentHandler {
   }
 
   @OnEvent('solution.*.deleted')
-  async onSolutionDeleted({data: solution}: EventPayload<SolutionDocument>) {
+  async onSolutionDeleted(solution: SolutionDocument) {
     await this.commentService.removeAll({assignment: solution.assignment, solution: solution.id});
   }
 }

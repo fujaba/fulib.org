@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NgbModal, NgbModalRef} from '@ng-bootstrap/ng-bootstrap';
-import {Toast, ToastService} from 'ng-bootstrap-ext';
+import {Toast, ToastService} from '@mean-stream/ngbx';
 import {ClipboardService} from 'ngx-clipboard';
 import {switchMap, tap} from 'rxjs/operators';
 import {Container} from '../../model/container';

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {ToastService} from 'ng-bootstrap-ext';
+import {ToastService} from '@mean-stream/ngbx';
 import {forkJoin} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
 import {User} from '../../../user/user';

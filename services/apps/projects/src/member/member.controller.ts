@@ -1,7 +1,8 @@
 import {AuthUser, UserToken} from '@app/keycloak-auth';
-import {NotFound} from '@app/not-found';
+import {NotFound, ObjectIdPipe} from '@mean-stream/nestx';
 import {Body, ConflictException, Controller, Delete, Get, Param, Put} from '@nestjs/common';
 import {ApiConflictResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
+import {Types} from 'mongoose';
 import {ProjectAuth} from '../project/project-auth.decorator';
 import {ProjectService} from '../project/project.service';
 import {MemberAuth} from './member-auth.decorator';
@@ -26,7 +27,7 @@ export class MemberController {
   @MemberAuth({forbiddenResponse})
   @ApiOkResponse({type: [Member]})
   async findAll(
-    @Param('project') projectId: string,
+    @Param('project', ObjectIdPipe) projectId: Types.ObjectId,
   ): Promise<Member[]> {
     return this.memberService.findAll({projectId});
   }
@@ -36,7 +37,7 @@ export class MemberController {
   @NotFound()
   @ApiOkResponse({type: Member})
   async findOne(
-    @Param('project') project: string,
+    @Param('project', ObjectIdPipe) project: Types.ObjectId,
     @Param('user') user: string,
   ): Promise<Member | null> {
     return this.memberService.findOne(project, user);
@@ -46,7 +47,7 @@ export class MemberController {
   @ProjectAuth({forbiddenResponse: forbiddenProjectResponse})
   @ApiOkResponse({type: Member})
   async update(
-    @Param('project') project: string,
+    @Param('project', ObjectIdPipe) project: Types.ObjectId,
     @Param('user') user: string,
     @Body() dto: UpdateMemberDto,
   ): Promise<Member> {
@@ -59,7 +60,7 @@ export class MemberController {
   @ApiOkResponse({type: Member})
   @ApiConflictResponse({description: removeOwnerResponse})
   async remove(
-    @Param('project') project: string,
+    @Param('project', ObjectIdPipe) project: Types.ObjectId,
     @Param('user') user: string,
     @AuthUser() token: UserToken,
   ): Promise<Member | null> {

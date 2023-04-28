@@ -1,6 +1,8 @@
 import {UserToken} from '@app/keycloak-auth';
-import {CanActivate, ExecutionContext, Injectable} from '@nestjs/common';
+import {objectId} from '@mean-stream/nestx';
+import {BadRequestException, CanActivate, ExecutionContext, Injectable} from '@nestjs/common';
 import {Request} from 'express';
+import {Types} from 'mongoose';
 import {Observable} from 'rxjs';
 import {MemberService} from './member.service';
 
@@ -13,12 +15,12 @@ export class MemberAuthGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     const req = context.switchToHttp().getRequest() as Request;
-    const id = req.params.project ?? req.params.id;
+    const id = objectId(req.params.project ?? req.params.id, error => new BadRequestException(error));
     const user = (req as any).user;
     return this.checkAuth(id, user);
   }
 
-  async checkAuth(id: string, user: UserToken): Promise<boolean> {
+  async checkAuth(id: Types.ObjectId, user: UserToken): Promise<boolean> {
     return !!await this.memberService.findOne(id, user.sub);
   }
 }

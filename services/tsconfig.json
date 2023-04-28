@@ -6,6 +6,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
+    "importHelpers": true,
     "target": "es2020",
     "sourceMap": true,
     "outDir": "./dist",
@@ -20,12 +21,6 @@
       ],
       "@app/keycloak-auth/*": [
         "libs/keycloak-auth/src/*"
-      ],
-      "@app/not-found": [
-        "libs/not-found/src"
-      ],
-      "@app/not-found/*": [
-        "libs/not-found/src/*"
       ],
       "@app/event": [
         "libs/event/src"

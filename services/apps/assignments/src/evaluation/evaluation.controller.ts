@@ -1,11 +1,9 @@
-import {EventPayload} from '@app/event/event.interface';
 import {AuthUser, UserToken} from '@app/keycloak-auth';
-import {NotFound} from '@app/not-found';
-import {Body, Controller, Delete, Get, MessageEvent, Param, Patch, Post, Query, Sse} from '@nestjs/common';
-import {EventPattern, Payload} from '@nestjs/microservices';
+import {NotFound} from '@mean-stream/nestx';
+import {Body, Controller, Delete, Get, Headers, MessageEvent, Param, Patch, Post, Query, Sse} from '@nestjs/common';
 import {ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {FilterQuery, Types} from 'mongoose';
-import {Observable, Subject} from 'rxjs';
+import {Observable} from 'rxjs';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {SolutionAuth} from '../solution/solution-auth.decorator';
 import {eventStream} from '../utils';
@@ -19,16 +17,9 @@ const forbiddenAssignmentResponse = 'Not owner of assignment, or invalid Assignm
 @Controller('assignments/:assignment')
 @ApiTags('Evaluations')
 export class EvaluationController {
-  private events$ = new Subject<EventPayload<Evaluation>>();
-
   constructor(
     private readonly evaluationService: EvaluationService,
   ) {
-  }
-
-  @EventPattern('evaluation.*.*')
-  onEvent(@Payload() payload: EventPayload<Evaluation>) {
-    this.events$.next(payload);
   }
 
   private toQuery(assignment: string, solution?: string, params: FilterEvaluationParams = {}): FilterQuery<Evaluation> {
@@ -114,8 +105,11 @@ export class EvaluationController {
   stream(
     @Param('assignment') assignment: string,
     @Param('solution') solution: string,
+    @AuthUser() user?: UserToken,
+    @Headers('assignment-token') assignmentToken?: string,
+    @Headers('solution-token') solutionToken?: string,
   ): Observable<MessageEvent> {
-    return eventStream(this.events$, 'evaluation', e => e.assignment === assignment && e.solution === solution);
+    return eventStream(this.evaluationService.subscribe(assignment, solution, '*', '*', assignmentToken || solutionToken || user?.sub), 'evaluation');
   }
 
   @Get('solutions/:solution/evaluations/:id')

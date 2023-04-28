@@ -1,8 +1,8 @@
-import {Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, PlatformRef, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import {CodemirrorComponent} from '@ctrl/ngx-codemirror';
+import {ThemeService} from '@mean-stream/ngbx';
 import type {Editor, EditorChange, EditorConfiguration, Position} from 'codemirror';
 import type {Annotation} from 'codemirror/addon/lint/lint';
-import {ThemeService} from 'ng-bootstrap-darkmode';
 import {interval, of, Subscription} from 'rxjs';
 import {filter, map, switchMap, take} from 'rxjs/operators';
 import {Marker} from '../model/marker';

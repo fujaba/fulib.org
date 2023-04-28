@@ -34,7 +34,7 @@ export class EditMemberComponent implements OnInit {
       userId: this.user.id!,
       user: this.user,
     }).subscribe(() => {
-      delete this.user;
+      this.user = undefined;
     });
   }
 }

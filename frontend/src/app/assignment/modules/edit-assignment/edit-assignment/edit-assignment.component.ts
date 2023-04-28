@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ToastService} from 'ng-bootstrap-ext';
+import {ToastService} from '@mean-stream/ngbx';
 import {of} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import Assignment, {CreateAssignmentDto} from '../../../model/assignment';
@@ -79,16 +79,7 @@ export class EditAssignmentComponent implements OnInit {
   }
 
   onExport(): void {
-    const rest: Partial<Assignment> = this.getAssignment();
-    if ('_id' in rest) {
-      delete rest._id;
-    }
-    if ('token' in rest) {
-      delete rest.token;
-    }
-    if ('createdBy' in rest) {
-      delete rest.createdBy;
-    }
+    const {_id, token, createdBy, ...rest} = this.getAssignment() as any;
     this.assignmentService.download(rest);
   }
 

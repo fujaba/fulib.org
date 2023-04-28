@@ -1,21 +1,23 @@
+import {Ref} from '@mean-stream/nestx';
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {ApiProperty} from '@nestjs/swagger';
-import {IsMongoId} from 'class-validator';
-import {Document} from 'mongoose';
+import {Document, Types} from 'mongoose';
+import {Project} from '../project/project.schema';
 
 @Schema({_id: false, id: false})
 export class Member {
-  @Prop({index: 1})
-  @ApiProperty()
-  @IsMongoId()
-  projectId: string;
+  @Ref(Project.name)
+  projectId: Types.ObjectId;
 
   @Prop()
   @ApiProperty()
   userId: string;
 }
 
-export type MemberDocument = Member & Document;
+export type MemberDocument = Member & Document<Types.ObjectId, any, Member>;
 
 export const MemberSchema = SchemaFactory.createForClass(Member)
-  .index({projectId: 1, userId: 1}, {unique: true});
+  .index({projectId: 1})
+  .index({userId: 1})
+  .index({projectId: 1, userId: 1}, {unique: true})
+;

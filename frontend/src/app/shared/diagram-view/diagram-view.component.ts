@@ -1,5 +1,5 @@
 import {Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
-import {ThemeService} from 'ng-bootstrap-darkmode';
+import {ThemeService} from '@mean-stream/ngbx';
 import {combineLatest, Subject, Subscription} from 'rxjs';
 
 @Component({

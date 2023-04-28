@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {ToastService} from 'ng-bootstrap-ext';
+import {ToastService} from '@mean-stream/ngbx';
 import {combineLatest} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import Assignment, {ReadAssignmentDto} from '../../../model/assignment';

@@ -1,6 +1,6 @@
 import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {ModalComponent, ToastService} from 'ng-bootstrap-ext';
+import {ModalComponent, ToastService} from '@mean-stream/ngbx';
 import {EMPTY, merge, of, Subject, Subscription} from 'rxjs';
 import {debounceTime, distinctUntilChanged, filter, map, share, switchMap, tap} from 'rxjs/operators';
 import {CodeSearchInfo, CreateEvaluationDto, Evaluation, Snippet} from '../../../model/evaluation';

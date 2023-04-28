@@ -5,7 +5,7 @@ import {RouterModule} from '@angular/router';
 
 import {CodemirrorModule} from '@ctrl/ngx-codemirror';
 import {NgbDropdownModule, NgbNavModule, NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
-import {ModalModule} from 'ng-bootstrap-ext';
+import {ModalModule} from '@mean-stream/ngbx';
 import {ClipboardModule} from 'ngx-clipboard';
 
 import {AutothemeCodemirrorComponent} from './autotheme-codemirror/autotheme-codemirror.component';

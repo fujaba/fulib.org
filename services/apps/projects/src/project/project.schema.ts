@@ -5,6 +5,7 @@ import {Document, Types} from 'mongoose';
 
 @Schema()
 export class Project {
+  @ApiProperty()
   _id!: Types.ObjectId;
 
   @Prop({index: 1})
@@ -47,7 +48,7 @@ export class Project {
   created: Date;
 }
 
-export type ProjectDocument = Project & Document;
+export type ProjectDocument = Project & Document<Types.ObjectId, any, Project>;
 
 export const ProjectSchema = SchemaFactory.createForClass(Project)
   .set('toJSON', {virtuals: true})
