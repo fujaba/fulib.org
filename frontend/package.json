@@ -38,7 +38,6 @@
     "keycloak-angular": "^13.0.0",
     "keycloak-js": "20.0.2",
     "markdown-it": "^13.0.1",
-    "ng-bootstrap-darkmode": "^5.0.0",
     "ngx-clipboard": "^16.0.0",
     "ngx-drag-drop": "^15.1.0",
     "rxjs": "~7.8.1",

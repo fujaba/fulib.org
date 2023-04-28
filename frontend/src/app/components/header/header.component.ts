@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {ThemeService} from '@mean-stream/ngbx';
 import {KeycloakService} from 'keycloak-angular';
-import {ThemeService} from 'ng-bootstrap-darkmode';
 import {environment} from '../../../environments/environment';
 import {ChangelogService, REPOS, Versions} from '../../services/changelog.service';
 
