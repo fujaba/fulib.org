@@ -4,7 +4,15 @@ import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ServiceWorkerModule} from '@angular/service-worker';
-import {NgbxDarkmodeModule, ThemeLoader, ThemeSaver} from '@mean-stream/ngbx';
+import {
+  ModalModule,
+  NgbxDarkmodeModule,
+  THEME_LOADER,
+  THEME_SAVER,
+  ThemeLoader,
+  ThemeSaver,
+  ToastModule,
+} from '@mean-stream/ngbx';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {KeycloakAngularModule, KeycloakService} from 'keycloak-angular';
 
