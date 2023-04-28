@@ -3,12 +3,11 @@ import {Component, HostListener, NgZone, OnInit} from '@angular/core';
 
 import {ToastService} from '@mean-stream/ngbx';
 import {EditorConfiguration} from 'codemirror';
-import {PrivacyService} from '../services/privacy.service';
-import {ThemeService} from 'ng-bootstrap-darkmode';
-import {WorkflowsService} from './workflows.service';
-import {GenerateResult} from './model/GenerateResult';
 import {environment} from '../../environments/environment';
+import {PrivacyService} from '../services/privacy.service';
+import {GenerateResult} from './model/GenerateResult';
 import {cmWorkflowsHint} from './model/helper/workflows-hint';
+import {WorkflowsService} from './workflows.service';
 
 interface Example {
   name: string;
