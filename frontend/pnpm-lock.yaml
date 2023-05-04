@@ -64,9 +64,6 @@ dependencies:
   bootstrap-icons:
     specifier: ^1.10.5
     version: 1.10.5
-  bson-objectid:
-    specifier: ^2.0.4
-    version: 2.0.4
   codemirror:
     specifier: ^5.65.13
     version: 5.65.13
@@ -3529,10 +3526,6 @@ packages:
       electron-to-chromium: 1.4.382
       node-releases: 2.0.10
       update-browserslist-db: 1.0.11(browserslist@4.21.5)
-
-  /bson-objectid@2.0.4:
-    resolution: {integrity: sha512-vgnKAUzcDoa+AeyYwXCoHyF2q6u/8H46dxu5JN+4/TZeq/Dlinn0K6GvxsCLb3LHUJl0m/TLiEK31kUwtgocMQ==}
-    dev: false
 
   /buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
