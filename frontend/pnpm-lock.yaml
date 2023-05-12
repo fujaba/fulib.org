@@ -50,8 +50,8 @@ dependencies:
     specifier: ^2.11.7
     version: 2.11.7
   angular-gridster2:
-    specifier: ^15.0.4
-    version: 15.0.4(@angular/common@16.0.1)(@angular/core@16.0.1)(rxjs@7.8.1)
+    specifier: ^16.0.0
+    version: 16.0.0(@angular/common@16.0.1)(@angular/core@16.0.1)(rxjs@7.8.1)
   angular-split:
     specifier: ^15.0.0
     version: 15.0.0(@angular/common@16.0.1)(@angular/core@16.0.1)(rxjs@7.8.1)
@@ -74,8 +74,8 @@ dependencies:
     specifier: ^11.8.0
     version: 11.8.0
   keycloak-angular:
-    specifier: ^13.1.0
-    version: 13.1.0(@angular/common@16.0.1)(@angular/core@16.0.1)(@angular/router@16.0.1)(keycloak-js@20.0.2)
+    specifier: ^14.0.0
+    version: 14.0.0(@angular/common@16.0.1)(@angular/core@16.0.1)(@angular/router@16.0.1)(keycloak-js@20.0.2)
   keycloak-js:
     specifier: 20.0.2
     version: 20.0.2
@@ -3242,11 +3242,11 @@ packages:
       uri-js: 4.4.1
     dev: true
 
-  /angular-gridster2@15.0.4(@angular/common@16.0.1)(@angular/core@16.0.1)(rxjs@7.8.1):
-    resolution: {integrity: sha512-5BUUn4ihar8pLdN2YwILygZBPk3v94GQzSML6eYdg5o2USPCRuqXyFznYjiMWJRGrcLrzZYdcKULR+LB/1+tfQ==}
+  /angular-gridster2@16.0.0(@angular/common@16.0.1)(@angular/core@16.0.1)(rxjs@7.8.1):
+    resolution: {integrity: sha512-Us6nwxS+84W49nRXk/Dcm7KxgVmJNzkMwLDN2/FfoRlV1nhcv8j7kM2llhSpelwGPDyw/T64BePFw2Dx03QaTQ==}
     peerDependencies:
-      '@angular/common': ^15.0.0
-      '@angular/core': ^15.0.0
+      '@angular/common': ^16.0.0
+      '@angular/core': ^16.0.0
       rxjs: ^7.0.0
     dependencies:
       '@angular/common': 16.0.1(@angular/core@16.0.1)(rxjs@7.8.1)
@@ -5859,12 +5859,12 @@ packages:
       - utf-8-validate
     dev: true
 
-  /keycloak-angular@13.1.0(@angular/common@16.0.1)(@angular/core@16.0.1)(@angular/router@16.0.1)(keycloak-js@20.0.2):
-    resolution: {integrity: sha512-IMiCzO6eWzA8dacmGAa+ckgsj1bB9Eww9CaKgnj9qsTw1V/GHn88IG242XPRwiVWRzeTWk2BOgu6abLC2fsP8g==}
+  /keycloak-angular@14.0.0(@angular/common@16.0.1)(@angular/core@16.0.1)(@angular/router@16.0.1)(keycloak-js@20.0.2):
+    resolution: {integrity: sha512-MbXdOz0omPkwzTpKTtaLPrbEoWiNM9zY/qi3JnVepV6zGRRFrzPu3uvz/1nsU+fio0lHcjkjPVLmp/06+kBWZg==}
     peerDependencies:
-      '@angular/common': ^15
-      '@angular/core': ^15
-      '@angular/router': ^15
+      '@angular/common': ^16
+      '@angular/core': ^16
+      '@angular/router': ^16
       keycloak-js: ^18 || ^19 || ^20 || ^21
     dependencies:
       '@angular/common': 16.0.1(@angular/core@16.0.1)(rxjs@7.8.1)
