@@ -99,6 +99,8 @@ export class ContainerService {
       await createFile(`${usersPath}/settings.json`);
       await createFile(`${usersPath}/.gitconfig`, async () => await this.generateGitConfig(user, auth));
       options.Env!.push(`USER_ID=${user.sub}`);
+      options.Env!.push(`USER_NAME=${user.preferred_username}`);
+      options.Env!.push(`USER_DISPLAY_NAME=${user.name}`);
       options.Labels!['org.fulib.user'] = user.sub;
       options.HostConfig!.Binds!.push(
         `${usersPath}/settings.json:/home/coder/.local/share/code-server/User/settings.json`,
