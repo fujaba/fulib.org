@@ -1,11 +1,13 @@
 import {AuthModule} from '@app/keycloak-auth';
-import {Module} from '@nestjs/common';
+import {HttpException, Module} from '@nestjs/common';
 import {MongooseModule} from '@nestjs/mongoose';
 import {ContainerModule} from './container/container.module';
 import {environment} from './environment';
 import {MemberModule} from './member/member.module';
 import {ProjectModule} from './project/project.module';
 import {ScheduleModule} from "@nestjs/schedule";
+import {SentryInterceptor, SentryModule} from "@ntegral/nestjs-sentry";
+import {APP_INTERCEPTOR} from "@nestjs/core";
 
 @Module({
   imports: [
@@ -15,9 +17,29 @@ import {ScheduleModule} from "@nestjs/schedule";
     MemberModule,
     ContainerModule,
     ScheduleModule.forRoot(),
+    SentryModule.forRoot({
+      dsn: environment.sentryDsn,
+      environment: environment.nodeEnv,
+      release: environment.version,
+      initialScope: {
+        tags: {
+          service: 'projects',
+        },
+      },
+    }),
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useFactory: () => new SentryInterceptor({
+        filters: [{
+          type: HttpException,
+          filter: (exception: HttpException) => 500 > exception.getStatus(),
+        }],
+      }),
+    }
+  ],
 })
 export class ProjectsModule {
 }

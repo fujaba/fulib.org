@@ -1,7 +1,6 @@
 import {EventModule} from '@app/event/event.module';
 import {AuthModule} from '@app/keycloak-auth';
-import {Module} from '@nestjs/common';
-import {Transport} from '@nestjs/microservices';
+import {HttpException, Module} from '@nestjs/common';
 import {MongooseModule} from '@nestjs/mongoose';
 import {ScheduleModule} from '@nestjs/schedule';
 import {AssigneeModule} from './assignee/assignee.module';
@@ -17,6 +16,8 @@ import {SelectionModule} from './selection/selection.module';
 import {SolutionModule} from './solution/solution.module';
 import {StatisticsModule} from './statistics/statistics.module';
 import {TelemetryModule} from './telemetry/telemetry.module';
+import {SentryInterceptor, SentryModule} from "@ntegral/nestjs-sentry";
+import {APP_INTERCEPTOR} from "@nestjs/core";
 
 @Module({
   imports: [
@@ -24,6 +25,16 @@ import {TelemetryModule} from './telemetry/telemetry.module';
     AuthModule.register(environment.auth),
     EventModule.forRoot({nats: environment.nats}),
     ScheduleModule.forRoot(),
+    SentryModule.forRoot({
+      dsn: environment.sentryDsn,
+      environment: environment.nodeEnv,
+      release: environment.version,
+      initialScope: {
+        tags: {
+          service: 'assignments',
+        },
+      },
+    }),
     AssignmentModule,
     SolutionModule,
     AssigneeModule,
@@ -38,7 +49,17 @@ import {TelemetryModule} from './telemetry/telemetry.module';
     TelemetryModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useFactory: () => new SentryInterceptor({
+        filters: [{
+          type: HttpException,
+          filter: (exception: HttpException) => 500 > exception.getStatus(),
+        }],
+      }),
+    }
+  ],
 })
 export class AssignmentsModule {
 }
