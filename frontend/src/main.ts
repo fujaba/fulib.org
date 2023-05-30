@@ -1,6 +1,6 @@
 import {enableProdMode} from '@angular/core';
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
-import Sentry from '@sentry/angular-ivy';
+import * as Sentry from '@sentry/angular-ivy';
 
 import 'codemirror/mode/markdown/markdown';
 import 'codemirror/mode/javascript/javascript';

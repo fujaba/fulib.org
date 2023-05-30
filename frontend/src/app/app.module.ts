@@ -29,7 +29,7 @@ import {PrivacyComponent} from './components/privacy/privacy.component';
 import {PrivacyService} from './services/privacy.service';
 import {SharedModule} from './shared/shared.module';
 import {UserModule} from './user/user.module';
-import Sentry from "@sentry/angular-ivy";
+import * as Sentry from "@sentry/angular-ivy";
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () => environment.auth && keycloak.init({
