@@ -1,5 +1,5 @@
 import {HttpClientModule} from '@angular/common/http';
-import {APP_INITIALIZER, NgModule} from '@angular/core';
+import {APP_INITIALIZER, ErrorHandler, NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -29,6 +29,7 @@ import {PrivacyComponent} from './components/privacy/privacy.component';
 import {PrivacyService} from './services/privacy.service';
 import {SharedModule} from './shared/shared.module';
 import {UserModule} from './user/user.module';
+import Sentry from "@sentry/angular-ivy";
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () => environment.auth && keycloak.init({
@@ -100,6 +101,10 @@ function initializeKeycloak(keycloak: KeycloakService) {
       useFactory(privacyService: PrivacyService): ThemeSaver {
         return (theme) => privacyService.setStorage('theme', theme);
       },
+    },
+    {
+      provide: ErrorHandler,
+      useValue: Sentry.createErrorHandler(),
     },
   ],
   bootstrap: [AppComponent],
