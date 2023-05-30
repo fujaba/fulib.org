@@ -8,7 +8,7 @@ import * as Dockerode from 'dockerode';
 import {ContainerCreateOptions} from 'dockerode';
 import * as fs from 'fs';
 import * as path from 'path';
-import {firstValueFrom, map} from 'rxjs';
+import {catchError, firstValueFrom, map, of} from 'rxjs';
 import {Readable} from 'stream';
 import {setTimeout} from 'timers/promises';
 import {Extract} from 'unzipper';
@@ -98,6 +98,9 @@ export class ContainerService {
        */
       await createFile(`${usersPath}/settings.json`);
       await createFile(`${usersPath}/.gitconfig`, async () => await this.generateGitConfig(user, auth));
+      options.Env!.push(`USER_ID=${user.sub}`);
+      options.Env!.push(`USER_NAME=${user.preferred_username}`);
+      options.Env!.push(`USER_DISPLAY_NAME=${user.name}`);
       options.Labels!['org.fulib.user'] = user.sub;
       options.HostConfig!.Binds!.push(
         `${usersPath}/settings.json:/home/coder/.local/share/code-server/User/settings.json`,
@@ -151,6 +154,7 @@ export class ContainerService {
       },
     }).pipe(
       map(({data}) => data.split('&').filter(s => s.startsWith(paramName))[0]?.substring(paramName.length)),
+      catchError(() => of(undefined)),
     ));
   }
 
