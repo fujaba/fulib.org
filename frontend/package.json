@@ -26,6 +26,7 @@
     "@mean-stream/ngbx": "^0.9.0",
     "@ng-bootstrap/ng-bootstrap": "^15.0.0",
     "@popperjs/core": "^2.11.8",
+    "@sentry/angular-ivy": "^7.53.1",
     "angular-gridster2": "^16.0.0",
     "angular-split": "^15.0.0",
     "bootstrap": "~5.2.3",
