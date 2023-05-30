@@ -38,14 +38,14 @@ dependencies:
     specifier: ^16.0.3
     version: 16.0.3(@angular/common@16.0.3)(@angular/core@16.0.3)
   '@ctrl/ngx-codemirror':
-    specifier: ^6.1.0
-    version: 6.1.0(@angular/core@16.0.3)(@angular/forms@16.0.3)(codemirror@5.65.13)
+    specifier: ^7.0.0
+    version: 7.0.0(@angular/core@16.0.3)(@angular/forms@16.0.3)(codemirror@5.65.13)
   '@mean-stream/ngbx':
     specifier: ^0.9.0
-    version: 0.9.0(@angular/common@16.0.3)(@angular/core@16.0.3)(@angular/forms@16.0.3)(@angular/router@16.0.3)(@ng-bootstrap/ng-bootstrap@14.2.0)(bootstrap-darkmode@5.0.1)(bootstrap@5.2.3)(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
+    version: 0.9.0(@angular/common@16.0.3)(@angular/core@16.0.3)(@angular/forms@16.0.3)(@angular/router@16.0.3)(@ng-bootstrap/ng-bootstrap@15.0.0)(bootstrap-darkmode@5.0.1)(bootstrap@5.2.3)(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
   '@ng-bootstrap/ng-bootstrap':
-    specifier: ^14.2.0
-    version: 14.2.0(@angular/common@16.0.3)(@angular/core@16.0.3)(@angular/forms@16.0.3)(@angular/localize@16.0.3)(@popperjs/core@2.11.8)(rxjs@7.8.1)
+    specifier: ^15.0.0
+    version: 15.0.0(@angular/common@16.0.3)(@angular/core@16.0.3)(@angular/forms@16.0.3)(@angular/localize@16.0.3)(@popperjs/core@2.11.8)(rxjs@7.8.1)
   '@popperjs/core':
     specifier: ^2.11.8
     version: 2.11.8
@@ -86,8 +86,8 @@ dependencies:
     specifier: ^16.0.0
     version: 16.0.0(@angular/common@16.0.3)(@angular/core@16.0.3)
   ngx-drag-drop:
-    specifier: ^15.1.0
-    version: 15.1.0(@angular/common@16.0.3)(@angular/core@16.0.3)
+    specifier: ^16.0.0
+    version: 16.0.0(@angular/common@16.0.3)(@angular/core@16.0.3)
   rxjs:
     specifier: ~7.8.1
     version: 7.8.1
@@ -1897,11 +1897,11 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
-  /@ctrl/ngx-codemirror@6.1.0(@angular/core@16.0.3)(@angular/forms@16.0.3)(codemirror@5.65.13):
-    resolution: {integrity: sha512-73QeoNbnluZalWmNw+SOFctsE+oz0+4Bl9KhlJOIfbCPK/U6OIc+vQNr28hMAp15Y/Idde3LntTwLBDFW0bRVA==}
+  /@ctrl/ngx-codemirror@7.0.0(@angular/core@16.0.3)(@angular/forms@16.0.3)(codemirror@5.65.13):
+    resolution: {integrity: sha512-qvIWtSTw/8fdXDnofBTX6LmTW9646HhawG2+Qyagf1vH40jCy0ZbHnkC20UYOVpUX+QCd1e/PQpkvWQ/1iGFzQ==}
     peerDependencies:
-      '@angular/core': '>=15.0.0-0'
-      '@angular/forms': '>=15.0.0-0'
+      '@angular/core': '>=16.0.0-0'
+      '@angular/forms': '>=16.0.0-0'
       codemirror: ^5.65.9
     dependencies:
       '@angular/core': 16.0.3(rxjs@7.8.1)(zone.js@0.13.0)
@@ -2254,7 +2254,7 @@ packages:
     resolution: {integrity: sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==}
     dev: true
 
-  /@mean-stream/ngbx@0.9.0(@angular/common@16.0.3)(@angular/core@16.0.3)(@angular/forms@16.0.3)(@angular/router@16.0.3)(@ng-bootstrap/ng-bootstrap@14.2.0)(bootstrap-darkmode@5.0.1)(bootstrap@5.2.3)(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.1):
+  /@mean-stream/ngbx@0.9.0(@angular/common@16.0.3)(@angular/core@16.0.3)(@angular/forms@16.0.3)(@angular/router@16.0.3)(@ng-bootstrap/ng-bootstrap@15.0.0)(bootstrap-darkmode@5.0.1)(bootstrap@5.2.3)(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.1):
     resolution: {integrity: sha512-kEmgmsRc0QeImEJUsQGkSegDxwD4TpTyHcdU4y11VJgqAtKfXZYhBrGfbhXxFOGmi50iuwViHX35/IPKssp16w==}
     peerDependencies:
       '@angular/common': ^15.2.0
@@ -2275,7 +2275,7 @@ packages:
       '@angular/core': 16.0.3(rxjs@7.8.1)(zone.js@0.13.0)
       '@angular/forms': 16.0.3(@angular/common@16.0.3)(@angular/core@16.0.3)(@angular/platform-browser@16.0.3)(rxjs@7.8.1)
       '@angular/router': 16.0.3(@angular/common@16.0.3)(@angular/core@16.0.3)(@angular/platform-browser@16.0.3)(rxjs@7.8.1)
-      '@ng-bootstrap/ng-bootstrap': 14.2.0(@angular/common@16.0.3)(@angular/core@16.0.3)(@angular/forms@16.0.3)(@angular/localize@16.0.3)(@popperjs/core@2.11.8)(rxjs@7.8.1)
+      '@ng-bootstrap/ng-bootstrap': 15.0.0(@angular/common@16.0.3)(@angular/core@16.0.3)(@angular/forms@16.0.3)(@angular/localize@16.0.3)(@popperjs/core@2.11.8)(rxjs@7.8.1)
       bootstrap: 5.2.3(@popperjs/core@2.11.8)
       bootstrap-darkmode: 5.0.1(bootstrap@5.2.3)
       class-validator: 0.14.0
@@ -2284,13 +2284,13 @@ packages:
       tslib: 2.5.2
     dev: false
 
-  /@ng-bootstrap/ng-bootstrap@14.2.0(@angular/common@16.0.3)(@angular/core@16.0.3)(@angular/forms@16.0.3)(@angular/localize@16.0.3)(@popperjs/core@2.11.8)(rxjs@7.8.1):
-    resolution: {integrity: sha512-nqEKVXauSontGKqC5WSKpch5TiAGDZB3hluvxkINS0r9LUE6sBQRP3qeYOe7Uwu+UbQcj28NG3qFHhpfnG8KHw==}
+  /@ng-bootstrap/ng-bootstrap@15.0.0(@angular/common@16.0.3)(@angular/core@16.0.3)(@angular/forms@16.0.3)(@angular/localize@16.0.3)(@popperjs/core@2.11.8)(rxjs@7.8.1):
+    resolution: {integrity: sha512-BA/SI7sURpKwIex6bj2ujL+xUh8oYMrc5POdGC8sVe+yX3NRS0xNbozI6oke6pL2PpYq+/zaJTmuEJsEMCplZA==}
     peerDependencies:
-      '@angular/common': ^15.0.0
-      '@angular/core': ^15.0.0
-      '@angular/forms': ^15.0.0
-      '@angular/localize': ^15.0.0
+      '@angular/common': ^16.0.0
+      '@angular/core': ^16.0.0
+      '@angular/forms': ^16.0.0
+      '@angular/localize': ^16.0.0
       '@popperjs/core': ^2.11.6
       rxjs: ^6.5.3 || ^7.4.0
     dependencies:
@@ -6446,11 +6446,11 @@ packages:
       tslib: 2.5.2
     dev: false
 
-  /ngx-drag-drop@15.1.0(@angular/common@16.0.3)(@angular/core@16.0.3):
-    resolution: {integrity: sha512-ZTAMrKMv7Fqdybvt+2sEtbT0LlOwsaFCNwFQ/CnKXrXEBkbs5K1jx2rN8HXx9BMlVAfa4ovOmtkJXtx/9XYqrA==}
+  /ngx-drag-drop@16.0.0(@angular/common@16.0.3)(@angular/core@16.0.3):
+    resolution: {integrity: sha512-VIfQvvQ+6GDgWzzP+iTtLy1b6jTdv9lrELdjSl4ebKYcknk6eF4ddKisbh+a12yfrGkSMkFl/RK1tDBAKWqu1w==}
     peerDependencies:
-      '@angular/common': ^15.0.3
-      '@angular/core': ^15.0.3
+      '@angular/common': ^16.0.0
+      '@angular/core': ^16.0.0
     dependencies:
       '@angular/common': 16.0.3(@angular/core@16.0.3)(rxjs@7.8.1)
       '@angular/core': 16.0.3(rxjs@7.8.1)(zone.js@0.13.0)
