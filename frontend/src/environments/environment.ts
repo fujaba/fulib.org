@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  sentryDsn: 'https://613fdea31ffd44aa9f21da06ce6346e1@o416265.ingest.sentry.io/4505273320734720',
+  sentryDsn: '',
   environment: 'development',
   apiURL: 'http://localhost:4567/api',
   assignmentsApiUrl: 'http://localhost:21318/api/v1',

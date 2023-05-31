@@ -39,6 +39,7 @@ hljs.registerLanguage('scenario', scenario);
 hljs.registerLanguage(json.name, json);
 
 Sentry.init({
+  enabled: environment.production,
   dsn: environment.sentryDsn,
   environment: environment.environment,
   release: 'v1',
