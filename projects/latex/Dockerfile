@@ -20,15 +20,13 @@ RUN wget https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz \
     && cd .. \
     && rm -rf install-tl-*
 
-# add texlive to PATH
-ARG TEXLIVE_VERSION
-ARG TEXLIVE_PATH=/usr/local/texlive/$TEXLIVE_VERSION/bin/x86_64-linux
-ENV PATH=$TEXLIVE_PATH:$PATH
+# symlink texlive to /usr/local/bin
+RUN for i in /usr/local/texlive/*/bin/x86_64-linux; do sudo ln -s $i/* /usr/local/bin/; done
 
 # enable tlmgr usertree \
-RUN sudo $TEXLIVE_PATH/tlmgr init-usertree
+RUN sudo tlmgr init-usertree
 
 # install some basic packages
 # see https://github.com/sekassel-research/thesis-template#installation
 ARG TEXLIVE_PACKAGES
-RUN sudo $TEXLIVE_PATH/tlmgr install $TEXLIVE_PACKAGES
+RUN sudo tlmgr install $TEXLIVE_PACKAGES
