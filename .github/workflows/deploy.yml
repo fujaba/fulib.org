@@ -185,6 +185,7 @@ jobs:
     name: Projects Deployment
     runs-on: ubuntu-latest
     needs: [ deployment, projects-images, projects-proxy, projects-runtime ]
+    if: ${{ needs.deployment.outputs.namespace }}
     steps:
       - name: Deploy the Projects Runtime to Rancher
         uses: sekassel-research/actions-rancher-update@v3.0.0
