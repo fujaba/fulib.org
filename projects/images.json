@@ -29,13 +29,14 @@
     }
   },
   {
-    "tag": "registry.uniks.de/fulib/code-server-latex",
+    "tag": "registry.uniks.de/fulib/code-server-latex:2023",
     "name": "LaTeX",
     "desc": "LaTeX/TeXLive",
     "dockerfile": "generic/Dockerfile",
     "args": {
-      "APT_DEPENDENCIES": "texlive",
-      "EXTENSION": "James-Yu.latex-workshop"
+      "EXTENSION": "James-Yu.latex-workshop",
+      "TEXLIVE_VERSION": "2023",
+      "TEXLIVE_PACKAGES": "footmisc siunitx paralist wrapfig minted acronym xstring bigfoot csquotes din1505"
     }
   },
   {
