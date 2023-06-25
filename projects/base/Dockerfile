@@ -1,4 +1,4 @@
-FROM codercom/code-server
+FROM codercom/code-server:4.14.0
 RUN code-server --install-extension fulib.vnc-viewer
 
 USER root
