@@ -138,7 +138,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           registry: ${{ secrets.DOCKER_REGISTRY }}
-          image_name: registry.uniks.de/fulib/code-server-base
+          image_name: fulib/code-server-base
           context: projects/
           dockerfile: base/Dockerfile
           push_image_and_stages: ${{ !!needs.deployment.outputs.namespace }}
