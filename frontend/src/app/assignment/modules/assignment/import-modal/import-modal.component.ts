@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {ToastService} from '@mean-stream/ngbx';
+import {ModalComponent, ToastService} from '@mean-stream/ngbx';
 import {SolutionService} from '../../../services/solution.service';
 import {ImportResult} from "../../../model/solution";
 
@@ -23,12 +23,17 @@ export class ImportModalComponent {
   ) {
   }
 
-  import() {
+  import(modal: ModalComponent) {
     const assignmentId = this.route.snapshot.params.aid;
     this.importing = true;
     this.solutionService.import(assignmentId, this.files).subscribe(results => {
       this.importing = false;
-      this.result = results;
+      if (!results.tokens) {
+        this.toastService.success('Import', `Successfully imported ${results.length} solutions`);
+        modal.close();
+      } else {
+        this.result = results;
+      }
     }, error => {
       this.importing = false;
       this.toastService.error('Import', 'Failed to import solutions', error);
