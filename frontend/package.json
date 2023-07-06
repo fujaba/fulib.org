@@ -29,7 +29,7 @@
     "@sentry/angular-ivy": "^7.57.0",
     "angular-gridster2": "^16.0.0",
     "angular-split": "^15.0.0",
-    "bootstrap": "~5.3.0",
+    "bootstrap": "~5.2.3",
     "bootstrap-darkmode": "^5.0.1",
     "bootstrap-icons": "^1.10.5",
     "class-validator": "^0.14.0",

@@ -46,7 +46,7 @@ dependencies:
     version: 7.0.0(@angular/core@16.1.3)(@angular/forms@16.1.3)(codemirror@5.65.13)
   '@mean-stream/ngbx':
     specifier: ^0.11.0
-    version: 0.11.0(@angular/common@16.1.3)(@angular/core@16.1.3)(@angular/forms@16.1.3)(@angular/router@16.1.3)(@ng-bootstrap/ng-bootstrap@15.1.0)(bootstrap-darkmode@5.0.1)(bootstrap@5.3.0)(class-validator@0.14.0)(rxjs@7.8.1)
+    version: 0.11.0(@angular/common@16.1.3)(@angular/core@16.1.3)(@angular/forms@16.1.3)(@angular/router@16.1.3)(@ng-bootstrap/ng-bootstrap@15.1.0)(bootstrap-darkmode@5.0.1)(bootstrap@5.2.3)(class-validator@0.14.0)(rxjs@7.8.1)
   '@ng-bootstrap/ng-bootstrap':
     specifier: ^15.1.0
     version: 15.1.0(@angular/common@16.1.3)(@angular/core@16.1.3)(@angular/forms@16.1.3)(@angular/localize@16.1.3)(@popperjs/core@2.11.8)(rxjs@7.8.1)
@@ -63,11 +63,11 @@ dependencies:
     specifier: ^15.0.0
     version: 15.0.0(@angular/common@16.1.3)(@angular/core@16.1.3)(rxjs@7.8.1)
   bootstrap:
-    specifier: ~5.3.0
-    version: 5.3.0(@popperjs/core@2.11.8)
+    specifier: ~5.2.3
+    version: 5.2.3(@popperjs/core@2.11.8)
   bootstrap-darkmode:
     specifier: ^5.0.1
-    version: 5.0.1(bootstrap@5.3.0)
+    version: 5.0.1(bootstrap@5.2.3)
   bootstrap-icons:
     specifier: ^1.10.5
     version: 1.10.5
@@ -2281,7 +2281,7 @@ packages:
     resolution: {integrity: sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==}
     dev: true
 
-  /@mean-stream/ngbx@0.11.0(@angular/common@16.1.3)(@angular/core@16.1.3)(@angular/forms@16.1.3)(@angular/router@16.1.3)(@ng-bootstrap/ng-bootstrap@15.1.0)(bootstrap-darkmode@5.0.1)(bootstrap@5.3.0)(class-validator@0.14.0)(rxjs@7.8.1):
+  /@mean-stream/ngbx@0.11.0(@angular/common@16.1.3)(@angular/core@16.1.3)(@angular/forms@16.1.3)(@angular/router@16.1.3)(@ng-bootstrap/ng-bootstrap@15.1.0)(bootstrap-darkmode@5.0.1)(bootstrap@5.2.3)(class-validator@0.14.0)(rxjs@7.8.1):
     resolution: {integrity: sha512-KYtpF3VlaoLb2QCQg4EPl/mD54207tYwzj1PKqYWa9m3AvIUBzt0HLYvJtNJL9LholwhGV1kxEdp9YJ0r3JgKQ==}
     peerDependencies:
       '@angular/common': ^15.2.0
@@ -2307,8 +2307,8 @@ packages:
       '@angular/forms': 16.1.3(@angular/common@16.1.3)(@angular/core@16.1.3)(@angular/platform-browser@16.1.3)(rxjs@7.8.1)
       '@angular/router': 16.1.3(@angular/common@16.1.3)(@angular/core@16.1.3)(@angular/platform-browser@16.1.3)(rxjs@7.8.1)
       '@ng-bootstrap/ng-bootstrap': 15.1.0(@angular/common@16.1.3)(@angular/core@16.1.3)(@angular/forms@16.1.3)(@angular/localize@16.1.3)(@popperjs/core@2.11.8)(rxjs@7.8.1)
-      bootstrap: 5.3.0(@popperjs/core@2.11.8)
-      bootstrap-darkmode: 5.0.1(bootstrap@5.3.0)
+      bootstrap: 5.2.3(@popperjs/core@2.11.8)
+      bootstrap-darkmode: 5.0.1(bootstrap@5.2.3)
       class-validator: 0.14.0
       rxjs: 7.8.1
       tslib: 2.6.0
@@ -3682,12 +3682,12 @@ packages:
     resolution: {integrity: sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==}
     dev: true
 
-  /bootstrap-darkmode@5.0.1(bootstrap@5.3.0):
+  /bootstrap-darkmode@5.0.1(bootstrap@5.2.3):
     resolution: {integrity: sha512-jyl507aEItDG7PHVdFgVNZ+qBX+Gffo6uGYOY9waegHcNRqBuajwyfkLpCGczMlhAQiEcms3jdxfhMg3AZJMfA==}
     peerDependencies:
       bootstrap: '>=5'
     dependencies:
-      bootstrap: 5.3.0(@popperjs/core@2.11.8)
+      bootstrap: 5.2.3(@popperjs/core@2.11.8)
       tslib: 2.6.0
     dev: false
 
@@ -3695,10 +3695,10 @@ packages:
     resolution: {integrity: sha512-oSX26F37V7QV7NCE53PPEL45d7EGXmBgHG3pDpZvcRaKVzWMqIRL9wcqJUyEha1esFtM3NJzvmxFXDxjJYD0jQ==}
     dev: false
 
-  /bootstrap@5.3.0(@popperjs/core@2.11.8):
-    resolution: {integrity: sha512-UnBV3E3v4STVNQdms6jSGO2CvOkjUMdDAVR2V5N4uCMdaIkaQjbcEAMqRimDHIs4uqBYzDAKCQwCB+97tJgHQw==}
+  /bootstrap@5.2.3(@popperjs/core@2.11.8):
+    resolution: {integrity: sha512-cEKPM+fwb3cT8NzQZYEu4HilJ3anCrWqh3CHAok1p9jXqMPsPTBhU25fBckEJHJ/p+tTxTFTsFQGM+gaHpi3QQ==}
     peerDependencies:
-      '@popperjs/core': ^2.11.7
+      '@popperjs/core': ^2.11.6
     dependencies:
       '@popperjs/core': 2.11.8
     dev: false
