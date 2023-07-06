@@ -1,4 +1,4 @@
-import {File, MossApi} from '@app/moss/moss-api';
+import {File} from '@app/moss/moss-api';
 import {HttpService} from '@nestjs/axios';
 import {Injectable, UnauthorizedException} from '@nestjs/common';
 import {Method} from 'axios';
@@ -10,11 +10,13 @@ import {Entry as ZipEntry, Parse as unzip} from 'unzipper';
 import {AssignmentDocument} from '../assignment/assignment.schema';
 import {AssignmentService} from '../assignment/assignment.service';
 import {SearchService} from '../search/search.service';
-import {ReadSolutionDto} from '../solution/solution.dto';
 import {AuthorInfo, Solution} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {generateToken} from '../utils';
 import {MossService} from './moss.service';
+import {OpenAIService} from "./openai.service";
+import {ImportResult} from "./classroom.dto";
+import {notFound} from "@mean-stream/nestx";
 
 interface RepositoryInfo {
   name: string;
@@ -47,16 +49,14 @@ export class ClassroomService {
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
     private searchService: SearchService,
+    private openaiService: OpenAIService,
     private mossService: MossService,
     private http: HttpService,
   ) {
   }
 
-  async importFiles(id: string, files: Express.Multer.File[]): Promise<ReadSolutionDto[]> {
-    const assignment = await this.assignmentService.findOne(id);
-    if (!assignment) {
-      return [];
-    }
+  async importFiles(id: string, files: Express.Multer.File[]): Promise<ImportResult> {
+    const assignment = await this.assignmentService.findOne(id) || notFound(id);
 
     const result = await this.solutionService.bulkWrite(files.map(file => {
       const [key, value] = this.parseAuthorInfo(assignment, file.originalname);
@@ -81,17 +81,16 @@ export class ClassroomService {
     }));
 
     const {codeSearch, mossId} = assignment.classroom || {};
+    let filess: File[][] = [];
     if (codeSearch || mossId) {
-      Promise.all(files.map(async (file, index) => {
+      filess = await Promise.all(files.map(async (file, index) => {
         const stream = createReadStream(file.path);
         const solution = result.upsertedIds[index];
         return this.importZipFiles(stream, id, solution, !!codeSearch);
-      })).then(files => {
-        mossId && this.mossService.moss(assignment, files.flat());
-      });
+      }));
     }
 
-    return this.solutionService.findAll({_id: {$in: Object.values(result.upsertedIds)}});
+    return {length: result.upsertedCount, ...await this.processFiles(assignment, filess)};
   }
 
   private parseAuthorInfo(assignment: AssignmentDocument, filename: string): [keyof AuthorInfo, string] {
@@ -105,15 +104,15 @@ export class ClassroomService {
     }
   }
 
-  private async importZipFiles(stream: Stream, assignment: string, solution: string, codeSearch: boolean, commit?: string): Promise<File[]> {
-    const files = await this.importZipStream(stream, assignment, solution);
-    if (codeSearch) {
+  private async importZipFiles(stream: Stream, assignment: string, solution?: string, codeSearch?: boolean, commit?: string): Promise<File[]> {
+    const files = await this.importZipStream(stream);
+    if (codeSearch && solution) {
       await Promise.all(files.map(file => this.addContentsToIndex(assignment, solution, file, commit)));
     }
     return files;
   }
 
-  private async importZipStream(stream: Stream, assignment: string, solution: string, commit?: string): Promise<File[]> {
+  private async importZipStream(stream: Stream): Promise<File[]> {
     const files: File[] = [];
     await stream.pipe(unzip()).on('entry', (entry: ZipEntry) => {
       // Using vars.uncompressedSize because entry.extra.* and entry.size are unavailable before parsing for some reason
@@ -155,18 +154,17 @@ export class ClassroomService {
     }
   }
 
-  async importSolutions(id: string): Promise<ReadSolutionDto[]> {
-    const assignment = await this.assignmentService.findOne(id);
-    if (!assignment || !assignment.classroom || !assignment.classroom.org || !assignment.classroom.prefix || !assignment.classroom.token) {
-      return [];
+  async importSolutions(id: string): Promise<ImportResult> {
+    const assignment = await this.assignmentService.findOne(id) || notFound(id);
+    if (!assignment.classroom || !assignment.classroom.org || !assignment.classroom.prefix || !assignment.classroom.token) {
+      return {length: 0, tokens: 0, estimatedCost: 0};
     }
 
-    const ids = await this.importSolutions2(assignment);
-    return this.solutionService.findAll({_id: {$in: ids}});
+    return this.importSolutions2(assignment);
   }
 
-  async importSolutions2(assignment: AssignmentDocument): Promise<string[]> {
-    const {token, codeSearch, mossId} = assignment.classroom!;
+  async importSolutions2(assignment: AssignmentDocument): Promise<ImportResult> {
+    const {token, codeSearch, mossId, openaiApiKey} = assignment.classroom!;
     if (!token) {
       throw new UnauthorizedException('Missing token');
     }
@@ -206,21 +204,6 @@ export class ClassroomService {
       };
     }));
 
-    if (codeSearch || mossId) {
-      Promise.all(repositories.map(async (repo, i) => {
-        const commit = commits[i];
-        const upsertedId = result.upsertedIds[i];
-        if (commit && upsertedId) {
-          const zip = await this.getRepoZip(assignment, this.getGithubName(repo, assignment), commit);
-          return zip ? this.importZipFiles(zip, assignment._id, upsertedId, !!codeSearch, commit) : [];
-        } else {
-          return [];
-        }
-      })).then(files => {
-        mossId && this.mossService.moss(assignment, files.flat());
-      });
-    }
-
     repositories.forEach((repo, i) => {
       const commit = commits[i];
       if (commit) {
@@ -228,7 +211,38 @@ export class ClassroomService {
       }
     });
 
-    return Object.values(result.upsertedIds);
+    if (!(codeSearch || mossId || openaiApiKey)) {
+      return {length: result.upsertedCount, tokens: 0, estimatedCost: 0};
+    }
+
+    const files = await Promise.all(repositories.map(async (repo, i) => {
+      const commit = commits[i];
+      const upsertedId = result.upsertedIds[i];
+      if (commit) {
+        const zip = await this.getRepoZip(assignment, this.getGithubName(repo, assignment), commit);
+        return zip ? this.importZipFiles(zip, assignment._id, upsertedId, !!codeSearch, commit) : [];
+      } else {
+        return [];
+      }
+    }));
+
+    return {length: result.upsertedCount, ...await this.processFiles(assignment, files)};
+  }
+
+  private async processFiles(assignment: AssignmentDocument, files: File[][]) {
+    const {openaiApiKey, mossId} = assignment.classroom!;
+
+    let tokens = 0;
+    let estimatedCost = 0;
+
+    const filesFlat = openaiApiKey || mossId ? files.flat() : [];
+    if (openaiApiKey) {
+      tokens = this.openaiService.countTokens(filesFlat);
+      estimatedCost = this.openaiService.estimateCost(tokens);
+    }
+    mossId && this.mossService.moss(assignment, filesFlat);
+
+    return {tokens, estimatedCost};
   }
 
   private getQuery(assignment: AssignmentDocument): string {
