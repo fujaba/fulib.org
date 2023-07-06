@@ -42,12 +42,20 @@
       </li>
     </ul>
     <div [ngbNavOutlet]="nav"></div>
+    <div *ngIf="result">
+      <h5>
+        Import Successfull - Results
+      </h5>
+      <app-statistic-value label="Imported Solutions" [value]="result.length" [standalone]="true"></app-statistic-value>
+      <app-statistic-value label="Tokens" [value]="result.tokens" [standalone]="true"></app-statistic-value>
+      <app-statistic-value label="Estimated Cost" [value]="result.estimatedCost | currency:'USD'" [standalone]="true"></app-statistic-value>
+    </div>
   </ng-container>
   <ng-container modal-footer>
     <button class="btn btn-secondary" (click)="modal.close()">
-      Cancel
+      {{ result ? 'Close' : 'Cancel' }}
     </button>
-    <button class="btn btn-success" (click)="import(modal)" [disabled]="importing">
+    <button class="btn btn-success" (click)="import()" [disabled]="importing">
       <span *ngIf="importing" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
       {{ importing ? 'Importing...' : 'Import' }}
     </button>

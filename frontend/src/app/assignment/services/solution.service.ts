@@ -18,7 +18,7 @@ import {
   UpdateEvaluationDto,
 } from '../model/evaluation';
 
-import Solution, {AuthorInfo} from '../model/solution';
+import Solution, {AuthorInfo, ImportResult} from '../model/solution';
 import {AssignmentService} from './assignment.service';
 import {observeSSE} from './sse-helper';
 
@@ -139,7 +139,7 @@ export class SolutionService {
     );
   }
 
-  import(assignment: string, files?: File[]): Observable<Solution[]> {
+  import(assignment: string, files?: File[]): Observable<ImportResult> {
     const headers = {};
     this.addAssignmentToken(headers, assignment);
     let body;
@@ -150,7 +150,7 @@ export class SolutionService {
       }
       body = data;
     }
-    return this.http.post<Solution[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/import`, body, {headers});
+    return this.http.post<ImportResult>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/import`, body, {headers});
   }
 
   get(assignment: Assignment | string, id: string): Observable<Solution> {
