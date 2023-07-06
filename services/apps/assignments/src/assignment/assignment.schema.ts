@@ -121,6 +121,13 @@ export class ClassroomInfo {
   @IsOptional()
   @IsUrl()
   mossResult?: string;
+
+  @Prop({transform: (v?: string) => v && '***'})
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @Transform(({value}) => value === '***' ? undefined : value)
+  openaiApiKey?: string;
 }
 
 @Schema()

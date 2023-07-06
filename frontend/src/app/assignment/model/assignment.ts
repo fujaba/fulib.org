@@ -22,6 +22,7 @@ export default class Assignment {
     mossId?: number;
     mossLanguage?: string;
     mossResult?: string;
+    openaiApiKey?: string;
   };
 
   tasks: Task[];
