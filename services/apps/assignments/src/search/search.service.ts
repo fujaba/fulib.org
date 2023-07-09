@@ -1,5 +1,5 @@
 import {Hit, QueryContainer, SpanNearQuery, SpanQuery} from '@elastic/elasticsearch/api/types';
-import {BadRequestException, Injectable, OnModuleInit} from '@nestjs/common';
+import {BadRequestException, Injectable, Logger, OnModuleInit} from '@nestjs/common';
 import {ElasticsearchService} from '@nestjs/elasticsearch';
 import {randomUUID} from 'crypto';
 import {isDeepStrictEqual} from 'util';
@@ -29,6 +29,8 @@ const TOKEN_PATTERN = new RegExp(Object.values({
 
 @Injectable()
 export class SearchService implements OnModuleInit {
+  private logger = new Logger(SearchService.name);
+
   constructor(
     private elasticsearchService: ElasticsearchService,
   ) {
@@ -36,51 +38,49 @@ export class SearchService implements OnModuleInit {
 
   async onModuleInit() {
     try {
-      await this.initElasticsearch();
+      await this.ensureIndex('files', {
+        content: {
+          type: 'text',
+          analyzer: 'code',
+          term_vector: 'with_positions_offsets',
+        },
+      }, {
+        analyzer: {
+          code: {
+            tokenizer: 'code',
+          },
+        },
+        tokenizer: {
+          code: {
+            type: 'simple_pattern',
+            pattern: TOKEN_PATTERN.source,
+          },
+        },
+      });
     } catch (e) {
-      console.error('Failed to initialize Elasticsearch:', e);
+      this.logger.error('Failed to initialize Elasticsearch:', e);
     }
   }
 
-  async initElasticsearch() {
-    const files = await this.elasticsearchService.indices.get({
-      index: 'files',
+  async ensureIndex(name: string, properties: any, analysis: any) {
+    const existingIndex = await this.elasticsearchService.indices.get({
+      index: name,
     }).catch(() => null);
 
-    const expectedAnalysis = {
-      analyzer: {
-        code: {
-          tokenizer: 'code',
-        },
-      },
-      tokenizer: {
-        code: {
-          type: 'simple_pattern',
-          pattern: TOKEN_PATTERN.source,
-        },
-      },
-    };
+    const newName = `${name}-${Date.now()}`;
 
-    const expectedContent = {
-      type: 'text',
-      analyzer: 'code',
-      term_vector: 'with_positions_offsets',
-    };
+    if (existingIndex) {
+      const {0: oldName, 1: oldData} = Object.entries(existingIndex.body)[0];
 
-    const newName = 'files-' + Date.now();
-
-    if (files) {
-      const {0: oldName, 1: oldData} = Object.entries(files.body)[0];
-
-      const actualContent = oldData.mappings?.properties?.content;
+      const actualProperties = oldData.mappings?.properties;
       const actualAnalysis = oldData.settings?.index?.analysis;
-      if (isDeepStrictEqual(expectedContent, actualContent) && isDeepStrictEqual(actualAnalysis, expectedAnalysis)) {
+      if (isDeepStrictEqual(properties, actualProperties) && isDeepStrictEqual(actualAnalysis, analysis)) {
         return;
       }
 
-      console.info('Migrating file index:', oldName, '->', newName);
+      this.logger.log(`Migrating ${name} index: ${oldName} -> ${newName}`);
 
-      await this.createIndex(newName, expectedContent, expectedAnalysis);
+      await this.createIndex(newName, properties, analysis);
 
       // transfer data from old index to new index
       await this.elasticsearchService.reindex({
@@ -96,12 +96,12 @@ export class SearchService implements OnModuleInit {
         requestTimeout: '600s',
       });
 
-      // add alias from 'files' to newName
+      // add alias from name to newName
       await this.elasticsearchService.indices.updateAliases({
         body: {
           actions: [
             {remove_index: {index: oldName}},
-            {add: {index: newName, alias: 'files'}},
+            {add: {index: newName, alias: name}},
           ],
         },
       });
@@ -111,12 +111,12 @@ export class SearchService implements OnModuleInit {
         index: oldName,
       });
     } else {
-      console.info('Creating file index:', newName);
-      await this.createIndex(newName, expectedContent, expectedAnalysis);
+      this.logger.log(`Creating ${name} index: ${newName}`);
+      await this.createIndex(newName, properties, analysis);
 
-      // add alias 'files' -> newName
+      // add alias name -> newName
       await this.elasticsearchService.indices.putAlias({
-        name: 'files',
+        name,
         index: newName,
       });
     }
