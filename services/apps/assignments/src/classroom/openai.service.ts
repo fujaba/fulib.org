@@ -28,6 +28,8 @@ interface SnippetEmbeddable extends BaseEmbeddable {
 
 type Embeddable = TaskEmbeddable | SnippetEmbeddable;
 
+type EmbeddableSearch = Pick<Embeddable, 'assignment' | 'embedding'> & Partial<Pick<Embeddable, 'type'>>;
+
 @Injectable()
 export class OpenAIService implements OnModuleInit, OnModuleDestroy {
   enc = tiktoken.encoding_for_model('text-embedding-ada-002');
@@ -100,5 +102,25 @@ export class OpenAIService implements OnModuleInit, OnModuleDestroy {
       id: emb.id,
       body: emb,
     })).body as Embeddable;
+  }
+
+  async getNearest({assignment, embedding, type}: EmbeddableSearch): Promise<(Embeddable & {_score: number})[]> {
+    return (await this.elasticsearchService.search({
+      index: 'embeddings',
+      body: {
+        knn: {
+          field: 'embedding',
+          query_vector: embedding,
+          k: 10,
+          num_candidates: 100,
+          filter: {
+            term: {
+              assignment,
+              type,
+            },
+          },
+        },
+      },
+    })).body.hits;
   }
 }
