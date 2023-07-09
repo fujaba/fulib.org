@@ -122,17 +122,15 @@ export class SearchService implements OnModuleInit {
     }
   }
 
-  private async createIndex(newName: string, expectedContent: any, expectedAnalysis: any) {
+  private async createIndex(newName: string, properties: any, analysis: any) {
     await this.elasticsearchService.indices.create({
       index: newName,
       body: {
         mappings: {
-          properties: {
-            content: expectedContent,
-          },
+          properties,
         },
         settings: {
-          analysis: expectedAnalysis,
+          analysis,
         },
       },
     });
