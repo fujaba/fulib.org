@@ -33,6 +33,9 @@ import {OpenAIService} from "./openai.service";
     MossService,
     OpenAIService,
   ],
+  exports: [
+    OpenAIService,
+  ],
   controllers: [ClassroomController],
 })
 export class ClassroomModule {
