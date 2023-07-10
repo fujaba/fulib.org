@@ -20,13 +20,13 @@ export class EmbeddingController {
   async getSolutionEmbeddings(
     @Param('assignment') assignment: string,
     @Param('solution') solution: string,
-    @Query('task') task: string,
+    @Query('task') task?: string,
   ): Promise<Embeddable[]> {
-    const taskEmbedding = await this.embeddingService.find(task) || notFound(task);
+    const taskEmbedding = task ? await this.embeddingService.find(task) || notFound(task) : undefined;
     return this.embeddingService.getNearest({
       assignment,
       solution,
-      embedding: taskEmbedding.embedding,
+      embedding: taskEmbedding?.embedding,
     });
   }
 }

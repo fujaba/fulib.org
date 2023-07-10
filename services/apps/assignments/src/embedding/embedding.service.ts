@@ -61,12 +61,18 @@ export class EmbeddingService implements OnModuleInit {
   async getNearest({embedding, ...keyword}: EmbeddableSearch): Promise<(Embeddable & { _score: number })[]> {
     return (await this.elasticsearchService.search({
       index: 'embeddings',
-      body: {
+      body: embedding ? {
         knn: {
           field: 'embedding',
           query_vector: embedding,
           k: 10,
           num_candidates: 100,
+          filter: {
+            keyword,
+          },
+        },
+      } : {
+        query: {
           filter: {
             keyword,
           },
