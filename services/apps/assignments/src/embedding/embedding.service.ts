@@ -1,4 +1,4 @@
-import {Injectable, OnModuleInit} from '@nestjs/common';
+import {HttpException, Injectable, OnModuleInit} from '@nestjs/common';
 import {ElasticsearchService} from "@nestjs/elasticsearch";
 import {SearchService} from "../search/search.service";
 import {Embeddable, EmbeddableSearch} from "./embedding.dto";
@@ -25,17 +25,30 @@ export class EmbeddingService implements OnModuleInit {
   }
 
   async upsert(emb: Embeddable, apiKey: string): Promise<Embeddable> {
-    const existing = await this.elasticsearchService.get({
-      index: 'embeddings',
-      id: emb.id,
-    });
-    if (existing && existing.body.text === emb.text) {
-      return existing.body as Embeddable;
+    const existing = await this.find(emb.id);
+    if (existing && existing.text === emb.text) {
+      return existing;
     }
     emb.embedding = await this.openaiService.getEmbedding(emb.text, apiKey);
     return this.index(emb);
   }
 
+  async find(id: string): Promise<Embeddable | undefined> {
+    const {statusCode, body} = await this.elasticsearchService.get({
+      index: 'embeddings',
+      id,
+    });
+    if (!statusCode) {
+      return undefined;
+    }
+    if (statusCode === 404) {
+      return undefined;
+    }
+    if (statusCode === 200) {
+      return body as Embeddable;
+    }
+    throw new HttpException(body, statusCode);
+  }
 
   private async index(emb: Embeddable): Promise<Embeddable> {
     return (await this.elasticsearchService.index({
@@ -45,7 +58,7 @@ export class EmbeddingService implements OnModuleInit {
     })).body as Embeddable;
   }
 
-  async getNearest({assignment, embedding, type}: EmbeddableSearch): Promise<(Embeddable & { _score: number })[]> {
+  async getNearest({embedding, ...keyword}: EmbeddableSearch): Promise<(Embeddable & { _score: number })[]> {
     return (await this.elasticsearchService.search({
       index: 'embeddings',
       body: {
@@ -55,10 +68,7 @@ export class EmbeddingService implements OnModuleInit {
           k: 10,
           num_candidates: 100,
           filter: {
-            term: {
-              assignment,
-              type,
-            },
+            keyword,
           },
         },
       },
