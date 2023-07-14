@@ -70,7 +70,7 @@ export class SearchService implements OnModuleInit {
     const newName = `${name}-${Date.now()}`;
 
     if (existingIndex) {
-      const {0: oldName, 1: oldData} = Object.entries(existingIndex.body)[0];
+      const {0: oldName, 1: oldData} = Object.entries(existingIndex)[0];
 
       const actualProperties = oldData.mappings?.properties;
       const actualAnalysis = oldData.settings?.index?.analysis;
