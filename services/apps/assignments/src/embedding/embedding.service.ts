@@ -135,7 +135,7 @@ export class EmbeddingService implements OnModuleInit {
   async getNearest({embedding, ...keyword}: EmbeddableSearch): Promise<(Embeddable & { _score: number })[]> {
     const filter: QueryDslQueryContainer = {
       bool: {
-        must: Object.entries(keyword).map(([key, value]) => ({
+        filter: Object.entries(keyword).map(([key, value]) => ({
           term: {
             [key]: value,
           },
