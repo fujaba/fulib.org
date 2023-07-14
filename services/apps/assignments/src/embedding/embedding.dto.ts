@@ -58,10 +58,6 @@ export class SnippetEmbeddable extends EmbeddableBase {
   @ApiProperty()
   @IsInt()
   line: number;
-
-  @ApiProperty()
-  @IsInt()
-  column: number;
 }
 
 export type Embeddable = TaskEmbeddable | SnippetEmbeddable;

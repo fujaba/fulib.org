@@ -59,9 +59,51 @@ export class EmbeddingService implements OnModuleInit {
     };
   }
 
-  async createEmbeddings(assignment: string) {
+  private findClosingBrace(code: string, start: number): number {
+    let depth = 1;
+    for (let i = start; i < code.length; i++) {
+      if (code[i] === '{') {
+        depth++;
+      } else if (code[i] === '}') {
+        depth--;
+        if (depth === 0) {
+          return i;
+        }
+      }
+    }
+    return -1;
+  }
+
+  getFunctions(file: string): { text: string; line: number; name: string }[] {
+    const results: { text: string; line: number; name: string }[] = [];
+    const lineStarts = this.searchService._buildLineStartList(file);
+    for (const match of file.matchAll(/([a-zA-Z0-9_]+)\([^)]*\)\s*\{/gi)) {
+      const name = match[1];
+      const start = match.index!;
+      const {line, character: column} = this.searchService._findLocation(lineStarts, start);
+      const end = this.findClosingBrace(file, start + match[0].length);
+      const text = file.substring(start - column, end + 1);
+      results.push({line, name, text});
+    }
+    return results;
+  }
+
+  async createEmbeddings(assignment: string, apiKey: string) {
     const documents = await this.searchService.findAll(assignment);
-    console.log(documents.length, documents[0]);
+    await Promise.all(documents.map(async d =>
+      Promise.all(this.getFunctions(d.content).map(async ({line, name, text}) =>
+        this.upsert({
+          id: `${d.solution}-${d.file}-${line}-${name}`,
+          assignment,
+          type: 'snippet',
+          solution: d.solution,
+          file: d.file,
+          line,
+          text,
+          embedding: [],
+        }, apiKey),
+      )),
+    ));
   }
 
   async upsert(emb: Embeddable, apiKey: string): Promise<Embeddable> {

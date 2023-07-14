@@ -4,12 +4,14 @@ import {AssignmentAuth} from "../assignment/assignment-auth.decorator";
 import {Embeddable, EmbeddingEstimate, SnippetEmbeddable, TaskEmbeddable} from "./embedding.dto";
 import {EmbeddingService} from "./embedding.service";
 import {notFound} from "@mean-stream/nestx";
+import {AssignmentService} from "../assignment/assignment.service";
 
 @Controller('assignments/:assignment')
 @ApiTags('Embeddings')
 export class EmbeddingController {
   constructor(
     private readonly embeddingService: EmbeddingService,
+    private readonly assignmentService: AssignmentService,
   ) {
   }
 
@@ -24,9 +26,11 @@ export class EmbeddingController {
   @Post('embeddings')
   @AssignmentAuth({forbiddenResponse: 'You are not allowed to create embeddings.'})
   async createEmbeddings(
-    @Param('assignment') assignment: string,
+    @Param('assignment') assignmentId: string,
   ): Promise<void> {
-    return this.embeddingService.createEmbeddings(assignment);
+    const assignment = await this.assignmentService.findOne(assignmentId) || notFound(assignmentId);
+    const apiKey = assignment.classroom?.openaiApiKey;
+    apiKey && await this.embeddingService.createEmbeddings(assignmentId, apiKey);
   }
 
   @Get('solutions/:solution/embeddings')
