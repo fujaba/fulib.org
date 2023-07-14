@@ -14,7 +14,6 @@ import {AuthorInfo, Solution} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {generateToken} from '../utils';
 import {MossService} from './moss.service';
-import {OpenAIService} from "./openai.service";
 import {ImportResult} from "./classroom.dto";
 import {notFound} from "@mean-stream/nestx";
 
@@ -49,7 +48,6 @@ export class ClassroomService {
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
     private searchService: SearchService,
-    private openaiService: OpenAIService,
     private mossService: MossService,
     private http: HttpService,
   ) {
@@ -90,7 +88,8 @@ export class ClassroomService {
       }));
     }
 
-    return {length: result.upsertedCount, ...await this.processFiles(assignment, filess)};
+    await this.processFiles(assignment, filess)
+    return {length: result.upsertedCount};
   }
 
   private parseAuthorInfo(assignment: AssignmentDocument, filename: string): [keyof AuthorInfo, string] {
@@ -157,7 +156,7 @@ export class ClassroomService {
   async importSolutions(id: string): Promise<ImportResult> {
     const assignment = await this.assignmentService.findOne(id) || notFound(id);
     if (!assignment.classroom || !assignment.classroom.org || !assignment.classroom.prefix || !assignment.classroom.token) {
-      return {length: 0, tokens: 0, estimatedCost: 0};
+      return {length: 0};
     }
 
     return this.importSolutions2(assignment);
@@ -212,7 +211,7 @@ export class ClassroomService {
     });
 
     if (!(codeSearch || mossId || openaiApiKey)) {
-      return {length: result.upsertedCount, tokens: 0, estimatedCost: 0};
+      return {length: result.upsertedCount};
     }
 
     const files = await Promise.all(repositories.map(async (repo, i) => {
@@ -226,23 +225,14 @@ export class ClassroomService {
       }
     }));
 
-    return {length: result.upsertedCount, ...await this.processFiles(assignment, files)};
+    await this.processFiles(assignment, files);
+    return {length: result.upsertedCount};
   }
 
   private async processFiles(assignment: AssignmentDocument, files: File[][]) {
-    const {openaiApiKey, mossId} = assignment.classroom!;
+    const {mossId} = assignment.classroom!;
 
-    let tokens = 0;
-    let estimatedCost = 0;
-
-    const filesFlat = openaiApiKey || mossId ? files.flat() : [];
-    if (openaiApiKey) {
-      tokens = this.openaiService.countTokens(filesFlat);
-      estimatedCost = this.openaiService.estimateCost(tokens);
-    }
-    mossId && this.mossService.moss(assignment, filesFlat);
-
-    return {tokens, estimatedCost};
+    mossId && this.mossService.moss(assignment, files.flat());
   }
 
   private getQuery(assignment: AssignmentDocument): string {
