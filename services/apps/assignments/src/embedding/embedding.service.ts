@@ -1,8 +1,9 @@
-import {HttpException, Injectable, OnModuleInit} from '@nestjs/common';
+import {Injectable, OnModuleInit} from '@nestjs/common';
 import {ElasticsearchService} from "@nestjs/elasticsearch";
 import {SearchService} from "../search/search.service";
 import {Embeddable, EmbeddableSearch} from "./embedding.dto";
 import {OpenAIService} from "../classroom/openai.service";
+import {QueryDslQueryContainer} from "@elastic/elasticsearch/lib/api/types";
 
 @Injectable()
 export class EmbeddingService implements OnModuleInit {
@@ -15,13 +16,33 @@ export class EmbeddingService implements OnModuleInit {
 
   async onModuleInit(): Promise<any> {
     await this.searchService.ensureIndex('embeddings', {
+      assignment: {
+        type: 'text',
+        fields: {keyword: {type: 'keyword', ignore_above: 256}}
+      },
       embedding: {
         type: 'dense_vector',
         dims: 1536,
         index: true,
-        similarity: 'cosine',
+        similarity: 'cosine'
       },
-    }, {});
+      id: {
+        type: 'text',
+        fields: {keyword: {type: 'keyword', ignore_above: 256}}
+      },
+      task: {
+        type: 'text',
+        fields: {keyword: {type: 'keyword', ignore_above: 256}}
+      },
+      text: {
+        type: 'text',
+        fields: {keyword: {type: 'keyword', ignore_above: 256}}
+      },
+      type: {
+        type: 'text',
+        fields: {keyword: {type: 'keyword', ignore_above: 256}}
+      }
+    }, undefined);
   }
 
   async upsert(emb: Embeddable, apiKey: string): Promise<Embeddable> {
@@ -37,8 +58,8 @@ export class EmbeddingService implements OnModuleInit {
     const result = await this.elasticsearchService.get<Embeddable>({
       index: 'embeddings',
       id,
-    });
-    return result.found ? result._source : undefined;
+    }).catch(() => undefined);
+    return result?.found ? result._source : undefined;
   }
 
   private async index(emb: Embeddable): Promise<Embeddable> {
@@ -51,26 +72,49 @@ export class EmbeddingService implements OnModuleInit {
   }
 
   async getNearest({embedding, ...keyword}: EmbeddableSearch): Promise<(Embeddable & { _score: number })[]> {
-    const response = await this.elasticsearchService.search<Embeddable>({
-      index: 'embeddings',
-      query: embedding ? {
-        knn: {
-          field: 'embedding',
-          query_vector: embedding,
-          k: 10,
-          num_candidates: 100,
-          filter: {
-            keyword,
+    const filter: QueryDslQueryContainer = {
+      bool: {
+        must: Object.entries(keyword).map(([key, value]) => ({
+          term: {
+            [key]: value,
           },
-        },
-      } as any : {
-        query: {
-          filter: {
-            keyword,
+        })),
+      },
+    };
+    const response = await this.elasticsearchService.search<Embeddable>(embedding ? {
+      index: 'embeddings',
+      knn: {
+        field: 'embedding',
+        query_vector: embedding,
+        k: 10,
+        num_candidates: 100,
+        filter,
+      },
+    } : {
+      index: 'embeddings',
+      query: filter,
+    });
+    return response.hits.hits.map(({_score, _source}) => ({...(_source as Embeddable), _score: _score || 0}));
+  }
+
+  async deleteNotIn(assignment: string, tasks: string[]): Promise<number> {
+    const body = await this.elasticsearchService.deleteByQuery({
+      index: 'embeddings',
+      query: {
+        bool: {
+          must: {
+            term: {
+              assignment,
+            },
+          },
+          must_not: {
+            terms: {
+              task: tasks,
+            },
           },
         },
       },
     });
-    return response.hits.hits.map(({_score, _source}) => ({...(_source as Embeddable), _score: _score || 0}));
+    return body.deleted || 0;
   }
 }

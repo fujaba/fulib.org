@@ -39,7 +39,8 @@ export class OpenAIService implements OnModuleDestroy {
     const result = await api.createEmbedding({
       model: model,
       input: text,
-    })
+    });
+    // console.log('Used', result.data.usage.total_tokens, 'tokens');
     return result.data.data[0].embedding;
   }
 }

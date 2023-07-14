@@ -6,6 +6,7 @@ import {ClassroomModule} from "../classroom/classroom.module";
 import {ElasticsearchModule} from "@nestjs/elasticsearch";
 import {environment} from "../environment";
 import {AssignmentModule} from "../assignment/assignment.module";
+import {EmbeddingHandler} from "./embedding.handler";
 
 @Module({
   imports: [
@@ -14,8 +15,8 @@ import {AssignmentModule} from "../assignment/assignment.module";
     ClassroomModule,
     AssignmentModule,
   ],
-  providers: [EmbeddingService],
-  controllers: [EmbeddingController]
+  providers: [EmbeddingService, EmbeddingHandler],
+  controllers: [EmbeddingController],
 })
 export class EmbeddingModule {
 }
