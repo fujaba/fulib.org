@@ -19,7 +19,7 @@ export class OpenAIService implements OnModuleDestroy {
   countTokens(files: File[]): number {
     let total = 0;
     for (let file of files) {
-      if (!this.allowedExtensions.some(ext => file.name.endsWith(ext))) {
+      if (!this.isSupportedExtension(file.name)) {
         continue;
       }
 
@@ -27,6 +27,10 @@ export class OpenAIService implements OnModuleDestroy {
       total += tokens;
     }
     return total;
+  }
+
+  isSupportedExtension(filename: string) {
+    return this.allowedExtensions.some(ext => filename.endsWith(ext));
   }
 
   estimateCost(tokens: number): number {

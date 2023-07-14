@@ -90,20 +90,22 @@ export class EmbeddingService implements OnModuleInit {
 
   async createEmbeddings(assignment: string, apiKey: string) {
     const documents = await this.searchService.findAll(assignment);
-    await Promise.all(documents.map(async d =>
-      Promise.all(this.getFunctions(d.content).map(async ({line, name, text}) =>
-        this.upsert({
-          id: `${d.solution}-${d.file}-${line}-${name}`,
-          assignment,
-          type: 'snippet',
-          solution: d.solution,
-          file: d.file,
-          line,
-          text,
-          embedding: [],
-        }, apiKey),
-      )),
-    ));
+    await Promise.all(documents
+      .filter(d => this.openaiService.isSupportedExtension(d.file))
+      .map(async d =>
+        Promise.all(this.getFunctions(d.content).map(async ({line, name, text}) =>
+          this.upsert({
+            id: `${d.solution}-${d.file}-${line}-${name}`,
+            assignment,
+            type: 'snippet',
+            solution: d.solution,
+            file: d.file,
+            line,
+            text,
+            embedding: [],
+          }, apiKey),
+        )),
+      ));
   }
 
   async upsert(emb: Embeddable, apiKey: string): Promise<Embeddable> {
