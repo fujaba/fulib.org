@@ -151,9 +151,11 @@ export class EmbeddingService implements OnModuleInit {
         num_candidates: 100,
         filter,
       },
+      _source_excludes: ['embedding'],
     } : {
       index: 'embeddings',
       query: filter,
+      _source_excludes: ['embedding'],
     });
     return response.hits.hits.map(({_score, _source}) => ({...(_source as Embeddable), _score: _score || 0}));
   }
