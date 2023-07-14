@@ -15,6 +15,7 @@ import {
   Evaluation,
   FilterEvaluationParams,
   RemarkDto,
+  Snippet,
   UpdateEvaluationDto,
 } from '../model/evaluation';
 
@@ -301,6 +302,21 @@ export class SolutionService {
     this.addAssignmentToken(headers, assignment);
     const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/assignee`;
     return assignee ? this.http.put<Assignee>(url, {assignee}, {headers}) : this.http.delete<Assignee>(url, {headers});
+  }
+
+  getEmbeddingSnippets(assignment: string, solution: string, task: string): Observable<Snippet[]> {
+    const headers = {};
+    this.addAssignmentToken(headers, assignment);
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/embeddings`;
+    return this.http.get<any[]>(url, {headers, params: {task}}).pipe(
+      map(embeddings => embeddings.map(({file, line, text, _score}) => ({
+        file,
+        from: {line, character: 0},
+        to: {line, character: 0},
+        comment: `${(_score * 100).toFixed(2)}% match`,
+        code: text,
+      }))),
+    );
   }
 
   private addAssignmentToken(headers: any, assignmentID: string) {

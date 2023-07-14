@@ -45,6 +45,8 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
   snippetUpdates$ = new Subject<Snippet>();
   searchSummary?: SearchSummary & { level: string, message?: string, code: string };
 
+  embeddingSnippets: Snippet[] = [];
+
   subscriptions = new Subscription();
 
   constructor(
@@ -102,6 +104,10 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     this.route.params.pipe(
       switchMap(({aid, task}) => this.solutionService.getEvaluationValues<string>(aid, 'snippets.comment', {task})),
     ).subscribe(comments => this.comments = comments);
+
+    this.route.params.pipe(
+      switchMap(({aid, sid, task}) => this.solutionService.getEmbeddingSnippets(aid, sid, task)),
+    ).subscribe(snippets => this.embeddingSnippets = snippets);
 
     const selection$ = this.route.params.pipe(
       switchMap(({aid, sid}) => this.selectionService.stream(aid, sid)),
