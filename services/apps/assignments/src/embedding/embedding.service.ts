@@ -26,7 +26,16 @@ export class EmbeddingService implements OnModuleInit {
         index: true,
         similarity: 'cosine'
       },
+      file: {
+        type: 'text',
+        fields: {keyword: {type: 'keyword', ignore_above: 256}}
+      },
       id: {
+        type: 'text',
+        fields: {keyword: {type: 'keyword', ignore_above: 256}}
+      },
+      line: {type: 'long'},
+      solution: {
         type: 'text',
         fields: {keyword: {type: 'keyword', ignore_above: 256}}
       },
@@ -92,9 +101,9 @@ export class EmbeddingService implements OnModuleInit {
     const documents = await this.searchService.findAll(assignment);
     await Promise.all(documents
       .filter(d => this.openaiService.isSupportedExtension(d.file))
-      .map(async d =>
-        Promise.all(this.getFunctions(d.content).map(async ({line, name, text}) =>
-          this.upsert({
+      .map(async d => {
+        return Promise.all(this.getFunctions(d.content).map(async ({line, name, text}) => {
+          return this.upsert({
             id: `${d.solution}-${d.file}-${line}-${name}`,
             assignment,
             type: 'snippet',
@@ -103,9 +112,9 @@ export class EmbeddingService implements OnModuleInit {
             line,
             text,
             embedding: [],
-          }, apiKey),
-        )),
-      ));
+          }, apiKey);
+        }));
+      }));
   }
 
   async upsert(emb: Embeddable, apiKey: string): Promise<Embeddable> {

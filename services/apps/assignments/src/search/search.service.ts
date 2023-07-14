@@ -39,11 +39,23 @@ export class SearchService implements OnModuleInit {
   async onModuleInit() {
     try {
       await this.ensureIndex('files', {
+        assignment: {
+          type: 'text',
+          fields: {keyword: {type: 'keyword', ignore_above: 256}}
+        },
         content: {
           type: 'text',
           analyzer: 'code',
           term_vector: 'with_positions_offsets',
         },
+        file: {
+          type: 'text',
+          fields: {keyword: {type: 'keyword', ignore_above: 256}}
+        },
+        solution: {
+          type: 'text',
+          fields: {keyword: {type: 'keyword', ignore_above: 256}}
+        }
       }, {
         analyzer: {
           code: {
