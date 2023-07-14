@@ -218,6 +218,22 @@ export class SearchService implements OnModuleInit {
     return {uniqueId, result, tokens};
   }
 
+  async findAll(assignment: string): Promise<FileDocument[]> {
+    const result = await this.elasticsearchService.search<FileDocument>({
+      index: 'files',
+      size: 10000,
+      _source: true,
+      query: {
+        bool: {
+          filter: {
+            term: {assignment},
+          },
+        },
+      },
+    });
+    return result.hits.hits.map(h => h._source!);
+  }
+
   async deleteAll(assignment: string, solution?: string): Promise<number> {
     const result = await this.elasticsearchService.deleteByQuery({
       index: 'files',

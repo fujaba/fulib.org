@@ -45,6 +45,11 @@ export class EmbeddingService implements OnModuleInit {
     }, undefined);
   }
 
+  async createEmbeddings(assignment: string) {
+    const documents = await this.searchService.findAll(assignment);
+    console.log(documents.length, documents[0]);
+  }
+
   async upsert(emb: Embeddable, apiKey: string): Promise<Embeddable> {
     const existing = await this.find(emb.id);
     if (existing && existing.text === emb.text) {
