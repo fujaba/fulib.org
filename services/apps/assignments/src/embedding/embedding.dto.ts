@@ -1,6 +1,16 @@
 import {ApiProperty} from "@nestjs/swagger";
 import {ArrayMaxSize, ArrayMinSize, IsIn, IsInt, IsMongoId, IsNumber, IsString} from "class-validator";
 
+export class EmbeddingEstimate {
+  @ApiProperty()
+  @IsInt()
+  tokens: number;
+
+  @ApiProperty()
+  @IsNumber({maxDecimalPlaces: 2})
+  estimatedCost: number;
+}
+
 export class EmbeddableBase {
   @ApiProperty()
   id: string;

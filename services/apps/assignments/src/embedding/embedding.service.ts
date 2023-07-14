@@ -1,7 +1,7 @@
 import {Injectable, OnModuleInit} from '@nestjs/common';
 import {ElasticsearchService} from "@nestjs/elasticsearch";
 import {SearchService} from "../search/search.service";
-import {Embeddable, EmbeddableSearch} from "./embedding.dto";
+import {Embeddable, EmbeddableSearch, EmbeddingEstimate} from "./embedding.dto";
 import {OpenAIService} from "../classroom/openai.service";
 import {QueryDslQueryContainer} from "@elastic/elasticsearch/lib/api/types";
 
@@ -43,6 +43,20 @@ export class EmbeddingService implements OnModuleInit {
         fields: {keyword: {type: 'keyword', ignore_above: 256}}
       }
     }, undefined);
+  }
+
+  async estimateEmbeddings(assignment: string): Promise<EmbeddingEstimate> {
+    const documents = await this.searchService.findAll(assignment);
+    const tokens = this.openaiService.countTokens(documents.map(d => ({
+      name: d.file,
+      content: d.content,
+      size: d.content.length
+    })));
+    const estimatedCost = this.openaiService.estimateCost(tokens);
+    return {
+      tokens,
+      estimatedCost,
+    };
   }
 
   async createEmbeddings(assignment: string) {
