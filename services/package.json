@@ -21,7 +21,7 @@
     "test:e2e": "jest --config ./apps/services/test/jest-e2e.json"
   },
   "dependencies": {
-    "@elastic/elasticsearch": "~7.13.0",
+    "@elastic/elasticsearch": "^8.8.1",
     "@mean-stream/nestx": "^0.6.1",
     "@nestjs/axios": "^2.0.0",
     "@nestjs/common": "^9.4.3",
