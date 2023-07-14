@@ -20,7 +20,7 @@ export class EmbeddingHandler {
 
     const taskIds = new Set<string>();
     const assignmentId = assignment._id.toString();
-    this.upsertTasks(apiKey, assignmentId, assignment.tasks, taskIds);
+    this.upsertTasks(apiKey, assignmentId, assignment.tasks, '', taskIds);
     const deleted = await this.embeddingService.deleteNotIn(assignmentId, [...taskIds]);
     // console.log('Deleted', deleted, 'embeddings');
   }
@@ -31,21 +31,21 @@ export class EmbeddingHandler {
     // console.log('Deleted', deleted, 'embeddings');
   }
 
-  private upsertTasks(apiKey: string, assignment: string, tasks: Task[], taskIds: Set<string>) {
+  private upsertTasks(apiKey: string, assignment: string, tasks: Task[], prefix: string, taskIds: Set<string>) {
     for (const task of tasks) {
       taskIds.add(task._id);
-      this.upsertTask(apiKey, assignment, task);
-      this.upsertTasks(apiKey, assignment, task.children, taskIds);
+      this.upsertTask(apiKey, assignment, task, prefix);
+      this.upsertTasks(apiKey, assignment, task.children, `${prefix}${task.description} > `, taskIds);
     }
   }
 
-  private upsertTask(apiKey: string, assignment: string, task: Task) {
+  private upsertTask(apiKey: string, assignment: string, task: Task, prefix: string) {
     return this.embeddingService.upsert({
       id: task._id,
       assignment,
       type: 'task',
       task: task._id,
-      text: task.description,
+      text: prefix + task.description,
       embedding: [],
     }, apiKey);
   }
