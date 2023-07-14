@@ -314,7 +314,7 @@ export class SolutionService {
         from: {line, character: 0},
         to: {line, character: 0},
         comment: `${(_score * 100).toFixed(2)}% match`,
-        code: text,
+        code: text.substring(text.indexOf('\n') + 2),
       }))),
     );
   }

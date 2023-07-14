@@ -110,7 +110,7 @@ export class EmbeddingService implements OnModuleInit {
             solution: d.solution,
             file: d.file,
             line,
-            text,
+            text: `${d.file}\n\n${text}`,
             embedding: [],
           }, apiKey);
         }));
