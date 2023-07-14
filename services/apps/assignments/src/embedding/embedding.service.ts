@@ -34,34 +34,26 @@ export class EmbeddingService implements OnModuleInit {
   }
 
   async find(id: string): Promise<Embeddable | undefined> {
-    const {statusCode, body} = await this.elasticsearchService.get({
+    const result = await this.elasticsearchService.get<Embeddable>({
       index: 'embeddings',
       id,
     });
-    if (!statusCode) {
-      return undefined;
-    }
-    if (statusCode === 404) {
-      return undefined;
-    }
-    if (statusCode === 200) {
-      return body as Embeddable;
-    }
-    throw new HttpException(body, statusCode);
+    return result.found ? result._source : undefined;
   }
 
   private async index(emb: Embeddable): Promise<Embeddable> {
-    return (await this.elasticsearchService.index({
+    await this.elasticsearchService.index({
       index: 'embeddings',
       id: emb.id,
-      body: emb,
-    })).body as Embeddable;
+      document: emb,
+    });
+    return emb;
   }
 
   async getNearest({embedding, ...keyword}: EmbeddableSearch): Promise<(Embeddable & { _score: number })[]> {
-    return (await this.elasticsearchService.search({
+    const response = await this.elasticsearchService.search<Embeddable>({
       index: 'embeddings',
-      body: embedding ? {
+      query: embedding ? {
         knn: {
           field: 'embedding',
           query_vector: embedding,
@@ -71,13 +63,14 @@ export class EmbeddingService implements OnModuleInit {
             keyword,
           },
         },
-      } : {
+      } as any : {
         query: {
           filter: {
             keyword,
           },
         },
       },
-    })).body.hits;
+    });
+    return response.hits.hits.map(({_score, _source}) => ({...(_source as Embeddable), _score: _score || 0}));
   }
 }

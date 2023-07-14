@@ -1,4 +1,4 @@
-import {Hit, QueryContainer, SpanNearQuery, SpanQuery} from '@elastic/elasticsearch/api/types';
+import {estypes} from '@elastic/elasticsearch';
 import {BadRequestException, Injectable, Logger, OnModuleInit} from '@nestjs/common';
 import {ElasticsearchService} from '@nestjs/elasticsearch';
 import {randomUUID} from 'crypto';
@@ -14,7 +14,7 @@ export interface FileDocument {
 }
 
 interface QueryPlan {
-  query: QueryContainer;
+  query: estypes.QueryDslQueryContainer;
   tokens: number;
   highlighter: 'fvh' | 'unified';
 }
@@ -153,15 +153,17 @@ export class SearchService implements OnModuleInit {
   async findSummary(assignment: string, params: SearchParams): Promise<SearchSummary> {
     const {uniqueId, result, tokens} = await this._search(assignment, params, ['solution']);
     const pattern = this.createPattern(uniqueId);
-    const hitsContainer = result.body.hits;
+    const hitsContainer = result.hits;
     const solutions = new Set(hitsContainer.hits.map((h: any) => h.fields.solution[0])).size;
-    const files = hitsContainer.total.value;
+    const files = typeof hitsContainer.total === 'number' ? hitsContainer.total : hitsContainer.total?.value || 0;
     let hits = 0;
     for (const hit of hitsContainer.hits) {
-      const content: string = hit.highlight.content[0];
       let occurrences = 0;
-      for (const {} of content.matchAll(pattern)) {
-        occurrences++;
+      const content = hit.highlight?.content[0];
+      if (content) {
+        for (const {} of content.matchAll(pattern)) {
+          occurrences++;
+        }
       }
       hits += occurrences / tokens;
     }
@@ -171,7 +173,7 @@ export class SearchService implements OnModuleInit {
   async find(assignment: string, params: SearchParams): Promise<SearchResult[]> {
     const {uniqueId, result, tokens} = await this._search(assignment, params);
     const grouped = new Map<string, SearchResult>();
-    for (const hit of result.body.hits.hits) {
+    for (const hit of result.hits.hits) {
       const result = this._convertHit(hit, uniqueId, params.context, tokens);
       const existing = grouped.get(result.solution);
       if (existing) {
@@ -191,7 +193,7 @@ export class SearchService implements OnModuleInit {
     const uniqueId = randomUUID();
     const regex = glob && this.glob2RegExp(glob);
     const {tokens, highlighter, query} = this._createQuery(snippet, wildcard);
-    const result = await this.elasticsearchService.search({
+    const result = await this.elasticsearchService.search<FileDocument>({
       index: 'files',
       body: {
         size: 10000,
@@ -234,7 +236,7 @@ export class SearchService implements OnModuleInit {
         },
       },
     });
-    return result.body.deleted;
+    return result.deleted || 0;
   }
 
   private glob2RegExp(glob: string): string {
@@ -255,7 +257,7 @@ export class SearchService implements OnModuleInit {
     });
   }
 
-  _convertHit(hit: Hit<FileDocument>, uniqueId: string, contextLines?: number, tokens = 1): SearchResult {
+  _convertHit(hit: estypes.SearchHit<FileDocument>, uniqueId: string, contextLines?: number, tokens = 1): SearchResult {
     const {assignment, solution, file, content} = hit._source!;
     const lineStartIndices = this._buildLineStartList(content);
     if (!hit.highlight) {
@@ -343,7 +345,7 @@ export class SearchService implements OnModuleInit {
     }
 
     let tokenCount = 0;
-    const clauses: SpanQuery[] = split.map(part => {
+    const clauses: estypes.QueryDslSpanQuery[] = split.map(part => {
       const tokens = [...part.matchAll(TOKEN_PATTERN)];
       tokenCount += tokens.length;
       if (tokens.length === 1) {
@@ -354,7 +356,7 @@ export class SearchService implements OnModuleInit {
         };
       }
 
-      const span_near: SpanNearQuery = {
+      const span_near: estypes.QueryDslSpanNearQuery = {
         in_order: true,
         slop: 0,
         clauses: tokens.map(([token]) => ({
