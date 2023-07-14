@@ -84,13 +84,11 @@ export class SearchService implements OnModuleInit {
 
       // transfer data from old index to new index
       await this.elasticsearchService.reindex({
-        body: {
-          source: {
-            index: oldName,
-          },
-          dest: {
-            index: newName,
-          },
+        source: {
+          index: oldName,
+        },
+        dest: {
+          index: newName,
         },
       }, {
         requestTimeout: '600s',
@@ -98,18 +96,16 @@ export class SearchService implements OnModuleInit {
 
       // add alias from name to newName
       await this.elasticsearchService.indices.updateAliases({
-        body: {
-          actions: [
-            {remove_index: {index: oldName}},
-            {add: {index: newName, alias: name}},
-          ],
-        },
+        actions: [
+          {remove_index: {index: oldName}},
+          {add: {index: newName, alias: name}},
+        ],
       });
 
       // delete old index
       await this.elasticsearchService.indices.delete({
         index: oldName,
-      });
+      }).catch(() => null);
     } else {
       this.logger.log(`Creating ${name} index: ${newName}`);
       await this.createIndex(newName, properties, analysis);
