@@ -25,6 +25,12 @@ export class EmbeddingHandler {
     // console.log('Deleted', deleted, 'embeddings');
   }
 
+  @OnEvent('assignment.*.deleted')
+  async onAssignmentDeleted(assignment: AssignmentDocument) {
+    const deleted = await this.embeddingService.deleteNotIn(assignment._id.toString(), []);
+    // console.log('Deleted', deleted, 'embeddings');
+  }
+
   private upsertTasks(apiKey: string, assignment: string, tasks: Task[], taskIds: Set<string>) {
     for (const task of tasks) {
       taskIds.add(task._id);
