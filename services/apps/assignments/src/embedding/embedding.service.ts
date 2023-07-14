@@ -1,9 +1,11 @@
 import {Injectable, OnModuleInit} from '@nestjs/common';
 import {ElasticsearchService} from "@nestjs/elasticsearch";
 import {SearchService} from "../search/search.service";
-import {Embeddable, EmbeddableSearch, EmbeddingEstimate} from "./embedding.dto";
+import {Embeddable, EmbeddableSearch, EmbeddingEstimate, SnippetEmbeddable} from "./embedding.dto";
 import {OpenAIService} from "../classroom/openai.service";
 import {QueryDslQueryContainer} from "@elastic/elasticsearch/lib/api/types";
+
+type DeclarationSnippet = Pick<SnippetEmbeddable, 'text' | 'line'> & { name: string };
 
 @Injectable()
 export class EmbeddingService implements OnModuleInit {
@@ -68,29 +70,14 @@ export class EmbeddingService implements OnModuleInit {
     };
   }
 
-  private findClosingBrace(code: string, start: number): number {
-    let depth = 1;
-    for (let i = start; i < code.length; i++) {
-      if (code[i] === '{') {
-        depth++;
-      } else if (code[i] === '}') {
-        depth--;
-        if (depth === 0) {
-          return i;
-        }
-      }
-    }
-    return -1;
-  }
-
-  getFunctions(file: string): { text: string; line: number; name: string }[] {
-    const results: { text: string; line: number; name: string }[] = [];
+  getFunctions(file: string, headPattern: RegExp, findEnd: (code: string, headStart: number, headEnd: number) => number): DeclarationSnippet[] {
+    const results: DeclarationSnippet[] = [];
     const lineStarts = this.searchService._buildLineStartList(file);
-    for (const match of file.matchAll(/([a-zA-Z0-9_]+)\([^)]*\)\s*\{/gi)) {
+    for (const match of file.matchAll(headPattern)) {
       const name = match[1];
       const start = match.index!;
       const {line, character: column} = this.searchService._findLocation(lineStarts, start);
-      const end = this.findClosingBrace(file, start + match[0].length);
+      const end = findEnd(file, start, start + match[0].length);
       const text = file.substring(start - column, end + 1);
       results.push({line, name, text});
     }
@@ -102,7 +89,11 @@ export class EmbeddingService implements OnModuleInit {
     await Promise.all(documents
       .filter(d => this.openaiService.isSupportedExtension(d.file))
       .map(async d => {
-        return Promise.all(this.getFunctions(d.content).map(async ({line, name, text}) => {
+        const functions = d.file.endsWith('.py')
+          ? this.getFunctions(d.content, /(async\s*)?def ([a-zA-Z0-9_]+)\([^)]*\)\s*:/gi, findIndentEnd)
+          : this.getFunctions(d.content, /([a-zA-Z0-9_]+)\([^)]*\)\s*\{/gi, findClosingBrace)
+        ;
+        return Promise.all(functions.map(async ({line, name, text}) => {
           return this.upsert({
             id: `${d.solution}-${d.file}-${line}-${name}`,
             assignment,
@@ -190,5 +181,40 @@ export class EmbeddingService implements OnModuleInit {
       },
     });
     return body.deleted || 0;
+  }
+}
+
+export function findClosingBrace(code: string, headStart: number, headEnd: number): number {
+  let depth = 1;
+  for (let i = headEnd; i < code.length; i++) {
+    if (code[i] === '{') {
+      depth++;
+    } else if (code[i] === '}') {
+      depth--;
+      if (depth === 0) {
+        return i;
+      }
+    }
+  }
+  return -1;
+}
+
+export function findIndentEnd(code: string, headStart: number, headEnd: number): number {
+  const firstLineStart = code.indexOf('\n', headEnd) + 1;
+  let bodyIndentEnd = firstLineStart;
+  while (bodyIndentEnd < code.length && code[bodyIndentEnd] === ' ' || code[bodyIndentEnd] === '\t') {
+    bodyIndentEnd++;
+  }
+
+  const bodyIndent = code.substring(firstLineStart, bodyIndentEnd);
+  let currentIndex = firstLineStart;
+  while (true) {
+    const nextLineIndex = (code.indexOf('\n', currentIndex) + 1) || code.length
+    const currentLine = code.substring(currentIndex, nextLineIndex);
+    if (currentLine.startsWith(bodyIndent)) {
+      currentIndex = nextLineIndex;
+    } else {
+      return currentIndex;
+    }
   }
 }
