@@ -85,7 +85,7 @@ export class AssignmentService {
       token,
       createdBy: userId,
     });
-    created && this.emit('created', created.id, created);
+    created && this.emit('created', created);
     return created;
   }
 
@@ -126,13 +126,13 @@ export class AssignmentService {
       }
     }
     const updated = await this.model.findOneAndUpdate(idFilter(id), update, {new: true}).exec();
-    updated && this.emit('updated', id, updated);
+    updated && this.emit('updated', updated);
     return updated;
   }
 
   async remove(id: string): Promise<AssignmentDocument | null> {
     const deleted = await this.model.findOneAndDelete(idFilter(id)).exec();
-    deleted && this.emit('deleted', id, deleted);
+    deleted && this.emit('deleted', deleted);
     return deleted;
   }
 
@@ -140,8 +140,8 @@ export class AssignmentService {
     return assignment.token === token || !!user && user.sub === assignment.createdBy;
   }
 
-  private emit(event: string, id: string, assignment: Assignment) {
+  private emit(event: string, assignment: AssignmentDocument) {
     const users = [assignment.token, assignment.createdBy].filter((i): i is string => !!i);
-    this.eventService.emit(`assignment.${id}.${event}`, {event, data: assignment, users});
+    this.eventService.emit(`assignment.${assignment._id}.${event}`, assignment, users);
   }
 }
