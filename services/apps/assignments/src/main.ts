@@ -1,4 +1,4 @@
-import {ValidationPipe} from '@nestjs/common';
+import {Logger, ValidationPipe} from '@nestjs/common';
 import {NestFactory} from '@nestjs/core';
 import {Transport} from '@nestjs/microservices';
 import {DocumentBuilder, SwaggerModule} from '@nestjs/swagger';
@@ -39,6 +39,7 @@ async function bootstrap() {
 
   await app.startAllMicroservices();
   await app.listen(environment.port);
+  new Logger().log(`🚀 Assignment Service running at http://localhost:${environment.port}${prefix}`);
 }
 
 bootstrap();
