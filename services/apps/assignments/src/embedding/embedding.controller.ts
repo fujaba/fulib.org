@@ -1,5 +1,5 @@
 import {Controller, Get, Param, Post, Query} from '@nestjs/common';
-import {ApiExtraModels, ApiOkResponse, ApiTags, refs} from "@nestjs/swagger";
+import {ApiCreatedResponse, ApiExtraModels, ApiOkResponse, ApiTags, refs} from "@nestjs/swagger";
 import {AssignmentAuth} from "../assignment/assignment-auth.decorator";
 import {Embeddable, EmbeddingEstimate, SnippetEmbeddable, TaskEmbeddable} from "./embedding.dto";
 import {EmbeddingService} from "./embedding.service";
@@ -16,6 +16,7 @@ export class EmbeddingController {
   }
 
   @Get('embeddings')
+  @ApiOkResponse({type: EmbeddingEstimate})
   @AssignmentAuth({forbiddenResponse: 'You are not allowed to estimate embeddings.'})
   async estimateEmbeddings(
     @Param('assignment') assignment: string,
@@ -24,13 +25,17 @@ export class EmbeddingController {
   }
 
   @Post('embeddings')
+  @ApiCreatedResponse({type: EmbeddingEstimate})
   @AssignmentAuth({forbiddenResponse: 'You are not allowed to create embeddings.'})
   async createEmbeddings(
     @Param('assignment') assignmentId: string,
-  ): Promise<void> {
+  ): Promise<EmbeddingEstimate> {
     const assignment = await this.assignmentService.findOne(assignmentId) || notFound(assignmentId);
     const apiKey = assignment.classroom?.openaiApiKey;
-    apiKey && await this.embeddingService.createEmbeddings(assignmentId, apiKey);
+    if (apiKey) {
+      return this.embeddingService.createEmbeddings(assignmentId, apiKey);
+    }
+    return {tokens: 0, estimatedCost: 0};
   }
 
   @Get('solutions/:solution/embeddings')

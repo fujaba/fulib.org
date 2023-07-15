@@ -84,17 +84,17 @@ export class EmbeddingService implements OnModuleInit {
     return results;
   }
 
-  async createEmbeddings(assignment: string, apiKey: string) {
+  async createEmbeddings(assignment: string, apiKey: string): Promise<EmbeddingEstimate> {
     const documents = await this.searchService.findAll(assignment);
-    await Promise.all(documents
+    const results = await Promise.all(documents
       .filter(d => this.openaiService.isSupportedExtension(d.file))
       .map(async d => {
         const functions = d.file.endsWith('.py')
           ? this.getFunctions(d.content, /(async\s*)?def ([a-zA-Z0-9_]+)\([^)]*\)\s*:/gi, findIndentEnd)
           : this.getFunctions(d.content, /([a-zA-Z0-9_]+)\([^)]*\)\s*\{/gi, findClosingBrace)
         ;
-        return Promise.all(functions.map(async ({line, name, text}) => {
-          return this.upsert({
+        const fileTotal = await Promise.all(functions.map(async ({line, name, text}) => {
+          const {tokens} = await this.upsert({
             id: `${d.solution}-${d.file}-${line}-${name}`,
             assignment,
             type: 'snippet',
@@ -104,17 +104,24 @@ export class EmbeddingService implements OnModuleInit {
             text: `${d.file}\n\n${text}`,
             embedding: [],
           }, apiKey);
+          return tokens;
         }));
+        return fileTotal.reduce((a, b) => a + b, 0);
       }));
+    const tokens = results.reduce((a, b) => a + b, 0);
+    const estimatedCost = this.openaiService.estimateCost(tokens);
+    return {tokens, estimatedCost};
   }
 
-  async upsert(emb: Embeddable, apiKey: string): Promise<Embeddable> {
-    const existing = await this.find(emb.id);
-    if (existing && existing.text === emb.text) {
-      return existing;
+  async upsert(embeddable: Embeddable, apiKey: string): Promise<{ embeddable: Embeddable, tokens: number }> {
+    const existing = await this.find(embeddable.id);
+    if (existing && existing.text === embeddable.text) {
+      return {embeddable: existing, tokens: 0};
     }
-    emb.embedding = await this.openaiService.getEmbedding(emb.text, apiKey);
-    return this.index(emb);
+    const {embedding, tokens} = await this.openaiService.getEmbedding(embeddable.text, apiKey);
+    embeddable.embedding = embedding;
+    await this.index(embeddable);
+    return {embeddable, tokens};
   }
 
   async find(id: string): Promise<Embeddable | undefined> {

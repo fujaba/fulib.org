@@ -38,13 +38,12 @@ export class OpenAIService implements OnModuleDestroy {
     return tokens * 0.0000004;
   }
 
-  async getEmbedding(text: string, apiKey: string): Promise<number[]> {
+  async getEmbedding(text: string, apiKey: string): Promise<{ tokens: number, embedding: number[] }> {
     const api = new OpenAIApi(new Configuration({apiKey}));
     const result = await api.createEmbedding({
       model: model,
       input: text,
     });
-    // console.log('Used', result.data.usage.total_tokens, 'tokens');
-    return result.data.data[0].embedding;
+    return {tokens: result.data.usage.total_tokens, embedding: result.data.data[0].embedding};
   }
 }
