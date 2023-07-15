@@ -10,7 +10,7 @@ export class MossService {
   ) {
   }
 
-  async moss(assignment: AssignmentDocument, files: File[]) {
+  async moss(assignment: AssignmentDocument, files: File[]): Promise<string> {
     const moss = new MossApi();
     moss.userid = assignment.classroom?.mossId || 0;
     const lang = assignment.classroom?.mossLanguage || 'java';
@@ -19,5 +19,6 @@ export class MossService {
     moss.files = files.filter(file => exts.some(ext => file.name.endsWith(ext)));
     const result = await moss.send();
     await this.assignmentService.update(assignment._id, {'classroom.mossResult': result});
+    return result;
   }
 }
