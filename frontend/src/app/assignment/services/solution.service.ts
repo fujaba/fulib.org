@@ -313,7 +313,8 @@ export class SolutionService {
         file,
         from: {line, character: 0},
         to: {line, character: 0},
-        comment: `${(_score * 100).toFixed(2)}% match`,
+        comment: '',
+        score: _score,
         code: text.substring(text.indexOf('\n') + 2),
       }))),
     );
