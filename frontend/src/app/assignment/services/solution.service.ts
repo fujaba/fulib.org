@@ -15,10 +15,11 @@ import {
   Evaluation,
   FilterEvaluationParams,
   RemarkDto,
+  Snippet,
   UpdateEvaluationDto,
 } from '../model/evaluation';
 
-import Solution, {AuthorInfo} from '../model/solution';
+import Solution, {AuthorInfo, EstimatedCosts, ImportResult} from '../model/solution';
 import {AssignmentService} from './assignment.service';
 import {observeSSE} from './sse-helper';
 
@@ -139,7 +140,7 @@ export class SolutionService {
     );
   }
 
-  import(assignment: string, files?: File[]): Observable<Solution[]> {
+  import(assignment: string, files?: File[]): Observable<ImportResult> {
     const headers = {};
     this.addAssignmentToken(headers, assignment);
     let body;
@@ -150,7 +151,19 @@ export class SolutionService {
       }
       body = data;
     }
-    return this.http.post<Solution[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/import`, body, {headers});
+    return this.http.post<ImportResult>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/import`, body, {headers});
+  }
+
+  estimateCosts(assignment: string): Observable<EstimatedCosts> {
+    const headers = {};
+    this.addAssignmentToken(headers, assignment);
+    return this.http.get<EstimatedCosts>(`${environment.assignmentsApiUrl}/assignments/${assignment}/embeddings`, {headers});
+  }
+
+  importEmbeddings(assignment: string): Observable<EstimatedCosts> {
+    const headers = {};
+    this.addAssignmentToken(headers, assignment);
+    return this.http.post<EstimatedCosts>(`${environment.assignmentsApiUrl}/assignments/${assignment}/embeddings`, {}, {headers});
   }
 
   get(assignment: Assignment | string, id: string): Observable<Solution> {
@@ -301,6 +314,22 @@ export class SolutionService {
     this.addAssignmentToken(headers, assignment);
     const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/assignee`;
     return assignee ? this.http.put<Assignee>(url, {assignee}, {headers}) : this.http.delete<Assignee>(url, {headers});
+  }
+
+  getEmbeddingSnippets(assignment: string, solution: string, task: string): Observable<Snippet[]> {
+    const headers = {};
+    this.addAssignmentToken(headers, assignment);
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/embeddings`;
+    return this.http.get<any[]>(url, {headers, params: {task}}).pipe(
+      map(embeddings => embeddings.map(({file, line, text, _score}) => ({
+        file,
+        from: {line, character: 0},
+        to: {line: line + text.split('\n').length - 2, character: 0},
+        comment: '',
+        score: _score,
+        code: text.substring(text.indexOf('\n') + 2),
+      }))),
+    );
   }
 
   private addAssignmentToken(headers: any, assignmentID: string) {

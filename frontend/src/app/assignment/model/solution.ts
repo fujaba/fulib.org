@@ -25,3 +25,12 @@ export default class Solution {
   timestamp?: Date;
   points?: number;
 }
+
+export interface ImportResult {
+  length: number;
+}
+
+export interface EstimatedCosts {
+  tokens: number;
+  estimatedCost: number;
+}

@@ -68,6 +68,19 @@
       It can be used to find code duplicates across submissions and allows grading multiple students at the same time.
     </div>
   </div>
+  <div class="mb-3" *ngIf="assignment.classroom!.codeSearch">
+    <label class="form-label" for="openaiApiKeyInput">OpenAI API Key</label>
+    <app-masked-input
+      id="openaiApiKeyInput"
+      type="text"
+      [(value)]="assignment.classroom!.openaiApiKey"
+      placeholder="sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+    ></app-masked-input>
+    <div class="form-text">
+      Your OpenAI API key for advanced Code Search. Generate one in the
+      <a href="https://platform.openai.com/account/api-keys" target="_blank">OpenAI API Keys</a>.
+    </div>
+  </div>
   <div class="mb-3">
     <label class="form-label" for="mossCheck">Plagiarism Detection</label>
     <div class="form-check">

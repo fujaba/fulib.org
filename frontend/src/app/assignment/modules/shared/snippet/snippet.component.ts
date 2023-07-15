@@ -1,6 +1,7 @@
 import {Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild} from '@angular/core';
 import hljs from 'highlight.js/lib/core';
 import {Snippet} from '../../../model/evaluation';
+import {ConfigService} from "../../../services/config.service";
 
 @Component({
   selector: 'app-snippet',
@@ -14,15 +15,23 @@ export class SnippetComponent implements OnChanges {
   @Input() expanded = true;
   @Input() wildcard?: string;
   @Output() updated = new EventEmitter<Snippet>();
+  @Output() confirmed = new EventEmitter<Snippet>();
 
   fileType?: string;
   contextLines = 0;
+  openUrl = '';
+
+  constructor(
+    private readonly configService: ConfigService,
+  ) {
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.snippet) {
       const snippet = changes.snippet.currentValue;
       this.fileType = snippet.file.substring(snippet.file.lastIndexOf('.') + 1);
       this.contextLines = snippet.context ? 2 : 0;
+      this.openUrl = `${this.configService.get('ide')}://fulib.fulibfeedback/open?file=${encodeURIComponent(snippet.file)}&line=${snippet.from.line}&endline=${snippet.to.line}`;
     }
     if (changes.expanded) {
       this.setExpanded(changes.expanded.currentValue);

@@ -18,6 +18,7 @@ import {StatisticsModule} from './statistics/statistics.module';
 import {TelemetryModule} from './telemetry/telemetry.module';
 import {SentryInterceptor, SentryModule} from "@ntegral/nestjs-sentry";
 import {APP_INTERCEPTOR} from "@nestjs/core";
+import { EmbeddingModule } from './embedding/embedding.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import {APP_INTERCEPTOR} from "@nestjs/core";
     StatisticsModule,
     SelectionModule,
     TelemetryModule,
+    EmbeddingModule,
   ],
   controllers: [],
   providers: [

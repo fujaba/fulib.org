@@ -1,5 +1,5 @@
-import {Hit, QueryContainer, SpanNearQuery, SpanQuery} from '@elastic/elasticsearch/api/types';
-import {BadRequestException, Injectable, OnModuleInit} from '@nestjs/common';
+import {estypes} from '@elastic/elasticsearch';
+import {BadRequestException, Injectable, Logger, OnModuleInit} from '@nestjs/common';
 import {ElasticsearchService} from '@nestjs/elasticsearch';
 import {randomUUID} from 'crypto';
 import {isDeepStrictEqual} from 'util';
@@ -14,7 +14,7 @@ export interface FileDocument {
 }
 
 interface QueryPlan {
-  query: QueryContainer;
+  query: estypes.QueryDslQueryContainer;
   tokens: number;
   highlighter: 'fvh' | 'unified';
 }
@@ -29,6 +29,8 @@ const TOKEN_PATTERN = new RegExp(Object.values({
 
 @Injectable()
 export class SearchService implements OnModuleInit {
+  private logger = new Logger(SearchService.name);
+
   constructor(
     private elasticsearchService: ElasticsearchService,
   ) {
@@ -36,103 +38,107 @@ export class SearchService implements OnModuleInit {
 
   async onModuleInit() {
     try {
-      await this.initElasticsearch();
+      await this.ensureIndex('files', {
+        assignment: {
+          type: 'text',
+          fields: {keyword: {type: 'keyword', ignore_above: 256}}
+        },
+        content: {
+          type: 'text',
+          analyzer: 'code',
+          term_vector: 'with_positions_offsets',
+        },
+        file: {
+          type: 'text',
+          fields: {keyword: {type: 'keyword', ignore_above: 256}}
+        },
+        solution: {
+          type: 'text',
+          fields: {keyword: {type: 'keyword', ignore_above: 256}}
+        }
+      }, {
+        analyzer: {
+          code: {
+            tokenizer: 'code',
+          },
+        },
+        tokenizer: {
+          code: {
+            type: 'simple_pattern',
+            pattern: TOKEN_PATTERN.source,
+          },
+        },
+      });
     } catch (e) {
-      console.error('Failed to initialize Elasticsearch:', e);
+      this.logger.error('Failed to initialize Elasticsearch:', e);
     }
   }
 
-  async initElasticsearch() {
-    const files = await this.elasticsearchService.indices.get({
-      index: 'files',
+  async ensureIndex(name: string, properties: any, analysis: any) {
+    const existingIndex = await this.elasticsearchService.indices.get({
+      index: name,
     }).catch(() => null);
 
-    const expectedAnalysis = {
-      analyzer: {
-        code: {
-          tokenizer: 'code',
-        },
-      },
-      tokenizer: {
-        code: {
-          type: 'simple_pattern',
-          pattern: TOKEN_PATTERN.source,
-        },
-      },
-    };
+    const newName = `${name}-${Date.now()}`;
 
-    const expectedContent = {
-      type: 'text',
-      analyzer: 'code',
-      term_vector: 'with_positions_offsets',
-    };
+    if (existingIndex) {
+      const {0: oldName, 1: oldData} = Object.entries(existingIndex)[0];
 
-    const newName = 'files-' + Date.now();
-
-    if (files) {
-      const {0: oldName, 1: oldData} = Object.entries(files.body)[0];
-
-      const actualContent = oldData.mappings?.properties?.content;
+      const actualProperties = oldData.mappings?.properties;
       const actualAnalysis = oldData.settings?.index?.analysis;
-      if (isDeepStrictEqual(expectedContent, actualContent) && isDeepStrictEqual(actualAnalysis, expectedAnalysis)) {
+      if (isDeepStrictEqual(properties, actualProperties) && isDeepStrictEqual(actualAnalysis, analysis)) {
         return;
       }
 
-      console.info('Migrating file index:', oldName, '->', newName);
+      this.logger.log(`Migrating ${name} index: ${oldName} -> ${newName}`);
 
-      await this.createIndex(newName, expectedContent, expectedAnalysis);
+      await this.createIndex(newName, properties, analysis);
 
       // transfer data from old index to new index
       await this.elasticsearchService.reindex({
-        body: {
-          source: {
-            index: oldName,
-          },
-          dest: {
-            index: newName,
-          },
+        source: {
+          index: oldName,
+        },
+        dest: {
+          index: newName,
         },
       }, {
         requestTimeout: '600s',
       });
 
-      // add alias from 'files' to newName
+      // add alias from name to newName
       await this.elasticsearchService.indices.updateAliases({
-        body: {
-          actions: [
-            {remove_index: {index: oldName}},
-            {add: {index: newName, alias: 'files'}},
-          ],
-        },
+        actions: [
+          {remove_index: {index: oldName}},
+          {add: {index: newName, alias: name}},
+        ],
       });
 
       // delete old index
       await this.elasticsearchService.indices.delete({
         index: oldName,
-      });
+      }).catch(() => null);
     } else {
-      console.info('Creating file index:', newName);
-      await this.createIndex(newName, expectedContent, expectedAnalysis);
+      this.logger.log(`Creating ${name} index: ${newName}`);
+      await this.createIndex(newName, properties, analysis);
 
-      // add alias 'files' -> newName
+      // add alias name -> newName
       await this.elasticsearchService.indices.putAlias({
-        name: 'files',
+        name,
         index: newName,
       });
     }
   }
 
-  private async createIndex(newName: string, expectedContent: any, expectedAnalysis: any) {
+  private async createIndex(newName: string, properties: any, analysis: any) {
     await this.elasticsearchService.indices.create({
       index: newName,
       body: {
         mappings: {
-          properties: {
-            content: expectedContent,
-          },
+          properties,
         },
         settings: {
-          analysis: expectedAnalysis,
+          analysis,
         },
       },
     });
@@ -155,15 +161,17 @@ export class SearchService implements OnModuleInit {
   async findSummary(assignment: string, params: SearchParams): Promise<SearchSummary> {
     const {uniqueId, result, tokens} = await this._search(assignment, params, ['solution']);
     const pattern = this.createPattern(uniqueId);
-    const hitsContainer = result.body.hits;
+    const hitsContainer = result.hits;
     const solutions = new Set(hitsContainer.hits.map((h: any) => h.fields.solution[0])).size;
-    const files = hitsContainer.total.value;
+    const files = typeof hitsContainer.total === 'number' ? hitsContainer.total : hitsContainer.total?.value || 0;
     let hits = 0;
     for (const hit of hitsContainer.hits) {
-      const content: string = hit.highlight.content[0];
       let occurrences = 0;
-      for (const {} of content.matchAll(pattern)) {
-        occurrences++;
+      const content = hit.highlight?.content[0];
+      if (content) {
+        for (const {} of content.matchAll(pattern)) {
+          occurrences++;
+        }
       }
       hits += occurrences / tokens;
     }
@@ -173,7 +181,7 @@ export class SearchService implements OnModuleInit {
   async find(assignment: string, params: SearchParams): Promise<SearchResult[]> {
     const {uniqueId, result, tokens} = await this._search(assignment, params);
     const grouped = new Map<string, SearchResult>();
-    for (const hit of result.body.hits.hits) {
+    for (const hit of result.hits.hits) {
       const result = this._convertHit(hit, uniqueId, params.context, tokens);
       const existing = grouped.get(result.solution);
       if (existing) {
@@ -193,7 +201,7 @@ export class SearchService implements OnModuleInit {
     const uniqueId = randomUUID();
     const regex = glob && this.glob2RegExp(glob);
     const {tokens, highlighter, query} = this._createQuery(snippet, wildcard);
-    const result = await this.elasticsearchService.search({
+    const result = await this.elasticsearchService.search<FileDocument>({
       index: 'files',
       body: {
         size: 10000,
@@ -222,6 +230,22 @@ export class SearchService implements OnModuleInit {
     return {uniqueId, result, tokens};
   }
 
+  async findAll(assignment: string): Promise<FileDocument[]> {
+    const result = await this.elasticsearchService.search<FileDocument>({
+      index: 'files',
+      size: 10000,
+      _source: true,
+      query: {
+        bool: {
+          filter: {
+            term: {assignment},
+          },
+        },
+      },
+    });
+    return result.hits.hits.map(h => h._source!);
+  }
+
   async deleteAll(assignment: string, solution?: string): Promise<number> {
     const result = await this.elasticsearchService.deleteByQuery({
       index: 'files',
@@ -236,7 +260,7 @@ export class SearchService implements OnModuleInit {
         },
       },
     });
-    return result.body.deleted;
+    return result.deleted || 0;
   }
 
   private glob2RegExp(glob: string): string {
@@ -257,7 +281,7 @@ export class SearchService implements OnModuleInit {
     });
   }
 
-  _convertHit(hit: Hit<FileDocument>, uniqueId: string, contextLines?: number, tokens = 1): SearchResult {
+  _convertHit(hit: estypes.SearchHit<FileDocument>, uniqueId: string, contextLines?: number, tokens = 1): SearchResult {
     const {assignment, solution, file, content} = hit._source!;
     const lineStartIndices = this._buildLineStartList(content);
     if (!hit.highlight) {
@@ -345,7 +369,7 @@ export class SearchService implements OnModuleInit {
     }
 
     let tokenCount = 0;
-    const clauses: SpanQuery[] = split.map(part => {
+    const clauses: estypes.QueryDslSpanQuery[] = split.map(part => {
       const tokens = [...part.matchAll(TOKEN_PATTERN)];
       tokenCount += tokens.length;
       if (tokens.length === 1) {
@@ -356,7 +380,7 @@ export class SearchService implements OnModuleInit {
         };
       }
 
-      const span_near: SpanNearQuery = {
+      const span_near: estypes.QueryDslSpanNearQuery = {
         in_order: true,
         slop: 0,
         clauses: tokens.map(([token]) => ({

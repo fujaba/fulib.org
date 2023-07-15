@@ -1,6 +1,14 @@
 <details #details [open]="expanded" (toggle)="setExpanded(details.open)">
   <summary>
     {{ snippet.file }} lines {{ snippet.from.line - contextLines + 1 }} to {{ snippet.to.line + contextLines + 1 }}:
+    {{ snippet.comment }}
+    <ng-container *ngIf="snippet.score">
+      <span class="text-muted">{{ snippet.score | percent:'0.2' }}</span>
+      &nbsp;
+      <i class="bi bi-check-circle link-success" ngbTooltip="Confirm Suggestion" (click)="confirmed.next(snippet)"></i>
+    </ng-container>
+    &nbsp;
+    <a class="bi bi-code-square" ngbTooltip="Open in Editor" [href]="openUrl | safeUrl"></a>
   </summary>
   <div class="markdown">
     <pre><code #code class="hljs language-{{fileType}}" [lang]="fileType" (mouseup)="onSelectionChange()">{{snippet.context ?? snippet.code}}</code></pre>

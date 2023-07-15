@@ -40,14 +40,48 @@
                  (change)="setFiles(input.files!)">
         </ng-template>
       </li>
+      <li ngbNavItem="embeddings" (shown)="estimateCosts()">
+        <a ngbNavLink>
+          Embeddings
+        </a>
+        <ng-template ngbNavContent>
+          <p>
+            After importing from GitHub or Files, you can import embeddings.
+          </p>
+          <p>
+            Here is an estimate of the token costs.
+            Actual costs may be <strong>lower</strong> if the embeddings are already cached,
+            or <strong>slightly higher</strong> due to some tokens like filenames being added to improve results.
+            Charges will be applied to your OpenAI account.
+          </p>
+          <p>
+            Please review the results below and click <b>Import</b> to confirm.
+          </p>
+          <div class="row" *ngIf="estimatedCosts">
+            <app-statistic-value class="col" label="Tokens" [value]="estimatedCosts.tokens" [standalone]="true"></app-statistic-value>
+            <app-statistic-value class="col" label="Estimated Cost" [value]="estimatedCosts.estimatedCost | currency:'USD':true:'0.7'" [standalone]="true"></app-statistic-value>
+          </div>
+          <ng-container *ngIf="finalCosts">
+            <hr/>
+            <p>
+              The import has been completed.
+              The following costs have been applied to your OpenAI account.
+            </p>
+            <div class="row">
+              <app-statistic-value class="col" label="Tokens" [value]="finalCosts.tokens" [standalone]="true"></app-statistic-value>
+              <app-statistic-value class="col" label="Cost" [value]="finalCosts.estimatedCost | currency:'USD':true:'0.7'" [standalone]="true"></app-statistic-value>
+            </div>
+          </ng-container>
+        </ng-template>
+      </li>
     </ul>
     <div [ngbNavOutlet]="nav"></div>
   </ng-container>
   <ng-container modal-footer>
     <button class="btn btn-secondary" (click)="modal.close()">
-      Cancel
+      {{ estimatedCosts ? 'Close' : 'Cancel' }}
     </button>
-    <button class="btn btn-success" (click)="import(modal)" [disabled]="importing">
+    <button class="btn btn-success" (click)="import()" [disabled]="importing">
       <span *ngIf="importing" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
       {{ importing ? 'Importing...' : 'Import' }}
     </button>

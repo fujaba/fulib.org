@@ -6,6 +6,7 @@ export class Snippet {
   code: string;
   context?: string;
   pattern?: string;
+  score?: number;
 }
 
 export interface CodeSearchInfo {
