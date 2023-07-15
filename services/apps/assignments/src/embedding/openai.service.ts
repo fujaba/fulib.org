@@ -2,15 +2,13 @@ import {Injectable, OnModuleDestroy} from "@nestjs/common";
 import * as tiktoken from "tiktoken";
 import {File} from "@app/moss/moss-api";
 import {Configuration, OpenAIApi} from "openai";
-import {MOSS_LANGUAGES} from "../search/search.constants";
+import {TEXT_EXTENSIONS} from "../search/search.constants";
 
 const model = 'text-embedding-ada-002';
 
 @Injectable()
 export class OpenAIService implements OnModuleDestroy {
   enc = tiktoken.encoding_for_model(model);
-
-  allowedExtensions = Object.values(MOSS_LANGUAGES).flat();
 
   onModuleDestroy(): any {
     this.enc.free();
@@ -30,7 +28,8 @@ export class OpenAIService implements OnModuleDestroy {
   }
 
   isSupportedExtension(filename: string) {
-    return this.allowedExtensions.some(ext => filename.endsWith(ext));
+    const extension = filename.substring(filename.lastIndexOf('.') + 1);
+    return TEXT_EXTENSIONS.has(extension);
   }
 
   estimateCost(tokens: number): number {
