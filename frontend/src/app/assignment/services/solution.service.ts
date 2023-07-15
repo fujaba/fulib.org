@@ -19,7 +19,7 @@ import {
   UpdateEvaluationDto,
 } from '../model/evaluation';
 
-import Solution, {AuthorInfo, ImportResult} from '../model/solution';
+import Solution, {AuthorInfo, EstimatedCosts, ImportResult} from '../model/solution';
 import {AssignmentService} from './assignment.service';
 import {observeSSE} from './sse-helper';
 
@@ -152,6 +152,18 @@ export class SolutionService {
       body = data;
     }
     return this.http.post<ImportResult>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/import`, body, {headers});
+  }
+
+  estimateCosts(assignment: string): Observable<EstimatedCosts> {
+    const headers = {};
+    this.addAssignmentToken(headers, assignment);
+    return this.http.get<EstimatedCosts>(`${environment.assignmentsApiUrl}/assignments/${assignment}/embeddings`, {headers});
+  }
+
+  importEmbeddings(assignment: string): Observable<EstimatedCosts> {
+    const headers = {};
+    this.addAssignmentToken(headers, assignment);
+    return this.http.post<EstimatedCosts>(`${environment.assignmentsApiUrl}/assignments/${assignment}/embeddings`, {}, {headers});
   }
 
   get(assignment: Assignment | string, id: string): Observable<Solution> {

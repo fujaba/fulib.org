@@ -28,6 +28,9 @@ export default class Solution {
 
 export interface ImportResult {
   length: number;
+}
+
+export interface EstimatedCosts {
   tokens: number;
   estimatedCost: number;
 }
