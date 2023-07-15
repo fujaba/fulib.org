@@ -74,6 +74,21 @@
           </ng-container>
         </ng-template>
       </li>
+      <li ngbNavItem="moss" (shown)="estimateCosts()">
+        <a ngbNavLink>
+          MOSS
+        </a>
+        <ng-template ngbNavContent>
+          <p>
+            After importing from GitHub or Files, you can run MOSS.
+          </p>
+          <ng-container *ngIf="mossResult">
+            <hr/>
+            The MOSS results are available at
+            <a [href]="mossResult" target="_blank">{{ mossResult }}</a>.
+          </ng-container>
+        </ng-template>
+      </li>
     </ul>
     <div [ngbNavOutlet]="nav"></div>
   </ng-container>

@@ -206,6 +206,14 @@ export class AssignmentService {
     });
   }
 
+  moss(assignment: string): Observable<string> {
+    const headers = this.getHeaders(this.getToken(assignment));
+    return this.http.put(`${environment.assignmentsApiUrl}/assignments/${assignment}/moss`, {}, {
+      headers,
+      responseType: 'text',
+    });
+  }
+
   private getHeaders(token?: string | null | undefined): Record<string, string> {
     return token ? {
       'Assignment-Token': token,

@@ -4,6 +4,7 @@ import {ToastService} from '@mean-stream/ngbx';
 import {SolutionService} from '../../../services/solution.service';
 import {EstimatedCosts, ImportResult} from "../../../model/solution";
 import {EMPTY, Observable} from "rxjs";
+import {AssignmentService} from "../../../services/assignment.service";
 
 @Component({
   selector: 'app-import-modal',
@@ -17,8 +18,10 @@ export class ImportModalComponent {
 
   estimatedCosts?: EstimatedCosts;
   finalCosts?: EstimatedCosts;
+  mossResult?: string;
 
   constructor(
+    private assignmentService: AssignmentService,
     private solutionService: SolutionService,
     private toastService: ToastService,
     public route: ActivatedRoute,
@@ -29,7 +32,11 @@ export class ImportModalComponent {
     this.importing = true;
     this.getImporter().subscribe(results => {
       this.importing = false;
-      if ('length' in results) {
+      if (typeof results === 'string') {
+        this.toastService.success('Import', 'Successfully ran MOSS');
+        this.mossResult = results;
+        return;
+      } else if ('length' in results) {
         this.toastService.success('Import', `Successfully imported ${results.length} solutions`);
       } else {
         this.toastService.success('Import', 'Successfully imported embeddings');
@@ -41,7 +48,7 @@ export class ImportModalComponent {
     });
   }
 
-  private getImporter(): Observable<EstimatedCosts | ImportResult> {
+  private getImporter(): Observable<EstimatedCosts | ImportResult | string> {
     const assignmentId = this.route.snapshot.params.aid;
 
     switch (this.mode) {
@@ -51,6 +58,8 @@ export class ImportModalComponent {
         return this.solutionService.import(assignmentId, this.files);
       case 'embeddings':
         return this.solutionService.importEmbeddings(assignmentId);
+      case 'moss':
+        return this.assignmentService.moss(assignmentId);
       default:
         return EMPTY;
     }
