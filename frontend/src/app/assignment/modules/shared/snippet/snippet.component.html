@@ -2,6 +2,11 @@
   <summary>
     {{ snippet.file }} lines {{ snippet.from.line - contextLines + 1 }} to {{ snippet.to.line + contextLines + 1 }}:
     {{ snippet.comment }}
+    <ng-container *ngIf="snippet.score">
+      <span class="text-muted">{{ snippet.score | percent:'0.2' }}</span>
+      &nbsp;
+      <i class="bi bi-check-circle link-primary" ngbTooltip="Confirm Suggestion" (click)="confirmed.next(snippet)"></i>
+    </ng-container>
   </summary>
   <div class="markdown">
     <pre><code #code class="hljs language-{{fileType}}" [lang]="fileType" (mouseup)="onSelectionChange()">{{snippet.context ?? snippet.code}}</code></pre>

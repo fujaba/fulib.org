@@ -172,6 +172,13 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     }
   }
 
+  confirmEmbedding(snippet: Snippet) {
+    this.embeddingSnippets.splice(this.embeddingSnippets.indexOf(snippet), 1);
+    this.dto.snippets.push(snippet);
+    snippet.score = undefined;
+    this.snippetUpdates$.next(snippet);
+  }
+
   deleteSnippet(index: number) {
     this.dto.snippets.splice(index, 1);
   }

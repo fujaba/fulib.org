@@ -14,6 +14,7 @@ export class SnippetComponent implements OnChanges {
   @Input() expanded = true;
   @Input() wildcard?: string;
   @Output() updated = new EventEmitter<Snippet>();
+  @Output() confirmed = new EventEmitter<Snippet>();
 
   fileType?: string;
   contextLines = 0;
