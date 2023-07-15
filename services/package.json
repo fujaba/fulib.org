@@ -59,6 +59,7 @@
     "rimraf": "^5.0.1",
     "rxjs": "^7.8.1",
     "swagger-ui-express": "^4.6.3",
+    "textextensions": "^5.16.0",
     "tiktoken": "^1.0.10",
     "tslib": "^2.6.0",
     "unzipper": "^0.10.14"

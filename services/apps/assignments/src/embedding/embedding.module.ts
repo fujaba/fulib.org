@@ -7,6 +7,7 @@ import {ElasticsearchModule} from "@nestjs/elasticsearch";
 import {environment} from "../environment";
 import {AssignmentModule} from "../assignment/assignment.module";
 import {EmbeddingHandler} from "./embedding.handler";
+import {OpenAIService} from "./openai.service";
 
 @Module({
   imports: [
@@ -15,7 +16,11 @@ import {EmbeddingHandler} from "./embedding.handler";
     ClassroomModule,
     AssignmentModule,
   ],
-  providers: [EmbeddingService, EmbeddingHandler],
+  providers: [
+    OpenAIService,
+    EmbeddingService,
+    EmbeddingHandler,
+  ],
   controllers: [EmbeddingController],
 })
 export class EmbeddingModule {

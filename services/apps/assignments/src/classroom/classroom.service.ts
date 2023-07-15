@@ -1,8 +1,6 @@
-import {File} from '@app/moss/moss-api';
 import {HttpService} from '@nestjs/axios';
 import {Injectable, UnauthorizedException} from '@nestjs/common';
 import {Method} from 'axios';
-import * as Buffer from 'buffer';
 import {createReadStream} from 'fs';
 import {firstValueFrom} from 'rxjs';
 import {Stream} from 'stream';
@@ -13,9 +11,9 @@ import {SearchService} from '../search/search.service';
 import {AuthorInfo, Solution} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {generateToken} from '../utils';
-import {MossService} from './moss.service';
 import {ImportResult} from "./classroom.dto";
 import {notFound} from "@mean-stream/nestx";
+import {MAX_FILE_SIZE, TEXT_EXTENSIONS} from "../search/search.constants";
 
 interface RepositoryInfo {
   name: string;
@@ -30,25 +28,12 @@ interface SearchResult {
   items: RepositoryInfo[];
 }
 
-/**
- * This is the Lucene term byte length limit.
- * In the pathological case, a file could start with a ' or " that never closes.
- * If we allowed a greater file size, it could produce a term bigger than this limit,
- * which will be rejected by Elasticsearch.
- * Few source code files are longer than this in the academic world.
- * This repository contains only three such files that are not in .gitignore -
- * the PNPM lockfiles and gradle-wrapper.jar.
- * Neither is useful in Code Search.
- */
-const MAX_FILE_SIZE = 32766;
-
 @Injectable()
 export class ClassroomService {
   constructor(
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
     private searchService: SearchService,
-    private mossService: MossService,
     private http: HttpService,
   ) {
   }
@@ -79,16 +64,14 @@ export class ClassroomService {
     }));
 
     const {codeSearch, mossId} = assignment.classroom || {};
-    let filess: File[][] = [];
     if (codeSearch || mossId) {
-      filess = await Promise.all(files.map(async (file, index) => {
+      await Promise.all(files.map(async (file, index) => {
         const stream = createReadStream(file.path);
         const solution = result.upsertedIds[index];
-        return this.importZipFiles(stream, id, solution, !!codeSearch);
+        return this.importZipFiles(stream, id, solution);
       }));
     }
 
-    await this.processFiles(assignment, filess)
     return {length: result.upsertedCount};
   }
 
@@ -103,16 +86,7 @@ export class ClassroomService {
     }
   }
 
-  private async importZipFiles(stream: Stream, assignment: string, solution?: string, codeSearch?: boolean, commit?: string): Promise<File[]> {
-    const files = await this.importZipStream(stream);
-    if (codeSearch && solution) {
-      await Promise.all(files.map(file => this.addContentsToIndex(assignment, solution, file, commit)));
-    }
-    return files;
-  }
-
-  private async importZipStream(stream: Stream): Promise<File[]> {
-    const files: File[] = [];
+  private async importZipFiles(stream: Stream, assignment: string, solution: string, commit?: string) {
     await stream.pipe(unzip()).on('entry', (entry: ZipEntry) => {
       // Using vars.uncompressedSize because entry.extra.* and entry.size are unavailable before parsing for some reason
       if (entry.type !== 'File' || (entry.vars as any).uncompressedSize > MAX_FILE_SIZE) {
@@ -123,16 +97,18 @@ export class ClassroomService {
         if (buffer.length > MAX_FILE_SIZE) {
           return;
         }
-        files.push({name: entry.path, size: buffer.length, content: buffer});
+        this.addContentsToIndex(assignment, solution, entry.path, buffer.toString('utf8'), commit);
       });
     }).promise();
-    return files;
   }
 
-  async addContentsToIndex(assignment: string, solution: string, file: File, commit?: string) {
-    const content = (file.content as Buffer).toString('utf-8');
+  async addContentsToIndex(assignment: string, solution: string, filename: string, content: string, commit?: string) {
     let index: number;
-    const path = commit && (index = file.name.indexOf(commit)) >= 0 ? file.name.substring(index + commit.length + 1) : file.name;
+    const path = commit && (index = filename.indexOf(commit)) >= 0 ? filename.substring(index + commit.length + 1) : filename;
+    const extension = path.substring(path.lastIndexOf('.') + 1);
+    if (!TEXT_EXTENSIONS.has(extension)) {
+      return;
+    }
     await this.searchService.addFile(assignment, solution, path, content);
   }
 
@@ -214,25 +190,18 @@ export class ClassroomService {
       return {length: result.upsertedCount};
     }
 
-    const files = await Promise.all(repositories.map(async (repo, i) => {
+    await Promise.all(repositories.map(async (repo, i) => {
       const commit = commits[i];
       const upsertedId = result.upsertedIds[i];
-      if (commit) {
+      if (commit && upsertedId) {
         const zip = await this.getRepoZip(assignment, this.getGithubName(repo, assignment), commit);
-        return zip ? this.importZipFiles(zip, assignment._id, upsertedId, !!codeSearch, commit) : [];
+        return zip ? this.importZipFiles(zip, assignment._id, upsertedId, commit) : [];
       } else {
         return [];
       }
     }));
 
-    await this.processFiles(assignment, files);
     return {length: result.upsertedCount};
-  }
-
-  private async processFiles(assignment: AssignmentDocument, files: File[][]) {
-    const {mossId} = assignment.classroom!;
-
-    mossId && this.mossService.moss(assignment, files.flat());
   }
 
   private getQuery(assignment: AssignmentDocument): string {
