@@ -312,7 +312,7 @@ export class SolutionService {
       map(embeddings => embeddings.map(({file, line, text, _score}) => ({
         file,
         from: {line, character: 0},
-        to: {line: line + text.split('\n').length - 3, character: 0},
+        to: {line: line + text.split('\n').length - 2, character: 0},
         comment: '',
         score: _score,
         code: text.substring(text.indexOf('\n') + 2),

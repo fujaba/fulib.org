@@ -6,6 +6,8 @@
       <span class="text-muted">{{ snippet.score | percent:'0.2' }}</span>
       &nbsp;
       <i class="bi bi-check-circle link-primary" ngbTooltip="Confirm Suggestion" (click)="confirmed.next(snippet)"></i>
+      &nbsp;
+      <a class="bi bi-code-square" ngbTooltip="Open in Editor" [href]="openUrl | safeUrl"></a>
     </ng-container>
   </summary>
   <div class="markdown">

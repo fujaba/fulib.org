@@ -18,12 +18,14 @@ export class SnippetComponent implements OnChanges {
 
   fileType?: string;
   contextLines = 0;
+  openUrl = '';
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.snippet) {
       const snippet = changes.snippet.currentValue;
       this.fileType = snippet.file.substring(snippet.file.lastIndexOf('.') + 1);
       this.contextLines = snippet.context ? 2 : 0;
+      this.openUrl = `vscode://fulib.fulibfeedback/open?file=${encodeURIComponent(snippet.file)}&line=${snippet.from.line}&endline=${snippet.to.line}`;
     }
     if (changes.expanded) {
       this.setExpanded(changes.expanded.currentValue);
