@@ -2,7 +2,7 @@ import {Injectable, OnModuleInit} from '@nestjs/common';
 import {ElasticsearchService} from "@nestjs/elasticsearch";
 import {SearchService} from "../search/search.service";
 import {Embeddable, EmbeddableSearch, EmbeddingEstimate, SnippetEmbeddable} from "./embedding.dto";
-import {OpenAIService} from "../classroom/openai.service";
+import {OpenAIService} from "./openai.service";
 import {QueryDslQueryContainer} from "@elastic/elasticsearch/lib/api/types";
 
 type DeclarationSnippet = Pick<SnippetEmbeddable, 'text' | 'line'> & { name: string };

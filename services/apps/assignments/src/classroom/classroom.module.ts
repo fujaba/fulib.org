@@ -11,7 +11,6 @@ import {ClassroomController} from './classroom.controller';
 import {ClassroomScheduler} from './classroom.scheduler';
 import {ClassroomService} from './classroom.service';
 import {MossService} from './moss.service';
-import {OpenAIService} from "./openai.service";
 
 @Module({
   imports: [
@@ -31,10 +30,6 @@ import {OpenAIService} from "./openai.service";
     ClassroomService,
     ClassroomScheduler,
     MossService,
-    OpenAIService,
-  ],
-  exports: [
-    OpenAIService,
   ],
   controllers: [ClassroomController],
 })
