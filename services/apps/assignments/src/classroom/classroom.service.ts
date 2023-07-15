@@ -13,7 +13,6 @@ import {SearchService} from '../search/search.service';
 import {AuthorInfo, Solution} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {generateToken} from '../utils';
-import {MossService} from './moss.service';
 import {ImportResult} from "./classroom.dto";
 import {notFound} from "@mean-stream/nestx";
 
@@ -48,7 +47,6 @@ export class ClassroomService {
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
     private searchService: SearchService,
-    private mossService: MossService,
     private http: HttpService,
   ) {
   }
@@ -79,16 +77,14 @@ export class ClassroomService {
     }));
 
     const {codeSearch, mossId} = assignment.classroom || {};
-    let filess: File[][] = [];
     if (codeSearch || mossId) {
-      filess = await Promise.all(files.map(async (file, index) => {
+      await Promise.all(files.map(async (file, index) => {
         const stream = createReadStream(file.path);
         const solution = result.upsertedIds[index];
         return this.importZipFiles(stream, id, solution, !!codeSearch);
       }));
     }
 
-    await this.processFiles(assignment, filess)
     return {length: result.upsertedCount};
   }
 
@@ -214,7 +210,7 @@ export class ClassroomService {
       return {length: result.upsertedCount};
     }
 
-    const files = await Promise.all(repositories.map(async (repo, i) => {
+    await Promise.all(repositories.map(async (repo, i) => {
       const commit = commits[i];
       const upsertedId = result.upsertedIds[i];
       if (commit) {
@@ -225,14 +221,7 @@ export class ClassroomService {
       }
     }));
 
-    await this.processFiles(assignment, files);
     return {length: result.upsertedCount};
-  }
-
-  private async processFiles(assignment: AssignmentDocument, files: File[][]) {
-    const {mossId} = assignment.classroom!;
-
-    mossId && this.mossService.moss(assignment, files.flat());
   }
 
   private getQuery(assignment: AssignmentDocument): string {

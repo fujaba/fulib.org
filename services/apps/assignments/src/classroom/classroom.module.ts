@@ -10,7 +10,6 @@ import {SolutionModule} from '../solution/solution.module';
 import {ClassroomController} from './classroom.controller';
 import {ClassroomScheduler} from './classroom.scheduler';
 import {ClassroomService} from './classroom.service';
-import {MossService} from './moss.service';
 
 @Module({
   imports: [
@@ -29,7 +28,6 @@ import {MossService} from './moss.service';
   providers: [
     ClassroomService,
     ClassroomScheduler,
-    MossService,
   ],
   controllers: [ClassroomController],
 })
