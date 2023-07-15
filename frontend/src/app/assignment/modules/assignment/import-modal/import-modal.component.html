@@ -47,15 +47,22 @@
         <ng-template ngbNavContent>
           <p>
             After importing from GitHub or Files, you can import embeddings.
+          </p>
+          <p>
             Here is an estimate of the token costs.
+            Actual costs may be <strong>lower</strong> if the embeddings are already cached,
+            or <strong>slightly higher</strong> due to some tokens like filenames being added to improve results.
             Charges will be applied to your OpenAI account.
-            Please review the results below and click <strong>Import</strong> to confirm.
+          </p>
+          <p>
+            Please review the results below and click <b>Import</b> to confirm.
           </p>
           <div class="row" *ngIf="estimatedCosts">
             <app-statistic-value class="col" label="Tokens" [value]="estimatedCosts.tokens" [standalone]="true"></app-statistic-value>
             <app-statistic-value class="col" label="Estimated Cost" [value]="estimatedCosts.estimatedCost | currency:'USD':true:'0.7'" [standalone]="true"></app-statistic-value>
           </div>
           <ng-container *ngIf="finalCosts">
+            <hr/>
             <p>
               The import has been completed.
               The following costs have been applied to your OpenAI account.
