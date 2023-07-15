@@ -1,3 +1,5 @@
+import list from 'textextensions';
+
 /**
  * This is the Lucene term byte length limit.
  * In the pathological case, a file could start with a ' or " that never closes.
@@ -26,3 +28,5 @@ export const MOSS_LANGUAGES = {
   python: ['.py'],
   javascript: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs'],
 } as const;
+
+export const TEXT_EXTENSIONS = new Set(list);

@@ -13,7 +13,7 @@ import {SolutionService} from '../solution/solution.service';
 import {generateToken} from '../utils';
 import {ImportResult} from "./classroom.dto";
 import {notFound} from "@mean-stream/nestx";
-import {MAX_FILE_SIZE} from "../search/search.constants";
+import {MAX_FILE_SIZE, TEXT_EXTENSIONS} from "../search/search.constants";
 
 interface RepositoryInfo {
   name: string;
@@ -105,6 +105,10 @@ export class ClassroomService {
   async addContentsToIndex(assignment: string, solution: string, filename: string, content: string, commit?: string) {
     let index: number;
     const path = commit && (index = filename.indexOf(commit)) >= 0 ? filename.substring(index + commit.length + 1) : filename;
+    const extension = path.substring(path.lastIndexOf('.') + 1);
+    if (!TEXT_EXTENSIONS.has(extension)) {
+      return;
+    }
     await this.searchService.addFile(assignment, solution, path, content);
   }
 
