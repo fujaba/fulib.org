@@ -1,8 +1,6 @@
-import {File} from '@app/moss/moss-api';
 import {HttpService} from '@nestjs/axios';
 import {Injectable, UnauthorizedException} from '@nestjs/common';
 import {Method} from 'axios';
-import * as Buffer from 'buffer';
 import {createReadStream} from 'fs';
 import {firstValueFrom} from 'rxjs';
 import {Stream} from 'stream';
@@ -81,7 +79,7 @@ export class ClassroomService {
       await Promise.all(files.map(async (file, index) => {
         const stream = createReadStream(file.path);
         const solution = result.upsertedIds[index];
-        return this.importZipFiles(stream, id, solution, !!codeSearch);
+        return this.importZipFiles(stream, id, solution);
       }));
     }
 
@@ -99,16 +97,7 @@ export class ClassroomService {
     }
   }
 
-  private async importZipFiles(stream: Stream, assignment: string, solution?: string, codeSearch?: boolean, commit?: string): Promise<File[]> {
-    const files = await this.importZipStream(stream);
-    if (codeSearch && solution) {
-      await Promise.all(files.map(file => this.addContentsToIndex(assignment, solution, file, commit)));
-    }
-    return files;
-  }
-
-  private async importZipStream(stream: Stream): Promise<File[]> {
-    const files: File[] = [];
+  private async importZipFiles(stream: Stream, assignment: string, solution: string, commit?: string) {
     await stream.pipe(unzip()).on('entry', (entry: ZipEntry) => {
       // Using vars.uncompressedSize because entry.extra.* and entry.size are unavailable before parsing for some reason
       if (entry.type !== 'File' || (entry.vars as any).uncompressedSize > MAX_FILE_SIZE) {
@@ -119,16 +108,14 @@ export class ClassroomService {
         if (buffer.length > MAX_FILE_SIZE) {
           return;
         }
-        files.push({name: entry.path, size: buffer.length, content: buffer});
+        this.addContentsToIndex(assignment, solution, entry.path, buffer.toString('utf8'), commit);
       });
     }).promise();
-    return files;
   }
 
-  async addContentsToIndex(assignment: string, solution: string, file: File, commit?: string) {
-    const content = (file.content as Buffer).toString('utf-8');
+  async addContentsToIndex(assignment: string, solution: string, filename: string, content: string, commit?: string) {
     let index: number;
-    const path = commit && (index = file.name.indexOf(commit)) >= 0 ? file.name.substring(index + commit.length + 1) : file.name;
+    const path = commit && (index = filename.indexOf(commit)) >= 0 ? filename.substring(index + commit.length + 1) : filename;
     await this.searchService.addFile(assignment, solution, path, content);
   }
 
@@ -213,9 +200,9 @@ export class ClassroomService {
     await Promise.all(repositories.map(async (repo, i) => {
       const commit = commits[i];
       const upsertedId = result.upsertedIds[i];
-      if (commit) {
+      if (commit && upsertedId) {
         const zip = await this.getRepoZip(assignment, this.getGithubName(repo, assignment), commit);
-        return zip ? this.importZipFiles(zip, assignment._id, upsertedId, !!codeSearch, commit) : [];
+        return zip ? this.importZipFiles(zip, assignment._id, upsertedId, commit) : [];
       } else {
         return [];
       }
