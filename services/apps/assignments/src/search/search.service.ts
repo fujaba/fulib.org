@@ -5,6 +5,7 @@ import {randomUUID} from 'crypto';
 import {isDeepStrictEqual} from 'util';
 import {Location} from '../evaluation/evaluation.schema';
 import {SearchParams, SearchResult, SearchSnippet, SearchSummary} from './search.dto';
+import {TOKEN_PATTERN} from "./search.constants";
 
 export interface FileDocument {
   assignment: string;
@@ -18,14 +19,6 @@ interface QueryPlan {
   tokens: number;
   highlighter: 'fvh' | 'unified';
 }
-
-const TOKEN_PATTERN = new RegExp(Object.values({
-  number: /[+-]?[0-9]+(\.[0-9]+)?/,
-  string: /["](\\.|[^"\\])*["]/, // NB double quotes must be escaped in Lucene RegExp
-  char: /'(\\.|[^'\\])*'/,
-  identifier: /[a-zA-Z$_][a-zA-Z0-9$_]*/,
-  symbol: /[(){}<>\[\].,;+\-*/%|&=!?:@^\\]/,
-}).map(r => r.source).join('|'), 'g');
 
 @Injectable()
 export class SearchService implements OnModuleInit {

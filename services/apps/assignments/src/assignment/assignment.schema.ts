@@ -17,15 +17,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import {Document} from 'mongoose';
-
-export const MOSS_LANGUAGES = {
-  c: ['.c', '.h'],
-  cc: ['.cpp', '.cc', '.cxx', '.c++', '.hpp', '.hh', '.hxx', '.h++'],
-  java: ['.java'],
-  csharp: ['.cs'],
-  python: ['.py'],
-  javascript: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs'],
-} as const;
+import {MOSS_LANGUAGES} from "../search/search.constants";
 
 @Schema({id: false, _id: false})
 export class Task {

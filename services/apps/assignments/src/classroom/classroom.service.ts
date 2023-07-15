@@ -13,6 +13,7 @@ import {SolutionService} from '../solution/solution.service';
 import {generateToken} from '../utils';
 import {ImportResult} from "./classroom.dto";
 import {notFound} from "@mean-stream/nestx";
+import {MAX_FILE_SIZE} from "../search/search.constants";
 
 interface RepositoryInfo {
   name: string;
@@ -26,18 +27,6 @@ interface SearchResult {
   incomplete_results: boolean;
   items: RepositoryInfo[];
 }
-
-/**
- * This is the Lucene term byte length limit.
- * In the pathological case, a file could start with a ' or " that never closes.
- * If we allowed a greater file size, it could produce a term bigger than this limit,
- * which will be rejected by Elasticsearch.
- * Few source code files are longer than this in the academic world.
- * This repository contains only three such files that are not in .gitignore -
- * the PNPM lockfiles and gradle-wrapper.jar.
- * Neither is useful in Code Search.
- */
-const MAX_FILE_SIZE = 32766;
 
 @Injectable()
 export class ClassroomService {

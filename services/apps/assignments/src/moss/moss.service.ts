@@ -1,7 +1,8 @@
 import {File, MossApi} from '@app/moss/moss-api';
 import {Injectable} from '@nestjs/common';
-import {AssignmentDocument, MOSS_LANGUAGES} from '../assignment/assignment.schema';
+import {AssignmentDocument} from '../assignment/assignment.schema';
 import {AssignmentService} from '../assignment/assignment.service';
+import {MOSS_LANGUAGES} from "../search/search.constants";
 
 @Injectable()
 export class MossService {

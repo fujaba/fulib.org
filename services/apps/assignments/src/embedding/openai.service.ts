@@ -1,8 +1,8 @@
 import {Injectable, OnModuleDestroy} from "@nestjs/common";
 import * as tiktoken from "tiktoken";
 import {File} from "@app/moss/moss-api";
-import {MOSS_LANGUAGES} from "../assignment/assignment.schema";
 import {Configuration, OpenAIApi} from "openai";
+import {MOSS_LANGUAGES} from "../search/search.constants";
 
 const model = 'text-embedding-ada-002';
 
