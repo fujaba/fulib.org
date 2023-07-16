@@ -90,8 +90,8 @@ export class EmbeddingService implements OnModuleInit {
       .filter(d => this.openaiService.isSupportedExtension(d.file))
       .map(async d => {
         const functions = d.file.endsWith('.py')
-          ? this.getFunctions(d.content, /(async\s*)?def ([a-zA-Z0-9_]+)\([^)]*\)\s*:/gi, findIndentEnd)
-          : this.getFunctions(d.content, /([a-zA-Z0-9_]+)\([^)]*\)\s*\{/gi, findClosingBrace)
+          ? this.getFunctions(d.content, PYTHON_FUNCTION_HEADER, findIndentEnd)
+          : this.getFunctions(d.content, CLIKE_FUNCTION_HEADER, findClosingBrace)
         ;
         const fileTotal = await Promise.all(functions.map(async ({line, name, text}) => {
           const {tokens} = await this.upsert({
@@ -191,6 +191,9 @@ export class EmbeddingService implements OnModuleInit {
   }
 }
 
+export const PYTHON_FUNCTION_HEADER = /(?:async\s*)?def ([a-zA-Z0-9_]+)\([^)]*\)\s*:/gi;
+export const CLIKE_FUNCTION_HEADER = /([a-zA-Z0-9_]+)\([^)]*\)\s*\{/gi;
+
 export function findClosingBrace(code: string, headStart: number, headEnd: number): number {
   let depth = 1;
   for (let i = headEnd; i < code.length; i++) {
@@ -216,12 +219,16 @@ export function findIndentEnd(code: string, headStart: number, headEnd: number):
   const bodyIndent = code.substring(firstLineStart, bodyIndentEnd);
   let currentIndex = firstLineStart;
   while (true) {
-    const nextLineIndex = (code.indexOf('\n', currentIndex) + 1) || code.length
+    const nextLineIndex = (code.indexOf('\n', currentIndex)) || code.length;
+    if (currentIndex === nextLineIndex) { // line is empty
+      currentIndex++;
+      continue;
+    }
     const currentLine = code.substring(currentIndex, nextLineIndex);
     if (currentLine.startsWith(bodyIndent)) {
       currentIndex = nextLineIndex;
     } else {
-      return currentIndex;
+      return currentIndex - 1;
     }
   }
 }

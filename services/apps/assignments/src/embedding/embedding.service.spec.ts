@@ -1,19 +1,103 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import {EmbeddingService, findIndentEnd} from './embedding.service';
+import {Test, TestingModule} from '@nestjs/testing';
+import {
+  CLIKE_FUNCTION_HEADER,
+  EmbeddingService,
+  findClosingBrace,
+  findIndentEnd,
+  PYTHON_FUNCTION_HEADER
+} from './embedding.service';
+import {ElasticsearchService} from "@nestjs/elasticsearch";
+import {SearchService} from "../search/search.service";
+import {OpenAIService} from "./openai.service";
 
 describe('EmbeddingService', () => {
   let service: EmbeddingService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [EmbeddingService],
+      providers: [
+        EmbeddingService,
+        SearchService,
+        OpenAIService,
+        {provide: ElasticsearchService, useValue: null},
+      ],
     }).compile();
 
     service = module.get<EmbeddingService>(EmbeddingService);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  it('should find C-like functions', () => {
+    const code = `\
+class Foo {
+  void bar() {
+    System.out.println()
+  }
+
+  void baz(int i) {
+    if (i != 0) {
+      i = i + 1;
+    }
+  }
+`;
+
+    expect(service.getFunctions(code, CLIKE_FUNCTION_HEADER, findClosingBrace)).toEqual([
+      {
+        name: 'bar',
+        line: 1,
+        text: `\
+  void bar() {
+    System.out.println()
+  }`,
+      },
+      {
+        name: 'baz',
+        line: 5,
+        text: `\
+  void baz(int i) {
+    if (i != 0) {
+      i = i + 1;
+    }
+  }`,
+      },
+    ]);
+  });
+
+
+  it('should find Python functions', () => {
+    const code = `\
+class Foo:
+  def bar():
+    print()
+
+    more()
+
+  def baz(i):
+    if i != 0:
+      i = i + 1
+`;
+
+    expect(service.getFunctions(code, PYTHON_FUNCTION_HEADER, findIndentEnd)).toEqual([
+      {
+        name: 'bar',
+        line: 1,
+        text: `\
+  def bar():
+    print()
+
+    more()
+
+`,
+      },
+      {
+        name: 'baz',
+        line: 6,
+        text: `\
+  def baz(i):
+    if i != 0:
+      i = i + 1
+`,
+      },
+    ]);
   });
 });
 
