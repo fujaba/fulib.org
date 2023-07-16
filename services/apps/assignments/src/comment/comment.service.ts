@@ -1,6 +1,6 @@
 import {EventService} from '@mean-stream/nestx';
 import {UserToken} from '@app/keycloak-auth';
-import {Injectable, OnModuleInit} from '@nestjs/common';
+import {Injectable, Logger, OnModuleInit} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model} from 'mongoose';
 import {idFilter} from '../utils';
@@ -28,7 +28,7 @@ export class CommentService implements OnModuleInit {
         html: 1,
       },
     });
-    console.info('Migrated', result.modifiedCount, 'comments');
+    result.modifiedCount && new Logger(CommentService.name).warn(`Migrated ${result.modifiedCount} comments`);
   }
 
   async create(assignment: string, solution: string, dto: CreateCommentDto, distinguished: boolean, createdBy?: string): Promise<CommentDocument> {

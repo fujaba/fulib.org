@@ -1,5 +1,5 @@
 import {EventService} from '@mean-stream/nestx';
-import {Injectable, OnModuleInit} from '@nestjs/common';
+import {Injectable, Logger, OnModuleInit} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {Model} from 'mongoose';
 import {AssigneeService} from '../assignee/assignee.service';
@@ -29,7 +29,7 @@ export class CourseService implements OnModuleInit {
         descriptionHtml: 1,
       },
     });
-    console.info('Migrated', result.modifiedCount, 'courses');
+    result.modifiedCount && new Logger(CourseService.name).warn(`Migrated ${result.modifiedCount} courses`);
   }
 
   async create(dto: CreateCourseDto, userId?: string): Promise<CourseDocument> {

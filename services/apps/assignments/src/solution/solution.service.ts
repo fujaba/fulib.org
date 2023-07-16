@@ -1,6 +1,6 @@
 import {EventService} from '@mean-stream/nestx';
 import {UserToken} from '@app/keycloak-auth';
-import {Injectable, OnModuleInit} from '@nestjs/common';
+import {Injectable, Logger, OnModuleInit} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model} from 'mongoose';
 import {AssignmentService} from '../assignment/assignment.service';
@@ -46,7 +46,8 @@ export class SolutionService implements OnModuleInit {
       }));
     }));
     const count = solutions.reduce((a, c) => c.results ? a + c.results.length : a, 0);
-    console.info('Migrated', count, 'results of', solutions.length, 'solutions');
+    const logger = new Logger(SolutionService.name);
+    count && logger.warn(`Migrated ${count} results of ${solutions.length} solutions`);
 
     const result = await this.model.updateMany({}, {
       $rename: {
@@ -60,7 +61,7 @@ export class SolutionService implements OnModuleInit {
         results: 1,
       },
     });
-    console.info('Migrated', result.modifiedCount, 'solutions');
+    result.modifiedCount && logger.warn(`Migrated ${result.modifiedCount} solutions`);
   }
 
   private async createEvaluation(solution: SolutionDocument, dto: CreateEvaluationDto): Promise<Evaluation> {

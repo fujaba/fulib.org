@@ -1,4 +1,4 @@
-import {Injectable, OnModuleInit} from '@nestjs/common';
+import {Injectable, Logger, OnModuleInit} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {Model} from 'mongoose';
 import {CreateEvaluationDto} from '../evaluation/evaluation.dto';
@@ -34,6 +34,6 @@ export class GradingService implements OnModuleInit {
       await this.evaluationService.create(assignment, solution, evaluation, createdBy);
     }
     const result = await this.model.deleteMany();
-    console.info('Migrated', result.deletedCount, 'gradings');
+    result.deletedCount && new Logger(GradingService.name).warn(`Migrated ${result.deletedCount} gradings`);
   }
 }

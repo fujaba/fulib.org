@@ -1,7 +1,7 @@
 import {EventService} from '@mean-stream/nestx';
 import {UserToken} from '@app/keycloak-auth';
 import {HttpService} from '@nestjs/axios';
-import {Injectable, OnModuleInit} from '@nestjs/common';
+import {Injectable, Logger, OnModuleInit} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model, UpdateQuery} from 'mongoose';
 import {environment} from '../environment';
@@ -28,7 +28,7 @@ export class AssignmentService implements OnModuleInit {
         descriptionHtml: 1,
       },
     });
-    console.info('Migrated', result.modifiedCount, 'assignments');
+    result.modifiedCount && new Logger(AssignmentService.name).warn(`Migrated ${result.modifiedCount} assignments`);
   }
 
   findTask(tasks: Task[], id: string): Task | undefined {
