@@ -15,7 +15,9 @@ export class AssigneeService implements OnModuleInit {
   }
 
   async onModuleInit() {
-    const result = await this.model.updateMany({}, {
+    const result = await this.model.updateMany({
+      id: {$exists: true},
+    }, {
       $rename: {
         id: 'solution',
       },

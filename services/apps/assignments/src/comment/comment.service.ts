@@ -16,7 +16,15 @@ export class CommentService implements OnModuleInit {
   }
 
   async onModuleInit() {
-    const result = await this.model.updateMany({}, {
+    const result = await this.model.updateMany({
+      $or: [
+        {userId: {$exists: true}},
+        {parent: {$exists: true}},
+        {timeStamp: {$exists: true}},
+        {markdown: {$exists: true}},
+        {html: {$exists: true}},
+      ],
+    }, {
       // TODO assignment
       $rename: {
         parent: 'solution',

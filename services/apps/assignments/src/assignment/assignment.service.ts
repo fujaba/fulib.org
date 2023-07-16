@@ -20,7 +20,12 @@ export class AssignmentService implements OnModuleInit {
   }
 
   async onModuleInit() {
-    const result = await this.model.updateMany({}, {
+    const result = await this.model.updateMany({
+      $or: [
+        {userId: {$exists: true}},
+        {descriptionHtml: {$exists: true}},
+      ],
+    }, {
       $rename: {
         userId: 'createdBy',
       },

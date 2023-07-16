@@ -23,7 +23,7 @@ export class SolutionService implements OnModuleInit {
 
   async onModuleInit() {
     const solutions: Pick<SolutionDocument, 'assignment' | '_id' | 'results'>[] = await this.model
-      .find({results: {$exists: true}})
+      .find({results: {$exists: true}}, {assignment: 1, _id: 1, results: 1})
       .exec();
     await Promise.all(solutions.map(async ({assignment, _id, results}) => {
       if (!results) {
@@ -49,7 +49,14 @@ export class SolutionService implements OnModuleInit {
     const logger = new Logger(SolutionService.name);
     count && logger.warn(`Migrated ${count} results of ${solutions.length} solutions`);
 
-    const result = await this.model.updateMany({}, {
+    const result = await this.model.updateMany({
+      $or: [
+        {userId: {$exists: true}},
+        {timeStamp: {$exists: true}},
+        {author: {$exists: false}},
+        {results: {$exists: true}},
+      ],
+    }, {
       $rename: {
         userId: 'createdBy',
         timeStamp: 'timestamp',

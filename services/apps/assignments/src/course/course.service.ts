@@ -20,7 +20,13 @@ export class CourseService implements OnModuleInit {
   }
 
   async onModuleInit() {
-    const result = await this.model.updateMany({}, {
+    const result = await this.model.updateMany({
+      $or: [
+        {assignmentIds: {$exists: true}},
+        {userId: {$exists: true}},
+        {descriptionHtml: {$exists: true}},
+      ]
+    }, {
       $rename: {
         assignmentIds: 'assignments',
         userId: 'createdBy',
