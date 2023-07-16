@@ -132,6 +132,6 @@ export class SolutionService {
   }
 
   private emit(event: string, solution: SolutionDocument) {
-    this.eventService.emit(`solution.${solution.id}.${event}`, {event, data: solution});
+    this.eventService.emit(`solution.${solution.id}.${event}`, solution);
   }
 }

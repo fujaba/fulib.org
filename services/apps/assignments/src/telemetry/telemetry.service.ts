@@ -14,7 +14,7 @@ export class TelemetryService {
   }
 
   private emit(event: 'created', telemetry: TelemetryDocument) {
-    this.eventService.emit(`telemetry.${telemetry.id}.${event}`, {event, data: telemetry});
+    this.eventService.emit(`telemetry.${telemetry.id}.${event}`, telemetry);
   }
 
   async create(assignment: string, solution: string, dto: CreateTelemetryDto, createdBy?: string): Promise<Telemetry> {
