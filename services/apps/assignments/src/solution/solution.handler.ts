@@ -10,7 +10,7 @@ export class SolutionHandler {
   ) {
   }
 
-  @OnEvent('assignment.*.deleted')
+  @OnEvent('assignments.*.deleted')
   async onAssignmentDeleted(assignment: AssignmentDocument) {
     await this.solutionService.removeAll({assignment: assignment.id});
   }

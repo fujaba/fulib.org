@@ -10,7 +10,7 @@ export class CommentHandler {
   ) {
   }
 
-  @OnEvent('solution.*.deleted')
+  @OnEvent('assignments.*.solutions.*.deleted')
   async onSolutionDeleted(solution: SolutionDocument) {
     await this.commentService.removeAll({assignment: solution.assignment, solution: solution.id});
   }

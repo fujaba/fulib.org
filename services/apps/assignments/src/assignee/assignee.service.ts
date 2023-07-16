@@ -49,6 +49,6 @@ export class AssigneeService {
   }
 
   private emit(event: string, assignee: AssigneeDocument) {
-    this.eventService.emit(`assignee.${assignee.id}.${event}`, assignee);
+    this.eventService.emit(`assignments.${assignee.assignment}.solutions.${assignee.solution}.assignee.${event}`, assignee);
   }
 }

@@ -10,8 +10,8 @@ export class EmbeddingHandler {
   ) {
   }
 
-  @OnEvent('assignment.*.created')
-  @OnEvent('assignment.*.updated')
+  @OnEvent('assignments.*.created')
+  @OnEvent('assignments.*.updated')
   async onAssignment(assignment: AssignmentDocument) {
     const apiKey = assignment.classroom?.openaiApiKey;
     if (!apiKey) {
@@ -25,7 +25,7 @@ export class EmbeddingHandler {
     // console.log('Deleted', deleted, 'embeddings');
   }
 
-  @OnEvent('assignment.*.deleted')
+  @OnEvent('assignments.*.deleted')
   async onAssignmentDeleted(assignment: AssignmentDocument) {
     const deleted = await this.embeddingService.deleteNotIn(assignment._id.toString(), []);
     // console.log('Deleted', deleted, 'embeddings');

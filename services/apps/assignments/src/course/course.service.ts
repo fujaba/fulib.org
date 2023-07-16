@@ -126,6 +126,6 @@ export class CourseService {
   }
 
   private emit(event: string, course: CourseDocument) {
-    this.eventService.emit(`course.${course.id}.${event}`, course);
+    this.eventService.emit(`courses.${course.id}.${event}`, course);
   }
 }
