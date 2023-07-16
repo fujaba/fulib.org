@@ -1,6 +1,6 @@
 import {EventService} from '@mean-stream/nestx';
 import {UserToken} from '@app/keycloak-auth';
-import {Injectable} from '@nestjs/common';
+import {Injectable, OnModuleInit} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model} from 'mongoose';
 import {idFilter} from '../utils';
@@ -8,15 +8,14 @@ import {CreateCommentDto, UpdateCommentDto} from './comment.dto';
 import {Comment, CommentDocument} from './comment.schema';
 
 @Injectable()
-export class CommentService {
+export class CommentService implements OnModuleInit {
   constructor(
     @InjectModel(Comment.name) public model: Model<Comment>,
     private eventService: EventService,
   ) {
-    this.migrate();
   }
 
-  async migrate() {
+  async onModuleInit() {
     const result = await this.model.updateMany({}, {
       // TODO assignment
       $rename: {

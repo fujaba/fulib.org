@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common';
+import {Injectable, OnModuleInit} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {Model} from 'mongoose';
 import {CreateEvaluationDto} from '../evaluation/evaluation.dto';
@@ -6,15 +6,14 @@ import {EvaluationService} from '../evaluation/evaluation.service';
 import {Grading} from './grading.schema';
 
 @Injectable()
-export class GradingService {
+export class GradingService implements OnModuleInit {
   constructor(
     @InjectModel(Grading.name) private model: Model<Grading>,
     private evaluationService: EvaluationService,
   ) {
-    this.migrate();
   }
 
-  async migrate() {
+  async onModuleInit() {
     for await (const grading of this.model.find()) {
       const {
         assignment,

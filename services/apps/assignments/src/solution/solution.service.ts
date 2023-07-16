@@ -1,6 +1,6 @@
 import {EventService} from '@mean-stream/nestx';
 import {UserToken} from '@app/keycloak-auth';
-import {Injectable} from '@nestjs/common';
+import {Injectable, OnModuleInit} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model} from 'mongoose';
 import {AssignmentService} from '../assignment/assignment.service';
@@ -12,17 +12,16 @@ import {CreateSolutionDto, ReadSolutionDto, UpdateSolutionDto} from './solution.
 import {Solution, SolutionDocument} from './solution.schema';
 
 @Injectable()
-export class SolutionService {
+export class SolutionService implements OnModuleInit {
   constructor(
     @InjectModel(Solution.name) public model: Model<Solution>,
     private assignmentService: AssignmentService,
     private evaluationService: EvaluationService,
     private eventService: EventService,
   ) {
-    this.migrate();
   }
 
-  async migrate() {
+  async onModuleInit() {
     const solutions: Pick<SolutionDocument, 'assignment' | '_id' | 'results'>[] = await this.model
       .find({results: {$exists: true}})
       .exec();

@@ -1,5 +1,5 @@
 import {EventService} from '@mean-stream/nestx';
-import {Injectable} from '@nestjs/common';
+import {Injectable, OnModuleInit} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model} from 'mongoose';
 import {UpdateAssigneeDto} from './assignee.dto';
@@ -7,15 +7,14 @@ import {UpdateAssigneeDto} from './assignee.dto';
 import {Assignee, AssigneeDocument} from './assignee.schema';
 
 @Injectable()
-export class AssigneeService {
+export class AssigneeService implements OnModuleInit {
   constructor(
     @InjectModel(Assignee.name) private model: Model<Assignee>,
     private eventService: EventService,
   ) {
-    this.migrate();
   }
 
-  async migrate() {
+  async onModuleInit() {
     const result = await this.model.updateMany({}, {
       $rename: {
         id: 'solution',
