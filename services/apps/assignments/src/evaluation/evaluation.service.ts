@@ -11,7 +11,7 @@ import {CodeSearchInfo, Evaluation, EvaluationDocument, Snippet} from './evaluat
 @Injectable()
 export class EvaluationService {
   constructor(
-    @InjectModel('evaluations') public model: Model<Evaluation>,
+    @InjectModel(Evaluation.name) public model: Model<Evaluation>,
     private eventService: EventService,
     private searchService: SearchService,
     private assignmentService: AssignmentService,

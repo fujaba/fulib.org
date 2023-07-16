@@ -8,7 +8,7 @@ import {Grading} from './grading.schema';
 @Injectable()
 export class GradingService {
   constructor(
-    @InjectModel('gradings') private model: Model<Grading>,
+    @InjectModel(Grading.name) private model: Model<Grading>,
     private evaluationService: EvaluationService,
   ) {
     this.migrate();

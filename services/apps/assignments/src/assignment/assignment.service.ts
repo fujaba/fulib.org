@@ -13,7 +13,7 @@ import {Assignment, AssignmentDocument, Task} from './assignment.schema';
 @Injectable()
 export class AssignmentService {
   constructor(
-    @InjectModel('assignments') private model: Model<Assignment>,
+    @InjectModel(Assignment.name) private model: Model<Assignment>,
     private http: HttpService,
     private eventService: EventService,
   ) {

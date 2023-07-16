@@ -9,7 +9,7 @@ import {Assignee, AssigneeDocument} from './assignee.schema';
 @Injectable()
 export class AssigneeService {
   constructor(
-    @InjectModel('assignee') private model: Model<Assignee>,
+    @InjectModel(Assignee.name) private model: Model<Assignee>,
     private eventService: EventService,
   ) {
     this.migrate();

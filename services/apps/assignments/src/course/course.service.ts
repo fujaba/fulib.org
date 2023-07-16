@@ -12,7 +12,7 @@ import {Course, CourseDocument} from './course.schema';
 @Injectable()
 export class CourseService {
   constructor(
-    @InjectModel('courses') private model: Model<Course>,
+    @InjectModel(Course.name) private model: Model<Course>,
     private solutionService: SolutionService,
     private assigneeService: AssigneeService,
     private eventService: EventService,

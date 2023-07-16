@@ -14,7 +14,7 @@ import {Solution, SolutionDocument} from './solution.schema';
 @Injectable()
 export class SolutionService {
   constructor(
-    @InjectModel('solutions') public model: Model<Solution>,
+    @InjectModel(Solution.name) public model: Model<Solution>,
     private assignmentService: AssignmentService,
     private evaluationService: EvaluationService,
     private eventService: EventService,

@@ -8,7 +8,7 @@ import {Telemetry, TelemetryDocument} from './telemetry.schema';
 @Injectable()
 export class TelemetryService {
   constructor(
-    @InjectModel('telemetry') public model: Model<Telemetry>,
+    @InjectModel(Telemetry.name) public model: Model<Telemetry>,
     private eventService: EventService,
   ) {
   }
