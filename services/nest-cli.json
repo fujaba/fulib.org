@@ -1,8 +1,10 @@
 {
+  "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
   "monorepo": true,
   "compilerOptions": {
-    "webpack": true
+    "webpack": true,
+    "manualRestart": true
   },
   "projects": {
     "assignments": {
