@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 overrides:
   jsonwebtoken: ^9.0.0
   debug: ^4.3.4
@@ -10,7 +14,7 @@ dependencies:
     version: 7.13.0
   '@mean-stream/nestx':
     specifier: ^0.6.1
-    version: 0.6.1(@nestjs/common@9.4.0)(@nestjs/core@9.4.0)(@nestjs/event-emitter@1.4.1)(@nestjs/microservices@9.4.0)(@nestjs/mongoose@9.2.2)(@nestjs/platform-express@9.4.0)(@nestjs/swagger@6.3.0)(@nestjs/websockets@9.4.0)(class-transformer@0.5.1)(class-validator@0.14.0)(mongoose@7.1.0)(nats@2.13.1)(reflect-metadata@0.1.13)(rxjs@7.8.1)(tslib@2.5.0)
+    version: 0.6.1(@nestjs/common@9.4.0)(@nestjs/core@9.4.0)(@nestjs/event-emitter@1.4.1)(@nestjs/microservices@9.4.0)(@nestjs/mongoose@9.2.2)(@nestjs/platform-express@9.4.0)(@nestjs/swagger@6.3.0)(@nestjs/websockets@9.4.0)(class-transformer@0.5.1)(class-validator@0.14.0)(mongoose@7.3.3)(nats@2.13.1)(reflect-metadata@0.1.13)(rxjs@7.8.1)(tslib@2.5.0)
   '@nestjs/axios':
     specifier: ^2.0.0
     version: 2.0.0(@nestjs/common@9.4.0)(axios@1.4.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
@@ -34,7 +38,7 @@ dependencies:
     version: 9.4.0(@nestjs/common@9.4.0)(@nestjs/core@9.4.0)(@nestjs/websockets@9.4.0)(nats@2.13.1)(reflect-metadata@0.1.13)(rxjs@7.8.1)
   '@nestjs/mongoose':
     specifier: ^9.2.2
-    version: 9.2.2(@nestjs/common@9.4.0)(@nestjs/core@9.4.0)(mongoose@7.1.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
+    version: 9.2.2(@nestjs/common@9.4.0)(@nestjs/core@9.4.0)(mongoose@7.3.3)(reflect-metadata@0.1.13)(rxjs@7.8.1)
   '@nestjs/passport':
     specifier: ^9.0.3
     version: 9.0.3(@nestjs/common@9.4.0)(passport@0.6.0)
@@ -84,8 +88,8 @@ dependencies:
     specifier: ^21.1.1
     version: 21.1.1
   mongoose:
-    specifier: ^7.1.0
-    version: 7.1.0
+    specifier: ^7.3.3
+    version: 7.3.3
   multer:
     specifier: 1.4.5-lts.1
     version: 1.4.5-lts.1
@@ -991,7 +995,7 @@ packages:
     resolution: {integrity: sha512-Z7C/xXCiGWsg0KuKsHTKJxbWhpI3Vs5GwLfOean7MGyVFGqdRgBbAjOCh6u4bbjPc/8MJ2pZmK/0DLdCbivLDA==}
     engines: {node: '>=8'}
 
-  /@mean-stream/nestx@0.6.1(@nestjs/common@9.4.0)(@nestjs/core@9.4.0)(@nestjs/event-emitter@1.4.1)(@nestjs/microservices@9.4.0)(@nestjs/mongoose@9.2.2)(@nestjs/platform-express@9.4.0)(@nestjs/swagger@6.3.0)(@nestjs/websockets@9.4.0)(class-transformer@0.5.1)(class-validator@0.14.0)(mongoose@7.1.0)(nats@2.13.1)(reflect-metadata@0.1.13)(rxjs@7.8.1)(tslib@2.5.0):
+  /@mean-stream/nestx@0.6.1(@nestjs/common@9.4.0)(@nestjs/core@9.4.0)(@nestjs/event-emitter@1.4.1)(@nestjs/microservices@9.4.0)(@nestjs/mongoose@9.2.2)(@nestjs/platform-express@9.4.0)(@nestjs/swagger@6.3.0)(@nestjs/websockets@9.4.0)(class-transformer@0.5.1)(class-validator@0.14.0)(mongoose@7.3.3)(nats@2.13.1)(reflect-metadata@0.1.13)(rxjs@7.8.1)(tslib@2.5.0):
     resolution: {integrity: sha512-POH2LBEmhebG3CedtHyNRMpBELXImz1Gukgdxv/pMspgNUg5DMd/0qc4Gk22cgh15Yv3wqmA6kfOgt3tGwlG8Q==}
     peerDependencies:
       '@nestjs/common': ^9.0.0
@@ -1031,13 +1035,13 @@ packages:
       '@nestjs/core': 9.4.0(@nestjs/common@9.4.0)(@nestjs/microservices@9.4.0)(@nestjs/platform-express@9.4.0)(@nestjs/websockets@9.4.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
       '@nestjs/event-emitter': 1.4.1(@nestjs/common@9.4.0)(@nestjs/core@9.4.0)(reflect-metadata@0.1.13)
       '@nestjs/microservices': 9.4.0(@nestjs/common@9.4.0)(@nestjs/core@9.4.0)(@nestjs/websockets@9.4.0)(nats@2.13.1)(reflect-metadata@0.1.13)(rxjs@7.8.1)
-      '@nestjs/mongoose': 9.2.2(@nestjs/common@9.4.0)(@nestjs/core@9.4.0)(mongoose@7.1.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
+      '@nestjs/mongoose': 9.2.2(@nestjs/common@9.4.0)(@nestjs/core@9.4.0)(mongoose@7.3.3)(reflect-metadata@0.1.13)(rxjs@7.8.1)
       '@nestjs/platform-express': 9.4.0(@nestjs/common@9.4.0)(@nestjs/core@9.4.0)
       '@nestjs/swagger': 6.3.0(@nestjs/common@9.4.0)(@nestjs/core@9.4.0)(class-transformer@0.5.1)(class-validator@0.14.0)(reflect-metadata@0.1.13)
       '@nestjs/websockets': 9.4.0(@nestjs/common@9.4.0)(@nestjs/core@9.4.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
       class-transformer: 0.5.1
       class-validator: 0.14.0
-      mongoose: 7.1.0
+      mongoose: 7.3.3
       nats: 2.13.1
       reflect-metadata: 0.1.13
       rxjs: 7.8.1
@@ -1248,7 +1252,7 @@ packages:
       rxjs: 7.8.1
       tslib: 2.5.0
 
-  /@nestjs/mongoose@9.2.2(@nestjs/common@9.4.0)(@nestjs/core@9.4.0)(mongoose@7.1.0)(reflect-metadata@0.1.13)(rxjs@7.8.1):
+  /@nestjs/mongoose@9.2.2(@nestjs/common@9.4.0)(@nestjs/core@9.4.0)(mongoose@7.3.3)(reflect-metadata@0.1.13)(rxjs@7.8.1):
     resolution: {integrity: sha512-szNuSUCwwbQSSeiTh8+tZ9fHV4nuzHwBDROb0hX0s7crwY15TunCfwyKbB2XjqkEQWUAasDeCBuKOJSL9N6tTg==}
     peerDependencies:
       '@nestjs/common': ^8.0.0 || ^9.0.0
@@ -1259,7 +1263,7 @@ packages:
     dependencies:
       '@nestjs/common': 9.4.0(class-transformer@0.5.1)(class-validator@0.14.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
       '@nestjs/core': 9.4.0(@nestjs/common@9.4.0)(@nestjs/microservices@9.4.0)(@nestjs/platform-express@9.4.0)(@nestjs/websockets@9.4.0)(reflect-metadata@0.1.13)(rxjs@7.8.1)
-      mongoose: 7.1.0
+      mongoose: 7.3.3
       reflect-metadata: 0.1.13
       rxjs: 7.8.1
     dev: false
@@ -2370,8 +2374,8 @@ packages:
     resolution: {integrity: sha512-vgnKAUzcDoa+AeyYwXCoHyF2q6u/8H46dxu5JN+4/TZeq/Dlinn0K6GvxsCLb3LHUJl0m/TLiEK31kUwtgocMQ==}
     dev: false
 
-  /bson@5.2.0:
-    resolution: {integrity: sha512-HevkSpDbpUfsrHWmWiAsNavANKYIErV2ePXllp1bwq5CDreAaFVj6RVlZpJnxK4WWDCJ/5jMUpaY6G526q3Hjg==}
+  /bson@5.4.0:
+    resolution: {integrity: sha512-WRZ5SQI5GfUuKnPTNmAYPiKIof3ORXAF4IRU5UcgmivNIon01rWQlw5RUH954dpu8yGL8T59YShVddIPaU/gFA==}
     engines: {node: '>=14.20.1'}
     dev: false
 
@@ -4605,8 +4609,8 @@ packages:
       whatwg-url: 11.0.0
     dev: false
 
-  /mongodb@5.3.0:
-    resolution: {integrity: sha512-Wy/sbahguL8c3TXQWXmuBabiLD+iVmz+tOgQf+FwkCjhUIorqbAxRbbz00g4ZoN4sXIPwpAlTANMaGRjGGTikQ==}
+  /mongodb@5.6.0:
+    resolution: {integrity: sha512-z8qVs9NfobHJm6uzK56XBZF8XwM9H294iRnB7wNjF0SnY93si5HPziIJn+qqvUR5QOff/4L0gCD6SShdR/GtVQ==}
     engines: {node: '>=14.20.1'}
     peerDependencies:
       '@aws-sdk/credential-providers': ^3.201.0
@@ -4620,20 +4624,20 @@ packages:
       snappy:
         optional: true
     dependencies:
-      bson: 5.2.0
+      bson: 5.4.0
       mongodb-connection-string-url: 2.6.0
       socks: 2.7.1
     optionalDependencies:
       saslprep: 1.0.3
     dev: false
 
-  /mongoose@7.1.0:
-    resolution: {integrity: sha512-shoo9z/7o96Ojx69wpJn65+EC+Mt3q1SWTducW+F2Y4ieCXo0lZwpCZedgC841MIvJ7V8o6gmzoN1NfcnOTOuw==}
-    engines: {node: '>=14.0.0'}
+  /mongoose@7.3.3:
+    resolution: {integrity: sha512-g4NrRGIUEUYLeScaSChQR8i4Dlk9lR0UJzkK3r6TPJyqJ6ZWdRVP3oXfOG9Yn+hNeKcCJKfVEHo+jsU1rh3YTA==}
+    engines: {node: '>=14.20.1'}
     dependencies:
-      bson: 5.2.0
+      bson: 5.4.0
       kareem: 2.5.1
-      mongodb: 5.3.0
+      mongodb: 5.6.0
       mpath: 0.9.0
       mquery: 5.0.0
       ms: 2.1.3
