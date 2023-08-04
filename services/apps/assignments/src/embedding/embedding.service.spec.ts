@@ -109,9 +109,11 @@ def foo():
     return 1
 
 def baz():
-  pass`;
+  pass
+`;
 
     expect(findIndentEnd(code, 0, 10)).toEqual(34);
     expect(findIndentEnd(code, 35, 45)).toEqual(52);
+    // TODO test with no newline at end of file
   });
 });
