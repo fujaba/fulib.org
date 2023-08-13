@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+    tags:
+      - v*
 
 jobs:
   deployment:
@@ -18,10 +20,17 @@ jobs:
         id: deployment
         run: |
           VERSION="$(git describe --tags)"
+          case "$GITHUB_REF" in
+            refs/tags/v*) TAG="${GITHUB_REF##*/}" ;;
+            *) TAG=latest ;;
+          esac
           echo "Git Describe Version: $VERSION"
+          echo "Docker Tag: $TAG"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
     outputs:
       version: ${{ steps.deployment.outputs.version }}
+      tag: ${{ steps.deployment.outputs.tag }}
   frontend:
     name: Frontend
     runs-on: ubuntu-latest
@@ -39,7 +48,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           registry: ${{ secrets.DOCKER_REGISTRY }}
           image_name: fulib/fulib.org-frontend
-          image_tag: ${{ needs.deployment.outputs.version }}
+          image_tag: ${{ needs.deployment.outputs.tag }}
           context: frontend/
       - name: Deploy to Rancher
         uses: sekassel-research/actions-rancher-update@2.0.2
@@ -50,7 +59,7 @@ jobs:
           project_id: ${{ secrets.RANCHER_PROJECT }}
           namespace: ${{ secrets.NAMESPACE }}
           deployment: fulib-frontend
-          docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-frontend:${{ needs.deployment.outputs.version }}
+          docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-frontend:${{ needs.deployment.outputs.tag }}
   backend:
     name: Backend
     runs-on: ubuntu-latest
@@ -65,7 +74,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           registry: ${{ secrets.DOCKER_REGISTRY }}
           image_name: fulib/fulib.org-backend
-          image_tag: ${{ needs.deployment.outputs.version }}
+          image_tag: ${{ needs.deployment.outputs.tag }}
           context: backend/
           build_extra_args: --build-arg VERSION=${{ needs.deployment.outputs.version }}
       - name: Deploy the Backend to Rancher
@@ -77,7 +86,7 @@ jobs:
           project_id: ${{ secrets.RANCHER_PROJECT }}
           namespace: ${{ secrets.NAMESPACE }}
           deployment: fulib-backend
-          docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-backend:${{ needs.deployment.outputs.version }}
+          docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-backend:${{ needs.deployment.outputs.tag }}
   services:
     name: ${{ matrix.service}} Service
     runs-on: ubuntu-latest
@@ -100,7 +109,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           registry: ${{ secrets.DOCKER_REGISTRY }}
           image_name: fulib/fulib.org-${{ matrix.service }}-service
-          image_tag: ${{ needs.deployment.outputs.version }}
+          image_tag: ${{ needs.deployment.outputs.tag }}
           build_extra_args: --build-arg=SERVICE=${{ matrix.service }}
           context: services/
       - name: Deploy to Rancher
@@ -112,7 +121,7 @@ jobs:
           project_id: ${{ secrets.RANCHER_PROJECT }}
           namespace: ${{ secrets.NAMESPACE }}
           deployment: fulib-${{ matrix.service }}-service
-          docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-${{ matrix.service }}-service:${{ needs.deployment.outputs.version }}
+          docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-${{ matrix.service }}-service:${{ needs.deployment.outputs.tag }}
   projects-images:
     name: Projects Images
     runs-on: ubuntu-latest
@@ -152,7 +161,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           registry: ${{ secrets.DOCKER_REGISTRY }}
           image_name: fulib/fulib.org-projects-proxy
-          image_tag: ${{ needs.deployment.outputs.version }}
+          image_tag: ${{ needs.deployment.outputs.tag }}
           context: projects/
           dockerfile: proxy/Dockerfile
   projects-runtime:
@@ -169,7 +178,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           registry: ${{ secrets.DOCKER_REGISTRY }}
           image_name: fulib/fulib.org-projects-runtime
-          image_tag: ${{ needs.deployment.outputs.version }}
+          image_tag: ${{ needs.deployment.outputs.tag }}
           context: projects/
           dockerfile: runtime/Dockerfile
   projects-deploy:
@@ -186,4 +195,4 @@ jobs:
           project_id: ${{ secrets.RANCHER_PROJECT }}
           namespace: ${{ secrets.NAMESPACE }}
           deployment: fulib-projects-runtime
-          docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-projects-runtime:${{ needs.deployment.outputs.version }}
+          docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-projects-runtime:${{ needs.deployment.outputs.tag }}
