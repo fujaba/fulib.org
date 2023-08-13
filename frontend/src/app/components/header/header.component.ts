@@ -55,7 +55,8 @@ export class HeaderComponent implements OnInit, AfterViewInit {
       if (this.changelogService.autoShow) {
         const lastUsedVersions = this.changelogService.lastUsedVersions;
         if (lastUsedVersions) {
-          const newVersions = this.changelogService.getVersionDiff(lastUsedVersions, currentVersions);
+          const strippedVersions = this.changelogService.stripBuildSuffix(currentVersions);
+          const newVersions = this.changelogService.getVersionDiff(lastUsedVersions, strippedVersions);
           if (Object.keys(newVersions).length) {
             this.router.navigate([{outlets: {modal: 'changelog'}}], {relativeTo: this.route});
           }
