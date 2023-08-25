@@ -142,9 +142,8 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           registry: ${{ secrets.DOCKER_REGISTRY }}
-          image_name: fulib/code-server-base
           context: projects/
-          dockerfile: base/Dockerfile
+          compose_file: projects/docker-compose.base.yaml
       - name: Build the Projects code-server Images
         uses: whoan/docker-build-with-cache-action@v5
         with:
@@ -152,7 +151,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           registry: ${{ secrets.DOCKER_REGISTRY }}
           context: projects/
-          compose_file: docker-compose.yaml
+          compose_file: context/docker-compose.techs.yaml
   projects-proxy:
     name: Projects Proxy
     runs-on: ubuntu-latest

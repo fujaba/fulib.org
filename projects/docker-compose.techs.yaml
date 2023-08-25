@@ -1,9 +1,4 @@
 services:
-  base:
-    image: registry.uniks.de/fulib/code-server-base
-    build:
-      context: .
-      dockerfile: base/Dockerfile
   fulib:
     image: registry.uniks.de/fulib/code-server-fulib:17
     build:
