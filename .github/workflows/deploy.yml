@@ -146,8 +146,13 @@ jobs:
           context: projects/
           dockerfile: base/Dockerfile
       - name: Build the Projects code-server Images
-        working-directory: projects
-        run: node build-all.mjs
+        uses: whoan/docker-build-with-cache-action@v5
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: ${{ secrets.DOCKER_REGISTRY }}
+          context: projects/
+          compose_file: docker-compose.yaml
   projects-proxy:
     name: Projects Proxy
     runs-on: ubuntu-latest
