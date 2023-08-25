@@ -32,7 +32,7 @@
     "tag": "registry.uniks.de/fulib/code-server-latex:2023",
     "name": "LaTeX",
     "desc": "LaTeX/TeXLive",
-    "dockerfile": "generic/Dockerfile",
+    "dockerfile": "latex/Dockerfile",
     "args": {
       "EXTENSION": "James-Yu.latex-workshop",
       "TEXLIVE_VERSION": "2023",
