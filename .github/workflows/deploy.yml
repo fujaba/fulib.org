@@ -151,7 +151,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           registry: ${{ secrets.DOCKER_REGISTRY }}
           context: projects/
-          compose_file: context/docker-compose.techs.yaml
+          compose_file: projects/docker-compose.techs.yaml
   projects-proxy:
     name: Projects Proxy
     runs-on: ubuntu-latest
