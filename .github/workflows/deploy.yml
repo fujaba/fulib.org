@@ -151,7 +151,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           registry: ${{ secrets.DOCKER_REGISTRY }}
           compose_file: docker-compose.projects-presets.yaml
-          services_regex: [^_].*
+          services_regex: '[^_].*'
   projects-proxy:
     name: Projects Proxy
     runs-on: ubuntu-latest
