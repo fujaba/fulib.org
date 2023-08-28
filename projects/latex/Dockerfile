@@ -15,13 +15,10 @@ RUN wget https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz \
     # install \
     && sudo ./install-tl --no-interaction --scheme basic \
     # update PATH \
-    && echo export PATH=/usr/local/texlive/*/bin/x86_64-linux:$PATH >> ~/.profile \
+    && echo export PATH="$(echo /usr/local/texlive/*/bin/*/):$PATH" >> ~/.profile \
     # cleanup \
     && cd .. \
     && rm -rf install-tl-*
-
-# symlink texlive to /usr/local/bin
-RUN for i in /usr/local/texlive/*/bin/x86_64-linux; do sudo ln -s $i/* /usr/local/bin/; done
 
 # enable tlmgr usertree \
 RUN sudo tlmgr init-usertree
