@@ -27,6 +27,5 @@ RUN for i in /usr/local/texlive/*/bin/x86_64-linux; do sudo ln -s $i/* /usr/loca
 RUN sudo tlmgr init-usertree
 
 # install some basic packages
-# see https://github.com/sekassel-research/thesis-template#installation
 ARG TEXLIVE_PACKAGES
 RUN sudo tlmgr install $TEXLIVE_PACKAGES

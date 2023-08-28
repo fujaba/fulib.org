@@ -30,7 +30,8 @@ services:
       args:
         EXTENSION: James-Yu.latex-workshop
         TEXLIVE_VERSION: '2023'
-        TEXLIVE_PACKAGES: footmisc siunitx paralist wrapfig minted acronym xstring bigfoot csquotes din1505
+        # see https://github.com/sekassel-research/thesis-template#installation
+        TEXLIVE_PACKAGES: collection-latexrecommended footmisc siunitx paralist wrapfig minted acronym xstring bigfoot csquotes din1505 multirow biber
   python:
     image: registry.uniks.de/fulib/code-server-python:3
     build:
