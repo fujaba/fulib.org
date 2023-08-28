@@ -136,22 +136,13 @@ jobs:
           registry: ${{ secrets.DOCKER_REGISTRY }}
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Build the Code Server Base Docker Image
-        uses: whoan/docker-build-with-cache-action@master
+      - name: Build the Code Server Docker Images
+        uses: whoan/docker-build-with-cache-action@v6
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           registry: ${{ secrets.DOCKER_REGISTRY }}
           compose_file: docker-compose.projects-presets.yaml
-          services_regex: '^_base$'
-      - name: Build the Projects code-server Images
-        uses: whoan/docker-build-with-cache-action@master
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          registry: ${{ secrets.DOCKER_REGISTRY }}
-          compose_file: docker-compose.projects-presets.yaml
-          services_regex: '^[^_].*$'
   projects-proxy:
     name: Projects Proxy
     runs-on: ubuntu-latest
