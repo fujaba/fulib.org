@@ -332,7 +332,7 @@ ${eofMarker}`]);
         return;
       }
 
-      await this.stop(name, labels['org.fulib.project']);
+      await this.stop(info.Id, labels['org.fulib.project']);
     }));
   }
 
