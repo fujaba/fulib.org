@@ -1,8 +1,14 @@
+# TODO this should be in projects/, but does not work https://github.com/whoan/docker-build-with-cache-action/issues/133
 services:
+  _base:
+    image: registry.uniks.de/fulib/code-server-base
+    build:
+      context: projects/
+      dockerfile: base/Dockerfile
   fulib:
     image: registry.uniks.de/fulib/code-server-fulib:17
     build:
-      context: .
+      context: projects/
       dockerfile: gradle/Dockerfile
       args:
         BUILD_GRADLE: fulib/build.gradle
@@ -10,7 +16,7 @@ services:
   java:
     image: registry.uniks.de/fulib/code-server-java:17
     build:
-      context: .
+      context: projects/
       dockerfile: gradle/Dockerfile
       args:
         BUILD_GRADLE: gradle/build.gradle
@@ -18,14 +24,14 @@ services:
   node:
     image: registry.uniks.de/fulib/code-server-node:18
     build:
-      context: .
+      context: projects/
       dockerfile: nodejs/Dockerfile
       args:
         NODE_VERSION: '18'
   latex:
     image: registry.uniks.de/fulib/code-server-latex:2023
     build:
-      context: .
+      context: projects/
       dockerfile: latex/Dockerfile
       args:
         EXTENSION: James-Yu.latex-workshop
@@ -35,7 +41,7 @@ services:
   python:
     image: registry.uniks.de/fulib/code-server-python:3
     build:
-      context: .
+      context: projects/
       dockerfile: generic/Dockerfile
       args:
         APT_DEPENDENCIES: python3
