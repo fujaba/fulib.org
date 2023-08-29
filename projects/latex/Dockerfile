@@ -21,8 +21,8 @@ RUN wget https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz \
     && rm -rf install-tl-*
 
 # enable tlmgr usertree \
-RUN sudo tlmgr init-usertree
+RUN sudo /usr/local/texlive/*/bin/*/tlmgr init-usertree
 
 # install some basic packages
 ARG TEXLIVE_PACKAGES
-RUN sudo tlmgr install $TEXLIVE_PACKAGES
+RUN sudo /usr/local/texlive/*/bin/*/tlmgr install $TEXLIVE_PACKAGES
