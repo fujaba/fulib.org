@@ -9,11 +9,12 @@ RUN sudo apt-get update -y \
     && sudo apt-get clean
 
 # install latest texlive (2023)
+ARG SCHEME
 RUN wget https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz \
     && tar -xzf install-tl-unx.tar.gz \
     && cd install-tl-*/ \
     # install \
-    && sudo ./install-tl --no-interaction --scheme basic \
+    && sudo ./install-tl --no-interaction --scheme $SCHEME \
     # update PATH \
     && echo export PATH="$(echo /usr/local/texlive/*/bin/*/):$PATH" >> ~/.profile \
     # cleanup \
