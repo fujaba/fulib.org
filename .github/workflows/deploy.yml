@@ -142,7 +142,8 @@ jobs:
         uses: docker/bake-action@v3
         with:
           push: true
-          files: projects/docker-compose.base.yaml
+          workdir: projects/
+          files: docker-compose.base.yaml
           set: |
             *.cache-to=type=gha,mode=max
             *.cache-from=type=gha
@@ -150,7 +151,8 @@ jobs:
         uses: docker/bake-action@v3
         with:
           push: true
-          files: projects/docker-compose.techs.yaml
+          workdir: projects/
+          files: docker-compose.techs.yaml
           set: |
             *.cache-to=type=gha,mode=max
             *.cache-from=type=gha
