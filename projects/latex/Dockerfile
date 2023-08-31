@@ -15,15 +15,20 @@ RUN wget https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz \
     && cd install-tl-*/ \
     # install \
     && sudo ./install-tl --no-interaction --scheme $SCHEME \
-    # update PATH \
-    && echo export PATH="$(echo /usr/local/texlive/*/bin/*/):$PATH" >> ~/.profile \
     # cleanup \
     && cd .. \
     && rm -rf install-tl-*
 
-# enable tlmgr usertree \
-RUN sudo /usr/local/texlive/*/bin/*/tlmgr init-usertree
+RUN sudo ln -s /usr/local/texlive/*/bin/* /usr/local/texlive/current
+
+ENV PATH=/usr/local/texlive/current:$PATH
+
+# enable tlmgr usertree
+RUN sudo /usr/local/texlive/current/tlmgr init-usertree
 
 # install some basic packages
 ARG TEXLIVE_PACKAGES
-RUN sudo /usr/local/texlive/*/bin/*/tlmgr install $TEXLIVE_PACKAGES
+RUN sudo /usr/local/texlive/current/tlmgr install $TEXLIVE_PACKAGES
+
+RUN echo "alias tlmgr='sudo /usr/local/texlive/current/tlmgr'" >> ~/.bashrc \
+    && echo "alias tlmgr='sudo /usr/local/texlive/current/tlmgr'" >> ~/.zshrc
