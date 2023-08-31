@@ -43,7 +43,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Build the Docker Image
-        uses: whoan/docker-build-with-cache-action@v5
+        uses: whoan/docker-build-with-cache-action@v6
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -69,7 +69,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Build the Backend Docker Image
-        uses: whoan/docker-build-with-cache-action@v5
+        uses: whoan/docker-build-with-cache-action@v6
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -104,7 +104,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Build the Docker Image
-        uses: whoan/docker-build-with-cache-action@v5
+        uses: whoan/docker-build-with-cache-action@v6
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -130,24 +130,32 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
       - name: Log in to Docker
         uses: docker/login-action@v2
         with:
           registry: ${{ secrets.DOCKER_REGISTRY }}
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Build the Code Server Base Docker Image
-        uses: whoan/docker-build-with-cache-action@v5
+      - name: Build and push base
+        uses: docker/bake-action@v3
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          registry: ${{ secrets.DOCKER_REGISTRY }}
-          image_name: fulib/code-server-base
-          context: projects/
-          dockerfile: base/Dockerfile
-      - name: Build the Projects code-server Images
-        working-directory: projects
-        run: node build-all.mjs
+          push: true
+          workdir: projects/
+          files: docker-compose.base.yaml
+          set: |
+            *.cache-to=type=gha,mode=max
+            *.cache-from=type=gha
+      - name: Build and push techs
+        uses: docker/bake-action@v3
+        with:
+          push: true
+          workdir: projects/
+          files: docker-compose.techs.yaml
+          set: |
+            *.cache-to=type=gha,mode=max
+            *.cache-from=type=gha
   projects-proxy:
     name: Projects Proxy
     runs-on: ubuntu-latest
@@ -156,7 +164,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Build the Projects Proxy Docker Image
-        uses: whoan/docker-build-with-cache-action@v5
+        uses: whoan/docker-build-with-cache-action@v6
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -173,7 +181,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Build the Projects Runtime Docker Image
-        uses: whoan/docker-build-with-cache-action@v5
+        uses: whoan/docker-build-with-cache-action@v6
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
