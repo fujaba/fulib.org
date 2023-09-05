@@ -1,6 +1,6 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
-import {NotFound} from '@mean-stream/nestx';
-import {Body, Controller, Delete, Get, Param, Patch, Post, Query} from '@nestjs/common';
+import {NotFound, ObjectIdArrayPipe} from '@mean-stream/nestx';
+import {Body, Controller, Delete, Get, Param, ParseArrayPipe, Patch, Post, Query} from '@nestjs/common';
 import {ApiCreatedResponse, ApiOkResponse, ApiQuery, ApiTags} from '@nestjs/swagger';
 import {isMongoId} from 'class-validator';
 import {FilterQuery, Types} from 'mongoose';
@@ -152,5 +152,18 @@ export class SolutionController {
     @Param('id') id: string,
   ): Promise<Solution | null> {
     return this.solutionService.remove(id);
+  }
+
+  @Delete('assignments/:assignment/solutions')
+  @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
+  @ApiOkResponse({type: [Solution]})
+  async removeAll(
+    @Param('assignment') assignment: string,
+    @Query('ids', ParseArrayPipe, ObjectIdArrayPipe) ids: Types.ObjectId[],
+  ): Promise<Solution[]> {
+    return this.solutionService.removeAll({
+      assignment,
+      _id: {$in: ids},
+    });
   }
 }
