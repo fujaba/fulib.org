@@ -4,7 +4,7 @@ import {ApiCreatedResponse, ApiTags} from '@nestjs/swagger';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {ReadSolutionDto} from '../solution/solution.dto';
 import {ClassroomService} from './classroom.service';
-import {ImportResult} from "./classroom.dto";
+import {ImportSolution} from "./classroom.dto";
 
 const forbiddenResponse = 'Not owner of assignment, or invalid Assignment-Token.';
 
@@ -23,7 +23,7 @@ export class ClassroomController {
   async importSolutions(
     @Param('assignment') assignment: string,
     @UploadedFiles() files?: Express.Multer.File[],
-  ): Promise<ImportResult> {
+  ): Promise<ImportSolution[]> {
     return files ? this.classroomService.importFiles(assignment, files) : this.classroomService.importSolutions(assignment);
   }
 }

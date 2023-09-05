@@ -11,9 +11,9 @@ import {SearchService} from '../search/search.service';
 import {AuthorInfo, Solution} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {generateToken} from '../utils';
-import {ImportResult} from "./classroom.dto";
 import {notFound} from "@mean-stream/nestx";
 import {MAX_FILE_SIZE, TEXT_EXTENSIONS} from "../search/search.constants";
+import {ImportSolution} from "./classroom.dto";
 
 interface RepositoryInfo {
   name: string;
@@ -38,19 +38,44 @@ export class ClassroomService {
   ) {
   }
 
-  async importFiles(id: string, files: Express.Multer.File[]): Promise<ImportResult> {
+  async importFiles(id: string, files: Express.Multer.File[]): Promise<ImportSolution[]> {
     const assignment = await this.assignmentService.findOne(id) || notFound(id);
-
-    const result = await this.solutionService.bulkWrite(files.map(file => {
+    const timestamp = new Date();
+    const importSolutions = files.map(file => {
       const [key, value] = this.parseAuthorInfo(assignment, file.originalname);
-      const author: AuthorInfo = {email: '', name: '', studentId: ''};
-      author[key] = value;
-      const solution: Solution = {
+      return {
         assignment: id,
+        author: {
+          email: '',
+          name: '',
+          studentId: '',
+          [key]: value,
+        },
+        timestamp,
+      } satisfies ImportSolution;
+    })
+    const solutions = await this.upsertSolutions(assignment, importSolutions);
+
+    const {codeSearch, mossId} = assignment.classroom || {};
+    if (codeSearch || mossId) {
+      await Promise.all(files.map(async (file, index) => {
+        const stream = createReadStream(file.path);
+        const solution = solutions.upsertedIds[index];
+        return this.importZipFiles(stream, id, solution);
+      }));
+    }
+
+    return importSolutions;
+  }
+
+  private async upsertSolutions(assignment: AssignmentDocument, importSolutions: ImportSolution[]) {
+    const result = await this.solutionService.bulkWrite(importSolutions.map(importSolution => {
+      const solution: Solution = {
+        ...importSolution,
         solution: '',
         token: generateToken(),
-        author,
       };
+      const [key, value] = Object.entries(importSolution.author).find(([, value]) => value)!;
       return {
         updateOne: {
           filter: {
@@ -62,17 +87,10 @@ export class ClassroomService {
         },
       };
     }));
-
-    const {codeSearch, mossId} = assignment.classroom || {};
-    if (codeSearch || mossId) {
-      await Promise.all(files.map(async (file, index) => {
-        const stream = createReadStream(file.path);
-        const solution = result.upsertedIds[index];
-        return this.importZipFiles(stream, id, solution);
-      }));
+    for (let i = 0; i < importSolutions.length; i++) {
+      importSolutions[i]._id = result.upsertedIds[i];
     }
-
-    return {length: result.upsertedCount};
+    return result;
   }
 
   private parseAuthorInfo(assignment: AssignmentDocument, filename: string): [keyof AuthorInfo, string] {
@@ -129,27 +147,56 @@ export class ClassroomService {
     }
   }
 
-  async importSolutions(id: string): Promise<ImportResult> {
+  async importSolutions(id: string): Promise<ImportSolution[]> {
     const assignment = await this.assignmentService.findOne(id) || notFound(id);
     if (!assignment.classroom || !assignment.classroom.org || !assignment.classroom.prefix || !assignment.classroom.token) {
-      return {length: 0};
+      return [];
     }
 
     return this.importSolutions2(assignment);
   }
 
-  async importSolutions2(assignment: AssignmentDocument): Promise<ImportResult> {
+  async importSolutions2(assignment: AssignmentDocument): Promise<ImportSolution[]> {
     const {token, codeSearch, mossId, openaiApiKey} = assignment.classroom!;
     if (!token) {
       throw new UnauthorizedException('Missing token');
     }
 
+    const repositories = await this.getRepositories(assignment);
+
+    const commits = await Promise.all(repositories.map(async repo => this.getMainCommitSHA(repo, token)));
+    const importSolutions = repositories.map((repo, index) => this.createImportSolution(assignment, repo, commits[index]));
+    const solutions = await this.upsertSolutions(assignment, importSolutions);
+
+    repositories.forEach((repo, i) => {
+      const commit = commits[i];
+      if (commit) {
+        this.tag(repo, token, assignment, commit);
+      }
+    });
+
+    (codeSearch || mossId || openaiApiKey) && await Promise.all(repositories.map(async (repo, i) => {
+      const commit = commits[i];
+      const upsertedId = solutions.upsertedIds[i];
+      if (commit && upsertedId) {
+        const zip = await this.getRepoZip(assignment, this.getGithubName(repo, assignment), commit);
+        return zip ? this.importZipFiles(zip, assignment._id, upsertedId, commit) : [];
+      } else {
+        return [];
+      }
+    }));
+
+    return importSolutions;
+  }
+
+  private async getRepositories(assignment: AssignmentDocument): Promise<RepositoryInfo[]> {
+    const token = assignment.classroom!.token!;
     const query = this.getQuery(assignment);
     const repositories: RepositoryInfo[] = [];
     let total = Number.MAX_SAFE_INTEGER;
     for (let page = 1; repositories.length < total; page++) {
       try {
-        const result = await this.github<SearchResult>('GET', 'https://api.github.com/search/repositories', token!, {
+        const result = await this.github<SearchResult>('GET', 'https://api.github.com/search/repositories', token, {
           q: query,
           per_page: 100,
           page,
@@ -163,45 +210,7 @@ export class ClassroomService {
         throw err;
       }
     }
-
-    const commits = await Promise.all(repositories.map(async repo => this.getMainCommitSHA(repo, token)));
-    const result = await this.solutionService.bulkWrite(repositories.map((repo, index) => {
-      const solution = this.createSolution(assignment, repo, commits[index]);
-      return {
-        updateOne: {
-          filter: {
-            assignment: assignment._id,
-            'author.github': solution.author.github,
-          },
-          update: {$setOnInsert: solution},
-          upsert: true,
-        },
-      };
-    }));
-
-    repositories.forEach((repo, i) => {
-      const commit = commits[i];
-      if (commit) {
-        this.tag(repo, token, assignment, commit);
-      }
-    });
-
-    if (!(codeSearch || mossId || openaiApiKey)) {
-      return {length: result.upsertedCount};
-    }
-
-    await Promise.all(repositories.map(async (repo, i) => {
-      const commit = commits[i];
-      const upsertedId = result.upsertedIds[i];
-      if (commit && upsertedId) {
-        const zip = await this.getRepoZip(assignment, this.getGithubName(repo, assignment), commit);
-        return zip ? this.importZipFiles(zip, assignment._id, upsertedId, commit) : [];
-      } else {
-        return [];
-      }
-    }));
-
-    return {length: result.upsertedCount};
+    return repositories;
   }
 
   private getQuery(assignment: AssignmentDocument): string {
@@ -240,7 +249,7 @@ export class ClassroomService {
     });
   }
 
-  private createSolution(assignment: AssignmentDocument, repo: RepositoryInfo, commit: string | undefined): Solution {
+  private createImportSolution(assignment: AssignmentDocument, repo: RepositoryInfo, commit: string | undefined): ImportSolution {
     return {
       assignment: assignment._id,
       author: {
@@ -249,9 +258,7 @@ export class ClassroomService {
         github: this.getGithubName(repo, assignment),
         studentId: '',
       },
-      solution: '',
       commit,
-      token: generateToken(),
       timestamp: new Date(repo.pushed_at),
     };
   }
