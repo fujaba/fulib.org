@@ -16,7 +16,7 @@
     <div *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-label="Loading...">
     </div>
   </div>
-  <div ngbDropdown class="d-inline-block me-2" *ngIf="(selected | keyvalue).length as count">
+  <div ngbDropdown class="d-inline-block me-2" *ngIf="(selected | keyvalue).length as count" autoClose="outside">
     <button class="btn btn-outline-secondary" id="actionsDropdown" ngbDropdownToggle ngbTooltip="Bulk Actions">
       <i class="bi-three-dots"></i>
       <span class="visually-hidden">Bulk Actions</span>
@@ -25,6 +25,21 @@
       <button ngbDropdownItem (click)="openSelected()">
         Open {{ count }} Solutions in New Tabs
       </button>
+      <button ngbDropdownItem class="text-danger" [ngbPopover]="deleteConfirm" autoClose="outside">
+        Delete {{ count }} Solutions
+      </button>
+      <ng-template #deleteConfirm>
+        <div class="d-flex flex-column">
+          <p>Are you sure you want to delete {{ count }} solutions?</p>
+          <div class="mb-3">
+            <label for="deleteInput">Type <b>{{ assignment?.title }}</b> to confirm</label>
+            <input type="text" class="form-control" id="deleteInput" #deleteInput>
+          </div>
+          <button class="btn btn-danger" [disabled]="deleteInput.value !== assignment?.title" (click)="deleteSelected()">
+            Delete
+          </button>
+        </div>
+      </ng-template>
     </div>
   </div>
   <div ngbDropdown class="d-inline-block">

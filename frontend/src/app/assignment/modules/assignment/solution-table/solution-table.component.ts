@@ -233,4 +233,8 @@ export class SolutionTableComponent implements OnInit {
       }
     }
   }
+
+  deleteSelected() {
+
+  }
 }
