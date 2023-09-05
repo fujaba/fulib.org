@@ -38,6 +38,7 @@ export class SolutionTableComponent implements OnInit {
   assignees: Partial<Record<string, Assignee>> = {};
   assigneeNames: string[] = [];
   evaluated: Partial<Record<string, boolean>> = {};
+  selected: Partial<Record<string, boolean>> = {};
 
   loading = false;
 
@@ -123,6 +124,24 @@ export class SolutionTableComponent implements OnInit {
     // copy is necessary to re-evaluate link pipes
     this.options = {...this.options, [key]: value};
     this.configService.set(key, value);
+  }
+
+  select(id: string, selected: boolean) {
+    if (selected) {
+      this.selected[id] = selected;
+    } else {
+      delete this.selected[id];
+    }
+  }
+
+  selectAll(selected: boolean) {
+    if (selected) {
+      for (const {_id} of this.solutions) {
+        this.selected[_id!] = true;
+      }
+    } else {
+      this.selected = {};
+    }
   }
 
   typeahead = (text$: Observable<string>): Observable<string[]> => {

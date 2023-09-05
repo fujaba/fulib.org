@@ -8,7 +8,10 @@
          placeholder="Name, Student ID, E-Mail, GitHub Username, Assignee"
          [ngModel]="search$.value" (ngModelChange)="search$.next($event)"
          [ngbTypeahead]="typeahead" [resultFormatter]="formatTypeahead">
-  <div style="width: 10rem">
+  <div style="width: 12rem">
+    <ng-container *ngIf="(selected | keyvalue).length as length">
+      {{ length }} /
+    </ng-container>
     {{ solutions.length }} Solutions
     <div *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-label="Loading...">
     </div>
@@ -63,6 +66,9 @@
 <table class="table table-bordered table-hover table-sm table-centered" *ngIf="solutions">
   <thead>
   <tr>
+    <th>
+      <input type="checkbox" [ngModel]="(selected | keyvalue).length == solutions.length" (ngModelChange)="selectAll($event)">
+    </th>
     <th *ngFor="let prop of authorProperties">
       {{ prop[0] }}
       <button class="btn btn-sm p-1 bi-clipboard" ngbTooltip="Copy Column as Text" (click)="copyAuthor(prop[0], prop[1])"></button>
@@ -108,6 +114,9 @@
   </thead>
   <tbody>
   <tr *ngFor="let solution of solutions; trackBy: solutionId">
+    <th>
+      <input type="checkbox" [ngModel]="selected[solution._id!]" (ngModelChange)="select(solution._id!, $event)">
+    </th>
     <td *ngFor="let prop of authorProperties">{{solution.author[prop[1]]}}</td>
     <td>
       <span *ngIf="solution.timestamp" [class]="
