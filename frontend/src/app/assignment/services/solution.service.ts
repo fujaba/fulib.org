@@ -205,6 +205,13 @@ export class SolutionService {
     return this.http.delete<Solution>(url, {headers});
   }
 
+  deleteAll(assignment: string, solutions: string[]): Observable<Solution> {
+    const headers = {};
+    this.addAssignmentToken(headers, assignment);
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions`;
+    return this.http.delete<Solution>(url, {headers, params: {ids: solutions}});
+  }
+
   getComments(assignment: string, solution: string): Observable<Comment[]> {
     const headers = {};
     this.addSolutionToken(headers, assignment, solution);
