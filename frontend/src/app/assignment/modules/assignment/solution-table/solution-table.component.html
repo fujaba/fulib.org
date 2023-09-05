@@ -16,8 +16,19 @@
     <div *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-label="Loading...">
     </div>
   </div>
+  <div ngbDropdown class="d-inline-block me-2" *ngIf="(selected | keyvalue).length as count">
+    <button class="btn btn-outline-secondary" id="actionsDropdown" ngbDropdownToggle ngbTooltip="Bulk Actions">
+      <i class="bi-three-dots"></i>
+      <span class="visually-hidden">Bulk Actions</span>
+    </button>
+    <div ngbDropdownMenu aria-labelledby="actionsDropdown">
+      <button ngbDropdownItem (click)="openSelected()">
+        Open {{ count }} Solutions in New Tabs
+      </button>
+    </div>
+  </div>
   <div ngbDropdown class="d-inline-block">
-    <button class="btn btn-outline-secondary" id="optionsDropdown" ngbDropdownToggle>
+    <button class="btn btn-outline-secondary" id="optionsDropdown" ngbDropdownToggle ngbTooltip="Options">
       <i class="bi-gear"></i>
       <span class="visually-hidden">Options</span>
     </button>

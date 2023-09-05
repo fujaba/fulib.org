@@ -224,4 +224,13 @@ export class SolutionTableComponent implements OnInit {
       this.toastService.error('Launch in Projects', 'Failed to launch in Projects', error);
     });
   }
+
+  openSelected() {
+    for (let i = this.solutions.length - 1; i >= 0; i--){
+      const {_id} = this.solutions[i];
+      if (_id && this.selected[_id]) {
+        open(`${location.href}/${_id}`, '_blank');
+      }
+    }
+  }
 }
