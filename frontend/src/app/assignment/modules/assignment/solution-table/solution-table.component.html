@@ -1,13 +1,15 @@
 <div class="p-3 d-flex align-items-center position-sticky bg-light bg-darkmode-dark" style="top: 3.5rem; z-index: 1">
-  <label for="searchInput" class="me-sm-2">
-    Search
-  </label>
-  <i class="bi-question-circle me-sm-2" ngbTooltip="View Search Help" [ngbPopover]="searchHelp" popoverTitle="Search Help" placement="bottom-left">
-  </i>
   <input type="search" class="form-control me-sm-2 flex-grow-1" id="searchInput"
-         placeholder="Name, Student ID, E-Mail, GitHub Username, Assignee"
+         placeholder="Search for Name, Student ID, E-Mail, GitHub Username, Assignee"
          [ngModel]="search$.value" (ngModelChange)="search$.next($event)"
          [ngbTypeahead]="typeahead" [resultFormatter]="formatTypeahead">
+  <button
+    class="btn btn-sm p-1 bi-question-circle me-sm-2"
+    ngbTooltip="View Search Help"
+    [ngbPopover]="searchHelp"
+    popoverTitle="Search Help"
+    placement="bottom-right"
+  ></button>
   <div style="width: 12rem">
     <ng-container *ngIf="(selected | keyvalue).length as length">
       {{ length }} /
