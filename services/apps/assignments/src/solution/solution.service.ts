@@ -139,6 +139,6 @@ export class SolutionService implements OnModuleInit {
   }
 
   private emit(event: string, solution: SolutionDocument) {
-    this.eventService.emit(`solution.${solution.id}.${event}`, solution);
+    this.eventService.emit(`assignments.${solution.assignment}.solutions.${solution.id}.${event}`, solution);
   }
 }
