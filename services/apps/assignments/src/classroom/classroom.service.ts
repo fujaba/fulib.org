@@ -199,7 +199,10 @@ export class ClassroomService {
       throw new UnauthorizedException('Missing token');
     }
     const repositories = await this.getRepositories(assignment);
-    return repositories.map(repo => this.createImportSolution(assignment, repo, undefined));
+    return repositories
+      .map(repo => this.createImportSolution(assignment, repo, undefined))
+      .sort((a, b) => a.author.github!.localeCompare(b.author.github!))
+    ;
   }
 
   private async getRepositories(assignment: AssignmentDocument): Promise<RepositoryInfo[]> {
