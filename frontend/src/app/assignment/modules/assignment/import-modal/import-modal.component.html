@@ -4,7 +4,7 @@
   </ng-container>
   <ng-container modal-body>
     <ul ngbNav #nav="ngbNav" [(activeId)]="mode" class="nav-tabs mb-3">
-      <li ngbNavItem="github">
+      <li ngbNavItem="github" (shown)="previewGitHubImport()">
         <a ngbNavLink>
           GitHub
         </a>
@@ -12,6 +12,12 @@
           Imports solutions from GitHub using the organisation and prefix configured in the
           <a routerLink="../edit/classroom">assignment settings</a>.
           No further configuration is required.
+          <hr/>
+          <ul>
+            <li *ngFor="let solution of previewSolutions">
+              {{ solution.author.github }}
+            </li>
+          </ul>
         </ng-template>
       </li>
       <li ngbNavItem="files">
@@ -74,7 +80,7 @@
           </ng-container>
         </ng-template>
       </li>
-      <li ngbNavItem="moss" (shown)="estimateCosts()">
+      <li ngbNavItem="moss">
         <a ngbNavLink>
           MOSS
         </a>

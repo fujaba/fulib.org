@@ -26,9 +26,13 @@ export default class Solution {
   points?: number;
 }
 
-export interface ImportResult {
-  length: number;
-}
+export type ImportSolution = Pick<Solution,
+  | '_id'
+  | 'assignment'
+  | 'timestamp'
+  | 'commit'
+  | 'author'
+>;
 
 export interface EstimatedCosts {
   tokens: number;

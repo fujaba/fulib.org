@@ -1,8 +1,8 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ToastService} from '@mean-stream/ngbx';
 import {SolutionService} from '../../../services/solution.service';
-import {EstimatedCosts, ImportResult} from "../../../model/solution";
+import {EstimatedCosts, ImportSolution} from "../../../model/solution";
 import {EMPTY, Observable} from "rxjs";
 import {AssignmentService} from "../../../services/assignment.service";
 
@@ -11,11 +11,12 @@ import {AssignmentService} from "../../../services/assignment.service";
   templateUrl: './import-modal.component.html',
   styleUrls: ['./import-modal.component.scss'],
 })
-export class ImportModalComponent {
+export class ImportModalComponent implements OnInit {
   mode = 'github';
   importing = false;
   files: File[] = [];
 
+  previewSolutions: ImportSolution[];
   estimatedCosts?: EstimatedCosts;
   finalCosts?: EstimatedCosts;
   mossResult?: string;
@@ -26,6 +27,9 @@ export class ImportModalComponent {
     private toastService: ToastService,
     public route: ActivatedRoute,
   ) {
+  }
+
+  ngOnInit() {
   }
 
   import() {
@@ -48,7 +52,7 @@ export class ImportModalComponent {
     });
   }
 
-  private getImporter(): Observable<EstimatedCosts | ImportResult | string> {
+  private getImporter(): Observable<EstimatedCosts | ImportSolution[] | string> {
     const assignmentId = this.route.snapshot.params.aid;
 
     switch (this.mode) {
@@ -67,6 +71,10 @@ export class ImportModalComponent {
 
   setFiles(files: FileList) {
     this.files = Array.from(files);
+  }
+
+  previewGitHubImport() {
+    this.solutionService.previewImport(this.route.snapshot.params.aid).subscribe(solutions => this.previewSolutions = solutions);
   }
 
   estimateCosts() {
