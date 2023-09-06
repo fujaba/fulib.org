@@ -57,7 +57,7 @@ export class ClassroomScheduler {
     await Promise.all(assignments.map(async a => {
       const webhook = a.classroom?.webhook;
       try {
-        const ids = await this.classroomService.importSolutions2(a as AssignmentDocument);
+        const ids = await this.classroomService.importSolutions(a);
         if (webhook) {
           this.notify(webhook, `The deadline for **${a.title}** is over. I imported **${ids.length}** Solutions.`);
         }

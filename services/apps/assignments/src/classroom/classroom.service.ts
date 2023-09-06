@@ -6,12 +6,10 @@ import {firstValueFrom} from 'rxjs';
 import {Stream} from 'stream';
 import {Entry as ZipEntry, Parse as unzip} from 'unzipper';
 import {AssignmentDocument} from '../assignment/assignment.schema';
-import {AssignmentService} from '../assignment/assignment.service';
 import {SearchService} from '../search/search.service';
 import {AuthorInfo, Solution} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {generateToken} from '../utils';
-import {notFound} from "@mean-stream/nestx";
 import {MAX_FILE_SIZE, TEXT_EXTENSIONS} from "../search/search.constants";
 import {ImportSolution} from "./classroom.dto";
 
@@ -31,20 +29,18 @@ interface SearchResult {
 @Injectable()
 export class ClassroomService {
   constructor(
-    private assignmentService: AssignmentService,
     private solutionService: SolutionService,
     private searchService: SearchService,
     private http: HttpService,
   ) {
   }
 
-  async importFiles(id: string, files: Express.Multer.File[]): Promise<ImportSolution[]> {
-    const assignment = await this.assignmentService.findOne(id) || notFound(id);
+  async importFiles(assignment: AssignmentDocument, files: Express.Multer.File[]): Promise<ImportSolution[]> {
     const timestamp = new Date();
     const importSolutions = files.map(file => {
       const [key, value] = this.parseAuthorInfo(assignment, file.originalname);
       return {
-        assignment: id,
+        assignment: assignment.id,
         author: {
           email: '',
           name: '',
@@ -61,7 +57,7 @@ export class ClassroomService {
       await Promise.all(files.map(async (file, index) => {
         const stream = createReadStream(file.path);
         const solution = solutions.upsertedIds[index];
-        return this.importZipFiles(stream, id, solution);
+        return this.importZipFiles(stream, assignment.id, solution);
       }));
     }
 
@@ -147,17 +143,15 @@ export class ClassroomService {
     }
   }
 
-  async importSolutions(id: string): Promise<ImportSolution[]> {
-    const assignment = await this.assignmentService.findOne(id) || notFound(id);
-    if (!assignment.classroom || !assignment.classroom.org || !assignment.classroom.prefix || !assignment.classroom.token) {
+  async importSolutions(assignment: AssignmentDocument): Promise<ImportSolution[]> {
+    if (!assignment.classroom) {
       return [];
     }
 
-    return this.importSolutions2(assignment);
-  }
-
-  async importSolutions2(assignment: AssignmentDocument): Promise<ImportSolution[]> {
-    const {token, codeSearch, mossId, openaiApiKey} = assignment.classroom!;
+    const {org, prefix, token, codeSearch, mossId, openaiApiKey} = assignment.classroom;
+    if (!org || !prefix) {
+      return [];
+    }
     if (!token) {
       throw new UnauthorizedException('Missing token');
     }
@@ -187,6 +181,21 @@ export class ClassroomService {
     }));
 
     return importSolutions;
+  }
+
+  async previewImports(assignment: AssignmentDocument): Promise<ImportSolution[]> {
+    if (!assignment.classroom) {
+      return [];
+    }
+    const {org, prefix, token} = assignment.classroom;
+    if (!org || !prefix) {
+      return [];
+    }
+    if (!token) {
+      throw new UnauthorizedException('Missing token');
+    }
+    const repositories = await this.getRepositories(assignment);
+    return repositories.map(repo => this.createImportSolution(assignment, repo, undefined));
   }
 
   private async getRepositories(assignment: AssignmentDocument): Promise<RepositoryInfo[]> {
