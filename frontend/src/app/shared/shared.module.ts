@@ -21,8 +21,9 @@ import {ProTipComponent} from './pro-tip/pro-tip.component';
 import {ProjectConfigFormComponent} from './project-config-form/project-config-form.component';
 import {ScenarioCodemirrorComponent} from './scenario-codemirror/scenario-codemirror.component';
 import {TabsComponent} from './tabs/tabs.component';
-import { TokenInputComponent } from './token-input/token-input.component';
-import { MaskedInputComponent } from './masked-input/masked-input.component';
+import {TokenInputComponent} from './token-input/token-input.component';
+import {MaskedInputComponent} from './masked-input/masked-input.component';
+import {DisabledTooltipComponent} from './disabled-tooltip/disabled-tooltip.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { MaskedInputComponent } from './masked-input/masked-input.component';
     DiagramViewComponent,
     TokenInputComponent,
     MaskedInputComponent,
+    DisabledTooltipComponent,
   ],
   imports: [
     FormsModule,
@@ -71,6 +73,7 @@ import { MaskedInputComponent } from './masked-input/masked-input.component';
     DiagramViewComponent,
     TokenInputComponent,
     MaskedInputComponent,
+    DisabledTooltipComponent,
   ],
   providers: [
     DurationPipe,

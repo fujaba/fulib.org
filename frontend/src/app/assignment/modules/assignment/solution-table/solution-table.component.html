@@ -27,20 +27,16 @@
       <button ngbDropdownItem (click)="openSelected()">
         Open {{ count }} Solutions in New Tabs
       </button>
-      <div [ngbTooltip]="!userToken || !assignment?.classroom?.org || !assignment?.classroom?.prefix ? submitTooltip : null">
-        <button ngbDropdownItem [disabled]="!userToken || !assignment?.classroom?.org || !assignment?.classroom?.prefix" (click)="submitSelected()">
+      <app-disabled-tooltip [require]="[
+        [!!assignment?.classroom?.org, 'Classroom Org is configured in Assignment'],
+        [!!assignment?.classroom?.prefix, 'Classroom Prefix is configured in Assignment'],
+        [!!userToken, 'You are logged in'],
+        [!!userToken, 'Your Account is linked to GitHub'],
+      ]" #submitIf>
+        <button ngbDropdownItem [disabled]="submitIf.isDisabled()" (click)="submitSelected()">
           Submit {{ count }} Feedback Issues
         </button>
-      </div>
-      <ng-template #submitTooltip>
-        All must be true:
-        <ul>
-          <li>Classroom Org is configured in Assignment</li>
-          <li>Classroom Prefix is configured in Assignment</li>
-          <li>You are logged in</li>
-          <li>Your Account is linked to GitHub</li>
-        </ul>
-      </ng-template>
+      </app-disabled-tooltip>
       <button ngbDropdownItem class="text-danger" [ngbPopover]="deleteConfirm" autoClose="outside">
         Delete {{ count }} Solutions
       </button>
