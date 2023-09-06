@@ -146,7 +146,7 @@ export class SolutionService {
     return this.http.get<ImportSolution[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/import`, {headers});
   }
 
-  import(assignment: string, files?: File[]): Observable<ImportSolution[]> {
+  import(assignment: string, files?: File[], usernames?: string[]): Observable<ImportSolution[]> {
     const headers = {};
     this.addAssignmentToken(headers, assignment);
     let body;
@@ -157,7 +157,10 @@ export class SolutionService {
       }
       body = data;
     }
-    return this.http.post<ImportSolution[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/import`, body, {headers});
+    return this.http.post<ImportSolution[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/import`, body, {
+      headers,
+      params: usernames ? {usernames} : undefined,
+    });
   }
 
   estimateCosts(assignment: string): Observable<EstimatedCosts> {

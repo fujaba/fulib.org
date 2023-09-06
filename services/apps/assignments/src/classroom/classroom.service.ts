@@ -143,7 +143,7 @@ export class ClassroomService {
     }
   }
 
-  async importSolutions(assignment: AssignmentDocument): Promise<ImportSolution[]> {
+  async importSolutions(assignment: AssignmentDocument, usernames?: string[]): Promise<ImportSolution[]> {
     if (!assignment.classroom) {
       return [];
     }
@@ -156,7 +156,11 @@ export class ClassroomService {
       throw new UnauthorizedException('Missing token');
     }
 
-    const repositories = await this.getRepositories(assignment);
+    let repositories = await this.getRepositories(assignment);
+    if (usernames && usernames.length) {
+      const usernamesSet = new Set(usernames);
+      repositories = repositories.filter(repo => usernamesSet.has(this.getGithubName(repo, assignment)));
+    }
 
     const commits = await Promise.all(repositories.map(async repo => this.getMainCommitSHA(repo, token)));
     const importSolutions = repositories.map((repo, index) => this.createImportSolution(assignment, repo, commits[index]));

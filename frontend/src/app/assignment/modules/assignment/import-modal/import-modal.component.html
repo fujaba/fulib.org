@@ -4,20 +4,29 @@
   </ng-container>
   <ng-container modal-body>
     <ul ngbNav #nav="ngbNav" [(activeId)]="mode" class="nav-tabs mb-3">
-      <li ngbNavItem="github" (shown)="previewGitHubImport()">
+      <li ngbNavItem="github">
         <a ngbNavLink>
           GitHub
         </a>
         <ng-template ngbNavContent>
-          Imports solutions from GitHub using the organisation and prefix configured in the
-          <a routerLink="../edit/classroom">assignment settings</a>.
-          No further configuration is required.
-          <hr/>
-          <ul>
-            <li *ngFor="let solution of previewSolutions">
-              {{ solution.author.github }}
-            </li>
-          </ul>
+          <p>
+            Imports solutions from GitHub using the organisation and prefix configured in the
+            <a routerLink="../edit/classroom">assignment settings</a>.
+            No further configuration is required.
+          </p>
+          <details #previewDetails (toggle)="previewDetails.open && previewGitHubImport()">
+            <summary>Select Students</summary>
+            <ul class="list-unstyled">
+              <li *ngFor="let solution of previewSolutions" class="form-check">
+                <input class="form-check-input" type="checkbox" [id]="'check-' + solution.author.github"
+                       [(ngModel)]="checkedUsernames[solution.author.github]">
+                <label class="form-check-label" [for]="'check-' + solution.author.github">
+                  {{ solution.author.github }}
+                  <span class="text-muted"> &bull; {{ solution.timestamp | date:'short' }}</span>
+                </label>
+              </li>
+            </ul>
+          </details>
         </ng-template>
       </li>
       <li ngbNavItem="files">

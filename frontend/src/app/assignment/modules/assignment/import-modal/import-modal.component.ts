@@ -16,6 +16,7 @@ export class ImportModalComponent implements OnInit {
   importing = false;
   files: File[] = [];
 
+  checkedUsernames: Partial<Record<string, boolean>> = {};
   previewSolutions: ImportSolution[];
   estimatedCosts?: EstimatedCosts;
   finalCosts?: EstimatedCosts;
@@ -57,7 +58,8 @@ export class ImportModalComponent implements OnInit {
 
     switch (this.mode) {
       case 'github':
-        return this.solutionService.import(assignmentId);
+        const usernames = Object.keys(this.checkedUsernames).filter(username => this.checkedUsernames[username]);
+        return this.solutionService.import(assignmentId, undefined, usernames);
       case 'files':
         return this.solutionService.import(assignmentId, this.files);
       case 'embeddings':
