@@ -1,0 +1,7 @@
+<div class="card position-fixed" style="bottom: 1rem; right: 1rem; width: 20rem">
+  <div class="card-body">
+    <span class="font-monospace">{{ renderedTime }}</span>
+    <button class="btn btn-primary" [class.bi-play]="!startTime" [class.bi-pause]="startTime" (click)="playPause()">
+    </button>
+  </div>
+</div>

@@ -16,6 +16,7 @@ import { GithubLinkPipe } from './pipes/github-link.pipe';
 import { CloneLinkPipe } from './pipes/clone-link.pipe';
 import { AssignmentActionsComponent } from './assignment-actions/assignment-actions.component';
 import { AssigneeInputComponent } from './assignee-input/assignee-input.component';
+import { TimetrackingComponent } from './timetracking/timetracking.component';
 
 
 @NgModule({
@@ -41,6 +42,7 @@ import { AssigneeInputComponent } from './assignee-input/assignee-input.componen
     CloneLinkPipe,
     AssignmentActionsComponent,
     AssigneeInputComponent,
+    TimetrackingComponent,
   ],
   exports: [
     AssignmentInfoComponent,
@@ -55,6 +57,7 @@ import { AssigneeInputComponent } from './assignee-input/assignee-input.componen
     CloneLinkPipe,
     AssignmentActionsComponent,
     AssigneeInputComponent,
+    TimetrackingComponent,
   ],
 })
 export class AssignmentSharedModule {
