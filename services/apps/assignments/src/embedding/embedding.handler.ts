@@ -2,6 +2,7 @@ import {Injectable} from "@nestjs/common";
 import {OnEvent} from "@nestjs/event-emitter";
 import {AssignmentDocument, Task} from "../assignment/assignment.schema";
 import {EmbeddingService} from "./embedding.service";
+import {SolutionDocument} from "../solution/solution.schema";
 
 @Injectable()
 export class EmbeddingHandler {
@@ -21,14 +22,12 @@ export class EmbeddingHandler {
     const taskIds = new Set<string>();
     const assignmentId = assignment._id.toString();
     this.upsertTasks(apiKey, assignmentId, assignment.tasks, '', taskIds);
-    const deleted = await this.embeddingService.deleteNotIn(assignmentId, [...taskIds]);
-    // console.log('Deleted', deleted, 'embeddings');
+    await this.embeddingService.deleteNotIn(assignmentId, [...taskIds]);
   }
 
   @OnEvent('assignments.*.deleted')
   async onAssignmentDeleted(assignment: AssignmentDocument) {
-    const deleted = await this.embeddingService.deleteNotIn(assignment._id.toString(), []);
-    // console.log('Deleted', deleted, 'embeddings');
+    await this.embeddingService.deleteNotIn(assignment._id.toString(), []);
   }
 
   private upsertTasks(apiKey: string, assignment: string, tasks: Task[], prefix: string, taskIds: Set<string>) {
@@ -48,5 +47,10 @@ export class EmbeddingHandler {
       text: prefix + task.description,
       embedding: [],
     }, apiKey);
+  }
+
+  @OnEvent('assignments.*.solutions.*.deleted')
+  async onSolutionDeleted(solution: SolutionDocument) {
+    await this.embeddingService.deleteBySolution(solution.assignment, solution.id);
   }
 }

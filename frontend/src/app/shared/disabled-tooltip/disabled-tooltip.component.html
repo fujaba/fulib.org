@@ -1,0 +1,12 @@
+<div [class]="class" [class.disabled]="disabled" [ngbTooltip]="disabled ? tooltip : null">
+  <ng-content></ng-content>
+</div>
+<ng-template #tooltip>
+  All must be true:
+  <ul class="text-start list-unstyled">
+    <li *ngFor="let item of require">
+      <i [class]="item[0] ? 'bi-check text-success' : 'bi-x text-danger'"></i>
+      {{ item[1] }}
+    </li>
+  </ul>
+</ng-template>

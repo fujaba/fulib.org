@@ -2,7 +2,7 @@ import {Component, OnInit, TrackByFunction} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ToastService} from '@mean-stream/ngbx';
 import {ClipboardService} from 'ngx-clipboard';
-import {BehaviorSubject, combineLatest, forkJoin, Observable} from 'rxjs';
+import {BehaviorSubject, combineLatest, firstValueFrom, forkJoin, Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 import {Assignee} from '../../../model/assignee';
 import Assignment, {ReadAssignmentDto} from '../../../model/assignment';
@@ -13,6 +13,8 @@ import {SolutionContainerService} from '../../../services/solution-container.ser
 import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
 import {TelemetryService} from '../../../services/telemetry.service';
+import {SubmitService} from "../submit.service";
+import {UserService} from "../../../../user/user.service";
 
 type SearchKey = keyof AuthorInfo | 'assignee';
 const searchKeys: readonly SearchKey[] = [
@@ -38,6 +40,9 @@ export class SolutionTableComponent implements OnInit {
   assignees: Partial<Record<string, Assignee>> = {};
   assigneeNames: string[] = [];
   evaluated: Partial<Record<string, boolean>> = {};
+  selected: Partial<Record<string, boolean>> = {};
+
+  userToken?: string;
 
   loading = false;
 
@@ -59,6 +64,8 @@ export class SolutionTableComponent implements OnInit {
     private toastService: ToastService,
     private taskService: TaskService,
     private clipboardService: ClipboardService,
+    private submitService: SubmitService,
+    private userService: UserService,
   ) {
   }
 
@@ -117,12 +124,32 @@ export class SolutionTableComponent implements OnInit {
         replaceUrl: true,
       });
     });
+
+    this.userService.getGitHubToken().subscribe(token => this.userToken = token);
   }
 
   setOption(key: ConfigKey, value: string) {
     // copy is necessary to re-evaluate link pipes
     this.options = {...this.options, [key]: value};
     this.configService.set(key, value);
+  }
+
+  select(id: string, selected: boolean) {
+    if (selected) {
+      this.selected[id] = selected;
+    } else {
+      delete this.selected[id];
+    }
+  }
+
+  selectAll(selected: boolean) {
+    if (selected) {
+      for (const {_id} of this.solutions) {
+        this.selected[_id!] = true;
+      }
+    } else {
+      this.selected = {};
+    }
   }
 
   typeahead = (text$: Observable<string>): Observable<string[]> => {
@@ -204,5 +231,52 @@ export class SolutionTableComponent implements OnInit {
       elem.disabled = false;
       this.toastService.error('Launch in Projects', 'Failed to launch in Projects', error);
     });
+  }
+
+  openSelected() {
+    for (let i = this.solutions.length - 1; i >= 0; i--){
+      const {_id} = this.solutions[i];
+      if (_id && this.selected[_id]) {
+        open(`${location.href}/${_id}`, '_blank');
+      }
+    }
+  }
+
+  deleteSelected() {
+    const ids = Object.keys(this.selected);
+    this.solutionService.deleteAll(this.assignment!._id!, ids).subscribe(() => {
+      this.toastService.success('Delete Solutions', `Successfully deleted ${ids.length} solutions`);
+      this.selected = {};
+      this.solutions = this.solutions.filter(s => !ids.includes(s._id!));
+    }, error => {
+      this.toastService.error('Delete Solutions', 'Failed to delete solutions', error);
+    });
+  }
+
+  async submitSelected() {
+    const {assignment, userToken} = this;
+    if (!userToken || !assignment || !assignment.classroom || !assignment.classroom.org || !assignment.classroom.prefix) {
+      return;
+    }
+
+    const timestamp = new Date();
+    const result = await Promise.all(this.solutions
+      .filter(s => this.selected[s._id!] && s.author.github)
+      .map(async solution => {
+        const issue = await this.submitService.createIssue(assignment, solution);
+        await this.submitService.postIssueToGitHub(assignment, solution, issue, userToken);
+        solution.points = issue._points;
+
+        this.telemetryService.create(assignment._id, solution._id!, {
+          action: 'submitFeedback',
+          timestamp,
+        }).subscribe();
+
+        this.solutionService.update(assignment._id, solution._id!, {
+          points: issue._points,
+        }).subscribe();
+      })
+    );
+    this.toastService.success('Submit Feedback', `Successfully submitted feedback for ${result.length} solutions`);
   }
 }

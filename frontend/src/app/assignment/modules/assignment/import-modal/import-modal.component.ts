@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ToastService} from '@mean-stream/ngbx';
 import {SolutionService} from '../../../services/solution.service';
-import {EstimatedCosts, ImportResult} from "../../../model/solution";
+import {EstimatedCosts, ImportSolution} from "../../../model/solution";
 import {EMPTY, Observable} from "rxjs";
 import {AssignmentService} from "../../../services/assignment.service";
 
@@ -16,6 +16,8 @@ export class ImportModalComponent {
   importing = false;
   files: File[] = [];
 
+  checkedUsernames: Partial<Record<string, boolean>> = {};
+  previewSolutions: ImportSolution[];
   estimatedCosts?: EstimatedCosts;
   finalCosts?: EstimatedCosts;
   mossResult?: string;
@@ -48,12 +50,13 @@ export class ImportModalComponent {
     });
   }
 
-  private getImporter(): Observable<EstimatedCosts | ImportResult | string> {
+  private getImporter(): Observable<EstimatedCosts | ImportSolution[] | string> {
     const assignmentId = this.route.snapshot.params.aid;
 
     switch (this.mode) {
       case 'github':
-        return this.solutionService.import(assignmentId);
+        const usernames = Object.keys(this.checkedUsernames).filter(username => this.checkedUsernames[username]);
+        return this.solutionService.import(assignmentId, undefined, usernames);
       case 'files':
         return this.solutionService.import(assignmentId, this.files);
       case 'embeddings':
@@ -67,6 +70,10 @@ export class ImportModalComponent {
 
   setFiles(files: FileList) {
     this.files = Array.from(files);
+  }
+
+  previewGitHubImport() {
+    this.solutionService.previewImport(this.route.snapshot.params.aid).subscribe(solutions => this.previewSolutions = solutions);
   }
 
   estimateCosts() {
