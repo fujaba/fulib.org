@@ -35,7 +35,7 @@
       [!!assignment?.classroom?.prefix, 'Classroom Prefix is configured in Assignment'],
       [!!solution?.author?.github, 'GitHub Username is set in Solution'],
     ]" #draftIf>
-      <a class="btn btn-primary bi-github" [href]="draftLink" target="_blank" [class.disabled]="draftIf.isDisabled()"
+      <a class="btn btn-primary bi-github" [href]="draftLink" target="_blank" [class.disabled]="draftIf.disabled"
          (click)="saveAndClose(modal)">
         Draft Issue
       </a>
@@ -47,7 +47,7 @@
       [!!githubToken, 'You are logged in'],
       [!!githubToken, 'Your Account is linked to GitHub'],
     ]" #submitIf>
-      <button class="btn btn-success" [disabled]="submitting || submitIf.isDisabled()"
+      <button class="btn btn-success" [disabled]="submitting || submitIf.disabled"
               (click)="submitIssue(); saveAndClose(modal)"
       >
         Submit Issue

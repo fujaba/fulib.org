@@ -1,14 +1,18 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 
 @Component({
   selector: 'app-disabled-tooltip',
   templateUrl: './disabled-tooltip.component.html',
   styleUrls: ['./disabled-tooltip.component.scss']
 })
-export class DisabledTooltipComponent {
+export class DisabledTooltipComponent implements OnChanges{
   @Input() require: [boolean, string][]; // [condition, tooltip]
 
-  isDisabled() {
-    return this.require.some(([enabled, _]) => !enabled);
+  disabled = false;
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.require) {
+      this.disabled = this.require.some(([condition, _]) => !condition);
+    }
   }
 }

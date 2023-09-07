@@ -1,4 +1,4 @@
-<div class="d-inline-block" [class.disabled]="isDisabled()" [ngbTooltip]="isDisabled() ? tooltip : null">
+<div class="d-inline-block" [class.disabled]="disabled" [ngbTooltip]="disabled ? tooltip : null">
   <ng-content></ng-content>
 </div>
 <ng-template #tooltip>

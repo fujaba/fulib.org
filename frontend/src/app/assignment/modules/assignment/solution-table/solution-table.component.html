@@ -33,7 +33,7 @@
         [!!userToken, 'You are logged in'],
         [!!userToken, 'Your Account is linked to GitHub'],
       ]" #submitIf>
-        <button ngbDropdownItem [disabled]="submitIf.isDisabled()" (click)="submitSelected()">
+        <button ngbDropdownItem [disabled]="submitIf.disabled" (click)="submitSelected()">
           Submit {{ count }} Feedback Issues
         </button>
       </app-disabled-tooltip>
