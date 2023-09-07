@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ToastService} from '@mean-stream/ngbx';
 import {SolutionService} from '../../../services/solution.service';
@@ -11,7 +11,7 @@ import {AssignmentService} from "../../../services/assignment.service";
   templateUrl: './import-modal.component.html',
   styleUrls: ['./import-modal.component.scss'],
 })
-export class ImportModalComponent implements OnInit {
+export class ImportModalComponent {
   mode = 'github';
   importing = false;
   files: File[] = [];
@@ -28,9 +28,6 @@ export class ImportModalComponent implements OnInit {
     private toastService: ToastService,
     public route: ActivatedRoute,
   ) {
-  }
-
-  ngOnInit() {
   }
 
   import() {

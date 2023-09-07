@@ -18,7 +18,7 @@
     <div *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-label="Loading...">
     </div>
   </div>
-  <div ngbDropdown class="d-inline-block me-2" *ngIf="(selected | keyvalue).length as count" autoClose="outside">
+  <div ngbDropdown class="d-inline-block me-2" *ngIf="(selected | keyvalue).length as count" [autoClose]="'outside'">
     <button class="btn btn-outline-secondary" id="actionsDropdown" ngbDropdownToggle ngbTooltip="Bulk Actions">
       <i class="bi-three-dots"></i>
       <span class="visually-hidden">Bulk Actions</span>
@@ -37,7 +37,7 @@
           Submit {{ count }} Feedback Issues
         </button>
       </app-disabled-tooltip>
-      <button ngbDropdownItem class="text-danger" [ngbPopover]="deleteConfirm" autoClose="outside">
+      <button ngbDropdownItem class="text-danger" [ngbPopover]="deleteConfirm" [autoClose]="'outside'">
         Delete {{ count }} Solutions
       </button>
       <ng-template #deleteConfirm>
@@ -68,7 +68,7 @@
         <button
           *ngFor="let item of option.options"
           ngbDropdownItem
-          role="check"
+          role="checkbox"
           (click)="setOption(option.key, item[0])"
           class="dropdown-item-check"
           [class.checked]="options[option.key] === item[0]"
@@ -105,7 +105,7 @@
   <thead>
   <tr>
     <th>
-      <input type="checkbox" [ngModel]="(selected | keyvalue).length == solutions.length" (ngModelChange)="selectAll($event)">
+      <input type="checkbox" [ngModel]="(selected | keyvalue).length === solutions.length" (ngModelChange)="selectAll($event)">
     </th>
     <th *ngFor="let prop of authorProperties">
       {{ prop[0] }}
@@ -167,9 +167,8 @@
       <span
         class="badge bg-{{
           solution.points !== undefined ? 'primary'
-          : evaluated[solution._id!] === true ? 'warning'
-          : evaluated[solution._id!] === false ? 'info'
-          : 'secondary'
+          : evaluated[solution._id!] === undefined ? 'secondary'
+          : evaluated[solution._id!] ? 'warning' : 'info'
         }}"
       >
         {{ solution.points ?? '?' }} / {{ totalPoints }}
