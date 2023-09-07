@@ -189,6 +189,23 @@ export class EmbeddingService implements OnModuleInit {
     });
     return body.deleted || 0;
   }
+
+  async deleteBySolution(assignment: string, solution: string): Promise<number> {
+    const body = await this.elasticsearchService.deleteByQuery({
+      index: 'embeddings',
+      query: {
+        bool: {
+          must: {
+            term: {
+              assignment,
+              solution,
+            },
+          },
+        },
+      },
+    });
+    return body.deleted || 0;
+  }
 }
 
 export const PYTHON_FUNCTION_HEADER = /(?:async\s*)?def ([a-zA-Z0-9_]+)\([^)]*\)\s*:/gi;
