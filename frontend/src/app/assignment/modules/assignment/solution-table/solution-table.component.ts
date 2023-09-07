@@ -201,10 +201,10 @@ export class SolutionTableComponent implements OnInit {
     return [...valueSet].sort();
   }
 
-  telemetry(solution: Solution, action: string) {
+  telemetry(solution: Solution, action: string, timestamp = new Date()) {
     this.telemetryService.create(solution.assignment, solution._id!, {
       action,
-      timestamp: new Date(),
+      timestamp,
     }).subscribe();
   }
 
@@ -267,10 +267,7 @@ export class SolutionTableComponent implements OnInit {
         await this.submitService.postIssueToGitHub(assignment, solution, issue, userToken);
         solution.points = issue._points;
 
-        this.telemetryService.create(assignment._id, solution._id!, {
-          action: 'submitFeedback',
-          timestamp,
-        }).subscribe();
+        this.telemetry(solution, 'submitFeedback', timestamp);
 
         this.solutionService.update(assignment._id, solution._id!, {
           points: issue._points,

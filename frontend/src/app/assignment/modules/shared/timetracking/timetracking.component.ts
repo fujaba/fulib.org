@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, HostListener, Input} from '@angular/core';
 import {animationFrameScheduler, interval, Subscription} from "rxjs";
 
 @Component({
@@ -7,6 +7,15 @@ import {animationFrameScheduler, interval, Subscription} from "rxjs";
   styleUrls: ['./timetracking.component.scss'],
 })
 export class TimetrackingComponent {
+  readonly actionName = {
+    viewSolutionTable: 'Viewing Solution Table',
+    viewSolution: 'Viewing Solution',
+    idle: 'Idling...',
+  };
+
+  @Input() action = 'idle';
+  @Input() pauseOnBlur = false;
+
   accTime = 0;
   startTime = 0;
 
@@ -39,17 +48,31 @@ export class TimetrackingComponent {
     this.subscription?.unsubscribe();
   }
 
+  @HostListener('window:blur')
+  onBlur() {
+    if (!this.startTime || !this.pauseOnBlur) {
+      return;
+    }
+    this.pause();
+  }
+
   playPause() {
     if (!this.startTime) {
-      // Start timer
-      this.startTime = Date.now();
-      this.startRenderTimer();
+      this.play();
     } else {
-      // Pause timer
-      this.accTime += Date.now() - this.startTime;
-      this.startTime = 0;
-      this.renderTime();
-      this.stopRenderTimer();
+      this.pause();
     }
+  }
+
+  private play() {
+    this.startTime = Date.now();
+    this.startRenderTimer();
+  }
+
+  private pause() {
+    this.accTime += Date.now() - this.startTime;
+    this.startTime = 0;
+    this.renderTime();
+    this.stopRenderTimer();
   }
 }
