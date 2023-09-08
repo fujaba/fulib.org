@@ -15,15 +15,6 @@ export class EmbeddingController {
   ) {
   }
 
-  @Get('embeddings')
-  @ApiOkResponse({type: EmbeddingEstimate})
-  @AssignmentAuth({forbiddenResponse: 'You are not allowed to estimate embeddings.'})
-  async estimateEmbeddings(
-    @Param('assignment') assignment: string,
-  ): Promise<EmbeddingEstimate> {
-    return this.embeddingService.estimateEmbeddings(assignment);
-  }
-
   @Post('embeddings')
   @ApiCreatedResponse({type: EmbeddingEstimate})
   @AssignmentAuth({forbiddenResponse: 'You are not allowed to create embeddings.'})
@@ -41,6 +32,21 @@ export class EmbeddingController {
       return this.embeddingService.createEmbeddings(assignmentId, apiKey);
     }
     return {tokens: 0, estimatedCost: 0};
+  }
+
+  @Get('embeddings')
+  @ApiOkResponse({type: EmbeddingEstimate})
+  @AssignmentAuth({forbiddenResponse: 'You are not allowed to estimate embeddings.'})
+  async getEmbeddings(
+    @Param('assignment') assignment: string,
+    @Query('id') id: string,
+  ): Promise<Embeddable[]> {
+    const embeddable = await this.embeddingService.find(id) || notFound(id);
+    return this.embeddingService.getNearest({
+      assignment,
+      type: 'snippet',
+      embedding: embeddable.embedding,
+    });
   }
 
   @Get('solutions/:solution/embeddings')
