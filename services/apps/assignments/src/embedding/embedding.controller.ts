@@ -1,4 +1,4 @@
-import {Controller, Get, Param, Post, Query} from '@nestjs/common';
+import {Controller, Get, Param, ParseBoolPipe, Post, Query} from '@nestjs/common';
 import {ApiCreatedResponse, ApiExtraModels, ApiOkResponse, ApiTags, refs} from "@nestjs/swagger";
 import {AssignmentAuth} from "../assignment/assignment-auth.decorator";
 import {Embeddable, EmbeddingEstimate, SnippetEmbeddable, TaskEmbeddable} from "./embedding.dto";
@@ -29,7 +29,12 @@ export class EmbeddingController {
   @AssignmentAuth({forbiddenResponse: 'You are not allowed to create embeddings.'})
   async createEmbeddings(
     @Param('assignment') assignmentId: string,
+    @Query('estimate', ParseBoolPipe) estimate?: boolean,
   ): Promise<EmbeddingEstimate> {
+    if (estimate) {
+      return this.embeddingService.estimateEmbeddings(assignmentId);
+    }
+
     const assignment = await this.assignmentService.findOne(assignmentId) || notFound(assignmentId);
     const apiKey = assignment.classroom?.openaiApiKey;
     if (apiKey) {

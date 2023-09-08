@@ -77,6 +77,6 @@ export class ImportModalComponent {
   }
 
   estimateCosts() {
-    this.solutionService.estimateCosts(this.route.snapshot.params.aid).subscribe(costs => this.estimatedCosts = costs);
+    this.solutionService.importEmbeddings(this.route.snapshot.params.aid, true).subscribe(costs => this.estimatedCosts = costs);
   }
 }

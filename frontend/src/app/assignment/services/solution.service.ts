@@ -163,16 +163,13 @@ export class SolutionService {
     });
   }
 
-  estimateCosts(assignment: string): Observable<EstimatedCosts> {
+  importEmbeddings(assignment: string, estimate?: boolean): Observable<EstimatedCosts> {
     const headers = {};
     this.addAssignmentToken(headers, assignment);
-    return this.http.get<EstimatedCosts>(`${environment.assignmentsApiUrl}/assignments/${assignment}/embeddings`, {headers});
-  }
-
-  importEmbeddings(assignment: string): Observable<EstimatedCosts> {
-    const headers = {};
-    this.addAssignmentToken(headers, assignment);
-    return this.http.post<EstimatedCosts>(`${environment.assignmentsApiUrl}/assignments/${assignment}/embeddings`, {}, {headers});
+    return this.http.post<EstimatedCosts>(`${environment.assignmentsApiUrl}/assignments/${assignment}/embeddings`, {}, {
+      headers,
+      params: estimate ? {estimate} : undefined,
+    });
   }
 
   get(assignment: Assignment | string, id: string): Observable<Solution> {
