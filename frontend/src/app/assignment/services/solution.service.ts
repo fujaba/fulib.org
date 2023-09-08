@@ -334,13 +334,31 @@ export class SolutionService {
     this.addAssignmentToken(headers, assignment);
     const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/embeddings`;
     return this.http.get<any[]>(url, {headers, params: {task}}).pipe(
-      map(embeddings => embeddings.map(({file, line, text, _score}) => ({
-        file,
-        from: {line, character: 0},
-        to: {line: line + text.split('\n').length - 2, character: 0},
-        comment: '',
-        score: _score,
-        code: text.substring(text.indexOf('\n') + 2),
+      map(embeddings => embeddings.map(emb => this.convertEmbeddable(emb))),
+    );
+  }
+
+  private convertEmbeddable({file, line, text, _score}): Snippet {
+    return {
+      file,
+      from: {line, character: 0},
+      to: {line: line + text.split('\n').length - 2, character: 0},
+      comment: '',
+      score: _score,
+      code: text.substring(text.indexOf('\n') + 2),
+    };
+  }
+
+  getSimilarEmbeddingSnippets(assignment: string, solution: string, snippet: Snippet): Observable<(Snippet & {solution: string})[]> {
+    const headers = {};
+    this.addAssignmentToken(headers, assignment);
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/embeddings`;
+    const name = /([a-zA-Z0-9_]+)\([^)]*\)\s*\{/gi.exec(snippet.code)?.[1];
+    const id = `${solution}-${snippet.file}-${snippet.from.line}-${name}`;
+    return this.http.get<any[]>(url, {headers, params: {id}}).pipe(
+      map(embeddings => embeddings.map(emb => ({
+        ...this.convertEmbeddable(emb),
+        solution: emb.solution,
       }))),
     );
   }

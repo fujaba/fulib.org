@@ -1,0 +1,40 @@
+<ngbx-modal #modal size="xl" [back]="['../..']">
+  <ng-container modal-title>
+    Similar Solutions
+    <span class="text-muted">
+      {{ task?.description }}
+    </span>
+  </ng-container>
+  <ng-container modal-body>
+    <app-evaluation-form [dto]="dto" [task]="task"></app-evaluation-form>
+    <ul class="list-unstyled">
+      <li *ngFor="let solution of solutions">
+        <div class="form-check" [class.bg-success]="selection[solution._id!]">
+          <input class="form-check-input" type="checkbox" [id]="'check-' + solution._id"
+                 [disabled]="solution._id === route.snapshot.params.sid"
+                 [(ngModel)]="selection[solution._id!]">
+          <label class="form-check-label" [for]="'check-' + solution._id">
+            Solution by {{ solution | solutionName }}
+          </label>
+        </div>
+        <div class="ms-4 w-100 overflow-scroll d-flex">
+          <app-edit-snippet
+            *ngFor="let snippet of snippets[solution._id!]; let index=index"
+            class="me-2"
+            [index]="index" [snippet]="snippet"
+            (updated)="snippets[solution._id!]![index] = $event"
+            (deleted)="snippets[solution._id!]!.splice(index, 1)"
+          ></app-edit-snippet>
+        </div>
+      </li>
+    </ul>
+  </ng-container>
+  <ng-container modal-footer>
+    <button type="button" class="btn btn-secondary" (click)="modal.close()">
+      Cancel
+    </button>
+    <button type="button" class="btn btn-primary" (click)="submit(); modal.close()">
+      Submit
+    </button>
+  </ng-container>
+</ngbx-modal>
