@@ -1,5 +1,5 @@
 import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Route, Router} from '@angular/router';
 import {ModalComponent, ToastService} from '@mean-stream/ngbx';
 import {EMPTY, merge, of, Subject, Subscription} from 'rxjs';
 import {debounceTime, distinctUntilChanged, filter, map, share, switchMap, tap} from 'rxjs/operators';
@@ -47,6 +47,8 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
 
   embeddingSnippets: Snippet[] = [];
 
+  viewSimilar = true;
+
   subscriptions = new Subscription();
 
   constructor(
@@ -58,6 +60,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     private toastService: ToastService,
     private telemetryService: TelemetryService,
     public route: ActivatedRoute,
+    private router: Router,
   ) {
   }
 
@@ -203,6 +206,10 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       const op = this.evaluation ? 'updated' : 'created';
       this.toastService.success('Evaluation', `Successfully ${op} evaluation${this.codeSearchInfo(result.codeSearch)}`);
       this.evaluation = result;
+
+      if (this.viewSimilar) {
+        this.router.navigate(['similar'], {relativeTo: this.route});
+      }
     }, error => {
       this.toastService.error('Evaluation', `Failed to ${this.evaluation ? 'update' : 'create'} evaluation`, error);
     });
