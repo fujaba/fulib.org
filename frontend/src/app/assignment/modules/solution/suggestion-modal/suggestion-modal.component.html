@@ -19,6 +19,10 @@
                 <label class="form-check-label" [for]="'check-' + solution._id">
                   Solution by {{ solution | solutionName }}
                 </label>
+                <span *ngIf="existingEvaluations[solution._id!] && solution._id !== solutionId" class="text-muted">
+                  &bull;
+                  <a [routerLink]="['../../../..', solution._id, 'tasks', task?._id]">View Evaluation</a>
+                </span>
               </div>
             </th>
           </tr>
