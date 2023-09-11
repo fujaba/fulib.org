@@ -17,6 +17,7 @@ import {ToastService} from "@mean-stream/ngbx";
   styleUrls: ['./suggestion-modal.component.scss']
 })
 export class SuggestionModalComponent implements OnInit {
+  solutionId!: string;
   task?: Task;
   evaluation?: Evaluation;
   dto: CreateEvaluationDto = {
@@ -43,6 +44,8 @@ export class SuggestionModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.dto.task = this.route.snapshot.params.task;
+
+    this.route.params.subscribe(({sid}) => this.solutionId = sid);
 
     this.route.params.pipe(
       switchMap(({aid, task}) => this.assignmentService.get(aid).pipe(

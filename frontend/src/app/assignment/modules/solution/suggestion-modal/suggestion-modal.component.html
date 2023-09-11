@@ -11,10 +11,10 @@
       <table class="table">
         <thead>
           <tr>
-            <th *ngFor="let solution of solutions" [class]="solution._id === route.snapshot.params.sid ? 'bg-body sticky-start' : ''">
+            <th *ngFor="let solution of solutions" [class]="solution._id === solutionId ? 'bg-body sticky-start' : ''">
               <div class="form-check" [class.bg-success]="selection[solution._id!]">
                 <input class="form-check-input" type="checkbox" [id]="'check-' + solution._id"
-                       [disabled]="solution._id === route.snapshot.params.sid"
+                       [disabled]="solution._id === solutionId"
                        [(ngModel)]="selection[solution._id!]">
                 <label class="form-check-label" [for]="'check-' + solution._id">
                   Solution by {{ solution | solutionName }}
@@ -24,9 +24,9 @@
           </tr>
         </thead>
         <tbody class="align-top">
-          <tr *ngFor="let originalSnippet of snippets[route.snapshot.params.sid]; let index=index">
+          <tr *ngFor="let originalSnippet of snippets[solutionId]; let index=index">
             <td *ngFor="let solution of solutions"
-                [class]="solution._id === route.snapshot.params.sid ? 'bg-body sticky-start' : ''"
+                [class]="solution._id === solutionId ? 'bg-body sticky-start' : ''"
                 style="max-width: 400px"
             >
               <ng-container *ngIf="snippets[solution._id!]?.[index] as solutionSnippet">
