@@ -14,7 +14,7 @@
             <th *ngFor="let solution of solutions" [class]="solution._id === solutionId ? 'bg-body sticky-start' : ''">
               <div class="form-check" [class.bg-success]="selection[solution._id!]">
                 <input class="form-check-input" type="checkbox" [id]="'check-' + solution._id"
-                       [disabled]="solution._id === solutionId"
+                       [disabled]="!!existingEvaluations[solution._id!]"
                        [(ngModel)]="selection[solution._id!]">
                 <label class="form-check-label" [for]="'check-' + solution._id">
                   Solution by {{ solution | solutionName }}

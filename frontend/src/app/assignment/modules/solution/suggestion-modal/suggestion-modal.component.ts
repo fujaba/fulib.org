@@ -30,6 +30,7 @@ export class SuggestionModalComponent implements OnInit {
   };
   solutions: Solution[] = [];
   selection: Partial<Record<string, boolean>> = {};
+  existingEvaluations: Partial<Record<string, boolean>> = {};
   snippets: Partial<Record<string, Snippet[]>> = {};
 
   constructor(
@@ -53,6 +54,13 @@ export class SuggestionModalComponent implements OnInit {
       )),
     ).subscribe(task => this.task = task);
 
+
+    this.route.params.pipe(
+      switchMap(({aid, sid, task}) => this.solutionService.getEvaluationValues<string>(aid, 'solution', {task})),
+    ).subscribe(ids => {
+      this.existingEvaluations = Object.fromEntries(ids.map(id => [id, true]));
+    })
+
     this.route.params.pipe(
       switchMap(({aid, sid, task}) => this.solutionService.getEvaluationByTask(aid, sid, task)),
       filter((e): e is Evaluation => !!e),
@@ -65,6 +73,7 @@ export class SuggestionModalComponent implements OnInit {
         .map(snippet => this.solutionService.getSimilarEmbeddingSnippets(evaluation.assignment, evaluation.solution, snippet))
       )),
       map(result => {
+        this.snippets = {};
         for (let snippetIndex = 0; snippetIndex < result.length; snippetIndex++) {
           for (const snippet of result[snippetIndex]) {
             (this.snippets[snippet.solution] ||= [])[snippetIndex] ||= snippet;
