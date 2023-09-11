@@ -16,6 +16,7 @@
     (click)="snippet.comment = ''"
   ></button>
   <button
+    *ngIf="deleted.observed"
     type="button"
     class="btn btn-outline-danger bi-trash"
     ngbTooltip="Delete Snippet"
