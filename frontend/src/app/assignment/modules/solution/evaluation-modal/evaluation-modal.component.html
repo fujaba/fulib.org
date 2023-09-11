@@ -47,8 +47,8 @@
         <app-edit-snippet
           [snippet]="snippet" [index]="index" [comments]="comments"
           (deleted)="deleteSnippet(index)"
-          (updated)="snippetUpdates$.next($event)"
         ></app-edit-snippet>
+        <app-snippet [snippet]="snippet" wildcard="***" (updated)="snippetUpdates$.next($event)"></app-snippet>
       </li>
     </ul>
     <div class="form-text">

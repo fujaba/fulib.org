@@ -15,7 +15,6 @@ export class EditSnippetComponent {
   @Input() index: number;
   @Input() snippet: Snippet;
   @Input() comments: string[] = [];
-  @Output() updated = new EventEmitter();
   @Output() deleted = new EventEmitter();
 
   commentFocus$ = new Subject<string>();

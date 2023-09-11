@@ -29,11 +29,10 @@
                 [class]="solution._id === route.snapshot.params.sid ? 'bg-body sticky-start' : ''"
                 style="max-width: 400px"
             >
-              <app-edit-snippet
-                *ngIf="snippets[solution._id!] as solutionSnippets"
-                [index]="index" [snippet]="solutionSnippets[index]"
-                (updated)="solutionSnippets[index] = $event"
-              ></app-edit-snippet>
+              <ng-container *ngIf="snippets[solution._id!]?.[index] as solutionSnippet">
+                <app-edit-snippet [index]="index" [snippet]="solutionSnippet"></app-edit-snippet>
+                <app-snippet [snippet]="solutionSnippet"></app-snippet>
+              </ng-container>
             </td>
           </tr>
         </tbody>
