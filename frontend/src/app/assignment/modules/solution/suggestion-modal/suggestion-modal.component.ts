@@ -18,6 +18,7 @@ import {ToastService} from "@mean-stream/ngbx";
 })
 export class SuggestionModalComponent implements OnInit {
   task?: Task;
+  evaluation?: Evaluation;
   dto: CreateEvaluationDto = {
     task: '',
     points: 0,
@@ -53,6 +54,7 @@ export class SuggestionModalComponent implements OnInit {
       switchMap(({aid, sid, task}) => this.solutionService.getEvaluationByTask(aid, sid, task)),
       filter((e): e is Evaluation => !!e),
       tap(evaluation => {
+        this.evaluation = evaluation;
         this.dto.remark = evaluation.remark;
         this.dto.points = evaluation.points;
       }),
