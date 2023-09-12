@@ -53,13 +53,13 @@ export class SearchService implements OnModuleInit {
         analyzer: {
           code: {
             tokenizer: 'code',
-          },
+          } as any,
         },
         tokenizer: {
           code: {
             type: 'simple_pattern',
             pattern: TOKEN_PATTERN.source,
-          },
+          } as any,
         },
       });
     } catch (e) {
@@ -67,7 +67,7 @@ export class SearchService implements OnModuleInit {
     }
   }
 
-  async ensureIndex(name: string, properties: any, analysis: any) {
+  async ensureIndex(name: string, properties: Record<string, estypes.MappingProperty>, analysis: estypes.IndicesIndexSettingsAnalysis | undefined) {
     const existingIndex = await this.elasticsearchService.indices.get({
       index: name,
     }).catch(() => null);
