@@ -1,4 +1,4 @@
-import {ApiProperty, PickType} from "@nestjs/swagger";
+import {ApiProperty} from "@nestjs/swagger";
 import {ArrayMaxSize, ArrayMinSize, IsIn, IsInt, IsMongoId, IsNumber, IsString} from "class-validator";
 
 export class EmbeddingEstimate {
