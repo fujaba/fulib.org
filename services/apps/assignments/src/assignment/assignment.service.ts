@@ -113,7 +113,7 @@ export class AssignmentService implements OnModuleInit {
     const {verification, note, children, ...rest} = task;
     return {
       ...rest,
-      children: children.map(t => this.maskTask(t)),
+      children: children?.map(t => this.maskTask(t)),
     };
   }
 
