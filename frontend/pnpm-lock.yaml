@@ -60,8 +60,8 @@ dependencies:
     specifier: ^16.0.0
     version: 16.0.0(@angular/common@16.2.4)(@angular/core@16.2.4)(rxjs@7.8.1)
   angular-split:
-    specifier: ^15.0.0
-    version: 15.0.0(@angular/common@16.2.4)(@angular/core@16.2.4)(rxjs@7.8.1)
+    specifier: ^16.2.1
+    version: 16.2.1(@angular/common@16.2.4)(@angular/core@16.2.4)(rxjs@7.8.1)
   bootstrap:
     specifier: ~5.2.3
     version: 5.2.3(@popperjs/core@2.11.8)
@@ -3445,12 +3445,12 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /angular-split@15.0.0(@angular/common@16.2.4)(@angular/core@16.2.4)(rxjs@7.8.1):
-    resolution: {integrity: sha512-An/f0NobbxHxA9bowwYIuKHPoP2yoQldrPklpMvmQdqntExys+B92m7kkfs4K0ANuowyFIZHMeEzounC4j7ocQ==}
+  /angular-split@16.2.1(@angular/common@16.2.4)(@angular/core@16.2.4)(rxjs@7.8.1):
+    resolution: {integrity: sha512-Yqf9sit9qDELM95EottO7cgY++AzD8XH7e6c1fTnC+s39TRY/LUOVT0k9ysEp1yH5wz7GHwcm+uZMSDBAjuODA==}
     peerDependencies:
-      '@angular/common': '>=9.0.0'
-      '@angular/core': '>=9.0.0'
-      rxjs: '>=6.0.0'
+      '@angular/common': '>=16.0.0'
+      '@angular/core': '>=16.0.0'
+      rxjs: '>=7.0.0'
     dependencies:
       '@angular/common': 16.2.4(@angular/core@16.2.4)(rxjs@7.8.1)
       '@angular/core': 16.2.4(rxjs@7.8.1)(zone.js@0.13.2)
