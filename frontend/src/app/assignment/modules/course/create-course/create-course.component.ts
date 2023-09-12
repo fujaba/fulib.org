@@ -16,7 +16,7 @@ import {CourseService} from '../../../services/course.service';
   styleUrls: ['./create-course.component.scss'],
 })
 export class CreateCourseComponent implements OnInit {
-  course: Course | CreateCourseDto;
+  course?: Course | CreateCourseDto;
   assignments: ReadAssignmentDto[] = [];
 
   newAssignment: string;
@@ -66,7 +66,7 @@ export class CreateCourseComponent implements OnInit {
   }
 
   saveDraft(): void {
-    this.courseService.draft = this.course;
+    this.course && (this.courseService.draft = this.course);
   }
 
   onImport(file: File): void {
@@ -78,7 +78,7 @@ export class CreateCourseComponent implements OnInit {
   }
 
   onExport(): void {
-    this.courseService.download(this.course);
+    this.course && this.courseService.download(this.course);
   }
 
   addAssignment() {
@@ -105,6 +105,10 @@ export class CreateCourseComponent implements OnInit {
   }
 
   submit(): void {
+    if (!this.course) {
+      return;
+    }
+
     this.submitting = true;
     this.course.assignments = this.assignments.map(a => a._id);
     const id = '_id' in this.course ? this.course._id : undefined;
