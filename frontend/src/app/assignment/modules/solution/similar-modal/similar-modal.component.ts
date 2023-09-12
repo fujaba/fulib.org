@@ -56,7 +56,7 @@ export class SimilarModalComponent implements OnInit {
 
 
     this.route.params.pipe(
-      switchMap(({aid, sid, task}) => this.solutionService.getEvaluationValues<string>(aid, 'solution', {task})),
+      switchMap(({aid, task}) => this.solutionService.getEvaluationValues<string>(aid, 'solution', {task})),
     ).subscribe(ids => {
       this.existingEvaluations = Object.fromEntries(ids.map(id => [id, true]));
     })
