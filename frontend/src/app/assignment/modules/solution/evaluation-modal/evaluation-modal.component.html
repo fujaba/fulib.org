@@ -47,8 +47,8 @@
         <app-edit-snippet
           [snippet]="snippet" [index]="index" [comments]="comments"
           (deleted)="deleteSnippet(index)"
-          (updated)="snippetUpdates$.next($event)"
         ></app-edit-snippet>
+        <app-snippet [snippet]="snippet" wildcard="***" (updated)="snippetUpdates$.next($event)"></app-snippet>
       </li>
     </ul>
     <div class="form-text">
@@ -81,6 +81,17 @@
         Code Search
       </label>
     </div>
+    <div class="form-check" *ngIf="!evaluation">
+      <input type="checkbox" class="form-check-input" id="similarCheck" [(ngModel)]="viewSimilar">
+      <label for="similarCheck" class="form-check-label"
+             ngbTooltip="View similar solutions to quickly copy this evaluation">
+        View Similar Solutions
+        <span class="badge bg-gradient-primary">New</span>
+      </label>
+    </div>
+    <a routerLink="similar" *ngIf="evaluation">
+      Similar Solutions
+    </a>
     <button type="button" class="btn btn-secondary" (click)="modal.close()">
       Cancel
     </button>

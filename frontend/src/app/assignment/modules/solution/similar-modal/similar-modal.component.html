@@ -1,0 +1,54 @@
+<ngbx-modal #modal size="xl" [back]="['../..']">
+  <ng-container modal-title>
+    Similar Solutions
+    <span class="text-muted">
+      {{ task?.description }}
+    </span>
+  </ng-container>
+  <ng-container modal-body>
+    <app-evaluation-form [dto]="dto" [task]="task"></app-evaluation-form>
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th *ngFor="let solution of solutions" [class]="solution._id === solutionId ? 'bg-body sticky-start' : ''">
+              <div class="form-check" [class.bg-success]="selection[solution._id!]">
+                <input class="form-check-input" type="checkbox" [id]="'check-' + solution._id"
+                       [disabled]="!!existingEvaluations[solution._id!]"
+                       [(ngModel)]="selection[solution._id!]">
+                <label class="form-check-label" [for]="'check-' + solution._id">
+                  Solution by {{ solution | solutionName }}
+                </label>
+                <span *ngIf="existingEvaluations[solution._id!] && solution._id !== solutionId" class="text-muted">
+                  &bull;
+                  <a [routerLink]="['../../../..', solution._id, 'tasks', task?._id]">View Evaluation</a>
+                </span>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="align-top">
+          <tr *ngFor="let originalSnippet of snippets[solutionId]; let index=index">
+            <td *ngFor="let solution of solutions"
+                [class]="solution._id === solutionId ? 'bg-body sticky-start' : ''"
+                style="max-width: 400px"
+            >
+              <ng-container *ngIf="snippets[solution._id!]?.[index] as solutionSnippet">
+                <app-edit-snippet [index]="index" [snippet]="solutionSnippet"></app-edit-snippet>
+                <app-snippet [snippet]="solutionSnippet"></app-snippet>
+              </ng-container>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
+  <ng-container modal-footer>
+    <button type="button" class="btn btn-secondary" (click)="modal.close()">
+      Cancel
+    </button>
+    <button type="button" class="btn btn-primary" (click)="submit(); modal.close()">
+      Submit
+    </button>
+  </ng-container>
+</ngbx-modal>

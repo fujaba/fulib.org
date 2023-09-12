@@ -150,6 +150,12 @@ a[href^="http"]::after {
   }
 }
 
+.sticky-start {
+  position: sticky;
+  left: 0;
+  z-index: $zindex-sticky;
+}
+
 /* --------------- Gradients --------------- */
 
 $gradient-angle: 135deg;
