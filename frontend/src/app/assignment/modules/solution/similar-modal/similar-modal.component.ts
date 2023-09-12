@@ -12,11 +12,11 @@ import {forkJoin} from "rxjs";
 import {ToastService} from "@mean-stream/ngbx";
 
 @Component({
-  selector: 'app-suggestion-modal',
-  templateUrl: './suggestion-modal.component.html',
-  styleUrls: ['./suggestion-modal.component.scss']
+  selector: 'app-similar-modal',
+  templateUrl: './similar-modal.component.html',
+  styleUrls: ['./similar-modal.component.scss']
 })
-export class SuggestionModalComponent implements OnInit {
+export class SimilarModalComponent implements OnInit {
   solutionId!: string;
   task?: Task;
   evaluation?: Evaluation;

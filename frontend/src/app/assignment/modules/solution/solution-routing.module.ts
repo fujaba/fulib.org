@@ -9,13 +9,13 @@ import {EventListComponent} from './event-list/event-list.component';
 import {SolutionShareComponent} from './share/share.component';
 import {SolutionComponent} from './solution/solution.component';
 import {SolutionTasksComponent} from './tasks/tasks.component';
-import {SuggestionModalComponent} from "./suggestion-modal/suggestion-modal.component";
+import {SimilarModalComponent} from "./similar-modal/similar-modal.component";
 
 export const solutionChildRoutes: Routes = [
   {
     path: 'tasks', component: SolutionTasksComponent, data: {title: 'Solution & Tasks'}, children: [
       {path: ':task', component: EvaluationModalComponent, data: {title: 'Evaluation'}},
-      {path: ':task/similar', component: SuggestionModalComponent, data: {title: 'Similar Solutions'}},
+      {path: ':task/similar', component: SimilarModalComponent, data: {title: 'Similar Solutions'}},
     ],
   },
   {

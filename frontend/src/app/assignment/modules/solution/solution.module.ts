@@ -18,7 +18,7 @@ import {SolutionShareComponent} from './share/share.component';
 import {SolutionRoutingModule} from './solution-routing.module';
 import {SolutionComponent} from './solution/solution.component';
 import {SolutionTasksComponent} from './tasks/tasks.component';
-import { SuggestionModalComponent } from './suggestion-modal/suggestion-modal.component';
+import { SimilarModalComponent } from './similar-modal/similar-modal.component';
 
 
 @NgModule({
@@ -33,7 +33,7 @@ import { SuggestionModalComponent } from './suggestion-modal/suggestion-modal.co
     EvaluationFormComponent,
     DeleteModalComponent,
     EventListComponent,
-    SuggestionModalComponent,
+    SimilarModalComponent,
   ],
   imports: [
     CommonModule,
