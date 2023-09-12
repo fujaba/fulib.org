@@ -1,6 +1,5 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 import {ToastService} from '@mean-stream/ngbx';
 import {DndDropEvent} from 'ngx-drag-drop';
@@ -17,8 +16,6 @@ import {CourseService} from '../../../services/course.service';
   styleUrls: ['./create-course.component.scss'],
 })
 export class CreateCourseComponent implements OnInit {
-  @ViewChild('successModal', {static: true}) successModal;
-
   course: Course | CreateCourseDto;
   assignments: ReadAssignmentDto[] = [];
 
@@ -47,7 +44,6 @@ export class CreateCourseComponent implements OnInit {
   constructor(
     private assignmentService: AssignmentService,
     private courseService: CourseService,
-    private modalService: NgbModal,
     private toastService: ToastService,
     private router: Router,
     private route: ActivatedRoute,
