@@ -1,5 +1,5 @@
-import {ApiProperty} from "@nestjs/swagger";
-import {ArrayMaxSize, ArrayMinSize, IsIn, IsInt, IsMongoId, IsNumber, IsString} from "class-validator";
+import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
+import {ArrayMaxSize, ArrayMinSize, IsIn, IsInt, IsMongoId, IsNumber, IsOptional, IsString} from "class-validator";
 
 export class EmbeddingEstimate {
   @ApiProperty()
@@ -58,6 +58,11 @@ export class SnippetEmbeddable extends EmbeddableBase {
   @ApiProperty()
   @IsInt()
   line: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  name?: string;
 }
 
 export type Embeddable = TaskEmbeddable | SnippetEmbeddable;

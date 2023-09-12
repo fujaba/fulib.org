@@ -353,8 +353,7 @@ export class SolutionService {
     const headers = {};
     this.addAssignmentToken(headers, assignment);
     const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/embeddings`;
-    const name = /([a-zA-Z0-9_]+)\([^)]*\)\s*\{/gi.exec(snippet.code)?.[1]; // TODO remove name from id
-    const id = `${solution}-${snippet.file}-${snippet.from.line}-${name}`;
+    const id = `${solution}-${snippet.file}-${snippet.from.line}`;
     return this.http.get<any[]>(url, {headers, params: {id}}).pipe(
       map(embeddings => embeddings.map(emb => ({
         ...this.convertEmbeddable(emb),

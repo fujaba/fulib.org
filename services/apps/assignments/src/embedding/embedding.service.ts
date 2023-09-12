@@ -37,6 +37,10 @@ export class EmbeddingService implements OnModuleInit {
         fields: {keyword: {type: 'keyword', ignore_above: 256}}
       },
       line: {type: 'long'},
+      name: {
+        type: 'text',
+        fields: {keyword: {type: 'keyword', ignore_above: 256}},
+      },
       solution: {
         type: 'text',
         fields: {keyword: {type: 'keyword', ignore_above: 256}}
@@ -95,12 +99,13 @@ export class EmbeddingService implements OnModuleInit {
         ;
         const fileTotal = await Promise.all(functions.map(async ({line, name, text}) => {
           const {tokens} = await this.upsert({
-            id: `${d.solution}-${d.file}-${line}-${name}`,
+            id: `${d.solution}-${d.file}-${line}`,
             assignment,
             type: 'snippet',
             solution: d.solution,
             file: d.file,
             line,
+            name,
             text: `${d.file}\n\n${text}`,
             embedding: [],
           }, apiKey);
