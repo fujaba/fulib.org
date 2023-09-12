@@ -1,7 +1,7 @@
 import {Injectable, OnModuleDestroy} from "@nestjs/common";
 import * as tiktoken from "tiktoken";
 import {File} from "@app/moss/moss-api";
-import {Configuration, OpenAIApi} from "openai";
+import OpenAI from "openai";
 import {TEXT_EXTENSIONS} from "../search/search.constants";
 
 const model = 'text-embedding-ada-002';
@@ -38,11 +38,11 @@ export class OpenAIService implements OnModuleDestroy {
   }
 
   async getEmbedding(text: string, apiKey: string): Promise<{ tokens: number, embedding: number[] }> {
-    const api = new OpenAIApi(new Configuration({apiKey}));
-    const result = await api.createEmbedding({
+    const api = new OpenAI({apiKey});
+    const result = await api.embeddings.create({
       model: model,
       input: text,
     });
-    return {tokens: result.data.usage.total_tokens, embedding: result.data.data[0].embedding};
+    return {tokens: result.usage.total_tokens, embedding: result.data[0].embedding};
   }
 }
