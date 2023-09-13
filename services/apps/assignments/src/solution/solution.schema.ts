@@ -1,6 +1,6 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
-import {Type} from 'class-transformer';
+import {Transform, Type} from 'class-transformer';
 import {
   IsDateString,
   IsEmail,
@@ -42,21 +42,23 @@ export class Consent {
 
 export class AuthorInfo {
   @Prop()
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  name: string;
+  name?: string;
 
   @Prop()
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  studentId: string;
+  studentId?: string;
 
   @Prop()
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsEmail()
-  email: string;
+  @Transform(({value}) => value || undefined)
+  email?: string;
 
   @Prop()
   @ApiProperty()
