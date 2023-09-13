@@ -1,6 +1,6 @@
 <ngbx-modal #modal [back]="['../solutions']">
   <ng-container modal-title>
-    Import Solutions
+    Import
   </ng-container>
   <ng-container modal-body>
     <ul ngbNav #nav="ngbNav" [activeId]="(route.queryParams | async)?.mode" class="nav-tabs mb-3">
@@ -104,6 +104,35 @@
             The MOSS results are available at
             <a [href]="mossResult" target="_blank">{{ mossResult }}</a>.
           </ng-container>
+        </ng-template>
+      </li>
+      <li ngbNavItem="consent">
+        <a ngbNavLink routerLink="." [queryParams]="{mode: 'consent'}">
+          Consent
+        </a>
+        <ng-template ngbNavContent>
+          <p>
+            Import consent flags by pasting tab-, space- or comma-separated values below.
+          </p>
+          <details>
+            <summary>More Info</summary>
+            <p>
+              The first line should specify the column names (case insensitive), for example:
+            </p>
+            <p>
+              <code>github,demonstration,scientific,3p</code>
+            </p>
+            <p>
+              Instead of or in addition to <code>github</code>,
+              you can also use <code>name</code>, <code>studentid</code> or <code>email</code>,
+              but at least one of must be specified.
+            </p>
+            <p>
+              The columns <code>demonstration</code>, <code>scientific</code> and <code>3p</code> are optional
+              and accept boolean values like <code>true</code> or <code>false</code> (case-insensitive).
+            </p>
+          </details>
+          <textarea class="form-control" rows="10" [(ngModel)]="consentText"></textarea>
         </ng-template>
       </li>
     </ul>

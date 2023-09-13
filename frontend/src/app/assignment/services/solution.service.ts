@@ -203,6 +203,13 @@ export class SolutionService {
     return this.http.patch<Solution>(url, dto, {headers});
   }
 
+  updateMany(assignment: string, dtos: Partial<Solution>[]): Observable<ImportSolution[]> {
+    const headers = {};
+    this.addAssignmentToken(headers, assignment);
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions`;
+    return this.http.patch<ImportSolution[]>(url, dtos, {headers});
+  }
+
   delete(assignment: string, solution: string): Observable<Solution> {
     const headers = {};
     this.addSolutionToken(headers, assignment, solution);

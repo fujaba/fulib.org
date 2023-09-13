@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ToastService} from '@mean-stream/ngbx';
 import {SolutionService} from '../../../services/solution.service';
-import {EstimatedCosts, ImportSolution} from "../../../model/solution";
+import Solution, {AuthorInfo, Consent, EstimatedCosts, ImportSolution} from "../../../model/solution";
 import {EMPTY, Observable} from "rxjs";
 import {AssignmentService} from "../../../services/assignment.service";
 
@@ -21,6 +21,7 @@ export class ImportModalComponent {
   estimatedCosts?: EstimatedCosts;
   finalCosts?: EstimatedCosts;
   mossResult?: string;
+  consentText = '';
 
   constructor(
     private assignmentService: AssignmentService,
@@ -63,6 +64,8 @@ export class ImportModalComponent {
         return this.solutionService.importEmbeddings(assignmentId);
       case 'moss':
         return this.assignmentService.moss(assignmentId);
+      case 'consent':
+        return this.importConsent(assignmentId);
       default:
         return EMPTY;
     }
@@ -78,5 +81,48 @@ export class ImportModalComponent {
 
   estimateCosts() {
     this.solutionService.importEmbeddings(this.route.snapshot.params.aid, true).subscribe(costs => this.estimatedCosts = costs);
+  }
+
+  importConsent(assignment: string): Observable<ImportSolution[]> {
+    const lines = this.consentText.split('\n');
+    const splitter = /[\s,;]/;
+    const columns = lines[0].split(splitter);
+    const updates: Partial<Solution>[] = [];
+    for (let i = 1; i < lines.length; i++){
+      const values = lines[i].split(splitter);
+      const author: AuthorInfo = {};
+      const consent: Consent = {};
+      for (let j = 0; j < columns.length; j++) {
+        const column = columns[j].toLowerCase();
+        const value = values[j];
+        switch (column) {
+          case 'name':
+            author.name = value;
+            break;
+          case 'studentid':
+            author.studentId = value;
+            break;
+          case 'email':
+            author.email = value;
+            break;
+          case 'github':
+            author.github = value;
+            break;
+          case 'demonstration':
+            consent.demonstration = Boolean(value.toLowerCase());
+            break;
+          case 'scientific':
+            consent.scientific = Boolean(value.toLowerCase());
+            break;
+          case '3p':
+            consent['3P'] = Boolean(value.toLowerCase());
+            break;
+        }
+      }
+      if (Object.keys(author).length) {
+        updates.push({author, consent});
+      }
+    }
+    return this.solutionService.updateMany(assignment, updates);
   }
 }

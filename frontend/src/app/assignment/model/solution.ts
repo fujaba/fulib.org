@@ -12,6 +12,12 @@ export const authorInfoProperties = [
   ['GitHub Username', 'github'],
 ] as const;
 
+export interface Consent {
+  demonstration?: boolean;
+  scientific?: boolean;
+  '3P'?: boolean;
+}
+
 export default class Solution {
   _id?: string;
   token?: string;
@@ -21,11 +27,7 @@ export default class Solution {
   author: AuthorInfo;
   solution: string;
   commit?: string;
-  consent?: {
-    demonstration?: boolean;
-    scientific?: boolean;
-    '3P'?: boolean;
-  };
+  consent?: Consent;
 
   timestamp?: Date;
   points?: number;
