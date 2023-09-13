@@ -5,6 +5,7 @@ import {SolutionService} from '../../../services/solution.service';
 import Solution, {AuthorInfo, Consent, EstimatedCosts, ImportSolution} from "../../../model/solution";
 import {EMPTY, Observable} from "rxjs";
 import {AssignmentService} from "../../../services/assignment.service";
+import {map} from "rxjs/operators";
 
 @Component({
   selector: 'app-import-modal',
@@ -33,28 +34,28 @@ export class ImportModalComponent {
 
   import() {
     this.importing = true;
-    this.getImporter().subscribe(results => {
-      this.importing = false;
-      if (typeof results === 'string') {
-        this.toastService.success('Import', 'Successfully ran MOSS');
-        this.mossResult = results;
-        return;
-      } else if ('length' in results) {
-        this.toastService.success('Import', `Successfully imported ${results.length} solutions`);
-      } else {
-        this.toastService.success('Import', 'Successfully imported embeddings');
-        this.finalCosts = results;
-      }
-    }, error => {
-      this.importing = false;
-      this.toastService.error('Import', 'Failed to import solutions', error);
+    this.getImporter().subscribe({
+      next: results => {
+        if (typeof results === 'string') {
+          this.toastService.success('Import', 'Successfully ran MOSS');
+          this.mossResult = results;
+          return;
+        } else if ('length' in results) {
+          this.toastService.success('Import', `Successfully imported ${results.length} solutions`);
+        } else {
+          this.toastService.success('Import', 'Successfully imported embeddings');
+          this.finalCosts = results;
+        }
+      },
+      error: error => this.toastService.error('Import', 'Failed to import solutions', error),
+      complete: () => this.importing = false,
     });
   }
 
   private getImporter(): Observable<EstimatedCosts | ImportSolution[] | string> {
     const assignmentId = this.route.snapshot.params.aid;
 
-    switch (this.route.snapshot.queryParams.type) {
+    switch (this.route.snapshot.queryParams.mode) {
       case 'github':
         const usernames = Object.keys(this.checkedUsernames).filter(username => this.checkedUsernames[username]);
         return this.solutionService.import(assignmentId, undefined, usernames);
@@ -123,6 +124,6 @@ export class ImportModalComponent {
         updates.push({author, consent});
       }
     }
-    return this.solutionService.updateMany(assignment, updates);
+    return this.solutionService.updateMany(assignment, updates).pipe(map(results => results.filter(s => s)));
   }
 }
