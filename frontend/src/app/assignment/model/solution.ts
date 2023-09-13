@@ -21,6 +21,11 @@ export default class Solution {
   author: AuthorInfo;
   solution: string;
   commit?: string;
+  consent?: {
+    demonstration?: boolean;
+    scientific?: boolean;
+    '3P'?: boolean;
+  };
 
   timestamp?: Date;
   points?: number;
