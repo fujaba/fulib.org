@@ -2,7 +2,14 @@ import {Component} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ToastService} from '@mean-stream/ngbx';
 import {SolutionService} from '../../../services/solution.service';
-import Solution, {AuthorInfo, Consent, EstimatedCosts, ImportSolution} from "../../../model/solution";
+import Solution, {
+  AuthorInfo,
+  authorInfoProperties,
+  Consent,
+  consentKeys,
+  EstimatedCosts,
+  ImportSolution
+} from "../../../model/solution";
 import {EMPTY, Observable} from "rxjs";
 import {AssignmentService} from "../../../services/assignment.service";
 import {map} from "rxjs/operators";
@@ -96,28 +103,11 @@ export class ImportModalComponent {
       for (let j = 0; j < columns.length; j++) {
         const column = columns[j].toLowerCase();
         const value = values[j];
-        switch (column) {
-          case 'name':
-            author.name = value;
-            break;
-          case 'studentid':
-            author.studentId = value;
-            break;
-          case 'email':
-            author.email = value;
-            break;
-          case 'github':
-            author.github = value;
-            break;
-          case 'demonstration':
-            consent.demonstration = Boolean(value.toLowerCase());
-            break;
-          case 'scientific':
-            consent.scientific = Boolean(value.toLowerCase());
-            break;
-          case '3p':
-            consent['3P'] = Boolean(value.toLowerCase());
-            break;
+        if (authorInfoProperties.find(([, key]) => key === column)) {
+          author[column as keyof AuthorInfo] = value;
+        }
+        if (consentKeys.includes(column as keyof Consent)) {
+          consent[column] = Boolean(value.toLowerCase());
         }
       }
       if (Object.keys(author).length) {

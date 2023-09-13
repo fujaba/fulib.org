@@ -17,6 +17,7 @@ export interface Consent {
   scientific?: boolean;
   '3P'?: boolean;
 }
+export const consentKeys = ['demonstration', 'scientific', '3P'] as const;
 
 export default class Solution {
   _id?: string;
