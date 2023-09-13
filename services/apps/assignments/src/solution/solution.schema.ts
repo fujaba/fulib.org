@@ -2,11 +2,11 @@ import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
 import {Transform, Type} from 'class-transformer';
 import {
+  IsBoolean,
   IsDateString,
   IsEmail,
   IsHash,
   IsMongoId,
-  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
@@ -29,14 +29,20 @@ export class TaskResult {
 export class Consent {
   @Prop()
   @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
   demonstration?: boolean;
 
   @Prop()
   @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
   scientific?: boolean;
 
   @Prop()
   @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
   '3P'?: boolean;
 }
 
