@@ -1,0 +1,19 @@
+<p>
+  Select multiple zip or jar files from your disk to upload.
+  The file name may have any of the following formats:
+</p>
+<ul>
+  <li>
+    Digits, e.g. <code>12345678.zip</code>, interpreted as Student IDs.
+  </li>
+  <li>
+    Prefixed with the same GitHub Classroom prefix as the assignment,
+    e.g. <code>assignment-1-Student.zip</code>,
+    which extracts the GitHub Username like <code>Student</code>.
+  </li>
+  <li>
+    Anything else, with the file name without extension becoming the student name.
+  </li>
+</ul>
+<input type="file" class="form-control" id="files" multiple accept="application/zip" #input
+       (change)="setFiles(input.files!)">

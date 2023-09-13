@@ -1,0 +1,22 @@
+<p>
+  Import consent flags by pasting tab-, space- or comma-separated values below.
+</p>
+<details>
+  <summary>More Info</summary>
+  <p>
+    The first line should specify the column names (case insensitive), for example:
+  </p>
+  <p>
+    <code>github,demonstration,scientific,3p</code>
+  </p>
+  <p>
+    Instead of or in addition to <code>github</code>,
+    you can also use <code>name</code>, <code>studentid</code> or <code>email</code>,
+    but at least one of must be specified.
+  </p>
+  <p>
+    The columns <code>demonstration</code>, <code>scientific</code> and <code>3p</code> are optional
+    and accept boolean values like <code>true</code> or <code>false</code> (case-insensitive).
+  </p>
+</details>
+<textarea class="form-control" rows="10" [(ngModel)]="consentText"></textarea>

@@ -1,0 +1,8 @@
+<p>
+  After importing from GitHub or Files, you can run MOSS.
+</p>
+<ng-container *ngIf="mossResult">
+  <hr/>
+  The MOSS results are available at
+  <a [href]="mossResult" target="_blank">{{ mossResult }}</a>.
+</ng-container>

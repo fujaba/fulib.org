@@ -1,0 +1,54 @@
+import {Component} from '@angular/core';
+import {Observable} from "rxjs";
+import Solution, {
+  AuthorInfo,
+  authorInfoProperties,
+  Consent,
+  consentKeys,
+  ImportSolution
+} from "../../../model/solution";
+import {map} from "rxjs/operators";
+import {SolutionService} from "../../../services/solution.service";
+import {ActivatedRoute} from "@angular/router";
+
+@Component({
+  selector: 'app-import-consent',
+  templateUrl: './import-consent.component.html',
+  styleUrls: ['./import-consent.component.scss']
+})
+export class ImportConsentComponent {
+  consentText = '';
+
+  constructor(
+    private solutionService: SolutionService,
+    private route: ActivatedRoute,
+  ) {
+  }
+
+  import(): Observable<ImportSolution[]> {
+    const assignment = this.route.snapshot.params.aid;
+    const lines = this.consentText.split('\n');
+    const splitter = /[\s,;]/;
+    const columns = lines[0].split(splitter);
+    const updates: Partial<Solution>[] = [];
+    for (let i = 1; i < lines.length; i++) {
+      const values = lines[i].split(splitter);
+      const author: AuthorInfo = {};
+      const consent: Consent = {};
+      for (let j = 0; j < columns.length; j++) {
+        const column = columns[j].toLowerCase();
+        const value = values[j];
+        if (authorInfoProperties.find(([, key]) => key === column)) {
+          author[column as keyof AuthorInfo] = value;
+        }
+        if (consentKeys.includes(column as keyof Consent)) {
+          consent[column] = Boolean(value.toLowerCase());
+        }
+      }
+      if (Object.keys(author).length) {
+        updates.push({author, consent});
+      }
+    }
+    return this.solutionService.updateMany(assignment, updates).pipe(map(results => results.filter(s => s)));
+  }
+}
