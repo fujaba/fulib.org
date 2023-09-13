@@ -4,6 +4,7 @@ import {SearchService} from "../search/search.service";
 import {Embeddable, EmbeddableSearch, EmbeddingEstimate, SnippetEmbeddable} from "./embedding.dto";
 import {OpenAIService} from "./openai.service";
 import {QueryDslQueryContainer} from "@elastic/elasticsearch/lib/api/types";
+import {SolutionService} from "../solution/solution.service";
 
 type DeclarationSnippet = Pick<SnippetEmbeddable, 'text' | 'line'> & { name: string };
 
@@ -13,6 +14,7 @@ export class EmbeddingService implements OnModuleInit {
     private searchService: SearchService,
     private elasticsearchService: ElasticsearchService,
     private openaiService: OpenAIService,
+    private solutionService: SolutionService,
   ) {
   }
 
@@ -61,7 +63,7 @@ export class EmbeddingService implements OnModuleInit {
   }
 
   async estimateEmbeddings(assignment: string): Promise<EmbeddingEstimate> {
-    const documents = await this.searchService.findAll(assignment);
+    const documents = await this.getDocuments(assignment);
     const tokens = this.openaiService.countTokens(documents.map(d => ({
       name: d.file,
       content: d.content,
@@ -89,7 +91,7 @@ export class EmbeddingService implements OnModuleInit {
   }
 
   async createEmbeddings(assignment: string, apiKey: string): Promise<EmbeddingEstimate> {
-    const documents = await this.searchService.findAll(assignment);
+    const documents = await this.getDocuments(assignment);
     const results = await Promise.all(documents
       .filter(d => this.openaiService.isSupportedExtension(d.file))
       .map(async d => {
@@ -116,6 +118,14 @@ export class EmbeddingService implements OnModuleInit {
     const tokens = results.reduce((a, b) => a + b, 0);
     const estimatedCost = this.openaiService.estimateCost(tokens);
     return {tokens, estimatedCost};
+  }
+
+  private async getDocuments(assignment: string) {
+    const solutionsWithConsent = await this.solutionService.model.find({
+      assignment,
+      'consent.3P': true,
+    }, {_id: 1});
+    return this.searchService.findAll(assignment, solutionsWithConsent.map(s => s.id));
   }
 
   async upsert(embeddable: Embeddable, apiKey: string): Promise<{ embeddable: Embeddable, tokens: number }> {
