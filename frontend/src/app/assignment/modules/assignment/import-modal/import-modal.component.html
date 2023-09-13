@@ -73,6 +73,8 @@
             Please review the results below and click <b>Import</b> to confirm.
           </p>
           <div class="row" *ngIf="estimatedCosts">
+            <app-statistic-value class="col" label="Solutions" [value]="estimatedCosts.solutions" [standalone]="true"></app-statistic-value>
+            <app-statistic-value class="col" label="Files" [value]="estimatedCosts.files" [standalone]="true"></app-statistic-value>
             <app-statistic-value class="col" label="Tokens" [value]="estimatedCosts.tokens" [standalone]="true"></app-statistic-value>
             <app-statistic-value class="col" label="Estimated Cost" [value]="estimatedCosts.estimatedCost | currency:'USD':true:'0.7'" [standalone]="true"></app-statistic-value>
           </div>

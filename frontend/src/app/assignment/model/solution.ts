@@ -40,6 +40,8 @@ export type ImportSolution = Pick<Solution,
 >;
 
 export interface EstimatedCosts {
+  solutions: number;
+  files: number;
   tokens: number;
   estimatedCost: number;
 }
