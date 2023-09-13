@@ -3,9 +3,9 @@
     Import Solutions
   </ng-container>
   <ng-container modal-body>
-    <ul ngbNav #nav="ngbNav" [(activeId)]="mode" class="nav-tabs mb-3">
+    <ul ngbNav #nav="ngbNav" [activeId]="(route.queryParams | async)?.mode" class="nav-tabs mb-3">
       <li ngbNavItem="github">
-        <a ngbNavLink>
+        <a ngbNavLink routerLink="." [queryParams]="{mode: 'github'}">
           GitHub
         </a>
         <ng-template ngbNavContent>
@@ -30,7 +30,7 @@
         </ng-template>
       </li>
       <li ngbNavItem="files">
-        <a ngbNavLink>
+        <a ngbNavLink routerLink="." [queryParams]="{mode: 'files'}">
           Files
         </a>
         <ng-template ngbNavContent>
@@ -56,7 +56,7 @@
         </ng-template>
       </li>
       <li ngbNavItem="embeddings" (shown)="estimateCosts()">
-        <a ngbNavLink>
+        <a ngbNavLink routerLink="." [queryParams]="{mode: 'embeddings'}">
           Embeddings
         </a>
         <ng-template ngbNavContent>
@@ -92,7 +92,7 @@
         </ng-template>
       </li>
       <li ngbNavItem="moss">
-        <a ngbNavLink>
+        <a ngbNavLink routerLink="." [queryParams]="{mode: 'moss'}">
           MOSS
         </a>
         <ng-template ngbNavContent>

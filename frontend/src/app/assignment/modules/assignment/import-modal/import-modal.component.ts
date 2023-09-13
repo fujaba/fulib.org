@@ -53,7 +53,7 @@ export class ImportModalComponent {
   private getImporter(): Observable<EstimatedCosts | ImportSolution[] | string> {
     const assignmentId = this.route.snapshot.params.aid;
 
-    switch (this.mode) {
+    switch (this.route.snapshot.queryParams.type) {
       case 'github':
         const usernames = Object.keys(this.checkedUsernames).filter(username => this.checkedUsernames[username]);
         return this.solutionService.import(assignmentId, undefined, usernames);
