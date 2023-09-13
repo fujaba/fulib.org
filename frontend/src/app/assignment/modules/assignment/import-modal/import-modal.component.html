@@ -19,7 +19,7 @@
             <ul class="list-unstyled">
               <li *ngFor="let solution of previewSolutions" class="form-check">
                 <input class="form-check-input" type="checkbox" [id]="'check-' + solution.author.github"
-                       [(ngModel)]="checkedUsernames[solution.author.github]">
+                       [(ngModel)]="checkedUsernames[solution.author.github!]">
                 <label class="form-check-label" [for]="'check-' + solution.author.github">
                   {{ solution.author.github }}
                   <span class="text-muted"> &bull; {{ solution.timestamp | date:'short' }}</span>

@@ -7,5 +7,5 @@ import {Component, Input} from '@angular/core';
 })
 export class AuthorNameComponent {
   @Input() name: string;
-  @Input() email: string;
+  @Input() email?: string;
 }

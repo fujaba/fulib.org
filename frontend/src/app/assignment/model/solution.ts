@@ -1,8 +1,8 @@
 export class AuthorInfo {
-  name: string;
-  studentId: string;
-  email: string;
-  github: string;
+  name?: string;
+  studentId?: string;
+  email?: string;
+  github?: string;
 }
 
 export const authorInfoProperties = [
