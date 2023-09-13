@@ -26,6 +26,20 @@ export class TaskResult {
   output: string;
 }
 
+export class Consent {
+  @Prop()
+  @ApiPropertyOptional()
+  demonstration?: boolean;
+
+  @Prop()
+  @ApiPropertyOptional()
+  scientific?: boolean;
+
+  @Prop()
+  @ApiPropertyOptional()
+  '3P'?: boolean;
+}
+
 export class AuthorInfo {
   @Prop()
   @ApiProperty()
@@ -89,6 +103,12 @@ export class Solution {
   @ApiProperty()
   @IsDateString()
   timestamp?: Date;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @ValidateNested()
+  @Type(() => Consent)
+  consent?: Consent;
 
   @Prop()
   @ApiPropertyOptional({description: ''})
