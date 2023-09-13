@@ -41,10 +41,11 @@ export class SolutionDetailsComponent implements OnInit {
   }
 
   save() {
-    const {assignment, _id, author} = this.solution!;
+    const {assignment, _id, author, consent} = this.solution!;
     this.saving = true;
     this.solutionService.update(assignment, _id!, {
       author,
+      consent,
     }).subscribe(solution => {
       this.solution = solution;
       this.saving = false;
