@@ -1,5 +1,5 @@
-import {Controller, Get, Param, ParseBoolPipe, Post, Query} from '@nestjs/common';
-import {ApiCreatedResponse, ApiExtraModels, ApiOkResponse, ApiTags, refs} from "@nestjs/swagger";
+import {Controller, ForbiddenException, Get, Param, ParseBoolPipe, Post, Query} from '@nestjs/common';
+import {ApiCreatedResponse, ApiExtraModels, ApiForbiddenResponse, ApiOkResponse, ApiTags, refs} from "@nestjs/swagger";
 import {AssignmentAuth} from "../assignment/assignment-auth.decorator";
 import {Embeddable, EmbeddingEstimate, SnippetEmbeddable, TaskEmbeddable} from "./embedding.dto";
 import {EmbeddingService} from "./embedding.service";
@@ -17,6 +17,7 @@ export class EmbeddingController {
 
   @Post('embeddings')
   @ApiCreatedResponse({type: EmbeddingEstimate})
+  @ApiForbiddenResponse({description: 'No OpenAI API key configured for this assignment.'})
   @AssignmentAuth({forbiddenResponse: 'You are not allowed to create embeddings.'})
   async createEmbeddings(
     @Param('assignment') assignmentId: string,
@@ -28,10 +29,10 @@ export class EmbeddingController {
 
     const assignment = await this.assignmentService.findOne(assignmentId) || notFound(assignmentId);
     const apiKey = assignment.classroom?.openaiApiKey;
-    if (apiKey) {
-      return this.embeddingService.createEmbeddings(assignmentId, apiKey);
+    if (!apiKey) {
+      throw new ForbiddenException('No OpenAI API key configured for this assignment.');
     }
-    return {tokens: 0, estimatedCost: 0};
+    return this.embeddingService.createEmbeddings(assignmentId, apiKey);
   }
 
   @Get('embeddings')

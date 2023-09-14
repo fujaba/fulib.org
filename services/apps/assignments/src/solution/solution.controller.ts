@@ -144,6 +144,16 @@ export class SolutionController {
     return this.solutionService.update(id, dto);
   }
 
+  @Patch('assignments/:assignment/solutions')
+  @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
+  @ApiOkResponse({type: [Solution]})
+  async updateMany(
+    @Param('assignment') assignment: string,
+    @Body() dtos: UpdateSolutionDto[],
+  ): Promise<(Solution | null)[]> {
+    return this.solutionService.updateMany(assignment, dtos);
+  }
+
   @Delete('assignments/:assignment/solutions/:id')
   @SolutionAuth({forbiddenResponse})
   @NotFound()

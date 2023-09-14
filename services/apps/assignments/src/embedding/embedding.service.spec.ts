@@ -9,6 +9,7 @@ import {
 import {ElasticsearchService} from "@nestjs/elasticsearch";
 import {SearchService} from "../search/search.service";
 import {OpenAIService} from "./openai.service";
+import {SolutionService} from "../solution/solution.service";
 
 describe('EmbeddingService', () => {
   let service: EmbeddingService;
@@ -19,6 +20,7 @@ describe('EmbeddingService', () => {
         EmbeddingService,
         SearchService,
         OpenAIService,
+        {provide: SolutionService, useValue: null},
         {provide: ElasticsearchService, useValue: null},
       ],
     }).compile();

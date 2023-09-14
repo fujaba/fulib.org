@@ -1,12 +1,12 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
-import {Type} from 'class-transformer';
+import {Transform, Type} from 'class-transformer';
 import {
+  IsBoolean,
   IsDateString,
   IsEmail,
   IsHash,
   IsMongoId,
-  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
@@ -26,23 +26,45 @@ export class TaskResult {
   output: string;
 }
 
+export class Consent {
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  demonstration?: boolean;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  scientific?: boolean;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  '3P'?: boolean;
+}
+
 export class AuthorInfo {
   @Prop()
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  name: string;
+  name?: string;
 
   @Prop()
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  studentId: string;
+  studentId?: string;
 
   @Prop()
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsEmail()
-  email: string;
+  @Transform(({value}) => value || undefined)
+  email?: string;
 
   @Prop()
   @ApiProperty()
@@ -89,6 +111,12 @@ export class Solution {
   @ApiProperty()
   @IsDateString()
   timestamp?: Date;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @ValidateNested()
+  @Type(() => Consent)
+  consent?: Consent;
 
   @Prop()
   @ApiPropertyOptional({description: ''})

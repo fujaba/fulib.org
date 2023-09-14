@@ -1,117 +1,16 @@
 <ngbx-modal #modal [back]="['../solutions']">
   <ng-container modal-title>
-    Import Solutions
+    Import
   </ng-container>
   <ng-container modal-body>
-    <ul ngbNav #nav="ngbNav" [(activeId)]="mode" class="nav-tabs mb-3">
-      <li ngbNavItem="github">
-        <a ngbNavLink>
-          GitHub
-        </a>
-        <ng-template ngbNavContent>
-          <p>
-            Imports solutions from GitHub using the organisation and prefix configured in the
-            <a routerLink="../edit/classroom">assignment settings</a>.
-            No further configuration is required.
-          </p>
-          <details #previewDetails (toggle)="previewDetails.open && previewGitHubImport()">
-            <summary>Select Students</summary>
-            <ul class="list-unstyled">
-              <li *ngFor="let solution of previewSolutions" class="form-check">
-                <input class="form-check-input" type="checkbox" [id]="'check-' + solution.author.github"
-                       [(ngModel)]="checkedUsernames[solution.author.github]">
-                <label class="form-check-label" [for]="'check-' + solution.author.github">
-                  {{ solution.author.github }}
-                  <span class="text-muted"> &bull; {{ solution.timestamp | date:'short' }}</span>
-                </label>
-              </li>
-            </ul>
-          </details>
-        </ng-template>
-      </li>
-      <li ngbNavItem="files">
-        <a ngbNavLink>
-          Files
-        </a>
-        <ng-template ngbNavContent>
-          <p>
-            Select multiple zip or jar files from your disk to upload.
-            The file name may have any of the following formats:
-          </p>
-          <ul>
-            <li>
-              Digits, e.g. <code>12345678.zip</code>, interpreted as Student IDs.
-            </li>
-            <li>
-              Prefixed with the same GitHub Classroom prefix as the assignment,
-              e.g. <code>assignment-1-Student.zip</code>,
-              which extracts the GitHub Username like <code>Student</code>.
-            </li>
-            <li>
-              Anything else, with the file name without extension becoming the student name.
-            </li>
-          </ul>
-          <input type="file" class="form-control" id="files" multiple accept="application/zip" #input
-                 (change)="setFiles(input.files!)">
-        </ng-template>
-      </li>
-      <li ngbNavItem="embeddings" (shown)="estimateCosts()">
-        <a ngbNavLink>
-          Embeddings
-        </a>
-        <ng-template ngbNavContent>
-          <p>
-            After importing from GitHub or Files, you can import embeddings.
-          </p>
-          <p>
-            Here is an estimate of the token costs.
-            Actual costs may be <strong>lower</strong> if the embeddings are already cached,
-            or <strong>slightly higher</strong> due to some tokens like filenames being added to improve results.
-            Charges will be applied to your OpenAI account.
-          </p>
-          <p>
-            Please review the results below and click <b>Import</b> to confirm.
-          </p>
-          <div class="row" *ngIf="estimatedCosts">
-            <app-statistic-value class="col" label="Tokens" [value]="estimatedCosts.tokens" [standalone]="true"></app-statistic-value>
-            <app-statistic-value class="col" label="Estimated Cost" [value]="estimatedCosts.estimatedCost | currency:'USD':true:'0.7'" [standalone]="true"></app-statistic-value>
-          </div>
-          <ng-container *ngIf="finalCosts">
-            <hr/>
-            <p>
-              The import has been completed.
-              The following costs have been applied to your OpenAI account.
-            </p>
-            <div class="row">
-              <app-statistic-value class="col" label="Tokens" [value]="finalCosts.tokens" [standalone]="true"></app-statistic-value>
-              <app-statistic-value class="col" label="Cost" [value]="finalCosts.estimatedCost | currency:'USD':true:'0.7'" [standalone]="true"></app-statistic-value>
-            </div>
-          </ng-container>
-        </ng-template>
-      </li>
-      <li ngbNavItem="moss">
-        <a ngbNavLink>
-          MOSS
-        </a>
-        <ng-template ngbNavContent>
-          <p>
-            After importing from GitHub or Files, you can run MOSS.
-          </p>
-          <ng-container *ngIf="mossResult">
-            <hr/>
-            The MOSS results are available at
-            <a [href]="mossResult" target="_blank">{{ mossResult }}</a>.
-          </ng-container>
-        </ng-template>
-      </li>
-    </ul>
-    <div [ngbNavOutlet]="nav"></div>
+    <ngbx-route-tabs [routes]="routes"></ngbx-route-tabs>
+    <router-outlet #outlet="outlet"></router-outlet>
   </ng-container>
   <ng-container modal-footer>
     <button class="btn btn-secondary" (click)="modal.close()">
-      {{ estimatedCosts ? 'Close' : 'Cancel' }}
+      Close
     </button>
-    <button class="btn btn-success" (click)="import()" [disabled]="importing">
+    <button class="btn btn-success" (click)="import(outlet.component)" [disabled]="importing">
       <span *ngIf="importing" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
       {{ importing ? 'Importing...' : 'Import' }}
     </button>

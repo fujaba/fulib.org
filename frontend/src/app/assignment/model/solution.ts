@@ -1,8 +1,8 @@
 export class AuthorInfo {
-  name: string;
-  studentId: string;
-  email: string;
-  github: string;
+  name?: string;
+  studentId?: string;
+  email?: string;
+  github?: string;
 }
 
 export const authorInfoProperties = [
@@ -11,6 +11,13 @@ export const authorInfoProperties = [
   ['E-Mail', 'email'],
   ['GitHub Username', 'github'],
 ] as const;
+
+export interface Consent {
+  demonstration?: boolean;
+  scientific?: boolean;
+  '3P'?: boolean;
+}
+export const consentKeys = ['demonstration', 'scientific', '3P'] as const;
 
 export default class Solution {
   _id?: string;
@@ -21,6 +28,7 @@ export default class Solution {
   author: AuthorInfo;
   solution: string;
   commit?: string;
+  consent?: Consent;
 
   timestamp?: Date;
   points?: number;
@@ -35,6 +43,8 @@ export type ImportSolution = Pick<Solution,
 >;
 
 export interface EstimatedCosts {
+  solutions: number;
+  files: number;
   tokens: number;
   estimatedCost: number;
 }

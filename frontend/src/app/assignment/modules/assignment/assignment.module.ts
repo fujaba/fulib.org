@@ -25,6 +25,11 @@ import {StatisticsBlockComponent} from './statistics-block/statistics-block.comp
 import {StatisticsComponent} from './statistics/statistics.component';
 import {SubmitModalComponent} from './submit-modal/submit-modal.component';
 import {AssignmentTasksComponent} from './tasks/tasks.component';
+import { ImportGithubComponent } from './import-github/import-github.component';
+import { ImportFilesComponent } from './import-files/import-files.component';
+import { ImportMossComponent } from './import-moss/import-moss.component';
+import { ImportEmbeddingsComponent } from './import-embeddings/import-embeddings.component';
+import { ImportConsentComponent } from './import-consent/import-consent.component';
 
 
 @NgModule({
@@ -39,6 +44,11 @@ import {AssignmentTasksComponent} from './tasks/tasks.component';
     ImportModalComponent,
     StatisticsBlockComponent,
     DeleteModalComponent,
+    ImportGithubComponent,
+    ImportFilesComponent,
+    ImportMossComponent,
+    ImportEmbeddingsComponent,
+    ImportConsentComponent,
   ],
   imports: [
     CommonModule,

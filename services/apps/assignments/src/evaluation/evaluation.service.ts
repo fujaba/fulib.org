@@ -2,7 +2,6 @@ import {EventService} from '@mean-stream/nestx';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model, UpdateQuery} from 'mongoose';
-import {tap} from 'rxjs';
 import {AssignmentService} from '../assignment/assignment.service';
 import {SearchService} from '../search/search.service';
 import {CreateEvaluationDto, RemarkDto, UpdateEvaluationDto} from './evaluation.dto';

@@ -25,7 +25,7 @@
            class="list-group-item list-group-item-action"
            routerLink="/assignments/{{assignment._id}}/solutions/{{solution._id}}">
           by
-          <app-author-name [name]="solution.author.name" [email]="solution.author.email"></app-author-name>
+          <app-author-name [name]="solution.author.name || 'You'" [email]="solution.author.email"></app-author-name>
           &mdash;
           {{solution.author.studentId}}
           &mdash;
@@ -34,7 +34,7 @@
         <a class="list-group-item list-group-item-action"
            routerLink="/assignments/{{assignment._id}}">
           by
-          <app-author-name [name]="author?.name ?? ''" [email]="author?.email ?? ''"></app-author-name>
+          <app-author-name [name]="author?.name || 'You'" [email]="author?.email"></app-author-name>
           &mdash;
           {{author?.studentId}}
           &mdash;

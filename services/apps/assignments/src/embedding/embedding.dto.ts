@@ -4,6 +4,14 @@ import {ArrayMaxSize, ArrayMinSize, IsIn, IsInt, IsMongoId, IsNumber, IsOptional
 export class EmbeddingEstimate {
   @ApiProperty()
   @IsInt()
+  solutions: number;
+
+  @ApiProperty()
+  @IsInt()
+  files: number;
+
+  @ApiProperty()
+  @IsInt()
   tokens: number;
 
   @ApiProperty()

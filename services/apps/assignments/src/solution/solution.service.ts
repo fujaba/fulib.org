@@ -2,7 +2,7 @@ import {EventService} from '@mean-stream/nestx';
 import {UserToken} from '@app/keycloak-auth';
 import {Injectable, Logger, OnModuleInit} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
-import {FilterQuery, Model} from 'mongoose';
+import {FilterQuery, Model, UpdateQuery} from 'mongoose';
 import {AssignmentService} from '../assignment/assignment.service';
 import {CreateEvaluationDto} from '../evaluation/evaluation.dto';
 import {Evaluation} from '../evaluation/evaluation.schema';
@@ -113,6 +113,35 @@ export class SolutionService implements OnModuleInit {
     const updated = await this.model.findOneAndUpdate(idFilter(id), dto, {new: true}).exec();
     updated && this.emit('updated', updated);
     return updated;
+  }
+
+  async updateMany(assignment: string, dtos: UpdateSolutionDto[]): Promise<(SolutionDocument | null)[]> {
+    return Promise.all(dtos.map(dto => {
+      const {author, consent, ...rest} = dto;
+      if (!author) {
+        return null;
+      }
+      const entries = Object.entries(author);
+      if (!entries.length) {
+        return null;
+      }
+
+      const update: UpdateQuery<Solution> = rest;
+      for (let [k, v] of entries) {
+        update['author.' + k] = v;
+      }
+      if (consent) {
+        for (let [k, v] of Object.entries(consent)) {
+          update['consent.' + k] = v;
+        }
+      }
+      const filter = {
+        assignment,
+        $or: entries.map(([k, v]) => ({['author.' + k]: v})),
+      };
+      console.log(filter, update);
+      return this.model.findOneAndUpdate(filter, update, {new: true}).exec();
+    }));
   }
 
   async remove(id: string): Promise<SolutionDocument | null> {
