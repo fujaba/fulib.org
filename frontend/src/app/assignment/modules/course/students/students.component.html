@@ -1,11 +1,13 @@
 <table class="table table-hover table-bordered table-sm table-responsive">
   <thead>
-  <th *ngFor="let prop of authorProperties">
-    {{ prop[0] }}
-  </th>
-  <th *ngFor="let assignment of course?.assignments; let i = index" colspan="2">
-    {{ i + 1 }}
-  </th>
+  <tr>
+    <th *ngFor="let prop of authorProperties">
+      {{ prop[0] }}
+    </th>
+    <th *ngFor="let name of assignmentNames" colspan="2">
+      {{ name }}
+    </th>
+  </tr>
   </thead>
   <tbody>
   <tr *ngFor="let student of students">
@@ -20,11 +22,11 @@
         <div ngbDropdown>
           <button ngbDropdownToggle class="btn p-0 text-white text-shadow">{{ (solution?.assignee || '-')|slice:0:1 }}</button>
           <div ngbDropdownMenu>
-            <ng-container *ngIf="solution as solution else noSolution">
+            <ng-container *ngIf="solution else noSolution">
               <a
                 ngbDropdownItem
                 class="bi-list-check"
-                [routerLink]="['/assignments', course?.assignments?.[i], 'solutions', solution?._id]"
+                [routerLink]="['/assignments', course?.assignments?.[i], 'solutions', solution._id]"
               >
                 View Solution
               </a>
