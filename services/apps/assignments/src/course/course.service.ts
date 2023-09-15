@@ -1,7 +1,7 @@
 import {EventService} from '@mean-stream/nestx';
 import {Injectable, Logger, OnModuleInit} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
-import {Model} from 'mongoose';
+import {FilterQuery, Model} from 'mongoose';
 import {AssigneeService} from '../assignee/assignee.service';
 import {AuthorInfo} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
@@ -47,8 +47,8 @@ export class CourseService implements OnModuleInit {
     return created;
   }
 
-  async findAll(): Promise<CourseDocument[]> {
-    return this.model.find().exec();
+  async findAll(filter: FilterQuery<Course> = {}): Promise<CourseDocument[]> {
+    return this.model.find(filter).exec();
   }
 
   async findOne(id: string): Promise<CourseDocument | null> {
