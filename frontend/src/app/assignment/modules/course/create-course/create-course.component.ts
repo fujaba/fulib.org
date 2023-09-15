@@ -105,19 +105,48 @@ export class CreateCourseComponent implements OnInit {
   }
 
   submit(): void {
-    if (!this.course) {
+    if (!this.course || '_id' in this.course) {
       return;
     }
 
     this.submitting = true;
     this.course.assignments = this.assignments.map(a => a._id);
-    const id = '_id' in this.course ? this.course._id : undefined;
-    (id ? this.courseService.update(id, this.course) : this.courseService.create(this.course)).subscribe(course => {
-      this.submitting = false;
-      this.router.navigate(['/assignments/courses', course._id, 'share']);
-    }, error => {
-      this.toastService.error('Course', `Failed to ${id ? 'update' : 'create'} course`, error);
-      this.submitting = false;
+    this.courseService.create(this.course).subscribe({
+      next: course => this.router.navigate(['/assignments/courses', course._id, 'share']),
+      error: error => this.toastService.error('Course', 'Failed to create course', error),
+      complete: () => this.submitting = false,
+    });
+  }
+
+  save() {
+    if (!this.course || !('_id' in this.course)) {
+      return;
+    }
+
+    this.submitting = true;
+    this.course.assignments = this.assignments.map(a => a._id);
+    this.courseService.update(this.course._id, this.course).subscribe({
+      next: course => this.course = course,
+      error: error => this.toastService.error('Course', `Failed to update course`, error),
+      complete: () => this.submitting = false,
+    });
+  }
+
+  delete() {
+    if (!this.course || !('_id' in this.course)) {
+      return;
+    }
+    if (!confirm('Are you sure you want to delete this course? This action cannot be undone.')) {
+      return;
+    }
+    this.submitting = true;
+    this.courseService.delete(this.course._id).subscribe({
+      next: () => {
+        this.router.navigate(['/assignments/courses']);
+        this.toastService.warn('Delete Course', 'Successfully deleted course');
+      },
+      error: error => this.toastService.error('Delete Course', 'Failed to delete course', error),
+      complete: () => this.submitting = false,
     });
   }
 

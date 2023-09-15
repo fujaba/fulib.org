@@ -77,6 +77,10 @@ export class CourseService {
     return this.http.patch<Course>(`${environment.assignmentsApiUrl}/courses/${id}`, update);
   }
 
+  delete(id: string): Observable<Course> {
+    return this.http.delete<Course>(`${environment.assignmentsApiUrl}/courses/${id}`);
+  }
+
   getOwn(): Observable<Course[]> {
     return this.userService.getCurrent().pipe(
       switchMap(user => user ? this.http.get<Course[]>(`${environment.assignmentsApiUrl}/courses`, {params: {createdBy: user.id!}}) : of([])),
