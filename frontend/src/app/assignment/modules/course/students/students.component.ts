@@ -13,7 +13,7 @@ import {AssignmentService} from "../../../services/assignment.service";
 })
 export class StudentsComponent implements OnInit {
   course?: Course;
-  students: CourseStudent[] = [];
+  students?: CourseStudent[];
   assignmentNames: string[] = [];
   assignees: string[] = [];
 

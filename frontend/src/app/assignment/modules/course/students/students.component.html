@@ -10,6 +10,12 @@
   </tr>
   </thead>
   <tbody>
+  <tr *ngIf="!students">
+    <td [attr.colspan]="authorProperties.length + assignmentNames.length * 2" class="text-center align-middle">
+      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      Loading...
+    </td>
+  </tr>
   <tr *ngFor="let student of students">
     <td *ngFor="let prop of authorProperties">
       {{ student.author[prop[1]] }}
