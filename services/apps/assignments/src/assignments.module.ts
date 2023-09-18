@@ -10,7 +10,6 @@ import {CommentModule} from './comment/comment.module';
 import {CourseModule} from './course/course.module';
 import {environment} from './environment';
 import {EvaluationModule} from './evaluation/evaluation.module';
-import {GradingModule} from './grading/grading.module';
 import {SearchModule} from './search/search.module';
 import {SelectionModule} from './selection/selection.module';
 import {SolutionModule} from './solution/solution.module';
@@ -41,7 +40,6 @@ import {MossModule} from './moss/moss.module';
     ClassroomModule,
     SolutionModule,
     AssigneeModule,
-    GradingModule,
     CommentModule,
     CourseModule,
     EvaluationModule,

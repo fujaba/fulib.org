@@ -1,5 +1,5 @@
 import {EventService} from '@mean-stream/nestx';
-import {Injectable, Logger, OnModuleInit} from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model} from 'mongoose';
 import {UpdateAssigneeDto} from './assignee.dto';
@@ -7,22 +7,11 @@ import {UpdateAssigneeDto} from './assignee.dto';
 import {Assignee, AssigneeDocument} from './assignee.schema';
 
 @Injectable()
-export class AssigneeService implements OnModuleInit {
+export class AssigneeService {
   constructor(
     @InjectModel(Assignee.name) private model: Model<Assignee>,
     private eventService: EventService,
   ) {
-  }
-
-  async onModuleInit() {
-    const result = await this.model.updateMany({
-      id: {$exists: true},
-    }, {
-      $rename: {
-        id: 'solution',
-      },
-    });
-    result.modifiedCount && new Logger(AssigneeService.name).warn(`Migrated ${result.modifiedCount} assignees`);
   }
 
   async findAll(where: FilterQuery<Assignee> = {}): Promise<AssigneeDocument[]> {

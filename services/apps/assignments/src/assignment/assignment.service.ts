@@ -1,7 +1,7 @@
 import {EventService} from '@mean-stream/nestx';
 import {UserToken} from '@app/keycloak-auth';
 import {HttpService} from '@nestjs/axios';
-import {Injectable, Logger, OnModuleInit} from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model, UpdateQuery} from 'mongoose';
 import {environment} from '../environment';
@@ -11,29 +11,12 @@ import {CreateAssignmentDto, ReadAssignmentDto, ReadTaskDto, UpdateAssignmentDto
 import {Assignment, AssignmentDocument, Task} from './assignment.schema';
 
 @Injectable()
-export class AssignmentService implements OnModuleInit {
+export class AssignmentService {
   constructor(
     @InjectModel(Assignment.name) private model: Model<Assignment>,
     private http: HttpService,
     private eventService: EventService,
   ) {
-  }
-
-  async onModuleInit() {
-    const result = await this.model.updateMany({
-      $or: [
-        {userId: {$exists: true}},
-        {descriptionHtml: {$exists: true}},
-      ],
-    }, {
-      $rename: {
-        userId: 'createdBy',
-      },
-      $unset: {
-        descriptionHtml: 1,
-      },
-    });
-    result.modifiedCount && new Logger(AssignmentService.name).warn(`Migrated ${result.modifiedCount} assignments`);
   }
 
   findTask(tasks: Task[], id: string): Task | undefined {

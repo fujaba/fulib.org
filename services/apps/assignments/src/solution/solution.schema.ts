@@ -15,17 +15,6 @@ import {
 } from 'class-validator';
 import {Document} from 'mongoose';
 
-export class TaskResult {
-  @Prop()
-  task: string;
-
-  @Prop()
-  points: number;
-
-  @Prop()
-  output: string;
-}
-
 export class Consent {
   @Prop()
   @ApiPropertyOptional()
@@ -122,9 +111,6 @@ export class Solution {
   @ApiPropertyOptional({description: ''})
   @IsNumber()
   points?: number;
-
-  @Prop({required: false})
-  results?: TaskResult[];
 }
 
 export type SolutionDocument = Solution & Document;

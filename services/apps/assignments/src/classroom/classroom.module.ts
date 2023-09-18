@@ -4,7 +4,6 @@ import {MulterModule} from '@nestjs/platform-express';
 import {diskStorage} from 'multer';
 import {AssignmentModule} from '../assignment/assignment.module';
 import {EvaluationModule} from '../evaluation/evaluation.module';
-import {GradingModule} from '../grading/grading.module';
 import {SearchModule} from '../search/search.module';
 import {SolutionModule} from '../solution/solution.module';
 import {ClassroomController} from './classroom.controller';
@@ -16,7 +15,6 @@ import {ClassroomService} from './classroom.service';
     SearchModule,
     AssignmentModule,
     SolutionModule,
-    GradingModule,
     EvaluationModule,
     HttpModule,
     MulterModule.register({

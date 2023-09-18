@@ -1,6 +1,6 @@
 import {EventService} from '@mean-stream/nestx';
 import {UserToken} from '@app/keycloak-auth';
-import {Injectable, Logger, OnModuleInit} from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model, UpdateQuery} from 'mongoose';
 import {AssignmentService} from '../assignment/assignment.service';
@@ -12,63 +12,13 @@ import {CreateSolutionDto, ReadSolutionDto, UpdateSolutionDto} from './solution.
 import {Solution, SolutionDocument} from './solution.schema';
 
 @Injectable()
-export class SolutionService implements OnModuleInit {
+export class SolutionService {
   constructor(
     @InjectModel(Solution.name) public model: Model<Solution>,
     private assignmentService: AssignmentService,
     private evaluationService: EvaluationService,
     private eventService: EventService,
   ) {
-  }
-
-  async onModuleInit() {
-    const solutions: Pick<SolutionDocument, 'assignment' | '_id' | 'results'>[] = await this.model
-      .find({results: {$exists: true}}, {assignment: 1, _id: 1, results: 1})
-      .exec();
-    await Promise.all(solutions.map(async ({assignment, _id, results}) => {
-      if (!results) {
-        return;
-      }
-      await Promise.all(results.map(result => {
-        const {
-          task,
-          output: remark,
-          points,
-        } = result;
-        const dto: CreateEvaluationDto = {
-          task,
-          author: 'Autograding',
-          remark,
-          points,
-          snippets: [],
-        };
-        return this.evaluationService.create(assignment, _id, dto);
-      }));
-    }));
-    const count = solutions.reduce((a, c) => c.results ? a + c.results.length : a, 0);
-    const logger = new Logger(SolutionService.name);
-    count && logger.warn(`Migrated ${count} results of ${solutions.length} solutions`);
-
-    const result = await this.model.updateMany({
-      $or: [
-        {userId: {$exists: true}},
-        {timeStamp: {$exists: true}},
-        {author: {$exists: false}},
-        {results: {$exists: true}},
-      ],
-    }, {
-      $rename: {
-        userId: 'createdBy',
-        timeStamp: 'timestamp',
-        name: 'author.name',
-        email: 'author.email',
-        studentID: 'author.studentId',
-      },
-      $unset: {
-        results: 1,
-      },
-    });
-    result.modifiedCount && logger.warn(`Migrated ${result.modifiedCount} solutions`);
   }
 
   private async createEvaluation(solution: SolutionDocument, dto: CreateEvaluationDto): Promise<Evaluation> {

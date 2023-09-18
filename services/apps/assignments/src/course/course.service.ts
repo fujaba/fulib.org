@@ -1,8 +1,7 @@
 import {EventService} from '@mean-stream/nestx';
-import {Injectable, Logger, OnModuleInit} from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model} from 'mongoose';
-import {AssigneeService} from '../assignee/assignee.service';
 import {AuthorInfo} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {idFilter} from '../utils';
@@ -10,32 +9,12 @@ import {CourseStudent, CreateCourseDto, UpdateCourseDto} from './course.dto';
 import {Course, CourseDocument} from './course.schema';
 
 @Injectable()
-export class CourseService implements OnModuleInit {
+export class CourseService {
   constructor(
     @InjectModel(Course.name) private model: Model<Course>,
     private solutionService: SolutionService,
-    private assigneeService: AssigneeService,
     private eventService: EventService,
   ) {
-  }
-
-  async onModuleInit() {
-    const result = await this.model.updateMany({
-      $or: [
-        {assignmentIds: {$exists: true}},
-        {userId: {$exists: true}},
-        {descriptionHtml: {$exists: true}},
-      ]
-    }, {
-      $rename: {
-        assignmentIds: 'assignments',
-        userId: 'createdBy',
-      },
-      $unset: {
-        descriptionHtml: 1,
-      },
-    });
-    result.modifiedCount && new Logger(CourseService.name).warn(`Migrated ${result.modifiedCount} courses`);
   }
 
   async create(dto: CreateCourseDto, userId?: string): Promise<CourseDocument> {
