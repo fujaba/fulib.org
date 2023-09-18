@@ -254,7 +254,10 @@ export function findIndentEnd(code: string, headStart: number, headEnd: number):
   const bodyIndent = code.substring(firstLineStart, bodyIndentEnd);
   let currentIndex = firstLineStart;
   while (true) {
-    const nextLineIndex = (code.indexOf('\n', currentIndex)) || code.length;
+    const nextLineIndex = code.indexOf('\n', currentIndex);
+    if (nextLineIndex === -1) {
+      return code.length - 1;
+    }
     if (currentIndex === nextLineIndex) { // line is empty
       currentIndex++;
       continue;

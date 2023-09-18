@@ -116,6 +116,6 @@ def baz():
 
     expect(findIndentEnd(code, 0, 10)).toEqual(34);
     expect(findIndentEnd(code, 35, 45)).toEqual(52);
-    // TODO test with no newline at end of file
+    expect(findIndentEnd(code.trim(), 35, 45)).toEqual(51);
   });
 });
