@@ -67,17 +67,6 @@ export class EvaluationController {
     return this.evaluationService.findRemarks(this.toQuery(assignment, undefined, params));
   }
 
-  @Get('evaluations/:id')
-  @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
-  @ApiOkResponse({type: Evaluation})
-  @NotFound()
-  async findOneByAssignment(
-    @Param('assignment') assignment: string,
-    @Param('id') id: string,
-  ): Promise<Evaluation | null> {
-    return this.evaluationService.findOne(id);
-  }
-
   @Post('solutions/:solution/evaluations')
   @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
   @ApiCreatedResponse({type: Evaluation})
@@ -119,8 +108,6 @@ export class EvaluationController {
   @ApiOkResponse({type: Evaluation})
   @NotFound()
   async findOne(
-    @Param('assignment') assignment: string,
-    @Param('solution') solution: string,
     @Param('id') id: string,
   ): Promise<Evaluation | null> {
     return this.evaluationService.findOne(id);

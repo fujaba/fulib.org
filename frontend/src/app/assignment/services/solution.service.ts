@@ -295,7 +295,8 @@ export class SolutionService {
     if (solution) {
       this.addSolutionToken(headers, assignment, solution);
     }
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/${solution ? `solutions/${solution}/` : ''}evaluations/${evaluation}`;
+    // NB: The findOne endpoint does not really care about the solution, so we can just use * if unknown.
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/${solution || '*'}/evaluations/${evaluation}`;
     return this.http.get<Evaluation>(url, {headers});
   }
 
