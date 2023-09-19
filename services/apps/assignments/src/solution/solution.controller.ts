@@ -1,7 +1,7 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound, ObjectIdArrayPipe} from '@mean-stream/nestx';
 import {Body, Controller, Delete, Get, Param, ParseArrayPipe, Patch, Post, Query} from '@nestjs/common';
-import {ApiCreatedResponse, ApiOkResponse, ApiQuery, ApiTags} from '@nestjs/swagger';
+import {ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiQuery, ApiTags} from '@nestjs/swagger';
 import {isMongoId} from 'class-validator';
 import {FilterQuery, Types} from 'mongoose';
 import {AssigneeService} from '../assignee/assignee.service';
@@ -125,6 +125,7 @@ export class SolutionController {
   }
 
   @Get('solutions')
+  @ApiOperation({summary: 'List your own solutions'})
   @Auth()
   @ApiOkResponse({type: [ReadSolutionDto]})
   async findOwn(
@@ -145,6 +146,10 @@ export class SolutionController {
   }
 
   @Patch('assignments/:assignment/solutions')
+  @ApiOperation({
+    summary: 'Batch update multiple solutions',
+    description: 'Matches by any author field. Only the fields that are present in the request body will be updated.',
+  })
   @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
   @ApiOkResponse({type: [Solution]})
   async updateMany(
@@ -165,6 +170,7 @@ export class SolutionController {
   }
 
   @Delete('assignments/:assignment/solutions')
+  @ApiOperation({summary: 'Batch delete multiple solutions by IDs'})
   @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
   @ApiOkResponse({type: [Solution]})
   async removeAll(

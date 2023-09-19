@@ -1,5 +1,13 @@
 import {Controller, ForbiddenException, Get, Param, ParseBoolPipe, Post, Query} from '@nestjs/common';
-import {ApiCreatedResponse, ApiExtraModels, ApiForbiddenResponse, ApiOkResponse, ApiTags, refs} from "@nestjs/swagger";
+import {
+  ApiCreatedResponse,
+  ApiExtraModels,
+  ApiForbiddenResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+  refs
+} from "@nestjs/swagger";
 import {AssignmentAuth} from "../assignment/assignment-auth.decorator";
 import {Embeddable, EmbeddingEstimate, SnippetEmbeddable, TaskEmbeddable} from "./embedding.dto";
 import {EmbeddingService} from "./embedding.service";
@@ -16,6 +24,7 @@ export class EmbeddingController {
   }
 
   @Post('embeddings')
+  @ApiOperation({summary: 'Create embeddings for all tasks and solutions in an assignment'})
   @ApiCreatedResponse({type: EmbeddingEstimate})
   @ApiForbiddenResponse({description: 'No OpenAI API key configured for this assignment.'})
   @AssignmentAuth({forbiddenResponse: 'You are not allowed to create embeddings.'})
@@ -37,6 +46,7 @@ export class EmbeddingController {
 
   @Get('embeddings')
   @ApiOkResponse({type: EmbeddingEstimate})
+  @ApiOperation({summary: 'Get embeddables related to an embeddable ID'})
   @AssignmentAuth({forbiddenResponse: 'You are not allowed to estimate embeddings.'})
   async getEmbeddings(
     @Param('assignment') assignment: string,
@@ -51,6 +61,7 @@ export class EmbeddingController {
   }
 
   @Get('solutions/:solution/embeddings')
+  @ApiOperation({summary: 'Get embeddables of a solution'})
   @ApiExtraModels(TaskEmbeddable, SnippetEmbeddable)
   @ApiOkResponse({schema: {oneOf: refs(TaskEmbeddable, SnippetEmbeddable)}})
   @AssignmentAuth({forbiddenResponse: 'You are not allowed to view this solution.'})

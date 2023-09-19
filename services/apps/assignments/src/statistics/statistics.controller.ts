@@ -1,5 +1,5 @@
 import {Controller, Get, Param} from '@nestjs/common';
-import {ApiOkResponse, ApiTags} from '@nestjs/swagger';
+import {ApiOkResponse, ApiOperation, ApiTags} from '@nestjs/swagger';
 import {AssignmentStatistics} from './statistics.dto';
 import {StatisticsService} from './statistics.service';
 
@@ -12,6 +12,7 @@ export class StatisticsController {
   }
 
   @Get('assignments/:assignment/statistics')
+  @ApiOperation({summary: 'Get statistics for an assignment'})
   @ApiOkResponse({type: AssignmentStatistics})
   async getAssignmentStatistics(
     @Param('assignment') assignment: string,
