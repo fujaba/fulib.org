@@ -4,7 +4,7 @@ import {
   ApiExtraModels,
   ApiForbiddenResponse,
   ApiOkResponse,
-  ApiOperation,
+  ApiOperation, ApiParam,
   ApiTags,
   refs
 } from "@nestjs/swagger";
@@ -46,35 +46,26 @@ export class EmbeddingController {
 
   @Get('embeddings')
   @ApiOkResponse({type: EmbeddingEstimate})
-  @ApiOperation({summary: 'Get embeddables related to an embeddable ID'})
-  @AssignmentAuth({forbiddenResponse: 'You are not allowed to estimate embeddings.'})
+  @ApiOperation({summary: 'Get embeddables related to an embeddable or task'})
+  @AssignmentAuth({forbiddenResponse: 'You are not allowed to read embeddings.'})
+  @ApiParam({name: 'id', description: 'Embeddable ID to find related embeddables'})
+  @ApiParam({name: 'task', description: 'Task ID to find related embeddables'})
+  @ApiParam({name: 'solution', description: 'Solution ID to limit search to a specific solution'})
+  @ApiParam({name: 'type', description: 'Type of embeddable to limit search', enum: ['snippet', 'task']})
   async getEmbeddings(
     @Param('assignment') assignment: string,
-    @Query('id') id: string,
-  ): Promise<Embeddable[]> {
-    const embeddable = await this.embeddingService.find(id) || notFound(id);
-    return this.embeddingService.getNearest({
-      assignment,
-      type: 'snippet',
-      embedding: embeddable.embedding,
-    });
-  }
-
-  @Get('solutions/:solution/embeddings')
-  @ApiOperation({summary: 'Get embeddables of a solution'})
-  @ApiExtraModels(TaskEmbeddable, SnippetEmbeddable)
-  @ApiOkResponse({schema: {oneOf: refs(TaskEmbeddable, SnippetEmbeddable)}})
-  @AssignmentAuth({forbiddenResponse: 'You are not allowed to view this solution.'})
-  async getSolutionEmbeddings(
-    @Param('assignment') assignment: string,
-    @Param('solution') solution: string,
+    @Query('id') id?: string,
     @Query('task') task?: string,
+    @Query('solution') solution?: string,
+    @Query('type') type?: 'snippet' | 'task',
   ): Promise<Embeddable[]> {
-    const taskEmbedding = task ? await this.embeddingService.find(task) || notFound(task) : undefined;
+    id ||= task;
+    const embeddable = id ? await this.embeddingService.find(id) || notFound(id) : undefined;
     return this.embeddingService.getNearest({
       assignment,
       solution,
-      embedding: taskEmbedding?.embedding,
+      type,
+      embedding: embeddable?.embedding,
     });
   }
 }
