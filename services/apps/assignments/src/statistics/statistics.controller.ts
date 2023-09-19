@@ -4,7 +4,7 @@ import {AssignmentStatistics} from './statistics.dto';
 import {StatisticsService} from './statistics.service';
 
 @Controller()
-@ApiTags('statistics')
+@ApiTags('Statistics')
 export class StatisticsController {
   constructor(
     private statisticsService: StatisticsService,

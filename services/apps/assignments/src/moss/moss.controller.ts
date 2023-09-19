@@ -5,8 +5,10 @@ import {AssignmentService} from "../assignment/assignment.service";
 import {SearchService} from "../search/search.service";
 import {NotFound, notFound} from "@mean-stream/nestx";
 import {SolutionService} from "../solution/solution.service";
+import {ApiTags} from "@nestjs/swagger";
 
 @Controller('assignments/:assignment/moss')
+@ApiTags('MOSS')
 export class MossController {
   constructor(
     private mossService: MossService,
