@@ -295,7 +295,8 @@ export class SolutionService {
     if (solution) {
       this.addSolutionToken(headers, assignment, solution);
     }
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/${solution ? `solutions/${solution}/` : ''}evaluations/${evaluation}`;
+    // NB: The findOne endpoint does not really care about the solution, so we can just use * if unknown.
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/${solution || '*'}/evaluations/${evaluation}`;
     return this.http.get<Evaluation>(url, {headers});
   }
 
@@ -339,8 +340,8 @@ export class SolutionService {
   getEmbeddingSnippets(assignment: string, solution: string, task: string): Observable<Snippet[]> {
     const headers = {};
     this.addAssignmentToken(headers, assignment);
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/embeddings`;
-    return this.http.get<any[]>(url, {headers, params: {task}}).pipe(
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/embeddings`;
+    return this.http.get<any[]>(url, {headers, params: {solution, task}}).pipe(
       map(embeddings => embeddings.map(emb => this.convertEmbeddable(emb))),
     );
   }

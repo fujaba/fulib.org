@@ -1,7 +1,7 @@
 import {AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound} from '@mean-stream/nestx';
 import {Body, Controller, Delete, Get, Headers, MessageEvent, Param, Patch, Post, Query, Sse} from '@nestjs/common';
-import {ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
+import {ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags} from '@nestjs/swagger';
 import {FilterQuery, Types} from 'mongoose';
 import {Observable} from 'rxjs';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
@@ -45,6 +45,7 @@ export class EvaluationController {
   }
 
   @Get('evaluations/unique/:field')
+  @ApiOperation({summary: 'Find unique values for a field in evaluations.'})
   @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
   @ApiOkResponse({isArray: true})
   async findUnique(
@@ -56,6 +57,7 @@ export class EvaluationController {
   }
 
   @Get('evaluations/remarks')
+  @ApiOperation({summary: 'Find unique remarks and points.'})
   @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
   @ApiOkResponse({type: [RemarkDto]})
   async findRemarks(
@@ -63,17 +65,6 @@ export class EvaluationController {
     @Query() params?: FilterEvaluationParams,
   ): Promise<RemarkDto[]> {
     return this.evaluationService.findRemarks(this.toQuery(assignment, undefined, params));
-  }
-
-  @Get('evaluations/:id')
-  @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
-  @ApiOkResponse({type: Evaluation})
-  @NotFound()
-  async findOneByAssignment(
-    @Param('assignment') assignment: string,
-    @Param('id') id: string,
-  ): Promise<Evaluation | null> {
-    return this.evaluationService.findOne(id);
   }
 
   @Post('solutions/:solution/evaluations')
@@ -117,8 +108,6 @@ export class EvaluationController {
   @ApiOkResponse({type: Evaluation})
   @NotFound()
   async findOne(
-    @Param('assignment') assignment: string,
-    @Param('solution') solution: string,
     @Param('id') id: string,
   ): Promise<Evaluation | null> {
     return this.evaluationService.findOne(id);

@@ -13,12 +13,13 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import {FileInterceptor} from '@nestjs/platform-express';
-import {ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
+import {ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags} from '@nestjs/swagger';
 import {Types} from 'mongoose';
 import {MemberAuth} from '../member/member-auth.decorator';
 import {ProjectService} from '../project/project.service';
 import {ContainerDto, CreateContainerDto} from './container.dto';
 import {ContainerService} from './container.service';
+import {ProjectAuth} from "../project/project-auth.decorator";
 
 const forbiddenResponse = 'Not member of project.';
 
@@ -32,6 +33,7 @@ export class ContainerController {
   }
 
   @Post('container')
+  @ApiOperation({summary: 'Create a container for a temporary project'})
   @ApiCreatedResponse({type: ContainerDto})
   @Auth({optional: true})
   async createTemp(
@@ -81,6 +83,8 @@ export class ContainerController {
   }
 
   @Post('projects/:id/zip')
+  @ApiOperation({summary: 'Upload a zip file to add files to a project'})
+  @ProjectAuth({forbiddenResponse: 'Not owner of project.'})
   @UseInterceptors(FileInterceptor('file'))
   async unzip(@Param('id') id: string, @UploadedFile() file: Express.Multer.File): Promise<any | null> {
     return this.containerService.unzip(id, file);

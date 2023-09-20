@@ -1,4 +1,4 @@
-import {ValidationPipe} from '@nestjs/common';
+import {Logger, ValidationPipe} from '@nestjs/common';
 import {NestFactory} from '@nestjs/core';
 import {DocumentBuilder, SwaggerModule} from '@nestjs/swagger';
 import {environment} from './environment';
@@ -16,18 +16,13 @@ async function bootstrap() {
     .setVersion(environment.version)
     .addBearerAuth()
     .addServer(`http://localhost:${environment.port}`, 'Local')
-    .addServer('https://{subdomain}.fulib.org', 'Production', {
-      subdomain: {
-        description: 'www - Production (stable; master branch), dev - Development (beta; develop branch)',
-        enum: ['www', 'dev'],
-        default: 'www',
-      },
-    })
+    .addServer('https://fulib.org', 'Production')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup(prefix, app, document);
 
   await app.listen(environment.port);
+  new Logger().log(`🚀 Projects Service running at http://localhost:${environment.port}${prefix}`);
 }
 
 bootstrap();

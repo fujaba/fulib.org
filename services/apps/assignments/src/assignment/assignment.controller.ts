@@ -13,7 +13,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import {ApiCreatedResponse, ApiHeader, ApiOkResponse, ApiTags, getSchemaPath} from '@nestjs/swagger';
+import {ApiCreatedResponse, ApiHeader, ApiOkResponse, ApiOperation, ApiTags, getSchemaPath} from '@nestjs/swagger';
 import {FilterQuery} from 'mongoose';
 import {AssignmentAuth} from './assignment-auth.decorator';
 import {
@@ -91,6 +91,7 @@ export class AssignmentController {
 
   @Post('check')
   @ApiOkResponse({type: CheckResponseDto})
+  @ApiOperation({summary: 'Check a solution draft for a new assignment draft'})
   async checkNew(
     @Body() dto: CheckNewRequestDto,
   ): Promise<CheckResponseDto> {
@@ -100,6 +101,7 @@ export class AssignmentController {
   }
 
   @Post(':id/check')
+  @ApiOperation({summary: 'Check a solution draft for an existing assignment'})
   @NotFound()
   @ApiOkResponse({type: CheckResponseDto})
   async check(
