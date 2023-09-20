@@ -66,7 +66,7 @@ export class SolutionService {
   }
 
   async updateMany(assignment: string, dtos: BatchUpdateSolutionDto[]): Promise<(SolutionDocument | null)[]> {
-    return Promise.all(dtos.map(dto => {
+    const updated = await Promise.all(dtos.map(dto => {
       const {_id, author, consent, ...rest} = dto;
       if (!_id && !author) {
         return null;
@@ -95,6 +95,10 @@ export class SolutionService {
         return null;
       }
     }));
+    for (const update of updated) {
+      update && this.emit('updated', update);
+    }
+    return updated;
   }
 
   async remove(id: string): Promise<SolutionDocument | null> {
