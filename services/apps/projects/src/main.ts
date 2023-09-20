@@ -16,13 +16,7 @@ async function bootstrap() {
     .setVersion(environment.version)
     .addBearerAuth()
     .addServer(`http://localhost:${environment.port}`, 'Local')
-    .addServer('https://{subdomain}.fulib.org', 'Production', {
-      subdomain: {
-        description: 'www - Production (stable; master branch), dev - Development (beta; develop branch)',
-        enum: ['www', 'dev'],
-        default: 'www',
-      },
-    })
+    .addServer('https://fulib.org', 'Production')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup(prefix, app, document);
