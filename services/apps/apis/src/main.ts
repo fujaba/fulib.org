@@ -27,16 +27,10 @@ async function bootstrap() {
   const merged = merge(inputs);
   if (!isErrorResult(merged)) {
     merged.output.info.title = 'fulib.org APIs';
-    merged.output.servers = [
-      ...environment.servers.map(([name, url]) => ({
-        url,
-        description: name,
-      })),
-      {
-        url: 'https://fulib.org',
-        description: 'Production',
-      },
-    ];
+    merged.output.servers = environment.servers.map(([name, url]) => ({
+      url,
+      description: name,
+    }));
     SwaggerModule.setup(prefix, app, merged.output as any);
   }
 
