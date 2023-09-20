@@ -19,6 +19,7 @@ import {MemberAuth} from '../member/member-auth.decorator';
 import {ProjectService} from '../project/project.service';
 import {ContainerDto, CreateContainerDto} from './container.dto';
 import {ContainerService} from './container.service';
+import {ProjectAuth} from "../project/project-auth.decorator";
 
 const forbiddenResponse = 'Not member of project.';
 
@@ -82,7 +83,8 @@ export class ContainerController {
   }
 
   @Post('projects/:id/zip')
-  @ApiOperation({summary: 'Upload a zip file to add files to a project', tags: ['Projects']})
+  @ApiOperation({summary: 'Upload a zip file to add files to a project'})
+  @ProjectAuth({forbiddenResponse: 'Not owner of project.'})
   @UseInterceptors(FileInterceptor('file'))
   async unzip(@Param('id') id: string, @UploadedFile() file: Express.Multer.File): Promise<any | null> {
     return this.containerService.unzip(id, file);
