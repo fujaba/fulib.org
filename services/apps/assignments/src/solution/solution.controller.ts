@@ -1,7 +1,7 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound, ObjectIdArrayPipe} from '@mean-stream/nestx';
 import {Body, Controller, Delete, Get, Param, ParseArrayPipe, Patch, Post, Query} from '@nestjs/common';
-import {ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiQuery, ApiTags} from '@nestjs/swagger';
+import {ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiQuery, ApiTags} from '@nestjs/swagger';
 import {isMongoId} from 'class-validator';
 import {FilterQuery, Types} from 'mongoose';
 import {AssigneeService} from '../assignee/assignee.service';
@@ -150,6 +150,7 @@ export class SolutionController {
     summary: 'Batch update multiple solutions',
     description: 'Matches by any author field. Only the fields that are present in the request body will be updated.',
   })
+  @ApiBody({type: [UpdateSolutionDto]})
   @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
   @ApiOkResponse({type: [Solution]})
   async updateMany(
