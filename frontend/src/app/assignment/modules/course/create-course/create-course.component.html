@@ -1,5 +1,5 @@
 <div class="container">
-  <h1>{{course?.['_id'] ? 'Edit' : 'Create'}} Course</h1>
+  <h1 *ngIf="!course?.['_id']">Create Course</h1>
 
   <div class="mb-3">
     <app-import-export (import)="onImport($event)" (export)="onExport()"></app-import-export>
@@ -70,13 +70,20 @@
     Drag and Drop the "&equiv;" boxes to change the order.
   </div>
 
-  <div class="text-center">
+  <div *ngIf="!course?.['_id'] else editActions" class="text-center">
     <p>
       Click "Submit" to finalize your course and generate a link.
     </p>
-    <button type="button" class="btn btn-primary btn-lg" id="submitButton" (click)="submit()"
-            [disabled]="submitting">
-      {{submitting ? 'Submitting...' : 'Submit'}}
+    <button type="button" class="btn btn-primary btn-lg" [disabled]="submitting" (click)="submit()">
+      Submit
     </button>
   </div>
+  <ng-template #editActions>
+    <button type="button" class="btn btn-primary me-2" [disabled]="submitting" (click)="save()">
+      Save
+    </button>
+    <button type="button" class="btn btn-danger" [disabled]="submitting" (click)="delete()">
+      Delete
+    </button>
+  </ng-template>
 </div>

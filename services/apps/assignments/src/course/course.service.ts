@@ -94,7 +94,7 @@ export class CourseService {
         assignee,
       };
     }
-    return Array.from(students.values());
+    return Array.from(new Set(students.values()));
   }
 
   async update(id: string, dto: UpdateCourseDto): Promise<Course | null> {

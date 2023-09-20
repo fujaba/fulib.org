@@ -11,10 +11,10 @@ import {StudentsComponent} from './students/students.component';
 export const courseChildren = [
   {path: 'students', component: StudentsComponent, data: {title: 'Students'}},
   {path: 'share', component: ShareComponent, data: {title: 'Share'}},
+  {path: 'edit', component: CreateCourseComponent, data: {title: 'Edit Course'}},
 ];
 const routes: Routes = [
   {path: 'create', component: CreateCourseComponent, data: {title: 'Create Course'}},
-  {path: ':cid/edit', component: CreateCourseComponent, data: {title: 'Edit Course'}},
   {path: ':cid', pathMatch: 'full', redirectTo: ':cid/assignments'},
   {
     path: ':cid',
