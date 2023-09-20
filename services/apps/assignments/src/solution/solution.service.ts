@@ -8,7 +8,7 @@ import {CreateEvaluationDto} from '../evaluation/evaluation.dto';
 import {Evaluation} from '../evaluation/evaluation.schema';
 import {EvaluationService} from '../evaluation/evaluation.service';
 import {generateToken, idFilter} from '../utils';
-import {CreateSolutionDto, ReadSolutionDto, UpdateSolutionDto} from './solution.dto';
+import {BatchUpdateSolutionDto, CreateSolutionDto, ReadSolutionDto, UpdateSolutionDto} from './solution.dto';
 import {Solution, SolutionDocument} from './solution.schema';
 
 @Injectable()
@@ -65,33 +65,40 @@ export class SolutionService {
     return updated;
   }
 
-  async updateMany(assignment: string, dtos: UpdateSolutionDto[]): Promise<(SolutionDocument | null)[]> {
-    return Promise.all(dtos.map(dto => {
-      const {author, consent, ...rest} = dto;
-      if (!author) {
-        return null;
-      }
-      const entries = Object.entries(author);
-      if (!entries.length) {
+  async updateMany(assignment: string, dtos: BatchUpdateSolutionDto[]): Promise<(SolutionDocument | null)[]> {
+    const updated = await Promise.all(dtos.map(dto => {
+      const {_id, author, consent, ...rest} = dto;
+      if (!_id && !author) {
         return null;
       }
 
       const update: UpdateQuery<Solution> = rest;
-      for (let [k, v] of entries) {
-        update['author.' + k] = v;
+      if (author) {
+        for (let [k, v] of Object.entries(author)) {
+          update['author.' + k] = v;
+        }
       }
       if (consent) {
         for (let [k, v] of Object.entries(consent)) {
           update['consent.' + k] = v;
         }
       }
-      const filter = {
-        assignment,
-        $or: entries.map(([k, v]) => ({['author.' + k]: v})),
-      };
-      console.log(filter, update);
-      return this.model.findOneAndUpdate(filter, update, {new: true}).exec();
+      if (_id) {
+        return this.model.findByIdAndUpdate(_id, update, {new: true}).exec();
+      } else if (author) {
+        const filter = {
+          assignment,
+          $or: Object.entries(author).map(([k, v]) => ({['author.' + k]: v})),
+        };
+        return this.model.findOneAndUpdate(filter, update, {new: true}).exec();
+      } else {
+        return null;
+      }
     }));
+    for (const update of updated) {
+      update && this.emit('updated', update);
+    }
+    return updated;
   }
 
   async remove(id: string): Promise<SolutionDocument | null> {

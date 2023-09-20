@@ -272,11 +272,16 @@ export class SolutionTableComponent implements OnInit {
           timestamp,
         }).subscribe();
 
-        this.solutionService.update(assignment._id, solution._id!, {
-          points: issue._points,
-        }).subscribe();
+        return solution;
       })
     );
-    this.toastService.success('Submit Feedback', `Successfully submitted feedback for ${result.length} solutions`);
+
+    this.solutionService.updateMany(assignment._id, result.map(solution => ({
+      _id: solution._id,
+      points: solution.points,
+    }))).subscribe({
+      next: () => this.toastService.success('Submit Feedback', `Successfully submitted feedback for ${result.length} solutions`),
+      error: error => this.toastService.error('Submit Feedback', 'Failed to update solutions', error),
+    });
   }
 }

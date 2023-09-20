@@ -1,6 +1,8 @@
-import {OmitType, PartialType} from '@nestjs/swagger';
+import {ApiProperty, ApiPropertyOptional, OmitType, PartialType} from '@nestjs/swagger';
 import {Types} from 'mongoose';
 import {Solution} from './solution.schema';
+import {AsObjectId} from "@mean-stream/nestx";
+import {IsOptional} from "class-validator";
 
 const excluded = [
   'token',
@@ -20,6 +22,13 @@ export class UpdateSolutionDto extends PartialType(OmitType(Solution, [
   'solution',
   'commit',
 ] as const)) {
+}
+
+export class BatchUpdateSolutionDto extends UpdateSolutionDto {
+  @IsOptional()
+  @AsObjectId()
+  @ApiPropertyOptional()
+  _id?: Types.ObjectId;
 }
 
 export class ReadSolutionDto extends OmitType(Solution, [
