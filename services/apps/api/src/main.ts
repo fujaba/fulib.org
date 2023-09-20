@@ -1,13 +1,13 @@
 import {Logger} from '@nestjs/common';
 import {NestFactory} from '@nestjs/core';
 import {SwaggerModule} from '@nestjs/swagger';
-import {ApisModule} from "./apis.module";
+import {ApiModule} from "./api.module";
 import {environment} from "./environment";
 import {isErrorResult, merge} from "openapi-merge";
 import {SingleMergeInput} from "openapi-merge/dist/data";
 
 async function bootstrap() {
-  const app = await NestFactory.create(ApisModule);
+  const app = await NestFactory.create(ApiModule);
   const prefix = `/api/${environment.version}`;
   app.enableCors();
   app.setGlobalPrefix(prefix);
