@@ -1,7 +1,7 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound, ObjectIdArrayPipe} from '@mean-stream/nestx';
 import {Body, Controller, Delete, Get, Param, ParseArrayPipe, Patch, Post, Query} from '@nestjs/common';
-import {ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiQuery, ApiTags} from '@nestjs/swagger';
+import {ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiQuery, ApiTags} from '@nestjs/swagger';
 import {isMongoId} from 'class-validator';
 import {FilterQuery, Types} from 'mongoose';
 import {AssigneeService} from '../assignee/assignee.service';
@@ -9,7 +9,7 @@ import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {AssignmentService} from '../assignment/assignment.service';
 import {EvaluationService} from '../evaluation/evaluation.service';
 import {SolutionAuth} from './solution-auth.decorator';
-import {CreateSolutionDto, ReadSolutionDto, UpdateSolutionDto} from './solution.dto';
+import {BatchUpdateSolutionDto, CreateSolutionDto, ReadSolutionDto, UpdateSolutionDto} from './solution.dto';
 import {Solution} from './solution.schema';
 import {SolutionService} from './solution.service';
 
@@ -148,13 +148,15 @@ export class SolutionController {
   @Patch('assignments/:assignment/solutions')
   @ApiOperation({
     summary: 'Batch update multiple solutions',
-    description: 'Matches by any author field. Only the fields that are present in the request body will be updated.',
+    description: 'Matches by _id or any author field. ' +
+      'Only the fields that are present in the request body will be updated.',
   })
   @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
+  @ApiBody({type: [BatchUpdateSolutionDto]})
   @ApiOkResponse({type: [Solution]})
   async updateMany(
     @Param('assignment') assignment: string,
-    @Body() dtos: UpdateSolutionDto[],
+    @Body() dtos: BatchUpdateSolutionDto[],
   ): Promise<(Solution | null)[]> {
     return this.solutionService.updateMany(assignment, dtos);
   }
