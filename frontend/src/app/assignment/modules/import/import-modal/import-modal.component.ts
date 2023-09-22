@@ -1,8 +1,7 @@
 import {Component} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ToastService} from '@mean-stream/ngbx';
-import {Observable} from "rxjs";
-import {importChildren} from "../assignment-routing.module";
+import {importChildren} from "../import-routing.module";
 
 @Component({
   selector: 'app-import-modal',
