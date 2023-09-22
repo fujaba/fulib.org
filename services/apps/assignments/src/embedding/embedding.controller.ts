@@ -30,7 +30,7 @@ export class EmbeddingController {
   @AssignmentAuth({forbiddenResponse: 'You are not allowed to create embeddings.'})
   async createEmbeddings(
     @Param('assignment') assignmentId: string,
-    @Query('estimate', ParseBoolPipe) estimate?: boolean,
+    @Query('estimate', new ParseBoolPipe({optional: true})) estimate?: boolean,
   ): Promise<EmbeddingEstimate> {
     if (estimate) {
       return this.embeddingService.estimateEmbeddings(assignmentId);
