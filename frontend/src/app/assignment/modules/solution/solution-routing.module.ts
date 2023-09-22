@@ -5,7 +5,6 @@ import {CommentListComponent} from './comment-list/comment-list.component';
 import {DeleteModalComponent} from './delete-modal/delete-modal.component';
 import {SolutionDetailsComponent} from './details/details.component';
 import {EvaluationModalComponent} from './evaluation-modal/evaluation-modal.component';
-import {EventListComponent} from './event-list/event-list.component';
 import {SolutionShareComponent} from './share/share.component';
 import {SolutionComponent} from './solution/solution.component';
 import {SolutionTasksComponent} from './tasks/tasks.component';
@@ -25,7 +24,6 @@ export const solutionChildRoutes: Routes = [
   },
   {path: 'share', component: SolutionShareComponent, data: {title: 'Sharing'}},
   {path: 'comments', component: CommentListComponent, data: {title: 'Comments'}},
-  {path: 'events', component: EventListComponent, data: {title: 'Events', new: true}},
 ];
 
 const routes: Routes = [

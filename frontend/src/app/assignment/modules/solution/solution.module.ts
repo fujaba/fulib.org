@@ -13,7 +13,6 @@ import {SolutionDetailsComponent} from './details/details.component';
 import {EditSnippetComponent} from './edit-snippet/edit-snippet.component';
 import {EvaluationFormComponent} from './evaluation-form/evaluation-form.component';
 import {EvaluationModalComponent} from './evaluation-modal/evaluation-modal.component';
-import {EventListComponent} from './event-list/event-list.component';
 import {SolutionShareComponent} from './share/share.component';
 import {SolutionRoutingModule} from './solution-routing.module';
 import {SolutionComponent} from './solution/solution.component';
@@ -32,7 +31,6 @@ import { SimilarModalComponent } from './similar-modal/similar-modal.component';
     EditSnippetComponent,
     EvaluationFormComponent,
     DeleteModalComponent,
-    EventListComponent,
     SimilarModalComponent,
   ],
   imports: [
