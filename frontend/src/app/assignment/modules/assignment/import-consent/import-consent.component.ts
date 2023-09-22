@@ -38,11 +38,13 @@ export class ImportConsentComponent {
       for (let j = 0; j < columns.length; j++) {
         const column = columns[j].toLowerCase();
         const value = values[j];
-        if (authorInfoProperties.find(([, key]) => key === column)) {
-          author[column as keyof AuthorInfo] = value;
+        const authorInfo = authorInfoProperties.find(([, key]) => key.toLowerCase() === column);
+        if (authorInfo) {
+          author[authorInfo[1]] = value;
         }
-        if (consentKeys.includes(column as keyof Consent)) {
-          consent[column] = Boolean(value.toLowerCase());
+        const consentKey = consentKeys.find(key => key.toLowerCase() === column);
+        if (consentKey) {
+          consent[consentKey] = Boolean(value.toLowerCase());
         }
       }
       if (Object.keys(author).length) {
