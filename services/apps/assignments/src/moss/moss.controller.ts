@@ -35,7 +35,7 @@ export class MossController {
     return this.mossService.moss(assignmentDoc, files.map(({solution, file, content}) => ({
       name: solutionNames.get(solution) + ':' + file,
       content,
-      size: Buffer.from(content, 'utf8').length,
+      size: Buffer.byteLength(content, 'utf8'),
     })));
   }
 }
