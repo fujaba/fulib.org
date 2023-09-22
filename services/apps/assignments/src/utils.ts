@@ -19,7 +19,6 @@ export function eventStream<T>(source: Observable<WsResponse<T>>, name: string):
   return merge(
     source.pipe(
       map(({event, data}) => ({data: {event: event.substring(event.lastIndexOf('.') + 1), [name]: data}})),
-      tap(console.log),
     ),
     interval(15000).pipe(mapTo({type: 'noop', data: 'noop'})),
   );
