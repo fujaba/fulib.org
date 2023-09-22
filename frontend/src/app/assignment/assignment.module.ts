@@ -19,6 +19,15 @@ import {OverviewComponent} from './pages/overview/overview.component';
 import {SettingsComponent} from './pages/settings/settings.component';
 import {TokenModalComponent} from './pages/token-modal/token-modal.component';
 import {ConfigService} from './services/config.service';
+import {AssignmentService} from "./services/assignment.service";
+import {SolutionService} from "./services/solution.service";
+import {TelemetryService} from "./services/telemetry.service";
+import {CourseService} from "./services/course.service";
+import {GithubService} from "./services/github.service";
+import {SelectionService} from "./services/selection.service";
+import {SolutionContainerService} from "./services/solution-container.service";
+import {TaskService} from "./services/task.service";
+import {SubmitService} from "./modules/assignment/submit.service";
 
 @NgModule({
   declarations: [
@@ -44,6 +53,15 @@ import {ConfigService} from './services/config.service';
   ],
   providers: [
     ConfigService,
+    AssignmentService,
+    SolutionService,
+    TelemetryService,
+    CourseService,
+    GithubService,
+    SelectionService,
+    SolutionContainerService,
+    TaskService,
+    SubmitService,
   ],
 })
 export class AssignmentModule {

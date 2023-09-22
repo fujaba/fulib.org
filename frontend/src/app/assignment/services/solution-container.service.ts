@@ -8,9 +8,7 @@ import {UserService} from '../../user/user.service';
 import Assignment from '../model/assignment';
 import Solution from '../model/solution';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class SolutionContainerService {
   constructor(
     private http: HttpClient,

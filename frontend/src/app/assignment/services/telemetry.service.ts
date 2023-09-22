@@ -5,9 +5,7 @@ import {environment} from '../../../environments/environment';
 import {CreateTelemetryDto, Telemetry} from '../model/telemetry';
 import {AssignmentService} from './assignment.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class TelemetryService {
   constructor(
     private http: HttpClient,

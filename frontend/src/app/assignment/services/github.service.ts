@@ -20,9 +20,7 @@ export interface PushEvent {
   };
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class GithubService {
 
   constructor(

@@ -1,5 +1,5 @@
 import {HttpClient} from '@angular/common/http';
-import {Injectable} from '@angular/core';
+import {Injectable, SkipSelf} from '@angular/core';
 
 import {saveAs} from 'file-saver';
 import {Observable, of} from 'rxjs';
@@ -15,9 +15,7 @@ import {CheckAssignment, CheckResult} from '../model/check';
 import Course from '../model/course';
 import {SearchResult, SearchSummary} from '../model/search-result';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class AssignmentService {
   constructor(
     private http: HttpClient,

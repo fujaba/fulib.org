@@ -27,9 +27,7 @@ function asID(id: { _id?: string, id?: string } | string): string {
   return typeof id === 'string' ? id : id._id! || id.id!;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class SolutionService {
   constructor(
     private http: HttpClient,

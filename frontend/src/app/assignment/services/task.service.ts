@@ -2,9 +2,7 @@ import {Injectable} from '@angular/core';
 import {CreateEvaluationDto, Evaluation} from '../model/evaluation';
 import Task from '../model/task';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class TaskService {
   find(tasks: Task[], id: string): Task | undefined {
     for (let task of tasks) {
