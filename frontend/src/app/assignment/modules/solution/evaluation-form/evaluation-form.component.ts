@@ -4,7 +4,7 @@ import {switchMap} from 'rxjs/operators';
 import {CreateEvaluationDto, RemarkDto} from '../../../model/evaluation';
 import Task from '../../../model/task';
 import {ConfigService} from '../../../services/config.service';
-import {SolutionService} from '../../../services/solution.service';
+import {EvaluationService} from "../../../services/evaluation.service";
 
 @Component({
   selector: 'app-evaluation-form',
@@ -23,7 +23,7 @@ export class EvaluationFormComponent implements OnInit, OnChanges {
   remarks: RemarkDto[] = [];
 
   constructor(
-    private solutionService: SolutionService,
+    private evaluationService: EvaluationService,
     private configService: ConfigService,
     private route: ActivatedRoute,
   ) {
@@ -31,7 +31,7 @@ export class EvaluationFormComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.route.params.pipe(
-      switchMap(({aid, task}) => this.solutionService.getEvaluationRemarks(aid, {task})),
+      switchMap(({aid, task}) => this.evaluationService.distinctRemarks(aid, {task})),
     ).subscribe(remarks => this.remarks = remarks);
   }
 

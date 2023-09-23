@@ -2,14 +2,13 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {firstValueFrom} from 'rxjs';
 import {environment} from '../../../../environments/environment';
-import {UserService} from '../../../user/user.service';
 import {ReadAssignmentDto} from '../../model/assignment';
 import {Evaluation, Snippet} from '../../model/evaluation';
 import Solution from '../../model/solution';
 import Task from '../../model/task';
-import {AssignmentService} from '../../services/assignment.service';
 import {SolutionService} from '../../services/solution.service';
 import {TaskService} from '../../services/task.service';
+import {EvaluationService} from "../../services/evaluation.service";
 
 export interface Issue {
   number: number;
@@ -24,10 +23,9 @@ export type IssueDto = Omit<Issue, 'number'>;
 export class SubmitService {
 
   constructor(
-    private assignmentService: AssignmentService,
+    private evaluationService: EvaluationService,
     private solutionService: SolutionService,
     private taskService: TaskService,
-    private userService: UserService,
     private http: HttpClient,
   ) {
   }
@@ -71,7 +69,7 @@ export class SubmitService {
   }
 
   private async renderTasks(assignment: ReadAssignmentDto, solution: Solution) {
-    const evaluations = await firstValueFrom(this.solutionService.getEvaluations(assignment._id, solution._id!));
+    const evaluations = await firstValueFrom(this.evaluationService.findAll(assignment._id, solution._id!));
     const evaluationRecord: Record<string, Evaluation> = {};
     for (let evaluation of evaluations) {
       evaluationRecord[evaluation.task] = evaluation;

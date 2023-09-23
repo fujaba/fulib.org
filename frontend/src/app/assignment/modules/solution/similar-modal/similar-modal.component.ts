@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import Task from "../../../model/task";
 import Solution from "../../../model/solution";
 import {CreateEvaluationDto, Evaluation, Snippet} from "../../../model/evaluation";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {AssignmentService} from "../../../services/assignment.service";
 import {SolutionService} from "../../../services/solution.service";
 import {filter, map, switchMap, tap} from "rxjs/operators";
@@ -10,6 +10,7 @@ import {TaskService} from "../../../services/task.service";
 import {ConfigService} from "../../../services/config.service";
 import {forkJoin} from "rxjs";
 import {ToastService} from "@mean-stream/ngbx";
+import {EvaluationService} from "../../../services/evaluation.service";
 
 @Component({
   selector: 'app-similar-modal',
@@ -39,6 +40,7 @@ export class SimilarModalComponent implements OnInit {
     private toastService: ToastService,
     private configService: ConfigService,
     private solutionService: SolutionService,
+    private evaluationService: EvaluationService,
     private assignmentService: AssignmentService,
   ) {
   }
@@ -56,13 +58,13 @@ export class SimilarModalComponent implements OnInit {
 
 
     this.route.params.pipe(
-      switchMap(({aid, task}) => this.solutionService.getEvaluationValues<string>(aid, 'solution', {task})),
+      switchMap(({aid, task}) => this.evaluationService.distinctValues<string>(aid, 'solution', {task})),
     ).subscribe(ids => {
       this.existingEvaluations = Object.fromEntries(ids.map(id => [id, true]));
     })
 
     this.route.params.pipe(
-      switchMap(({aid, sid, task}) => this.solutionService.getEvaluationByTask(aid, sid, task)),
+      switchMap(({aid, sid, task}) => this.evaluationService.findByTask(aid, sid, task)),
       filter((e): e is Evaluation => !!e),
       tap(evaluation => {
         this.evaluation = evaluation;
@@ -92,7 +94,7 @@ export class SimilarModalComponent implements OnInit {
     const assignment = this.route.snapshot.params.aid;
     forkJoin(Object.entries(this.selection)
       .filter(([, selected]) => selected)
-      .map(([solution]) => this.solutionService.createEvaluation(assignment, solution, {
+      .map(([solution]) => this.evaluationService.create(assignment, solution, {
         ...this.dto,
         snippets: this.snippets[solution] || [],
       }))

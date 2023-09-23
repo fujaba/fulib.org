@@ -7,6 +7,7 @@ import Task from '../../../model/task';
 import {ConfigService} from '../../../services/config.service';
 import {SolutionService} from '../../../services/solution.service';
 import {TelemetryService} from '../../../services/telemetry.service';
+import {EvaluationService} from "../../../services/evaluation.service";
 
 @Component({
   selector: 'app-task-list',
@@ -21,6 +22,7 @@ export class TaskListComponent {
   constructor(
     private telemetryService: TelemetryService,
     private solutionService: SolutionService,
+    private evaluationService: EvaluationService,
     private configService: ConfigService,
     private toastService: ToastService,
     private route: ActivatedRoute,
@@ -38,10 +40,10 @@ export class TaskListComponent {
 
   givePoints(task: Task, points: number) {
     const {aid, sid} = this.route.snapshot.params;
-    this.solutionService.getEvaluationByTask(aid, sid, task._id).pipe(
+    this.evaluationService.findByTask(aid, sid, task._id).pipe(
       switchMap(evaluation => evaluation ?
-        this.solutionService.updateEvaluation(aid, sid, evaluation._id, {points}) :
-        this.solutionService.createEvaluation(aid, sid, {
+        this.evaluationService.update(aid, sid, evaluation._id, {points}) :
+        this.evaluationService.create(aid, sid, {
           task: task._id,
           points,
           author: this.configService.get('name'),

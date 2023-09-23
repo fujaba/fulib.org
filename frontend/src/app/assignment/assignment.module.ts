@@ -31,6 +31,7 @@ import {SolutionContainerService} from "./services/solution-container.service";
 import {TaskService} from "./services/task.service";
 import {SubmitService} from "./modules/assignment/submit.service";
 import {AssigneeService} from "./services/assignee.service";
+import {EvaluationService} from "./services/evaluation.service";
 
 @NgModule({
   declarations: [
@@ -72,6 +73,7 @@ import {AssigneeService} from "./services/assignee.service";
     TaskService,
     SubmitService,
     AssigneeService,
+    EvaluationService,
   ],
 })
 export class AssignmentModule {

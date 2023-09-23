@@ -1,5 +1,5 @@
 import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Route, Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {ModalComponent, ToastService} from '@mean-stream/ngbx';
 import {EMPTY, merge, of, Subject, Subscription} from 'rxjs';
 import {debounceTime, distinctUntilChanged, filter, map, share, switchMap, tap} from 'rxjs/operators';
@@ -13,6 +13,7 @@ import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
 import {TelemetryService} from '../../../services/telemetry.service';
 import {SelectionService} from '../../../services/selection.service';
+import {EvaluationService} from "../../../services/evaluation.service";
 
 export const selectionComment = '(fulibFeedback Selection)';
 
@@ -59,6 +60,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     private configService: ConfigService,
     private toastService: ToastService,
     private telemetryService: TelemetryService,
+    private evaluationService: EvaluationService,
     public route: ActivatedRoute,
     private router: Router,
   ) {
@@ -75,7 +77,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     });
 
     const evaluation$ = this.route.params.pipe(
-      switchMap(({aid, sid, task}) => this.solutionService.getEvaluationByTask(aid, sid, task)),
+      switchMap(({aid, sid, task}) => this.evaluationService.findByTask(aid, sid, task)),
       share(),
     );
 
@@ -90,7 +92,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     this.subscriptions.add(evaluation$.pipe(
       switchMap(evaluation => {
         const origin = evaluation?.codeSearch?.origin;
-        return origin ? this.solutionService.getEvaluation(evaluation.assignment, undefined, origin) : of(undefined);
+        return origin ? this.evaluationService.findOne(evaluation.assignment, undefined, origin) : of(undefined);
       }),
       tap(originEvaluation => this.originEvaluation = originEvaluation),
       switchMap(originEvaluation => originEvaluation ? this.solutionService.get(originEvaluation.assignment, originEvaluation.solution) : of(undefined)),
@@ -98,14 +100,14 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     ).subscribe());
 
     this.subscriptions.add(evaluation$.pipe(
-      switchMap(evaluation => evaluation ? this.solutionService.getEvaluationValues<string>(evaluation.assignment, 'solution', {
+      switchMap(evaluation => evaluation ? this.evaluationService.distinctValues<string>(evaluation.assignment, 'solution', {
         origin: evaluation._id,
         task: evaluation.task,
       }) : EMPTY),
     ).subscribe(solutionIds => this.derivedSolutionCount = solutionIds.length));
 
     this.route.params.pipe(
-      switchMap(({aid, task}) => this.solutionService.getEvaluationValues<string>(aid, 'snippets.comment', {task})),
+      switchMap(({aid, task}) => this.evaluationService.distinctValues<string>(aid, 'snippets.comment', {task})),
     ).subscribe(comments => this.comments = comments);
 
     this.route.params.pipe(
@@ -200,8 +202,8 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     }).subscribe();
 
     const op = this.evaluation
-      ? this.solutionService.updateEvaluation(aid, sid, this.evaluation._id, this.dto)
-      : this.solutionService.createEvaluation(aid, sid, this.dto);
+      ? this.evaluationService.update(aid, sid, this.evaluation._id, this.dto)
+      : this.evaluationService.create(aid, sid, this.dto);
     op.subscribe(result => {
       const op = this.evaluation ? 'updated' : 'created';
       this.toastService.success('Evaluation', `Successfully ${op} evaluation${this.codeSearchInfo(result.codeSearch)}`);
@@ -221,7 +223,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     }
 
     const {aid, sid} = this.route.snapshot.params;
-    this.solutionService.deleteEvaluation(aid, sid, this.evaluation._id).subscribe(result => {
+    this.evaluationService.delete(aid, sid, this.evaluation._id).subscribe(result => {
       this.toastService.warn('Evaluation', `Successfully deleted evaluation${this.codeSearchInfo(result.codeSearch)}`);
     }, error => {
       this.toastService.error('Evaluation', 'Failed to delete evaluation', error);

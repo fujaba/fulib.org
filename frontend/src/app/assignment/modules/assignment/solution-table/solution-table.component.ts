@@ -2,7 +2,7 @@ import {Component, OnInit, TrackByFunction} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ToastService} from '@mean-stream/ngbx';
 import {ClipboardService} from 'ngx-clipboard';
-import {BehaviorSubject, combineLatest, firstValueFrom, forkJoin, Observable} from 'rxjs';
+import {BehaviorSubject, combineLatest, forkJoin, Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 import {Assignee} from '../../../model/assignee';
 import Assignment, {ReadAssignmentDto} from '../../../model/assignment';
@@ -16,6 +16,7 @@ import {TelemetryService} from '../../../services/telemetry.service';
 import {SubmitService} from "../submit.service";
 import {UserService} from "../../../../user/user.service";
 import {AssigneeService} from "../../../services/assignee.service";
+import {EvaluationService} from "../../../services/evaluation.service";
 
 type SearchKey = keyof AuthorInfo | 'assignee';
 const searchKeys: readonly SearchKey[] = [
@@ -58,6 +59,7 @@ export class SolutionTableComponent implements OnInit {
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
     private assigneeService: AssigneeService,
+    private evaluationService: EvaluationService,
     private solutionContainerService: SolutionContainerService,
     private configService: ConfigService,
     private router: Router,
@@ -93,8 +95,8 @@ export class SolutionTableComponent implements OnInit {
 
     this.activatedRoute.params.pipe(
       switchMap(({aid}) => forkJoin([
-        this.solutionService.getEvaluationValues<string>(aid, 'solution', {codeSearch: false}),
-        this.solutionService.getEvaluationValues<string>(aid, 'solution', {codeSearch: true}),
+        this.evaluationService.distinctValues<string>(aid, 'solution', {codeSearch: false}),
+        this.evaluationService.distinctValues<string>(aid, 'solution', {codeSearch: true}),
       ])),
     ).subscribe(([manual, codeSearch]) => {
       this.evaluated = {};

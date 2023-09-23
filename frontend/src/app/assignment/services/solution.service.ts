@@ -6,18 +6,10 @@ import {map, switchMap, tap} from 'rxjs/operators';
 import {environment} from '../../../environments/environment';
 import {StorageService} from '../../services/storage.service';
 import {UserService} from '../../user/user.service';
-import {Assignee} from '../model/assignee';
 import {ReadAssignmentDto} from '../model/assignment';
 import {CheckResult, CheckSolution} from '../model/check';
 import Comment from '../model/comment';
-import {
-  CreateEvaluationDto,
-  Evaluation,
-  FilterEvaluationParams,
-  RemarkDto,
-  Snippet,
-  UpdateEvaluationDto,
-} from '../model/evaluation';
+import {Snippet,} from '../model/evaluation';
 
 import Solution, {AuthorInfo, EstimatedCosts, ImportSolution} from '../model/solution';
 import {AssignmentService} from './assignment.service';
@@ -199,44 +191,6 @@ export class SolutionService {
   streamComments(assignment: string, solution: string): Observable<{ event: string, comment: Comment }> {
     const token = this.getToken(assignment, solution) || this.assignmentService.getToken(assignment);
     return observeSSE<Comment, 'comment'>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/comments/events?token=${token}`);
-  }
-
-  getEvaluations(assignment: string, id?: string, params: FilterEvaluationParams = {}): Observable<Evaluation[]> {
-    return this.http.get<Evaluation[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/${id ? `solutions/${id}/` : ''}evaluations`, {params: params as any});
-  }
-
-  getEvaluationValues<T>(assignment: string, field: keyof Evaluation | string, params: FilterEvaluationParams = {}): Observable<T[]> {
-    return this.http.get<T[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/evaluations/unique/${field}`, {params: params as any});
-  }
-
-  getEvaluationRemarks(assignment: string, params: FilterEvaluationParams = {}): Observable<RemarkDto[]> {
-    return this.http.get<RemarkDto[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/evaluations/remarks`, {params: params as any});
-  }
-
-  streamEvaluations(assignment: string, solution: string): Observable<{ event: string, evaluation: Evaluation }> {
-    const token = this.assignmentService.getToken(assignment);
-    return observeSSE<Evaluation, 'evaluation'>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/evaluations/events?token=${token}`);
-  }
-
-  getEvaluationByTask(assignent: string, solution: string, task: string): Observable<Evaluation | undefined> {
-    return this.getEvaluations(assignent, solution, {task}).pipe(map(([first]) => first));
-  }
-
-  getEvaluation(assignment: string, solution: string | undefined, evaluation: string): Observable<Evaluation> {
-    // NB: The findOne endpoint does not really care about the solution, so we can just use * if unknown.
-    return this.http.get<Evaluation>(`${environment.assignmentsApiUrl}/assignments/${assignment}/${solution || '*'}/evaluations/${evaluation}`);
-  }
-
-  createEvaluation(assignment: string, solution: string, dto: CreateEvaluationDto): Observable<Evaluation> {
-    return this.http.post<Evaluation>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/evaluations`, dto);
-  }
-
-  updateEvaluation(assignment: string, solution: string, id: string, dto: UpdateEvaluationDto): Observable<Evaluation> {
-    return this.http.patch<Evaluation>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/evaluations/${id}`, dto);
-  }
-
-  deleteEvaluation(assignment: string, solution: string, id: string): Observable<Evaluation> {
-    return this.http.delete<Evaluation>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/evaluations/${id}`);
   }
 
   getEmbeddingSnippets(assignment: string, solution: string, task: string): Observable<Snippet[]> {
