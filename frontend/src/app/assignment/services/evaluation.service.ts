@@ -44,7 +44,7 @@ export class EvaluationService {
 
   findOne(assignment: string, solution: string | undefined, evaluation: string): Observable<Evaluation> {
     // NB: The findOne endpoint does not really care about the solution, so we can just use * if unknown.
-    return this.http.get<Evaluation>(`${environment.assignmentsApiUrl}/assignments/${assignment}/${solution || '*'}/evaluations/${evaluation}`);
+    return this.http.get<Evaluation>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution || '*'}/evaluations/${evaluation}`);
   }
 
   create(assignment: string, solution: string, dto: CreateEvaluationDto): Observable<Evaluation> {
