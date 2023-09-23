@@ -3,7 +3,7 @@ import {ToastService} from '@mean-stream/ngbx';
 import {Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 import {Assignee} from '../../../model/assignee';
-import {SolutionService} from '../../../services/solution.service';
+import {AssigneeService} from "../../../services/assignee.service";
 
 @Component({
   selector: 'app-assignee-input',
@@ -29,14 +29,14 @@ export class AssigneeInputComponent {
   );
 
   constructor(
-    private solutionService: SolutionService,
+    private assigneeService: AssigneeService,
     private toastService: ToastService,
   ) {
   }
 
   save(): void {
     this.saving = true;
-    this.solutionService.setAssignee(this.assignment, this.solution, this.assignee).subscribe(result => {
+    this.assigneeService.setAssignee(this.assignment, this.solution, this.assignee).subscribe(result => {
       this.saving = false;
       this.saved.next(result);
       this.assigneeChange.next(result.assignee);

@@ -239,15 +239,6 @@ export class SolutionService {
     return this.http.delete<Evaluation>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/evaluations/${id}`);
   }
 
-  getAssignees(assignment: string): Observable<Assignee[]> {
-    return this.http.get<Assignee[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/assignees`);
-  }
-
-  setAssignee(assignment: string, solution: string, assignee: string | undefined): Observable<Assignee> {
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/assignee`;
-    return assignee ? this.http.put<Assignee>(url, {assignee}) : this.http.delete<Assignee>(url);
-  }
-
   getEmbeddingSnippets(assignment: string, solution: string, task: string): Observable<Snippet[]> {
     return this.http.get<any[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/embeddings`, {
       params: {

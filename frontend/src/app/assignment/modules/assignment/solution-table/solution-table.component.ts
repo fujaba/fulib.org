@@ -15,6 +15,7 @@ import {TaskService} from '../../../services/task.service';
 import {TelemetryService} from '../../../services/telemetry.service';
 import {SubmitService} from "../submit.service";
 import {UserService} from "../../../../user/user.service";
+import {AssigneeService} from "../../../services/assignee.service";
 
 type SearchKey = keyof AuthorInfo | 'assignee';
 const searchKeys: readonly SearchKey[] = [
@@ -56,6 +57,7 @@ export class SolutionTableComponent implements OnInit {
   constructor(
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
+    private assigneeService: AssigneeService,
     private solutionContainerService: SolutionContainerService,
     private configService: ConfigService,
     private router: Router,
@@ -78,7 +80,7 @@ export class SolutionTableComponent implements OnInit {
     });
 
     this.activatedRoute.params.pipe(
-      switchMap(({aid}) => this.solutionService.getAssignees(aid)),
+      switchMap(({aid}) => this.assigneeService.getAssignees(aid)),
     ).subscribe(assignees => {
       this.assignees = {};
       const names = new Set<string>();
