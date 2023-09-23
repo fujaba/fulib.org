@@ -1,5 +1,5 @@
 import {HttpClient} from '@angular/common/http';
-import {Injectable, SkipSelf} from '@angular/core';
+import {Injectable} from '@angular/core';
 
 import {saveAs} from 'file-saver';
 import {Observable, of} from 'rxjs';
@@ -154,16 +154,13 @@ export class AssignmentService {
   }
 
   update(id: string, dto: UpdateAssignmentDto): Observable<Assignment> {
-    const token = this.getToken(id);
-    const headers = this.getHeaders(token);
-    return this.http.patch<Assignment>(`${environment.assignmentsApiUrl}/assignments/${id}`, dto, {headers}).pipe(
+    return this.http.patch<Assignment>(`${environment.assignmentsApiUrl}/assignments/${id}`, dto).pipe(
       tap(({token}) => token && this.setToken(id, token)),
     );
   }
 
   delete(assignment: string): Observable<Assignment> {
-    const headers = this.getHeaders(this.getToken(assignment));
-    return this.http.delete<Assignment>(`${environment.assignmentsApiUrl}/assignments/${assignment}`, {headers}).pipe(
+    return this.http.delete<Assignment>(`${environment.assignmentsApiUrl}/assignments/${assignment}`).pipe(
       tap(() => {
         this.setToken(assignment, null);
         this.deleteDraft(assignment);
@@ -172,8 +169,7 @@ export class AssignmentService {
   }
 
   get(id: string): Observable<Assignment | ReadAssignmentDto> {
-    const headers = this.getHeaders(this.getToken(id));
-    return this.http.get<Assignment | ReadAssignmentDto>(`${environment.assignmentsApiUrl}/assignments/${id}`, {headers}).pipe(
+    return this.http.get<Assignment | ReadAssignmentDto>(`${environment.assignmentsApiUrl}/assignments/${id}`).pipe(
       tap(a => {
         if ('token' in a && a.token) {
           this.setToken(id, a.token);
@@ -183,39 +179,27 @@ export class AssignmentService {
   }
 
   search(id: string, q: string, context = 2, glob?: string, wildcard?: string): Observable<SearchResult[]> {
-    const headers = this.getHeaders(this.getToken(id));
     const params: Record<string, string | number> = {q, context};
     glob && (params.glob = glob);
     wildcard && (params.wildcard = wildcard);
     return this.http.get<SearchResult[]>(`${environment.assignmentsApiUrl}/assignments/${id}/search`, {
       params,
-      headers,
     });
   }
 
   searchSummary(id: string, q: string, glob?: string, wildcard?: string): Observable<SearchSummary> {
-    const headers = this.getHeaders(this.getToken(id));
     const params: Record<string, string> = {q};
     glob && (params.glob = glob);
     wildcard && (params.wildcard = wildcard);
     return this.http.get<SearchSummary>(`${environment.assignmentsApiUrl}/assignments/${id}/search/summary`, {
       params,
-      headers,
     });
   }
 
   moss(assignment: string): Observable<string> {
-    const headers = this.getHeaders(this.getToken(assignment));
     return this.http.put(`${environment.assignmentsApiUrl}/assignments/${assignment}/moss`, {}, {
-      headers,
       responseType: 'text',
     });
-  }
-
-  private getHeaders(token?: string | null | undefined): Record<string, string> {
-    return token ? {
-      'Assignment-Token': token,
-    } : {};
   }
 
   getNext(course: Course, assignment: ReadAssignmentDto): Observable<Assignment | ReadAssignmentDto | undefined> {
