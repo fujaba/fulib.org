@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {EstimatedCosts} from "../../../model/solution";
-import {SolutionService} from "../../../services/solution.service";
 import {ActivatedRoute} from "@angular/router";
-import {tap} from "rxjs/operators";
+import {switchMap, tap} from "rxjs/operators";
+import {EmbeddingService} from "../../../services/embedding.service";
 
 @Component({
   selector: 'app-import-embeddings',
@@ -14,18 +14,20 @@ export class ImportEmbeddingsComponent implements OnInit {
   finalCosts?: EstimatedCosts;
 
   constructor(
-    private solutionService: SolutionService,
+    private embeddingService: EmbeddingService,
     private route: ActivatedRoute,
   ) {
   }
 
   ngOnInit() {
-    this.solutionService.importEmbeddings(this.route.snapshot.params.aid, true).subscribe(costs => this.estimatedCosts = costs);
+    this.route.params.pipe(
+      switchMap(({aid}) => this.embeddingService.import(aid, true)),
+    ).subscribe(costs => this.estimatedCosts = costs);
   }
 
   import() {
     const assignmentId = this.route.snapshot.params.aid;
-    return this.solutionService.importEmbeddings(assignmentId).pipe(
+    return this.embeddingService.import(assignmentId).pipe(
       tap(result => this.finalCosts = result),
     );
   }

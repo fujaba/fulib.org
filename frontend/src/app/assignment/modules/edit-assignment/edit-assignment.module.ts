@@ -17,6 +17,7 @@ import {PreviewComponent} from './preview/preview.component';
 import {SampleComponent} from './sample/sample.component';
 import {TasksComponent} from './tasks/tasks.component';
 import {TemplateComponent} from './template/template.component';
+import {TaskMarkdownService} from "./task-markdown.service";
 
 
 @NgModule({
@@ -41,6 +42,9 @@ import {TemplateComponent} from './template/template.component';
     NgbTooltipModule,
     RouteTabsModule,
     ModalModule,
+  ],
+  providers: [
+    TaskMarkdownService,
   ],
 })
 export class EditAssignmentModule {

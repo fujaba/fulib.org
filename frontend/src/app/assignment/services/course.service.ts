@@ -9,9 +9,7 @@ import {environment} from '../../../environments/environment';
 import {UserService} from '../../user/user.service';
 import Course, {CourseStudent, CreateCourseDto, UpdateCourseDto} from '../model/course';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class CourseService {
   private _draft?: Course | CreateCourseDto | null;
 

@@ -9,6 +9,7 @@ import Solution from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
 import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
+import {EvaluationService} from "../../../services/evaluation.service";
 
 @Component({
   selector: 'app-solution-tasks',
@@ -26,6 +27,7 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
 
   constructor(
     private assignmentService: AssignmentService,
+    private evaluationService: EvaluationService,
     private solutionService: SolutionService,
     private taskService: TaskService,
     private router: Router,
@@ -40,7 +42,7 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
         this.solutionService.get(assignmentId, solutionId).pipe(tap(solution => {
           this.solution = solution;
         })),
-        this.solutionService.getEvaluations(assignmentId, solutionId).pipe(tap(evaluations => {
+        this.evaluationService.findAll(assignmentId, solutionId).pipe(tap(evaluations => {
           this.evaluations = {};
           for (const evaluation of evaluations) {
             this.evaluations[evaluation.task] = evaluation;
@@ -59,7 +61,7 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
     });
 
     this.subscription = this.route.params.pipe(
-      switchMap(({aid, sid}) => this.solutionService.streamEvaluations(aid, sid)),
+      switchMap(({aid, sid}) => this.evaluationService.stream(aid, sid)),
     ).subscribe(({event, evaluation}) => {
       if (!this.assignment || !this.evaluations) {
         return;
