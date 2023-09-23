@@ -3,9 +3,7 @@ import {extractTaskItem, TASK_ITEM_PATTERN} from '../../../../modes/task-list-co
 import Task from '../../model/task';
 import {TaskService} from '../../services/task.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class TaskMarkdownService {
   constructor(
     private taskService: TaskService,
