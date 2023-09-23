@@ -6,6 +6,7 @@ import Solution from '../../../model/solution';
 import {SolutionService} from '../../../services/solution.service';
 import {SolutionNamePipe} from '../../shared/pipes/solution-name.pipe';
 import {EvaluationService} from "../../../services/evaluation.service";
+import {CommentService} from "../comment.service";
 
 @Component({
   selector: 'app-delete-modal',
@@ -24,6 +25,7 @@ export class DeleteModalComponent implements OnInit {
     public route: ActivatedRoute,
     private solutionService: SolutionService,
     private evaluationService: EvaluationService,
+    private commentService: CommentService,
     private toastService: ToastService,
   ) {
   }
@@ -37,7 +39,7 @@ export class DeleteModalComponent implements OnInit {
     });
 
     this.route.params.pipe(
-      switchMap(({aid, sid}) => this.solutionService.getComments(aid, sid)),
+      switchMap(({aid, sid}) => this.commentService.findAll(aid, sid)),
     ).subscribe(comments => this.comments = comments.length);
 
     this.route.params.pipe(

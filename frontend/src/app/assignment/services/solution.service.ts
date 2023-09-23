@@ -8,12 +8,10 @@ import {StorageService} from '../../services/storage.service';
 import {UserService} from '../../user/user.service';
 import {ReadAssignmentDto} from '../model/assignment';
 import {CheckResult, CheckSolution} from '../model/check';
-import Comment from '../model/comment';
 import {Snippet,} from '../model/evaluation';
 
 import Solution, {AuthorInfo, EstimatedCosts, ImportSolution} from '../model/solution';
 import {AssignmentService} from './assignment.service';
-import {observeSSE} from './sse-helper';
 
 @Injectable()
 export class SolutionService {
@@ -42,16 +40,6 @@ export class SolutionService {
 
   setDraft(assignment: string, solution: string | null): void {
     this.storageService.set(`solutionDraft/${assignment}`, solution);
-  }
-
-  // --------------- Comment Drafts ---------------
-
-  getCommentDraft(solution: string): string | null {
-    return this.storageService.get(`commentDraft/${solution}`);
-  }
-
-  setCommentDraft(solution: string, draft: string | null) {
-    this.storageService.set(`commentDraft/${solution}`, draft);
   }
 
   // --------------- Tokens ---------------
@@ -174,23 +162,6 @@ export class SolutionService {
 
   deleteAll(assignment: string, solutions: string[]): Observable<Solution> {
     return this.http.delete<Solution>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions`, {params: {ids: solutions}});
-  }
-
-  getComments(assignment: string, solution: string): Observable<Comment[]> {
-    return this.http.get<Comment[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/comments`);
-  }
-
-  postComment(assignment: string, solution: string, comment: Comment): Observable<Comment> {
-    return this.http.post<Comment>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/comments`, comment);
-  }
-
-  deleteComment(assignment: string, solution: string, comment: string): Observable<Comment> {
-    return this.http.delete<Comment>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/comments/${comment}`);
-  }
-
-  streamComments(assignment: string, solution: string): Observable<{ event: string, comment: Comment }> {
-    const token = this.getToken(assignment, solution) || this.assignmentService.getToken(assignment);
-    return observeSSE<Comment, 'comment'>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/comments/events?token=${token}`);
   }
 
   getEmbeddingSnippets(assignment: string, solution: string, task: string): Observable<Snippet[]> {

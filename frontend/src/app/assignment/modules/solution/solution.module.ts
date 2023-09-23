@@ -19,6 +19,7 @@ import {SolutionRoutingModule} from './solution-routing.module';
 import {SolutionComponent} from './solution/solution.component';
 import {SolutionTasksComponent} from './tasks/tasks.component';
 import { SimilarModalComponent } from './similar-modal/similar-modal.component';
+import {CommentService} from "./comment.service";
 
 
 @NgModule({
@@ -47,6 +48,9 @@ import { SimilarModalComponent } from './similar-modal/similar-modal.component';
     RouteTabsModule,
     ModalModule,
     NgbPopoverModule,
+  ],
+  providers: [
+    CommentService,
   ],
 })
 export class SolutionModule {

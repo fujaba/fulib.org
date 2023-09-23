@@ -2,11 +2,12 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ToastService} from '@mean-stream/ngbx';
 import {Subscription} from 'rxjs';
-import {mapTo, switchMap, take, tap} from 'rxjs/operators';
+import {mapTo, switchMap, tap} from 'rxjs/operators';
 import {UserService} from '../../../../user/user.service';
 import Comment from '../../../model/comment';
 import {ConfigService} from '../../../services/config.service';
 import {SolutionService} from '../../../services/solution.service';
+import {CommentService} from "../comment.service";
 
 @Component({
   selector: 'app-comment-list',
@@ -27,6 +28,7 @@ export class CommentListComponent implements OnInit, OnDestroy {
   constructor(
     private userService: UserService,
     private solutionService: SolutionService,
+    private commentService: CommentService,
     private configService: ConfigService,
     private toastService: ToastService,
     private route: ActivatedRoute,
@@ -36,11 +38,11 @@ export class CommentListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const eventSub = this.route.params.pipe(
       tap(({sid}) => this.loadCommentDraft(sid)),
-      switchMap(params => this.solutionService.getComments(params.aid, params.sid).pipe(
+      switchMap(params => this.commentService.findAll(params.aid, params.sid).pipe(
         tap(comments => this.comments = comments),
         mapTo(params),
       )),
-      switchMap(({aid, sid}) => this.solutionService.streamComments(aid, sid)),
+      switchMap(({aid, sid}) => this.commentService.stream(aid, sid)),
     ).subscribe(({event, comment}) => {
       this.safeApply(comment._id!, event === 'deleted' ? undefined : comment);
     });
@@ -71,14 +73,14 @@ export class CommentListComponent implements OnInit, OnDestroy {
   loadCommentDraft(solution: string): void {
     this.commentName = this.configService.get('name');
     this.commentEmail = this.configService.get('email');
-    this.commentBody = this.solutionService.getCommentDraft(solution) || '';
+    this.commentBody = this.commentService.getDraft(solution) || '';
   }
 
   saveCommentDraft(): void {
     const solution = this.route.snapshot.params.sid;
     this.configService.set('name', this.commentName);
     this.configService.set('email', this.commentEmail);
-    this.solutionService.setCommentDraft(solution, this.commentBody);
+    this.commentService.setDraft(solution, this.commentBody);
   }
 
   submitComment(): void {
@@ -92,7 +94,7 @@ export class CommentListComponent implements OnInit, OnDestroy {
       email: this.commentEmail,
       body: this.commentBody,
     };
-    this.solutionService.postComment(aid, sid, comment).subscribe(result => {
+    this.commentService.post(aid, sid, comment).subscribe(result => {
       this.safeApply(result._id!, result);
       this.commentBody = '';
       this.saveCommentDraft();
@@ -109,7 +111,7 @@ export class CommentListComponent implements OnInit, OnDestroy {
     }
 
     const {sid, aid} = this.route.snapshot.params;
-    this.solutionService.deleteComment(aid, sid, comment._id!).subscribe(result => {
+    this.commentService.delete(aid, sid, comment._id!).subscribe(result => {
       this.safeApply(result._id!, undefined);
       this.toastService.warn('Comment', 'Successfully deleted comment');
     }, error => {
