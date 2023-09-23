@@ -11,6 +11,7 @@ import {ConfigService} from "../../../services/config.service";
 import {forkJoin} from "rxjs";
 import {ToastService} from "@mean-stream/ngbx";
 import {EvaluationService} from "../../../services/evaluation.service";
+import {EmbeddingService} from "../../../services/embedding.service";
 
 @Component({
   selector: 'app-similar-modal',
@@ -42,6 +43,7 @@ export class SimilarModalComponent implements OnInit {
     private solutionService: SolutionService,
     private evaluationService: EvaluationService,
     private assignmentService: AssignmentService,
+    private embeddingService: EmbeddingService,
   ) {
   }
 
@@ -72,7 +74,7 @@ export class SimilarModalComponent implements OnInit {
         this.dto.points = evaluation.points;
       }),
       switchMap(evaluation => forkJoin(evaluation.snippets
-        .map(snippet => this.solutionService.getSimilarEmbeddingSnippets(evaluation.assignment, evaluation.solution, snippet))
+        .map(snippet => this.embeddingService.findSimilarSnippets(evaluation.assignment, evaluation.solution, snippet))
       )),
       map(result => {
         this.snippets = {};

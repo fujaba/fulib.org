@@ -2,15 +2,14 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Params} from '@angular/router';
 import {forkJoin, Observable, of} from 'rxjs';
-import {map, switchMap, tap} from 'rxjs/operators';
+import {switchMap, tap} from 'rxjs/operators';
 import {environment} from '../../../environments/environment';
 import {StorageService} from '../../services/storage.service';
 import {UserService} from '../../user/user.service';
 import {ReadAssignmentDto} from '../model/assignment';
 import {CheckResult, CheckSolution} from '../model/check';
-import {Snippet,} from '../model/evaluation';
 
-import Solution, {AuthorInfo, EstimatedCosts, ImportSolution} from '../model/solution';
+import Solution, {AuthorInfo, ImportSolution} from '../model/solution';
 import {AssignmentService} from './assignment.service';
 
 @Injectable()
@@ -126,12 +125,6 @@ export class SolutionService {
     });
   }
 
-  importEmbeddings(assignment: string, estimate?: boolean): Observable<EstimatedCosts> {
-    return this.http.post<EstimatedCosts>(`${environment.assignmentsApiUrl}/assignments/${assignment}/embeddings`, {}, {
-      params: estimate ? {estimate} : undefined,
-    });
-  }
-
   get(assignment: string, id: string): Observable<Solution> {
     return this.http.get<Solution>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${id}`);
   }
@@ -162,39 +155,5 @@ export class SolutionService {
 
   deleteAll(assignment: string, solutions: string[]): Observable<Solution> {
     return this.http.delete<Solution>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions`, {params: {ids: solutions}});
-  }
-
-  getEmbeddingSnippets(assignment: string, solution: string, task: string): Observable<Snippet[]> {
-    return this.http.get<any[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/embeddings`, {
-      params: {
-        solution,
-        task
-      }
-    }).pipe(
-      map(embeddings => embeddings.map(emb => this.convertEmbeddable(emb))),
-    );
-  }
-
-  private convertEmbeddable({file, line, text, _score}): Snippet {
-    return {
-      file,
-      from: {line, character: 0},
-      to: {line: line + text.split('\n').length - 2, character: 0},
-      comment: '',
-      score: _score,
-      code: text.substring(text.indexOf('\n') + 2),
-    };
-  }
-
-  getSimilarEmbeddingSnippets(assignment: string, solution: string, snippet: Snippet): Observable<(Snippet & {
-    solution: string
-  })[]> {
-    const id = `${solution}-${snippet.file}-${snippet.from.line}`;
-    return this.http.get<any[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/embeddings`, {params: {id}}).pipe(
-      map(embeddings => embeddings.map(emb => ({
-        ...this.convertEmbeddable(emb),
-        solution: emb.solution,
-      }))),
-    );
   }
 }

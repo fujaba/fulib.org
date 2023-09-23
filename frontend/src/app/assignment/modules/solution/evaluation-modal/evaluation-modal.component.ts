@@ -14,6 +14,7 @@ import {TaskService} from '../../../services/task.service';
 import {TelemetryService} from '../../../services/telemetry.service';
 import {SelectionService} from '../../../services/selection.service';
 import {EvaluationService} from "../../../services/evaluation.service";
+import {EmbeddingService} from "../../../services/embedding.service";
 
 export const selectionComment = '(fulibFeedback Selection)';
 
@@ -61,6 +62,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     private toastService: ToastService,
     private telemetryService: TelemetryService,
     private evaluationService: EvaluationService,
+    private embeddingService: EmbeddingService,
     public route: ActivatedRoute,
     private router: Router,
   ) {
@@ -111,7 +113,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     ).subscribe(comments => this.comments = comments);
 
     this.route.params.pipe(
-      switchMap(({aid, sid, task}) => this.solutionService.getEmbeddingSnippets(aid, sid, task)),
+      switchMap(({aid, sid, task}) => this.embeddingService.findTaskRelatedSnippets(aid, sid, task)),
     ).subscribe(snippets => this.embeddingSnippets = snippets);
 
     const selection$ = this.route.params.pipe(
