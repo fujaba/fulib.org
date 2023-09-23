@@ -25,7 +25,6 @@ import {TokenService} from "./services/token.service";
 import {SolutionService} from "./services/solution.service";
 import {TelemetryService} from "./services/telemetry.service";
 import {CourseService} from "./services/course.service";
-import {GithubService} from "./services/github.service";
 import {SelectionService} from "./services/selection.service";
 import {SolutionContainerService} from "./services/solution-container.service";
 import {TaskService} from "./services/task.service";
@@ -68,7 +67,6 @@ import {EmbeddingService} from "./services/embedding.service";
     SolutionService,
     TelemetryService,
     CourseService,
-    GithubService,
     SelectionService,
     SolutionContainerService,
     TaskService,
