@@ -139,14 +139,10 @@ export class SolutionService {
   }
 
   previewImport(assignment: string): Observable<ImportSolution[]> {
-    const headers = {};
-    this.addAssignmentToken(headers, assignment);
-    return this.http.get<ImportSolution[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/import`, {headers});
+    return this.http.get<ImportSolution[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/import`);
   }
 
   import(assignment: string, files?: File[], usernames?: string[]): Observable<ImportSolution[]> {
-    const headers = {};
-    this.addAssignmentToken(headers, assignment);
     let body;
     if (files && files.length) {
       const data = new FormData();
@@ -156,35 +152,25 @@ export class SolutionService {
       body = data;
     }
     return this.http.post<ImportSolution[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/import`, body, {
-      headers,
       params: usernames ? {usernames} : undefined,
     });
   }
 
   importEmbeddings(assignment: string, estimate?: boolean): Observable<EstimatedCosts> {
-    const headers = {};
-    this.addAssignmentToken(headers, assignment);
     return this.http.post<EstimatedCosts>(`${environment.assignmentsApiUrl}/assignments/${assignment}/embeddings`, {}, {
-      headers,
       params: estimate ? {estimate} : undefined,
     });
   }
 
   get(assignment: Assignment | string, id: string): Observable<Solution> {
     const assignmentID = asID(assignment);
-    const headers = {};
-    this.addSolutionToken(headers, assignmentID, id);
-    this.addAssignmentToken(headers, assignmentID);
-    return this.http.get<Solution>(`${environment.assignmentsApiUrl}/assignments/${assignmentID}/solutions/${id}`, {headers});
+    return this.http.get<Solution>(`${environment.assignmentsApiUrl}/assignments/${assignmentID}/solutions/${id}`);
   }
 
   getAll(assignment: string, search?: string): Observable<Solution[]> {
-    const headers = {};
-    this.addAssignmentToken(headers, assignment);
     const params: Params = {};
     search && (params.q = search);
     return this.http.get<Solution[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions`, {
-      headers,
       params,
     });
   }
@@ -194,93 +180,54 @@ export class SolutionService {
   }
 
   update(assignment: string, solution: string, dto: Partial<Solution>): Observable<Solution> {
-    const headers = {};
-    this.addSolutionToken(headers, assignment, solution);
-    this.addAssignmentToken(headers, assignment);
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}`;
-    return this.http.patch<Solution>(url, dto, {headers});
+    return this.http.patch<Solution>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}`, dto);
   }
 
   updateMany(assignment: string, dtos: Partial<Solution>[]): Observable<ImportSolution[]> {
-    const headers = {};
-    this.addAssignmentToken(headers, assignment);
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions`;
-    return this.http.patch<ImportSolution[]>(url, dtos, {headers});
+    return this.http.patch<ImportSolution[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions`, dtos);
   }
 
   delete(assignment: string, solution: string): Observable<Solution> {
-    const headers = {};
-    this.addSolutionToken(headers, assignment, solution);
-    this.addAssignmentToken(headers, assignment);
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}`;
-    return this.http.delete<Solution>(url, {headers});
+    return this.http.delete<Solution>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}`);
   }
 
   deleteAll(assignment: string, solutions: string[]): Observable<Solution> {
-    const headers = {};
-    this.addAssignmentToken(headers, assignment);
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions`;
-    return this.http.delete<Solution>(url, {headers, params: {ids: solutions}});
+    return this.http.delete<Solution>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions`, {params: {ids: solutions}});
   }
 
   getComments(assignment: string, solution: string): Observable<Comment[]> {
-    const headers = {};
-    this.addSolutionToken(headers, assignment, solution);
-    this.addAssignmentToken(headers, assignment);
-
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/comments`;
-    return this.http.get<Comment[]>(url, {headers});
+    return this.http.get<Comment[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/comments`);
   }
 
   postComment(assignment: string, solution: string, comment: Comment): Observable<Comment> {
-    const headers = {};
-    this.addSolutionToken(headers, assignment, solution);
-    this.addAssignmentToken(headers, assignment);
-
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/comments`;
-    return this.http.post<Comment>(url, comment, {headers});
+    return this.http.post<Comment>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/comments`, comment);
   }
 
   deleteComment(assignment: string, solution: string, comment: string): Observable<Comment> {
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/comments/${comment}`;
-    return this.http.delete<Comment>(url);
+    return this.http.delete<Comment>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/comments/${comment}`);
   }
 
   streamComments(assignment: string, solution: string): Observable<{ event: string, comment: Comment }> {
     const token = this.getToken(assignment, solution) || this.assignmentService.getToken(assignment);
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/comments/events?token=${token}`;
-    return observeSSE<Comment, 'comment'>(url);
+    return observeSSE<Comment, 'comment'>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/comments/events?token=${token}`);
   }
 
   getEvaluations(assignment: Assignment | string, id?: string, params: FilterEvaluationParams = {}): Observable<Evaluation[]> {
     const assignmentID = asID(assignment);
-    const headers = {};
-    if (id) {
-      this.addSolutionToken(headers, assignmentID, id);
-    }
-    this.addAssignmentToken(headers, assignmentID);
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignmentID}/${id ? `solutions/${id}/` : ''}evaluations`;
-    return this.http.get<Evaluation[]>(url, {headers, params: params as any});
+    return this.http.get<Evaluation[]>(`${environment.assignmentsApiUrl}/assignments/${assignmentID}/${id ? `solutions/${id}/` : ''}evaluations`, {params: params as any});
   }
 
   getEvaluationValues<T>(assignment: string, field: keyof Evaluation | string, params: FilterEvaluationParams = {}): Observable<T[]> {
-    const headers = {};
-    this.addAssignmentToken(headers, assignment);
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/evaluations/unique/${field}`;
-    return this.http.get<T[]>(url, {headers, params: params as any});
+    return this.http.get<T[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/evaluations/unique/${field}`, {params: params as any});
   }
 
   getEvaluationRemarks(assignment: string, params: FilterEvaluationParams = {}): Observable<RemarkDto[]> {
-    const headers = {};
-    this.addAssignmentToken(headers, assignment);
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/evaluations/remarks`;
-    return this.http.get<RemarkDto[]>(url, {headers, params: params as any});
+    return this.http.get<RemarkDto[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/evaluations/remarks`, {params: params as any});
   }
 
   streamEvaluations(assignment: string, solution: string): Observable<{ event: string, evaluation: Evaluation }> {
     const token = this.assignmentService.getToken(assignment);
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/evaluations/events?token=${token}`;
-    return observeSSE<Evaluation, 'evaluation'>(url);
+    return observeSSE<Evaluation, 'evaluation'>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/evaluations/events?token=${token}`);
   }
 
   getEvaluationByTask(assignent: string, solution: string, task: string): Observable<Evaluation | undefined> {
@@ -288,58 +235,33 @@ export class SolutionService {
   }
 
   getEvaluation(assignment: string, solution: string | undefined, evaluation: string): Observable<Evaluation> {
-    const headers = {};
-    this.addAssignmentToken(headers, assignment);
-    if (solution) {
-      this.addSolutionToken(headers, assignment, solution);
-    }
     // NB: The findOne endpoint does not really care about the solution, so we can just use * if unknown.
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/${solution || '*'}/evaluations/${evaluation}`;
-    return this.http.get<Evaluation>(url, {headers});
+    return this.http.get<Evaluation>(`${environment.assignmentsApiUrl}/assignments/${assignment}/${solution || '*'}/evaluations/${evaluation}`);
   }
 
   createEvaluation(assignment: string, solution: string, dto: CreateEvaluationDto): Observable<Evaluation> {
-    const headers = {};
-    this.addAssignmentToken(headers, assignment);
-
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/evaluations`;
-    return this.http.post<Evaluation>(url, dto, {headers});
+    return this.http.post<Evaluation>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/evaluations`, dto);
   }
 
   updateEvaluation(assignment: string, solution: string, id: string, dto: UpdateEvaluationDto): Observable<Evaluation> {
-    const headers = {};
-    this.addAssignmentToken(headers, assignment);
-
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/evaluations/${id}`;
-    return this.http.patch<Evaluation>(url, dto, {headers});
+    return this.http.patch<Evaluation>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/evaluations/${id}`, dto);
   }
 
   deleteEvaluation(assignment: string, solution: string, id: string): Observable<Evaluation> {
-    const headers = {};
-    this.addAssignmentToken(headers, assignment);
-
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/evaluations/${id}`;
-    return this.http.delete<Evaluation>(url, {headers});
+    return this.http.delete<Evaluation>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/evaluations/${id}`);
   }
 
   getAssignees(assignment: string): Observable<Assignee[]> {
-    const headers = {};
-    this.addAssignmentToken(headers, assignment);
-    return this.http.get<Assignee[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/assignees`, {headers});
+    return this.http.get<Assignee[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/assignees`);
   }
 
   setAssignee(assignment: string, solution: string, assignee: string | undefined): Observable<Assignee> {
-    const headers = {};
-    this.addAssignmentToken(headers, assignment);
     const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/assignee`;
-    return assignee ? this.http.put<Assignee>(url, {assignee}, {headers}) : this.http.delete<Assignee>(url, {headers});
+    return assignee ? this.http.put<Assignee>(url, {assignee}) : this.http.delete<Assignee>(url);
   }
 
   getEmbeddingSnippets(assignment: string, solution: string, task: string): Observable<Snippet[]> {
-    const headers = {};
-    this.addAssignmentToken(headers, assignment);
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/embeddings`;
-    return this.http.get<any[]>(url, {headers, params: {solution, task}}).pipe(
+    return this.http.get<any[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/embeddings`, {params: {solution, task}}).pipe(
       map(embeddings => embeddings.map(emb => this.convertEmbeddable(emb))),
     );
   }
@@ -355,31 +277,15 @@ export class SolutionService {
     };
   }
 
-  getSimilarEmbeddingSnippets(assignment: string, solution: string, snippet: Snippet): Observable<(Snippet & {solution: string})[]> {
-    const headers = {};
-    this.addAssignmentToken(headers, assignment);
-    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/embeddings`;
+  getSimilarEmbeddingSnippets(assignment: string, solution: string, snippet: Snippet): Observable<(Snippet & {
+    solution: string
+  })[]> {
     const id = `${solution}-${snippet.file}-${snippet.from.line}`;
-    return this.http.get<any[]>(url, {headers, params: {id}}).pipe(
+    return this.http.get<any[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/embeddings`, {params: {id}}).pipe(
       map(embeddings => embeddings.map(emb => ({
         ...this.convertEmbeddable(emb),
         solution: emb.solution,
       }))),
     );
-  }
-
-  private addAssignmentToken(headers: any, assignmentID: string) {
-    const assignmentToken = this.assignmentService.getToken(assignmentID);
-    if (assignmentToken) {
-      headers['Assignment-Token'] = assignmentToken;
-    }
-  }
-
-  private addSolutionToken(headers: any, assignmentID: string, solutionID: string): string | null {
-    const token = this.getToken(assignmentID, solutionID);
-    if (token) {
-      headers['Solution-Token'] = token;
-    }
-    return token;
   }
 }
