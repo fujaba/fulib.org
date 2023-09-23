@@ -7,7 +7,7 @@ import {environment} from '../../../environments/environment';
 import {StorageService} from '../../services/storage.service';
 import {UserService} from '../../user/user.service';
 import {Assignee} from '../model/assignee';
-import Assignment, {ReadAssignmentDto} from '../model/assignment';
+import {ReadAssignmentDto} from '../model/assignment';
 import {CheckResult, CheckSolution} from '../model/check';
 import Comment from '../model/comment';
 import {
@@ -22,10 +22,6 @@ import {
 import Solution, {AuthorInfo, EstimatedCosts, ImportSolution} from '../model/solution';
 import {AssignmentService} from './assignment.service';
 import {observeSSE} from './sse-helper';
-
-function asID(id: { _id?: string, id?: string } | string): string {
-  return typeof id === 'string' ? id : id._id! || id.id!;
-}
 
 @Injectable()
 export class SolutionService {
@@ -58,31 +54,25 @@ export class SolutionService {
 
   // --------------- Comment Drafts ---------------
 
-  getCommentDraft(solution: Solution | string): string | null {
-    const solutionID = asID(solution);
-    return this.storageService.get(`commentDraft/${solutionID}`);
+  getCommentDraft(solution: string): string | null {
+    return this.storageService.get(`commentDraft/${solution}`);
   }
 
-  setCommentDraft(solution: Solution | string, draft: string | null) {
-    const solutionID = asID(solution);
-    this.storageService.set(`commentDraft/${solutionID}`, draft);
+  setCommentDraft(solution: string, draft: string | null) {
+    this.storageService.set(`commentDraft/${solution}`, draft);
   }
 
   // --------------- Tokens ---------------
 
-  getToken(assignment: Assignment | string, id: string): string | null {
-    const assignmentID = asID(assignment);
-    return this.storageService.get(`solutionToken/${assignmentID}/${id}`);
+  getToken(assignment: string, id: string): string | null {
+    return this.storageService.get(`solutionToken/${assignment}/${id}`);
   }
 
-  setToken(assignment: Assignment | string, id: string, token: string | null): void {
-    const assignmentID = asID(assignment);
-    this.storageService.set(`solutionToken/${assignmentID}/${id}`, token);
+  setToken(assignment: string, id: string, token: string | null): void {
+    this.storageService.set(`solutionToken/${assignment}/${id}`, token);
   }
 
-  getOwnIds(assignment?: Assignment | string): { assignment: string, id: string }[] {
-    const assignmentID = assignment ? asID(assignment) : null;
-
+  getOwnIds(assignment?: string): { assignment: string, id: string }[] {
     const pattern = /^solutionToken\/(.*)\/(.*)$/;
     const ids: { assignment: string, id: string; }[] = [];
     for (let i = 0; i < localStorage.length; i++) {
@@ -93,7 +83,7 @@ export class SolutionService {
       }
 
       const matchedAssignmentID = match[1] as string;
-      if (assignmentID && matchedAssignmentID !== assignmentID) {
+      if (assignment && matchedAssignmentID !== assignment) {
         continue;
       }
 
@@ -162,9 +152,8 @@ export class SolutionService {
     });
   }
 
-  get(assignment: Assignment | string, id: string): Observable<Solution> {
-    const assignmentID = asID(assignment);
-    return this.http.get<Solution>(`${environment.assignmentsApiUrl}/assignments/${assignmentID}/solutions/${id}`);
+  get(assignment: string, id: string): Observable<Solution> {
+    return this.http.get<Solution>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${id}`);
   }
 
   getAll(assignment: string, search?: string): Observable<Solution[]> {
@@ -212,9 +201,8 @@ export class SolutionService {
     return observeSSE<Comment, 'comment'>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/comments/events?token=${token}`);
   }
 
-  getEvaluations(assignment: Assignment | string, id?: string, params: FilterEvaluationParams = {}): Observable<Evaluation[]> {
-    const assignmentID = asID(assignment);
-    return this.http.get<Evaluation[]>(`${environment.assignmentsApiUrl}/assignments/${assignmentID}/${id ? `solutions/${id}/` : ''}evaluations`, {params: params as any});
+  getEvaluations(assignment: string, id?: string, params: FilterEvaluationParams = {}): Observable<Evaluation[]> {
+    return this.http.get<Evaluation[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/${id ? `solutions/${id}/` : ''}evaluations`, {params: params as any});
   }
 
   getEvaluationValues<T>(assignment: string, field: keyof Evaluation | string, params: FilterEvaluationParams = {}): Observable<T[]> {
@@ -261,7 +249,12 @@ export class SolutionService {
   }
 
   getEmbeddingSnippets(assignment: string, solution: string, task: string): Observable<Snippet[]> {
-    return this.http.get<any[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/embeddings`, {params: {solution, task}}).pipe(
+    return this.http.get<any[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/embeddings`, {
+      params: {
+        solution,
+        task
+      }
+    }).pipe(
       map(embeddings => embeddings.map(emb => this.convertEmbeddable(emb))),
     );
   }
