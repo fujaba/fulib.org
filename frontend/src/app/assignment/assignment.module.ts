@@ -1,5 +1,5 @@
 import {CommonModule} from '@angular/common';
-import {HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 
@@ -19,7 +19,9 @@ import {OverviewComponent} from './pages/overview/overview.component';
 import {SettingsComponent} from './pages/settings/settings.component';
 import {TokenModalComponent} from './pages/token-modal/token-modal.component';
 import {ConfigService} from './services/config.service';
+import {TokenInterceptor} from "./services/token.interceptor";
 import {AssignmentService} from "./services/assignment.service";
+import {TokenService} from "./services/token.service";
 import {SolutionService} from "./services/solution.service";
 import {TelemetryService} from "./services/telemetry.service";
 import {CourseService} from "./services/course.service";
@@ -52,6 +54,12 @@ import {SubmitService} from "./modules/assignment/submit.service";
     ModalModule,
   ],
   providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      multi: true,
+      useClass: TokenInterceptor,
+    },
+    TokenService,
     ConfigService,
     AssignmentService,
     SolutionService,
