@@ -20,9 +20,7 @@ export interface Issue {
 
 export type IssueDto = Omit<Issue, 'number'>;
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class SubmitService {
 
   constructor(

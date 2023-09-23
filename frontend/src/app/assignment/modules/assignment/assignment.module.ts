@@ -24,6 +24,8 @@ import {StatisticsBlockComponent} from './statistics-block/statistics-block.comp
 import {StatisticsComponent} from './statistics/statistics.component';
 import {SubmitModalComponent} from './submit-modal/submit-modal.component';
 import {AssignmentTasksComponent} from './tasks/tasks.component';
+import {StatisticsService} from "./statistics.service";
+import {SubmitService} from "./submit.service";
 
 @NgModule({
   declarations: [
@@ -52,6 +54,10 @@ import {AssignmentTasksComponent} from './tasks/tasks.component';
     NgbAccordionModule,
     RouteTabsModule,
     ModalModule,
+  ],
+  providers: [
+    StatisticsService,
+    SubmitService,
   ],
 })
 export class AssignmentModule {

@@ -51,9 +51,7 @@ export interface AssignmentStatistics {
   tasks: TaskStatistics[];
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class StatisticsService {
   constructor(
     private http: HttpClient,
