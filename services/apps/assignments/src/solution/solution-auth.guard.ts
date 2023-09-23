@@ -31,13 +31,20 @@ export class SolutionAuthGuard implements CanActivate {
       notFound(assignmentId);
     }
 
+    const privileged = this.assignmentService.isAuthorized(assignment, user, assignmentToken);
+    if (privileged) {
+      return true;
+    }
+
+    if (solutionId === '*') {
+      return false;
+    }
+
     const solution = await this.solutionService.findOne(solutionId);
     if (!solution) {
       notFound(solutionId);
     }
 
-    const privileged = this.assignmentService.isAuthorized(assignment, user, assignmentToken);
-    const authorized = this.solutionService.isAuthorized(solution, user, solutionToken);
-    return privileged || authorized;
+    return this.solutionService.isAuthorized(solution, user, solutionToken);
   }
 }
