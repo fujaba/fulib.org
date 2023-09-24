@@ -19,7 +19,6 @@ export class CreateSolutionDto extends OmitType(Solution, [
 
 export class UpdateSolutionDto extends PartialType(OmitType(Solution, [
   ...excluded,
-  'solution',
   'commit',
 ] as const)) {
 }

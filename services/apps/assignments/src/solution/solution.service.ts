@@ -3,10 +3,6 @@ import {UserToken} from '@app/keycloak-auth';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model, UpdateQuery} from 'mongoose';
-import {AssignmentService} from '../assignment/assignment.service';
-import {CreateEvaluationDto} from '../evaluation/evaluation.dto';
-import {Evaluation} from '../evaluation/evaluation.schema';
-import {EvaluationService} from '../evaluation/evaluation.service';
 import {generateToken, idFilter} from '../utils';
 import {BatchUpdateSolutionDto, CreateSolutionDto, ReadSolutionDto, UpdateSolutionDto} from './solution.dto';
 import {Solution, SolutionDocument} from './solution.schema';
@@ -15,14 +11,8 @@ import {Solution, SolutionDocument} from './solution.schema';
 export class SolutionService {
   constructor(
     @InjectModel(Solution.name) public model: Model<Solution>,
-    private assignmentService: AssignmentService,
-    private evaluationService: EvaluationService,
     private eventService: EventService,
   ) {
-  }
-
-  private async createEvaluation(solution: SolutionDocument, dto: CreateEvaluationDto): Promise<Evaluation> {
-    return this.evaluationService.create(solution.assignment, solution._id, dto);
   }
 
   async create(assignment: string, dto: CreateSolutionDto, createdBy?: string): Promise<SolutionDocument> {
@@ -35,15 +25,6 @@ export class SolutionService {
     });
     this.emit('created', created);
     return created;
-  }
-
-  async autoGrade(solution: SolutionDocument): Promise<void> {
-    const assignment = await this.assignmentService.findOne(solution.assignment);
-    if (!assignment) {
-      return;
-    }
-    const results = await this.assignmentService.check(solution.solution, assignment);
-    await Promise.all(results.map(r => this.createEvaluation(solution, r)));
   }
 
   async findAll(where: FilterQuery<Solution> = {}): Promise<ReadSolutionDto[]> {
