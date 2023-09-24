@@ -1,6 +1,6 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
-import {Transform, Type} from 'class-transformer';
+import {plainToInstance, Transform, Type} from 'class-transformer';
 import {
   IsBoolean,
   IsDateString,
@@ -82,6 +82,8 @@ export class Solution {
   @Prop()
   @ApiProperty()
   @ValidateNested()
+  // Transform JSON strings to objects to support the multipart/form-data request with files
+  @Transform(({value}) => typeof value === 'string' ? plainToInstance(AuthorInfo, JSON.parse(value)) : value)
   @Type(() => AuthorInfo)
   author: AuthorInfo;
 

@@ -1,6 +1,18 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound, ObjectIdArrayPipe} from '@mean-stream/nestx';
-import {Body, Controller, Delete, Get, Param, ParseArrayPipe, Patch, Post, Query} from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseArrayPipe,
+  Patch,
+  Post,
+  Query,
+  UploadedFiles,
+  UseInterceptors
+} from '@nestjs/common';
 import {ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiQuery, ApiTags} from '@nestjs/swagger';
 import {isMongoId} from 'class-validator';
 import {FilterQuery, Types} from 'mongoose';
@@ -11,6 +23,7 @@ import {SolutionAuth} from './solution-auth.decorator';
 import {BatchUpdateSolutionDto, CreateSolutionDto, ReadSolutionDto, UpdateSolutionDto} from './solution.dto';
 import {Solution} from './solution.schema';
 import {SolutionService} from './solution.service';
+import {FilesInterceptor} from "@nestjs/platform-express";
 
 const forbiddenResponse = 'Not owner of solution or assignment, or invalid Assignment-Token or Solution-Token.';
 const forbiddenAssignmentResponse = 'Not owner of assignment, or invalid Assignment-Token.';
@@ -37,10 +50,12 @@ export class SolutionController {
   @Post('assignments/:assignment/solutions')
   @Auth({optional: true})
   @ApiCreatedResponse({type: Solution})
+  @UseInterceptors(FilesInterceptor('files'))
   async create(
     @Param('assignment') assignment: string,
     @Body() dto: CreateSolutionDto,
     @AuthUser() user?: UserToken,
+    @UploadedFiles() files?: Express.Multer.File[],
   ): Promise<Solution> {
     return this.solutionService.create(assignment, dto, user?.sub);
   }
