@@ -106,23 +106,24 @@ export class ClassroomService {
         entry.autodrain();
         return;
       }
+      const extension = entry.path.substring(entry.path.lastIndexOf('.') + 1);
+      if (!TEXT_EXTENSIONS.has(extension)) {
+        entry.autodrain();
+        return;
+      }
       entry.buffer().then(buffer => {
         if (buffer.length > MAX_FILE_SIZE) {
           return;
         }
-        this.addContentsToIndex(assignment, solution, entry.path, buffer.toString('utf8'), commit);
+        const strippedPath = commit ? this.stripCommit(entry.path, commit) : entry.path;
+        this.searchService.addFile(assignment, solution, strippedPath, buffer.toString('utf8'));
       });
     }).promise();
   }
 
-  async addContentsToIndex(assignment: string, solution: string, filename: string, content: string, commit?: string) {
-    let index: number;
-    const path = commit && (index = filename.indexOf(commit)) >= 0 ? filename.substring(index + commit.length + 1) : filename;
-    const extension = path.substring(path.lastIndexOf('.') + 1);
-    if (!TEXT_EXTENSIONS.has(extension)) {
-      return;
-    }
-    await this.searchService.addFile(assignment, solution, path, content);
+  private stripCommit(filename: string, commit: string) {
+    const index = filename.indexOf(commit);
+    return index >= 0 ? filename.substring(index + commit.length + 1) : filename;
   }
 
   async countSolutions(assignment: AssignmentDocument): Promise<number> {
