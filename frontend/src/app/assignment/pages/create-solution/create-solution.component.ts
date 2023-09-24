@@ -22,6 +22,7 @@ export class CreateSolutionComponent implements OnInit {
   assignment?: ReadAssignmentDto;
   loggedIn = false;
   author: AuthorInfo;
+  files: File[] = [];
 
   submitting: boolean;
 
@@ -71,16 +72,21 @@ export class CreateSolutionComponent implements OnInit {
     this.solutionService.setAuthor(this.author);
   }
 
+  addFiles(files: FileList) {
+    for (let i = 0; i < files.length; i++) {
+      this.files.push(files[i]);
+    }
+  }
+
   submit(): void {
     if (!this.assignment) {
       return;
     }
 
     this.submitting = true;
-    this.solutionService.submit({
-      assignment: this.assignment?._id,
+    this.solutionService.submit(this.assignment._id, {
       author: this.author,
-    }).subscribe(result => {
+    }, this.files).subscribe(result => {
       this.submitting = false;
       this.toastService.success('Solution', 'Successfully submitted solution');
       if (this.course && this.nextAssignment) {

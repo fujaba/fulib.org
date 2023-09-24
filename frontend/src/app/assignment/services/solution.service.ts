@@ -9,7 +9,7 @@ import {UserService} from '../../user/user.service';
 import {ReadAssignmentDto} from '../model/assignment';
 import {CheckResult, CheckSolution} from '../model/check';
 
-import Solution, {AuthorInfo, ImportSolution} from '../model/solution';
+import Solution, {AuthorInfo, CreateSolutionDto, ImportSolution} from '../model/solution';
 import {AssignmentService} from './assignment.service';
 
 @Injectable()
@@ -93,9 +93,20 @@ export class SolutionService {
     return this.http.post<CheckResult>(`${environment.assignmentsApiUrl}/assignments/${solution.assignment._id}/check`, solution);
   }
 
-  submit(solution: Solution): Observable<Solution> {
-    return this.http.post<Solution>(`${environment.assignmentsApiUrl}/assignments/${solution.assignment}/solutions`, solution).pipe(
-      tap(response => this.setToken(solution.assignment, response._id!, response.token!)),
+  submit(assignment: string, dto: CreateSolutionDto, files?: File[]): Observable<Solution> {
+    let body;
+    if (files && files.length) {
+      const data = new FormData();
+      data.set('author', JSON.stringify(dto.author));
+      for (const file of files) {
+        data.append('files', file, file.name);
+      }
+      body = data;
+    } else {
+      body = dto;
+    }
+    return this.http.post<Solution>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions`, body).pipe(
+      tap(response => this.setToken(assignment, response._id!, response.token!)),
     );
   }
 

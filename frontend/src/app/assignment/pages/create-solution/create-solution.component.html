@@ -4,6 +4,20 @@
   <h2>Tasks</h2>
   <app-task-list [tasks]="assignment?.tasks"></app-task-list>
 
+  <h2>Files</h2>
+  <div class="mb-3">
+    <label for="files" class="form-label">Upload files</label>
+    <input class="form-control" type="file" id="files" multiple #filesInput (change)="addFiles(filesInput.files!)">
+  </div>
+  <ul class="list-group">
+    <li *ngFor="let file of files; let index = index" class="list-group-item d-flex align-items-center">
+      <div class="me-auto">
+        {{ file.name }} ({{ file.size >= 1024 ? (file.size / 1024 | number:'0.0-1') + ' KiB' : file.size + ' bytes' }})
+      </div>
+      <button class="btn btn-outline-danger bi-trash" (click)="files.splice(index, 1)"></button>
+    </li>
+  </ul>
+
   <h2>Your Info</h2>
 
   <div class="mb-3">
