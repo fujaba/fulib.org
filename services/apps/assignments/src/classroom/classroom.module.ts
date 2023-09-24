@@ -9,6 +9,7 @@ import {SolutionModule} from '../solution/solution.module';
 import {ClassroomController} from './classroom.controller';
 import {ClassroomScheduler} from './classroom.scheduler';
 import {ClassroomService} from './classroom.service';
+import {FileModule} from "../file/file.module";
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import {ClassroomService} from './classroom.service';
     AssignmentModule,
     SolutionModule,
     EvaluationModule,
+    FileModule,
     HttpModule,
     MulterModule.register({
       storage: diskStorage({
