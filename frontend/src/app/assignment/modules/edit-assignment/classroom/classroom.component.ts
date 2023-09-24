@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {CreateAssignmentDto} from '../../../model/assignment';
+import {ClassroomInfo} from '../../../model/assignment';
 import {AssignmentContext} from '../../../services/assignment.context';
 
 @Component({
@@ -8,16 +8,13 @@ import {AssignmentContext} from '../../../services/assignment.context';
   styleUrls: ['./classroom.component.scss'],
 })
 export class ClassroomComponent {
-  assignment: CreateAssignmentDto;
-  saveDraft: () => void;
+  classroom: ClassroomInfo;
 
   encodeURIComponent = encodeURIComponent;
 
   constructor(
-    context: AssignmentContext,
+    readonly context: AssignmentContext,
   ) {
-    this.assignment = context.assignment;
-    this.assignment.classroom ||= {};
-    this.saveDraft = context.saveDraft;
+    this.classroom = context.assignment.classroom ||= {};
   }
 }

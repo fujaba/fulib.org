@@ -9,10 +9,10 @@
     <div class="input-group">
       <span class="input-group-text">https://github.com/</span>
       <input type="text" class="form-control" id="classroomOrgInput" placeholder="my-awesome-org"
-             [(ngModel)]="assignment.classroom!.org" (change)="saveDraft()">
+             [(ngModel)]="classroom.org" (change)="context.saveDraft()">
       <span class="input-group-text">/</span>
       <input type="text" class="form-control" id="classroomPrefixInput" placeholder="prefix"
-             [(ngModel)]="assignment.classroom!.prefix" (change)="saveDraft()">
+             [(ngModel)]="classroom.prefix" (change)="context.saveDraft()">
       <span class="input-group-text">-Student</span>
     </div>
     <div class="form-text">
@@ -24,19 +24,19 @@
     <app-masked-input
       id="tokenInput"
       type="password"
-      [(value)]="assignment.classroom!.token"
+      [(value)]="classroom.token"
       placeholder="ghp_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
     ></app-masked-input>
     <div class="form-text">
       Required for importing solutions from GitHub Classroom.
       You can generate a token in the
       <a
-        href="https://github.com/settings/tokens/new?description={{encodeURIComponent(assignment.title)}}&scopes=repo"
+        href="https://github.com/settings/tokens/new?description={{encodeURIComponent(context.assignment.title)}}&scopes=repo"
         target="_blank">
         GitHub Settings
       </a>.
       Make sure your account has access to the
-      <b>{{ assignment.classroom!.org }}</b>
+      <b>{{ classroom.org }}</b>
       organisation and select the
       <code>repo</code>
       scope.
@@ -47,7 +47,7 @@
     <app-masked-input
       id="webhookInput"
       type="url"
-      [(value)]="assignment.classroom!.webhook"
+      [(value)]="classroom.webhook"
       placeholder="https://discord.com/api/webhooks/XXXXXXXXXXXXXXXXXXX"
     ></app-masked-input>
     <div class="form-text">
