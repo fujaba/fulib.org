@@ -6,10 +6,11 @@ import {EditTaskModalComponent} from './edit-task-modal/edit-task-modal.componen
 import {InfoComponent} from './info/info.component';
 import {PreviewComponent} from './preview/preview.component';
 import {TasksComponent} from './tasks/tasks.component';
+import {PlagiarismDetectionComponent} from "./plagiarism-detection/plagiarism-detection.component";
+import {CodeSearchComponent} from "./code-search/code-search.component";
 
 export const editAssignmentChildRoutes: Routes = [
   {path: 'info', component: InfoComponent, data: {title: 'Info'}},
-  {path: 'classroom', component: ClassroomComponent, data: {icon: 'github', title: 'Classroom'}},
   {
     path: 'tasks',
     component: TasksComponent,
@@ -18,6 +19,9 @@ export const editAssignmentChildRoutes: Routes = [
       {path: ':task', component: EditTaskModalComponent},
     ],
   },
+  {path: 'classroom', component: ClassroomComponent, data: {icon: 'bi-github', title: 'Classroom'}},
+  {path: 'code-search', component: CodeSearchComponent, data: {icon: 'bi-robot', title: 'Code Search'}},
+  {path: 'plagiarism-detection', component: PlagiarismDetectionComponent, data: {icon: 'bi-incognito', title: 'Plagiarism Detection'}},
   {path: 'preview', component: PreviewComponent, data: {title: 'Preview'}},
 ];
 

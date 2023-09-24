@@ -1,0 +1,26 @@
+<div class="mb-3">
+  <label class="form-label" for="codeSearchCheck">Code Search</label>
+  <div class="form-check">
+    <input type="checkbox" class="form-check-input" id="codeSearchCheck"
+           [(ngModel)]="classroom.codeSearch" (change)="context.saveDraft()">
+    <label class="form-check-label" for="codeSearchCheck">Enable Code Search</label>
+  </div>
+  <div class="form-text">
+    Code Search will import the source code from Classroom repositories and index it.
+    It can be used to find code duplicates across submissions and allows grading multiple students at the same time.
+  </div>
+</div>
+<div class="mb-3" *ngIf="classroom.codeSearch">
+  <label class="form-label" for="openaiApiKeyInput">OpenAI API Key</label>
+  <app-masked-input
+    id="openaiApiKeyInput"
+    type="password"
+    [(value)]="classroom.openaiApiKey"
+    (change)="context.saveDraft()"
+    placeholder="sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+  ></app-masked-input>
+  <div class="form-text">
+    Your OpenAI API key for advanced Code Search. Generate one in the
+    <a href="https://platform.openai.com/account/api-keys" target="_blank">OpenAI API Keys</a>.
+  </div>
+</div>

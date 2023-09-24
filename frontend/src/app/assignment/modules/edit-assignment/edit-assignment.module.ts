@@ -16,6 +16,8 @@ import {InfoComponent} from './info/info.component';
 import {PreviewComponent} from './preview/preview.component';
 import {TasksComponent} from './tasks/tasks.component';
 import {TaskMarkdownService} from "./task-markdown.service";
+import { CodeSearchComponent } from './code-search/code-search.component';
+import { PlagiarismDetectionComponent } from './plagiarism-detection/plagiarism-detection.component';
 
 
 @NgModule({
@@ -27,6 +29,8 @@ import {TaskMarkdownService} from "./task-markdown.service";
     InfoComponent,
     PreviewComponent,
     TasksComponent,
+    CodeSearchComponent,
+    PlagiarismDetectionComponent,
   ],
   imports: [
     CommonModule,

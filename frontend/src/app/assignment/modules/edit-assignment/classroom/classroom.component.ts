@@ -9,25 +9,15 @@ import {AssignmentContext} from '../../../services/assignment.context';
 })
 export class ClassroomComponent {
   assignment: CreateAssignmentDto;
-  showMoss = false;
   saveDraft: () => void;
 
   encodeURIComponent = encodeURIComponent;
-  mossLanguages = {
-    java: 'Java',
-    javascript: 'JavaScript',
-    python: 'Python',
-    c: 'C',
-    cc: 'C++',
-    csharp: 'C#',
-  };
 
   constructor(
     context: AssignmentContext,
   ) {
     this.assignment = context.assignment;
     this.assignment.classroom ||= {};
-    this.showMoss = !!this.assignment.classroom.mossId;
     this.saveDraft = context.saveDraft;
   }
 }
