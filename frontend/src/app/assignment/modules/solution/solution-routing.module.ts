@@ -12,7 +12,7 @@ import {SimilarModalComponent} from "./similar-modal/similar-modal.component";
 
 export const solutionChildRoutes: Routes = [
   {
-    path: 'tasks', component: SolutionTasksComponent, data: {title: 'Solution & Tasks'}, children: [
+    path: 'tasks', component: SolutionTasksComponent, data: {title: 'Tasks'}, children: [
       {path: ':task', component: EvaluationModalComponent, data: {title: 'Evaluation'}},
       {path: ':task/similar', component: SimilarModalComponent, data: {title: 'Similar Solutions'}},
     ],
