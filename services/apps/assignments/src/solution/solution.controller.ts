@@ -24,6 +24,7 @@ import {BatchUpdateSolutionDto, CreateSolutionDto, ReadSolutionDto, UpdateSoluti
 import {Solution} from './solution.schema';
 import {SolutionService} from './solution.service';
 import {FilesInterceptor} from "@nestjs/platform-express";
+import {FileService} from "../file/file.service";
 
 const forbiddenResponse = 'Not owner of solution or assignment, or invalid Assignment-Token or Solution-Token.';
 const forbiddenAssignmentResponse = 'Not owner of assignment, or invalid Assignment-Token.';
@@ -44,6 +45,7 @@ export class SolutionController {
     private readonly solutionService: SolutionService,
     private readonly assigneeService: AssigneeService,
     private readonly evaluationService: EvaluationService,
+    private readonly fileService: FileService,
   ) {
   }
 
@@ -57,7 +59,11 @@ export class SolutionController {
     @AuthUser() user?: UserToken,
     @UploadedFiles() files?: Express.Multer.File[],
   ): Promise<Solution> {
-    return this.solutionService.create(assignment, dto, user?.sub);
+    const solution = await this.solutionService.create(assignment, dto, user?.sub);
+    if (files && files.length) {
+      await this.fileService.importFiles(assignment, solution.id, files);
+    }
+    return solution;
   }
 
   @Get('assignments/:assignment/solutions')
