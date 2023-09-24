@@ -27,7 +27,6 @@ export class TaskMarkdownService {
         points: +points,
         description,
         glob,
-        verification: '',
         children: [],
         collapsed: true,
       };
