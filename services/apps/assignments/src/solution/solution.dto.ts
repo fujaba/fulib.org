@@ -1,4 +1,4 @@
-import {ApiProperty, ApiPropertyOptional, OmitType, PartialType} from '@nestjs/swagger';
+import {ApiPropertyOptional, OmitType, PartialType} from '@nestjs/swagger';
 import {Types} from 'mongoose';
 import {Solution} from './solution.schema';
 import {AsObjectId} from "@mean-stream/nestx";

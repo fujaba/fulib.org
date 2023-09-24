@@ -55,12 +55,12 @@ export class SolutionService {
 
       const update: UpdateQuery<Solution> = rest;
       if (author) {
-        for (let [k, v] of Object.entries(author)) {
+        for (const [k, v] of Object.entries(author)) {
           update['author.' + k] = v;
         }
       }
       if (consent) {
-        for (let [k, v] of Object.entries(consent)) {
+        for (const [k, v] of Object.entries(consent)) {
           update['consent.' + k] = v;
         }
       }

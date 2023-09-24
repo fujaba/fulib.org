@@ -1,15 +1,14 @@
 import {Controller, ForbiddenException, Get, Param, ParseBoolPipe, Post, Query} from '@nestjs/common';
 import {
   ApiCreatedResponse,
-  ApiExtraModels,
   ApiForbiddenResponse,
   ApiOkResponse,
-  ApiOperation, ApiParam,
+  ApiOperation,
+  ApiParam,
   ApiTags,
-  refs
 } from "@nestjs/swagger";
 import {AssignmentAuth} from "../assignment/assignment-auth.decorator";
-import {Embeddable, EmbeddingEstimate, SnippetEmbeddable, TaskEmbeddable} from "./embedding.dto";
+import {Embeddable, EmbeddingEstimate} from "./embedding.dto";
 import {EmbeddingService} from "./embedding.service";
 import {notFound} from "@mean-stream/nestx";
 import {AssignmentService} from "../assignment/assignment.service";
