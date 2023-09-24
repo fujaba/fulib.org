@@ -109,41 +109,6 @@ export class AssignmentService {
     });
   }
 
-  check(assignment: CheckAssignment): Observable<CheckResult> {
-    return this.http.post<CheckResult>(`${environment.assignmentsApiUrl}/assignments/check`, assignment);
-  }
-
-  lint(result: CheckResult): Marker[] {
-    const grouped = new Map<string, { marker: Marker, tasks: number[] }>();
-
-    for (let i = 0; i < result.results.length; i++) {
-      const taskNum = i + 1;
-      const taskResult = result.results[i];
-      for (const marker of this.lintService.lint(taskResult.remark)) {
-        marker.from.line -= 2;
-        marker.to.line -= 2;
-
-        const key = `${marker.from.line}:${marker.from.ch}-${marker.to.line}:${marker.to.ch}:${marker.severity}:${marker.message}`;
-        let entry = grouped.get(key);
-        if (entry) {
-          entry.tasks.push(taskNum);
-        } else {
-          entry = {marker, tasks: [taskNum]};
-          grouped.set(key, entry);
-        }
-      }
-    }
-
-    const markers: Marker[] = [];
-
-    for (const {marker, tasks} of grouped.values()) {
-      marker.message = `[${tasks.length === 1 ? 'task' : 'tasks'} ${tasks.join(', ')}] ${marker.message}`;
-      markers.push(marker);
-    }
-
-    return markers;
-  }
-
   create(dto: CreateAssignmentDto): Observable<Assignment> {
     return this.http.post<Assignment>(`${environment.assignmentsApiUrl}/assignments`, dto).pipe(
       map(response => {
