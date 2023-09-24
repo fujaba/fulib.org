@@ -58,8 +58,6 @@ export class EditAssignmentComponent implements OnInit {
       deadline: new Date(),
       description: '',
       tasks: [],
-      solution: '',
-      templateSolution: '',
       classroom: {},
     };
   }

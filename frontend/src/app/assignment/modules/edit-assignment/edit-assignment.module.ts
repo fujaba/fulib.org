@@ -14,9 +14,7 @@ import {EditTaskListComponent} from './edit-task-list/edit-task-list.component';
 import {EditTaskModalComponent} from './edit-task-modal/edit-task-modal.component';
 import {InfoComponent} from './info/info.component';
 import {PreviewComponent} from './preview/preview.component';
-import {SampleComponent} from './sample/sample.component';
 import {TasksComponent} from './tasks/tasks.component';
-import {TemplateComponent} from './template/template.component';
 import {TaskMarkdownService} from "./task-markdown.service";
 
 
@@ -28,9 +26,7 @@ import {TaskMarkdownService} from "./task-markdown.service";
     EditTaskModalComponent,
     InfoComponent,
     PreviewComponent,
-    SampleComponent,
     TasksComponent,
-    TemplateComponent,
   ],
   imports: [
     CommonModule,

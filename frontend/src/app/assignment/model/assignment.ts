@@ -26,8 +26,6 @@ export default class Assignment {
   };
 
   tasks: Task[];
-  solution: string;
-  templateSolution: string;
 }
 
 export type CreateAssignmentDto = Omit<Assignment, '_id' | 'token' | 'createdBy'>;
