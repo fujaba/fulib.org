@@ -4,20 +4,6 @@
   <h2>Tasks</h2>
   <app-task-list [tasks]="assignment?.tasks"></app-task-list>
 
-  <h2><label for="solutionInput">Your Solution</label></h2>
-  <div class="mb-3">
-    <app-scenario-codemirror
-      id="solutionInput"
-      [(content)]="solution"
-      [autoSubmit]="true"
-      [markers]="markers"
-      (save)="check()"
-    ></app-scenario-codemirror>
-    <div class="form-text">
-      {{ status }}
-    </div>
-  </div>
-
   <h2>Your Info</h2>
 
   <div class="mb-3">

@@ -33,14 +33,6 @@ export class SolutionService {
     this.storageService.set('solutionAuthor', JSON.stringify(value));
   }
 
-  getDraft(assignment: string): string | null {
-    return this.storageService.get(`solutionDraft/${assignment}`);
-  }
-
-  setDraft(assignment: string, solution: string | null): void {
-    this.storageService.set(`solutionDraft/${assignment}`, solution);
-  }
-
   // --------------- Tokens ---------------
 
   getToken(assignment: string, id: string): string | null {

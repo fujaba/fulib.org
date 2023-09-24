@@ -3,12 +3,10 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ToastService} from '@mean-stream/ngbx';
 import {forkJoin, of} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
-
-import {Marker} from '../../../shared/model/marker';
 import {UserService} from '../../../user/user.service';
 import {ReadAssignmentDto} from '../../model/assignment';
 import Course from '../../model/course';
-import Solution, {AuthorInfo} from '../../model/solution';
+import {AuthorInfo} from '../../model/solution';
 import {AssignmentService} from '../../services/assignment.service';
 import {ConfigService} from '../../services/config.service';
 import {CourseService} from '../../services/course.service';
@@ -22,12 +20,8 @@ import {SolutionService} from '../../services/solution.service';
 export class CreateSolutionComponent implements OnInit {
   course?: Course;
   assignment?: ReadAssignmentDto;
-  solution: string;
   loggedIn = false;
   author: AuthorInfo;
-
-  status = 'Your solution is checked automatically when you make changes.';
-  markers: Marker[] = [];
 
   submitting: boolean;
 
@@ -57,7 +51,6 @@ export class CreateSolutionComponent implements OnInit {
       switchMap(params => forkJoin({
         assignment: this.assignmentService.get(params.aid).pipe(tap(assignment => {
           this.assignment = assignment;
-          this.solution = this.solutionService.getDraft(this.assignment._id) ?? this.assignment.templateSolution;
         })),
         course: params.cid ? this.courseService.get(params.cid).pipe(tap(course => this.course = course)) : of(undefined),
       })),
@@ -76,21 +69,6 @@ export class CreateSolutionComponent implements OnInit {
 
   saveDraft(): void {
     this.solutionService.setAuthor(this.author);
-    this.assignment && this.solutionService.setDraft(this.assignment._id, this.solution);
-  }
-
-  check(): void {
-    if (!this.assignment) {
-      return;
-    }
-    this.saveDraft();
-    this.status = 'Checking...';
-    this.solutionService.check({assignment: this.assignment, solution: this.solution}).subscribe(response => {
-      this.status = 'Your solution was checked automatically. Don\'t forget to submit when you are done!';
-      this.markers = this.assignmentService.lint(response);
-    }, error => {
-      this.status = 'Failed to check your solution automatically: ' + error.error?.message ?? error.message;
-    });
   }
 
   submit(): void {
@@ -102,7 +80,6 @@ export class CreateSolutionComponent implements OnInit {
     this.solutionService.submit({
       assignment: this.assignment?._id,
       author: this.author,
-      solution: this.solution,
     }).subscribe(result => {
       this.submitting = false;
       this.toastService.success('Solution', 'Successfully submitted solution');

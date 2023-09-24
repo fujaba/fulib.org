@@ -2,7 +2,6 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {forkJoin, Subscription} from 'rxjs';
 import {switchMap, tap} from 'rxjs/operators';
-import {Marker} from '../../../../shared/model/marker';
 import {ReadAssignmentDto} from '../../../model/assignment';
 import {Evaluation} from '../../../model/evaluation';
 import Solution from '../../../model/solution';
@@ -21,7 +20,6 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
   solution?: Solution;
   points?: Record<string, number>;
   evaluations?: Record<string, Evaluation>;
-  markers: Marker[] = [];
 
   subscription?: Subscription;
 
@@ -51,9 +49,6 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
       ])),
     ).subscribe(([assignment, , evaluations]) => {
       this.points = this.taskService.createPointsCache(assignment.tasks, this.evaluations!);
-      // NB: this happens here instead of where the solution is loaded above, because the solution text needs to be updated first.
-      // Otherwise the markers don't show up
-      this.markers = this.assignmentService.lint({results: evaluations});
     }, error => {
       if (error.status === 401 || error.status === 403) {
         this.router.navigate(['token'], {relativeTo: this.route});
