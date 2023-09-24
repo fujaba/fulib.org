@@ -48,7 +48,7 @@ export class AssignmentService {
   }
 
   mask(assignment: Assignment): ReadAssignmentDto {
-    const {token, solution, tasks, classroom, ...rest} = assignment;
+    const {token, tasks, classroom, ...rest} = assignment;
     return {
       ...rest,
       tasks: assignment.tasks.map(t => this.maskTask(t)),
