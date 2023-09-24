@@ -8,15 +8,21 @@
   <input type="number" class="form-control" id="mossIdInput" placeholder="123456789"
          [(ngModel)]="classroom.mossId" (change)="context.saveDraft()">
   <div class="form-text">
-    Your Moss User ID. See "Registering for Moss" in the Moss documentation to obtain it.
+    Your Moss User ID.
+    See "Registering for Moss" in the Moss documentation to obtain it.
+    Or
+    <a [href]="'mailto:moss@moss.stanford.edu?subject=Moss%20User%20ID%20Request&body=registeruser%0Amail%20' + email">send an email</a>
+    to request one.
   </div>
 </div>
 <div class="mb-3">
-  <label class="form-label" for="mossIdInput">Moss Language</label>
+  <label class="form-label" for="mossLanguageInput">Moss Language</label>
   <select class="form-control" id="mossLanguageInput" [(ngModel)]="classroom.mossLanguage" (change)="context.saveDraft()">
     <option *ngFor="let lang of mossLanguages | keyvalue" [value]="lang.key">{{ lang.value }}</option>
   </select>
   <div class="form-text">
     Language to use for Moss duplicate analysis.
+    See our list of <a href="https://github.com/fujaba/fulib.org/issues/326" target="_blank">supported languages</a>
+    if you need a Moss-supported language that is not listed here.
   </div>
 </div>

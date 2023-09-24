@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {AssignmentContext} from "../../../services/assignment.context";
 import {ClassroomInfo} from "../../../model/assignment";
+import {ConfigService} from "../../../services/config.service";
 
 @Component({
   selector: 'app-plagiarism-detection',
@@ -9,6 +10,7 @@ import {ClassroomInfo} from "../../../model/assignment";
 })
 export class PlagiarismDetectionComponent {
   classroom: ClassroomInfo;
+  email: string;
 
   mossLanguages = {
     java: 'Java',
@@ -21,7 +23,9 @@ export class PlagiarismDetectionComponent {
 
   constructor(
     readonly context: AssignmentContext,
+    private configService: ConfigService,
   ) {
+    this.email = configService.get('email');
     this.classroom = context.assignment.classroom ||= {};
   }
 }
