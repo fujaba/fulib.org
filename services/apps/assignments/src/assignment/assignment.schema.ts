@@ -47,12 +47,6 @@ export class Task {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  verification?: string;
-
-  @Prop()
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
   glob?: string;
 
   @Prop({default: []})

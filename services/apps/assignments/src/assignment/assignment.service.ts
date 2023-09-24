@@ -56,7 +56,7 @@ export class AssignmentService {
   }
 
   private maskTask(task: Task): ReadTaskDto {
-    const {verification, note, children, ...rest} = task;
+    const {note, children, ...rest} = task;
     return {
       ...rest,
       children: children?.map(t => this.maskTask(t)),
