@@ -71,7 +71,6 @@ export class EditAssignmentComponent implements OnInit {
     this.assignmentService.upload(file).subscribe(result => {
       const {_id, token, createdBy, ...rest} = result;
       this.context.assignment = rest as Assignment;
-      this.context.evaluations = undefined;
       this.saveDraft();
     });
   }
