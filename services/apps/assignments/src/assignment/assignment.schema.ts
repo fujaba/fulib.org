@@ -47,12 +47,6 @@ export class Task {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  verification?: string;
-
-  @Prop()
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
   glob?: string;
 
   @Prop({default: []})
@@ -187,16 +181,6 @@ export class Assignment {
   @ValidateNested({each: true})
   @Type(() => Task)
   tasks: Task[];
-
-  @Prop()
-  @ApiProperty()
-  @IsString()
-  solution: string;
-
-  @Prop()
-  @ApiProperty()
-  @IsString()
-  templateSolution: string;
 }
 
 export type AssignmentDocument = Assignment & Document;

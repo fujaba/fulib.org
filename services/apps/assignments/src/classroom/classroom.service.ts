@@ -68,7 +68,6 @@ export class ClassroomService {
     const result = await this.solutionService.bulkWrite(importSolutions.map(importSolution => {
       const solution: Solution = {
         ...importSolution,
-        solution: '',
         token: generateToken(),
       };
       const [key, value] = Object.entries(importSolution.author).find(([, value]) => value)!;

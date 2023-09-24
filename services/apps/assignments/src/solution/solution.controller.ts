@@ -6,7 +6,6 @@ import {isMongoId} from 'class-validator';
 import {FilterQuery, Types} from 'mongoose';
 import {AssigneeService} from '../assignee/assignee.service';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
-import {AssignmentService} from '../assignment/assignment.service';
 import {EvaluationService} from '../evaluation/evaluation.service';
 import {SolutionAuth} from './solution-auth.decorator';
 import {BatchUpdateSolutionDto, CreateSolutionDto, ReadSolutionDto, UpdateSolutionDto} from './solution.dto';
@@ -29,7 +28,6 @@ const searchFields = [
 @ApiTags('Solutions')
 export class SolutionController {
   constructor(
-    private readonly assignmentService: AssignmentService,
     private readonly solutionService: SolutionService,
     private readonly assigneeService: AssigneeService,
     private readonly evaluationService: EvaluationService,
@@ -44,9 +42,7 @@ export class SolutionController {
     @Body() dto: CreateSolutionDto,
     @AuthUser() user?: UserToken,
   ): Promise<Solution> {
-    const solution = await this.solutionService.create(assignment, dto, user?.sub);
-    await this.solutionService.autoGrade(solution);
-    return solution;
+    return this.solutionService.create(assignment, dto, user?.sub);
   }
 
   @Get('assignments/:assignment/solutions')

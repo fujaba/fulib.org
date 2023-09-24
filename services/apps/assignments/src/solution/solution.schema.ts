@@ -86,11 +86,6 @@ export class Solution {
   author: AuthorInfo;
 
   @Prop()
-  @ApiProperty()
-  @IsString()
-  solution: string;
-
-  @Prop()
   @ApiPropertyOptional()
   @IsOptional()
   @IsHash('sha1')

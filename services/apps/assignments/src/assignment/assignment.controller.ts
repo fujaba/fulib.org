@@ -13,17 +13,10 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import {ApiCreatedResponse, ApiHeader, ApiOkResponse, ApiOperation, ApiTags, getSchemaPath} from '@nestjs/swagger';
+import {ApiCreatedResponse, ApiHeader, ApiOkResponse, ApiTags, getSchemaPath} from '@nestjs/swagger';
 import {FilterQuery} from 'mongoose';
 import {AssignmentAuth} from './assignment-auth.decorator';
-import {
-  CheckNewRequestDto,
-  CheckRequestDto,
-  CheckResponseDto,
-  CreateAssignmentDto,
-  ReadAssignmentDto,
-  UpdateAssignmentDto,
-} from './assignment.dto';
+import {CreateAssignmentDto, ReadAssignmentDto, UpdateAssignmentDto,} from './assignment.dto';
 import {Assignment} from './assignment.schema';
 import {AssignmentService} from './assignment.service';
 
@@ -87,31 +80,6 @@ export class AssignmentController {
       return assignment;
     }
     return this.assignmentService.mask(assignment.toObject());
-  }
-
-  @Post('check')
-  @ApiOkResponse({type: CheckResponseDto})
-  @ApiOperation({summary: 'Check a solution draft for a new assignment draft'})
-  async checkNew(
-    @Body() dto: CheckNewRequestDto,
-  ): Promise<CheckResponseDto> {
-    return {
-      results: await this.assignmentService.check(dto.solution, dto),
-    };
-  }
-
-  @Post(':id/check')
-  @ApiOperation({summary: 'Check a solution draft for an existing assignment'})
-  @NotFound()
-  @ApiOkResponse({type: CheckResponseDto})
-  async check(
-    @Param('id') id: string,
-    @Body() dto: CheckRequestDto,
-  ): Promise<CheckResponseDto> {
-    const assignment = await this.assignmentService.findOne(id) ?? notFound(id);
-    return {
-      results: await this.assignmentService.check(dto.solution, assignment),
-    };
   }
 
   @Patch(':id')

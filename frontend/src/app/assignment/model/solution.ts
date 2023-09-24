@@ -26,7 +26,6 @@ export default class Solution {
 
   createdBy?: string;
   author: AuthorInfo;
-  solution: string;
   commit?: string;
   consent?: Consent;
 
