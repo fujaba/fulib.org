@@ -1,8 +1,8 @@
 import {Injectable} from "@nestjs/common";
 import {createReadStream} from "fs";
-import fs from "node:fs/promises";
+import * as fs from "node:fs/promises";
 import {MAX_FILE_SIZE, TEXT_EXTENSIONS} from "../search/search.constants";
-import {Stream} from "stream";
+import {Stream, Readable} from "node:stream";
 import {Entry as ZipEntry, Parse as unzip} from "unzipper";
 import {SearchService} from "../search/search.service";
 
@@ -13,21 +13,29 @@ export class FileService {
   ) {
   }
 
+  private asStream(file: Express.Multer.File): Stream {
+    return file.path ? createReadStream(file.path) : Readable.from(file.buffer);
+  }
+
+  private async asBuffer(file: Express.Multer.File): Promise<Buffer> {
+    return file.buffer || fs.readFile(file.path);
+  }
+
   async importFiles(assignment: string, solution: string, files: Express.Multer.File[]) {
     await Promise.all(files.map(file => this.importFile(assignment, solution, file)));
   }
 
   async importFile(assignment: string, solution: string, file: Express.Multer.File) {
     if (file.mimetype === 'application/zip') {
-      const stream = createReadStream(file.path);
+      const stream = this.asStream(file);
       return this.importZipEntries(stream, assignment, solution);
     }
 
-    const buffer = await fs.readFile(file.path, 'utf8');
+    const buffer = await this.asBuffer(file);
     if (buffer.length > MAX_FILE_SIZE) {
       return;
     }
-    return this.searchService.addFile(assignment, solution, file.originalname, buffer);
+    return this.searchService.addFile(assignment, solution, file.originalname, buffer.toString('utf8'));
   }
 
   async importZipEntries(stream: Stream, assignment: string, solution: string, commit?: string) {
