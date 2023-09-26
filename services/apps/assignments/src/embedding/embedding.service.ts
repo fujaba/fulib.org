@@ -28,7 +28,8 @@ export class EmbeddingService implements OnModuleInit {
         type: 'dense_vector',
         dims: 1536,
         index: true,
-        similarity: 'cosine'
+        // dot_product is faster than cosine, because OpenAI embeddings are already normalized
+        similarity: 'dot_product',
       },
       file: {
         type: 'text',
