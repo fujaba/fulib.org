@@ -1,5 +1,4 @@
 import {HttpException, Module} from '@nestjs/common';
-import {IssueReactionsService} from './issue-reactions.service';
 import {MongooseModule} from "@nestjs/mongoose";
 import {environment} from "../../assignments/src/environment";
 import {SentryInterceptor, SentryModule} from "@ntegral/nestjs-sentry";
@@ -23,7 +22,6 @@ import {IssueModule} from "./issue/issue.module";
   ],
   controllers: [],
   providers: [
-    IssueReactionsService,
     {
       provide: APP_INTERCEPTOR,
       useFactory: () => new SentryInterceptor({
