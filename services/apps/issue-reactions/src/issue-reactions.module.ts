@@ -6,6 +6,7 @@ import {APP_INTERCEPTOR} from "@nestjs/core";
 import {IssueModule} from "./issue/issue.module";
 import { IssueFinderModule } from './issue-finder/issue-finder.module';
 import {ScheduleModule} from "@nestjs/schedule";
+import { CommentPosterModule } from './comment-poster/comment-poster.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import {ScheduleModule} from "@nestjs/schedule";
     ScheduleModule.forRoot(),
     IssueModule,
     IssueFinderModule,
+    CommentPosterModule,
   ],
   controllers: [],
   providers: [

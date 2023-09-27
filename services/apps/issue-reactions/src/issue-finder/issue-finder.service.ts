@@ -11,10 +11,6 @@ export class IssueFinderService {
   ) {
   }
 
-  async onModuleInit() {
-    return this.findIssues();
-  }
-
   @Cron(CronExpression.EVERY_HOUR)
   async findIssues() {
     const octokit = new Octokit({

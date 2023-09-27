@@ -14,6 +14,9 @@ export class Issue {
 
   @Prop()
   url: string;
+
+  @Prop()
+  comment?: number;
 }
 
 export type IssueDocument = Doc<Issue>;
