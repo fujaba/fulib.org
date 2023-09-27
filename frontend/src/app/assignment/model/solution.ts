@@ -33,6 +33,8 @@ export default class Solution {
   points?: number;
 }
 
+export type CreateSolutionDto = Pick<Solution, 'author'>;
+
 export type ImportSolution = Pick<Solution,
   | '_id'
   | 'assignment'

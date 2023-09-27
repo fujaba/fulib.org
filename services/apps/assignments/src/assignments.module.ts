@@ -19,6 +19,7 @@ import {SentryInterceptor, SentryModule} from "@ntegral/nestjs-sentry";
 import {APP_INTERCEPTOR} from "@nestjs/core";
 import {EmbeddingModule} from './embedding/embedding.module';
 import {MossModule} from './moss/moss.module';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import {MossModule} from './moss/moss.module';
     TelemetryModule,
     MossModule,
     EmbeddingModule,
+    FileModule,
   ],
   controllers: [],
   providers: [
