@@ -69,6 +69,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/moss/tsconfig.lib.json"
       }
+    },
+    "issue-reactions": {
+      "type": "application",
+      "root": "apps/issue-reactions",
+      "entryFile": "main",
+      "sourceRoot": "apps/issue-reactions/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/issue-reactions/tsconfig.app.json"
+      }
     }
   }
 }
