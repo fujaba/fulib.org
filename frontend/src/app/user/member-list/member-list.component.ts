@@ -6,12 +6,12 @@ import {Member} from "../member";
   templateUrl: './member-list.component.html',
   styleUrls: ['./member-list.component.scss']
 })
-export class MemberListComponent {
-  @Input() members: Member[];
+export class MemberListComponent<M extends Member> {
+  @Input() members: M[];
   @Input() owner?: string;
-  @Output() deleted = new EventEmitter<Member>();
+  @Output() deleted = new EventEmitter<M>();
 
-  delete(member: Member) {
+  delete(member: M) {
     this.deleted.emit(member);
   }
 }

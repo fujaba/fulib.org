@@ -4,7 +4,7 @@
       {{ member._user
       ? member._user.firstName + ' ' + member._user.lastName + ' (' + member._user.username + ')'
       : 'Loading...' }}
-      <span class="text-muted">&bull; {{ member.userId === owner ? 'Owner' : 'Collaborator' }}</span>
+      <span class="text-muted">&bull; {{ member.role || (member.userId === owner ? 'Owner' : 'Collaborator') }}</span>
     </div>
     <button
       *ngIf="member.userId !== owner && deleted.observed"

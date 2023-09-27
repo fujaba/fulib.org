@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {tap} from 'rxjs/operators';
 import {environment} from '../../../environments/environment';
-import {Member} from '../../user/member';
+import {ProjectMember} from "../model/project-member";
 
 @Injectable()
 export class MemberService {
@@ -12,18 +12,18 @@ export class MemberService {
   ) {
   }
 
-  findAll(id: string): Observable<Member[]> {
-    return this.http.get<Member[]>(`${environment.projectsApiUrl}/projects/${id}/members`);
+  findAll(id: string): Observable<ProjectMember[]> {
+    return this.http.get<ProjectMember[]>(`${environment.projectsApiUrl}/projects/${id}/members`);
   }
 
-  update(member: Member): Observable<Member> {
+  update(member: ProjectMember): Observable<ProjectMember> {
     const {_user, ...rest} = member;
-    return this.http.put<Member>(`${environment.projectsApiUrl}/projects/${member.projectId}/members/${member.userId}`, rest).pipe(
+    return this.http.put<ProjectMember>(`${environment.projectsApiUrl}/projects/${member.projectId}/members/${member.userId}`, rest).pipe(
       tap(newMember => newMember._user = _user),
     );
   }
 
-  delete({projectId, userId}: Member): Observable<Member> {
-    return this.http.delete<Member>(`${environment.projectsApiUrl}/projects/${projectId}/members/${userId}`);
+  delete({projectId, userId}: ProjectMember): Observable<ProjectMember> {
+    return this.http.delete<ProjectMember>(`${environment.projectsApiUrl}/projects/${projectId}/members/${userId}`);
   }
 }

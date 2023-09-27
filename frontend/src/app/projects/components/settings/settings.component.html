@@ -16,7 +16,7 @@
         Add
       </a>
     </h4>
-    <app-member-list [members]="members" [owner]="project.userId"></app-member-list>
+    <app-member-list [members]="members" [owner]="project.userId" (deleted)="delete($event)"></app-member-list>
   </ng-container>
   <ng-container *ngIf="project && (currentUser && currentUser.id === project.userId)">
     <hr/>

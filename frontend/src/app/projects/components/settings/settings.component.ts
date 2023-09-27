@@ -9,6 +9,7 @@ import {Member} from '../../../user/member';
 import {Project} from '../../model/project';
 import {MemberService} from '../../services/member.service';
 import {ProjectService} from '../../services/project.service';
+import {ProjectMember} from "../../model/project-member";
 
 @Component({
   selector: 'app-settings',
@@ -17,7 +18,7 @@ import {ProjectService} from '../../services/project.service';
 })
 export class SettingsComponent implements OnInit {
   project?: Project;
-  members: Member[] = [];
+  members: ProjectMember[] = [];
 
   currentUser?: User;
 
@@ -58,7 +59,7 @@ export class SettingsComponent implements OnInit {
     });
   }
 
-  delete(member: Member) {
+  delete(member: ProjectMember) {
     if (!confirm(`Are you sure you want to revoke Collaborator status from ${member._user?.firstName} ${member._user?.lastName}? They can be added as a collaborator again later.`)) {
       return;
     }
