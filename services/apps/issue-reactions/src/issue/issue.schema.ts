@@ -1,8 +1,11 @@
 import {Prop, Schema, SchemaFactory} from "@nestjs/mongoose";
 import {Doc} from "@mean-stream/nestx";
+import {Types} from "mongoose";
 
 @Schema()
 export class Issue {
+  _id: Types.ObjectId;
+
   @Prop()
   assignment: string;
 

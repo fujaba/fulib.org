@@ -1,13 +1,14 @@
 import {HttpException, Module} from '@nestjs/common';
 import {MongooseModule} from "@nestjs/mongoose";
-import {environment} from "../../assignments/src/environment";
 import {SentryInterceptor, SentryModule} from "@ntegral/nestjs-sentry";
 import {APP_INTERCEPTOR} from "@nestjs/core";
 import {IssueModule} from "./issue/issue.module";
-import { IssueFinderModule } from './issue-finder/issue-finder.module';
+import {IssueFinderModule} from './issue-finder/issue-finder.module';
 import {ScheduleModule} from "@nestjs/schedule";
-import { CommentPosterModule } from './comment-poster/comment-poster.module';
-import { ReactionHandlerModule } from './reaction-handler/reaction-handler.module';
+import {CommentPosterModule} from './comment-poster/comment-poster.module';
+import {ReactionHandlerModule} from './reaction-handler/reaction-handler.module';
+import {EventModule} from "@app/event/event.module";
+import {environment} from "./environment";
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ReactionHandlerModule } from './reaction-handler/reaction-handler.modul
         },
       },
     }),
+    EventModule.forRoot({nats: environment.nats}),
     ScheduleModule.forRoot(),
     IssueModule,
     IssueFinderModule,
