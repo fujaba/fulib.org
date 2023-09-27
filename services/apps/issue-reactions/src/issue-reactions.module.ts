@@ -4,6 +4,7 @@ import {MongooseModule} from "@nestjs/mongoose";
 import {environment} from "../../assignments/src/environment";
 import {SentryInterceptor, SentryModule} from "@ntegral/nestjs-sentry";
 import {APP_INTERCEPTOR} from "@nestjs/core";
+import {IssueModule} from "./issue/issue.module";
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import {APP_INTERCEPTOR} from "@nestjs/core";
         },
       },
     }),
+    IssueModule,
   ],
   controllers: [],
   providers: [
