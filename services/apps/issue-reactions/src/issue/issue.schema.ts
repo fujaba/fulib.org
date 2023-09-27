@@ -11,6 +11,9 @@ export class Issue {
 
   @Prop()
   id: number;
+
+  @Prop()
+  url: string;
 }
 
 export type IssueDocument = Doc<Issue>;

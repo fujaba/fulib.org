@@ -8,6 +8,7 @@ import {Issue, IssueSchema} from "./issue.schema";
     MongooseModule.forFeature([{name: Issue.name, schema: IssueSchema}]),
   ],
   providers: [IssueService],
+  exports: [IssueService],
 })
 export class IssueModule {
 }

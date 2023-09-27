@@ -9,4 +9,8 @@ export const environment = {
     uri: process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/fulib-org',
     options: {} satisfies MongooseModuleOptions,
   },
+  github: {
+    token: process.env.GITHUB_TOKEN,
+    org: process.env.GITHUB_ORG || 'sekassel-archive',
+  },
 };

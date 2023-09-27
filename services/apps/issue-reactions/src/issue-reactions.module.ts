@@ -4,6 +4,8 @@ import {environment} from "../../assignments/src/environment";
 import {SentryInterceptor, SentryModule} from "@ntegral/nestjs-sentry";
 import {APP_INTERCEPTOR} from "@nestjs/core";
 import {IssueModule} from "./issue/issue.module";
+import { IssueFinderModule } from './issue-finder/issue-finder.module';
+import {ScheduleModule} from "@nestjs/schedule";
 
 @Module({
   imports: [
@@ -18,7 +20,9 @@ import {IssueModule} from "./issue/issue.module";
         },
       },
     }),
+    ScheduleModule.forRoot(),
     IssueModule,
+    IssueFinderModule,
   ],
   controllers: [],
   providers: [
