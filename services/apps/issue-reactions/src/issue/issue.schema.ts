@@ -17,6 +17,12 @@ export class Issue {
 
   @Prop()
   comment?: number;
+
+  @Prop({type: Object})
+  reactions?: Record<string, {
+    createdAt: Date;
+    user?: string;
+  }>;
 }
 
 export type IssueDocument = Doc<Issue>;

@@ -7,6 +7,7 @@ import {IssueModule} from "./issue/issue.module";
 import { IssueFinderModule } from './issue-finder/issue-finder.module';
 import {ScheduleModule} from "@nestjs/schedule";
 import { CommentPosterModule } from './comment-poster/comment-poster.module';
+import { ReactionHandlerModule } from './reaction-handler/reaction-handler.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { CommentPosterModule } from './comment-poster/comment-poster.module';
     IssueModule,
     IssueFinderModule,
     CommentPosterModule,
+    ReactionHandlerModule,
   ],
   controllers: [],
   providers: [
