@@ -32,7 +32,7 @@ export class EditMemberComponent implements OnInit {
     this.memberService.update({
       projectId: this.route.snapshot.params.id,
       userId: this.user.id!,
-      user: this.user,
+      _user: this.user,
     }).subscribe(() => {
       this.user = undefined;
     });

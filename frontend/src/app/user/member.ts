@@ -1,8 +1,8 @@
-import {User} from '../../user/user';
+import {User} from "./user";
 
 export interface Member {
   projectId: string;
   userId: string;
 
-  user?: User;
+  _user?: User;
 }
