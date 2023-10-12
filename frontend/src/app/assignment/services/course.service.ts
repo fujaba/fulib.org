@@ -3,39 +3,31 @@ import {Injectable} from '@angular/core';
 
 import {saveAs} from 'file-saver';
 import {Observable, of} from 'rxjs';
-import {switchMap, take, tap} from 'rxjs/operators';
+import {switchMap} from 'rxjs/operators';
 
 import {environment} from '../../../environments/environment';
 import {UserService} from '../../user/user.service';
 import Course, {CourseStudent, CreateCourseDto, UpdateCourseDto} from '../model/course';
+import {StorageService} from "../../services/storage.service";
 
 @Injectable()
 export class CourseService {
-  private _draft?: Course | CreateCourseDto | null;
-
   constructor(
     private http: HttpClient,
     private userService: UserService,
+    private storageService: StorageService,
   ) {
   }
 
   // --------------- Draft ---------------
 
-  get draft(): Course | CreateCourseDto | null {
-    if (typeof this._draft !== 'undefined') {
-      return this._draft;
-    }
-    const json = localStorage.getItem('courseDraft');
-    return this._draft = json ? JSON.parse(json) : null;
+  get draft(): CreateCourseDto | null {
+    const json = this.storageService.get('courseDraft');
+    return json ? JSON.parse(json) : null;
   }
 
-  set draft(value: Course | CreateCourseDto | null) {
-    this._draft = value;
-    if (value) {
-      localStorage.setItem('courseDraft', JSON.stringify(value));
-    } else {
-      localStorage.removeItem('courseDraft');
-    }
+  set draft(value: CreateCourseDto | null) {
+    this.storageService.set('courseDraft', value ? JSON.stringify(value) : null);
   }
 
   // --------------- Import/Export ---------------
