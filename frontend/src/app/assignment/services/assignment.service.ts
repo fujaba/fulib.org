@@ -92,19 +92,19 @@ export class AssignmentService {
     return ids;
   }
 
-  findOwn(archived = false): Observable<ReadAssignmentDto[]> {
+  findOwn(archived?: boolean): Observable<ReadAssignmentDto[]> {
     const ownIds = this.getOwnIds();
     return this.users.getCurrent().pipe(
       switchMap(user => this.findAll(ownIds, user?.id, archived)),
     );
   }
 
-  findAll(ids?: string[], createdBy?: string, archived = false): Observable<ReadAssignmentDto[]> {
+  findAll(ids?: string[], createdBy?: string, archived?: boolean): Observable<ReadAssignmentDto[]> {
     return this.http.get<ReadAssignmentDto[]>(`${environment.assignmentsApiUrl}/assignments`, {
       params: {
         ...(ids ? {ids: ids.join(',')} : {}),
         ...(createdBy ? {createdBy} : {}),
-        archived,
+        ...(archived !== undefined ? {archived} : {}),
       },
     });
   }
