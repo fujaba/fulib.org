@@ -66,7 +66,11 @@ export class CreateCourseComponent implements OnInit {
   }
 
   saveDraft(): void {
-    this.course && !('_id' in this.course) && (this.courseService.draft = this.course);
+    if (!this.course || '_id' in this.course) {
+      return;
+    }
+    this.course.assignments = this.assignments.map(a => a._id);
+    this.courseService.draft = this.course;
   }
 
   onImport(file: File): void {
