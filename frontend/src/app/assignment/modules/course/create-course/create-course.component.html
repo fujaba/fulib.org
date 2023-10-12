@@ -58,16 +58,13 @@
       <span class="timeline-item-body" dndDragImageRef>
         {{assignment?.title || 'Loading...'}}
       </span>
-      <div class="btn btn-secondary ms-auto bi-grip-horizontal" aria-label="Reorder" ngbTooltip="Drag to Reorder" dndHandle>
-      </div>
-      <button type="button" class="btn btn-danger ms-2" aria-label="Remove" ngbTooltip="Remove"
-              (click)="removeAssignment(i)">
-        <i class="bi-trash"></i>
-      </button>
+      <div class="btn btn-secondary ms-auto bi-grip-horizontal" ngbTooltip="Drag to Reorder" dndHandle></div>
+      <button type="button" class="btn btn-danger ms-2 bi-trash" ngbTooltip="Remove"
+              (click)="removeAssignment(i)"></button>
     </li>
   </ul>
   <div class="form-text">
-    Drag and Drop the "&equiv;" boxes to change the order.
+    Drag and Drop the <span class="bi-grip-horizontal"> handles</span> to change the order.
   </div>
 
   <div *ngIf="!course?.['_id'] else editActions" class="text-center">
