@@ -65,13 +65,7 @@ export class CreateCourseComponent implements OnInit {
     ).subscribe(assignments => this.assignments = assignments);
   }
 
-  saveDraft(): void {
-    if (!this.course || '_id' in this.course) {
-      return;
-    }
-    this.course.assignments = this.assignments.map(a => a._id);
-    this.courseService.draft = this.course;
-  }
+  // ------------------ Import/Export ------------------
 
   onImport(file: File): void {
     this.courseService.upload(file).subscribe(result => {
@@ -84,6 +78,8 @@ export class CreateCourseComponent implements OnInit {
   onExport(): void {
     this.course && this.courseService.download(this.course);
   }
+
+  // ------------------ Assignments List ------------------
 
   addAssignmentById() {
     const newID = this.getNewID();
@@ -112,9 +108,30 @@ export class CreateCourseComponent implements OnInit {
     return this.newAssignment;
   }
 
+  dragged(assignment: ReadAssignmentDto) {
+    this.assignments.removeFirst(t => t === assignment);
+  }
+
+  drop(event: DndDropEvent) {
+    if (event.index !== undefined) {
+      this.assignments.splice(event.index, 0, event.data);
+      this.saveDraft();
+    }
+  }
+
   removeAssignment(index: number) {
     this.assignments.splice(index, 1);
     this.saveDraft();
+  }
+
+  // ------------------ Creation ------------------
+
+  saveDraft(): void {
+    if (!this.course || '_id' in this.course) {
+      return;
+    }
+    this.course.assignments = this.assignments.map(a => a._id);
+    this.courseService.draft = this.course;
   }
 
   submit(): void {
@@ -130,6 +147,8 @@ export class CreateCourseComponent implements OnInit {
       complete: () => this.submitting = false,
     });
   }
+
+  // ------------------ Editing ------------------
 
   save() {
     if (!this.course || !('_id' in this.course)) {
@@ -161,16 +180,5 @@ export class CreateCourseComponent implements OnInit {
       error: error => this.toastService.error('Delete Course', 'Failed to delete course', error),
       complete: () => this.submitting = false,
     });
-  }
-
-  dragged(assignment: ReadAssignmentDto) {
-    this.assignments.removeFirst(t => t === assignment);
-  }
-
-  drop(event: DndDropEvent) {
-    if (event.index !== undefined) {
-      this.assignments.splice(event.index, 0, event.data);
-      this.saveDraft();
-    }
   }
 }
