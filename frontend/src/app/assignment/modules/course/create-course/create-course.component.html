@@ -31,12 +31,12 @@
     <input type="text" class="form-control" id="assignmentInput"
            placeholder="Start typing to search your assignments or paste ID or URL"
            [(ngModel)]="newAssignment" [ngbTypeahead]="search"
-           (change)="saveDraft()" (keyup.enter)="addAssignment()">
+           (keyup.enter)="addAssignmentById()">
     <button
       type="button"
       class="btn btn-success bi-plus"
       ngbTooltip="Keyboard Shortcut: &#9166;"
-      (click)="addAssignment()"
+      (click)="addAssignmentById()"
     ></button>
   </div>
   <ul class="timeline-list" [dndDropzone]="['assignment']" (dndDrop)="drop($event)">

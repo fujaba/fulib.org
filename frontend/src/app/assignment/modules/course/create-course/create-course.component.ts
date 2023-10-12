@@ -81,13 +81,22 @@ export class CreateCourseComponent implements OnInit {
     this.course && this.courseService.download(this.course);
   }
 
-  addAssignment() {
+  addAssignmentById() {
     const newID = this.getNewID();
+    const existing = this.ownAssignments.find(a => a._id === newID);
+    if (existing) {
+      this.addAssignment(existing);
+      return;
+    }
     this.assignmentService.get(newID).subscribe(assignment => {
-      this.assignments.push(assignment);
-      this.newAssignment = '';
-      this.saveDraft();
+      this.addAssignment(assignment);
     });
+  }
+
+  private addAssignment(assignment: ReadAssignmentDto) {
+    this.assignments.push(assignment);
+    this.newAssignment = '';
+    this.saveDraft();
   }
 
   getNewID(): string {
