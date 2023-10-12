@@ -25,21 +25,20 @@ export class CreateCourseComponent implements OnInit {
 
   private ownAssignments: ReadAssignmentDto[] = [];
 
-  search = (text$: Observable<string>): Observable<string[]> => {
-    return text$.pipe(
-      debounceTime(200),
-      distinctUntilChanged(),
-      map(term => {
-        if (term.length < 2 || this.ownAssignments.length === 0) {
-          return [];
-        }
-        const lowerTerm = term.toLowerCase();
-        return this.ownAssignments
-          .filter(a => a.title.toLowerCase().indexOf(lowerTerm) >= 0)
-          .map(a => `${a.title} (${a._id})`);
-      }),
-    );
-  };
+  search = (text$: Observable<string>): Observable<string[]> => text$.pipe(
+    debounceTime(200),
+    distinctUntilChanged(),
+    map(term => {
+      if (!term || !this.ownAssignments.length) {
+        return [];
+      }
+      const lowerTerm = term.toLowerCase();
+      return this.ownAssignments
+        .filter(a => a.title.toLowerCase().includes(lowerTerm))
+        .slice(0, 10)
+        .map(a => `${a.title} (${a._id})`);
+    }),
+  );
 
   constructor(
     private assignmentService: AssignmentService,
