@@ -43,11 +43,14 @@ export class AssignmentController {
   @Get()
   @ApiOkResponse({type: [ReadAssignmentDto]})
   async findAll(
-    @Query('archived', new DefaultValuePipe(false), ParseBoolPipe) archived: boolean,
+    @Query('archived', new ParseBoolPipe({optional: true})) archived?: boolean,
     @Query('createdBy') createdBy?: string,
     @Query('ids') ids?: string,
   ) {
-    const filter: FilterQuery<Assignment> = {archived: archived ? true : {$ne: true}};
+    const filter: FilterQuery<Assignment> = {};
+    if (archived !== undefined) {
+      filter.archived = archived || {$ne: true};
+    }
     if (createdBy) {
       (filter.$or ||= []).push({createdBy});
     }

@@ -7,11 +7,8 @@ import {map, switchMap, tap} from 'rxjs/operators';
 
 import {environment} from '../../../environments/environment';
 import {StorageService} from '../../services/storage.service';
-import {LintService} from '../../shared/lint.service';
-import {Marker} from '../../shared/model/marker';
 import {UserService} from '../../user/user.service';
 import Assignment, {CreateAssignmentDto, ReadAssignmentDto, UpdateAssignmentDto} from '../model/assignment';
-import {CheckAssignment, CheckResult} from '../model/check';
 import Course from '../model/course';
 import {SearchResult, SearchSummary} from '../model/search-result';
 
@@ -20,7 +17,6 @@ export class AssignmentService {
   constructor(
     private http: HttpClient,
     private storage: StorageService,
-    private lintService: LintService,
     private users: UserService,
   ) {
   }
@@ -32,16 +28,16 @@ export class AssignmentService {
   }
 
   loadDraft(id: string | undefined): Assignment | CreateAssignmentDto | undefined {
-    const stored = localStorage.getItem(this.getDraftKey(id));
+    const stored = this.storage.get(this.getDraftKey(id));
     return stored ? JSON.parse(stored) : undefined;
   }
 
   saveDraft(id: string | undefined, value: Assignment | CreateAssignmentDto) {
-    localStorage.setItem(this.getDraftKey(id), JSON.stringify(value));
+    this.storage.set(this.getDraftKey(id), JSON.stringify(value));
   }
 
   deleteDraft(id: string | undefined) {
-    localStorage.removeItem(this.getDraftKey(id));
+    this.storage.set(this.getDraftKey(id), null);
   }
 
   // --------------- Tokens ---------------
@@ -76,35 +72,22 @@ export class AssignmentService {
   // --------------- HTTP Methods ---------------
 
   getOwnIds(): string[] {
-    const pattern = /^assignmentToken\/(.*)$/;
-    const ids: string[] = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i)!;
-      const match = pattern.exec(key);
-      if (!match) {
-        continue;
-      }
-
-      const id = match[1] as string;
-      ids.push(id);
-    }
-
-    return ids;
+    return this.storage.getAllKeys(/^assignmentToken\/(.*)$/).map(match => match[1]);
   }
 
-  findOwn(archived = false): Observable<ReadAssignmentDto[]> {
+  findOwn(archived?: boolean): Observable<ReadAssignmentDto[]> {
     const ownIds = this.getOwnIds();
     return this.users.getCurrent().pipe(
       switchMap(user => this.findAll(ownIds, user?.id, archived)),
     );
   }
 
-  findAll(ids?: string[], createdBy?: string, archived = false): Observable<ReadAssignmentDto[]> {
+  findAll(ids?: string[], createdBy?: string, archived?: boolean): Observable<ReadAssignmentDto[]> {
     return this.http.get<ReadAssignmentDto[]>(`${environment.assignmentsApiUrl}/assignments`, {
       params: {
         ...(ids ? {ids: ids.join(',')} : {}),
         ...(createdBy ? {createdBy} : {}),
-        archived,
+        ...(archived !== undefined ? {archived} : {}),
       },
     });
   }
