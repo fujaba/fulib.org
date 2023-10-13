@@ -1,33 +1,24 @@
-name: "CodeQL"
+name: CodeQL Backend
 
 on:
   push:
-    branches: [ master, develop ]
+    branches:
+      - master
+    paths:
+      - backend/**
   pull_request:
-    branches: [ master, develop ]
+    branches:
+      - master
+    paths:
+      - backend/**
 
 jobs:
-  analyze-js:
-    name: Analyze JavaScript
-    runs-on: ubuntu-latest
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
-      with:
-        languages: javascript
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v2
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
   analyze-java:
     name: Analyze Java
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend/
     permissions:
       actions: read
       contents: read
@@ -39,6 +30,7 @@ jobs:
       uses: github/codeql-action/init@v2
       with:
         languages: java
+        source-root: backend/
     - name: Setup Java
       uses: actions/setup-java@v3
       with:
