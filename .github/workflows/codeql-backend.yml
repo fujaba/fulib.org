@@ -16,21 +16,19 @@ jobs:
   analyze-java:
     name: Analyze Java
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend/
     permissions:
       actions: read
       contents: read
       security-events: write
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
+      with:
+        sparse-checkout: backend/
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v2
       with:
         languages: java
-        source-root: backend/
     - name: Setup Java
       uses: actions/setup-java@v3
       with:

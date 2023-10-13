@@ -16,21 +16,19 @@ jobs:
   analyze-js:
     name: Analyze JavaScript
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend/
     permissions:
       actions: read
       contents: read
       security-events: write
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
+      with:
+        sparse-checkout: frontend/
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v2
       with:
         languages: javascript
-        source-root: frontend/
     - name: Autobuild
       uses: github/codeql-action/autobuild@v2
     - name: Perform CodeQL Analysis
