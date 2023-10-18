@@ -2,9 +2,7 @@ import {DOCUMENT} from '@angular/common';
 import {Component, Inject, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {switchMap, tap} from 'rxjs/operators';
-import {environment} from '../../../../../environments/environment';
 import {AssignmentService} from '../../../services/assignment.service';
-import {ConfigService} from '../../../services/config.service';
 import Assignment, {ReadAssignmentDto} from "../../../model/assignment";
 import {MemberService} from "../member.service";
 import {Member} from "../../../../user/member";
@@ -23,16 +21,13 @@ export class ShareComponent implements OnInit {
 
   newMember?: User;
 
-  readonly ide = this.configService.get('ide');
   readonly origin: string;
-  readonly encodedApiServer = encodeURIComponent(new URL(environment.assignmentsApiUrl, location.origin).origin);
 
   constructor(
     private assignmentService: AssignmentService,
     private memberService: MemberService,
     private userService: UserService,
     private route: ActivatedRoute,
-    private configService: ConfigService,
     @Inject(DOCUMENT) document: Document,
   ) {
     this.origin = document.location.origin;
