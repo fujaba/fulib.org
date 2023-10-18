@@ -86,7 +86,7 @@ export class AssignmentService {
     return this.http.get<ReadAssignmentDto[]>(`${environment.assignmentsApiUrl}/assignments`, {
       params: {
         ...(ids ? {ids: ids.join(',')} : {}),
-        ...(createdBy ? {createdBy} : {}),
+        ...(createdBy ? {createdBy, members: [createdBy]} : {}),
         ...(archived !== undefined ? {archived} : {}),
       },
     });
