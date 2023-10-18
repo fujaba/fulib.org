@@ -3,8 +3,7 @@ import {NotFound, ObjectIdPipe} from '@mean-stream/nestx';
 import {Body, Controller, Delete, Get, Param, Patch, Post} from '@nestjs/common';
 import {ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {Types} from 'mongoose';
-import {MemberAuth} from '@app/member/member-auth.decorator';
-import {MemberService} from '@app/member/member.service';
+import {MemberAuth, MemberService} from '@app/member';
 import {ProjectAuth} from './project-auth.decorator';
 import {CreateProjectDto, UpdateProjectDto} from './project.dto';
 import {Project} from './project.schema';
@@ -30,7 +29,7 @@ export class ProjectController {
     @AuthUser() user: UserToken,
   ): Promise<Project> {
     const project = await this.projectService.create(dto, user.sub);
-    project && await this.memberService.update(project._id, user.sub, {});
+    project && await this.memberService.updateOne({parent: project._id, user: user.sub}, {});
     return project;
   }
 
@@ -40,8 +39,8 @@ export class ProjectController {
   async findAll(
     @AuthUser() user: UserToken,
   ): Promise<Project[]> {
-    const members = await this.memberService.findAll({userId: user.sub});
-    return this.projectService.findAll({_id: {$in: members.map(m => m.projectId)}});
+    const members = await this.memberService.findAll({user: user.sub});
+    return this.projectService.findAll({_id: {$in: members.map(m => m.parent)}});
   }
 
   @Get(':id')
@@ -65,7 +64,7 @@ export class ProjectController {
     const project = await this.projectService.update(id, dto);
     if (project && dto.userId) {
       // when changing owner, create a member
-      await this.memberService.update(id, dto.userId, {});
+      await this.memberService.updateOne({parent: id, user: dto.userId}, {});
     }
     return project;
   }
@@ -77,7 +76,7 @@ export class ProjectController {
   async remove(
     @Param('id', ObjectIdPipe) id: Types.ObjectId,
   ): Promise<Project | null> {
-    await this.memberService.removeAll({projectId: id});
+    await this.memberService.deleteMany({parent: id});
     return this.projectService.remove(id);
   }
 }

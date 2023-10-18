@@ -16,11 +16,11 @@ export class MemberAuthGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     const req = context.switchToHttp().getRequest() as Request;
     const id = objectId(req.params.project ?? req.params.id, error => new BadRequestException(error));
-    const user = (req as any).user;
-    return this.checkAuth(id, user);
+    const user: UserToken = (req as any).user;
+    return this.checkAuth(id, user.sub);
   }
 
-  async checkAuth(id: Types.ObjectId, user: UserToken): Promise<boolean> {
-    return !!await this.memberService.findOne(id, user.sub);
+  async checkAuth(parent: Types.ObjectId, user: string): Promise<boolean> {
+    return !!await this.memberService.findOne({parent, user});
   }
 }

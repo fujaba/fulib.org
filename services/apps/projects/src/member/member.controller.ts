@@ -16,10 +16,7 @@ import {
 import {ApiConflictResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {Types} from 'mongoose';
 import {ProjectAuth} from '../project/project-auth.decorator';
-import {MemberAuth} from '@app/member/member-auth.decorator';
-import {UpdateMemberDto} from '@app/member/member.dto';
-import {Member} from '@app/member/member.schema';
-import {MemberService} from '@app/member/member.service';
+import {Member, MemberAuth, MemberService, UpdateMemberDto} from '@app/member';
 
 const forbiddenResponse = 'Not member of project';
 const forbiddenProjectResponse = 'Not owner of project.';
@@ -35,11 +32,14 @@ export class MemberController implements OnModuleInit {
   }
 
   async onModuleInit() {
+    await this.memberService.model.syncIndexes();
     const {modifiedCount} = await this.memberService.updateMany({
-      projectId: {$type: 'string'},
-    }, [{
-      $set: {projectId: {$toObjectId: '$projectId'}},
-    }]);
+      projectId: {$exists: true},
+      userId: {$exists: true},
+    }, [
+      {$set: {parent: '$projectId', user: '$userId'}},
+      {$unset: ['projectId', 'userId']},
+    ]);
     modifiedCount && this.logger.warn(`Migrated ${modifiedCount} members`);
   }
 
@@ -47,9 +47,9 @@ export class MemberController implements OnModuleInit {
   @MemberAuth({forbiddenResponse})
   @ApiOkResponse({type: [Member]})
   async findAll(
-    @Param('project', ObjectIdPipe) projectId: Types.ObjectId,
+    @Param('project', ObjectIdPipe) project: Types.ObjectId,
   ): Promise<Member[]> {
-    return this.memberService.findAll({projectId});
+    return this.memberService.findAll({parent: project});
   }
 
   @Get(':user')
@@ -57,21 +57,22 @@ export class MemberController implements OnModuleInit {
   @NotFound()
   @ApiOkResponse({type: Member})
   async findOne(
-    @Param('project', ObjectIdPipe) projectId: Types.ObjectId,
-    @Param('user') userId: string,
+    @Param('project', ObjectIdPipe) project: Types.ObjectId,
+    @Param('user') user: string,
   ): Promise<Member | null> {
-    return this.memberService.findOne({projectId, userId});
+    return this.memberService.findOne({parent: project, user});
   }
 
   @Put(':user')
   @ProjectAuth({forbiddenResponse: forbiddenProjectResponse})
   @ApiOkResponse({type: Member})
+  @NotFound()
   async update(
-    @Param('project', ObjectIdPipe) projectId: Types.ObjectId,
-    @Param('user') userId: string,
+    @Param('project', ObjectIdPipe) project: Types.ObjectId,
+    @Param('user') user: string,
     @Body() dto: UpdateMemberDto,
-  ): Promise<Member> {
-    return this.memberService.update({projectId, userId}, dto);
+  ): Promise<Member | null> {
+    return this.memberService.updateOne({parent: project, user}, dto);
   }
 
   @Delete(':user')
@@ -80,13 +81,13 @@ export class MemberController implements OnModuleInit {
   @ApiOkResponse({type: Member})
   @ApiConflictResponse({description: removeOwnerResponse})
   async remove(
-    @Param('project', ObjectIdPipe) projectId: Types.ObjectId,
-    @Param('user') userId: string,
+    @Param('project', ObjectIdPipe) project: Types.ObjectId,
+    @Param('user') user: string,
     @AuthUser() token: UserToken,
   ): Promise<Member | null> {
-    if (token.sub === userId) {
+    if (token.sub === user) {
       throw new ConflictException(removeOwnerResponse);
     }
-    return this.memberService.deleteOne({projectId, userId});
+    return this.memberService.deleteOne({parent: project, user});
   }
 }

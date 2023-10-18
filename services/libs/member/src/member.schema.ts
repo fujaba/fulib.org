@@ -6,18 +6,18 @@ import {Project} from '../../../apps/projects/src/project/project.schema';
 
 @Schema({_id: false, id: false})
 export class Member {
-  @Ref(Project.name)
-  projectId: Types.ObjectId;
+  @Ref('')
+  parent: Types.ObjectId;
 
   @Prop()
   @ApiProperty()
-  userId: string;
+  user: string;
 }
 
 export type MemberDocument = Member & Document<Types.ObjectId, any, Member>;
 
 export const MemberSchema = SchemaFactory.createForClass(Member)
-  .index({projectId: 1})
-  .index({userId: 1})
-  .index({projectId: 1, userId: 1}, {unique: true})
+  .index({parent: 1})
+  .index({user: 1})
+  .index({parent: 1, user: 1}, {unique: true})
 ;

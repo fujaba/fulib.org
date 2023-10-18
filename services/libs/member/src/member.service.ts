@@ -7,7 +7,7 @@ import {MongooseRepository} from "@mean-stream/nestx";
 @Injectable()
 export class MemberService extends MongooseRepository<Member, never, MemberDocument> {
   constructor(
-    @InjectModel(Member.name) model: Model<Member>,
+    @InjectModel(Member.name) readonly model: Model<Member>,
   ) {
     super(model);
   }
