@@ -5,10 +5,10 @@ import {ApiConflictResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {Types} from 'mongoose';
 import {ProjectAuth} from '../project/project-auth.decorator';
 import {ProjectService} from '../project/project.service';
-import {MemberAuth} from './member-auth.decorator';
-import {UpdateMemberDto} from './member.dto';
-import {Member} from './member.schema';
-import {MemberService} from './member.service';
+import {MemberAuth} from '@app/member/member-auth.decorator';
+import {UpdateMemberDto} from '@app/member/member.dto';
+import {Member} from '@app/member/member.schema';
+import {MemberService} from '@app/member/member.service';
 
 const forbiddenResponse = 'Not member of project';
 const forbiddenProjectResponse = 'Not owner of project.';

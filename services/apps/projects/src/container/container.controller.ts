@@ -15,7 +15,7 @@ import {
 import {FileInterceptor} from '@nestjs/platform-express';
 import {ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags} from '@nestjs/swagger';
 import {Types} from 'mongoose';
-import {MemberAuth} from '../member/member-auth.decorator';
+import {MemberAuth} from '@app/member/member-auth.decorator';
 import {ProjectService} from '../project/project.service';
 import {ContainerDto, CreateContainerDto} from './container.dto';
 import {ContainerService} from './container.service';

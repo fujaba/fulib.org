@@ -2,7 +2,7 @@ import {Ref} from '@mean-stream/nestx';
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {ApiProperty} from '@nestjs/swagger';
 import {Document, Types} from 'mongoose';
-import {Project} from '../project/project.schema';
+import {Project} from '../../../apps/projects/src/project/project.schema';
 
 @Schema({_id: false, id: false})
 export class Member {

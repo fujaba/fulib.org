@@ -1,10 +1,10 @@
 import {forwardRef, Module} from '@nestjs/common';
 import {MongooseModule} from '@nestjs/mongoose';
 import {ProjectModule} from '../project/project.module';
-import {MemberAuthGuard} from './member-auth.guard';
+import {MemberAuthGuard} from '@app/member';
 import {MemberController} from './member.controller';
-import {Member, MemberSchema} from './member.schema';
-import {MemberService} from './member.service';
+import {Member, MemberSchema} from '@app/member';
+import {MemberService} from '@app/member';
 
 @Module({
   imports: [
