@@ -1,18 +1,6 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound, notFound} from '@mean-stream/nestx';
-import {
-  Body,
-  Controller,
-  DefaultValuePipe,
-  Delete,
-  Get,
-  Headers,
-  Param,
-  ParseBoolPipe,
-  Patch,
-  Post,
-  Query,
-} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Headers, Param, ParseBoolPipe, Patch, Post, Query,} from '@nestjs/common';
 import {ApiCreatedResponse, ApiHeader, ApiOkResponse, ApiTags, getSchemaPath} from '@nestjs/swagger';
 import {FilterQuery} from 'mongoose';
 import {AssignmentAuth} from './assignment-auth.decorator';
@@ -43,11 +31,14 @@ export class AssignmentController {
   @Get()
   @ApiOkResponse({type: [ReadAssignmentDto]})
   async findAll(
-    @Query('archived', new DefaultValuePipe(false), ParseBoolPipe) archived: boolean,
+    @Query('archived', new ParseBoolPipe({optional: true})) archived?: boolean,
     @Query('createdBy') createdBy?: string,
     @Query('ids') ids?: string,
   ) {
-    const filter: FilterQuery<Assignment> = {archived: archived ? true : {$ne: true}};
+    const filter: FilterQuery<Assignment> = {};
+    if (archived !== undefined) {
+      filter.archived = archived || {$ne: true};
+    }
     if (createdBy) {
       (filter.$or ||= []).push({createdBy});
     }

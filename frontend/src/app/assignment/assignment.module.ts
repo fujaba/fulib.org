@@ -32,6 +32,7 @@ import {SubmitService} from "./modules/assignment/submit.service";
 import {AssigneeService} from "./services/assignee.service";
 import {EvaluationService} from "./services/evaluation.service";
 import {EmbeddingService} from "./services/embedding.service";
+import {KeycloakBearerInterceptor} from "keycloak-angular";
 
 @NgModule({
   declarations: [
@@ -60,6 +61,11 @@ import {EmbeddingService} from "./services/embedding.service";
       provide: HTTP_INTERCEPTORS,
       multi: true,
       useClass: TokenInterceptor,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      multi: true,
+      useClass: KeycloakBearerInterceptor,
     },
     TokenService,
     ConfigService,

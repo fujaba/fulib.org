@@ -4,7 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ToastService} from '@mean-stream/ngbx';
 import {DndDropEvent} from 'ngx-drag-drop';
 import {Observable, of} from 'rxjs';
-import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, filter, map, switchMap, tap} from 'rxjs/operators';
 import {ReadAssignmentDto} from '../../../model/assignment';
 import Course, {CreateCourseDto} from '../../../model/course';
 import {AssignmentService} from '../../../services/assignment.service';
@@ -25,21 +25,20 @@ export class CreateCourseComponent implements OnInit {
 
   private ownAssignments: ReadAssignmentDto[] = [];
 
-  search = (text$: Observable<string>): Observable<string[]> => {
-    return text$.pipe(
-      debounceTime(200),
-      distinctUntilChanged(),
-      map(term => {
-        if (term.length < 2 || this.ownAssignments.length === 0) {
-          return [];
-        }
-        const lowerTerm = term.toLowerCase();
-        return this.ownAssignments
-          .filter(a => a.title.toLowerCase().indexOf(lowerTerm) >= 0)
-          .map(a => `${a.title} (${a._id})`);
-      }),
-    );
-  };
+  search = (text$: Observable<string>): Observable<string[]> => text$.pipe(
+    debounceTime(200),
+    distinctUntilChanged(),
+    map(term => {
+      if (!term || !this.ownAssignments.length) {
+        return [];
+      }
+      const lowerTerm = term.toLowerCase();
+      return this.ownAssignments
+        .filter(a => a.title.toLowerCase().includes(lowerTerm))
+        .slice(0, 10)
+        .map(a => `${a.title} (${a._id})`);
+    }),
+  );
 
   constructor(
     private assignmentService: AssignmentService,
@@ -61,13 +60,12 @@ export class CreateCourseComponent implements OnInit {
         description: '',
       })),
       tap(course => this.course = course),
+      filter(course => course.assignments.length !== 0),
       switchMap(course => this.assignmentService.findAll(course.assignments)),
     ).subscribe(assignments => this.assignments = assignments);
   }
 
-  saveDraft(): void {
-    this.course && (this.courseService.draft = this.course);
-  }
+  // ------------------ Import/Export ------------------
 
   onImport(file: File): void {
     this.courseService.upload(file).subscribe(result => {
@@ -81,13 +79,24 @@ export class CreateCourseComponent implements OnInit {
     this.course && this.courseService.download(this.course);
   }
 
-  addAssignment() {
+  // ------------------ Assignments List ------------------
+
+  addAssignmentById() {
     const newID = this.getNewID();
+    const existing = this.ownAssignments.find(a => a._id === newID);
+    if (existing) {
+      this.addAssignment(existing);
+      return;
+    }
     this.assignmentService.get(newID).subscribe(assignment => {
-      this.assignments.push(assignment);
-      this.newAssignment = '';
-      this.saveDraft();
+      this.addAssignment(assignment);
     });
+  }
+
+  private addAssignment(assignment: ReadAssignmentDto) {
+    this.assignments.push(assignment);
+    this.newAssignment = '';
+    this.saveDraft();
   }
 
   getNewID(): string {
@@ -99,9 +108,30 @@ export class CreateCourseComponent implements OnInit {
     return this.newAssignment;
   }
 
+  dragged(assignment: ReadAssignmentDto) {
+    this.assignments.removeFirst(t => t === assignment);
+  }
+
+  drop(event: DndDropEvent) {
+    if (event.index !== undefined) {
+      this.assignments.splice(event.index, 0, event.data);
+      this.saveDraft();
+    }
+  }
+
   removeAssignment(index: number) {
     this.assignments.splice(index, 1);
     this.saveDraft();
+  }
+
+  // ------------------ Creation ------------------
+
+  saveDraft(): void {
+    if (!this.course || '_id' in this.course) {
+      return;
+    }
+    this.course.assignments = this.assignments.map(a => a._id);
+    this.courseService.draft = this.course;
   }
 
   submit(): void {
@@ -117,6 +147,8 @@ export class CreateCourseComponent implements OnInit {
       complete: () => this.submitting = false,
     });
   }
+
+  // ------------------ Editing ------------------
 
   save() {
     if (!this.course || !('_id' in this.course)) {
@@ -148,16 +180,5 @@ export class CreateCourseComponent implements OnInit {
       error: error => this.toastService.error('Delete Course', 'Failed to delete course', error),
       complete: () => this.submitting = false,
     });
-  }
-
-  dragged(assignment: ReadAssignmentDto) {
-    this.assignments.removeFirst(t => t === assignment);
-  }
-
-  drop(event: DndDropEvent) {
-    if (event.index !== undefined) {
-      this.assignments.splice(event.index, 0, event.data);
-      this.saveDraft();
-    }
   }
 }

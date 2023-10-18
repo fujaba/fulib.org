@@ -65,10 +65,10 @@ export class ContainerController {
   @NotFound()
   @ApiOkResponse({type: ContainerDto})
   async findOne(
-    @Param('id') id: string,
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
     @AuthUser() user: UserToken,
   ): Promise<ContainerDto | null> {
-    return this.containerService.findOne(id, user.sub);
+    return this.containerService.findOne(id.toString(), user.sub);
   }
 
   @Delete('projects/:id/container')
@@ -76,17 +76,20 @@ export class ContainerController {
   @NotFound()
   @ApiOkResponse({type: ContainerDto})
   async remove(
-    @Param('id') id: string,
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
     @AuthUser() user: UserToken,
   ): Promise<ContainerDto | null> {
-    return this.containerService.remove(id, user.sub);
+    return this.containerService.remove(id.toString(), user.sub);
   }
 
   @Post('projects/:id/zip')
   @ApiOperation({summary: 'Upload a zip file to add files to a project'})
   @ProjectAuth({forbiddenResponse: 'Not owner of project.'})
   @UseInterceptors(FileInterceptor('file'))
-  async unzip(@Param('id') id: string, @UploadedFile() file: Express.Multer.File): Promise<any | null> {
-    return this.containerService.unzip(id, file);
+  async unzip(
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<any | null> {
+    return this.containerService.unzip(id.toString(), file);
   }
 }
