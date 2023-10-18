@@ -1,4 +1,14 @@
 <div class="container">
+  <h5 class="d-flex align-items-center">
+    Members
+    <app-user-typeahead class="ms-auto" [(user)]="newMember"></app-user-typeahead>
+    <button class="btn btn-success bi-person-add ms-2" [disabled]="!newMember" (click)="addMember()">
+      Add Member
+    </button>
+  </h5>
+  <div class="mb-3">
+    <app-member-list [members]="members" [owner]="assignment?.createdBy" (deleted)="deleteMember($event)"></app-member-list>
+  </div>
   <h5>
     Student Link
   </h5>
@@ -6,7 +16,7 @@
     You can now give your students the following link:
   </p>
   <div class="input-group">
-    <input #linkInput type="text" class="form-control" readonly [value]="origin + '/assignments/' + id">
+    <input #linkInput type="text" class="form-control" readonly [value]="origin + '/assignments/' + assignment?._id">
     <button *ngxClipboardIfSupported type="button" class="btn btn-outline-secondary bi-clipboard" ngbTooltip="Copy" [ngxClipboard]="linkInput">
     </button>
   </div>
@@ -19,29 +29,31 @@
     If you suspect this token may have leaked, you can
     <a routerLink="." (click)="regenerateToken()">generate a new token</a>.
   </div>
-  <h5>
-    Access Token
-  </h5>
-  <p>
-    To view submissions on other devices, you may be asked for the following token.
-  </p>
-  <app-token-input [value]="token || ''"></app-token-input>
-  <hr/>
-  <h5>
-    Teaching Assistant Invitation
-  </h5>
-  <p>
-    You can invite Teaching Assistants by giving them the following link.
-  </p>
-  <app-token-input [value]="origin + '/assignments/' + id + '/solutions?atok=' + token"></app-token-input>
-  <hr/>
-  <h5>
-    fulibFeedback Settings
-  </h5>
-  <p>
-    Use the button below to configure fulibFeedback for this assignment.
-  </p>
-  <a class="btn btn-primary bi-magic" [href]="ide + '://fulib.fulibfeedback/configure?api_server=' + encodedApiServer + '&assignment=' + id + '&token=' + token | safeUrl">
-    Configure
-  </a>
+  <ng-container *ngIf="assignment && assignment['token']">
+    <h5>
+      Access Token
+    </h5>
+    <p>
+      To view submissions on other devices, you may be asked for the following token.
+    </p>
+    <app-token-input [value]="assignment['token'] || ''"></app-token-input>
+    <hr/>
+    <h5>
+      Teaching Assistant Invitation
+    </h5>
+    <p>
+      You can invite Teaching Assistants by giving them the following link.
+    </p>
+    <app-token-input [value]="origin + '/assignments/' + assignment._id + '/solutions?atok=' + assignment['token']"></app-token-input>
+    <hr/>
+    <h5>
+      fulibFeedback Settings
+    </h5>
+    <p>
+      Use the button below to configure fulibFeedback for this assignment.
+    </p>
+    <a class="btn btn-primary bi-magic" [href]="ide + '://fulib.fulibfeedback/configure?api_server=' + encodedApiServer + '&assignment=' + assignment._id + '&token=' + assignment['token'] | safeUrl">
+      Configure
+    </a>
+  </ng-container>
 </div>
