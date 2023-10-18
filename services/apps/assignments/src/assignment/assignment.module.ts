@@ -5,6 +5,7 @@ import {AssignmentAuthGuard} from './assignment-auth.guard';
 import {AssignmentController} from './assignment.controller';
 import {Assignment, AssignmentSchema} from './assignment.schema';
 import {AssignmentService} from './assignment.service';
+import {MemberModule} from "../member/member.module";
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import {AssignmentService} from './assignment.service';
       },
     ]),
     HttpModule,
+    MemberModule,
   ],
   controllers: [AssignmentController],
   providers: [
