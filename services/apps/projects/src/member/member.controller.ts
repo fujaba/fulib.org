@@ -72,7 +72,7 @@ export class MemberController implements OnModuleInit {
     @Param('user') user: string,
     @Body() dto: UpdateMemberDto,
   ): Promise<Member | null> {
-    return this.memberService.updateOne({parent: project, user}, dto);
+    return this.memberService.upsert({parent: project, user}, dto);
   }
 
   @Delete(':user')
