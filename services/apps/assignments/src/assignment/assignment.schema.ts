@@ -16,7 +16,7 @@ import {
   IsUrl,
   ValidateNested,
 } from 'class-validator';
-import {Document} from 'mongoose';
+import {Document, Types} from 'mongoose';
 import {MOSS_LANGUAGES} from "../search/search.constants";
 
 @Schema({id: false, _id: false})
@@ -118,6 +118,9 @@ export class ClassroomInfo {
 
 @Schema()
 export class Assignment {
+  @ApiProperty({format: 'objectid'})
+  _id: Types.ObjectId;
+
   @Prop()
   @ApiPropertyOptional()
   @IsOptional()

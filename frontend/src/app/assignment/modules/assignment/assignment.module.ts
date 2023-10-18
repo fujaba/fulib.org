@@ -26,6 +26,8 @@ import {SubmitModalComponent} from './submit-modal/submit-modal.component';
 import {AssignmentTasksComponent} from './tasks/tasks.component';
 import {StatisticsService} from "./statistics.service";
 import {SubmitService} from "./submit.service";
+import {MemberService} from "./member.service";
+import {UserModule} from "../../../user/user.module";
 
 @NgModule({
   declarations: [
@@ -54,8 +56,10 @@ import {SubmitService} from "./submit.service";
     NgbAccordionModule,
     RouteTabsModule,
     ModalModule,
+    UserModule,
   ],
   providers: [
+    MemberService,
     StatisticsService,
     SubmitService,
   ],

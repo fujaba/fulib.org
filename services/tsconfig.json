@@ -33,6 +33,12 @@
       ],
       "@app/moss/*": [
         "libs/moss/src/*"
+      ],
+      "@app/member": [
+        "libs/member/src"
+      ],
+      "@app/member/*": [
+        "libs/member/src/*"
       ]
     }
   }

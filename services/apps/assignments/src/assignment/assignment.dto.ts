@@ -3,6 +3,7 @@ import {Equals, IsOptional} from 'class-validator';
 import {Assignment, Task} from './assignment.schema';
 
 export class CreateAssignmentDto extends OmitType(Assignment, [
+  '_id',
   'token',
   'createdBy',
 ] as const) {
@@ -19,6 +20,7 @@ export class ReadAssignmentDto extends OmitType(Assignment, ['token', 'tasks', '
 }
 
 export class UpdateAssignmentDto extends PartialType(OmitType(Assignment, [
+  '_id',
   'token',
   'createdBy',
 ] as const)) {

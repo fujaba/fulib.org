@@ -16,25 +16,7 @@
         Add
       </a>
     </h4>
-    <ul class="list-group">
-      <li *ngFor="let member of members" class="list-group-item d-flex align-items-center">
-        <div class="me-auto">
-          {{ member.user
-          ? member.user.firstName + ' ' + member.user.lastName + ' (' + member.user.username + ')'
-          : 'Loading...' }}
-          <span class="text-muted">
-            &bull;
-            {{ member.userId === project.userId ? 'Owner' : 'Collaborator' }}
-          </span>
-        </div>
-        <button *ngIf="member.userId !== project.userId"
-                type="button" class="btn btn-sm btn-danger"
-                ngbTooltip="Remove Collaborator"
-                (click)="delete(member)">
-          <i class="bi-person-x"></i>
-        </button>
-      </li>
-    </ul>
+    <app-member-list [members]="members" [owner]="project.userId" (deleted)="delete($event)"></app-member-list>
   </ng-container>
   <ng-container *ngIf="project && (currentUser && currentUser.id === project.userId)">
     <hr/>

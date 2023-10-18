@@ -3,8 +3,7 @@ import {NotFound, ObjectIdPipe} from '@mean-stream/nestx';
 import {Body, Controller, Delete, Get, Param, Patch, Post} from '@nestjs/common';
 import {ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {Types} from 'mongoose';
-import {MemberAuth} from '../member/member-auth.decorator';
-import {MemberService} from '../member/member.service';
+import {MemberAuth, MemberService} from '@app/member';
 import {ProjectAuth} from './project-auth.decorator';
 import {CreateProjectDto, UpdateProjectDto} from './project.dto';
 import {Project} from './project.schema';
@@ -29,9 +28,7 @@ export class ProjectController {
     @Body() dto: CreateProjectDto,
     @AuthUser() user: UserToken,
   ): Promise<Project> {
-    const project = await this.projectService.create(dto, user.sub);
-    project && await this.memberService.update(project._id, user.sub, {});
-    return project;
+    return this.projectService.create(dto, user.sub);
   }
 
   @Get()
@@ -40,8 +37,8 @@ export class ProjectController {
   async findAll(
     @AuthUser() user: UserToken,
   ): Promise<Project[]> {
-    const members = await this.memberService.findAll({userId: user.sub});
-    return this.projectService.findAll({_id: {$in: members.map(m => m.projectId)}});
+    const members = await this.memberService.findAll({user: user.sub});
+    return this.projectService.findAll({_id: {$in: members.map(m => m.parent)}});
   }
 
   @Get(':id')
@@ -62,12 +59,7 @@ export class ProjectController {
     @Param('id', ObjectIdPipe) id: Types.ObjectId,
     @Body() dto: UpdateProjectDto,
   ): Promise<Project | null> {
-    const project = await this.projectService.update(id, dto);
-    if (project && dto.userId) {
-      // when changing owner, create a member
-      await this.memberService.update(id, dto.userId, {});
-    }
-    return project;
+    return this.projectService.update(id, dto);
   }
 
   @Delete(':id')
@@ -77,7 +69,6 @@ export class ProjectController {
   async remove(
     @Param('id', ObjectIdPipe) id: Types.ObjectId,
   ): Promise<Project | null> {
-    await this.memberService.removeAll({projectId: id});
     return this.projectService.remove(id);
   }
 }

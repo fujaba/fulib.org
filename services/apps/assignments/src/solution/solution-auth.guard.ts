@@ -31,7 +31,7 @@ export class SolutionAuthGuard implements CanActivate {
       notFound(assignmentId);
     }
 
-    const privileged = this.assignmentService.isAuthorized(assignment, user, assignmentToken);
+    const privileged = await this.assignmentService.isAuthorized(assignment, user, assignmentToken);
     if (privileged) {
       return true;
     }

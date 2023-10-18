@@ -6,12 +6,14 @@ import {FilterQuery, Model, UpdateQuery} from 'mongoose';
 import {generateToken, idFilter} from '../utils';
 import {CreateAssignmentDto, ReadAssignmentDto, ReadTaskDto, UpdateAssignmentDto} from './assignment.dto';
 import {Assignment, AssignmentDocument, Task} from './assignment.schema';
+import {MemberService} from "@app/member";
 
 @Injectable()
 export class AssignmentService {
   constructor(
     @InjectModel(Assignment.name) private model: Model<Assignment>,
     private eventService: EventService,
+    private readonly memberService: MemberService,
   ) {
   }
 
@@ -86,8 +88,15 @@ export class AssignmentService {
     return deleted;
   }
 
-  isAuthorized(assignment: Assignment, user?: UserToken, token?: string): boolean {
-    return assignment.token === token || !!user && user.sub === assignment.createdBy;
+  async isAuthorized(assignment: Assignment, user?: UserToken, token?: string): Promise<boolean> {
+    if (assignment.token === token) {
+      return true;
+    }
+    if (!user) {
+      return false;
+    }
+    return user.sub === assignment.createdBy
+      || !!await this.memberService.findOne({parent: assignment._id, user: user.sub});
   }
 
   private emit(event: string, assignment: AssignmentDocument) {
