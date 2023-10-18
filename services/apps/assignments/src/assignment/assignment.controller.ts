@@ -1,5 +1,5 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
-import {NotFound, notFound} from '@mean-stream/nestx';
+import {NotFound, notFound, ObjectIdArrayPipe} from '@mean-stream/nestx';
 import {
   Body,
   Controller,
@@ -14,7 +14,7 @@ import {
   Query,
 } from '@nestjs/common';
 import {ApiCreatedResponse, ApiHeader, ApiOkResponse, ApiTags, getSchemaPath} from '@nestjs/swagger';
-import {FilterQuery} from 'mongoose';
+import {FilterQuery, Types} from 'mongoose';
 import {AssignmentAuth} from './assignment-auth.decorator';
 import {CreateAssignmentDto, ReadAssignmentDto, UpdateAssignmentDto,} from './assignment.dto';
 import {Assignment} from './assignment.schema';
@@ -47,7 +47,7 @@ export class AssignmentController {
   async findAll(
     @Query('archived', new ParseBoolPipe({optional: true})) archived?: boolean,
     @Query('createdBy') createdBy?: string,
-    @Query('ids') ids?: string,
+    @Query('ids', new ParseArrayPipe({optional: true}), ObjectIdArrayPipe) ids?: Types.ObjectId[],
     @Query('members', new ParseArrayPipe({optional: true})) memberIds?: string[],
   ) {
     const filter: FilterQuery<Assignment> = {};
@@ -58,7 +58,7 @@ export class AssignmentController {
       (filter.$or ||= []).push({createdBy});
     }
     if (ids) {
-      (filter.$or ||= []).push({_id: {$in: ids.split(',')}});
+      (filter.$or ||= []).push({_id: {$in: ids}});
     }
     if (memberIds) {
       const members = await this.memberService.findAll({user: {$in: memberIds}});
