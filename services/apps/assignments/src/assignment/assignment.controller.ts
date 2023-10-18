@@ -48,7 +48,7 @@ export class AssignmentController {
     @Query('archived', new ParseBoolPipe({optional: true})) archived?: boolean,
     @Query('createdBy') createdBy?: string,
     @Query('ids') ids?: string,
-    @Query('members', ParseArrayPipe) memberIds?: string[],
+    @Query('members', new ParseArrayPipe({optional: true})) memberIds?: string[],
   ) {
     const filter: FilterQuery<Assignment> = {};
     if (archived !== undefined) {
