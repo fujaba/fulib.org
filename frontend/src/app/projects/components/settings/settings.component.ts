@@ -9,7 +9,6 @@ import {Member} from '../../../user/member';
 import {Project} from '../../model/project';
 import {MemberService} from '../../services/member.service';
 import {ProjectService} from '../../services/project.service';
-import {ProjectMember} from "../../model/project-member";
 
 @Component({
   selector: 'app-settings',
@@ -18,7 +17,7 @@ import {ProjectMember} from "../../model/project-member";
 })
 export class SettingsComponent implements OnInit {
   project?: Project;
-  members: ProjectMember[] = [];
+  members: Member[] = [];
 
   currentUser?: User;
 
@@ -46,7 +45,7 @@ export class SettingsComponent implements OnInit {
     id$.pipe(
       switchMap(id => this.memberService.findAll(id)),
       tap(members => this.members = members),
-      switchMap(members => forkJoin(members.map(member => this.userService.findOne(member.userId).pipe(
+      switchMap(members => forkJoin(members.map(member => this.userService.findOne(member.user).pipe(
         tap(user => member._user = user),
       )))),
     ).subscribe();
@@ -59,7 +58,7 @@ export class SettingsComponent implements OnInit {
     });
   }
 
-  delete(member: ProjectMember) {
+  delete(member: Member) {
     if (!confirm(`Are you sure you want to revoke Collaborator status from ${member._user?.firstName} ${member._user?.lastName}? They can be added as a collaborator again later.`)) {
       return;
     }
