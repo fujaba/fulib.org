@@ -17,8 +17,8 @@ export class MemberService {
   }
 
   update(member: Member): Observable<Member> {
-    const {_user, ...rest} = member;
-    return this.http.put<Member>(`${environment.projectsApiUrl}/projects/${member.parent}/members/${member.user}`, rest).pipe(
+    const {_user, parent, user, ...rest} = member;
+    return this.http.put<Member>(`${environment.projectsApiUrl}/projects/${parent}/members/${user}`, rest).pipe(
       tap(newMember => newMember._user = _user),
     );
   }
