@@ -4,7 +4,7 @@ import {Body, ConflictException, Controller, Delete, Get, Param, Put} from '@nes
 import {ApiConflictResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {Types} from 'mongoose';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
-import {Member, MemberAuth, MemberService, UpdateMemberDto} from '@app/member';
+import {Member, MemberService, UpdateMemberDto} from '@app/member';
 
 const forbiddenResponse = 'Not member of assignment';
 const notOwnerResponse = 'Not owner of assignment';
@@ -19,7 +19,7 @@ export class MemberController {
   }
 
   @Get()
-  @MemberAuth({forbiddenResponse})
+  @AssignmentAuth({forbiddenResponse})
   @ApiOkResponse({type: [Member]})
   async findAll(
     @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
@@ -28,7 +28,7 @@ export class MemberController {
   }
 
   @Get(':user')
-  @MemberAuth({forbiddenResponse})
+  @AssignmentAuth({forbiddenResponse})
   @NotFound()
   @ApiOkResponse({type: Member})
   async findOne(
