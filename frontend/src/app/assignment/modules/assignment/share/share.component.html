@@ -1,4 +1,16 @@
 <div class="container">
+  <h5>
+    Student Link
+  </h5>
+  <div class="input-group">
+    <input #linkInput type="text" class="form-control" readonly [value]="origin + '/assignments/' + assignment?._id">
+    <button *ngxClipboardIfSupported type="button" class="btn btn-outline-secondary bi-clipboard" ngbTooltip="Copy" [ngxClipboard]="linkInput">
+    </button>
+  </div>
+  <div class="form-text">
+    Share this link with your students. They will be able to submit solutions to this assignment.
+  </div>
+  <hr/>
   <h5 class="d-flex align-items-center">
     Members
     <app-user-typeahead class="ms-auto" [(user)]="newMember"></app-user-typeahead>
@@ -8,17 +20,9 @@
   </h5>
   <div class="mb-3">
     <app-member-list [members]="members" [owner]="assignment?.createdBy" (deleted)="deleteMember($event)"></app-member-list>
-  </div>
-  <h5>
-    Student Link
-  </h5>
-  <p>
-    You can now give your students the following link:
-  </p>
-  <div class="input-group">
-    <input #linkInput type="text" class="form-control" readonly [value]="origin + '/assignments/' + assignment?._id">
-    <button *ngxClipboardIfSupported type="button" class="btn btn-outline-secondary bi-clipboard" ngbTooltip="Copy" [ngxClipboard]="linkInput">
-    </button>
+    <div class="form-text">
+      Add teaching assistants and other people who should have full access to this assignment.
+    </div>
   </div>
   <hr/>
   <div class="alert alert-warning">
@@ -33,27 +37,27 @@
     <h5>
       Access Token
     </h5>
-    <p>
-      To view submissions on other devices, you may be asked for the following token.
-    </p>
     <app-token-input [value]="assignment['token'] || ''"></app-token-input>
+    <div class="form-text">
+      To view submissions on other devices, you may be asked for this token.
+    </div>
     <hr/>
     <h5>
       Teaching Assistant Invitation
     </h5>
-    <p>
-      You can invite Teaching Assistants by giving them the following link.
-    </p>
     <app-token-input [value]="origin + '/assignments/' + assignment._id + '/solutions?atok=' + assignment['token']"></app-token-input>
+    <div class="form-text">
+      You can invite Teaching Assistants by giving them this link.
+    </div>
     <hr/>
     <h5>
       fulibFeedback Settings
     </h5>
-    <p>
-      Use the button below to configure fulibFeedback for this assignment.
-    </p>
     <a class="btn btn-primary bi-magic" [href]="ide + '://fulib.fulibfeedback/configure?api_server=' + encodedApiServer + '&assignment=' + assignment._id + '&token=' + assignment['token'] | safeUrl">
       Configure
     </a>
+    <div class="form-text">
+      Use this button to configure fulibFeedback for this assignment.
+    </div>
   </ng-container>
 </div>
