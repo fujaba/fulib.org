@@ -28,9 +28,7 @@ export class ProjectController {
     @Body() dto: CreateProjectDto,
     @AuthUser() user: UserToken,
   ): Promise<Project> {
-    const project = await this.projectService.create(dto, user.sub);
-    project && await this.memberService.upsert({parent: project._id, user: user.sub}, {});
-    return project;
+    return this.projectService.create(dto, user.sub);
   }
 
   @Get()
@@ -61,12 +59,7 @@ export class ProjectController {
     @Param('id', ObjectIdPipe) id: Types.ObjectId,
     @Body() dto: UpdateProjectDto,
   ): Promise<Project | null> {
-    const project = await this.projectService.update(id, dto);
-    if (project && dto.userId) {
-      // when changing owner, create a member
-      await this.memberService.upsert({parent: id, user: dto.userId}, {});
-    }
-    return project;
+    return this.projectService.update(id, dto);
   }
 
   @Delete(':id')
@@ -76,7 +69,6 @@ export class ProjectController {
   async remove(
     @Param('id', ObjectIdPipe) id: Types.ObjectId,
   ): Promise<Project | null> {
-    await this.memberService.deleteMany({parent: id});
     return this.projectService.remove(id);
   }
 }
