@@ -1,10 +1,21 @@
 import {AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound, ObjectIdPipe} from '@mean-stream/nestx';
-import {Body, ConflictException, Controller, Delete, Get, Param, Put} from '@nestjs/common';
+import {
+  Body,
+  ConflictException,
+  Controller,
+  Delete,
+  Get,
+  Inject,
+  Logger,
+  OnModuleInit,
+  Optional,
+  Param,
+  Put
+} from '@nestjs/common';
 import {ApiConflictResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {Types} from 'mongoose';
 import {ProjectAuth} from '../project/project-auth.decorator';
-import {ProjectService} from '../project/project.service';
 import {MemberAuth} from '@app/member/member-auth.decorator';
 import {UpdateMemberDto} from '@app/member/member.dto';
 import {Member} from '@app/member/member.schema';
@@ -16,11 +27,20 @@ const removeOwnerResponse = 'Owner cannot remove themselves as member.';
 
 @Controller('projects/:project/members')
 @ApiTags('Members')
-export class MemberController {
+export class MemberController implements OnModuleInit {
   constructor(
-    private readonly projectService: ProjectService,
+    @Optional() @Inject() private readonly logger = new Logger(MemberService.name),
     private readonly memberService: MemberService,
   ) {
+  }
+
+  async onModuleInit() {
+    const {modifiedCount} = await this.memberService.updateMany({
+      projectId: {$type: 'string'},
+    }, [{
+      $set: {projectId: {$toObjectId: '$projectId'}},
+    }]);
+    modifiedCount && this.logger.warn(`Migrated ${modifiedCount} members`);
   }
 
   @Get()
@@ -37,21 +57,21 @@ export class MemberController {
   @NotFound()
   @ApiOkResponse({type: Member})
   async findOne(
-    @Param('project', ObjectIdPipe) project: Types.ObjectId,
-    @Param('user') user: string,
+    @Param('project', ObjectIdPipe) projectId: Types.ObjectId,
+    @Param('user') userId: string,
   ): Promise<Member | null> {
-    return this.memberService.findOne(project, user);
+    return this.memberService.findOne({projectId, userId});
   }
 
   @Put(':user')
   @ProjectAuth({forbiddenResponse: forbiddenProjectResponse})
   @ApiOkResponse({type: Member})
   async update(
-    @Param('project', ObjectIdPipe) project: Types.ObjectId,
-    @Param('user') user: string,
+    @Param('project', ObjectIdPipe) projectId: Types.ObjectId,
+    @Param('user') userId: string,
     @Body() dto: UpdateMemberDto,
   ): Promise<Member> {
-    return this.memberService.update(project, user, dto);
+    return this.memberService.update({projectId, userId}, dto);
   }
 
   @Delete(':user')
@@ -60,13 +80,13 @@ export class MemberController {
   @ApiOkResponse({type: Member})
   @ApiConflictResponse({description: removeOwnerResponse})
   async remove(
-    @Param('project', ObjectIdPipe) project: Types.ObjectId,
-    @Param('user') user: string,
+    @Param('project', ObjectIdPipe) projectId: Types.ObjectId,
+    @Param('user') userId: string,
     @AuthUser() token: UserToken,
   ): Promise<Member | null> {
-    if (token.sub === user) {
+    if (token.sub === userId) {
       throw new ConflictException(removeOwnerResponse);
     }
-    return this.memberService.remove(project, user);
+    return this.memberService.deleteOne({projectId, userId});
   }
 }
