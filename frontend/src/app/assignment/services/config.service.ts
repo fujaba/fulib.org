@@ -7,6 +7,9 @@ export type ConfigKey =
   | 'ide'
   | 'cloneProtocol'
   | 'cloneRef'
+  | 'codeSearch'
+  | 'similarSolutions'
+  | 'snippetSuggestions'
   ;
 
 export interface ConfigOption {
@@ -49,7 +52,28 @@ export const CONFIG_OPTIONS: ConfigOption[] = [
       'Tags are only supported in VSCode v1.74+ and Assignments imported after 2022-12-21.',
     options: [['none', 'None'], ['tag', 'Tag']],
     default: 'tag',
-  }
+  },
+  {
+    key: 'codeSearch',
+    title: 'Code Search',
+    description: 'Enable Code Search globally.',
+    options: [['true', '✔️ Enabled'], ['false', '❌ Disabled']],
+    default: 'true',
+  },
+  {
+    key: 'snippetSuggestions',
+    title: 'Snippet Suggestions',
+    description: 'Enable Snippet Suggestions globally.',
+    options: [['true', '✔️ Enabled'], ['false', '❌ Disabled']],
+    default: 'true',
+  },
+  {
+    key: 'similarSolutions',
+    title: 'Similar Solutions',
+    description: 'Enable Similar Solutions globally.',
+    options: [['true', '✔️ Enabled'], ['false', '❌ Disabled']],
+    default: 'true',
+  },
 ];
 
 @Injectable()
@@ -78,10 +102,18 @@ export class ConfigService {
     return this.privacyService.getStorage('assignments/' + key) || option?.default || '';
   }
 
+  getBool(key: ConfigKey): boolean {
+    return this.get(key) === 'true';
+  }
+
   set(key: ConfigKey, value: string) {
     if (this.getOption(key)) {
       this.privacyService.setStorage('assignments/' + key, value);
     }
+  }
+
+  setBool(key: ConfigKey, value: boolean) {
+    this.set(key, value ? 'true' : 'false');
   }
 
   private getOption(key: ConfigKey): ConfigOption | undefined {
