@@ -3,7 +3,7 @@ import {WsResponse} from '@nestjs/websockets';
 import {isUUID} from 'class-validator';
 import {randomBytes} from 'crypto';
 import {FilterQuery} from 'mongoose';
-import {interval, map, mapTo, merge, Observable, tap} from 'rxjs';
+import {interval, map, mapTo, merge, Observable} from 'rxjs';
 
 export function generateToken(): string {
   const bytes = randomBytes(8);
@@ -19,7 +19,6 @@ export function eventStream<T>(source: Observable<WsResponse<T>>, name: string):
   return merge(
     source.pipe(
       map(({event, data}) => ({data: {event: event.substring(event.lastIndexOf('.') + 1), [name]: data}})),
-      tap(console.log),
     ),
     interval(15000).pipe(mapTo({type: 'noop', data: 'noop'})),
   );

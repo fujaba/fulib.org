@@ -53,13 +53,13 @@ export class SearchService implements OnModuleInit {
         analyzer: {
           code: {
             tokenizer: 'code',
-          },
+          } as any,
         },
         tokenizer: {
           code: {
             type: 'simple_pattern',
             pattern: TOKEN_PATTERN.source,
-          },
+          } as any,
         },
       });
     } catch (e) {
@@ -67,7 +67,7 @@ export class SearchService implements OnModuleInit {
     }
   }
 
-  async ensureIndex(name: string, properties: any, analysis: any) {
+  async ensureIndex(name: string, properties: Record<string, estypes.MappingProperty>, analysis: estypes.IndicesIndexSettingsAnalysis | undefined) {
     const existingIndex = await this.elasticsearchService.indices.get({
       index: name,
     }).catch(() => null);
@@ -223,14 +223,17 @@ export class SearchService implements OnModuleInit {
     return {uniqueId, result, tokens};
   }
 
-  async findAll(assignment: string): Promise<FileDocument[]> {
+  async findAll(assignment: string, solutions?: string[]): Promise<FileDocument[]> {
     const result = await this.elasticsearchService.search<FileDocument>({
       index: 'files',
       size: 10000,
       _source: true,
       query: {
         bool: {
-          filter: {
+          filter: solutions ? [
+            {term: {assignment}},
+            {terms: {solution: solutions}},
+          ] : {
             term: {assignment},
           },
         },

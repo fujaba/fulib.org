@@ -1,25 +1,20 @@
 import {forwardRef, Module} from '@nestjs/common';
 import {MongooseModule} from '@nestjs/mongoose';
-import {ProjectModule} from '../project/project.module';
-import {MemberAuthGuard} from './member-auth.guard';
+import {Member, MemberAuthGuard, MemberSchema, MemberService} from '@app/member';
 import {MemberController} from './member.controller';
-import {Member, MemberSchema} from './member.schema';
-import {MemberService} from './member.service';
+import {MemberHandler} from "./member.handler";
+import {ProjectModule} from "../project/project.module";
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      {
-        name: Member.name,
-        schema: MemberSchema,
-      },
-    ]),
+    MongooseModule.forFeature([{name: Member.name, schema: MemberSchema}]),
     forwardRef(() => ProjectModule),
   ],
   controllers: [MemberController],
   providers: [
     MemberService,
     MemberAuthGuard,
+    MemberHandler,
   ],
   exports: [
     MemberService,

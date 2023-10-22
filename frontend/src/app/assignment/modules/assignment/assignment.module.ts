@@ -17,7 +17,6 @@ import {AssignmentSharedModule} from '../shared/shared.module';
 import {AssignmentRoutingModule} from './assignment-routing.module';
 import {AssignmentComponent} from './assignment/assignment.component';
 import {DeleteModalComponent} from './delete-modal/delete-modal.component';
-import {ImportModalComponent} from './import-modal/import-modal.component';
 import {SearchComponent} from './search/search.component';
 import {ShareComponent} from './share/share.component';
 import {SolutionTableComponent} from './solution-table/solution-table.component';
@@ -25,7 +24,10 @@ import {StatisticsBlockComponent} from './statistics-block/statistics-block.comp
 import {StatisticsComponent} from './statistics/statistics.component';
 import {SubmitModalComponent} from './submit-modal/submit-modal.component';
 import {AssignmentTasksComponent} from './tasks/tasks.component';
-
+import {StatisticsService} from "./statistics.service";
+import {SubmitService} from "./submit.service";
+import {MemberService} from "./member.service";
+import {UserModule} from "../../../user/user.module";
 
 @NgModule({
   declarations: [
@@ -36,7 +38,6 @@ import {AssignmentTasksComponent} from './tasks/tasks.component';
     SolutionTableComponent,
     StatisticsComponent,
     SearchComponent,
-    ImportModalComponent,
     StatisticsBlockComponent,
     DeleteModalComponent,
   ],
@@ -55,6 +56,12 @@ import {AssignmentTasksComponent} from './tasks/tasks.component';
     NgbAccordionModule,
     RouteTabsModule,
     ModalModule,
+    UserModule,
+  ],
+  providers: [
+    MemberService,
+    StatisticsService,
+    SubmitService,
   ],
 })
 export class AssignmentModule {

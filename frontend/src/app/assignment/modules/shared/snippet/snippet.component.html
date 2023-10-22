@@ -10,7 +10,7 @@
     &nbsp;
     <a class="bi bi-code-square" ngbTooltip="Open in Editor" [href]="openUrl | safeUrl"></a>
   </summary>
-  <div class="markdown">
+  <div class="markdown overflow-auto" style="max-height: 300px">
     <pre><code #code class="hljs language-{{fileType}}" [lang]="fileType" (mouseup)="onSelectionChange()">{{snippet.context ?? snippet.code}}</code></pre>
   </div>
 </details>

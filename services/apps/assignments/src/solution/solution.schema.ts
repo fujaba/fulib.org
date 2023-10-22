@@ -1,12 +1,12 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
-import {Type} from 'class-transformer';
+import {plainToInstance, Transform, Type} from 'class-transformer';
 import {
+  IsBoolean,
   IsDateString,
   IsEmail,
   IsHash,
   IsMongoId,
-  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
@@ -15,34 +15,45 @@ import {
 } from 'class-validator';
 import {Document} from 'mongoose';
 
-export class TaskResult {
+export class Consent {
   @Prop()
-  task: string;
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  demonstration?: boolean;
 
   @Prop()
-  points: number;
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  scientific?: boolean;
 
   @Prop()
-  output: string;
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  '3P'?: boolean;
 }
 
 export class AuthorInfo {
   @Prop()
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  name: string;
+  name?: string;
 
   @Prop()
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  studentId: string;
+  studentId?: string;
 
   @Prop()
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsEmail()
-  email: string;
+  @Transform(({value}) => value || undefined)
+  email?: string;
 
   @Prop()
   @ApiProperty()
@@ -71,13 +82,10 @@ export class Solution {
   @Prop()
   @ApiProperty()
   @ValidateNested()
+  // Transform JSON strings to objects to support the multipart/form-data request with files
+  @Transform(({value}) => typeof value === 'string' ? plainToInstance(AuthorInfo, JSON.parse(value)) : value)
   @Type(() => AuthorInfo)
   author: AuthorInfo;
-
-  @Prop()
-  @ApiProperty()
-  @IsString()
-  solution: string;
 
   @Prop()
   @ApiPropertyOptional()
@@ -91,12 +99,15 @@ export class Solution {
   timestamp?: Date;
 
   @Prop()
+  @ApiPropertyOptional()
+  @ValidateNested()
+  @Type(() => Consent)
+  consent?: Consent;
+
+  @Prop()
   @ApiPropertyOptional({description: ''})
   @IsNumber()
   points?: number;
-
-  @Prop({required: false})
-  results?: TaskResult[];
 }
 
 export type SolutionDocument = Solution & Document;

@@ -45,22 +45,6 @@
           Example: <code>src/**/model/*.java</code>
         </div>
       </div>
-      <div class="mb-3">
-        <label for="verificationInput" class="form-label">Verification</label>
-        <app-scenario-codemirror
-          id="verificationInput"
-          [(content)]="task.verification"
-          [autoSubmit]="true"
-        ></app-scenario-codemirror>
-      </div>
-      <div class="mb-3" *ngIf="context.evaluations?.[task._id]?.remark as remark">
-        <label for="output" class="form-label">Output</label>
-        <app-autotheme-codemirror id="output" [content]="remark" [options]="{
-          autoRefresh: true,
-          lineNumbers: true,
-          styleActiveLine: true
-        }"></app-autotheme-codemirror>
-      </div>
     </div>
   </ng-container>
   <ng-container modal-footer>

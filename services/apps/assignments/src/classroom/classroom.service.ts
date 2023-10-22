@@ -4,14 +4,12 @@ import {Method} from 'axios';
 import {createReadStream} from 'fs';
 import {firstValueFrom} from 'rxjs';
 import {Stream} from 'stream';
-import {Entry as ZipEntry, Parse as unzip} from 'unzipper';
 import {AssignmentDocument} from '../assignment/assignment.schema';
-import {SearchService} from '../search/search.service';
 import {AuthorInfo, Solution} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {generateToken} from '../utils';
-import {MAX_FILE_SIZE, TEXT_EXTENSIONS} from "../search/search.constants";
 import {ImportSolution} from "./classroom.dto";
+import {FileService} from "../file/file.service";
 
 interface RepositoryInfo {
   name: string;
@@ -30,7 +28,7 @@ interface SearchResult {
 export class ClassroomService {
   constructor(
     private solutionService: SolutionService,
-    private searchService: SearchService,
+    private fileService: FileService,
     private http: HttpService,
   ) {
   }
@@ -57,7 +55,7 @@ export class ClassroomService {
       await Promise.all(files.map(async (file, index) => {
         const stream = createReadStream(file.path);
         const solution = solutions.upsertedIds[index];
-        return this.importZipFiles(stream, assignment.id, solution);
+        return this.fileService.importZipEntries(stream, assignment.id, solution);
       }));
     }
 
@@ -68,7 +66,6 @@ export class ClassroomService {
     const result = await this.solutionService.bulkWrite(importSolutions.map(importSolution => {
       const solution: Solution = {
         ...importSolution,
-        solution: '',
         token: generateToken(),
       };
       const [key, value] = Object.entries(importSolution.author).find(([, value]) => value)!;
@@ -98,32 +95,6 @@ export class ClassroomService {
     } else {
       return ['name', filename.slice(0, -4)];
     }
-  }
-
-  private async importZipFiles(stream: Stream, assignment: string, solution: string, commit?: string) {
-    await stream.pipe(unzip()).on('entry', (entry: ZipEntry) => {
-      // Using vars.uncompressedSize because entry.extra.* and entry.size are unavailable before parsing for some reason
-      if (entry.type !== 'File' || (entry.vars as any).uncompressedSize > MAX_FILE_SIZE) {
-        entry.autodrain();
-        return;
-      }
-      entry.buffer().then(buffer => {
-        if (buffer.length > MAX_FILE_SIZE) {
-          return;
-        }
-        this.addContentsToIndex(assignment, solution, entry.path, buffer.toString('utf8'), commit);
-      });
-    }).promise();
-  }
-
-  async addContentsToIndex(assignment: string, solution: string, filename: string, content: string, commit?: string) {
-    let index: number;
-    const path = commit && (index = filename.indexOf(commit)) >= 0 ? filename.substring(index + commit.length + 1) : filename;
-    const extension = path.substring(path.lastIndexOf('.') + 1);
-    if (!TEXT_EXTENSIONS.has(extension)) {
-      return;
-    }
-    await this.searchService.addFile(assignment, solution, path, content);
   }
 
   async countSolutions(assignment: AssignmentDocument): Promise<number> {
@@ -178,7 +149,7 @@ export class ClassroomService {
       const upsertedId = solutions.upsertedIds[i];
       if (commit && upsertedId) {
         const zip = await this.getRepoZip(assignment, this.getGithubName(repo, assignment), commit);
-        return zip ? this.importZipFiles(zip, assignment._id, upsertedId, commit) : [];
+        return zip ? this.fileService.importZipEntries(zip, assignment._id, upsertedId, commit) : [];
       } else {
         return [];
       }
@@ -202,7 +173,7 @@ export class ClassroomService {
     return repositories
       .map(repo => this.createImportSolution(assignment, repo, undefined))
       .sort((a, b) => a.author.github!.localeCompare(b.author.github!))
-    ;
+      ;
   }
 
   private async getRepositories(assignment: AssignmentDocument): Promise<RepositoryInfo[]> {

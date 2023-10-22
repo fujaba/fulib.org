@@ -122,7 +122,7 @@ export class FourPaneEditorComponent implements OnInit {
     }
 
     let javaCode = '';
-    for (const testMethod of this.response.testMethods ?? []) {
+    for (const testMethod of this.response.methods ?? []) {
       javaCode += `// --------------- ${testMethod.name} in class ${testMethod.className} ---------------\n\n`;
       javaCode += testMethod.body;
       javaCode += '\n';

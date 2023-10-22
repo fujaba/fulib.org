@@ -1,31 +1,25 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
-import {NotFound, notFound} from '@mean-stream/nestx';
+import {NotFound, notFound, ObjectIdArrayPipe} from '@mean-stream/nestx';
 import {
   Body,
   Controller,
-  DefaultValuePipe,
   Delete,
   Get,
   Headers,
   Param,
+  ParseArrayPipe,
   ParseBoolPipe,
   Patch,
   Post,
   Query,
 } from '@nestjs/common';
 import {ApiCreatedResponse, ApiHeader, ApiOkResponse, ApiTags, getSchemaPath} from '@nestjs/swagger';
-import {FilterQuery} from 'mongoose';
+import {FilterQuery, Types} from 'mongoose';
 import {AssignmentAuth} from './assignment-auth.decorator';
-import {
-  CheckNewRequestDto,
-  CheckRequestDto,
-  CheckResponseDto,
-  CreateAssignmentDto,
-  ReadAssignmentDto,
-  UpdateAssignmentDto,
-} from './assignment.dto';
+import {CreateAssignmentDto, ReadAssignmentDto, UpdateAssignmentDto,} from './assignment.dto';
 import {Assignment} from './assignment.schema';
 import {AssignmentService} from './assignment.service';
+import {MemberService} from "@app/member";
 
 const forbiddenResponse = 'Not owner or invalid Assignment-Token.';
 
@@ -34,6 +28,7 @@ const forbiddenResponse = 'Not owner or invalid Assignment-Token.';
 export class AssignmentController {
   constructor(
     private readonly assignmentService: AssignmentService,
+    private readonly memberService: MemberService,
   ) {
   }
 
@@ -50,16 +45,24 @@ export class AssignmentController {
   @Get()
   @ApiOkResponse({type: [ReadAssignmentDto]})
   async findAll(
-    @Query('archived', new DefaultValuePipe(false), ParseBoolPipe) archived: boolean,
+    @Query('archived', new ParseBoolPipe({optional: true})) archived?: boolean,
     @Query('createdBy') createdBy?: string,
-    @Query('ids') ids?: string,
+    @Query('ids', new ParseArrayPipe({optional: true}), ObjectIdArrayPipe) ids?: Types.ObjectId[],
+    @Query('members', new ParseArrayPipe({optional: true})) memberIds?: string[],
   ) {
-    const filter: FilterQuery<Assignment> = {archived: archived ? true : {$ne: true}};
+    const filter: FilterQuery<Assignment> = {};
+    if (archived !== undefined) {
+      filter.archived = archived || {$ne: true};
+    }
     if (createdBy) {
       (filter.$or ||= []).push({createdBy});
     }
     if (ids) {
-      (filter.$or ||= []).push({_id: {$in: ids.split(',')}});
+      (filter.$or ||= []).push({_id: {$in: ids}});
+    }
+    if (memberIds) {
+      const members = await this.memberService.findAll({user: {$in: memberIds}});
+      (filter.$or ||= []).push({_id: {$in: members.map(m => m.parent)}});
     }
     return (await this.assignmentService.findAll(filter)).map(a => this.assignmentService.mask(a.toObject()));
   }
@@ -83,33 +86,10 @@ export class AssignmentController {
     @AuthUser() user?: UserToken,
   ): Promise<Assignment | ReadAssignmentDto> {
     const assignment = await this.assignmentService.findOne(id) ?? notFound(id);
-    if (this.assignmentService.isAuthorized(assignment, user, token)) {
+    if (await this.assignmentService.isAuthorized(assignment, user, token)) {
       return assignment;
     }
     return this.assignmentService.mask(assignment.toObject());
-  }
-
-  @Post('check')
-  @ApiOkResponse({type: CheckResponseDto})
-  async checkNew(
-    @Body() dto: CheckNewRequestDto,
-  ): Promise<CheckResponseDto> {
-    return {
-      results: await this.assignmentService.check(dto.solution, dto),
-    };
-  }
-
-  @Post(':id/check')
-  @NotFound()
-  @ApiOkResponse({type: CheckResponseDto})
-  async check(
-    @Param('id') id: string,
-    @Body() dto: CheckRequestDto,
-  ): Promise<CheckResponseDto> {
-    const assignment = await this.assignmentService.findOne(id) ?? notFound(id);
-    return {
-      results: await this.assignmentService.check(dto.solution, assignment),
-    };
   }
 
   @Patch(':id')

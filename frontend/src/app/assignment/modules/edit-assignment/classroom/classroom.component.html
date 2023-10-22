@@ -9,10 +9,10 @@
     <div class="input-group">
       <span class="input-group-text">https://github.com/</span>
       <input type="text" class="form-control" id="classroomOrgInput" placeholder="my-awesome-org"
-             [(ngModel)]="assignment.classroom!.org" (change)="saveDraft()">
+             [(ngModel)]="classroom.org" (change)="context.saveDraft()">
       <span class="input-group-text">/</span>
       <input type="text" class="form-control" id="classroomPrefixInput" placeholder="prefix"
-             [(ngModel)]="assignment.classroom!.prefix" (change)="saveDraft()">
+             [(ngModel)]="classroom.prefix" (change)="context.saveDraft()">
       <span class="input-group-text">-Student</span>
     </div>
     <div class="form-text">
@@ -24,19 +24,19 @@
     <app-masked-input
       id="tokenInput"
       type="password"
-      [(value)]="assignment.classroom!.token"
+      [(value)]="classroom.token"
       placeholder="ghp_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
     ></app-masked-input>
     <div class="form-text">
       Required for importing solutions from GitHub Classroom.
       You can generate a token in the
       <a
-        href="https://github.com/settings/tokens/new?description={{encodeURIComponent(assignment.title)}}&scopes=repo"
+        href="https://github.com/settings/tokens/new?description={{encodeURIComponent(context.assignment.title)}}&scopes=repo"
         target="_blank">
         GitHub Settings
       </a>.
       Make sure your account has access to the
-      <b>{{ assignment.classroom!.org }}</b>
+      <b>{{ classroom.org }}</b>
       organisation and select the
       <code>repo</code>
       scope.
@@ -47,67 +47,13 @@
     <app-masked-input
       id="webhookInput"
       type="url"
-      [(value)]="assignment.classroom!.webhook"
+      [(value)]="classroom.webhook"
       placeholder="https://discord.com/api/webhooks/XXXXXXXXXXXXXXXXXXX"
     ></app-masked-input>
     <div class="form-text">
       Notify a webhook when solutions are automatically imported at the deadline.
       In addition, it will be notified 12 hours before the deadline with a preliminary count of solutions,
       or an error in case of a problem.
-    </div>
-  </div>
-  <div class="mb-3">
-    <label class="form-label" for="codeSearchCheck">Code Search</label>
-    <div class="form-check">
-      <input type="checkbox" class="form-check-input" id="codeSearchCheck"
-             [(ngModel)]="assignment.classroom!.codeSearch" (change)="saveDraft()">
-      <label class="form-check-label" for="codeSearchCheck">Enable Code Search</label>
-    </div>
-    <div class="form-text">
-      Code Search will import the source code from Classroom repositories and index it.
-      It can be used to find code duplicates across submissions and allows grading multiple students at the same time.
-    </div>
-  </div>
-  <div class="mb-3" *ngIf="assignment.classroom!.codeSearch">
-    <label class="form-label" for="openaiApiKeyInput">OpenAI API Key</label>
-    <app-masked-input
-      id="openaiApiKeyInput"
-      type="text"
-      [(value)]="assignment.classroom!.openaiApiKey"
-      placeholder="sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-    ></app-masked-input>
-    <div class="form-text">
-      Your OpenAI API key for advanced Code Search. Generate one in the
-      <a href="https://platform.openai.com/account/api-keys" target="_blank">OpenAI API Keys</a>.
-    </div>
-  </div>
-  <div class="mb-3">
-    <label class="form-label" for="mossCheck">Plagiarism Detection</label>
-    <div class="form-check">
-      <input type="checkbox" class="form-check-input" id="mossCheck" [(ngModel)]="showMoss">
-      <label class="form-check-label" for="mossCheck">Enable Moss Integration</label>
-    </div>
-    <div class="form-text">
-      Use
-      <a href="https://theory.stanford.edu/~aiken/moss/" target="_blank">Moss</a>
-      to detect code duplicates across submissions.
-    </div>
-  </div>
-  <div class="mb-3" *ngIf="showMoss">
-    <label class="form-label" for="mossIdInput">Moss User ID</label>
-    <input type="number" class="form-control" id="mossIdInput" placeholder="123456789"
-           [(ngModel)]="assignment.classroom!.mossId" (change)="saveDraft()">
-    <div class="form-text">
-      Your Moss User ID. See "Registering for Moss" in the Moss documentation to obtain it.
-    </div>
-  </div>
-  <div class="mb-3" *ngIf="showMoss">
-    <label class="form-label" for="mossIdInput">Moss Language</label>
-    <select class="form-control" id="mossLanguageInput" [(ngModel)]="assignment.classroom!.mossLanguage" (change)="saveDraft()">
-      <option *ngFor="let lang of mossLanguages | keyvalue" [value]="lang.key">{{ lang.value }}</option>
-    </select>
-    <div class="form-text">
-      Language to use for Moss duplicate analysis.
     </div>
   </div>
 </div>

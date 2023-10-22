@@ -6,7 +6,7 @@ import {SubmitModalComponent} from './submit-modal/submit-modal.component';
 import {AssignmentTasksComponent} from './tasks/tasks.component';
 
 export const assignmentChildRoutes = [
-  {path: 'tasks', component: AssignmentTasksComponent, data: {title: 'Tasks & Sample Solution'}},
+  {path: 'tasks', component: AssignmentTasksComponent, data: {title: 'Tasks'}},
   {path: 'share', component: ShareComponent, data: {title: 'Sharing'}},
   {
     path: 'solutions',

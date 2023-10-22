@@ -2,7 +2,7 @@ import {Component, OnInit, TrackByFunction} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ToastService} from '@mean-stream/ngbx';
 import {ClipboardService} from 'ngx-clipboard';
-import {BehaviorSubject, combineLatest, firstValueFrom, forkJoin, Observable} from 'rxjs';
+import {BehaviorSubject, combineLatest, forkJoin, Observable} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 import {Assignee} from '../../../model/assignee';
 import Assignment, {ReadAssignmentDto} from '../../../model/assignment';
@@ -15,6 +15,8 @@ import {TaskService} from '../../../services/task.service';
 import {TelemetryService} from '../../../services/telemetry.service';
 import {SubmitService} from "../submit.service";
 import {UserService} from "../../../../user/user.service";
+import {AssigneeService} from "../../../services/assignee.service";
+import {EvaluationService} from "../../../services/evaluation.service";
 
 type SearchKey = keyof AuthorInfo | 'assignee';
 const searchKeys: readonly SearchKey[] = [
@@ -56,6 +58,8 @@ export class SolutionTableComponent implements OnInit {
   constructor(
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
+    private assigneeService: AssigneeService,
+    private evaluationService: EvaluationService,
     private solutionContainerService: SolutionContainerService,
     private configService: ConfigService,
     private router: Router,
@@ -78,7 +82,7 @@ export class SolutionTableComponent implements OnInit {
     });
 
     this.activatedRoute.params.pipe(
-      switchMap(({aid}) => this.solutionService.getAssignees(aid)),
+      switchMap(({aid}) => this.assigneeService.getAssignees(aid)),
     ).subscribe(assignees => {
       this.assignees = {};
       const names = new Set<string>();
@@ -91,8 +95,8 @@ export class SolutionTableComponent implements OnInit {
 
     this.activatedRoute.params.pipe(
       switchMap(({aid}) => forkJoin([
-        this.solutionService.getEvaluationValues<string>(aid, 'solution', {codeSearch: false}),
-        this.solutionService.getEvaluationValues<string>(aid, 'solution', {codeSearch: true}),
+        this.evaluationService.distinctValues<string>(aid, 'solution', {codeSearch: false}),
+        this.evaluationService.distinctValues<string>(aid, 'solution', {codeSearch: true}),
       ])),
     ).subscribe(([manual, codeSearch]) => {
       this.evaluated = {};
@@ -269,11 +273,16 @@ export class SolutionTableComponent implements OnInit {
 
         this.telemetry(solution, 'submitFeedback', timestamp);
 
-        this.solutionService.update(assignment._id, solution._id!, {
-          points: issue._points,
-        }).subscribe();
+        return solution;
       })
     );
-    this.toastService.success('Submit Feedback', `Successfully submitted feedback for ${result.length} solutions`);
+
+    this.solutionService.updateMany(assignment._id, result.map(solution => ({
+      _id: solution._id,
+      points: solution.points,
+    }))).subscribe({
+      next: () => this.toastService.success('Submit Feedback', `Successfully submitted feedback for ${result.length} solutions`),
+      error: error => this.toastService.error('Submit Feedback', 'Failed to update solutions', error),
+    });
   }
 }

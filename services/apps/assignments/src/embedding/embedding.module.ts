@@ -8,6 +8,7 @@ import {environment} from "../environment";
 import {AssignmentModule} from "../assignment/assignment.module";
 import {EmbeddingHandler} from "./embedding.handler";
 import {OpenAIService} from "./openai.service";
+import {SolutionModule} from "../solution/solution.module";
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import {OpenAIService} from "./openai.service";
     SearchModule,
     ClassroomModule,
     AssignmentModule,
+    SolutionModule,
   ],
   providers: [
     OpenAIService,

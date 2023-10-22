@@ -1,0 +1,18 @@
+<ngbx-modal #modal [back]="['../solutions']">
+  <ng-container modal-title>
+    Import
+  </ng-container>
+  <ng-container modal-body>
+    <ngbx-route-tabs [routes]="routes"></ngbx-route-tabs>
+    <router-outlet #outlet="outlet"></router-outlet>
+  </ng-container>
+  <ng-container modal-footer>
+    <button class="btn btn-secondary" (click)="modal.close()">
+      Close
+    </button>
+    <button class="btn btn-success" (click)="import(outlet.component)" [disabled]="importing">
+      <span *ngIf="importing" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      {{ importing ? 'Importing...' : 'Import' }}
+    </button>
+  </ng-container>
+</ngbx-modal>

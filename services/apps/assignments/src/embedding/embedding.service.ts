@@ -1,9 +1,10 @@
 import {Injectable, OnModuleInit} from '@nestjs/common';
 import {ElasticsearchService} from "@nestjs/elasticsearch";
-import {SearchService} from "../search/search.service";
+import {FileDocument, SearchService} from "../search/search.service";
 import {Embeddable, EmbeddableSearch, EmbeddingEstimate, SnippetEmbeddable} from "./embedding.dto";
 import {OpenAIService} from "./openai.service";
 import {QueryDslQueryContainer} from "@elastic/elasticsearch/lib/api/types";
+import {SolutionService} from "../solution/solution.service";
 
 type DeclarationSnippet = Pick<SnippetEmbeddable, 'text' | 'line'> & { name: string };
 
@@ -13,6 +14,7 @@ export class EmbeddingService implements OnModuleInit {
     private searchService: SearchService,
     private elasticsearchService: ElasticsearchService,
     private openaiService: OpenAIService,
+    private solutionService: SolutionService,
   ) {
   }
 
@@ -26,7 +28,8 @@ export class EmbeddingService implements OnModuleInit {
         type: 'dense_vector',
         dims: 1536,
         index: true,
-        similarity: 'cosine'
+        // dot_product is faster than cosine, because OpenAI embeddings are already normalized
+        similarity: 'dot_product',
       },
       file: {
         type: 'text',
@@ -37,6 +40,10 @@ export class EmbeddingService implements OnModuleInit {
         fields: {keyword: {type: 'keyword', ignore_above: 256}}
       },
       line: {type: 'long'},
+      name: {
+        type: 'text',
+        fields: {keyword: {type: 'keyword', ignore_above: 256}},
+      },
       solution: {
         type: 'text',
         fields: {keyword: {type: 'keyword', ignore_above: 256}}
@@ -57,17 +64,13 @@ export class EmbeddingService implements OnModuleInit {
   }
 
   async estimateEmbeddings(assignment: string): Promise<EmbeddingEstimate> {
-    const documents = await this.searchService.findAll(assignment);
+    const {solutions, documents} = await this.getDocuments(assignment);
     const tokens = this.openaiService.countTokens(documents.map(d => ({
       name: d.file,
       content: d.content,
       size: d.content.length
     })));
-    const estimatedCost = this.openaiService.estimateCost(tokens);
-    return {
-      tokens,
-      estimatedCost,
-    };
+    return this.createEstimate(solutions, documents, tokens);
   }
 
   getFunctions(file: string, headPattern: RegExp, findEnd: (code: string, headStart: number, headEnd: number) => number): DeclarationSnippet[] {
@@ -85,7 +88,7 @@ export class EmbeddingService implements OnModuleInit {
   }
 
   async createEmbeddings(assignment: string, apiKey: string): Promise<EmbeddingEstimate> {
-    const documents = await this.searchService.findAll(assignment);
+    const {solutions, documents} = await this.getDocuments(assignment);
     const results = await Promise.all(documents
       .filter(d => this.openaiService.isSupportedExtension(d.file))
       .map(async d => {
@@ -95,12 +98,13 @@ export class EmbeddingService implements OnModuleInit {
         ;
         const fileTotal = await Promise.all(functions.map(async ({line, name, text}) => {
           const {tokens} = await this.upsert({
-            id: `${d.solution}-${d.file}-${line}-${name}`,
+            id: `${d.solution}-${d.file}-${line}`,
             assignment,
             type: 'snippet',
             solution: d.solution,
             file: d.file,
             line,
+            name,
             text: `${d.file}\n\n${text}`,
             embedding: [],
           }, apiKey);
@@ -109,8 +113,23 @@ export class EmbeddingService implements OnModuleInit {
         return fileTotal.reduce((a, b) => a + b, 0);
       }));
     const tokens = results.reduce((a, b) => a + b, 0);
+    return this.createEstimate(solutions, documents, tokens);
+  }
+
+  private createEstimate(solutions: number, documents: FileDocument[], tokens: number): EmbeddingEstimate {
     const estimatedCost = this.openaiService.estimateCost(tokens);
-    return {tokens, estimatedCost};
+    return {solutions, files: documents.length, tokens, estimatedCost};
+  }
+
+  private async getDocuments(assignment: string) {
+    const solutionsWithConsent = await this.solutionService.model.find({
+      assignment,
+      'consent.3P': true,
+    }, {_id: 1});
+    return {
+      solutions: solutionsWithConsent.length,
+      documents: await this.searchService.findAll(assignment, solutionsWithConsent.map(s => s.id)),
+    };
   }
 
   async upsert(embeddable: Embeddable, apiKey: string): Promise<{ embeddable: Embeddable, tokens: number }> {
@@ -144,11 +163,9 @@ export class EmbeddingService implements OnModuleInit {
   async getNearest({embedding, ...keyword}: EmbeddableSearch): Promise<(Embeddable & { _score: number })[]> {
     const filter: QueryDslQueryContainer = {
       bool: {
-        filter: Object.entries(keyword).map(([key, value]) => ({
-          term: {
-            [key]: value,
-          },
-        })),
+        filter: Object.entries(keyword)
+          .filter(([, value]) => value !== undefined)
+          .map(([key, value]) => ({term: {[key]: value}})),
       },
     };
     const response = await this.elasticsearchService.search<Embeddable>(embedding ? {
@@ -236,7 +253,10 @@ export function findIndentEnd(code: string, headStart: number, headEnd: number):
   const bodyIndent = code.substring(firstLineStart, bodyIndentEnd);
   let currentIndex = firstLineStart;
   while (true) {
-    const nextLineIndex = (code.indexOf('\n', currentIndex)) || code.length;
+    const nextLineIndex = code.indexOf('\n', currentIndex);
+    if (nextLineIndex === -1) {
+      return code.length - 1;
+    }
     if (currentIndex === nextLineIndex) { // line is empty
       currentIndex++;
       continue;

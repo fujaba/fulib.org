@@ -5,8 +5,10 @@ import {AssignmentService} from "../assignment/assignment.service";
 import {SearchService} from "../search/search.service";
 import {NotFound, notFound} from "@mean-stream/nestx";
 import {SolutionService} from "../solution/solution.service";
+import {ApiOperation, ApiTags} from "@nestjs/swagger";
 
 @Controller('assignments/:assignment/moss')
+@ApiTags('MOSS')
 export class MossController {
   constructor(
     private mossService: MossService,
@@ -17,6 +19,7 @@ export class MossController {
   }
 
   @Put()
+  @ApiOperation({summary: 'Run MOSS on all solutions of an assignment'})
   @AssignmentAuth({forbiddenResponse: 'You are not allowed to run MOSS on this assignment'})
   @NotFound()
   async runMoss(
@@ -32,7 +35,7 @@ export class MossController {
     return this.mossService.moss(assignmentDoc, files.map(({solution, file, content}) => ({
       name: solutionNames.get(solution) + ':' + file,
       content,
-      size: Buffer.from(content, 'utf8').length,
+      size: Buffer.byteLength(content, 'utf8'),
     })));
   }
 }

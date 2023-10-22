@@ -1,0 +1,43 @@
+name: CodeQL Backend
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - backend/**
+  pull_request:
+    branches:
+      - master
+    paths:
+      - backend/**
+
+jobs:
+  analyze-java:
+    name: Analyze Java
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        sparse-checkout: backend/
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: java
+    - name: Setup Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: adopt
+        java-version: 17
+    - name: Setup Gradle
+      uses: gradle/gradle-build-action@v2
+      with:
+        arguments: test
+        build-root-directory: backend/
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v2

@@ -1,7 +1,7 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound, notFound} from '@mean-stream/nestx';
-import {Body, Controller, Delete, ForbiddenException, Get, Param, Patch, Post} from '@nestjs/common';
-import {ApiCreatedResponse, ApiForbiddenResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
+import {Body, Controller, Delete, ForbiddenException, Get, Param, Patch, Post, Query} from '@nestjs/common';
+import {ApiCreatedResponse, ApiForbiddenResponse, ApiOkResponse, ApiOperation, ApiTags} from '@nestjs/swagger';
 import {CourseStudent, CreateCourseDto, UpdateCourseDto} from './course.dto';
 import {Course} from './course.schema';
 import {CourseService} from './course.service';
@@ -28,8 +28,10 @@ export class CourseController {
 
   @Get()
   @ApiOkResponse({type: [Course]})
-  async findAll(): Promise<Course[]> {
-    return this.courseService.findAll();
+  async findAll(
+    @Query('createdBy') createdBy?: string,
+  ): Promise<Course[]> {
+    return this.courseService.findAll({createdBy});
   }
 
   @Get(':id')
@@ -40,6 +42,7 @@ export class CourseController {
   }
 
   @Get(':id/students')
+  @ApiOperation({summary: 'Get summary of all students in a course'})
   @Auth()
   @NotFound()
   @ApiOkResponse({type: [CourseStudent]})

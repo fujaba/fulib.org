@@ -71,9 +71,6 @@ public class Main
 			enableCORS();
 		}
 
-		// all endpoints available with and without /api for backward compatibility
-		// TODO remove endpoints without /api in v2
-		addApiRoutes();
 		service.path("/api", this::addApiRoutes);
 
 		setupExceptionHandler();

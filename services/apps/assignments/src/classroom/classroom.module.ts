@@ -4,20 +4,20 @@ import {MulterModule} from '@nestjs/platform-express';
 import {diskStorage} from 'multer';
 import {AssignmentModule} from '../assignment/assignment.module';
 import {EvaluationModule} from '../evaluation/evaluation.module';
-import {GradingModule} from '../grading/grading.module';
 import {SearchModule} from '../search/search.module';
 import {SolutionModule} from '../solution/solution.module';
 import {ClassroomController} from './classroom.controller';
 import {ClassroomScheduler} from './classroom.scheduler';
 import {ClassroomService} from './classroom.service';
+import {FileModule} from "../file/file.module";
 
 @Module({
   imports: [
     SearchModule,
     AssignmentModule,
     SolutionModule,
-    GradingModule,
     EvaluationModule,
+    FileModule,
     HttpModule,
     MulterModule.register({
       storage: diskStorage({

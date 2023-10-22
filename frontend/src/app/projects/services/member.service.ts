@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {tap} from 'rxjs/operators';
 import {environment} from '../../../environments/environment';
-import {Member} from '../model/member';
+import {Member} from "../../user/member";
 
 @Injectable()
 export class MemberService {
@@ -17,13 +17,13 @@ export class MemberService {
   }
 
   update(member: Member): Observable<Member> {
-    const {user, ...rest} = member;
-    return this.http.put<Member>(`${environment.projectsApiUrl}/projects/${member.projectId}/members/${member.userId}`, rest).pipe(
-      tap(newMember => newMember.user = user),
+    const {_user, parent, user, ...rest} = member;
+    return this.http.put<Member>(`${environment.projectsApiUrl}/projects/${parent}/members/${user}`, rest).pipe(
+      tap(newMember => newMember._user = _user),
     );
   }
 
-  delete({projectId, userId}: Member): Observable<Member> {
-    return this.http.delete<Member>(`${environment.projectsApiUrl}/projects/${projectId}/members/${userId}`);
+  delete({parent, user}: Member): Observable<Member> {
+    return this.http.delete<Member>(`${environment.projectsApiUrl}/projects/${parent}/members/${user}`);
   }
 }

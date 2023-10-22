@@ -9,13 +9,17 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class ProjectZipControllerTest
@@ -31,6 +35,69 @@ public class ProjectZipControllerTest
 		"src/gen/java/org/example/MyDecorator.java",
 		"src/main/scenarios/org/example/Scenario.md",
 	};
+	private static final Map<String, String> EXPECTED_CONTENT = Map.of(
+		"settings.gradle", "rootProject.name = 'myProject'\n",
+		"build.gradle", """
+			plugins {
+			\tid 'java'
+			\t// https://plugins.gradle.org/plugin/org.fulib.fulibGradle
+			\tid 'org.fulib.fulibGradle' version '0.5.0'
+			}
+
+			group = 'org.example'
+			version = '1.2.3'
+
+			repositories {
+			\tmavenLocal()
+			\tmavenCentral()
+			}
+
+			dependencies {
+			\t// https://mvnrepository.com/artifact/org.fulib/fulibScenarios
+			\tfulibScenarios group: 'org.fulib', name: 'fulibScenarios', version: '1.7.0'
+
+			\t// https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
+			\tfulibScenarios group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.36'
+
+			\t// https://mvnrepository.com/artifact/org.fulib/fulibTools
+			\ttestImplementation group: 'org.fulib', name: 'fulibTools', version: '1.5.1'
+
+			\t// https://mvnrepository.com/artifact/org.fulib/fulibTables
+			\ttestImplementation group: 'org.fulib', name: 'fulibTables', version: '1.4.0'
+
+			\t// https://mvnrepository.com/artifact/org.fulib/fulibMockups
+			\ttestImplementation group: 'org.fulib', name: 'fulibMockups', version: '0.4.0'
+
+			\t// https://mvnrepository.com/artifact/junit/junit
+			\ttestImplementation group: 'junit', name: 'junit', version: '4.13.2'
+
+			\t// https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
+			\ttestImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.36'
+			}
+
+			generateScenarioSource {
+			\tclassDiagramSVG = true
+			}
+			""",
+		"src/gen/java/org/example/MyDecorator.java", """
+			package org.example;
+
+			import org.fulib.builder.ClassModelDecorator;
+			import org.fulib.builder.ClassModelManager;
+
+			public class MyDecorator implements ClassModelDecorator
+			{
+			\t@Override
+			\tpublic void decorate(ClassModelManager mm)
+			\t{
+			\t}
+			}
+			""",
+		"src/main/scenarios/org/example/Scenario.md", """
+			# Test
+
+			There is a Student with name Alice."""
+	);
 
 	@Test
 	public void handle() throws IOException
@@ -63,6 +130,7 @@ public class ProjectZipControllerTest
 		verify(response).type("application/zip");
 
 		final Set<String> files = new HashSet<>();
+		final Map<String, String> contents = new HashMap<>();
 
 		final byte[] responseBytes = outputStream.toByteArray();
 		try (final ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(responseBytes)))
@@ -71,11 +139,18 @@ public class ProjectZipControllerTest
 			while ((entry = zipInputStream.getNextEntry()) != null)
 			{
 				files.add(entry.getName());
+				if (EXPECTED_CONTENT.containsKey(entry.getName()))
+				{
+					final String content = new String(zipInputStream.readAllBytes(), StandardCharsets.UTF_8);
+					contents.put(entry.getName(), content);
+				}
 			}
 		}
 
 		assertThat(files, hasItems(EXPECTED_FILES));
-		// TODO check contents of Scenario.md (scenarioText), settings.gradle (projectName), build.gradle (packageName,
-		//  projectVersion), and MyDecorator.java (decoratorClassName, packageName)
+		for (final Map.Entry<String, String> entry : EXPECTED_CONTENT.entrySet())
+		{
+			assertEquals(entry.getKey(), contents.get(entry.getKey()), entry.getValue());
+		}
 	}
 }

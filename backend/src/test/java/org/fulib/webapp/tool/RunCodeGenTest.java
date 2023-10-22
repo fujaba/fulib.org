@@ -2,6 +2,7 @@ package org.fulib.webapp.tool;
 
 import org.fulib.StrUtil;
 import org.fulib.webapp.mongo.Mongo;
+import org.fulib.webapp.tool.model.Result;
 import org.hamcrest.CoreMatchers;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -60,7 +61,7 @@ public class RunCodeGenTest
 		assertThat(objectDiagram1.getString("name"), equalTo("test.svg"));
 		assertThat(objectDiagram1.getString("content"), CoreMatchers.startsWith("<?xml"));
 
-		final JSONObject testMethod = responseObj.getJSONArray("testMethods").getJSONObject(0);
+		final JSONObject testMethod = responseObj.getJSONArray(Result.PROPERTY_methods).getJSONObject(0);
 		assertThat(testMethod.getString("name"), equalTo("void test()"));
 		assertThat(testMethod.getString("className"), equalTo("ScenarioTest"));
 		assertThat(testMethod.getString("body"), CoreMatchers.startsWith(

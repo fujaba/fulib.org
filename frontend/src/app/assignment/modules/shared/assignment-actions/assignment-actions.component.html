@@ -12,6 +12,11 @@
     <a ngbDropdownItem [routerLink]="['/assignments', assignment._id, 'import']" class="bi-download">
       Import Solutions
     </a>
+    <a ngbDropdownItem class="bi-magic"
+       ngbTooltip="Automatically configure fulibFeedback for this assigmnent in your IDE"
+       [href]="ide + '://fulib.fulibfeedback/configure?api_server=' + encodedApiServer + '&assignment=' + assignment._id + '&token=' + assignment['token'] | safeUrl">
+      Configure fulibFeedback
+    </a>
     <div class="dropdown-divider"></div>
     <button ngbDropdownItem class="text-warning bi-archive" (click)="archive()">
       {{ assignment.archived ? 'Unarchive' : 'Archive' }}

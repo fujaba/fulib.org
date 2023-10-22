@@ -1,6 +1,6 @@
 import {Controller, Get, Param, ParseArrayPipe, Post, Query, UploadedFiles, UseInterceptors} from '@nestjs/common';
 import {FilesInterceptor} from '@nestjs/platform-express';
-import {ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
+import {ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags} from '@nestjs/swagger';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {ClassroomService} from './classroom.service';
 import {ImportSolution} from "./classroom.dto";
@@ -19,6 +19,7 @@ export class ClassroomController {
   }
 
   @Get('assignments/:assignment/solutions/import')
+  @ApiOperation({summary: 'Preview import of solutions from GitHub'})
   @AssignmentAuth({forbiddenResponse})
   @ApiOkResponse({type: [ImportSolution]})
   async previewImport(
@@ -29,6 +30,7 @@ export class ClassroomController {
   }
 
   @Post('assignments/:assignment/solutions/import')
+  @ApiOperation({summary: 'Import solutions from GitHub'})
   @UseInterceptors(FilesInterceptor('files'))
   @AssignmentAuth({forbiddenResponse})
   @ApiCreatedResponse({type: [ImportSolution]})

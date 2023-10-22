@@ -8,6 +8,7 @@ import {SolutionController} from './solution.controller';
 import {SolutionHandler} from './solution.handler';
 import {Solution, SolutionSchema} from './solution.schema';
 import {SolutionService} from './solution.service';
+import {FileModule} from "../file/file.module";
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import {SolutionService} from './solution.service';
     AssignmentModule,
     forwardRef(() => EvaluationModule),
     AssigneeModule,
+    FileModule,
   ],
   controllers: [SolutionController],
   providers: [

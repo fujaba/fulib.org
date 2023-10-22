@@ -1,78 +1,18 @@
 import {EventService} from '@mean-stream/nestx';
 import {UserToken} from '@app/keycloak-auth';
-import {Injectable, Logger, OnModuleInit} from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
-import {FilterQuery, Model} from 'mongoose';
-import {AssignmentService} from '../assignment/assignment.service';
-import {CreateEvaluationDto} from '../evaluation/evaluation.dto';
-import {Evaluation} from '../evaluation/evaluation.schema';
-import {EvaluationService} from '../evaluation/evaluation.service';
+import {FilterQuery, Model, UpdateQuery} from 'mongoose';
 import {generateToken, idFilter} from '../utils';
-import {CreateSolutionDto, ReadSolutionDto, UpdateSolutionDto} from './solution.dto';
+import {BatchUpdateSolutionDto, CreateSolutionDto, ReadSolutionDto, UpdateSolutionDto} from './solution.dto';
 import {Solution, SolutionDocument} from './solution.schema';
 
 @Injectable()
-export class SolutionService implements OnModuleInit {
+export class SolutionService {
   constructor(
     @InjectModel(Solution.name) public model: Model<Solution>,
-    private assignmentService: AssignmentService,
-    private evaluationService: EvaluationService,
     private eventService: EventService,
   ) {
-  }
-
-  async onModuleInit() {
-    const solutions: Pick<SolutionDocument, 'assignment' | '_id' | 'results'>[] = await this.model
-      .find({results: {$exists: true}}, {assignment: 1, _id: 1, results: 1})
-      .exec();
-    await Promise.all(solutions.map(async ({assignment, _id, results}) => {
-      if (!results) {
-        return;
-      }
-      await Promise.all(results.map(result => {
-        const {
-          task,
-          output: remark,
-          points,
-        } = result;
-        const dto: CreateEvaluationDto = {
-          task,
-          author: 'Autograding',
-          remark,
-          points,
-          snippets: [],
-        };
-        return this.evaluationService.create(assignment, _id, dto);
-      }));
-    }));
-    const count = solutions.reduce((a, c) => c.results ? a + c.results.length : a, 0);
-    const logger = new Logger(SolutionService.name);
-    count && logger.warn(`Migrated ${count} results of ${solutions.length} solutions`);
-
-    const result = await this.model.updateMany({
-      $or: [
-        {userId: {$exists: true}},
-        {timeStamp: {$exists: true}},
-        {author: {$exists: false}},
-        {results: {$exists: true}},
-      ],
-    }, {
-      $rename: {
-        userId: 'createdBy',
-        timeStamp: 'timestamp',
-        name: 'author.name',
-        email: 'author.email',
-        studentID: 'author.studentId',
-      },
-      $unset: {
-        results: 1,
-      },
-    });
-    result.modifiedCount && logger.warn(`Migrated ${result.modifiedCount} solutions`);
-  }
-
-  private async createEvaluation(solution: SolutionDocument, dto: CreateEvaluationDto): Promise<Evaluation> {
-    return this.evaluationService.create(solution.assignment, solution._id, dto);
   }
 
   async create(assignment: string, dto: CreateSolutionDto, createdBy?: string): Promise<SolutionDocument> {
@@ -85,15 +25,6 @@ export class SolutionService implements OnModuleInit {
     });
     this.emit('created', created);
     return created;
-  }
-
-  async autoGrade(solution: SolutionDocument): Promise<void> {
-    const assignment = await this.assignmentService.findOne(solution.assignment);
-    if (!assignment) {
-      return;
-    }
-    const results = await this.assignmentService.check(solution.solution, assignment);
-    await Promise.all(results.map(r => this.createEvaluation(solution, r)));
   }
 
   async findAll(where: FilterQuery<Solution> = {}): Promise<ReadSolutionDto[]> {
@@ -112,6 +43,42 @@ export class SolutionService implements OnModuleInit {
   async update(id: string, dto: UpdateSolutionDto): Promise<SolutionDocument | null> {
     const updated = await this.model.findOneAndUpdate(idFilter(id), dto, {new: true}).exec();
     updated && this.emit('updated', updated);
+    return updated;
+  }
+
+  async updateMany(assignment: string, dtos: BatchUpdateSolutionDto[]): Promise<(SolutionDocument | null)[]> {
+    const updated = await Promise.all(dtos.map(dto => {
+      const {_id, author, consent, ...rest} = dto;
+      if (!_id && !author) {
+        return null;
+      }
+
+      const update: UpdateQuery<Solution> = rest;
+      if (author) {
+        for (const [k, v] of Object.entries(author)) {
+          update['author.' + k] = v;
+        }
+      }
+      if (consent) {
+        for (const [k, v] of Object.entries(consent)) {
+          update['consent.' + k] = v;
+        }
+      }
+      if (_id) {
+        return this.model.findByIdAndUpdate(_id, update, {new: true}).exec();
+      } else if (author) {
+        const filter = {
+          assignment,
+          $or: Object.entries(author).map(([k, v]) => ({['author.' + k]: v})),
+        };
+        return this.model.findOneAndUpdate(filter, update, {new: true}).exec();
+      } else {
+        return null;
+      }
+    }));
+    for (const update of updated) {
+      update && this.emit('updated', update);
+    }
     return updated;
   }
 

@@ -9,6 +9,7 @@ import {
 import {ElasticsearchService} from "@nestjs/elasticsearch";
 import {SearchService} from "../search/search.service";
 import {OpenAIService} from "./openai.service";
+import {SolutionService} from "../solution/solution.service";
 
 describe('EmbeddingService', () => {
   let service: EmbeddingService;
@@ -19,6 +20,7 @@ describe('EmbeddingService', () => {
         EmbeddingService,
         SearchService,
         OpenAIService,
+        {provide: SolutionService, useValue: null},
         {provide: ElasticsearchService, useValue: null},
       ],
     }).compile();
@@ -114,6 +116,6 @@ def baz():
 
     expect(findIndentEnd(code, 0, 10)).toEqual(34);
     expect(findIndentEnd(code, 35, 45)).toEqual(52);
-    // TODO test with no newline at end of file
+    expect(findIndentEnd(code.trim(), 35, 45)).toEqual(51);
   });
 });
