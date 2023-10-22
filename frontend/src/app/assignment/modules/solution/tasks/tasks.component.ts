@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {forkJoin, Subscription} from 'rxjs';
-import {switchMap, tap} from 'rxjs/operators';
+import {map, switchMap, tap} from 'rxjs/operators';
 import {ReadAssignmentDto} from '../../../model/assignment';
 import {Evaluation} from '../../../model/evaluation';
 import Solution from '../../../model/solution';
@@ -28,31 +28,28 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
     private evaluationService: EvaluationService,
     private solutionService: SolutionService,
     private taskService: TaskService,
-    private router: Router,
     private route: ActivatedRoute,
   ) {
   }
 
   ngOnInit(): void {
     this.route.params.pipe(
-      switchMap(({aid: assignmentId, sid: solutionId}) => forkJoin([
-        this.assignmentService.get(assignmentId).pipe(tap(assignment => this.assignment = assignment)),
-        this.solutionService.get(assignmentId, solutionId).pipe(tap(solution => {
-          this.solution = solution;
-        })),
-        this.evaluationService.findAll(assignmentId, solutionId).pipe(tap(evaluations => {
+      switchMap(({aid, sid}) => this.solutionService.get(aid, sid)),
+    ).subscribe(solution => this.solution = solution);
+
+    this.route.params.pipe(
+      switchMap(({aid, sid}) => forkJoin([
+        this.assignmentService.get(aid).pipe(tap(assignment => this.assignment = assignment)),
+        this.evaluationService.findAll(aid, sid).pipe(map(evaluations => {
           this.evaluations = {};
           for (const evaluation of evaluations) {
             this.evaluations[evaluation.task] = evaluation;
           }
+          return this.evaluations;
         })),
       ])),
-    ).subscribe(([assignment, , evaluations]) => {
-      this.points = this.taskService.createPointsCache(assignment.tasks, this.evaluations!);
-    }, error => {
-      if (error.status === 401 || error.status === 403) {
-        this.router.navigate(['token'], {relativeTo: this.route});
-      }
+    ).subscribe(([assignment, evaluations]) => {
+      this.points = this.taskService.createPointsCache(assignment.tasks, evaluations);
     });
 
     this.subscription = this.route.params.pipe(
