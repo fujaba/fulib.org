@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {ToastService} from '@mean-stream/ngbx';
-import {CONFIG_OPTIONS, ConfigService} from '../../services/config.service';
+import {ConfigService} from '../../services/config.service';
+import {Config} from "../../model/config";
 
 @Component({
   selector: 'app-config-form',
@@ -8,8 +9,9 @@ import {CONFIG_OPTIONS, ConfigService} from '../../services/config.service';
   styleUrls: ['./config-form.component.scss']
 })
 export class ConfigFormComponent {
-  options = CONFIG_OPTIONS;
-  optionValues = this.configService.getAll();
+  config = this.configService.getAll();
+
+  protected readonly Config = Config;
 
   constructor(
     private configService: ConfigService,
@@ -18,7 +20,7 @@ export class ConfigFormComponent {
   }
 
   save() {
-    this.configService.setAll(this.optionValues);
+    this.configService.setAll(this.config);
     this.toastService.success('Settings', 'Successfully saved settings');
   }
 }
