@@ -45,8 +45,8 @@ dependencies:
     specifier: ^7.0.0
     version: 7.0.0(@angular/core@16.2.9)(@angular/forms@16.2.9)(codemirror@5.65.15)
   '@mean-stream/ngbx':
-    specifier: ^0.11.0
-    version: 0.11.0(@angular/common@16.2.9)(@angular/core@16.2.9)(@angular/forms@16.2.9)(@angular/router@16.2.9)(@ng-bootstrap/ng-bootstrap@15.1.1)(bootstrap-darkmode@5.0.1)(bootstrap@5.2.3)(class-validator@0.14.0)(rxjs@7.8.1)
+    specifier: ^0.12.0
+    version: 0.12.0(@angular/common@16.2.9)(@angular/core@16.2.9)(@angular/router@16.2.9)(@ng-bootstrap/ng-bootstrap@15.1.1)(bootstrap-darkmode@5.0.1)(bootstrap@5.2.3)(class-validator@0.14.0)
   '@ng-bootstrap/ng-bootstrap':
     specifier: ^15.1.1
     version: 15.1.1(@angular/common@16.2.9)(@angular/core@16.2.9)(@angular/forms@16.2.9)(@angular/localize@16.2.9)(@popperjs/core@2.11.8)(rxjs@7.8.1)
@@ -2288,19 +2288,17 @@ packages:
     resolution: {integrity: sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==}
     dev: true
 
-  /@mean-stream/ngbx@0.11.0(@angular/common@16.2.9)(@angular/core@16.2.9)(@angular/forms@16.2.9)(@angular/router@16.2.9)(@ng-bootstrap/ng-bootstrap@15.1.1)(bootstrap-darkmode@5.0.1)(bootstrap@5.2.3)(class-validator@0.14.0)(rxjs@7.8.1):
-    resolution: {integrity: sha512-KYtpF3VlaoLb2QCQg4EPl/mD54207tYwzj1PKqYWa9m3AvIUBzt0HLYvJtNJL9LholwhGV1kxEdp9YJ0r3JgKQ==}
+  /@mean-stream/ngbx@0.12.0(@angular/common@16.2.9)(@angular/core@16.2.9)(@angular/router@16.2.9)(@ng-bootstrap/ng-bootstrap@15.1.1)(bootstrap-darkmode@5.0.1)(bootstrap@5.2.3)(class-validator@0.14.0):
+    resolution: {integrity: sha512-rXuaI0YrZUSFToMD+XTyQSBI/KFRVbNo4NpSQ2cBjD+ck8kon0xNflq/BnzgSxUuO9T6FDlpZED17Cnnj0p7/Q==}
     peerDependencies:
-      '@angular/common': ^15.2.0
-      '@angular/core': ^15.2.0
-      '@angular/forms': 15.2.8
-      '@angular/router': ^15.2.0
-      '@ng-bootstrap/ng-bootstrap': ^14.0.0
+      '@angular/common': ^16.2.0
+      '@angular/core': ^16.2.0
+      '@angular/router': ^16.2.0
+      '@ng-bootstrap/ng-bootstrap': ^15.1.0
       bootstrap: ^5.2.3
       bootstrap-darkmode: ^0.9.1
       class-validator: ^0.14.0
       reflect-metadata: ^0.1.13
-      rxjs: 7.8.1
     peerDependenciesMeta:
       bootstrap-darkmode:
         optional: true
@@ -2311,13 +2309,11 @@ packages:
     dependencies:
       '@angular/common': 16.2.9(@angular/core@16.2.9)(rxjs@7.8.1)
       '@angular/core': 16.2.9(rxjs@7.8.1)(zone.js@0.13.3)
-      '@angular/forms': 16.2.9(@angular/common@16.2.9)(@angular/core@16.2.9)(@angular/platform-browser@16.2.9)(rxjs@7.8.1)
       '@angular/router': 16.2.9(@angular/common@16.2.9)(@angular/core@16.2.9)(@angular/platform-browser@16.2.9)(rxjs@7.8.1)
       '@ng-bootstrap/ng-bootstrap': 15.1.1(@angular/common@16.2.9)(@angular/core@16.2.9)(@angular/forms@16.2.9)(@angular/localize@16.2.9)(@popperjs/core@2.11.8)(rxjs@7.8.1)
       bootstrap: 5.2.3(@popperjs/core@2.11.8)
       bootstrap-darkmode: 5.0.1(bootstrap@5.2.3)
       class-validator: 0.14.0
-      rxjs: 7.8.1
       tslib: 2.6.2
     dev: false
 
