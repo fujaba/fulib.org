@@ -1,5 +1,6 @@
 import {IsBoolean, IsEmail, IsIn, IsNotEmpty, IsString} from "class-validator";
 import {Presentation} from "@mean-stream/ngbx";
+import {Transform} from "class-transformer";
 
 export class Config {
   @Presentation({
@@ -55,17 +56,20 @@ export class Config {
     description: 'Enable Code Search globally.',
   })
   @IsBoolean()
+  @Transform(({value}) => value === 'true')
   codeSearch = true;
 
   @Presentation({
     description: 'Enable Similar Solutions globally.',
   })
   @IsBoolean()
+  @Transform(({value}) => value === 'true')
   similarSolutions = true;
 
   @Presentation({
     description: 'Enable Snippet Suggestions globally.',
   })
   @IsBoolean()
+  @Transform(({value}) => value === 'true')
   snippetSuggestions = true;
 }

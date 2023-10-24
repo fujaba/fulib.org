@@ -1,6 +1,8 @@
 import {Injectable} from '@angular/core';
 import {PrivacyService} from '../../services/privacy.service';
 import {Config} from "../model/config";
+import {transformDecoratorResources} from "@angular/compiler-cli/src/ngtsc/annotations/component/src/resources";
+import {plainToClass} from "class-transformer";
 
 export type ConfigKey = keyof Config;
 
@@ -18,7 +20,7 @@ export class ConfigService {
     for (const key of Object.keys(this.default)) {
       options[key] = this.get(key as ConfigKey);
     }
-    return options;
+    return plainToClass(Config, options);
   }
 
   setAll(options: Config) {

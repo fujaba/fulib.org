@@ -1,7 +1,8 @@
-import {Component} from '@angular/core';
-import {ToastService} from '@mean-stream/ngbx';
+import {Component, ViewChild} from '@angular/core';
+import {ToastService, ValidatorFormComponent} from '@mean-stream/ngbx';
 import {ConfigService} from '../../services/config.service';
 import {Config} from "../../model/config";
+import {validate} from "class-validator";
 
 @Component({
   selector: 'app-config-form',
@@ -9,6 +10,8 @@ import {Config} from "../../model/config";
   styleUrls: ['./config-form.component.scss']
 })
 export class ConfigFormComponent {
+  @ViewChild('form') form: ValidatorFormComponent<Config>;
+
   config = this.configService.getAll();
 
   protected readonly Config = Config;
@@ -19,8 +22,13 @@ export class ConfigFormComponent {
   ) {
   }
 
-  save() {
-    this.configService.setAll(this.config);
-    this.toastService.success('Settings', 'Successfully saved settings');
+  async save() {
+    const errors = await this.form.validateAll();
+    if (errors.length) {
+      this.toastService.error('Settings', 'Please fix the errors in the form');
+    } else {
+      this.configService.setAll(this.config);
+      this.toastService.success('Settings', 'Successfully saved settings');
+    }
   }
 }
