@@ -21,9 +21,17 @@
       Please enter some information about yourself to begin using Assignments.
       All data will only be saved locally on your device.
     </p>
-    <ngbx-validator-form #form [model]="config!" [type]="Config"></ngbx-validator-form>
+    <ngbx-validator-form
+      #form
+      [model]="config!"
+      [type]="Config"
+      [options]="{pick: ['name', 'email', 'ide']}"
+    ></ngbx-validator-form>
   </div>
   <div class="modal-footer">
+    <a routerLink="settings" (click)="modal.dismiss('Settings')">
+      All Settings
+    </a>
     <button class="btn btn-secondary" (click)="modal.dismiss('Cancel')">
       Cancel
     </button>
