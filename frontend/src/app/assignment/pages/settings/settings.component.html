@@ -3,8 +3,8 @@
     <a class="bi-chevron-left" routerLink=".."></a>
     Settings
   </h1>
-  <app-config-form #form></app-config-form>
-  <button type="button" class="btn btn-primary" (click)="form.save()">
+  <ngbx-validator-form #form [model]="config" [type]="Config"></ngbx-validator-form>
+  <button type="button" class="btn btn-primary" (click)="save(form)">
     Save
   </button>
 </div>
