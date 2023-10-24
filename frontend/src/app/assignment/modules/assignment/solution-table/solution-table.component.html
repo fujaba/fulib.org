@@ -1,44 +1,57 @@
 <div class="p-3 d-flex align-items-center position-sticky bg-light bg-darkmode-dark" style="top: 3.5rem; z-index: 1">
-  <label for="searchInput" class="me-sm-2">
-    Search
-  </label>
-  <i class="bi-question-circle me-sm-2" ngbTooltip="View Search Help" [ngbPopover]="searchHelp" popoverTitle="Search Help" placement="bottom-left">
-  </i>
   <input type="search" class="form-control me-sm-2 flex-grow-1" id="searchInput"
-         placeholder="Name, Student ID, E-Mail, GitHub Username, Assignee"
+         placeholder="Search for Name, Student ID, E-Mail, GitHub Username, Assignee"
          [ngModel]="search$.value" (ngModelChange)="search$.next($event)"
          [ngbTypeahead]="typeahead" [resultFormatter]="formatTypeahead">
-  <div style="width: 10rem">
+  <button
+    class="btn btn-sm p-1 bi-question-circle me-sm-2"
+    ngbTooltip="View Search Help"
+    [ngbPopover]="searchHelp"
+    popoverTitle="Search Help"
+    placement="bottom-right"
+  ></button>
+  <div style="width: 12rem">
+    <ng-container *ngIf="(selected | keyvalue).length as length">
+      {{ length }} /
+    </ng-container>
     {{ solutions.length }} Solutions
     <div *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-label="Loading...">
     </div>
   </div>
-  <div ngbDropdown class="d-inline-block">
-    <button class="btn btn-outline-secondary" id="optionsDropdown" ngbDropdownToggle>
-      <i class="bi-gear"></i>
-      <span class="visually-hidden">Options</span>
+  <div ngbDropdown class="d-inline-block me-2" *ngIf="(selected | keyvalue).length as count" [autoClose]="'outside'">
+    <button class="btn btn-outline-secondary" id="actionsDropdown" ngbDropdownToggle ngbTooltip="Bulk Actions">
+      <i class="bi-three-dots"></i>
+      <span class="visually-hidden">Bulk Actions</span>
     </button>
-    <div ngbDropdownMenu aria-labelledby="optionsDropdown">
-      <ng-container *ngFor="let option of optionItems!">
-        <h6 class="dropdown-header">
-          {{ option.title }}
-          <i class="bi-info-circle" [ngbTooltip]="option.description"></i>
-        </h6>
-        <button
-          *ngFor="let item of option.options"
-          ngbDropdownItem
-          role="check"
-          (click)="setOption(option.key, item[0])"
-          class="dropdown-item-check"
-          [class.checked]="options[option.key] === item[0]"
-        >
-          {{ item[1] }}
+    <div ngbDropdownMenu aria-labelledby="actionsDropdown">
+      <button ngbDropdownItem (click)="openSelected()">
+        Open {{ count }} Solutions in New Tabs
+      </button>
+      <app-disabled-tooltip [require]="[
+        [!!assignment?.classroom?.org, 'Classroom Org is configured in Assignment'],
+        [!!assignment?.classroom?.prefix, 'Classroom Prefix is configured in Assignment'],
+        [!!userToken, 'You are logged in'],
+        [!!userToken, 'Your Account is linked to GitHub'],
+      ]" #submitIf>
+        <button ngbDropdownItem [disabled]="submitIf.disabled" (click)="submitSelected()">
+          Submit {{ count }} Feedback Issues
         </button>
-        <div class="dropdown-divider"></div>
-      </ng-container>
-      <a ngbDropdownItem routerLink="/assignments/settings">
-        All Settings...
-      </a>
+      </app-disabled-tooltip>
+      <button ngbDropdownItem class="text-danger" [ngbPopover]="deleteConfirm" [autoClose]="'outside'">
+        Delete {{ count }} Solutions
+      </button>
+      <ng-template #deleteConfirm>
+        <div class="d-flex flex-column">
+          <p>Are you sure you want to delete {{ count }} solutions?</p>
+          <div class="mb-3">
+            <label for="deleteInput">Type <b>{{ assignment?.title }}</b> to confirm</label>
+            <input type="text" class="form-control" id="deleteInput" #deleteInput>
+          </div>
+          <button class="btn btn-danger" [disabled]="deleteInput.value !== assignment?.title" (click)="deleteSelected()">
+            Delete
+          </button>
+        </div>
+      </ng-template>
     </div>
   </div>
   <ng-template #searchHelp>
@@ -63,6 +76,9 @@
 <table class="table table-bordered table-hover table-sm table-centered" *ngIf="solutions">
   <thead>
   <tr>
+    <th>
+      <input type="checkbox" [ngModel]="(selected | keyvalue).length === solutions.length" (ngModelChange)="selectAll($event)">
+    </th>
     <th *ngFor="let prop of authorProperties">
       {{ prop[0] }}
       <button class="btn btn-sm p-1 bi-clipboard" ngbTooltip="Copy Column as Text" (click)="copyAuthor(prop[0], prop[1])"></button>
@@ -108,6 +124,9 @@
   </thead>
   <tbody>
   <tr *ngFor="let solution of solutions; trackBy: solutionId">
+    <th>
+      <input type="checkbox" [ngModel]="selected[solution._id!]" (ngModelChange)="select(solution._id!, $event)">
+    </th>
     <td *ngFor="let prop of authorProperties">{{solution.author[prop[1]]}}</td>
     <td>
       <span *ngIf="solution.timestamp" [class]="
@@ -120,9 +139,8 @@
       <span
         class="badge bg-{{
           solution.points !== undefined ? 'primary'
-          : evaluated[solution._id!] === true ? 'warning'
-          : evaluated[solution._id!] === false ? 'info'
-          : 'secondary'
+          : evaluated[solution._id!] === undefined ? 'secondary'
+          : evaluated[solution._id!] ? 'warning' : 'info'
         }}"
       >
         {{ solution.points ?? '?' }} / {{ totalPoints }}

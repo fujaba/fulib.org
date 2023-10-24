@@ -7,22 +7,16 @@ import {map, switchMap, tap} from 'rxjs/operators';
 
 import {environment} from '../../../environments/environment';
 import {StorageService} from '../../services/storage.service';
-import {LintService} from '../../shared/lint.service';
-import {Marker} from '../../shared/model/marker';
 import {UserService} from '../../user/user.service';
 import Assignment, {CreateAssignmentDto, ReadAssignmentDto, UpdateAssignmentDto} from '../model/assignment';
-import {CheckAssignment, CheckResult} from '../model/check';
 import Course from '../model/course';
 import {SearchResult, SearchSummary} from '../model/search-result';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class AssignmentService {
   constructor(
     private http: HttpClient,
     private storage: StorageService,
-    private lintService: LintService,
     private users: UserService,
   ) {
   }
@@ -34,16 +28,16 @@ export class AssignmentService {
   }
 
   loadDraft(id: string | undefined): Assignment | CreateAssignmentDto | undefined {
-    const stored = localStorage.getItem(this.getDraftKey(id));
+    const stored = this.storage.get(this.getDraftKey(id));
     return stored ? JSON.parse(stored) : undefined;
   }
 
   saveDraft(id: string | undefined, value: Assignment | CreateAssignmentDto) {
-    localStorage.setItem(this.getDraftKey(id), JSON.stringify(value));
+    this.storage.set(this.getDraftKey(id), JSON.stringify(value));
   }
 
   deleteDraft(id: string | undefined) {
-    localStorage.removeItem(this.getDraftKey(id));
+    this.storage.set(this.getDraftKey(id), null);
   }
 
   // --------------- Tokens ---------------
@@ -78,72 +72,24 @@ export class AssignmentService {
   // --------------- HTTP Methods ---------------
 
   getOwnIds(): string[] {
-    const pattern = /^assignmentToken\/(.*)$/;
-    const ids: string[] = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i)!;
-      const match = pattern.exec(key);
-      if (!match) {
-        continue;
-      }
-
-      const id = match[1] as string;
-      ids.push(id);
-    }
-
-    return ids;
+    return this.storage.getAllKeys(/^assignmentToken\/(.*)$/).map(match => match[1]);
   }
 
-  findOwn(archived = false): Observable<ReadAssignmentDto[]> {
+  findOwn(archived?: boolean): Observable<ReadAssignmentDto[]> {
     const ownIds = this.getOwnIds();
     return this.users.getCurrent().pipe(
       switchMap(user => this.findAll(ownIds, user?.id, archived)),
     );
   }
 
-  findAll(ids?: string[], createdBy?: string, archived = false): Observable<ReadAssignmentDto[]> {
+  findAll(ids?: string[], createdBy?: string, archived?: boolean): Observable<ReadAssignmentDto[]> {
     return this.http.get<ReadAssignmentDto[]>(`${environment.assignmentsApiUrl}/assignments`, {
       params: {
         ...(ids ? {ids: ids.join(',')} : {}),
-        ...(createdBy ? {createdBy} : {}),
-        archived,
+        ...(createdBy ? {createdBy, members: [createdBy]} : {}),
+        ...(archived !== undefined ? {archived} : {}),
       },
     });
-  }
-
-  check(assignment: CheckAssignment): Observable<CheckResult> {
-    return this.http.post<CheckResult>(`${environment.assignmentsApiUrl}/assignments/check`, assignment);
-  }
-
-  lint(result: CheckResult): Marker[] {
-    const grouped = new Map<string, { marker: Marker, tasks: number[] }>();
-
-    for (let i = 0; i < result.results.length; i++) {
-      const taskNum = i + 1;
-      const taskResult = result.results[i];
-      for (const marker of this.lintService.lint(taskResult.remark)) {
-        marker.from.line -= 2;
-        marker.to.line -= 2;
-
-        const key = `${marker.from.line}:${marker.from.ch}-${marker.to.line}:${marker.to.ch}:${marker.severity}:${marker.message}`;
-        let entry = grouped.get(key);
-        if (entry) {
-          entry.tasks.push(taskNum);
-        } else {
-          entry = {marker, tasks: [taskNum]};
-          grouped.set(key, entry);
-        }
-      }
-    }
-
-    const markers: Marker[] = [];
-
-    for (const {marker, tasks} of grouped.values()) {
-      marker.message = `[${tasks.length === 1 ? 'task' : 'tasks'} ${tasks.join(', ')}] ${marker.message}`;
-      markers.push(marker);
-    }
-
-    return markers;
   }
 
   create(dto: CreateAssignmentDto): Observable<Assignment> {
@@ -156,16 +102,13 @@ export class AssignmentService {
   }
 
   update(id: string, dto: UpdateAssignmentDto): Observable<Assignment> {
-    const token = this.getToken(id);
-    const headers = this.getHeaders(token);
-    return this.http.patch<Assignment>(`${environment.assignmentsApiUrl}/assignments/${id}`, dto, {headers}).pipe(
+    return this.http.patch<Assignment>(`${environment.assignmentsApiUrl}/assignments/${id}`, dto).pipe(
       tap(({token}) => token && this.setToken(id, token)),
     );
   }
 
   delete(assignment: string): Observable<Assignment> {
-    const headers = this.getHeaders(this.getToken(assignment));
-    return this.http.delete<Assignment>(`${environment.assignmentsApiUrl}/assignments/${assignment}`, {headers}).pipe(
+    return this.http.delete<Assignment>(`${environment.assignmentsApiUrl}/assignments/${assignment}`).pipe(
       tap(() => {
         this.setToken(assignment, null);
         this.deleteDraft(assignment);
@@ -174,8 +117,7 @@ export class AssignmentService {
   }
 
   get(id: string): Observable<Assignment | ReadAssignmentDto> {
-    const headers = this.getHeaders(this.getToken(id));
-    return this.http.get<Assignment | ReadAssignmentDto>(`${environment.assignmentsApiUrl}/assignments/${id}`, {headers}).pipe(
+    return this.http.get<Assignment | ReadAssignmentDto>(`${environment.assignmentsApiUrl}/assignments/${id}`).pipe(
       tap(a => {
         if ('token' in a && a.token) {
           this.setToken(id, a.token);
@@ -185,31 +127,27 @@ export class AssignmentService {
   }
 
   search(id: string, q: string, context = 2, glob?: string, wildcard?: string): Observable<SearchResult[]> {
-    const headers = this.getHeaders(this.getToken(id));
     const params: Record<string, string | number> = {q, context};
     glob && (params.glob = glob);
     wildcard && (params.wildcard = wildcard);
     return this.http.get<SearchResult[]>(`${environment.assignmentsApiUrl}/assignments/${id}/search`, {
       params,
-      headers,
     });
   }
 
   searchSummary(id: string, q: string, glob?: string, wildcard?: string): Observable<SearchSummary> {
-    const headers = this.getHeaders(this.getToken(id));
     const params: Record<string, string> = {q};
     glob && (params.glob = glob);
     wildcard && (params.wildcard = wildcard);
     return this.http.get<SearchSummary>(`${environment.assignmentsApiUrl}/assignments/${id}/search/summary`, {
       params,
-      headers,
     });
   }
 
-  private getHeaders(token?: string | null | undefined): Record<string, string> {
-    return token ? {
-      'Assignment-Token': token,
-    } : {};
+  moss(assignment: string): Observable<string> {
+    return this.http.put(`${environment.assignmentsApiUrl}/assignments/${assignment}/moss`, {}, {
+      responseType: 'text',
+    });
   }
 
   getNext(course: Course, assignment: ReadAssignmentDto): Observable<Assignment | ReadAssignmentDto | undefined> {

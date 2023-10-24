@@ -9,19 +9,9 @@ import {Assignee, AssigneeDocument} from './assignee.schema';
 @Injectable()
 export class AssigneeService {
   constructor(
-    @InjectModel('assignee') private model: Model<Assignee>,
+    @InjectModel(Assignee.name) private model: Model<Assignee>,
     private eventService: EventService,
   ) {
-    this.migrate();
-  }
-
-  async migrate() {
-    const result = await this.model.updateMany({}, {
-      $rename: {
-        id: 'solution',
-      },
-    });
-    console.info('Migrated', result.modifiedCount, 'assignees');
   }
 
   async findAll(where: FilterQuery<Assignee> = {}): Promise<AssigneeDocument[]> {
@@ -49,6 +39,6 @@ export class AssigneeService {
   }
 
   private emit(event: string, assignee: AssigneeDocument) {
-    this.eventService.emit(`assignee.${assignee.id}.${event}`, {event, data: assignee});
+    this.eventService.emit(`assignments.${assignee.assignment}.solutions.${assignee.solution}.assignee.${event}`, assignee);
   }
 }

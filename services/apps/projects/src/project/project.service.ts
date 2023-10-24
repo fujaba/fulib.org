@@ -50,7 +50,7 @@ export class ProjectService {
   }
 
   private removeStorage(id: string) {
-    for (let type of projectStorageTypes) {
+    for (const type of projectStorageTypes) {
       fs.promises.rm(this.getStoragePath(type, id), {recursive: true}).catch(e => {
         console.error(`Failed to remove project '${id}' storage '${type}': ${e.message}`);
       });

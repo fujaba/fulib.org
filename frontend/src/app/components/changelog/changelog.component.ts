@@ -43,19 +43,21 @@ export class ChangelogComponent implements OnInit {
 
     this.changelogService.getCurrentVersions().subscribe(currentVersions => {
       this.currentVersions = currentVersions;
+
+      const strippedVersions = this.changelogService.stripBuildSuffix(currentVersions);
       if (!this.lastUsedVersions) {
         this.showAll();
-        this.changelogService.lastUsedVersions = this.currentVersions;
+        this.changelogService.lastUsedVersions = strippedVersions;
         return;
       }
 
-      const newVersions = this.changelogService.getVersionDiff(this.lastUsedVersions, currentVersions);
+      const newVersions = this.changelogService.getVersionDiff(this.lastUsedVersions, strippedVersions);
       const newRepos = Object.keys(newVersions) as (keyof Versions)[];
       if (newRepos.length === 0) {
         this.showAll();
       } else {
         this.showNewVersions(newRepos);
-        this.changelogService.lastUsedVersions = this.currentVersions;
+        this.changelogService.lastUsedVersions = strippedVersions;
       }
     });
 

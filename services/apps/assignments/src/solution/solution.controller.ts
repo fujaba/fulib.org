@@ -1,17 +1,30 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
-import {NotFound} from '@mean-stream/nestx';
-import {Body, Controller, Delete, Get, Param, Patch, Post, Query} from '@nestjs/common';
-import {ApiCreatedResponse, ApiOkResponse, ApiQuery, ApiTags} from '@nestjs/swagger';
+import {NotFound, ObjectIdArrayPipe} from '@mean-stream/nestx';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseArrayPipe,
+  Patch,
+  Post,
+  Query,
+  UploadedFiles,
+  UseInterceptors
+} from '@nestjs/common';
+import {ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiQuery, ApiTags} from '@nestjs/swagger';
 import {isMongoId} from 'class-validator';
 import {FilterQuery, Types} from 'mongoose';
 import {AssigneeService} from '../assignee/assignee.service';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
-import {AssignmentService} from '../assignment/assignment.service';
 import {EvaluationService} from '../evaluation/evaluation.service';
 import {SolutionAuth} from './solution-auth.decorator';
-import {CreateSolutionDto, ReadSolutionDto, UpdateSolutionDto} from './solution.dto';
+import {BatchUpdateSolutionDto, CreateSolutionDto, ReadSolutionDto, UpdateSolutionDto} from './solution.dto';
 import {Solution} from './solution.schema';
 import {SolutionService} from './solution.service';
+import {FilesInterceptor} from "@nestjs/platform-express";
+import {FileService} from "../file/file.service";
 
 const forbiddenResponse = 'Not owner of solution or assignment, or invalid Assignment-Token or Solution-Token.';
 const forbiddenAssignmentResponse = 'Not owner of assignment, or invalid Assignment-Token.';
@@ -29,23 +42,27 @@ const searchFields = [
 @ApiTags('Solutions')
 export class SolutionController {
   constructor(
-    private readonly assignmentService: AssignmentService,
     private readonly solutionService: SolutionService,
     private readonly assigneeService: AssigneeService,
     private readonly evaluationService: EvaluationService,
+    private readonly fileService: FileService,
   ) {
   }
 
   @Post('assignments/:assignment/solutions')
   @Auth({optional: true})
   @ApiCreatedResponse({type: Solution})
+  @UseInterceptors(FilesInterceptor('files'))
   async create(
     @Param('assignment') assignment: string,
     @Body() dto: CreateSolutionDto,
     @AuthUser() user?: UserToken,
+    @UploadedFiles() files?: Express.Multer.File[],
   ): Promise<Solution> {
     const solution = await this.solutionService.create(assignment, dto, user?.sub);
-    await this.solutionService.autoGrade(solution);
+    if (files && files.length) {
+      await this.fileService.importFiles(assignment, solution.id, files);
+    }
     return solution;
   }
 
@@ -125,6 +142,7 @@ export class SolutionController {
   }
 
   @Get('solutions')
+  @ApiOperation({summary: 'List your own solutions'})
   @Auth()
   @ApiOkResponse({type: [ReadSolutionDto]})
   async findOwn(
@@ -144,6 +162,23 @@ export class SolutionController {
     return this.solutionService.update(id, dto);
   }
 
+  @Patch('assignments/:assignment/solutions')
+  @ApiOperation({
+    summary: 'Batch update multiple solutions',
+    description: 'Matches by _id or any author field. ' +
+      'Only the fields that are present in the request body will be updated.',
+  })
+  @ApiBody({type: [UpdateSolutionDto]})
+  @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
+  @ApiBody({type: [BatchUpdateSolutionDto]})
+  @ApiOkResponse({type: [Solution]})
+  async updateMany(
+    @Param('assignment') assignment: string,
+    @Body() dtos: BatchUpdateSolutionDto[],
+  ): Promise<(Solution | null)[]> {
+    return this.solutionService.updateMany(assignment, dtos);
+  }
+
   @Delete('assignments/:assignment/solutions/:id')
   @SolutionAuth({forbiddenResponse})
   @NotFound()
@@ -152,5 +187,19 @@ export class SolutionController {
     @Param('id') id: string,
   ): Promise<Solution | null> {
     return this.solutionService.remove(id);
+  }
+
+  @Delete('assignments/:assignment/solutions')
+  @ApiOperation({summary: 'Batch delete multiple solutions by IDs'})
+  @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
+  @ApiOkResponse({type: [Solution]})
+  async removeAll(
+    @Param('assignment') assignment: string,
+    @Query('ids', ParseArrayPipe, ObjectIdArrayPipe) ids: Types.ObjectId[],
+  ): Promise<Solution[]> {
+    return this.solutionService.removeAll({
+      assignment,
+      _id: {$in: ids},
+    });
   }
 }

@@ -1,7 +1,7 @@
-import {Hit} from '@elastic/elasticsearch/api/types';
 import {ElasticsearchService} from '@nestjs/elasticsearch';
 import {Test, TestingModule} from '@nestjs/testing';
 import {FileDocument, SearchService} from './search.service';
+import {estypes} from "@elastic/elasticsearch";
 
 describe('SearchService', () => {
   let service: SearchService;
@@ -36,7 +36,7 @@ describe('SearchService', () => {
   });
 
   it('should convert hits', () => {
-    const hit: Hit<FileDocument> = {
+    const hit: estypes.SearchHit<FileDocument> = {
       _index: 'files',
       _id: '0',
       _source: {assignment: 'a1', solution: 's1', file: 'test.java', content: content},
@@ -70,7 +70,7 @@ describe('SearchService', () => {
 
   it('should convert wildcard hits', () => {
     const highlight = 'Hello World\n<b>This</b> is a <b>World</b>!\nWorld be greeted.';
-    const hit: Hit<FileDocument> = {
+    const hit: estypes.SearchHit<FileDocument> = {
       _index: 'files',
       _id: '0',
       _source: {assignment: 'a1', solution: 's1', file: 'test.java', content},

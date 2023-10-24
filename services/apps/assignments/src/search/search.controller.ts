@@ -1,5 +1,5 @@
 import {Controller, Get, Param, Query} from '@nestjs/common';
-import {ApiOkResponse, ApiTags} from '@nestjs/swagger';
+import {ApiOkResponse, ApiOperation, ApiTags} from '@nestjs/swagger';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {SearchSummary, SearchParams, SearchResult} from './search.dto';
 import {SearchService} from './search.service';
@@ -15,6 +15,7 @@ export class SearchController {
   }
 
   @Get()
+  @ApiOperation({summary: 'Search for code'})
   @AssignmentAuth({forbiddenResponse})
   @ApiOkResponse({type: [SearchResult]})
   async findCode(
@@ -25,6 +26,7 @@ export class SearchController {
   }
 
   @Get('summary')
+  @ApiOperation({summary: 'Preview the number of code search results'})
   @AssignmentAuth({forbiddenResponse})
   @ApiOkResponse({type: SearchSummary})
   async findSummary(

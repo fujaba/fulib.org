@@ -34,7 +34,7 @@ export class CommentController {
     @Headers('assignment-token') assignmentToken?: string,
   ): Promise<Comment> {
     const assignment = await this.assignmentService.findOne(assignmentId) ?? notFound(assignmentId);
-    const distinguished = this.assignmentService.isAuthorized(assignment, user, assignmentToken);
+    const distinguished = await this.assignmentService.isAuthorized(assignment, user, assignmentToken);
     return this.commentService.create(assignmentId, solution, dto, distinguished, user?.sub);
   }
 

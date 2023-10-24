@@ -16,10 +16,10 @@
     (click)="snippet.comment = ''"
   ></button>
   <button
+    *ngIf="deleted.observed"
     type="button"
     class="btn btn-outline-danger bi-trash"
     ngbTooltip="Delete Snippet"
     (click)="delete()"
   ></button>
 </div>
-<app-snippet [snippet]="snippet" wildcard="***" (updated)="updated.next($event)"></app-snippet>

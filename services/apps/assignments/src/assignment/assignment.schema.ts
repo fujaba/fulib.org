@@ -16,16 +16,8 @@ import {
   IsUrl,
   ValidateNested,
 } from 'class-validator';
-import {Document} from 'mongoose';
-
-export const MOSS_LANGUAGES = {
-  c: ['.c', '.h'],
-  cc: ['.cpp', '.cc', '.cxx', '.c++', '.hpp', '.hh', '.hxx', '.h++'],
-  java: ['.java'],
-  csharp: ['.cs'],
-  python: ['.py'],
-  javascript: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs'],
-} as const;
+import {Document, Types} from 'mongoose';
+import {MOSS_LANGUAGES} from "../search/search.constants";
 
 @Schema({id: false, _id: false})
 export class Task {
@@ -50,12 +42,6 @@ export class Task {
   @IsOptional()
   @IsString()
   note?: string;
-
-  @Prop()
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  verification?: string;
 
   @Prop()
   @ApiPropertyOptional()
@@ -121,10 +107,20 @@ export class ClassroomInfo {
   @IsOptional()
   @IsUrl()
   mossResult?: string;
+
+  @Prop({transform: (v?: string) => v && '***'})
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @Transform(({value}) => value === '***' ? undefined : value)
+  openaiApiKey?: string;
 }
 
 @Schema()
 export class Assignment {
+  @ApiProperty({format: 'objectid'})
+  _id: Types.ObjectId;
+
   @Prop()
   @ApiPropertyOptional()
   @IsOptional()
@@ -188,16 +184,6 @@ export class Assignment {
   @ValidateNested({each: true})
   @Type(() => Task)
   tasks: Task[];
-
-  @Prop()
-  @ApiProperty()
-  @IsString()
-  solution: string;
-
-  @Prop()
-  @ApiProperty()
-  @IsString()
-  templateSolution: string;
 }
 
 export type AssignmentDocument = Assignment & Document;

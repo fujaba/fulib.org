@@ -8,11 +8,15 @@ import {Assignee} from '../../../model/assignee';
 import Assignment, {ReadAssignmentDto} from '../../../model/assignment';
 import Solution, {AuthorInfo, authorInfoProperties} from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
-import {CONFIG_OPTIONS, ConfigKey, ConfigService} from '../../../services/config.service';
+import {ConfigService} from '../../../services/config.service';
 import {SolutionContainerService} from '../../../services/solution-container.service';
 import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
 import {TelemetryService} from '../../../services/telemetry.service';
+import {SubmitService} from "../submit.service";
+import {UserService} from "../../../../user/user.service";
+import {AssigneeService} from "../../../services/assignee.service";
+import {EvaluationService} from "../../../services/evaluation.service";
 
 type SearchKey = keyof AuthorInfo | 'assignee';
 const searchKeys: readonly SearchKey[] = [
@@ -38,10 +42,12 @@ export class SolutionTableComponent implements OnInit {
   assignees: Partial<Record<string, Assignee>> = {};
   assigneeNames: string[] = [];
   evaluated: Partial<Record<string, boolean>> = {};
+  selected: Partial<Record<string, boolean>> = {};
+
+  userToken?: string;
 
   loading = false;
 
-  optionItems = CONFIG_OPTIONS.filter(o => o.options);
   options = this.configService.getAll();
 
   search$ = new BehaviorSubject<string>('');
@@ -51,6 +57,8 @@ export class SolutionTableComponent implements OnInit {
   constructor(
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
+    private assigneeService: AssigneeService,
+    private evaluationService: EvaluationService,
     private solutionContainerService: SolutionContainerService,
     private configService: ConfigService,
     private router: Router,
@@ -59,6 +67,8 @@ export class SolutionTableComponent implements OnInit {
     private toastService: ToastService,
     private taskService: TaskService,
     private clipboardService: ClipboardService,
+    private submitService: SubmitService,
+    private userService: UserService,
   ) {
   }
 
@@ -71,7 +81,7 @@ export class SolutionTableComponent implements OnInit {
     });
 
     this.activatedRoute.params.pipe(
-      switchMap(({aid}) => this.solutionService.getAssignees(aid)),
+      switchMap(({aid}) => this.assigneeService.getAssignees(aid)),
     ).subscribe(assignees => {
       this.assignees = {};
       const names = new Set<string>();
@@ -84,8 +94,8 @@ export class SolutionTableComponent implements OnInit {
 
     this.activatedRoute.params.pipe(
       switchMap(({aid}) => forkJoin([
-        this.solutionService.getEvaluationValues<string>(aid, 'solution', {codeSearch: false}),
-        this.solutionService.getEvaluationValues<string>(aid, 'solution', {codeSearch: true}),
+        this.evaluationService.distinctValues<string>(aid, 'solution', {codeSearch: false}),
+        this.evaluationService.distinctValues<string>(aid, 'solution', {codeSearch: true}),
       ])),
     ).subscribe(([manual, codeSearch]) => {
       this.evaluated = {};
@@ -117,12 +127,26 @@ export class SolutionTableComponent implements OnInit {
         replaceUrl: true,
       });
     });
+
+    this.userService.getGitHubToken().subscribe(token => this.userToken = token);
   }
 
-  setOption(key: ConfigKey, value: string) {
-    // copy is necessary to re-evaluate link pipes
-    this.options = {...this.options, [key]: value};
-    this.configService.set(key, value);
+  select(id: string, selected: boolean) {
+    if (selected) {
+      this.selected[id] = selected;
+    } else {
+      delete this.selected[id];
+    }
+  }
+
+  selectAll(selected: boolean) {
+    if (selected) {
+      for (const {_id} of this.solutions) {
+        this.selected[_id!] = true;
+      }
+    } else {
+      this.selected = {};
+    }
   }
 
   typeahead = (text$: Observable<string>): Observable<string[]> => {
@@ -203,6 +227,58 @@ export class SolutionTableComponent implements OnInit {
     }, error => {
       elem.disabled = false;
       this.toastService.error('Launch in Projects', 'Failed to launch in Projects', error);
+    });
+  }
+
+  openSelected() {
+    for (let i = this.solutions.length - 1; i >= 0; i--){
+      const {_id} = this.solutions[i];
+      if (_id && this.selected[_id]) {
+        open(`${location.href}/${_id}`, '_blank');
+      }
+    }
+  }
+
+  deleteSelected() {
+    const ids = Object.keys(this.selected);
+    this.solutionService.deleteAll(this.assignment!._id!, ids).subscribe(() => {
+      this.toastService.success('Delete Solutions', `Successfully deleted ${ids.length} solutions`);
+      this.selected = {};
+      this.solutions = this.solutions.filter(s => !ids.includes(s._id!));
+    }, error => {
+      this.toastService.error('Delete Solutions', 'Failed to delete solutions', error);
+    });
+  }
+
+  async submitSelected() {
+    const {assignment, userToken} = this;
+    if (!userToken || !assignment || !assignment.classroom || !assignment.classroom.org || !assignment.classroom.prefix) {
+      return;
+    }
+
+    const timestamp = new Date();
+    const result = await Promise.all(this.solutions
+      .filter(s => this.selected[s._id!] && s.author.github)
+      .map(async solution => {
+        const issue = await this.submitService.createIssue(assignment, solution);
+        await this.submitService.postIssueToGitHub(assignment, solution, issue, userToken);
+        solution.points = issue._points;
+
+        this.telemetryService.create(assignment._id, solution._id!, {
+          action: 'submitFeedback',
+          timestamp,
+        }).subscribe();
+
+        return solution;
+      })
+    );
+
+    this.solutionService.updateMany(assignment._id, result.map(solution => ({
+      _id: solution._id,
+      points: solution.points,
+    }))).subscribe({
+      next: () => this.toastService.success('Submit Feedback', `Successfully submitted feedback for ${result.length} solutions`),
+      error: error => this.toastService.error('Submit Feedback', 'Failed to update solutions', error),
     });
   }
 }

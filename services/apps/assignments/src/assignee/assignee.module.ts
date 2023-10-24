@@ -3,14 +3,14 @@ import {MongooseModule} from '@nestjs/mongoose';
 import {AssignmentModule} from '../assignment/assignment.module';
 import {AssigneeController} from './assignee.controller';
 import {AssigneeHandler} from './assignee.handler';
-import {AssigneeSchema} from './assignee.schema';
+import {Assignee, AssigneeSchema} from './assignee.schema';
 import {AssigneeService} from './assignee.service';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       {
-        name: 'assignee',
+        name: Assignee.name,
         schema: AssigneeSchema,
       },
     ]),

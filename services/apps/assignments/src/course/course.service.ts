@@ -1,8 +1,7 @@
 import {EventService} from '@mean-stream/nestx';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
-import {Model} from 'mongoose';
-import {AssigneeService} from '../assignee/assignee.service';
+import {FilterQuery, Model} from 'mongoose';
 import {AuthorInfo} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {idFilter} from '../utils';
@@ -12,25 +11,10 @@ import {Course, CourseDocument} from './course.schema';
 @Injectable()
 export class CourseService {
   constructor(
-    @InjectModel('courses') private model: Model<Course>,
+    @InjectModel(Course.name) private model: Model<Course>,
     private solutionService: SolutionService,
-    private assigneeService: AssigneeService,
     private eventService: EventService,
   ) {
-    this.migrate();
-  }
-
-  async migrate() {
-    const result = await this.model.updateMany({}, {
-      $rename: {
-        assignmentIds: 'assignments',
-        userId: 'createdBy',
-      },
-      $unset: {
-        descriptionHtml: 1,
-      },
-    });
-    console.info('Migrated', result.modifiedCount, 'courses');
   }
 
   async create(dto: CreateCourseDto, userId?: string): Promise<CourseDocument> {
@@ -42,8 +26,8 @@ export class CourseService {
     return created;
   }
 
-  async findAll(): Promise<CourseDocument[]> {
-    return this.model.find().exec();
+  async findAll(filter: FilterQuery<Course> = {}): Promise<CourseDocument[]> {
+    return this.model.find(filter).exec();
   }
 
   async findOne(id: string): Promise<CourseDocument | null> {
@@ -110,7 +94,7 @@ export class CourseService {
         assignee,
       };
     }
-    return Array.from(students.values());
+    return Array.from(new Set(students.values()));
   }
 
   async update(id: string, dto: UpdateCourseDto): Promise<Course | null> {
@@ -126,6 +110,6 @@ export class CourseService {
   }
 
   private emit(event: string, course: CourseDocument) {
-    this.eventService.emit(`comment.${course.id}.${event}`, {event, data: course});
+    this.eventService.emit(`courses.${course.id}.${event}`, course);
   }
 }

@@ -1,5 +1,17 @@
 import Task from './task';
 
+export interface ClassroomInfo {
+  org?: string;
+  prefix?: string;
+  token?: string;
+  webhook?: string;
+  codeSearch?: boolean;
+  mossId?: number;
+  mossLanguage?: string;
+  mossResult?: string;
+  openaiApiKey?: string;
+}
+
 export default class Assignment {
   _id: string;
   archived?: boolean;
@@ -13,20 +25,9 @@ export default class Assignment {
   issuance?: Date | string;
   deadline?: Date | string;
 
-  classroom?: {
-    org?: string;
-    prefix?: string;
-    token?: string;
-    webhook?: string;
-    codeSearch?: boolean;
-    mossId?: number;
-    mossLanguage?: string;
-    mossResult?: string;
-  };
+  classroom?: ClassroomInfo;
 
   tasks: Task[];
-  solution: string;
-  templateSolution: string;
 }
 
 export type CreateAssignmentDto = Omit<Assignment, '_id' | 'token' | 'createdBy'>;

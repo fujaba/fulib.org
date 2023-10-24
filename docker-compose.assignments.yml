@@ -16,10 +16,11 @@ services:
     ports:
       - '21318:3000'
   elasticsearch:
-    image: elasticsearch:7.13.4
+    image: elasticsearch:8.8.1
     restart: unless-stopped
     environment:
       - discovery.type=single-node
+      - xpack.security.enabled=false
     ports:
       - '9200:9200'
       - '9300:9300'

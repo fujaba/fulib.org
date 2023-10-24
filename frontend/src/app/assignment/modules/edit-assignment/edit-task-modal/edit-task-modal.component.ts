@@ -37,7 +37,6 @@ export class EditTaskModalComponent implements OnInit {
       _id,
       description: '',
       points: 0,
-      verification: '',
       children: [],
     };
   }

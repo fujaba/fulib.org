@@ -47,8 +47,8 @@
         <app-edit-snippet
           [snippet]="snippet" [index]="index" [comments]="comments"
           (deleted)="deleteSnippet(index)"
-          (updated)="snippetUpdates$.next($event)"
         ></app-edit-snippet>
+        <app-snippet [snippet]="snippet" wildcard="***" (updated)="snippetUpdates$.next($event)"></app-snippet>
       </li>
     </ul>
     <div class="form-text">
@@ -61,15 +61,39 @@
         Code Search will only look for files matching the glob pattern <code>{{ task.glob }}</code>.
       </span>
     </div>
+    <ng-container *ngIf="snippetSuggestionsEnabled && embeddingSnippets.length">
+      <label class="form-label" for="embedding-snippets">
+        Snippet Suggestions
+        <span class="badge bg-gradient-primary">New</span>
+        &nbsp;
+        <i class="bi-question-circle" [ngbTooltip]='"Code Search suggests code that is related to the task \"" + task?.description + "\"" '></i>
+      </label>
+      <ul class="list-group" id="embedding-snippets">
+        <li *ngFor="let snippet of embeddingSnippets; let first=first" class="list-group-item">
+          <app-snippet [snippet]="snippet" [expanded]="first" (confirmed)="confirmEmbedding(snippet)"></app-snippet>
+        </li>
+      </ul>
+    </ng-container>
   </ng-container>
   <ng-container modal-footer>
-    <div class="form-check">
+    <div class="form-check" *ngIf="codeSearchEnabled">
       <input type="checkbox" class="form-check-input" id="codeSearchCheck" [(ngModel)]="dto.codeSearch">
       <label for="codeSearchCheck" class="form-check-label"
              ngbTooltip="Use Code Search to create or update derived evaluations in other solutions">
         Code Search
       </label>
     </div>
+    <div class="form-check" *ngIf="similarSolutionsEnabled && !evaluation">
+      <input type="checkbox" class="form-check-input" id="similarCheck" [(ngModel)]="viewSimilar">
+      <label for="similarCheck" class="form-check-label"
+             ngbTooltip="View similar solutions to quickly copy this evaluation">
+        View Similar Solutions
+        <span class="badge bg-gradient-primary">New</span>
+      </label>
+    </div>
+    <a routerLink="similar" *ngIf="similarSolutionsEnabled && evaluation">
+      Similar Solutions
+    </a>
     <button type="button" class="btn btn-secondary" (click)="modal.close()">
       Cancel
     </button>

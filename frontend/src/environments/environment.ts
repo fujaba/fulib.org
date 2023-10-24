@@ -1,5 +1,7 @@
 export const environment = {
   production: false,
+  sentryDsn: '',
+  environment: 'development',
   apiURL: 'http://localhost:4567/api',
   assignmentsApiUrl: 'http://localhost:21318/api/v1',
   projectsApiUrl: 'http://localhost:6266/api/v1',

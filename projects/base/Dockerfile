@@ -6,12 +6,13 @@ USER root
 ENV DEBIAN_FRONTEND=noninteractive
 ENV DEBCONF_NONINTERACTIVE_SEEN=true
 RUN apt-get update -y && \
-    apt-get install -y gnupg apt-transport-https wget software-properties-common i3 novnc websockify libxv1 libglu1-mesa xauth x11-utils xorg tightvncserver && \
+    apt-get install -y gnupg apt-transport-https wget software-properties-common i3 novnc websockify libxv1 libglu1-mesa libegl1-mesa xauth x11-utils xorg tightvncserver && \
     apt-get clean -y
-RUN wget https://kumisystems.dl.sourceforge.net/project/virtualgl/2.6.5/virtualgl_2.6.5_amd64.deb && \
+ARG TARGETARCH
+RUN wget https://kumisystems.dl.sourceforge.net/project/virtualgl/3.1/virtualgl_3.1_$TARGETARCH.deb && \
     dpkg -i virtualgl_*.deb && \
     rm virtualgl_*.deb
-RUN wget https://kumisystems.dl.sourceforge.net/project/turbovnc/2.2.7/turbovnc_2.2.7_amd64.deb && \
+RUN wget https://kumisystems.dl.sourceforge.net/project/turbovnc/3.0.3/turbovnc_3.0.3_$TARGETARCH.deb && \
     dpkg -i turbovnc_*.deb && \
     rm turbovnc_*.deb
 

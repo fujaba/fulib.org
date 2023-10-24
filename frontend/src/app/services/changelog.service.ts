@@ -56,6 +56,13 @@ export class ChangelogService {
     return this.http.get<Versions>(environment.apiURL + '/versions');
   }
 
+  stripBuildSuffix(versions: Versions): Versions {
+    return Object.fromEntries(Object.entries(versions).map(([repo, version]) => {
+      const end = version.indexOf('-');
+      return [repo, end < 0 ? version : version.substring(0, end)];
+    })) as Versions;
+  }
+
   public get lastUsedVersions(): Versions | null {
     const stored = this.privacyService.getStorage('lastUsedVersions');
     return stored ? {...JSON.parse(stored)} as Versions : null;

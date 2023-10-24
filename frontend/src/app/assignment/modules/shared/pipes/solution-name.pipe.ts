@@ -10,6 +10,6 @@ export class SolutionNamePipe implements PipeTransform {
       return '';
     }
     const {name, github, studentId, email} = solution.author;
-    return name || github || studentId || email;
+    return name || github || studentId || email || '';
   }
 }

@@ -1,90 +1,45 @@
 import {Injectable} from '@angular/core';
 import {PrivacyService} from '../../services/privacy.service';
+import {Config} from "../model/config";
+import {transformDecoratorResources} from "@angular/compiler-cli/src/ngtsc/annotations/component/src/resources";
+import {plainToClass} from "class-transformer";
 
-export type ConfigKey =
-  | 'name'
-  | 'email'
-  | 'ide'
-  | 'cloneProtocol'
-  | 'cloneRef'
-  ;
-
-export interface ConfigOption {
-  key: ConfigKey;
-  title: string;
-  description: string;
-  options?: [string, string][];
-  default?: string;
-}
-
-export const CONFIG_OPTIONS: ConfigOption[] = [
-  {
-    key: 'name',
-    title: 'Name',
-    description: 'Your full name for use in assignments, solutions, comments and evaluations.',
-  },
-  {
-    key: 'email',
-    title: 'E-Mail Address',
-    description: 'Your email address for use in assignments, solutions, comments and evaluations.',
-  },
-  {
-    key: 'ide',
-    title: 'IDE',
-    description: 'Your preferred IDE for cloning repositories.',
-    options: [['vscode', 'VSCode'], ['code-oss', 'Code - OSS'], ['vscodium', 'VSCodium']],
-    default: 'vscode',
-  },
-  {
-    key: 'cloneProtocol',
-    title: 'Git Clone Protocol',
-    description: 'The protocol to use when cloning a repository.',
-    options: [['https', 'HTTPS'], ['ssh', 'SSH']],
-    default: 'https',
-  },
-  {
-    key: 'cloneRef',
-    title: 'Git Clone Ref',
-    description: 'The ref to use when cloning a repository. ' +
-      'Tags are only supported in VSCode v1.74+ and Assignments imported after 2022-12-21.',
-    options: [['none', 'None'], ['tag', 'Tag']],
-    default: 'tag',
-  }
-];
+export type ConfigKey = keyof Config;
 
 @Injectable()
 export class ConfigService {
+  readonly default = new Config();
+
   constructor(
     private privacyService: PrivacyService,
   ) {
   }
 
-  getAll(): Record<ConfigKey, string> {
-    const options = {} as Record<ConfigKey, string>;
-    for (const option of CONFIG_OPTIONS) {
-      options[option.key] = this.get(option.key);
+  getAll(): Config {
+    const options = {...this.default};
+    for (const key of Object.keys(this.default)) {
+      options[key] = this.get(key as ConfigKey);
     }
-    return options;
+    return plainToClass(Config, options);
   }
 
-  setAll(options: Record<ConfigKey, string>) {
+  setAll(options: Config) {
     for (const key of Object.keys(options) as ConfigKey[]) {
-      this.set(key, options[key]);
+      this.set(key, options[key].toString());
     }
   }
 
-  get(key: ConfigKey): string {
-    const option = CONFIG_OPTIONS.find(o => o.key === key);
-    return this.privacyService.getStorage('assignments/' + key) || option?.default || '';
+  get<K extends ConfigKey>(key: K): Config[K] {
+    return this.privacyService.getStorage('assignments/' + key) as Config[K] || this.default[key];
+  }
+
+  getBool(key: ConfigKey): boolean {
+    return this.get(key) === 'true';
   }
 
   set(key: ConfigKey, value: string) {
-    if (this.getOption(key)) {
+    if (key in this.default) {
       this.privacyService.setStorage('assignments/' + key, value);
     }
-  }
-
-  private getOption(key: ConfigKey): ConfigOption | undefined {
-    return CONFIG_OPTIONS.find(o => o.key === key);
   }
 }

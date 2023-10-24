@@ -1,20 +1,15 @@
-import {File, MossApi} from '@app/moss/moss-api';
 import {HttpService} from '@nestjs/axios';
 import {Injectable, UnauthorizedException} from '@nestjs/common';
 import {Method} from 'axios';
-import * as Buffer from 'buffer';
 import {createReadStream} from 'fs';
 import {firstValueFrom} from 'rxjs';
 import {Stream} from 'stream';
-import {Entry as ZipEntry, Parse as unzip} from 'unzipper';
 import {AssignmentDocument} from '../assignment/assignment.schema';
-import {AssignmentService} from '../assignment/assignment.service';
-import {SearchService} from '../search/search.service';
-import {ReadSolutionDto} from '../solution/solution.dto';
 import {AuthorInfo, Solution} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {generateToken} from '../utils';
-import {MossService} from './moss.service';
+import {ImportSolution} from "./classroom.dto";
+import {FileService} from "../file/file.service";
 
 interface RepositoryInfo {
   name: string;
@@ -29,45 +24,51 @@ interface SearchResult {
   items: RepositoryInfo[];
 }
 
-/**
- * This is the Lucene term byte length limit.
- * In the pathological case, a file could start with a ' or " that never closes.
- * If we allowed a greater file size, it could produce a term bigger than this limit,
- * which will be rejected by Elasticsearch.
- * Few source code files are longer than this in the academic world.
- * This repository contains only three such files that are not in .gitignore -
- * the PNPM lockfiles and gradle-wrapper.jar.
- * Neither is useful in Code Search.
- */
-const MAX_FILE_SIZE = 32766;
-
 @Injectable()
 export class ClassroomService {
   constructor(
-    private assignmentService: AssignmentService,
     private solutionService: SolutionService,
-    private searchService: SearchService,
-    private mossService: MossService,
+    private fileService: FileService,
     private http: HttpService,
   ) {
   }
 
-  async importFiles(id: string, files: Express.Multer.File[]): Promise<ReadSolutionDto[]> {
-    const assignment = await this.assignmentService.findOne(id);
-    if (!assignment) {
-      return [];
+  async importFiles(assignment: AssignmentDocument, files: Express.Multer.File[]): Promise<ImportSolution[]> {
+    const timestamp = new Date();
+    const importSolutions = files.map(file => {
+      const [key, value] = this.parseAuthorInfo(assignment, file.originalname);
+      return {
+        assignment: assignment.id,
+        author: {
+          email: '',
+          name: '',
+          studentId: '',
+          [key]: value,
+        },
+        timestamp,
+      } satisfies ImportSolution;
+    })
+    const solutions = await this.upsertSolutions(assignment, importSolutions);
+
+    const {codeSearch, mossId} = assignment.classroom || {};
+    if (codeSearch || mossId) {
+      await Promise.all(files.map(async (file, index) => {
+        const stream = createReadStream(file.path);
+        const solution = solutions.upsertedIds[index];
+        return this.fileService.importZipEntries(stream, assignment.id, solution);
+      }));
     }
 
-    const result = await this.solutionService.bulkWrite(files.map(file => {
-      const [key, value] = this.parseAuthorInfo(assignment, file.originalname);
-      const author: AuthorInfo = {email: '', name: '', studentId: ''};
-      author[key] = value;
+    return importSolutions;
+  }
+
+  private async upsertSolutions(assignment: AssignmentDocument, importSolutions: ImportSolution[]) {
+    const result = await this.solutionService.bulkWrite(importSolutions.map(importSolution => {
       const solution: Solution = {
-        assignment: id,
-        solution: '',
+        ...importSolution,
         token: generateToken(),
-        author,
       };
+      const [key, value] = Object.entries(importSolution.author).find(([, value]) => value)!;
       return {
         updateOne: {
           filter: {
@@ -79,19 +80,10 @@ export class ClassroomService {
         },
       };
     }));
-
-    const {codeSearch, mossId} = assignment.classroom || {};
-    if (codeSearch || mossId) {
-      Promise.all(files.map(async (file, index) => {
-        const stream = createReadStream(file.path);
-        const solution = result.upsertedIds[index];
-        return this.importZipFiles(stream, id, solution, !!codeSearch);
-      })).then(files => {
-        mossId && this.mossService.moss(assignment, files.flat());
-      });
+    for (let i = 0; i < importSolutions.length; i++) {
+      importSolutions[i]._id = result.upsertedIds[i];
     }
-
-    return this.solutionService.findAll({_id: {$in: Object.values(result.upsertedIds)}});
+    return result;
   }
 
   private parseAuthorInfo(assignment: AssignmentDocument, filename: string): [keyof AuthorInfo, string] {
@@ -103,39 +95,6 @@ export class ClassroomService {
     } else {
       return ['name', filename.slice(0, -4)];
     }
-  }
-
-  private async importZipFiles(stream: Stream, assignment: string, solution: string, codeSearch: boolean, commit?: string): Promise<File[]> {
-    const files = await this.importZipStream(stream, assignment, solution);
-    if (codeSearch) {
-      await Promise.all(files.map(file => this.addContentsToIndex(assignment, solution, file, commit)));
-    }
-    return files;
-  }
-
-  private async importZipStream(stream: Stream, assignment: string, solution: string, commit?: string): Promise<File[]> {
-    const files: File[] = [];
-    await stream.pipe(unzip()).on('entry', (entry: ZipEntry) => {
-      // Using vars.uncompressedSize because entry.extra.* and entry.size are unavailable before parsing for some reason
-      if (entry.type !== 'File' || (entry.vars as any).uncompressedSize > MAX_FILE_SIZE) {
-        entry.autodrain();
-        return;
-      }
-      entry.buffer().then(buffer => {
-        if (buffer.length > MAX_FILE_SIZE) {
-          return;
-        }
-        files.push({name: entry.path, size: buffer.length, content: buffer});
-      });
-    }).promise();
-    return files;
-  }
-
-  async addContentsToIndex(assignment: string, solution: string, file: File, commit?: string) {
-    const content = (file.content as Buffer).toString('utf-8');
-    let index: number;
-    const path = commit && (index = file.name.indexOf(commit)) >= 0 ? file.name.substring(index + commit.length + 1) : file.name;
-    await this.searchService.addFile(assignment, solution, path, content);
   }
 
   async countSolutions(assignment: AssignmentDocument): Promise<number> {
@@ -155,28 +114,76 @@ export class ClassroomService {
     }
   }
 
-  async importSolutions(id: string): Promise<ReadSolutionDto[]> {
-    const assignment = await this.assignmentService.findOne(id);
-    if (!assignment || !assignment.classroom || !assignment.classroom.org || !assignment.classroom.prefix || !assignment.classroom.token) {
+  async importSolutions(assignment: AssignmentDocument, usernames?: string[]): Promise<ImportSolution[]> {
+    if (!assignment.classroom) {
       return [];
     }
 
-    const ids = await this.importSolutions2(assignment);
-    return this.solutionService.findAll({_id: {$in: ids}});
-  }
-
-  async importSolutions2(assignment: AssignmentDocument): Promise<string[]> {
-    const {token, codeSearch, mossId} = assignment.classroom!;
+    const {org, prefix, token, codeSearch, mossId, openaiApiKey} = assignment.classroom;
+    if (!org || !prefix) {
+      return [];
+    }
     if (!token) {
       throw new UnauthorizedException('Missing token');
     }
 
+    let repositories = await this.getRepositories(assignment);
+    if (usernames && usernames.length) {
+      const usernamesSet = new Set(usernames);
+      repositories = repositories.filter(repo => usernamesSet.has(this.getGithubName(repo, assignment)));
+    }
+
+    const commits = await Promise.all(repositories.map(async repo => this.getMainCommitSHA(repo, token)));
+    const importSolutions = repositories.map((repo, index) => this.createImportSolution(assignment, repo, commits[index]));
+    const solutions = await this.upsertSolutions(assignment, importSolutions);
+
+    repositories.forEach((repo, i) => {
+      const commit = commits[i];
+      if (commit) {
+        this.tag(repo, token, assignment, commit);
+      }
+    });
+
+    (codeSearch || mossId || openaiApiKey) && await Promise.all(repositories.map(async (repo, i) => {
+      const commit = commits[i];
+      const upsertedId = solutions.upsertedIds[i];
+      if (commit && upsertedId) {
+        const zip = await this.getRepoZip(assignment, this.getGithubName(repo, assignment), commit);
+        return zip ? this.fileService.importZipEntries(zip, assignment._id, upsertedId, commit) : [];
+      } else {
+        return [];
+      }
+    }));
+
+    return importSolutions;
+  }
+
+  async previewImports(assignment: AssignmentDocument): Promise<ImportSolution[]> {
+    if (!assignment.classroom) {
+      return [];
+    }
+    const {org, prefix, token} = assignment.classroom;
+    if (!org || !prefix) {
+      return [];
+    }
+    if (!token) {
+      throw new UnauthorizedException('Missing token');
+    }
+    const repositories = await this.getRepositories(assignment);
+    return repositories
+      .map(repo => this.createImportSolution(assignment, repo, undefined))
+      .sort((a, b) => a.author.github!.localeCompare(b.author.github!))
+      ;
+  }
+
+  private async getRepositories(assignment: AssignmentDocument): Promise<RepositoryInfo[]> {
+    const token = assignment.classroom!.token!;
     const query = this.getQuery(assignment);
     const repositories: RepositoryInfo[] = [];
     let total = Number.MAX_SAFE_INTEGER;
     for (let page = 1; repositories.length < total; page++) {
       try {
-        const result = await this.github<SearchResult>('GET', 'https://api.github.com/search/repositories', token!, {
+        const result = await this.github<SearchResult>('GET', 'https://api.github.com/search/repositories', token, {
           q: query,
           per_page: 100,
           page,
@@ -190,45 +197,7 @@ export class ClassroomService {
         throw err;
       }
     }
-
-    const commits = await Promise.all(repositories.map(async repo => this.getMainCommitSHA(repo, token)));
-    const result = await this.solutionService.bulkWrite(repositories.map((repo, index) => {
-      const solution = this.createSolution(assignment, repo, commits[index]);
-      return {
-        updateOne: {
-          filter: {
-            assignment: assignment._id,
-            'author.github': solution.author.github,
-          },
-          update: {$setOnInsert: solution},
-          upsert: true,
-        },
-      };
-    }));
-
-    if (codeSearch || mossId) {
-      Promise.all(repositories.map(async (repo, i) => {
-        const commit = commits[i];
-        const upsertedId = result.upsertedIds[i];
-        if (commit && upsertedId) {
-          const zip = await this.getRepoZip(assignment, this.getGithubName(repo, assignment), commit);
-          return zip ? this.importZipFiles(zip, assignment._id, upsertedId, !!codeSearch, commit) : [];
-        } else {
-          return [];
-        }
-      })).then(files => {
-        mossId && this.mossService.moss(assignment, files.flat());
-      });
-    }
-
-    repositories.forEach((repo, i) => {
-      const commit = commits[i];
-      if (commit) {
-        this.tag(repo, token, assignment, commit);
-      }
-    });
-
-    return Object.values(result.upsertedIds);
+    return repositories;
   }
 
   private getQuery(assignment: AssignmentDocument): string {
@@ -267,7 +236,7 @@ export class ClassroomService {
     });
   }
 
-  private createSolution(assignment: AssignmentDocument, repo: RepositoryInfo, commit: string | undefined): Solution {
+  private createImportSolution(assignment: AssignmentDocument, repo: RepositoryInfo, commit: string | undefined): ImportSolution {
     return {
       assignment: assignment._id,
       author: {
@@ -276,9 +245,7 @@ export class ClassroomService {
         github: this.getGithubName(repo, assignment),
         studentId: '',
       },
-      solution: '',
       commit,
-      token: generateToken(),
       timestamp: new Date(repo.pushed_at),
     };
   }

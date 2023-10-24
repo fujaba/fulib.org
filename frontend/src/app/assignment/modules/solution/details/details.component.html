@@ -43,6 +43,27 @@
       ></a>
     </div>
   </div>
+  <div class="mb-3" *ngIf="solution.consent as consent">
+    <label class="form-label">Consent</label>
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" id="consentDemonstrationInput" [(ngModel)]="consent.demonstration">
+      <label class="form-check-label" for="consentDemonstrationInput">
+        This solution may be used for demonstration purposes.
+      </label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" id="consentScientificInput" [(ngModel)]="consent.scientific">
+      <label class="form-check-label" for="consentScientificInput">
+        This solution may be used for scientific purposes.
+      </label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" id="consent3PInput" [(ngModel)]="consent['3P']">
+      <label class="form-check-label" for="consent3PInput">
+        This solution may be sent to third parties for evaluation purposes.
+      </label>
+    </div>
+  </div>
   <button type="button" class="btn btn-primary" (click)="save()" [disabled]="saving">
     {{ saving ? 'Saving...' : 'Save' }}
   </button>

@@ -5,13 +5,13 @@ import {SearchModule} from '../search/search.module';
 import {SolutionModule} from '../solution/solution.module';
 import {EvaluationController} from './evaluation.controller';
 import {EvaluationHandler} from './evaluation.handler';
-import {EvaluationSchema} from './evaluation.schema';
+import {Evaluation, EvaluationSchema} from './evaluation.schema';
 import {EvaluationService} from './evaluation.service';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{
-      name: 'evaluations',
+      name: Evaluation.name,
       schema: EvaluationSchema,
     }]),
     AssignmentModule,

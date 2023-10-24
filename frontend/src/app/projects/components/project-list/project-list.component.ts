@@ -68,7 +68,7 @@ export class ProjectListComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.memberService.delete({projectId: project.id, userId: this.currentUser!.id!}).subscribe(() => {
+    this.memberService.delete({parent: project.id, user: this.currentUser!.id!}).subscribe(() => {
       this.projects.removeFirst(p => p === project);
       this.toastService.warn('Leave Project', 'Successfully left project.');
     }, error => {

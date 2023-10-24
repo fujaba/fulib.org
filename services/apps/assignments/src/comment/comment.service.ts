@@ -10,26 +10,9 @@ import {Comment, CommentDocument} from './comment.schema';
 @Injectable()
 export class CommentService {
   constructor(
-    @InjectModel('comments') public model: Model<Comment>,
+    @InjectModel(Comment.name) public model: Model<Comment>,
     private eventService: EventService,
   ) {
-    this.migrate();
-  }
-
-  async migrate() {
-    const result = await this.model.updateMany({}, {
-      // TODO assignment
-      $rename: {
-        parent: 'solution',
-        userId: 'createdBy',
-        timeStamp: 'timestamp',
-        markdown: 'body',
-      },
-      $unset: {
-        html: 1,
-      },
-    });
-    console.info('Migrated', result.modifiedCount, 'comments');
   }
 
   async create(assignment: string, solution: string, dto: CreateCommentDto, distinguished: boolean, createdBy?: string): Promise<CommentDocument> {

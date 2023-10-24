@@ -5,7 +5,7 @@ import {of} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
 import {SolutionService} from 'src/app/assignment/services/solution.service';
 import {environment} from '../../../../../environments/environment';
-import {CONFIG_OPTIONS, ConfigService} from '../../../services/config.service';
+import {ConfigService} from '../../../services/config.service';
 
 @Component({
   selector: 'app-solution-share',
@@ -20,7 +20,6 @@ export class SolutionShareComponent implements OnInit {
 
   readonly origin: string;
   readonly encodedApiServer = encodeURIComponent(new URL(environment.assignmentsApiUrl, location.origin).origin);
-  readonly ideOption = CONFIG_OPTIONS.find(o => o.key === 'ide')!;
 
   constructor(
     private solutionService: SolutionService,

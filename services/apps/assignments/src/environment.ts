@@ -1,6 +1,8 @@
 export const environment = {
   version: 'v1',
   port: +(process.env.PORT || 21318),
+  nodeEnv: process.env.NODE_ENV || 'development',
+  sentryDsn: process.env.SENTRY_DSN || 'https://613fdea31ffd44aa9f21da06ce6346e1@o416265.ingest.sentry.io/4505273320734720',
   mongo: {
     uri: process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/fulib-org',
     options: {
@@ -16,9 +18,6 @@ export const environment = {
     resource: process.env.AUTH_RESOURCE || 'assignments-service',
     algorithms: (process.env.AUTH_ALGORITHMS || 'RS256').split(','),
     issuer: process.env.AUTH_ISSUER || 'https://se.uniks.de/auth/realms/fulib.org',
-  },
-  compiler: {
-    apiUrl: process.env.COMPILER_API_URL || 'http://localhost:4567/api',
   },
   nats: {
     servers: process.env.NATS_URL || 'nats://localhost:4222',

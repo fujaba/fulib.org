@@ -5,7 +5,7 @@ import {forkJoin} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
 import {User} from '../../../user/user';
 import {UserService} from '../../../user/user.service';
-import {Member} from '../../model/member';
+import {Member} from '../../../user/member';
 import {Project} from '../../model/project';
 import {MemberService} from '../../services/member.service';
 import {ProjectService} from '../../services/project.service';
@@ -45,8 +45,8 @@ export class SettingsComponent implements OnInit {
     id$.pipe(
       switchMap(id => this.memberService.findAll(id)),
       tap(members => this.members = members),
-      switchMap(members => forkJoin(members.map(member => this.userService.findOne(member.userId).pipe(
-        tap(user => member.user = user),
+      switchMap(members => forkJoin(members.map(member => this.userService.findOne(member.user).pipe(
+        tap(user => member._user = user),
       )))),
     ).subscribe();
   }
@@ -59,7 +59,7 @@ export class SettingsComponent implements OnInit {
   }
 
   delete(member: Member) {
-    if (!confirm(`Are you sure you want to revoke Collaborator status from ${member.user?.firstName} ${member.user?.lastName}? They can be added as a collaborator again later.`)) {
+    if (!confirm(`Are you sure you want to revoke Collaborator status from ${member._user?.firstName} ${member._user?.lastName}? They can be added as a collaborator again later.`)) {
       return;
     }
 

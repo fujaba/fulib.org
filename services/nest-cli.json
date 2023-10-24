@@ -1,8 +1,10 @@
 {
+  "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
   "monorepo": true,
   "compilerOptions": {
-    "webpack": true
+    "webpack": true,
+    "manualRestart": true
   },
   "projects": {
     "assignments": {
@@ -12,6 +14,15 @@
       "sourceRoot": "apps/assignments/src",
       "compilerOptions": {
         "tsConfigPath": "apps/assignments/tsconfig.app.json"
+      }
+    },
+    "api": {
+      "type": "application",
+      "root": "apps/api",
+      "entryFile": "main",
+      "sourceRoot": "apps/api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/api/tsconfig.app.json"
       }
     },
     "keycloak-auth": {
@@ -57,6 +68,15 @@
       "sourceRoot": "libs/moss/src",
       "compilerOptions": {
         "tsConfigPath": "libs/moss/tsconfig.lib.json"
+      }
+    },
+    "member": {
+      "type": "library",
+      "root": "libs/member",
+      "entryFile": "index",
+      "sourceRoot": "libs/member/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/member/tsconfig.lib.json"
       }
     }
   }

@@ -30,36 +30,28 @@
     <a class="btn btn-primary bi-envelope" [href]="mailLink" (click)="saveAndClose(modal)">
       Draft Mail
     </a>
-    <span class="d-inline-block" [ngbTooltip]="draftLink ? undefined : draftIssueTooltip">
-      <a class="btn btn-primary bi-github" [href]="draftLink" target="_blank" [class.disabled]="!draftLink"
+    <app-disabled-tooltip [require]="[
+      [!!assignment?.classroom?.org, 'Classroom Org is configured in Assignment'],
+      [!!assignment?.classroom?.prefix, 'Classroom Prefix is configured in Assignment'],
+      [!!solution?.author?.github, 'GitHub Username is set in Solution'],
+    ]" #draftIf>
+      <a class="btn btn-primary bi-github" [href]="draftLink" target="_blank" [class.disabled]="draftIf.disabled"
          (click)="saveAndClose(modal)">
         Draft Issue
       </a>
-    </span>
-    <ng-template #draftIssueTooltip>
-      All must be true:
-      <ul>
-        <li>Classroom Org is configured in Assignment</li>
-        <li>Classroom Prefix is configured in Assignment</li>
-        <li>GitHub Username is set in Solution</li>
-      </ul>
-    </ng-template>
-    <span class="d-inline-block" [ngbTooltip]="draftLink && githubToken ? undefined : submitIssueTooltip">
-      <button class="btn btn-success" [disabled]="submitting || !githubToken || !draftLink"
+    </app-disabled-tooltip>
+    <app-disabled-tooltip [require]="[
+      [!!assignment?.classroom?.org, 'Classroom Org is configured in Assignment'],
+      [!!assignment?.classroom?.prefix, 'Classroom Prefix is configured in Assignment'],
+      [!!solution?.author?.github, 'GitHub Username is set in Solution'],
+      [!!githubToken, 'You are logged in'],
+      [!!githubToken, 'Your Account is linked to GitHub'],
+    ]" #submitIf>
+      <button class="btn btn-success" [disabled]="submitting || submitIf.disabled"
               (click)="submitIssue(); saveAndClose(modal)"
       >
         Submit Issue
       </button>
-    </span>
-    <ng-template #submitIssueTooltip>
-      All must be true:
-      <ul>
-        <li>Classroom Org is configured in Assignment</li>
-        <li>Classroom Prefix is configured in Assignment</li>
-        <li>GitHub Username is set in Solution</li>
-        <li>You are logged in</li>
-        <li>Your Account is linked to GitHub</li>
-      </ul>
-    </ng-template>
+    </app-disabled-tooltip>
   </ng-container>
 </ngbx-modal>

@@ -2,9 +2,13 @@ import {DOCUMENT} from '@angular/common';
 import {Component, Inject, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {switchMap, tap} from 'rxjs/operators';
-import {environment} from '../../../../../environments/environment';
 import {AssignmentService} from '../../../services/assignment.service';
-import {ConfigService} from '../../../services/config.service';
+import Assignment, {ReadAssignmentDto} from "../../../model/assignment";
+import {MemberService} from "../member.service";
+import {Member} from "../../../../user/member";
+import {User} from "../../../../user/user";
+import {forkJoin} from "rxjs";
+import {UserService} from "../../../../user/user.service";
 
 @Component({
   selector: 'app-assignment-share',
@@ -12,18 +16,18 @@ import {ConfigService} from '../../../services/config.service';
   styleUrls: ['./share.component.scss'],
 })
 export class ShareComponent implements OnInit {
-  id: string;
-  token?: string;
+  assignment?: Assignment | ReadAssignmentDto;
+  members: Member[];
 
-  ide = this.configService.get('ide');
+  newMember?: User;
 
   readonly origin: string;
-  readonly encodedApiServer = encodeURIComponent(new URL(environment.assignmentsApiUrl, location.origin).origin);
 
   constructor(
     private assignmentService: AssignmentService,
+    private memberService: MemberService,
+    private userService: UserService,
     private route: ActivatedRoute,
-    private configService: ConfigService,
     @Inject(DOCUMENT) document: Document,
   ) {
     this.origin = document.location.origin;
@@ -31,13 +35,18 @@ export class ShareComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.pipe(
-      tap(({aid}) => this.id = aid),
       switchMap(({aid}) => this.assignmentService.get(aid)),
     ).subscribe(assignment => {
-      if ('token' in assignment) {
-        this.token = assignment.token;
-      }
+      this.assignment = assignment;
     });
+
+    this.route.params.pipe(
+      switchMap(({aid}) => this.memberService.findAll(aid)),
+      tap(members => this.members = members),
+      switchMap(members => forkJoin(members.map(member => this.userService.findOne(member.user).pipe(
+        tap(user => member._user = user),
+      )))),
+    ).subscribe();
   }
 
   regenerateToken() {
@@ -45,8 +54,25 @@ export class ShareComponent implements OnInit {
       return;
     }
 
-    this.assignmentService.update(this.id, {token: true}).subscribe(assignment => {
-      this.token = assignment.token!;
+    this.assignmentService.update(this.assignment!._id, {token: true}).subscribe(assignment => {
+      this.assignment = assignment;
+    });
+  }
+
+  addMember() {
+    this.memberService.update({
+      parent: this.assignment!._id,
+      user: this.newMember!.id!,
+      _user: this.newMember!,
+    }).subscribe(member => {
+      this.members.push(member);
+      this.newMember = undefined;
+    });
+  }
+
+  deleteMember(member: Member) {
+    this.memberService.delete(member).subscribe(() => {
+      this.members.splice(this.members.indexOf(member), 1);
     });
   }
 }

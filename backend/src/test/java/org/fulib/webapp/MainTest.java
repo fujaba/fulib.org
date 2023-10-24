@@ -41,7 +41,7 @@ public class MainTest
 	{
 		when(runCodeGen.handle(any(), any())).thenReturn("");
 
-		checkRoute("POST", "/runcodegen");
+		checkRoute("POST", "/api/runcodegen");
 
 		verify(runCodeGen).handle(any(), any());
 	}
@@ -59,7 +59,7 @@ public class MainTest
 	@Test
 	public void versions() throws IOException
 	{
-		checkRoute("GET", "/versions");
+		checkRoute("GET", "/api/versions");
 	}
 
 	private void checkRoute(String method, String path) throws IOException

@@ -1,5 +1,6 @@
 import {enableProdMode} from '@angular/core';
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
+import * as Sentry from '@sentry/angular-ivy';
 
 import 'codemirror/mode/markdown/markdown';
 import 'codemirror/mode/javascript/javascript';
@@ -36,6 +37,18 @@ hljs.registerLanguage('yaml', yaml);
 hljs.registerLanguage('bnf', bnf);
 hljs.registerLanguage('scenario', scenario);
 hljs.registerLanguage(json.name, json);
+
+Sentry.init({
+  enabled: environment.production,
+  dsn: environment.sentryDsn,
+  environment: environment.environment,
+  release: 'v1',
+  initialScope: {
+    tags: {
+      service: 'frontend',
+    },
+  },
+});
 
 if (environment.production) {
   enableProdMode();

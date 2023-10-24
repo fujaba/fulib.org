@@ -8,13 +8,13 @@ import {Telemetry, TelemetryDocument} from './telemetry.schema';
 @Injectable()
 export class TelemetryService {
   constructor(
-    @InjectModel('telemetry') public model: Model<Telemetry>,
+    @InjectModel(Telemetry.name) public model: Model<Telemetry>,
     private eventService: EventService,
   ) {
   }
 
   private emit(event: 'created', telemetry: TelemetryDocument) {
-    this.eventService.emit(`telemetry.${telemetry.id}.${event}`, {event, data: telemetry});
+    this.eventService.emit(`.solutions.${telemetry.solution}.solutions.${telemetry.solution}.telemetry.${telemetry.id}.${event}`, telemetry);
   }
 
   async create(assignment: string, solution: string, dto: CreateTelemetryDto, createdBy?: string): Promise<Telemetry> {

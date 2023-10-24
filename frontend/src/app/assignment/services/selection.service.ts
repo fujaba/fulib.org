@@ -12,9 +12,7 @@ interface SelectionDto {
   snippet: Snippet;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class SelectionService {
   constructor(
     private assignmentService: AssignmentService,

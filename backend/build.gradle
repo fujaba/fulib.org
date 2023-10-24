@@ -11,7 +11,6 @@ plugins {
 
 // --------------- Publication Info ---------------
 
-version = property('version') ?: 'local'
 group = 'org.fulib'
 description = 'The fulib.org website and fulibScenarios Web App'
 
@@ -83,10 +82,10 @@ dependencies {
 	implementation group: 'com.sparkjava', name: 'spark-core', version: '2.9.4'
 
 	// https://mvnrepository.com/artifact/org.json/json
-	implementation group: 'org.json', name: 'json', version: '20230227'
+	implementation group: 'org.json', name: 'json', version: '20230618'
 
 	// https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync
-	implementation group: 'org.mongodb', name: 'mongodb-driver-sync', version: '4.9.0'
+	implementation group: 'org.mongodb', name: 'mongodb-driver-sync', version: '4.10.2'
 
 	// https://mvnrepository.com/artifact/com.auth0/java-jwt
 	implementation group: 'com.auth0', name: 'java-jwt', version: '4.3.0'
@@ -97,7 +96,7 @@ dependencies {
 	testImplementation slf4jDependency
 
 	// https://mvnrepository.com/artifact/org.mockito/mockito-core
-	testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.2.0'
+	testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.4.0'
 }
 
 // --------------- Version Injection ---------------
