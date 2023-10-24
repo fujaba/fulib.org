@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -45,8 +45,8 @@ dependencies:
     specifier: ^7.0.0
     version: 7.0.0(@angular/core@16.2.9)(@angular/forms@16.2.9)(codemirror@5.65.15)
   '@mean-stream/ngbx':
-    specifier: ^0.11.0
-    version: 0.11.0(@angular/common@16.2.9)(@angular/core@16.2.9)(@angular/forms@16.2.9)(@angular/router@16.2.9)(@ng-bootstrap/ng-bootstrap@15.1.1)(bootstrap-darkmode@5.0.1)(bootstrap@5.2.3)(class-validator@0.14.0)(rxjs@7.8.1)
+    specifier: ^0.12.0
+    version: 0.12.0(@angular/common@16.2.9)(@angular/core@16.2.9)(@angular/router@16.2.9)(@ng-bootstrap/ng-bootstrap@15.1.1)(bootstrap-darkmode@5.0.1)(bootstrap@5.2.3)(class-validator@0.14.0)
   '@ng-bootstrap/ng-bootstrap':
     specifier: ^15.1.1
     version: 15.1.1(@angular/common@16.2.9)(@angular/core@16.2.9)(@angular/forms@16.2.9)(@angular/localize@16.2.9)(@popperjs/core@2.11.8)(rxjs@7.8.1)
@@ -71,6 +71,9 @@ dependencies:
   bootstrap-icons:
     specifier: ^1.11.1
     version: 1.11.1
+  class-transformer:
+    specifier: ^0.5.1
+    version: 0.5.1
   class-validator:
     specifier: ^0.14.0
     version: 0.14.0
@@ -2288,19 +2291,17 @@ packages:
     resolution: {integrity: sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==}
     dev: true
 
-  /@mean-stream/ngbx@0.11.0(@angular/common@16.2.9)(@angular/core@16.2.9)(@angular/forms@16.2.9)(@angular/router@16.2.9)(@ng-bootstrap/ng-bootstrap@15.1.1)(bootstrap-darkmode@5.0.1)(bootstrap@5.2.3)(class-validator@0.14.0)(rxjs@7.8.1):
-    resolution: {integrity: sha512-KYtpF3VlaoLb2QCQg4EPl/mD54207tYwzj1PKqYWa9m3AvIUBzt0HLYvJtNJL9LholwhGV1kxEdp9YJ0r3JgKQ==}
+  /@mean-stream/ngbx@0.12.0(@angular/common@16.2.9)(@angular/core@16.2.9)(@angular/router@16.2.9)(@ng-bootstrap/ng-bootstrap@15.1.1)(bootstrap-darkmode@5.0.1)(bootstrap@5.2.3)(class-validator@0.14.0):
+    resolution: {integrity: sha512-rXuaI0YrZUSFToMD+XTyQSBI/KFRVbNo4NpSQ2cBjD+ck8kon0xNflq/BnzgSxUuO9T6FDlpZED17Cnnj0p7/Q==}
     peerDependencies:
-      '@angular/common': ^15.2.0
-      '@angular/core': ^15.2.0
-      '@angular/forms': 15.2.8
-      '@angular/router': ^15.2.0
-      '@ng-bootstrap/ng-bootstrap': ^14.0.0
+      '@angular/common': ^16.2.0
+      '@angular/core': ^16.2.0
+      '@angular/router': ^16.2.0
+      '@ng-bootstrap/ng-bootstrap': ^15.1.0
       bootstrap: ^5.2.3
       bootstrap-darkmode: ^0.9.1
       class-validator: ^0.14.0
       reflect-metadata: ^0.1.13
-      rxjs: 7.8.1
     peerDependenciesMeta:
       bootstrap-darkmode:
         optional: true
@@ -2311,13 +2312,11 @@ packages:
     dependencies:
       '@angular/common': 16.2.9(@angular/core@16.2.9)(rxjs@7.8.1)
       '@angular/core': 16.2.9(rxjs@7.8.1)(zone.js@0.13.3)
-      '@angular/forms': 16.2.9(@angular/common@16.2.9)(@angular/core@16.2.9)(@angular/platform-browser@16.2.9)(rxjs@7.8.1)
       '@angular/router': 16.2.9(@angular/common@16.2.9)(@angular/core@16.2.9)(@angular/platform-browser@16.2.9)(rxjs@7.8.1)
       '@ng-bootstrap/ng-bootstrap': 15.1.1(@angular/common@16.2.9)(@angular/core@16.2.9)(@angular/forms@16.2.9)(@angular/localize@16.2.9)(@popperjs/core@2.11.8)(rxjs@7.8.1)
       bootstrap: 5.2.3(@popperjs/core@2.11.8)
       bootstrap-darkmode: 5.0.1(bootstrap@5.2.3)
       class-validator: 0.14.0
-      rxjs: 7.8.1
       tslib: 2.6.2
     dev: false
 
@@ -3904,6 +3903,10 @@ packages:
     resolution: {integrity: sha512-p3KULyQg4S7NIHixdwbGX+nFHkoBiA4YQmyWtjb8XngSKV124nJmRysgAeujbUVb15vh+RvFUfCPqU7rXk+hZg==}
     engines: {node: '>=6.0'}
     dev: true
+
+  /class-transformer@0.5.1:
+    resolution: {integrity: sha512-SQa1Ws6hUbfC98vKGxZH3KFY0Y1lm5Zm0SY8XX9zbK7FJCyVEac3ATW0RIpwzW+oOfmHE5PMPufDG9hCfoEOMw==}
+    dev: false
 
   /class-validator@0.14.0:
     resolution: {integrity: sha512-ct3ltplN8I9fOwUd8GrP8UQixwff129BkEtuWDKL5W45cQuLd19xqmTLu5ge78YDm/fdje6FMt0hGOhl0lii3A==}
@@ -7177,6 +7180,7 @@ packages:
 
   /prr@1.0.1:
     resolution: {integrity: sha512-yPw4Sng1gWghHQWj0B3ZggWUm4qVbPwPFcRG8KyxiU7J2OHFSoEHKS+EZ3fv5l1t9CyCiop6l/ZYeWbrgoQejw==}
+    requiresBuild: true
     dev: true
     optional: true
 
@@ -7494,6 +7498,7 @@ packages:
 
   /sax@1.3.0:
     resolution: {integrity: sha512-0s+oAmw9zLl1V1cS9BtZN7JAd0cW5e0QH4W3LWEK6a4LaLEA2OTpGYWDY+6XasBLtz6wkm3u1xRw95mRuJ59WA==}
+    requiresBuild: true
     dev: true
     optional: true
 

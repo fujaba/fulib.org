@@ -54,34 +54,6 @@
       </ng-template>
     </div>
   </div>
-  <div ngbDropdown class="d-inline-block">
-    <button class="btn btn-outline-secondary" id="optionsDropdown" ngbDropdownToggle ngbTooltip="Options">
-      <i class="bi-gear"></i>
-      <span class="visually-hidden">Options</span>
-    </button>
-    <div ngbDropdownMenu aria-labelledby="optionsDropdown">
-      <ng-container *ngFor="let option of optionItems!">
-        <h6 class="dropdown-header">
-          {{ option.title }}
-          <i class="bi-info-circle" [ngbTooltip]="option.description"></i>
-        </h6>
-        <button
-          *ngFor="let item of option.options"
-          ngbDropdownItem
-          role="checkbox"
-          (click)="setOption(option.key, item[0])"
-          class="dropdown-item-check"
-          [class.checked]="options[option.key] === item[0]"
-        >
-          {{ item[1] }}
-        </button>
-        <div class="dropdown-divider"></div>
-      </ng-container>
-      <a ngbDropdownItem routerLink="/assignments/settings">
-        All Settings...
-      </a>
-    </div>
-  </div>
   <ng-template #searchHelp>
     <ul>
       <li>Search terms are separated by spaces and case sensitive</li>

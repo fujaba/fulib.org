@@ -8,7 +8,7 @@ import {Assignee} from '../../../model/assignee';
 import Assignment, {ReadAssignmentDto} from '../../../model/assignment';
 import Solution, {AuthorInfo, authorInfoProperties} from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
-import {CONFIG_OPTIONS, ConfigKey, ConfigService} from '../../../services/config.service';
+import {ConfigService} from '../../../services/config.service';
 import {SolutionContainerService} from '../../../services/solution-container.service';
 import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
@@ -48,7 +48,6 @@ export class SolutionTableComponent implements OnInit {
 
   loading = false;
 
-  optionItems = CONFIG_OPTIONS.filter(o => o.options);
   options = this.configService.getAll();
 
   search$ = new BehaviorSubject<string>('');
@@ -130,12 +129,6 @@ export class SolutionTableComponent implements OnInit {
     });
 
     this.userService.getGitHubToken().subscribe(token => this.userToken = token);
-  }
-
-  setOption(key: ConfigKey, value: string) {
-    // copy is necessary to re-evaluate link pipes
-    this.options = {...this.options, [key]: value};
-    this.configService.set(key, value);
   }
 
   select(id: string, selected: boolean) {
