@@ -6,8 +6,9 @@ on:
       - master
     tags:
       - v*
-    paths:
-      - 'backend/**'
+    # TODO the backend needs to be deployed every time because it contains the version number
+    # paths:
+    #   - 'backend/**'
 
 jobs:
   backend:
