@@ -22,13 +22,15 @@ export class ConfigFormComponent {
   ) {
   }
 
-  async save() {
+  async save(): Promise<boolean> {
     const errors = await this.form.validateAll();
     if (errors.length) {
       this.toastService.error('Settings', 'Please fix the errors in the form');
+      return false;
     } else {
       this.configService.setAll(this.config);
       this.toastService.success('Settings', 'Successfully saved settings');
+      return true;
     }
   }
 }

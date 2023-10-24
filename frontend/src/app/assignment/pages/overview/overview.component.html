@@ -27,7 +27,7 @@
     <button class="btn btn-secondary" (click)="modal.dismiss('Cancel')">
       Cancel
     </button>
-    <button class="btn btn-primary" (click)="form.save(); modal.close('Save click')">
+    <button class="btn btn-primary" (click)="save(form, modal)">
       Save
     </button>
   </div>
