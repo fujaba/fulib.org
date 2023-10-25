@@ -5,7 +5,7 @@ import {
   IsBoolean,
   IsDateString,
   IsEmail,
-  IsHash,
+  IsHash, IsIn,
   IsMongoId,
   IsNumber,
   IsOptional,
@@ -33,6 +33,21 @@ export class Consent {
   @IsOptional()
   @IsBoolean()
   '3P'?: boolean;
+}
+
+// TODO when merging frontend and backend, reuse and merge this with the frontend model
+export class Feedback {
+  @IsOptional()
+  @IsIn([1, 2, 3, 4])
+  appropriate?: number;
+
+  @IsOptional()
+  @IsIn([1, 2, 3, 4])
+  helpful?: number;
+
+  @IsOptional()
+  @IsIn([1, 2, 3, 4])
+  understandable?: number;
 }
 
 export class AuthorInfo {
@@ -103,6 +118,12 @@ export class Solution {
   @ValidateNested()
   @Type(() => Consent)
   consent?: Consent;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @ValidateNested()
+  @Type(() => Feedback)
+  feedback?: Feedback;
 
   @Prop()
   @ApiPropertyOptional({description: ''})
