@@ -2,7 +2,7 @@ import {EventService} from '@mean-stream/nestx';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model} from 'mongoose';
-import {AuthorInfo} from '../solution/solution.schema';
+import {AuthorInfo, Solution} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {idFilter} from '../utils';
 import {CourseStudent, CreateCourseDto, UpdateCourseDto} from './course.dto';
@@ -59,6 +59,7 @@ export class CourseService {
           assignee: 1,
           author: 1,
           points: 1,
+          feedback: 1,
         },
       },
       {$sort: {'author.name': 1, 'author.github': 1}},
@@ -66,7 +67,7 @@ export class CourseService {
 
     const keys: (keyof AuthorInfo)[] = ['studentId', 'email', 'github', 'name'];
     for (const solution of solutions) {
-      const {assignment, _id, assignee, author, points} = solution;
+      const {assignment, _id, assignee, author, points, feedback} = solution;
       let student: CourseStudent | undefined = undefined;
       for (const key of keys) {
         const value = author[key];
@@ -78,6 +79,7 @@ export class CourseService {
         student = {
           author,
           solutions: Array(course.assignments.length).fill(null),
+          feedbacks: 0,
         };
       }
       for (const key of keys) {
@@ -93,6 +95,9 @@ export class CourseService {
         points,
         assignee,
       };
+      if (feedback && feedback.appropriate && feedback.helpful && feedback.understandable) {
+        student.feedbacks++;
+      }
     }
     return Array.from(new Set(students.values()));
   }
