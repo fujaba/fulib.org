@@ -23,6 +23,10 @@ export class TimetrackingComponent {
   ) {
   }
 
+  get playing(): boolean {
+    return !!this.startTime;
+  }
+
   ngOnInit() {
     this.accTime = +(this.storageService.get(this.storageKey) || 0);
     this.play();
@@ -51,26 +55,32 @@ export class TimetrackingComponent {
 
   @HostListener('window:blur')
   onBlur() {
-    if (!this.startTime || !this.pauseOnBlur) {
+    if (!this.pauseOnBlur || !this.playing) {
       return;
     }
     this.pause();
   }
 
   playPause() {
-    if (!this.startTime) {
-      this.play();
-    } else {
+    if (this.playing) {
       this.pause();
+    } else {
+      this.play();
     }
   }
 
-  private play() {
+  play() {
+    if (this.playing) {
+      return;
+    }
     this.startTime = Date.now();
     this.startRenderTimer();
   }
 
-  private pause() {
+  pause() {
+    if (!this.playing) {
+      return;
+    }
     this.accTime += Date.now() - this.startTime;
     this.startTime = 0;
     this.saveTime();

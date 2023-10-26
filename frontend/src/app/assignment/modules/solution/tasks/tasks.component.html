@@ -10,8 +10,8 @@
       <button class="btn btn-primary bi-rocket me-2" [disabled]="launching" (click)="launch()">
         Launch in Projects
       </button>
-      <app-timetracking [storageKey]="'solutionTime/' + solution!._id" class="me-2"></app-timetracking>
-      <button class="btn btn-danger bi-stop" (click)="evaluating = false">
+      <app-timetracking #timer [storageKey]="'solutionTime/' + solution!._id" class="me-2"></app-timetracking>
+      <button class="btn btn-danger bi-stop" (click)="timer.pause(); evaluating = false">
         Stop
       </button>
     </ng-template>
