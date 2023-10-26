@@ -8,8 +8,6 @@ import {Assignee} from '../../../model/assignee';
 import Assignment, {ReadAssignmentDto} from '../../../model/assignment';
 import Solution, {AuthorInfo, authorInfoProperties} from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
-import {ConfigService} from '../../../services/config.service';
-import {SolutionContainerService} from '../../../services/solution-container.service';
 import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
 import {TelemetryService} from '../../../services/telemetry.service';
@@ -48,8 +46,6 @@ export class SolutionTableComponent implements OnInit {
 
   loading = false;
 
-  options = this.configService.getAll();
-
   search$ = new BehaviorSubject<string>('');
 
   solutionId: TrackByFunction<Solution> = (index, s) => s._id;
@@ -59,8 +55,6 @@ export class SolutionTableComponent implements OnInit {
     private solutionService: SolutionService,
     private assigneeService: AssigneeService,
     private evaluationService: EvaluationService,
-    private solutionContainerService: SolutionContainerService,
-    private configService: ConfigService,
     private router: Router,
     private telemetryService: TelemetryService,
     private activatedRoute: ActivatedRoute,
@@ -215,23 +209,8 @@ export class SolutionTableComponent implements OnInit {
     this.toastService.success(`Copy ${name}`, `Copied ${this.solutions.length} rows to clipboard`);
   }
 
-  launch(solution: Solution, elem: HTMLButtonElement) {
-    if (!this.assignment || !('token' in this.assignment)) {
-      return;
-    }
-
-    elem.disabled = true;
-    this.solutionContainerService.launch(this.assignment, solution).subscribe(container => {
-      elem.disabled = false;
-      open(container.url, '_blank');
-    }, error => {
-      elem.disabled = false;
-      this.toastService.error('Launch in Projects', 'Failed to launch in Projects', error);
-    });
-  }
-
   openSelected() {
-    for (let i = this.solutions.length - 1; i >= 0; i--){
+    for (let i = this.solutions.length - 1; i >= 0; i--) {
       const {_id} = this.solutions[i];
       if (_id && this.selected[_id]) {
         open(`${location.href}/${_id}`, '_blank');
