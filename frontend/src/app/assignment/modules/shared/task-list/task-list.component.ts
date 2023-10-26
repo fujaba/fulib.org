@@ -16,12 +16,12 @@ import {EvaluationService} from "../../../services/evaluation.service";
 })
 export class TaskListComponent {
   @Input() tasks?: Task[];
+  @Input() editable = false;
   @Input() evaluations?: Record<string, Evaluation | CreateEvaluationDto>;
   @Input() points?: Record<string, number>;
 
   constructor(
     private telemetryService: TelemetryService,
-    private solutionService: SolutionService,
     private evaluationService: EvaluationService,
     private configService: ConfigService,
     private toastService: ToastService,

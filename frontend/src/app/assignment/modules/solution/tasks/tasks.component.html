@@ -17,5 +17,10 @@
     </ng-template>
   </div>
 </div>
-<app-task-list [tasks]="assignment?.tasks" [evaluations]="evaluations" [points]="points"></app-task-list>
+<app-task-list
+  [tasks]="assignment?.tasks"
+  [evaluations]="evaluations"
+  [editable]="evaluating"
+  [points]="points"
+></app-task-list>
 <router-outlet></router-outlet>
