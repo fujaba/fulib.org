@@ -61,9 +61,19 @@ export class SubmitService {
     const {total, sum, tasks} = await this.renderTasks(assignment, solution);
     const footer = this.renderFooter(assignment, solution);
 
+    const feedbackInfo = sum === total ? `
+> [!NOTE]
+> Du hast die volle Punktzahl erreicht. Dafür bekommst du automatisch einen Bonuspunkt.
+` : `
+> [!IMPORTANT]
+> Bitte gib uns Feedback für diese Bewertung, indem du auf den Link klickst und die Fragen beantwortest.
+> Bei erfolgreicher Teilnahme bekommst du einen Bonuspunkt.
+> [Feedback erstellen](${location.origin}/assignments/${assignment._id}/solutions/${solution._id}/feedback?stok=${solution.token})
+`;
+
     return {
       title: `${assignment.title} (${sum}/${total}P)`,
-      body: `${tasks}\n\n${footer}`,
+      body: `${tasks}\n${feedbackInfo}\n${footer}`,
       _points: sum,
     };
   }
