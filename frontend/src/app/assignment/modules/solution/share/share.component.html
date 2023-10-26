@@ -37,12 +37,8 @@
   fulibFeedback Settings
 </h5>
 <p>
-  Use the button below to configure fulibFeedback and view evaluations for this submission in
-  <select class="form-control form-control-sm d-inline-block w-auto" [(ngModel)]="ide"
-          (ngModelChange)="saveIde($event)">
-    <option *ngFor="let option of ideOption.options" [value]="option[0]">{{ option[1] }}</option>
-  </select>
-  .
+  Use the button below to configure fulibFeedback and view evaluations for this submission in your IDE
+  <a class="bi-gear" routerLink="/assignments/settings" ngbTooltip="Configure"></a>.
 </p>
 <a class="btn btn-primary bi-magic"
    [href]="ide + '://fulib.fulibfeedback/configure?api_server=' + encodedApiServer + '&assignment=' + assignmentId + '&solution=' + solutionId + '&token=' + token | safeUrl">

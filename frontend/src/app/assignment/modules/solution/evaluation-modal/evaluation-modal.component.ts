@@ -28,6 +28,10 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
 
   readonly selectionComment = selectionComment;
 
+  codeSearchEnabled = this.configService.getBool('codeSearch');
+  snippetSuggestionsEnabled = this.configService.getBool('snippetSuggestions');
+  similarSolutionsEnabled = this.configService.getBool('similarSolutions');
+
   task?: Task;
   comments: string[] = [];
   evaluation?: Evaluation;
@@ -71,7 +75,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.route.params.pipe(
       switchMap(({aid, task}) => this.assignmentService.get(aid).pipe(
-        tap(assignment => this.dto.codeSearch = !!assignment.classroom?.codeSearch),
+        tap(assignment => this.dto.codeSearch = this.codeSearchEnabled && !!assignment.classroom?.codeSearch),
         map(assignment => this.taskService.find(assignment.tasks, task)),
       )),
     ).subscribe(task => {
@@ -112,9 +116,11 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       switchMap(({aid, task}) => this.evaluationService.distinctValues<string>(aid, 'snippets.comment', {task})),
     ).subscribe(comments => this.comments = comments);
 
-    this.route.params.pipe(
-      switchMap(({aid, sid, task}) => this.embeddingService.findTaskRelatedSnippets(aid, sid, task)),
-    ).subscribe(snippets => this.embeddingSnippets = snippets);
+    if (this.snippetSuggestionsEnabled) {
+      this.route.params.pipe(
+        switchMap(({aid, sid, task}) => this.embeddingService.findTaskRelatedSnippets(aid, sid, task)),
+      ).subscribe(snippets => this.embeddingSnippets = snippets);
+    }
 
     const selection$ = this.route.params.pipe(
       switchMap(({aid, sid}) => this.selectionService.stream(aid, sid)),
@@ -134,37 +140,39 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       setTimeout(() => document.getElementById('snippet-' + index)?.focus());
     }));
 
-    this.subscriptions.add(merge(
-      selection$.pipe(map(sel => sel.snippet.code)),
-      this.snippetUpdates$.pipe(map(snippet => snippet.pattern || snippet.code)),
-    ).pipe(
-      debounceTime(200),
-      distinctUntilChanged(),
-      switchMap(code => this.assignmentService.searchSummary(this.route.snapshot.params.aid, code, this.task?.glob, '***').pipe(
-        map(searchSummary => ({...searchSummary, code})),
-      )),
-    ).subscribe(summary => {
-      let level: string;
-      let message: string | undefined;
-      if (!summary.hits) {
-        level = 'warning';
-        message = 'No result indicates the snippet is not part of the submitted code for this solution. Please make sure you checked out the correct commit.';
-      } else if (summary.files > summary.solutions) {
-        level = 'danger';
-        message = 'The snippet was found in multiple files per solution. It most likely does not provide enough context.';
-      } else if (summary.hits > summary.files) {
-        level = 'warning';
-        message = 'The snippet was found in multiple places per file. It probably does not provide enough context.';
-      } else {
-        level = 'success';
-      }
+    if (this.codeSearchEnabled) {
+      this.subscriptions.add(merge(
+        selection$.pipe(map(sel => sel.snippet.code)),
+        this.snippetUpdates$.pipe(map(snippet => snippet.pattern || snippet.code)),
+      ).pipe(
+        debounceTime(200),
+        distinctUntilChanged(),
+        switchMap(code => this.assignmentService.searchSummary(this.route.snapshot.params.aid, code, this.task?.glob, '***').pipe(
+          map(searchSummary => ({...searchSummary, code})),
+        )),
+      ).subscribe(summary => {
+        let level: string;
+        let message: string | undefined;
+        if (!summary.hits) {
+          level = 'warning';
+          message = 'No result indicates the snippet is not part of the submitted code for this solution. Please make sure you checked out the correct commit.';
+        } else if (summary.files > summary.solutions) {
+          level = 'danger';
+          message = 'The snippet was found in multiple files per solution. It most likely does not provide enough context.';
+        } else if (summary.hits > summary.files) {
+          level = 'warning';
+          message = 'The snippet was found in multiple places per file. It probably does not provide enough context.';
+        } else {
+          level = 'success';
+        }
 
-      this.searchSummary = {
-        ...summary,
-        level,
-        message,
-      };
-    }));
+        this.searchSummary = {
+          ...summary,
+          level,
+          message,
+        };
+      }));
+    }
   }
 
   ngOnDestroy(): void {
