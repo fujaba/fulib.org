@@ -1,2 +1,21 @@
+<div class="card mb-3">
+  <div class="card-body d-flex align-items-center">
+    <button *ngIf="!evaluating else evaluatingTools" (click)="evaluating = true" class="btn btn-primary bi-play">
+      Start
+    </button>
+    <ng-template #evaluatingTools>
+      <a class="btn btn-primary bi-code me-2" [href]="assignment!|cloneLink:solution!:config|safeUrl">
+        Clone in IDE
+      </a>
+      <button class="btn btn-primary bi-rocket me-2" [disabled]="launching" (click)="launch()">
+        Launch in Projects
+      </button>
+      <app-timetracking class="me-2"></app-timetracking>
+      <button class="btn btn-danger bi-stop" (click)="evaluating = false">
+        Stop
+      </button>
+    </ng-template>
+  </div>
+</div>
 <app-task-list [tasks]="assignment?.tasks" [evaluations]="evaluations" [points]="points"></app-task-list>
 <router-outlet></router-outlet>

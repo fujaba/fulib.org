@@ -1,14 +1,18 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {forkJoin, Subscription} from 'rxjs';
+import {config, forkJoin, Subscription} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
-import {ReadAssignmentDto} from '../../../model/assignment';
+import Assignment, {ReadAssignmentDto} from '../../../model/assignment';
 import {Evaluation} from '../../../model/evaluation';
 import Solution from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
 import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
 import {EvaluationService} from "../../../services/evaluation.service";
+import {Config} from "../../../model/config";
+import {ConfigService} from "../../../services/config.service";
+import {SolutionContainerService} from "../../../services/solution-container.service";
+import {ToastService} from "@mean-stream/ngbx";
 
 @Component({
   selector: 'app-solution-tasks',
@@ -22,14 +26,21 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
   evaluations?: Record<string, Evaluation>;
 
   subscription?: Subscription;
+  evaluating = false;
+  config: Config;
+  launching = false;
 
   constructor(
     private assignmentService: AssignmentService,
     private evaluationService: EvaluationService,
     private solutionService: SolutionService,
+    private solutionContainerService: SolutionContainerService,
+    private toastService: ToastService,
     private taskService: TaskService,
     private route: ActivatedRoute,
+    configService: ConfigService,
   ) {
+    this.config = configService.getAll();
   }
 
   ngOnInit(): void {
@@ -85,5 +96,23 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription?.unsubscribe();
+  }
+
+  launch() {
+    if (this.launching || !this.assignment || !('token' in this.assignment)) {
+      return;
+    }
+
+    this.launching = true;
+    this.solutionContainerService.launch(this.assignment as Assignment, this.solution!).subscribe({
+      next: container => {
+        open(container.url, '_blank');
+        this.launching = false;
+      },
+      error: error => {
+        this.toastService.error('Launch in Projects', 'Failed to launch in Projects', error)
+        this.launching = false;
+      },
+    });
   }
 }

@@ -1,4 +1,4 @@
-import {Component, HostListener, Input} from '@angular/core';
+import {Component, EventEmitter, HostListener, Input, Output} from '@angular/core';
 import {animationFrameScheduler, interval, Subscription} from "rxjs";
 
 @Component({
@@ -7,14 +7,8 @@ import {animationFrameScheduler, interval, Subscription} from "rxjs";
   styleUrls: ['./timetracking.component.scss'],
 })
 export class TimetrackingComponent {
-  readonly actionName = {
-    viewSolutionTable: 'Viewing Solution Table',
-    viewSolution: 'Viewing Solution',
-    idle: 'Idling...',
-  };
-
-  @Input() action = 'idle';
   @Input() pauseOnBlur = false;
+  @Output() stateChange = new EventEmitter<boolean>();
 
   accTime = 0;
   startTime = 0;
@@ -24,7 +18,7 @@ export class TimetrackingComponent {
   subscription?: Subscription;
 
   ngOnInit() {
-    this.renderTime();
+    this.play();
   }
 
   ngOnDestroy() {
@@ -67,6 +61,7 @@ export class TimetrackingComponent {
   private play() {
     this.startTime = Date.now();
     this.startRenderTimer();
+    this.stateChange.emit(true);
   }
 
   private pause() {
@@ -74,5 +69,6 @@ export class TimetrackingComponent {
     this.startTime = 0;
     this.renderTime();
     this.stopRenderTimer();
+    this.stateChange.emit(false);
   }
 }
