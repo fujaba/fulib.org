@@ -1,5 +1,6 @@
 import {Component, EventEmitter, HostListener, Input, Output} from '@angular/core';
 import {animationFrameScheduler, interval, Subscription} from "rxjs";
+import {StorageService} from "../../../../services/storage.service";
 
 @Component({
   selector: 'app-timetracking',
@@ -7,8 +8,8 @@ import {animationFrameScheduler, interval, Subscription} from "rxjs";
   styleUrls: ['./timetracking.component.scss'],
 })
 export class TimetrackingComponent {
+  @Input({required: true}) storageKey: string;
   @Input() pauseOnBlur = false;
-  @Output() stateChange = new EventEmitter<boolean>();
 
   accTime = 0;
   startTime = 0;
@@ -17,7 +18,13 @@ export class TimetrackingComponent {
 
   subscription?: Subscription;
 
+  constructor(
+    private storageService: StorageService,
+  ) {
+  }
+
   ngOnInit() {
+    this.accTime = +(this.storageService.get(this.storageKey) || 0);
     this.play();
   }
 
@@ -61,14 +68,17 @@ export class TimetrackingComponent {
   private play() {
     this.startTime = Date.now();
     this.startRenderTimer();
-    this.stateChange.emit(true);
   }
 
   private pause() {
     this.accTime += Date.now() - this.startTime;
     this.startTime = 0;
+    this.saveTime();
     this.renderTime();
     this.stopRenderTimer();
-    this.stateChange.emit(false);
+  }
+
+  private saveTime() {
+    this.storageService.set(this.storageKey, String(this.accTime));
   }
 }
