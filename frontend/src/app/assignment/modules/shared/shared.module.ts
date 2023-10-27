@@ -16,6 +16,8 @@ import {GithubLinkPipe} from './pipes/github-link.pipe';
 import {CloneLinkPipe} from './pipes/clone-link.pipe';
 import {AssignmentActionsComponent} from './assignment-actions/assignment-actions.component';
 import {AssigneeInputComponent} from './assignee-input/assignee-input.component';
+import {EditMemberListComponent} from './edit-member-list/edit-member-list.component';
+import {UserModule} from "../../../user/user.module";
 
 @NgModule({
   imports: [
@@ -26,6 +28,7 @@ import {AssigneeInputComponent} from './assignee-input/assignee-input.component'
     NgbDropdownModule,
     NgbTypeaheadModule,
     FormsModule,
+    UserModule,
   ],
   declarations: [
     AssignmentInfoComponent,
@@ -40,6 +43,7 @@ import {AssigneeInputComponent} from './assignee-input/assignee-input.component'
     CloneLinkPipe,
     AssignmentActionsComponent,
     AssigneeInputComponent,
+    EditMemberListComponent,
   ],
   exports: [
     AssignmentInfoComponent,
@@ -54,6 +58,7 @@ import {AssigneeInputComponent} from './assignee-input/assignee-input.component'
     CloneLinkPipe,
     AssignmentActionsComponent,
     AssigneeInputComponent,
+    EditMemberListComponent,
   ],
 })
 export class AssignmentSharedModule {

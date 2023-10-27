@@ -1,14 +1,9 @@
 import {DOCUMENT} from '@angular/common';
 import {Component, Inject, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {switchMap, tap} from 'rxjs/operators';
+import {switchMap} from 'rxjs/operators';
 import {AssignmentService} from '../../../services/assignment.service';
 import Assignment, {ReadAssignmentDto} from "../../../model/assignment";
-import {MemberService} from "../../../services/member.service";
-import {Member} from "../../../../user/member";
-import {User} from "../../../../user/user";
-import {forkJoin} from "rxjs";
-import {UserService} from "../../../../user/user.service";
 
 @Component({
   selector: 'app-assignment-share',
@@ -17,16 +12,11 @@ import {UserService} from "../../../../user/user.service";
 })
 export class ShareComponent implements OnInit {
   assignment?: Assignment | ReadAssignmentDto;
-  members: Member[];
-
-  newMember?: User;
 
   readonly origin: string;
 
   constructor(
     private assignmentService: AssignmentService,
-    private memberService: MemberService,
-    private userService: UserService,
     private route: ActivatedRoute,
     @Inject(DOCUMENT) document: Document,
   ) {
@@ -39,14 +29,6 @@ export class ShareComponent implements OnInit {
     ).subscribe(assignment => {
       this.assignment = assignment;
     });
-
-    this.route.params.pipe(
-      switchMap(({aid}) => this.memberService.findAll('assignments', aid)),
-      tap(members => this.members = members),
-      switchMap(members => forkJoin(members.map(member => this.userService.findOne(member.user).pipe(
-        tap(user => member._user = user),
-      )))),
-    ).subscribe();
   }
 
   regenerateToken() {
@@ -59,20 +41,5 @@ export class ShareComponent implements OnInit {
     });
   }
 
-  addMember() {
-    this.memberService.update('assignments', {
-      parent: this.assignment!._id,
-      user: this.newMember!.id!,
-      _user: this.newMember!,
-    }).subscribe(member => {
-      this.members.push(member);
-      this.newMember = undefined;
-    });
-  }
-
-  deleteMember(member: Member) {
-    this.memberService.delete('assignments', member.parent, member.user).subscribe(() => {
-      this.members.splice(this.members.indexOf(member), 1);
-    });
-  }
+  protected readonly switchMap = switchMap;
 }

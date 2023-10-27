@@ -11,19 +11,7 @@
     Share this link with your students. They will be able to submit solutions to this assignment.
   </div>
   <hr/>
-  <h5 class="d-flex align-items-center">
-    Members
-    <app-user-typeahead class="ms-auto" [(user)]="newMember"></app-user-typeahead>
-    <button class="btn btn-success bi-person-add ms-2" [disabled]="!newMember" (click)="addMember()">
-      Add Member
-    </button>
-  </h5>
-  <div class="mb-3">
-    <app-member-list [members]="members" [owner]="assignment?.createdBy" (deleted)="deleteMember($event)"></app-member-list>
-    <div class="form-text">
-      Add teaching assistants and other people who should have full access to this assignment.
-    </div>
-  </div>
+  <app-edit-member-list *ngIf="assignment" namespace="assignments" [parent]="assignment._id" [owner]="assignment.createdBy"></app-edit-member-list>
   <hr/>
   <div class="alert alert-warning">
     The following fields contain the assignment token, a secret key that can be used to access and grade all submissions.
