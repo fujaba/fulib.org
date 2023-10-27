@@ -1,9 +1,6 @@
 <div class="card mb-3" *ngIf="assignee">
   <div class="card-body d-flex align-items-center">
-    <button *ngIf="!evaluating else evaluatingTools" (click)="evaluating = true" class="btn btn-primary bi-play">
-      Start
-    </button>
-    <ng-template #evaluatingTools>
+    <ng-container *ngIf="evaluating else notEvaluating">
       <a class="btn btn-primary bi-code me-2" [href]="assignment!|cloneLink:solution!:config|safeUrl">
         Clone in IDE
       </a>
@@ -14,6 +11,15 @@
       <button class="btn btn-danger bi-stop" (click)="timer.pause(); saveDuration(); evaluating = false">
         Stop
       </button>
+    </ng-container>
+    <ng-template #notEvaluating>
+      <button (click)="evaluating = true" class="btn btn-primary bi-play me-2">
+        Start
+      </button>
+      <span class="text-muted" *ngIf="assignee.duration">
+        Duration:
+        {{ assignee.duration | duration }}
+      </span>
     </ng-template>
   </div>
 </div>
