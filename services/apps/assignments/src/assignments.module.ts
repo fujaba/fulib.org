@@ -14,7 +14,6 @@ import {SearchModule} from './search/search.module';
 import {SelectionModule} from './selection/selection.module';
 import {SolutionModule} from './solution/solution.module';
 import {StatisticsModule} from './statistics/statistics.module';
-import {TelemetryModule} from './telemetry/telemetry.module';
 import {SentryInterceptor, SentryModule} from "@ntegral/nestjs-sentry";
 import {APP_INTERCEPTOR} from "@nestjs/core";
 import {EmbeddingModule} from './embedding/embedding.module';
@@ -49,7 +48,6 @@ import {MemberModule} from "./member/member.module";
     SearchModule,
     StatisticsModule,
     SelectionModule,
-    TelemetryModule,
     MossModule,
     EmbeddingModule,
     FileModule,

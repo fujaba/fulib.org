@@ -78,10 +78,10 @@
           </div>
           <app-statistic-value
             [label]="weightedEvaluations ? '∅ per Point' : '∅ per Evaluation'"
-            [value]="(weightedEvaluations ? stats.time.pointsAvg : stats.time.evaluationAvg) / 1000 | duration"
+            [value]="(weightedEvaluations ? stats.time.pointsAvg : stats.time.evaluationAvg) | duration"
           ></app-statistic-value>
           <div class="border-end mx-3 align-self-stretch"></div>
-          <app-statistic-value label="Spent" [value]="stats.time.evaluationTotal / 1000 | duration"></app-statistic-value>
+          <app-statistic-value label="Spent" [value]="stats.time.evaluationTotal | duration"></app-statistic-value>
           <div class="border-end mx-3 align-self-stretch"></div>
           <app-statistic-value label="of Total" [value]="(stats.time.evaluationTotal / (stats.time.codeSearchSavings + stats.time.evaluationTotal)) | percent:'0.0'"></app-statistic-value>
         </li>
@@ -97,7 +97,7 @@
               popoverTitle="Code Search Time Savings Explained"
             ></i>
           </div>
-          <app-statistic-value label="Saved" [value]="stats.time.codeSearchSavings / 1000 | duration"></app-statistic-value>
+          <app-statistic-value label="Saved" [value]="stats.time.codeSearchSavings | duration"></app-statistic-value>
           <div class="border-end mx-3 align-self-stretch"></div>
           <app-statistic-value label="of Total" [value]="(stats.time.codeSearchSavings / (stats.time.codeSearchSavings + stats.time.evaluationTotal)) | percent:'0.0'"></app-statistic-value>
         </li>
@@ -167,7 +167,7 @@
           </li>
           <li>
             The task took
-            <b>{{ taskStats.timeAvg / 1000 | duration }}</b>
+            <b>{{ taskStats.timeAvg | duration }}</b>
             on average to evaluate.
           </li>
           <li>
@@ -213,7 +213,7 @@
           </li>
           <li>
             Code Search saved approximately
-            <b>{{ taskStats._codeSearchTimeSavings / 1000 | duration }}</b>
+            <b>{{ taskStats._codeSearchTimeSavings | duration }}</b>
             of grading time for this task.
           </li>
         </ul>

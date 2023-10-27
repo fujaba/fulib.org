@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import Solution, {Feedback} from "../../../model/solution";
 import {ActivatedRoute} from "@angular/router";
 import {SolutionService} from "../../../services/solution.service";
@@ -10,7 +10,7 @@ import {ToastService} from "@mean-stream/ngbx";
   templateUrl: './feedback.component.html',
   styleUrls: ['./feedback.component.scss']
 })
-export class FeedbackComponent {
+export class FeedbackComponent implements OnInit {
   protected readonly Feedback = Feedback;
 
   feedback: Feedback = {};

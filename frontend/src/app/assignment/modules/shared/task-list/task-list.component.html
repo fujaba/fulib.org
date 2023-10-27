@@ -28,7 +28,6 @@
         [class.bi-robot]="evaluation.author === 'Code Search'"
         [ngbTooltip]="evaluation.remark + ' ~ ' + evaluation.author"
         [routerLink]="[task._id]"
-        (click)="openTelemetry(task)"
       ></a>
       <a
         *ngIf="editable && !evaluations[task._id]"
@@ -36,7 +35,6 @@
         role="button"
         class="bi-plus-circle link-primary ms-1"
         [routerLink]="[task._id]"
-        (click)="openTelemetry(task)"
       ></a>
     </ng-container>
     <app-task-list

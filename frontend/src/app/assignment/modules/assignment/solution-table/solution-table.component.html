@@ -161,7 +161,6 @@
         routerLink="/assignments/{{assignment?._id}}/solutions/{{solution._id}}"
         queryParamsHandling="merge"
         ngbTooltip="View Solution"
-        (click)="telemetry(solution, 'openSolution')"
       ></a>
       <div
         *ngIf="assignment && assignment?.classroom?.org && assignment?.classroom?.prefix && solution.author.github"
@@ -172,7 +171,6 @@
           [href]="assignment|githubLink:solution:true"
           target="_blank"
           ngbTooltip="View {{solution.commit ? 'Commit' : 'Repository'}} on GitHub"
-          (click)="telemetry(solution, 'showGithub')"
         ></a>
       </div>
       <a
@@ -180,7 +178,6 @@
         ngbTooltip="Submit Feedback"
         [routerLink]="['submit', solution._id]"
         queryParamsHandling="preserve"
-        (click)="telemetry(solution, 'openFeedback')"
       ></a>
     </td>
   </tr>

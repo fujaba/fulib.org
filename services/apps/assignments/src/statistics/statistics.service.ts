@@ -4,10 +4,9 @@ import {AssignmentService} from '../assignment/assignment.service';
 import {CommentService} from '../comment/comment.service';
 import {EvaluationService} from '../evaluation/evaluation.service';
 import {SolutionService} from '../solution/solution.service';
-import {TelemetryService} from '../telemetry/telemetry.service';
 import {AssignmentStatistics, EvaluationStatistics, SolutionStatistics, TaskStatistics} from './statistics.dto';
 
-const outlierDurationMillis = 60 * 1000;
+const outlierDuration = 60;
 
 @Injectable()
 export class StatisticsService {
@@ -16,7 +15,6 @@ export class StatisticsService {
     private solutionService: SolutionService,
     private evaluationService: EvaluationService,
     private commentService: CommentService,
-    private telemetryService: TelemetryService,
   ) {
   }
 
@@ -85,45 +83,20 @@ export class StatisticsService {
     let totalTime = 0;
     let weightedTime = 0;
     let codeSearchSavings = 0;
-    for (const result of await this.telemetryService.model.aggregate([
-      {$match: {assignment, action: {$in: ['openEvaluation', 'submitEvaluation']}}},
-      {$sort: {timestamp: 1}},
-      {$group: {_id: {s: '$solution', t: '$task'} as any, events: {$push: '$$ROOT'}}},
+    for (const result of await this.evaluationService.model.aggregate([
       {
-        // end = events.filter(e => e.action === 'submitEvaluation')
-        $addFields: {
-          end: {
-            $last: {
-              $filter: {
-                input: '$events', cond: {
-                  $eq: ['$$this.action', 'submitEvaluation'],
-                },
-              },
-            },
-          },
+        $match: {
+          assignment,
+          duration: {$lt: outlierDuration},
         },
       },
       {
-        // start = events.filter(e => e.action === 'openEvaluation' && e.timestamp < end.timestamp)
-        $addFields: {
-          start: {
-            $last: {
-              $filter: {
-                input: '$events',
-                cond: {
-                  $and: [
-                    {$eq: ['$$this.action', 'openEvaluation']},
-                    {$lt: ['$$this.timestamp', '$end.timestamp']},
-                  ],
-                },
-              },
-            },
-          },
+        $group: {
+          _id: '$task',
+          time: {$sum: '$duration'},
+          count: {$sum: 1},
         },
-      },
-      {$project: {duration: {$subtract: ['$end.timestamp', '$start.timestamp']}}},
-      {$match: {duration: {$lt: outlierDurationMillis}}},
-      {$group: {_id: '$_id.t' as any, time: {$sum: '$duration'}, count: {$sum: 1}}},
+      }
     ])) {
       const {_id, time, count} = result;
       const taskStat = taskStats.get(_id);

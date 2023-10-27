@@ -22,7 +22,6 @@ import {TokenInterceptor} from "./services/token.interceptor";
 import {AssignmentService} from "./services/assignment.service";
 import {TokenService} from "./services/token.service";
 import {SolutionService} from "./services/solution.service";
-import {TelemetryService} from "./services/telemetry.service";
 import {CourseService} from "./services/course.service";
 import {SelectionService} from "./services/selection.service";
 import {SolutionContainerService} from "./services/solution-container.service";
@@ -70,7 +69,6 @@ import {KeycloakBearerInterceptor} from "keycloak-angular";
     ConfigService,
     AssignmentService,
     SolutionService,
-    TelemetryService,
     CourseService,
     SelectionService,
     SolutionContainerService,
