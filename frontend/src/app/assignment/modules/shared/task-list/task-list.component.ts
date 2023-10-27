@@ -5,8 +5,6 @@ import {switchMap} from 'rxjs/operators';
 import {CreateEvaluationDto, Evaluation} from '../../../model/evaluation';
 import Task from '../../../model/task';
 import {ConfigService} from '../../../services/config.service';
-import {SolutionService} from '../../../services/solution.service';
-import {TelemetryService} from '../../../services/telemetry.service';
 import {EvaluationService} from "../../../services/evaluation.service";
 
 @Component({
@@ -21,21 +19,11 @@ export class TaskListComponent {
   @Input() points?: Record<string, number>;
 
   constructor(
-    private telemetryService: TelemetryService,
     private evaluationService: EvaluationService,
     private configService: ConfigService,
     private toastService: ToastService,
     private route: ActivatedRoute,
   ) {
-  }
-
-  openTelemetry(task: Task) {
-    const {aid, sid} = this.route.snapshot.params;
-    this.telemetryService.create(aid, sid, {
-      task: task._id,
-      timestamp: new Date(),
-      action: 'openEvaluation',
-    }).subscribe();
   }
 
   givePoints(task: Task, points: number) {

@@ -11,7 +11,6 @@ import {AssignmentService} from '../../../services/assignment.service';
 import {ConfigService} from '../../../services/config.service';
 import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
-import {TelemetryService} from '../../../services/telemetry.service';
 import {SelectionService} from '../../../services/selection.service';
 import {EvaluationService} from "../../../services/evaluation.service";
 import {EmbeddingService} from "../../../services/embedding.service";
@@ -64,7 +63,6 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     private selectionService: SelectionService,
     private configService: ConfigService,
     private toastService: ToastService,
-    private telemetryService: TelemetryService,
     private evaluationService: EvaluationService,
     private embeddingService: EmbeddingService,
     public route: ActivatedRoute,
@@ -203,13 +201,6 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     this.dto.task = task;
 
     this.dto.snippets.removeFirst(s => s.comment === this.selectionComment);
-
-    this.telemetryService.create(aid, sid, {
-      timestamp: new Date(),
-      task,
-      author: this.dto.author,
-      action: 'submitEvaluation',
-    }).subscribe();
 
     const op = this.evaluation
       ? this.evaluationService.update(aid, sid, this.evaluation._id, this.dto)
