@@ -1,7 +1,7 @@
 import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ModalComponent, ToastService} from '@mean-stream/ngbx';
-import {EMPTY, of, Subscription} from 'rxjs';
+import {EMPTY, Observable, of, Subscription} from 'rxjs';
 import {map, share, switchMap, tap} from 'rxjs/operators';
 import {CodeSearchInfo, CreateEvaluationDto, Evaluation} from '../../../model/evaluation';
 import Solution from '../../../model/solution';
@@ -12,6 +12,7 @@ import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
 import {EvaluationService} from "../../../services/evaluation.service";
 import {selectionComment} from "../snippet-list/snippet-list.component";
+import {ReadAssignmentDto} from "../../../model/assignment";
 
 
 @Component({
@@ -58,20 +59,37 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.route.params.pipe(
-      switchMap(({aid, task}) => this.assignmentService.get(aid).pipe(
-        tap(assignment => this.dto.codeSearch = this.codeSearchEnabled && !!assignment.classroom?.codeSearch),
-        map(assignment => this.taskService.find(assignment.tasks, task)),
-      )),
-    ).subscribe(task => {
-      this.task = task;
-    });
+    const assignment$ = this.route.params.pipe(
+      switchMap(({aid}) => this.assignmentService.get(aid)),
+      share(),
+    );
+
+    this.loadCodeSearchEnabled(assignment$);
+    this.loadTask(assignment$);
 
     const evaluation$ = this.route.params.pipe(
       switchMap(({aid, sid, task}) => this.evaluationService.findByTask(aid, sid, task)),
       share(),
     );
 
+    this.loadEvaluation(evaluation$);
+    this.loadOriginEvaluationAndSolution(evaluation$);
+    this.loadDerivedSolutions(evaluation$);
+  }
+
+  private loadCodeSearchEnabled(assignment$: Observable<ReadAssignmentDto>) {
+    this.subscriptions.add(assignment$.subscribe(assignment => {
+      this.dto.codeSearch = this.codeSearchEnabled && !!assignment.classroom?.codeSearch;
+    }));
+  }
+
+  private loadTask(assignment$: Observable<ReadAssignmentDto>) {
+    this.subscriptions.add(assignment$.subscribe(assignment => {
+      this.task = this.taskService.find(assignment.tasks, this.route.snapshot.params.task);
+    }));
+  }
+
+  private loadEvaluation(evaluation$: Observable<Evaluation | undefined>) {
     this.subscriptions.add(evaluation$.subscribe(evaluation => {
       this.evaluation = evaluation;
       if (evaluation) {
@@ -79,7 +97,9 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
         this.dto = {...this.dto, points, remark, snippets};
       }
     }));
+  }
 
+  private loadOriginEvaluationAndSolution(evaluation$: Observable<Evaluation | undefined>) {
     this.subscriptions.add(evaluation$.pipe(
       switchMap(evaluation => {
         const origin = evaluation?.codeSearch?.origin;
@@ -89,7 +109,9 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       switchMap(originEvaluation => originEvaluation ? this.solutionService.get(originEvaluation.assignment, originEvaluation.solution) : of(undefined)),
       tap(originSolution => this.originSolution = originSolution),
     ).subscribe());
+  }
 
+  private loadDerivedSolutions(evaluation$: Observable<Evaluation | undefined>) {
     this.subscriptions.add(evaluation$.pipe(
       switchMap(evaluation => evaluation ? this.evaluationService.distinctValues<string>(evaluation.assignment, 'solution', {
         origin: evaluation._id,
