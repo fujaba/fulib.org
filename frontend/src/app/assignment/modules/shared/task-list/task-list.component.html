@@ -1,8 +1,10 @@
 <ul *ngIf="tasks else loading">
-  <li *ngFor="let task of tasks"
-      [class]="points && evaluations?.[task._id] ? 'list-unstyled text-' + (task | taskColor:points[task._id]) : evaluations ? 'list-unstyled' : undefined">
+  <li *ngFor="let task of tasks" [class]="[
+    points ? 'text-' + (task | taskColor:points[task._id]) : null,
+    evaluations && editable ? 'list-unstyled' : null,
+  ]">
     <input
-      *ngIf="evaluations"
+      *ngIf="evaluations && editable"
       #check
       type="checkbox"
       class="form-check-input"
@@ -18,7 +20,7 @@
     </span>
     <ng-container *ngIf="evaluations">
       <a
-        *ngIf="evaluations[task._id] as evaluation; else createEvaluation"
+        *ngIf="evaluations[task._id] as evaluation"
         class="ms-1"
         [class.link-info]="evaluation.remark"
         [class.link-secondary]="!evaluation.remark"
@@ -28,20 +30,20 @@
         [routerLink]="[task._id]"
         (click)="openTelemetry(task)"
       ></a>
-      <ng-template #createEvaluation>
-        <a
-          ngbTooltip="Create Evaluation"
-          role="button"
-          class="bi-plus-circle link-primary ms-1"
-          [routerLink]="[task._id]"
-          (click)="openTelemetry(task)"
-        ></a>
-      </ng-template>
+      <a
+        *ngIf="editable && !evaluations[task._id]"
+        ngbTooltip="Create Evaluation"
+        role="button"
+        class="bi-plus-circle link-primary ms-1"
+        [routerLink]="[task._id]"
+        (click)="openTelemetry(task)"
+      ></a>
     </ng-container>
     <app-task-list
       *ngIf="task.children.length"
       [tasks]="task.children"
       [evaluations]="evaluations"
+      [editable]="editable"
       [points]="points"
     ></app-task-list>
   </li>

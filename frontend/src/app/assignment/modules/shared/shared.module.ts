@@ -11,12 +11,11 @@ import {TaskColorPipe} from './pipes/task-color.pipe';
 import {SnippetComponent} from './snippet/snippet.component';
 import {StatisticValueComponent} from './statistic-value/statistic-value.component';
 import {TaskListComponent} from './task-list/task-list.component';
-import { SolutionNamePipe } from './pipes/solution-name.pipe';
-import { GithubLinkPipe } from './pipes/github-link.pipe';
-import { CloneLinkPipe } from './pipes/clone-link.pipe';
-import { AssignmentActionsComponent } from './assignment-actions/assignment-actions.component';
-import { AssigneeInputComponent } from './assignee-input/assignee-input.component';
-
+import {SolutionNamePipe} from './pipes/solution-name.pipe';
+import {GithubLinkPipe} from './pipes/github-link.pipe';
+import {CloneLinkPipe} from './pipes/clone-link.pipe';
+import {AssignmentActionsComponent} from './assignment-actions/assignment-actions.component';
+import {AssigneeInputComponent} from './assignee-input/assignee-input.component';
 
 @NgModule({
   imports: [

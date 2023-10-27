@@ -1,7 +1,32 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
-import {ApiProperty} from '@nestjs/swagger';
-import {IsMongoId, IsNotEmpty, IsString} from 'class-validator';
+import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
+import {IsIn, IsMongoId, IsNotEmpty, IsOptional, IsPositive, IsString, ValidateNested} from 'class-validator';
 import {Document} from 'mongoose';
+import {Type} from "class-transformer";
+
+const OPTIONS = [1, 2, 3, 4];
+
+export class Feedback {
+  @IsOptional()
+  @IsIn(OPTIONS)
+  motivation?: number;
+
+  @IsOptional()
+  @IsIn(OPTIONS)
+  exhaustion?: number;
+
+  @IsOptional()
+  @IsIn(OPTIONS)
+  stress?: number;
+
+  @IsOptional()
+  @IsIn(OPTIONS)
+  concentration?: number;
+
+  @IsOptional()
+  @IsIn(OPTIONS)
+  ignoreDistraction?: number;
+}
 
 @Schema({id: false, _id: false})
 export class Assignee {
@@ -20,6 +45,19 @@ export class Assignee {
   @IsString()
   @IsNotEmpty()
   assignee: string;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsPositive()
+  duration?: number;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => Feedback)
+  feedback?: Feedback;
 }
 
 export type AssigneeDocument = Assignee & Document;

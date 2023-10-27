@@ -1,0 +1,13 @@
+<ngbx-modal #modal [back]="['..']" size="lg">
+  <ng-container modal-title>
+    Feedback
+  </ng-container>
+  <ng-container modal-body>
+    <ngbx-validator-form [model]="feedback" [type]="Feedback"></ngbx-validator-form>
+  </ng-container>
+  <ng-container modal-footer>
+    <button class="btn btn-primary" (click)="save(); modal.close()">
+      Submit
+    </button>
+  </ng-container>
+</ngbx-modal>

@@ -17,10 +17,11 @@ import {SolutionShareComponent} from './share/share.component';
 import {SolutionRoutingModule} from './solution-routing.module';
 import {SolutionComponent} from './solution/solution.component';
 import {SolutionTasksComponent} from './tasks/tasks.component';
-import { SimilarModalComponent } from './similar-modal/similar-modal.component';
+import {SimilarModalComponent} from './similar-modal/similar-modal.component';
 import {CommentService} from "./comment.service";
-import { FeedbackComponent } from './feedback/feedback.component';
-
+import {FeedbackComponent} from './feedback/feedback.component';
+import {TimetrackingComponent} from './timetracking/timetracking.component';
+import {AssigneeFeedbackComponent} from './assignee-feedback/assignee-feedback.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,8 @@ import { FeedbackComponent } from './feedback/feedback.component';
     DeleteModalComponent,
     SimilarModalComponent,
     FeedbackComponent,
+    TimetrackingComponent,
+    AssigneeFeedbackComponent,
   ],
   imports: [
     CommonModule,
