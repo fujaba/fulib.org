@@ -37,9 +37,9 @@ export class TimetrackingComponent {
   }
 
   private renderTime() {
-    const totalTime = this.duration + (this.startTime ? Date.now() - this.startTime : 0);
-    const minutes = Math.floor(totalTime / 1000 / 60) % 60;
-    const seconds = totalTime / 1000 % 60;
+    const totalTime = this.duration + (this.startTime ? (Date.now() - this.startTime) / 1000 : 0);
+    const minutes = Math.floor(totalTime / 60) % 60;
+    const seconds = totalTime % 60;
     this.renderedTime = `${minutes}:${seconds.toFixed(2).padStart(5, '0')}`;
   }
 
@@ -75,7 +75,7 @@ export class TimetrackingComponent {
     if (!this.playing) {
       return;
     }
-    this.duration += Date.now() - this.startTime;
+    this.duration += (Date.now() - this.startTime) / 1000;
     this.durationChange.emit(this.duration);
     this.startTime = 0;
     this.renderTime();
