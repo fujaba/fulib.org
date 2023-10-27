@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {CreateEvaluationDto, Snippet} from "../../../model/evaluation";
 import {merge, Observable, Subject, Subscription} from "rxjs";
 import {SearchSummary} from "../../../model/search-result";
@@ -18,7 +18,7 @@ export const selectionComment = '(fulibFeedback Selection)';
   templateUrl: './snippet-list.component.html',
   styleUrls: ['./snippet-list.component.scss']
 })
-export class SnippetListComponent implements OnInit {
+export class SnippetListComponent implements OnInit, OnDestroy {
   @Input({required: true}) task?: Task;
   @Input({required: true}) dto: CreateEvaluationDto;
 

@@ -2,7 +2,7 @@ import {EventService} from '@mean-stream/nestx';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model} from 'mongoose';
-import {AuthorInfo, Solution} from '../solution/solution.schema';
+import {AuthorInfo} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {idFilter} from '../utils';
 import {CourseStudent, CreateCourseDto, UpdateCourseDto} from './course.dto';
