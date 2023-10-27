@@ -1,8 +1,8 @@
 import {NotFound} from '@mean-stream/nestx';
-import {Body, Controller, Delete, Get, Param, Put} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Patch, Put} from '@nestjs/common';
 import {ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
-import {UpdateAssigneeDto} from './assignee.dto';
+import {PatchAssigneeDto, UpdateAssigneeDto} from './assignee.dto';
 import {Assignee} from './assignee.schema';
 import {AssigneeService} from './assignee.service';
 
@@ -45,6 +45,17 @@ export class AssigneeController {
     @Body() dto: UpdateAssigneeDto,
   ) {
     return this.assigneeService.upsert({assignment, solution}, dto);
+  }
+
+  @Patch('assignments/:assignment/solutions/:solution/assignee')
+  @AssignmentAuth({forbiddenResponse})
+  @ApiOkResponse({type: Assignee})
+  async patch(
+    @Param('assignment') assignment: string,
+    @Param('solution') solution: string,
+    @Body() dto: PatchAssigneeDto,
+  ) {
+    return this.assigneeService.updateOne({assignment, solution}, dto);
   }
 
   @Delete('assignments/:assignment/solutions/:solution/assignee')
