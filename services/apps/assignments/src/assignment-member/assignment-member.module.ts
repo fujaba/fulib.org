@@ -1,8 +1,8 @@
 import {forwardRef, Module} from '@nestjs/common';
 import {MongooseModule} from '@nestjs/mongoose';
 import {Member, MemberAuthGuard, MemberSchema, MemberService} from '@app/member';
-import {MemberController} from './member.controller';
-import {MemberHandler} from "./member.handler";
+import {AssignmentMemberController} from './assignment-member.controller';
+import {AssignmentMemberHandler} from "./assignment-member.handler";
 import {AssignmentModule} from "../assignment/assignment.module";
 
 @Module({
@@ -10,16 +10,16 @@ import {AssignmentModule} from "../assignment/assignment.module";
     MongooseModule.forFeature([{name: Member.name, schema: MemberSchema}]),
     forwardRef(() => AssignmentModule),
   ],
-  controllers: [MemberController],
+  controllers: [AssignmentMemberController],
   providers: [
     MemberService,
     MemberAuthGuard,
-    MemberHandler,
+    AssignmentMemberHandler,
   ],
   exports: [
     MemberService,
     MemberAuthGuard,
   ],
 })
-export class MemberModule {
+export class AssignmentMemberModule {
 }
