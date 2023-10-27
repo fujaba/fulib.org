@@ -11,7 +11,7 @@
         Launch in Projects
       </button>
       <app-timetracking #timer [storageKey]="'solutionTime/' + solution!._id" class="me-2"></app-timetracking>
-      <button class="btn btn-danger bi-stop" (click)="timer.pause(); evaluating = false">
+      <button class="btn btn-danger bi-stop" (click)="timer.pause(); saveDuration(timer.accTime); evaluating = false">
         Stop
       </button>
     </ng-template>

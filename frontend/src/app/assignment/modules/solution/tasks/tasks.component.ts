@@ -13,6 +13,7 @@ import {Config} from "../../../model/config";
 import {ConfigService} from "../../../services/config.service";
 import {SolutionContainerService} from "../../../services/solution-container.service";
 import {ToastService} from "@mean-stream/ngbx";
+import {AssigneeService} from "../../../services/assignee.service";
 
 @Component({
   selector: 'app-solution-tasks',
@@ -38,6 +39,7 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
     private toastService: ToastService,
     private taskService: TaskService,
     private route: ActivatedRoute,
+    private assigneeService: AssigneeService,
     configService: ConfigService,
   ) {
     this.config = configService.getAll();
@@ -113,6 +115,16 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
         this.toastService.error('Launch in Projects', 'Failed to launch in Projects', error)
         this.launching = false;
       },
+    });
+  }
+
+  saveDuration(duration: number) {
+    this.assigneeService.set(this.assignment!._id, this.solution!._id!, {
+      duration,
+      assignee: this.config.name,
+    }).subscribe({
+      next: () => this.toastService.success('Finish Evaluation', 'Successfully saved duration'),
+      error: error => this.toastService.error('Finish Evaluation', 'Failed to save duration', error),
     });
   }
 }
