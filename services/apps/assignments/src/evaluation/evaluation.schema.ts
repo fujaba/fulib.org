@@ -8,6 +8,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  IsPositive,
   IsString,
   IsUUID,
   Min,
@@ -135,6 +136,12 @@ export class Evaluation {
   @ApiProperty()
   @IsNumber()
   points: number;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsPositive()
+  duration?: number;
 
   @Prop()
   @ApiProperty({type: [Snippet]})
