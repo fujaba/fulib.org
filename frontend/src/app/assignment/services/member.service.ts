@@ -5,6 +5,8 @@ import {tap} from 'rxjs/operators';
 import {Member} from "../../user/member";
 import {environment} from "../../../environments/environment";
 
+export type Namespace = 'assignments' | 'courses';
+
 @Injectable()
 export class MemberService {
   constructor(
@@ -12,18 +14,18 @@ export class MemberService {
   ) {
   }
 
-  findAll(id: string): Observable<Member[]> {
-    return this.http.get<Member[]>(`${environment.assignmentsApiUrl}/assignments/${id}/members`);
+  findAll(namespace: Namespace, parent: string): Observable<Member[]> {
+    return this.http.get<Member[]>(`${environment.assignmentsApiUrl}/${namespace}/${parent}/members`);
   }
 
-  update(member: Member): Observable<Member> {
+  update(namespace: Namespace, member: Member): Observable<Member> {
     const {_user, parent, user, ...rest} = member;
-    return this.http.put<Member>(`${environment.assignmentsApiUrl}/assignments/${parent}/members/${user}`, rest).pipe(
+    return this.http.put<Member>(`${environment.assignmentsApiUrl}/${namespace}/${parent}/members/${user}`, rest).pipe(
       tap(newMember => newMember._user = _user),
     );
   }
 
-  delete({parent, user}: Member): Observable<Member> {
-    return this.http.delete<Member>(`${environment.assignmentsApiUrl}/assignments/${parent}/members/${user}`);
+  delete(namespace: Namespace, parent: string, user: string): Observable<Member> {
+    return this.http.delete<Member>(`${environment.assignmentsApiUrl}/${namespace}/${parent}/members/${user}`);
   }
 }

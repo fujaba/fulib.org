@@ -41,7 +41,7 @@ export class ShareComponent implements OnInit {
     });
 
     this.route.params.pipe(
-      switchMap(({aid}) => this.memberService.findAll(aid)),
+      switchMap(({aid}) => this.memberService.findAll('assignments', aid)),
       tap(members => this.members = members),
       switchMap(members => forkJoin(members.map(member => this.userService.findOne(member.user).pipe(
         tap(user => member._user = user),
@@ -60,7 +60,7 @@ export class ShareComponent implements OnInit {
   }
 
   addMember() {
-    this.memberService.update({
+    this.memberService.update('assignments', {
       parent: this.assignment!._id,
       user: this.newMember!.id!,
       _user: this.newMember!,
@@ -71,7 +71,7 @@ export class ShareComponent implements OnInit {
   }
 
   deleteMember(member: Member) {
-    this.memberService.delete(member).subscribe(() => {
+    this.memberService.delete('assignments', member.parent, member.user).subscribe(() => {
       this.members.splice(this.members.indexOf(member), 1);
     });
   }
