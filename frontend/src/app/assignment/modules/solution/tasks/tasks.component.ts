@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {config, forkJoin, Subscription} from 'rxjs';
+import {forkJoin, Subscription} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
 import Assignment, {ReadAssignmentDto} from '../../../model/assignment';
 import {Evaluation} from '../../../model/evaluation';
@@ -9,11 +9,11 @@ import {AssignmentService} from '../../../services/assignment.service';
 import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
 import {EvaluationService} from "../../../services/evaluation.service";
-import {Config} from "../../../model/config";
 import {ConfigService} from "../../../services/config.service";
 import {SolutionContainerService} from "../../../services/solution-container.service";
 import {ToastService} from "@mean-stream/ngbx";
 import {AssigneeService} from "../../../services/assignee.service";
+import {UpdateAssigneeDto} from "../../../model/assignee";
 
 @Component({
   selector: 'app-solution-tasks',
@@ -28,8 +28,12 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
 
   subscription?: Subscription;
   evaluating = false;
-  config: Config;
+  config = this.configService.getAll();
   launching = false;
+  assignee: UpdateAssigneeDto = {
+    assignee: this.config.name,
+    duration: 0,
+  };
 
   constructor(
     private assignmentService: AssignmentService,
@@ -40,15 +44,21 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
     private taskService: TaskService,
     private route: ActivatedRoute,
     private assigneeService: AssigneeService,
-    configService: ConfigService,
+    private configService: ConfigService,
   ) {
-    this.config = configService.getAll();
   }
 
   ngOnInit(): void {
     this.route.params.pipe(
       switchMap(({aid, sid}) => this.solutionService.get(aid, sid)),
     ).subscribe(solution => this.solution = solution);
+
+    this.route.params.pipe(
+      switchMap(({aid, sid}) => this.assigneeService.findOne(aid, sid)),
+    ).subscribe(assignee => {
+      assignee.duration ||= 0;
+      this.assignee = assignee;
+    });
 
     this.route.params.pipe(
       switchMap(({aid, sid}) => forkJoin([
@@ -118,11 +128,14 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
     });
   }
 
-  saveDuration(duration: number) {
-    this.assigneeService.set(this.assignment!._id, this.solution!._id!, {
-      duration,
-      assignee: this.config.name,
-    }).subscribe({
+  saveDuration() {
+    if (!this.assignee) {
+      return;
+    }
+    if (this.assignee.assignee !== this.config.name && !confirm('You are not assigned to this solution. Do you want to assign yourself and save the duration?')) {
+      return;
+    }
+    this.assigneeService.set(this.assignment!._id, this.solution!._id!, this.assignee).subscribe({
       next: () => this.toastService.success('Finish Evaluation', 'Successfully saved duration'),
       error: error => this.toastService.error('Finish Evaluation', 'Failed to save duration', error),
     });

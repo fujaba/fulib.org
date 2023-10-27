@@ -24,7 +24,7 @@ export class AssigneeService {
   }
 
   setAssignee(assignment: string, solution: string, assignee: string | undefined): Observable<Assignee> {
-    return assignee ? this.set(assignee, solution, {assignee}) : this.delete(assignment, solution);
+    return assignee ? this.set(assignment, solution, {assignee}) : this.delete(assignment, solution);
   }
 
   set(assignment: string, solution: string, dto: UpdateAssigneeDto): Observable<Assignee> {

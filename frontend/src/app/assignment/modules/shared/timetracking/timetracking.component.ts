@@ -8,27 +8,21 @@ import {StorageService} from "../../../../services/storage.service";
   styleUrls: ['./timetracking.component.scss'],
 })
 export class TimetrackingComponent {
-  @Input({required: true}) storageKey: string;
   @Input() pauseOnBlur = false;
+  @Input() duration = 0;
+  @Output() durationChange = new EventEmitter<number>();
 
-  accTime = 0;
   startTime = 0;
 
   renderedTime = '0:00.00';
 
   subscription?: Subscription;
 
-  constructor(
-    private storageService: StorageService,
-  ) {
-  }
-
   get playing(): boolean {
     return !!this.startTime;
   }
 
   ngOnInit() {
-    this.accTime = +(this.storageService.get(this.storageKey) || 0);
     this.play();
   }
 
@@ -43,7 +37,7 @@ export class TimetrackingComponent {
   }
 
   private renderTime() {
-    const totalTime = this.accTime + (this.startTime ? Date.now() - this.startTime : 0);
+    const totalTime = this.duration + (this.startTime ? Date.now() - this.startTime : 0);
     const minutes = Math.floor(totalTime / 1000 / 60) % 60;
     const seconds = totalTime / 1000 % 60;
     this.renderedTime = `${minutes}:${seconds.toFixed(2).padStart(5, '0')}`;
@@ -81,14 +75,10 @@ export class TimetrackingComponent {
     if (!this.playing) {
       return;
     }
-    this.accTime += Date.now() - this.startTime;
+    this.duration += Date.now() - this.startTime;
+    this.durationChange.emit(this.duration);
     this.startTime = 0;
-    this.saveTime();
     this.renderTime();
     this.stopRenderTimer();
-  }
-
-  private saveTime() {
-    this.storageService.set(this.storageKey, String(this.accTime));
   }
 }
