@@ -5,6 +5,7 @@ import {SolutionModule} from '../solution/solution.module';
 import {CourseController} from './course.controller';
 import {Course, CourseSchema} from './course.schema';
 import {CourseService} from './course.service';
+import {CourseAuthGuard} from "./course-auth.guard";
 
 @Module({
   imports: [
@@ -18,7 +19,14 @@ import {CourseService} from './course.service';
     AssigneeModule,
   ],
   controllers: [CourseController],
-  providers: [CourseService],
+  providers: [
+    CourseService,
+    CourseAuthGuard,
+  ],
+  exports: [
+    CourseService,
+    CourseAuthGuard,
+  ],
 })
 export class CourseModule {
 }

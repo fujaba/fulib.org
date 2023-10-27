@@ -20,6 +20,7 @@ import {EmbeddingModule} from './embedding/embedding.module';
 import {MossModule} from './moss/moss.module';
 import { FileModule } from './file/file.module';
 import {AssignmentMemberModule} from "./assignment-member/assignment-member.module";
+import {CourseMemberModule} from "./course-member/course-member.module";
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import {AssignmentMemberModule} from "./assignment-member/assignment-member.modu
     AssigneeModule,
     CommentModule,
     CourseModule,
+    CourseMemberModule,
     EvaluationModule,
     SearchModule,
     StatisticsModule,
