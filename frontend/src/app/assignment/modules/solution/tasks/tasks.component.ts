@@ -132,7 +132,10 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
     if (this.assignee.assignee !== this.config.name && !confirm('You are not assigned to this solution. Do you want to assign yourself and save the duration?')) {
       return;
     }
-    this.assigneeService.set(this.assignment!._id, this.solution!._id!, this.assignee).subscribe({
+    this.assigneeService.update(this.assignment!._id, this.solution!._id!, {
+      duration: this.assignee.duration,
+      assignee: this.config.name,
+    }).subscribe({
       next: () => this.toastService.success('Finish Evaluation', 'Successfully saved duration'),
       error: error => this.toastService.error('Finish Evaluation', 'Failed to save duration', error),
     });
