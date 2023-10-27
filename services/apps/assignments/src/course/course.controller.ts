@@ -18,13 +18,13 @@ export class CourseController {
   }
 
   @Post()
-  @Auth({optional: true})
+  @Auth()
   @ApiCreatedResponse({type: Course})
   async create(
     @Body() dto: CreateCourseDto,
-    @AuthUser() user?: UserToken,
+    @AuthUser() user: UserToken,
   ): Promise<Course> {
-    return this.courseService.create(dto, user?.sub);
+    return this.courseService.create(dto, user.sub);
   }
 
   @Get()
