@@ -1,11 +1,13 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound} from '@mean-stream/nestx';
-import {Body, Controller, Delete, Get, Param, Patch, Post, Query} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, ParseArrayPipe, Patch, Post, Query} from '@nestjs/common';
 import {ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags} from '@nestjs/swagger';
 import {CourseStudent, CreateCourseDto, UpdateCourseDto} from './course.dto';
 import {Course} from './course.schema';
 import {CourseService} from './course.service';
 import {CourseAuth} from "../course-member/course-auth.decorator";
+import {FilterQuery} from "mongoose";
+import {MemberService} from "@app/member";
 
 const forbiddenResponse = 'Not owner.';
 
@@ -14,6 +16,7 @@ const forbiddenResponse = 'Not owner.';
 export class CourseController {
   constructor(
     private readonly courseService: CourseService,
+    private readonly memberService: MemberService,
   ) {
   }
 
@@ -31,8 +34,17 @@ export class CourseController {
   @ApiOkResponse({type: [Course]})
   async findAll(
     @Query('createdBy') createdBy?: string,
+    @Query('members', new ParseArrayPipe({optional: true})) memberIds?: string[],
   ): Promise<Course[]> {
-    return this.courseService.findAll({createdBy});
+    const filter: FilterQuery<Course> = {};
+    if (createdBy) {
+      (filter.$or ||= []).push({createdBy});
+    }
+    if (memberIds) {
+      const members = await this.memberService.findAll({user: {$in: memberIds}});
+      (filter.$or ||= []).push({_id: {$in: members.map(m => m.parent)}});
+    }
+    return this.courseService.findAll(filter);
   }
 
   @Get(':id')
