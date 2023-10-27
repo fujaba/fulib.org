@@ -4,7 +4,7 @@ import {ActivatedRoute} from '@angular/router';
 import {switchMap, tap} from 'rxjs/operators';
 import {AssignmentService} from '../../../services/assignment.service';
 import Assignment, {ReadAssignmentDto} from "../../../model/assignment";
-import {MemberService} from "../member.service";
+import {MemberService} from "../../../services/member.service";
 import {Member} from "../../../../user/member";
 import {User} from "../../../../user/user";
 import {forkJoin} from "rxjs";

@@ -2,8 +2,8 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {tap} from 'rxjs/operators';
-import {Member} from "../../../user/member";
-import {environment} from "../../../../environments/environment";
+import {Member} from "../../user/member";
+import {environment} from "../../../environments/environment";
 
 @Injectable()
 export class MemberService {
