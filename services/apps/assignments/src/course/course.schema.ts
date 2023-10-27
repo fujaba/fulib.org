@@ -1,10 +1,13 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
 import {IsArray, IsMongoId, IsNotEmpty, IsOptional, IsString, IsUUID} from 'class-validator';
-import {Document} from 'mongoose';
+import {Document, Types} from 'mongoose';
 
 @Schema()
 export class Course {
+  @ApiProperty()
+  _id: Types.ObjectId;
+
   @Prop()
   @ApiPropertyOptional()
   @IsOptional()
