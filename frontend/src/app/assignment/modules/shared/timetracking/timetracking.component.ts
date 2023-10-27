@@ -1,13 +1,12 @@
-import {Component, EventEmitter, HostListener, Input, Output} from '@angular/core';
+import {Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {animationFrameScheduler, interval, Subscription} from "rxjs";
-import {StorageService} from "../../../../services/storage.service";
 
 @Component({
   selector: 'app-timetracking',
   templateUrl: './timetracking.component.html',
   styleUrls: ['./timetracking.component.scss'],
 })
-export class TimetrackingComponent {
+export class TimetrackingComponent implements OnInit, OnDestroy {
   @Input() pauseOnBlur = false;
   @Input() duration = 0;
   @Output() durationChange = new EventEmitter<number>();
