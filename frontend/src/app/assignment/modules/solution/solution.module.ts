@@ -22,6 +22,7 @@ import {CommentService} from "./comment.service";
 import {FeedbackComponent} from './feedback/feedback.component';
 import {TimetrackingComponent} from './timetracking/timetracking.component';
 import {AssigneeFeedbackComponent} from './assignee-feedback/assignee-feedback.component';
+import { SnippetListComponent } from './snippet-list/snippet-list.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import {AssigneeFeedbackComponent} from './assignee-feedback/assignee-feedback.c
     FeedbackComponent,
     TimetrackingComponent,
     AssigneeFeedbackComponent,
+    SnippetListComponent,
   ],
   imports: [
     CommonModule,
