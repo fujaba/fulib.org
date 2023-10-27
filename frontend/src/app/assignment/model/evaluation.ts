@@ -28,6 +28,7 @@ export class Evaluation {
   author: string;
   remark: string;
   points: number;
+  duration?: number;
   snippets: Snippet[];
 
   codeSearch?: CodeSearchInfo;

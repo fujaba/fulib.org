@@ -31,6 +31,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
   snippetSuggestionsEnabled = this.configService.getBool('snippetSuggestions');
   similarSolutionsEnabled = this.configService.getBool('similarSolutions');
 
+  startDate = Date.now();
   task?: Task;
   comments: string[] = [];
   evaluation?: Evaluation;
@@ -201,6 +202,10 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     this.dto.task = task;
 
     this.dto.snippets.removeFirst(s => s.comment === this.selectionComment);
+
+    if (!this.evaluation) {
+      this.dto.duration = (Date.now() - this.startDate) / 1000;
+    }
 
     const op = this.evaluation
       ? this.evaluationService.update(aid, sid, this.evaluation._id, this.dto)
