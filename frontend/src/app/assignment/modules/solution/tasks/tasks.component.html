@@ -8,18 +8,21 @@
         Launch in Projects
       </button>
       <app-timetracking #timer [(duration)]="assignee.duration!" class="me-2"></app-timetracking>
-      <button class="btn btn-danger bi-stop" (click)="timer.pause(); saveDuration(); evaluating = false">
+      <a class="btn btn-danger bi-stop" (click)="timer.pause(); saveDuration(); evaluating = false" routerLink="feedback">
         Stop
-      </button>
+      </a>
     </ng-container>
     <ng-template #notEvaluating>
       <button (click)="evaluating = true" class="btn btn-primary bi-play me-2">
         Start
       </button>
-      <span class="text-muted" *ngIf="assignee.duration">
+      <span class="text-muted me-2" *ngIf="assignee.duration">
         Duration:
         {{ assignee.duration | duration }}
       </span>
+      <a *ngIf="assignee.feedback" routerLink="feedback">
+        View Feedback
+      </a>
     </ng-template>
   </div>
 </div>

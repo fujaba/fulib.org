@@ -9,10 +9,12 @@ import {SolutionShareComponent} from './share/share.component';
 import {SolutionComponent} from './solution/solution.component';
 import {SolutionTasksComponent} from './tasks/tasks.component';
 import {SimilarModalComponent} from "./similar-modal/similar-modal.component";
+import {AssigneeFeedbackComponent} from "./assignee-feedback/assignee-feedback.component";
 
 export const solutionChildRoutes: Routes = [
   {
     path: 'tasks', component: SolutionTasksComponent, data: {title: 'Tasks'}, children: [
+      {path: 'feedback', component: AssigneeFeedbackComponent, data: {title: 'Feedback'}},
       {path: ':task', component: EvaluationModalComponent, data: {title: 'Evaluation'}},
       {path: ':task/similar', component: SimilarModalComponent, data: {title: 'Similar Solutions'}},
     ],
