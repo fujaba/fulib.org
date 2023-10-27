@@ -2,7 +2,6 @@ import {NotFound} from '@mean-stream/nestx';
 import {Body, Controller, Delete, Get, Param, Put} from '@nestjs/common';
 import {ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
-import {AssignmentService} from '../assignment/assignment.service';
 import {UpdateAssigneeDto} from './assignee.dto';
 import {Assignee} from './assignee.schema';
 import {AssigneeService} from './assignee.service';
@@ -13,7 +12,6 @@ const forbiddenResponse = 'Not owner of assignment, or invalid Assignment-Token'
 @ApiTags('Assignees')
 export class AssigneeController {
   constructor(
-    private readonly assignmentService: AssignmentService,
     private readonly assigneeService: AssigneeService,
   ) {
   }
@@ -24,7 +22,7 @@ export class AssigneeController {
   async findAll(
     @Param('assignment') assignment: string,
   ): Promise<Assignee[]> {
-    return this.assigneeService.findAll({assignment});
+    return this.assigneeService.findAll({assignment}, {sort: {assignee: 1}});
   }
 
   @Get('assignments/:assignment/solutions/:solution/assignee')
@@ -32,21 +30,21 @@ export class AssigneeController {
   @AssignmentAuth({forbiddenResponse})
   @ApiOkResponse({type: Assignee})
   async findOne(
-    @Param('assignment') assignmentId: string,
-    @Param('solution') solutionId: string,
+    @Param('assignment') assignment: string,
+    @Param('solution') solution: string,
   ) {
-    return this.assigneeService.findOne(assignmentId, solutionId);
+    return this.assigneeService.findOne({assignment, solution});
   }
 
   @Put('assignments/:assignment/solutions/:solution/assignee')
   @AssignmentAuth({forbiddenResponse})
   @ApiOkResponse({type: Assignee})
   async update(
-    @Param('assignment') assignmentId: string,
-    @Param('solution') solutionId: string,
+    @Param('assignment') assignment: string,
+    @Param('solution') solution: string,
     @Body() dto: UpdateAssigneeDto,
   ) {
-    return this.assigneeService.update(assignmentId, solutionId, dto);
+    return this.assigneeService.upsert({assignment, solution}, dto);
   }
 
   @Delete('assignments/:assignment/solutions/:solution/assignee')
@@ -54,9 +52,9 @@ export class AssigneeController {
   @AssignmentAuth({forbiddenResponse})
   @ApiOkResponse({type: Assignee})
   async remove(
-    @Param('assignment') assignmentId: string,
-    @Param('solution') solutionId: string,
+    @Param('assignment') assignment: string,
+    @Param('solution') solution: string,
   ) {
-    return this.assigneeService.remove(assignmentId, solutionId);
+    return this.assigneeService.deleteOne({assignment, solution});
   }
 }
