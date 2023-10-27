@@ -30,10 +30,7 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
   evaluating = false;
   config = this.configService.getAll();
   launching = false;
-  assignee: UpdateAssigneeDto = {
-    assignee: this.config.name,
-    duration: 0,
-  };
+  assignee?: UpdateAssigneeDto;
 
   constructor(
     private assignmentService: AssignmentService,
