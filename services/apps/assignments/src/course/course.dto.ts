@@ -28,4 +28,7 @@ export class CourseStudent {
 
   @ApiProperty({type: [SolutionSummary]})
   solutions: (SolutionSummary | null)[];
+
+  @ApiProperty()
+  feedbacks: number;
 }

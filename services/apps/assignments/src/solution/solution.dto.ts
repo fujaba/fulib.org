@@ -14,6 +14,7 @@ const excluded = [
 export class CreateSolutionDto extends OmitType(Solution, [
   ...excluded,
   'points',
+  'feedback',
 ] as const) {
 }
 

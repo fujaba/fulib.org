@@ -18,4 +18,5 @@ export interface SolutionInfo extends Required<Pick<Solution, '_id' | 'points'>>
 export interface CourseStudent {
   author: AuthorInfo;
   solutions: SolutionInfo[];
+  feedbacks: number;
 }

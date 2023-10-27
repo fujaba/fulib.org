@@ -9,6 +9,7 @@ import {SolutionShareComponent} from './share/share.component';
 import {SolutionComponent} from './solution/solution.component';
 import {SolutionTasksComponent} from './tasks/tasks.component';
 import {SimilarModalComponent} from "./similar-modal/similar-modal.component";
+import {FeedbackComponent} from "./feedback/feedback.component";
 
 export const solutionChildRoutes: Routes = [
   {
@@ -23,6 +24,7 @@ export const solutionChildRoutes: Routes = [
     ],
   },
   {path: 'share', component: SolutionShareComponent, data: {title: 'Sharing'}},
+  {path: 'feedback', component: FeedbackComponent, data: {title: 'Feedback'}},
   {path: 'comments', component: CommentListComponent, data: {title: 'Comments'}},
 ];
 
