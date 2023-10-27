@@ -6,7 +6,7 @@ import {EvaluationService} from '../evaluation/evaluation.service';
 import {SolutionService} from '../solution/solution.service';
 import {AssignmentStatistics, EvaluationStatistics, SolutionStatistics, TaskStatistics} from './statistics.dto';
 
-const outlierDurationMillis = 60 * 1000;
+const outlierDuration = 60;
 
 @Injectable()
 export class StatisticsService {
@@ -83,7 +83,21 @@ export class StatisticsService {
     let totalTime = 0;
     let weightedTime = 0;
     let codeSearchSavings = 0;
-    for (const result of []) { // TODO
+    for (const result of await this.evaluationService.model.aggregate([
+      {
+        $match: {
+          assignment,
+          duration: {$lt: outlierDuration},
+        },
+      },
+      {
+        $group: {
+          _id: '$task',
+          time: {$sum: '$duration'},
+          count: {$sum: 1},
+        },
+      }
+    ])) {
       const {_id, time, count} = result;
       const taskStat = taskStats.get(_id);
       if (taskStat) {
