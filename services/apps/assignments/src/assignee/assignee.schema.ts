@@ -1,6 +1,6 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
-import {ApiProperty} from '@nestjs/swagger';
-import {IsMongoId, IsNotEmpty, IsString} from 'class-validator';
+import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
+import {IsMongoId, IsNotEmpty, IsOptional, IsPositive, IsString} from 'class-validator';
 import {Document} from 'mongoose';
 
 @Schema({id: false, _id: false})
@@ -20,6 +20,12 @@ export class Assignee {
   @IsString()
   @IsNotEmpty()
   assignee: string;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsPositive()
+  duration?: number;
 }
 
 export type AssigneeDocument = Assignee & Document;
