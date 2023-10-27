@@ -5,7 +5,7 @@ import {ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags} from '@nestjs/
 import {CourseStudent, CreateCourseDto, UpdateCourseDto} from './course.dto';
 import {Course} from './course.schema';
 import {CourseService} from './course.service';
-import {CourseAuth} from "./course-auth.decorator";
+import {CourseAuth} from "../course-member/course-auth.decorator";
 
 const forbiddenResponse = 'Not owner.';
 

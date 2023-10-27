@@ -1,9 +1,10 @@
 import {forwardRef, Module} from '@nestjs/common';
 import {MongooseModule} from '@nestjs/mongoose';
-import {Member, MemberAuthGuard, MemberSchema, MemberService} from '@app/member';
+import {Member, MemberSchema, MemberService} from '@app/member';
 import {CourseMemberController} from './course-member.controller';
 import {CourseMemberHandler} from "./course-member.handler";
 import {CourseModule} from "../course/course.module";
+import {CourseAuthGuard} from "./course-auth.guard";
 
 @Module({
   imports: [
@@ -13,12 +14,12 @@ import {CourseModule} from "../course/course.module";
   controllers: [CourseMemberController],
   providers: [
     MemberService,
-    MemberAuthGuard,
+    CourseAuthGuard,
     CourseMemberHandler,
   ],
   exports: [
     MemberService,
-    MemberAuthGuard,
+    CourseAuthGuard,
   ],
 })
 export class CourseMemberModule {

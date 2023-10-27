@@ -3,7 +3,7 @@ import {NotFound, ObjectIdPipe} from '@mean-stream/nestx';
 import {Body, ConflictException, Controller, Delete, Get, Param, Put} from '@nestjs/common';
 import {ApiConflictResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {Types} from 'mongoose';
-import {CourseAuth} from '../course/course-auth.decorator';
+import {CourseAuth} from './course-auth.decorator';
 import {Member, MemberService, UpdateMemberDto} from '@app/member';
 
 const forbiddenResponse = 'Not member of course';

@@ -3,12 +3,14 @@ import {CanActivate, ExecutionContext, Injectable} from '@nestjs/common';
 import {Request} from 'express';
 import {Observable} from 'rxjs';
 import {notFound} from '@mean-stream/nestx';
-import {CourseService} from "./course.service";
+import {CourseService} from "../course/course.service";
+import {MemberService} from "@app/member";
 
 @Injectable()
 export class CourseAuthGuard implements CanActivate {
   constructor(
     private courseService: CourseService,
+    private memberService: MemberService,
   ) {
   }
 
@@ -21,6 +23,9 @@ export class CourseAuthGuard implements CanActivate {
 
   async checkAuth(id: string, user: UserToken): Promise<boolean> {
     const course = await this.courseService.findOne(id) ?? notFound(id);
-    return course.createdBy === user.sub;
+    return course.createdBy === user.sub || !!await this.memberService.findOne({
+      parent: course._id,
+      user: user.sub,
+    });
   }
 }
