@@ -75,7 +75,7 @@ export class SolutionTableComponent implements OnInit {
     });
 
     this.activatedRoute.params.pipe(
-      switchMap(({aid}) => this.assigneeService.getAssignees(aid)),
+      switchMap(({aid}) => this.assigneeService.findAll(aid)),
     ).subscribe(assignees => {
       this.assignees = {};
       const names = new Set<string>();
