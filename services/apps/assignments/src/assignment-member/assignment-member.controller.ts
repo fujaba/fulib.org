@@ -12,7 +12,7 @@ const removeOwnerResponse = 'Owner cannot remove themselves as member';
 
 @Controller('assignments/:assignment/members')
 @ApiTags('Assignment Members')
-export class MemberController {
+export class AssignmentMemberController {
   constructor(
     private readonly memberService: MemberService,
   ) {

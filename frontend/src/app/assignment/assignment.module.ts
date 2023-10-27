@@ -31,6 +31,7 @@ import {AssigneeService} from "./services/assignee.service";
 import {EvaluationService} from "./services/evaluation.service";
 import {EmbeddingService} from "./services/embedding.service";
 import {KeycloakBearerInterceptor} from "keycloak-angular";
+import {MemberService} from "./services/member.service";
 
 @NgModule({
   declarations: [
@@ -77,6 +78,7 @@ import {KeycloakBearerInterceptor} from "keycloak-angular";
     AssigneeService,
     EvaluationService,
     EmbeddingService,
+    MemberService,
   ],
 })
 export class AssignmentModule {

@@ -73,7 +73,12 @@ export class CourseService {
 
   getOwn(): Observable<Course[]> {
     return this.userService.getCurrent().pipe(
-      switchMap(user => user ? this.http.get<Course[]>(`${environment.assignmentsApiUrl}/courses`, {params: {createdBy: user.id!}}) : of([])),
+      switchMap(user => user ? this.http.get<Course[]>(`${environment.assignmentsApiUrl}/courses`, {
+        params: {
+          createdBy: user.id!,
+          members: [user.id!],
+        },
+      }) : of([])),
     );
   }
 }

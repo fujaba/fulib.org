@@ -4,7 +4,7 @@ import {Injectable} from "@nestjs/common";
 import {MemberService} from "@app/member";
 
 @Injectable()
-export class MemberHandler {
+export class AssignmentMemberHandler {
   constructor(
     readonly memberService: MemberService,
   ) {

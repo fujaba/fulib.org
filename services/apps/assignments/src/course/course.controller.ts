@@ -1,10 +1,13 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
-import {NotFound, notFound} from '@mean-stream/nestx';
-import {Body, Controller, Delete, ForbiddenException, Get, Param, Patch, Post, Query} from '@nestjs/common';
-import {ApiCreatedResponse, ApiForbiddenResponse, ApiOkResponse, ApiOperation, ApiTags} from '@nestjs/swagger';
+import {NotFound} from '@mean-stream/nestx';
+import {Body, Controller, Delete, Get, Param, ParseArrayPipe, Patch, Post, Query} from '@nestjs/common';
+import {ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags} from '@nestjs/swagger';
 import {CourseStudent, CreateCourseDto, UpdateCourseDto} from './course.dto';
 import {Course} from './course.schema';
 import {CourseService} from './course.service';
+import {CourseAuth} from "../course-member/course-auth.decorator";
+import {FilterQuery} from "mongoose";
+import {MemberService} from "@app/member";
 
 const forbiddenResponse = 'Not owner.';
 
@@ -13,25 +16,35 @@ const forbiddenResponse = 'Not owner.';
 export class CourseController {
   constructor(
     private readonly courseService: CourseService,
+    private readonly memberService: MemberService,
   ) {
   }
 
   @Post()
-  @Auth({optional: true})
+  @Auth()
   @ApiCreatedResponse({type: Course})
   async create(
     @Body() dto: CreateCourseDto,
-    @AuthUser() user?: UserToken,
+    @AuthUser() user: UserToken,
   ): Promise<Course> {
-    return this.courseService.create(dto, user?.sub);
+    return this.courseService.create(dto, user.sub);
   }
 
   @Get()
   @ApiOkResponse({type: [Course]})
   async findAll(
     @Query('createdBy') createdBy?: string,
+    @Query('members', new ParseArrayPipe({optional: true})) memberIds?: string[],
   ): Promise<Course[]> {
-    return this.courseService.findAll({createdBy});
+    const filter: FilterQuery<Course> = {};
+    if (createdBy) {
+      (filter.$or ||= []).push({createdBy});
+    }
+    if (memberIds) {
+      const members = await this.memberService.findAll({user: {$in: memberIds}});
+      (filter.$or ||= []).push({_id: {$in: members.map(m => m.parent)}});
+    }
+    return this.courseService.findAll(filter);
   }
 
   @Get(':id')
@@ -43,50 +56,33 @@ export class CourseController {
 
   @Get(':id/students')
   @ApiOperation({summary: 'Get summary of all students in a course'})
-  @Auth()
+  @CourseAuth({forbiddenResponse})
   @NotFound()
   @ApiOkResponse({type: [CourseStudent]})
-  @ApiForbiddenResponse({description: forbiddenResponse})
   async getStudents(
     @Param('id') id: string,
-    @AuthUser() user: UserToken,
   ): Promise<CourseStudent[]> {
-    await this.checkAuth(id, user);
     return this.courseService.getStudents(id);
   }
 
   @Patch(':id')
-  @Auth()
+  @CourseAuth({forbiddenResponse})
   @NotFound()
   @ApiOkResponse({type: Course})
-  @ApiForbiddenResponse({description: forbiddenResponse})
   async update(
     @Param('id') id: string,
     @Body() dto: UpdateCourseDto,
-    @AuthUser() user: UserToken,
   ): Promise<Course | null> {
-    await this.checkAuth(id, user);
     return this.courseService.update(id, dto);
   }
 
   @Delete(':id')
-  @Auth()
+  @CourseAuth({forbiddenResponse})
   @NotFound()
   @ApiOkResponse({type: Course})
-  @ApiForbiddenResponse({description: forbiddenResponse})
   async remove(
     @Param('id') id: string,
-    @Body() dto: UpdateCourseDto,
-    @AuthUser() user: UserToken,
   ): Promise<Course | null> {
-    await this.checkAuth(id, user);
     return this.courseService.remove(id);
-  }
-
-  private async checkAuth(id: string, user: UserToken) {
-    const course = await this.courseService.findOne(id) ?? notFound(id);
-    if (course.createdBy !== user.sub) {
-      throw new ForbiddenException(forbiddenResponse);
-    }
   }
 }

@@ -2,12 +2,14 @@
   <h5>
     Student Link
   </h5>
-  <p>
-    You can now give your students the following link:
-  </p>
   <div class="input-group">
-    <input #linkInput type="text" class="form-control" readonly [value]="origin + '/assignments/courses/' + route.snapshot.params.cid">
+    <input #linkInput type="text" class="form-control" readonly [value]="origin + '/assignments/courses/' + course?._id">
     <button *ngxClipboardIfSupported type="button" class="btn btn-outline-secondary bi-clipboard" ngbTooltip="Copy" [ngxClipboard]="linkInput">
     </button>
   </div>
+  <div class="form-text">
+    Share this link with your students. They will be able to submit solutions for this course.
+  </div>
+  <hr/>
+  <app-edit-member-list *ngIf="course" namespace="courses" [parent]="course._id" [owner]="course.createdBy"></app-edit-member-list>
 </div>

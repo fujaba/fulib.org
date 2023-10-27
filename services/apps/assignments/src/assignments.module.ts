@@ -19,7 +19,8 @@ import {APP_INTERCEPTOR} from "@nestjs/core";
 import {EmbeddingModule} from './embedding/embedding.module';
 import {MossModule} from './moss/moss.module';
 import { FileModule } from './file/file.module';
-import {MemberModule} from "./member/member.module";
+import {AssignmentMemberModule} from "./assignment-member/assignment-member.module";
+import {CourseMemberModule} from "./course-member/course-member.module";
 
 @Module({
   imports: [
@@ -38,12 +39,13 @@ import {MemberModule} from "./member/member.module";
       },
     }),
     AssignmentModule,
-    MemberModule,
+    AssignmentMemberModule,
     ClassroomModule,
     SolutionModule,
     AssigneeModule,
     CommentModule,
     CourseModule,
+    CourseMemberModule,
     EvaluationModule,
     SearchModule,
     StatisticsModule,

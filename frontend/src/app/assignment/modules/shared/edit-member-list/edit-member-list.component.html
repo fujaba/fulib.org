@@ -1,0 +1,13 @@
+<h5 class="d-flex align-items-center">
+  Members
+  <app-user-typeahead class="ms-auto" [(user)]="newMember"></app-user-typeahead>
+  <button class="btn btn-success bi-person-add ms-2" [disabled]="!newMember" (click)="addMember()">
+    Add Member
+  </button>
+</h5>
+<div class="mb-3">
+  <app-member-list [members]="members" [owner]="owner" (deleted)="deleteMember($event)"></app-member-list>
+  <div class="form-text">
+    Add teaching assistants and other people who should have full access to this {{ namespace|slice:0:-1 }}.
+  </div>
+</div>
