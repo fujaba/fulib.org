@@ -7,6 +7,9 @@
     <th *ngFor="let name of assignmentNames" colspan="2">
       {{ name }}
     </th>
+    <th>
+      <i class="bi-person-raised-hand" ngbTooltip="Number of complete Feedbacks submitted"></i>
+    </th>
   </tr>
   </thead>
   <tbody>
@@ -63,6 +66,9 @@
         </div>
       </td>
     </ng-container>
+    <td>
+      {{ student.feedbacks }}
+    </td>
   </tr>
   </tbody>
 </table>

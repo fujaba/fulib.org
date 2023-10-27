@@ -18,7 +18,8 @@ import {SolutionRoutingModule} from './solution-routing.module';
 import {SolutionComponent} from './solution/solution.component';
 import {SolutionTasksComponent} from './tasks/tasks.component';
 import {SimilarModalComponent} from './similar-modal/similar-modal.component';
-import {CommentService} from './comment.service';
+import {CommentService} from "./comment.service";
+import {FeedbackComponent} from './feedback/feedback.component';
 import {TimetrackingComponent} from './timetracking/timetracking.component';
 import {AssigneeFeedbackComponent} from './assignee-feedback/assignee-feedback.component';
 
@@ -34,6 +35,7 @@ import {AssigneeFeedbackComponent} from './assignee-feedback/assignee-feedback.c
     EvaluationFormComponent,
     DeleteModalComponent,
     SimilarModalComponent,
+    FeedbackComponent,
     TimetrackingComponent,
     AssigneeFeedbackComponent,
   ],
