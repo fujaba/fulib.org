@@ -51,7 +51,13 @@
                   [(assignee)]="solution.assignee"
                 ></app-assignee-input>
                 <div class="btn-group">
-                  <button class="btn btn-sm text-white text-shadow" *ngFor="let assignee of assignees" [style.background-color]="assignee | assigneeColor" (click)="assigneeInput.assignee = assignee; assigneeInput.save()">
+                  <button
+                    *ngFor="let assignee of assignees"
+                    class="btn btn-sm text-white text-shadow"
+                    [ngbTooltip]="assignee"
+                    [style.background-color]="assignee | assigneeColor"
+                    (click)="assigneeInput.assignee = assignee; assigneeInput.save()"
+                  >
                     {{ assignee | slice:0:1 }}
                   </button>
                 </div>
