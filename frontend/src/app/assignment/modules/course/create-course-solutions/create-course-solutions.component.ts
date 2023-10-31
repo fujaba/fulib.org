@@ -44,7 +44,7 @@ export class CreateCourseSolutionsComponent implements OnInit {
             this.solutions[index] = solution;
           }
         }
-        return this.assignmentService.findAll(course.assignments);
+        return this.assignmentService.findIds(course.assignments);
       }),
     ).subscribe(assignments => {
       this.assignments = assignments;

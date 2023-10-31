@@ -30,7 +30,7 @@ export class StudentsComponent implements OnInit {
     this.route.params.pipe(
       switchMap(({cid}) => this.courseService.get(cid)),
       tap(course => this.course = course),
-      switchMap(course => this.assignmentService.findAll(course.assignments)),
+      switchMap(course => this.assignmentService.findIds(course.assignments)),
     ).subscribe(assignments => {
       if (!assignments.length) {
         return;
