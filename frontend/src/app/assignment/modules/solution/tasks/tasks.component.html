@@ -1,7 +1,7 @@
 <div class="card mb-3" *ngIf="assignee">
   <div class="card-body d-flex align-items-center">
     <ng-container *ngIf="evaluating else notEvaluating">
-      <a class="btn btn-primary bi-code me-2" [href]="assignment!|cloneLink:solution!:config|safeUrl">
+      <a class="btn btn-primary bi-code me-2" [href]="assignment!|cloneLink:solution!:config|safeUrl" target="_blank">
         Clone in IDE
       </a>
       <button class="btn btn-primary bi-rocket me-2" [disabled]="launching" (click)="launch()">
