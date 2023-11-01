@@ -58,7 +58,7 @@ export class SimilarModalComponent implements OnInit {
       )),
     ).subscribe(task => this.task = task);
 
-
+    // load solution IDs that already have an evaluation for this task
     this.route.params.pipe(
       switchMap(({aid, task}) => this.evaluationService.distinctValues<string>(aid, 'solution', {task})),
     ).subscribe(ids => {
@@ -66,6 +66,7 @@ export class SimilarModalComponent implements OnInit {
     })
 
     this.route.params.pipe(
+      // load the original evaluation to get remark, points and snippets
       switchMap(({aid, sid, task}) => this.evaluationService.findByTask(aid, sid, task)),
       filter((e): e is Evaluation => !!e),
       tap(evaluation => {
@@ -73,9 +74,11 @@ export class SimilarModalComponent implements OnInit {
         this.dto.remark = evaluation.remark;
         this.dto.points = evaluation.points;
       }),
+      // for each snippet, find similar snippets
       switchMap(evaluation => forkJoin(evaluation.snippets
         .map(snippet => this.embeddingService.findSimilarSnippets(evaluation.assignment, evaluation.solution, snippet))
       )),
+      // group snippets by solution and ordered by index of the original snippet
       map(result => {
         this.snippets = {};
         for (let snippetIndex = 0; snippetIndex < result.length; snippetIndex++) {
@@ -85,6 +88,7 @@ export class SimilarModalComponent implements OnInit {
         }
         return this.snippets;
       }),
+      // fetch the solutions
       switchMap(snippets => forkJoin(Object.keys(snippets)
         .map(solution => this.solutionService.get(this.route.snapshot.params.aid, solution)),
       )),
@@ -94,6 +98,7 @@ export class SimilarModalComponent implements OnInit {
 
   submit() {
     const assignment = this.route.snapshot.params.aid;
+    // for each selected solution, create an evaluation
     forkJoin(Object.entries(this.selection)
       .filter(([, selected]) => selected)
       .map(([solution]) => this.evaluationService.create(assignment, solution, {
