@@ -23,8 +23,8 @@ import {ReadAssignmentDto} from "../../../model/assignment";
 export class EvaluationModalComponent implements OnInit, OnDestroy {
   @ViewChild('modal', {static: true}) modal: ModalComponent;
 
-  codeSearchEnabled = this.configService.getBool('codeSearch');
-  similarSolutionsEnabled = this.configService.getBool('similarSolutions');
+  readonly codeSearchEnabled = this.configService.getBool('codeSearch');
+  readonly similarSolutionsEnabled = this.configService.getBool('similarSolutions');
 
   startDate = Date.now();
   task?: Task;
@@ -42,7 +42,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
 
   derivedSolutionCount?: number;
 
-  viewSimilar = true;
+  viewSimilar = this.similarSolutionsEnabled;
 
   subscriptions = new Subscription();
 
