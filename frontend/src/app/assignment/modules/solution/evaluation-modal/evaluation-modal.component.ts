@@ -2,7 +2,7 @@ import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/co
 import {ActivatedRoute, Router} from '@angular/router';
 import {ModalComponent, ToastService} from '@mean-stream/ngbx';
 import {EMPTY, Observable, of, Subscription} from 'rxjs';
-import {map, share, switchMap, tap} from 'rxjs/operators';
+import {share, switchMap, tap} from 'rxjs/operators';
 import {CodeSearchInfo, CreateEvaluationDto, Evaluation} from '../../../model/evaluation';
 import Solution from '../../../model/solution';
 import Task from '../../../model/task';
@@ -23,8 +23,8 @@ import {ReadAssignmentDto} from "../../../model/assignment";
 export class EvaluationModalComponent implements OnInit, OnDestroy {
   @ViewChild('modal', {static: true}) modal: ModalComponent;
 
-  readonly codeSearchEnabled = this.configService.getBool('codeSearch');
-  readonly similarSolutionsEnabled = this.configService.getBool('similarSolutions');
+  codeSearchEnabled = this.configService.getBool('codeSearch');
+  similarSolutionsEnabled = this.configService.getBool('similarSolutions');
 
   startDate = Date.now();
   task?: Task;
@@ -79,7 +79,12 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
 
   private loadCodeSearchEnabled(assignment$: Observable<ReadAssignmentDto>) {
     this.subscriptions.add(assignment$.subscribe(assignment => {
-      this.dto.codeSearch = this.codeSearchEnabled && !!assignment.classroom?.codeSearch;
+      if (!assignment.classroom?.codeSearch) {
+        this.dto.codeSearch = this.codeSearchEnabled = false;
+      }
+      if (!assignment.classroom?.openaiApiKey) {
+        this.viewSimilar = this.similarSolutionsEnabled = false;
+      }
     }));
   }
 
