@@ -61,7 +61,7 @@ export class CreateCourseComponent implements OnInit {
       })),
       tap(course => this.course = course),
       filter(course => course.assignments.length !== 0),
-      switchMap(course => this.assignmentService.findAll(course.assignments)),
+      switchMap(course => this.assignmentService.findIds(course.assignments)),
     ).subscribe(assignments => this.assignments = assignments);
   }
 
@@ -70,7 +70,7 @@ export class CreateCourseComponent implements OnInit {
   onImport(file: File): void {
     this.courseService.upload(file).subscribe(result => {
       this.course = result;
-      this.assignmentService.findAll(result.assignments).subscribe(assignments => this.assignments = assignments);
+      this.assignmentService.findIds(result.assignments).subscribe(assignments => this.assignments = assignments);
       this.saveDraft();
     });
   }

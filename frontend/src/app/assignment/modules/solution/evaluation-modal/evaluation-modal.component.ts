@@ -2,7 +2,7 @@ import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/co
 import {ActivatedRoute, Router} from '@angular/router';
 import {ModalComponent, ToastService} from '@mean-stream/ngbx';
 import {EMPTY, Observable, of, Subscription} from 'rxjs';
-import {map, share, switchMap, tap} from 'rxjs/operators';
+import {share, switchMap, tap} from 'rxjs/operators';
 import {CodeSearchInfo, CreateEvaluationDto, Evaluation} from '../../../model/evaluation';
 import Solution from '../../../model/solution';
 import Task from '../../../model/task';
@@ -42,7 +42,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
 
   derivedSolutionCount?: number;
 
-  viewSimilar = true;
+  viewSimilar = this.similarSolutionsEnabled;
 
   subscriptions = new Subscription();
 
@@ -79,7 +79,12 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
 
   private loadCodeSearchEnabled(assignment$: Observable<ReadAssignmentDto>) {
     this.subscriptions.add(assignment$.subscribe(assignment => {
-      this.dto.codeSearch = this.codeSearchEnabled && !!assignment.classroom?.codeSearch;
+      if (!assignment.classroom?.codeSearch) {
+        this.dto.codeSearch = this.codeSearchEnabled = false;
+      }
+      if (!assignment.classroom?.openaiApiKey) {
+        this.viewSimilar = this.similarSolutionsEnabled = false;
+      }
     }));
   }
 
@@ -150,7 +155,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       this.toastService.success('Evaluation', `Successfully ${op} evaluation${this.codeSearchInfo(result.codeSearch)}`);
       this.evaluation = result;
 
-      if (this.viewSimilar) {
+      if (this.viewSimilar && result.snippets.length) {
         this.router.navigate(['similar'], {relativeTo: this.route});
       }
     }, error => {

@@ -92,6 +92,16 @@ export class AssignmentService {
     });
   }
 
+  findIds(ids: string[]): Observable<ReadAssignmentDto[]> {
+    return this.findAll(ids).pipe(
+      map(assignments => assignments
+        .map(a => ids.indexOf(a._id))
+        .sort((a, b) => a - b)
+        .map(i => assignments[i])
+      ),
+    );
+  }
+
   create(dto: CreateAssignmentDto): Observable<Assignment> {
     return this.http.post<Assignment>(`${environment.assignmentsApiUrl}/assignments`, dto).pipe(
       map(response => {
