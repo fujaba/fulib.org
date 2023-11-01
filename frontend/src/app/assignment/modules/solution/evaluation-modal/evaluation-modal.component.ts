@@ -155,7 +155,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       this.toastService.success('Evaluation', `Successfully ${op} evaluation${this.codeSearchInfo(result.codeSearch)}`);
       this.evaluation = result;
 
-      if (this.viewSimilar) {
+      if (this.viewSimilar && result.snippets.length) {
         this.router.navigate(['similar'], {relativeTo: this.route});
       }
     }, error => {
