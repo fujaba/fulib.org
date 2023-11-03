@@ -35,6 +35,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     remark: '',
     points: 0,
     snippets: [],
+    codeSearch: this.codeSearchEnabled,
   };
 
   originEvaluation?: Evaluation;
