@@ -24,3 +24,15 @@
     <a href="https://platform.openai.com/account/api-keys" target="_blank">OpenAI API Keys</a>.
   </div>
 </div>
+<div class="mb-3" *ngIf="classroom.codeSearch">
+  <label class="form-label" for="openaiConsentCheck">OpenAI Consent</label>
+  <div class="form-check">
+    <input type="checkbox" class="form-check-input" id="openaiConsentCheck"
+           [(ngModel)]="classroom.openaiConsent" (change)="context.saveDraft()">
+    <label class="form-check-label" for="openaiConsentCheck">Require Third-Party Consent</label>
+  </div>
+  <div class="form-text">
+    The OpenAI API will be used to semantically index all code submissions that consent to third-party sharing.
+    If disabled, the students' consent will be ignored and all submissions will be indexed.
+  </div>
+</div>
