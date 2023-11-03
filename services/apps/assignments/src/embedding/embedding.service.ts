@@ -1,10 +1,13 @@
-import {Injectable, OnModuleInit} from '@nestjs/common';
+import {ForbiddenException, Injectable, OnModuleInit} from '@nestjs/common';
 import {ElasticsearchService} from "@nestjs/elasticsearch";
 import {FileDocument, SearchService} from "../search/search.service";
 import {Embeddable, EmbeddableSearch, EmbeddingEstimate, SnippetEmbeddable} from "./embedding.dto";
 import {OpenAIService} from "./openai.service";
 import {QueryDslQueryContainer} from "@elastic/elasticsearch/lib/api/types";
 import {SolutionService} from "../solution/solution.service";
+import {Assignment} from "../assignment/assignment.schema";
+import {FilterQuery} from "mongoose";
+import {Solution} from "../solution/solution.schema";
 
 type DeclarationSnippet = Pick<SnippetEmbeddable, 'text' | 'line'> & { name: string };
 
@@ -63,7 +66,7 @@ export class EmbeddingService implements OnModuleInit {
     }, undefined);
   }
 
-  async estimateEmbeddings(assignment: string): Promise<EmbeddingEstimate> {
+  async estimateEmbeddings(assignment: Assignment): Promise<EmbeddingEstimate> {
     const {solutions, documents} = await this.getDocuments(assignment);
     const tokens = this.openaiService.countTokens(documents.map(d => ({
       name: d.file,
@@ -87,7 +90,13 @@ export class EmbeddingService implements OnModuleInit {
     return results;
   }
 
-  async createEmbeddings(assignment: string, apiKey: string): Promise<EmbeddingEstimate> {
+  async createEmbeddings(assignment: Assignment): Promise<EmbeddingEstimate> {
+    const apiKey = assignment.classroom?.openaiApiKey;
+    if (!apiKey) {
+      throw new ForbiddenException('No OpenAI API key configured for this assignment.');
+    }
+    const assignmentId = assignment._id.toString();
+
     const {solutions, documents} = await this.getDocuments(assignment);
     const results = await Promise.all(documents
       .filter(d => this.openaiService.isSupportedExtension(d.file))
@@ -99,7 +108,7 @@ export class EmbeddingService implements OnModuleInit {
         const fileTotal = await Promise.all(functions.map(async ({line, name, text}) => {
           const {tokens} = await this.upsert({
             id: `${d.solution}-${d.file}-${line}`,
-            assignment,
+            assignment: assignmentId,
             type: 'snippet',
             solution: d.solution,
             file: d.file,
@@ -121,14 +130,16 @@ export class EmbeddingService implements OnModuleInit {
     return {solutions, files: documents.length, tokens, estimatedCost};
   }
 
-  private async getDocuments(assignment: string) {
-    const solutionsWithConsent = await this.solutionService.model.find({
-      assignment,
-      'consent.3P': true,
-    }, {_id: 1});
+  private async getDocuments(assignment: Assignment) {
+    const assignmentId = assignment._id.toString();
+    const filter:FilterQuery<Solution> = {assignment: assignmentId};
+    if (assignment.classroom?.openaiConsent !== false) {
+      filter['consent.3P'] = true;
+    }
+    const solutionsWithConsent = await this.solutionService.model.find(filter, {_id: 1});
     return {
       solutions: solutionsWithConsent.length,
-      documents: await this.searchService.findAll(assignment, solutionsWithConsent.map(s => s.id)),
+      documents: await this.searchService.findAll(assignmentId, solutionsWithConsent.map(s => s.id)),
     };
   }
 
