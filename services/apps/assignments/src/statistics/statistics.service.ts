@@ -54,15 +54,15 @@ export class StatisticsService {
     const weightedEvaluations = this.createEmptyEvaluationStatistics();
 
     const [
-      time,
       comments,
       solutions,
-      ,
+      time,
     ] = await Promise.all([
-      this.timeStatistics(assignment, taskStats, tasks),
       this.countComments(assignment),
       this.solutionStatistics(assignmentDoc),
-      this.fillEvaluationStatistics(assignment, taskStats, tasks, evaluations, weightedEvaluations),
+      this.fillEvaluationStatistics(assignment, taskStats, tasks, evaluations, weightedEvaluations)
+        // timeStatistics uses taskStats.points, which is calculated in fillEvaluationStatistics
+        .then(() => this.timeStatistics(assignment, taskStats, tasks)),
     ]);
 
     return {
