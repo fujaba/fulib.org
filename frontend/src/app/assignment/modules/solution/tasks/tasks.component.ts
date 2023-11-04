@@ -61,6 +61,9 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
       switchMap(({aid, sid}) => forkJoin([
         this.assignmentService.get(aid).pipe(tap(assignment => this.assignment = assignment)),
         this.evaluationService.findAll(aid, sid).pipe(map(evaluations => {
+          if (!this.config.codeSearch) { // TODO Remove this after the Winter Term 2023/24 study is over
+            evaluations = evaluations.filter(evaluation => evaluation.author !== 'Code Search');
+          }
           this.evaluations = {};
           for (const evaluation of evaluations) {
             this.evaluations[evaluation.task] = evaluation;
@@ -82,6 +85,10 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
       const task = evaluation.task;
       if (event === 'deleted') {
         delete this.evaluations[task];
+      }
+      else if (!this.config.codeSearch && evaluation.author === 'Code Search') { // TODO Remove this after the Winter Term 2023/24 study is over
+        // Code Search evaluations are not shown to the user
+        return;
       } else {
         this.evaluations[task] = evaluation;
       }

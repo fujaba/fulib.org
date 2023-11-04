@@ -2,7 +2,7 @@ import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/co
 import {ActivatedRoute, Router} from '@angular/router';
 import {ModalComponent, ToastService} from '@mean-stream/ngbx';
 import {EMPTY, Observable, of, Subscription} from 'rxjs';
-import {share, switchMap, tap} from 'rxjs/operators';
+import {filter, share, switchMap, tap} from 'rxjs/operators';
 import {CodeSearchInfo, CreateEvaluationDto, Evaluation} from '../../../model/evaluation';
 import Solution from '../../../model/solution';
 import Task from '../../../model/task';
@@ -70,6 +70,8 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
 
     const evaluation$ = this.route.params.pipe(
       switchMap(({aid, sid, task}) => this.evaluationService.findByTask(aid, sid, task)),
+      // TODO Remove this after the Winter Term 2023/24 study is over
+      filter(evaluation => this.codeSearchEnabled || evaluation?.author !== 'Code Search'),
       share(),
     );
 
@@ -109,7 +111,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     this.subscriptions.add(evaluation$.pipe(
       switchMap(evaluation => {
         const origin = evaluation?.codeSearch?.origin;
-        return origin ? this.evaluationService.findOne(evaluation.assignment, undefined, origin) : of(undefined);
+        return origin ? this.evaluationService.findOne(evaluation.assignment, undefined, origin) : EMPTY;
       }),
       tap(originEvaluation => this.originEvaluation = originEvaluation),
       switchMap(originEvaluation => originEvaluation ? this.solutionService.get(originEvaluation.assignment, originEvaluation.solution) : of(undefined)),
