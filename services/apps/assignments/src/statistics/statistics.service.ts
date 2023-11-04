@@ -54,16 +54,21 @@ export class StatisticsService {
     const weightedEvaluations = this.createEmptyEvaluationStatistics();
 
     const [
+      time,
       comments,
       solutions,
-      time,
+      ,
     ] = await Promise.all([
+      this.timeStatistics(assignment, taskStats, tasks),
       this.countComments(assignment),
       this.solutionStatistics(assignmentDoc),
-      this.fillEvaluationStatistics(assignment, taskStats, tasks, evaluations, weightedEvaluations)
-        // timeStatistics uses taskStats.points, which is calculated in fillEvaluationStatistics
-        .then(() => this.timeStatistics(assignment, taskStats, tasks)),
+      this.fillEvaluationStatistics(assignment, taskStats, tasks, evaluations, weightedEvaluations),
     ]);
+
+    // needs to happen after timeStatistics and fillEvaluationStatistics
+    for (let taskStat of taskStats.values()) {
+      time.codeSearchSavings += taskStat.count.codeSearch * taskStat.timeAvg;
+    }
 
     return {
       solutions,
@@ -114,7 +119,6 @@ export class StatisticsService {
     let eventCount = 0;
     let totalTime = 0;
     let weightedTime = 0;
-    let codeSearchSavings = 0;
     for await (const result of this.evaluationService.model.aggregate([
       {
         $match: {
@@ -134,7 +138,6 @@ export class StatisticsService {
       const taskStat = taskStats.get(_id);
       if (taskStat) {
         taskStat.timeAvg = time / count;
-        codeSearchSavings += taskStat.count.codeSearch * taskStat.timeAvg;
       }
       eventCount += count;
       totalTime += time;
@@ -144,7 +147,7 @@ export class StatisticsService {
       evaluationTotal: totalTime,
       evaluationAvg: totalTime / eventCount,
       pointsAvg: weightedTime / eventCount,
-      codeSearchSavings,
+      codeSearchSavings: 0, // NB: calculated later, once taskStats.count is set by fillEvaluationStatistics
     };
   }
 
