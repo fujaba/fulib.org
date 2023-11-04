@@ -115,7 +115,7 @@ export class StatisticsService {
     let totalTime = 0;
     let weightedTime = 0;
     let codeSearchSavings = 0;
-    for (const result of await this.evaluationService.model.aggregate([
+    for await (const result of this.evaluationService.model.aggregate([
       {
         $match: {
           assignment,
