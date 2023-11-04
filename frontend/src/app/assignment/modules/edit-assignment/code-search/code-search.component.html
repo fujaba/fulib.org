@@ -1,5 +1,7 @@
 <div class="mb-3">
-  <label class="form-label" for="codeSearchCheck">Code Search</label>
+  <label class="form-label bi-robot" for="codeSearchCheck">
+    Code Search
+  </label>
   <div class="form-check">
     <input type="checkbox" class="form-check-input" id="codeSearchCheck"
            [(ngModel)]="classroom.codeSearch" (change)="context.saveDraft()">
@@ -11,7 +13,9 @@
   </div>
 </div>
 <div class="mb-3" *ngIf="classroom.codeSearch">
-  <label class="form-label" for="openaiApiKeyInput">OpenAI API Key</label>
+  <label class="form-label bi-cpu" for="openaiApiKeyInput">
+    OpenAI API Key
+  </label>
   <app-masked-input
     id="openaiApiKeyInput"
     type="password"
@@ -25,7 +29,9 @@
   </div>
 </div>
 <div class="mb-3" *ngIf="classroom.codeSearch">
-  <label class="form-label" for="openaiConsentCheck">OpenAI Consent</label>
+  <label class="form-label bi-ui-checks" for="openaiConsentCheck">
+    OpenAI Consent
+  </label>
   <div class="form-check">
     <input type="checkbox" class="form-check-input" id="openaiConsentCheck"
            [(ngModel)]="classroom.openaiConsent" (change)="context.saveDraft()">

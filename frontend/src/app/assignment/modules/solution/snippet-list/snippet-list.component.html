@@ -2,7 +2,8 @@
   Snippets
 </label>
 <div *ngIf="searchSummary" class="alert alert-{{searchSummary.level}}">
-  Code Search found
+  <span class="bi-robot">Code Search</span>
+  found
   <b>{{ searchSummary.hits }}</b>
   hits in
   <b>{{ searchSummary.files }}</b>
@@ -31,16 +32,16 @@
     fulibFeedback
   </a>
   to add code snippets from within your IDE.
-  <span *ngIf="task && task.glob" class="text-info">
-        Code Search will only look for files matching the glob pattern <code>{{ task.glob }}</code>.
-      </span>
+  <span *ngIf="task && task.glob" class="text-info bi-robot">
+    Code Search will only look for files matching the glob pattern <code>{{ task.glob }}</code>.
+  </span>
 </div>
 <ng-container *ngIf="snippetSuggestionsEnabled && embeddingSnippets.length">
-  <label class="form-label" for="embedding-snippets">
+  <label class="form-label bi-cpu" for="embedding-snippets">
     Snippet Suggestions
     <span class="badge bg-gradient-primary">New</span>
     &nbsp;
-    <i class="bi-question-circle" [ngbTooltip]='"Code Search suggests code that is related to the task \"" + task?.description + "\"" '></i>
+    <i class="bi-question-circle" [ngbTooltip]='"Advanced Code Search suggests code that is related to the task \"" + task?.description + "\"" '></i>
   </label>
   <ul class="list-group" id="embedding-snippets">
     <li *ngFor="let snippet of embeddingSnippets; let first=first" class="list-group-item">
