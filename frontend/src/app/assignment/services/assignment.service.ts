@@ -92,13 +92,13 @@ export class AssignmentService {
     });
   }
 
-  findIds(ids: string[]): Observable<ReadAssignmentDto[]> {
+  findIds(ids: string[], filter?: true): Observable<ReadAssignmentDto[]>
+  findIds(ids: string[], filter = true): Observable<(ReadAssignmentDto | undefined)[]> {
     return this.findAll(ids).pipe(
-      map(assignments => assignments
-        .map(a => ids.indexOf(a._id))
-        .sort((a, b) => a - b)
-        .map(i => assignments[i])
-      ),
+      map(assignments => {
+        const mapped = ids.map(id => assignments.find(a => a._id === id));
+        return filter ? mapped.filter(a => !!a) : mapped;
+      }),
     );
   }
 

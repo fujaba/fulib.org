@@ -3,6 +3,7 @@ import {Observable} from "rxjs";
 import {Assignee, PatchAssigneeDto, UpdateAssigneeDto} from "../model/assignee";
 import {environment} from "../../../environments/environment";
 import {HttpClient} from "@angular/common/http";
+import {map} from "rxjs/operators";
 
 function url(assignment: string, solution: string) {
   return `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/assignee`;
@@ -23,8 +24,10 @@ export class AssigneeService {
     return this.http.get<Assignee>(url(assignment, solution));
   }
 
-  setAssignee(assignment: string, solution: string, assignee: string | undefined): Observable<Assignee> {
-    return assignee ? this.set(assignment, solution, {assignee}) : this.delete(assignment, solution);
+  setAssignee(assignment: string, solution: string, assignee: string | undefined): Observable<Assignee | undefined> {
+    return assignee
+      ? this.set(assignment, solution, {assignee})
+      : this.delete(assignment, solution).pipe(map(() => undefined));
   }
 
   set(assignment: string, solution: string, dto: UpdateAssigneeDto): Observable<Assignee> {

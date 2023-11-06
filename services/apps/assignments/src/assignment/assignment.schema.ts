@@ -114,6 +114,12 @@ export class ClassroomInfo {
   @IsString()
   @Transform(({value}) => value === '***' ? undefined : value)
   openaiApiKey?: string;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  openaiConsent?: boolean;
 }
 
 @Schema()

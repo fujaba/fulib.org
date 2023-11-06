@@ -31,16 +31,10 @@ export class EmbeddingController {
     @Param('assignment') assignmentId: string,
     @Query('estimate', new ParseBoolPipe({optional: true})) estimate?: boolean,
   ): Promise<EmbeddingEstimate> {
-    if (estimate) {
-      return this.embeddingService.estimateEmbeddings(assignmentId);
-    }
-
     const assignment = await this.assignmentService.findOne(assignmentId) || notFound(assignmentId);
-    const apiKey = assignment.classroom?.openaiApiKey;
-    if (!apiKey) {
-      throw new ForbiddenException('No OpenAI API key configured for this assignment.');
-    }
-    return this.embeddingService.createEmbeddings(assignmentId, apiKey);
+    return estimate
+      ? this.embeddingService.estimateEmbeddings(assignment)
+      : this.embeddingService.createEmbeddings(assignment);
   }
 
   @Get('embeddings')

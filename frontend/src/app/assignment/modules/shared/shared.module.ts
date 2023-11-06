@@ -18,6 +18,7 @@ import {AssignmentActionsComponent} from './assignment-actions/assignment-action
 import {AssigneeInputComponent} from './assignee-input/assignee-input.component';
 import {EditMemberListComponent} from './edit-member-list/edit-member-list.component';
 import {UserModule} from "../../../user/user.module";
+import {InitialsPipe} from "./pipes/initials.pipe";
 
 @NgModule({
   imports: [
@@ -44,6 +45,7 @@ import {UserModule} from "../../../user/user.module";
     AssignmentActionsComponent,
     AssigneeInputComponent,
     EditMemberListComponent,
+    InitialsPipe,
   ],
   exports: [
     AssignmentInfoComponent,
@@ -59,6 +61,7 @@ import {UserModule} from "../../../user/user.module";
     AssignmentActionsComponent,
     AssigneeInputComponent,
     EditMemberListComponent,
+    InitialsPipe,
   ],
 })
 export class AssignmentSharedModule {

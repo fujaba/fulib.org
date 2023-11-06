@@ -142,9 +142,15 @@ export class CreateCourseComponent implements OnInit {
     this.submitting = true;
     this.course.assignments = this.assignments.map(a => a._id);
     this.courseService.create(this.course).subscribe({
-      next: course => this.router.navigate(['/assignments/courses', course._id, 'share']),
-      error: error => this.toastService.error('Course', 'Failed to create course', error),
-      complete: () => this.submitting = false,
+      next: course => {
+        this.submitting = false;
+        this.router.navigate(['/assignments/courses', course._id, 'share']);
+        this.toastService.success('Course', 'Successfully created course');
+      },
+      error: error => {
+        this.submitting = false;
+        this.toastService.error('Course', 'Failed to create course', error)
+      },
     });
   }
 
@@ -158,9 +164,15 @@ export class CreateCourseComponent implements OnInit {
     this.submitting = true;
     this.course.assignments = this.assignments.map(a => a._id);
     this.courseService.update(this.course._id, this.course).subscribe({
-      next: course => this.course = course,
-      error: error => this.toastService.error('Course', `Failed to update course`, error),
-      complete: () => this.submitting = false,
+      next: course => {
+        this.submitting = false;
+        this.course = course;
+        this.toastService.success('Course', 'Successfully updated course');
+      },
+      error: error => {
+        this.submitting = false;
+        this.toastService.error('Course', 'Failed to update course', error)
+      },
     });
   }
 
@@ -174,11 +186,14 @@ export class CreateCourseComponent implements OnInit {
     this.submitting = true;
     this.courseService.delete(this.course._id).subscribe({
       next: () => {
+        this.submitting = false;
         this.router.navigate(['/assignments/courses']);
         this.toastService.warn('Delete Course', 'Successfully deleted course');
       },
-      error: error => this.toastService.error('Delete Course', 'Failed to delete course', error),
-      complete: () => this.submitting = false,
+      error: error => {
+        this.submitting = false;
+        this.toastService.error('Delete Course', 'Failed to delete course', error);
+      },
     });
   }
 }

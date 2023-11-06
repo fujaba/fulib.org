@@ -36,7 +36,7 @@ export class SolutionTableComponent implements OnInit {
   assignment?: Assignment | ReadAssignmentDto;
   totalPoints?: number;
   solutions: Solution[] = [];
-  assignees: Partial<Record<string, Assignee>> = {};
+  assignees: Partial<Record<string, Assignee | undefined>> = {};
   assigneeNames: string[] = [];
   evaluated: Partial<Record<string, boolean>> = {};
   selected: Partial<Record<string, boolean>> = {};
