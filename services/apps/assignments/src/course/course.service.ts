@@ -1,12 +1,13 @@
 import {EventService} from '@mean-stream/nestx';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
-import {FilterQuery, Model} from 'mongoose';
+import {FilterQuery, Model, Types} from 'mongoose';
 import {AuthorInfo} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {idFilter} from '../utils';
 import {CourseStudent, CreateCourseDto, UpdateCourseDto} from './course.dto';
 import {Course, CourseDocument} from './course.schema';
+import {MemberService} from "@app/member";
 
 @Injectable()
 export class CourseService {
@@ -14,6 +15,7 @@ export class CourseService {
     @InjectModel(Course.name) private model: Model<Course>,
     private solutionService: SolutionService,
     private eventService: EventService,
+    private memberService: MemberService,
   ) {
   }
 
@@ -34,14 +36,24 @@ export class CourseService {
     return this.model.findOne(idFilter(id)).exec();
   }
 
-  async getStudents(id: string): Promise<CourseStudent[]> {
+  async getStudents(id: string, user: string): Promise<CourseStudent[]> {
     const course = await this.findOne(id);
     if (!course) {
       return [];
     }
+
+    const userMembers = await this.memberService.findAll({
+      parent: {$in: course.assignments.map(a => new Types.ObjectId(a))},
+      user,
+    });
+    const courseAssignmentsWhereUserIsMember = userMembers.map(m => m.parent.toString());
+    if (!courseAssignmentsWhereUserIsMember.length) {
+      return [];
+    }
+
     const students = new Map<string, CourseStudent>();
     const solutions = await this.solutionService.model.aggregate([
-      {$match: {assignment: {$in: course.assignments}}},
+      {$match: {assignment: {$in: courseAssignmentsWhereUserIsMember}}},
       {$addFields: {id: {$toString: '$_id'}}},
       {
         $lookup: {

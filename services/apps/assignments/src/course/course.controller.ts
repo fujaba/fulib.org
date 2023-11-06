@@ -61,8 +61,9 @@ export class CourseController {
   @ApiOkResponse({type: [CourseStudent]})
   async getStudents(
     @Param('id') id: string,
+    @AuthUser() user: UserToken,
   ): Promise<CourseStudent[]> {
-    return this.courseService.getStudents(id);
+    return this.courseService.getStudents(id, user.sub);
   }
 
   @Patch(':id')
