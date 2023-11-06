@@ -1,42 +1,27 @@
-import {EventService} from '@mean-stream/nestx';
+import {EventRepository, EventService, MongooseRepository} from '@mean-stream/nestx';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
-import {FilterQuery, Model, Types} from 'mongoose';
+import {Model, Types} from 'mongoose';
 import {AuthorInfo} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
-import {CourseStudent, CreateCourseDto, UpdateCourseDto} from './course.dto';
+import {CourseStudent} from './course.dto';
 import {Course, CourseDocument} from './course.schema';
 import {MemberService} from "@app/member";
 
 @Injectable()
-export class CourseService {
+@EventRepository()
+export class CourseService extends MongooseRepository<Course> {
   constructor(
-    @InjectModel(Course.name) private model: Model<Course>,
+    @InjectModel(Course.name) model: Model<Course>,
     private solutionService: SolutionService,
     private eventService: EventService,
     private memberService: MemberService,
   ) {
+    super(model);
   }
 
-  async create(dto: CreateCourseDto, userId?: string): Promise<CourseDocument> {
-    const created = await this.model.create({
-      ...dto,
-      createdBy: userId,
-    });
-    this.emit('created', created);
-    return created;
-  }
-
-  async findAll(filter: FilterQuery<Course> = {}): Promise<CourseDocument[]> {
-    return this.model.find(filter).exec();
-  }
-
-  async findOne(id: string): Promise<CourseDocument | null> {
-    return this.model.findById(id).exec();
-  }
-
-  async getStudents(id: string, user: string): Promise<CourseStudent[]> {
-    const course = await this.findOne(id);
+  async getStudents(id: Types.ObjectId, user: string): Promise<CourseStudent[]> {
+    const course = await this.find(id);
     if (!course) {
       return [];
     }
@@ -118,19 +103,7 @@ export class CourseService {
     return Array.from(new Set(students.values()));
   }
 
-  async update(id: string, dto: UpdateCourseDto): Promise<Course | null> {
-    const updated = await this.model.findByIdAndUpdate(id, dto, {new: true}).exec();
-    updated && this.emit('updated', updated);
-    return updated;
-  }
-
-  async remove(id: string): Promise<CourseDocument | null> {
-    const deleted = await this.model.findByIdAndDelete(id).exec();
-    deleted && this.emit('deleted', deleted);
-    return deleted;
-  }
-
-  private emit(event: string, course: CourseDocument) {
+  emit(event: string, course: CourseDocument) {
     this.eventService.emit(`courses.${course.id}.${event}`, course);
   }
 }

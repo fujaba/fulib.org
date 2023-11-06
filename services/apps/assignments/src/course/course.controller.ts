@@ -1,12 +1,12 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
-import {NotFound} from '@mean-stream/nestx';
+import {NotFound, ObjectIdPipe} from '@mean-stream/nestx';
 import {Body, Controller, Delete, Get, Param, ParseArrayPipe, Patch, Post, Query} from '@nestjs/common';
 import {ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags} from '@nestjs/swagger';
 import {CourseStudent, CreateCourseDto, UpdateCourseDto} from './course.dto';
 import {Course} from './course.schema';
 import {CourseService} from './course.service';
 import {CourseAuth} from "../course-member/course-auth.decorator";
-import {FilterQuery} from "mongoose";
+import {FilterQuery, Types} from "mongoose";
 import {MemberService} from "@app/member";
 
 const forbiddenResponse = 'Not owner.';
@@ -27,7 +27,7 @@ export class CourseController {
     @Body() dto: CreateCourseDto,
     @AuthUser() user: UserToken,
   ): Promise<Course> {
-    return this.courseService.create(dto, user.sub);
+    return this.courseService.create({...dto, createdBy: user.sub});
   }
 
   @Get()
@@ -50,8 +50,10 @@ export class CourseController {
   @Get(':id')
   @NotFound()
   @ApiOkResponse({type: Course})
-  async findOne(@Param('id') id: string): Promise<Course | null> {
-    return this.courseService.findOne(id);
+  async findOne(
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
+  ): Promise<Course | null> {
+    return this.courseService.find(id);
   }
 
   @Get(':id/students')
@@ -60,7 +62,7 @@ export class CourseController {
   @NotFound()
   @ApiOkResponse({type: [CourseStudent]})
   async getStudents(
-    @Param('id') id: string,
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
     @AuthUser() user: UserToken,
   ): Promise<CourseStudent[]> {
     return this.courseService.getStudents(id, user.sub);
@@ -71,7 +73,7 @@ export class CourseController {
   @NotFound()
   @ApiOkResponse({type: Course})
   async update(
-    @Param('id') id: string,
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
     @Body() dto: UpdateCourseDto,
   ): Promise<Course | null> {
     return this.courseService.update(id, dto);
@@ -82,8 +84,8 @@ export class CourseController {
   @NotFound()
   @ApiOkResponse({type: Course})
   async remove(
-    @Param('id') id: string,
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
   ): Promise<Course | null> {
-    return this.courseService.remove(id);
+    return this.courseService.delete(id);
   }
 }
