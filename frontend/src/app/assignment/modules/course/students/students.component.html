@@ -29,7 +29,7 @@
       </td>
       <td [style.background-color]="solution?.assignee | assigneeColor">
         <div ngbDropdown>
-          <button ngbDropdownToggle class="btn p-0 text-white text-shadow">{{ (solution?.assignee || '-')|slice:0:1 }}</button>
+          <button ngbDropdownToggle class="btn p-0 text-white text-shadow">{{ (solution?.assignee || '-') | initials }}</button>
           <div ngbDropdownMenu>
             <ng-container *ngIf="solution else noSolution">
               <a
@@ -58,7 +58,7 @@
                     [style.background-color]="assignee | assigneeColor"
                     (click)="assigneeInput.assignee = assignee; assigneeInput.save()"
                   >
-                    {{ assignee | slice:0:1 }}
+                    {{ assignee | initials }}
                   </button>
                 </div>
               </div>
