@@ -35,16 +35,16 @@ export class StudentsComponent implements OnInit {
       if (!assignments.length) {
         return;
       }
-      const firstTitle = assignments[0].title;
+      const firstTitle = assignments.find(a => a && a.title)?.title || '';
       if (assignments.length === 1) {
         this.assignmentNames = [firstTitle];
         return;
       }
       let prefixLength = 0;
-      while (prefixLength < firstTitle.length && assignments.every(a => a.title[prefixLength] === firstTitle[prefixLength])) {
+      while (prefixLength < firstTitle.length && assignments.every(a => !a || a.title[prefixLength] === firstTitle[prefixLength])) {
         prefixLength++;
       }
-      this.assignmentNames = assignments.map(a => a.title.slice(prefixLength));
+      this.assignmentNames = assignments.map(a => a ? a.title.slice(prefixLength) : '<deleted>');
     });
 
     this.route.params.pipe(
