@@ -29,6 +29,11 @@
                 <label class="form-check-label" [for]="'check-' + solution._id">
                   Solution by {{ solution | solutionName }}
                 </label>
+                <span *ngIf="assignees[solution._id!] as assignee" class="text-muted">
+                  &bull;
+                  <i class="bi-person-check" ngbTooltip="Assignee"></i>
+                  {{ assignee }}
+                </span>
                 <span *ngIf="existingEvaluations[solution._id!] && solution._id !== solutionId" class="text-muted">
                   &bull;
                   <a [routerLink]="['../../../..', solution._id, 'tasks', task?._id]">View Evaluation</a>
