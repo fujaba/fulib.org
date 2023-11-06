@@ -63,7 +63,12 @@ export class CourseService {
         },
       },
       {$sort: {'author.name': 1, 'author.github': 1}},
-    ]);
+    ], {
+      collation: {
+        locale: 'en',
+        caseFirst: 'off',
+      },
+    });
 
     const keys: (keyof AuthorInfo)[] = ['studentId', 'email', 'github', 'name'];
     for (const solution of solutions) {
