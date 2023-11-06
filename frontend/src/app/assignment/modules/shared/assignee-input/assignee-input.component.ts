@@ -18,7 +18,7 @@ export class AssigneeInputComponent {
   @Input() assignees: string[] = [];
 
   @Output() assigneeChange = new EventEmitter<string>();
-  @Output() saved = new EventEmitter<Assignee>();
+  @Output() saved = new EventEmitter<Assignee | undefined>();
 
   saving = false;
 
@@ -39,8 +39,8 @@ export class AssigneeInputComponent {
     this.assigneeService.setAssignee(this.assignment, this.solution, this.assignee).subscribe(result => {
       this.saving = false;
       this.saved.next(result);
-      this.assigneeChange.next(result.assignee);
-      this.toastService.success('Assignee', this.assignee ? `Successfully assigned to ${this.assignee}` : 'Successfully de-assigned');
+      this.assigneeChange.next(result?.assignee || '');
+      this.toastService.success('Assignee', result ? `Successfully assigned to ${result.assignee}` : 'Successfully de-assigned');
     }, error => {
       this.saving = false;
       this.toastService.error('Assignee', 'Failed to assign', error);

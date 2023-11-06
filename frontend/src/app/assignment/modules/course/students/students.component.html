@@ -56,7 +56,7 @@
                     class="btn btn-sm text-white text-shadow"
                     [ngbTooltip]="assignee"
                     [style.background-color]="assignee | assigneeColor"
-                    (click)="assigneeInput.assignee = assignee; assigneeInput.save()"
+                    (click)="solution.assignee = assignee; assigneeInput.assignee = assignee; assigneeInput.save()"
                   >
                     {{ assignee | initials }}
                   </button>
