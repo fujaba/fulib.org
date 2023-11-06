@@ -4,7 +4,6 @@ import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model, Types} from 'mongoose';
 import {AuthorInfo} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
-import {idFilter} from '../utils';
 import {CourseStudent, CreateCourseDto, UpdateCourseDto} from './course.dto';
 import {Course, CourseDocument} from './course.schema';
 import {MemberService} from "@app/member";
@@ -33,7 +32,7 @@ export class CourseService {
   }
 
   async findOne(id: string): Promise<CourseDocument | null> {
-    return this.model.findOne(idFilter(id)).exec();
+    return this.model.findById(id).exec();
   }
 
   async getStudents(id: string, user: string): Promise<CourseStudent[]> {
@@ -120,13 +119,13 @@ export class CourseService {
   }
 
   async update(id: string, dto: UpdateCourseDto): Promise<Course | null> {
-    const updated = await this.model.findOneAndUpdate(idFilter(id), dto, {new: true}).exec();
+    const updated = await this.model.findByIdAndUpdate(id, dto, {new: true}).exec();
     updated && this.emit('updated', updated);
     return updated;
   }
 
   async remove(id: string): Promise<CourseDocument | null> {
-    const deleted = await this.model.findOneAndDelete(idFilter(id)).exec();
+    const deleted = await this.model.findByIdAndDelete(id).exec();
     deleted && this.emit('deleted', deleted);
     return deleted;
   }

@@ -11,10 +11,6 @@ export function generateToken(): string {
   return new Array(4).fill(0).map((_, index) => hex.substr(index * 4, 4)).join('-');
 }
 
-export function idFilter(id: string): FilterQuery<any> {
-  return isUUID(id) ? {id} : {_id: id};
-}
-
 export function eventStream<T>(source: Observable<WsResponse<T>>, name: string): Observable<MessageEvent> {
   return merge(
     source.pipe(
