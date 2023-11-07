@@ -15,7 +15,6 @@ import {SolutionNamePipe} from './pipes/solution-name.pipe';
 import {GithubLinkPipe} from './pipes/github-link.pipe';
 import {CloneLinkPipe} from './pipes/clone-link.pipe';
 import {AssignmentActionsComponent} from './assignment-actions/assignment-actions.component';
-import {AssigneeInputComponent} from './assignee-input/assignee-input.component';
 import {EditMemberListComponent} from './edit-member-list/edit-member-list.component';
 import {UserModule} from "../../../user/user.module";
 import {InitialsPipe} from "./pipes/initials.pipe";
@@ -45,7 +44,6 @@ import {AssigneeColorPipe} from "./pipes/assignee-color.pipe";
     GithubLinkPipe,
     CloneLinkPipe,
     AssignmentActionsComponent,
-    AssigneeInputComponent,
     EditMemberListComponent,
     InitialsPipe,
     AssigneeDropdownComponent,
@@ -63,7 +61,6 @@ import {AssigneeColorPipe} from "./pipes/assignee-color.pipe";
     GithubLinkPipe,
     CloneLinkPipe,
     AssignmentActionsComponent,
-    AssigneeInputComponent,
     EditMemberListComponent,
     InitialsPipe,
     AssigneeDropdownComponent,

@@ -146,14 +146,13 @@
         {{ solution.points ?? '?' }} / {{ totalPoints }}
       </span>
     </td>
-    <td>
-      <app-assignee-input
+    <td [style.background-color]="assignees[solution._id!] | assigneeColor">
+      <app-assignee-dropdown
         [assignment]="assignment?._id!"
         [solution]="solution._id!"
         [assignees]="assigneeNames"
-        [assignee]="assignees[solution._id!]?.assignee || ''"
-        (saved)="assignees[solution._id!] = $event"
-      ></app-assignee-input>
+        [(assignee)]="assignees[solution._id!]"
+      ></app-assignee-dropdown>
     </td>
     <td>
       <a
