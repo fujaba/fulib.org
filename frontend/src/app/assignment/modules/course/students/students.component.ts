@@ -54,7 +54,12 @@ export class StudentsComponent implements OnInit {
       switchMap(({cid}) => this.courseService.getStudents(cid)),
     ).subscribe(students => {
       this.students = students;
-      this.assignees = [...new Set(students.flatMap(s => s.solutions.map(s => s?.assignee).filter(x => x)))].sort();
+      this.assignees = [...new Set(students
+        .flatMap(s => s.solutions
+          .map(s => s?.assignee)
+          .filter((x): x is string => !!x)
+        )
+      )].sort();
     });
   }
 }

@@ -38,39 +38,13 @@
         {{ solution?.points || 0 }}
       </td>
       <td [style.background-color]="solution?.assignee | assigneeColor">
-        <div *ngIf="solution" ngbDropdown>
-          <button ngbDropdownToggle class="btn p-0 text-white text-shadow"
-                  [class.bi-person-plus]="!solution.assignee"
-                  [ngbTooltip]="solution.assignee || 'Add Assignee'"
-          >
-            {{ solution.assignee | initials }}
-          </button>
-          <div ngbDropdownMenu>
-            <div class="dropdown-item-text">
-              <label class="form-label bi-person-check">
-                Assignee
-              </label>
-              <app-assignee-input
-                #assigneeInput
-                [assignment]="course?.assignments?.[i]!"
-                [solution]="solution._id!"
-                [assignees]="assignees"
-                [(assignee)]="solution.assignee"
-              ></app-assignee-input>
-              <div class="btn-group">
-                <button
-                  *ngFor="let assignee of assignees"
-                  class="btn btn-sm text-white text-shadow"
-                  [ngbTooltip]="assignee"
-                  [style.background-color]="assignee | assigneeColor"
-                  (click)="solution.assignee = assignee; assigneeInput.assignee = assignee; assigneeInput.save()"
-                >
-                  {{ assignee | initials }}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <app-assignee-dropdown
+          *ngIf="solution && course"
+          [assignment]="course.assignments[i]"
+          [solution]="solution._id"
+          [assignees]="assignees"
+          [(assignee)]="solution.assignee"
+        ></app-assignee-dropdown>
       </td>
     </ng-container>
     <td>
