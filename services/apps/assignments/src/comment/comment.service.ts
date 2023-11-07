@@ -3,7 +3,6 @@ import {UserToken} from '@app/keycloak-auth';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model} from 'mongoose';
-import {idFilter} from '../utils';
 import {CreateCommentDto, UpdateCommentDto} from './comment.dto';
 import {Comment, CommentDocument} from './comment.schema';
 
@@ -34,17 +33,17 @@ export class CommentService {
   }
 
   async findOne(id: string): Promise<CommentDocument | null> {
-    return this.model.findOne(idFilter(id)).exec();
+    return this.model.findById(id).exec();
   }
 
   async update(id: string, dto: UpdateCommentDto): Promise<Comment | null> {
-    const updated = await this.model.findOneAndUpdate(idFilter(id), dto, {new: true}).exec();
+    const updated = await this.model.findByIdAndUpdate(id, dto, {new: true}).exec();
     updated && this.emit('updated', updated);
     return updated;
   }
 
   async remove(id: string): Promise<CommentDocument | null> {
-    const deleted = await this.model.findOneAndDelete(idFilter(id)).exec();
+    const deleted = await this.model.findByIdAndDelete(id).exec();
     deleted && this.emit('deleted', deleted);
     return deleted;
   }

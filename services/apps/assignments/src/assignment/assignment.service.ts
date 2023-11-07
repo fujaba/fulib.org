@@ -3,7 +3,7 @@ import {UserToken} from '@app/keycloak-auth';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model, UpdateQuery} from 'mongoose';
-import {generateToken, idFilter} from '../utils';
+import {generateToken} from '../utils';
 import {CreateAssignmentDto, ReadAssignmentDto, ReadTaskDto, UpdateAssignmentDto} from './assignment.dto';
 import {Assignment, AssignmentDocument, Task} from './assignment.schema';
 import {MemberService} from "@app/member";
@@ -42,11 +42,14 @@ export class AssignmentService {
   }
 
   async findAll(where: FilterQuery<Assignment> = {}): Promise<AssignmentDocument[]> {
-    return this.model.find(where).sort({title: 1}).exec();
+    return this.model.find(where).sort({title: 1}).collation({
+      locale: 'en',
+      numericOrdering: true,
+    }).exec();
   }
 
   async findOne(id: string): Promise<AssignmentDocument | null> {
-    return this.model.findOne(idFilter(id)).exec();
+    return this.model.findById(id).exec();
   }
 
   mask(assignment: Assignment): ReadAssignmentDto {
@@ -77,13 +80,13 @@ export class AssignmentService {
         update[`classroom.${key}`] = value;
       }
     }
-    const updated = await this.model.findOneAndUpdate(idFilter(id), update, {new: true}).exec();
+    const updated = await this.model.findByIdAndUpdate(id, update, {new: true}).exec();
     updated && this.emit('updated', updated);
     return updated;
   }
 
   async remove(id: string): Promise<AssignmentDocument | null> {
-    const deleted = await this.model.findOneAndDelete(idFilter(id)).exec();
+    const deleted = await this.model.findByIdAndDelete(id).exec();
     deleted && this.emit('deleted', deleted);
     return deleted;
   }
