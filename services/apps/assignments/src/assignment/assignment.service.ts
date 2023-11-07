@@ -42,7 +42,10 @@ export class AssignmentService {
   }
 
   async findAll(where: FilterQuery<Assignment> = {}): Promise<AssignmentDocument[]> {
-    return this.model.find(where).sort({title: 1}).exec();
+    return this.model.find(where).sort({title: 1}).collation({
+      locale: 'en',
+      numericOrdering: true,
+    }).exec();
   }
 
   async findOne(id: string): Promise<AssignmentDocument | null> {
