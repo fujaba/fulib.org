@@ -4,8 +4,12 @@
     <th *ngFor="let prop of authorProperties">
       {{ prop[0] }}
     </th>
-    <th *ngFor="let name of assignmentNames" colspan="2">
-      {{ name }}
+    <th *ngFor="let assignment of assignments; let index = index" colspan="2"
+        [routerLink]="assignment && '/assignments/' + assignment._id + '/solutions'"
+        [ngbTooltip]="assignment && assignment.title" container="body"
+        class="bi-clipboard-check cursor-pointer"
+    >
+      {{ assignmentNames[index] }}
     </th>
     <th>
       <i class="bi-person-raised-hand" ngbTooltip="Number of complete Feedbacks submitted"></i>
