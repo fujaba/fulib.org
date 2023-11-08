@@ -31,7 +31,7 @@ export class AssigneeDropdownComponent {
         return;
       }
     }
-    this.assigneeService.setAssignee(this.assignment, this.solution, this.assignee).subscribe(result => {
+    this.assigneeService.setAssignee(this.assignment, this.solution, assignee).subscribe(result => {
       this.assignee = result?.assignee;
       this.assigneeChange.next(result?.assignee);
       this.toastService.success('Assignee', result ? `Successfully assigned to ${result.assignee}` : 'Successfully de-assigned');
