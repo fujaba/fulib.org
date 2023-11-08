@@ -64,10 +64,6 @@ export class ClassroomService {
 
   private async upsertSolutions(assignment: AssignmentDocument, importSolutions: ImportSolution[]) {
     const result = await this.solutionService.bulkWrite(importSolutions.map(importSolution => {
-      const solution: Solution = {
-        ...importSolution,
-        token: generateToken(),
-      };
       const [key, value] = Object.entries(importSolution.author).find(([, value]) => value)!;
       return {
         updateOne: {
@@ -75,7 +71,12 @@ export class ClassroomService {
             assignment: assignment._id,
             ['author.' + key]: value,
           },
-          update: {$setOnInsert: solution},
+          update: {
+            $setOnInsert: {
+              ...importSolution,
+              token: generateToken(),
+            },
+          },
           upsert: true,
         },
       };
