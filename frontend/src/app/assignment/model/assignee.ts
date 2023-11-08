@@ -67,7 +67,7 @@ export class Feedback {
   @Presentation({
     control: 'radio',
     rows: 1,
-    label: 'Wie leicht fällt es dir, Ablenkungen zu ignorieren?',
+    label: 'Wie leicht fällt es dir aktuell, Ablenkungen zu ignorieren?',
     optionLabels: {
       1: 'Gar nicht leicht',
       2: 'Eher nicht leicht',
