@@ -5,7 +5,9 @@ import {CourseService} from 'src/app/assignment/services/course.service';
 import Course, {CourseStudent} from '../../../model/course';
 import {authorInfoProperties} from '../../../model/solution';
 import {AssignmentService} from "../../../services/assignment.service";
-import Assignment, {ReadAssignmentDto} from "../../../model/assignment";
+import {ReadAssignmentDto} from "../../../model/assignment";
+import {AssigneeService} from "../../../services/assignee.service";
+import {BulkUpdateAssigneeDto} from "../../../model/assignee";
 
 @Component({
   selector: 'app-students',
@@ -25,6 +27,7 @@ export class StudentsComponent implements OnInit {
     private route: ActivatedRoute,
     private courseService: CourseService,
     private assignmentService: AssignmentService,
+    private assigneeService: AssigneeService,
   ) {
   }
 
@@ -61,5 +64,26 @@ export class StudentsComponent implements OnInit {
         )
       )].sort();
     });
+  }
+
+  copyAssignees(to: number, from: number) {
+    if (!this.course || !this.students) {
+      return;
+    }
+    this.assigneeService.updateMany(this.course.assignments[to], this.students
+      .map(student => {
+        const fromSolution = student.solutions[from];
+        const toSolution = student.solutions[to];
+        if (!fromSolution || !toSolution || !fromSolution.assignee) {
+          return;
+        }
+        toSolution.assignee = fromSolution.assignee;
+        return {
+          solution: toSolution._id,
+          assignee: fromSolution.assignee,
+        };
+      })
+      .filter((x): x is BulkUpdateAssigneeDto => !!x),
+    );
   }
 }

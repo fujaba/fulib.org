@@ -4,12 +4,31 @@
     <th *ngFor="let prop of authorProperties">
       {{ prop[0] }}
     </th>
-    <th *ngFor="let assignment of assignments; let index = index" colspan="2"
-        [routerLink]="assignment && '/assignments/' + assignment._id + '/solutions'"
-        [ngbTooltip]="assignment && assignment.title" container="body"
-        class="bi-clipboard-check cursor-pointer"
-    >
-      {{ assignmentNames[index] }}
+    <th *ngFor="let assignment of assignments; let index = index" colspan="2">
+      <div  class="d-flex align-items-end">
+        <a class="bi-clipboard-check me-auto text-body"
+           [routerLink]="assignment && '/assignments/' + assignment._id + '/solutions'"
+           [ngbTooltip]="assignment && assignment.title" container="body">
+          {{ assignmentNames[index] }}
+        </a>
+        <div ngbDropdown>
+          <button class="btn btn-sm btn-outline-secondary bi-person-check" ngbDropdownToggle
+                  ngbTooltip="Apply Assignees" placement="top">
+          </button>
+          <div ngbDropdownMenu>
+            <div class="dropdown-item-text">
+              Copy Assignees from
+            </div>
+            <button ngbDropdownItem
+                    *ngFor="let otherAssignment of assignments; let otherIndex = index"
+                    [disabled]="otherAssignment === assignment"
+                    (click)="copyAssignees(index, otherIndex)"
+            >
+              {{ otherAssignment?.title }}
+            </button>
+          </div>
+        </div>
+      </div>
     </th>
     <th>
       <i class="bi-person-raised-hand" ngbTooltip="Number of complete Feedbacks submitted"></i>
