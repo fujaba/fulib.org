@@ -8,6 +8,7 @@ import {AssignmentService} from "../../../services/assignment.service";
 import {ReadAssignmentDto} from "../../../model/assignment";
 import {AssigneeService} from "../../../services/assignee.service";
 import {BulkUpdateAssigneeDto} from "../../../model/assignee";
+import {ToastService} from "@mean-stream/ngbx";
 
 @Component({
   selector: 'app-students',
@@ -28,6 +29,7 @@ export class StudentsComponent implements OnInit {
     private courseService: CourseService,
     private assignmentService: AssignmentService,
     private assigneeService: AssigneeService,
+    private toastService: ToastService,
   ) {
   }
 
@@ -77,13 +79,26 @@ export class StudentsComponent implements OnInit {
         if (!fromSolution || !toSolution || !fromSolution.assignee) {
           return;
         }
-        toSolution.assignee = fromSolution.assignee;
         return {
           solution: toSolution._id,
           assignee: fromSolution.assignee,
         };
       })
       .filter((x): x is BulkUpdateAssigneeDto => !!x),
-    );
+    ).subscribe(assignees => {
+      const solutionIdToAssignee = Object.fromEntries(assignees.map(a => [a.solution, a.assignee]));
+      for (const student of this.students!) {
+        const solution = student.solutions[to];
+        if (!solution) {
+          continue;
+        }
+        const assignee = solutionIdToAssignee[solution._id];
+        if (!assignee) {
+          continue;
+        }
+        solution.assignee = assignee;
+      }
+      this.toastService.success('Copy Assignees', `Successfully copied ${assignees.length} assignees.`);
+    });
   }
 }

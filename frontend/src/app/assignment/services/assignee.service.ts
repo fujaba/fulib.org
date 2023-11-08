@@ -20,8 +20,8 @@ export class AssigneeService {
     return this.http.get<Assignee[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/assignees`);
   }
 
-  updateMany(assignment: string, dtos: BulkUpdateAssigneeDto[]): Observable<Assignee> {
-    return this.http.patch<Assignee>(`${environment.assignmentsApiUrl}/assignments/${assignment}/assignees`, dtos);
+  updateMany(assignment: string, dtos: BulkUpdateAssigneeDto[]): Observable<Assignee[]> {
+    return this.http.patch<Assignee[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/assignees`, dtos);
   }
 
   findOne(assignment: string, solution: string): Observable<Assignee> {
