@@ -190,6 +190,17 @@ export class SolutionTableComponent implements OnInit {
     return [...valueSet].sort();
   }
 
+  copyTimestamp() {
+    this.copy('Timestamp', s => {
+      if (!s.timestamp) {
+        return '';
+      }
+      const date = new Date(s.timestamp);
+      // format as YYYY-MM-DD HH:mm:ss (local time) to be understood by Excel
+      return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    });
+  }
+
   copyPoints() {
     this.copy('Points', s => (s.points || '').toString());
   }
