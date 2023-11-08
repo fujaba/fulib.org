@@ -36,7 +36,7 @@ export class SolutionTableComponent implements OnInit {
   assignment?: Assignment | ReadAssignmentDto;
   totalPoints?: number;
   solutions: Solution[] = [];
-  assignees: Partial<Record<string, Assignee | undefined>> = {};
+  assignees: Partial<Record<string, string | undefined>> = {};
   assigneeNames: string[] = [];
   evaluated: Partial<Record<string, boolean>> = {};
   selected: Partial<Record<string, boolean>> = {};
@@ -79,7 +79,7 @@ export class SolutionTableComponent implements OnInit {
       const names = new Set<string>();
       for (let assignee of assignees) {
         names.add(assignee.assignee);
-        this.assignees[assignee.solution] = assignee;
+        this.assignees[assignee.solution] = assignee.assignee;
       }
       this.assigneeNames = [...names].sort();
     });

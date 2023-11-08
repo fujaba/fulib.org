@@ -4,7 +4,7 @@ import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model, UpdateQuery} from 'mongoose';
 import {generateToken} from '../utils';
-import {BatchUpdateSolutionDto, CreateSolutionDto, ReadSolutionDto, UpdateSolutionDto} from './solution.dto';
+import {BatchUpdateSolutionDto, CreateSolutionDto, UpdateSolutionDto} from './solution.dto';
 import {Solution, SolutionDocument} from './solution.schema';
 
 @Injectable()
@@ -27,10 +27,9 @@ export class SolutionService {
     return created;
   }
 
-  async findAll(where: FilterQuery<Solution> = {}): Promise<ReadSolutionDto[]> {
+  async findAll(where: FilterQuery<Solution> = {}): Promise<Solution[]> {
     return this.model
       .find(where)
-      .select(['-token'])
       .sort('author.name author.github timestamp')
       .collation({locale: 'en', caseFirst: 'off'})
       .exec();

@@ -20,7 +20,7 @@ import {AssigneeService} from '../assignee/assignee.service';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {EvaluationService} from '../evaluation/evaluation.service';
 import {SolutionAuth} from './solution-auth.decorator';
-import {BatchUpdateSolutionDto, CreateSolutionDto, ReadSolutionDto, UpdateSolutionDto} from './solution.dto';
+import {BatchUpdateSolutionDto, CreateSolutionDto, UpdateSolutionDto} from './solution.dto';
 import {Solution} from './solution.schema';
 import {SolutionService} from './solution.service';
 import {FilesInterceptor} from "@nestjs/platform-express";
@@ -68,7 +68,7 @@ export class SolutionController {
 
   @Get('assignments/:assignment/solutions')
   @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
-  @ApiOkResponse({type: [ReadSolutionDto]})
+  @ApiOkResponse({type: [Solution]})
   @ApiQuery({
     name: 'q',
     description: 'Search query: ' +
@@ -81,7 +81,7 @@ export class SolutionController {
     @Param('assignment') assignment: string,
     @Query('q') search?: string,
     @Query('author.github') github?: string,
-  ): Promise<ReadSolutionDto[]> {
+  ): Promise<Solution[]> {
     const query: FilterQuery<Solution> = {assignment};
     github && (query['author.github'] = github);
     if (search) {
@@ -144,10 +144,10 @@ export class SolutionController {
   @Get('solutions')
   @ApiOperation({summary: 'List your own solutions'})
   @Auth()
-  @ApiOkResponse({type: [ReadSolutionDto]})
+  @ApiOkResponse({type: [Solution]})
   async findOwn(
     @AuthUser() user: UserToken,
-  ): Promise<ReadSolutionDto[]> {
+  ): Promise<Solution[]> {
     return this.solutionService.findAll({createdBy: user.sub});
   }
 

@@ -13,7 +13,7 @@ import {
   IsUUID,
   ValidateNested,
 } from 'class-validator';
-import {Document} from 'mongoose';
+import {Document, Types} from 'mongoose';
 
 export class Consent {
   @Prop()
@@ -79,6 +79,9 @@ export class AuthorInfo {
 
 @Schema()
 export class Solution {
+  @ApiProperty()
+  _id: Types.ObjectId;
+
   @Prop()
   @ApiProperty()
   token: string;

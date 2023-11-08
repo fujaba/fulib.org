@@ -15,7 +15,6 @@ import {MyCoursesComponent} from './my-courses/my-courses.component';
 import { CourseComponent } from './course/course.component';
 import { ShareComponent } from './share/share.component';
 import { StudentsComponent } from './students/students.component';
-import { AssigneeColorPipe } from './assignee-color.pipe';
 
 
 @NgModule({
@@ -26,7 +25,6 @@ import { AssigneeColorPipe } from './assignee-color.pipe';
     CourseComponent,
     ShareComponent,
     StudentsComponent,
-    AssigneeColorPipe,
   ],
   imports: [
     CommonModule,

@@ -5,6 +5,7 @@ import {CourseService} from 'src/app/assignment/services/course.service';
 import Course, {CourseStudent} from '../../../model/course';
 import {authorInfoProperties} from '../../../model/solution';
 import {AssignmentService} from "../../../services/assignment.service";
+import Assignment, {ReadAssignmentDto} from "../../../model/assignment";
 
 @Component({
   selector: 'app-students',
@@ -14,6 +15,7 @@ import {AssignmentService} from "../../../services/assignment.service";
 export class StudentsComponent implements OnInit {
   course?: Course;
   students?: CourseStudent[];
+  assignments: (ReadAssignmentDto | undefined)[] = [];
   assignmentNames: string[] = [];
   assignees: string[] = [];
 
@@ -32,6 +34,7 @@ export class StudentsComponent implements OnInit {
       tap(course => this.course = course),
       switchMap(course => this.assignmentService.findIds(course.assignments)),
     ).subscribe(assignments => {
+      this.assignments = assignments;
       if (!assignments.length) {
         return;
       }
@@ -51,7 +54,12 @@ export class StudentsComponent implements OnInit {
       switchMap(({cid}) => this.courseService.getStudents(cid)),
     ).subscribe(students => {
       this.students = students;
-      this.assignees = [...new Set(students.flatMap(s => s.solutions.map(s => s?.assignee).filter(x => x)))].sort();
+      this.assignees = [...new Set(students
+        .flatMap(s => s.solutions
+          .map(s => s?.assignee)
+          .filter((x): x is string => !!x)
+        )
+      )].sort();
     });
   }
 }

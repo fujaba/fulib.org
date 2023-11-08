@@ -5,6 +5,7 @@ import {AsObjectId} from "@mean-stream/nestx";
 import {IsOptional} from "class-validator";
 
 const excluded = [
+  '_id',
   'token',
   'assignment',
   'createdBy',
@@ -29,16 +30,4 @@ export class BatchUpdateSolutionDto extends UpdateSolutionDto {
   @AsObjectId()
   @ApiPropertyOptional()
   _id?: Types.ObjectId;
-}
-
-export class ReadSolutionDto extends OmitType(Solution, [
-  'token',
-]) {
-  _id: Types.ObjectId;
-  /*
-  @Prop()
-  @ApiProperty()
-  @IsString()
-  assignee: string;
-   */
 }
