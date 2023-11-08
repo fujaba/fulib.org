@@ -9,3 +9,8 @@ export class UpdateAssigneeDto extends OmitType(Assignee, [
 
 export class PatchAssigneeDto extends PartialType(UpdateAssigneeDto) {
 }
+
+export class BulkUpdateAssigneeDto extends OmitType(Assignee, [
+  'assignment',
+] as const) {
+}

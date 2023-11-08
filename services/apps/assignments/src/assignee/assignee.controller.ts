@@ -2,7 +2,7 @@ import {NotFound} from '@mean-stream/nestx';
 import {Body, Controller, Delete, Get, Param, Patch, Put} from '@nestjs/common';
 import {ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
-import {PatchAssigneeDto, UpdateAssigneeDto} from './assignee.dto';
+import {BulkUpdateAssigneeDto, PatchAssigneeDto, UpdateAssigneeDto} from './assignee.dto';
 import {Assignee} from './assignee.schema';
 import {AssigneeService} from './assignee.service';
 
@@ -23,6 +23,16 @@ export class AssigneeController {
     @Param('assignment') assignment: string,
   ): Promise<Assignee[]> {
     return this.assigneeService.findAll({assignment}, {sort: {assignee: 1}});
+  }
+
+  @Patch('assignments/:assignment/assignees')
+  @AssignmentAuth({forbiddenResponse})
+  @ApiOkResponse({type: Assignee})
+  async updateMany(
+    @Param('assignment') assignment: string,
+    @Body() dtos: BulkUpdateAssigneeDto[],
+  ): Promise<Assignee[]> {
+    return Promise.all(dtos.map(dto => this.assigneeService.upsert({assignment, solution: dto.solution}, dto)));
   }
 
   @Get('assignments/:assignment/solutions/:solution/assignee')
