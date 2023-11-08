@@ -86,6 +86,7 @@
     <th>
       Submitted
       <button class="btn btn-sm p-1 bi-question-circle" ngbTooltip="View Color Legend" [ngbPopover]="timestampPopover" placement="bottom-left"></button>
+      <button class="btn btn-sm p-1 bi-clipboard" ngbTooltip="Copy Column as Text" (click)="copyTimestamp()"></button>
       <ng-template #timestampPopover>
         <dl>
           <ng-container *ngIf="assignment && assignment.deadline">
@@ -118,7 +119,10 @@
       </ng-template>
       <button class="btn btn-sm p-1 bi-clipboard" ngbTooltip="Copy Column as Text" (click)="copyPoints()"></button>
     </th>
-    <th>Assignee</th>
+    <th>
+      Assignee
+      <button class="btn btn-sm p-1 bi-clipboard" ngbTooltip="Copy Column as Text" (click)="copyAssignee()"></button>
+    </th>
     <th>Actions</th>
   </tr>
   </thead>

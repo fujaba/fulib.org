@@ -33,7 +33,7 @@ export default class Solution {
   commit?: string;
   consent?: Consent;
 
-  timestamp?: Date;
+  timestamp?: string;
   points?: number;
   feedback?: Feedback;
 }

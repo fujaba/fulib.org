@@ -1,4 +1,4 @@
-<div ngbDropdown>
+<div ngbDropdown #dropdown=ngbDropdown>
   <button ngbDropdownToggle class="btn p-0 text-white text-shadow"
           [class.bi-person-plus]="!assignee"
           [ngbTooltip]="assignee || 'Add Assignee'"
@@ -6,18 +6,20 @@
     {{ (assignee || '') | initials }}
   </button>
   <div ngbDropdownMenu>
-    <button *ngFor="let suggestion of assignees" ngbDropdownItem (click)="assignee = suggestion; save()">
-      <span class="badge" [style.background-color]="suggestion | assigneeColor">{{ suggestion | initials }}</span>
-      {{ suggestion }}
-    </button>
-    <button ngbDropdownItem class="bi-person-x" (click)="this.assignee = ''; save()">
-      Unassign
-    </button>
-    <div class="dropdown-item-text">
-      <label class="form-label" for="custom-assignee">
-        Custom Assignee
-      </label>
-      <input type="text" class="form-control" id="custom-assignee" [(ngModel)]="assignee" (change)="save()">
-    </div>
+    <ng-container *ngIf="dropdown.isOpen()">
+      <button *ngFor="let suggestion of assignees" ngbDropdownItem (click)="save(suggestion)">
+        <span class="badge" [style.background-color]="suggestion | assigneeColor">{{ suggestion | initials }}</span>
+        {{ suggestion }}
+      </button>
+      <button ngbDropdownItem class="bi-person-x" (click)="save(undefined)">
+        Unassign
+      </button>
+      <div class="dropdown-item-text">
+        <label class="form-label" for="custom-assignee">
+          Custom Assignee
+        </label>
+        <input type="text" class="form-control" id="custom-assignee" [(ngModel)]="assignee" (change)="save(assignee)">
+      </div>
+    </ng-container>
   </div>
 </div>

@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
-import {Assignee, PatchAssigneeDto, UpdateAssigneeDto} from "../model/assignee";
+import {Assignee, BulkUpdateAssigneeDto, PatchAssigneeDto, UpdateAssigneeDto} from "../model/assignee";
 import {environment} from "../../../environments/environment";
 import {HttpClient} from "@angular/common/http";
 import {map} from "rxjs/operators";
@@ -18,6 +18,10 @@ export class AssigneeService {
 
   findAll(assignment: string): Observable<Assignee[]> {
     return this.http.get<Assignee[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/assignees`);
+  }
+
+  updateMany(assignment: string, dtos: BulkUpdateAssigneeDto[]): Observable<Assignee[]> {
+    return this.http.patch<Assignee[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/assignees`, dtos);
   }
 
   findOne(assignment: string, solution: string): Observable<Assignee> {

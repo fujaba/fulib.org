@@ -89,4 +89,5 @@ export interface Assignee {
 }
 
 export type UpdateAssigneeDto = Omit<Assignee, 'assignment' | 'solution'>;
+export type BulkUpdateAssigneeDto = Omit<Assignee, 'assignment'>;
 export type PatchAssigneeDto = Partial<UpdateAssigneeDto>;
