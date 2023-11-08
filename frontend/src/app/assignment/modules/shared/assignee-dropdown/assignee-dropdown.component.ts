@@ -21,8 +21,18 @@ export class AssigneeDropdownComponent {
   ) {
   }
 
-  save(): void {
+  save(assignee: string | undefined): void {
+    if (!assignee) {
+      if (!this.assignee) {
+        // nothing to do; prevent an unnecessary API call that errors
+        return;
+      }
+      if (!confirm('Are you sure you want to unassign? This may remove the recorded duration and feedback.')) {
+        return;
+      }
+    }
     this.assigneeService.setAssignee(this.assignment, this.solution, this.assignee).subscribe(result => {
+      this.assignee = result?.assignee;
       this.assigneeChange.next(result?.assignee);
       this.toastService.success('Assignee', result ? `Successfully assigned to ${result.assignee}` : 'Successfully de-assigned');
     }, error => {
