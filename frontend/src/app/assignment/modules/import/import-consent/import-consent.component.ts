@@ -28,7 +28,7 @@ export class ImportConsentComponent {
   import(): Observable<ImportSolution[]> {
     const assignment = this.route.snapshot.params.aid;
     const lines = this.consentText.split('\n');
-    const splitter = /[\s,;]/;
+    const splitter = /[\t,;]/;
     const columns = lines[0].split(splitter);
     const updates: Partial<Solution>[] = [];
     for (let i = 1; i < lines.length; i++) {

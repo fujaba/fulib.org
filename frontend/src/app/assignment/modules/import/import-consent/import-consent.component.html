@@ -1,5 +1,5 @@
 <p>
-  Import consent flags by pasting tab-, space- or comma-separated values below.
+  Import consent flags by pasting tab- or comma-separated values below.
 </p>
 <details class="alert alert-info">
   <summary>More Info</summary>
@@ -19,4 +19,10 @@
     and accept boolean values like <code>true</code> or <code>false</code> (case-insensitive).
   </p>
 </details>
-<textarea class="form-control" rows="10" [(ngModel)]="consentText"></textarea>
+<textarea
+  #area
+  class="form-control"
+  rows="10"
+  [(ngModel)]="consentText"
+  (keydown.tab)="$event.preventDefault(); area.setRangeText('\t', area.selectionStart, area.selectionEnd, 'end')"
+></textarea>
