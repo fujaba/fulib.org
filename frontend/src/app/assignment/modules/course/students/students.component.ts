@@ -43,7 +43,7 @@ export class StudentsComponent implements OnInit {
       if (!assignments.length) {
         return;
       }
-      const firstTitle = assignments.find(a => a && a.title)?.title || '';
+      const firstTitle = assignments.find(a => a?.title)?.title ?? '';
       if (assignments.length === 1) {
         this.assignmentNames = [firstTitle];
         return;

@@ -30,7 +30,7 @@ export class FeedbackComponent implements OnInit {
   }
 
   private setSolution(solution: Solution) {
-    this.feedback = solution.feedback || {};
+    this.feedback = solution.feedback ?? {};
     this.saved = !!solution.feedback;
   }
 

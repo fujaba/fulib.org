@@ -66,7 +66,7 @@ export class ConfigComponent implements OnInit {
   downloadProjectZip(): void {
     const request: ProjectZipRequest = {
       ...this.config,
-      privacy: this.privacyService.privacy || 'none',
+      privacy: this.privacyService.privacy ?? 'none',
       scenarioText: this.configService.storedScenario,
     };
     this.configService.downloadZip(request).subscribe(blob => {

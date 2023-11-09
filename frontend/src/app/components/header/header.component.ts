@@ -72,13 +72,11 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   }
 
   login(): void {
-    this.keycloak.login().then(() => {
-    });
+    this.keycloak.login().then();
   }
 
   logout(): void {
-    this.keycloak.logout().then(() => {
-    });
+    this.keycloak.logout().then();
   }
 
   selectTheme(value: string) {

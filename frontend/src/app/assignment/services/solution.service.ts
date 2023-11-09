@@ -68,7 +68,7 @@ export class SolutionService {
   getOwnWithAssignments(): Observable<[ReadAssignmentDto[], Solution[]]> {
     return this.users.getCurrent().pipe(
       switchMap(user => {
-        if (user && user.id) {
+        if (user?.id) {
           return this.getOwn().pipe(switchMap(solutions => {
             const assignmentIds = [...new Set<string>(solutions.map(s => s.assignment))];
             const assignments = this.assignmentService.findAll(assignmentIds);
@@ -95,7 +95,7 @@ export class SolutionService {
 
   submit(assignment: string, dto: CreateSolutionDto, files?: File[]): Observable<Solution> {
     let body;
-    if (files && files.length) {
+    if (files?.length) {
       const data = new FormData();
       data.set('author', JSON.stringify(dto.author));
       for (const file of files) {
@@ -116,9 +116,9 @@ export class SolutionService {
 
   import(assignment: string, files?: File[], usernames?: string[]): Observable<ImportSolution[]> {
     let body;
-    if (files && files.length) {
+    if (files?.length) {
       const data = new FormData();
-      for (let file of files) {
+      for (const file of files) {
         data.append('files', file, file.name);
       }
       body = data;

@@ -56,5 +56,5 @@ function getDateAndTime(deadline: Date | string | undefined): [string, string] |
 }
 
 function makeDate(date: string | undefined, time: string | undefined): Date | undefined {
-  return date ? new Date(`${date} ${time || '00:00:00'}`) : undefined;
+  return date ? new Date(`${date} ${time ?? '00:00:00'}`) : undefined;
 }

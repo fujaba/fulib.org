@@ -26,7 +26,7 @@ export class AssigneeFeedbackComponent implements OnInit {
     this.route.params.pipe(
       switchMap(({aid, sid}) => this.assigneeService.findOne(aid, sid)),
     ).subscribe(assignee => {
-      this.feedback = plainToClass(Feedback, assignee.feedback || {});
+      this.feedback = plainToClass(Feedback, assignee.feedback ?? {});
     });
   }
 

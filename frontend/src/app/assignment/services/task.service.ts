@@ -5,7 +5,7 @@ import Task from '../model/task';
 @Injectable()
 export class TaskService {
   find(tasks: Task[], id: string): Task | undefined {
-    for (let task of tasks) {
+    for (const task of tasks) {
       if (task._id === id) {
         return task;
       }
@@ -18,7 +18,7 @@ export class TaskService {
   }
 
   findWithParents(tasks: Task[], id: string): Task[] {
-    for (let task of tasks) {
+    for (const task of tasks) {
       if (task._id === id) {
         return [task];
       }
@@ -36,7 +36,7 @@ export class TaskService {
 
   createPointsCache(tasks: Task[], evaluations: Record<string, Evaluation | CreateEvaluationDto>): Record<string, number> {
     const cache = {};
-    for (let task of tasks) {
+    for (const task of tasks) {
       this.getTaskPoints(task, evaluations, cache);
     }
     return cache;

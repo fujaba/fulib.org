@@ -95,7 +95,7 @@ export class SnippetListComponent implements OnInit, OnDestroy {
   private listenForCodeSearch(selection$: Observable<SelectionDto>) {
     this.subscriptions.add(merge(
       selection$.pipe(map(sel => sel.snippet.code)),
-      this.snippetUpdates$.pipe(map(snippet => snippet.pattern || snippet.code)),
+      this.snippetUpdates$.pipe(map(snippet => snippet.pattern ?? snippet.code)),
     ).pipe(
       debounceTime(200),
       distinctUntilChanged(),

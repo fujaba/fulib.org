@@ -77,7 +77,7 @@ export class SolutionTableComponent implements OnInit {
     ).subscribe(assignees => {
       this.assignees = {};
       const names = new Set<string>();
-      for (let assignee of assignees) {
+      for (const assignee of assignees) {
         names.add(assignee.assignee);
         this.assignees[assignee.solution] = assignee.assignee;
       }
@@ -91,10 +91,10 @@ export class SolutionTableComponent implements OnInit {
       ])),
     ).subscribe(([manual, codeSearch]) => {
       this.evaluated = {};
-      for (let id of codeSearch) {
+      for (const id of codeSearch) {
         this.evaluated[id] = false;
       }
-      for (let id of manual) {
+      for (const id of manual) {
         this.evaluated[id] = true;
       }
     });
@@ -202,15 +202,15 @@ export class SolutionTableComponent implements OnInit {
   }
 
   copyPoints() {
-    this.copy('Points', s => (s.points || '').toString());
+    this.copy('Points', s => (s.points ?? '').toString());
   }
 
   copyAssignee() {
-    this.copy('Assignees', s => this.assignees[s._id!] || '');
+    this.copy('Assignees', s => this.assignees[s._id!] ?? '');
   }
 
   copyAuthor(name: string, key: keyof AuthorInfo) {
-    this.copy(name, s => s.author[key] || '');
+    this.copy(name, s => s.author[key] ?? '');
   }
 
   copy(name: string, select: (s: Solution) => string) {
@@ -240,7 +240,7 @@ export class SolutionTableComponent implements OnInit {
 
   async submitSelected() {
     const {assignment, userToken} = this;
-    if (!userToken || !assignment || !assignment.classroom || !assignment.classroom.org || !assignment.classroom.prefix) {
+    if (!userToken || !assignment?.classroom?.org || !assignment.classroom.prefix) {
       return;
     }
 

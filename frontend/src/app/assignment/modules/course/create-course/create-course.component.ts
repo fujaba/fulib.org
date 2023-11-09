@@ -54,7 +54,7 @@ export class CreateCourseComponent implements OnInit {
       this.ownAssignments = assignments;
     });
     this.route.params.pipe(
-      switchMap(({cid}) => cid ? this.courseService.get(cid) : of(this.courseService.draft || {
+      switchMap(({cid}) => cid ? this.courseService.get(cid) : of(this.courseService.draft ?? {
         title: '',
         assignments: [],
         description: '',

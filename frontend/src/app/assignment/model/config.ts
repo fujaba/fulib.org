@@ -8,14 +8,14 @@ export class Config {
   })
   @IsString()
   @IsNotEmpty()
-  name: string = '';
+  name = '';
 
   @Presentation({
     label: 'E-Mail Address',
     description: 'Your email address for use in assignments, solutions, comments and evaluations.',
   })
   @IsEmail()
-  email: string = '';
+  email = '';
 
   @Presentation({
     label: 'IDE',

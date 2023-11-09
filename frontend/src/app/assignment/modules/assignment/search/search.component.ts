@@ -52,7 +52,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     ).subscribe(([assignment, solutions]) => {
       this.assignment = assignment;
       this.solutions = {};
-      for (let solution of solutions) {
+      for (const solution of solutions) {
         this.solutions[solution._id!] = solution;
       }
     });

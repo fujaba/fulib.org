@@ -117,7 +117,7 @@ export class SimilarModalComponent implements OnInit {
       .filter(([, selected]) => selected)
       .map(([solution]) => this.evaluationService.create(assignment, solution, {
         ...this.dto,
-        snippets: this.snippets[solution] || [],
+        snippets: this.snippets[solution] ?? [],
       }))
     ).subscribe(results => {
       this.toastService.success('Submit Evaluations', `Successfully submitted ${results.length} evaluations`);

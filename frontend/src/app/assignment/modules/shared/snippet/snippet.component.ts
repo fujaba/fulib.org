@@ -52,7 +52,7 @@ export class SnippetComponent implements OnChanges {
     }
 
     const sel = document.getSelection();
-    if (!sel || !sel.rangeCount) {
+    if (!sel?.rangeCount) {
       return;
     }
 

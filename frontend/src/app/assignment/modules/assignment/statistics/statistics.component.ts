@@ -73,7 +73,7 @@ export class StatisticsComponent implements OnInit {
     ).subscribe(([assignment, statistics]) => {
       this.maxPoints = this.taskService.sumPositivePoints(assignment.tasks);
       this.stats = statistics;
-      for (let taskStats of statistics.tasks) {
+      for (const taskStats of statistics.tasks) {
         const tasks = this.taskService.findWithParents(assignment.tasks, taskStats.task);
         taskStats._tasks = tasks;
         taskStats._task = tasks[tasks.length - 1];

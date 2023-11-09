@@ -99,12 +99,12 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
 
       // Clear cache for affected tasks
       const tasks = this.taskService.findWithParents(this.assignment.tasks, task);
-      for (let task of tasks) {
+      for (const task of tasks) {
         delete this.points[task._id];
       }
 
       // Restore cache
-      for (let task of this.assignment.tasks) {
+      for (const task of this.assignment.tasks) {
         this.taskService.getTaskPoints(task, this.evaluations, this.points);
       }
     });

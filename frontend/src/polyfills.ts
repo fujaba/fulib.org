@@ -73,7 +73,6 @@ String.prototype.hashCode = function() {
   let hash = 0;
   for (let i = 0; i < this.length; i++) {
     const chr = this.charCodeAt(i);
-    // tslint:disable-next-line:no-bitwise
     hash = (((hash << 5) - hash) + chr) | 0;
   }
   return hash;
