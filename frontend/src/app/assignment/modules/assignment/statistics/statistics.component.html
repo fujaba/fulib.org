@@ -137,11 +137,11 @@
         </div>
       </div>
     </div>
-    <ngb-accordion [closeOthers]="false">
+    <div ngbAccordion [closeOthers]="false">
       @for (taskStats of stats.tasks;track taskStats) {
-        <ngb-panel>
-          <ng-template ngbPanelHeader>
-            <button ngbPanelToggle class="accordion-button">
+        <div ngbAccordionItem>
+          <h2 ngbAccordionHeader>
+            <button ngbAccordionButton>
               <ol class="breadcrumb mb-0 flex-grow-1 bg-transparent">
                 @for (task of taskStats._tasks;track task;let last = $last) {
                   <li class="breadcrumb-item" [class.text-muted]="!last">
@@ -163,71 +163,75 @@
                 }
               }
             </button>
-          </ng-template>
-          <ng-template ngbPanelContent>
-            <ul>
-              <li>
-                The Task
-                <b>{{ taskStats._task.description }}</b>
-                was evaluated
-                <b>{{ taskStats.count.total }}</b>
-                times.
-              </li>
-              <li>
-                The task took
-                <b>{{ taskStats.timeAvg | duration }}</b>
-                on average to evaluate.
-              </li>
-              <li>
-                A total of
-                <b>{{ taskStats.points.total }}</b>
-                points was
-                {{ taskStats._task.points < 0 ? 'deducted' : 'given' }}
-                across all submissions.
-              </li>
-              <li>
-                On average, that is
-                <b>{{ taskStats._pointsAvg | number:'0.0-2' }}</b>
-                points across evaluated submissions.
-              </li>
-              <li>
-                This results in a
-                {{ taskStats._task.points < 0 ? 'failure' : 'success' }}
-                rate of
-                <b>{{ taskStats._score | percent:'0.0-2' }}</b>.
-              </li>
-              <li>
-                Of the {{ taskStats.count.total }} evaluations for this task,
+          </h2>
+          <div ngbAccordionCollapse>
+            <div ngbAccordionBody>
+              <ng-template>
                 <ul>
                   <li>
-                    <b>{{ taskStats.count.codeSearch }}</b> were found by Code Search and unedited,
+                    The Task
+                    <b>{{ taskStats._task.description }}</b>
+                    was evaluated
+                    <b>{{ taskStats.count.total }}</b>
+                    times.
                   </li>
                   <li>
-                    <b>{{ taskStats.count.editedCodeSearch }}</b> were found by Code Search and manually edited, and
+                    The task took
+                    <b>{{ taskStats.timeAvg | duration }}</b>
+                    on average to evaluate.
                   </li>
                   <li>
-                    <b>{{ taskStats.count.manual }}</b> were added manually.
+                    A total of
+                    <b>{{ taskStats.points.total }}</b>
+                    points was
+                    {{ taskStats._task.points < 0 ? 'deducted' : 'given' }}
+                    across all submissions.
+                  </li>
+                  <li>
+                    On average, that is
+                    <b>{{ taskStats._pointsAvg | number:'0.0-2' }}</b>
+                    points across evaluated submissions.
+                  </li>
+                  <li>
+                    This results in a
+                    {{ taskStats._task.points < 0 ? 'failure' : 'success' }}
+                    rate of
+                    <b>{{ taskStats._score | percent:'0.0-2' }}</b>.
+                  </li>
+                  <li>
+                    Of the {{ taskStats.count.total }} evaluations for this task,
+                    <ul>
+                      <li>
+                        <b>{{ taskStats.count.codeSearch }}</b> were found by Code Search and unedited,
+                      </li>
+                      <li>
+                        <b>{{ taskStats.count.editedCodeSearch }}</b> were found by Code Search and manually edited, and
+                      </li>
+                      <li>
+                        <b>{{ taskStats.count.manual }}</b> were added manually.
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    This makes Code Search
+                    <b>{{ taskStats._codeSearchEffectiveness | percent:'0.0' }}</b>
+                    @if (taskStats.count.editedCodeSearch) {
+                      -
+                      <b>{{ (taskStats.count.codeSearch + taskStats.count.editedCodeSearch) / taskStats.count.total | percent:'0.0' }}</b>
+                    }
+                    effective for this task.
+                  </li>
+                  <li>
+                    Code Search saved approximately
+                    <b>{{ taskStats._codeSearchTimeSavings | duration }}</b>
+                    of grading time for this task.
                   </li>
                 </ul>
-              </li>
-              <li>
-                This makes Code Search
-                <b>{{ taskStats._codeSearchEffectiveness | percent:'0.0' }}</b>
-                @if (taskStats.count.editedCodeSearch) {
-                  -
-                  <b>{{ (taskStats.count.codeSearch + taskStats.count.editedCodeSearch) / taskStats.count.total | percent:'0.0' }}</b>
-                }
-                effective for this task.
-              </li>
-              <li>
-                Code Search saved approximately
-                <b>{{ taskStats._codeSearchTimeSavings | duration }}</b>
-                of grading time for this task.
-              </li>
-            </ul>
-          </ng-template>
-        </ngb-panel>
+              </ng-template>
+            </div>
+          </div>
+        </div>
       }
-    </ngb-accordion>
+    </div>
   </div>
 }
