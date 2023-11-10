@@ -10,12 +10,12 @@
     <input class="form-control" type="file" id="files" multiple #filesInput (change)="addFiles(filesInput.files!)">
   </div>
   <ul class="list-group">
-    @for (file of files; track file; let index = $index) {
+    @for (file of files; track file) {
       <li class="list-group-item d-flex align-items-center">
         <div class="me-auto">
           {{ file.name }} ({{ file.size >= 1024 ? (file.size / 1024 | number:'0.0-1') + ' KiB' : file.size + ' bytes' }})
         </div>
-        <button class="btn btn-outline-danger bi-trash" (click)="files.splice(index, 1)"></button>
+        <button class="btn btn-outline-danger bi-trash" (click)="files.splice($index, 1)"></button>
       </li>
     }
   </ul>

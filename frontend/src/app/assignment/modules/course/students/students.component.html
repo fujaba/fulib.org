@@ -4,13 +4,13 @@
     @for (prop of authorProperties;track prop) {
       <th>{{ prop[0] }}</th>
     }
-    @for (assignment of assignments;track assignment;let index = $index) {
+    @for (assignment of assignments;track assignment) {
       <th colspan="2">
         <div class="d-flex align-items-end">
           <a class="bi-clipboard-check me-auto text-body"
              [routerLink]="assignment && '/assignments/' + assignment._id + '/solutions'"
              [ngbTooltip]="assignment && assignment.title" container="body">
-            {{ assignmentNames[index] }}
+            {{ assignmentNames[$index] }}
           </a>
           <div ngbDropdown>
             <button class="btn btn-sm btn-outline-secondary bi-person-check" ngbDropdownToggle
@@ -23,7 +23,7 @@
               @for (otherAssignment of assignments;track otherAssignment;let otherIndex = $index) {
                 <button ngbDropdownItem
                         [disabled]="otherAssignment === assignment"
-                        (click)="copyAssignees(index, otherIndex)"
+                        (click)="copyAssignees($index, otherIndex)"
                 >
                   {{ otherAssignment?.title }}
                 </button>

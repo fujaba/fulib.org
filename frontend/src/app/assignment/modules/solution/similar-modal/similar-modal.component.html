@@ -40,15 +40,15 @@
             </tr>
           </thead>
           <tbody class="align-top">
-            @for (originalSnippet of evaluation?.snippets;track originalSnippet;let index = $index) {
+            @for (originalSnippet of evaluation?.snippets;track originalSnippet) {
               <tr>
                 @for (solution of solutions;track solution) {
                   <td
                       [class]="solution._id === solutionId ? 'bg-body sticky-start' : ''"
                       style="max-width: 400px"
                   >
-                    @if (snippets[solution._id!]?.[index];as solutionSnippet) {
-                      <app-edit-snippet [index]="index" [snippet]="solutionSnippet"></app-edit-snippet>
+                    @if (snippets[solution._id!]?.[$index];as solutionSnippet) {
+                      <app-edit-snippet [index]="$index" [snippet]="solutionSnippet"></app-edit-snippet>
                       <app-snippet [snippet]="solutionSnippet"></app-snippet>
                     }
                   </td>

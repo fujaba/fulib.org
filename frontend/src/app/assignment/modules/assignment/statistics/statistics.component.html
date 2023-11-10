@@ -143,22 +143,22 @@
           <h2 ngbAccordionHeader>
             <button ngbAccordionButton>
               <ol class="breadcrumb mb-0 flex-grow-1 bg-transparent">
-                @for (task of taskStats._tasks;track task;let last = $last) {
-                  <li class="breadcrumb-item" [class.text-muted]="!last">
+                @for (task of taskStats._tasks;track task) {
+                  <li class="breadcrumb-item" [class.text-muted]="!$last">
                     {{ task.description }}
-                      @if (last) {
-                        <span class="badge bg-secondary">
-                      {{ task.points }}
-                    </span>
-                      }
+                    @if ($last) {
+                      <span class="badge bg-secondary">
+                        {{ task.points }}
+                      </span>
+                    }
                   </li>
                 }
               </ol>
-              @for (prop of visibleProps;track prop;let last = $last) {
+              @for (prop of visibleProps;track prop) {
                 @if (taskProps[prop];as taskProp) {
                   <app-statistic-value [value]="taskProp.render(taskProp.get(taskStats))" [label]="taskProp.label"></app-statistic-value>
                 }
-                @if (!last) {
+                @if (!$last) {
                   <div class="border-end mx-3 align-self-stretch"></div>
                 }
               }
