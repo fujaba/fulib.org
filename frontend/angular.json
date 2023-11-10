@@ -87,10 +87,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "fulib.org:build:production"
+              "buildTarget": "fulib.org:build:production"
             },
             "development": {
-              "browserTarget": "fulib.org:build:development"
+              "buildTarget": "fulib.org:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -98,7 +98,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "fulib.org:build"
+            "buildTarget": "fulib.org:build"
           }
         },
         "test": {
