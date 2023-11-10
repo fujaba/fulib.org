@@ -126,16 +126,15 @@ export class SubmitService {
   }
 
   private hasRelevantInfo(task: Task, points: number, evaluation: Evaluation | undefined, depth: number): boolean {
-    return !!(
-      evaluation?.remark
-      || evaluation?.snippets.find(s => s.comment)
+    return !!evaluation?.remark
+      || !!evaluation?.snippets.some(s => s.comment)
       // always show non-full points
       || points !== Math.max(task.points, 0)
       // always show top-level tasks (but not deductions)
       || depth === 0 && task.points > 0
       // always show tasks with subtasks
-      || task.children.length
-    );
+      || !!task.children.length
+    ;
   }
 
   private renderSnippets(assignment: ReadAssignmentDto, solution: Solution, snippets: Snippet[]) {

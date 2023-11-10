@@ -73,9 +73,7 @@ export class CreateSolutionComponent implements OnInit {
   }
 
   addFiles(files: FileList) {
-    for (let i = 0; i < files.length; i++) {
-      this.files.push(files[i]);
-    }
+    this.files.push(...Array.from(files));
   }
 
   submit(): void {
