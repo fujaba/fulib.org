@@ -95,15 +95,15 @@
         <button class="btn btn-sm p-1 bi-clipboard" ngbTooltip="Copy Column as Text" (click)="copyTimestamp()"></button>
         <ng-template #timestampPopover>
           <dl>
-            @if (assignment && assignment.deadline) {
+            @if (assignment?.deadline; as deadline) {
 
-              <dt class="text-danger bi-hourglass-bottom">{{ assignment.deadline | date:'short' }}</dt>
+              <dt class="text-danger bi-hourglass-bottom">{{ deadline | date:'short' }}</dt>
               <dd>Submitted after Deadline</dd>
 
             }
-            @if (assignment && assignment.issuance) {
+            @if (assignment?.issuance; as issuance) {
 
-              <dt class="text-warning bi-hourglass-top">{{ assignment.issuance | date:'short' }}</dt>
+              <dt class="text-warning bi-hourglass-top">{{ issuance | date:'short' }}</dt>
               <dd>No changes since Issuance</dd>
 
             }
@@ -180,7 +180,7 @@
               queryParamsHandling="merge"
               ngbTooltip="View Solution"
             ></a>
-            @if (assignment && assignment?.classroom?.org && assignment?.classroom?.prefix && solution.author.github) {
+            @if (assignment && assignment.classroom?.org && assignment.classroom?.prefix && solution.author.github) {
               <div class="btn-group me-1">
                 <a
                   class="btn btn-secondary bi-github"
