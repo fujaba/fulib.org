@@ -43,8 +43,6 @@ export class FourPaneEditorComponent implements OnInit {
     this.editorService.panels = this.panels;
   };
 
-  itemId = item => item.id;
-
   constructor(
     private examplesService: ExamplesService,
     private editorService: EditorService,

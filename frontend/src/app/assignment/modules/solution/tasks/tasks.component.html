@@ -1,31 +1,31 @@
-<div class="card mb-3" *ngIf="assignee">
-  <div class="card-body d-flex align-items-center">
-    <ng-container *ngIf="evaluating else notEvaluating">
-      <a class="btn btn-primary bi-code me-2" [href]="assignment!|cloneLink:solution!:config|safeUrl" target="_blank">
-        Clone in IDE
-      </a>
-      <button class="btn btn-primary bi-rocket me-2" [disabled]="launching" (click)="launch()">
-        Launch in Projects
-      </button>
-      <app-timetracking #timer [(duration)]="assignee.duration!" class="me-2"></app-timetracking>
-      <a class="btn btn-danger bi-stop" (click)="timer.pause(); saveDuration(); evaluating = false" routerLink="feedback">
-        Stop
-      </a>
-    </ng-container>
-    <ng-template #notEvaluating>
-      <button (click)="evaluating = true" class="btn btn-primary bi-play me-2">
-        Start
-      </button>
-      <span class="text-muted me-2" *ngIf="assignee.duration">
-        Duration:
-        {{ assignee.duration | duration }}
-      </span>
-      <a *ngIf="assignee.feedback" routerLink="feedback">
-        View Feedback
-      </a>
-    </ng-template>
+@if (assignee) {
+  <div class="card mb-3">
+    <div class="card-body d-flex align-items-center">
+      @if (evaluating) {
+        <a class="btn btn-primary bi-code me-2" [href]="assignment!|cloneLink:solution!:config|safeUrl" target="_blank">
+          Clone in IDE
+        </a>
+        <button class="btn btn-primary bi-rocket me-2" [disabled]="launching" (click)="launch()">
+          Launch in Projects
+        </button>
+        <app-timetracking #timer [(duration)]="assignee.duration!" class="me-2"></app-timetracking>
+        <a class="btn btn-danger bi-stop" (click)="timer.pause(); saveDuration(); evaluating = false" routerLink="feedback">
+          Stop
+        </a>
+      } @else {
+        <button (click)="evaluating = true" class="btn btn-primary bi-play me-2">
+          Start
+        </button>
+        @if (assignee.duration) {
+          <span class="text-muted me-2">Duration: {{ assignee.duration | duration }}</span>
+        }
+        @if (assignee.feedback) {
+          <a routerLink="feedback">View Feedback</a>
+        }
+      }
+    </div>
   </div>
-</div>
+}
 <app-task-list
   [tasks]="assignment?.tasks"
   [evaluations]="evaluations"

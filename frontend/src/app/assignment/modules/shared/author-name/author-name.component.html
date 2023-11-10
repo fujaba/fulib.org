@@ -1,6 +1,7 @@
-<a *ngIf="email else justName" href="mailto:{{email}}" [ngbTooltip]="email" container="body">
+@if (email) {
+  <a href="mailto:{{email}}" [ngbTooltip]="email" container="body">
+    {{name}}
+  </a>
+} @else {
   {{name}}
-</a>
-<ng-template #justName>
-  {{name}}
-</ng-template>
+}

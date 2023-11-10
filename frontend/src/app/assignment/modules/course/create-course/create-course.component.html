@@ -1,29 +1,32 @@
 <div class="container">
-  <h1 *ngIf="!course?.['_id']">Create Course</h1>
+  @if (!course?.['_id']) {
+    <h1>Create Course</h1>
+  }
 
   <div class="mb-3">
     <app-import-export (import)="onImport($event)" (export)="onExport()"></app-import-export>
   </div>
 
   <h2>General Info</h2>
-
-  <div class="mb-3" *ngIf="course">
+  @if (course) {
     <div class="mb-3">
-      <label for="titleInput" class="form-label">Title</label>
-      <input type="text" class="form-control" id="titleInput" placeholder="My Course"
-             [(ngModel)]="course.title" (change)="saveDraft()">
-    </div>
-    <div class="mb-3">
-      <label for="descriptionInput" class="form-label">Description</label>
-      <textarea id="descriptionInput" class="form-control" rows="6"
-                placeholder="A short description for this course..."
-                [(ngModel)]="course.description" (change)="saveDraft()">
-        </textarea>
-      <div class="form-text">
-        <a href="https://commonmark.org/help/" target="_blank">Markdown syntax</a> is supported.
+      <div class="mb-3">
+        <label for="titleInput" class="form-label">Title</label>
+        <input type="text" class="form-control" id="titleInput" placeholder="My Course"
+               [(ngModel)]="course.title" (change)="saveDraft()">
+      </div>
+      <div class="mb-3">
+        <label for="descriptionInput" class="form-label">Description</label>
+        <textarea id="descriptionInput" class="form-control" rows="6"
+                  placeholder="A short description for this course..."
+                  [(ngModel)]="course.description" (change)="saveDraft()">
+          </textarea>
+        <div class="form-text">
+          <a href="https://commonmark.org/help/" target="_blank">Markdown syntax</a> is supported.
+        </div>
       </div>
     </div>
-  </div>
+  }
 
   <h2>Assignments</h2>
   <div class="input-group mb-3">
@@ -43,8 +46,9 @@
     <li dndPlaceholderRef>
       <hr class="border-success">
     </li>
-    <li
-      *ngFor="let assignment of assignments; let i=index"
+    @for (assignment of assignments; track assignment; let i = $index) {
+  <li
+     
       class="timeline-item"
       dndType="assignment"
       [dndDraggable]="assignment"
@@ -62,25 +66,27 @@
       <button type="button" class="btn btn-danger ms-2 bi-trash" ngbTooltip="Remove"
               (click)="removeAssignment(i)"></button>
     </li>
+}
   </ul>
   <div class="form-text">
     Drag and Drop the <span class="bi-grip-horizontal"> handles</span> to change the order.
   </div>
 
-  <div *ngIf="!course?.['_id'] else editActions" class="text-center">
-    <p>
-      Click "Submit" to finalize your course and generate a link.
-    </p>
-    <button type="button" class="btn btn-primary btn-lg" [disabled]="submitting" (click)="submit()">
-      Submit
-    </button>
-  </div>
-  <ng-template #editActions>
+  @if(!course?.['_id']) {
+    <div class="text-center">
+      <p>
+        Click "Submit" to finalize your course and generate a link.
+      </p>
+      <button type="button" class="btn btn-primary btn-lg" [disabled]="submitting" (click)="submit()">
+        Submit
+      </button>
+    </div>
+  } @else {
     <button type="button" class="btn btn-primary me-2" [disabled]="submitting" (click)="save()">
       Save
     </button>
     <button type="button" class="btn btn-danger" [disabled]="submitting" (click)="delete()">
       Delete
     </button>
-  </ng-template>
+  }
 </div>
