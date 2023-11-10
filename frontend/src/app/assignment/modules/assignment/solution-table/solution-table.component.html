@@ -137,7 +137,7 @@
     </tr>
     </thead>
     <tbody>
-      @for (solution of solutions;track solutionId($index, solution)) {
+      @for (solution of solutions;track solution._id) {
         <tr>
           <th>
             <input type="checkbox" [ngModel]="selected[solution._id!]" (ngModelChange)="select(solution._id!, $event)">

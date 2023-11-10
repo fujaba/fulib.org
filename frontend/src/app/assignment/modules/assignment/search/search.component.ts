@@ -1,9 +1,8 @@
-import {Component, OnDestroy, OnInit, TrackByFunction} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {BehaviorSubject, combineLatest, EMPTY, forkJoin} from 'rxjs';
 import {debounceTime, distinctUntilChanged, switchMap} from 'rxjs/operators';
 import {ReadAssignmentDto} from '../../../model/assignment';
-import {Snippet} from '../../../model/evaluation';
 import {SearchResult} from '../../../model/search-result';
 import Solution from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
@@ -27,9 +26,6 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   syncSelection$ = new BehaviorSubject<boolean>(false);
   author = '';
-
-  trackResult: TrackByFunction<SearchResult> = (index, result) => result.solution;
-  trackSnippet: TrackByFunction<Snippet> = (index, snippet) => snippet.code;
 
   constructor(
     private solutionService: SolutionService,

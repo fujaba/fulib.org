@@ -9,6 +9,6 @@
     <span class="badge bg-secondary">WIP</span>
   }
 </a>
-@for (subPage of page.children;track pageUrl($index, subPage)) {
+@for (subPage of page.children;track subPage.url) {
   <app-page-navigation [page]="subPage"></app-page-navigation>
 }
