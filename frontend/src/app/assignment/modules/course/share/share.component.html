@@ -11,5 +11,7 @@
     Share this link with your students. They will be able to submit solutions for this course.
   </div>
   <hr/>
-  <app-edit-member-list *ngIf="course" namespace="courses" [parent]="course._id" [owner]="course.createdBy"></app-edit-member-list>
+  @if (course) {
+    <app-edit-member-list namespace="courses" [parent]="course._id" [owner]="course.createdBy"></app-edit-member-list>
+  }
 </div>

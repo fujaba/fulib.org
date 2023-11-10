@@ -1,74 +1,84 @@
 <table class="table table-hover table-bordered table-sm table-responsive">
   <thead>
   <tr>
-    <th *ngFor="let prop of authorProperties">
-      {{ prop[0] }}
-    </th>
-    <th *ngFor="let assignment of assignments; let index = index" colspan="2">
-      <div  class="d-flex align-items-end">
-        <a class="bi-clipboard-check me-auto text-body"
-           [routerLink]="assignment && '/assignments/' + assignment._id + '/solutions'"
-           [ngbTooltip]="assignment && assignment.title" container="body">
-          {{ assignmentNames[index] }}
-        </a>
-        <div ngbDropdown>
-          <button class="btn btn-sm btn-outline-secondary bi-person-check" ngbDropdownToggle
-                  ngbTooltip="Apply Assignees" placement="top">
-          </button>
-          <div ngbDropdownMenu>
-            <div class="dropdown-item-text">
-              Copy Assignees from
-            </div>
-            <button ngbDropdownItem
-                    *ngFor="let otherAssignment of assignments; let otherIndex = index"
-                    [disabled]="otherAssignment === assignment"
-                    (click)="copyAssignees(index, otherIndex)"
-            >
-              {{ otherAssignment?.title }}
+    @for (prop of authorProperties;track prop) {
+      <th>{{ prop[0] }}</th>
+    }
+    @for (assignment of assignments;track assignment;let index = $index) {
+      <th colspan="2">
+        <div class="d-flex align-items-end">
+          <a class="bi-clipboard-check me-auto text-body"
+             [routerLink]="assignment && '/assignments/' + assignment._id + '/solutions'"
+             [ngbTooltip]="assignment && assignment.title" container="body">
+            {{ assignmentNames[index] }}
+          </a>
+          <div ngbDropdown>
+            <button class="btn btn-sm btn-outline-secondary bi-person-check" ngbDropdownToggle
+                    ngbTooltip="Apply Assignees" placement="top">
             </button>
+            <div ngbDropdownMenu>
+              <div class="dropdown-item-text">
+                Copy Assignees from
+              </div>
+              @for (otherAssignment of assignments;track otherAssignment;let otherIndex = $index) {
+                <button ngbDropdownItem
+                        [disabled]="otherAssignment === assignment"
+                        (click)="copyAssignees(index, otherIndex)"
+                >
+                  {{ otherAssignment?.title }}
+                </button>
+              }
+            </div>
           </div>
         </div>
-      </div>
-    </th>
+      </th>
+    }
     <th>
       <i class="bi-person-raised-hand" ngbTooltip="Number of complete Feedbacks submitted"></i>
     </th>
   </tr>
   </thead>
   <tbody>
-  <tr *ngIf="!students">
-    <td [attr.colspan]="authorProperties.length + assignmentNames.length * 2" class="text-center align-middle">
-      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-      Loading...
-    </td>
-  </tr>
-  <tr *ngFor="let student of students">
-    <td *ngFor="let prop of authorProperties">
-      {{ student.author[prop[1]] }}
-    </td>
-    <ng-container *ngFor="let solution of student.solutions; let i = index">
-      <td class="text-end"
-          [class.text-danger]="!solution"
-          [class.text-muted]="solution && solution.points === undefined"
-          [routerLink]="solution && ['/assignments', course?.assignments?.[i], 'solutions', solution._id]"
-          [ngbTooltip]="solution ? 'View Solution' : 'No Solution'" container="body"
-          [class.cursor-pointer]="solution"
-      >
-        {{ solution?.points || 0 }}
-      </td>
-      <td [style.background-color]="solution?.assignee | assigneeColor">
-        <app-assignee-dropdown
-          *ngIf="solution && course"
-          [assignment]="course.assignments[i]"
-          [solution]="solution._id"
-          [assignees]="assignees"
-          [(assignee)]="solution.assignee"
-        ></app-assignee-dropdown>
-      </td>
-    </ng-container>
-    <td>
-      {{ student.feedbacks }}
-    </td>
-  </tr>
+    @if (!students) {
+      <tr>
+        <td [attr.colspan]="authorProperties.length + assignmentNames.length * 2" class="text-center align-middle">
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          Loading...
+        </td>
+      </tr>
+    }
+    @for (student of students;track student) {
+      <tr>
+        @for (prop of authorProperties;track prop) {
+          <td>
+            {{ student.author[prop[1]] }}
+          </td>
+        }
+        @for (solution of student.solutions;track solution;let i = $index) {
+          <td class="text-end"
+              [class.text-danger]="!solution"
+              [class.text-muted]="solution && solution.points === undefined"
+              [routerLink]="solution && ['/assignments', course?.assignments?.[i], 'solutions', solution._id]"
+              [ngbTooltip]="solution ? 'View Solution' : 'No Solution'" container="body"
+              [class.cursor-pointer]="solution"
+          >
+            {{ solution?.points || 0 }}
+          </td>
+          <td [style.background-color]="solution?.assignee | assigneeColor">
+            @if (solution && course) {
+              <app-assignee-dropdown
+                [assignment]="course.assignments[i]"
+                [solution]="solution._id"
+                [assignees]="assignees"
+                [(assignee)]="solution.assignee"
+              ></app-assignee-dropdown>
+            }
+          </td>
+        }
+        <td>
+          {{ student.feedbacks }}
+        </td>
+      </tr>
+    }
   </tbody>
 </table>

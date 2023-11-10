@@ -11,8 +11,12 @@
       Close
     </button>
     <button class="btn btn-success" (click)="import(outlet.component)" [disabled]="importing">
-      <span *ngIf="importing" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-      {{ importing ? 'Importing...' : 'Import' }}
+      @if (importing) {
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        Importing...
+      } @else {
+        Import
+      }
     </button>
   </ng-container>
 </ngbx-modal>

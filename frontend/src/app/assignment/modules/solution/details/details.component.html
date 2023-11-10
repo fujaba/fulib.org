@@ -1,86 +1,97 @@
-<div class="mb-3" *ngIf="solution">
+@if (solution) {
   <div class="mb-3">
-    <label class="form-label" for="nameInput">Name</label>
-    <input type="text" class="form-control" id="nameInput" [(ngModel)]="solution.author.name">
-  </div>
-  <div class="mb-3">
-    <label class="form-label" for="studentIDInput">Student ID</label>
-    <input type="text" class="form-control" id="studentIDInput" [(ngModel)]="solution.author.studentId">
-  </div>
-  <div class="mb-3">
-    <label class="form-label" for="emailInput">E-Mail</label>
-    <div class="input-group">
-      <input type="text" class="form-control" id="emailInput" [(ngModel)]="solution.author.email">
-      <a
-        *ngIf="solution.author.email"
-        class="btn btn-primary bi-envelope"
-        href="mailto:{{solution.author.email}}"
-        ngbTooltip="Compose Mail"
-      ></a>
+    <div class="mb-3">
+      <label class="form-label" for="nameInput">Name</label>
+      <input type="text" class="form-control" id="nameInput" [(ngModel)]="solution.author.name">
     </div>
-  </div>
-  <div class="mb-3">
-    <label class="form-label" for="githubInput">GitHub Username</label>
-    <div class="input-group">
-      <input type="text" class="form-control" id="githubInput" [(ngModel)]="solution.author.github">
-      <a *ngIf="solution && solution.author.github"
-         class="btn btn-primary bi-github"
-         href="https://github.com/{{solution.author.github}}"
-         target="_blank"
-         ngbTooltip="Open on GitHub"
-      ></a>
+    <div class="mb-3">
+      <label class="form-label" for="studentIDInput">Student ID</label>
+      <input type="text" class="form-control" id="studentIDInput" [(ngModel)]="solution.author.studentId">
     </div>
-  </div>
-  <div class="mb-3" *ngIf="solution.commit">
-    <label class="form-label" for="commitInput">Git Commit</label>
-    <div class="input-group">
-      <input type="text" class="form-control font-monospace" id="commitInput" readonly [ngModel]="solution.commit">
-      <a *ngIf="assignment && solution.commit"
-         class="btn btn-primary bi-github"
-         [href]="assignment|githubLink:solution:true"
-         target="_blank"
-         ngbTooltip="Open on GitHub"
-      ></a>
-    </div>
-  </div>
-  <div class="mb-3" *ngIf="solution.consent as consent">
-    <label class="form-label">Consent</label>
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" id="consentDemonstrationInput" [(ngModel)]="consent.demonstration">
-      <label class="form-check-label" for="consentDemonstrationInput">
-        This solution may be used for demonstration purposes.
-      </label>
-    </div>
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" id="consentScientificInput" [(ngModel)]="consent.scientific">
-      <label class="form-check-label" for="consentScientificInput">
-        This solution may be used for scientific purposes.
-      </label>
-    </div>
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" id="consent3PInput" [(ngModel)]="consent['3P']">
-      <label class="form-check-label" for="consent3PInput">
-        This solution may be sent to third parties for evaluation purposes.
-      </label>
-    </div>
-  </div>
-  <button type="button" class="btn btn-primary" (click)="save()" [disabled]="saving">
-    {{ saving ? 'Saving...' : 'Save' }}
-  </button>
-  <hr/>
-  <h4>Danger Zone</h4>
-  <div class="list-group">
-    <div class="list-group-item border-danger d-flex align-items-center">
-      <div class="me-auto">
-        <h6>
-          Delete Solution
-        </h6>
-        This will also remove all comments and evaluations.
+    <div class="mb-3">
+      <label class="form-label" for="emailInput">E-Mail</label>
+      <div class="input-group">
+        <input type="text" class="form-control" id="emailInput" [(ngModel)]="solution.author.email">
+        @if (solution.author.email) {
+          <a
+            class="btn btn-primary bi-envelope"
+            href="mailto:{{solution.author.email}}"
+            ngbTooltip="Compose Mail"
+          ></a>
+        }
       </div>
-      <a class="btn btn-danger" routerLink="delete">
-        Delete
-      </a>
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="githubInput">GitHub Username</label>
+      <div class="input-group">
+        <input type="text" class="form-control" id="githubInput" [(ngModel)]="solution.author.github">
+        @if (solution && solution.author.github) {
+          <a
+             class="btn btn-primary bi-github"
+             href="https://github.com/{{solution.author.github}}"
+             target="_blank"
+             ngbTooltip="Open on GitHub"
+          ></a>
+        }
+      </div>
+    </div>
+    @if (solution.commit) {
+      <div class="mb-3">
+        <label class="form-label" for="commitInput">Git Commit</label>
+        <div class="input-group">
+          <input type="text" class="form-control font-monospace" id="commitInput" readonly [ngModel]="solution.commit">
+          @if (assignment && solution.commit) {
+            <a
+               class="btn btn-primary bi-github"
+               [href]="assignment|githubLink:solution:true"
+               target="_blank"
+               ngbTooltip="Open on GitHub"
+            ></a>
+          }
+        </div>
+      </div>
+    }
+    @if (solution.consent;as consent) {
+      <div class="mb-3">
+        <label class="form-label">Consent</label>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="consentDemonstrationInput" [(ngModel)]="consent.demonstration">
+          <label class="form-check-label" for="consentDemonstrationInput">
+            This solution may be used for demonstration purposes.
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="consentScientificInput" [(ngModel)]="consent.scientific">
+          <label class="form-check-label" for="consentScientificInput">
+            This solution may be used for scientific purposes.
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="consent3PInput" [(ngModel)]="consent['3P']">
+          <label class="form-check-label" for="consent3PInput">
+            This solution may be sent to third parties for evaluation purposes.
+          </label>
+        </div>
+      </div>
+    }
+    <button type="button" class="btn btn-primary" (click)="save()" [disabled]="saving">
+      {{ saving ? 'Saving...' : 'Save' }}
+    </button>
+    <hr/>
+    <h4>Danger Zone</h4>
+    <div class="list-group">
+      <div class="list-group-item border-danger d-flex align-items-center">
+        <div class="me-auto">
+          <h6>
+            Delete Solution
+          </h6>
+          This will also remove all comments and evaluations.
+        </div>
+        <a class="btn btn-danger" routerLink="delete">
+          Delete
+        </a>
+      </div>
     </div>
   </div>
-</div>
+}
 <router-outlet></router-outlet>

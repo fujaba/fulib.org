@@ -4,16 +4,18 @@
     Select a topic to get started:
   </h4>
   <div class="d-flex flex-wrap justify-content-center align-items-stretch">
-    <div *ngFor="let repo of repos" class="card m-3">
-      <div class="card-body">
-        <h5 class="card-title">{{ repo.name }}</h5>
-        <p class="card-text">{{ repo.description }}</p>
+    @for (repo of repos;track repo) {
+      <div class="card m-3">
+        <div class="card-body">
+          <h5 class="card-title">{{ repo.name }}</h5>
+          <p class="card-text">{{ repo.description }}</p>
+        </div>
+        <div class="card-footer">
+          <a [routerLink]="repo.name" class="btn btn-primary">
+            View Docs
+          </a>
+        </div>
       </div>
-      <div class="card-footer">
-        <a [routerLink]="repo.name" class="btn btn-primary">
-          View Docs
-        </a>
-      </div>
-    </div>
+    }
   </div>
 </div>

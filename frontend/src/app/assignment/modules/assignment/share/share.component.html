@@ -11,7 +11,10 @@
     Share this link with your students. They will be able to submit solutions to this assignment.
   </div>
   <hr/>
-  <app-edit-member-list *ngIf="assignment" namespace="assignments" [parent]="assignment._id" [owner]="assignment.createdBy"></app-edit-member-list>
+  @if (assignment) {
+    <app-edit-member-list namespace="assignments" [parent]="assignment._id"
+                          [owner]="assignment.createdBy"></app-edit-member-list>
+  }
   <hr/>
   <div class="alert alert-warning">
     The following fields contain the assignment token, a secret key that can be used to access and grade all submissions.
@@ -21,7 +24,7 @@
     If you suspect this token may have leaked, you can
     <a routerLink="." (click)="regenerateToken()">generate a new token</a>.
   </div>
-  <ng-container *ngIf="assignment && assignment['token']">
+  @if (assignment && assignment['token']) {
     <h5>
       Access Token
     </h5>
@@ -37,5 +40,5 @@
     <div class="form-text">
       You can invite Teaching Assistants by giving them this link.
     </div>
-  </ng-container>
+  }
 </div>

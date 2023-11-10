@@ -12,33 +12,36 @@
     It can be used to find code duplicates across submissions and allows grading multiple students at the same time.
   </div>
 </div>
-<div class="mb-3" *ngIf="classroom.codeSearch">
-  <label class="form-label bi-cpu" for="openaiApiKeyInput">
-    OpenAI API Key
-  </label>
-  <app-masked-input
-    id="openaiApiKeyInput"
-    type="password"
-    [(value)]="classroom.openaiApiKey"
-    (change)="context.saveDraft()"
-    placeholder="sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-  ></app-masked-input>
-  <div class="form-text">
-    Your OpenAI API key for advanced Code Search. Generate one in the
-    <a href="https://platform.openai.com/account/api-keys" target="_blank">OpenAI API Keys</a>.
+@if (classroom.codeSearch) {
+  <div class="mb-3">
+    <label class="form-label bi-cpu" for="openaiApiKeyInput">
+      OpenAI API Key
+    </label>
+    <app-masked-input
+      id="openaiApiKeyInput"
+      type="password"
+      [(value)]="classroom.openaiApiKey"
+      (change)="context.saveDraft()"
+      placeholder="sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+    ></app-masked-input>
+    <div class="form-text">
+      Your OpenAI API key for advanced Code Search. Generate one in the
+      <a href="https://platform.openai.com/account/api-keys" target="_blank">OpenAI API Keys</a>.
+    </div>
   </div>
-</div>
-<div class="mb-3" *ngIf="classroom.codeSearch">
-  <label class="form-label bi-ui-checks" for="openaiConsentCheck">
-    OpenAI Consent
-  </label>
-  <div class="form-check">
-    <input type="checkbox" class="form-check-input" id="openaiConsentCheck"
-           [(ngModel)]="classroom.openaiConsent" (change)="context.saveDraft()">
-    <label class="form-check-label" for="openaiConsentCheck">Require Third-Party Consent</label>
+
+  <div class="mb-3">
+    <label class="form-label bi-ui-checks" for="openaiConsentCheck">
+      OpenAI Consent
+    </label>
+    <div class="form-check">
+      <input type="checkbox" class="form-check-input" id="openaiConsentCheck"
+             [(ngModel)]="classroom.openaiConsent" (change)="context.saveDraft()">
+      <label class="form-check-label" for="openaiConsentCheck">Require Third-Party Consent</label>
+    </div>
+    <div class="form-text">
+      The OpenAI API will be used to semantically index all code submissions that consent to third-party sharing.
+      If disabled, the students' consent will be ignored and all submissions will be indexed.
+    </div>
   </div>
-  <div class="form-text">
-    The OpenAI API will be used to semantically index all code submissions that consent to third-party sharing.
-    If disabled, the students' consent will be ignored and all submissions will be indexed.
-  </div>
-</div>
+}

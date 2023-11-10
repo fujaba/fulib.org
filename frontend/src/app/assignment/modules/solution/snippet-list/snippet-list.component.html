@@ -1,30 +1,34 @@
 <label class="form-label" for="snippets">
   Snippets
 </label>
-<div *ngIf="searchSummary" class="alert alert-{{searchSummary.level}}">
-  <span class="bi-robot">Code Search</span>
-  found
-  <b>{{ searchSummary.hits }}</b>
-  hits in
-  <b>{{ searchSummary.files }}</b>
-  files from
-  <b>{{ searchSummary.solutions }}</b>
-  solutions for this snippet.
-  {{ searchSummary.message }}
-  <a [routerLink]="['/assignments', route.snapshot.params.aid, 'search']"
-     [queryParams]="{q: searchSummary.code, glob: task?.glob}">
-    View Results
-  </a>
-</div>
+@if (searchSummary) {
+  <div class="alert alert-{{searchSummary.level}}">
+    <span class="bi-robot">Code Search</span>
+    found
+    <b>{{ searchSummary.hits }}</b>
+    hits in
+    <b>{{ searchSummary.files }}</b>
+    files from
+    <b>{{ searchSummary.solutions }}</b>
+    solutions for this snippet.
+    {{ searchSummary.message }}
+    <a [routerLink]="['/assignments', route.snapshot.params.aid, 'search']"
+       [queryParams]="{q: searchSummary.code, glob: task?.glob}">
+      View Results
+    </a>
+  </div>
+}
 <ul class="list-group" id="snippets">
-  <li *ngFor="let snippet of dto.snippets; let index=index" class="list-group-item"
+  @for (snippet of dto.snippets;track snippet;let index = $index) {
+    <li class="list-group-item"
       [class.list-group-item-warning]="snippet.comment === selectionComment">
-    <app-edit-snippet
-      [snippet]="snippet" [index]="index" [comments]="comments"
-      (deleted)="deleteSnippet(index)"
-    ></app-edit-snippet>
-    <app-snippet [snippet]="snippet" wildcard="***" (updated)="snippetUpdates$.next($event)"></app-snippet>
-  </li>
+      <app-edit-snippet
+        [snippet]="snippet" [index]="index" [comments]="comments"
+        (deleted)="deleteSnippet(index)"
+      ></app-edit-snippet>
+      <app-snippet [snippet]="snippet" wildcard="***" (updated)="snippetUpdates$.next($event)"></app-snippet>
+    </li>
+  }
 </ul>
 <div class="form-text">
   Use
@@ -32,11 +36,13 @@
     fulibFeedback
   </a>
   to add code snippets from within your IDE.
-  <span *ngIf="task && task.glob" class="text-info bi-robot">
-    Code Search will only look for files matching the glob pattern <code>{{ task.glob }}</code>.
-  </span>
+  @if (task && task.glob) {
+    <span class="text-info bi-robot">
+      Code Search will only look for files matching the glob pattern <code>{{ task.glob }}</code>.
+    </span>
+  }
 </div>
-<ng-container *ngIf="snippetSuggestionsEnabled && embeddingSnippets.length">
+@if (snippetSuggestionsEnabled && embeddingSnippets.length) {
   <label class="form-label bi-cpu" for="embedding-snippets">
     Snippet Suggestions
     <span class="badge bg-gradient-primary">New</span>
@@ -44,8 +50,10 @@
     <i class="bi-question-circle" [ngbTooltip]='"Advanced Code Search suggests code that is related to the task \"" + task?.description + "\"" '></i>
   </label>
   <ul class="list-group" id="embedding-snippets">
-    <li *ngFor="let snippet of embeddingSnippets; let first=first" class="list-group-item">
-      <app-snippet [snippet]="snippet" [expanded]="first" (confirmed)="confirmEmbedding(snippet)"></app-snippet>
-    </li>
+    @for (snippet of embeddingSnippets;track snippet;let first = $first) {
+      <li class="list-group-item">
+        <app-snippet [snippet]="snippet" [expanded]="first" (confirmed)="confirmEmbedding(snippet)"></app-snippet>
+      </li>
+    }
   </ul>
-</ng-container>
+}

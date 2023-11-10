@@ -16,24 +16,26 @@
   <h4 class="text-center">
     Here's what you can do on fulib.org:
   </h4>
-  <div *ngFor="let feature of features" class="card mx-auto my-3">
-    <div class="row no-gutters align-items-center">
-      <div class="col-2 text-center">
-        <i class="m-3 display-3 bi-{{feature.icon}}"></i>
-      </div>
-      <div class="col-8">
-        <div class="card-body">
-          <h5 class="card-title">
-            {{ feature.title }}
-          </h5>
-          <p class="card-text">
-            {{ feature.description }}
-          </p>
-          <a class="btn btn-primary" [routerLink]="feature.link">
-            Launch
-          </a>
+  @for (feature of features; track feature) {
+    <div class="card mx-auto my-3">
+      <div class="row no-gutters align-items-center">
+        <div class="col-2 text-center">
+          <i class="m-3 display-3 bi-{{feature.icon}}"></i>
+        </div>
+        <div class="col-8">
+          <div class="card-body">
+            <h5 class="card-title">
+              {{ feature.title }}
+            </h5>
+            <p class="card-text">
+              {{ feature.description }}
+            </p>
+            <a class="btn btn-primary" [routerLink]="feature.link">
+              Launch
+            </a>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  }
 </div>

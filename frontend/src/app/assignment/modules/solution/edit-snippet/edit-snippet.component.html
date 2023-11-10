@@ -8,18 +8,20 @@
     (click)="commentFocus$.next('')"
     [(ngModel)]="snippet.comment"
   >
-  <button
-    *ngIf="snippet.comment === selectionComment"
-    type="button"
-    class="btn btn-outline-success bi-plus-circle me-2"
-    ngbTooltip="Add Selection Snippet"
-    (click)="snippet.comment = ''"
-  ></button>
-  <button
-    *ngIf="deleted.observed"
-    type="button"
-    class="btn btn-outline-danger bi-trash"
-    ngbTooltip="Delete Snippet"
-    (click)="delete()"
-  ></button>
+  @if (snippet.comment === selectionComment) {
+    <button
+      type="button"
+      class="btn btn-outline-success bi-plus-circle me-2"
+      ngbTooltip="Add Selection Snippet"
+      (click)="snippet.comment = ''"
+    ></button>
+  }
+  @if (deleted.observed) {
+    <button
+      type="button"
+      class="btn btn-outline-danger bi-trash"
+      ngbTooltip="Delete Snippet"
+      (click)="delete()"
+    ></button>
+  }
 </div>

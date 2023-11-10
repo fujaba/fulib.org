@@ -1,26 +1,25 @@
-<h1>{{assignment ? assignment.title : 'Loading...'}}</h1>
+<h1>{{ assignment ? assignment.title : 'Loading...' }}</h1>
 <p class="text-muted">
-  <ng-container *ngIf="assignment">
+  @if (assignment) {
     by
     <app-author-name [name]="assignment.author" [email]="assignment.email"></app-author-name>
-    <i *ngIf="$any(assignment).createdBy" class="text-info bi-patch-check-fill" ngbTooltip="Registered"></i>
-    <ng-container *ngIf="assignment.issuance">
-      &mdash;
-      Start: {{assignment.issuance | date:'medium'}}
-    </ng-container>
-    <ng-container *ngIf="assignment.deadline">
-      &mdash;
-      Deadline: {{assignment.deadline | date:'medium'}}
-    </ng-container>
-    <ng-container *ngIf="assignment.classroom && assignment.classroom.mossResult">
+    @if ($any(assignment).createdBy) {
+      <i class="text-info bi-patch-check-fill" ngbTooltip="Registered"></i>
+    }
+    @if (assignment.issuance) {
+      &mdash; Start: {{ assignment.issuance | date:'medium' }}
+    }
+    @if (assignment.deadline) {
+      &mdash; Deadline: {{ assignment.deadline | date:'medium' }}
+    }
+    @if (assignment.classroom && assignment.classroom.mossResult) {
       &mdash;
       <a class="bi-incognito" [href]="assignment.classroom.mossResult" target="_blank">
         Moss Results
       </a>
-    </ng-container>
-  </ng-container>
-  <ng-container *ngIf="!assignment">
+    }
+  } @else {
     Loading...
-  </ng-container>
+  }
 </p>
 <app-markdown [markdown]="assignment?.description"></app-markdown>

@@ -12,12 +12,13 @@
         <label for="pointsInput" class="form-label">Points</label>
         <div class="input-group">
           <input type="number" class="form-control" id="pointsInput" [(ngModel)]="task.points">
-          <button
-            *ngIf="task.children.length"
-            class="btn btn-outline-secondary bi-magic"
-            ngbTooltip="Calculate Automatically"
-            (click)="calcPoints(task)"
-          ></button>
+          @if (task.children.length) {
+            <button
+              class="btn btn-outline-secondary bi-magic"
+              ngbTooltip="Calculate Automatically"
+              (click)="calcPoints(task)"
+            ></button>
+          }
         </div>
       </div>
       <div class="mb-3">

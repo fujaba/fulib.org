@@ -6,95 +6,107 @@
     </a>
   </h1>
 
-  <div *ngIf="projects.length === 0" class="card">
-    <div class="card-body">
-      <h5 class="card-title">
-        Welcome to Projects <span class="badge bg-gradient-primary">v2</span>!
-      </h5>
-      <p class="card-text">
-        Projects allow you to:
-      </p>
-      <div class="d-flex align-items-center">
-        <i class="bi-window-sidebar feature-icon"></i>
-        Use a VSCode-like online IDE for fulib, Java and other languages
-      </div>
-      <div class="d-flex align-items-center">
-        <i class="bi-window-stack feature-icon"></i>
-        Run desktop GUI applications in the browser
-      </div>
-      <div class="d-flex align-items-center">
-        <i class="bi-terminal feature-icon"></i>
-        Work within a powerful and secure container context
-      </div>
-      <div class="d-flex align-items-center">
-        <i class="bi-file-earmark-zip feature-icon"></i>
-        Create complex applications ready for download and use in desktop environments
+  @if (projects.length === 0) {
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">
+          Welcome to Projects <span class="badge bg-gradient-primary">v2</span>!
+        </h5>
+        <p class="card-text">
+          Projects allow you to:
+        </p>
+        <div class="d-flex align-items-center">
+          <i class="bi-window-sidebar feature-icon"></i>
+          Use a VSCode-like online IDE for fulib, Java and other languages
+        </div>
+        <div class="d-flex align-items-center">
+          <i class="bi-window-stack feature-icon"></i>
+          Run desktop GUI applications in the browser
+        </div>
+        <div class="d-flex align-items-center">
+          <i class="bi-terminal feature-icon"></i>
+          Work within a powerful and secure container context
+        </div>
+        <div class="d-flex align-items-center">
+          <i class="bi-file-earmark-zip feature-icon"></i>
+          Create complex applications ready for download and use in desktop environments
+        </div>
       </div>
     </div>
-  </div>
+  }
 
   <ul class="list-group">
-    <li *ngFor="let project of projects; let index = index" class="list-group-item">
-      <div class="d-flex align-items-center">
-        <i class="bi-{{ project.icon || 'server'}} feature-icon"></i>
-        <div class="me-auto">
-          <h3>
-            {{project.name}}
-          </h3>
-          <div class="text-muted">
-            {{project.description}}
+    @for (project of projects;track project;let index = $index) {
+      <li class="list-group-item">
+        <div class="d-flex align-items-center">
+          <i class="bi-{{ project.icon || 'server'}} feature-icon"></i>
+          <div class="me-auto">
+            <h3>
+              {{project.name}}
+            </h3>
+            <div class="text-muted">
+              {{project.description}}
+            </div>
+            <small class="text-muted">
+              Created {{project.created | date:'medium'}}
+            </small>
           </div>
-          <small class="text-muted">
-            Created {{project.created | date:'medium'}}
-          </small>
-        </div>
-        <div *ngIf="containers[index]" class="h1 bi-play text-success me-2 mb-0" ngbTooltip="Container already running">
-        </div>
-        <a class="btn btn-primary bi-play-circle me-2" [routerLink]="project.id">
-          Open
-        </a>
-        <div ngbDropdown role="group">
-          <button class="btn btn-secondary bi-gear" ngbDropdownToggle>
-            Options
-          </button>
-          <div class="dropdown-menu" ngbDropdownMenu>
-            <a ngbDropdownItem class="bi-pencil" [routerLink]="[project.id, 'edit']">
-              Edit
-            </a>
-            <a ngbDropdownItem class="bi-gear" [routerLink]="[project.id, 'settings']">
-              Settings
-            </a>
-            <a ngbDropdownItem class="bi-person-plus" [routerLink]="[project.id, 'edit-member']">
-              Add Collaborator
-            </a>
-            <div class="dropdown-divider"></div>
-            <button *ngIf="containers[index]" ngbDropdownItem class="text-warning bi-stop-circle" (click)="stop(project)">
-              Stop Container
+          @if (containers[index]) {
+            <div class="h1 bi-play text-success me-2 mb-0" ngbTooltip="Container already running"></div>
+          }
+          <a class="btn btn-primary bi-play-circle me-2" [routerLink]="project.id">
+            Open
+          </a>
+          <div ngbDropdown role="group">
+            <button class="btn btn-secondary bi-gear" ngbDropdownToggle>
+              Options
             </button>
-            <a *ngIf="currentUser && currentUser.id === project.userId"
-               ngbDropdownItem class="text-danger bi-folder-symlink" [routerLink]="[project.id, 'transfer']">
-              Transfer
-            </a>
-            <a *ngIf="currentUser && currentUser.id === project.userId"
-               ngbDropdownItem class="text-danger bi-trash" [routerLink]="[project.id, 'delete']">
-              Delete
-            </a>
-            <button *ngIf="currentUser && currentUser.id !== project.userId"
-                    ngbDropdownItem class="text-dangerbi-person-x" (click)="leave(project)">
-              Leave
-            </button>
+            <div class="dropdown-menu" ngbDropdownMenu>
+              <a ngbDropdownItem class="bi-pencil" [routerLink]="[project.id, 'edit']">
+                Edit
+              </a>
+              <a ngbDropdownItem class="bi-gear" [routerLink]="[project.id, 'settings']">
+                Settings
+              </a>
+              <a ngbDropdownItem class="bi-person-plus" [routerLink]="[project.id, 'edit-member']">
+                Add Collaborator
+              </a>
+              <div class="dropdown-divider"></div>
+              @if (containers[index]) {
+                <button ngbDropdownItem class="text-warning bi-stop-circle" (click)="stop(project)">
+                  Stop Container
+                </button>
+              }
+              @if (currentUser && currentUser.id === project.userId) {
+                <a ngbDropdownItem class="text-danger bi-folder-symlink" [routerLink]="[project.id, 'transfer']">
+                  Transfer
+                </a>
+              }
+              @if (currentUser && currentUser.id === project.userId) {
+                <a ngbDropdownItem class="text-danger bi-trash" [routerLink]="[project.id, 'delete']">
+                  Delete
+                </a>
+              }
+              @if (currentUser && currentUser.id !== project.userId) {
+                <button ngbDropdownItem class="text-dangerbi-person-x" (click)="leave(project)">
+                  Leave
+                </button>
+              }
+            </div>
           </div>
         </div>
-      </div>
-    </li>
+      </li>
+    }
   </ul>
 
-  <p *ngIf="!currentUser" class="text-center text-muted mt-3">
-    Missing something?
-    Some of your Projects may not be available until you
-    <a routerLink="." (click)="login()">log in</a>
-    with your account.
-  </p>
+  @if (!currentUser) {
+    <p class="text-center text-muted mt-3">
+      Missing something?
+      Some of your Projects may not be available until you
+      <a routerLink="." (click)="login()">log in</a>
+      with your account.
+    </p>
+  }
 </div>
 
 <router-outlet></router-outlet>
