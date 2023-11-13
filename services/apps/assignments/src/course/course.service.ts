@@ -4,9 +4,10 @@ import {InjectModel} from '@nestjs/mongoose';
 import {Model, Types} from 'mongoose';
 import {AuthorInfo} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
-import {CourseStudent} from './course.dto';
+import {CourseAssignee, CourseStudent} from './course.dto';
 import {Course, CourseDocument} from './course.schema';
 import {MemberService} from "@app/member";
+import {AssigneeService} from "../assignee/assignee.service";
 
 @Injectable()
 @EventRepository()
@@ -14,6 +15,7 @@ export class CourseService extends MongooseRepository<Course> {
   constructor(
     @InjectModel(Course.name) model: Model<Course>,
     private solutionService: SolutionService,
+    private assigneeService: AssigneeService,
     private eventService: EventService,
     private memberService: MemberService,
   ) {
@@ -26,11 +28,7 @@ export class CourseService extends MongooseRepository<Course> {
       return [];
     }
 
-    const userMembers = await this.memberService.findAll({
-      parent: {$in: course.assignments.map(a => new Types.ObjectId(a))},
-      user,
-    });
-    const courseAssignmentsWhereUserIsMember = userMembers.map(m => m.parent.toString());
+    const courseAssignmentsWhereUserIsMember = await this.getCourseAssignmentsWhereUserIsMember(course, user);
     if (!courseAssignmentsWhereUserIsMember.length) {
       return [];
     }
@@ -101,6 +99,73 @@ export class CourseService extends MongooseRepository<Course> {
       }
     }
     return Array.from(new Set(students.values()));
+  }
+
+  private async getCourseAssignmentsWhereUserIsMember(course: CourseDocument, user: string) {
+    const userMembers = await this.memberService.findAll({
+      parent: {$in: course.assignments.map(a => new Types.ObjectId(a))},
+      user,
+    });
+    return userMembers.map(m => m.parent.toString());
+  }
+
+  async getAssignees(id: Types.ObjectId, user: string): Promise<CourseAssignee[]> {
+    const course = await this.find(id);
+    if (!course) {
+      return [];
+    }
+
+    const courseAssignmentsWhereUserIsMember = await this.getCourseAssignmentsWhereUserIsMember(course, user);
+    if (!courseAssignmentsWhereUserIsMember.length) {
+      return [];
+    }
+
+    const assigneeMap = new Map<string, CourseAssignee>();
+    for await (const aggregateElement of this.assigneeService.model.aggregate<{
+      _id: {
+        assignee: string,
+        assignment: string,
+      },
+      solutions: number,
+      duration: number,
+      feedbacks: number,
+    }>([
+      {
+        $match: {
+          assignment: {$in: courseAssignmentsWhereUserIsMember},
+        },
+      },
+      {
+        $group: {
+          _id: {
+            assignee: '$assignee',
+            assignment: '$assignment',
+          },
+          solutions: {$sum: 1},
+          duration: {$sum: '$duration'},
+          feedbacks: {$sum: {$cond: [{$gt: ['$feedback', null]}, 1, 0]}},
+        },
+      },
+    ])) {
+      const {_id: {assignment, assignee}, ...rest} = aggregateElement;
+      let courseAssignee = assigneeMap.get(assignee);
+      if (!courseAssignee) {
+        courseAssignee = {
+          assignee: assignee,
+          assignments: Array(course.assignments.length).fill(null),
+          solutions: 0,
+          duration: 0,
+          feedbacks: 0,
+        };
+        assigneeMap.set(assignee, courseAssignee);
+      }
+      const index = course.assignments.indexOf(assignment);
+      courseAssignee.assignments[index] = rest;
+      courseAssignee.solutions += rest.solutions;
+      courseAssignee.duration += rest.duration;
+      courseAssignee.feedbacks += rest.feedbacks;
+    }
+    return Array.from(assigneeMap.values());
   }
 
   emit(event: string, course: CourseDocument) {

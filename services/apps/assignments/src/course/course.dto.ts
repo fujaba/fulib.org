@@ -31,3 +31,31 @@ export class CourseStudent {
   @ApiProperty()
   feedbacks: number;
 }
+
+export class AssigneeSummary {
+  @ApiProperty()
+  solutions: number;
+
+  @ApiProperty()
+  duration: number;
+
+  @ApiProperty()
+  feedbacks: number;
+}
+
+export class CourseAssignee {
+  @ApiProperty()
+  assignee: string;
+
+  @ApiProperty({type: [AssigneeSummary]})
+  assignments: (AssigneeSummary | null)[];
+
+  @ApiProperty()
+  solutions: number;
+
+  @ApiProperty()
+  duration: number;
+
+  @ApiProperty()
+  feedbacks: number;
+}
