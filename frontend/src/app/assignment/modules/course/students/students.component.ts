@@ -40,19 +40,7 @@ export class StudentsComponent implements OnInit {
       switchMap(course => this.assignmentService.findIds(course.assignments)),
     ).subscribe(assignments => {
       this.assignments = assignments;
-      if (!assignments.length) {
-        return;
-      }
-      const firstTitle = assignments.find(a => a?.title)?.title ?? '';
-      if (assignments.length === 1) {
-        this.assignmentNames = [firstTitle];
-        return;
-      }
-      let prefixLength = 0;
-      while (prefixLength < firstTitle.length && assignments.every(a => !a || a.title[prefixLength] === firstTitle[prefixLength])) {
-        prefixLength++;
-      }
-      this.assignmentNames = assignments.map(a => a ? a.title.slice(prefixLength) : '<deleted>');
+      this.assignmentNames = this.courseService.getAssignmentNames(assignments);
     });
 
     this.route.params.pipe(
