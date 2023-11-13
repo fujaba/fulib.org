@@ -20,3 +20,15 @@ export interface CourseStudent {
   solutions: SolutionInfo[];
   feedbacks: number;
 }
+
+export interface CourseAssignee {
+  assignee: string;
+  assignments: {
+    solutions: number;
+    duration: number;
+    feedbacks: number;
+  }[];
+  solutions: number;
+  duration: number;
+  feedbacks: number;
+}

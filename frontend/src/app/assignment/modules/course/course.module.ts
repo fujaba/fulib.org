@@ -12,9 +12,10 @@ import {CourseRoutingModule} from './course-routing.module';
 import {CreateCourseSolutionsComponent} from './create-course-solutions/create-course-solutions.component';
 import {CreateCourseComponent} from './create-course/create-course.component';
 import {MyCoursesComponent} from './my-courses/my-courses.component';
-import { CourseComponent } from './course/course.component';
-import { ShareComponent } from './share/share.component';
-import { StudentsComponent } from './students/students.component';
+import {CourseComponent} from './course/course.component';
+import {ShareComponent} from './share/share.component';
+import {StudentsComponent} from './students/students.component';
+import {AssigneesComponent} from "./assignees/assignees.component";
 
 
 @NgModule({
@@ -25,6 +26,7 @@ import { StudentsComponent } from './students/students.component';
     CourseComponent,
     ShareComponent,
     StudentsComponent,
+    AssigneesComponent,
   ],
   imports: [
     CommonModule,

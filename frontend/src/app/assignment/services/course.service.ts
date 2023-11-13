@@ -7,8 +7,9 @@ import {switchMap} from 'rxjs/operators';
 
 import {environment} from '../../../environments/environment';
 import {UserService} from '../../user/user.service';
-import Course, {CourseStudent, CreateCourseDto, UpdateCourseDto} from '../model/course';
+import Course, {CourseAssignee, CourseStudent, CreateCourseDto, UpdateCourseDto} from '../model/course';
 import {StorageService} from "../../services/storage.service";
+import {ReadAssignmentDto} from "../model/assignment";
 
 @Injectable()
 export class CourseService {
@@ -17,6 +18,21 @@ export class CourseService {
     private userService: UserService,
     private storageService: StorageService,
   ) {
+  }
+
+  getAssignmentNames(assignments: (ReadAssignmentDto | undefined)[]): string[] {
+    if (!assignments.length) {
+      return [];
+    }
+    const firstTitle = assignments.find(a => a?.title)?.title ?? '';
+    if (assignments.length === 1) {
+      return [firstTitle];
+    }
+    let prefixLength = 0;
+    while (prefixLength < firstTitle.length && assignments.every(a => !a || a.title[prefixLength] === firstTitle[prefixLength])) {
+      prefixLength++;
+    }
+    return assignments.map(a => a ? a.title.slice(prefixLength) : '<deleted>');
   }
 
   // --------------- Draft ---------------
@@ -57,6 +73,10 @@ export class CourseService {
 
   getStudents(id: string): Observable<CourseStudent[]> {
     return this.http.get<CourseStudent[]>(`${environment.assignmentsApiUrl}/courses/${id}/students`);
+  }
+
+  getAssignees(id: string): Observable<CourseAssignee[]> {
+    return this.http.get<CourseAssignee[]>(`${environment.assignmentsApiUrl}/courses/${id}/assignees`);
   }
 
   create(course: CreateCourseDto): Observable<Course> {
