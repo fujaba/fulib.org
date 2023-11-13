@@ -7,9 +7,11 @@ import {CreateCourseComponent} from './create-course/create-course.component';
 import {MyCoursesComponent} from './my-courses/my-courses.component';
 import {ShareComponent} from './share/share.component';
 import {StudentsComponent} from './students/students.component';
+import {AssigneesComponent} from "./assignees/assignees.component";
 
 export const courseChildren = [
   {path: 'students', component: StudentsComponent, data: {title: 'Students'}},
+  {path: 'assignees', component: AssigneesComponent, data: {title: 'Assignees'}},
   {path: 'share', component: ShareComponent, data: {title: 'Share'}},
   {path: 'edit', component: CreateCourseComponent, data: {title: 'Edit Course'}},
 ];

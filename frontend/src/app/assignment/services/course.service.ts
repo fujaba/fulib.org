@@ -7,7 +7,7 @@ import {switchMap} from 'rxjs/operators';
 
 import {environment} from '../../../environments/environment';
 import {UserService} from '../../user/user.service';
-import Course, {CourseStudent, CreateCourseDto, UpdateCourseDto} from '../model/course';
+import Course, {CourseAssignee, CourseStudent, CreateCourseDto, UpdateCourseDto} from '../model/course';
 import {StorageService} from "../../services/storage.service";
 
 @Injectable()
@@ -57,6 +57,10 @@ export class CourseService {
 
   getStudents(id: string): Observable<CourseStudent[]> {
     return this.http.get<CourseStudent[]>(`${environment.assignmentsApiUrl}/courses/${id}/students`);
+  }
+
+  getAssignees(id: string): Observable<CourseAssignee[]> {
+    return this.http.get<CourseAssignee[]>(`${environment.assignmentsApiUrl}/courses/${id}/assignees`);
   }
 
   create(course: CreateCourseDto): Observable<Course> {
