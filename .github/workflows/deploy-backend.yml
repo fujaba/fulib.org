@@ -35,7 +35,7 @@ jobs:
         with:
           context: backend/
           push: true
-          tags: fulib/fulib.org-backend:${{ steps.deployment.outputs.tag }}
+          tags: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-backend:${{ steps.deployment.outputs.tag }}
           build-args: |
             VERSION=${{ steps.deployment.outputs.version }}
           cache-to: type=gha,mode=max
