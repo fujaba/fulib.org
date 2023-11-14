@@ -69,9 +69,9 @@ export class SolutionTableComponent implements OnInit {
     });
 
     this.activatedRoute.params.pipe(
-      switchMap(({aid}) => this.assigneeService.findAll(aid)),
+      switchMap(({aid}) => this.assigneeService.findUnique(aid, 'assignee')),
     ).subscribe(assignees => {
-      this.assigneeNames = [...new Set(assignees.map(a => a.assignee))].sort();
+      this.assigneeNames = assignees.sort();
     });
 
     combineLatest([this.activatedRoute.params, this.activatedRoute.queryParams]).pipe(
