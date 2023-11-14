@@ -40,6 +40,18 @@ export default class Solution {
 
 export type CreateSolutionDto = Pick<Solution, 'author'>;
 
+export enum SolutionStatus {
+  todo = 'todo',
+  codeSearch = 'code-search',
+  started = 'started',
+  graded = 'graded',
+}
+
+export interface RichSolutionDto extends Solution {
+  assignee?: string;
+  status: SolutionStatus;
+}
+
 export type ImportSolution = Pick<Solution,
   | '_id'
   | 'assignment'
