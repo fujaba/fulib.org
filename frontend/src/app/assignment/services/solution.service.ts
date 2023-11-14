@@ -9,7 +9,7 @@ import {UserService} from '../../user/user.service';
 import {ReadAssignmentDto} from '../model/assignment';
 import {CheckResult, CheckSolution} from '../model/check';
 
-import Solution, {AuthorInfo, CreateSolutionDto, ImportSolution} from '../model/solution';
+import Solution, {AuthorInfo, CreateSolutionDto, ImportSolution, RichSolutionDto} from '../model/solution';
 import {AssignmentService} from './assignment.service';
 
 @Injectable()
@@ -132,10 +132,10 @@ export class SolutionService {
     return this.http.get<Solution>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${id}`);
   }
 
-  getAll(assignment: string, search?: string): Observable<Solution[]> {
+  getAll(assignment: string, search?: string): Observable<RichSolutionDto[]> {
     const params: Params = {};
     search && (params.q = search);
-    return this.http.get<Solution[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions`, {
+    return this.http.get<RichSolutionDto[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions`, {
       params,
     });
   }

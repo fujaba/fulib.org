@@ -66,7 +66,7 @@ export class StatisticsService {
     ]);
 
     // needs to happen after timeStatistics and fillEvaluationStatistics
-    for (let taskStat of taskStats.values()) {
+    for (const taskStat of taskStats.values()) {
       time.codeSearchSavings += taskStat.count.codeSearch * taskStat.timeAvg;
     }
 
