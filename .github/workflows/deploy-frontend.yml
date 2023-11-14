@@ -21,15 +21,24 @@ jobs:
       - name: Set Deployment Options
         id: deployment
         run: ./.github/workflows/deploy.sh
-      - name: Build the Docker Image
-        uses: whoan/docker-build-with-cache-action@v6
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
         with:
+          registry: ${{ secrets.DOCKER_REGISTRY }}
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          registry: ${{ secrets.DOCKER_REGISTRY }}
-          image_name: fulib/fulib.org-frontend
-          image_tag: ${{ steps.deployment.outputs.tag }}
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
           context: frontend/
+          push: true
+          tags: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-frontend:${{ steps.deployment.outputs.tag }}
+          build-args: |
+            VERSION=${{ steps.deployment.outputs.version }}
+          cache-to: type=gha,mode=max
+          cache-from: type=gha
       - name: Deploy to Rancher
         uses: sekassel-research/actions-rancher-update@2.0.2
         with:
