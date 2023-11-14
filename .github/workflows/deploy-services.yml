@@ -8,6 +8,8 @@ on:
       - v*
     paths:
       - 'services/**'
+      - '.github/workflows/deploy.sh'
+      - '.github/workflows/deploy-services.yml'
 
 jobs:
   services:

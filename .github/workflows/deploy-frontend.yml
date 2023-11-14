@@ -8,6 +8,8 @@ on:
       - v*
     paths:
       - 'frontend/**'
+      - '.github/workflows/deploy.sh'
+      - '.github/workflows/deploy-frontend.yml'
 
 jobs:
   frontend:
