@@ -1,10 +1,11 @@
 import {NotFound} from '@mean-stream/nestx';
-import {Body, Controller, Delete, Get, Param, Patch, Put} from '@nestjs/common';
-import {ApiOkResponse, ApiTags} from '@nestjs/swagger';
+import {Body, Controller, Delete, Get, Param, Patch, Put, Query} from '@nestjs/common';
+import {ApiOkResponse, ApiOperation, ApiTags} from '@nestjs/swagger';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {BulkUpdateAssigneeDto, PatchAssigneeDto, UpdateAssigneeDto} from './assignee.dto';
 import {Assignee} from './assignee.schema';
 import {AssigneeService} from './assignee.service';
+import {FilterEvaluationParams} from "../evaluation/evaluation.dto";
 
 const forbiddenResponse = 'Not owner of assignment, or invalid Assignment-Token';
 
@@ -23,6 +24,17 @@ export class AssigneeController {
     @Param('assignment') assignment: string,
   ): Promise<Assignee[]> {
     return this.assigneeService.findAll({assignment}, {sort: {assignee: 1}});
+  }
+
+  @Get('assignments/:assignment/assignees/unique/:field')
+  @ApiOperation({summary: 'Find unique values for a field in assignees.'})
+  @AssignmentAuth({forbiddenResponse})
+  @ApiOkResponse({isArray: true})
+  async findUnique(
+    @Param('assignment') assignment: string,
+    @Param('field') field: string,
+  ): Promise<unknown[]> {
+    return this.assigneeService.model.distinct(field, {assignment}).exec();
   }
 
   @Patch('assignments/:assignment/assignees')
