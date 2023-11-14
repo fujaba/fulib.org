@@ -15,13 +15,14 @@ import {UserService} from "../../../../user/user.service";
 import {AssigneeService} from "../../../services/assignee.service";
 import {EvaluationService} from "../../../services/evaluation.service";
 
-type SearchKey = keyof AuthorInfo | 'assignee';
+type SearchKey = keyof AuthorInfo | 'assignee' | 'status';
 const searchKeys: readonly SearchKey[] = [
   'name',
   'studentId',
   'email',
   'github',
   'assignee',
+  'status',
 ];
 
 @Component({
@@ -179,6 +180,9 @@ export class SolutionTableComponent implements OnInit {
   private collectAllValues(key: SearchKey): string[] {
     if (key === 'assignee') {
       return this.assigneeNames;
+    }
+    if (key === 'status') {
+      return ['todo', 'code-search', 'started', 'graded'];
     }
     const valueSet = new Set<string>();
     for (const solution of this.solutions!) {
