@@ -65,6 +65,14 @@ export class SolutionService {
           localField: 'id',
           foreignField: 'solution',
           as: '_evaluations',
+          pipeline: [
+            {
+              $group: {
+                _id: '$codeSearch.origin',
+                count: {$sum: 1},
+              },
+            },
+          ],
         },
       },
       {
@@ -84,12 +92,13 @@ export class SolutionService {
                   then: {
                     $cond: {
                       if: {
+                        // no evaluations has _id === null
                         $eq: [{
                           $size: {
                             $filter: {
                               input: '$_evaluations',
                               as: 'e',
-                              cond: {$ne: ['$$e.author', 'Code Search']}
+                              cond: {$eq: ['$$e._id', null]}
                             }
                           }
                         }, 0]

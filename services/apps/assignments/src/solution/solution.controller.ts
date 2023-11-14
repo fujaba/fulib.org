@@ -107,7 +107,7 @@ export class SolutionController {
           postAnd.push({assignee: regex});
           break;
         case 'origin':
-          isMongoId(subTerm) && postAnd.push({'_evaluations.codeSearch.origin': new Types.ObjectId(subTerm)});
+          isMongoId(subTerm) && postAnd.push({'_evaluations._id': new Types.ObjectId(subTerm)});
           break;
         case 'status':
           postAnd.push({status: subTerm});
