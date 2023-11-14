@@ -4,8 +4,16 @@ import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model, UpdateQuery} from 'mongoose';
 import {generateToken} from '../utils';
-import {BatchUpdateSolutionDto, CreateSolutionDto, UpdateSolutionDto} from './solution.dto';
+import {BatchUpdateSolutionDto, CreateSolutionDto, RichSolutionDto, UpdateSolutionDto} from './solution.dto';
 import {Solution, SolutionDocument} from './solution.schema';
+
+const SOLUTION_SORT = {
+  'author.name': 1,
+  'author.github': 1,
+  timestamp: 1,
+} as const;
+
+const SOLUTION_COLLATION = {locale: 'en', caseFirst: 'off'};
 
 @Injectable()
 export class SolutionService {
@@ -30,9 +38,89 @@ export class SolutionService {
   async findAll(where: FilterQuery<Solution> = {}): Promise<Solution[]> {
     return this.model
       .find(where)
-      .sort('author.name author.github timestamp')
-      .collation({locale: 'en', caseFirst: 'off'})
+      .sort(SOLUTION_SORT)
+      .collation(SOLUTION_COLLATION)
       .exec();
+  }
+
+  async findRich(preFilter: FilterQuery<Solution>, postFilter: FilterQuery<RichSolutionDto>): Promise<RichSolutionDto[]> {
+    return this.model.aggregate([
+      {
+        $match: preFilter,
+      },
+      {
+        $addFields: {id: {$toString: '$_id'}},
+      },
+      {
+        $lookup: {
+          from: 'assignees',
+          localField: 'id',
+          foreignField: 'solution',
+          as: '_assignee',
+        },
+      },
+      {
+        $lookup: {
+          from: 'evaluations',
+          localField: 'id',
+          foreignField: 'solution',
+          as: '_evaluations',
+        },
+      },
+      {
+        $addFields: {
+          assignee: {$first: '$_assignee.assignee'},
+          // if points are set: SolutionStatus.graded
+          // else if all evaluations have author 'Code Search': SolutionStatus.codeSearch
+          // else if there are any evaluations: SolutionStatus.started
+          // otherwise: SolutionStatus.todo
+          status: {
+            $cond: {
+              if: {$gt: ['$points', null]},
+              then: 'graded',
+              else: {
+                $cond: {
+                  if: {$gt: [{$size: '$_evaluations'}, 0]},
+                  then: {
+                    $cond: {
+                      if: {
+                        $eq: [{
+                          $size: {
+                            $filter: {
+                              input: '$_evaluations',
+                              as: 'e',
+                              cond: {$ne: ['$$e.author', 'Code Search']}
+                            }
+                          }
+                        }, 0]
+                      },
+                      then: 'code-search',
+                      else: 'started',
+                    },
+                  },
+                  else: 'todo',
+                },
+              },
+            },
+          },
+        },
+      },
+      {
+        $match: postFilter,
+      },
+      {
+        $project: {
+          id: 0,
+          _evaluations: 0,
+          _assignee: 0,
+        },
+      },
+      {
+        $sort: SOLUTION_SORT,
+      }
+    ], {
+      collation: SOLUTION_COLLATION,
+    });
   }
 
   async findOne(id: string): Promise<SolutionDocument | null> {
