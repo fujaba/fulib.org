@@ -1,4 +1,4 @@
-import {Controller, ForbiddenException, Get, Param, ParseBoolPipe, Post, Query} from '@nestjs/common';
+import {Controller, Get, Param, ParseBoolPipe, Post, Query} from '@nestjs/common';
 import {
   ApiCreatedResponse,
   ApiForbiddenResponse,

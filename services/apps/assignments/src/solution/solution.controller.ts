@@ -15,10 +15,8 @@ import {
 } from '@nestjs/common';
 import {ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiQuery, ApiTags} from '@nestjs/swagger';
 import {isMongoId} from 'class-validator';
-import {FilterQuery, isValidObjectId, Types} from 'mongoose';
-import {AssigneeService} from '../assignee/assignee.service';
+import {FilterQuery, Types} from 'mongoose';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
-import {EvaluationService} from '../evaluation/evaluation.service';
 import {SolutionAuth} from './solution-auth.decorator';
 import {BatchUpdateSolutionDto, CreateSolutionDto, RichSolutionDto, UpdateSolutionDto} from './solution.dto';
 import {Solution} from './solution.schema';
@@ -34,8 +32,6 @@ const forbiddenAssignmentResponse = 'Not owner of assignment, or invalid Assignm
 export class SolutionController {
   constructor(
     private readonly solutionService: SolutionService,
-    private readonly assigneeService: AssigneeService,
-    private readonly evaluationService: EvaluationService,
     private readonly fileService: FileService,
   ) {
   }
@@ -111,7 +107,7 @@ export class SolutionController {
           postAnd.push({assignee: regex});
           break;
         case 'origin':
-          isValidObjectId(subTerm) && postAnd.push({'_evaluations.codeSearch.origin': new Types.ObjectId(subTerm)});
+          isMongoId(subTerm) && postAnd.push({'_evaluations.codeSearch.origin': new Types.ObjectId(subTerm)});
           break;
         case 'status':
           postAnd.push({status: subTerm});

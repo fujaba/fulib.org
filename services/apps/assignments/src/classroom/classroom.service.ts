@@ -5,7 +5,7 @@ import {createReadStream} from 'fs';
 import {firstValueFrom} from 'rxjs';
 import {Stream} from 'stream';
 import {AssignmentDocument} from '../assignment/assignment.schema';
-import {AuthorInfo, Solution} from '../solution/solution.schema';
+import {AuthorInfo} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {generateToken} from '../utils';
 import {ImportSolution} from "./classroom.dto";

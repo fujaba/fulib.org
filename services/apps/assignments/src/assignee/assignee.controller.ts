@@ -1,11 +1,10 @@
 import {NotFound} from '@mean-stream/nestx';
-import {Body, Controller, Delete, Get, Param, Patch, Put, Query} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Patch, Put} from '@nestjs/common';
 import {ApiOkResponse, ApiOperation, ApiTags} from '@nestjs/swagger';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {BulkUpdateAssigneeDto, PatchAssigneeDto, UpdateAssigneeDto} from './assignee.dto';
 import {Assignee} from './assignee.schema';
 import {AssigneeService} from './assignee.service';
-import {FilterEvaluationParams} from "../evaluation/evaluation.dto";
 
 const forbiddenResponse = 'Not owner of assignment, or invalid Assignment-Token';
 
