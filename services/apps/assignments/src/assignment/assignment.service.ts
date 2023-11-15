@@ -2,10 +2,10 @@ import {EventService} from '@mean-stream/nestx';
 import {UserToken} from '@app/keycloak-auth';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
-import {FilterQuery, Model, UpdateQuery} from 'mongoose';
+import {FilterQuery, Model, Types, UpdateQuery} from 'mongoose';
 import {generateToken} from '../utils';
 import {CreateAssignmentDto, ReadAssignmentDto, ReadTaskDto, UpdateAssignmentDto} from './assignment.dto';
-import {Assignment, AssignmentDocument, Task} from './assignment.schema';
+import {Assignment, ASSIGNMENT_COLLATION, ASSIGNMENT_SORT, AssignmentDocument, Task} from './assignment.schema';
 import {MemberService} from "@app/member";
 
 @Injectable()
@@ -42,13 +42,13 @@ export class AssignmentService {
   }
 
   async findAll(where: FilterQuery<Assignment> = {}): Promise<AssignmentDocument[]> {
-    return this.model.find(where).sort({title: 1}).collation({
-      locale: 'en',
-      numericOrdering: true,
+    return this.model.find(where, undefined,{
+      sort: ASSIGNMENT_SORT,
+      collation: ASSIGNMENT_COLLATION,
     }).exec();
   }
 
-  async findOne(id: string): Promise<AssignmentDocument | null> {
+  async findOne(id: string | Types.ObjectId): Promise<AssignmentDocument | null> {
     return this.model.findById(id).exec();
   }
 
@@ -68,7 +68,7 @@ export class AssignmentService {
     };
   }
 
-  async update(id: string, dto: UpdateAssignmentDto | UpdateQuery<Assignment>): Promise<Assignment | null> {
+  async update(id: string | Types.ObjectId, dto: UpdateAssignmentDto | UpdateQuery<Assignment>): Promise<Assignment | null> {
     const {token, classroom, ...rest} = dto;
     const update: UpdateQuery<Assignment> = rest;
     if (token) {

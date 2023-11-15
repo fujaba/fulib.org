@@ -1,7 +1,7 @@
 import {EventService} from '@mean-stream/nestx';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
-import {FilterQuery, Model, UpdateQuery} from 'mongoose';
+import {FilterQuery, Model, Types, UpdateQuery} from 'mongoose';
 import {AssignmentService} from '../assignment/assignment.service';
 import {SearchService} from '../search/search.service';
 import {CreateEvaluationDto, RemarkDto, UpdateEvaluationDto} from './evaluation.dto';
@@ -21,12 +21,12 @@ export class EvaluationService {
     this.eventService.emit(`assignments.${evaluation.assignment}.solutions.${evaluation.solution}.evaluations.${evaluation.id}.${event}`, evaluation);
   }
 
-  subscribe(assignment: string, solution: string, evaluation: string, event: string, user?: string) {
+  subscribe(assignment: Types.ObjectId, solution: Types.ObjectId, evaluation: Types.ObjectId | '*', event: string, user?: string) {
     // TODO only emit to users that have access to the assignment or solution
     return this.eventService.subscribe<Evaluation>(`assignments.${assignment}.solutions.${solution}.evaluations.${evaluation}.${event}`, user);
   }
 
-  async create(assignment: string, solution: string, dto: CreateEvaluationDto, createdBy?: string): Promise<Evaluation> {
+  async create(assignment: Types.ObjectId, solution: Types.ObjectId, dto: CreateEvaluationDto, createdBy?: string): Promise<Evaluation> {
     const {codeSearch, ...rest} = dto;
     const evaluation = await this.model.findOneAndUpdate({
       assignment,
@@ -121,11 +121,11 @@ export class EvaluationService {
     return evaluations;
   }
 
-  private async codeSearch(assignmentId: string, taskId: string, snippets: Snippet[]): Promise<[string, Snippet[] | undefined][]> {
+  private async codeSearch(assignmentId: Types.ObjectId, taskId: string, snippets: Snippet[]): Promise<[Types.ObjectId, Snippet[] | undefined][]> {
     const assignment = await this.assignmentService.findOne(assignmentId);
     const task = assignment && this.assignmentService.findTask(assignment.tasks, taskId);
     const resultsBySnippet = await Promise.all(snippets.map(async snippet => {
-      const results = await this.searchService.find(assignmentId, {
+      const results = await this.searchService.find(assignmentId.toString(), {
         q: snippet.pattern || snippet.code,
         glob: task?.glob,
         wildcard: '***',
@@ -149,14 +149,14 @@ export class EvaluationService {
       .map(solution => {
         if (solutionMatches[solution] !== snippets.length) {
           // remove solutions where any original snippet was not found
-          return [solution, undefined];
+          return [new Types.ObjectId(solution), undefined];
         }
-        return [solution, solutionSnippets[solution]];
+        return [new Types.ObjectId(solution), solutionSnippets[solution]];
       })
       ;
   }
 
-  private async codeSearchCreate(assignment: string, origin: any, dto: CreateEvaluationDto): Promise<CodeSearchInfo> {
+  private async codeSearchCreate(assignment: Types.ObjectId, origin: Types.ObjectId, dto: CreateEvaluationDto): Promise<CodeSearchInfo> {
     const solutions = await this.codeSearch(assignment, dto.task, dto.snippets);
     const result = await this.model.bulkWrite(solutions.filter(s => s[1]).map(([solution, snippets]) => {
       const newEvaluation: UpdateQuery<Evaluation> = {
@@ -181,7 +181,7 @@ export class EvaluationService {
     return {created: result.upsertedCount};
   }
 
-  private async codeSearchUpdate(assignment: string, task: string, origin: any, dto: UpdateEvaluationDto): Promise<Partial<CodeSearchInfo>> {
+  private async codeSearchUpdate(assignment: Types.ObjectId, task: string, origin: Types.ObjectId, dto: UpdateEvaluationDto): Promise<Partial<CodeSearchInfo>> {
     const solutions = await this.codeSearch(assignment, task, dto.snippets!);
     let deleted = 0;
     let updated = 0;

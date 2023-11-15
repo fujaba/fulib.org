@@ -150,7 +150,7 @@ export class ClassroomService {
       const upsertedId = solutions.upsertedIds[i];
       if (commit && upsertedId) {
         const zip = await this.getRepoZip(assignment, this.getGithubName(repo, assignment), commit);
-        return zip ? this.fileService.importZipEntries(zip, assignment._id, upsertedId, commit) : [];
+        return zip ? this.fileService.importZipEntries(zip, assignment._id.toString(), upsertedId, commit) : [];
       } else {
         return [];
       }
@@ -239,7 +239,7 @@ export class ClassroomService {
 
   private createImportSolution(assignment: AssignmentDocument, repo: RepositoryInfo, commit: string | undefined): ImportSolution {
     return {
-      assignment: assignment._id,
+      assignment: assignment._id.toString(),
       author: {
         name: '',
         email: '',

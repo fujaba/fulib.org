@@ -12,11 +12,9 @@ export class UpdateCourseDto extends PartialType(CreateCourseDto) {
 }
 
 export class SolutionSummary extends PickType(Solution, [
+  '_id',
   'points',
 ] as const) {
-  @ApiProperty()
-  _id: string;
-
   @ApiPropertyOptional()
   assignee?: string;
 }

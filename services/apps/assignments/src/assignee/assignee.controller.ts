@@ -1,10 +1,11 @@
-import {NotFound} from '@mean-stream/nestx';
+import {NotFound, ObjectIdPipe} from '@mean-stream/nestx';
 import {Body, Controller, Delete, Get, Param, Patch, Put} from '@nestjs/common';
 import {ApiOkResponse, ApiOperation, ApiTags} from '@nestjs/swagger';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {BulkUpdateAssigneeDto, PatchAssigneeDto, UpdateAssigneeDto} from './assignee.dto';
 import {Assignee} from './assignee.schema';
 import {AssigneeService} from './assignee.service';
+import {Types} from "mongoose";
 
 const forbiddenResponse = 'Not owner of assignment, or invalid Assignment-Token';
 
@@ -20,7 +21,7 @@ export class AssigneeController {
   @AssignmentAuth({forbiddenResponse})
   @ApiOkResponse({type: [Assignee]})
   async findAll(
-    @Param('assignment') assignment: string,
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
   ): Promise<Assignee[]> {
     return this.assigneeService.findAll({assignment}, {sort: {assignee: 1}});
   }
@@ -30,7 +31,7 @@ export class AssigneeController {
   @AssignmentAuth({forbiddenResponse})
   @ApiOkResponse({isArray: true})
   async findUnique(
-    @Param('assignment') assignment: string,
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
     @Param('field') field: string,
   ): Promise<unknown[]> {
     return this.assigneeService.model.distinct(field, {assignment}).exec();
@@ -40,7 +41,7 @@ export class AssigneeController {
   @AssignmentAuth({forbiddenResponse})
   @ApiOkResponse({type: Assignee})
   async updateMany(
-    @Param('assignment') assignment: string,
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
     @Body() dtos: BulkUpdateAssigneeDto[],
   ): Promise<Assignee[]> {
     return Promise.all(dtos.map(dto => this.assigneeService.upsert({assignment, solution: dto.solution}, dto)));
@@ -51,8 +52,8 @@ export class AssigneeController {
   @AssignmentAuth({forbiddenResponse})
   @ApiOkResponse({type: Assignee})
   async findOne(
-    @Param('assignment') assignment: string,
-    @Param('solution') solution: string,
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
+    @Param('solution', ObjectIdPipe) solution: Types.ObjectId,
   ) {
     return this.assigneeService.findOne({assignment, solution});
   }
@@ -61,8 +62,8 @@ export class AssigneeController {
   @AssignmentAuth({forbiddenResponse})
   @ApiOkResponse({type: Assignee})
   async update(
-    @Param('assignment') assignment: string,
-    @Param('solution') solution: string,
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
+    @Param('solution', ObjectIdPipe) solution: Types.ObjectId,
     @Body() dto: UpdateAssigneeDto,
   ) {
     return this.assigneeService.upsert({assignment, solution}, dto);
@@ -72,8 +73,8 @@ export class AssigneeController {
   @AssignmentAuth({forbiddenResponse})
   @ApiOkResponse({type: Assignee})
   async patch(
-    @Param('assignment') assignment: string,
-    @Param('solution') solution: string,
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
+    @Param('solution', ObjectIdPipe) solution: Types.ObjectId,
     @Body() dto: PatchAssigneeDto,
   ) {
     return this.assigneeService.updateOne({assignment, solution}, dto);
@@ -84,8 +85,8 @@ export class AssigneeController {
   @AssignmentAuth({forbiddenResponse})
   @ApiOkResponse({type: Assignee})
   async remove(
-    @Param('assignment') assignment: string,
-    @Param('solution') solution: string,
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
+    @Param('solution', ObjectIdPipe) solution: Types.ObjectId,
   ) {
     return this.assigneeService.deleteOne({assignment, solution});
   }

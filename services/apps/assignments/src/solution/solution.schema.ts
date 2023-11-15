@@ -5,7 +5,8 @@ import {
   IsBoolean,
   IsDateString,
   IsEmail,
-  IsHash, IsIn,
+  IsHash,
+  IsIn,
   IsMongoId,
   IsNumber,
   IsOptional,
@@ -13,7 +14,8 @@ import {
   IsUUID,
   ValidateNested,
 } from 'class-validator';
-import {Document, Types} from 'mongoose';
+import {Types} from 'mongoose';
+import {Doc} from "@mean-stream/nestx";
 
 export class Consent {
   @Prop()
@@ -134,10 +136,19 @@ export class Solution {
   points?: number;
 }
 
-export type SolutionDocument = Solution & Document;
+export type SolutionDocument = Doc<Solution>;
+
+export const SOLUTION_SORT = {
+  'author.name': 1,
+  'author.github': 1,
+  timestamp: 1,
+} as const;
+
+export const SOLUTION_COLLATION = {
+  locale: 'en',
+  caseFirst: 'off',
+} as const;
 
 export const SolutionSchema = SchemaFactory.createForClass(Solution)
-  .index({assignment: 1, 'author.name': 1})
-  .index({assignment: 1, 'author.github': 1})
-  .index({assignment: 1, 'timestamp': 1})
+  .index({assignment: 1, ...SOLUTION_SORT}, {collation: SOLUTION_COLLATION})
 ;

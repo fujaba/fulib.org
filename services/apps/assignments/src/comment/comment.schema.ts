@@ -1,7 +1,7 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {ApiProperty} from '@nestjs/swagger';
 import {IsBoolean, IsDateString, IsEmail, IsMongoId, IsNotEmpty, IsString} from 'class-validator';
-import {Document} from 'mongoose';
+import {Doc} from "@mean-stream/nestx";
 
 @Schema()
 export class Comment {
@@ -47,7 +47,7 @@ export class Comment {
   distinguished: boolean;
 }
 
-export type CommentDocument = Comment & Document;
+export type CommentDocument = Doc<Comment>;
 
 export const CommentSchema = SchemaFactory.createForClass(Comment)
   .index({assignment: 1, solution: 1})
