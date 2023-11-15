@@ -35,7 +35,7 @@ export class Assignee {
   @IsMongoId()
   assignment: string;
 
-  @Prop()
+  @Prop({index: 1})
   @ApiProperty()
   @IsMongoId()
   solution: string;
