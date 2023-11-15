@@ -34,7 +34,7 @@ export class AssigneeController {
     @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
     @Param('field') field: string,
   ): Promise<unknown[]> {
-    return this.assigneeService.model.distinct(field, {assignment}).exec();
+    return this.assigneeService.distinct(assignment, field);
   }
 
   @Patch('assignments/:assignment/assignees')
@@ -44,7 +44,7 @@ export class AssigneeController {
     @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
     @Body() dtos: BulkUpdateAssigneeDto[],
   ): Promise<Assignee[]> {
-    return Promise.all(dtos.map(dto => this.assigneeService.upsert({assignment, solution: dto.solution}, dto)));
+    return this.assigneeService.upsertMany(assignment, dtos);
   }
 
   @Get('assignments/:assignment/solutions/:solution/assignee')
