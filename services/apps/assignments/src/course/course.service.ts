@@ -2,7 +2,7 @@ import {EventRepository, EventService, MongooseRepository} from '@mean-stream/ne
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {Model, Types} from 'mongoose';
-import {AuthorInfo} from '../solution/solution.schema';
+import {AuthorInfo, SOLUTION_COLLATION, SOLUTION_SORT} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {CourseAssignee, CourseStudent} from './course.dto';
 import {Course, CourseDocument} from './course.schema';
@@ -55,12 +55,9 @@ export class CourseService extends MongooseRepository<Course> {
           feedback: 1,
         },
       },
-      {$sort: {'author.name': 1, 'author.github': 1}},
+      {$sort: SOLUTION_SORT},
     ], {
-      collation: {
-        locale: 'en',
-        caseFirst: 'off',
-      },
+      collation: SOLUTION_COLLATION,
     });
 
     const keys: (keyof AuthorInfo)[] = ['studentId', 'email', 'github', 'name'];

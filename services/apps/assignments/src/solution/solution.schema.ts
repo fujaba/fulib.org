@@ -141,3 +141,14 @@ export const SolutionSchema = SchemaFactory.createForClass(Solution)
   .index({assignment: 1, 'author.github': 1})
   .index({assignment: 1, 'timestamp': 1})
 ;
+
+export const SOLUTION_SORT = {
+  'author.name': 1,
+  'author.github': 1,
+  timestamp: 1,
+} as const;
+
+export const SOLUTION_COLLATION = {
+  locale: 'en',
+  caseFirst: 'off',
+} as const;

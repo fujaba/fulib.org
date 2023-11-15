@@ -5,15 +5,7 @@ import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model, UpdateQuery} from 'mongoose';
 import {generateToken} from '../utils';
 import {BatchUpdateSolutionDto, CreateSolutionDto, RichSolutionDto, UpdateSolutionDto} from './solution.dto';
-import {Solution, SolutionDocument} from './solution.schema';
-
-const SOLUTION_SORT = {
-  'author.name': 1,
-  'author.github': 1,
-  timestamp: 1,
-} as const;
-
-const SOLUTION_COLLATION = {locale: 'en', caseFirst: 'off'};
+import {Solution, SOLUTION_COLLATION, SOLUTION_SORT, SolutionDocument} from './solution.schema';
 
 @Injectable()
 export class SolutionService {
