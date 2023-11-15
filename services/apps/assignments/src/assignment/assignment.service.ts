@@ -2,7 +2,7 @@ import {EventService} from '@mean-stream/nestx';
 import {UserToken} from '@app/keycloak-auth';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
-import {FilterQuery, Model, UpdateQuery} from 'mongoose';
+import {FilterQuery, Model, Types, UpdateQuery} from 'mongoose';
 import {generateToken} from '../utils';
 import {CreateAssignmentDto, ReadAssignmentDto, ReadTaskDto, UpdateAssignmentDto} from './assignment.dto';
 import {Assignment, AssignmentDocument, Task} from './assignment.schema';
@@ -48,7 +48,7 @@ export class AssignmentService {
     }).exec();
   }
 
-  async findOne(id: string): Promise<AssignmentDocument | null> {
+  async findOne(id: string | Types.ObjectId): Promise<AssignmentDocument | null> {
     return this.model.findById(id).exec();
   }
 

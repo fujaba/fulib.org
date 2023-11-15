@@ -11,6 +11,7 @@ import {
   TaskStatistics,
   TimeStatistics
 } from './statistics.dto';
+import {Types} from "mongoose";
 
 const outlierDuration = 60;
 
@@ -59,10 +60,10 @@ export class StatisticsService {
       solutions,
       ,
     ] = await Promise.all([
-      this.timeStatistics(assignment, taskStats, tasks),
+      this.timeStatistics(assignmentDoc._id, taskStats, tasks),
       this.countComments(assignment),
       this.solutionStatistics(assignmentDoc),
-      this.fillEvaluationStatistics(assignment, taskStats, tasks, evaluations, weightedEvaluations),
+      this.fillEvaluationStatistics(assignmentDoc._id, taskStats, tasks, evaluations, weightedEvaluations),
     ]);
 
     // needs to happen after timeStatistics and fillEvaluationStatistics
@@ -80,7 +81,7 @@ export class StatisticsService {
     };
   }
 
-  private async fillEvaluationStatistics(assignment: string, taskStats: Map<string, TaskStatistics>, tasks: Map<string, Task>, evaluationStatistics: EvaluationStatistics, weightedEvaluationStatistics: EvaluationStatistics) {
+  private async fillEvaluationStatistics(assignment: Types.ObjectId, taskStats: Map<string, TaskStatistics>, tasks: Map<string, Task>, evaluationStatistics: EvaluationStatistics, weightedEvaluationStatistics: EvaluationStatistics) {
     for await (const {
       codeSearch,
       points,
@@ -115,7 +116,7 @@ export class StatisticsService {
     }
   }
 
-  private async timeStatistics(assignment: string, taskStats: Map<string, TaskStatistics>, tasks: Map<string, Task>): Promise<TimeStatistics> {
+  private async timeStatistics(assignment: Types.ObjectId, taskStats: Map<string, TaskStatistics>, tasks: Map<string, Task>): Promise<TimeStatistics> {
     let eventCount = 0;
     let totalTime = 0;
     let weightedTime = 0;
@@ -182,7 +183,7 @@ export class StatisticsService {
       }
       passed++;
     }
-    const evaluated = (await this.evaluationService.findUnique('solution', {assignment: assignment.id})).length;
+    const evaluated = (await this.evaluationService.findUnique('solution', {assignment: assignment._id})).length;
     return {
       total,
       evaluated,

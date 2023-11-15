@@ -15,7 +15,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import {Document, Types} from 'mongoose';
-import {OptionalRef} from "@mean-stream/nestx";
+import {OptionalRef, Ref} from "@mean-stream/nestx";
 
 export class Location {
   @Prop()
@@ -92,15 +92,11 @@ export class Evaluation {
   @ApiProperty()
   _id: Types.ObjectId;
 
-  @Prop()
-  @ApiProperty()
-  @IsMongoId()
-  assignment: string;
+  @Ref('Assignment')
+  assignment: Types.ObjectId;
 
-  @Prop({index: 1})
-  @ApiProperty()
-  @IsMongoId()
-  solution: string;
+  @Ref('Solution', {index: 1})
+  solution: Types.ObjectId;
 
   @Prop()
   @ApiProperty()

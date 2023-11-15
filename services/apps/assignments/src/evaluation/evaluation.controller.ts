@@ -1,5 +1,5 @@
 import {AuthUser, UserToken} from '@app/keycloak-auth';
-import {NotFound} from '@mean-stream/nestx';
+import {NotFound, ObjectIdPipe} from '@mean-stream/nestx';
 import {Body, Controller, Delete, Get, Headers, MessageEvent, Param, Patch, Post, Query, Sse} from '@nestjs/common';
 import {ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags} from '@nestjs/swagger';
 import {FilterQuery, Types} from 'mongoose';
@@ -22,7 +22,7 @@ export class EvaluationController {
   ) {
   }
 
-  private toQuery(assignment: string, solution?: string, params: FilterEvaluationParams = {}): FilterQuery<Evaluation> {
+  private toQuery(assignment: Types.ObjectId, solution?: Types.ObjectId, params: FilterEvaluationParams = {}): FilterQuery<Evaluation> {
     const query: FilterQuery<Evaluation> = {assignment};
     solution && (query.solution = solution);
     params.file && (query['snippets.file'] = params.file);
@@ -38,7 +38,7 @@ export class EvaluationController {
   @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
   @ApiOkResponse({type: [Evaluation]})
   async findByAssignment(
-    @Param('assignment') assignment: string,
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
     @Query() params?: FilterEvaluationParams,
   ): Promise<Evaluation[]> {
     return this.evaluationService.findAll(this.toQuery(assignment, undefined, params));
@@ -49,7 +49,7 @@ export class EvaluationController {
   @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
   @ApiOkResponse({isArray: true})
   async findUnique(
-    @Param('assignment') assignment: string,
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
     @Param('field') field: string,
     @Query() params?: FilterEvaluationParams,
   ): Promise<unknown[]> {
@@ -61,7 +61,7 @@ export class EvaluationController {
   @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
   @ApiOkResponse({type: [RemarkDto]})
   async findRemarks(
-    @Param('assignment') assignment: string,
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
     @Query() params?: FilterEvaluationParams,
   ): Promise<RemarkDto[]> {
     return this.evaluationService.findRemarks(this.toQuery(assignment, undefined, params));
@@ -71,8 +71,8 @@ export class EvaluationController {
   @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
   @ApiCreatedResponse({type: Evaluation})
   async create(
-    @Param('assignment') assignment: string,
-    @Param('solution') solution: string,
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
+    @Param('solution', ObjectIdPipe) solution: Types.ObjectId,
     @Body() dto: CreateEvaluationDto,
     @AuthUser() user?: UserToken,
   ): Promise<Evaluation> {
@@ -83,8 +83,8 @@ export class EvaluationController {
   @SolutionAuth({forbiddenResponse})
   @ApiOkResponse({type: [Evaluation]})
   async findAll(
-    @Param('assignment') assignment: string,
-    @Param('solution') solution: string,
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
+    @Param('solution', ObjectIdPipe) solution: Types.ObjectId,
     @Query() params?: FilterEvaluationParams,
   ): Promise<Evaluation[]> {
     return this.evaluationService.findAll(this.toQuery(assignment, solution, params));
@@ -94,8 +94,8 @@ export class EvaluationController {
   @SolutionAuth({forbiddenResponse})
   @ApiOkResponse({type: Evaluation})
   stream(
-    @Param('assignment') assignment: string,
-    @Param('solution') solution: string,
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
+    @Param('solution', ObjectIdPipe) solution: Types.ObjectId,
     @AuthUser() user?: UserToken,
     @Headers('assignment-token') assignmentToken?: string,
     @Headers('solution-token') solutionToken?: string,

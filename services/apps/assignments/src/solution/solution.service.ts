@@ -49,12 +49,9 @@ export class SolutionService {
         },
       },
       {
-        $addFields: {id: {$toString: '$_id'}},
-      },
-      {
         $lookup: {
           from: 'evaluations',
-          localField: 'id',
+          localField: '_id',
           foreignField: 'solution',
           as: '_evaluations',
           pipeline: [
@@ -111,7 +108,6 @@ export class SolutionService {
       },
       {
         $project: {
-          id: 0,
           _evaluations: 0,
           _assignee: 0,
         },
