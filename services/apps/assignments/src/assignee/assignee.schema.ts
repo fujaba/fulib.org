@@ -1,8 +1,9 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
-import {IsIn, IsMongoId, IsNotEmpty, IsOptional, IsPositive, IsString, ValidateNested} from 'class-validator';
-import {Document} from 'mongoose';
+import {IsIn, IsNotEmpty, IsOptional, IsPositive, IsString, ValidateNested} from 'class-validator';
+import {Document, Types} from 'mongoose';
 import {Type} from "class-transformer";
+import {Ref} from "@mean-stream/nestx";
 
 const OPTIONS = [1, 2, 3, 4];
 
@@ -30,15 +31,11 @@ export class Feedback {
 
 @Schema({id: false, _id: false})
 export class Assignee {
-  @Prop({index: 1})
-  @ApiProperty()
-  @IsMongoId()
-  assignment: string;
+  @Ref('Assignment', {index: 1})
+  assignment: Types.ObjectId;
 
-  @Prop({index: 1})
-  @ApiProperty()
-  @IsMongoId()
-  solution: string;
+  @Ref('Solution', {index: 1})
+  solution: Types.ObjectId;
 
   @Prop()
   @ApiProperty()

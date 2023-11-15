@@ -49,15 +49,15 @@ export class SolutionService {
         $match: preFilter,
       },
       {
-        $addFields: {id: {$toString: '$_id'}},
-      },
-      {
         $lookup: {
           from: 'assignees',
-          localField: 'id',
+          localField: '_id',
           foreignField: 'solution',
           as: '_assignee',
         },
+      },
+      {
+        $addFields: {id: {$toString: '$_id'}},
       },
       {
         $lookup: {

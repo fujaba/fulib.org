@@ -35,12 +35,11 @@ export class CourseService extends MongooseRepository<Course> {
 
     const students = new Map<string, CourseStudent>();
     const solutions = await this.solutionService.model.aggregate([
-      {$match: {assignment: {$in: courseAssignmentsWhereUserIsMember}}},
-      {$addFields: {id: {$toString: '$_id'}}},
+      {$match: {assignment: {$in: courseAssignmentsWhereUserIsMember.map(o => o.toString())}}},
       {
         $lookup: {
           from: 'assignees',
-          localField: 'id',
+          localField: '_id',
           foreignField: 'solution',
           as: '_assignees',
         },
@@ -101,12 +100,12 @@ export class CourseService extends MongooseRepository<Course> {
     return Array.from(new Set(students.values()));
   }
 
-  private async getCourseAssignmentsWhereUserIsMember(course: CourseDocument, user: string) {
+  private async getCourseAssignmentsWhereUserIsMember(course: CourseDocument, user: string): Promise<Types.ObjectId[]> {
     const userMembers = await this.memberService.findAll({
       parent: {$in: course.assignments.map(a => new Types.ObjectId(a))},
       user,
     });
-    return userMembers.map(m => m.parent.toString());
+    return userMembers.map(m => m.parent);
   }
 
   async getAssignees(id: Types.ObjectId, user: string): Promise<CourseAssignee[]> {
@@ -124,7 +123,7 @@ export class CourseService extends MongooseRepository<Course> {
     for await (const aggregateElement of this.assigneeService.model.aggregate<{
       _id: {
         assignee: string,
-        assignment: string,
+        assignment: Types.ObjectId,
       },
       solutions: number,
       duration: number,
@@ -159,7 +158,7 @@ export class CourseService extends MongooseRepository<Course> {
         };
         assigneeMap.set(assignee, courseAssignee);
       }
-      const index = course.assignments.indexOf(assignment);
+      const index = course.assignments.indexOf(assignment.toString());
       courseAssignee.assignments[index] = rest;
       courseAssignee.solutions += rest.solutions;
       courseAssignee.duration += rest.duration;
