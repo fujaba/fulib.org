@@ -138,12 +138,6 @@ export class Solution {
 
 export type SolutionDocument = Doc<Solution>;
 
-export const SolutionSchema = SchemaFactory.createForClass(Solution)
-  .index({assignment: 1, 'author.name': 1})
-  .index({assignment: 1, 'author.github': 1})
-  .index({assignment: 1, 'timestamp': 1})
-;
-
 export const SOLUTION_SORT = {
   'author.name': 1,
   'author.github': 1,
@@ -154,3 +148,7 @@ export const SOLUTION_COLLATION = {
   locale: 'en',
   caseFirst: 'off',
 } as const;
+
+export const SolutionSchema = SchemaFactory.createForClass(Solution)
+  .index({assignment: 1, ...SOLUTION_SORT}, {collation: SOLUTION_COLLATION})
+;
