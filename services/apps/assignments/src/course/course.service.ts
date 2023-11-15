@@ -86,7 +86,7 @@ export class CourseService extends MongooseRepository<Course> {
 
       const index = course.assignments.indexOf(assignment);
       student.solutions[index] = {
-        _id: _id.toString(),
+        _id,
         points,
         assignee,
       };
