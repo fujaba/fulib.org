@@ -14,7 +14,8 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
-import {Document} from 'mongoose';
+import {Document, Types} from 'mongoose';
+import {OptionalRef} from "@mean-stream/nestx";
 
 export class Location {
   @Prop()
@@ -66,11 +67,9 @@ export class Snippet {
 }
 
 export class CodeSearchInfo {
-  @Prop()
   @ApiPropertyOptional({description: 'Only in GET responses'})
-  @IsOptional()
-  @IsMongoId()
-  origin?: string;
+  @OptionalRef('Evaluation')
+  origin?: Types.ObjectId;
 
   @ApiPropertyOptional({description: 'Only in POST response'})
   @IsOptional()
@@ -91,7 +90,7 @@ export class CodeSearchInfo {
 @Schema({timestamps: true})
 export class Evaluation {
   @ApiProperty()
-  _id: string;
+  _id: Types.ObjectId;
 
   @Prop()
   @ApiProperty()

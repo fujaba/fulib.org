@@ -1,7 +1,7 @@
 import {EventService} from '@mean-stream/nestx';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
-import {FilterQuery, Model, UpdateQuery} from 'mongoose';
+import {FilterQuery, Model, Types, UpdateQuery} from 'mongoose';
 import {AssignmentService} from '../assignment/assignment.service';
 import {SearchService} from '../search/search.service';
 import {CreateEvaluationDto, RemarkDto, UpdateEvaluationDto} from './evaluation.dto';
@@ -156,7 +156,7 @@ export class EvaluationService {
       ;
   }
 
-  private async codeSearchCreate(assignment: string, origin: any, dto: CreateEvaluationDto): Promise<CodeSearchInfo> {
+  private async codeSearchCreate(assignment: string, origin: Types.ObjectId, dto: CreateEvaluationDto): Promise<CodeSearchInfo> {
     const solutions = await this.codeSearch(assignment, dto.task, dto.snippets);
     const result = await this.model.bulkWrite(solutions.filter(s => s[1]).map(([solution, snippets]) => {
       const newEvaluation: UpdateQuery<Evaluation> = {
@@ -181,7 +181,7 @@ export class EvaluationService {
     return {created: result.upsertedCount};
   }
 
-  private async codeSearchUpdate(assignment: string, task: string, origin: any, dto: UpdateEvaluationDto): Promise<Partial<CodeSearchInfo>> {
+  private async codeSearchUpdate(assignment: string, task: string, origin: Types.ObjectId, dto: UpdateEvaluationDto): Promise<Partial<CodeSearchInfo>> {
     const solutions = await this.codeSearch(assignment, task, dto.snippets!);
     let deleted = 0;
     let updated = 0;
