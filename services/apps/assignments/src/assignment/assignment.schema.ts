@@ -16,8 +16,9 @@ import {
   IsUrl,
   ValidateNested,
 } from 'class-validator';
-import {Document, Types} from 'mongoose';
+import {Types} from 'mongoose';
 import {MOSS_LANGUAGES} from "../search/search.constants";
+import {Doc} from "@mean-stream/nestx";
 
 @Schema({id: false, _id: false})
 export class Task {
@@ -192,6 +193,6 @@ export class Assignment {
   tasks: Task[];
 }
 
-export type AssignmentDocument = Assignment & Document;
+export type AssignmentDocument = Doc<Assignment>;
 
 export const AssignmentSchema = SchemaFactory.createForClass(Assignment);

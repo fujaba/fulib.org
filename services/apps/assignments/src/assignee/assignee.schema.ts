@@ -1,9 +1,9 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
 import {IsIn, IsNotEmpty, IsOptional, IsPositive, IsString, ValidateNested} from 'class-validator';
-import {Document, Types} from 'mongoose';
+import {Types} from 'mongoose';
 import {Type} from "class-transformer";
-import {Ref} from "@mean-stream/nestx";
+import {Doc, Ref} from "@mean-stream/nestx";
 
 const OPTIONS = [1, 2, 3, 4];
 
@@ -57,7 +57,7 @@ export class Assignee {
   feedback?: Feedback;
 }
 
-export type AssigneeDocument = Assignee & Document;
+export type AssigneeDocument = Doc<Assignee, never>;
 
 export const AssigneeSchema = SchemaFactory.createForClass(Assignee)
   .index({assignment: 1, solution: 1}, {unique: true});

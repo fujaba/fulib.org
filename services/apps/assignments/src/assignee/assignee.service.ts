@@ -8,7 +8,7 @@ import {Assignee, AssigneeDocument} from './assignee.schema';
 @Injectable()
 export class AssigneeService extends MongooseRepository<Assignee, never, AssigneeDocument> {
   constructor(
-    @InjectModel(Assignee.name) public model: Model<Assignee>,
+    @InjectModel(Assignee.name) public model: Model<Assignee, object, object, object, AssigneeDocument>,
     private eventService: EventService,
   ) {
     super(model);

@@ -1,7 +1,8 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
 import {IsArray, IsMongoId, IsNotEmpty, IsOptional, IsString, IsUUID} from 'class-validator';
-import {Document, Types} from 'mongoose';
+import {Types} from 'mongoose';
+import {Doc} from "@mean-stream/nestx";
 
 @Schema()
 export class Course {
@@ -32,6 +33,6 @@ export class Course {
   assignments: string[];
 }
 
-export type CourseDocument = Course & Document;
+export type CourseDocument = Doc<Course>;
 
 export const CourseSchema = SchemaFactory.createForClass(Course);

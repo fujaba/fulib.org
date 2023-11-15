@@ -4,7 +4,6 @@ import {Type} from 'class-transformer';
 import {
   IsAlphanumeric,
   IsInt,
-  IsMongoId,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -14,8 +13,8 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
-import {Document, Types} from 'mongoose';
-import {OptionalRef, Ref} from "@mean-stream/nestx";
+import {Types} from 'mongoose';
+import {Doc, OptionalRef, Ref} from "@mean-stream/nestx";
 
 export class Location {
   @Prop()
@@ -152,7 +151,7 @@ export class Evaluation {
   codeSearch?: CodeSearchInfo;
 }
 
-export type EvaluationDocument = Evaluation & Document;
+export type EvaluationDocument = Doc<Evaluation>;
 
 export const EvaluationSchema = SchemaFactory.createForClass(Evaluation)
   .index({assignment: 1, solution: 1})
