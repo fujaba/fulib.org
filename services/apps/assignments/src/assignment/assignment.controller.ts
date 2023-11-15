@@ -93,7 +93,7 @@ export class AssignmentController {
     @Headers('assignment-token') token?: string,
     @AuthUser() user?: UserToken,
   ): Promise<Assignment | ReadAssignmentDto> {
-    const assignment = await this.assignmentService.findOne(id) ?? notFound(id);
+    const assignment = await this.assignmentService.find(id) ?? notFound(id);
     if (await this.assignmentService.isAuthorized(assignment, user, token)) {
       return assignment;
     }

@@ -1,5 +1,5 @@
 import {AuthUser, UserToken} from '@app/keycloak-auth';
-import {NotFound, notFound} from '@mean-stream/nestx';
+import {NotFound, notFound, ObjectIdPipe} from '@mean-stream/nestx';
 import {Body, Controller, Delete, Get, Headers, MessageEvent, Param, Patch, Post, Sse} from '@nestjs/common';
 import {ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {Observable} from 'rxjs';
@@ -10,6 +10,7 @@ import {CommentAuth} from './comment-auth.decorator';
 import {CreateCommentDto, UpdateCommentDto} from './comment.dto';
 import {Comment} from './comment.schema';
 import {CommentService} from './comment.service';
+import {Types} from "mongoose";
 
 const forbiddenResponse = 'Not owner of assignment or solution, or invalid Assignment-Token or Solution-Token.';
 const forbiddenCommentResponse = 'Not owner of comment.';
@@ -27,15 +28,15 @@ export class CommentController {
   @SolutionAuth({forbiddenResponse})
   @ApiCreatedResponse({type: Comment})
   async create(
-    @Param('assignment') assignmentId: string,
+    @Param('assignment', ObjectIdPipe) assignmentId: Types.ObjectId,
     @Param('solution') solution: string,
     @Body() dto: CreateCommentDto,
     @AuthUser() user?: UserToken,
     @Headers('assignment-token') assignmentToken?: string,
   ): Promise<Comment> {
-    const assignment = await this.assignmentService.findOne(assignmentId) ?? notFound(assignmentId);
+    const assignment = await this.assignmentService.find(assignmentId) ?? notFound(assignmentId);
     const distinguished = await this.assignmentService.isAuthorized(assignment, user, assignmentToken);
-    return this.commentService.create(assignmentId, solution, dto, distinguished, user?.sub);
+    return this.commentService.create(assignmentId.toString(), solution, dto, distinguished, user?.sub);
   }
 
   @Sse('events')

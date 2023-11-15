@@ -6,6 +6,7 @@ import {SearchService} from "../search/search.service";
 import {NotFound, notFound} from "@mean-stream/nestx";
 import {SolutionService} from "../solution/solution.service";
 import {ApiOperation, ApiTags} from "@nestjs/swagger";
+import {Types} from "mongoose";
 
 @Controller('assignments/:assignment/moss')
 @ApiTags('MOSS')
@@ -25,7 +26,7 @@ export class MossController {
   async runMoss(
     @Param('assignment') assignment: string,
   ): Promise<string> {
-    const assignmentDoc = await this.assignmentService.findOne(assignment) || notFound(assignment);
+    const assignmentDoc = await this.assignmentService.find(new Types.ObjectId(assignment)) || notFound(assignment);
     const files = await this.searchService.findAll(assignment);
     const solutions = await this.solutionService.findAll({assignment});
     const solutionNames = new Map(solutions.map(({author: {name, github, studentId, email}, _id}) => [

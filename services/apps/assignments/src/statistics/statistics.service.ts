@@ -32,8 +32,8 @@ export class StatisticsService {
     }
   }
 
-  async getAssignmentStatistics(assignment: string): Promise<AssignmentStatistics> {
-    const assignmentDoc = await this.assignmentService.findOne(assignment);
+  async getAssignmentStatistics(assignment: Types.ObjectId): Promise<AssignmentStatistics> {
+    const assignmentDoc = await this.assignmentService.find(assignment);
     if (!assignmentDoc) {
       throw new NotFoundException(assignment);
     }
@@ -60,10 +60,10 @@ export class StatisticsService {
       solutions,
       ,
     ] = await Promise.all([
-      this.timeStatistics(assignmentDoc._id, taskStats, tasks),
-      this.countComments(assignment),
+      this.timeStatistics(assignment, taskStats, tasks),
+      this.countComments(assignment.toString()),
       this.solutionStatistics(assignmentDoc),
-      this.fillEvaluationStatistics(assignmentDoc._id, taskStats, tasks, evaluations, weightedEvaluations),
+      this.fillEvaluationStatistics(assignment, taskStats, tasks, evaluations, weightedEvaluations),
     ]);
 
     // needs to happen after timeStatistics and fillEvaluationStatistics

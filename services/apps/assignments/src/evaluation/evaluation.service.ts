@@ -122,7 +122,7 @@ export class EvaluationService {
   }
 
   private async codeSearch(assignmentId: Types.ObjectId, taskId: string, snippets: Snippet[]): Promise<[Types.ObjectId, Snippet[] | undefined][]> {
-    const assignment = await this.assignmentService.findOne(assignmentId);
+    const assignment = await this.assignmentService.find(assignmentId);
     const task = assignment && this.assignmentService.findTask(assignment.tasks, taskId);
     const resultsBySnippet = await Promise.all(snippets.map(async snippet => {
       const results = await this.searchService.find(assignmentId.toString(), {
