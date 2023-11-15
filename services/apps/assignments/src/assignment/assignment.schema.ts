@@ -195,4 +195,15 @@ export class Assignment {
 
 export type AssignmentDocument = Doc<Assignment>;
 
-export const AssignmentSchema = SchemaFactory.createForClass(Assignment);
+export const ASSIGNMENT_SORT = {
+  title: 1,
+} as const;
+
+export const ASSIGNMENT_COLLATION = {
+  locale: 'en',
+  numericOrdering: true,
+} as const;
+
+export const AssignmentSchema = SchemaFactory.createForClass(Assignment)
+  .index(ASSIGNMENT_SORT, {collation: ASSIGNMENT_COLLATION})
+;

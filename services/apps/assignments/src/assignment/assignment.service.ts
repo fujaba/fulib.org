@@ -5,7 +5,7 @@ import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model, Types, UpdateQuery} from 'mongoose';
 import {generateToken} from '../utils';
 import {CreateAssignmentDto, ReadAssignmentDto, ReadTaskDto, UpdateAssignmentDto} from './assignment.dto';
-import {Assignment, AssignmentDocument, Task} from './assignment.schema';
+import {Assignment, ASSIGNMENT_COLLATION, ASSIGNMENT_SORT, AssignmentDocument, Task} from './assignment.schema';
 import {MemberService} from "@app/member";
 
 @Injectable()
@@ -42,9 +42,9 @@ export class AssignmentService {
   }
 
   async findAll(where: FilterQuery<Assignment> = {}): Promise<AssignmentDocument[]> {
-    return this.model.find(where).sort({title: 1}).collation({
-      locale: 'en',
-      numericOrdering: true,
+    return this.model.find(where, undefined,{
+      sort: ASSIGNMENT_SORT,
+      collation: ASSIGNMENT_COLLATION,
     }).exec();
   }
 
