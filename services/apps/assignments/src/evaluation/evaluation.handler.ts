@@ -13,7 +13,7 @@ export class EvaluationHandler {
 
   @OnEvent('assignments.*.solutions.*.deleted')
   async onSolutionDeleted(solution: SolutionDocument) {
-    await this.evaluationService.removeAll({
+    await this.evaluationService.deleteMany({
       assignment: new Types.ObjectId(solution.assignment),
       solution: solution._id,
     });
