@@ -12,6 +12,6 @@ export class SolutionHandler {
 
   @OnEvent('assignments.*.deleted')
   async onAssignmentDeleted(assignment: AssignmentDocument) {
-    await this.solutionService.removeAll({assignment: assignment.id});
+    await this.solutionService.deleteMany({assignment: assignment.id});
   }
 }

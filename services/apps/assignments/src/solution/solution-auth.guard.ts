@@ -41,7 +41,7 @@ export class SolutionAuthGuard implements CanActivate {
       return false;
     }
 
-    const solution = await this.solutionService.findOne(solutionId);
+    const solution = await this.solutionService.find(new Types.ObjectId(solutionId));
     if (!solution) {
       notFound(solutionId);
     }
