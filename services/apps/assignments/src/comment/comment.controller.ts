@@ -36,7 +36,14 @@ export class CommentController {
   ): Promise<Comment> {
     const assignment = await this.assignmentService.find(assignmentId) ?? notFound(assignmentId);
     const distinguished = await this.assignmentService.isAuthorized(assignment, user, assignmentToken);
-    return this.commentService.create(assignmentId.toString(), solution, dto, distinguished, user?.sub);
+    return this.commentService.create({
+      ...dto,
+      assignment: assignmentId.toString(),
+      solution,
+      timestamp: new Date(),
+      createdBy: user?.sub,
+      distinguished,
+    });
   }
 
   @Sse('events')
@@ -58,7 +65,7 @@ export class CommentController {
     @Param('assignment') assignment: string,
     @Param('solution') solution: string,
   ): Promise<Comment[]> {
-    return this.commentService.findAll({assignment, solution});
+    return this.commentService.findAll({assignment, solution}, {sort: {timestamp: 1}});
   }
 
   @Get(':id')
@@ -66,11 +73,9 @@ export class CommentController {
   @NotFound()
   @ApiOkResponse({type: Comment})
   async findOne(
-    @Param('assignment') assignment: string,
-    @Param('solution') solution: string,
-    @Param('id') id: string,
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
   ): Promise<Comment | null> {
-    return this.commentService.findOne(id);
+    return this.commentService.find(id);
   }
 
   @Patch(':id')
@@ -78,9 +83,7 @@ export class CommentController {
   @NotFound()
   @ApiOkResponse({type: Comment})
   async update(
-    @Param('assignment') assignment: string,
-    @Param('solution') solution: string,
-    @Param('id') id: string,
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
     @Body() dto: UpdateCommentDto,
   ): Promise<Comment | null> {
     return this.commentService.update(id, dto);
@@ -91,10 +94,8 @@ export class CommentController {
   @NotFound()
   @ApiOkResponse({type: Comment})
   async remove(
-    @Param('assignment') assignment: string,
-    @Param('solution') solution: string,
-    @Param('id') id: string,
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
   ): Promise<Comment | null> {
-    return this.commentService.remove(id);
+    return this.commentService.delete(id);
   }
 }
