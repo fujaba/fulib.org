@@ -47,14 +47,12 @@
       {{ student.author[prop[1]] }}
     </td>
     <ng-container *ngFor="let solution of student.solutions; let i = index">
-      <td class="text-end"
-          [class.text-danger]="!solution"
-          [class.text-muted]="solution && solution.points === undefined"
-          [routerLink]="solution && ['/assignments', course?.assignments?.[i], 'solutions', solution._id]"
-          [ngbTooltip]="solution ? 'View Solution' : 'No Solution'" container="body"
-          [class.cursor-pointer]="solution"
-      >
-        {{ solution?.points || 0 }}
+      <td class="text-end" [class.text-danger]="!solution" [class.text-muted]="solution && solution.points === undefined">
+        <a class="d-block text-body text-decoration-none"
+           [routerLink]="solution && ['/assignments', course?.assignments?.[i], 'solutions', solution._id]"
+           [ngbTooltip]="solution ? 'View Solution' : 'No Solution'" container="body">
+          {{ solution?.points || 0 }}
+        </a>
       </td>
       <td [style.background-color]="solution?.assignee | assigneeColor">
         <app-assignee-dropdown
