@@ -14,7 +14,7 @@ export class EvaluationHandler {
   @OnEvent('assignments.*.solutions.*.deleted')
   async onSolutionDeleted(solution: SolutionDocument) {
     await this.evaluationService.deleteMany({
-      assignment: new Types.ObjectId(solution.assignment),
+      assignment: solution.assignment,
       solution: solution._id,
     });
   }

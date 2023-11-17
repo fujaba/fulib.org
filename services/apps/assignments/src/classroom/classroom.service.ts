@@ -239,7 +239,7 @@ export class ClassroomService {
 
   private createImportSolution(assignment: AssignmentDocument, repo: RepositoryInfo, commit: string | undefined): ImportSolution {
     return {
-      assignment: assignment._id.toString(),
+      assignment: assignment._id,
       author: {
         name: '',
         email: '',

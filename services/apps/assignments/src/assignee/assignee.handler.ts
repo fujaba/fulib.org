@@ -14,7 +14,7 @@ export class AssigneeHandler {
   @OnEvent('assignments.*.solutions.*.deleted')
   async onSolutionDeleted(solution: SolutionDocument) {
     await this.assigneeService.deleteOne({
-      assignment: new Types.ObjectId(solution.assignment),
+      assignment: solution.assignment,
       solution: solution._id,
     });
   }

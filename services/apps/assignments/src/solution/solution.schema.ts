@@ -15,7 +15,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import {Types} from 'mongoose';
-import {Doc} from "@mean-stream/nestx";
+import {Doc, Ref} from "@mean-stream/nestx";
 
 export class Consent {
   @Prop()
@@ -88,10 +88,8 @@ export class Solution {
   @ApiProperty()
   token: string;
 
-  @Prop({index: 1})
-  @ApiProperty()
-  @IsMongoId()
-  assignment: string;
+  @Ref('Assignment', {index: 1})
+  assignment: Types.ObjectId;
 
   @Prop({index: 1})
   @ApiProperty({required: false})

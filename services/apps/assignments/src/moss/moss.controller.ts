@@ -28,7 +28,7 @@ export class MossController {
   ): Promise<string> {
     const assignmentDoc = await this.assignmentService.find(new Types.ObjectId(assignment)) || notFound(assignment);
     const files = await this.searchService.findAll(assignment);
-    const solutions = await this.solutionService.findAll({assignment});
+    const solutions = await this.solutionService.findAll({assignment: assignmentDoc._id});
     const solutionNames = new Map(solutions.map(({author: {name, github, studentId, email}, _id}) => [
       _id.toString(),
       name || github || studentId || email,

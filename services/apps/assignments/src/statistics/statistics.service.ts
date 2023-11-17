@@ -168,7 +168,7 @@ export class StatisticsService {
     let graded = 0;
     let total = 0;
     let passed = 0;
-    for await (const {points} of this.solutionService.model.find({assignment: assignment.id}).select('points')) {
+    for await (const {points} of this.solutionService.model.find({assignment: assignment._id}).select('points')) {
       total++;
 
       if (points === undefined) {

@@ -42,7 +42,7 @@ export class SolutionController {
   @ApiCreatedResponse({type: Solution})
   @UseInterceptors(FilesInterceptor('files'))
   async create(
-    @Param('assignment') assignment: string,
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
     @Body() dto: CreateSolutionDto,
     @AuthUser() user?: UserToken,
     @UploadedFiles() files?: Express.Multer.File[],
@@ -55,7 +55,7 @@ export class SolutionController {
       timestamp: new Date(),
     });
     if (files && files.length) {
-      await this.fileService.importFiles(assignment, solution.id, files);
+      await this.fileService.importFiles(assignment.toString(), solution.id, files);
     }
     return solution;
   }
@@ -71,7 +71,7 @@ export class SolutionController {
       'and `field:term` for searching any of the author fields and `assignee`, `origin`, or `status`.'
   })
   async findAll(
-    @Param('assignment') assignment: string,
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
     @Query('q') search?: string,
     @Query('author.github') github?: string,
   ): Promise<RichSolutionDto[]> {
@@ -174,7 +174,7 @@ export class SolutionController {
   @ApiBody({type: [BatchUpdateSolutionDto]})
   @ApiOkResponse({type: [Solution]})
   async updateMany(
-    @Param('assignment') assignment: string,
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
     @Body() dtos: BatchUpdateSolutionDto[],
   ): Promise<(Solution | null)[]> {
     return this.solutionService.batchUpdate(assignment, dtos);
@@ -195,7 +195,7 @@ export class SolutionController {
   @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
   @ApiOkResponse({type: [Solution]})
   async removeAll(
-    @Param('assignment') assignment: string,
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
     @Query('ids', ParseArrayPipe, ObjectIdArrayPipe) ids: Types.ObjectId[],
   ): Promise<Solution[]> {
     const solutions = await this.solutionService.findAll({

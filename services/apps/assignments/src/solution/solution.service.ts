@@ -2,7 +2,7 @@ import {EventRepository, EventService, MongooseRepository} from '@mean-stream/ne
 import {UserToken} from '@app/keycloak-auth';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
-import {FilterQuery, Model, UpdateQuery} from 'mongoose';
+import {FilterQuery, Model, Types, UpdateQuery} from 'mongoose';
 import {BatchUpdateSolutionDto, RichSolutionDto} from './solution.dto';
 import {Solution, SOLUTION_COLLATION, SOLUTION_SORT, SolutionDocument} from './solution.schema';
 
@@ -101,7 +101,7 @@ export class SolutionService extends MongooseRepository<Solution> {
     });
   }
 
-  async batchUpdate(assignment: string, dtos: BatchUpdateSolutionDto[]): Promise<(SolutionDocument | null)[]> {
+  async batchUpdate(assignment: Types.ObjectId, dtos: BatchUpdateSolutionDto[]): Promise<(SolutionDocument | null)[]> {
     const updated = await Promise.all(dtos.map(dto => {
       const {_id, author, consent, ...rest} = dto;
       if (!_id && !author) {
