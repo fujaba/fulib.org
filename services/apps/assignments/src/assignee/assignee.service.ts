@@ -1,4 +1,4 @@
-import {EventService, MongooseRepository} from '@mean-stream/nestx';
+import {EventRepository, EventService, MongooseRepository} from '@mean-stream/nestx';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {Model, Types} from 'mongoose';
@@ -7,6 +7,7 @@ import {Assignee, AssigneeDocument} from './assignee.schema';
 import {BulkUpdateAssigneeDto} from "./assignee.dto";
 
 @Injectable()
+@EventRepository()
 export class AssigneeService extends MongooseRepository<Assignee, never, AssigneeDocument> {
   constructor(
     @InjectModel(Assignee.name) public model: Model<Assignee, object, object, object, AssigneeDocument>,
