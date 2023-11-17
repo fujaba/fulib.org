@@ -38,7 +38,7 @@ export class CourseService extends MongooseRepository<Course> {
     for await (const solution of this.solutionService.model.aggregate<
       Pick<Solution, '_id' | 'assignment' | 'author' | 'points' | 'feedback'> & { assignee?: string }
     >([
-      {$match: {assignment: {$in: courseAssignmentsWhereUserIsMember.map(o => o.toString())}}},
+      {$match: {assignment: {$in: courseAssignmentsWhereUserIsMember}}},
       {
         $lookup: {
           from: 'assignees',
