@@ -1,38 +1,19 @@
-import {EventService} from '@mean-stream/nestx';
+import {EventRepository, EventService, MongooseRepository} from '@mean-stream/nestx';
 import {UserToken} from '@app/keycloak-auth';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
-import {FilterQuery, Model, UpdateQuery} from 'mongoose';
-import {generateToken} from '../utils';
-import {BatchUpdateSolutionDto, CreateSolutionDto, RichSolutionDto, UpdateSolutionDto} from './solution.dto';
+import {FilterQuery, Model, Types, UpdateQuery} from 'mongoose';
+import {BatchUpdateSolutionDto, RichSolutionDto} from './solution.dto';
 import {Solution, SOLUTION_COLLATION, SOLUTION_SORT, SolutionDocument} from './solution.schema';
 
 @Injectable()
-export class SolutionService {
+@EventRepository()
+export class SolutionService extends MongooseRepository<Solution> {
   constructor(
     @InjectModel(Solution.name) public model: Model<Solution>,
     private eventService: EventService,
   ) {
-  }
-
-  async create(assignment: string, dto: CreateSolutionDto, createdBy?: string): Promise<SolutionDocument> {
-    const created = await this.model.create({
-      ...dto,
-      assignment,
-      createdBy,
-      token: generateToken(),
-      timestamp: new Date(),
-    });
-    this.emit('created', created);
-    return created;
-  }
-
-  async findAll(where: FilterQuery<Solution> = {}): Promise<Solution[]> {
-    return this.model
-      .find(where)
-      .sort(SOLUTION_SORT)
-      .collation(SOLUTION_COLLATION)
-      .exec();
+    super(model);
   }
 
   async findRich(preFilter: FilterQuery<Solution>, postFilter: FilterQuery<RichSolutionDto>): Promise<RichSolutionDto[]> {
@@ -120,17 +101,7 @@ export class SolutionService {
     });
   }
 
-  async findOne(id: string): Promise<SolutionDocument | null> {
-    return this.model.findById(id).exec();
-  }
-
-  async update(id: string, dto: UpdateSolutionDto): Promise<SolutionDocument | null> {
-    const updated = await this.model.findByIdAndUpdate(id, dto, {new: true}).exec();
-    updated && this.emit('updated', updated);
-    return updated;
-  }
-
-  async updateMany(assignment: string, dtos: BatchUpdateSolutionDto[]): Promise<(SolutionDocument | null)[]> {
+  async batchUpdate(assignment: Types.ObjectId, dtos: BatchUpdateSolutionDto[]): Promise<(SolutionDocument | null)[]> {
     const updated = await Promise.all(dtos.map(dto => {
       const {_id, author, consent, ...rest} = dto;
       if (!_id && !author) {
@@ -164,21 +135,6 @@ export class SolutionService {
       update && this.emit('updated', update);
     }
     return updated;
-  }
-
-  async remove(id: string): Promise<SolutionDocument | null> {
-    const deleted = await this.model.findByIdAndDelete(id).exec();
-    deleted && this.emit('deleted', deleted);
-    return deleted;
-  }
-
-  async removeAll(where: FilterQuery<Solution>): Promise<SolutionDocument[]> {
-    const solutions = await this.model.find(where).exec();
-    await this.model.deleteMany({_id: {$in: solutions.map(a => a._id)}}).exec();
-    for (const solution of solutions) {
-      this.emit('deleted', solution);
-    }
-    return solutions;
   }
 
   isAuthorized(solution: Solution, user?: UserToken, token?: string): boolean {

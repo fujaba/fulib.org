@@ -131,15 +131,14 @@ export class EmbeddingService implements OnModuleInit {
   }
 
   private async getDocuments(assignment: Assignment) {
-    const assignmentId = assignment._id.toString();
-    const filter:FilterQuery<Solution> = {assignment: assignmentId};
+    const filter: FilterQuery<Solution> = {assignment: assignment._id};
     if (assignment.classroom?.openaiConsent !== false) {
       filter['consent.3P'] = true;
     }
-    const solutionsWithConsent = await this.solutionService.model.find(filter, {_id: 1});
+    const solutionsWithConsent = await this.solutionService.findAll(filter, {projection: {_id: 1}});
     return {
       solutions: solutionsWithConsent.length,
-      documents: await this.searchService.findAll(assignmentId, solutionsWithConsent.map(s => s.id)),
+      documents: await this.searchService.findAll(assignment._id.toString(), solutionsWithConsent.map(s => s.id)),
     };
   }
 

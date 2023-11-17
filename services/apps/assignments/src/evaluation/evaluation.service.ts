@@ -1,4 +1,4 @@
-import {EventService} from '@mean-stream/nestx';
+import {EventRepository, EventService, MongooseRepository} from '@mean-stream/nestx';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model, Types, UpdateQuery} from 'mongoose';
@@ -8,13 +8,15 @@ import {CreateEvaluationDto, RemarkDto, UpdateEvaluationDto} from './evaluation.
 import {CodeSearchInfo, Evaluation, EvaluationDocument, Snippet} from './evaluation.schema';
 
 @Injectable()
-export class EvaluationService {
+@EventRepository()
+export class EvaluationService extends MongooseRepository<Evaluation> {
   constructor(
     @InjectModel(Evaluation.name) public model: Model<Evaluation>,
     private eventService: EventService,
     private searchService: SearchService,
     private assignmentService: AssignmentService,
   ) {
+    super(model);
   }
 
   private emit(event: string, evaluation: EvaluationDocument) {
@@ -26,9 +28,9 @@ export class EvaluationService {
     return this.eventService.subscribe<Evaluation>(`assignments.${assignment}.solutions.${solution}.evaluations.${evaluation}.${event}`, user);
   }
 
-  async create(assignment: Types.ObjectId, solution: Types.ObjectId, dto: CreateEvaluationDto, createdBy?: string): Promise<Evaluation> {
+  async createWithCodeSearch(assignment: Types.ObjectId, solution: Types.ObjectId, dto: CreateEvaluationDto, createdBy?: string): Promise<Evaluation> {
     const {codeSearch, ...rest} = dto;
-    const evaluation = await this.model.findOneAndUpdate({
+    const evaluation = await this.upsert({
       assignment,
       solution,
       task: dto.task,
@@ -37,20 +39,15 @@ export class EvaluationService {
       assignment,
       solution,
       createdBy,
-    }, {upsert: true, new: true}).exec();
-    this.emit('created', evaluation);
+    });
     if (codeSearch && dto.snippets.length) {
       evaluation.codeSearch = await this.codeSearchCreate(assignment, evaluation._id, dto);
     }
     return evaluation;
   }
 
-  async findAll(where: FilterQuery<Evaluation> = {}): Promise<EvaluationDocument[]> {
-    return this.model.find(where).exec();
-  }
-
   async findUnique(field: keyof Evaluation | string, where: FilterQuery<Evaluation> = {}): Promise<unknown[]> {
-    return this.model.find(where).sort(field).distinct(field).exec();
+    return this.model.distinct(field, where).exec();
   }
 
   async findRemarks(where: FilterQuery<Evaluation> = {}): Promise<RemarkDto[]> {
@@ -80,19 +77,10 @@ export class EvaluationService {
     ]).exec();
   }
 
-  async findOne(id: string): Promise<Evaluation | null> {
-    return this.model.findById(id).exec();
-  }
-
-  async update(id: string, dto: UpdateEvaluationDto): Promise<Evaluation | null> {
+  async updateWithCodeSearch(id: Types.ObjectId, dto: UpdateEvaluationDto): Promise<EvaluationDocument | null> {
     const {codeSearch, ...rest} = dto;
-    const evaluation = await this.model.findByIdAndUpdate(id, rest, {new: true}).exec();
-    if (!evaluation) {
-      return null;
-    }
-
-    this.emit('updated', evaluation);
-    if (codeSearch && dto.snippets && dto.snippets.length) {
+    const evaluation = await this.update(id, rest);
+    if (evaluation && codeSearch && dto.snippets && dto.snippets.length) {
       evaluation.codeSearch = {
         ...evaluation.codeSearch,
         ...await this.codeSearchUpdate(evaluation.assignment, evaluation.task, evaluation._id, dto),
@@ -101,28 +89,16 @@ export class EvaluationService {
     return evaluation;
   }
 
-  async remove(id: string): Promise<Evaluation | null> {
-    const deleted = await this.model.findByIdAndDelete(id).exec();
-    if (!deleted) {
-      return null;
+  async deleteWithCodeSearch(id: Types.ObjectId): Promise<EvaluationDocument | null> {
+    const deleted = await this.delete(id);
+    if (deleted) {
+      deleted.codeSearch = await this.codeSearchDelete(deleted);
     }
-
-    this.emit('deleted', deleted);
-    deleted.codeSearch = await this.codeSearchDelete(deleted);
     return deleted;
   }
 
-  async removeAll(where: FilterQuery<Evaluation>): Promise<EvaluationDocument[]> {
-    const evaluations = await this.findAll(where);
-    await this.model.deleteMany({_id: {$in: evaluations.map(a => a._id)}}).exec();
-    for (const evaluation of evaluations) {
-      this.emit('deleted', evaluation);
-    }
-    return evaluations;
-  }
-
   private async codeSearch(assignmentId: Types.ObjectId, taskId: string, snippets: Snippet[]): Promise<[Types.ObjectId, Snippet[] | undefined][]> {
-    const assignment = await this.assignmentService.findOne(assignmentId);
+    const assignment = await this.assignmentService.find(assignmentId);
     const task = assignment && this.assignmentService.findTask(assignment.tasks, taskId);
     const resultsBySnippet = await Promise.all(snippets.map(async snippet => {
       const results = await this.searchService.find(assignmentId.toString(), {

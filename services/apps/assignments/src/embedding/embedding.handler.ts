@@ -51,6 +51,6 @@ export class EmbeddingHandler {
 
   @OnEvent('assignments.*.solutions.*.deleted')
   async onSolutionDeleted(solution: SolutionDocument) {
-    await this.embeddingService.deleteBySolution(solution.assignment, solution.id);
+    await this.embeddingService.deleteBySolution(solution.assignment.toString(), solution.id);
   }
 }

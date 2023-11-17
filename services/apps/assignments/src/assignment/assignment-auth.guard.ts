@@ -4,6 +4,7 @@ import {Request} from 'express';
 import {Observable} from 'rxjs';
 import {AssignmentService} from './assignment.service';
 import {notFound} from '@mean-stream/nestx';
+import {Types} from "mongoose";
 
 @Injectable()
 export class AssignmentAuthGuard implements CanActivate {
@@ -21,7 +22,7 @@ export class AssignmentAuthGuard implements CanActivate {
   }
 
   async checkAuth(id: string, user?: UserToken, token?: string): Promise<boolean> {
-    const assignment = await this.assignmentService.findOne(id) ?? notFound(id);
+    const assignment = await this.assignmentService.find(new Types.ObjectId(id)) ?? notFound(id);
     return this.assignmentService.isAuthorized(assignment, user, token);
   }
 }

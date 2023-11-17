@@ -76,7 +76,7 @@ export class EvaluationController {
     @Body() dto: CreateEvaluationDto,
     @AuthUser() user?: UserToken,
   ): Promise<Evaluation> {
-    return this.evaluationService.create(assignment, solution, dto, user?.sub);
+    return this.evaluationService.createWithCodeSearch(assignment, solution, dto, user?.sub);
   }
 
   @Get('solutions/:solution/evaluations')
@@ -108,9 +108,9 @@ export class EvaluationController {
   @ApiOkResponse({type: Evaluation})
   @NotFound()
   async findOne(
-    @Param('id') id: string,
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
   ): Promise<Evaluation | null> {
-    return this.evaluationService.findOne(id);
+    return this.evaluationService.find(id);
   }
 
   @Patch('solutions/:solution/evaluations/:id')
@@ -118,10 +118,10 @@ export class EvaluationController {
   @ApiOkResponse({type: Evaluation})
   @NotFound()
   async update(
-    @Param('id') id: string,
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
     @Body() dto: UpdateEvaluationDto,
   ): Promise<Evaluation | null> {
-    return this.evaluationService.update(id, dto);
+    return this.evaluationService.updateWithCodeSearch(id, dto);
   }
 
   @Delete('solutions/:solution/evaluations/:id')
@@ -129,8 +129,8 @@ export class EvaluationController {
   @ApiOkResponse({type: Evaluation})
   @NotFound()
   async remove(
-    @Param('id') id: string,
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
   ): Promise<Evaluation | null> {
-    return this.evaluationService.remove(id);
+    return this.evaluationService.deleteWithCodeSearch(id);
   }
 }

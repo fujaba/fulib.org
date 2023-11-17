@@ -1,5 +1,5 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
-import {NotFound, ObjectIdArrayPipe} from '@mean-stream/nestx';
+import {NotFound, ObjectIdArrayPipe, ObjectIdPipe} from '@mean-stream/nestx';
 import {
   Body,
   Controller,
@@ -19,10 +19,11 @@ import {FilterQuery, Types} from 'mongoose';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {SolutionAuth} from './solution-auth.decorator';
 import {BatchUpdateSolutionDto, CreateSolutionDto, RichSolutionDto, UpdateSolutionDto} from './solution.dto';
-import {Solution} from './solution.schema';
+import {Solution, SOLUTION_COLLATION, SOLUTION_SORT} from './solution.schema';
 import {SolutionService} from './solution.service';
 import {FilesInterceptor} from "@nestjs/platform-express";
 import {FileService} from "../file/file.service";
+import {generateToken} from "../utils";
 
 const forbiddenResponse = 'Not owner of solution or assignment, or invalid Assignment-Token or Solution-Token.';
 const forbiddenAssignmentResponse = 'Not owner of assignment, or invalid Assignment-Token.';
@@ -41,14 +42,20 @@ export class SolutionController {
   @ApiCreatedResponse({type: Solution})
   @UseInterceptors(FilesInterceptor('files'))
   async create(
-    @Param('assignment') assignment: string,
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
     @Body() dto: CreateSolutionDto,
     @AuthUser() user?: UserToken,
     @UploadedFiles() files?: Express.Multer.File[],
   ): Promise<Solution> {
-    const solution = await this.solutionService.create(assignment, dto, user?.sub);
+    const solution = await this.solutionService.create({
+      ...dto,
+      assignment,
+      createdBy: user?.sub,
+      token: generateToken(),
+      timestamp: new Date(),
+    });
     if (files && files.length) {
-      await this.fileService.importFiles(assignment, solution.id, files);
+      await this.fileService.importFiles(assignment.toString(), solution.id, files);
     }
     return solution;
   }
@@ -64,7 +71,7 @@ export class SolutionController {
       'and `field:term` for searching any of the author fields and `assignee`, `origin`, or `status`.'
   })
   async findAll(
-    @Param('assignment') assignment: string,
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
     @Query('q') search?: string,
     @Query('author.github') github?: string,
   ): Promise<RichSolutionDto[]> {
@@ -127,9 +134,9 @@ export class SolutionController {
   @NotFound()
   @ApiOkResponse({type: Solution})
   async findOne(
-    @Param('id') id: string,
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
   ): Promise<Solution | null> {
-    return this.solutionService.findOne(id);
+    return this.solutionService.find(id);
   }
 
   @Get('solutions')
@@ -139,7 +146,10 @@ export class SolutionController {
   async findOwn(
     @AuthUser() user: UserToken,
   ): Promise<Solution[]> {
-    return this.solutionService.findAll({createdBy: user.sub});
+    return this.solutionService.findAll({createdBy: user.sub}, {
+      sort: SOLUTION_SORT,
+      collation: SOLUTION_COLLATION,
+    });
   }
 
   @Patch('assignments/:assignment/solutions/:id')
@@ -147,7 +157,7 @@ export class SolutionController {
   @NotFound()
   @ApiOkResponse({type: Solution})
   async update(
-    @Param('id') id: string,
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
     @Body() dto: UpdateSolutionDto,
   ): Promise<Solution | null> {
     return this.solutionService.update(id, dto);
@@ -164,10 +174,10 @@ export class SolutionController {
   @ApiBody({type: [BatchUpdateSolutionDto]})
   @ApiOkResponse({type: [Solution]})
   async updateMany(
-    @Param('assignment') assignment: string,
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
     @Body() dtos: BatchUpdateSolutionDto[],
   ): Promise<(Solution | null)[]> {
-    return this.solutionService.updateMany(assignment, dtos);
+    return this.solutionService.batchUpdate(assignment, dtos);
   }
 
   @Delete('assignments/:assignment/solutions/:id')
@@ -175,9 +185,9 @@ export class SolutionController {
   @NotFound()
   @ApiOkResponse({type: Solution})
   async remove(
-    @Param('id') id: string,
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
   ): Promise<Solution | null> {
-    return this.solutionService.remove(id);
+    return this.solutionService.delete(id);
   }
 
   @Delete('assignments/:assignment/solutions')
@@ -185,12 +195,14 @@ export class SolutionController {
   @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
   @ApiOkResponse({type: [Solution]})
   async removeAll(
-    @Param('assignment') assignment: string,
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
     @Query('ids', ParseArrayPipe, ObjectIdArrayPipe) ids: Types.ObjectId[],
   ): Promise<Solution[]> {
-    return this.solutionService.removeAll({
+    const solutions = await this.solutionService.findAll({
       assignment,
       _id: {$in: ids},
     });
+    await this.solutionService.deleteAll(solutions);
+    return solutions;
   }
 }

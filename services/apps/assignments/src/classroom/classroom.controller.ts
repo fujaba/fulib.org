@@ -5,7 +5,8 @@ import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {ClassroomService} from './classroom.service';
 import {ImportSolution} from "./classroom.dto";
 import {AssignmentService} from "../assignment/assignment.service";
-import {notFound} from "@mean-stream/nestx";
+import {notFound, ObjectIdPipe} from "@mean-stream/nestx";
+import {Types} from "mongoose";
 
 const forbiddenResponse = 'Not owner of assignment, or invalid Assignment-Token.';
 
@@ -23,9 +24,9 @@ export class ClassroomController {
   @AssignmentAuth({forbiddenResponse})
   @ApiOkResponse({type: [ImportSolution]})
   async previewImport(
-    @Param('assignment') id: string,
+    @Param('assignment', ObjectIdPipe) id: Types.ObjectId,
   ): Promise<ImportSolution[]> {
-    const assignment = await this.assignmentService.findOne(id) || notFound(id);
+    const assignment = await this.assignmentService.find(id) || notFound(id);
     return this.classroomService.previewImports(assignment);
   }
 
@@ -35,11 +36,11 @@ export class ClassroomController {
   @AssignmentAuth({forbiddenResponse})
   @ApiCreatedResponse({type: [ImportSolution]})
   async importSolutions(
-    @Param('assignment') id: string,
+    @Param('assignment', ObjectIdPipe) id: Types.ObjectId,
     @Query('usernames', new ParseArrayPipe({optional: true})) usernames?: string[],
     @UploadedFiles() files?: Express.Multer.File[],
   ): Promise<ImportSolution[]> {
-    const assignment = await this.assignmentService.findOne(id) || notFound(id);
+    const assignment = await this.assignmentService.find(id) || notFound(id);
     return files ? this.classroomService.importFiles(assignment, files) : this.classroomService.importSolutions(assignment, usernames);
   }
 }

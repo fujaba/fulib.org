@@ -12,6 +12,6 @@ export class SearchHandler {
 
   @OnEvent('assignments.*.solutions.*.deleted')
   async onSolutionDeleted(solution: SolutionDocument) {
-    await this.searchService.deleteAll(solution.assignment, solution.id);
+    await this.searchService.deleteAll(solution.assignment.toString(), solution.id);
   }
 }
