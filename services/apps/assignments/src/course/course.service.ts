@@ -2,7 +2,7 @@ import {EventRepository, EventService, MongooseRepository} from '@mean-stream/ne
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {Model, Types} from 'mongoose';
-import {AuthorInfo, SOLUTION_COLLATION, SOLUTION_SORT} from '../solution/solution.schema';
+import {AuthorInfo, Solution, SOLUTION_COLLATION, SOLUTION_SORT} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {CourseAssignee, CourseStudent} from './course.dto';
 import {Course, CourseDocument} from './course.schema';
@@ -34,7 +34,10 @@ export class CourseService extends MongooseRepository<Course> {
     }
 
     const students = new Map<string, CourseStudent>();
-    const solutions = await this.solutionService.model.aggregate([
+    const keys: (keyof AuthorInfo)[] = ['studentId', 'email', 'github', 'name'];
+    for await (const solution of this.solutionService.model.aggregate<
+      Pick<Solution, '_id' | 'assignment' | 'author' | 'points' | 'feedback'> & { assignee?: string }
+    >([
       {$match: {assignment: {$in: courseAssignmentsWhereUserIsMember.map(o => o.toString())}}},
       {
         $lookup: {
@@ -58,10 +61,7 @@ export class CourseService extends MongooseRepository<Course> {
       {$sort: SOLUTION_SORT},
     ], {
       collation: SOLUTION_COLLATION,
-    });
-
-    const keys: (keyof AuthorInfo)[] = ['studentId', 'email', 'github', 'name'];
-    for (const solution of solutions) {
+    })) {
       const {assignment, _id, assignee, author, points, feedback} = solution;
       let student: CourseStudent | undefined = undefined;
       for (const key of keys) {
@@ -84,7 +84,7 @@ export class CourseService extends MongooseRepository<Course> {
         }
       }
 
-      const index = course.assignments.indexOf(assignment);
+      const index = course.assignments.indexOf(assignment.toString());
       student.solutions[index] = {
         _id,
         points,
