@@ -28,17 +28,17 @@ export class CommentController {
   @SolutionAuth({forbiddenResponse})
   @ApiCreatedResponse({type: Comment})
   async create(
-    @Param('assignment', ObjectIdPipe) assignmentId: Types.ObjectId,
-    @Param('solution') solution: string,
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
+    @Param('solution', ObjectIdPipe) solution: Types.ObjectId,
     @Body() dto: CreateCommentDto,
     @AuthUser() user?: UserToken,
     @Headers('assignment-token') assignmentToken?: string,
   ): Promise<Comment> {
-    const assignment = await this.assignmentService.find(assignmentId) ?? notFound(assignmentId);
-    const distinguished = await this.assignmentService.isAuthorized(assignment, user, assignmentToken);
+    const assignmentDoc = await this.assignmentService.find(assignment) ?? notFound(assignment);
+    const distinguished = await this.assignmentService.isAuthorized(assignmentDoc, user, assignmentToken);
     return this.commentService.create({
       ...dto,
-      assignment: assignmentId.toString(),
+      assignment,
       solution,
       timestamp: new Date(),
       createdBy: user?.sub,
@@ -49,8 +49,8 @@ export class CommentController {
   @Sse('events')
   @SolutionAuth({forbiddenResponse})
   events(
-    @Param('assignment') assignment: string,
-    @Param('solution') solution: string,
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
+    @Param('solution', ObjectIdPipe) solution: Types.ObjectId,
     @AuthUser() user?: UserToken,
     @Headers('assignment-token') assignmentToken?: string,
     @Headers('solution-token') solutionToken?: string,
@@ -62,8 +62,8 @@ export class CommentController {
   @SolutionAuth({forbiddenResponse})
   @ApiOkResponse({type: [Comment]})
   async findAll(
-    @Param('assignment') assignment: string,
-    @Param('solution') solution: string,
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
+    @Param('solution', ObjectIdPipe) solution: Types.ObjectId,
   ): Promise<Comment[]> {
     return this.commentService.findAll({assignment, solution}, {sort: {timestamp: 1}});
   }

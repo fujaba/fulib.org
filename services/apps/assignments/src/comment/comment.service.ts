@@ -2,7 +2,7 @@ import {EventRepository, EventService, MongooseRepository} from '@mean-stream/ne
 import {UserToken} from '@app/keycloak-auth';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
-import {Model} from 'mongoose';
+import {Model, Types} from 'mongoose';
 import {Comment, CommentDocument} from './comment.schema';
 
 @Injectable()
@@ -24,7 +24,7 @@ export class CommentService extends MongooseRepository<Comment> {
     this.eventService.emit(`assignments.${comment.assignment}.solutions.${comment.solution}.comments.${comment._id}.${event}`, comment);
   }
 
-  subscribe(assignment: string, solution: string, comment: string, event: string, user?: string) {
+  subscribe(assignment: Types.ObjectId, solution: Types.ObjectId, comment: string, event: string, user?: string) {
     return this.eventService.subscribe<Comment>(`assignments.${assignment}.solutions.${solution}.comments.${comment}.${event}`, user);
   }
 }

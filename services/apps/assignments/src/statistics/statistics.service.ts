@@ -61,7 +61,7 @@ export class StatisticsService {
       ,
     ] = await Promise.all([
       this.timeStatistics(assignment, taskStats, tasks),
-      this.countComments(assignment.toString()),
+      this.countComments(assignment),
       this.solutionStatistics(assignmentDoc),
       this.fillEvaluationStatistics(assignment, taskStats, tasks, evaluations, weightedEvaluations),
     ]);
@@ -152,7 +152,7 @@ export class StatisticsService {
     };
   }
 
-  private countComments(assignment: string) {
+  private countComments(assignment: Types.ObjectId) {
     return this.commentService.model.find({
       assignment,
     }).count().exec();

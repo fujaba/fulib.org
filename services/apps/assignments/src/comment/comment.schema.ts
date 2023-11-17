@@ -1,19 +1,16 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {ApiProperty} from '@nestjs/swagger';
 import {IsBoolean, IsDateString, IsEmail, IsMongoId, IsNotEmpty, IsString} from 'class-validator';
-import {Doc} from "@mean-stream/nestx";
+import {Doc, Ref} from "@mean-stream/nestx";
+import {Types} from "mongoose";
 
 @Schema()
 export class Comment {
-  @Prop()
-  @ApiProperty()
-  @IsMongoId()
-  assignment: string;
+  @Ref('Assignment')
+  assignment: Types.ObjectId;
 
-  @Prop()
-  @ApiProperty()
-  @IsMongoId()
-  solution: string;
+  @Ref('Assignment')
+  solution: Types.ObjectId;
 
   @Prop()
   @ApiProperty()
