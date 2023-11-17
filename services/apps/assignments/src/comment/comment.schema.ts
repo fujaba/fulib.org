@@ -1,6 +1,6 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {ApiProperty} from '@nestjs/swagger';
-import {IsBoolean, IsDateString, IsEmail, IsMongoId, IsNotEmpty, IsString} from 'class-validator';
+import {IsBoolean, IsDateString, IsEmail, IsNotEmpty, IsString} from 'class-validator';
 import {Doc, Ref} from "@mean-stream/nestx";
 import {Types} from "mongoose";
 

@@ -7,7 +7,6 @@ import {
   IsEmail,
   IsHash,
   IsIn,
-  IsMongoId,
   IsNumber,
   IsOptional,
   IsString,

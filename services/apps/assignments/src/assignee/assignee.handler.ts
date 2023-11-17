@@ -2,7 +2,6 @@ import {Injectable} from '@nestjs/common';
 import {OnEvent} from '@nestjs/event-emitter';
 import {SolutionDocument} from '../solution/solution.schema';
 import {AssigneeService} from './assignee.service';
-import {Types} from "mongoose";
 
 @Injectable()
 export class AssigneeHandler {
