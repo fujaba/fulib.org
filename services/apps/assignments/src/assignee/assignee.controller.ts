@@ -1,5 +1,5 @@
 import {NotFound, ObjectIdPipe} from '@mean-stream/nestx';
-import {Body, Controller, Delete, Get, Param, Patch, Put} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, ParseArrayPipe, Patch, Put} from '@nestjs/common';
 import {ApiOkResponse, ApiOperation, ApiTags} from '@nestjs/swagger';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {BulkUpdateAssigneeDto, PatchAssigneeDto, UpdateAssigneeDto} from './assignee.dto';
@@ -42,7 +42,7 @@ export class AssigneeController {
   @ApiOkResponse({type: Assignee})
   async updateMany(
     @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
-    @Body() dtos: BulkUpdateAssigneeDto[],
+    @Body(new ParseArrayPipe({ items: BulkUpdateAssigneeDto })) dtos: BulkUpdateAssigneeDto[],
   ): Promise<Assignee[]> {
     return this.assigneeService.upsertMany(assignment, dtos);
   }

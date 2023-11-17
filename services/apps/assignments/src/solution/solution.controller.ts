@@ -175,7 +175,7 @@ export class SolutionController {
   @ApiOkResponse({type: [Solution]})
   async updateMany(
     @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
-    @Body() dtos: BatchUpdateSolutionDto[],
+    @Body(new ParseArrayPipe({items: BatchUpdateSolutionDto })) dtos: BatchUpdateSolutionDto[],
   ): Promise<(Solution | null)[]> {
     return this.solutionService.batchUpdate(assignment, dtos);
   }
