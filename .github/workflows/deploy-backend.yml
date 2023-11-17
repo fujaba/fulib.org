@@ -40,8 +40,8 @@ jobs:
             VERSION=${{ steps.deployment.outputs.version }}
           cache-to: type=gha,mode=max
           cache-from: type=gha
-      - name: Deploy the Backend to Rancher
-        uses: sekassel-research/actions-rancher-update@2.0.2
+      - name: Deploy to Rancher
+        uses: sekassel-research/actions-rancher-update@v3.0.0
         with:
           rancher_url: ${{ secrets.RANCHER_URL }}
           rancher_token: ${{ secrets.RANCHER_TOKEN }}
