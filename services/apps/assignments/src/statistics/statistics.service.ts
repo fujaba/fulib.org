@@ -164,32 +164,35 @@ export class StatisticsService {
 
   private async solutionStatistics(assignment: AssignmentDocument): Promise<SolutionStatistics> {
     const passingMin = assignment.tasks.reduce((a, c) => c.points > 0 ? a + c.points : a, 0) / 2;
-    let pointsTotal = 0;
-    let graded = 0;
-    let total = 0;
-    let passed = 0;
-    for await (const {points} of this.solutionService.model.find({assignment: assignment._id}).select('points')) {
-      total++;
-
-      if (points === undefined) {
-        continue;
-      }
-
-      pointsTotal += points;
-      graded++;
-
-      if (points < passingMin) {
-        continue;
-      }
-      passed++;
+    const [result] = await this.solutionService.model.aggregate([
+      {$match: {assignment: assignment._id}},
+      {
+        $group: {
+          _id: null,
+          total: {$sum: 1},
+          points: {$sum: '$points'},
+          graded: {$sum: {$cond: [{$gt: ['$points', null]}, 1, 0]}},
+          passed: {$sum: {$cond: [{$gte: ['$points', passingMin]}, 1, 0]}},
+        },
+      },
+    ]);
+    if (!result) {
+      return {
+        total: 0,
+        evaluated: 0,
+        graded: 0,
+        passed: 0,
+        pointsAvg: 0,
+      };
     }
+    const {total, points, graded, passed} = result;
     const evaluated = (await this.evaluationService.findUnique('solution', {assignment: assignment._id})).length;
     return {
       total,
       evaluated,
       graded,
       passed,
-      pointsAvg: pointsTotal / graded,
+      pointsAvg: points / graded,
     };
   }
 }
