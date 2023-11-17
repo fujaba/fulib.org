@@ -108,7 +108,7 @@ export class EvaluationController {
   @ApiOkResponse({type: Evaluation})
   @NotFound()
   async findOne(
-    @Param('assignment', ObjectIdPipe) id: Types.ObjectId,
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
   ): Promise<Evaluation | null> {
     return this.evaluationService.find(id);
   }
@@ -118,7 +118,7 @@ export class EvaluationController {
   @ApiOkResponse({type: Evaluation})
   @NotFound()
   async update(
-    @Param('assignment', ObjectIdPipe) id: Types.ObjectId,
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
     @Body() dto: UpdateEvaluationDto,
   ): Promise<Evaluation | null> {
     return this.evaluationService.updateWithCodeSearch(id, dto);
@@ -129,7 +129,7 @@ export class EvaluationController {
   @ApiOkResponse({type: Evaluation})
   @NotFound()
   async remove(
-    @Param('assignment', ObjectIdPipe) id: Types.ObjectId,
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
   ): Promise<Evaluation | null> {
     return this.evaluationService.deleteWithCodeSearch(id);
   }
