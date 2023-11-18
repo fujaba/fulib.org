@@ -196,7 +196,7 @@ export class EmbeddingService implements OnModuleInit {
     return response.hits.hits.map(({_score, _source}) => ({...(_source as Embeddable), _score: _score || 0}));
   }
 
-  async deleteNotIn(assignment: string, tasks: string[]): Promise<number> {
+  async deleteTasksNotIn(assignment: string, tasks: string[]): Promise<number> {
     const body = await this.elasticsearchService.deleteByQuery({
       index: 'embeddings',
       query: {
@@ -204,11 +204,28 @@ export class EmbeddingService implements OnModuleInit {
           must: {
             term: {
               assignment,
+              type: 'task',
             },
           },
           must_not: {
             terms: {
               task: tasks,
+            },
+          },
+        },
+      },
+    });
+    return body.deleted || 0;
+  }
+
+  async deleteAll(assignment: string): Promise<number> {
+    const body = await this.elasticsearchService.deleteByQuery({
+      index: 'embeddings',
+      query: {
+        bool: {
+          must: {
+            term: {
+              assignment,
             },
           },
         },
