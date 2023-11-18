@@ -16,6 +16,10 @@ export interface CodeSearchInfo {
   deleted?: number;
 }
 
+export interface SimilarityInfo {
+  origin: string;
+}
+
 export class Evaluation {
   assignment: string;
   solution: string;
@@ -32,6 +36,7 @@ export class Evaluation {
   snippets: Snippet[];
 
   codeSearch?: CodeSearchInfo;
+  similarity?: SimilarityInfo;
 }
 
 export interface CreateEvaluationDto extends Omit<Evaluation, '_id' | 'assignment' | 'solution' | 'createdAt' | 'createdBy' | 'updatedAt' | 'codeSearch'> {

@@ -5,7 +5,7 @@ import {CreateEvaluationDto, Evaluation, Snippet} from "../../../model/evaluatio
 import {ActivatedRoute} from "@angular/router";
 import {AssignmentService} from "../../../services/assignment.service";
 import {SolutionService} from "../../../services/solution.service";
-import {catchError, filter, map, share, switchMap, tap} from "rxjs/operators";
+import {catchError, filter, map, switchMap, tap} from "rxjs/operators";
 import {TaskService} from "../../../services/task.service";
 import {ConfigService} from "../../../services/config.service";
 import {forkJoin, of} from "rxjs";
@@ -24,6 +24,7 @@ export class SimilarModalComponent implements OnInit {
   solutionId!: string;
   task?: Task;
   evaluation?: Evaluation;
+  startDate = Date.now();
   dto: CreateEvaluationDto = {
     task: '',
     points: 0,
@@ -113,10 +114,16 @@ export class SimilarModalComponent implements OnInit {
   submit() {
     const assignment = this.route.snapshot.params.aid;
     // for each selected solution, create an evaluation
-    forkJoin(Object.entries(this.selection)
-      .filter(([, selected]) => selected)
+    const selected = Object.entries(this.selection).filter(([, selected]) => selected);
+    const duration = (Date.now() - this.startDate) / 1000 / selected.length;
+
+    forkJoin(selected
       .map(([solution]) => this.evaluationService.create(assignment, solution, {
         ...this.dto,
+        duration,
+        similarity: this.evaluation && {
+          origin: this.evaluation._id,
+        },
         snippets: this.snippets[solution] ?? [],
       }))
     ).subscribe(results => {
