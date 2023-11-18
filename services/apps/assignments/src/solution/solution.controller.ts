@@ -115,7 +115,13 @@ export class SolutionController {
           postAnd.push({assignee: regex});
           break;
         case 'origin':
-          isMongoId(subTerm) && postAnd.push({'_evaluations._id': new Types.ObjectId(subTerm)});
+          if (isMongoId(subTerm)) {
+            const origin = new Types.ObjectId(subTerm);
+            postAnd.push({$or: [
+              {'_evaluations.codeSearch.origin': origin},
+              {'_evaluations.similarity.origin': origin},
+            ]});
+          }
           break;
         case 'status':
           postAnd.push({status: subTerm});

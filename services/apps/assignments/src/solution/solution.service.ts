@@ -3,7 +3,7 @@ import {UserToken} from '@app/keycloak-auth';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model, Types, UpdateQuery} from 'mongoose';
-import {BatchUpdateSolutionDto, RichSolutionDto} from './solution.dto';
+import {BatchUpdateSolutionDto, RichSolutionDto, SolutionStatus} from './solution.dto';
 import {Solution, SOLUTION_COLLATION, SOLUTION_SORT, SolutionDocument} from './solution.schema';
 
 @Injectable()
@@ -37,9 +37,10 @@ export class SolutionService extends MongooseRepository<Solution> {
           as: '_evaluations',
           pipeline: [
             {
-              $group: {
-                _id: '$codeSearch.origin',
-                count: {$sum: 1},
+              $project: {
+                _id: 1,
+                'codeSearch.origin': 1,
+                'similarity.origin': 1,
               },
             },
           ],
@@ -49,35 +50,37 @@ export class SolutionService extends MongooseRepository<Solution> {
         $addFields: {
           assignee: {$first: '$_assignee.assignee'},
           // if points are set: SolutionStatus.graded
-          // else if all evaluations have author 'Code Search': SolutionStatus.codeSearch
-          // else if there are any evaluations: SolutionStatus.started
-          // otherwise: SolutionStatus.todo
+          // else if there are no evaluations: SolutionStatus.todo
+          // else if all evaluations have an origin: SolutionStatus.codeSearch
+          // else: SolutionStatus.started
           status: {
             $cond: {
               if: {$gt: ['$points', null]},
-              then: 'graded',
+              then: SolutionStatus.graded,
               else: {
                 $cond: {
-                  if: {$gt: [{$size: '$_evaluations'}, 0]},
-                  then: {
+                  if: {$eq: [{$size: '$_evaluations'}, 0]},
+                  then: SolutionStatus.todo,
+                  else: {
                     $cond: {
                       if: {
-                        // no evaluations has _id === null
-                        $eq: [{
-                          $size: {
-                            $filter: {
-                              input: '$_evaluations',
-                              as: 'e',
-                              cond: {$eq: ['$$e._id', null]}
-                            }
-                          }
-                        }, 0]
+                        $allElementsTrue: {
+                          $map: {
+                            input: '$_evaluations',
+                            as: 'evaluation',
+                            in: {
+                              $or: [
+                                {$gt: ['$$evaluation.codeSearch.origin', null]},
+                                {$gt: ['$$evaluation.similarity.origin', null]},
+                              ],
+                            },
+                          },
+                        },
                       },
-                      then: 'code-search',
-                      else: 'started',
+                      then: SolutionStatus.codeSearch,
+                      else: SolutionStatus.started,
                     },
                   },
-                  else: 'todo',
                 },
               },
             },
