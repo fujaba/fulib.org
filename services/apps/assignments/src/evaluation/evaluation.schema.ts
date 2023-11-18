@@ -63,6 +63,12 @@ export class Snippet {
   @ApiProperty()
   @IsString()
   comment: string;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsNumber()
+  score?: number;
 }
 
 export class CodeSearchInfo {
