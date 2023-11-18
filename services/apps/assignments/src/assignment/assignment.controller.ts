@@ -119,7 +119,7 @@ export class AssignmentController {
         update[`classroom.${key}`] = value;
       }
     }
-    return this.assignmentService.update(id, dto);
+    return this.assignmentService.update(id, update);
   }
 
   @Delete(':id')
