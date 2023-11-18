@@ -3,6 +3,7 @@ import {NotFound, ObjectIdArrayPipe, ObjectIdPipe} from '@mean-stream/nestx';
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   Param,
@@ -72,13 +73,13 @@ export class SolutionController {
   })
   async findAll(
     @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
+    @Query('ids', new DefaultValuePipe([]), ParseArrayPipe, ObjectIdArrayPipe) ids: Types.ObjectId[],
     @Query('q') search?: string,
-    @Query('ids', ParseArrayPipe, ObjectIdArrayPipe) ids?: Types.ObjectId[],
   ): Promise<RichSolutionDto[]> {
     const preFilter: FilterQuery<Solution>[] = [];
     const postFilter: FilterQuery<RichSolutionDto>[] = [];
     preFilter.push({assignment});
-    if (ids) {
+    if (ids.length) {
       preFilter.push({_id: {$in: ids}});
     }
     if (search) {
@@ -175,7 +176,7 @@ export class SolutionController {
   @ApiOkResponse({type: [Solution]})
   async updateMany(
     @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
-    @Body(new ParseArrayPipe({items: BatchUpdateSolutionDto })) dtos: BatchUpdateSolutionDto[],
+    @Body(new ParseArrayPipe({items: BatchUpdateSolutionDto})) dtos: BatchUpdateSolutionDto[],
   ): Promise<(Solution | null)[]> {
     return this.solutionService.batchUpdate(assignment, dtos);
   }

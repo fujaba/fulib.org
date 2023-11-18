@@ -2,7 +2,7 @@ import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound, notFound, ObjectIdArrayPipe, ObjectIdPipe} from '@mean-stream/nestx';
 import {
   Body,
-  Controller,
+  Controller, DefaultValuePipe,
   Delete,
   Get,
   Headers,
@@ -50,9 +50,9 @@ export class AssignmentController {
   @Get()
   @ApiOkResponse({type: [ReadAssignmentDto]})
   async findAll(
+    @Query('ids', new DefaultValuePipe([]), ParseArrayPipe, ObjectIdArrayPipe) ids: Types.ObjectId[],
     @Query('archived', new ParseBoolPipe({optional: true})) archived?: boolean,
     @Query('createdBy') createdBy?: string,
-    @Query('ids', new ParseArrayPipe({optional: true}), ObjectIdArrayPipe) ids?: Types.ObjectId[],
     @Query('members', new ParseArrayPipe({optional: true})) memberIds?: string[],
   ) {
     const filter: FilterQuery<Assignment> = {};
@@ -62,7 +62,7 @@ export class AssignmentController {
     if (createdBy) {
       (filter.$or ||= []).push({createdBy});
     }
-    if (ids) {
+    if (ids.length) {
       (filter.$or ||= []).push({_id: {$in: ids}});
     }
     if (memberIds) {
