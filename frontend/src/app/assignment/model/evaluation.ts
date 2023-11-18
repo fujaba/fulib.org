@@ -1,3 +1,5 @@
+import {Config} from "./config";
+
 export class Snippet {
   file: string;
   from: { line: number; character: number; };
@@ -37,6 +39,17 @@ export class Evaluation {
 
   codeSearch?: CodeSearchInfo;
   similarity?: SimilarityInfo;
+}
+
+// TODO Remove this after the Winter Term 2023/24 study is over
+export function isVisible(evaluation: Evaluation, config: Pick<Config, 'codeSearch' | 'similarSolutions'>) {
+  if (!config.codeSearch && evaluation.author === 'Code Search') {
+    return false;
+  }
+  if (!config.similarSolutions && evaluation.similarity?.origin && evaluation.createdAt !== evaluation.updatedAt) {
+    return false;
+  }
+  return true;
 }
 
 export interface CreateEvaluationDto extends Omit<Evaluation, '_id' | 'assignment' | 'solution' | 'createdAt' | 'createdBy' | 'updatedAt' | 'codeSearch'> {
