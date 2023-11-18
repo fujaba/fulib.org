@@ -73,10 +73,14 @@ export class SolutionController {
   async findAll(
     @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
     @Query('q') search?: string,
+    @Query('ids', ParseArrayPipe, ObjectIdArrayPipe) ids?: Types.ObjectId[],
   ): Promise<RichSolutionDto[]> {
     const preFilter: FilterQuery<Solution>[] = [];
     const postFilter: FilterQuery<RichSolutionDto>[] = [];
     preFilter.push({assignment});
+    if (ids) {
+      preFilter.push({_id: {$in: ids}});
+    }
     if (search) {
       const terms = search.trim().split(/\s+/);
       for (const term of terms) {
