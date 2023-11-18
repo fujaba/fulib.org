@@ -86,6 +86,12 @@ export class CodeSearchInfo {
   deleted?: number;
 }
 
+export class SimilarityInfo {
+  @ApiPropertyOptional({description: 'Only in GET responses'})
+  @OptionalRef('Evaluation')
+  origin: Types.ObjectId;
+}
+
 @Schema({timestamps: true})
 export class Evaluation {
   @ApiProperty()
@@ -149,6 +155,13 @@ export class Evaluation {
   @ValidateNested()
   @Type(() => CodeSearchInfo)
   codeSearch?: CodeSearchInfo;
+
+  @Prop()
+  @ApiPropertyOptional({type: SimilarityInfo})
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => SimilarityInfo)
+  similarity?: SimilarityInfo;
 }
 
 export type EvaluationDocument = Doc<Evaluation>;
