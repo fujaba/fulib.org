@@ -90,7 +90,7 @@ export class SimilarModalComponent implements OnInit {
         return this.snippets;
       }),
       // fetch the solutions
-      switchMap(snippets => this.solutionService.getAll(this.route.snapshot.params.aid, undefined, Object.keys(snippets))),
+      switchMap(snippets => this.solutionService.getIds(this.route.snapshot.params.aid, Object.keys(snippets))),
       tap(solutions => this.solutions = solutions),
     ).subscribe();
   }
