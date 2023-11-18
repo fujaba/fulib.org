@@ -1,19 +1,17 @@
 import {Component, OnInit} from '@angular/core';
 import Task from "../../../model/task";
-import Solution from "../../../model/solution";
+import {RichSolutionDto} from "../../../model/solution";
 import {CreateEvaluationDto, Evaluation, Snippet} from "../../../model/evaluation";
 import {ActivatedRoute} from "@angular/router";
 import {AssignmentService} from "../../../services/assignment.service";
 import {SolutionService} from "../../../services/solution.service";
-import {catchError, filter, map, switchMap, tap} from "rxjs/operators";
+import {filter, map, switchMap, tap} from "rxjs/operators";
 import {TaskService} from "../../../services/task.service";
 import {ConfigService} from "../../../services/config.service";
-import {forkJoin, of} from "rxjs";
+import {forkJoin} from "rxjs";
 import {ToastService} from "@mean-stream/ngbx";
 import {EvaluationService} from "../../../services/evaluation.service";
 import {EmbeddingService} from "../../../services/embedding.service";
-import {Assignee} from "../../../model/assignee";
-import {AssigneeService} from "../../../services/assignee.service";
 
 @Component({
   selector: 'app-similar-modal',
@@ -33,11 +31,10 @@ export class SimilarModalComponent implements OnInit {
     author: this.configService.get('name'),
     codeSearch: false,
   };
-  solutions: Solution[] = [];
+  solutions: RichSolutionDto[] = [];
   selection: Partial<Record<string, boolean>> = {};
   existingEvaluations: Partial<Record<string, boolean>> = {};
   snippets: Partial<Record<string, Snippet[]>> = {};
-  assignees: Partial<Record<string, string>> = {};
 
   constructor(
     public route: ActivatedRoute,
@@ -48,7 +45,6 @@ export class SimilarModalComponent implements OnInit {
     private evaluationService: EvaluationService,
     private assignmentService: AssignmentService,
     private embeddingService: EmbeddingService,
-    private assigneeService: AssigneeService,
   ) {
   }
 
@@ -94,20 +90,8 @@ export class SimilarModalComponent implements OnInit {
         return this.snippets;
       }),
       // fetch the solutions
-      switchMap(snippets => forkJoin(Object.keys(snippets)
-        .map(solution => this.solutionService.get(this.route.snapshot.params.aid, solution)),
-      )),
+      switchMap(snippets => this.solutionService.getAll(this.route.snapshot.params.aid, undefined, Object.keys(snippets))),
       tap(solutions => this.solutions = solutions),
-      // fetch the assignees
-      switchMap(solutions => forkJoin(solutions
-        .map(solution => this.assigneeService.findOne(this.route.snapshot.params.aid, solution._id!).pipe(
-          catchError(() => of(undefined)),
-        ))),
-      ),
-      tap(assignees => this.assignees = Object.fromEntries(assignees
-        .filter((a): a is Assignee => !!a)
-        .map(({solution, assignee}) => [solution, assignee]),
-      )),
     ).subscribe();
   }
 
