@@ -3,6 +3,7 @@ import {NotFound, ObjectIdArrayPipe, ObjectIdPipe} from '@mean-stream/nestx';
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   Param,
@@ -72,14 +73,14 @@ export class SolutionController {
   })
   async findAll(
     @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
+    @Query('ids', new DefaultValuePipe([]), ParseArrayPipe, ObjectIdArrayPipe) ids: Types.ObjectId[],
     @Query('q') search?: string,
-    @Query('author.github') github?: string,
   ): Promise<RichSolutionDto[]> {
     const preFilter: FilterQuery<Solution>[] = [];
     const postFilter: FilterQuery<RichSolutionDto>[] = [];
     preFilter.push({assignment});
-    if (github) {
-      preFilter.push({'author.github': github});
+    if (ids.length) {
+      preFilter.push({_id: {$in: ids}});
     }
     if (search) {
       const terms = search.trim().split(/\s+/);
@@ -114,7 +115,13 @@ export class SolutionController {
           postAnd.push({assignee: regex});
           break;
         case 'origin':
-          isMongoId(subTerm) && postAnd.push({'_evaluations._id': new Types.ObjectId(subTerm)});
+          if (isMongoId(subTerm)) {
+            const origin = new Types.ObjectId(subTerm);
+            postAnd.push({$or: [
+              {'_evaluations.codeSearch.origin': origin},
+              {'_evaluations.similarity.origin': origin},
+            ]});
+          }
           break;
         case 'status':
           postAnd.push({status: subTerm});
@@ -175,7 +182,7 @@ export class SolutionController {
   @ApiOkResponse({type: [Solution]})
   async updateMany(
     @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
-    @Body(new ParseArrayPipe({items: BatchUpdateSolutionDto })) dtos: BatchUpdateSolutionDto[],
+    @Body(new ParseArrayPipe({items: BatchUpdateSolutionDto})) dtos: BatchUpdateSolutionDto[],
   ): Promise<(Solution | null)[]> {
     return this.solutionService.batchUpdate(assignment, dtos);
   }

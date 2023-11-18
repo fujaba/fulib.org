@@ -63,6 +63,12 @@ export class Snippet {
   @ApiProperty()
   @IsString()
   comment: string;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsNumber()
+  score?: number;
 }
 
 export class CodeSearchInfo {
@@ -84,6 +90,12 @@ export class CodeSearchInfo {
   @IsOptional()
   @IsInt()
   deleted?: number;
+}
+
+export class SimilarityInfo {
+  @ApiPropertyOptional({description: 'Only in GET responses'})
+  @OptionalRef('Evaluation')
+  origin: Types.ObjectId;
 }
 
 @Schema({timestamps: true})
@@ -149,6 +161,13 @@ export class Evaluation {
   @ValidateNested()
   @Type(() => CodeSearchInfo)
   codeSearch?: CodeSearchInfo;
+
+  @Prop()
+  @ApiPropertyOptional({type: SimilarityInfo})
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => SimilarityInfo)
+  similarity?: SimilarityInfo;
 }
 
 export type EvaluationDocument = Doc<Evaluation>;

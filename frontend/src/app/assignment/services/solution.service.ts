@@ -140,6 +140,12 @@ export class SolutionService {
     });
   }
 
+  getIds(assignment: string, ids: string[]): Observable<RichSolutionDto[]> {
+    return !ids.length ? of([]) : this.http.get<RichSolutionDto[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions`, {
+      params: {ids},
+    });
+  }
+
   getOwn(): Observable<Solution[]> {
     return this.http.get<Solution[]>(`${environment.assignmentsApiUrl}/solutions`);
   }

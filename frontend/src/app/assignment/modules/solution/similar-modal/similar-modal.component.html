@@ -29,7 +29,7 @@
                 <label class="form-check-label" [for]="'check-' + solution._id">
                   Solution by {{ solution | solutionName }}
                 </label>
-                <span *ngIf="assignees[solution._id!] as assignee" class="text-muted">
+                <span *ngIf="solution.assignee as assignee" class="text-muted">
                   &bull;
                   <i class="bi-person-check" ngbTooltip="Assignee"></i>
                   {{ assignee }}

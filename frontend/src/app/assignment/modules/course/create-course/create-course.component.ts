@@ -4,7 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ToastService} from '@mean-stream/ngbx';
 import {DndDropEvent} from 'ngx-drag-drop';
 import {Observable, of} from 'rxjs';
-import {debounceTime, distinctUntilChanged, filter, map, switchMap, tap} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 import {ReadAssignmentDto} from '../../../model/assignment';
 import Course, {CreateCourseDto} from '../../../model/course';
 import {AssignmentService} from '../../../services/assignment.service';
@@ -60,7 +60,6 @@ export class CreateCourseComponent implements OnInit {
         description: '',
       })),
       tap(course => this.course = course),
-      filter(course => course.assignments.length !== 0),
       switchMap(course => this.assignmentService.findIds(course.assignments)),
     ).subscribe(assignments => this.assignments = assignments);
   }

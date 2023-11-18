@@ -3,7 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {forkJoin, Subscription} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
 import Assignment, {ReadAssignmentDto} from '../../../model/assignment';
-import {Evaluation} from '../../../model/evaluation';
+import {Evaluation, isVisible} from '../../../model/evaluation';
 import Solution from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
 import {SolutionService} from '../../../services/solution.service';
@@ -61,8 +61,8 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
       switchMap(({aid, sid}) => forkJoin([
         this.assignmentService.get(aid).pipe(tap(assignment => this.assignment = assignment)),
         this.evaluationService.findAll(aid, sid).pipe(map(evaluations => {
-          if (!this.config.codeSearch) { // TODO Remove this after the Winter Term 2023/24 study is over
-            evaluations = evaluations.filter(evaluation => evaluation.author !== 'Code Search');
+          if (!this.config.codeSearch || !this.config.similarSolutions) {
+            evaluations = evaluations.filter(evaluation => isVisible(evaluation, this.config));
           }
           this.evaluations = {};
           for (const evaluation of evaluations) {
@@ -86,8 +86,7 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
       if (event === 'deleted') {
         delete this.evaluations[task];
       }
-      else if (!this.config.codeSearch && evaluation.author === 'Code Search') { // TODO Remove this after the Winter Term 2023/24 study is over
-        // Code Search evaluations are not shown to the user
+      else if (!isVisible(evaluation, this.config)) {
         return;
       } else {
         this.evaluations[task] = evaluation;
