@@ -73,14 +73,10 @@ export class SolutionController {
   async findAll(
     @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
     @Query('q') search?: string,
-    @Query('author.github') github?: string,
   ): Promise<RichSolutionDto[]> {
     const preFilter: FilterQuery<Solution>[] = [];
     const postFilter: FilterQuery<RichSolutionDto>[] = [];
     preFilter.push({assignment});
-    if (github) {
-      preFilter.push({'author.github': github});
-    }
     if (search) {
       const terms = search.trim().split(/\s+/);
       for (const term of terms) {
