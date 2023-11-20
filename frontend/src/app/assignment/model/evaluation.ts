@@ -46,7 +46,7 @@ export function isVisible(evaluation: Evaluation, config: Pick<Config, 'codeSear
   if (!config.codeSearch && evaluation.author === 'Code Search') {
     return false;
   }
-  if (!config.similarSolutions && evaluation.similarity?.origin && evaluation.createdAt !== evaluation.updatedAt) {
+  if (!config.similarSolutions && evaluation.similarity?.origin && evaluation.createdAt === evaluation.updatedAt) {
     return false;
   }
   return true;
