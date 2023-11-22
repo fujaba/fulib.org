@@ -153,9 +153,9 @@ export class StatisticsService {
   }
 
   private countComments(assignment: Types.ObjectId) {
-    return this.commentService.model.find({
+    return this.commentService.model.countDocuments({
       assignment,
-    }).count().exec();
+    }).exec();
   }
 
   private createEmptyEvaluationStatistics() {
