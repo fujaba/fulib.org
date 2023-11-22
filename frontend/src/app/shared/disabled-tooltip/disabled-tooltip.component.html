@@ -4,9 +4,11 @@
 <ng-template #tooltip>
   All must be true:
   <ul class="text-start list-unstyled">
-    <li *ngFor="let item of require">
-      <i [class]="item[0] ? 'bi-check text-success' : 'bi-x text-danger'"></i>
-      {{ item[1] }}
-    </li>
+    @for (item of require;track item) {
+      <li>
+        <i [class]="item[0] ? 'bi-check text-success' : 'bi-x text-danger'"></i>
+        {{ item[1] }}
+      </li>
+    }
   </ul>
 </ng-template>

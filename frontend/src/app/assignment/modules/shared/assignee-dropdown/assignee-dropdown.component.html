@@ -6,11 +6,13 @@
     {{ (assignee || '') | initials }}
   </button>
   <div ngbDropdownMenu>
-    <ng-container *ngIf="dropdown.isOpen()">
-      <button *ngFor="let suggestion of assignees" ngbDropdownItem (click)="save(suggestion)">
-        <span class="badge" [style.background-color]="suggestion | assigneeColor">{{ suggestion | initials }}</span>
-        {{ suggestion }}
-      </button>
+    @if (dropdown.isOpen()) {
+      @for (suggestion of assignees; track suggestion) {
+        <button ngbDropdownItem (click)="save(suggestion)">
+          <span class="badge" [style.background-color]="suggestion | assigneeColor">{{ suggestion | initials }}</span>
+          {{ suggestion }}
+        </button>
+      }
       <button ngbDropdownItem class="bi-person-x" (click)="save(undefined)">
         Unassign
       </button>
@@ -20,6 +22,6 @@
         </label>
         <input type="text" class="form-control" id="custom-assignee" [(ngModel)]="assignee" (change)="save(assignee)">
       </div>
-    </ng-container>
+    }
   </div>
 </div>

@@ -1,28 +1,30 @@
 <ul class="nav-tabs" ngbNav #nav="ngbNav" [(activeId)]="current" [animation]="false" [destroyOnHide]="false">
-  <li *ngFor="let editor of tabs" [ngbNavItem]="editor">
-    <a ngbNavLink class="text-reset"
-       (contextmenu)="openContextMenu($event, editor, dropdown)"
-       (auxclick)="auxClick($event, editor)">
-      <ng-container [ngTemplateOutlet]="header" [ngTemplateOutletContext]="{$implicit: editor}"></ng-container>
-      <div class="d-inline" ngbDropdown #dropdown="ngbDropdown" container="body">
-        <span ngbDropdownToggle>
-        </span>
-        <div ngbDropdownMenu>
-          <button ngbDropdownItem (click)="close(editor)">Close</button>
-          <button ngbDropdownItem (click)="closeOthers(editor)">Close Others</button>
-          <button ngbDropdownItem (click)="closeAll()">Close All</button>
-          <button ngbDropdownItem (click)="closeLeftOf(editor)">Close All to the Left</button>
-          <button ngbDropdownItem (click)="closeRightOf(editor)">Close All to the Right</button>
+  @for (editor of tabs; track editor) {
+    <li [ngbNavItem]="editor">
+      <a ngbNavLink class="text-reset"
+         (contextmenu)="openContextMenu($event, editor, dropdown)"
+         (auxclick)="auxClick($event, editor)">
+        <ng-container [ngTemplateOutlet]="header" [ngTemplateOutletContext]="{$implicit: editor}"></ng-container>
+        <div class="d-inline" ngbDropdown #dropdown="ngbDropdown" container="body">
+          <span ngbDropdownToggle>
+          </span>
+          <div ngbDropdownMenu>
+            <button ngbDropdownItem (click)="close(editor)">Close</button>
+            <button ngbDropdownItem (click)="closeOthers(editor)">Close Others</button>
+            <button ngbDropdownItem (click)="closeAll()">Close All</button>
+            <button ngbDropdownItem (click)="closeLeftOf(editor)">Close All to the Left</button>
+            <button ngbDropdownItem (click)="closeRightOf(editor)">Close All to the Right</button>
+          </div>
         </div>
-      </div>
-      <span class="btn-close ms-2 fw-light"
-            (click)="close(editor); $event.preventDefault(); $event.stopImmediatePropagation()">
-      </span>
-    </a>
-    <ng-template ngbNavContent>
-      <ng-container [ngTemplateOutlet]="content" [ngTemplateOutletContext]="{$implicit: editor}"></ng-container>
-    </ng-template>
-  </li>
+        <span class="btn-close ms-2 fw-light"
+              (click)="close(editor); $event.preventDefault(); $event.stopImmediatePropagation()">
+        </span>
+      </a>
+      <ng-template ngbNavContent>
+        <ng-container [ngTemplateOutlet]="content" [ngTemplateOutletContext]="{$implicit: editor}"></ng-container>
+      </ng-template>
+    </li>
+  }
   <li class="nav-item">
     <a class="nav-link new-tab" href (click)="create.next(); $event.preventDefault()">
       +
@@ -30,6 +32,9 @@
   </li>
 </ul>
 <div style="height: calc(100% - 42px)">
-  <div class="h-100" *ngIf="current else fallback" [ngbNavOutlet]="nav">
-  </div>
+  @if (current) {
+    <div class="h-100" [ngbNavOutlet]="nav"></div>
+  } @else {
+    <ng-container [ngTemplateOutlet]="fallback"></ng-container>
+  }
 </div>

@@ -4,11 +4,13 @@
     Project Settings: {{ project?.name }}
   </h1>
   <h4>Basic Settings</h4>
-  <app-project-form *ngIf="project" [project]="project"></app-project-form>
+  @if (project) {
+    <app-project-form [project]="project"></app-project-form>
+  }
   <button type="button" class="btn btn-primary" (click)="save()">
     Save
   </button>
-  <ng-container *ngIf="project">
+  @if (project) {
     <hr/>
     <h4 class="d-flex align-items-center">
       Members
@@ -17,8 +19,8 @@
       </a>
     </h4>
     <app-member-list [members]="members" [owner]="project.userId" (deleted)="delete($event)"></app-member-list>
-  </ng-container>
-  <ng-container *ngIf="project && (currentUser && currentUser.id === project.userId)">
+  }
+  @if (project && (currentUser && currentUser.id === project.userId)) {
     <hr/>
     <h4>Danger Zone</h4>
     <div class="list-group">
@@ -56,6 +58,6 @@
         </a>
       </div>
     </div>
-  </ng-container>
+  }
 </div>
 <router-outlet></router-outlet>

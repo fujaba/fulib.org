@@ -11,8 +11,9 @@
     <button class="btn btn-outline-secondary bi-{{project.icon || 'server'}} feature-icon ms-3" [ngbPopover]="iconSelect" placement="bottom-right"></button>
     <ng-template #iconSelect>
       <div class="d-flex flex-wrap overflow-scroll" style="max-height: 30rem">
-        <button *ngFor="let i of icons" class="btn btn-outline-secondary bi-{{i}}" (click)="project.icon = i">
-        </button>
+        @for (i of icons;track i) {
+          <button class="btn btn-outline-secondary bi-{{i}}" (click)="project.icon = i"></button>
+        }
       </div>
     </ng-template>
   </div>
@@ -31,11 +32,13 @@
     </label>
     <select class="form-select" id="dockerImageInput" [(ngModel)]="project.dockerImage">
       <option [value]="undefined">Use Default</option>
-      <option *ngFor="let image of dockerImages" [value]="image.tag">
-        {{image.name}}
-        —
-        {{image.desc}}
-      </option>
+      @for (image of dockerImages;track image) {
+        <option [value]="image.tag">
+          {{image.name}}
+          —
+          {{image.desc}}
+        </option>
+      }
     </select>
     <div class="form-text">
       Select a matching Docker image for your use case.

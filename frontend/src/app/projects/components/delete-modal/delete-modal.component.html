@@ -7,12 +7,18 @@
     This action cannot be undone.
   </ng-container>
   <ng-container modal-footer>
-    <button *ngIf="!deleting" type="button" class="btn btn-secondary" (click)="modal.close()">
-      Cancel
-    </button>
+    @if (!deleting) {
+      <button type="button" class="btn btn-secondary" (click)="modal.close()">
+        Cancel
+      </button>
+    }
     <button type="button" class="btn btn-danger" (click)="delete(modal)" [disabled]="deleting">
-      <span *ngIf="deleting" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-      {{deleting ? 'Deleting...' : 'Delete'}}
+      @if (deleting) {
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        Deleting...
+      } @else {
+        Delete
+      }
     </button>
   </ng-container>
 </ngbx-modal>

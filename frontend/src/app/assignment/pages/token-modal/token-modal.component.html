@@ -3,7 +3,7 @@
     Authorization Required
   </ng-container>
   <ng-container modal-body>
-    <ng-container *ngIf="solution">
+    @if (solution) {
       <p>
         Please enter the token for this solution to view it:
       </p>
@@ -15,10 +15,11 @@
       <p>
         If you are the assignment administrator or tutor, enter the assignment token here:
       </p>
-    </ng-container>
-    <p *ngIf="!solution">
-      Please enter the token for this assignment to view solutions:
-    </p>
+    } @else {
+      <p>
+        Please enter the token for this assignment to view solutions:
+      </p>
+    }
     <div class="mb-3">
       <label class="form-label" for="assignmentTokenInput">Assignment Token</label>
       <input type="text" class="form-control font-monospace" id="assignmentTokenInput"

@@ -39,11 +39,14 @@
             GitHub
           </a>
           <div ngbDropdownMenu aria-labelledby="githubDropdown">
-            <a *ngFor="let repo of repos"
-               ngbDropdownItem href="https://github.com/fujaba/{{repo}}">
-              {{repo}}
-              <span class="text-muted" *ngIf="versions && versions[repo]"> (v{{versions[repo]}})</span>
-            </a>
+            @for (repo of repos;track repo) {
+              <a ngbDropdownItem href="https://github.com/fujaba/{{repo}}">
+                {{repo}}
+                  @if (versions && versions[repo]) {
+                    <span class="text-muted"> (v{{ versions[repo] }})</span>
+                  }
+              </a>
+            }
           </div>
         </li>
         <li class="nav-item" ngbDropdown>
@@ -86,11 +89,17 @@
           <div ngbDropdownMenu aria-labelledby="accountDropdown" class="dropdown-menu-end">
             <h6 class="dropdown-header">Account</h6>
             <div class="dropdown-item-text text-muted">
-              {{username ? 'Logged in as ' : 'Not logged in'}}<b *ngIf="username">{{username}}</b>.
+              @if (username) {
+                Logged in as <b>{{ username }}</b>
+              } @else {
+                Not logged in
+              }
             </div>
-            <a *ngIf="username && accountUrl" ngbDropdownItem [href]="accountUrl" target="_blank">
-              Edit Account
-            </a>
+            @if (username && accountUrl) {
+              <a ngbDropdownItem [href]="accountUrl" target="_blank">
+                Edit Account
+              </a>
+            }
             <button ngbDropdownItem (click)="username ? logout() : login()">
               {{username ? 'Logout' : 'Login'}}
             </button>
@@ -112,15 +121,16 @@
           ></a>
           <div ngbDropdownMenu aria-labelledby="accountDropdown" class="dropdown-menu-end">
             <h6 class="dropdown-header">Theme</h6>
-            <button
-              *ngFor="let theme of themes"
-              ngbDropdownItem
-              class="dropdown-item-check {{ theme.value === selectedTheme ? theme.selectedIcon : theme.icon }}"
-              [disabled]="theme.value === selectedTheme"
-              (click)="selectTheme(theme.value)"
-            >
-              {{ theme.name }}
-            </button>
+            @for (theme of themes;track theme) {
+              <button
+                ngbDropdownItem
+                class="dropdown-item-check {{ theme.value === selectedTheme ? theme.selectedIcon : theme.icon }}"
+                [disabled]="theme.value === selectedTheme"
+                (click)="selectTheme(theme.value)"
+              >
+                {{ theme.name }}
+              </button>
+            }
           </div>
         </li>
       </ul>

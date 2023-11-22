@@ -2,48 +2,48 @@
   <button class="btn btn-primary" [class.active]="markdown !== undefined" (click)="switchMarkdown(true)">Markdown</button>
   <button class="btn btn-primary" [class.active]="markdown === undefined" (click)="switchMarkdown(false)">List</button>
 </div>
-<app-edit-task-list
-  *ngIf="markdown === undefined"
-  [tasks]="context.assignment.tasks"
-></app-edit-task-list>
-<div *ngIf="markdown !== undefined" class="row" style="height: calc(100vh - 20rem)">
-  <div class="col-md-9">
-    <app-autotheme-codemirror
-      class="cm-h-100"
-      [(content)]="markdown"
-      [options]="{
-              mode: 'task-list',
-              autoRefresh: true,
-              lineNumbers: true
-            }"
-    ></app-autotheme-codemirror>
-  </div>
-  <div class="col-md-3">
-    <div class="alert alert-info">
-      <h4 class="alert-heading">
-        Syntax Help
-      </h4>
-      <ul>
-        <li>
-          Write each task on a new line.
-        </li>
-        <li>
-          Write parent tasks using Markdown headers:
-          <code>## Task 1 (15P)</code>
-        </li>
-        <li>
-          Use <code>###</code>, <code>####</code>, etc. for nesting.
-          The top level must use <code class="text-success">##</code> instead of <code class="text-danger">#</code>.
-        </li>
-        <li>
-          Write child tasks and deductions using Markdown list items:
-          <code>- Wrong format (-1P)</code>
-        </li>
-        <li>
-          (Optional) Specify a Task ID: <code>## Task 2 (10P) &lt;!--123abc--&gt;</code>
-        </li>
-      </ul>
+@if (markdown === undefined) {
+  <app-edit-task-list [tasks]="context.assignment.tasks"></app-edit-task-list>
+} @else {
+  <div class="row" style="height: calc(100vh - 20rem)">
+    <div class="col-md-9">
+      <app-autotheme-codemirror
+        class="cm-h-100"
+        [(content)]="markdown"
+        [options]="{
+                mode: 'task-list',
+                autoRefresh: true,
+                lineNumbers: true
+              }"
+      ></app-autotheme-codemirror>
+    </div>
+    <div class="col-md-3">
+      <div class="alert alert-info">
+        <h4 class="alert-heading">
+          Syntax Help
+        </h4>
+        <ul>
+          <li>
+            Write each task on a new line.
+          </li>
+          <li>
+            Write parent tasks using Markdown headers:
+            <code>## Task 1 (15P)</code>
+          </li>
+          <li>
+            Use <code>###</code>, <code>####</code>, etc. for nesting.
+            The top level must use <code class="text-success">##</code> instead of <code class="text-danger">#</code>.
+          </li>
+          <li>
+            Write child tasks and deductions using Markdown list items:
+            <code>- Wrong format (-1P)</code>
+          </li>
+          <li>
+            (Optional) Specify a Task ID: <code>## Task 2 (10P) &lt;!--123abc--&gt;</code>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
-</div>
+}
 <router-outlet></router-outlet>

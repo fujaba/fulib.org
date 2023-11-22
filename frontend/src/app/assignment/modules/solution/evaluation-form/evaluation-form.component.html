@@ -1,35 +1,38 @@
 <div class="row flex-row-reverse">
-  <div class="col-lg-6" *ngIf="task?.note || remarks.length">
-    <ng-container *ngIf="task?.note as note">
-      <label class="form-label">Evaluation Note</label>
-      <div class="alert alert-info">
-        {{ note }}
-      </div>
-    </ng-container>
-    <ng-container *ngIf="remarks.length">
-      <label class="form-label">Suggestions</label>
-      <div class="list-group mb-3">
-        <button
-          *ngFor="let remark of remarks"
-          class="list-group-item list-group-item-action d-flex"
-          [ngbTooltip]="remark.remark"
-          (click)="setRemark(remark)"
-        >
-          <span class="text-muted me-1">
-            {{ remark.count }}x
-          </span>
-          <ngb-highlight
-            class="text-truncate me-auto"
-            [result]="remark.remark"
-            [term]="dto.remark"
-          ></ngb-highlight>
-          <span class="badge bg-secondary ms-1">
-            {{ remark.points }}P
-          </span>
-        </button>
-      </div>
-    </ng-container>
-  </div>
+  @if (task?.note || remarks.length) {
+    <div class="col-lg-6">
+      @if (task?.note;as note) {
+        <label class="form-label">Evaluation Note</label>
+        <div class="alert alert-info">
+          {{ note }}
+        </div>
+      }
+      @if (remarks.length) {
+        <label class="form-label">Suggestions</label>
+        <div class="list-group mb-3">
+          @for (remark of remarks;track remark) {
+            <button
+              class="list-group-item list-group-item-action d-flex"
+              [ngbTooltip]="remark.remark"
+              (click)="setRemark(remark)"
+            >
+              <span class="text-muted me-1">
+                {{ remark.count }}x
+              </span>
+              <ngb-highlight
+                class="text-truncate me-auto"
+                [result]="remark.remark"
+                [term]="dto.remark"
+              ></ngb-highlight>
+              <span class="badge bg-secondary ms-1">
+                {{ remark.points }}P
+              </span>
+            </button>
+          }
+        </div>
+      }
+    </div>
+  }
   <div class="col-lg">
     <div class="mb-3">
       <label class="form-label" for="pointsInput">Points</label>

@@ -9,5 +9,5 @@ RUN pnpm run build --configuration $CONFIGURATION
 
 FROM nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=builder /frontend/dist/fulib.org/ /usr/share/nginx/html/
+COPY --from=builder /frontend/dist/fulib.org/browser/ /usr/share/nginx/html/
 EXPOSE 80

@@ -2,19 +2,21 @@
   <thead>
   <tr>
     <th></th>
-    <th *ngFor="let assignment of assignments; let index = index" colspan="3">
-      <a class="bi-clipboard-check text-body"
-         [routerLink]="assignment && '/assignments/' + assignment._id + '/solutions'"
-         [ngbTooltip]="assignment && assignment.title" container="body">
-        {{ assignmentNames[index] }}
-      </a>
-    </th>
+    @for (assignment of assignments;track assignment) {
+      <th colspan="3">
+        <a class="bi-clipboard-check text-body"
+           [routerLink]="assignment && '/assignments/' + assignment._id + '/solutions'"
+           [ngbTooltip]="assignment && assignment.title" container="body">
+          {{ assignmentNames[$index] }}
+        </a>
+      </th>
+    }
   </tr>
   <tr>
     <th>
       Assignee
     </th>
-    <ng-container *ngFor="let assignment of assignments; let index = index">
+    @for (assignment of assignments;track assignment) {
       <th>
         <span class="bi-lightbulb" ngbTooltip="Solutions"></span>
       </th>
@@ -24,7 +26,7 @@
       <th>
         <span class="bi-stopwatch" ngbTooltip="Average Duration"> Avg.</span>
       </th>
-    </ng-container>
+    }
     <th>
       <span class="bi-lightbulb" ngbTooltip="Total Solutions"> Solutions</span>
     </th>
@@ -37,41 +39,45 @@
   </tr>
   </thead>
   <tbody class="text-end">
-  <tr *ngIf="!assignees">
-    <td [attr.colspan]="1 + assignmentNames.length * 3 + 3" class="text-center align-middle">
-      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-      Loading...
-    </td>
-  </tr>
-  <tr *ngFor="let assignee of assignees">
-    <td class="text-start">
-      {{ assignee.assignee }}
-    </td>
-    <ng-container *ngFor="let assignment of assignee.assignments; let i = index">
-      <td class="text-end"
-          [routerLink]="assignment && ['/assignments', course?.assignments?.[i], 'solutions']"
-          [queryParams]="{q: 'assignee:' + assignee.assignee}"
-          [ngbTooltip]="assignment ? 'View Solutions' : 'No Solutions'" container="body"
-          [class.cursor-pointer]="assignment"
-      >
-        {{ assignment?.solutions }}
-      </td>
-      <td>
-        {{ assignment && (assignment.duration | duration) }}
-      </td>
-      <td>
-        {{ assignment && (assignment.duration / assignment.solutions | duration:true) }}
-      </td>
-    </ng-container>
-    <td>
-      {{ assignee.solutions }}
-    </td>
-    <td>
-      {{ assignee.duration | duration }}
-    </td>
-    <td>
-      {{ assignee.feedbacks }}
-    </td>
-  </tr>
+    @if (!assignees) {
+      <tr>
+        <td [attr.colspan]="1 + assignmentNames.length * 3 + 3" class="text-center align-middle">
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          Loading...
+        </td>
+      </tr>
+    }
+    @for (assignee of assignees;track assignee) {
+      <tr>
+        <td class="text-start">
+          {{ assignee.assignee }}
+        </td>
+        @for (assignment of assignee.assignments;track assignment;let i = $index) {
+          <td class="text-end"
+              [routerLink]="assignment && ['/assignments', course?.assignments?.[i], 'solutions']"
+              [queryParams]="{q: 'assignee:' + assignee.assignee}"
+              [ngbTooltip]="assignment ? 'View Solutions' : 'No Solutions'" container="body"
+              [class.cursor-pointer]="assignment"
+          >
+            {{ assignment?.solutions }}
+          </td>
+          <td>
+            {{ assignment && (assignment.duration | duration) }}
+          </td>
+          <td>
+            {{ assignment && (assignment.duration / assignment.solutions | duration:true) }}
+          </td>
+        }
+        <td>
+          {{ assignee.solutions }}
+        </td>
+        <td>
+          {{ assignee.duration | duration }}
+        </td>
+        <td>
+          {{ assignee.feedbacks }}
+        </td>
+      </tr>
+    }
   </tbody>
 </table>

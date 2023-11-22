@@ -6,53 +6,65 @@
     </span>
   </ng-container>
   <ng-container modal-body>
-    <div class="alert alert-info" id="codeSearchOrigin" *ngIf="originEvaluation && originSolution">
-      <span class="bi-robot">Code Search</span>
-      created this evaluation based on the original
-      <a [routerLink]="['../../..', originSolution._id, 'tasks', originEvaluation.task]">
-        Evaluation by {{ originEvaluation.author }}
-      </a>
-      for the
-      <a [routerLink]="['../../..', originSolution._id]">
-        Solution by {{ originSolution | solutionName }}
-      </a>
-      .
-    </div>
-    <div class="alert alert-info" *ngIf="evaluation && derivedSolutionCount">
-      <span class="bi-robot">Code Search</span>
-      derived {{ derivedSolutionCount }} evaluations from this.
-      <a routerLink="../../.." [queryParams]="{q: 'origin:' + evaluation._id}">
-        View in Table
-      </a>
-    </div>
+    @if (originEvaluation && originSolution) {
+      <div class="alert alert-info" id="codeSearchOrigin">
+        <span class="bi-robot">Code Search</span>
+        created this evaluation based on the original
+        <a [routerLink]="['../../..', originSolution._id, 'tasks', originEvaluation.task]">
+          Evaluation by {{ originEvaluation.author }}
+        </a>
+        for the
+        <a [routerLink]="['../../..', originSolution._id]">
+          Solution by {{ originSolution | solutionName }}
+        </a>
+        .
+      </div>
+    }
+    @if (evaluation && derivedSolutionCount) {
+      <div class="alert alert-info">
+        <span class="bi-robot">Code Search</span>
+        derived {{ derivedSolutionCount }} evaluations from this.
+        <a routerLink="../../.." [queryParams]="{q: 'origin:' + evaluation._id}">
+          View in Table
+        </a>
+      </div>
+    }
     <app-evaluation-form [dto]="dto" [task]="task"></app-evaluation-form>
     <app-snippet-list [dto]="dto" [task]="task"></app-snippet-list>
   </ng-container>
   <ng-container modal-footer>
-    <div class="form-check" *ngIf="codeSearchEnabled">
-      <input type="checkbox" class="form-check-input" id="codeSearchCheck" [(ngModel)]="dto.codeSearch">
-      <label for="codeSearchCheck" class="form-check-label bi-robot"
-             ngbTooltip="Use Code Search to create or update derived evaluations in other solutions">
-        Code Search
-      </label>
-    </div>
-    <div class="form-check" *ngIf="similarSolutionsEnabled && !evaluation">
-      <input type="checkbox" class="form-check-input" id="similarCheck" [(ngModel)]="viewSimilar">
-      <label for="similarCheck" class="form-check-label bi-cpu"
-             ngbTooltip="View similar solutions to quickly copy this evaluation">
-        View Similar Solutions
-        <span class="badge bg-gradient-primary">New</span>
-      </label>
-    </div>
-    <a class="bi-cpu" routerLink="similar" *ngIf="similarSolutionsEnabled && evaluation">
-      Similar Solutions
-    </a>
+    @if (codeSearchEnabled) {
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="codeSearchCheck" [(ngModel)]="dto.codeSearch">
+        <label for="codeSearchCheck" class="form-check-label bi-robot"
+               ngbTooltip="Use Code Search to create or update derived evaluations in other solutions">
+          Code Search
+        </label>
+      </div>
+    }
+    @if (similarSolutionsEnabled && !evaluation) {
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="similarCheck" [(ngModel)]="viewSimilar">
+        <label for="similarCheck" class="form-check-label bi-cpu"
+               ngbTooltip="View similar solutions to quickly copy this evaluation">
+          View Similar Solutions
+          <span class="badge bg-gradient-primary">New</span>
+        </label>
+      </div>
+    }
+    @if (similarSolutionsEnabled && evaluation) {
+      <a class="bi-cpu" routerLink="similar">
+        Similar Solutions
+      </a>
+    }
     <button type="button" class="btn btn-secondary" (click)="modal.close()">
       Cancel
     </button>
-    <button *ngIf="evaluation" class="btn btn-danger" (click)="delete() && modal.close()">
-      Delete
-    </button>
+    @if (evaluation) {
+      <button class="btn btn-danger" (click)="delete() && modal.close()">
+        Delete
+      </button>
+    }
     <button type="button" class="btn btn-primary" ngbTooltip="Keyboard Shortcut: Ctrl+&#9166;"
             (click)="doSubmit(); modal.close()">
       Submit
