@@ -29,7 +29,7 @@ export class EditModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.keycloakService.isLoggedIn().then(loggedIn => this.loggedIn = loggedIn);
+    this.loggedIn = this.keycloakService.isLoggedIn();
     this.activatedRoute.params.pipe(
       switchMap(({id}) => {
         if (id !== 'new') {
