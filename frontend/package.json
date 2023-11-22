@@ -76,6 +76,6 @@
     "typescript": "~5.2.2"
   },
   "resolutions": {
-    "debug": "^4.3.4"
+    "axios": ">=1.6.0"
   }
 }
