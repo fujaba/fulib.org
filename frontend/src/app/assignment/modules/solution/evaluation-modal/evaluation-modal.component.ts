@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ModalComponent, ToastService} from '@mean-stream/ngbx';
 import {EMPTY, Observable, of, Subscription} from 'rxjs';
 import {filter, share, switchMap, tap} from 'rxjs/operators';
-import {CodeSearchInfo, CreateEvaluationDto, Evaluation} from '../../../model/evaluation';
+import {CodeSearchInfo, CreateEvaluationDto, Evaluation, isVisible} from '../../../model/evaluation';
 import Solution from '../../../model/solution';
 import Task from '../../../model/task';
 import {AssignmentService} from '../../../services/assignment.service';
@@ -68,10 +68,13 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     this.loadCodeSearchEnabled(assignment$);
     this.loadTask(assignment$);
 
+    const config = {
+      codeSearch: this.codeSearchEnabled,
+      similarSolutions: this.similarSolutionsEnabled,
+    };
     const evaluation$ = this.route.params.pipe(
       switchMap(({aid, sid, task}) => this.evaluationService.findByTask(aid, sid, task)),
-      // TODO Remove this after the Winter Term 2023/24 study is over
-      filter(evaluation => this.codeSearchEnabled || evaluation?.author !== 'Code Search'),
+      filter(evaluation => !!evaluation && isVisible(evaluation, config)),
       share(),
     );
 

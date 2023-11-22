@@ -2,6 +2,7 @@ import {CanActivate, ExecutionContext, Injectable} from '@nestjs/common';
 import {Request} from 'express';
 import {notFound} from '@mean-stream/nestx';
 import {CommentService} from './comment.service';
+import {Types} from "mongoose";
 
 @Injectable()
 export class CommentAuthGuard implements CanActivate {
@@ -14,7 +15,7 @@ export class CommentAuthGuard implements CanActivate {
     const req = context.switchToHttp().getRequest() as Request;
     const commentId = req.params.comment ?? req.params.id;
     const user = (req as any).user;
-    const comment = await this.commentService.findOne(commentId) ?? notFound(commentId);
+    const comment = await this.commentService.find(new Types.ObjectId(commentId)) ?? notFound(commentId);
     return this.commentService.isAuthorized(comment, user);
   }
 }

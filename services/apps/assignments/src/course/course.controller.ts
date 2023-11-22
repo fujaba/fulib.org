@@ -1,8 +1,8 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound, ObjectIdPipe} from '@mean-stream/nestx';
 import {Body, Controller, Delete, Get, Param, ParseArrayPipe, Patch, Post, Query} from '@nestjs/common';
-import {ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags} from '@nestjs/swagger';
-import {CourseStudent, CreateCourseDto, UpdateCourseDto} from './course.dto';
+import {ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiParam, ApiTags} from '@nestjs/swagger';
+import {CourseAssignee, CourseStudent, CreateCourseDto, UpdateCourseDto} from './course.dto';
 import {Course} from './course.schema';
 import {CourseService} from './course.service';
 import {CourseAuth} from "../course-member/course-auth.decorator";
@@ -66,6 +66,19 @@ export class CourseController {
     @AuthUser() user: UserToken,
   ): Promise<CourseStudent[]> {
     return this.courseService.getStudents(id, user.sub);
+  }
+
+  @Get(':id/assignees')
+  @ApiOperation({summary: 'Get summary of all assignees in a course'})
+  @ApiParam({name: 'id', type: String, format: 'object-id'})
+  @CourseAuth({forbiddenResponse})
+  @NotFound()
+  @ApiOkResponse({type: [CourseAssignee]})
+  async getAssignees(
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
+    @AuthUser() user: UserToken,
+  ): Promise<CourseAssignee[]> {
+    return this.courseService.getAssignees(id, user.sub);
   }
 
   @Patch(':id')

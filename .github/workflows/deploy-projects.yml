@@ -6,6 +6,8 @@ on:
       - master
     paths:
       - 'projects/**'
+      - '.github/workflows/deploy.sh'
+      - '.github/workflows/deploy-projects.yml'
 
 jobs:
   projects-images:

@@ -1,8 +1,6 @@
 import {MessageEvent} from '@nestjs/common';
 import {WsResponse} from '@nestjs/websockets';
-import {isUUID} from 'class-validator';
 import {randomBytes} from 'crypto';
-import {FilterQuery} from 'mongoose';
 import {interval, map, mapTo, merge, Observable} from 'rxjs';
 
 export function generateToken(): string {

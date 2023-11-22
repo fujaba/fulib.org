@@ -1,8 +1,9 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
-import {NotFound, ObjectIdArrayPipe} from '@mean-stream/nestx';
+import {NotFound, ObjectIdArrayPipe, ObjectIdPipe} from '@mean-stream/nestx';
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   Param,
@@ -16,35 +17,23 @@ import {
 import {ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiQuery, ApiTags} from '@nestjs/swagger';
 import {isMongoId} from 'class-validator';
 import {FilterQuery, Types} from 'mongoose';
-import {AssigneeService} from '../assignee/assignee.service';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
-import {EvaluationService} from '../evaluation/evaluation.service';
 import {SolutionAuth} from './solution-auth.decorator';
-import {BatchUpdateSolutionDto, CreateSolutionDto, UpdateSolutionDto} from './solution.dto';
-import {Solution} from './solution.schema';
+import {BatchUpdateSolutionDto, CreateSolutionDto, RichSolutionDto, UpdateSolutionDto} from './solution.dto';
+import {Solution, SOLUTION_COLLATION, SOLUTION_SORT} from './solution.schema';
 import {SolutionService} from './solution.service';
 import {FilesInterceptor} from "@nestjs/platform-express";
 import {FileService} from "../file/file.service";
+import {generateToken} from "../utils";
 
 const forbiddenResponse = 'Not owner of solution or assignment, or invalid Assignment-Token or Solution-Token.';
 const forbiddenAssignmentResponse = 'Not owner of assignment, or invalid Assignment-Token.';
-
-const searchFields = [
-  'name',
-  'studentId',
-  'github',
-  'email',
-  'assignee',
-  'origin',
-];
 
 @Controller()
 @ApiTags('Solutions')
 export class SolutionController {
   constructor(
     private readonly solutionService: SolutionService,
-    private readonly assigneeService: AssigneeService,
-    private readonly evaluationService: EvaluationService,
     private readonly fileService: FileService,
   ) {
   }
@@ -54,14 +43,20 @@ export class SolutionController {
   @ApiCreatedResponse({type: Solution})
   @UseInterceptors(FilesInterceptor('files'))
   async create(
-    @Param('assignment') assignment: string,
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
     @Body() dto: CreateSolutionDto,
     @AuthUser() user?: UserToken,
     @UploadedFiles() files?: Express.Multer.File[],
   ): Promise<Solution> {
-    const solution = await this.solutionService.create(assignment, dto, user?.sub);
+    const solution = await this.solutionService.create({
+      ...dto,
+      assignment,
+      createdBy: user?.sub,
+      token: generateToken(),
+      timestamp: new Date(),
+    });
     if (files && files.length) {
-      await this.fileService.importFiles(assignment, solution.id, files);
+      await this.fileService.importFiles(assignment.toString(), solution.id, files);
     }
     return solution;
   }
@@ -74,61 +69,71 @@ export class SolutionController {
     description: 'Search query: ' +
       'Terms separated by spaces, ' +
       'with `+` in place of spaces within terms, ' +
-      'and `field:term` for searching any of the fields' +
-      searchFields.map(s => `\`${s}\``).join(', '),
+      'and `field:term` for searching any of the author fields and `assignee`, `origin`, or `status`.'
   })
   async findAll(
-    @Param('assignment') assignment: string,
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
+    @Query('ids', new DefaultValuePipe([]), ParseArrayPipe, ObjectIdArrayPipe) ids: Types.ObjectId[],
     @Query('q') search?: string,
-    @Query('author.github') github?: string,
-  ): Promise<Solution[]> {
-    const query: FilterQuery<Solution> = {assignment};
-    github && (query['author.github'] = github);
+  ): Promise<RichSolutionDto[]> {
+    const preFilter: FilterQuery<Solution>[] = [];
+    const postFilter: FilterQuery<RichSolutionDto>[] = [];
+    preFilter.push({assignment});
+    if (ids.length) {
+      preFilter.push({_id: {$in: ids}});
+    }
     if (search) {
       const terms = search.trim().split(/\s+/);
-      query.$and = await Promise.all(terms.map(t => this.toFilter(assignment, t)));
+      for (const term of terms) {
+        this.toFilter(term, preFilter, postFilter);
+      }
     }
-    return this.solutionService.findAll(query);
+    return this.solutionService.findRich({$and: preFilter}, postFilter.length ? {$and: postFilter} : {});
   }
 
-  private async toFilter(assignment: string, term: string): Promise<FilterQuery<Solution>> {
+  private toFilter(term: string, preAnd: FilterQuery<Solution>[], postAnd: FilterQuery<RichSolutionDto>[]) {
     term = term.replace(/\+/g, ' ');
 
     const colonIndex = term.indexOf(':');
-    if (colonIndex >= 0) {
-      const field = term.substring(0, colonIndex);
-      const subTerm = term.substring(colonIndex + 1);
-      return this.fieldFilter(assignment, field, subTerm);
-    }
-
-    return {
-      $or: await Promise.all(searchFields.map(k => this.fieldFilter(assignment, k, term))),
-    };
-  }
-
-  private async fieldFilter(assignment: string, field: string, term: string): Promise<FilterQuery<Solution>> {
-    const regex = new RegExp(term, 'i');
-    if (field === 'assignee') {
-      return this.assigneeFilter(assignment, regex);
-    } else if (field === 'origin') {
-      return this.originFilter(assignment, term, regex);
+    if (colonIndex < 0) {
+      const regex = new RegExp(term, 'i');
+      postAnd.push({
+        $or: [
+          {assignee: regex},
+          {'author.name': regex},
+          {'author.github': regex},
+          {'author.email': regex},
+          {'author.studentId': regex},
+        ],
+      });
     } else {
-      return {['author.' + field]: regex};
+      const field = term.substring(0, colonIndex).toLowerCase();
+      const subTerm = term.substring(colonIndex + 1);
+      const regex = new RegExp(subTerm, 'i');
+      switch (field) {
+        case 'assignee':
+          postAnd.push({assignee: regex});
+          break;
+        case 'origin':
+          if (isMongoId(subTerm)) {
+            const origin = new Types.ObjectId(subTerm);
+            postAnd.push({$or: [
+              {'_evaluations.codeSearch.origin': origin},
+              {'_evaluations.similarity.origin': origin},
+            ]});
+          }
+          break;
+        case 'status':
+          postAnd.push({status: subTerm});
+          break;
+        case 'name':
+        case 'github':
+        case 'email':
+        case 'studentid':
+          preAnd.push({[`author.${field}`]: regex});
+          break;
+      }
     }
-  }
-
-  private async originFilter(assignment: string, term: string, regex: RegExp) {
-    const ids = await this.evaluationService.findUnique('solution', {
-      assignment,
-      // regex does not work on ObjectIds, for now this does not matter because who searches for partial IDs?
-      'codeSearch.origin': isMongoId(term) ? new Types.ObjectId(term) : regex,
-    });
-    return {_id: {$in: ids}};
-  }
-
-  private async assigneeFilter(assignment: string, regex: RegExp): Promise<FilterQuery<Solution>> {
-    const assignees = await this.assigneeService.findAll({assignment, assignee: regex});
-    return {_id: {$in: assignees.map(a => a.solution)}};
   }
 
   @Get('assignments/:assignment/solutions/:id')
@@ -136,9 +141,9 @@ export class SolutionController {
   @NotFound()
   @ApiOkResponse({type: Solution})
   async findOne(
-    @Param('id') id: string,
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
   ): Promise<Solution | null> {
-    return this.solutionService.findOne(id);
+    return this.solutionService.find(id);
   }
 
   @Get('solutions')
@@ -148,7 +153,10 @@ export class SolutionController {
   async findOwn(
     @AuthUser() user: UserToken,
   ): Promise<Solution[]> {
-    return this.solutionService.findAll({createdBy: user.sub});
+    return this.solutionService.findAll({createdBy: user.sub}, {
+      sort: SOLUTION_SORT,
+      collation: SOLUTION_COLLATION,
+    });
   }
 
   @Patch('assignments/:assignment/solutions/:id')
@@ -156,7 +164,7 @@ export class SolutionController {
   @NotFound()
   @ApiOkResponse({type: Solution})
   async update(
-    @Param('id') id: string,
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
     @Body() dto: UpdateSolutionDto,
   ): Promise<Solution | null> {
     return this.solutionService.update(id, dto);
@@ -173,10 +181,10 @@ export class SolutionController {
   @ApiBody({type: [BatchUpdateSolutionDto]})
   @ApiOkResponse({type: [Solution]})
   async updateMany(
-    @Param('assignment') assignment: string,
-    @Body() dtos: BatchUpdateSolutionDto[],
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
+    @Body(new ParseArrayPipe({items: BatchUpdateSolutionDto})) dtos: BatchUpdateSolutionDto[],
   ): Promise<(Solution | null)[]> {
-    return this.solutionService.updateMany(assignment, dtos);
+    return this.solutionService.batchUpdate(assignment, dtos);
   }
 
   @Delete('assignments/:assignment/solutions/:id')
@@ -184,9 +192,9 @@ export class SolutionController {
   @NotFound()
   @ApiOkResponse({type: Solution})
   async remove(
-    @Param('id') id: string,
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
   ): Promise<Solution | null> {
-    return this.solutionService.remove(id);
+    return this.solutionService.delete(id);
   }
 
   @Delete('assignments/:assignment/solutions')
@@ -194,12 +202,14 @@ export class SolutionController {
   @AssignmentAuth({forbiddenResponse: forbiddenAssignmentResponse})
   @ApiOkResponse({type: [Solution]})
   async removeAll(
-    @Param('assignment') assignment: string,
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
     @Query('ids', ParseArrayPipe, ObjectIdArrayPipe) ids: Types.ObjectId[],
   ): Promise<Solution[]> {
-    return this.solutionService.removeAll({
+    const solutions = await this.solutionService.findAll({
       assignment,
       _id: {$in: ids},
     });
+    await this.solutionService.deleteAll(solutions);
+    return solutions;
   }
 }

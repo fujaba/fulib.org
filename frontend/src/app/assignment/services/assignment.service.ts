@@ -94,7 +94,7 @@ export class AssignmentService {
 
   findIds(ids: string[], filter?: true): Observable<ReadAssignmentDto[]>
   findIds(ids: string[], filter = true): Observable<(ReadAssignmentDto | undefined)[]> {
-    return this.findAll(ids).pipe(
+    return !ids.length ? of([]) : this.findAll(ids).pipe(
       map(assignments => {
         const mapped = ids.map(id => assignments.find(a => a._id === id));
         return filter ? mapped.filter(a => !!a) : mapped;

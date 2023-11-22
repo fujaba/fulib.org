@@ -2,11 +2,12 @@ import {EventRepository, EventService, MongooseRepository} from '@mean-stream/ne
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {Model, Types} from 'mongoose';
-import {AuthorInfo} from '../solution/solution.schema';
+import {AuthorInfo, Solution, SOLUTION_COLLATION, SOLUTION_SORT} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
-import {CourseStudent} from './course.dto';
+import {CourseAssignee, CourseStudent} from './course.dto';
 import {Course, CourseDocument} from './course.schema';
 import {MemberService} from "@app/member";
+import {AssigneeService} from "../assignee/assignee.service";
 
 @Injectable()
 @EventRepository()
@@ -14,6 +15,7 @@ export class CourseService extends MongooseRepository<Course> {
   constructor(
     @InjectModel(Course.name) model: Model<Course>,
     private solutionService: SolutionService,
+    private assigneeService: AssigneeService,
     private eventService: EventService,
     private memberService: MemberService,
   ) {
@@ -26,23 +28,21 @@ export class CourseService extends MongooseRepository<Course> {
       return [];
     }
 
-    const userMembers = await this.memberService.findAll({
-      parent: {$in: course.assignments.map(a => new Types.ObjectId(a))},
-      user,
-    });
-    const courseAssignmentsWhereUserIsMember = userMembers.map(m => m.parent.toString());
+    const courseAssignmentsWhereUserIsMember = await this.getCourseAssignmentsWhereUserIsMember(course, user);
     if (!courseAssignmentsWhereUserIsMember.length) {
       return [];
     }
 
     const students = new Map<string, CourseStudent>();
-    const solutions = await this.solutionService.model.aggregate([
+    const keys: (keyof AuthorInfo)[] = ['studentId', 'email', 'github', 'name'];
+    for await (const solution of this.solutionService.model.aggregate<
+      Pick<Solution, '_id' | 'assignment' | 'author' | 'points' | 'feedback'> & { assignee?: string }
+    >([
       {$match: {assignment: {$in: courseAssignmentsWhereUserIsMember}}},
-      {$addFields: {id: {$toString: '$_id'}}},
       {
         $lookup: {
           from: 'assignees',
-          localField: 'id',
+          localField: '_id',
           foreignField: 'solution',
           as: '_assignees',
         },
@@ -58,16 +58,10 @@ export class CourseService extends MongooseRepository<Course> {
           feedback: 1,
         },
       },
-      {$sort: {'author.name': 1, 'author.github': 1}},
+      {$sort: SOLUTION_SORT},
     ], {
-      collation: {
-        locale: 'en',
-        caseFirst: 'off',
-      },
-    });
-
-    const keys: (keyof AuthorInfo)[] = ['studentId', 'email', 'github', 'name'];
-    for (const solution of solutions) {
+      collation: SOLUTION_COLLATION,
+    })) {
       const {assignment, _id, assignee, author, points, feedback} = solution;
       let student: CourseStudent | undefined = undefined;
       for (const key of keys) {
@@ -90,9 +84,9 @@ export class CourseService extends MongooseRepository<Course> {
         }
       }
 
-      const index = course.assignments.indexOf(assignment);
+      const index = course.assignments.indexOf(assignment.toString());
       student.solutions[index] = {
-        _id: _id.toString(),
+        _id,
         points,
         assignee,
       };
@@ -101,6 +95,73 @@ export class CourseService extends MongooseRepository<Course> {
       }
     }
     return Array.from(new Set(students.values()));
+  }
+
+  private async getCourseAssignmentsWhereUserIsMember(course: CourseDocument, user: string): Promise<Types.ObjectId[]> {
+    const userMembers = await this.memberService.findAll({
+      parent: {$in: course.assignments.map(a => new Types.ObjectId(a))},
+      user,
+    });
+    return userMembers.map(m => m.parent);
+  }
+
+  async getAssignees(id: Types.ObjectId, user: string): Promise<CourseAssignee[]> {
+    const course = await this.find(id);
+    if (!course) {
+      return [];
+    }
+
+    const courseAssignmentsWhereUserIsMember = await this.getCourseAssignmentsWhereUserIsMember(course, user);
+    if (!courseAssignmentsWhereUserIsMember.length) {
+      return [];
+    }
+
+    const assigneeMap = new Map<string, CourseAssignee>();
+    for await (const aggregateElement of this.assigneeService.model.aggregate<{
+      _id: {
+        assignee: string,
+        assignment: Types.ObjectId,
+      },
+      solutions: number,
+      duration: number,
+      feedbacks: number,
+    }>([
+      {
+        $match: {
+          assignment: {$in: courseAssignmentsWhereUserIsMember},
+        },
+      },
+      {
+        $group: {
+          _id: {
+            assignee: '$assignee',
+            assignment: '$assignment',
+          },
+          solutions: {$sum: 1},
+          duration: {$sum: '$duration'},
+          feedbacks: {$sum: {$cond: [{$gt: ['$feedback', null]}, 1, 0]}},
+        },
+      },
+    ])) {
+      const {_id: {assignment, assignee}, ...rest} = aggregateElement;
+      let courseAssignee = assigneeMap.get(assignee);
+      if (!courseAssignee) {
+        courseAssignee = {
+          assignee: assignee,
+          assignments: Array(course.assignments.length).fill(null),
+          solutions: 0,
+          duration: 0,
+          feedbacks: 0,
+        };
+        assigneeMap.set(assignee, courseAssignee);
+      }
+      const index = course.assignments.indexOf(assignment.toString());
+      courseAssignee.assignments[index] = rest;
+      courseAssignee.solutions += rest.solutions;
+      courseAssignee.duration += rest.duration;
+      courseAssignee.feedbacks += rest.feedbacks;
+    }
+    return Array.from(assigneeMap.values());
   }
 
   emit(event: string, course: CourseDocument) {

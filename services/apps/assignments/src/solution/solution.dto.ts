@@ -1,4 +1,4 @@
-import {ApiPropertyOptional, OmitType, PartialType} from '@nestjs/swagger';
+import {ApiProperty, ApiPropertyOptional, OmitType, PartialType} from '@nestjs/swagger';
 import {Types} from 'mongoose';
 import {Solution} from './solution.schema';
 import {AsObjectId} from "@mean-stream/nestx";
@@ -30,4 +30,19 @@ export class BatchUpdateSolutionDto extends UpdateSolutionDto {
   @AsObjectId()
   @ApiPropertyOptional()
   _id?: Types.ObjectId;
+}
+
+export enum SolutionStatus {
+  todo = 'todo',
+  codeSearch = 'code-search',
+  started = 'started',
+  graded = 'graded',
+}
+
+export class RichSolutionDto extends Solution {
+  @ApiPropertyOptional()
+  assignee?: string;
+
+  @ApiProperty({enum: SolutionStatus})
+  status: SolutionStatus;
 }

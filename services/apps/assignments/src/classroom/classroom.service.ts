@@ -5,7 +5,7 @@ import {createReadStream} from 'fs';
 import {firstValueFrom} from 'rxjs';
 import {Stream} from 'stream';
 import {AssignmentDocument} from '../assignment/assignment.schema';
-import {AuthorInfo, Solution} from '../solution/solution.schema';
+import {AuthorInfo} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {generateToken} from '../utils';
 import {ImportSolution} from "./classroom.dto";
@@ -150,7 +150,7 @@ export class ClassroomService {
       const upsertedId = solutions.upsertedIds[i];
       if (commit && upsertedId) {
         const zip = await this.getRepoZip(assignment, this.getGithubName(repo, assignment), commit);
-        return zip ? this.fileService.importZipEntries(zip, assignment._id, upsertedId, commit) : [];
+        return zip ? this.fileService.importZipEntries(zip, assignment._id.toString(), upsertedId, commit) : [];
       } else {
         return [];
       }

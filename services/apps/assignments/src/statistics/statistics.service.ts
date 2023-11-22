@@ -11,6 +11,7 @@ import {
   TaskStatistics,
   TimeStatistics
 } from './statistics.dto';
+import {Types} from "mongoose";
 
 const outlierDuration = 60;
 
@@ -31,8 +32,8 @@ export class StatisticsService {
     }
   }
 
-  async getAssignmentStatistics(assignment: string): Promise<AssignmentStatistics> {
-    const assignmentDoc = await this.assignmentService.findOne(assignment);
+  async getAssignmentStatistics(assignment: Types.ObjectId): Promise<AssignmentStatistics> {
+    const assignmentDoc = await this.assignmentService.find(assignment);
     if (!assignmentDoc) {
       throw new NotFoundException(assignment);
     }
@@ -66,7 +67,7 @@ export class StatisticsService {
     ]);
 
     // needs to happen after timeStatistics and fillEvaluationStatistics
-    for (let taskStat of taskStats.values()) {
+    for (const taskStat of taskStats.values()) {
       time.codeSearchSavings += taskStat.count.codeSearch * taskStat.timeAvg;
     }
 
@@ -80,7 +81,7 @@ export class StatisticsService {
     };
   }
 
-  private async fillEvaluationStatistics(assignment: string, taskStats: Map<string, TaskStatistics>, tasks: Map<string, Task>, evaluationStatistics: EvaluationStatistics, weightedEvaluationStatistics: EvaluationStatistics) {
+  private async fillEvaluationStatistics(assignment: Types.ObjectId, taskStats: Map<string, TaskStatistics>, tasks: Map<string, Task>, evaluationStatistics: EvaluationStatistics, weightedEvaluationStatistics: EvaluationStatistics) {
     for await (const {
       codeSearch,
       points,
@@ -115,7 +116,7 @@ export class StatisticsService {
     }
   }
 
-  private async timeStatistics(assignment: string, taskStats: Map<string, TaskStatistics>, tasks: Map<string, Task>): Promise<TimeStatistics> {
+  private async timeStatistics(assignment: Types.ObjectId, taskStats: Map<string, TaskStatistics>, tasks: Map<string, Task>): Promise<TimeStatistics> {
     let eventCount = 0;
     let totalTime = 0;
     let weightedTime = 0;
@@ -151,7 +152,7 @@ export class StatisticsService {
     };
   }
 
-  private countComments(assignment: string) {
+  private countComments(assignment: Types.ObjectId) {
     return this.commentService.model.find({
       assignment,
     }).count().exec();
@@ -163,32 +164,35 @@ export class StatisticsService {
 
   private async solutionStatistics(assignment: AssignmentDocument): Promise<SolutionStatistics> {
     const passingMin = assignment.tasks.reduce((a, c) => c.points > 0 ? a + c.points : a, 0) / 2;
-    let pointsTotal = 0;
-    let graded = 0;
-    let total = 0;
-    let passed = 0;
-    for await (const {points} of this.solutionService.model.find({assignment: assignment.id}).select('points')) {
-      total++;
-
-      if (points === undefined) {
-        continue;
-      }
-
-      pointsTotal += points;
-      graded++;
-
-      if (points < passingMin) {
-        continue;
-      }
-      passed++;
+    const [result] = await this.solutionService.model.aggregate([
+      {$match: {assignment: assignment._id}},
+      {
+        $group: {
+          _id: null,
+          total: {$sum: 1},
+          points: {$sum: '$points'},
+          graded: {$sum: {$cond: [{$gt: ['$points', null]}, 1, 0]}},
+          passed: {$sum: {$cond: [{$gte: ['$points', passingMin]}, 1, 0]}},
+        },
+      },
+    ]);
+    if (!result) {
+      return {
+        total: 0,
+        evaluated: 0,
+        graded: 0,
+        passed: 0,
+        pointsAvg: 0,
+      };
     }
-    const evaluated = (await this.evaluationService.findUnique('solution', {assignment: assignment.id})).length;
+    const {total, points, graded, passed} = result;
+    const evaluated = (await this.evaluationService.findUnique('solution', {assignment: assignment._id})).length;
     return {
       total,
       evaluated,
       graded,
       passed,
-      pointsAvg: pointsTotal / graded,
+      pointsAvg: points / graded,
     };
   }
 }

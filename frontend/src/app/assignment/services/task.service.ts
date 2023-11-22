@@ -31,7 +31,10 @@ export class TaskService {
   }
 
   generateID(): string {
-    return (Date.now() + Math.random()).toString(36).replace('.', 'T').substring(0, 12);
+    // generate a random hex string with 16 characters (64 bit) securely
+    const array = new Uint8Array(8);
+    crypto.getRandomValues(array);
+    return Array.from(array, (byte) => byte.toString(16).padStart(2, '0')).join('');
   }
 
   createPointsCache(tasks: Task[], evaluations: Record<string, Evaluation | CreateEvaluationDto>): Record<string, number> {

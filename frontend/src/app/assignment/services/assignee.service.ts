@@ -20,6 +20,10 @@ export class AssigneeService {
     return this.http.get<Assignee[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/assignees`);
   }
 
+  findUnique<K extends keyof Assignee>(assignment: string, field: K): Observable<Assignee[K][]> {
+    return this.http.get<Assignee[K][]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/assignees/unique/${field}`);
+  }
+
   updateMany(assignment: string, dtos: BulkUpdateAssigneeDto[]): Observable<Assignee[]> {
     return this.http.patch<Assignee[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/assignees`, dtos);
   }

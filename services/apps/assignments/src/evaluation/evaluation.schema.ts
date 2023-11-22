@@ -4,7 +4,6 @@ import {Type} from 'class-transformer';
 import {
   IsAlphanumeric,
   IsInt,
-  IsMongoId,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -14,7 +13,8 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
-import {Document} from 'mongoose';
+import {Types} from 'mongoose';
+import {Doc, OptionalRef, Ref} from "@mean-stream/nestx";
 
 export class Location {
   @Prop()
@@ -63,14 +63,18 @@ export class Snippet {
   @ApiProperty()
   @IsString()
   comment: string;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsNumber()
+  score?: number;
 }
 
 export class CodeSearchInfo {
-  @Prop()
   @ApiPropertyOptional({description: 'Only in GET responses'})
-  @IsOptional()
-  @IsMongoId()
-  origin?: string;
+  @OptionalRef('Evaluation')
+  origin?: Types.ObjectId;
 
   @ApiPropertyOptional({description: 'Only in POST response'})
   @IsOptional()
@@ -88,20 +92,22 @@ export class CodeSearchInfo {
   deleted?: number;
 }
 
+export class SimilarityInfo {
+  @ApiPropertyOptional({description: 'Only in GET responses'})
+  @OptionalRef('Evaluation')
+  origin: Types.ObjectId;
+}
+
 @Schema({timestamps: true})
 export class Evaluation {
   @ApiProperty()
-  _id: string;
+  _id: Types.ObjectId;
 
-  @Prop()
-  @ApiProperty()
-  @IsMongoId()
-  assignment: string;
+  @Ref('Assignment')
+  assignment: Types.ObjectId;
 
-  @Prop()
-  @ApiProperty()
-  @IsMongoId()
-  solution: string;
+  @Ref('Solution', {index: 1})
+  solution: Types.ObjectId;
 
   @Prop()
   @ApiProperty()
@@ -155,9 +161,16 @@ export class Evaluation {
   @ValidateNested()
   @Type(() => CodeSearchInfo)
   codeSearch?: CodeSearchInfo;
+
+  @Prop()
+  @ApiPropertyOptional({type: SimilarityInfo})
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => SimilarityInfo)
+  similarity?: SimilarityInfo;
 }
 
-export type EvaluationDocument = Evaluation & Document;
+export type EvaluationDocument = Doc<Evaluation>;
 
 export const EvaluationSchema = SchemaFactory.createForClass(Evaluation)
   .index({assignment: 1, solution: 1})

@@ -156,21 +156,22 @@
           </td>
           <td>
             <span
-              class="badge bg-{{
-                solution.points !== undefined ? 'primary'
-                : evaluated[solution._id!] === undefined ? 'secondary'
-                : evaluated[solution._id!] ? 'warning' : 'info'
-              }}"
+              class="badge bg-{{{
+                'todo': 'secondary',
+          'graded': 'primary',
+                'code-search': 'info',
+                'started': 'warning',
+              }[solution.status]}}"
             >
               {{ solution.points ?? '?' }} / {{ totalPoints }}
             </span>
           </td>
-          <td [style.background-color]="assignees[solution._id!] | assigneeColor">
+          <td [style.background-color]="solution.assignee | assigneeColor">
             <app-assignee-dropdown
               [assignment]="assignment?._id!"
               [solution]="solution._id!"
               [assignees]="assigneeNames"
-              [(assignee)]="assignees[solution._id!]"
+              [(assignee)]="solution.assignee"
             ></app-assignee-dropdown>
           </td>
           <td>
