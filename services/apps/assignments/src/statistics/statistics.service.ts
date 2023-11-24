@@ -163,7 +163,7 @@ export class StatisticsService {
   }
 
   private async solutionStatistics(assignment: AssignmentDocument): Promise<SolutionStatistics> {
-    const passingMin = assignment.tasks.reduce((a, c) => c.points > 0 ? a + c.points : a, 0) / 2;
+    const passingPoints = assignment.passingPoints ?? assignment.tasks.reduce((a, c) => c.points > 0 ? a + c.points : a, 0) / 2;
     const [result] = await this.solutionService.model.aggregate([
       {$match: {assignment: assignment._id}},
       {
@@ -172,7 +172,7 @@ export class StatisticsService {
           total: {$sum: 1},
           points: {$sum: '$points'},
           graded: {$sum: {$cond: [{$gt: ['$points', null]}, 1, 0]}},
-          passed: {$sum: {$cond: [{$gte: ['$points', passingMin]}, 1, 0]}},
+          passed: {$sum: {$cond: [{$gte: ['$points', passingPoints]}, 1, 0]}},
         },
       },
     ]);
