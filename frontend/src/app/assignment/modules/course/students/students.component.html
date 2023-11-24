@@ -64,7 +64,7 @@
                   'd-block',
                   'text-decoration-none',
                   solution.points === undefined ? 'text-muted'
-                  : solution.points < assignmentPoints[i] / 2 ? 'text-warning'
+                  : solution.points < assignmentPoints[i] ? 'text-warning'
                   : 'text-body'
                 ] // TODO make passing threshold configurable"
                 [routerLink]="['/assignments', course?.assignments?.[i], 'solutions', solution._id]"

@@ -44,7 +44,7 @@ export class StudentsComponent implements OnInit {
     ).subscribe(assignments => {
       this.assignments = assignments;
       this.assignmentNames = this.courseService.getAssignmentNames(assignments);
-      this.assignmentPoints = assignments.map(a => a ? this.taskService.sumPositivePoints(a.tasks) : 0);
+      this.assignmentPoints = assignments.map(a => a ? a.passingPoints ?? this.taskService.sumPositivePoints(a.tasks) / 2 : 0);
     });
 
     this.route.params.pipe(

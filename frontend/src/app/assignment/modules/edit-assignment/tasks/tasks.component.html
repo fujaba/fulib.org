@@ -1,3 +1,14 @@
+<div class="mb-3">
+  <label for="passing-points" class="form-label">Passing Points</label>
+  <div class="input-group">
+    <input type="number" class="form-control" id="passing-points" [(ngModel)]="context.assignment.passingPoints" (change)="context.saveDraft()"/>
+    <button class="btn btn-outline-secondary input-group-btn bi-magic" ngbTooltip="Calculate Automatically" (click)="setPassingPoints()"></button>
+  </div>
+  <div class="form-text">
+    The minimum number of points required to pass the assignment.
+    Defaults to 50% of the maximum points.
+  </div>
+</div>
 <div class="btn-group mb-3" role="group">
   <button class="btn btn-primary" [class.active]="markdown !== undefined" (click)="switchMarkdown(true)">Markdown</button>
   <button class="btn btn-primary" [class.active]="markdown === undefined" (click)="switchMarkdown(false)">List</button>
