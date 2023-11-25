@@ -68,16 +68,6 @@ export class EmbeddingService implements OnModuleInit {
     }, undefined);
   }
 
-  async estimateEmbeddings(assignment: Assignment): Promise<EmbeddingEstimate> {
-    const {solutions, documents} = await this.getDocuments(assignment);
-    const tokens = this.openaiService.countTokens(documents.map(d => ({
-      name: d.file,
-      content: d.content,
-      size: d.content.length
-    })));
-    return this.createEstimate(solutions, documents, tokens);
-  }
-
   getFunctions(file: string, headPattern: RegExp, findEnd: (code: string, headStart: number, headEnd: number) => number): DeclarationSnippet[] {
     const results: DeclarationSnippet[] = [];
     const lineStarts = this.searchService._buildLineStartList(file);
@@ -92,7 +82,7 @@ export class EmbeddingService implements OnModuleInit {
     return results;
   }
 
-  async createEmbeddings(assignment: Assignment): Promise<EmbeddingEstimate> {
+  async createEmbeddings(assignment: Assignment, estimate = false): Promise<EmbeddingEstimate> {
     const apiKey = assignment.classroom?.openaiApiKey;
     if (!apiKey) {
       throw new ForbiddenException('No OpenAI API key configured for this assignment.');
@@ -106,6 +96,10 @@ export class EmbeddingService implements OnModuleInit {
         : this.getFunctions(d.content, CLIKE_FUNCTION_HEADER, findClosingBrace)
       ;
       const fileTotal = await Promise.all(functions.map(async ({line, name, text}) => {
+        const embeddableText = `${d.file}\n\n${text}`;
+        if (estimate) {
+          return this.openaiService.countTokens(embeddableText);
+        }
         const {tokens} = await this.upsert({
           id: `${d.solution}-${d.file}-${line}`,
           assignment: assignmentId,
@@ -114,7 +108,7 @@ export class EmbeddingService implements OnModuleInit {
           file: d.file,
           line,
           name,
-          text: `${d.file}\n\n${text}`,
+          text: embeddableText,
           embedding: [],
         }, apiKey);
         return tokens;
