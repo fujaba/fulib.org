@@ -1,6 +1,6 @@
 import {ForbiddenException, Injectable, OnModuleInit} from '@nestjs/common';
 import {ElasticsearchService} from "@nestjs/elasticsearch";
-import {SearchService} from "../search/search.service";
+import {FileDocument, SearchService} from "../search/search.service";
 import {Embeddable, EmbeddableSearch, EmbeddingEstimate, SnippetEmbeddable} from "./embedding.dto";
 import {OpenAIService} from "./openai.service";
 import {QueryDslQueryContainer} from "@elastic/elasticsearch/lib/api/types";
@@ -11,7 +11,7 @@ import {Solution} from "../solution/solution.schema";
 // @ts-ignore
 import * as ignore from 'ignore-file';
 
-type DeclarationSnippet = Pick<SnippetEmbeddable, 'text' | 'line'> & { name: string };
+type DeclarationSnippet = SnippetEmbeddable & { name: string };
 
 @Injectable()
 export class EmbeddingService implements OnModuleInit {
@@ -73,39 +73,26 @@ export class EmbeddingService implements OnModuleInit {
     if (!apiKey) {
       throw new ForbiddenException('No OpenAI API key configured for this assignment.');
     }
-    const assignmentId = assignment._id.toString();
 
     const {solutions, documents, ignoreFn} = await this.getDocuments(assignment);
-    const results = await Promise.all(documents.map(async d => {
-      const functions = d.file.endsWith('.py')
-        ? this.getFunctions(d.content, PYTHON_FUNCTION_HEADER, findIndentEnd)
-        : this.getFunctions(d.content, CLIKE_FUNCTION_HEADER, findClosingBrace)
-      ;
-      const fileTotal = await Promise.all(functions.map(async ({line, name, text}) => {
-        if (ignoreFn && ignoreFn(`${d.file}#${name}`)) {
-          return 0;
-        }
+    const functions = documents
+      .flatMap(d => d.file.endsWith('.py')
+        ? this.getFunctions(d, PYTHON_FUNCTION_HEADER, findIndentEnd)
+        : this.getFunctions(d, CLIKE_FUNCTION_HEADER, findClosingBrace)
+      )
+      .filter(f => !ignoreFn || !ignoreFn(`${f.file}#${f.name}`))
+    ;
 
-        const embeddableText = `${d.file}\n\n${text}`;
-        if (estimate) {
-          return this.openaiService.countTokens(embeddableText);
-        }
-        const {tokens} = await this.upsert({
-          id: `${d.solution}-${d.file}-${line}`,
-          assignment: assignmentId,
-          type: 'snippet',
-          solution: d.solution,
-          file: d.file,
-          line,
-          name,
-          text: embeddableText,
-          embedding: [],
-        }, apiKey);
-        return tokens;
-      }));
-      return fileTotal.reduce((a, b) => a + b, 0);
-    }));
-    const tokens = results.reduce((a, b) => a + b, 0);
+    let tokens = 0;
+    if (estimate) {
+      for (const func of functions) {
+        tokens += this.openaiService.countTokens(func.text);
+      }
+    } else {
+      tokens = (await Promise.all(functions.map(async func => this.upsert(func, apiKey).then(({tokens}) => tokens))))
+        .reduce((a, b) => a + b, 0);
+    }
+
     const estimatedCost = this.openaiService.estimateCost(tokens);
     return {solutions, files: documents.length, tokens, estimatedCost};
   }
@@ -128,16 +115,27 @@ export class EmbeddingService implements OnModuleInit {
     };
   }
 
-  getFunctions(file: string, headPattern: RegExp, findEnd: (code: string, headStart: number, headEnd: number) => number): DeclarationSnippet[] {
+  getFunctions(document: FileDocument, headPattern: RegExp, findEnd: (code: string, headStart: number, headEnd: number) => number): DeclarationSnippet[] {
+    const {content, file, solution, assignment} = document;
     const results: DeclarationSnippet[] = [];
-    const lineStarts = this.searchService._buildLineStartList(file);
-    for (const match of file.matchAll(headPattern)) {
+    const lineStarts = this.searchService._buildLineStartList(content);
+    for (const match of content.matchAll(headPattern)) {
       const name = match[1];
       const start = match.index!;
       const {line, character: column} = this.searchService._findLocation(lineStarts, start);
-      const end = findEnd(file, start, start + match[0].length);
-      const text = file.substring(start - column, end + 1);
-      results.push({line, name, text});
+      const end = findEnd(content, start, start + match[0].length);
+      const text = content.substring(start - column, end + 1);
+      results.push({
+        id: `${solution}-${file}-${line}`,
+        type: 'snippet',
+        assignment,
+        solution,
+        file,
+        line,
+        name,
+        text,
+        embedding: [],
+      });
     }
     return results;
   }
