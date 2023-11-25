@@ -1,6 +1,6 @@
 import {ForbiddenException, Injectable, OnModuleInit} from '@nestjs/common';
 import {ElasticsearchService} from "@nestjs/elasticsearch";
-import {FileDocument, SearchService} from "../search/search.service";
+import {SearchService} from "../search/search.service";
 import {Embeddable, EmbeddableSearch, EmbeddingEstimate, SnippetEmbeddable} from "./embedding.dto";
 import {OpenAIService} from "./openai.service";
 import {QueryDslQueryContainer} from "@elastic/elasticsearch/lib/api/types";
@@ -68,20 +68,6 @@ export class EmbeddingService implements OnModuleInit {
     }, undefined);
   }
 
-  getFunctions(file: string, headPattern: RegExp, findEnd: (code: string, headStart: number, headEnd: number) => number): DeclarationSnippet[] {
-    const results: DeclarationSnippet[] = [];
-    const lineStarts = this.searchService._buildLineStartList(file);
-    for (const match of file.matchAll(headPattern)) {
-      const name = match[1];
-      const start = match.index!;
-      const {line, character: column} = this.searchService._findLocation(lineStarts, start);
-      const end = findEnd(file, start, start + match[0].length);
-      const text = file.substring(start - column, end + 1);
-      results.push({line, name, text});
-    }
-    return results;
-  }
-
   async createEmbeddings(assignment: Assignment, estimate = false): Promise<EmbeddingEstimate> {
     const apiKey = assignment.classroom?.openaiApiKey;
     if (!apiKey) {
@@ -116,10 +102,6 @@ export class EmbeddingService implements OnModuleInit {
       return fileTotal.reduce((a, b) => a + b, 0);
     }));
     const tokens = results.reduce((a, b) => a + b, 0);
-    return this.createEstimate(solutions, documents, tokens);
-  }
-
-  private createEstimate(solutions: number, documents: FileDocument[], tokens: number): EmbeddingEstimate {
     const estimatedCost = this.openaiService.estimateCost(tokens);
     return {solutions, files: documents.length, tokens, estimatedCost};
   }
@@ -139,6 +121,20 @@ export class EmbeddingService implements OnModuleInit {
       solutions: solutionsWithConsent.length,
       documents,
     };
+  }
+
+  getFunctions(file: string, headPattern: RegExp, findEnd: (code: string, headStart: number, headEnd: number) => number): DeclarationSnippet[] {
+    const results: DeclarationSnippet[] = [];
+    const lineStarts = this.searchService._buildLineStartList(file);
+    for (const match of file.matchAll(headPattern)) {
+      const name = match[1];
+      const start = match.index!;
+      const {line, character: column} = this.searchService._findLocation(lineStarts, start);
+      const end = findEnd(file, start, start + match[0].length);
+      const text = file.substring(start - column, end + 1);
+      results.push({line, name, text});
+    }
+    return results;
   }
 
   async upsert(embeddable: Embeddable, apiKey: string): Promise<{ embeddable: Embeddable, tokens: number }> {
