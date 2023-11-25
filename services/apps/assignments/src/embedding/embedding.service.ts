@@ -74,14 +74,23 @@ export class EmbeddingService implements OnModuleInit {
       throw new ForbiddenException('No OpenAI API key configured for this assignment.');
     }
 
-    const {solutions, documents, ignoreFn} = await this.getDocuments(assignment);
-    const functions = documents
+    const {solutions, documents, ignoreFn, ignoredFiles} = await this.getDocuments(assignment);
+    const ignoredFunctions = new Set<string>();
+    let functions = documents
       .flatMap(d => d.file.endsWith('.py')
         ? this.getFunctions(d, PYTHON_FUNCTION_HEADER, findIndentEnd)
         : this.getFunctions(d, CLIKE_FUNCTION_HEADER, findClosingBrace)
       )
-      .filter(f => !ignoreFn || !ignoreFn(`${f.file}#${f.name}`))
     ;
+    if (ignoreFn) {
+      functions = functions.filter(f => {
+        if (ignoreFn(f.file)) {
+          ignoredFunctions.add(f.id);
+          return false;
+        }
+        return true;
+      });
+    }
 
     let tokens = 0;
     if (estimate) {
@@ -93,8 +102,15 @@ export class EmbeddingService implements OnModuleInit {
         .reduce((a, b) => a + b, 0);
     }
 
-    const estimatedCost = this.openaiService.estimateCost(tokens);
-    return {solutions, files: documents.length, tokens, estimatedCost};
+    return {
+      solutions,
+      files: documents.length,
+      tokens,
+      estimatedCost: this.openaiService.estimateCost(tokens),
+      functions: functions.map(f => `${f.file}#${f.name}`),
+      ignoredFiles: Array.from(ignoredFiles),
+      ignoredFunctions: Array.from(ignoredFunctions),
+    };
   }
 
   private async getDocuments(assignment: Assignment) {
@@ -106,12 +122,24 @@ export class EmbeddingService implements OnModuleInit {
     const allDocuments = await this.searchService.findAll(assignment._id.toString(), solutionsWithConsent.map(s => s.id));
 
     const ignoreFn = assignment.classroom?.openaiIgnore ? ignore.compile(assignment.classroom.openaiIgnore) as (path: string) => boolean : undefined;
-    const documents = allDocuments.filter(d => this.openaiService.isSupportedExtension(d.file) && (!ignoreFn || !ignoreFn(d.file)));
+    const ignoredFiles = new Set<string>();
+    const documents = allDocuments.filter(d => {
+      if (!this.openaiService.isSupportedExtension(d.file)) {
+        ignoredFiles.add(d.file);
+        return false;
+      }
+      if (ignoreFn && ignoreFn(d.file)) {
+        ignoredFiles.add(d.file);
+        return false;
+      }
+      return true;
+    });
 
     return {
       solutions: solutionsWithConsent.length,
       documents,
       ignoreFn,
+      ignoredFiles,
     };
   }
 
