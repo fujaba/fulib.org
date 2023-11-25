@@ -11,6 +11,7 @@ export interface ClassroomInfo {
   mossResult?: string;
   openaiApiKey?: string;
   openaiConsent?: boolean;
+  openaiIgnore?: string;
 }
 
 export default class Assignment {
