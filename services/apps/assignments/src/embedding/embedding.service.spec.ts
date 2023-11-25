@@ -10,6 +10,8 @@ import {ElasticsearchService} from "@nestjs/elasticsearch";
 import {SearchService} from "../search/search.service";
 import {OpenAIService} from "./openai.service";
 import {SolutionService} from "../solution/solution.service";
+// @ts-ignore
+import * as ignore from 'ignore-file';
 
 describe('EmbeddingService', () => {
   let service: EmbeddingService;
@@ -117,5 +119,36 @@ def baz():
     expect(findIndentEnd(code, 0, 10)).toEqual(34);
     expect(findIndentEnd(code, 35, 45)).toEqual(52);
     expect(findIndentEnd(code.trim(), 35, 45)).toEqual(51);
+  });
+});
+
+describe('Ignore snippets', () => {
+  it('should ignore files', () => {
+    const ignoreFile = `\
+      foo/
+      !foo/Bar.java
+    `;
+    const ignoreFn = ignore.compile(ignoreFile) as (path: string) => boolean;
+    expect(ignoreFn('foo/Foo.java')).toEqual(true);
+    expect(ignoreFn('foo/Bar.java')).toEqual(false);
+  });
+
+  it('should ignore methods', () => {
+    const ignoreFile = `\
+      Foo.java#*
+      !Foo.java#bar
+
+      Bar.java
+      !Bar.java#baz
+    `;
+    const ignoreFn = ignore.compile(ignoreFile) as (path: string) => boolean;
+    // this is important, otherwise the documents will be pre-filtered
+    expect(ignoreFn('Foo.java')).toEqual(false);
+    expect(ignoreFn('Foo.java#bar')).toEqual(false);
+    expect(ignoreFn('Foo.java#baz')).toEqual(true);
+
+    expect(ignoreFn('Bar.java')).toEqual(true);
+    expect(ignoreFn('Bar.java#bar')).toEqual(false);
+    expect(ignoreFn('Bar.java#baz')).toEqual(false);
   });
 });
