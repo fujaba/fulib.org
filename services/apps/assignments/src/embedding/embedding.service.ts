@@ -8,6 +8,8 @@ import {SolutionService} from "../solution/solution.service";
 import {Assignment} from "../assignment/assignment.schema";
 import {FilterQuery} from "mongoose";
 import {Solution} from "../solution/solution.schema";
+// @ts-ignore
+import * as ignore from 'ignore-file';
 
 type DeclarationSnippet = Pick<SnippetEmbeddable, 'text' | 'line'> & { name: string };
 
@@ -98,29 +100,27 @@ export class EmbeddingService implements OnModuleInit {
     const assignmentId = assignment._id.toString();
 
     const {solutions, documents} = await this.getDocuments(assignment);
-    const results = await Promise.all(documents
-      .filter(d => this.openaiService.isSupportedExtension(d.file))
-      .map(async d => {
-        const functions = d.file.endsWith('.py')
-          ? this.getFunctions(d.content, PYTHON_FUNCTION_HEADER, findIndentEnd)
-          : this.getFunctions(d.content, CLIKE_FUNCTION_HEADER, findClosingBrace)
-        ;
-        const fileTotal = await Promise.all(functions.map(async ({line, name, text}) => {
-          const {tokens} = await this.upsert({
-            id: `${d.solution}-${d.file}-${line}`,
-            assignment: assignmentId,
-            type: 'snippet',
-            solution: d.solution,
-            file: d.file,
-            line,
-            name,
-            text: `${d.file}\n\n${text}`,
-            embedding: [],
-          }, apiKey);
-          return tokens;
-        }));
-        return fileTotal.reduce((a, b) => a + b, 0);
+    const results = await Promise.all(documents.map(async d => {
+      const functions = d.file.endsWith('.py')
+        ? this.getFunctions(d.content, PYTHON_FUNCTION_HEADER, findIndentEnd)
+        : this.getFunctions(d.content, CLIKE_FUNCTION_HEADER, findClosingBrace)
+      ;
+      const fileTotal = await Promise.all(functions.map(async ({line, name, text}) => {
+        const {tokens} = await this.upsert({
+          id: `${d.solution}-${d.file}-${line}`,
+          assignment: assignmentId,
+          type: 'snippet',
+          solution: d.solution,
+          file: d.file,
+          line,
+          name,
+          text: `${d.file}\n\n${text}`,
+          embedding: [],
+        }, apiKey);
+        return tokens;
       }));
+      return fileTotal.reduce((a, b) => a + b, 0);
+    }));
     const tokens = results.reduce((a, b) => a + b, 0);
     return this.createEstimate(solutions, documents, tokens);
   }
@@ -136,9 +136,14 @@ export class EmbeddingService implements OnModuleInit {
       filter['consent.3P'] = true;
     }
     const solutionsWithConsent = await this.solutionService.findAll(filter, {projection: {_id: 1}});
+    const allDocuments = await this.searchService.findAll(assignment._id.toString(), solutionsWithConsent.map(s => s.id));
+
+    const ignoreFn = assignment.classroom?.openaiIgnore ? ignore.compile(assignment.classroom.openaiIgnore) as (path: string) => boolean : undefined;
+    const documents = allDocuments.filter(d => this.openaiService.isSupportedExtension(d.file) && (!ignoreFn || !ignoreFn(d.file)));
+
     return {
       solutions: solutionsWithConsent.length,
-      documents: await this.searchService.findAll(assignment._id.toString(), solutionsWithConsent.map(s => s.id)),
+      documents,
     };
   }
 

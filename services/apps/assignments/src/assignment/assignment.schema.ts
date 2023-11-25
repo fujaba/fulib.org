@@ -121,6 +121,12 @@ export class ClassroomInfo {
   @IsOptional()
   @IsBoolean()
   openaiConsent?: boolean;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  openaiIgnore?: string;
 }
 
 @Schema()
