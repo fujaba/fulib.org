@@ -75,13 +75,17 @@ export class EmbeddingService implements OnModuleInit {
     }
     const assignmentId = assignment._id.toString();
 
-    const {solutions, documents} = await this.getDocuments(assignment);
+    const {solutions, documents, ignoreFn} = await this.getDocuments(assignment);
     const results = await Promise.all(documents.map(async d => {
       const functions = d.file.endsWith('.py')
         ? this.getFunctions(d.content, PYTHON_FUNCTION_HEADER, findIndentEnd)
         : this.getFunctions(d.content, CLIKE_FUNCTION_HEADER, findClosingBrace)
       ;
       const fileTotal = await Promise.all(functions.map(async ({line, name, text}) => {
+        if (ignoreFn && ignoreFn(`${d.file}#${name}`)) {
+          return 0;
+        }
+
         const embeddableText = `${d.file}\n\n${text}`;
         if (estimate) {
           return this.openaiService.countTokens(embeddableText);
@@ -120,6 +124,7 @@ export class EmbeddingService implements OnModuleInit {
     return {
       solutions: solutionsWithConsent.length,
       documents,
+      ignoreFn,
     };
   }
 
