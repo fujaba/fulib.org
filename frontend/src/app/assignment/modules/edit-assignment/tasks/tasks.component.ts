@@ -1,6 +1,7 @@
 import {Component, OnDestroy} from '@angular/core';
 import {AssignmentContext} from '../../../services/assignment.context';
 import {TaskMarkdownService} from '../task-markdown.service';
+import {TaskService} from "../../../services/task.service";
 
 @Component({
   selector: 'app-edit-assignment-tasks',
@@ -12,6 +13,7 @@ export class TasksComponent implements OnDestroy {
 
   constructor(
     private taskMarkdownService: TaskMarkdownService,
+    private taskService: TaskService,
     public context: AssignmentContext,
   ) {
   }
@@ -33,4 +35,9 @@ export class TasksComponent implements OnDestroy {
     }
   }
 
+  setPassingPoints() {
+    const tasks = this.markdown ? this.taskMarkdownService.parseTasks(this.markdown) : this.context.assignment.tasks;
+    this.context.assignment.passingPoints = this.taskService.sumPositivePoints(tasks) / 2;
+    this.context.saveDraft();
+  }
 }

@@ -28,6 +28,7 @@ export default class Assignment {
 
   classroom?: ClassroomInfo;
 
+  passingPoints?: number;
   tasks: Task[];
 }
 

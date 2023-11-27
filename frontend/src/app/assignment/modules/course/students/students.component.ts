@@ -9,6 +9,7 @@ import {ReadAssignmentDto} from "../../../model/assignment";
 import {AssigneeService} from "../../../services/assignee.service";
 import {BulkUpdateAssigneeDto} from "../../../model/assignee";
 import {ToastService} from "@mean-stream/ngbx";
+import {TaskService} from "../../../services/task.service";
 
 @Component({
   selector: 'app-students',
@@ -19,6 +20,7 @@ export class StudentsComponent implements OnInit {
   course?: Course;
   students?: CourseStudent[];
   assignments: (ReadAssignmentDto | undefined)[] = [];
+  assignmentPoints: number[] = [];
   assignmentNames: string[] = [];
   assignees: string[] = [];
 
@@ -30,6 +32,7 @@ export class StudentsComponent implements OnInit {
     private assignmentService: AssignmentService,
     private assigneeService: AssigneeService,
     private toastService: ToastService,
+    private taskService: TaskService,
   ) {
   }
 
@@ -41,6 +44,7 @@ export class StudentsComponent implements OnInit {
     ).subscribe(assignments => {
       this.assignments = assignments;
       this.assignmentNames = this.courseService.getAssignmentNames(assignments);
+      this.assignmentPoints = assignments.map(a => a ? a.passingPoints ?? this.taskService.sumPositivePoints(a.tasks) / 2 : 0);
     });
 
     this.route.params.pipe(

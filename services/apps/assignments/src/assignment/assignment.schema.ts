@@ -12,6 +12,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  IsPositive,
   IsString,
   IsUrl,
   ValidateNested,
@@ -184,6 +185,12 @@ export class Assignment {
   @ValidateNested()
   @Type(() => ClassroomInfo)
   classroom?: ClassroomInfo;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsPositive()
+  passingPoints?: number;
 
   @Prop()
   @ApiProperty({type: [Task]})
