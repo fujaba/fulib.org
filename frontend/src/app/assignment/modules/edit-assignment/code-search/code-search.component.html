@@ -44,4 +44,40 @@
       If disabled, the students' consent will be ignored and all submissions will be indexed.
     </div>
   </div>
+  <div class="mb-3">
+    <label class="form-label" for="openaiIgnore">
+      OpenAI Ignore
+    </label>
+    <textarea class="form-control" id="openaiIgnore" rows="10"
+              [(ngModel)]="classroom.openaiIgnore" (change)="context.saveDraft()"></textarea>
+    <div class="form-text">
+      A gitignore-like list of directories, files and methods to ignore when indexing code.
+      <details>
+        <summary>More Info</summary>
+        <ul>
+          <li>
+            Supports wildcards, negation, and other <a href="https://github.com/isaacs/minimatch" target="_blank">minimatch</a> patterns.
+          </li>
+          <li>
+            To ignore a file, use <code>Foo.java</code>.
+          </li>
+          <li>
+            To ignore a directory, use <code>bar/</code>.
+          </li>
+          <li>
+            To ignore a directory except for a specific file, use <code>bar/</code> and <code>!bar/Foo.java</code>.
+          </li>
+          <li>
+            To ignore a method or function, use <code>Foo.java#baz</code>.
+          </li>
+          <li>
+            To ignore all methods and functions except for a specific one, use <code>Foo.java#*</code> and <code>!Foo.java#baz</code>.
+          </li>
+          <li>
+            If a file is already ignored, all method rules for that file, even allow rules, have no effect.
+          </li>
+        </ul>
+      </details>
+    </div>
+  </div>
 }

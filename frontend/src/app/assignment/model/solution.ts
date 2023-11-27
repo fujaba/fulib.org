@@ -65,6 +65,9 @@ export interface EstimatedCosts {
   files: number;
   tokens: number;
   estimatedCost: number;
+  functions: string[];
+  ignoredFiles: string[];
+  ignoredFunctions: string[];
 }
 
 export class Feedback {

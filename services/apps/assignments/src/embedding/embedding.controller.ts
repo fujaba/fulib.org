@@ -33,9 +33,7 @@ export class EmbeddingController {
     @Query('estimate', new ParseBoolPipe({optional: true})) estimate?: boolean,
   ): Promise<EmbeddingEstimate> {
     const assignment = await this.assignmentService.find(assignmentId) || notFound(assignmentId);
-    return estimate
-      ? this.embeddingService.estimateEmbeddings(assignment)
-      : this.embeddingService.createEmbeddings(assignment);
+    return this.embeddingService.createEmbeddings(assignment, estimate);
   }
 
   @Get('embeddings')
