@@ -10,7 +10,6 @@ import {ElasticsearchService} from "@nestjs/elasticsearch";
 import {SearchService} from "../search/search.service";
 import {OpenAIService} from "./openai.service";
 import {SolutionService} from "../solution/solution.service";
-// @ts-ignore
 import * as ignore from 'ignore-file';
 
 describe('EmbeddingService', () => {

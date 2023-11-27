@@ -8,7 +8,6 @@ import {SolutionService} from "../solution/solution.service";
 import {Assignment} from "../assignment/assignment.schema";
 import {FilterQuery} from "mongoose";
 import {Solution} from "../solution/solution.schema";
-// @ts-ignore
 import * as ignore from 'ignore-file';
 
 type DeclarationSnippet = SnippetEmbeddable & { name: string };
