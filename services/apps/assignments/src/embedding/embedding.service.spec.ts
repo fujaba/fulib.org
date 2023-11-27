@@ -7,7 +7,7 @@ import {
   PYTHON_FUNCTION_HEADER
 } from './embedding.service';
 import {ElasticsearchService} from "@nestjs/elasticsearch";
-import {SearchService} from "../search/search.service";
+import {FileDocument, SearchService} from "../search/search.service";
 import {OpenAIService} from "./openai.service";
 import {SolutionService} from "../solution/solution.service";
 import * as ignore from 'ignore-file';
@@ -42,9 +42,21 @@ class Foo {
     }
   }
 `;
+    const doc: FileDocument = {
+      assignment: 'a1',
+      solution: 's1',
+      file: 'Foo.java',
+      content: code,
+    };
 
-    expect(service.getFunctions(code, CLIKE_FUNCTION_HEADER, findClosingBrace)).toEqual([
+    expect(service.getFunctions(doc, CLIKE_FUNCTION_HEADER, findClosingBrace)).toEqual([
       {
+        assignment: 'a1',
+        solution: 's1',
+        file: 'Foo.java',
+        id: 's1-Foo.java-1',
+        type: 'snippet',
+        embedding: [],
         name: 'bar',
         line: 1,
         text: `\
@@ -53,6 +65,12 @@ class Foo {
   }`,
       },
       {
+        assignment: 'a1',
+        solution: 's1',
+        file: 'Foo.java',
+        id: 's1-Foo.java-5',
+        type: 'snippet',
+        embedding: [],
         name: 'baz',
         line: 5,
         text: `\
@@ -78,9 +96,21 @@ class Foo:
     if i != 0:
       i = i + 1
 `;
+    const doc: FileDocument = {
+      assignment: 'a1',
+      solution: 's1',
+      file: 'Foo.py',
+      content: code,
+    };
 
-    expect(service.getFunctions(code, PYTHON_FUNCTION_HEADER, findIndentEnd)).toEqual([
+    expect(service.getFunctions(doc, PYTHON_FUNCTION_HEADER, findIndentEnd)).toEqual([
       {
+        assignment: 'a1',
+        solution: 's1',
+        file: 'Foo.py',
+        id: 's1-Foo.py-1',
+        type: 'snippet',
+        embedding: [],
         name: 'bar',
         line: 1,
         text: `\
@@ -92,6 +122,12 @@ class Foo:
 `,
       },
       {
+        assignment: 'a1',
+        solution: 's1',
+        file: 'Foo.py',
+        id: 's1-Foo.py-6',
+        type: 'snippet',
+        embedding: [],
         name: 'baz',
         line: 6,
         text: `\
