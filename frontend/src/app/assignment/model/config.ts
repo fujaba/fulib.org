@@ -11,6 +11,8 @@ export const IDEs = {
   'pycharm': 'PyCharm',
 } as const;
 
+export type IDE = keyof typeof IDEs;
+
 export class Config {
   @Presentation({
     description: 'Your full name for use in assignments, solutions, comments and evaluations.',
@@ -32,7 +34,7 @@ export class Config {
     optionLabels: IDEs,
   })
   @IsIn(Object.keys(IDEs))
-  ide: keyof typeof IDEs = 'vscode';
+  ide: IDE = 'vscode';
 
   @Presentation({
     label: 'Git Clone Protocol',
