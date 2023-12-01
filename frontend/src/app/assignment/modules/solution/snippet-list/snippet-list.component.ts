@@ -10,6 +10,8 @@ import {EvaluationService} from "../../../services/evaluation.service";
 import {EmbeddingService} from "../../../services/embedding.service";
 import {ActivatedRoute} from "@angular/router";
 import Task from "../../../model/task";
+import Solution from "../../../model/solution";
+import {ReadAssignmentDto} from "../../../model/assignment";
 
 export const selectionComment = '(fulibFeedback Selection)';
 
@@ -19,6 +21,8 @@ export const selectionComment = '(fulibFeedback Selection)';
   styleUrls: ['./snippet-list.component.scss']
 })
 export class SnippetListComponent implements OnInit, OnDestroy {
+  @Input({required: true}) assignment?: ReadAssignmentDto;
+  @Input({required: true}) solution?: Solution;
   @Input({required: true}) task?: Task;
   @Input({required: true}) dto: CreateEvaluationDto;
 

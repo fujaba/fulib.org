@@ -26,7 +26,13 @@
         [snippet]="snippet" [index]="$index" [comments]="comments"
         (deleted)="deleteSnippet($index)"
       ></app-edit-snippet>
-      <app-snippet [snippet]="snippet" wildcard="***" (updated)="snippetUpdates$.next($event)"></app-snippet>
+      <app-snippet
+        [assignment]="assignment"
+        [solution]="solution"
+        [snippet]="snippet"
+        wildcard="***"
+        (updated)="snippetUpdates$.next($event)"
+      ></app-snippet>
     </li>
   }
 </ul>
@@ -52,7 +58,13 @@
   <ul class="list-group" id="embedding-snippets">
     @for (snippet of embeddingSnippets;track snippet) {
       <li class="list-group-item">
-        <app-snippet [snippet]="snippet" [expanded]="$first" (confirmed)="confirmEmbedding(snippet)"></app-snippet>
+        <app-snippet
+          [assignment]="assignment"
+          [solution]="solution"
+          [snippet]="snippet"
+          [expanded]="$first"
+          (confirmed)="confirmEmbedding(snippet)"
+        ></app-snippet>
       </li>
     }
   </ul>

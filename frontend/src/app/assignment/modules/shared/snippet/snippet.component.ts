@@ -2,6 +2,8 @@ import {Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleCha
 import hljs from 'highlight.js/lib/core';
 import {Snippet} from '../../../model/evaluation';
 import {ConfigService} from "../../../services/config.service";
+import Solution from "../../../model/solution";
+import Assignment, {ReadAssignmentDto} from "../../../model/assignment";
 
 @Component({
   selector: 'app-snippet',
@@ -11,7 +13,9 @@ import {ConfigService} from "../../../services/config.service";
 export class SnippetComponent implements OnChanges {
   @ViewChild('code') code: ElementRef<HTMLElement>;
 
-  @Input() snippet: Snippet;
+  @Input({required: true}) assignment?: ReadAssignmentDto;
+  @Input({required: true}) solution?: Solution;
+  @Input({required: true}) snippet: Snippet;
   @Input() expanded = true;
   @Input() wildcard?: string;
   @Output() updated = new EventEmitter<Snippet>();
@@ -31,6 +35,10 @@ export class SnippetComponent implements OnChanges {
       const snippet = changes.snippet.currentValue;
       this.fileType = snippet.file.substring(snippet.file.lastIndexOf('.') + 1);
       this.contextLines = snippet.context ? 2 : 0;
+      // TODO `jetbrains://${ide}/navigate/reference?project=${project}&path=${filePath}:${lineIndex}:${columnIndex}`;
+      //      - project is the name of the repo, e.g. "stc-23-language-Clashsoft"
+      //      - filePath is the path to the file, e.g. "src/main/java/org/example/MyClass.java"
+      //      - lineIndex and columnIndex are 0-based
       this.openUrl = `${this.configService.get('ide')}://fulib.fulibfeedback/open?file=${encodeURIComponent(snippet.file)}&line=${snippet.from.line}&endline=${snippet.to.line}`;
     }
     if (changes.expanded) {

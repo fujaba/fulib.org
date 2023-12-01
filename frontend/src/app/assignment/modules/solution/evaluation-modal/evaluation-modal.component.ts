@@ -27,6 +27,8 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
   similarSolutionsEnabled = this.configService.getBool('similarSolutions');
 
   startDate = Date.now();
+  assignment?: ReadAssignmentDto;
+  solution?: Solution;
   task?: Task;
   evaluation?: Evaluation;
   dto: CreateEvaluationDto = {
@@ -65,8 +67,14 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       share(),
     );
 
+    assignment$.subscribe(assignment => this.assignment = assignment);
+
     this.loadCodeSearchEnabled(assignment$);
     this.loadTask(assignment$);
+
+    this.route.params.pipe(
+      switchMap(({aid, sid}) => this.solutionService.get(aid, sid)),
+    ).subscribe(solution => this.solution = solution);
 
     const config = {
       codeSearch: this.codeSearchEnabled,

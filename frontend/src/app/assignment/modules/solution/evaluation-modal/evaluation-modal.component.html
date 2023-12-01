@@ -30,7 +30,7 @@
       </div>
     }
     <app-evaluation-form [dto]="dto" [task]="task"></app-evaluation-form>
-    <app-snippet-list [dto]="dto" [task]="task"></app-snippet-list>
+    <app-snippet-list [assignment]="assignment" [solution]="solution" [dto]="dto" [task]="task"></app-snippet-list>
   </ng-container>
   <ng-container modal-footer>
     @if (codeSearchEnabled) {

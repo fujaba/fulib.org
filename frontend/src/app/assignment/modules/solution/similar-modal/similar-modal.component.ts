@@ -12,6 +12,7 @@ import {forkJoin} from "rxjs";
 import {ToastService} from "@mean-stream/ngbx";
 import {EvaluationService} from "../../../services/evaluation.service";
 import {EmbeddingService} from "../../../services/embedding.service";
+import {ReadAssignmentDto} from "../../../model/assignment";
 
 @Component({
   selector: 'app-similar-modal',
@@ -19,6 +20,7 @@ import {EmbeddingService} from "../../../services/embedding.service";
   styleUrls: ['./similar-modal.component.scss']
 })
 export class SimilarModalComponent implements OnInit {
+  assignment?: ReadAssignmentDto;
   solutionId!: string;
   task?: Task;
   evaluation?: Evaluation;
@@ -54,10 +56,11 @@ export class SimilarModalComponent implements OnInit {
     this.route.params.subscribe(({sid}) => this.solutionId = sid);
 
     this.route.params.pipe(
-      switchMap(({aid, task}) => this.assignmentService.get(aid).pipe(
-        map(assignment => this.taskService.find(assignment.tasks, task)),
-      )),
-    ).subscribe(task => this.task = task);
+      switchMap(({aid}) => this.assignmentService.get(aid)),
+    ).subscribe(assignment => {
+      this.assignment = assignment;
+      this.task = this.taskService.find(assignment.tasks, this.route.snapshot.params.task);
+    });
 
     // load solution IDs that already have an evaluation for this task
     this.route.params.pipe(
