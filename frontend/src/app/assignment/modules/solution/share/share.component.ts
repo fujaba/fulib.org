@@ -4,7 +4,6 @@ import {ActivatedRoute} from '@angular/router';
 import {of} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
 import {SolutionService} from 'src/app/assignment/services/solution.service';
-import {environment} from '../../../../../environments/environment';
 import {ConfigService} from '../../../services/config.service';
 
 @Component({
@@ -19,7 +18,6 @@ export class SolutionShareComponent implements OnInit {
   ide = this.configService.get('ide');
 
   readonly origin: string;
-  readonly encodedApiServer = encodeURIComponent(new URL(environment.assignmentsApiUrl, location.origin).origin);
 
   constructor(
     private solutionService: SolutionService,
@@ -46,9 +44,5 @@ export class SolutionShareComponent implements OnInit {
     ).subscribe(token => {
       this.token = token;
     });
-  }
-
-  saveIde(value: string) {
-    this.configService.set('ide', value);
   }
 }

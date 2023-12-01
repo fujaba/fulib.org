@@ -14,7 +14,7 @@
     </a>
     <a ngbDropdownItem class="bi-magic"
        ngbTooltip="Automatically configure fulibFeedback for this assigmnent in your IDE"
-       [href]="ide + '://fulib.fulibfeedback/configure?api_server=' + encodedApiServer + '&assignment=' + assignment._id + '&token=' + assignment['token'] | safeUrl">
+       [href]="ide|fulibFeedbackLink:assignment._id:undefined:assignment['token'] | safeUrl">
       Configure fulibFeedback
     </a>
     <div class="dropdown-divider"></div>

@@ -22,6 +22,16 @@ export class CloneLinkPipe implements PipeTransform {
         ref = `&ref=assignments/${assignment._id}`;
         break;
     }
-    return `${ide}://vscode.git/clone?url=${clonePrefix[cloneProtocol]}${org}%2F${prefix}-${user}${cloneSuffix[cloneProtocol]}${ref}`;
+    const cloneUrl = `${clonePrefix[cloneProtocol]}${org}%2F${prefix}-${user}${cloneSuffix[cloneProtocol]}`;
+    switch (ide) {
+      case 'vscode':
+      case 'code-oss':
+      case 'vscodium':
+        return `${ide}://vscode.git/clone?url=${cloneUrl}${ref}`;
+      case 'idea':
+      case 'web-storm':
+      case 'pycharm':
+        return `jetbrains://${ide}/checkout/git?checkout.repo=${cloneUrl}&idea.required.plugins.id=Git4Idea${ref}`;
+    }
   }
 }

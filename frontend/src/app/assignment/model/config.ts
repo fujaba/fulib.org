@@ -2,6 +2,17 @@ import {IsBoolean, IsEmail, IsIn, IsNotEmpty, IsString} from "class-validator";
 import {Presentation} from "@mean-stream/ngbx";
 import {Transform} from "class-transformer";
 
+export const IDEs = {
+  vscode: 'VSCode',
+  'code-oss': 'Code - OSS',
+  vscodium: 'VSCodium',
+  idea: 'IntelliJ IDEA',
+  'web-storm': 'WebStorm',
+  'pycharm': 'PyCharm',
+} as const;
+
+export type IDE = keyof typeof IDEs;
+
 export class Config {
   @Presentation({
     description: 'Your full name for use in assignments, solutions, comments and evaluations.',
@@ -20,14 +31,10 @@ export class Config {
   @Presentation({
     label: 'IDE',
     description: 'Your preferred IDE for cloning repositories.',
-    optionLabels: {
-      vscode: 'VSCode',
-      'code-oss': 'Code - OSS',
-      vscodium: 'VSCodium',
-    },
+    optionLabels: IDEs,
   })
-  @IsIn(['vscode', 'code-oss', 'vscodium'])
-  ide: 'vscode' | 'code-oss' | 'vscodium' = 'vscode';
+  @IsIn(Object.keys(IDEs))
+  ide: IDE = 'vscode';
 
   @Presentation({
     label: 'Git Clone Protocol',
