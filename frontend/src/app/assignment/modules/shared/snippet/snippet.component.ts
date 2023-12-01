@@ -3,7 +3,8 @@ import hljs from 'highlight.js/lib/core';
 import {Snippet} from '../../../model/evaluation';
 import {ConfigService} from "../../../services/config.service";
 import Solution from "../../../model/solution";
-import Assignment, {ReadAssignmentDto} from "../../../model/assignment";
+import {ReadAssignmentDto} from "../../../model/assignment";
+import {IDE} from "../../../model/config";
 
 @Component({
   selector: 'app-snippet',
@@ -23,11 +24,12 @@ export class SnippetComponent implements OnChanges {
 
   fileType?: string;
   contextLines = 0;
-  openUrl = '';
+  ide: IDE;
 
   constructor(
-    private readonly configService: ConfigService,
+    configService: ConfigService,
   ) {
+    this.ide = configService.get('ide');
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -35,11 +37,6 @@ export class SnippetComponent implements OnChanges {
       const snippet = changes.snippet.currentValue;
       this.fileType = snippet.file.substring(snippet.file.lastIndexOf('.') + 1);
       this.contextLines = snippet.context ? 2 : 0;
-      // TODO `jetbrains://${ide}/navigate/reference?project=${project}&path=${filePath}:${lineIndex}:${columnIndex}`;
-      //      - project is the name of the repo, e.g. "stc-23-language-Clashsoft"
-      //      - filePath is the path to the file, e.g. "src/main/java/org/example/MyClass.java"
-      //      - lineIndex and columnIndex are 0-based
-      this.openUrl = `${this.configService.get('ide')}://fulib.fulibfeedback/open?file=${encodeURIComponent(snippet.file)}&line=${snippet.from.line}&endline=${snippet.to.line}`;
     }
     if (changes.expanded) {
       this.setExpanded(changes.expanded.currentValue);
