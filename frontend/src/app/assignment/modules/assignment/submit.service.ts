@@ -171,7 +171,7 @@ export class SubmitService {
 <details>
 <summary>View Evaluations in VSCode</summary>
 
-Download the [fulibFeedback Extension](https://marketplace.visualstudio.com/items?itemName=fulib.fulibFeedback) \
+Download the [fulibFeedback Extension](https://github.com/fujaba/fulibFeedback) \
 and copy this to \`.vscode/settings.json\`:
 
 \`\`\`json
