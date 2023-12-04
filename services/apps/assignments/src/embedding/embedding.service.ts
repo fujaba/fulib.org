@@ -160,7 +160,7 @@ export class EmbeddingService implements OnModuleInit {
         file,
         line,
         name,
-        text,
+        text: `${document.file}\n\n${text}`,
         embedding: [],
       });
     }
