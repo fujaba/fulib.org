@@ -2,8 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ToastService} from '@mean-stream/ngbx';
 import {ClipboardService} from 'ngx-clipboard';
-import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
-import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
+import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
+import {catchError, debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 import Assignment, {ReadAssignmentDto} from '../../../model/assignment';
 import {AuthorInfo, authorInfoProperties, RichSolutionDto} from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
@@ -12,6 +12,7 @@ import {TaskService} from '../../../services/task.service';
 import {SubmitService} from "../submit.service";
 import {UserService} from "../../../../user/user.service";
 import {AssigneeService} from "../../../services/assignee.service";
+import {HttpErrorResponse} from "@angular/common/http";
 
 type SearchKey = keyof AuthorInfo | 'assignee' | 'status';
 const searchKeys: readonly SearchKey[] = [
@@ -41,6 +42,7 @@ export class SolutionTableComponent implements OnInit {
   userToken?: string;
 
   loading = false;
+  searchError?: string;
 
   search$ = new BehaviorSubject<string>('');
 
@@ -75,10 +77,15 @@ export class SolutionTableComponent implements OnInit {
     combineLatest([this.activatedRoute.params, this.activatedRoute.queryParams]).pipe(
       tap(() => this.loading = true),
       tap(([, {q}]) => this.search$.next(q)),
-      switchMap(([{aid}, {q}]) => this.solutionService.getAll(aid, q)),
-    ).subscribe(solutions => {
-      this.solutions = solutions;
+      switchMap(([{aid}, {q}]) => this.solutionService.getAll(aid, q).pipe(catchError((error: HttpErrorResponse) => of(error)))),
+    ).subscribe(solutionsOrError => {
       this.loading = false;
+      if (Array.isArray(solutionsOrError)) {
+        this.solutions = solutionsOrError;
+        this.searchError = undefined;
+      } else {
+        this.searchError = solutionsOrError.error.message;
+      }
     });
 
     this.search$.pipe(
