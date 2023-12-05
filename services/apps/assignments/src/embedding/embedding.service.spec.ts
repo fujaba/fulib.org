@@ -60,6 +60,8 @@ class Foo {
         name: 'bar',
         line: 1,
         text: `\
+Foo.java
+
   void bar() {
     System.out.println()
   }`,
@@ -74,6 +76,8 @@ class Foo {
         name: 'baz',
         line: 5,
         text: `\
+Foo.java
+
   void baz(int i) {
     if (i != 0) {
       i = i + 1;
@@ -114,6 +118,8 @@ class Foo:
         name: 'bar',
         line: 1,
         text: `\
+Foo.py
+
   def bar():
     print()
 
@@ -131,6 +137,8 @@ class Foo:
         name: 'baz',
         line: 6,
         text: `\
+Foo.py
+
   def baz(i):
     if i != 0:
       i = i + 1
