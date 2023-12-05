@@ -1,6 +1,7 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound, ObjectIdArrayPipe, ObjectIdPipe} from '@mean-stream/nestx';
 import {
+  BadRequestException,
   Body,
   Controller,
   DefaultValuePipe,
@@ -83,9 +84,16 @@ export class SolutionController {
       preFilter.push({_id: {$in: ids}});
     }
     if (search) {
-      const terms = search.trim().split(/\s+/);
-      for (const term of terms) {
-        this.toFilter(term, preFilter, postFilter);
+      try {
+        const terms = search.trim().split(/\s+/);
+        for (const term of terms) {
+          this.toFilter(term, preFilter, postFilter);
+        }
+      } catch (err: unknown) {
+        // SyntaxError Invalid regular expression
+        if (err instanceof SyntaxError && err.message.startsWith('Invalid regular expression')) {
+          throw new BadRequestException(err.message);
+        }
       }
     }
     return this.solutionService.findRich({$and: preFilter}, postFilter.length ? {$and: postFilter} : {});
