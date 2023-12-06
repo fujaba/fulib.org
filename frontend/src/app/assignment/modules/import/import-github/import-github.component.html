@@ -1,11 +1,10 @@
 <p>
   Imports solutions from GitHub using the organisation and prefix configured in the
   <a routerLink="../../edit/classroom">assignment settings</a>.
-  No further configuration is required.
 </p>
-<details #previewDetails (toggle)="previewDetails.open && previewGitHubImport()">
-  <summary>Select Students</summary>
-  <ul class="list-unstyled">
+<details class="mb-3" #previewDetails (toggle)="previewDetails.open && previewGitHubImport()">
+  <summary class="form-label">Select Students</summary>
+  <ul class="list-unstyled form-control overflow-auto" style="max-height: 30vh">
     @for (solution of previewSolutions;track solution) {
       <li class="form-check">
         <input class="form-check-input" type="checkbox" [id]="'check-' + solution.author.github"
@@ -16,5 +15,27 @@
         </label>
       </li>
     }
+    <div class="text-muted">
+      @if (!previewSolutions) {
+        Loading...
+      } @else if (!previewSolutions.length) {
+        No solutions found.
+      }
+    </div>
   </ul>
+  <div class="form-text">
+    Select none to import all solutions.
+  </div>
 </details>
+<div class="mb-3">
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" id="reimport" [(ngModel)]="reimport">
+    <label class="form-check-label" for="reimport">
+      Re-import files for existing solutions
+    </label>
+    <div class="form-text">
+      If some files are missing in an existing solution, they will be re-imported.
+      The origin commit of the solution will be used to determine the file contents.
+    </div>
+  </div>
+</div>

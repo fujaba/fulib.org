@@ -114,7 +114,7 @@ export class SolutionService {
     return this.http.get<ImportSolution[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/import`);
   }
 
-  import(assignment: string, files?: File[], usernames?: string[]): Observable<ImportSolution[]> {
+  import(assignment: string, files?: File[], usernames?: string[], reimport?: boolean): Observable<ImportSolution[]> {
     let body;
     if (files?.length) {
       const data = new FormData();
@@ -123,9 +123,11 @@ export class SolutionService {
       }
       body = data;
     }
-    return this.http.post<ImportSolution[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/import`, body, {
-      params: usernames ? {usernames} : undefined,
-    });
+    const params: Record<string, string | boolean | string[]> = {};
+    usernames && (params.usernames = usernames);
+    reimport && (params.reimport = reimport);
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/import`;
+    return this.http.post<ImportSolution[]>(url, body, {params});
   }
 
   get(assignment: string, id: string): Observable<Solution> {
