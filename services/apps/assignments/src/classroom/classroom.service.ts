@@ -115,7 +115,7 @@ export class ClassroomService {
     }
   }
 
-  async importSolutions(assignment: AssignmentDocument, usernames?: string[]): Promise<ImportSolution[]> {
+  async importSolutions(assignment: AssignmentDocument, usernames?: string[], reimport?: boolean): Promise<ImportSolution[]> {
     if (!assignment.classroom) {
       return [];
     }
@@ -150,11 +150,26 @@ export class ClassroomService {
       const upsertedId = solutions.upsertedIds[i];
       if (commit && upsertedId) {
         const zip = await this.getRepoZip(assignment, this.getGithubName(repo, assignment), commit);
-        return zip ? this.fileService.importZipEntries(zip, assignment._id.toString(), upsertedId, commit) : [];
-      } else {
-        return [];
+        if (zip) {
+          await this.fileService.importZipEntries(zip, assignment.id, upsertedId, commit);
+        }
       }
     }));
+
+    if (reimport) {
+      const otherSolutions = await this.solutionService.findAll({
+        assignment: assignment._id,
+        _id: {$nin: Object.values(solutions.upsertedIds)},
+        'author.github': {$gt: ''},
+        commit: {$gt: ''},
+      });
+      await Promise.all(otherSolutions.map(async solution => {
+        const zip = await this.getRepoZip(assignment, solution.author.github!, solution.commit!);
+        if (zip) {
+          await this.fileService.importZipEntries(zip, assignment.id, solution.id, solution.commit!);
+        }
+      }));
+    }
 
     return importSolutions;
   }

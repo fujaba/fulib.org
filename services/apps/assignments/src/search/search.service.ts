@@ -138,16 +138,15 @@ export class SearchService implements OnModuleInit {
   }
 
   async addFile(assignment: string, solution: string, file: string, content: string) {
-    const body: FileDocument = {
-      assignment,
-      solution,
-      file,
-      content,
-    };
-    await this.elasticsearchService.index({
+    await this.elasticsearchService.index<FileDocument>({
       index: 'files',
       id: `${assignment}/${solution}/${file}`,
-      body,
+      document: {
+        assignment,
+        solution,
+        file,
+        content,
+      },
     });
   }
 
