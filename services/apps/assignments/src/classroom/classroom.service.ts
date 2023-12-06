@@ -169,6 +169,7 @@ export class ClassroomService {
           await this.fileService.importZipEntries(zip, assignment.id, solution.id, solution.commit!);
         }
       }));
+      importSolutions.push(...otherSolutions);
     }
 
     return importSolutions;
