@@ -1,7 +1,7 @@
 import {MessageEvent} from '@nestjs/common';
 import {WsResponse} from '@nestjs/websockets';
 import {randomBytes} from 'crypto';
-import {interval, map, mapTo, merge, Observable} from 'rxjs';
+import {interval, map, mapTo, merge, Observable, of} from 'rxjs';
 
 export function generateToken(): string {
   const bytes = randomBytes(8);
@@ -14,6 +14,6 @@ export function eventStream<T>(source: Observable<WsResponse<T>>, name: string):
     source.pipe(
       map(({event, data}) => ({data: {event: event.substring(event.lastIndexOf('.') + 1), [name]: data}})),
     ),
-    interval(15000).pipe(mapTo({type: 'noop', data: 'noop'})),
+    interval(15000).pipe(mapTo({type: 'noop', data: 'noop', retry: 5000})),
   );
 }
