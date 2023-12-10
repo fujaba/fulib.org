@@ -96,16 +96,7 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
         return;
       }
 
-      // Clear cache for affected tasks
-      const tasks = this.taskService.findWithParents(this.assignment.tasks, task);
-      for (const task of tasks) {
-        delete this.points[task._id];
-      }
-
-      // Restore cache
-      for (const task of this.assignment.tasks) {
-        this.taskService.getTaskPoints(task, this.evaluations, this.points);
-      }
+      this.taskService.updatePoints(this.assignment.tasks, this.points, this.evaluations, evaluation);
     });
   }
 

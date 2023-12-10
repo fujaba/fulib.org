@@ -26,10 +26,15 @@
     </div>
   </div>
 }
-<app-task-list
-  [tasks]="assignment?.tasks"
-  [evaluations]="evaluations"
-  [editable]="evaluating"
-  [points]="points"
-></app-task-list>
+@if (assignment) {
+  <app-task-list
+    [allTasks]="assignment.tasks"
+    [tasks]="assignment.tasks"
+    [evaluations]="evaluations"
+    [editable]="evaluating"
+    [points]="points"
+  ></app-task-list>
+} @else {
+  Loading...
+}
 <router-outlet></router-outlet>
