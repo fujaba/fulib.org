@@ -1,14 +1,16 @@
 <div class="card mb-3">
   <div class="card-body pb-0">
     <app-assignment-info [assignment]="assignment"></app-assignment-info>
-    <app-task-list [allTasks]="tasks" [tasks]="tasks"></app-task-list>
+    <app-task-list [allTasks]="assignment.tasks" [tasks]="assignment.tasks"></app-task-list>
   </div>
 </div>
 
-@if (!$any(assignment)._id) {
-  <p class="text-center">
-    Click "Submit" to finalize your assignment and generate a link.
-  </p>
+@if (diffMetadata && diffTasks) {
+  <h2>Differences</h2>
+  <h3>Metadata</h3>
+  <pre [innerHTML]="diffMetadata | safeHtml"></pre>
+  <h3>Tasks</h3>
+  <pre [innerHTML]="diffTasks | safeHtml"></pre>
 }
 @if (!loggedIn) {
   <div class="alert alert-warning" role="alert">
