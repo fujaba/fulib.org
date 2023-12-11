@@ -2,7 +2,11 @@
   <app-assignment-info [assignment]="assignment"></app-assignment-info>
 
   <h2>Tasks</h2>
-  <app-task-list [tasks]="assignment?.tasks"></app-task-list>
+  @if (assignment) {
+    <app-task-list [allTasks]="assignment.tasks" [tasks]="assignment.tasks"></app-task-list>
+  } @else {
+    Loading...
+  }
 
   <h2>Files</h2>
   <div class="mb-3">

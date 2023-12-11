@@ -46,6 +46,7 @@
         }
         @if (task.children.length) {
           <app-task-list
+            [allTasks]="allTasks"
             [tasks]="task.children"
             [evaluations]="evaluations"
             [editable]="editable"

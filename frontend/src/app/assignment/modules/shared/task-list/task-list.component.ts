@@ -6,6 +6,7 @@ import {CreateEvaluationDto, Evaluation} from '../../../model/evaluation';
 import Task from '../../../model/task';
 import {ConfigService} from '../../../services/config.service';
 import {EvaluationService} from "../../../services/evaluation.service";
+import {TaskService} from "../../../services/task.service";
 
 @Component({
   selector: 'app-task-list',
@@ -13,7 +14,8 @@ import {EvaluationService} from "../../../services/evaluation.service";
   styleUrls: ['./task-list.component.scss'],
 })
 export class TaskListComponent {
-  @Input() tasks?: Task[];
+  @Input({required: true}) allTasks: Task[];
+  @Input({required: true}) tasks: Task[];
   @Input() editable = false;
   @Input() evaluations?: Record<string, Evaluation | CreateEvaluationDto>;
   @Input() points?: Record<string, number>;
@@ -22,24 +24,28 @@ export class TaskListComponent {
     private evaluationService: EvaluationService,
     private configService: ConfigService,
     private toastService: ToastService,
+    private taskService: TaskService,
     private route: ActivatedRoute,
   ) {
   }
 
   givePoints(task: Task, points: number) {
     const {aid, sid} = this.route.snapshot.params;
-    this.evaluationService.findByTask(aid, sid, task._id).pipe(
-      switchMap(evaluation => evaluation ?
-        this.evaluationService.update(aid, sid, evaluation._id, {points}) :
-        this.evaluationService.create(aid, sid, {
-          task: task._id,
-          points,
-          author: this.configService.get('name'),
-          remark: '',
-          snippets: [],
-        })),
-    ).subscribe({
-      // updating evaluations and points is handled by the tasks component
+    this.evaluationService.create(aid, sid, {
+      task: task._id,
+      points,
+      author: this.configService.get('name'),
+      remark: '',
+      snippets: [],
+    }).subscribe({
+      next: evaluation => {
+        if (this.evaluations) {
+          this.evaluations[task._id] = evaluation;
+        }
+        if (this.points && this.evaluations) {
+          this.taskService.updatePoints(this.allTasks, this.points, this.evaluations, evaluation);
+        }
+      },
       error: error => {
         this.toastService.error('Quick Evaluation', 'Failed to create or update evaluation', error);
       },
