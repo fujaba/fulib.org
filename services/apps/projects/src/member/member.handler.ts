@@ -13,6 +13,7 @@ export class MemberHandler {
   @OnEvent('projects.*.created')
   @OnEvent('projects.*.updated')
   async onProjectChanged(project: Project) {
+    console.log(project);
     await this.memberService.upsert({parent: project._id, user: project.userId}, {});
   }
 
