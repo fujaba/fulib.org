@@ -17,6 +17,12 @@ import {Project} from '../project/project.schema';
 import {ProjectService} from '../project/project.service';
 import {allowedFilenameCharacters, ContainerDto, CreateContainerDto} from './container.dto';
 
+const projectStorageTypes = ['projects', 'config'] as const;
+type ProjectStorageType = typeof projectStorageTypes[number];
+const userStorageTypes = ['users'] as const;
+type UserStorageType = typeof userStorageTypes[number];
+const bindPrefix = path.resolve(environment.docker.bindPrefix);
+
 @Injectable()
 export class ContainerService {
   docker = new Dockerode({
@@ -28,7 +34,6 @@ export class ContainerService {
 
   constructor(
     private readonly httpService: HttpService,
-    private readonly projectService: ProjectService,
   ) {
   }
 
@@ -81,14 +86,14 @@ export class ContainerService {
 
     let projectPath: string | undefined;
     if (dto.projectId) {
-      projectPath = this.projectService.getStoragePath('projects', dto.projectId);
+      projectPath = this.getStoragePath('projects', dto.projectId);
       options.HostConfig!.Binds!.push(`${projectPath}:${workspace}`);
       options.Env!.push(`PROJECT_ID=${dto.projectId}`);
       options.Labels!['org.fulib.project'] = dto.projectId;
     }
 
     if (user) {
-      const usersPath = this.projectService.getStoragePath('users', user.sub);
+      const usersPath = this.getStoragePath('users', user.sub);
 
       /* create 'settings.json' files if they don't exist already
       code server will write the user/machine settings there
@@ -177,7 +182,7 @@ export class ContainerService {
   }
 
   private async getProjectExtensions(projectId: string): Promise<string[]> {
-    const extensionsListPath = `${this.projectService.getStoragePath('config', projectId)}/extensions.txt`;
+    const extensionsListPath = `${this.getStoragePath('config', projectId)}/extensions.txt`;
 
     const fileBuffer = await fs.promises.readFile(extensionsListPath).catch(() => '');
     if (!fileBuffer) {
@@ -308,7 +313,7 @@ ${eofMarker}`]);
 
   private async saveExtensions(container: Dockerode.Container, projectId: string) {
     const stream = await this.containerExec(container, ['code-server', '--list-extensions', '--show-versions']);
-    const extensionsList = `${this.projectService.getStoragePath('config', projectId)}/extensions.txt`;
+    const extensionsList = `${this.getStoragePath('config', projectId)}/extensions.txt`;
     await createFile(extensionsList);
 
     const writeStream = fs.createWriteStream(extensionsList);
@@ -353,12 +358,28 @@ ${eofMarker}`]);
   }
 
   async unzip(projectId: string, zip: Express.Multer.File): Promise<void> {
-    const storagePath = this.projectService.getStoragePath('projects', projectId);
+    const storagePath = this.getStoragePath('projects', projectId);
     const stream = new Readable();
     stream.push(zip.buffer);
     stream.push(null);
     await stream.pipe(Extract({path: storagePath})).promise();
     await new Promise((resolve, reject) => chownr(storagePath, 1000, 1000, err => err ? reject(err) : resolve(undefined)));
+  }
+
+  deleteStorage(id: string) {
+    for (const type of projectStorageTypes) {
+      fs.promises.rm(this.getStoragePath(type, id), {recursive: true}).catch(e => {
+        console.error(`Failed to remove project '${id}' storage '${type}': ${e.message}`);
+      });
+    }
+  }
+
+  getStoragePath(type: ProjectStorageType | UserStorageType, projectId: string): string {
+    return `${bindPrefix}/${type}/${this.idBin(projectId)}/${projectId}/`;
+  }
+
+  private idBin(projectId: string) {
+    return projectId.slice(-2); // last 2 hex chars
   }
 }
 
