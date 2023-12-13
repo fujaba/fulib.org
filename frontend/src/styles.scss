@@ -51,25 +51,21 @@ $body-color-dark: #f8f9fa; // $gray-100
 
 /* --------------- Dark Mode Overrides --------------- */
 
-@include color-mode(dark) {
-  .CodeMirror {
-    border-color: $border-color-dark;
-  }
+gridster-item {
+  background-color: var(--bs-body-bg) !important;
+}
 
+.CodeMirror {
+  border-color: var(--bs-border-color) !important;
+}
+
+.as-split-gutter {
+  background-color: var(--bs-body-bg) !important;
+}
+
+@include color-mode(dark) {
   img.diagram, .diagram > svg {
     filter: invert(100%);
-  }
-
-  gridster-item {
-    background-color: $body-bg-dark;
-  }
-
-  .as-split-gutter {
-    background-color: $gray-900 !important;
-  }
-
-  .text-blur {
-    text-shadow: 0 0 8px $gray-100 !important;
   }
 }
 
@@ -110,7 +106,7 @@ a[href^="http"]::after {
 
 .text-blur {
   color: transparent !important;
-  text-shadow: 0 0 8px $gray-900 !important;
+  text-shadow: 0 0 8px var(--bs-body-bg) !important;
 }
 
 .backdrop-blur {
