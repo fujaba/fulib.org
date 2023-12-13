@@ -9,65 +9,16 @@ $body-color-dark: #f8f9fa; // $gray-100
 @import "codemirror/theme/idea";
 @import "codemirror/theme/darcula";
 
+@import "./styles/codemirror/base";
 @import "./styles/codemirror/hint";
 @import "./styles/codemirror/lint";
 
+@import "./styles/gradients";
 @import "./styles/highlight";
 @import "./styles/markdown";
+@import "./styles/timeline";
 
-/* --------------- CodeMirror --------------- */
-
-.CodeMirror {
-  border-width: 1px;
-  border-style: solid;
-  border-color: #ced4da;
-  border-radius: .25rem;
-
-  &:focus-within {
-    outline: 0;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25)
-  }
-}
-
-.cm-h-100 .CodeMirror {
-  height: 100%;
-}
-
-// Adapt Darcula theme to match darkmode colors
-.cm-s-darcula {
-  &.CodeMirror {
-    background: $gray-900;
-  }
-
-  .CodeMirror-activeline-background {
-    background: $gray-800;
-  }
-
-  .CodeMirror-gutters {
-    background: $gray-800;
-    border-right-color: $gray-800;
-  }
-}
-
-/* --------------- Dark Mode Overrides --------------- */
-
-gridster-item {
-  background-color: var(--bs-body-bg) !important;
-}
-
-.CodeMirror {
-  border-color: var(--bs-border-color) !important;
-}
-
-.as-split-gutter {
-  background-color: var(--bs-body-bg) !important;
-}
-
-@include color-mode(dark) {
-  img.diagram, .diagram > svg {
-    filter: invert(100%);
-  }
-}
+/* --------------- Page Layout --------------- */
 
 html {
   position: relative;
@@ -78,6 +29,22 @@ html {
 body {
   padding-top: 3.5rem;
   height: 100%;
+}
+
+/* --------------- Dark Mode Overrides --------------- */
+
+gridster-item {
+  background-color: var(--bs-body-bg) !important;
+}
+
+.as-split-gutter {
+  background-color: var(--bs-body-bg) !important;
+}
+
+@include color-mode(dark) {
+  img.diagram, .diagram > svg {
+    filter: invert(100%);
+  }
 }
 
 /* --------------- Misc. --------------- */
@@ -124,89 +91,4 @@ a[href^="http"]::after {
   position: sticky;
   left: 0;
   z-index: $zindex-sticky;
-}
-
-/* --------------- Gradients --------------- */
-
-$gradient-angle: 135deg;
-$gradients: (
-  pretty: linear-gradient($gradient-angle, #75ff00, #0075ff, #ff0075),
-  primary: linear-gradient($gradient-angle, $primary, $purple),
-  positive: linear-gradient($gradient-angle, $success, $primary),
-  negative: linear-gradient($gradient-angle, $warning, $danger),
-) !default;
-
-@each $name, $gradient in $gradients {
-  .text-gradient-#{$name} {
-    background: -webkit-#{$gradient};
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .bg-gradient-#{$name} {
-    background: $gradient;
-  }
-}
-
-/* --------------- Timelines --------------- */
-
-$outline-color: #777;
-$badge-color: #fff;
-
-.timeline-list {
-  border-top: 1px solid $outline-color;
-  border-bottom: 1px solid $outline-color;
-
-  list-style: none;
-  counter-reset: my-awesome-counter;
-  padding-inline-start: 0;
-}
-
-.timeline-item {
-  position: relative;
-  display: flex;
-  padding: 8px 0;
-  margin-left: 16px;
-}
-
-.timeline-item:not(.gu-mirror):before {
-  display: block;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 2px;
-
-  content: "";
-
-  background-color: $outline-color;
-}
-
-.timeline-item-badge {
-  position: relative;
-  z-index: 1;
-  width: 32px;
-  height: 32px;
-  margin-right: 8px;
-  margin-left: -15px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-
-  color: $badge-color;
-  border: 2px solid $outline-color;
-  border-radius: 50%;
-}
-
-.timeline-item-body {
-  min-width: 0;
-  max-width: 100%;
-  margin-top: 4px;
-  flex: auto;
-}
-
-.timeline-item-active > .timeline-item-badge {
-  background-color: $primary !important;
 }
