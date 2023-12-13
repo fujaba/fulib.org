@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {KeycloakService} from 'keycloak-angular';
 import {CreateAssignmentDto} from '../../../model/assignment';
-import Task from '../../../model/task';
 import {AssignmentContext} from '../../../services/assignment.context';
+
 
 @Component({
   selector: 'app-edit-assignment-preview',
@@ -11,7 +11,6 @@ import {AssignmentContext} from '../../../services/assignment.context';
 })
 export class PreviewComponent implements OnInit {
   assignment: CreateAssignmentDto;
-  tasks: Task[];
 
   loggedIn = false;
 
@@ -19,8 +18,7 @@ export class PreviewComponent implements OnInit {
     private keycloakService: KeycloakService,
     context: AssignmentContext,
   ) {
-    this.assignment = context.assignment;
-    this.tasks = this.assignment.tasks.filter(t => !t.deleted);
+    this.assignment = context.getAssignment();
   }
 
   ngOnInit(): void {
