@@ -20,6 +20,7 @@ import {EventModule} from "@app/event/event.module";
     ContainerModule,
     ScheduleModule.forRoot(),
     SentryModule.forRoot({
+      enabled: environment.nodeEnv !== 'development',
       dsn: environment.sentryDsn,
       environment: environment.nodeEnv,
       release: environment.version,
