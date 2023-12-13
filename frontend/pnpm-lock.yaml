@@ -45,8 +45,8 @@ dependencies:
     specifier: ^7.0.0
     version: 7.0.0(@angular/core@17.0.6)(@angular/forms@17.0.6)(codemirror@5.65.16)
   '@mean-stream/ngbx':
-    specifier: ^0.12.0
-    version: 0.12.0(@angular/common@17.0.6)(@angular/core@17.0.6)(@angular/router@17.0.6)(@ng-bootstrap/ng-bootstrap@16.0.0)(bootstrap@5.3.2)(class-validator@0.14.0)
+    specifier: ^0.13.0
+    version: 0.13.0(@angular/common@17.0.6)(@angular/core@17.0.6)(@angular/router@17.0.6)(@ng-bootstrap/ng-bootstrap@16.0.0)(bootstrap@5.3.2)(class-validator@0.14.0)
   '@ng-bootstrap/ng-bootstrap':
     specifier: ^16.0.0
     version: 16.0.0(@angular/common@17.0.6)(@angular/core@17.0.6)(@angular/forms@17.0.6)(@angular/localize@17.0.6)(@popperjs/core@2.11.8)(rxjs@7.8.1)
@@ -2438,20 +2438,17 @@ packages:
       call-bind: 1.0.5
     dev: true
 
-  /@mean-stream/ngbx@0.12.0(@angular/common@17.0.6)(@angular/core@17.0.6)(@angular/router@17.0.6)(@ng-bootstrap/ng-bootstrap@16.0.0)(bootstrap@5.3.2)(class-validator@0.14.0):
-    resolution: {integrity: sha512-rXuaI0YrZUSFToMD+XTyQSBI/KFRVbNo4NpSQ2cBjD+ck8kon0xNflq/BnzgSxUuO9T6FDlpZED17Cnnj0p7/Q==}
+  /@mean-stream/ngbx@0.13.0(@angular/common@17.0.6)(@angular/core@17.0.6)(@angular/router@17.0.6)(@ng-bootstrap/ng-bootstrap@16.0.0)(bootstrap@5.3.2)(class-validator@0.14.0):
+    resolution: {integrity: sha512-d6pHvmS2UCMLA+TRAH0CSdVraCyiBvthuO0WEp/U4h/35miva5YZbSAh0F35tzOqdKxBKpJRD1+jdTfM8G4Rhg==}
     peerDependencies:
-      '@angular/common': ^16.2.0
-      '@angular/core': ^16.2.0
-      '@angular/router': ^16.2.0
-      '@ng-bootstrap/ng-bootstrap': ^15.1.0
-      bootstrap: ^5.2.3
-      bootstrap-darkmode: ^0.9.1
+      '@angular/common': '>=16.2.0 <18.0.0'
+      '@angular/core': '>=16.2.0 <18.0.0'
+      '@angular/router': '>=16.2.0 <18.0.0'
+      '@ng-bootstrap/ng-bootstrap': '>=15.1.0 <17.0.0'
+      bootstrap: '>=5.2.0 <6.0.0'
       class-validator: ^0.14.0
       reflect-metadata: ^0.1.13
     peerDependenciesMeta:
-      bootstrap-darkmode:
-        optional: true
       class-validator:
         optional: true
       reflect-metadata:
