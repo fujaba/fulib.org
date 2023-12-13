@@ -32,9 +32,9 @@ export class AssigneeController {
   @ApiOkResponse({isArray: true})
   async findUnique(
     @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
-    @Param('field') field: string,
+    @Param('field') field: keyof Assignee,
   ): Promise<unknown[]> {
-    return this.assigneeService.distinct(assignment, field);
+    return this.assigneeService.distinct(field, {assignment});
   }
 
   @Patch('assignments/:assignment/assignees')

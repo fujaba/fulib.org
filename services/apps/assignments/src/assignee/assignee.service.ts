@@ -20,10 +20,6 @@ export class AssigneeService extends MongooseRepository<Assignee, never, Assigne
     this.eventService.emit(`assignments.${assignee.assignment}.solutions.${assignee.solution}.assignee.${event}`, assignee);
   }
 
-  async distinct(assignment: Types.ObjectId, field: string): Promise<unknown[]> {
-    return this.model.distinct(field, {assignment}).exec();
-  }
-
   async upsertMany(assignment: Types.ObjectId, dtos: BulkUpdateAssigneeDto[]): Promise<AssigneeDocument[]> {
     return Promise.all(dtos.map(dto => this.upsert({assignment, solution: dto.solution}, dto)));
   }
