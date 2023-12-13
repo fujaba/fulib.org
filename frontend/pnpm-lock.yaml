@@ -46,10 +46,10 @@ dependencies:
     version: 7.0.0(@angular/core@17.0.6)(@angular/forms@17.0.6)(codemirror@5.65.16)
   '@mean-stream/ngbx':
     specifier: ^0.12.0
-    version: 0.12.0(@angular/common@17.0.6)(@angular/core@17.0.6)(@angular/router@17.0.6)(@ng-bootstrap/ng-bootstrap@16.0.0-rc.2)(bootstrap-darkmode@5.0.1)(bootstrap@5.2.3)(class-validator@0.14.0)
+    version: 0.12.0(@angular/common@17.0.6)(@angular/core@17.0.6)(@angular/router@17.0.6)(@ng-bootstrap/ng-bootstrap@16.0.0)(bootstrap-darkmode@5.0.1)(bootstrap@5.2.3)(class-validator@0.14.0)
   '@ng-bootstrap/ng-bootstrap':
-    specifier: 16.0.0-rc.2
-    version: 16.0.0-rc.2(@angular/common@17.0.6)(@angular/core@17.0.6)(@angular/forms@17.0.6)(@angular/localize@17.0.6)(@popperjs/core@2.11.8)(rxjs@7.8.1)
+    specifier: ^16.0.0
+    version: 16.0.0(@angular/common@17.0.6)(@angular/core@17.0.6)(@angular/forms@17.0.6)(@angular/localize@17.0.6)(@popperjs/core@2.11.8)(rxjs@7.8.1)
   '@popperjs/core':
     specifier: ^2.11.8
     version: 2.11.8
@@ -96,14 +96,14 @@ dependencies:
     specifier: 21.1.2
     version: 21.1.2
   markdown-it:
-    specifier: ^13.0.2
-    version: 13.0.2
+    specifier: ^14.0.0
+    version: 14.0.0
   ngx-clipboard:
     specifier: ^16.0.0
     version: 16.0.0(@angular/common@17.0.6)(@angular/core@17.0.6)
   ngx-drag-drop:
-    specifier: ^16.1.0
-    version: 16.1.0(@angular/common@17.0.6)(@angular/core@17.0.6)
+    specifier: ^17.0.0
+    version: 17.0.0(@angular/common@17.0.6)(@angular/core@17.0.6)
   rxjs:
     specifier: ~7.8.1
     version: 7.8.1
@@ -2441,7 +2441,7 @@ packages:
       call-bind: 1.0.5
     dev: true
 
-  /@mean-stream/ngbx@0.12.0(@angular/common@17.0.6)(@angular/core@17.0.6)(@angular/router@17.0.6)(@ng-bootstrap/ng-bootstrap@16.0.0-rc.2)(bootstrap-darkmode@5.0.1)(bootstrap@5.2.3)(class-validator@0.14.0):
+  /@mean-stream/ngbx@0.12.0(@angular/common@17.0.6)(@angular/core@17.0.6)(@angular/router@17.0.6)(@ng-bootstrap/ng-bootstrap@16.0.0)(bootstrap-darkmode@5.0.1)(bootstrap@5.2.3)(class-validator@0.14.0):
     resolution: {integrity: sha512-rXuaI0YrZUSFToMD+XTyQSBI/KFRVbNo4NpSQ2cBjD+ck8kon0xNflq/BnzgSxUuO9T6FDlpZED17Cnnj0p7/Q==}
     peerDependencies:
       '@angular/common': ^16.2.0
@@ -2463,15 +2463,15 @@ packages:
       '@angular/common': 17.0.6(@angular/core@17.0.6)(rxjs@7.8.1)
       '@angular/core': 17.0.6(rxjs@7.8.1)(zone.js@0.14.2)
       '@angular/router': 17.0.6(@angular/common@17.0.6)(@angular/core@17.0.6)(@angular/platform-browser@17.0.6)(rxjs@7.8.1)
-      '@ng-bootstrap/ng-bootstrap': 16.0.0-rc.2(@angular/common@17.0.6)(@angular/core@17.0.6)(@angular/forms@17.0.6)(@angular/localize@17.0.6)(@popperjs/core@2.11.8)(rxjs@7.8.1)
+      '@ng-bootstrap/ng-bootstrap': 16.0.0(@angular/common@17.0.6)(@angular/core@17.0.6)(@angular/forms@17.0.6)(@angular/localize@17.0.6)(@popperjs/core@2.11.8)(rxjs@7.8.1)
       bootstrap: 5.2.3(@popperjs/core@2.11.8)
       bootstrap-darkmode: 5.0.1(bootstrap@5.2.3)
       class-validator: 0.14.0
       tslib: 2.6.2
     dev: false
 
-  /@ng-bootstrap/ng-bootstrap@16.0.0-rc.2(@angular/common@17.0.6)(@angular/core@17.0.6)(@angular/forms@17.0.6)(@angular/localize@17.0.6)(@popperjs/core@2.11.8)(rxjs@7.8.1):
-    resolution: {integrity: sha512-XQUOr6OfAYA9FK1e9tsKJiuKYGkNeO3vCkbCryWDWZzWaehvOWLcB214RUVBeoxynd4c/n2PmQRGnKcJLTAeSA==}
+  /@ng-bootstrap/ng-bootstrap@16.0.0(@angular/common@17.0.6)(@angular/core@17.0.6)(@angular/forms@17.0.6)(@angular/localize@17.0.6)(@popperjs/core@2.11.8)(rxjs@7.8.1):
+    resolution: {integrity: sha512-+FJ3e6cX9DW2t7021Ji3oz433rk3+4jLfqzU+Jyx6/vJz1dIOaML3EAY6lYuW4TLiXgMPOMvs6KzPFALGh4Lag==}
     peerDependencies:
       '@angular/common': ^17.0.0
       '@angular/core': ^17.0.0
@@ -4761,11 +4761,6 @@ packages:
     resolution: {integrity: sha512-GHrMyVZQWvTIdDtpiEXdHZnFQKzeO09apj8Cbl4pKWy4i0Oprcq17usfDt5aO63swf0JOeMWjWQE/LzgSRuWpA==}
     dev: true
 
-  /entities@3.0.1:
-    resolution: {integrity: sha512-WiyBqoomrwMdFG1e0kqvASYfnlb0lp8M5o5Fw2OFq1hNZxxcNk8Ik0Xm7LxzBhuidnZB/UtBqVCgUz3kBOP51Q==}
-    engines: {node: '>=0.12'}
-    dev: false
-
   /entities@4.5.0:
     resolution: {integrity: sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==}
     engines: {node: '>=0.12'}
@@ -6329,10 +6324,10 @@ packages:
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
     dev: true
 
-  /linkify-it@4.0.1:
-    resolution: {integrity: sha512-C7bfi1UZmoj8+PQx22XyeXCuBlokoyWQL5pWSP+EI6nzRylyThouddufc2c1NDIcP9k5agmN9fLpA7VNJfIiqw==}
+  /linkify-it@5.0.0:
+    resolution: {integrity: sha512-5aHCbzQRADcdP+ATqnDuhhJ/MRIqDkZX5pyjFHRRysS8vZ5AbqGEoFIb6pYHPZ+L/OC2Lc+xT8uHVVR5CAK/wQ==}
     dependencies:
-      uc.micro: 1.0.6
+      uc.micro: 2.0.0
     dev: false
 
   /loader-runner@4.3.0:
@@ -6486,19 +6481,20 @@ packages:
       - supports-color
     dev: true
 
-  /markdown-it@13.0.2:
-    resolution: {integrity: sha512-FtwnEuuK+2yVU7goGn/MJ0WBZMM9ZPgU9spqlFs7/A/pDIUNSOQZhUgOqYCficIuR2QaFnrt8LHqBWsbTAoI5w==}
+  /markdown-it@14.0.0:
+    resolution: {integrity: sha512-seFjF0FIcPt4P9U39Bq1JYblX0KZCjDLFFQPHpL5AzHpqPEKtosxmdq/LTVZnjfH7tjt9BxStm+wXcDBNuYmzw==}
     hasBin: true
     dependencies:
       argparse: 2.0.1
-      entities: 3.0.1
-      linkify-it: 4.0.1
-      mdurl: 1.0.1
-      uc.micro: 1.0.6
+      entities: 4.5.0
+      linkify-it: 5.0.0
+      mdurl: 2.0.0
+      punycode.js: 2.3.1
+      uc.micro: 2.0.0
     dev: false
 
-  /mdurl@1.0.1:
-    resolution: {integrity: sha512-/sKlQJCBYVY9Ers9hqzKou4H6V5UWc/M59TH2dvkt+84itfnq7uFOMLpOiOS4ujvHP4etln18fmIxA5R5fll0g==}
+  /mdurl@2.0.0:
+    resolution: {integrity: sha512-Lf+9+2r+Tdp5wXDXC4PcIBjTDtq4UKjCPMQhKIuzpJNW0b96kVqSwW0bT7FhRSfmAiFYgP+SCRvdrDozfh0U5w==}
     dev: false
 
   /media-typer@0.3.0:
@@ -6774,11 +6770,11 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /ngx-drag-drop@16.1.0(@angular/common@17.0.6)(@angular/core@17.0.6):
-    resolution: {integrity: sha512-y2l9pJGD7OupsIRkCElN/JqTgzjg2V9ZxymKGQR7ZjjcdjaP1wKkiFWIgVEvLNtb8wgm10U+9tkGwLClGaHkQA==}
+  /ngx-drag-drop@17.0.0(@angular/common@17.0.6)(@angular/core@17.0.6):
+    resolution: {integrity: sha512-BNPzkXgkGcmR77qoN/m71bYtZWwCfbLAH7TZ5qqd6IByleWjvXbTzB8BJI4Iw/jUdEAAhjkzLuBVJ+XG2HTtLA==}
     peerDependencies:
-      '@angular/common': ^16.0.0
-      '@angular/core': ^16.0.0
+      '@angular/common': ^17.0.0
+      '@angular/core': ^17.0.0
     dependencies:
       '@angular/common': 17.0.6(@angular/core@17.0.6)(rxjs@7.8.1)
       '@angular/core': 17.0.6(rxjs@7.8.1)(zone.js@0.14.2)
@@ -7477,6 +7473,11 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /punycode.js@2.3.1:
+    resolution: {integrity: sha512-uxFIHU0YlHYhDQtV4R9J6a52SLx28BCjT+4ieh7IGbgwVJWO+km431c4yRlREUAsAmt/uMjQUyQHNEPf0M39CA==}
+    engines: {node: '>=6'}
+    dev: false
 
   /punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
@@ -8560,8 +8561,8 @@ packages:
     resolution: {integrity: sha512-bhTyI94tZofjo+Dn8SN6Zv8nBDvyXTymAdM3LDI/0IboIUwTu1rEhW7v2TfiVsoYWgkQ4kOVqnI8APUFbIQIFQ==}
     dev: true
 
-  /uc.micro@1.0.6:
-    resolution: {integrity: sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==}
+  /uc.micro@2.0.0:
+    resolution: {integrity: sha512-DffL94LsNOccVn4hyfRe5rdKa273swqeA5DJpMOeFmEn1wCDc7nAbbB0gXlgBCL7TNzeTv6G7XVWzan7iJtfig==}
     dev: false
 
   /undici-types@5.26.5:
