@@ -1,0 +1,19 @@
+$gradient-angle: 135deg;
+$gradients: (
+  pretty: linear-gradient($gradient-angle, #75ff00, #0075ff, #ff0075),
+  primary: linear-gradient($gradient-angle, $primary, $purple),
+  positive: linear-gradient($gradient-angle, $success, $primary),
+  negative: linear-gradient($gradient-angle, $warning, $danger),
+) !default;
+
+@each $name, $gradient in $gradients {
+  .text-gradient-#{$name} {
+    background: -webkit-#{$gradient};
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .bg-gradient-#{$name} {
+    background: $gradient;
+  }
+}

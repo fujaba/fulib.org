@@ -1,4 +1,4 @@
-<div class="p-3 d-flex align-items-center position-sticky bg-light bg-darkmode-dark" style="top: 3.5rem; z-index: 1">
+<div class="p-3 d-flex align-items-center position-sticky bg-body-secondary" style="top: 3.5rem; z-index: 1">
   <div class="position-relative me-sm-2 flex-grow-1">
     <input type="search" class="form-control" id="searchInput" [class.is-invalid]="searchError"
            placeholder="Search for Name, Student ID, E-Mail, GitHub Username, Assignee"
@@ -89,7 +89,12 @@
     <thead>
     <tr>
       <th>
-        <input type="checkbox" [ngModel]="(selected | keyvalue).length === solutions.length" (ngModelChange)="selectAll($event)">
+        <input
+          type="checkbox"
+          class="form-check-input"
+          [ngModel]="(selected | keyvalue).length === solutions.length"
+          (ngModelChange)="selectAll($event)"
+        >
       </th>
       @for (prop of authorProperties;track prop) {
         <th>
@@ -148,7 +153,12 @@
       @for (solution of solutions;track solution._id) {
         <tr>
           <th>
-            <input type="checkbox" [ngModel]="selected[solution._id!]" (ngModelChange)="select(solution._id!, $event)">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              [ngModel]="selected[solution._id!]"
+              (ngModelChange)="select(solution._id!, $event)"
+            >
           </th>
           @for (prop of authorProperties;track prop) {
             <td>{{ solution.author[prop[1]] }}</td>

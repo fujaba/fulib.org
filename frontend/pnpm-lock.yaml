@@ -45,8 +45,8 @@ dependencies:
     specifier: ^7.0.0
     version: 7.0.0(@angular/core@17.0.6)(@angular/forms@17.0.6)(codemirror@5.65.16)
   '@mean-stream/ngbx':
-    specifier: ^0.12.0
-    version: 0.12.0(@angular/common@17.0.6)(@angular/core@17.0.6)(@angular/router@17.0.6)(@ng-bootstrap/ng-bootstrap@16.0.0)(bootstrap-darkmode@5.0.1)(bootstrap@5.2.3)(class-validator@0.14.0)
+    specifier: ^0.13.0
+    version: 0.13.0(@angular/common@17.0.6)(@angular/core@17.0.6)(@angular/router@17.0.6)(@ng-bootstrap/ng-bootstrap@16.0.0)(bootstrap@5.3.2)(class-validator@0.14.0)
   '@ng-bootstrap/ng-bootstrap':
     specifier: ^16.0.0
     version: 16.0.0(@angular/common@17.0.6)(@angular/core@17.0.6)(@angular/forms@17.0.6)(@angular/localize@17.0.6)(@popperjs/core@2.11.8)(rxjs@7.8.1)
@@ -63,11 +63,8 @@ dependencies:
     specifier: ^17.1.1
     version: 17.1.1(@angular/common@17.0.6)(@angular/core@17.0.6)(rxjs@7.8.1)
   bootstrap:
-    specifier: ~5.2.3
-    version: 5.2.3(@popperjs/core@2.11.8)
-  bootstrap-darkmode:
-    specifier: ^5.0.1
-    version: 5.0.1(bootstrap@5.2.3)
+    specifier: ~5.3.2
+    version: 5.3.2(@popperjs/core@2.11.8)
   bootstrap-icons:
     specifier: ^1.11.2
     version: 1.11.2
@@ -2441,20 +2438,17 @@ packages:
       call-bind: 1.0.5
     dev: true
 
-  /@mean-stream/ngbx@0.12.0(@angular/common@17.0.6)(@angular/core@17.0.6)(@angular/router@17.0.6)(@ng-bootstrap/ng-bootstrap@16.0.0)(bootstrap-darkmode@5.0.1)(bootstrap@5.2.3)(class-validator@0.14.0):
-    resolution: {integrity: sha512-rXuaI0YrZUSFToMD+XTyQSBI/KFRVbNo4NpSQ2cBjD+ck8kon0xNflq/BnzgSxUuO9T6FDlpZED17Cnnj0p7/Q==}
+  /@mean-stream/ngbx@0.13.0(@angular/common@17.0.6)(@angular/core@17.0.6)(@angular/router@17.0.6)(@ng-bootstrap/ng-bootstrap@16.0.0)(bootstrap@5.3.2)(class-validator@0.14.0):
+    resolution: {integrity: sha512-d6pHvmS2UCMLA+TRAH0CSdVraCyiBvthuO0WEp/U4h/35miva5YZbSAh0F35tzOqdKxBKpJRD1+jdTfM8G4Rhg==}
     peerDependencies:
-      '@angular/common': ^16.2.0
-      '@angular/core': ^16.2.0
-      '@angular/router': ^16.2.0
-      '@ng-bootstrap/ng-bootstrap': ^15.1.0
-      bootstrap: ^5.2.3
-      bootstrap-darkmode: ^0.9.1
+      '@angular/common': '>=16.2.0 <18.0.0'
+      '@angular/core': '>=16.2.0 <18.0.0'
+      '@angular/router': '>=16.2.0 <18.0.0'
+      '@ng-bootstrap/ng-bootstrap': '>=15.1.0 <17.0.0'
+      bootstrap: '>=5.2.0 <6.0.0'
       class-validator: ^0.14.0
       reflect-metadata: ^0.1.13
     peerDependenciesMeta:
-      bootstrap-darkmode:
-        optional: true
       class-validator:
         optional: true
       reflect-metadata:
@@ -2464,8 +2458,7 @@ packages:
       '@angular/core': 17.0.6(rxjs@7.8.1)(zone.js@0.14.2)
       '@angular/router': 17.0.6(@angular/common@17.0.6)(@angular/core@17.0.6)(@angular/platform-browser@17.0.6)(rxjs@7.8.1)
       '@ng-bootstrap/ng-bootstrap': 16.0.0(@angular/common@17.0.6)(@angular/core@17.0.6)(@angular/forms@17.0.6)(@angular/localize@17.0.6)(@popperjs/core@2.11.8)(rxjs@7.8.1)
-      bootstrap: 5.2.3(@popperjs/core@2.11.8)
-      bootstrap-darkmode: 5.0.1(bootstrap@5.2.3)
+      bootstrap: 5.3.2(@popperjs/core@2.11.8)
       class-validator: 0.14.0
       tslib: 2.6.2
     dev: false
@@ -3873,23 +3866,14 @@ packages:
     resolution: {integrity: sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==}
     dev: true
 
-  /bootstrap-darkmode@5.0.1(bootstrap@5.2.3):
-    resolution: {integrity: sha512-jyl507aEItDG7PHVdFgVNZ+qBX+Gffo6uGYOY9waegHcNRqBuajwyfkLpCGczMlhAQiEcms3jdxfhMg3AZJMfA==}
-    peerDependencies:
-      bootstrap: '>=5'
-    dependencies:
-      bootstrap: 5.2.3(@popperjs/core@2.11.8)
-      tslib: 2.6.2
-    dev: false
-
   /bootstrap-icons@1.11.2:
     resolution: {integrity: sha512-TgdiPv+IM9tgDb+dsxrnGIyocsk85d2M7T0qIgkvPedZeoZfyeG/j+yiAE4uHCEayKef2RP05ahQ0/e9Sv75Wg==}
     dev: false
 
-  /bootstrap@5.2.3(@popperjs/core@2.11.8):
-    resolution: {integrity: sha512-cEKPM+fwb3cT8NzQZYEu4HilJ3anCrWqh3CHAok1p9jXqMPsPTBhU25fBckEJHJ/p+tTxTFTsFQGM+gaHpi3QQ==}
+  /bootstrap@5.3.2(@popperjs/core@2.11.8):
+    resolution: {integrity: sha512-D32nmNWiQHo94BKHLmOrdjlL05q1c8oxbtBphQFb9Z5to6eGRDCm0QgeaZ4zFBHzfg2++rqa2JkqCcxDy0sH0g==}
     peerDependencies:
-      '@popperjs/core': ^2.11.6
+      '@popperjs/core': ^2.11.8
     dependencies:
       '@popperjs/core': 2.11.8
     dev: false
