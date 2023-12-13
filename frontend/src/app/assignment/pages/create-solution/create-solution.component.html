@@ -2,7 +2,11 @@
   <app-assignment-info [assignment]="assignment"></app-assignment-info>
 
   <h2>Tasks</h2>
-  <app-task-list [tasks]="assignment?.tasks"></app-task-list>
+  @if (assignment) {
+    <app-task-list [allTasks]="assignment.tasks" [tasks]="assignment.tasks"></app-task-list>
+  } @else {
+    Loading...
+  }
 
   <h2>Files</h2>
   <div class="mb-3">
@@ -10,12 +14,14 @@
     <input class="form-control" type="file" id="files" multiple #filesInput (change)="addFiles(filesInput.files!)">
   </div>
   <ul class="list-group">
-    <li *ngFor="let file of files; let index = index" class="list-group-item d-flex align-items-center">
-      <div class="me-auto">
-        {{ file.name }} ({{ file.size >= 1024 ? (file.size / 1024 | number:'0.0-1') + ' KiB' : file.size + ' bytes' }})
-      </div>
-      <button class="btn btn-outline-danger bi-trash" (click)="files.splice(index, 1)"></button>
-    </li>
+    @for (file of files; track file) {
+      <li class="list-group-item d-flex align-items-center">
+        <div class="me-auto">
+          {{ file.name }} ({{ file.size >= 1024 ? (file.size / 1024 | number:'0.0-1') + ' KiB' : file.size + ' bytes' }})
+        </div>
+        <button class="btn btn-outline-danger bi-trash" (click)="files.splice($index, 1)"></button>
+      </li>
+    }
   </ul>
 
   <h2>Your Info</h2>

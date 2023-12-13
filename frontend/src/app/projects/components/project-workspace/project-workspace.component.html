@@ -1,5 +1,7 @@
-<iframe *ngIf="container" [src]="container.url | safeResourceUrl" allow="clipboard-read; clipboard-write"
+@if (container) {
+  <iframe [src]="container.url | safeResourceUrl" allow="clipboard-read; clipboard-write"
         class="w-100 h-100 border-0"></iframe>
+}
 <ng-template #loadingModal let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="loading-modal-title">

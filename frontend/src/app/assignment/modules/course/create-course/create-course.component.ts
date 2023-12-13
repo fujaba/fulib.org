@@ -4,7 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ToastService} from '@mean-stream/ngbx';
 import {DndDropEvent} from 'ngx-drag-drop';
 import {Observable, of} from 'rxjs';
-import {debounceTime, distinctUntilChanged, filter, map, switchMap, tap} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 import {ReadAssignmentDto} from '../../../model/assignment';
 import Course, {CreateCourseDto} from '../../../model/course';
 import {AssignmentService} from '../../../services/assignment.service';
@@ -54,14 +54,13 @@ export class CreateCourseComponent implements OnInit {
       this.ownAssignments = assignments;
     });
     this.route.params.pipe(
-      switchMap(({cid}) => cid ? this.courseService.get(cid) : of(this.courseService.draft || {
+      switchMap(({cid}) => cid ? this.courseService.get(cid) : of(this.courseService.draft ?? {
         title: '',
         assignments: [],
         description: '',
       })),
       tap(course => this.course = course),
-      filter(course => course.assignments.length !== 0),
-      switchMap(course => this.assignmentService.findAll(course.assignments)),
+      switchMap(course => this.assignmentService.findIds(course.assignments)),
     ).subscribe(assignments => this.assignments = assignments);
   }
 
@@ -70,7 +69,7 @@ export class CreateCourseComponent implements OnInit {
   onImport(file: File): void {
     this.courseService.upload(file).subscribe(result => {
       this.course = result;
-      this.assignmentService.findAll(result.assignments).subscribe(assignments => this.assignments = assignments);
+      this.assignmentService.findIds(result.assignments).subscribe(assignments => this.assignments = assignments);
       this.saveDraft();
     });
   }
@@ -142,9 +141,15 @@ export class CreateCourseComponent implements OnInit {
     this.submitting = true;
     this.course.assignments = this.assignments.map(a => a._id);
     this.courseService.create(this.course).subscribe({
-      next: course => this.router.navigate(['/assignments/courses', course._id, 'share']),
-      error: error => this.toastService.error('Course', 'Failed to create course', error),
-      complete: () => this.submitting = false,
+      next: course => {
+        this.submitting = false;
+        this.router.navigate(['/assignments/courses', course._id, 'share']);
+        this.toastService.success('Course', 'Successfully created course');
+      },
+      error: error => {
+        this.submitting = false;
+        this.toastService.error('Course', 'Failed to create course', error)
+      },
     });
   }
 
@@ -158,9 +163,15 @@ export class CreateCourseComponent implements OnInit {
     this.submitting = true;
     this.course.assignments = this.assignments.map(a => a._id);
     this.courseService.update(this.course._id, this.course).subscribe({
-      next: course => this.course = course,
-      error: error => this.toastService.error('Course', `Failed to update course`, error),
-      complete: () => this.submitting = false,
+      next: course => {
+        this.submitting = false;
+        this.course = course;
+        this.toastService.success('Course', 'Successfully updated course');
+      },
+      error: error => {
+        this.submitting = false;
+        this.toastService.error('Course', 'Failed to update course', error)
+      },
     });
   }
 
@@ -174,11 +185,14 @@ export class CreateCourseComponent implements OnInit {
     this.submitting = true;
     this.courseService.delete(this.course._id).subscribe({
       next: () => {
+        this.submitting = false;
         this.router.navigate(['/assignments/courses']);
         this.toastService.warn('Delete Course', 'Successfully deleted course');
       },
-      error: error => this.toastService.error('Delete Course', 'Failed to delete course', error),
-      complete: () => this.submitting = false,
+      error: error => {
+        this.submitting = false;
+        this.toastService.error('Delete Course', 'Failed to delete course', error);
+      },
     });
   }
 }

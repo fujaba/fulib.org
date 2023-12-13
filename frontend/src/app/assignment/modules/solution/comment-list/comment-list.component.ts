@@ -73,7 +73,7 @@ export class CommentListComponent implements OnInit, OnDestroy {
   loadCommentDraft(solution: string): void {
     this.commentName = this.configService.get('name');
     this.commentEmail = this.configService.get('email');
-    this.commentBody = this.commentService.getDraft(solution) || '';
+    this.commentBody = this.commentService.getDraft(solution) ?? '';
   }
 
   saveCommentDraft(): void {

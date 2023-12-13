@@ -7,9 +7,6 @@ import {Observable} from 'rxjs';
 export class StorageService {
   private properties = new Map<string, string | null>();
 
-  constructor() {
-  }
-
   getAllKeys(prefix: RegExp): RegExpExecArray[] {
     const result: RegExpExecArray[] = [];
     for (let i = 0; i < localStorage.length; i++) {

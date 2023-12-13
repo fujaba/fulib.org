@@ -6,14 +6,15 @@ import {
   IsDateString,
   IsEmail,
   IsHash,
-  IsMongoId,
+  IsIn,
   IsNumber,
   IsOptional,
   IsString,
   IsUUID,
   ValidateNested,
 } from 'class-validator';
-import {Document} from 'mongoose';
+import {Types} from 'mongoose';
+import {Doc, Ref} from "@mean-stream/nestx";
 
 export class Consent {
   @Prop()
@@ -33,6 +34,21 @@ export class Consent {
   @IsOptional()
   @IsBoolean()
   '3P'?: boolean;
+}
+
+// TODO when merging frontend and backend, reuse and merge this with the frontend model
+export class Feedback {
+  @IsOptional()
+  @IsIn([1, 2, 3, 4])
+  appropriate?: number;
+
+  @IsOptional()
+  @IsIn([1, 2, 3, 4])
+  helpful?: number;
+
+  @IsOptional()
+  @IsIn([1, 2, 3, 4])
+  understandable?: number;
 }
 
 export class AuthorInfo {
@@ -64,14 +80,15 @@ export class AuthorInfo {
 
 @Schema()
 export class Solution {
+  @ApiProperty()
+  _id: Types.ObjectId;
+
   @Prop()
   @ApiProperty()
   token: string;
 
-  @Prop({index: 1})
-  @ApiProperty()
-  @IsMongoId()
-  assignment: string;
+  @Ref('Assignment', {index: 1})
+  assignment: Types.ObjectId;
 
   @Prop({index: 1})
   @ApiProperty({required: false})
@@ -105,15 +122,30 @@ export class Solution {
   consent?: Consent;
 
   @Prop()
+  @ApiPropertyOptional()
+  @ValidateNested()
+  @Type(() => Feedback)
+  feedback?: Feedback;
+
+  @Prop()
   @ApiPropertyOptional({description: ''})
   @IsNumber()
   points?: number;
 }
 
-export type SolutionDocument = Solution & Document;
+export type SolutionDocument = Doc<Solution>;
+
+export const SOLUTION_SORT = {
+  'author.name': 1,
+  'author.github': 1,
+  timestamp: 1,
+} as const;
+
+export const SOLUTION_COLLATION = {
+  locale: 'en',
+  caseFirst: 'off',
+} as const;
 
 export const SolutionSchema = SchemaFactory.createForClass(Solution)
-  .index({assignment: 1, 'author.name': 1})
-  .index({assignment: 1, 'author.github': 1})
-  .index({assignment: 1, 'timestamp': 1})
+  .index({assignment: 1, ...SOLUTION_SORT}, {collation: SOLUTION_COLLATION})
 ;

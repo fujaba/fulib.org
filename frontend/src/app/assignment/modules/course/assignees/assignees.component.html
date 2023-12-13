@@ -1,0 +1,83 @@
+<table class="table table-hover table-bordered table-sm table-responsive">
+  <thead>
+  <tr>
+    <th></th>
+    @for (assignment of assignments;track assignment) {
+      <th colspan="3">
+        <a class="bi-clipboard-check text-body"
+           [routerLink]="assignment && '/assignments/' + assignment._id + '/solutions'"
+           [ngbTooltip]="assignment && assignment.title" container="body">
+          {{ assignmentNames[$index] }}
+        </a>
+      </th>
+    }
+  </tr>
+  <tr>
+    <th>
+      Assignee
+    </th>
+    @for (assignment of assignments;track assignment) {
+      <th>
+        <span class="bi-lightbulb" ngbTooltip="Solutions"></span>
+      </th>
+      <th>
+        <span class="bi-stopwatch" ngbTooltip="Total Duration"> Total</span>
+      </th>
+      <th>
+        <span class="bi-stopwatch" ngbTooltip="Average Duration"> Avg.</span>
+      </th>
+    }
+    <th>
+      <span class="bi-lightbulb" ngbTooltip="Total Solutions"> Solutions</span>
+    </th>
+    <th>
+      <span class="bi-stopwatch" ngbTooltip="Total Duration"> Duration</span>
+    </th>
+    <th>
+      <span class="bi-person-raised-hand" ngbTooltip="No. of Feedbacks"> Feedbacks</span>
+    </th>
+  </tr>
+  </thead>
+  <tbody class="text-end">
+    @if (!assignees) {
+      <tr>
+        <td [attr.colspan]="1 + assignmentNames.length * 3 + 3" class="text-center align-middle">
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          Loading...
+        </td>
+      </tr>
+    }
+    @for (assignee of assignees;track assignee) {
+      <tr>
+        <td class="text-start">
+          {{ assignee.assignee }}
+        </td>
+        @for (assignment of assignee.assignments;track assignment;let i = $index) {
+          <td class="text-end"
+              [routerLink]="assignment && ['/assignments', course?.assignments?.[i], 'solutions']"
+              [queryParams]="{q: 'assignee:' + assignee.assignee}"
+              [ngbTooltip]="assignment ? 'View Solutions' : 'No Solutions'" container="body"
+              [class.cursor-pointer]="assignment"
+          >
+            {{ assignment?.solutions }}
+          </td>
+          <td>
+            {{ assignment && (assignment.duration | duration) }}
+          </td>
+          <td>
+            {{ assignment && (assignment.duration / assignment.solutions | duration:true) }}
+          </td>
+        }
+        <td>
+          {{ assignee.solutions }}
+        </td>
+        <td>
+          {{ assignee.duration | duration }}
+        </td>
+        <td>
+          {{ assignee.feedbacks }}
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>

@@ -28,7 +28,11 @@ export class ProjectController {
     @Body() dto: CreateProjectDto,
     @AuthUser() user: UserToken,
   ): Promise<Project> {
-    return this.projectService.create(dto, user.sub);
+    return this.projectService.create({
+      ...dto,
+      userId: user.sub,
+      created: new Date(),
+    });
   }
 
   @Get()
@@ -38,7 +42,11 @@ export class ProjectController {
     @AuthUser() user: UserToken,
   ): Promise<Project[]> {
     const members = await this.memberService.findAll({user: user.sub});
-    return this.projectService.findAll({_id: {$in: members.map(m => m.parent)}});
+    return this.projectService.findAll({
+      _id: {$in: members.map(m => m.parent)},
+    }, {
+      sort: {name: 1},
+    });
   }
 
   @Get(':id')
@@ -69,6 +77,6 @@ export class ProjectController {
   async remove(
     @Param('id', ObjectIdPipe) id: Types.ObjectId,
   ): Promise<Project | null> {
-    return this.projectService.remove(id);
+    return this.projectService.delete(id);
   }
 }

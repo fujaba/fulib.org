@@ -47,9 +47,11 @@
       readOnly: true
     }"></app-autotheme-codemirror>
   </div>
-  <div *ngIf="response && (response | exception:scenarioText) as exception" style="height: 2rem">
-    It looks like an exception occurred. <a target="_blank" [href]="exception">Report an Issue</a>
-  </div>
+  @if (response && (response | exception:scenarioText);as exception) {
+    <div style="height: 2rem">
+      It looks like an exception occurred. <a target="_blank" [href]="exception">Report an Issue</a>
+    </div>
+  }
 </ng-template>
 
 <ng-template #java>
@@ -63,147 +65,163 @@
 </ng-template>
 
 <ng-template #markdown>
-  <div *ngIf="markdownHtml else loading" class="h-100 overflow-auto">
-    <app-markdown [html]="markdownHtml"></app-markdown>
-  </div>
+  @if (markdownHtml) {
+    <div class="h-100 overflow-auto">
+      <app-markdown [html]="markdownHtml"></app-markdown>
+    </div>
+  } @else {
+    Loading...
+  }
 </ng-template>
 
 <ng-template #classDiagram>
-  <ng-container *ngIf="response else loading">
-    <div *ngIf="response.classDiagram else emptyClassDiagram" class="h-100 overflow-auto">
-     <a routerLink="preview" [queryParams]="{url: classDiagramUrl}" queryParamsHandling="merge">
-       <img class="diagram w-100 h-100" [src]="classDiagramUrl" alt="Class Diagram">
-     </a>
-    </div>
-    <ng-template #emptyClassDiagram>
+  @if (response) {
+    @if (response.classDiagram) {
+      <div class="h-100 overflow-auto">
+        <a routerLink="preview" [queryParams]="{url: classDiagramUrl}" queryParamsHandling="merge">
+          <img class="diagram w-100 h-100" [src]="classDiagramUrl" alt="Class Diagram">
+        </a>
+      </div>
+    } @else {
       No model classes to display.
-    </ng-template>
-  </ng-container>
+    }
+  } @else {
+    Loading...
+  }
 </ng-template>
 
 <ng-template #objectDiagrams>
-  <ng-container *ngIf="response else loading">
-    <div *ngIf="response.objectDiagrams?.length else emptyObjectDiagrams" class="d-flex flex-column h-100">
-      <ul ngbNav #objectDiagramTabs="ngbNav" [(activeId)]="activeObjectDiagramTab" class="nav-tabs">
-        <li *ngFor="let diagram of response.objectDiagrams; index as diagramIndex"
-            [ngbNavItem]="diagramIndex + 1">
-          <a ngbNavLink>{{diagram.name}}</a>
-          <ng-template ngbNavContent>
-            <a
-              routerLink="preview"
-              [queryParams]="{url: apiUrl + '/runcodegen/' + response.id + '/' + diagram.path}"
-              queryParamsHandling="merge"
-            >
-              <app-diagram-view [url]="apiUrl + '/runcodegen/' + response.id + '/' + diagram.path"></app-diagram-view>
-            </a>
-          </ng-template>
-        </li>
-      </ul>
-
-      <div [ngbNavOutlet]="objectDiagramTabs" class="mt-2 overflow-auto"></div>
-    </div>
-    <ng-template #emptyObjectDiagrams>
+  @if (response) {
+    @if (response.objectDiagrams?.length) {
+      <div class="d-flex flex-column h-100">
+        <ul ngbNav #objectDiagramTabs="ngbNav" [(activeId)]="activeObjectDiagramTab" class="nav-tabs">
+          @for (diagram of response.objectDiagrams;track diagram;let diagramIndex = $index) {
+            <li [ngbNavItem]="diagramIndex + 1">
+              <a ngbNavLink>{{ diagram.name }}</a>
+              <ng-template ngbNavContent>
+                <a
+                  routerLink="preview"
+                  [queryParams]="{url: apiUrl + '/runcodegen/' + response.id + '/' + diagram.path}"
+                  queryParamsHandling="merge"
+                >
+                  <app-diagram-view
+                    [url]="apiUrl + '/runcodegen/' + response.id + '/' + diagram.path"></app-diagram-view>
+                </a>
+              </ng-template>
+            </li>
+          }
+        </ul>
+        <div [ngbNavOutlet]="objectDiagramTabs" class="mt-2 overflow-auto"></div>
+      </div>
+    } @else {
       No object diagrams to display.
-    </ng-template>
-  </ng-container>
+    }
+  } @else {
+    Loading...
+  }
 </ng-template>
 
-<div class="h-100 d-flex flex-column" *ngIf="[
+@if ([
   {id: 'scenario', title: 'Scenario', template: scenario},
   {id: 'output', title: 'Output', template: output},
   {id: 'java', title: 'Java Test Code', template: java},
   {id: 'markdown', title: 'Markdown', template: markdown},
   {id: 'classDiagram', title: 'Class Diagram', template: classDiagram},
   {id: 'objectDiagrams', title: 'Object Diagrams', template: objectDiagrams}
-] as items">
-  <div class="btn-toolbar align-items-center p-3" role="toolbar" aria-label="Toolbar">
-    <select
-      class="form-select w-auto me-2"
-      aria-label="Selected Example"
-      [ngModel]="selectedExample" (ngModelChange)="selectExample($event)"
-    >
-      <option [ngValue]="null">Select Example...</option>
-      <optgroup *ngFor="let category of exampleCategories; index as categoryIndex"
-                label="{{categoryIndex + 1}}. {{category.name}}">
-        <option *ngFor="let example of category.examples; index as exampleIndex"
-                label="{{categoryIndex + 1}}.{{exampleIndex + 1}}. {{example.name}}"
-                [ngValue]="example"></option>
-      </optgroup>
-    </select>
-    <div ngbDropdown class="d-inline-block me-2" autoClose="outside">
-      <button class="btn btn-outline-secondary" id="panelsDropdown" ngbDropdownToggle>View</button>
-      <div ngbDropdownMenu aria-labelledby="panelsDropdown">
-        <h6 class="dropdown-header">Editor Panels</h6>
-        <button *ngFor="let panel of items"
-                ngbDropdownItem
-                (click)="setPanelClosed(panel.id, !panels[panel.id].closed)"
-                class="dropdown-item-check"
-                [class.checked]="!panels[panel.id].closed"
-        >
-          {{panel.title}}
-        </button>
-        <div class="dropdown-divider"></div>
-        <button ngbDropdownItem (click)="resetPanels()" class="text-danger">
-          Reset Editor Layout
-        </button>
-      </div>
-    </div>
-    <a role="button" class="btn btn-outline-secondary me-2" routerLink="config">
-      Configure or Export
-    </a>
-    <div class="btn-group" role="group">
-      <button type="button" class="btn btn-outline-primary"
-              ngbTooltip="Keyboard Shortcuts: Ctrl-&#9166;, &#8984;&#9166;, Ctrl-S, &#8984;S"
-              (click)="submit()" [disabled]="submitting">
-        Compile and Run
-      </button>
-      <div class="btn-group" ngbDropdown role="group" aria-label="Compile and Run Options">
-        <button class="btn btn-outline-primary dropdown-toggle-split" ngbDropdownToggle></button>
-        <div class="dropdown-menu" ngbDropdownMenu>
-          <button ngbDropdownItem (click)="autoSubmit = !autoSubmit" class="dropdown-item-check" [class.checked]="autoSubmit">
-            Automatically Compile and Run
-            <br/>
-            when the scenario changes
+];as items) {
+  <div class="h-100 d-flex flex-column">
+    <div class="btn-toolbar align-items-center p-3" role="toolbar" aria-label="Toolbar">
+      <select
+        class="form-select w-auto me-2"
+        aria-label="Selected Example"
+        [ngModel]="selectedExample" (ngModelChange)="selectExample($event)"
+      >
+        <option [ngValue]="null">Select Example...</option>
+        @for (category of exampleCategories;track category;let categoryIndex = $index) {
+          <optgroup label="{{categoryIndex + 1}}. {{category.name}}">
+            @for (example of category.examples;track example;let exampleIndex = $index) {
+              <option [ngValue]="example">
+                {{ categoryIndex + 1 }}.{{ exampleIndex + 1 }}. {{ example.name }}
+              </option>
+            }
+          </optgroup>
+        }
+      </select>
+      <div ngbDropdown class="d-inline-block me-2" autoClose="outside">
+        <button class="btn btn-outline-secondary" id="panelsDropdown" ngbDropdownToggle>View</button>
+        <div ngbDropdownMenu aria-labelledby="panelsDropdown">
+          <h6 class="dropdown-header">Editor Panels</h6>
+          @for (panel of items;track panel) {
+            <button
+              ngbDropdownItem
+              (click)="setPanelClosed(panel.id, !panels[panel.id].closed)"
+              class="dropdown-item-check"
+              [class.checked]="!panels[panel.id].closed"
+            >
+              {{ panel.title }}
+            </button>
+          }
+          <div class="dropdown-divider"></div>
+          <button ngbDropdownItem (click)="resetPanels()" class="text-danger">
+            Reset Editor Layout
           </button>
         </div>
       </div>
-    </div>
-  </div>
-  <div class="flex-grow-1">
-    <gridster [options]="{
-      draggable: {enabled: true},
-      resizable: {enabled: true},
-      itemChangeCallback: savePanels,
-      minRows: 12,
-      maxRows: 12,
-      minCols: 12,
-      maxCols: 12,
-      margin: 0,
-      outerMargin: false,
-      swap: true,
-      displayGrid: 'onDrag&Resize'
-    }">
-      <ng-container *ngFor="let item of items; trackBy: itemId">
-        <gridster-item *ngIf="!panels[item.id].closed" [item]="panels[item.id]" class="p-3">
-          <div class="d-flex align-items-center">
-            <h2 class="me-auto">
-              {{item.title}}
-            </h2>
-            <button class="btn-close" aria-label="Close" (click)="setPanelClosed(item.id, true)">
+      <a role="button" class="btn btn-outline-secondary me-2" routerLink="config">
+        Configure or Export
+      </a>
+      <div class="btn-group" role="group">
+        <button type="button" class="btn btn-outline-primary"
+                ngbTooltip="Keyboard Shortcuts: Ctrl-&#9166;, &#8984;&#9166;, Ctrl-S, &#8984;S"
+                (click)="submit()" [disabled]="submitting">
+          Compile and Run
+        </button>
+        <div class="btn-group" ngbDropdown role="group" aria-label="Compile and Run Options">
+          <button class="btn btn-outline-primary dropdown-toggle-split" ngbDropdownToggle></button>
+          <div class="dropdown-menu" ngbDropdownMenu>
+            <button ngbDropdownItem (click)="autoSubmit = !autoSubmit" class="dropdown-item-check" [class.checked]="autoSubmit">
+              Automatically Compile and Run
+              <br/>
+              when the scenario changes
             </button>
           </div>
-          <hr class="m-2"/>
-          <div class="gridster-item-content">
-            <ng-container [ngTemplateOutlet]="item.template"></ng-container>
-          </div>
-        </gridster-item>
-      </ng-container>
-    </gridster>
+        </div>
+      </div>
+    </div>
+    <div class="flex-grow-1">
+      <gridster [options]="{
+        draggable: {enabled: true},
+        resizable: {enabled: true},
+        itemChangeCallback: savePanels,
+        minRows: 12,
+        maxRows: 12,
+        minCols: 12,
+        maxCols: 12,
+        margin: 0,
+        outerMargin: false,
+        swap: true,
+        displayGrid: 'onDrag&Resize'
+      }">
+        @for (item of items;track item.id) {
+          @if (!panels[item.id].closed) {
+            <gridster-item [item]="panels[item.id]" class="p-3">
+              <div class="d-flex align-items-center">
+                <h2 class="me-auto">
+                  {{item.title}}
+                </h2>
+                <button class="btn-close" aria-label="Close" (click)="setPanelClosed(item.id, true)">
+                </button>
+              </div>
+              <hr class="m-2"/>
+              <div class="gridster-item-content">
+                <ng-container [ngTemplateOutlet]="item.template"></ng-container>
+              </div>
+            </gridster-item>
+          }
+        }
+      </gridster>
+    </div>
   </div>
-</div>
-
-<ng-template #loading>
-  Loading...
-</ng-template>
+}
 
 <router-outlet></router-outlet>

@@ -9,9 +9,6 @@ export class ProTipComponent implements OnInit {
   @Input() tips: string[];
   tip = 0;
 
-  constructor() {
-  }
-
   ngOnInit(): void {
     this.tip = 0 | (Math.random() * this.tips.length);
   }

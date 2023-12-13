@@ -5,7 +5,7 @@ import {Snippet} from '../model/evaluation';
 import {AssignmentService} from './assignment.service';
 import {observeSSE} from './sse-helper';
 
-interface SelectionDto {
+export interface SelectionDto {
   assignment: string;
   solution: string;
   author: string;

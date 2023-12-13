@@ -1,4 +1,4 @@
-import {Component, Input, TrackByFunction} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Page} from '../docs.interface';
 
@@ -14,6 +14,4 @@ export class PageNavigationComponent {
     public route: ActivatedRoute,
   ) {
   }
-
-  pageUrl: TrackByFunction<Page> = (_, p) => p.url;
 }

@@ -1,12 +1,16 @@
-import {Injectable, OnModuleInit} from '@nestjs/common';
+import {ForbiddenException, Injectable, OnModuleInit} from '@nestjs/common';
 import {ElasticsearchService} from "@nestjs/elasticsearch";
 import {FileDocument, SearchService} from "../search/search.service";
 import {Embeddable, EmbeddableSearch, EmbeddingEstimate, SnippetEmbeddable} from "./embedding.dto";
 import {OpenAIService} from "./openai.service";
 import {QueryDslQueryContainer} from "@elastic/elasticsearch/lib/api/types";
 import {SolutionService} from "../solution/solution.service";
+import {Assignment} from "../assignment/assignment.schema";
+import {FilterQuery} from "mongoose";
+import {Solution} from "../solution/solution.schema";
+import * as ignore from 'ignore-file';
 
-type DeclarationSnippet = Pick<SnippetEmbeddable, 'text' | 'line'> & { name: string };
+type DeclarationSnippet = SnippetEmbeddable & { name: string };
 
 @Injectable()
 export class EmbeddingService implements OnModuleInit {
@@ -63,73 +67,104 @@ export class EmbeddingService implements OnModuleInit {
     }, undefined);
   }
 
-  async estimateEmbeddings(assignment: string): Promise<EmbeddingEstimate> {
-    const {solutions, documents} = await this.getDocuments(assignment);
-    const tokens = this.openaiService.countTokens(documents.map(d => ({
-      name: d.file,
-      content: d.content,
-      size: d.content.length
-    })));
-    return this.createEstimate(solutions, documents, tokens);
+  async createEmbeddings(assignment: Assignment, estimate = false): Promise<EmbeddingEstimate> {
+    const apiKey = assignment.classroom?.openaiApiKey;
+    if (!apiKey) {
+      throw new ForbiddenException('No OpenAI API key configured for this assignment.');
+    }
+
+    const {solutions, documents, ignoreFn, ignoredFiles} = await this.getDocuments(assignment);
+    const ignoredFunctions = new Set<string>();
+    let functions = documents
+      .flatMap(d => d.file.endsWith('.py')
+        ? this.getFunctions(d, PYTHON_FUNCTION_HEADER, findIndentEnd)
+        : this.getFunctions(d, CLIKE_FUNCTION_HEADER, findClosingBrace)
+      )
+    ;
+    if (ignoreFn) {
+      functions = functions.filter(f => {
+        if (ignoreFn(f.file)) {
+          ignoredFunctions.add(f.id);
+          return false;
+        }
+        return true;
+      });
+    }
+
+    let tokens = 0;
+    if (estimate) {
+      for (const func of functions) {
+        tokens += this.openaiService.countTokens(func.text);
+      }
+    } else {
+      tokens = (await Promise.all(functions.map(async func => this.upsert(func, apiKey).then(({tokens}) => tokens))))
+        .reduce((a, b) => a + b, 0);
+    }
+
+    return {
+      solutions,
+      files: documents.length,
+      tokens,
+      estimatedCost: this.openaiService.estimateCost(tokens),
+      functions: functions.map(f => `${f.file}#${f.name}`),
+      ignoredFiles: Array.from(ignoredFiles),
+      ignoredFunctions: Array.from(ignoredFunctions),
+    };
   }
 
-  getFunctions(file: string, headPattern: RegExp, findEnd: (code: string, headStart: number, headEnd: number) => number): DeclarationSnippet[] {
+  private async getDocuments(assignment: Assignment) {
+    const filter: FilterQuery<Solution> = {assignment: assignment._id};
+    if (assignment.classroom?.openaiConsent !== false) {
+      filter['consent.3P'] = true;
+    }
+    const solutionsWithConsent = await this.solutionService.findAll(filter, {projection: {_id: 1}});
+    const allDocuments = await this.searchService.findAll(assignment._id.toString(), solutionsWithConsent.map(s => s.id));
+
+    const ignoreFn = assignment.classroom?.openaiIgnore ? ignore.compile(assignment.classroom.openaiIgnore) as (path: string) => boolean : undefined;
+    const ignoredFiles = new Set<string>();
+    const documents = allDocuments.filter(d => {
+      if (!this.openaiService.isSupportedExtension(d.file)) {
+        ignoredFiles.add(d.file);
+        return false;
+      }
+      if (ignoreFn && ignoreFn(d.file)) {
+        ignoredFiles.add(d.file);
+        return false;
+      }
+      return true;
+    });
+
+    return {
+      solutions: solutionsWithConsent.length,
+      documents,
+      ignoreFn,
+      ignoredFiles,
+    };
+  }
+
+  getFunctions(document: FileDocument, headPattern: RegExp, findEnd: (code: string, headStart: number, headEnd: number) => number): DeclarationSnippet[] {
+    const {content, file, solution, assignment} = document;
     const results: DeclarationSnippet[] = [];
-    const lineStarts = this.searchService._buildLineStartList(file);
-    for (const match of file.matchAll(headPattern)) {
+    const lineStarts = this.searchService._buildLineStartList(content);
+    for (const match of content.matchAll(headPattern)) {
       const name = match[1];
       const start = match.index!;
       const {line, character: column} = this.searchService._findLocation(lineStarts, start);
-      const end = findEnd(file, start, start + match[0].length);
-      const text = file.substring(start - column, end + 1);
-      results.push({line, name, text});
+      const end = findEnd(content, start, start + match[0].length);
+      const text = content.substring(start - column, end + 1);
+      results.push({
+        id: `${solution}-${file}-${line}`,
+        type: 'snippet',
+        assignment,
+        solution,
+        file,
+        line,
+        name,
+        text: `${document.file}\n\n${text}`,
+        embedding: [],
+      });
     }
     return results;
-  }
-
-  async createEmbeddings(assignment: string, apiKey: string): Promise<EmbeddingEstimate> {
-    const {solutions, documents} = await this.getDocuments(assignment);
-    const results = await Promise.all(documents
-      .filter(d => this.openaiService.isSupportedExtension(d.file))
-      .map(async d => {
-        const functions = d.file.endsWith('.py')
-          ? this.getFunctions(d.content, PYTHON_FUNCTION_HEADER, findIndentEnd)
-          : this.getFunctions(d.content, CLIKE_FUNCTION_HEADER, findClosingBrace)
-        ;
-        const fileTotal = await Promise.all(functions.map(async ({line, name, text}) => {
-          const {tokens} = await this.upsert({
-            id: `${d.solution}-${d.file}-${line}`,
-            assignment,
-            type: 'snippet',
-            solution: d.solution,
-            file: d.file,
-            line,
-            name,
-            text: `${d.file}\n\n${text}`,
-            embedding: [],
-          }, apiKey);
-          return tokens;
-        }));
-        return fileTotal.reduce((a, b) => a + b, 0);
-      }));
-    const tokens = results.reduce((a, b) => a + b, 0);
-    return this.createEstimate(solutions, documents, tokens);
-  }
-
-  private createEstimate(solutions: number, documents: FileDocument[], tokens: number): EmbeddingEstimate {
-    const estimatedCost = this.openaiService.estimateCost(tokens);
-    return {solutions, files: documents.length, tokens, estimatedCost};
-  }
-
-  private async getDocuments(assignment: string) {
-    const solutionsWithConsent = await this.solutionService.model.find({
-      assignment,
-      'consent.3P': true,
-    }, {_id: 1});
-    return {
-      solutions: solutionsWithConsent.length,
-      documents: await this.searchService.findAll(assignment, solutionsWithConsent.map(s => s.id)),
-    };
   }
 
   async upsert(embeddable: Embeddable, apiKey: string): Promise<{ embeddable: Embeddable, tokens: number }> {
@@ -186,7 +221,7 @@ export class EmbeddingService implements OnModuleInit {
     return response.hits.hits.map(({_score, _source}) => ({...(_source as Embeddable), _score: _score || 0}));
   }
 
-  async deleteNotIn(assignment: string, tasks: string[]): Promise<number> {
+  async deleteTasksNotIn(assignment: string, tasks: string[]): Promise<number> {
     const body = await this.elasticsearchService.deleteByQuery({
       index: 'embeddings',
       query: {
@@ -194,11 +229,28 @@ export class EmbeddingService implements OnModuleInit {
           must: {
             term: {
               assignment,
+              type: 'task',
             },
           },
           must_not: {
             terms: {
               task: tasks,
+            },
+          },
+        },
+      },
+    });
+    return body.deleted || 0;
+  }
+
+  async deleteAll(assignment: string): Promise<number> {
+    const body = await this.elasticsearchService.deleteByQuery({
+      index: 'embeddings',
+      query: {
+        bool: {
+          must: {
+            term: {
+              assignment,
             },
           },
         },

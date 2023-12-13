@@ -4,23 +4,26 @@
       <h1>{{course?.title || 'Loading Title...'}}</h1>
       <app-markdown [markdown]="course?.description"></app-markdown>
       <div class="timeline-list">
-        <a
-          *ngFor="let assignment of assignments; let i = index"
-          class="timeline-item text-body text-decoration-none"
-          [routerLink]="[assignment._id]"
-          routerLinkActive="timeline-item-active"
-        >
-          <div class="timeline-item-badge bg-secondary">
-            {{i + 1}}
-          </div>
-          <div class="timeline-item-body">
-            {{assignment.title}}
-            <span class="text-muted" *ngIf="solutions[i]">
-              &#8226;
-              Done!
-            </span>
-          </div>
-        </a>
+        @for (assignment of assignments; track assignment._id; let i = $index) {
+          <a
+            class="timeline-item text-body text-decoration-none"
+            [routerLink]="[assignment._id]"
+            routerLinkActive="timeline-item-active"
+          >
+            <div class="timeline-item-badge bg-secondary">
+              {{i + 1}}
+            </div>
+            <div class="timeline-item-body">
+              {{assignment.title}}
+              @if (solutions[i]) {
+                <span class="text-muted">
+                &#8226;
+                Done!
+              </span>
+              }
+            </div>
+          </a>
+        }
       </div>
     </div>
   </div>

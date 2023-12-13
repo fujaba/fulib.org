@@ -1,15 +1,17 @@
 <div class="container">
   <app-my-assignments></app-my-assignments>
   <h1>More...</h1>
-  <a
-    *ngFor="let page of [['courses', 'bi-list-ol', 'My Courses'], ['solutions', 'bi-lightbulb', 'My Solutions'], ['settings', 'bi-gear', 'Settings']]"
-    [routerLink]="page[0]"
-    class="d-block h2 link-secondary text-decoration-none"
-  >
-    <i [class]="page[1]"></i>
-    {{ page[2] }}
-    <i class="bi-chevron-right"></i>
-  </a>
+  @for (page of [
+    ['courses', 'bi-list-ol', 'My Courses'],
+    ['solutions', 'bi-lightbulb', 'My Solutions'],
+    ['settings', 'bi-gear', 'Settings'],
+  ]; track page) {
+    <a [routerLink]="page[0]" class="d-block h2 link-secondary text-decoration-none">
+      <i [class]="page[1]"></i>
+      {{ page[2] }}
+      <i class="bi-chevron-right"></i>
+    </a>
+  }
 </div>
 <ng-template #configModal let-modal>
   <div class="modal-header">

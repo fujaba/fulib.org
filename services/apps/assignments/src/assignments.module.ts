@@ -14,13 +14,13 @@ import {SearchModule} from './search/search.module';
 import {SelectionModule} from './selection/selection.module';
 import {SolutionModule} from './solution/solution.module';
 import {StatisticsModule} from './statistics/statistics.module';
-import {TelemetryModule} from './telemetry/telemetry.module';
 import {SentryInterceptor, SentryModule} from "@ntegral/nestjs-sentry";
 import {APP_INTERCEPTOR} from "@nestjs/core";
 import {EmbeddingModule} from './embedding/embedding.module';
 import {MossModule} from './moss/moss.module';
 import { FileModule } from './file/file.module';
-import {MemberModule} from "./member/member.module";
+import {AssignmentMemberModule} from "./assignment-member/assignment-member.module";
+import {CourseMemberModule} from "./course-member/course-member.module";
 
 @Module({
   imports: [
@@ -29,6 +29,7 @@ import {MemberModule} from "./member/member.module";
     EventModule.forRoot({nats: environment.nats}),
     ScheduleModule.forRoot(),
     SentryModule.forRoot({
+      enabled: environment.nodeEnv !== 'development',
       dsn: environment.sentryDsn,
       environment: environment.nodeEnv,
       release: environment.version,
@@ -39,17 +40,17 @@ import {MemberModule} from "./member/member.module";
       },
     }),
     AssignmentModule,
-    MemberModule,
+    AssignmentMemberModule,
     ClassroomModule,
     SolutionModule,
     AssigneeModule,
     CommentModule,
     CourseModule,
+    CourseMemberModule,
     EvaluationModule,
     SearchModule,
     StatisticsModule,
     SelectionModule,
-    TelemetryModule,
     MossModule,
     EmbeddingModule,
     FileModule,

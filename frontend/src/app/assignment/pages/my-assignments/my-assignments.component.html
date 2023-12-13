@@ -7,47 +7,51 @@
 </h1>
 
 <ul class="list-group">
-  <li *ngFor="let assignment of assignments; let index = index" class="list-group-item">
-    <div class="d-flex align-items-center">
-      <div class="me-auto">
-        <app-assignment-info [assignment]="assignment"></app-assignment-info>
+  @for (assignment of assignments;track assignment) {
+    <li class="list-group-item">
+      <div class="d-flex align-items-center">
+        <div class="me-auto">
+          <app-assignment-info [assignment]="assignment"></app-assignment-info>
+        </div>
+        <a class="btn btn-primary bi-table me-2" [routerLink]="[assignment._id, 'solutions']">
+          View Solutions
+        </a>
+        <app-assignment-actions [assignment]="assignment" (removed)="remove(assignment)"></app-assignment-actions>
       </div>
-      <a class="btn btn-primary bi-table me-2" [routerLink]="[assignment._id, 'solutions']">
-        View Solutions
-      </a>
-      <app-assignment-actions [assignment]="assignment" (removed)="remove(assignment)"></app-assignment-actions>
-    </div>
-  </li>
+    </li>
+  }
 </ul>
 
-<div class="card" *ngIf="!assignments?.length && !archived">
-  <div class="card-body">
-    <h5 class="card-title">
-      Welcome to Assignments!
-    </h5>
-    <p class="card-text">
-      Assignments allow you to:
-    </p>
-    <div class="d-flex align-items-center">
-      <i class="bi-clipboard-check feature-icon"></i>
-      <div class="flex-grow-1 ms-3">
-        Create interactive exercises for your students.
+@if (!assignments?.length && !archived) {
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">
+        Welcome to Assignments!
+      </h5>
+      <p class="card-text">
+        Assignments allow you to:
+      </p>
+      <div class="d-flex align-items-center">
+        <i class="bi-clipboard-check feature-icon"></i>
+        <div class="flex-grow-1 ms-3">
+          Create interactive exercises for your students.
+        </div>
       </div>
-    </div>
-    <div class="d-flex align-items-center">
-      <i class="bi-list-check feature-icon"></i>
-      <div class="flex-grow-1 ms-3">
-        Automatically and manually grade submissions.
+      <div class="d-flex align-items-center">
+        <i class="bi-list-check feature-icon"></i>
+        <div class="flex-grow-1 ms-3">
+          Automatically and manually grade submissions.
+        </div>
       </div>
-    </div>
-    <div class="d-flex align-items-center">
-      <i class="bi-chat-left-text feature-icon"></i>
-      <div class="flex-grow-1 ms-3">
-        Discuss submissions and grades.
+      <div class="d-flex align-items-center">
+        <i class="bi-chat-left-text feature-icon"></i>
+        <div class="flex-grow-1 ms-3">
+          Discuss submissions and grades.
+        </div>
       </div>
     </div>
   </div>
-</div>
+}
 
 <a routerLink="." [queryParams]="{archived: !archived}">
   View {{ archived ? 'Active' : 'Archived'}} Assignments

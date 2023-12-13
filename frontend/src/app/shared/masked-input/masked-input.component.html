@@ -1,17 +1,18 @@
-<div *ngIf="value === '***' else tokenInput" class="input-group">
-  <input
-    type="text"
-    class="form-control text-blur"
-    readonly
-    [value]="placeholder"
-  >
-  <button
-    class="btn btn-outline-secondary bi-pencil"
-    ngbTooltip="Edit"
-    (click)="value = ''"
-  ></button>
-</div>
-<ng-template #tokenInput>
+@if (value === '***') {
+  <div class="input-group">
+    <input
+      type="text"
+      class="form-control text-blur"
+      readonly
+      [value]="placeholder"
+    >
+    <button
+      class="btn btn-outline-secondary bi-pencil"
+      ngbTooltip="Edit"
+      (click)="value = ''"
+    ></button>
+  </div>
+} @else {
   <input
     [type]="type"
     class="form-control"
@@ -19,4 +20,4 @@
     [(ngModel)]="value"
     (ngModelChange)="valueChange.next(value)"
   >
-</ng-template>
+}

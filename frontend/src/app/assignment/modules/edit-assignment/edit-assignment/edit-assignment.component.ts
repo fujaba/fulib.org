@@ -63,7 +63,7 @@ export class EditAssignmentComponent implements OnInit {
   }
 
   saveDraft(): void {
-    this.assignmentService.saveDraft('_id' in this.context.assignment ? this.context.assignment._id : undefined, this.getAssignment());
+    this.assignmentService.saveDraft('_id' in this.context.assignment ? this.context.assignment._id : undefined, this.context.getAssignment());
     this.draft = true;
   }
 
@@ -76,13 +76,13 @@ export class EditAssignmentComponent implements OnInit {
   }
 
   onExport(): void {
-    const {_id, token, createdBy, ...rest} = this.getAssignment() as any;
+    const {_id, token, createdBy, ...rest} = this.context.getAssignment() as any;
     this.assignmentService.download(rest);
   }
 
   submit(): void {
     this.submitting = true;
-    const dto = this.getAssignment();
+    const dto = this.context.getAssignment();
     const _id = '_id' in dto ? dto._id : undefined;
     const operation = _id ? this.assignmentService.update(_id, {
       ...dto,
@@ -97,20 +97,6 @@ export class EditAssignmentComponent implements OnInit {
       this.submitting = false;
       this.toastService.error('Assignment', `Failed to ${_id ? 'update' : 'create'} assignment`, error);
     });
-  }
-
-  private getAssignment(): Assignment | CreateAssignmentDto {
-    return {
-      ...this.context.assignment,
-      tasks: this.getTasks(this.context.assignment.tasks),
-    };
-  }
-
-  private getTasks(tasks: Task[]): Task[] {
-    return tasks.filter(t => !t.deleted).map(({deleted, collapsed, children, ...rest}) => ({
-      ...rest,
-      children: this.getTasks(children),
-    }));
   }
 
   deleteDraft() {

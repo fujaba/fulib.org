@@ -4,6 +4,7 @@ import {ProjectModule} from '../project/project.module';
 import {ContainerController} from './container.controller';
 import {ContainerService} from './container.service';
 import {HttpModule} from "@nestjs/axios";
+import {ContainerHandler} from "./container.handler";
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import {HttpModule} from "@nestjs/axios";
     HttpModule
   ],
   controllers: [ContainerController],
-  providers: [ContainerService],
+  providers: [ContainerService, ContainerHandler],
 })
 export class ContainerModule {
 }

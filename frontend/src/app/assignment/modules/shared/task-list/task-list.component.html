@@ -1,51 +1,61 @@
-<ul *ngIf="tasks else loading">
-  <li *ngFor="let task of tasks"
-      [class]="points && evaluations?.[task._id] ? 'list-unstyled text-' + (task | taskColor:points[task._id]) : evaluations ? 'list-unstyled' : undefined">
-    <input
-      *ngIf="evaluations"
-      #check
-      type="checkbox"
-      class="form-check-input"
-      [checked]="evaluations[task._id] && points?.[task._id] !== 0"
-      [indeterminate]="!evaluations[task._id]"
-      (change)="givePoints(task, check.checked ? task.points : 0)"
-      [ngbTooltip]="'Click to give ' + (check.checked ? 0 : task.points) + ' points'"
-    >
-    {{task.description}}
-    <span class="badge bg-{{task | taskColor:points?.[task._id]}}">
-      <ng-container *ngIf="points">{{points[task._id]}} / </ng-container>
-      {{task.points}}
-    </span>
-    <ng-container *ngIf="evaluations">
-      <a
-        *ngIf="evaluations[task._id] as evaluation; else createEvaluation"
-        class="ms-1"
-        [class.link-info]="evaluation.remark"
-        [class.link-secondary]="!evaluation.remark"
-        [class.bi-person]="evaluation.author !== 'Code Search'"
-        [class.bi-robot]="evaluation.author === 'Code Search'"
-        [ngbTooltip]="evaluation.remark + ' ~ ' + evaluation.author"
-        [routerLink]="[task._id]"
-        (click)="openTelemetry(task)"
-      ></a>
-      <ng-template #createEvaluation>
-        <a
-          ngbTooltip="Create Evaluation"
-          role="button"
-          class="bi-plus-circle link-primary ms-1"
-          [routerLink]="[task._id]"
-          (click)="openTelemetry(task)"
-        ></a>
-      </ng-template>
-    </ng-container>
-    <app-task-list
-      *ngIf="task.children.length"
-      [tasks]="task.children"
-      [evaluations]="evaluations"
-      [points]="points"
-    ></app-task-list>
-  </li>
-</ul>
-<ng-template #loading>
+@if (tasks) {
+  <ul>
+    @for (task of tasks;track task) {
+      <li [class]="[
+        points ? 'text-' + (task | taskColor:points[task._id]) : null,
+        evaluations && editable ? 'list-unstyled' : null,
+      ]">
+        @if (evaluations && editable) {
+          <input
+            #check
+            type="checkbox"
+            class="form-check-input"
+            [checked]="evaluations[task._id] && points?.[task._id] !== 0"
+            [indeterminate]="!evaluations[task._id]"
+            (change)="givePoints(task, check.checked ? task.points : 0)"
+            [ngbTooltip]="'Click to give ' + (check.checked ? 0 : task.points) + ' points'"
+          >
+        }
+        {{task.description}}
+        <span class="badge bg-{{task | taskColor:points?.[task._id]}}">
+          @if (points) {
+            {{ points[task._id] }} /
+          }
+          {{task.points}}
+        </span>
+        @if (evaluations) {
+          @if (evaluations[task._id];as evaluation) {
+            <a
+              class="ms-1"
+              [class.link-info]="evaluation.remark"
+              [class.link-secondary]="!evaluation.remark"
+              [class.bi-person]="evaluation.author !== 'Code Search'"
+              [class.bi-robot]="evaluation.author === 'Code Search'"
+              [ngbTooltip]="evaluation.remark + ' ~ ' + evaluation.author"
+              [routerLink]="[task._id]"
+            ></a>
+          }
+          @if (editable && !evaluations[task._id]) {
+            <a
+              ngbTooltip="Create Evaluation"
+              role="button"
+              class="bi-plus-circle link-primary ms-1"
+              [routerLink]="[task._id]"
+            ></a>
+          }
+        }
+        @if (task.children.length) {
+          <app-task-list
+            [allTasks]="allTasks"
+            [tasks]="task.children"
+            [evaluations]="evaluations"
+            [editable]="editable"
+            [points]="points"
+          ></app-task-list>
+        }
+      </li>
+    }
+  </ul>
+} @else {
   Loading...
-</ng-template>
+}

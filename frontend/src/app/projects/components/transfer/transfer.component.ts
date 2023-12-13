@@ -34,7 +34,7 @@ export class TransferComponent implements OnInit {
   }
 
   transfer(): void {
-    if (!this.transferOwner || !this.transferOwner.id) {
+    if (!this.transferOwner?.id) {
       return;
     }
     this.transfering = true;

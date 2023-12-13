@@ -2,6 +2,9 @@ import {Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleCha
 import hljs from 'highlight.js/lib/core';
 import {Snippet} from '../../../model/evaluation';
 import {ConfigService} from "../../../services/config.service";
+import Solution from "../../../model/solution";
+import {ReadAssignmentDto} from "../../../model/assignment";
+import {IDE} from "../../../model/config";
 
 @Component({
   selector: 'app-snippet',
@@ -11,7 +14,9 @@ import {ConfigService} from "../../../services/config.service";
 export class SnippetComponent implements OnChanges {
   @ViewChild('code') code: ElementRef<HTMLElement>;
 
-  @Input() snippet: Snippet;
+  @Input({required: true}) assignment?: ReadAssignmentDto;
+  @Input({required: true}) solution?: Solution;
+  @Input({required: true}) snippet: Snippet;
   @Input() expanded = true;
   @Input() wildcard?: string;
   @Output() updated = new EventEmitter<Snippet>();
@@ -19,11 +24,12 @@ export class SnippetComponent implements OnChanges {
 
   fileType?: string;
   contextLines = 0;
-  openUrl = '';
+  ide: IDE;
 
   constructor(
-    private readonly configService: ConfigService,
+    configService: ConfigService,
   ) {
+    this.ide = configService.get('ide');
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -31,7 +37,6 @@ export class SnippetComponent implements OnChanges {
       const snippet = changes.snippet.currentValue;
       this.fileType = snippet.file.substring(snippet.file.lastIndexOf('.') + 1);
       this.contextLines = snippet.context ? 2 : 0;
-      this.openUrl = `${this.configService.get('ide')}://fulib.fulibfeedback/open?file=${encodeURIComponent(snippet.file)}&line=${snippet.from.line}&endline=${snippet.to.line}`;
     }
     if (changes.expanded) {
       this.setExpanded(changes.expanded.currentValue);
@@ -52,7 +57,7 @@ export class SnippetComponent implements OnChanges {
     }
 
     const sel = document.getSelection();
-    if (!sel || !sel.rangeCount) {
+    if (!sel?.rangeCount) {
       return;
     }
 

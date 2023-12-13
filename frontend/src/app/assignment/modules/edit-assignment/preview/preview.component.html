@@ -1,36 +1,35 @@
 <div class="card mb-3">
   <div class="card-body pb-0">
     <app-assignment-info [assignment]="assignment"></app-assignment-info>
-    <app-task-list [tasks]="tasks"></app-task-list>
+    <app-task-list [allTasks]="assignment.tasks" [tasks]="assignment.tasks"></app-task-list>
   </div>
 </div>
 
-<p *ngIf="!$any(assignment)._id" class="text-center">
-  Click "Submit" to finalize your assignment and generate a link.
-</p>
-<div *ngIf="!loggedIn" class="alert alert-warning" role="alert">
-  <h4 class="alert-heading">
-    Warning!
-  </h4>
-  <p>
-    You are currently not logged in, therefore submitting this assignment as a guest.
-  </p>
-  <p>
-    <a routerLink="." (click)="login()">
-      Logging in
-    </a>
-    has the following advantages:
-  </p>
-  <ul>
-    <li>
-      You will be shown as Registered <i class="text-info bi-patch-check-fill"></i>
-      to students viewing your assignment.
-    </li>
-    <li>
-      You can view student submissions on other devices without entering the generated token.
-    </li>
-    <li>
-      You will have access to future features like notifications and improved access control.
-    </li>
-  </ul>
-</div>
+@if (!loggedIn) {
+  <div class="alert alert-warning" role="alert">
+    <h4 class="alert-heading">
+      Warning!
+    </h4>
+    <p>
+      You are currently not logged in, therefore submitting this assignment as a guest.
+    </p>
+    <p>
+      <a routerLink="." (click)="login()">
+        Logging in
+      </a>
+      has the following advantages:
+    </p>
+    <ul>
+      <li>
+        You will be shown as Registered <i class="text-info bi-patch-check-fill"></i>
+        to students viewing your assignment.
+      </li>
+      <li>
+        You can view student submissions on other devices without entering the generated token.
+      </li>
+      <li>
+        You will have access to future features like notifications and improved access control.
+      </li>
+    </ul>
+  </div>
+}

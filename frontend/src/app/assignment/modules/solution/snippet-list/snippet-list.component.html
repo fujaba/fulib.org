@@ -1,0 +1,71 @@
+<label class="form-label" for="snippets">
+  Snippets
+</label>
+@if (searchSummary) {
+  <div class="alert alert-{{searchSummary.level}}">
+    <span class="bi-robot">Code Search</span>
+    found
+    <b>{{ searchSummary.hits }}</b>
+    hits in
+    <b>{{ searchSummary.files }}</b>
+    files from
+    <b>{{ searchSummary.solutions }}</b>
+    solutions for this snippet.
+    {{ searchSummary.message }}
+    <a [routerLink]="['/assignments', route.snapshot.params.aid, 'search']"
+       [queryParams]="{q: searchSummary.code, glob: task?.glob}">
+      View Results
+    </a>
+  </div>
+}
+<ul class="list-group" id="snippets">
+  @for (snippet of dto.snippets;track snippet) {
+    <li class="list-group-item"
+      [class.list-group-item-warning]="snippet.comment === selectionComment">
+      <app-edit-snippet
+        [snippet]="snippet" [index]="$index" [comments]="comments"
+        (deleted)="deleteSnippet($index)"
+      ></app-edit-snippet>
+      <app-snippet
+        [assignment]="assignment"
+        [solution]="solution"
+        [snippet]="snippet"
+        wildcard="***"
+        (updated)="snippetUpdates$.next($event)"
+      ></app-snippet>
+    </li>
+  }
+</ul>
+<div class="form-text">
+  Use
+  <a href="https://github.com/fujaba/fulibFeedback" target="_blank">
+    fulibFeedback
+  </a>
+  to add code snippets from within your IDE.
+  @if (task && task.glob) {
+    <span class="text-info bi-robot">
+      Code Search will only look for files matching the glob pattern <code>{{ task.glob }}</code>.
+    </span>
+  }
+</div>
+@if (snippetSuggestionsEnabled && embeddingSnippets.length) {
+  <label class="form-label bi-cpu" for="embedding-snippets">
+    Snippet Suggestions
+    <span class="badge bg-gradient-primary">New</span>
+    &nbsp;
+    <i class="bi-question-circle" [ngbTooltip]='"Advanced Code Search suggests code that is related to the task \"" + task?.description + "\"" '></i>
+  </label>
+  <ul class="list-group" id="embedding-snippets">
+    @for (snippet of embeddingSnippets;track snippet) {
+      <li class="list-group-item">
+        <app-snippet
+          [assignment]="assignment"
+          [solution]="solution"
+          [snippet]="snippet"
+          [expanded]="$first"
+          (confirmed)="confirmEmbedding(snippet)"
+        ></app-snippet>
+      </li>
+    }
+  </ul>
+}

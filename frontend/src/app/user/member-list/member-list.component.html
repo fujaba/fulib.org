@@ -1,16 +1,19 @@
 <ul class="list-group">
-  <li *ngFor="let member of members; let index = index" class="list-group-item d-flex align-items-center">
-    <div class="me-auto">
-      {{ member._user
-      ? member._user.firstName + ' ' + member._user.lastName + ' (' + member._user.username + ')'
-      : 'Loading...' }}
-      <span class="text-muted">&bull; {{ member.role || (member.user === owner ? 'Owner' : 'Collaborator') }}</span>
-    </div>
-    <button
-      *ngIf="member.user !== owner && deleted.observed"
-      type="button" class="btn btn-sm btn-danger bi-person-x"
-      ngbTooltip="Remove Collaborator"
-      (click)="delete(member)"
-    ></button>
-  </li>
+  @for (member of members;track member) {
+    <li class="list-group-item d-flex align-items-center">
+      <div class="me-auto">
+        {{ member._user
+        ? member._user.firstName + ' ' + member._user.lastName + ' (' + member._user.username + ')'
+        : 'Loading...' }}
+        <span class="text-muted">&bull; {{ member.role || (member.user === owner ? 'Owner' : 'Collaborator') }}</span>
+      </div>
+        @if (member.user !== owner && deleted.observed) {
+          <button
+            type="button" class="btn btn-sm btn-danger bi-person-x"
+            ngbTooltip="Remove Collaborator"
+            (click)="delete(member)"
+          ></button>
+        }
+    </li>
+  }
 </ul>

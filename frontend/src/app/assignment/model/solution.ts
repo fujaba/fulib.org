@@ -1,3 +1,6 @@
+import {IsIn, IsOptional} from "class-validator";
+import {Presentation} from "@mean-stream/ngbx";
+
 export class AuthorInfo {
   name?: string;
   studentId?: string;
@@ -17,6 +20,7 @@ export interface Consent {
   scientific?: boolean;
   '3P'?: boolean;
 }
+
 export const consentKeys = ['demonstration', 'scientific', '3P'] as const;
 
 export default class Solution {
@@ -29,11 +33,24 @@ export default class Solution {
   commit?: string;
   consent?: Consent;
 
-  timestamp?: Date;
+  timestamp?: string;
   points?: number;
+  feedback?: Feedback;
 }
 
 export type CreateSolutionDto = Pick<Solution, 'author'>;
+
+export enum SolutionStatus {
+  todo = 'todo',
+  codeSearch = 'code-search',
+  started = 'started',
+  graded = 'graded',
+}
+
+export interface RichSolutionDto extends Solution {
+  assignee?: string;
+  status: SolutionStatus;
+}
 
 export type ImportSolution = Pick<Solution,
   | '_id'
@@ -48,4 +65,54 @@ export interface EstimatedCosts {
   files: number;
   tokens: number;
   estimatedCost: number;
+  functions: string[];
+  ignoredFiles: string[];
+  ignoredFunctions: string[];
+}
+
+export class Feedback {
+  @Presentation({
+    control: 'radio',
+    rows: 1,
+    label: 'Wie angemessen empfindest du die Bewertung?',
+    optionLabels: {
+      1: 'Gar nicht angemessen',
+      2: 'Eher nicht angemessen',
+      3: 'Eher angemessen',
+      4: 'Sehr angemessen',
+    },
+  })
+  @IsOptional()
+  @IsIn([1, 2, 3, 4])
+  appropriate?: number;
+
+  @Presentation({
+    control: 'radio',
+    rows: 1,
+    label: 'Hast Du die Erklärungen zur Bewertung als hilfreich empfunden?',
+    optionLabels: {
+      1: 'Gar nicht hilfreich',
+      2: 'Eher nicht hilfreich',
+      3: 'Eher hilfreich',
+      4: 'Sehr hilfreich',
+    },
+  })
+  @IsOptional()
+  @IsIn([1, 2, 3, 4])
+  helpful?: number;
+
+  @Presentation({
+    control: 'radio',
+    rows: 1,
+    label: 'Wie sehr fördert das Feedback dein Verständnis, wie eine richtige Lösung aussehen könnte und wie du diese erreichen kannst?',
+    optionLabels: {
+      1: 'Gar nicht förderlich',
+      2: 'Eher nicht förderlich',
+      3: 'Eher förderlich',
+      4: 'Sehr förderlich',
+    },
+  })
+  @IsOptional()
+  @IsIn([1, 2, 3, 4])
+  understandable?: number;
 }

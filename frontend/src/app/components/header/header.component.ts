@@ -40,15 +40,11 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.keycloak.isLoggedIn().then(loggedIn => {
-      if (!loggedIn) {
-        return;
-      }
-
+    if (this.keycloak.isLoggedIn()) {
       this.keycloak.loadUserProfile().then(profile => {
         this.username = profile.username;
       });
-    });
+    }
 
     this.changelogService.getCurrentVersions().subscribe(currentVersions => {
       this.versions = currentVersions;
@@ -72,13 +68,11 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   }
 
   login(): void {
-    this.keycloak.login().then(() => {
-    });
+    this.keycloak.login().then();
   }
 
   logout(): void {
-    this.keycloak.logout().then(() => {
-    });
+    this.keycloak.logout().then();
   }
 
   selectTheme(value: string) {

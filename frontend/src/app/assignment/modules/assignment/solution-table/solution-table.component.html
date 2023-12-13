@@ -1,8 +1,16 @@
 <div class="p-3 d-flex align-items-center position-sticky bg-light bg-darkmode-dark" style="top: 3.5rem; z-index: 1">
-  <input type="search" class="form-control me-sm-2 flex-grow-1" id="searchInput"
-         placeholder="Search for Name, Student ID, E-Mail, GitHub Username, Assignee"
-         [ngModel]="search$.value" (ngModelChange)="search$.next($event)"
-         [ngbTypeahead]="typeahead" [resultFormatter]="formatTypeahead">
+  <div class="position-relative me-sm-2 flex-grow-1">
+    <input type="search" class="form-control" id="searchInput" [class.is-invalid]="searchError"
+           placeholder="Search for Name, Student ID, E-Mail, GitHub Username, Assignee"
+           [ngModel]="search$.value" (ngModelChange)="search$.next($event)"
+           [ngbTypeahead]="typeahead" [resultFormatter]="formatTypeahead"
+    >
+    @if (searchError) {
+      <div class="invalid-tooltip">
+        {{ searchError }}
+      </div>
+    }
+  </div>
   <button
     class="btn btn-sm p-1 bi-question-circle me-sm-2"
     ngbTooltip="View Search Help"
@@ -11,49 +19,52 @@
     placement="bottom-right"
   ></button>
   <div style="width: 12rem">
-    <ng-container *ngIf="(selected | keyvalue).length as length">
+    @if ((selected | keyvalue).length;as length) {
       {{ length }} /
-    </ng-container>
+    }
     {{ solutions.length }} Solutions
-    <div *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-label="Loading...">
-    </div>
+    @if (loading) {
+      <div class="spinner-border spinner-border-sm" role="status" aria-label="Loading..."></div>
+    }
   </div>
-  <div ngbDropdown class="d-inline-block me-2" *ngIf="(selected | keyvalue).length as count" [autoClose]="'outside'">
-    <button class="btn btn-outline-secondary" id="actionsDropdown" ngbDropdownToggle ngbTooltip="Bulk Actions">
-      <i class="bi-three-dots"></i>
-      <span class="visually-hidden">Bulk Actions</span>
-    </button>
-    <div ngbDropdownMenu aria-labelledby="actionsDropdown">
-      <button ngbDropdownItem (click)="openSelected()">
-        Open {{ count }} Solutions in New Tabs
+  @if ((selected | keyvalue).length;as count) {
+    <div ngbDropdown class="d-inline-block me-2" [autoClose]="'outside'">
+      <button class="btn btn-outline-secondary" id="actionsDropdown" ngbDropdownToggle ngbTooltip="Bulk Actions">
+        <i class="bi-three-dots"></i>
+        <span class="visually-hidden">Bulk Actions</span>
       </button>
-      <app-disabled-tooltip [require]="[
-        [!!assignment?.classroom?.org, 'Classroom Org is configured in Assignment'],
-        [!!assignment?.classroom?.prefix, 'Classroom Prefix is configured in Assignment'],
-        [!!userToken, 'You are logged in'],
-        [!!userToken, 'Your Account is linked to GitHub'],
-      ]" #submitIf>
-        <button ngbDropdownItem [disabled]="submitIf.disabled" (click)="submitSelected()">
-          Submit {{ count }} Feedback Issues
+      <div ngbDropdownMenu aria-labelledby="actionsDropdown">
+        <button ngbDropdownItem (click)="openSelected()">
+          Open {{ count }} Solutions in New Tabs
         </button>
-      </app-disabled-tooltip>
-      <button ngbDropdownItem class="text-danger" [ngbPopover]="deleteConfirm" [autoClose]="'outside'">
-        Delete {{ count }} Solutions
-      </button>
-      <ng-template #deleteConfirm>
-        <div class="d-flex flex-column">
-          <p>Are you sure you want to delete {{ count }} solutions?</p>
-          <div class="mb-3">
-            <label for="deleteInput">Type <b>{{ assignment?.title }}</b> to confirm</label>
-            <input type="text" class="form-control" id="deleteInput" #deleteInput>
-          </div>
-          <button class="btn btn-danger" [disabled]="deleteInput.value !== assignment?.title" (click)="deleteSelected()">
-            Delete
+        <app-disabled-tooltip [require]="[
+          [!!assignment?.classroom?.org, 'Classroom Org is configured in Assignment'],
+          [!!assignment?.classroom?.prefix, 'Classroom Prefix is configured in Assignment'],
+          [!!userToken, 'You are logged in'],
+          [!!userToken, 'Your Account is linked to GitHub'],
+        ]" #submitIf>
+          <button ngbDropdownItem [disabled]="submitIf.disabled" (click)="submitSelected()">
+            Submit {{ count }} Feedback Issues
           </button>
-        </div>
-      </ng-template>
+        </app-disabled-tooltip>
+        <button ngbDropdownItem class="text-danger" [ngbPopover]="deleteConfirm" [autoClose]="'outside'">
+          Delete {{ count }} Solutions
+        </button>
+        <ng-template #deleteConfirm>
+          <div class="d-flex flex-column">
+            <p>Are you sure you want to delete {{ count }} solutions?</p>
+            <div class="mb-3">
+              <label for="deleteInput">Type <b>{{ assignment?.title }}</b> to confirm</label>
+              <input type="text" class="form-control" id="deleteInput" #deleteInput>
+            </div>
+            <button class="btn btn-danger" [disabled]="deleteInput.value !== assignment?.title" (click)="deleteSelected()">
+              Delete
+            </button>
+          </div>
+        </ng-template>
+      </div>
     </div>
-  </div>
+  }
   <ng-template #searchHelp>
     <ul>
       <li>Search terms are separated by spaces and case sensitive</li>
@@ -62,142 +73,142 @@
           E.g. <code>John+Doe</code>
       </li>
       <li>To search for specific attributes, enter <code>attribute:value</code><br/>
-          E.g. <code>studentID:1234</code>, <code>email:@example.org</code>, or <code>assignee:John+Doe</code><br/>
+          E.g. <code>studentID:1234</code>, <code>email:&#64;example.org</code>, or <code>assignee:John+Doe</code><br/>
           Supported attribute names (case sensitive):
         <ul>
-          <li *ngFor="let propertyName of searchableProperties">
-            <code>{{propertyName}}</code>
-          </li>
+          @for (propertyName of searchableProperties;track propertyName) {
+            <li><code>{{propertyName}}</code></li>
+          }
         </ul>
       </li>
     </ul>
   </ng-template>
 </div>
-<table class="table table-bordered table-hover table-sm table-centered" *ngIf="solutions">
-  <thead>
-  <tr>
-    <th>
-      <input type="checkbox" [ngModel]="(selected | keyvalue).length === solutions.length" (ngModelChange)="selectAll($event)">
-    </th>
-    <th *ngFor="let prop of authorProperties">
-      {{ prop[0] }}
-      <button class="btn btn-sm p-1 bi-clipboard" ngbTooltip="Copy Column as Text" (click)="copyAuthor(prop[0], prop[1])"></button>
-    </th>
-    <th>
-      Submitted
-      <button class="btn btn-sm p-1 bi-question-circle" ngbTooltip="View Color Legend" [ngbPopover]="timestampPopover" placement="bottom-left"></button>
-      <ng-template #timestampPopover>
-        <dl>
-          <ng-container *ngIf="assignment && assignment.deadline">
-            <dt class="text-danger bi-hourglass-bottom">{{ assignment.deadline | date:'short' }}</dt>
-            <dd>Submitted after Deadline</dd>
-          </ng-container>
-          <ng-container *ngIf="assignment && assignment.issuance">
-            <dt class="text-warning bi-hourglass-top">{{ assignment.issuance | date:'short' }}</dt>
-            <dd>No changes since Issuance</dd>
-          </ng-container>
-          <dt class="bi-check">{{ assignment?.issuance || assignment?.deadline || '2023-01-01T12:00:00Z' | date:'short' }}</dt>
-          <dd>Submitted in time</dd>
-        </dl>
-      </ng-template>
-    </th>
-    <th>
-      Points
-      <button class="btn btn-sm p-1 bi-question-circle" ngbTooltip="View Color Legend" [ngbPopover]="pointsPopover" placement="bottom-left"></button>
-      <ng-template #pointsPopover>
-        <dl>
-          <dt class="badge bg-primary">{{ totalPoints }} / {{ totalPoints }}</dt>
-          <dd>Graded</dd>
-          <dt class="badge bg-warning">? / {{ totalPoints }}</dt>
-          <dd>Partially Evaluated manually</dd>
-          <dt class="badge bg-info">? / {{ totalPoints }}</dt>
-          <dd>Partially Evaluated by Code Search</dd>
-          <dt class="badge bg-secondary">? / {{ totalPoints }}</dt>
-          <dd>Not Evaluated</dd>
-        </dl>
-      </ng-template>
-      <button class="btn btn-sm p-1 bi-clipboard" ngbTooltip="Copy Column as Text" (click)="copyPoints()"></button>
-    </th>
-    <th>Assignee</th>
-    <th>Actions</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr *ngFor="let solution of solutions; trackBy: solutionId">
-    <th>
-      <input type="checkbox" [ngModel]="selected[solution._id!]" (ngModelChange)="select(solution._id!, $event)">
-    </th>
-    <td *ngFor="let prop of authorProperties">{{solution.author[prop[1]]}}</td>
-    <td>
-      <span *ngIf="solution.timestamp" [class]="
-          assignment && assignment.deadline && assignment.deadline < solution.timestamp ? 'text-danger bi-hourglass-bottom' :
-          assignment && assignment.issuance && solution.timestamp < assignment.issuance ? 'text-warning bi-hourglass-top' :
-          'bi-check'
-       ">{{ solution.timestamp | date:'medium' }}</span>
-    </td>
-    <td>
-      <span
-        class="badge bg-{{
-          solution.points !== undefined ? 'primary'
-          : evaluated[solution._id!] === undefined ? 'secondary'
-          : evaluated[solution._id!] ? 'warning' : 'info'
-        }}"
-      >
-        {{ solution.points ?? '?' }} / {{ totalPoints }}
-      </span>
-    </td>
-    <td>
-      <app-assignee-input
-        [assignment]="assignment?._id!"
-        [solution]="solution._id!"
-        [assignees]="assigneeNames"
-        [assignee]="assignees[solution._id!]?.assignee || ''"
-        (saved)="assignees[solution._id!] = $event"
-      ></app-assignee-input>
-    </td>
-    <td>
-      <a
-        class="btn btn-primary me-1 bi-eye-fill"
-        routerLink="/assignments/{{assignment?._id}}/solutions/{{solution._id}}"
-        queryParamsHandling="merge"
-        ngbTooltip="View Solution"
-        (click)="telemetry(solution, 'openSolution')"
-      ></a>
-      <div
-        *ngIf="assignment && assignment?.classroom?.org && assignment?.classroom?.prefix && solution.author.github"
-        class="btn-group me-1"
-      >
-        <a
-          class="btn btn-secondary bi-github"
-          [href]="assignment|githubLink:solution:true"
-          target="_blank"
-          ngbTooltip="View {{solution.commit ? 'Commit' : 'Repository'}} on GitHub"
-          (click)="telemetry(solution, 'showGithub')"
-        ></a>
-        <a
-          class="btn btn-secondary bi-code-square"
-          ngbTooltip="Clone in IDE"
-          [href]="assignment|cloneLink:solution:options | safeUrl"
-          (click)="telemetry(solution, 'clone')"
-        ></a>
-        <button
-          #launchButton
-          class="btn btn-secondary"
-          ngbTooltip="Launch in Projects"
-          (click)="telemetry(solution, 'launchProjects'); launch(solution, launchButton)"
-        >
-          <span [class]="launchButton.disabled ? 'spinner-border spinner-border-sm' : 'bi-rocket'"></span>
-        </button>
-      </div>
-      <a
-        class="btn btn-primary me-1 bi-check-circle"
-        ngbTooltip="Submit Feedback"
-        [routerLink]="['submit', solution._id]"
-        queryParamsHandling="preserve"
-        (click)="telemetry(solution, 'openFeedback')"
-      ></a>
-    </td>
-  </tr>
-  </tbody>
-</table>
+@if (solutions) {
+  <table class="table table-bordered table-hover table-sm table-centered">
+    <thead>
+    <tr>
+      <th>
+        <input type="checkbox" [ngModel]="(selected | keyvalue).length === solutions.length" (ngModelChange)="selectAll($event)">
+      </th>
+      @for (prop of authorProperties;track prop) {
+        <th>
+        {{ prop[0] }}
+        <button class="btn btn-sm p-1 bi-clipboard" ngbTooltip="Copy Column as Text" (click)="copyAuthor(prop[0], prop[1])"></button>
+      </th>
+      }
+      <th>
+        Submitted
+        <button class="btn btn-sm p-1 bi-question-circle" ngbTooltip="View Color Legend" [ngbPopover]="timestampPopover" placement="bottom-left"></button>
+        <button class="btn btn-sm p-1 bi-clipboard" ngbTooltip="Copy Column as Text" (click)="copyTimestamp()"></button>
+        <ng-template #timestampPopover>
+          <dl>
+            @if (assignment?.deadline; as deadline) {
+
+              <dt class="text-danger bi-hourglass-bottom">{{ deadline | date:'short' }}</dt>
+              <dd>Submitted after Deadline</dd>
+
+            }
+            @if (assignment?.issuance; as issuance) {
+
+              <dt class="text-warning bi-hourglass-top">{{ issuance | date:'short' }}</dt>
+              <dd>No changes since Issuance</dd>
+
+            }
+            <dt class="bi-check">{{ assignment?.issuance || assignment?.deadline || '2023-01-01T12:00:00Z' | date:'short' }}</dt>
+            <dd>Submitted in time</dd>
+          </dl>
+        </ng-template>
+      </th>
+      <th>
+        Points
+        <button class="btn btn-sm p-1 bi-question-circle" ngbTooltip="View Color Legend" [ngbPopover]="pointsPopover" placement="bottom-left"></button>
+        <ng-template #pointsPopover>
+          <dl>
+            <dt class="badge bg-primary">{{ totalPoints }} / {{ totalPoints }}</dt>
+            <dd>Graded</dd>
+            <dt class="badge bg-warning">? / {{ totalPoints }}</dt>
+            <dd>Partially Evaluated manually</dd>
+            <dt class="badge bg-info">? / {{ totalPoints }}</dt>
+            <dd>Partially Evaluated by Code Search</dd>
+            <dt class="badge bg-secondary">? / {{ totalPoints }}</dt>
+            <dd>Not Evaluated</dd>
+          </dl>
+        </ng-template>
+        <button class="btn btn-sm p-1 bi-clipboard" ngbTooltip="Copy Column as Text" (click)="copyPoints()"></button>
+      </th>
+      <th>
+        Assignee
+        <button class="btn btn-sm p-1 bi-clipboard" ngbTooltip="Copy Column as Text" (click)="copyAssignee()"></button>
+      </th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+      @for (solution of solutions;track solution._id) {
+        <tr>
+          <th>
+            <input type="checkbox" [ngModel]="selected[solution._id!]" (ngModelChange)="select(solution._id!, $event)">
+          </th>
+          @for (prop of authorProperties;track prop) {
+            <td>{{ solution.author[prop[1]] }}</td>
+          }
+          <td>
+            @if (solution.timestamp) {
+              <span [class]="
+                assignment && assignment.deadline && assignment.deadline < solution.timestamp ? 'text-danger bi-hourglass-bottom' :
+                assignment && assignment.issuance && solution.timestamp < assignment.issuance ? 'text-warning bi-hourglass-top' :
+                'bi-check'
+              ">{{ solution.timestamp | date:'medium' }}</span>
+            }
+          </td>
+          <td>
+            <span
+              class="badge bg-{{{
+                'todo': 'secondary',
+          'graded': 'primary',
+                'code-search': 'info',
+                'started': 'warning',
+              }[solution.status]}}"
+            >
+              {{ solution.points ?? '?' }} / {{ totalPoints }}
+            </span>
+          </td>
+          <td [style.background-color]="solution.assignee | assigneeColor">
+            <app-assignee-dropdown
+              [assignment]="assignment?._id!"
+              [solution]="solution._id!"
+              [assignees]="assigneeNames"
+              [(assignee)]="solution.assignee"
+            ></app-assignee-dropdown>
+          </td>
+          <td>
+            <a
+              class="btn btn-primary me-1 bi-eye-fill"
+              routerLink="/assignments/{{assignment?._id}}/solutions/{{solution._id}}"
+              queryParamsHandling="merge"
+              ngbTooltip="View Solution"
+            ></a>
+            @if (assignment && assignment.classroom?.org && assignment.classroom?.prefix && solution.author.github) {
+              <div class="btn-group me-1">
+                <a
+                  class="btn btn-secondary bi-github"
+                  [href]="assignment|githubLink:solution:true"
+                  target="_blank"
+                  ngbTooltip="View {{solution.commit ? 'Commit' : 'Repository'}} on GitHub"
+                ></a>
+              </div>
+            }
+            <a
+              class="btn btn-primary me-1 bi-check-circle"
+              ngbTooltip="Submit Feedback"
+              [routerLink]="['submit', solution._id]"
+              queryParamsHandling="preserve"
+            ></a>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}
 <router-outlet></router-outlet>

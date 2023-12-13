@@ -3,7 +3,7 @@ import {ToastService} from '@mean-stream/ngbx';
 import {ReadAssignmentDto} from '../../../model/assignment';
 import {AssignmentService} from '../../../services/assignment.service';
 import {ConfigService} from "../../../services/config.service";
-import {environment} from "../../../../../environments/environment";
+import {IDE} from "../../../model/config";
 
 @Component({
   selector: 'app-assignment-actions',
@@ -14,8 +14,7 @@ export class AssignmentActionsComponent {
   @Input() assignment: ReadAssignmentDto;
   @Output() removed = new EventEmitter<void>();
 
-  readonly ide: string;
-  readonly encodedApiServer = encodeURIComponent(new URL(environment.assignmentsApiUrl, globalThis.location?.origin).origin);
+  readonly ide: IDE;
 
   constructor(
     private assignmentService: AssignmentService,

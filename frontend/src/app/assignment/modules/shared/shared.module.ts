@@ -11,12 +11,17 @@ import {TaskColorPipe} from './pipes/task-color.pipe';
 import {SnippetComponent} from './snippet/snippet.component';
 import {StatisticValueComponent} from './statistic-value/statistic-value.component';
 import {TaskListComponent} from './task-list/task-list.component';
-import { SolutionNamePipe } from './pipes/solution-name.pipe';
-import { GithubLinkPipe } from './pipes/github-link.pipe';
-import { CloneLinkPipe } from './pipes/clone-link.pipe';
-import { AssignmentActionsComponent } from './assignment-actions/assignment-actions.component';
-import { AssigneeInputComponent } from './assignee-input/assignee-input.component';
-
+import {SolutionNamePipe} from './pipes/solution-name.pipe';
+import {GithubLinkPipe} from './pipes/github-link.pipe';
+import {CloneLinkPipe} from './pipes/clone-link.pipe';
+import {AssignmentActionsComponent} from './assignment-actions/assignment-actions.component';
+import {EditMemberListComponent} from './edit-member-list/edit-member-list.component';
+import {UserModule} from "../../../user/user.module";
+import {InitialsPipe} from "./pipes/initials.pipe";
+import {AssigneeDropdownComponent} from './assignee-dropdown/assignee-dropdown.component';
+import {AssigneeColorPipe} from "./pipes/assignee-color.pipe";
+import {FulibFeedbackLinkPipe} from "./pipes/fulibfeedback-link.pipe";
+import {NavigateLinkPipe} from "./pipes/navigate-link.pipe";
 
 @NgModule({
   imports: [
@@ -27,6 +32,7 @@ import { AssigneeInputComponent } from './assignee-input/assignee-input.componen
     NgbDropdownModule,
     NgbTypeaheadModule,
     FormsModule,
+    UserModule,
   ],
   declarations: [
     AssignmentInfoComponent,
@@ -40,7 +46,12 @@ import { AssigneeInputComponent } from './assignee-input/assignee-input.componen
     GithubLinkPipe,
     CloneLinkPipe,
     AssignmentActionsComponent,
-    AssigneeInputComponent,
+    EditMemberListComponent,
+    InitialsPipe,
+    AssigneeDropdownComponent,
+    AssigneeColorPipe,
+    FulibFeedbackLinkPipe,
+    NavigateLinkPipe,
   ],
   exports: [
     AssignmentInfoComponent,
@@ -54,7 +65,12 @@ import { AssigneeInputComponent } from './assignee-input/assignee-input.componen
     GithubLinkPipe,
     CloneLinkPipe,
     AssignmentActionsComponent,
-    AssigneeInputComponent,
+    EditMemberListComponent,
+    InitialsPipe,
+    AssigneeDropdownComponent,
+    AssigneeColorPipe,
+    FulibFeedbackLinkPipe,
+    NavigateLinkPipe,
   ],
 })
 export class AssignmentSharedModule {

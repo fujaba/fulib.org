@@ -12,10 +12,23 @@ export type CreateCourseDto = Omit<Course, '_id' | 'createdBy'>;
 export type UpdateCourseDto = Partial<CreateCourseDto>;
 
 export interface SolutionInfo extends Required<Pick<Solution, '_id' | 'points'>> {
-  assignee: string;
+  assignee?: string;
 }
 
 export interface CourseStudent {
   author: AuthorInfo;
   solutions: SolutionInfo[];
+  feedbacks: number;
+}
+
+export interface CourseAssignee {
+  assignee: string;
+  assignments: {
+    solutions: number;
+    duration: number;
+    feedbacks: number;
+  }[];
+  solutions: number;
+  duration: number;
+  feedbacks: number;
 }

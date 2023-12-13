@@ -5,10 +5,14 @@
             [(ngModel)]="currentExample"
             (ngModelChange)="setExample($event)">
       <option [ngValue]="null">Select Example...</option>
-      <option *ngFor="let example of examples" [ngValue]="example">{{ example.name }}</option>
+      @for (example of examples;track example) {
+        <option [ngValue]="example">{{ example.name }}</option>
+      }
     </select>
     <button class="btn btn-primary me-2" (click)="generate()" [disabled]="loading">
-      <span *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      @if (loading) {
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      }
       {{ loading ? 'Generating...' : 'Generate' }}
     </button>
     <a role="button" class="btn btn-success me-2" routerLink="download">
@@ -32,14 +36,14 @@
         (dragEnd)="this.showIframeHider = false"
         (gutterClick)="split.notify('end', $event.gutterNum)">
         <as-split-area [size]="35">
-          <ng-container *ngIf="generateResult">
+          @if (generateResult) {
             <a routerLink="preview"
                [queryParams]="{url: workflowsUrl + '/workflows' + this.generateResult.board}"
                queryParamsHandling="merge"
             >
               <app-diagram-view [url]="workflowsUrl + '/workflows' + this.generateResult.board"></app-diagram-view>
             </a>
-          </ng-container>
+          }
           <div [hidden]="showIframeHider === false" class="iframe-hider"></div>
         </as-split-area>
         <as-split-area [size]="65">

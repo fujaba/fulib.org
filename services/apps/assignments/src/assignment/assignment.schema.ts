@@ -12,12 +12,14 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  IsPositive,
   IsString,
   IsUrl,
   ValidateNested,
 } from 'class-validator';
-import {Document, Types} from 'mongoose';
+import {Types} from 'mongoose';
 import {MOSS_LANGUAGES} from "../search/search.constants";
+import {Doc} from "@mean-stream/nestx";
 
 @Schema({id: false, _id: false})
 export class Task {
@@ -114,6 +116,18 @@ export class ClassroomInfo {
   @IsString()
   @Transform(({value}) => value === '***' ? undefined : value)
   openaiApiKey?: string;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  openaiConsent?: boolean;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  openaiIgnore?: string;
 }
 
 @Schema()
@@ -179,6 +193,12 @@ export class Assignment {
   classroom?: ClassroomInfo;
 
   @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsPositive()
+  passingPoints?: number;
+
+  @Prop()
   @ApiProperty({type: [Task]})
   @IsArray()
   @ValidateNested({each: true})
@@ -186,6 +206,17 @@ export class Assignment {
   tasks: Task[];
 }
 
-export type AssignmentDocument = Assignment & Document;
+export type AssignmentDocument = Doc<Assignment>;
 
-export const AssignmentSchema = SchemaFactory.createForClass(Assignment);
+export const ASSIGNMENT_SORT = {
+  title: 1,
+} as const;
+
+export const ASSIGNMENT_COLLATION = {
+  locale: 'en',
+  numericOrdering: true,
+} as const;
+
+export const AssignmentSchema = SchemaFactory.createForClass(Assignment)
+  .index(ASSIGNMENT_SORT, {collation: ASSIGNMENT_COLLATION})
+;

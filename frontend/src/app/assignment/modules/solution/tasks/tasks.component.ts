@@ -1,14 +1,19 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 import {forkJoin, Subscription} from 'rxjs';
-import {switchMap, tap} from 'rxjs/operators';
-import {ReadAssignmentDto} from '../../../model/assignment';
-import {Evaluation} from '../../../model/evaluation';
+import {map, switchMap, tap} from 'rxjs/operators';
+import Assignment, {ReadAssignmentDto} from '../../../model/assignment';
+import {Evaluation, isVisible} from '../../../model/evaluation';
 import Solution from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
 import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
 import {EvaluationService} from "../../../services/evaluation.service";
+import {ConfigService} from "../../../services/config.service";
+import {SolutionContainerService} from "../../../services/solution-container.service";
+import {ToastService} from "@mean-stream/ngbx";
+import {AssigneeService} from "../../../services/assignee.service";
+import {UpdateAssigneeDto} from "../../../model/assignee";
 
 @Component({
   selector: 'app-solution-tasks',
@@ -22,37 +27,52 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
   evaluations?: Record<string, Evaluation>;
 
   subscription?: Subscription;
+  evaluating = false;
+  config = this.configService.getAll();
+  launching = false;
+  assignee?: UpdateAssigneeDto;
 
   constructor(
     private assignmentService: AssignmentService,
     private evaluationService: EvaluationService,
     private solutionService: SolutionService,
+    private solutionContainerService: SolutionContainerService,
+    private toastService: ToastService,
     private taskService: TaskService,
-    private router: Router,
     private route: ActivatedRoute,
+    private assigneeService: AssigneeService,
+    private configService: ConfigService,
   ) {
   }
 
   ngOnInit(): void {
     this.route.params.pipe(
-      switchMap(({aid: assignmentId, sid: solutionId}) => forkJoin([
-        this.assignmentService.get(assignmentId).pipe(tap(assignment => this.assignment = assignment)),
-        this.solutionService.get(assignmentId, solutionId).pipe(tap(solution => {
-          this.solution = solution;
-        })),
-        this.evaluationService.findAll(assignmentId, solutionId).pipe(tap(evaluations => {
+      switchMap(({aid, sid}) => this.solutionService.get(aid, sid)),
+    ).subscribe(solution => this.solution = solution);
+
+    this.route.params.pipe(
+      switchMap(({aid, sid}) => this.assigneeService.findOne(aid, sid)),
+    ).subscribe(assignee => {
+      assignee.duration ||= 0;
+      this.assignee = assignee;
+    });
+
+    this.route.params.pipe(
+      switchMap(({aid, sid}) => forkJoin([
+        this.assignmentService.get(aid).pipe(tap(assignment => this.assignment = assignment)),
+        this.evaluationService.findAll(aid, sid).pipe(map(evaluations => {
+          if (!this.config.codeSearch || !this.config.similarSolutions) {
+            evaluations = evaluations.filter(evaluation => isVisible(evaluation, this.config));
+          }
           this.evaluations = {};
           for (const evaluation of evaluations) {
             this.evaluations[evaluation.task] = evaluation;
           }
+          return this.evaluations;
         })),
       ])),
-    ).subscribe(([assignment, , evaluations]) => {
-      this.points = this.taskService.createPointsCache(assignment.tasks, this.evaluations!);
-    }, error => {
-      if (error.status === 401 || error.status === 403) {
-        this.router.navigate(['token'], {relativeTo: this.route});
-      }
+    ).subscribe(([assignment, evaluations]) => {
+      this.points = this.taskService.createPointsCache(assignment.tasks, evaluations);
     });
 
     this.subscription = this.route.params.pipe(
@@ -65,6 +85,9 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
       const task = evaluation.task;
       if (event === 'deleted') {
         delete this.evaluations[task];
+      }
+      else if (!isVisible(evaluation, this.config)) {
+        return;
       } else {
         this.evaluations[task] = evaluation;
       }
@@ -73,20 +96,50 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
         return;
       }
 
-      // Clear cache for affected tasks
-      const tasks = this.taskService.findWithParents(this.assignment.tasks, task);
-      for (let task of tasks) {
-        delete this.points[task._id];
-      }
-
-      // Restore cache
-      for (let task of this.assignment.tasks) {
-        this.taskService.getTaskPoints(task, this.evaluations, this.points);
-      }
+      this.taskService.updatePoints(this.assignment.tasks, this.points, this.evaluations, evaluation);
     });
   }
 
   ngOnDestroy() {
     this.subscription?.unsubscribe();
+  }
+
+  @HostListener('window:beforeunload')
+  canDeactivate(): boolean {
+    return !this.evaluating;
+  }
+
+  launch() {
+    if (this.launching || !this.assignment || !('token' in this.assignment)) {
+      return;
+    }
+
+    this.launching = true;
+    this.solutionContainerService.launch(this.assignment as Assignment, this.solution!).subscribe({
+      next: container => {
+        open(container.url, '_blank');
+        this.launching = false;
+      },
+      error: error => {
+        this.toastService.error('Launch in Projects', 'Failed to launch in Projects', error)
+        this.launching = false;
+      },
+    });
+  }
+
+  saveDuration() {
+    if (!this.assignee) {
+      return;
+    }
+    if (this.assignee.assignee !== this.config.name && !confirm('You are not assigned to this solution. Do you want to assign yourself and save the duration?')) {
+      return;
+    }
+    this.assigneeService.update(this.assignment!._id, this.solution!._id!, {
+      duration: this.assignee.duration,
+      assignee: this.config.name,
+    }).subscribe({
+      next: () => this.toastService.success('Finish Evaluation', 'Successfully saved duration'),
+      error: error => this.toastService.error('Finish Evaluation', 'Failed to save duration', error),
+    });
   }
 }

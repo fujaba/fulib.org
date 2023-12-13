@@ -4,8 +4,21 @@ import Task from '../model/task';
 
 @Injectable()
 export class TaskService {
+  updatePoints(allTasks: Task[], points: Record<string, number>, evaluations: Record<string, Evaluation | CreateEvaluationDto>, evaluation: Evaluation): void {
+    // Clear cache for affected tasks
+    const affectedTasks = this.findWithParents(allTasks, evaluation.task);
+    for (const task of affectedTasks) {
+      delete points[task._id];
+    }
+
+    // Restore cache
+    for (const task of affectedTasks) {
+      this.getTaskPoints(task, evaluations, points);
+    }
+  }
+
   find(tasks: Task[], id: string): Task | undefined {
-    for (let task of tasks) {
+    for (const task of tasks) {
       if (task._id === id) {
         return task;
       }
@@ -18,7 +31,7 @@ export class TaskService {
   }
 
   findWithParents(tasks: Task[], id: string): Task[] {
-    for (let task of tasks) {
+    for (const task of tasks) {
       if (task._id === id) {
         return [task];
       }
@@ -31,12 +44,15 @@ export class TaskService {
   }
 
   generateID(): string {
-    return (Date.now() + Math.random()).toString(36).replace('.', 'T').substring(0, 12);
+    // generate a random hex string with 16 characters (64 bit) securely
+    const array = new Uint8Array(8);
+    crypto.getRandomValues(array);
+    return Array.from(array, (byte) => byte.toString(16).padStart(2, '0')).join('');
   }
 
   createPointsCache(tasks: Task[], evaluations: Record<string, Evaluation | CreateEvaluationDto>): Record<string, number> {
     const cache = {};
-    for (let task of tasks) {
+    for (const task of tasks) {
       this.getTaskPoints(task, evaluations, cache);
     }
     return cache;

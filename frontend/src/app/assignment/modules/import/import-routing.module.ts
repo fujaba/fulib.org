@@ -8,11 +8,11 @@ import {ImportMossComponent} from "./import-moss/import-moss.component";
 import {ImportConsentComponent} from "./import-consent/import-consent.component";
 
 export const importChildren = [
-  {path: 'github', component: ImportGithubComponent, data: {title: 'GitHub'}},
-  {path: 'files', component: ImportFilesComponent, data: {title: 'Files'}},
-  {path: 'embeddings', component: ImportEmbeddingsComponent, data: {title: 'Embeddings'}},
-  {path: 'moss', component: ImportMossComponent, data: {title: 'MOSS'}},
-  {path: 'consent', component: ImportConsentComponent, data: {title: 'Consent'}},
+  {path: 'github', component: ImportGithubComponent, data: {title: 'GitHub', icon: 'bi-github'}},
+  {path: 'files', component: ImportFilesComponent, data: {title: 'Files', icon: 'bi-file-zip'}},
+  {path: 'embeddings', component: ImportEmbeddingsComponent, data: {title: 'Embeddings', icon: 'bi-cpu'}},
+  {path: 'moss', component: ImportMossComponent, data: {title: 'MOSS', icon: 'bi-incognito'}},
+  {path: 'consent', component: ImportConsentComponent, data: {title: 'Consent', icon: 'bi-ui-checks'}},
 ];
 
 const routes: Routes = [

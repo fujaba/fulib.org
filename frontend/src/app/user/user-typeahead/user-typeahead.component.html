@@ -1,7 +1,9 @@
 <div [class.mb-3]="label">
-  <label *ngIf="label" class="form-label" for="user-input">
-    {{ label }}
-  </label>
+  @if (label) {
+    <label class="form-label" for="user-input">
+      {{ label }}
+    </label>
+  }
   <input id="user-input" type="text" class="form-control"
          placeholder="Type to search for a user"
          [ngModel]="user"

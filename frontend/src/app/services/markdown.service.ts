@@ -22,9 +22,9 @@ export class MarkdownService {
   renderMarkdownSync(md: string, options: { imageBaseUrl?: string; linkBaseUrl?: string }): string {
     const {imageBaseUrl, linkBaseUrl} = options;
     const tokens = this.parser.parse(md, {});
-    for (let token of tokens) {
+    for (const token of tokens) {
       if (token.type === 'inline') {
-        for (let child of (token.children || [])) {
+        for (const child of (token.children ?? [])) {
           switch (child.type) {
             case 'link_open':
               const href = child.attrGet('href');

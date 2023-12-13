@@ -11,7 +11,9 @@
         Format
       </label>
       <select class="form-select" id="formatSelect" [(ngModel)]="format">
-        <option *ngFor="let format of formats" [ngValue]="format">{{ format.name }}</option>
+        @for (format of formats; track format) {
+          <option [ngValue]="format">{{ format.name }}</option>
+        }
       </select>
       <div class="form-text" [innerHTML]="format.description | safeHtml"></div>
     </div>
