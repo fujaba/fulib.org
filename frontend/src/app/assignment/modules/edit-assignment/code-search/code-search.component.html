@@ -1,5 +1,7 @@
 <div class="mb-3">
-  <label class="form-label" for="codeSearchCheck">Code Search</label>
+  <label class="form-label bi-robot" for="codeSearchCheck">
+    Code Search
+  </label>
   <div class="form-check">
     <input type="checkbox" class="form-check-input" id="codeSearchCheck"
            [(ngModel)]="classroom.codeSearch" (change)="context.saveDraft()">
@@ -10,17 +12,72 @@
     It can be used to find code duplicates across submissions and allows grading multiple students at the same time.
   </div>
 </div>
-<div class="mb-3" *ngIf="classroom.codeSearch">
-  <label class="form-label" for="openaiApiKeyInput">OpenAI API Key</label>
-  <app-masked-input
-    id="openaiApiKeyInput"
-    type="password"
-    [(value)]="classroom.openaiApiKey"
-    (change)="context.saveDraft()"
-    placeholder="sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-  ></app-masked-input>
-  <div class="form-text">
-    Your OpenAI API key for advanced Code Search. Generate one in the
-    <a href="https://platform.openai.com/account/api-keys" target="_blank">OpenAI API Keys</a>.
+@if (classroom.codeSearch) {
+  <div class="mb-3">
+    <label class="form-label bi-cpu" for="openaiApiKeyInput">
+      OpenAI API Key
+    </label>
+    <app-masked-input
+      id="openaiApiKeyInput"
+      type="password"
+      [(value)]="classroom.openaiApiKey"
+      (change)="context.saveDraft()"
+      placeholder="sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+    ></app-masked-input>
+    <div class="form-text">
+      Your OpenAI API key for advanced Code Search. Generate one in the
+      <a href="https://platform.openai.com/account/api-keys" target="_blank">OpenAI API Keys</a>.
+    </div>
   </div>
-</div>
+
+  <div class="mb-3">
+    <label class="form-label bi-ui-checks" for="openaiConsentCheck">
+      OpenAI Consent
+    </label>
+    <div class="form-check">
+      <input type="checkbox" class="form-check-input" id="openaiConsentCheck"
+             [(ngModel)]="classroom.openaiConsent" (change)="context.saveDraft()">
+      <label class="form-check-label" for="openaiConsentCheck">Require Third-Party Consent</label>
+    </div>
+    <div class="form-text">
+      The OpenAI API will be used to semantically index all code submissions that consent to third-party sharing.
+      If disabled, the students' consent will be ignored and all submissions will be indexed.
+    </div>
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="openaiIgnore">
+      OpenAI Ignore
+    </label>
+    <textarea class="form-control" id="openaiIgnore" rows="10"
+              [(ngModel)]="classroom.openaiIgnore" (change)="context.saveDraft()"></textarea>
+    <div class="form-text">
+      A gitignore-like list of directories, files and methods to ignore when indexing code.
+      <details>
+        <summary>More Info</summary>
+        <ul>
+          <li>
+            Supports wildcards, negation, and other <a href="https://github.com/isaacs/minimatch" target="_blank">minimatch</a> patterns.
+          </li>
+          <li>
+            To ignore a file, use <code>Foo.java</code>.
+          </li>
+          <li>
+            To ignore a directory, use <code>bar/</code>.
+          </li>
+          <li>
+            To ignore a directory except for a specific file, use <code>bar/</code> and <code>!bar/Foo.java</code>.
+          </li>
+          <li>
+            To ignore a method or function, use <code>Foo.java#baz</code>.
+          </li>
+          <li>
+            To ignore all methods and functions except for a specific one, use <code>Foo.java#*</code> and <code>!Foo.java#baz</code>.
+          </li>
+          <li>
+            If a file is already ignored, all method rules for that file, even allow rules, have no effect.
+          </li>
+        </ul>
+      </details>
+    </div>
+  </div>
+}

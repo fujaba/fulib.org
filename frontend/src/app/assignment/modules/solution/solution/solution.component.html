@@ -4,53 +4,45 @@
     </a>
     Solution by {{ solution | solutionName }}
   </h1>
-  <p class="text-muted" *ngIf="solution">
-    <ng-container *ngIf="solution.author.github">
-      <a class="bi-github" href="https://github.com/{{solution.author.github}}" target="_blank">
-        {{ solution.author.github }}
-      </a>
-      &bull;
-    </ng-container>
-    <ng-container
-      *ngIf="assignment && assignment.classroom?.org && assignment.classroom?.prefix && solution.author.github">
-      <a class="bi-server" [href]="assignment|githubLink:solution" target="_blank">
-        {{assignment.classroom?.prefix}}-{{ solution.author.github }}
-      </a>
-      &bull;
-      <ng-container *ngIf="solution.commit">
-        <a class="bi-node-plus" [href]="assignment|githubLink:solution:true" target="_blank">
-          {{ solution.commit | slice:0:7 }}
+  @if (solution) {
+    <p class="text-muted">
+      @if (solution.author.github; as github) {
+        <a class="bi-github" href="https://github.com/{{github}}" target="_blank">
+          {{ github }}
         </a>
         &bull;
-      </ng-container>
-      <a class="bi-code" [href]="assignment|cloneLink:solution:options|safeUrl" target="_blank">
-        Clone in IDE
-      </a>
-      &bull;
-      <a class="bi-rocket" [routerLink]="[]" [class.link-secondary]="launching" (click)="launch()">
-        {{ launching ? 'Launching...' : 'Launch in Projects' }}
-      </a>
-      &bull;
-    </ng-container>
-    <ng-container *ngIf="solution.author.email">
-      <a class="bi-envelope" href="mailto:{{solution.author.email}}">
-        {{ solution.author.email }}
-      </a>
-      &bull;
-    </ng-container>
-    <span
-      *ngIf="assignment && assignment.deadline && solution.timestamp && assignment.deadline < solution.timestamp else submitted"
-      class="text-danger"
-      [ngbTooltip]="'Deadline: ' + (assignment.deadline | date:'medium')"
-    >
-      <ng-container [ngTemplateOutlet]="submitted"></ng-container>
-    </span>
-    <ng-template #submitted>
-      <i class="bi-clock"></i>
-      Submitted:
-      {{solution.timestamp | date:'medium'}}
-    </ng-template>
-  </p>
+      }
+      @if (assignment && assignment.classroom?.org && assignment.classroom?.prefix && solution.author.github) {
+        <a class="bi-server" [href]="assignment|githubLink:solution" target="_blank">
+          {{assignment.classroom?.prefix}}-{{ solution.author.github }}
+        </a>
+        &bull;
+        @if (solution.commit) {
+          <a class="bi-node-plus" [href]="assignment|githubLink:solution:true" target="_blank">
+            {{ solution.commit | slice:0:7 }}
+          </a>
+          &bull;
+        }
+      }
+      @if (solution.author.email; as email) {
+        <a class="bi-envelope" href="mailto:{{email}}">
+          {{ email }}
+        </a>
+        &bull;
+      }
+      @if (assignment && assignment.deadline && solution.timestamp && assignment.deadline < solution.timestamp) {
+        <span class="text-danger" [ngbTooltip]="'Deadline: ' + (assignment.deadline | date:'medium')">
+          <i class="bi-clock"></i>
+          Submitted:
+          {{solution.timestamp | date:'medium'}}
+        </span>
+      } @else {
+        <i class="bi-clock"></i>
+        Submitted:
+        {{solution.timestamp | date:'medium'}}
+      }
+    </p>
+  }
 
   <ngbx-route-tabs [routes]="routes"></ngbx-route-tabs>
   <router-outlet></router-outlet>

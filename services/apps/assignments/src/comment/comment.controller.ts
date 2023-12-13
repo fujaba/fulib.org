@@ -1,5 +1,5 @@
 import {AuthUser, UserToken} from '@app/keycloak-auth';
-import {NotFound, notFound} from '@mean-stream/nestx';
+import {NotFound, notFound, ObjectIdPipe} from '@mean-stream/nestx';
 import {Body, Controller, Delete, Get, Headers, MessageEvent, Param, Patch, Post, Sse} from '@nestjs/common';
 import {ApiCreatedResponse, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 import {Observable} from 'rxjs';
@@ -10,6 +10,7 @@ import {CommentAuth} from './comment-auth.decorator';
 import {CreateCommentDto, UpdateCommentDto} from './comment.dto';
 import {Comment} from './comment.schema';
 import {CommentService} from './comment.service';
+import {Types} from "mongoose";
 
 const forbiddenResponse = 'Not owner of assignment or solution, or invalid Assignment-Token or Solution-Token.';
 const forbiddenCommentResponse = 'Not owner of comment.';
@@ -27,22 +28,29 @@ export class CommentController {
   @SolutionAuth({forbiddenResponse})
   @ApiCreatedResponse({type: Comment})
   async create(
-    @Param('assignment') assignmentId: string,
-    @Param('solution') solution: string,
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
+    @Param('solution', ObjectIdPipe) solution: Types.ObjectId,
     @Body() dto: CreateCommentDto,
     @AuthUser() user?: UserToken,
     @Headers('assignment-token') assignmentToken?: string,
   ): Promise<Comment> {
-    const assignment = await this.assignmentService.findOne(assignmentId) ?? notFound(assignmentId);
-    const distinguished = await this.assignmentService.isAuthorized(assignment, user, assignmentToken);
-    return this.commentService.create(assignmentId, solution, dto, distinguished, user?.sub);
+    const assignmentDoc = await this.assignmentService.find(assignment) ?? notFound(assignment);
+    const distinguished = await this.assignmentService.isAuthorized(assignmentDoc, user, assignmentToken);
+    return this.commentService.create({
+      ...dto,
+      assignment,
+      solution,
+      timestamp: new Date(),
+      createdBy: user?.sub,
+      distinguished,
+    });
   }
 
   @Sse('events')
   @SolutionAuth({forbiddenResponse})
   events(
-    @Param('assignment') assignment: string,
-    @Param('solution') solution: string,
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
+    @Param('solution', ObjectIdPipe) solution: Types.ObjectId,
     @AuthUser() user?: UserToken,
     @Headers('assignment-token') assignmentToken?: string,
     @Headers('solution-token') solutionToken?: string,
@@ -54,10 +62,10 @@ export class CommentController {
   @SolutionAuth({forbiddenResponse})
   @ApiOkResponse({type: [Comment]})
   async findAll(
-    @Param('assignment') assignment: string,
-    @Param('solution') solution: string,
+    @Param('assignment', ObjectIdPipe) assignment: Types.ObjectId,
+    @Param('solution', ObjectIdPipe) solution: Types.ObjectId,
   ): Promise<Comment[]> {
-    return this.commentService.findAll({assignment, solution});
+    return this.commentService.findAll({assignment, solution}, {sort: {timestamp: 1}});
   }
 
   @Get(':id')
@@ -65,11 +73,9 @@ export class CommentController {
   @NotFound()
   @ApiOkResponse({type: Comment})
   async findOne(
-    @Param('assignment') assignment: string,
-    @Param('solution') solution: string,
-    @Param('id') id: string,
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
   ): Promise<Comment | null> {
-    return this.commentService.findOne(id);
+    return this.commentService.find(id);
   }
 
   @Patch(':id')
@@ -77,9 +83,7 @@ export class CommentController {
   @NotFound()
   @ApiOkResponse({type: Comment})
   async update(
-    @Param('assignment') assignment: string,
-    @Param('solution') solution: string,
-    @Param('id') id: string,
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
     @Body() dto: UpdateCommentDto,
   ): Promise<Comment | null> {
     return this.commentService.update(id, dto);
@@ -90,10 +94,8 @@ export class CommentController {
   @NotFound()
   @ApiOkResponse({type: Comment})
   async remove(
-    @Param('assignment') assignment: string,
-    @Param('solution') solution: string,
-    @Param('id') id: string,
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
   ): Promise<Comment | null> {
-    return this.commentService.remove(id);
+    return this.commentService.delete(id);
   }
 }

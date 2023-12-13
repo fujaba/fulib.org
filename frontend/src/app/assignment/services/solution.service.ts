@@ -9,7 +9,7 @@ import {UserService} from '../../user/user.service';
 import {ReadAssignmentDto} from '../model/assignment';
 import {CheckResult, CheckSolution} from '../model/check';
 
-import Solution, {AuthorInfo, CreateSolutionDto, ImportSolution} from '../model/solution';
+import Solution, {AuthorInfo, CreateSolutionDto, ImportSolution, RichSolutionDto} from '../model/solution';
 import {AssignmentService} from './assignment.service';
 
 @Injectable()
@@ -68,7 +68,7 @@ export class SolutionService {
   getOwnWithAssignments(): Observable<[ReadAssignmentDto[], Solution[]]> {
     return this.users.getCurrent().pipe(
       switchMap(user => {
-        if (user && user.id) {
+        if (user?.id) {
           return this.getOwn().pipe(switchMap(solutions => {
             const assignmentIds = [...new Set<string>(solutions.map(s => s.assignment))];
             const assignments = this.assignmentService.findAll(assignmentIds);
@@ -95,7 +95,7 @@ export class SolutionService {
 
   submit(assignment: string, dto: CreateSolutionDto, files?: File[]): Observable<Solution> {
     let body;
-    if (files && files.length) {
+    if (files?.length) {
       const data = new FormData();
       data.set('author', JSON.stringify(dto.author));
       for (const file of files) {
@@ -114,29 +114,37 @@ export class SolutionService {
     return this.http.get<ImportSolution[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/import`);
   }
 
-  import(assignment: string, files?: File[], usernames?: string[]): Observable<ImportSolution[]> {
+  import(assignment: string, files?: File[], usernames?: string[], reimport?: boolean): Observable<ImportSolution[]> {
     let body;
-    if (files && files.length) {
+    if (files?.length) {
       const data = new FormData();
-      for (let file of files) {
+      for (const file of files) {
         data.append('files', file, file.name);
       }
       body = data;
     }
-    return this.http.post<ImportSolution[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/import`, body, {
-      params: usernames ? {usernames} : undefined,
-    });
+    const params: Record<string, string | boolean | string[]> = {};
+    usernames && (params.usernames = usernames);
+    reimport && (params.reimport = reimport);
+    const url = `${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/import`;
+    return this.http.post<ImportSolution[]>(url, body, {params});
   }
 
   get(assignment: string, id: string): Observable<Solution> {
     return this.http.get<Solution>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${id}`);
   }
 
-  getAll(assignment: string, search?: string): Observable<Solution[]> {
+  getAll(assignment: string, search?: string): Observable<RichSolutionDto[]> {
     const params: Params = {};
     search && (params.q = search);
-    return this.http.get<Solution[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions`, {
+    return this.http.get<RichSolutionDto[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions`, {
       params,
+    });
+  }
+
+  getIds(assignment: string, ids: string[]): Observable<RichSolutionDto[]> {
+    return !ids.length ? of([]) : this.http.get<RichSolutionDto[]>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions`, {
+      params: {ids},
     });
   }
 

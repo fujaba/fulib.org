@@ -37,7 +37,7 @@ export class CommentService {
   }
 
   stream(assignment: string, solution: string): Observable<{ event: string, comment: Comment }> {
-    const token = this.tokenService.getSolutionToken(assignment, solution) || this.tokenService.getAssignmentToken(assignment);
+    const token = this.tokenService.getSolutionToken(assignment, solution) ?? this.tokenService.getAssignmentToken(assignment);
     return observeSSE<Comment, 'comment'>(`${environment.assignmentsApiUrl}/assignments/${assignment}/solutions/${solution}/comments/events?token=${token}`);
   }
 }

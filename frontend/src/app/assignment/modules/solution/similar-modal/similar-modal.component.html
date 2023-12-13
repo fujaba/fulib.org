@@ -7,41 +7,70 @@
   </ng-container>
   <ng-container modal-body>
     <app-evaluation-form [dto]="dto" [task]="task"></app-evaluation-form>
-    <div class="table-responsive">
-      <table class="table">
-        <thead>
+    @if (!evaluation?.snippets?.length) {
+      <div class="alert alert-info">
+        The original solution has no snippets, so no related solutions can be shown.
+      </div>
+    }
+    @if (!solutions.length) {
+      <div class="alert alert-info">
+        No similar solutions were found.
+        Please make sure to
+        <a routerLink="../../../../../import/embeddings">Import Embeddings</a>.
+      </div>
+    }
+    @if (evaluation?.snippets?.length && solutions.length) {
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
           <tr>
-            <th *ngFor="let solution of solutions" [class]="solution._id === solutionId ? 'bg-body sticky-start' : ''">
-              <div class="form-check" [class.bg-success]="selection[solution._id!]">
-                <input class="form-check-input" type="checkbox" [id]="'check-' + solution._id"
-                       [disabled]="!!existingEvaluations[solution._id!]"
-                       [(ngModel)]="selection[solution._id!]">
-                <label class="form-check-label" [for]="'check-' + solution._id">
-                  Solution by {{ solution | solutionName }}
-                </label>
-                <span *ngIf="existingEvaluations[solution._id!] && solution._id !== solutionId" class="text-muted">
-                  &bull;
-                  <a [routerLink]="['../../../..', solution._id, 'tasks', task?._id]">View Evaluation</a>
-                </span>
-              </div>
-            </th>
+            @for (solution of solutions;track solution) {
+              <th [class]="solution._id === solutionId ? 'bg-body sticky-start' : ''">
+                <div class="form-check" [class.bg-success]="selection[solution._id!]">
+                  <input class="form-check-input" type="checkbox" [id]="'check-' + solution._id"
+                         [disabled]="!!existingEvaluations[solution._id!]"
+                         [(ngModel)]="selection[solution._id!]">
+                  <label class="form-check-label" [for]="'check-' + solution._id">
+                    Solution by {{ solution | solutionName }}
+                  </label>
+                  @if (solution.assignee;as assignee) {
+                    <span class="text-muted">
+                      &bull;
+                      <i class="bi-person-check" ngbTooltip="Assignee"></i>
+                      {{ assignee }}
+                    </span>
+                  }
+                  @if (existingEvaluations[solution._id!] && solution._id !== solutionId) {
+                    <span class="text-muted">
+                      &bull;
+                      <a [routerLink]="['../../../..', solution._id, 'tasks', task?._id]">View Evaluation</a>
+                    </span>
+                  }
+                </div>
+              </th>
+            }
           </tr>
-        </thead>
-        <tbody class="align-top">
-          <tr *ngFor="let originalSnippet of snippets[solutionId]; let index=index">
-            <td *ngFor="let solution of solutions"
-                [class]="solution._id === solutionId ? 'bg-body sticky-start' : ''"
-                style="max-width: 400px"
-            >
-              <ng-container *ngIf="snippets[solution._id!]?.[index] as solutionSnippet">
-                <app-edit-snippet [index]="index" [snippet]="solutionSnippet"></app-edit-snippet>
-                <app-snippet [snippet]="solutionSnippet"></app-snippet>
-              </ng-container>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody class="align-top">
+            @for (originalSnippet of evaluation?.snippets;track originalSnippet;let index = $index) {
+              <tr>
+                @for (solution of solutions;track solution) {
+                  <td
+                    [class]="solution._id === solutionId ? 'bg-body sticky-start' : ''"
+                    style="max-width: 400px"
+                  >
+                    @if (snippets[solution._id!]?.[index];as solutionSnippet) {
+                      <app-edit-snippet [index]="index" [snippet]="solutionSnippet"></app-edit-snippet>
+                      <app-snippet [assignment]="assignment" [solution]="solution" [snippet]="solutionSnippet"></app-snippet>
+                    }
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
   </ng-container>
   <ng-container modal-footer>
     <button type="button" class="btn btn-secondary" (click)="modal.close()">

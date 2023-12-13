@@ -16,8 +16,9 @@ import {InfoComponent} from './info/info.component';
 import {PreviewComponent} from './preview/preview.component';
 import {TasksComponent} from './tasks/tasks.component';
 import {TaskMarkdownService} from "./task-markdown.service";
-import { CodeSearchComponent } from './code-search/code-search.component';
-import { PlagiarismDetectionComponent } from './plagiarism-detection/plagiarism-detection.component';
+import {CodeSearchComponent} from './code-search/code-search.component';
+import {PlagiarismDetectionComponent} from './plagiarism-detection/plagiarism-detection.component';
+import {DiffModalComponent} from "./diff-modal/diff-modal.component";
 
 
 @NgModule({
@@ -31,6 +32,7 @@ import { PlagiarismDetectionComponent } from './plagiarism-detection/plagiarism-
     TasksComponent,
     CodeSearchComponent,
     PlagiarismDetectionComponent,
+    DiffModalComponent,
   ],
   imports: [
     CommonModule,

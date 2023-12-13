@@ -5,7 +5,7 @@ import {createReadStream} from 'fs';
 import {firstValueFrom} from 'rxjs';
 import {Stream} from 'stream';
 import {AssignmentDocument} from '../assignment/assignment.schema';
-import {AuthorInfo, Solution} from '../solution/solution.schema';
+import {AuthorInfo} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {generateToken} from '../utils';
 import {ImportSolution} from "./classroom.dto";
@@ -55,7 +55,7 @@ export class ClassroomService {
       await Promise.all(files.map(async (file, index) => {
         const stream = createReadStream(file.path);
         const solution = solutions.upsertedIds[index];
-        return this.fileService.importZipEntries(stream, assignment.id, solution);
+        return this.fileService.importZipEntries(stream, assignment.id, solution.toString());
       }));
     }
 
@@ -64,10 +64,6 @@ export class ClassroomService {
 
   private async upsertSolutions(assignment: AssignmentDocument, importSolutions: ImportSolution[]) {
     const result = await this.solutionService.bulkWrite(importSolutions.map(importSolution => {
-      const solution: Solution = {
-        ...importSolution,
-        token: generateToken(),
-      };
       const [key, value] = Object.entries(importSolution.author).find(([, value]) => value)!;
       return {
         updateOne: {
@@ -75,7 +71,12 @@ export class ClassroomService {
             assignment: assignment._id,
             ['author.' + key]: value,
           },
-          update: {$setOnInsert: solution},
+          update: {
+            $setOnInsert: {
+              ...importSolution,
+              token: generateToken(),
+            },
+          },
           upsert: true,
         },
       };
@@ -114,7 +115,7 @@ export class ClassroomService {
     }
   }
 
-  async importSolutions(assignment: AssignmentDocument, usernames?: string[]): Promise<ImportSolution[]> {
+  async importSolutions(assignment: AssignmentDocument, usernames?: string[], reimport?: boolean): Promise<ImportSolution[]> {
     if (!assignment.classroom) {
       return [];
     }
@@ -149,11 +150,27 @@ export class ClassroomService {
       const upsertedId = solutions.upsertedIds[i];
       if (commit && upsertedId) {
         const zip = await this.getRepoZip(assignment, this.getGithubName(repo, assignment), commit);
-        return zip ? this.fileService.importZipEntries(zip, assignment._id, upsertedId, commit) : [];
-      } else {
-        return [];
+        if (zip) {
+          await this.fileService.importZipEntries(zip, assignment.id, upsertedId.toString(), commit);
+        }
       }
     }));
+
+    if (reimport) {
+      const otherSolutions = await this.solutionService.findAll({
+        assignment: assignment._id,
+        _id: {$nin: Object.values(solutions.upsertedIds)},
+        'author.github': {$gt: ''},
+        commit: {$gt: ''},
+      });
+      await Promise.all(otherSolutions.map(async solution => {
+        const zip = await this.getRepoZip(assignment, solution.author.github!, solution.commit!);
+        if (zip) {
+          await this.fileService.importZipEntries(zip, assignment.id, solution.id, solution.commit!);
+        }
+      }));
+      importSolutions.push(...otherSolutions);
+    }
 
     return importSolutions;
   }

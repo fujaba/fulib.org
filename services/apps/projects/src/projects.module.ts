@@ -8,16 +8,19 @@ import {ProjectModule} from './project/project.module';
 import {ScheduleModule} from "@nestjs/schedule";
 import {SentryInterceptor, SentryModule} from "@ntegral/nestjs-sentry";
 import {APP_INTERCEPTOR} from "@nestjs/core";
+import {EventModule} from "@app/event/event.module";
 
 @Module({
   imports: [
     MongooseModule.forRoot(environment.mongo.uri, environment.mongo.options),
     AuthModule.register(environment.auth),
+    EventModule.forRoot({nats: environment.nats}),
     ProjectModule,
     MemberModule,
     ContainerModule,
     ScheduleModule.forRoot(),
     SentryModule.forRoot({
+      enabled: environment.nodeEnv !== 'development',
       dsn: environment.sentryDsn,
       environment: environment.nodeEnv,
       release: environment.version,

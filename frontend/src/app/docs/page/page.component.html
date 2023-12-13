@@ -11,16 +11,20 @@
       {{ repo ? repo.description : 'Loading...' }}
     </p>
     <div class="list-group">
-      <app-page-navigation *ngIf="rootPage" [page]="rootPage"></app-page-navigation>
+      @if (rootPage) {
+        <app-page-navigation [page]="rootPage"></app-page-navigation>
+      }
     </div>
   </div>
-  <div class="col-9 h-100 overflow-auto" *ngIf="page">
-    <app-markdown [html]="page.html"></app-markdown>
-    <div class="d-print-none text-center mb-3">
-      <hr/>
-      <a class="btn btn-primary" href="https://github.com/fujaba/{{page.repo}}/blob/master/docs/{{page.url}}">
-        Edit on GitHub
-      </a>
+  @if (page) {
+    <div class="col-9 h-100 overflow-auto">
+      <app-markdown [html]="page.html"></app-markdown>
+      <div class="d-print-none text-center mb-3">
+        <hr/>
+        <a class="btn btn-primary" href="https://github.com/fujaba/{{page.repo}}/blob/master/docs/{{page.url}}">
+          Edit on GitHub
+        </a>
+      </div>
     </div>
-  </div>
+  }
 </div>

@@ -114,7 +114,7 @@ There is a Car with name Herbie.
     this.projectName = projectConfig.projectName;
     this.projectVersion = projectConfig.projectVersion;
     this.scenarioFileName = projectConfig.scenarioFileName;
-    this.decoratorClassName = projectConfig.decoratorClassName || '';
+    this.decoratorClassName = projectConfig.decoratorClassName ?? '';
   }
 
   downloadZip(projectZipRequest: ProjectZipRequest): Observable<Blob> {

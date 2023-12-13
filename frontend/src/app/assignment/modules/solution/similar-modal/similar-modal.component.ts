@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import Task from "../../../model/task";
-import Solution from "../../../model/solution";
+import {RichSolutionDto} from "../../../model/solution";
 import {CreateEvaluationDto, Evaluation, Snippet} from "../../../model/evaluation";
 import {ActivatedRoute} from "@angular/router";
 import {AssignmentService} from "../../../services/assignment.service";
@@ -12,6 +12,7 @@ import {forkJoin} from "rxjs";
 import {ToastService} from "@mean-stream/ngbx";
 import {EvaluationService} from "../../../services/evaluation.service";
 import {EmbeddingService} from "../../../services/embedding.service";
+import {ReadAssignmentDto} from "../../../model/assignment";
 
 @Component({
   selector: 'app-similar-modal',
@@ -19,9 +20,11 @@ import {EmbeddingService} from "../../../services/embedding.service";
   styleUrls: ['./similar-modal.component.scss']
 })
 export class SimilarModalComponent implements OnInit {
+  assignment?: ReadAssignmentDto;
   solutionId!: string;
   task?: Task;
   evaluation?: Evaluation;
+  startDate = Date.now();
   dto: CreateEvaluationDto = {
     task: '',
     points: 0,
@@ -30,7 +33,7 @@ export class SimilarModalComponent implements OnInit {
     author: this.configService.get('name'),
     codeSearch: false,
   };
-  solutions: Solution[] = [];
+  solutions: RichSolutionDto[] = [];
   selection: Partial<Record<string, boolean>> = {};
   existingEvaluations: Partial<Record<string, boolean>> = {};
   snippets: Partial<Record<string, Snippet[]>> = {};
@@ -53,12 +56,13 @@ export class SimilarModalComponent implements OnInit {
     this.route.params.subscribe(({sid}) => this.solutionId = sid);
 
     this.route.params.pipe(
-      switchMap(({aid, task}) => this.assignmentService.get(aid).pipe(
-        map(assignment => this.taskService.find(assignment.tasks, task)),
-      )),
-    ).subscribe(task => this.task = task);
+      switchMap(({aid}) => this.assignmentService.get(aid)),
+    ).subscribe(assignment => {
+      this.assignment = assignment;
+      this.task = this.taskService.find(assignment.tasks, this.route.snapshot.params.task);
+    });
 
-
+    // load solution IDs that already have an evaluation for this task
     this.route.params.pipe(
       switchMap(({aid, task}) => this.evaluationService.distinctValues<string>(aid, 'solution', {task})),
     ).subscribe(ids => {
@@ -66,6 +70,7 @@ export class SimilarModalComponent implements OnInit {
     })
 
     this.route.params.pipe(
+      // load the original evaluation to get remark, points and snippets
       switchMap(({aid, sid, task}) => this.evaluationService.findByTask(aid, sid, task)),
       filter((e): e is Evaluation => !!e),
       tap(evaluation => {
@@ -73,9 +78,11 @@ export class SimilarModalComponent implements OnInit {
         this.dto.remark = evaluation.remark;
         this.dto.points = evaluation.points;
       }),
+      // for each snippet, find similar snippets
       switchMap(evaluation => forkJoin(evaluation.snippets
         .map(snippet => this.embeddingService.findSimilarSnippets(evaluation.assignment, evaluation.solution, snippet))
       )),
+      // group snippets by solution and ordered by index of the original snippet
       map(result => {
         this.snippets = {};
         for (let snippetIndex = 0; snippetIndex < result.length; snippetIndex++) {
@@ -85,20 +92,26 @@ export class SimilarModalComponent implements OnInit {
         }
         return this.snippets;
       }),
-      switchMap(snippets => forkJoin(Object.keys(snippets)
-        .map(solution => this.solutionService.get(this.route.snapshot.params.aid, solution)),
-      )),
+      // fetch the solutions
+      switchMap(snippets => this.solutionService.getIds(this.route.snapshot.params.aid, Object.keys(snippets))),
       tap(solutions => this.solutions = solutions),
     ).subscribe();
   }
 
   submit() {
     const assignment = this.route.snapshot.params.aid;
-    forkJoin(Object.entries(this.selection)
-      .filter(([, selected]) => selected)
+    // for each selected solution, create an evaluation
+    const selected = Object.entries(this.selection).filter(([, selected]) => selected);
+    const duration = (Date.now() - this.startDate) / 1000 / selected.length;
+
+    forkJoin(selected
       .map(([solution]) => this.evaluationService.create(assignment, solution, {
         ...this.dto,
-        snippets: this.snippets[solution] || [],
+        duration,
+        similarity: this.evaluation && {
+          origin: this.evaluation._id,
+        },
+        snippets: this.snippets[solution] ?? [],
       }))
     ).subscribe(results => {
       this.toastService.success('Submit Evaluations', `Successfully submitted ${results.length} evaluations`);

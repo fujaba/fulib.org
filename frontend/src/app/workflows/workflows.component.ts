@@ -30,10 +30,10 @@ export class WorkflowsComponent implements OnInit {
   examples: Example[] = [];
 
   showIframeHider = false;
-  newPageIndex: number = 0;
+  newPageIndex = 0;
   currentDisplay: 'pages' | 'objects' | 'class' = 'pages';
 
-  loading: boolean = false;
+  loading = false;
 
   constructor(
     private toastService: ToastService,

@@ -9,9 +9,6 @@ export class CollapseButtonComponent {
   @Input() collapsed = false;
   @Output() collapsedChange = new EventEmitter<boolean>();
 
-  constructor() {
-  }
-
   toggle(): void {
     this.collapsed = !this.collapsed;
     this.collapsedChange.emit(this.collapsed);

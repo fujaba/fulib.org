@@ -4,9 +4,11 @@
   </ng-container>
   <ng-container modal-body>
     <app-project-form [project]="editing"></app-project-form>
-    <div class="alert alert-success" *ngIf="creatingFromEditor">
-      This Project will be created with the configuration and scenario from the Scenario editor.
-    </div>
+    @if (creatingFromEditor) {
+      <div class="alert alert-success">
+        This Project will be created with the configuration and scenario from the Scenario editor.
+      </div>
+    }
   </ng-container>
   <ng-container modal-footer>
     <button type="button" class="btn btn-secondary" (click)="modal.close()">

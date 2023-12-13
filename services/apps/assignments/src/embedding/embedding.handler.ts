@@ -22,12 +22,12 @@ export class EmbeddingHandler {
     const taskIds = new Set<string>();
     const assignmentId = assignment._id.toString();
     this.upsertTasks(apiKey, assignmentId, assignment.tasks, '', taskIds);
-    await this.embeddingService.deleteNotIn(assignmentId, [...taskIds]);
+    await this.embeddingService.deleteTasksNotIn(assignmentId, [...taskIds]);
   }
 
   @OnEvent('assignments.*.deleted')
   async onAssignmentDeleted(assignment: AssignmentDocument) {
-    await this.embeddingService.deleteNotIn(assignment._id.toString(), []);
+    await this.embeddingService.deleteAll(assignment._id.toString());
   }
 
   private upsertTasks(apiKey: string, assignment: string, tasks: Task[], prefix: string, taskIds: Set<string>) {
@@ -51,6 +51,6 @@ export class EmbeddingHandler {
 
   @OnEvent('assignments.*.solutions.*.deleted')
   async onSolutionDeleted(solution: SolutionDocument) {
-    await this.embeddingService.deleteBySolution(solution.assignment, solution.id);
+    await this.embeddingService.deleteBySolution(solution.assignment.toString(), solution.id);
   }
 }

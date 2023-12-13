@@ -8,6 +8,6 @@ export class SafeHtmlPipe implements PipeTransform {
 
   transform(value: string): SafeHtml {
     const sanitized = this.sanitizer.sanitize(SecurityContext.HTML, value);
-    return this.sanitizer.bypassSecurityTrustHtml(sanitized || '');
+    return this.sanitizer.bypassSecurityTrustHtml(sanitized ?? '');
   }
 }

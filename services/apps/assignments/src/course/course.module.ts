@@ -5,6 +5,7 @@ import {SolutionModule} from '../solution/solution.module';
 import {CourseController} from './course.controller';
 import {Course, CourseSchema} from './course.schema';
 import {CourseService} from './course.service';
+import {CourseMemberModule} from "../course-member/course-member.module";
 
 @Module({
   imports: [
@@ -16,9 +17,15 @@ import {CourseService} from './course.service';
     ]),
     SolutionModule,
     AssigneeModule,
+    CourseMemberModule,
   ],
   controllers: [CourseController],
-  providers: [CourseService],
+  providers: [
+    CourseService,
+  ],
+  exports: [
+    CourseService,
+  ],
 })
 export class CourseModule {
 }

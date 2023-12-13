@@ -54,10 +54,6 @@ import 'zone.js'; // Included with Angular CLI.
  * APPLICATION IMPORTS
  */
 
-// Dragula
-// from https://github.com/valor-software/ng2-dragula/#1-important-add-the-following-line-to-your-polyfillsts
-(window as any).global = window;
-
 /***************************************************************************************************
  * EXTENSION METHODS
  */
@@ -73,7 +69,6 @@ String.prototype.hashCode = function() {
   let hash = 0;
   for (let i = 0; i < this.length; i++) {
     const chr = this.charCodeAt(i);
-    // tslint:disable-next-line:no-bitwise
     hash = (((hash << 5) - hash) + chr) | 0;
   }
   return hash;
@@ -82,10 +77,6 @@ String.prototype.hashCode = function() {
 declare global {
   interface Array<T> {
     removeFirst(predicate: (value: T, index: number, obj: T[]) => boolean): T | undefined;
-
-    findLast(predicate: (value: T, index: number, obj: T[]) => boolean): T | undefined;
-
-    findLastIndex(predicate: (value: T, index: number, obj: T[]) => boolean): number;
   }
 }
 
@@ -96,22 +87,4 @@ Array.prototype.removeFirst = function removeFirst<T>(predicate: (value: T, inde
   }
   const [value] = this.splice(index, 1);
   return value;
-};
-
-Array.prototype.findLast = function findLast<T>(predicate: (value: T, index: number, obj: T[]) => boolean): T | undefined {
-  for (let l = this.length - 1; l >= 0; l--) {
-    if (predicate(this[l], l, this)) {
-      return this[l];
-    }
-  }
-  return undefined;
-};
-
-Array.prototype.findLastIndex = function findLastIndex<T>(predicate: (value: T, index: number, obj: T[]) => boolean): number {
-  for (let l = this.length - 1; l >= 0; l--) {
-    if (predicate(this[l], l, this)) {
-      return l;
-    }
-  }
-  return -1;
 };

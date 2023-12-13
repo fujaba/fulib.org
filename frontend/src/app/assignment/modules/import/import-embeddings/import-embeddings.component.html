@@ -1,29 +1,45 @@
 <p>
   After importing from GitHub or Files, you can import embeddings.
 </p>
-<p>
-  Here is an estimate of the token costs.
-  Actual costs may be <strong>lower</strong> if the embeddings are already cached,
-  or <strong>slightly higher</strong> due to some tokens like filenames being added to improve results.
-  Charges will be applied to your OpenAI account.
-</p>
-<p>
-  Please review the results below and click <b>Import</b> to confirm.
-</p>
-<div class="row" *ngIf="estimatedCosts">
-  <app-statistic-value class="col" label="Solutions" [value]="estimatedCosts.solutions" [standalone]="true"></app-statistic-value>
-  <app-statistic-value class="col" label="Files" [value]="estimatedCosts.files" [standalone]="true"></app-statistic-value>
-  <app-statistic-value class="col" label="Tokens" [value]="estimatedCosts.tokens" [standalone]="true"></app-statistic-value>
-  <app-statistic-value class="col" label="Estimated Cost" [value]="estimatedCosts.estimatedCost | currency:'USD':true:'0.7'" [standalone]="true"></app-statistic-value>
-</div>
-<ng-container *ngIf="finalCosts">
+@if (costsAreFinal) {
   <hr/>
   <p>
     The import has been completed.
     The following costs have been applied to your OpenAI account.
   </p>
+} @else {
+  <p>
+    Here is an estimate of the token costs.
+    Actual costs may be <strong>lower</strong> if the embeddings are already cached,
+    or <strong>slightly higher</strong> due to some tokens like filenames being added to improve results.
+    Charges will be applied to your OpenAI account.
+  </p>
+  <p>
+    Please review the results below and click <b>Import</b> to confirm.
+  </p>
+}
+@if (costs) {
   <div class="row">
-    <app-statistic-value class="col" label="Tokens" [value]="finalCosts.tokens" [standalone]="true"></app-statistic-value>
-    <app-statistic-value class="col" label="Cost" [value]="finalCosts.estimatedCost | currency:'USD':true:'0.7'" [standalone]="true"></app-statistic-value>
+    <app-statistic-value class="col" label="Solutions" [value]="costs.solutions" [standalone]="true"></app-statistic-value>
+    <app-statistic-value class="col" label="Files" [value]="costs.files" [standalone]="true"></app-statistic-value>
+    <app-statistic-value class="col" label="Functions" [value]="costs.functions.length" [standalone]="true"></app-statistic-value>
+    <app-statistic-value class="col" label="Tokens" [value]="costs.tokens" [standalone]="true"></app-statistic-value>
+    <app-statistic-value class="col" [label]="costsAreFinal ? 'Total Cost' : 'Estimated Cost'" [value]="costs.estimatedCost | currency:'USD':true:'0.7'" [standalone]="true"></app-statistic-value>
   </div>
-</ng-container>
+  <div class="mb-3">
+    <label for="functions">Imported Functions</label>
+    <textarea class="form-control" id="functions" rows="6" readonly>{{ costs.functions.join('\n') }}</textarea>
+  </div>
+  @if (costs.ignoredFiles.length > 0) {
+    <div class="mb-3">
+      <label for="ignoredFiles">Ignored Files</label>
+      <textarea class="form-control" id="ignoredFiles" rows="6" readonly>{{ costs.ignoredFiles.join('\n') }}</textarea>
+    </div>
+  }
+  @if (costs.ignoredFunctions.length > 0) {
+    <div class="mb-3">
+      <label for="ignoredFunctions">Ignored Functions</label>
+      <textarea class="form-control" id="ignoredFunctions" rows="6" readonly>{{ costs.ignoredFunctions.join('\n') }}</textarea>
+    </div>
+  }
+}

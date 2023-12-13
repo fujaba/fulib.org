@@ -10,6 +10,7 @@ export class SolutionNamePipe implements PipeTransform {
       return '';
     }
     const {name, github, studentId, email} = solution.author;
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     return name || github || studentId || email || '';
   }
 }

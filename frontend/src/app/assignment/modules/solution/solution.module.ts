@@ -2,7 +2,7 @@ import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgbPopoverModule, NgbTooltipModule, NgbTypeaheadModule} from '@ng-bootstrap/ng-bootstrap';
-import {ModalModule, RouteTabsModule} from '@mean-stream/ngbx';
+import {FormsModule as NgbxFormsModule, ModalModule, RouteTabsModule} from '@mean-stream/ngbx';
 import {ClipboardModule} from 'ngx-clipboard';
 import {SharedModule} from '../../../shared/shared.module';
 import {AssignmentSharedModule} from '../shared/shared.module';
@@ -17,9 +17,12 @@ import {SolutionShareComponent} from './share/share.component';
 import {SolutionRoutingModule} from './solution-routing.module';
 import {SolutionComponent} from './solution/solution.component';
 import {SolutionTasksComponent} from './tasks/tasks.component';
-import { SimilarModalComponent } from './similar-modal/similar-modal.component';
+import {SimilarModalComponent} from './similar-modal/similar-modal.component';
 import {CommentService} from "./comment.service";
-
+import {FeedbackComponent} from './feedback/feedback.component';
+import {TimetrackingComponent} from './timetracking/timetracking.component';
+import {AssigneeFeedbackComponent} from './assignee-feedback/assignee-feedback.component';
+import { SnippetListComponent } from './snippet-list/snippet-list.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +36,10 @@ import {CommentService} from "./comment.service";
     EvaluationFormComponent,
     DeleteModalComponent,
     SimilarModalComponent,
+    FeedbackComponent,
+    TimetrackingComponent,
+    AssigneeFeedbackComponent,
+    SnippetListComponent,
   ],
   imports: [
     CommonModule,
@@ -46,6 +53,7 @@ import {CommentService} from "./comment.service";
     RouteTabsModule,
     ModalModule,
     NgbPopoverModule,
+    NgbxFormsModule,
   ],
   providers: [
     CommentService,

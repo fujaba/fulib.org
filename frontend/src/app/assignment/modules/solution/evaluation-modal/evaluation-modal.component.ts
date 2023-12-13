@@ -1,22 +1,19 @@
 import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ModalComponent, ToastService} from '@mean-stream/ngbx';
-import {EMPTY, merge, of, Subject, Subscription} from 'rxjs';
-import {debounceTime, distinctUntilChanged, filter, map, share, switchMap, tap} from 'rxjs/operators';
-import {CodeSearchInfo, CreateEvaluationDto, Evaluation, Snippet} from '../../../model/evaluation';
-import {SearchSummary} from '../../../model/search-result';
+import {EMPTY, Observable, of, Subscription} from 'rxjs';
+import {filter, share, switchMap, tap} from 'rxjs/operators';
+import {CodeSearchInfo, CreateEvaluationDto, Evaluation, isVisible} from '../../../model/evaluation';
 import Solution from '../../../model/solution';
 import Task from '../../../model/task';
 import {AssignmentService} from '../../../services/assignment.service';
 import {ConfigService} from '../../../services/config.service';
 import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
-import {TelemetryService} from '../../../services/telemetry.service';
-import {SelectionService} from '../../../services/selection.service';
 import {EvaluationService} from "../../../services/evaluation.service";
-import {EmbeddingService} from "../../../services/embedding.service";
+import {selectionComment} from "../snippet-list/snippet-list.component";
+import {ReadAssignmentDto} from "../../../model/assignment";
 
-export const selectionComment = '(fulibFeedback Selection)';
 
 @Component({
   selector: 'app-evaluation-modal',
@@ -26,14 +23,13 @@ export const selectionComment = '(fulibFeedback Selection)';
 export class EvaluationModalComponent implements OnInit, OnDestroy {
   @ViewChild('modal', {static: true}) modal: ModalComponent;
 
-  readonly selectionComment = selectionComment;
-
   codeSearchEnabled = this.configService.getBool('codeSearch');
-  snippetSuggestionsEnabled = this.configService.getBool('snippetSuggestions');
   similarSolutionsEnabled = this.configService.getBool('similarSolutions');
 
+  startDate = Date.now();
+  assignment?: ReadAssignmentDto;
+  solution?: Solution;
   task?: Task;
-  comments: string[] = [];
   evaluation?: Evaluation;
   dto: CreateEvaluationDto = {
     task: '',
@@ -41,6 +37,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     remark: '',
     points: 0,
     snippets: [],
+    codeSearch: this.codeSearchEnabled,
   };
 
   originEvaluation?: Evaluation;
@@ -48,12 +45,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
 
   derivedSolutionCount?: number;
 
-  snippetUpdates$ = new Subject<Snippet>();
-  searchSummary?: SearchSummary & { level: string, message?: string, code: string };
-
-  embeddingSnippets: Snippet[] = [];
-
-  viewSimilar = true;
+  viewSimilar = this.similarSolutionsEnabled;
 
   subscriptions = new Subscription();
 
@@ -61,32 +53,62 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     private assignmentService: AssignmentService,
     private taskService: TaskService,
     private solutionService: SolutionService,
-    private selectionService: SelectionService,
     private configService: ConfigService,
     private toastService: ToastService,
-    private telemetryService: TelemetryService,
     private evaluationService: EvaluationService,
-    private embeddingService: EmbeddingService,
     public route: ActivatedRoute,
     private router: Router,
   ) {
   }
 
   ngOnInit(): void {
-    this.route.params.pipe(
-      switchMap(({aid, task}) => this.assignmentService.get(aid).pipe(
-        tap(assignment => this.dto.codeSearch = this.codeSearchEnabled && !!assignment.classroom?.codeSearch),
-        map(assignment => this.taskService.find(assignment.tasks, task)),
-      )),
-    ).subscribe(task => {
-      this.task = task;
-    });
-
-    const evaluation$ = this.route.params.pipe(
-      switchMap(({aid, sid, task}) => this.evaluationService.findByTask(aid, sid, task)),
+    const assignment$ = this.route.params.pipe(
+      switchMap(({aid}) => this.assignmentService.get(aid)),
       share(),
     );
 
+    assignment$.subscribe(assignment => this.assignment = assignment);
+
+    this.loadCodeSearchEnabled(assignment$);
+    this.loadTask(assignment$);
+
+    this.route.params.pipe(
+      switchMap(({aid, sid}) => this.solutionService.get(aid, sid)),
+    ).subscribe(solution => this.solution = solution);
+
+    const config = {
+      codeSearch: this.codeSearchEnabled,
+      similarSolutions: this.similarSolutionsEnabled,
+    };
+    const evaluation$ = this.route.params.pipe(
+      switchMap(({aid, sid, task}) => this.evaluationService.findByTask(aid, sid, task)),
+      filter(evaluation => !!evaluation && isVisible(evaluation, config)),
+      share(),
+    );
+
+    this.loadEvaluation(evaluation$);
+    this.loadOriginEvaluationAndSolution(evaluation$);
+    this.loadDerivedSolutions(evaluation$);
+  }
+
+  private loadCodeSearchEnabled(assignment$: Observable<ReadAssignmentDto>) {
+    this.subscriptions.add(assignment$.subscribe(assignment => {
+      if (!assignment.classroom?.codeSearch) {
+        this.dto.codeSearch = this.codeSearchEnabled = false;
+      }
+      if (!assignment.classroom?.openaiApiKey) {
+        this.viewSimilar = this.similarSolutionsEnabled = false;
+      }
+    }));
+  }
+
+  private loadTask(assignment$: Observable<ReadAssignmentDto>) {
+    this.subscriptions.add(assignment$.subscribe(assignment => {
+      this.task = this.taskService.find(assignment.tasks, this.route.snapshot.params.task);
+    }));
+  }
+
+  private loadEvaluation(evaluation$: Observable<Evaluation | undefined>) {
     this.subscriptions.add(evaluation$.subscribe(evaluation => {
       this.evaluation = evaluation;
       if (evaluation) {
@@ -94,85 +116,27 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
         this.dto = {...this.dto, points, remark, snippets};
       }
     }));
+  }
 
+  private loadOriginEvaluationAndSolution(evaluation$: Observable<Evaluation | undefined>) {
     this.subscriptions.add(evaluation$.pipe(
       switchMap(evaluation => {
         const origin = evaluation?.codeSearch?.origin;
-        return origin ? this.evaluationService.findOne(evaluation.assignment, undefined, origin) : of(undefined);
+        return origin ? this.evaluationService.findOne(evaluation.assignment, undefined, origin) : EMPTY;
       }),
       tap(originEvaluation => this.originEvaluation = originEvaluation),
       switchMap(originEvaluation => originEvaluation ? this.solutionService.get(originEvaluation.assignment, originEvaluation.solution) : of(undefined)),
       tap(originSolution => this.originSolution = originSolution),
     ).subscribe());
+  }
 
+  private loadDerivedSolutions(evaluation$: Observable<Evaluation | undefined>) {
     this.subscriptions.add(evaluation$.pipe(
       switchMap(evaluation => evaluation ? this.evaluationService.distinctValues<string>(evaluation.assignment, 'solution', {
         origin: evaluation._id,
         task: evaluation.task,
       }) : EMPTY),
     ).subscribe(solutionIds => this.derivedSolutionCount = solutionIds.length));
-
-    this.route.params.pipe(
-      switchMap(({aid, task}) => this.evaluationService.distinctValues<string>(aid, 'snippets.comment', {task})),
-    ).subscribe(comments => this.comments = comments);
-
-    if (this.snippetSuggestionsEnabled) {
-      this.route.params.pipe(
-        switchMap(({aid, sid, task}) => this.embeddingService.findTaskRelatedSnippets(aid, sid, task)),
-      ).subscribe(snippets => this.embeddingSnippets = snippets);
-    }
-
-    const selection$ = this.route.params.pipe(
-      switchMap(({aid, sid}) => this.selectionService.stream(aid, sid)),
-      filter(({selection: {author}}) => author === this.dto.author),
-      map(({selection}) => selection),
-      filter(({snippet}) => !!snippet.code.trim()),
-      share(),
-    );
-
-    this.subscriptions.add(selection$.subscribe(({author, snippet}) => {
-      let index = this.dto.snippets.findIndex(s => s.comment === this.selectionComment);
-      if (index >= 0) {
-        this.dto.snippets[index] = snippet;
-      } else {
-        index = this.dto.snippets.push(snippet) - 1;
-      }
-      setTimeout(() => document.getElementById('snippet-' + index)?.focus());
-    }));
-
-    if (this.codeSearchEnabled) {
-      this.subscriptions.add(merge(
-        selection$.pipe(map(sel => sel.snippet.code)),
-        this.snippetUpdates$.pipe(map(snippet => snippet.pattern || snippet.code)),
-      ).pipe(
-        debounceTime(200),
-        distinctUntilChanged(),
-        switchMap(code => this.assignmentService.searchSummary(this.route.snapshot.params.aid, code, this.task?.glob, '***').pipe(
-          map(searchSummary => ({...searchSummary, code})),
-        )),
-      ).subscribe(summary => {
-        let level: string;
-        let message: string | undefined;
-        if (!summary.hits) {
-          level = 'warning';
-          message = 'No result indicates the snippet is not part of the submitted code for this solution. Please make sure you checked out the correct commit.';
-        } else if (summary.files > summary.solutions) {
-          level = 'danger';
-          message = 'The snippet was found in multiple files per solution. It most likely does not provide enough context.';
-        } else if (summary.hits > summary.files) {
-          level = 'warning';
-          message = 'The snippet was found in multiple places per file. It probably does not provide enough context.';
-        } else {
-          level = 'success';
-        }
-
-        this.searchSummary = {
-          ...summary,
-          level,
-          message,
-        };
-      }));
-    }
   }
 
   ngOnDestroy(): void {
@@ -187,29 +151,15 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
     }
   }
 
-  confirmEmbedding(snippet: Snippet) {
-    this.embeddingSnippets.splice(this.embeddingSnippets.indexOf(snippet), 1);
-    this.dto.snippets.push(snippet);
-    snippet.score = undefined;
-    this.snippetUpdates$.next(snippet);
-  }
-
-  deleteSnippet(index: number) {
-    this.dto.snippets.splice(index, 1);
-  }
-
   doSubmit(): void {
     const {aid, sid, task} = this.route.snapshot.params;
     this.dto.task = task;
 
-    this.dto.snippets.removeFirst(s => s.comment === this.selectionComment);
+    this.dto.snippets.removeFirst(s => s.comment === selectionComment);
 
-    this.telemetryService.create(aid, sid, {
-      timestamp: new Date(),
-      task,
-      author: this.dto.author,
-      action: 'submitEvaluation',
-    }).subscribe();
+    if (!this.evaluation) {
+      this.dto.duration = (Date.now() - this.startDate) / 1000;
+    }
 
     const op = this.evaluation
       ? this.evaluationService.update(aid, sid, this.evaluation._id, this.dto)
@@ -219,7 +169,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       this.toastService.success('Evaluation', `Successfully ${op} evaluation${this.codeSearchInfo(result.codeSearch)}`);
       this.evaluation = result;
 
-      if (this.viewSimilar) {
+      if (this.viewSimilar && result.snippets.length) {
         this.router.navigate(['similar'], {relativeTo: this.route});
       }
     }, error => {

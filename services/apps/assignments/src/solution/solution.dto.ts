@@ -1,10 +1,11 @@
-import {ApiPropertyOptional, OmitType, PartialType} from '@nestjs/swagger';
+import {ApiProperty, ApiPropertyOptional, OmitType, PartialType} from '@nestjs/swagger';
 import {Types} from 'mongoose';
 import {Solution} from './solution.schema';
 import {AsObjectId} from "@mean-stream/nestx";
 import {IsOptional} from "class-validator";
 
 const excluded = [
+  '_id',
   'token',
   'assignment',
   'createdBy',
@@ -14,6 +15,7 @@ const excluded = [
 export class CreateSolutionDto extends OmitType(Solution, [
   ...excluded,
   'points',
+  'feedback',
 ] as const) {
 }
 
@@ -30,14 +32,17 @@ export class BatchUpdateSolutionDto extends UpdateSolutionDto {
   _id?: Types.ObjectId;
 }
 
-export class ReadSolutionDto extends OmitType(Solution, [
-  'token',
-]) {
-  _id: Types.ObjectId;
-  /*
-  @Prop()
-  @ApiProperty()
-  @IsString()
-  assignee: string;
-   */
+export enum SolutionStatus {
+  todo = 'todo',
+  codeSearch = 'code-search',
+  started = 'started',
+  graded = 'graded',
+}
+
+export class RichSolutionDto extends Solution {
+  @ApiPropertyOptional()
+  assignee?: string;
+
+  @ApiProperty({enum: SolutionStatus})
+  status: SolutionStatus;
 }

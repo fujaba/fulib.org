@@ -10,6 +10,8 @@ export interface ClassroomInfo {
   mossLanguage?: string;
   mossResult?: string;
   openaiApiKey?: string;
+  openaiConsent?: boolean;
+  openaiIgnore?: string;
 }
 
 export default class Assignment {
@@ -27,6 +29,7 @@ export default class Assignment {
 
   classroom?: ClassroomInfo;
 
+  passingPoints?: number;
   tasks: Task[];
 }
 

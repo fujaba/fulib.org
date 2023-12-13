@@ -8,7 +8,6 @@ import {ReadAssignmentDto} from '../../../model/assignment';
 import Solution from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
 import {SolutionService} from '../../../services/solution.service';
-import {TelemetryService} from '../../../services/telemetry.service';
 import {IssueDto, SubmitService} from '../submit.service';
 
 @Component({
@@ -30,7 +29,6 @@ export class SubmitModalComponent implements OnInit {
   constructor(
     public route: ActivatedRoute,
     private assignmentService: AssignmentService,
-    private telemetryService: TelemetryService,
     private solutionService: SolutionService,
     private submitService: SubmitService,
     private toastService: ToastService,
@@ -73,10 +71,6 @@ export class SubmitModalComponent implements OnInit {
     }
 
     const {assignment, _id} = this.solution!;
-    this.telemetryService.create(assignment, _id!, {
-      action: 'submitFeedback',
-      timestamp: new Date(),
-    }).subscribe();
 
     this.submitting = true;
     this.solutionService.update(assignment, _id!, {

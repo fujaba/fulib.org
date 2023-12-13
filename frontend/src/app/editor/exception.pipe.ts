@@ -41,7 +41,7 @@ ${value.output}
    */
   private getFenceBackticks(scenarioText: string): string {
     let minBackticks = 3;
-    for (const match of scenarioText.match(/`+/g) || []) {
+    for (const match of scenarioText.match(/`+/g) ?? []) {
       if (match.length >= minBackticks) {
         minBackticks = match.length + 1;
       }

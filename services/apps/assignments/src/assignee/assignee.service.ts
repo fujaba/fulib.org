@@ -1,44 +1,30 @@
-import {EventService} from '@mean-stream/nestx';
+import {EventRepository, EventService, MongooseRepository} from '@mean-stream/nestx';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
-import {FilterQuery, Model} from 'mongoose';
-import {UpdateAssigneeDto} from './assignee.dto';
+import {Model, Types} from 'mongoose';
 
 import {Assignee, AssigneeDocument} from './assignee.schema';
+import {BulkUpdateAssigneeDto} from "./assignee.dto";
 
 @Injectable()
-export class AssigneeService {
+@EventRepository()
+export class AssigneeService extends MongooseRepository<Assignee, never, AssigneeDocument> {
   constructor(
-    @InjectModel(Assignee.name) private model: Model<Assignee>,
+    @InjectModel(Assignee.name) public model: Model<Assignee, object, object, object, AssigneeDocument>,
     private eventService: EventService,
   ) {
-  }
-
-  async findAll(where: FilterQuery<Assignee> = {}): Promise<AssigneeDocument[]> {
-    return this.model.find(where).sort('+assignee').exec();
-  }
-
-  async findOne(assignment: string, solution: string): Promise<AssigneeDocument | null> {
-    return this.model.findOne({assignment, solution}).exec();
-  }
-
-  async update(assignment: string, solution: string, dto: UpdateAssigneeDto): Promise<AssigneeDocument | null> {
-    const updated = await this.model.findOneAndReplace({assignment, solution}, {
-      ...dto,
-      assignment,
-      solution,
-    }, {new: true, upsert: true}).exec();
-    this.emit('updated', updated);
-    return updated;
-  }
-
-  async remove(assignment: string, solution: string): Promise<AssigneeDocument | null> {
-    const deleted = await this.model.findOneAndDelete({assignment, solution}).exec();
-    deleted && this.emit('deleted', deleted);
-    return deleted;
+    super(model);
   }
 
   private emit(event: string, assignee: AssigneeDocument) {
     this.eventService.emit(`assignments.${assignee.assignment}.solutions.${assignee.solution}.assignee.${event}`, assignee);
+  }
+
+  async distinct(assignment: Types.ObjectId, field: string): Promise<unknown[]> {
+    return this.model.distinct(field, {assignment}).exec();
+  }
+
+  async upsertMany(assignment: Types.ObjectId, dtos: BulkUpdateAssigneeDto[]): Promise<AssigneeDocument[]> {
+    return Promise.all(dtos.map(dto => this.upsert({assignment, solution: dto.solution}, dto)));
   }
 }

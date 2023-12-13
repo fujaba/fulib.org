@@ -37,7 +37,7 @@ export class StatisticsComponent implements OnInit {
       title: 'Average Evaluation Time',
       label: 'per Evaluation',
       get: t => t.timeAvg,
-      render: n => this.durationPipe.transform(n / 1000),
+      render: n => this.durationPipe.transform(n),
     },
     codeSearchEffectiveness: {
       title: 'Code Search Effectiveness',
@@ -49,7 +49,7 @@ export class StatisticsComponent implements OnInit {
       title: 'Code Search Time Savings',
       label: 'Saved by Code Search',
       get: t => t._codeSearchTimeSavings,
-      render: n => this.durationPipe.transform(n / 1000),
+      render: n => this.durationPipe.transform(n),
     },
   } as const;
   visibleProps = new Set<TaskStatisticsKey>(['score', 'codeSearchTimeSavings']);
@@ -73,7 +73,7 @@ export class StatisticsComponent implements OnInit {
     ).subscribe(([assignment, statistics]) => {
       this.maxPoints = this.taskService.sumPositivePoints(assignment.tasks);
       this.stats = statistics;
-      for (let taskStats of statistics.tasks) {
+      for (const taskStats of statistics.tasks) {
         const tasks = this.taskService.findWithParents(assignment.tasks, taskStats.task);
         taskStats._tasks = tasks;
         taskStats._task = tasks[tasks.length - 1];

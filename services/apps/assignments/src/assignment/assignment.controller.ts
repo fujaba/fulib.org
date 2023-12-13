@@ -1,8 +1,8 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
-import {NotFound, notFound, ObjectIdArrayPipe} from '@mean-stream/nestx';
+import {NotFound, notFound, ObjectIdArrayPipe, ObjectIdPipe} from '@mean-stream/nestx';
 import {
   Body,
-  Controller,
+  Controller, DefaultValuePipe,
   Delete,
   Get,
   Headers,
@@ -14,12 +14,13 @@ import {
   Query,
 } from '@nestjs/common';
 import {ApiCreatedResponse, ApiHeader, ApiOkResponse, ApiTags, getSchemaPath} from '@nestjs/swagger';
-import {FilterQuery, Types} from 'mongoose';
+import {FilterQuery, Types, UpdateQuery} from 'mongoose';
 import {AssignmentAuth} from './assignment-auth.decorator';
 import {CreateAssignmentDto, ReadAssignmentDto, UpdateAssignmentDto,} from './assignment.dto';
-import {Assignment} from './assignment.schema';
+import {Assignment, ASSIGNMENT_COLLATION, ASSIGNMENT_SORT} from './assignment.schema';
 import {AssignmentService} from './assignment.service';
 import {MemberService} from "@app/member";
+import {generateToken} from "../utils";
 
 const forbiddenResponse = 'Not owner or invalid Assignment-Token.';
 
@@ -39,15 +40,19 @@ export class AssignmentController {
     @Body() dto: CreateAssignmentDto,
     @AuthUser() user?: UserToken,
   ) {
-    return this.assignmentService.create(dto, user?.sub);
+    return this.assignmentService.create({
+      ...dto,
+      token: generateToken(),
+      createdBy: user?.sub,
+    });
   }
 
   @Get()
   @ApiOkResponse({type: [ReadAssignmentDto]})
   async findAll(
+    @Query('ids', new DefaultValuePipe([]), ParseArrayPipe, ObjectIdArrayPipe) ids: Types.ObjectId[],
     @Query('archived', new ParseBoolPipe({optional: true})) archived?: boolean,
     @Query('createdBy') createdBy?: string,
-    @Query('ids', new ParseArrayPipe({optional: true}), ObjectIdArrayPipe) ids?: Types.ObjectId[],
     @Query('members', new ParseArrayPipe({optional: true})) memberIds?: string[],
   ) {
     const filter: FilterQuery<Assignment> = {};
@@ -57,14 +62,17 @@ export class AssignmentController {
     if (createdBy) {
       (filter.$or ||= []).push({createdBy});
     }
-    if (ids) {
+    if (ids.length) {
       (filter.$or ||= []).push({_id: {$in: ids}});
     }
     if (memberIds) {
       const members = await this.memberService.findAll({user: {$in: memberIds}});
       (filter.$or ||= []).push({_id: {$in: members.map(m => m.parent)}});
     }
-    return (await this.assignmentService.findAll(filter)).map(a => this.assignmentService.mask(a.toObject()));
+    return (await this.assignmentService.findAll(filter, {
+      sort: ASSIGNMENT_SORT,
+      collation: ASSIGNMENT_COLLATION,
+    })).map(a => this.assignmentService.mask(a.toObject()));
   }
 
   @Get(':id')
@@ -81,11 +89,11 @@ export class AssignmentController {
   })
   @ApiHeader({name: 'assignment-token', required: false})
   async findOne(
-    @Param('id') id: string,
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
     @Headers('assignment-token') token?: string,
     @AuthUser() user?: UserToken,
   ): Promise<Assignment | ReadAssignmentDto> {
-    const assignment = await this.assignmentService.findOne(id) ?? notFound(id);
+    const assignment = await this.assignmentService.find(id) ?? notFound(id);
     if (await this.assignmentService.isAuthorized(assignment, user, token)) {
       return assignment;
     }
@@ -97,10 +105,21 @@ export class AssignmentController {
   @AssignmentAuth({forbiddenResponse})
   @ApiOkResponse({type: Assignment})
   async update(
-    @Param('id') id: string,
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
     @Body() dto: UpdateAssignmentDto,
   ): Promise<Assignment | null> {
-    return this.assignmentService.update(id, dto);
+    const {token, classroom, ...rest} = dto;
+    const update: UpdateQuery<Assignment> = rest;
+    if (token) {
+      update.token = generateToken();
+    }
+    if (classroom) {
+      // need to flatten the classroom object to prevent deleting the GitHub token all the time
+      for (const [key, value] of Object.entries(classroom)) {
+        update[`classroom.${key}`] = value;
+      }
+    }
+    return this.assignmentService.update(id, update);
   }
 
   @Delete(':id')
@@ -108,8 +127,8 @@ export class AssignmentController {
   @AssignmentAuth({forbiddenResponse})
   @ApiOkResponse({type: Assignment})
   async remove(
-    @Param('id') id: string,
+    @Param('id', ObjectIdPipe) id: Types.ObjectId,
   ): Promise<Assignment | null> {
-    return this.assignmentService.remove(id);
+    return this.assignmentService.delete(id);
   }
 }

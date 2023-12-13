@@ -14,5 +14,6 @@ export class CodeSearchComponent {
     readonly context: AssignmentContext,
   ) {
     this.classroom = this.context.assignment.classroom ||= {};
+    this.classroom.openaiConsent ??= true;
   }
 }

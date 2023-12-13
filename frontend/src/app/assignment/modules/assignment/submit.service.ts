@@ -61,9 +61,19 @@ export class SubmitService {
     const {total, sum, tasks} = await this.renderTasks(assignment, solution);
     const footer = this.renderFooter(assignment, solution);
 
+    const feedbackInfo = sum === total ? `
+> [!NOTE]
+> Du hast die volle Punktzahl erreicht. Dafür bekommst du automatisch einen Bonuspunkt.
+` : `
+> [!IMPORTANT]
+> Bitte gib uns Feedback für diese Bewertung, indem du auf den Link klickst und die Fragen beantwortest.
+> Bei erfolgreicher Teilnahme bekommst du einen Bonuspunkt.
+> [Feedback erstellen](${location.origin}/assignments/${assignment._id}/solutions/${solution._id}/feedback?stok=${solution.token})
+`;
+
     return {
       title: `${assignment.title} (${sum}/${total}P)`,
-      body: `${tasks}\n\n${footer}`,
+      body: `${tasks}\n${feedbackInfo}\n${footer}`,
       _points: sum,
     };
   }
@@ -71,7 +81,7 @@ export class SubmitService {
   private async renderTasks(assignment: ReadAssignmentDto, solution: Solution) {
     const evaluations = await firstValueFrom(this.evaluationService.findAll(assignment._id, solution._id!));
     const evaluationRecord: Record<string, Evaluation> = {};
-    for (let evaluation of evaluations) {
+    for (const evaluation of evaluations) {
       evaluationRecord[evaluation.task] = evaluation;
     }
     const points = this.taskService.createPointsCache(assignment.tasks, evaluationRecord);
@@ -91,13 +101,13 @@ export class SubmitService {
       if (task.children.length) {
         const headlinePrefix = '#'.repeat(depth + 2);
         const header = `${headlinePrefix} ${task.description}${pointsString}\n`;
-        const remark = evaluation && evaluation.remark ? evaluation.remark + '\n' : '';
+        const remark = evaluation?.remark ? evaluation.remark + '\n' : '';
         const subTasks = evaluation ? '' : renderSubTasks(task.children, depth + 1);
         return header + remark + snippets + subTasks;
       } else {
         let desc = task.description;
         let remark = '';
-        if (evaluation && evaluation.remark) {
+        if (evaluation?.remark) {
           if (evaluation.remark.includes('\n')) {
             remark = '\n  ' + evaluation.remark.trim().replace(/\n/g, '\n  ') + '\n';
           } else {
@@ -116,16 +126,15 @@ export class SubmitService {
   }
 
   private hasRelevantInfo(task: Task, points: number, evaluation: Evaluation | undefined, depth: number): boolean {
-    return !!(
-      evaluation?.remark
-      || evaluation?.snippets.find(s => s.comment)
+    return !!evaluation?.remark
+      || !!evaluation?.snippets.some(s => s.comment)
       // always show non-full points
       || points !== Math.max(task.points, 0)
       // always show top-level tasks (but not deductions)
       || depth === 0 && task.points > 0
       // always show tasks with subtasks
-      || task.children.length
-    );
+      || !!task.children.length
+    ;
   }
 
   private renderSnippets(assignment: ReadAssignmentDto, solution: Solution, snippets: Snippet[]) {
@@ -162,7 +171,7 @@ export class SubmitService {
 <details>
 <summary>View Evaluations in VSCode</summary>
 
-Download the [fulibFeedback Extension](https://marketplace.visualstudio.com/items?itemName=fulib.fulibFeedback) \
+Download the [fulibFeedback Extension](https://github.com/fujaba/fulibFeedback) \
 and copy this to \`.vscode/settings.json\`:
 
 \`\`\`json

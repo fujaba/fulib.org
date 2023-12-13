@@ -1,4 +1,4 @@
-import {Controller, ForbiddenException, Get, Param, ParseBoolPipe, Post, Query} from '@nestjs/common';
+import {Controller, Get, Param, ParseBoolPipe, Post, Query} from '@nestjs/common';
 import {
   ApiCreatedResponse,
   ApiForbiddenResponse,
@@ -10,8 +10,9 @@ import {
 import {AssignmentAuth} from "../assignment/assignment-auth.decorator";
 import {Embeddable, EmbeddingEstimate} from "./embedding.dto";
 import {EmbeddingService} from "./embedding.service";
-import {notFound} from "@mean-stream/nestx";
+import {notFound, ObjectIdPipe} from "@mean-stream/nestx";
 import {AssignmentService} from "../assignment/assignment.service";
+import {Types} from "mongoose";
 
 @Controller('assignments/:assignment')
 @ApiTags('Embeddings')
@@ -28,19 +29,11 @@ export class EmbeddingController {
   @ApiForbiddenResponse({description: 'No OpenAI API key configured for this assignment.'})
   @AssignmentAuth({forbiddenResponse: 'You are not allowed to create embeddings.'})
   async createEmbeddings(
-    @Param('assignment') assignmentId: string,
+    @Param('assignment', ObjectIdPipe) assignmentId: Types.ObjectId,
     @Query('estimate', new ParseBoolPipe({optional: true})) estimate?: boolean,
   ): Promise<EmbeddingEstimate> {
-    if (estimate) {
-      return this.embeddingService.estimateEmbeddings(assignmentId);
-    }
-
-    const assignment = await this.assignmentService.findOne(assignmentId) || notFound(assignmentId);
-    const apiKey = assignment.classroom?.openaiApiKey;
-    if (!apiKey) {
-      throw new ForbiddenException('No OpenAI API key configured for this assignment.');
-    }
-    return this.embeddingService.createEmbeddings(assignmentId, apiKey);
+    const assignment = await this.assignmentService.find(assignmentId) || notFound(assignmentId);
+    return this.embeddingService.createEmbeddings(assignment, estimate);
   }
 
   @Get('embeddings')

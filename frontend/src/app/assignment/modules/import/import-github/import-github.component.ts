@@ -11,6 +11,7 @@ import {ActivatedRoute} from "@angular/router";
 export class ImportGithubComponent {
   checkedUsernames: Partial<Record<string, boolean>> = {};
   previewSolutions: ImportSolution[];
+  reimport = false;
 
   constructor(
     private solutionService: SolutionService,
@@ -25,6 +26,6 @@ export class ImportGithubComponent {
   import() {
     const assignmentId = this.route.snapshot.params.aid;
     const usernames = Object.keys(this.checkedUsernames).filter(username => this.checkedUsernames[username]);
-    return this.solutionService.import(assignmentId, undefined, usernames);
+    return this.solutionService.import(assignmentId, undefined, usernames, this.reimport);
   }
 }

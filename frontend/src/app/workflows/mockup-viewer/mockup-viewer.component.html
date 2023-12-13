@@ -21,11 +21,13 @@
 
     <ul ngbNav class="nav-tabs nav flex-shrink-1 overflow-auto me-auto" role="tablist"
         [(activeId)]="index" style="flex-wrap: nowrap">
-      <li *ngFor="let tab of currentTabs" [ngbNavItem]="tab.index">
-        <a ngbNavLink>
-          {{tab.name}}
-        </a>
-      </li>
+      @for (tab of currentTabs;track tab) {
+        <li [ngbNavItem]="tab.index">
+          <a ngbNavLink>
+            {{tab.name}}
+          </a>
+        </li>
+      }
     </ul>
 
     <div class="btn-group" role="group">
@@ -34,12 +36,12 @@
       <button class="btn btn-primary" [class.active]="currentDisplay === 'class'" (click)="currentDisplay = 'class'; evaluateTabs()">Class</button>
     </div>
   </div>
-  <ng-container *ngIf="currentTabs && currentTabs[index]">
+  @if (currentTabs && currentTabs[index]) {
     <a routerLink="preview"
        [queryParams]="{url: currentTabs[index].url}"
        queryParamsHandling="merge"
     >
       <app-diagram-view [url]="currentTabs[index].url"></app-diagram-view>
     </a>
-  </ng-container>
+  }
 </div>

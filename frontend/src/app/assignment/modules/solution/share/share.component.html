@@ -41,6 +41,6 @@
   <a class="bi-gear" routerLink="/assignments/settings" ngbTooltip="Configure"></a>.
 </p>
 <a class="btn btn-primary bi-magic"
-   [href]="ide + '://fulib.fulibfeedback/configure?api_server=' + encodedApiServer + '&assignment=' + assignmentId + '&solution=' + solutionId + '&token=' + token | safeUrl">
+   [href]="ide|fulibFeedbackLink:assignmentId:solutionId:token! | safeUrl">
   Configure
 </a>
