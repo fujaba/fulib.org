@@ -55,7 +55,7 @@ export class ClassroomService {
       await Promise.all(files.map(async (file, index) => {
         const stream = createReadStream(file.path);
         const solution = solutions.upsertedIds[index];
-        return this.fileService.importZipEntries(stream, assignment.id, solution);
+        return this.fileService.importZipEntries(stream, assignment.id, solution.toString());
       }));
     }
 
@@ -151,7 +151,7 @@ export class ClassroomService {
       if (commit && upsertedId) {
         const zip = await this.getRepoZip(assignment, this.getGithubName(repo, assignment), commit);
         if (zip) {
-          await this.fileService.importZipEntries(zip, assignment.id, upsertedId, commit);
+          await this.fileService.importZipEntries(zip, assignment.id, upsertedId.toString(), commit);
         }
       }
     }));
