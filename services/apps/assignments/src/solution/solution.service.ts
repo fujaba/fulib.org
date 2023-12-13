@@ -144,7 +144,7 @@ export class SolutionService extends MongooseRepository<Solution> {
     return solution.token === token || !!user && user.sub === solution.createdBy;
   }
 
-  bulkWrite(map: any) {
+  bulkWrite(map: any): Promise<{ upsertedIds: Record<number, Types.ObjectId> }> {
     return this.model.bulkWrite(map);
   }
 
