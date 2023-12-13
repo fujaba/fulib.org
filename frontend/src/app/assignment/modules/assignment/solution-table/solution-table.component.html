@@ -89,7 +89,12 @@
     <thead>
     <tr>
       <th>
-        <input type="checkbox" [ngModel]="(selected | keyvalue).length === solutions.length" (ngModelChange)="selectAll($event)">
+        <input
+          type="checkbox"
+          class="form-check-input"
+          [ngModel]="(selected | keyvalue).length === solutions.length"
+          (ngModelChange)="selectAll($event)"
+        >
       </th>
       @for (prop of authorProperties;track prop) {
         <th>
@@ -148,7 +153,12 @@
       @for (solution of solutions;track solution._id) {
         <tr>
           <th>
-            <input type="checkbox" [ngModel]="selected[solution._id!]" (ngModelChange)="select(solution._id!, $event)">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              [ngModel]="selected[solution._id!]"
+              (ngModelChange)="select(solution._id!, $event)"
+            >
           </th>
           @for (prop of authorProperties;track prop) {
             <td>{{ solution.author[prop[1]] }}</td>
