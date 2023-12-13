@@ -5,13 +5,6 @@
   </div>
 </div>
 
-@if (diffMetadata && diffTasks) {
-  <h2>Differences</h2>
-  <h3>Metadata</h3>
-  <pre [innerHTML]="diffMetadata | safeHtml"></pre>
-  <h3>Tasks</h3>
-  <pre [innerHTML]="diffTasks | safeHtml"></pre>
-}
 @if (!loggedIn) {
   <div class="alert alert-warning" role="alert">
     <h4 class="alert-heading">

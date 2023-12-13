@@ -8,6 +8,7 @@ import {PreviewComponent} from './preview/preview.component';
 import {TasksComponent} from './tasks/tasks.component';
 import {PlagiarismDetectionComponent} from "./plagiarism-detection/plagiarism-detection.component";
 import {CodeSearchComponent} from "./code-search/code-search.component";
+import {DiffModalComponent} from "./diff-modal/diff-modal.component";
 
 export const editAssignmentChildRoutes: Routes = [
   {path: 'info', component: InfoComponent, data: {title: 'Info'}},
@@ -32,6 +33,7 @@ const routes: Routes = [
     data: {title: 'Edit Assignment'},
     children: [
       ...editAssignmentChildRoutes,
+      {path: 'diff', component: DiffModalComponent, data: {title: 'Differences'}},
       {path: '', redirectTo: 'info', pathMatch: 'full'},
     ],
   },
