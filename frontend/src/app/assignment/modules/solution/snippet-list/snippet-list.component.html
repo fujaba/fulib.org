@@ -26,13 +26,19 @@
         [snippet]="snippet" [index]="$index" [comments]="comments"
         (deleted)="deleteSnippet($index)"
       ></app-edit-snippet>
-      <app-snippet [snippet]="snippet" wildcard="***" (updated)="snippetUpdates$.next($event)"></app-snippet>
+      <app-snippet
+        [assignment]="assignment"
+        [solution]="solution"
+        [snippet]="snippet"
+        wildcard="***"
+        (updated)="snippetUpdates$.next($event)"
+      ></app-snippet>
     </li>
   }
 </ul>
 <div class="form-text">
   Use
-  <a href="https://marketplace.visualstudio.com/items?itemName=fulib.fulibFeedback" target="_blank">
+  <a href="https://github.com/fujaba/fulibFeedback" target="_blank">
     fulibFeedback
   </a>
   to add code snippets from within your IDE.
@@ -52,7 +58,13 @@
   <ul class="list-group" id="embedding-snippets">
     @for (snippet of embeddingSnippets;track snippet) {
       <li class="list-group-item">
-        <app-snippet [snippet]="snippet" [expanded]="$first" (confirmed)="confirmEmbedding(snippet)"></app-snippet>
+        <app-snippet
+          [assignment]="assignment"
+          [solution]="solution"
+          [snippet]="snippet"
+          [expanded]="$first"
+          (confirmed)="confirmEmbedding(snippet)"
+        ></app-snippet>
       </li>
     }
   </ul>

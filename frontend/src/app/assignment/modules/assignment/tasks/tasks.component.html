@@ -1,3 +1,7 @@
 <div class="container">
-  <app-task-list [tasks]="assignment?.tasks"></app-task-list>
+  @if (assignment) {
+    <app-task-list [allTasks]="assignment.tasks" [tasks]="assignment.tasks"></app-task-list>
+  } @else {
+    Loading...
+  }
 </div>

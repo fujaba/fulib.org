@@ -8,6 +8,11 @@
     <a class="btn btn-secondary ms-2" routerLink="/assignments">
       Cancel
     </a>
+    @if (context.assignment['_id']) {
+      <a class="btn btn-info ms-2" routerLink="diff">
+        View Diff
+      </a>
+    }
     @if (draft) {
       <button class="btn btn-warning ms-2" (click)="deleteDraft()">
         Delete Draft

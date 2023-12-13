@@ -85,7 +85,7 @@ export class AssignmentService {
   findAll(ids?: string[], createdBy?: string, archived?: boolean): Observable<ReadAssignmentDto[]> {
     return this.http.get<ReadAssignmentDto[]>(`${environment.assignmentsApiUrl}/assignments`, {
       params: {
-        ...(ids ? {ids: ids.join(',')} : {}),
+        ...(ids?.length ? {ids: ids.join(',')} : {}),
         ...(createdBy ? {createdBy, members: [createdBy]} : {}),
         ...(archived !== undefined ? {archived} : {}),
       },

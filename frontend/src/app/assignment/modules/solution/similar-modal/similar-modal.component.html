@@ -61,7 +61,7 @@
                   >
                     @if (snippets[solution._id!]?.[index];as solutionSnippet) {
                       <app-edit-snippet [index]="index" [snippet]="solutionSnippet"></app-edit-snippet>
-                      <app-snippet [snippet]="solutionSnippet"></app-snippet>
+                      <app-snippet [assignment]="assignment" [solution]="solution" [snippet]="solutionSnippet"></app-snippet>
                     }
                   </td>
                 }

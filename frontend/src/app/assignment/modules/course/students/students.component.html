@@ -55,14 +55,23 @@
           </td>
         }
         @for (solution of student.solutions;track solution;let i = $index) {
-          <td class="text-end"
-              [class.text-danger]="!solution"
-              [class.text-muted]="solution && solution.points === undefined">
-        <a class="d-block text-body text-decoration-none"
-              [routerLink]="solution && ['/assignments', course?.assignments?.[i], 'solutions', solution._id]"
-              [ngbTooltip]="solution ? 'View Solution' : 'No Solution'" container="body">
-
-            {{ solution?.points || 0 }}</a>
+          <td class="text-end">
+            @if (!solution) {
+              <span class="d-block text-danger" ngbTooltip="No Solution">0</span>
+            } @else {
+              <a
+                [class]="[
+                  'd-block',
+                  'text-decoration-none',
+                  solution.points === undefined ? 'text-muted'
+                  : solution.points < assignmentPoints[i] ? 'text-warning'
+                  : 'text-body'
+                ]"
+                [routerLink]="['/assignments', course?.assignments?.[i], 'solutions', solution._id]"
+                ngbTooltip="View Solution">
+                {{ solution.points ?? '-' }}
+              </a>
+            }
           </td>
           <td [style.background-color]="solution?.assignee | assigneeColor">
             @if (solution && course) {

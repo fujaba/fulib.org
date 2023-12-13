@@ -14,17 +14,8 @@ export class OpenAIService implements OnModuleDestroy {
     this.enc.free();
   }
 
-  countTokens(files: File[]): number {
-    let total = 0;
-    for (const file of files) {
-      if (!this.isSupportedExtension(file.name)) {
-        continue;
-      }
-
-      const tokens = this.enc.encode(file.content.toString()).length;
-      total += tokens;
-    }
-    return total;
+  countTokens(text: string): number {
+    return this.enc.encode(text).length;
   }
 
   isSupportedExtension(filename: string) {

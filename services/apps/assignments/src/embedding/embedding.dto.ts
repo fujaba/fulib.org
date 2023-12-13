@@ -1,5 +1,15 @@
 import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
-import {ArrayMaxSize, ArrayMinSize, IsIn, IsInt, IsMongoId, IsNumber, IsOptional, IsString} from "class-validator";
+import {
+  ArrayMaxSize,
+  ArrayMinSize,
+  IsArray,
+  IsIn,
+  IsInt,
+  IsMongoId,
+  IsNumber,
+  IsOptional,
+  IsString
+} from "class-validator";
 
 export class EmbeddingEstimate {
   @ApiProperty()
@@ -17,6 +27,21 @@ export class EmbeddingEstimate {
   @ApiProperty()
   @IsNumber({maxDecimalPlaces: 2})
   estimatedCost: number;
+
+  @ApiProperty()
+  @IsArray()
+  @IsString({each: true})
+  functions: string[];
+
+  @ApiProperty()
+  @IsArray()
+  @IsString({each: true})
+  ignoredFiles: string[];
+
+  @ApiProperty()
+  @IsArray()
+  @IsString({each: true})
+  ignoredFunctions: string[];
 }
 
 export class EmbeddableBase {

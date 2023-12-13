@@ -20,6 +20,8 @@ import {UserModule} from "../../../user/user.module";
 import {InitialsPipe} from "./pipes/initials.pipe";
 import {AssigneeDropdownComponent} from './assignee-dropdown/assignee-dropdown.component';
 import {AssigneeColorPipe} from "./pipes/assignee-color.pipe";
+import {FulibFeedbackLinkPipe} from "./pipes/fulibfeedback-link.pipe";
+import {NavigateLinkPipe} from "./pipes/navigate-link.pipe";
 
 @NgModule({
   imports: [
@@ -48,6 +50,8 @@ import {AssigneeColorPipe} from "./pipes/assignee-color.pipe";
     InitialsPipe,
     AssigneeDropdownComponent,
     AssigneeColorPipe,
+    FulibFeedbackLinkPipe,
+    NavigateLinkPipe,
   ],
   exports: [
     AssignmentInfoComponent,
@@ -65,6 +69,8 @@ import {AssigneeColorPipe} from "./pipes/assignee-color.pipe";
     InitialsPipe,
     AssigneeDropdownComponent,
     AssigneeColorPipe,
+    FulibFeedbackLinkPipe,
+    NavigateLinkPipe,
   ],
 })
 export class AssignmentSharedModule {

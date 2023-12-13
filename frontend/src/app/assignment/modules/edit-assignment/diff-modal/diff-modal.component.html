@@ -1,0 +1,16 @@
+<ngbx-modal [back]="['..']" size="lg" #modal>
+  <ng-container modal-title>
+    Differences
+  </ng-container>
+  <ng-container modal-body>
+    <h5>Metadata</h5>
+    <pre [innerHTML]="diffMetadata | safeHtml"></pre>
+    <h5>Tasks</h5>
+    <pre [innerHTML]="diffTasks | safeHtml"></pre>
+  </ng-container>
+  <ng-container modal-footer>
+    <button type="button" class="btn btn-secondary" (click)="modal.close()">
+      Close
+    </button>
+  </ng-container>
+</ngbx-modal>

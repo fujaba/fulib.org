@@ -12,6 +12,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  IsPositive,
   IsString,
   IsUrl,
   ValidateNested,
@@ -121,6 +122,12 @@ export class ClassroomInfo {
   @IsOptional()
   @IsBoolean()
   openaiConsent?: boolean;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  openaiIgnore?: string;
 }
 
 @Schema()
@@ -184,6 +191,12 @@ export class Assignment {
   @ValidateNested()
   @Type(() => ClassroomInfo)
   classroom?: ClassroomInfo;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsPositive()
+  passingPoints?: number;
 
   @Prop()
   @ApiProperty({type: [Task]})

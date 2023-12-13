@@ -29,4 +29,7 @@ export const environment = {
     algorithms: (process.env.AUTH_ALGORITHMS || 'RS256').split(','),
     issuer: process.env.AUTH_ISSUER || 'https://se.uniks.de/auth/realms/fulib.org',
   },
+  nats: {
+    servers: process.env.NATS_URL || 'nats://localhost:4222',
+  },
 };

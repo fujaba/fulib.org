@@ -30,3 +30,4 @@ export const MOSS_LANGUAGES = {
 } as const;
 
 export const TEXT_EXTENSIONS = new Set(list);
+TEXT_EXTENSIONS.add('fxml');

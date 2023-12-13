@@ -4,6 +4,19 @@ import Task from '../model/task';
 
 @Injectable()
 export class TaskService {
+  updatePoints(allTasks: Task[], points: Record<string, number>, evaluations: Record<string, Evaluation | CreateEvaluationDto>, evaluation: Evaluation): void {
+    // Clear cache for affected tasks
+    const affectedTasks = this.findWithParents(allTasks, evaluation.task);
+    for (const task of affectedTasks) {
+      delete points[task._id];
+    }
+
+    // Restore cache
+    for (const task of affectedTasks) {
+      this.getTaskPoints(task, evaluations, points);
+    }
+  }
+
   find(tasks: Task[], id: string): Task | undefined {
     for (const task of tasks) {
       if (task._id === id) {
