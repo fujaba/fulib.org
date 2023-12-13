@@ -28,7 +28,6 @@
   <div class="mb-3">
     <label class="form-label" for="dockerImageInput">
       Docker Image
-      <span class="badge bg-gradient-primary">New</span>
     </label>
     <select class="form-select" id="dockerImageInput" [(ngModel)]="project.dockerImage">
       <option [value]="undefined">Use Default</option>
@@ -49,7 +48,6 @@
   <div class="mb-3">
     <label class="form-label" for="repositoryInput">
       Git Repository
-      <span class="badge bg-gradient-primary">New</span>
     </label>
     <input class="form-control" type="url" id="repositoryInput" [(ngModel)]="project.repository">
     <div class="form-text">
