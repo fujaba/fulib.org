@@ -29,6 +29,7 @@ import {CourseMemberModule} from "./course-member/course-member.module";
     EventModule.forRoot({nats: environment.nats}),
     ScheduleModule.forRoot(),
     SentryModule.forRoot({
+      enabled: environment.nodeEnv !== 'development',
       dsn: environment.sentryDsn,
       environment: environment.nodeEnv,
       release: environment.version,
