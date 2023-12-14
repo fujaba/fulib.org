@@ -128,6 +128,7 @@ export class ContainerService {
       await this.cloneRepository(container, dto.repository, workspace);
     } else if (projectPath) {
       await this.checkIsNew(projectPath, containerDto);
+      await chown(projectPath, 1000, 1000);
     } else {
       containerDto.isNew = true;
     }
@@ -363,7 +364,7 @@ ${eofMarker}`]);
     stream.push(zip.buffer);
     stream.push(null);
     await stream.pipe(Extract({path: storagePath})).promise();
-    await new Promise((resolve, reject) => chownr(storagePath, 1000, 1000, err => err ? reject(err) : resolve(undefined)));
+    await chown(storagePath, 1000, 1000);
   }
 
   deleteStorage(id: string) {
@@ -404,4 +405,8 @@ async function createFile(p: string, content: () => string | Promise<string> = (
     await fs.promises.writeFile(p, await content());
     await fs.promises.chown(p, 1000, 1000);
   });
+}
+
+async function chown(p: string, uid: number, gid: number) {
+  return new Promise((resolve, reject) => chownr(p, uid, gid, err => err ? reject(err) : resolve(undefined)));
 }
