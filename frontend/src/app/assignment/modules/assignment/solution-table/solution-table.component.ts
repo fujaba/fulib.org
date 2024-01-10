@@ -5,7 +5,7 @@ import {ClipboardService} from 'ngx-clipboard';
 import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
 import {catchError, debounceTime, distinctUntilChanged, map, switchMap, tap} from 'rxjs/operators';
 import Assignment, {ReadAssignmentDto} from '../../../model/assignment';
-import {AuthorInfo, authorInfoProperties, RichSolutionDto} from '../../../model/solution';
+import {AuthorInfo, authorInfoProperties, RichSolutionDto, SolutionStatus} from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
 import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
@@ -37,6 +37,7 @@ export class SolutionTableComponent implements OnInit {
   totalPoints?: number;
   solutions: RichSolutionDto[] = [];
   assigneeNames: string[] = [];
+  solutionStatus = Object.values(SolutionStatus);
   selected: Partial<Record<string, boolean>> = {};
 
   userToken?: string;
@@ -246,4 +247,39 @@ export class SolutionTableComponent implements OnInit {
       error: error => this.toastService.error('Submit Feedback', 'Failed to update solutions', error),
     });
   }
+
+  toggleSearch(criteria: string, value: string) {
+    const oldSearch = this.search$.value;
+    const newSearch = toggleSearchTerm(oldSearch, criteria, value);
+    this.search$.next(newSearch);
+  }
+
+  hasSearch(criteria: string, value: string) {
+    return this.search$.value.includes(criteria + ':' + value.replace(/ /g, '+'));
+  }
+}
+
+function toggleSearchTerm(search: string, criteria: string, value: string): string {
+  value = value.replace(/ /g, '+');
+  const prefix = criteria + ':';
+  const newTerm = criteria + ':' + value;
+
+  // fast path: search is empty
+  if (!search) {
+    return newTerm;
+  }
+
+  let searchTerms = search.split(' ');
+  const oldIndex = searchTerms.findIndex(term => term.startsWith(prefix));
+  if (oldIndex < 0) {
+    // add new search term
+    searchTerms.push(newTerm);
+  } else if (searchTerms[oldIndex] === newTerm) {
+    // remove old search term ("toggle off")
+    searchTerms.splice(oldIndex, 1);
+  } else {
+    // replace old search term
+    searchTerms[oldIndex] = newTerm;
+  }
+  return searchTerms.join(' ');
 }

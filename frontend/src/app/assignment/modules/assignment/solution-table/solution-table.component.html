@@ -18,6 +18,23 @@
     popoverTitle="Search Help"
     placement="bottom-right"
   ></button>
+  <div *ngFor="let criteria of [
+    {id: 'assignee', title: 'Assignee', icon: 'bi-person-check', options: assigneeNames},
+    {id: 'status', title: 'Status', icon: 'bi-award', options: solutionStatus},
+  ]" ngbDropdown #dropdown=ngbDropdown class="d-inline-block me-2">
+    <button class="btn btn-outline-secondary" [id]="criteria.id + '-dropdown'" ngbDropdownToggle [ngbTooltip]="criteria.title">
+      <i [class]="criteria.icon"></i>
+      <span class="visually-hidden">{{ criteria.title }}</span>
+    </button>
+    <div ngbDropdownMenu [attr.aria-labelledby]="criteria.id + '-dropdown'">
+      @if (dropdown.isOpen()) {
+        <button *ngFor="let option of criteria.options" ngbDropdownItem (click)="toggleSearch(criteria.id, option)"
+                class="dropdown-item-check" [class.checked]="hasSearch(criteria.id, option)">
+          {{ option }}
+        </button>
+      }
+    </div>
+  </div>
   <div style="width: 12rem">
     @if ((selected | keyvalue).length;as length) {
       {{ length }} /
