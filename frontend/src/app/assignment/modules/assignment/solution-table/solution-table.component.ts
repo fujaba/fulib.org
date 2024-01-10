@@ -248,6 +248,24 @@ export class SolutionTableComponent implements OnInit {
     });
   }
 
+  assignAll(assignee: string) {
+    const ids = Object.keys(this.selected);
+    this.assigneeService.updateMany(this.assignment!._id!, ids.map(id => ({
+      solution: id,
+      assignee,
+    }))).subscribe({
+      next: () => {
+        this.toastService.success('Assign Solutions', `Successfully assigned ${ids.length} solutions`);
+        for (let solution of this.solutions) {
+          if (ids.includes(solution._id!)) {
+            solution.assignee = assignee;
+          }
+        }
+      },
+      error: error => this.toastService.error('Assign Solutions', 'Failed to assign solutions', error),
+    });
+  }
+
   toggleSearch(criteria: string, value: string) {
     const oldSearch = this.search$.value;
     const newSearch = toggleSearchTerm(oldSearch, criteria, value);
