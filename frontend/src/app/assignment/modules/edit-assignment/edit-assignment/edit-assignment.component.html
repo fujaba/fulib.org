@@ -1,6 +1,6 @@
 <div class="container">
   <h1>
-    {{$any(context.assignment)?._id ? 'Edit' : 'Create'}}
+    {{ context.assignment?.['_id'] ? 'Edit' : 'Create' }}
     Assignment
   </h1>
   <div class="d-flex align-items-center mb-3">
@@ -8,7 +8,7 @@
     <a class="btn btn-secondary ms-2" routerLink="/assignments">
       Cancel
     </a>
-    @if (context.assignment['_id']) {
+    @if (context.assignment?.['_id']) {
       <a class="btn btn-info ms-2" routerLink="diff">
         View Diff
       </a>
@@ -19,11 +19,9 @@
       </button>
     }
     <button class="btn btn-primary ms-2" (click)="submit()" [disabled]="submitting">
-      {{$any(context.assignment)?._id ? (submitting ? 'Saving...' : 'Save') : (submitting ? 'Submitting...' : 'Submit')}}
+      {{ submitting ? 'Saving...' : 'Save' }}
     </button>
   </div>
   <ngbx-route-tabs [routes]="steps"></ngbx-route-tabs>
-  @if (context.assignment) {
-    <router-outlet></router-outlet>
-  }
+  <router-outlet></router-outlet>
 </div>
