@@ -72,7 +72,7 @@ a[href^="http"]::after {
 
 .text-blur {
   color: transparent !important;
-  text-shadow: 0 0 8px var(--bs-body-bg) !important;
+  text-shadow: 0 0 8px var(--bs-body-color) !important;
 }
 
 .backdrop-blur {
