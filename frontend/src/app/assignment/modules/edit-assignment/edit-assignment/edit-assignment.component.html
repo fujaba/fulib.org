@@ -23,5 +23,7 @@
     </button>
   </div>
   <ngbx-route-tabs [routes]="steps"></ngbx-route-tabs>
-  <router-outlet></router-outlet>
+  @if (context.assignment) {
+    <router-outlet></router-outlet>
+  }
 </div>
