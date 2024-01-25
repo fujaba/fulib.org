@@ -69,6 +69,10 @@ export class AssignmentController {
       const members = await this.memberService.findAll({user: {$in: memberIds}});
       (filter.$or ||= []).push({_id: {$in: members.map(m => m.parent)}});
     }
+    if (!filter.$or?.length) {
+      // disallow global queries
+      return [];
+    }
     return (await this.assignmentService.findAll(filter, {
       sort: ASSIGNMENT_SORT,
       collation: ASSIGNMENT_COLLATION,

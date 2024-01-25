@@ -83,6 +83,10 @@ export class AssignmentService {
   }
 
   findAll(ids?: string[], createdBy?: string, archived?: boolean): Observable<ReadAssignmentDto[]> {
+    if (!ids?.length && !createdBy) {
+      // disallow global queries
+      return of([]);
+    }
     return this.http.get<ReadAssignmentDto[]>(`${environment.assignmentsApiUrl}/assignments`, {
       params: {
         ...(ids?.length ? {ids: ids.join(',')} : {}),
