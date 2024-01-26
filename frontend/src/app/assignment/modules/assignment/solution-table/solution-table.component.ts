@@ -267,13 +267,13 @@ export class SolutionTableComponent implements OnInit {
   }
 
   toggleSearch(criteria: string, value: string) {
-    const oldSearch = this.search$.value;
+    const oldSearch = this.search$.value ?? '';
     const newSearch = toggleSearchTerm(oldSearch, criteria, value);
     this.search$.next(newSearch);
   }
 
   hasSearch(criteria: string, value: string) {
-    return this.search$.value.includes(criteria + ':' + value.replace(/ /g, '+'));
+    return this.search$.value?.includes(criteria + ':' + value.replace(/ /g, '+'));
   }
 }
 
