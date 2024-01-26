@@ -31,11 +31,21 @@ export class AssignmentService extends MongooseRepository<Assignment> {
     return undefined;
   }
 
+  /**
+   * Removes all information from the assignment that should be hidden from unauthorized users.
+   * Note that some information will always be hidden (e.g. GitHub token, OpenAI API Key) via Mongoose transforms.
+   * @param assignment the assignment to mask.
+   * **Do not pass `AssignmentDocument` (use `.toObject()` first), as it will lead to unwanted extra fields.**
+   * @returns the masked assignment
+   */
   mask(assignment: Assignment): ReadAssignmentDto {
-    const {token, tasks, classroom, ...rest} = assignment;
+    const {token: _token, tasks: _tasks, classroom: _classroom, ...rest} = assignment;
+    const tasks = assignment.deadline && assignment.deadline.valueOf() > Date.now()
+      ? [] // hide tasks if deadline is in the future
+      : assignment.tasks.map(t => this.maskTask(t));
     return {
       ...rest,
-      tasks: assignment.tasks.map(t => this.maskTask(t)),
+      tasks,
     };
   }
 
