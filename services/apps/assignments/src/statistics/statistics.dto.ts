@@ -47,6 +47,12 @@ export class TaskStatistics {
 
 export class TimeStatistics {
   @ApiProperty()
+  durationTotal: number;
+
+  @ApiProperty()
+  durationAvg: number;
+
+  @ApiProperty()
   evaluationTotal: number;
 
   @ApiProperty()

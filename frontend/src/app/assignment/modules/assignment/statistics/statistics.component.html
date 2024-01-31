@@ -76,6 +76,7 @@
           <li class="list-group-item d-flex align-items-center bg-progress-purple" [style.--percentage.%]="stats.time.evaluationTotal / (stats.time.codeSearchSavings + stats.time.evaluationTotal) * 100">
             <div class="me-auto">
               Time spent Evaluating
+              <i class="bi-question-circle" ngbTooltip="How much time was spent manually evaluating tasks across all solutions"></i>
             </div>
             <app-statistic-value
               [label]="weightedEvaluations ? '∅ per Point' : '∅ per Evaluation'"
@@ -90,8 +91,8 @@
             <div class="me-auto">
               Time saved by Code Search
               <i
-                class="bi-info-circle"
-                ngbTooltip="Approximately. Click for more info."
+                class="bi-question-circle"
+                ngbTooltip="The approximate time that was saved by Code Search. Click for more info."
                 ngbPopover="The time saved by Code Search is approximately calculated as a sum of each task's time savings.
                   The time taken to manually evaluate a task is multiplied by the number of automatic evaluations created by Code Search.
                   You can view the time savings for each task in the list below."
@@ -101,6 +102,16 @@
             <app-statistic-value label="Saved" [value]="stats.time.codeSearchSavings | duration"></app-statistic-value>
             <div class="border-end mx-3 align-self-stretch"></div>
             <app-statistic-value label="of Total" [value]="(stats.time.codeSearchSavings / (stats.time.codeSearchSavings + stats.time.evaluationTotal)) | percent:'0.0'"></app-statistic-value>
+          </li>
+          <div class="my-1"></div>
+          <li class="list-group-item d-flex align-items-center">
+            <div class="me-auto">
+              Time per Solution
+              <i class="bi-question-circle" ngbTooltip="How much time was spent on average per solution, including overhead"></i>
+            </div>
+            <app-statistic-value label="∅ per Solution" [value]="stats.time.durationAvg | duration"></app-statistic-value>
+            <div class="border-end mx-3 align-self-stretch"></div>
+            <app-statistic-value label="Total" [value]="stats.time.durationTotal | duration"></app-statistic-value>
           </li>
         </ul>
       </div>

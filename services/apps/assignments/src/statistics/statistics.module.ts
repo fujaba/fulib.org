@@ -5,6 +5,7 @@ import {EvaluationModule} from '../evaluation/evaluation.module';
 import {SolutionModule} from '../solution/solution.module';
 import {StatisticsController} from './statistics.controller';
 import {StatisticsService} from './statistics.service';
+import {AssigneeModule} from '../assignee/assignee.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import {StatisticsService} from './statistics.service';
     EvaluationModule,
     SolutionModule,
     CommentModule,
+    AssigneeModule,
   ],
   controllers: [StatisticsController],
   providers: [StatisticsService],

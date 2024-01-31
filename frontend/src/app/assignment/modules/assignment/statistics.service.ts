@@ -36,6 +36,8 @@ export interface TaskStatistics {
 }
 
 export interface TimeStatistics {
+  durationTotal: number;
+  durationAvg: number;
   evaluationTotal: number;
   evaluationAvg: number;
   pointsAvg: number;
