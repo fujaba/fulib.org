@@ -256,7 +256,7 @@ export class SolutionTableComponent implements OnInit {
     }))).subscribe({
       next: () => {
         this.toastService.success('Assign Solutions', `Successfully assigned ${ids.length} solutions`);
-        for (let solution of this.solutions) {
+        for (const solution of this.solutions) {
           if (ids.includes(solution._id!)) {
             solution.assignee = assignee;
           }
@@ -287,7 +287,7 @@ function toggleSearchTerm(search: string, criteria: string, value: string): stri
     return newTerm;
   }
 
-  let searchTerms = search.split(' ');
+  const searchTerms = search.split(' ');
   const oldIndex = searchTerms.findIndex(term => term.startsWith(prefix));
   if (oldIndex < 0) {
     // add new search term
