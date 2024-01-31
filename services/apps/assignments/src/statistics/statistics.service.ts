@@ -9,9 +9,10 @@ import {
   EvaluationStatistics,
   SolutionStatistics,
   TaskStatistics,
-  TimeStatistics
+  TimeStatistics,
 } from './statistics.dto';
-import {Types} from "mongoose";
+import {Types} from 'mongoose';
+import {AssigneeService} from '../assignee/assignee.service';
 
 const outlierDuration = 60;
 
@@ -20,6 +21,7 @@ export class StatisticsService {
   constructor(
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
+    private assigneeService: AssigneeService,
     private evaluationService: EvaluationService,
     private commentService: CommentService,
   ) {
@@ -59,12 +61,17 @@ export class StatisticsService {
       comments,
       solutions,
       ,
+      durationStats,
     ] = await Promise.all([
       this.timeStatistics(assignment, taskStats, tasks),
       this.countComments(assignment),
       this.solutionStatistics(assignmentDoc),
       this.fillEvaluationStatistics(assignment, taskStats, tasks, evaluations, weightedEvaluations),
+      this.durationStatistics(assignment),
     ]);
+
+    time.durationTotal = durationStats.total;
+    time.durationAvg = durationStats.total / durationStats.count;
 
     // needs to happen after timeStatistics and fillEvaluationStatistics
     for (const taskStat of taskStats.values()) {
@@ -133,7 +140,7 @@ export class StatisticsService {
           time: {$sum: '$duration'},
           count: {$sum: 1},
         },
-      }
+      },
     ])) {
       const {_id, time, count} = result;
       const taskStat = taskStats.get(_id);
@@ -149,6 +156,8 @@ export class StatisticsService {
       evaluationAvg: totalTime / eventCount,
       pointsAvg: weightedTime / eventCount,
       codeSearchSavings: 0, // NB: calculated later, once taskStats.count is set by fillEvaluationStatistics
+      durationAvg: 0, // calculated later
+      durationTotal: 0, // calculated later
     };
   }
 
@@ -194,5 +203,24 @@ export class StatisticsService {
       passed,
       pointsAvg: points / graded,
     };
+  }
+
+  private async durationStatistics(assignment: Types.ObjectId) {
+    const [result] = await this.assigneeService.model.aggregate([
+      {
+        $match: {
+          assignment,
+          duration: {$exists: true},
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: {$sum: '$duration'},
+          count: {$sum: 1},
+        },
+      },
+    ]);
+    return result ?? {total: 0, count: 0};
   }
 }
