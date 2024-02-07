@@ -9,10 +9,10 @@ import {AuthorInfo, authorInfoProperties, RichSolutionDto, SolutionStatus} from 
 import {AssignmentService} from '../../../services/assignment.service';
 import {SolutionService} from '../../../services/solution.service';
 import {TaskService} from '../../../services/task.service';
-import {SubmitService} from "../submit.service";
-import {UserService} from "../../../../user/user.service";
-import {AssigneeService} from "../../../services/assignee.service";
-import {HttpErrorResponse} from "@angular/common/http";
+import {SubmitService} from '../submit.service';
+import {UserService} from '../../../../user/user.service';
+import {AssigneeService} from '../../../services/assignee.service';
+import {HttpErrorResponse} from '@angular/common/http';
 
 type SearchKey = keyof AuthorInfo | 'assignee' | 'status';
 const searchKeys: readonly SearchKey[] = [
@@ -234,7 +234,7 @@ export class SolutionTableComponent implements OnInit {
         const issue = await this.submitService.createIssue(assignment, solution);
         await this.submitService.postIssueToGitHub(assignment, solution, issue, userToken);
         solution.points = issue._points;
-
+        solution.status = SolutionStatus.graded;
         return solution;
       })
     );
