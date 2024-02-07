@@ -25,7 +25,7 @@ export class EvaluationFormComponent implements OnInit, OnChanges {
   constructor(
     private evaluationService: EvaluationService,
     private configService: ConfigService,
-    private route: ActivatedRoute,
+    public route: ActivatedRoute,
   ) {
   }
 
