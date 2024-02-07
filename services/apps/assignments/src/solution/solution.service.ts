@@ -39,6 +39,8 @@ export class SolutionService extends MongooseRepository<Solution> {
             {
               $project: {
                 _id: 1,
+                task: 1,
+                remark: 1,
                 'codeSearch.origin': 1,
                 'similarity.origin': 1,
               },
