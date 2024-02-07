@@ -10,6 +10,10 @@ on:
     # paths:
     #   - 'backend/**'
 
+concurrency:
+  group: deploy-backend
+  cancel-in-progress: true
+
 jobs:
   backend:
     name: Backend

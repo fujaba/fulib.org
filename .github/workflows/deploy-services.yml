@@ -20,6 +20,9 @@ jobs:
         service:
           - projects
           - assignments
+    concurrency:
+      group: deploy-services-${{ matrix.service }}
+      cancel-in-progress: true
     steps:
       - name: Checkout
         uses: actions/checkout@v3

@@ -11,6 +11,10 @@ on:
       - '.github/workflows/deploy.sh'
       - '.github/workflows/deploy-frontend.yml'
 
+concurrency:
+  group: deploy-frontend
+  cancel-in-progress: true
+
 jobs:
   frontend:
     name: Frontend

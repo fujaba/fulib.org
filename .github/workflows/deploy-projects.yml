@@ -9,6 +9,10 @@ on:
       - '.github/workflows/deploy.sh'
       - '.github/workflows/deploy-projects.yml'
 
+concurrency:
+  group: deploy-projects
+  cancel-in-progress: true
+
 jobs:
   projects-images:
     name: Projects Images
