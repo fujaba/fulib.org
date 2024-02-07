@@ -131,6 +131,18 @@ export class SolutionController {
             ]});
           }
           break;
+        case 'remark':
+          const index = subTerm.indexOf(':');
+          if (index >= 0) {
+            // "remark:t123:^Foo$" matches solutions with an evaluation for task "t123" and a remark "Foo"
+            const task = subTerm.substring(0, index) || undefined; // empty task should match any task
+            const remark = new RegExp(subTerm.substring(index + 1), 'i');
+            postAnd.push({_evaluations: {$elemMatch: {task, remark}}});
+          } else {
+            // "remark:^Foo$" matches solutions with an evaluation with a remark "Foo"
+            postAnd.push({'_evaluations.remark': regex});
+          }
+          break;
         case 'status':
           postAnd.push({status: subTerm});
           break;
