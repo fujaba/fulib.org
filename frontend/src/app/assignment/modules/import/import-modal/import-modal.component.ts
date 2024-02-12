@@ -22,6 +22,7 @@ export class ImportModalComponent {
     this.importing = true;
     component.import().subscribe({
       next: results => {
+        this.importing = false;
         if (typeof results === 'string') {
           this.toastService.success('Import', 'Successfully ran MOSS');
         } else if (results && typeof results === 'object' && 'length' in results) {
@@ -30,8 +31,10 @@ export class ImportModalComponent {
           this.toastService.success('Import', 'Successfully imported embeddings');
         }
       },
-      error: error => this.toastService.error('Import', 'Failed to import solutions', error),
-      complete: () => this.importing = false,
+      error: error => {
+        this.importing = false;
+        this.toastService.error('Import', 'Failed to import solutions', error);
+      },
     });
   }
 }
