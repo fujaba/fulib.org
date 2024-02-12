@@ -43,3 +43,9 @@
     </div>
   }
 }
+@if (!costsAreFinal && costs && costs.functions.length > rateLimit) {
+  <div class="alert alert-warning">
+    The number of functions exceeds the OpenAI rate limit.
+    The import may take up to {{ ceil(costs.functions.length / rateLimit) }} minutes.
+  </div>
+}

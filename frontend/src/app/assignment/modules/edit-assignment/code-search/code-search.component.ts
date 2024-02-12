@@ -9,6 +9,8 @@ import {ClassroomInfo} from "../../../model/assignment";
 })
 export class CodeSearchComponent {
   classroom: ClassroomInfo;
+
+  // TODO use a shared constant when frontend and backend are merged
   embeddingModels = [
     {id: 'text-embedding-3-small', label: 'Cheapest', labelBg: 'success'},
     {id: 'text-embedding-3-large', label: 'Most accurate', labelBg: 'primary'},
