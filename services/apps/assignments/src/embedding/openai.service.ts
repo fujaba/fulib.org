@@ -1,6 +1,5 @@
 import {Injectable, OnModuleDestroy} from "@nestjs/common";
 import * as tiktoken from "tiktoken";
-import {File} from "@app/moss/moss-api";
 import OpenAI from "openai";
 import {TEXT_EXTENSIONS} from "../search/search.constants";
 
@@ -24,8 +23,9 @@ export class OpenAIService implements OnModuleDestroy {
   }
 
   estimateCost(tokens: number): number {
+    // https://openai.com/pricing#language-models
     // https://platform.openai.com/docs/guides/embeddings/embedding-models
-    return tokens * 0.0000004;
+    return tokens * 0.0000001;
   }
 
   async getEmbedding(text: string, apiKey: string): Promise<{ tokens: number, embedding: number[] }> {
