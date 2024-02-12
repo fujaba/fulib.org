@@ -106,9 +106,9 @@ export class EmbeddingService implements OnModuleInit {
         );
         tokens += batch.reduce((a, b) => a + b, 0);
         const elapsed = Date.now() - start;
-        if (elapsed < 60000) {
+        if (elapsed < 60100) {
           // wait for the minute to pass to avoid rate limiting
-          await new Promise(resolve => setTimeout(resolve, 60000 - elapsed));
+          await new Promise(resolve => setTimeout(resolve, 60100 - elapsed));
         }
       }
     }

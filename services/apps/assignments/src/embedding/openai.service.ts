@@ -8,12 +8,15 @@ import {TEXT_EXTENSIONS} from "../search/search.constants";
 export const EMBEDDING_MODELS = {
   'text-embedding-ada-002': {
     tokenCost: 0.00010 / 1000,
+    dimensions: undefined,
   },
   'text-embedding-3-small': {
     tokenCost: 0.00002 / 1000,
+    dimensions: undefined,
   },
   'text-embedding-3-large': {
     tokenCost: 0.00013 / 1000,
+    dimensions: 1536,
   },
 } as const;
 export type EmbeddingModel = keyof typeof EMBEDDING_MODELS;
@@ -54,7 +57,7 @@ export class OpenAIService implements OnModuleDestroy {
     const result = await api.embeddings.create({
       model,
       input: text,
-      dimensions: 1536,
+      dimensions: EMBEDDING_MODELS[model].dimensions,
     });
     return {tokens: result.usage.total_tokens, embedding: result.data[0].embedding};
   }
