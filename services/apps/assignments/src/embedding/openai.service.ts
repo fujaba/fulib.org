@@ -9,6 +9,8 @@ const model = 'text-embedding-ada-002';
 export class OpenAIService implements OnModuleDestroy {
   enc = tiktoken.encoding_for_model(model);
 
+  readonly rateLimitPerMinute = 3000;
+
   onModuleDestroy(): any {
     this.enc.free();
   }

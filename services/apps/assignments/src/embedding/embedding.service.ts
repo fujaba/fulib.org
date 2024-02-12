@@ -9,6 +9,7 @@ import {Assignment} from "../assignment/assignment.schema";
 import {FilterQuery} from "mongoose";
 import {Solution} from "../solution/solution.schema";
 import * as ignore from 'ignore-file';
+import {sleep} from "openai/core";
 
 type DeclarationSnippet = SnippetEmbeddable & { name: string };
 
@@ -97,8 +98,19 @@ export class EmbeddingService implements OnModuleInit {
         tokens += this.openaiService.countTokens(func.text);
       }
     } else {
-      tokens = (await Promise.all(functions.map(async func => this.upsert(func, apiKey).then(({tokens}) => tokens))))
-        .reduce((a, b) => a + b, 0);
+      for (let i = 0; i < functions.length; i += this.openaiService.rateLimitPerMinute) {
+        const start = Date.now();
+        const batch = await Promise.all(functions
+          .slice(i, i + this.openaiService.rateLimitPerMinute)
+          .map(async func => this.upsert(func, apiKey).then(({tokens}) => tokens))
+        );
+        tokens += batch.reduce((a, b) => a + b, 0);
+        const elapsed = Date.now() - start;
+        if (elapsed < 60000) {
+          // wait for the minute to pass to avoid rate limiting
+          await sleep(60000 - elapsed);
+        }
+      }
     }
 
     return {
