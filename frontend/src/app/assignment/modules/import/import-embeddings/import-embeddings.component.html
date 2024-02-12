@@ -19,7 +19,7 @@
   </p>
 }
 @if (costs) {
-  <div class="row">
+  <div class="row mb-3">
     <app-statistic-value class="col" label="Solutions" [value]="costs.solutions" [standalone]="true"></app-statistic-value>
     <app-statistic-value class="col" label="Files" [value]="costs.files" [standalone]="true"></app-statistic-value>
     <app-statistic-value class="col" label="Functions" [value]="costs.functions.length" [standalone]="true"></app-statistic-value>
