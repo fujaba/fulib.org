@@ -1,8 +1,9 @@
 import {Injectable} from "@nestjs/common";
 import {OnEvent} from "@nestjs/event-emitter";
-import {AssignmentDocument, Task} from "../assignment/assignment.schema";
+import {Assignment, AssignmentDocument, Task} from "../assignment/assignment.schema";
 import {EmbeddingService} from "./embedding.service";
 import {SolutionDocument} from "../solution/solution.schema";
+import {DEFAULT_MODEL} from "./openai.service";
 
 @Injectable()
 export class EmbeddingHandler {
@@ -14,15 +15,13 @@ export class EmbeddingHandler {
   @OnEvent('assignments.*.created')
   @OnEvent('assignments.*.updated')
   async onAssignment(assignment: AssignmentDocument) {
-    const apiKey = assignment.classroom?.openaiApiKey;
-    if (!apiKey) {
+    if (!assignment.classroom?.openaiApiKey) {
       return;
     }
 
     const taskIds = new Set<string>();
-    const assignmentId = assignment._id.toString();
-    this.upsertTasks(apiKey, assignmentId, assignment.tasks, '', taskIds);
-    await this.embeddingService.deleteTasksNotIn(assignmentId, [...taskIds]);
+    this.upsertTasks(assignment, assignment.tasks, '', taskIds);
+    await this.embeddingService.deleteTasksNotIn(assignment._id.toString(), [...taskIds]);
   }
 
   @OnEvent('assignments.*.deleted')
@@ -30,23 +29,23 @@ export class EmbeddingHandler {
     await this.embeddingService.deleteAll(assignment._id.toString());
   }
 
-  private upsertTasks(apiKey: string, assignment: string, tasks: Task[], prefix: string, taskIds: Set<string>) {
+  private upsertTasks(assignment: Assignment, tasks: Task[], prefix: string, taskIds: Set<string>) {
     for (const task of tasks) {
       taskIds.add(task._id);
-      this.upsertTask(apiKey, assignment, task, prefix);
-      this.upsertTasks(apiKey, assignment, task.children, `${prefix}${task.description} > `, taskIds);
+      this.upsertTask(assignment, task, prefix);
+      this.upsertTasks(assignment, task.children, `${prefix}${task.description} > `, taskIds);
     }
   }
 
-  private upsertTask(apiKey: string, assignment: string, task: Task, prefix: string) {
+  private upsertTask(assignment: Assignment, task: Task, prefix: string) {
     return this.embeddingService.upsert({
       id: task._id,
-      assignment,
+      assignment: assignment._id.toString(),
       type: 'task',
       task: task._id,
       text: prefix + task.description,
       embedding: [],
-    }, apiKey);
+    }, assignment.classroom!.openaiApiKey!, assignment.classroom!.openaiModel ?? DEFAULT_MODEL);
   }
 
   @OnEvent('assignments.*.solutions.*.deleted')
