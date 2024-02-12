@@ -24,7 +24,7 @@
     <app-statistic-value class="col" label="Files" [value]="costs.files" [standalone]="true"></app-statistic-value>
     <app-statistic-value class="col" label="Functions" [value]="costs.functions.length" [standalone]="true"></app-statistic-value>
     <app-statistic-value class="col" label="Tokens" [value]="costs.tokens" [standalone]="true"></app-statistic-value>
-    <app-statistic-value class="col" [label]="costsAreFinal ? 'Total Cost' : 'Estimated Cost'" [value]="costs.estimatedCost | currency:'USD':true:'0.7'" [standalone]="true"></app-statistic-value>
+    <app-statistic-value class="col" [label]="costsAreFinal ? 'Total Cost' : 'Estimated Cost'" [value]="costs.estimatedCost | currency:'USD'" [standalone]="true"></app-statistic-value>
   </div>
   <div class="mb-3">
     <label for="functions">Imported Functions</label>
