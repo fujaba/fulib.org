@@ -2,7 +2,7 @@ import {ForbiddenException, Injectable, OnModuleInit} from '@nestjs/common';
 import {ElasticsearchService} from "@nestjs/elasticsearch";
 import {FileDocument, SearchService} from "../search/search.service";
 import {Embeddable, EmbeddableSearch, EmbeddingEstimate, SnippetEmbeddable} from "./embedding.dto";
-import {OpenAIService} from "./openai.service";
+import {DEFAULT_MODEL, EmbeddingModel, OpenAIService} from "./openai.service";
 import {QueryDslQueryContainer} from "@elastic/elasticsearch/lib/api/types";
 import {SolutionService} from "../solution/solution.service";
 import {Assignment} from "../assignment/assignment.schema";
@@ -72,6 +72,7 @@ export class EmbeddingService implements OnModuleInit {
     if (!apiKey) {
       throw new ForbiddenException('No OpenAI API key configured for this assignment.');
     }
+    const model = assignment.classroom?.openaiModel || DEFAULT_MODEL;
 
     const {solutions, documents, ignoreFn, ignoredFiles} = await this.getDocuments(assignment);
     const ignoredFunctions = new Set<string>();
@@ -94,18 +95,29 @@ export class EmbeddingService implements OnModuleInit {
     let tokens = 0;
     if (estimate) {
       for (const func of functions) {
-        tokens += this.openaiService.countTokens(func.text);
+        tokens += this.openaiService.countTokens(func.text, model);
       }
     } else {
-      tokens = (await Promise.all(functions.map(async func => this.upsert(func, apiKey).then(({tokens}) => tokens))))
-        .reduce((a, b) => a + b, 0);
+      for (let i = 0; i < functions.length; i += this.openaiService.rateLimitPerMinute) {
+        const start = Date.now();
+        const batch = await Promise.all(functions
+          .slice(i, i + this.openaiService.rateLimitPerMinute)
+          .map(async func => this.upsert(func, apiKey, model).then(({tokens}) => tokens))
+        );
+        tokens += batch.reduce((a, b) => a + b, 0);
+        const elapsed = Date.now() - start;
+        if (elapsed < 60100) {
+          // wait for the minute to pass to avoid rate limiting
+          await new Promise(resolve => setTimeout(resolve, 60100 - elapsed));
+        }
+      }
     }
 
     return {
       solutions,
       files: documents.length,
       tokens,
-      estimatedCost: this.openaiService.estimateCost(tokens),
+      estimatedCost: this.openaiService.estimateCost(tokens, model),
       functions: functions.map(f => `${f.file}#${f.name}`),
       ignoredFiles: Array.from(ignoredFiles),
       ignoredFunctions: Array.from(ignoredFunctions),
@@ -167,12 +179,12 @@ export class EmbeddingService implements OnModuleInit {
     return results;
   }
 
-  async upsert(embeddable: Embeddable, apiKey: string): Promise<{ embeddable: Embeddable, tokens: number }> {
+  async upsert(embeddable: Embeddable, apiKey: string, model: EmbeddingModel): Promise<{ embeddable: Embeddable, tokens: number }> {
     const existing = await this.find(embeddable.id);
     if (existing && existing.text === embeddable.text) {
       return {embeddable: existing, tokens: 0};
     }
-    const {embedding, tokens} = await this.openaiService.getEmbedding(embeddable.text, apiKey);
+    const {embedding, tokens} = await this.openaiService.getEmbedding(embeddable.text, apiKey, model);
     embeddable.embedding = embedding;
     await this.index(embeddable);
     return {embeddable, tokens};

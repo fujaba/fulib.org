@@ -19,12 +19,12 @@
   </p>
 }
 @if (costs) {
-  <div class="row">
+  <div class="row mb-3">
     <app-statistic-value class="col" label="Solutions" [value]="costs.solutions" [standalone]="true"></app-statistic-value>
     <app-statistic-value class="col" label="Files" [value]="costs.files" [standalone]="true"></app-statistic-value>
     <app-statistic-value class="col" label="Functions" [value]="costs.functions.length" [standalone]="true"></app-statistic-value>
     <app-statistic-value class="col" label="Tokens" [value]="costs.tokens" [standalone]="true"></app-statistic-value>
-    <app-statistic-value class="col" [label]="costsAreFinal ? 'Total Cost' : 'Estimated Cost'" [value]="costs.estimatedCost | currency:'USD':true:'0.7'" [standalone]="true"></app-statistic-value>
+    <app-statistic-value class="col" [label]="costsAreFinal ? 'Total Cost' : 'Estimated Cost'" [value]="costs.estimatedCost | currency:'USD'" [standalone]="true"></app-statistic-value>
   </div>
   <div class="mb-3">
     <label for="functions">Imported Functions</label>
@@ -42,4 +42,10 @@
       <textarea class="form-control" id="ignoredFunctions" rows="6" readonly>{{ costs.ignoredFunctions.join('\n') }}</textarea>
     </div>
   }
+}
+@if (!costsAreFinal && costs && costs.functions.length > rateLimit) {
+  <div class="alert alert-warning">
+    The number of functions exceeds the OpenAI rate limit.
+    The import may take up to {{ ceil(costs.functions.length / rateLimit) }} minutes.
+  </div>
 }

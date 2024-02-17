@@ -10,6 +10,7 @@ export interface ClassroomInfo {
   mossLanguage?: string;
   mossResult?: string;
   openaiApiKey?: string;
+  openaiModel?: string;
   openaiConsent?: boolean;
   openaiIgnore?: string;
 }

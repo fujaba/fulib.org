@@ -13,6 +13,10 @@ export class ImportEmbeddingsComponent implements OnInit {
   costs?: EstimatedCosts;
   costsAreFinal = false;
 
+  // TODO use a shared constant when frontend and backend are merged
+  readonly rateLimit = 3000;
+  readonly ceil = Math.ceil;
+
   constructor(
     private embeddingService: EmbeddingService,
     private route: ActivatedRoute,

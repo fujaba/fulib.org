@@ -20,6 +20,7 @@ import {
 import {Types} from 'mongoose';
 import {MOSS_LANGUAGES} from "../search/search.constants";
 import {Doc} from "@mean-stream/nestx";
+import {EmbeddingModel, EMBEDDING_MODELS} from "../embedding/openai.service";
 
 @Schema({id: false, _id: false})
 export class Task {
@@ -116,6 +117,12 @@ export class ClassroomInfo {
   @IsString()
   @Transform(({value}) => value === '***' ? undefined : value)
   openaiApiKey?: string;
+
+  @Prop({type: String})
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsIn(Object.keys(EMBEDDING_MODELS))
+  openaiModel?: EmbeddingModel;
 
   @Prop()
   @ApiPropertyOptional()

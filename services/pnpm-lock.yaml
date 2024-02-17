@@ -1,4 +1,4 @@
-lockfileVersion: '6.0'
+lockfileVersion: '6.1'
 
 settings:
   autoInstallPeers: true
@@ -106,8 +106,8 @@ dependencies:
     specifier: ^2.18.0
     version: 2.18.0
   openai:
-    specifier: ^4.21.0
-    version: 4.21.0
+    specifier: ^4.27.0
+    version: 4.27.0
   openapi-merge:
     specifier: ^1.3.2
     version: 1.3.2
@@ -133,8 +133,8 @@ dependencies:
     specifier: ^6.9.0
     version: 6.9.0
   tiktoken:
-    specifier: ^1.0.11
-    version: 1.0.11
+    specifier: ^1.0.13
+    version: 1.0.13
   tslib:
     specifier: ^2.6.2
     version: 2.6.2
@@ -5425,8 +5425,8 @@ packages:
       is-wsl: 2.2.0
     dev: true
 
-  /openai@4.21.0:
-    resolution: {integrity: sha512-HT0Jm2iGI5+Maq7Da/DPTeIAxNvpa5pamkhlNnJJAqJgVjaFDvMUBjGhFJoVohkYWwZjM9oSyfSC0eoVNPioaQ==}
+  /openai@4.27.0:
+    resolution: {integrity: sha512-j1ZEx9NiBpm31rxWqQTjQt1QvH/8001xHsc/pRoPjkRDYWONCb+qkR6L9C7Wl6ar72Mz1ybtn1bv6fqAoTPlKw==}
     hasBin: true
     dependencies:
       '@types/node': 18.19.3
@@ -6388,8 +6388,8 @@ packages:
     resolution: {integrity: sha512-w89qg7PI8wAdvX60bMDP+bFoD5Dvhm9oLheFp5O4a2QF0cSBGsBX4qZmadPMvVqlLJBBci+WqGGOAPvcDeNSVg==}
     dev: true
 
-  /tiktoken@1.0.11:
-    resolution: {integrity: sha512-aMJcn9NGmb6zDXkCweJLnACyIyjdiYIk1odAfnCUvin7O1QsV1rQP1hatGDMhQovxkeSJhFeU7QuGkbDHGciDQ==}
+  /tiktoken@1.0.13:
+    resolution: {integrity: sha512-JaL9ZnvTbGFMDIBeGdVkLt4qWTeCPw+n7Ock+wceAGRenuHA6nOOvMJFliNDyXsjg2osGKJWsXtO2xc74VxyDw==}
     dev: false
 
   /titleize@3.0.0:

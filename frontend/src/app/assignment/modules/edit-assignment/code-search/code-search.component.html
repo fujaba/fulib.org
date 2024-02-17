@@ -29,7 +29,29 @@
       <a href="https://platform.openai.com/account/api-keys" target="_blank">OpenAI API Keys</a>.
     </div>
   </div>
-
+  <div class="mb-3">
+    <label class="form-label bi-cpu" for="openaiApiKeyInput">
+      OpenAI Embedding Model
+    </label>
+    @for (model of embeddingModels; track model.id) {
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="openaiModel" id="openaiModel-{{model.id}}" [value]="model.id" [ngModel]="classroom.openaiModel">
+        <label class="form-check-label" for="openaiModel-{{model.id}}">
+          {{ model.id }}
+          <span class="badge bg-{{ model.labelBg }}">
+            {{ model.label }}
+          </span>
+        </label>
+      </div>
+    }
+    <div class="form-text">
+      The embedding model for use with the OpenAI API.
+      Learn more in the
+      <a href="https://platform.openai.com/docs/guides/embeddings/embedding-models" target="_blank">OpenAI Embedding Models Documentation</a>
+      and check out the
+      <a href="https://openai.com/pricing#embedding-models" target="_blank">OpenAI Pricing</a>.
+    </div>
+  </div>
   <div class="mb-3">
     <label class="form-label bi-ui-checks" for="openaiConsentCheck">
       OpenAI Consent
