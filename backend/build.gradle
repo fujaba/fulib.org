@@ -57,8 +57,8 @@ dependencies {
 	// --------------- Dagger (Dependency Injection) ---------------
 
 	// https://mvnrepository.com/artifact/com.google.dagger/dagger
-	implementation 'com.google.dagger:dagger:2.45'
-	annotationProcessor 'com.google.dagger:dagger-compiler:2.45'
+	implementation 'com.google.dagger:dagger:2.50'
+	annotationProcessor 'com.google.dagger:dagger-compiler:2.50'
 
 	// --------------- Fulib Libraries ---------------
 
@@ -82,7 +82,7 @@ dependencies {
 	implementation group: 'com.sparkjava', name: 'spark-core', version: '2.9.4'
 
 	// https://mvnrepository.com/artifact/org.json/json
-	implementation group: 'org.json', name: 'json', version: '20231013'
+	implementation group: 'org.json', name: 'json', version: '20240205'
 
 	// https://mvnrepository.com/artifact/org.mongodb/mongodb-driver-sync
 	implementation group: 'org.mongodb', name: 'mongodb-driver-sync', version: '4.11.1'
