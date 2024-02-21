@@ -3,7 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {forkJoin, Subscription} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
 import Assignment, {ReadAssignmentDto} from '../../../model/assignment';
-import {Evaluation, isVisible} from '../../../model/evaluation';
+import {Evaluation} from '../../../model/evaluation';
 import Solution from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
 import {SolutionService} from '../../../services/solution.service';
@@ -61,9 +61,6 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
       switchMap(({aid, sid}) => forkJoin([
         this.assignmentService.get(aid).pipe(tap(assignment => this.assignment = assignment)),
         this.evaluationService.findAll(aid, sid).pipe(map(evaluations => {
-          if (!this.config.codeSearch || !this.config.similarSolutions) {
-            evaluations = evaluations.filter(evaluation => isVisible(evaluation, this.config));
-          }
           this.evaluations = {};
           for (const evaluation of evaluations) {
             this.evaluations[evaluation.task] = evaluation;
@@ -85,9 +82,6 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
       const task = evaluation.task;
       if (event === 'deleted') {
         delete this.evaluations[task];
-      }
-      else if (!isVisible(evaluation, this.config)) {
-        return;
       } else {
         this.evaluations[task] = evaluation;
       }
