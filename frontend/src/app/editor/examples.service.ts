@@ -40,11 +40,6 @@ export class ExamplesService {
         {name: 'Piecewise Definition'},
       ],
     },
-    {
-      name: 'Prototyping', examples: [
-        {name: 'UIs'},
-      ],
-    },
   ];
 
   constructor(
