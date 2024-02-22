@@ -25,9 +25,6 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.fulib/fulibTables
 	testImplementation group: 'org.fulib', name: 'fulibTables', version: '$$fulibTablesVersion$$'
 
-	// https://mvnrepository.com/artifact/org.fulib/fulibMockups
-	testImplementation group: 'org.fulib', name: 'fulibMockups', version: '$$fulibMockupsVersion$$'
-
 	// https://mvnrepository.com/artifact/junit/junit
 	testImplementation group: 'junit', name: 'junit', version: '$$junitVersion$$'
 

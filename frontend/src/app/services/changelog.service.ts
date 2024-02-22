@@ -14,7 +14,6 @@ export const REPOS = [
   'fulibYaml',
   'fulibTables',
   'fulibScenarios',
-  'fulibMockups',
   'fulibGradle',
   'fulibWorkflows'
 ] as const;

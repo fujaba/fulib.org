@@ -32,10 +32,6 @@ The Pumps has price 42.42.
 
 ![Sneakers, Pumps](images/products.txt)
 
-> The .tables.html format shows nicely formatted tables:
-
-![Amazon](images/products.tables.html)
-
 # More Info
 
 > The documentation goes into more depth about how to create diagrams and display data:

@@ -29,22 +29,19 @@ repositories {
 
 ext {
 	// https://mvnrepository.com/artifact/org.fulib/fulib
-	fulibDependency = [ group: 'org.fulib', name: 'fulib', version: '1.6.1' ]
+	fulibDependency = [ group: 'org.fulib', name: 'fulib', version: '1.6.2' ]
 
 	// https://mvnrepository.com/artifact/org.fulib/fulibScenarios
-	fulibScenariosDependency = [ group: 'org.fulib', name: 'fulibScenarios', version: '1.7.0' ]
+	fulibScenariosDependency = [ group: 'org.fulib', name: 'fulibScenarios', version: '1.7.1' ]
 
 	// https://mvnrepository.com/artifact/org.fulib/fulibTools
-	fulibToolsDependency = [ group: 'org.fulib', name: 'fulibTools', version: '1.5.1' ]
-
-	// https://mvnrepository.com/artifact/org.fulib/fulibMockups
-	fulibMockupsDependency = [ group: 'org.fulib', name: 'fulibMockups', version: '0.4.0' ]
+	fulibToolsDependency = [ group: 'org.fulib', name: 'fulibTools', version: '1.6.0' ]
 
 	// https://mvnrepository.com/artifact/org.fulib/fulibTables
 	fulibTablesDependency = [ group: 'org.fulib', name: 'fulibTables', version: '1.4.0' ]
 
 	// https://mvnrepository.com/artifact/org.fulib/fulibWorkflows
-	fulibWorkflowsDependency = [ group: 'org.fulib', name: 'fulibWorkflows', version: '0.5.6' ]
+	fulibWorkflowsDependency = [ group: 'org.fulib', name: 'fulibWorkflows', version: '0.6.0' ]
 
 	// https://mvnrepository.com/artifact/junit/junit
 	junitDependency = [ group: 'junit', name: 'junit', version: '4.13.2' ]
@@ -68,7 +65,6 @@ dependencies {
 
 	implementation fulibDependency
 	implementation fulibScenariosDependency
-	implementation fulibMockupsDependency
 	implementation fulibTablesDependency
 
 	// --------------- Other Libraries ---------------
@@ -110,7 +106,6 @@ processResources {
 	def fulibTablesVersion = getDependencyVersion(config, 'org.fulib', 'fulibTables')
 	def fulibScenariosVersion = getDependencyVersion(config, 'org.fulib', 'fulibScenarios')
 	def fulibGradleVersion = getDependencyVersion(rootProject.buildscript.configurations.classpath, 'org.fulib', 'fulibGradle')
-	def fulibMockupsVersion = getDependencyVersion(config, 'org.fulib', 'fulibMockups')
 	def junitVersion = getDependencyVersion(config, 'junit', 'junit')
 	def slf4jVersion = getDependencyVersion(config, 'org.slf4j', 'slf4j-simple')
 
@@ -131,7 +126,6 @@ processResources {
 			it = it.replace('$$fulibYamlVersion$$', fulibYamlVersion)
 			it = it.replace('$$fulibTablesVersion$$', fulibTablesVersion)
 			it = it.replace('$$fulibScenariosVersion$$', fulibScenariosVersion)
-			it = it.replace('$$fulibMockupsVersion$$', fulibMockupsVersion)
 			it = it.replace('$$fulibGradleVersion$$', fulibGradleVersion)
 			it = it.replace('$$fulibWorkflowsVersion$$', fulibWorkflowsDependency.version)
 			it = it.replace('$$junitVersion$$', junitVersion)
