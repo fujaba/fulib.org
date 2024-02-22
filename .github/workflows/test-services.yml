@@ -2,9 +2,13 @@ name: Test Services
 
 on:
   push:
+    branches:
+      - master
     paths:
       - 'services/**'
   pull_request:
+    branches:
+      - master
     paths:
       - 'services/**'
 

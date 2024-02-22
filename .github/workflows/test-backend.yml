@@ -2,9 +2,13 @@ name: Test Backend
 
 on:
   push:
+    branches:
+      - master
     paths:
       - 'backend/**'
   pull_request:
+    branches:
+      - master
     paths:
       - 'backend/**'
 
