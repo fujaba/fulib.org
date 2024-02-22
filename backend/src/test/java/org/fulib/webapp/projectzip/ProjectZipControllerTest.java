@@ -65,9 +65,6 @@ public class ProjectZipControllerTest
 			\t// https://mvnrepository.com/artifact/org.fulib/fulibTables
 			\ttestImplementation group: 'org.fulib', name: 'fulibTables', version: '1.4.0'
 
-			\t// https://mvnrepository.com/artifact/org.fulib/fulibMockups
-			\ttestImplementation group: 'org.fulib', name: 'fulibMockups', version: '0.4.0'
-
 			\t// https://mvnrepository.com/artifact/junit/junit
 			\ttestImplementation group: 'junit', name: 'junit', version: '4.13.2'
 

@@ -1,6 +1,5 @@
 package org.fulib.webapp.tool;
 
-import org.fulib.mockups.FulibMockups;
 import org.fulib.scenarios.tool.ScenarioCompiler;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
@@ -64,8 +63,6 @@ public class Tools
 	)
 	{
 		final List<String> finalArgs = new ArrayList<>(8 + args.length);
-		finalArgs.add("--classpath");
-		finalArgs.add(FulibMockups.class.getProtectionDomain().getCodeSource().getLocation().getPath());
 		finalArgs.add("-m");
 		finalArgs.add(modelSrcDir.toString());
 		finalArgs.add("-t");
