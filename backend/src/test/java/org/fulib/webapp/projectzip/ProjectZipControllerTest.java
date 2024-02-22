@@ -54,13 +54,13 @@ public class ProjectZipControllerTest
 
 			dependencies {
 			\t// https://mvnrepository.com/artifact/org.fulib/fulibScenarios
-			\tfulibScenarios group: 'org.fulib', name: 'fulibScenarios', version: '1.7.0'
+			\tfulibScenarios group: 'org.fulib', name: 'fulibScenarios', version: '1.7.1'
 
 			\t// https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
 			\tfulibScenarios group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.36'
 
 			\t// https://mvnrepository.com/artifact/org.fulib/fulibTools
-			\ttestImplementation group: 'org.fulib', name: 'fulibTools', version: '1.5.1'
+			\ttestImplementation group: 'org.fulib', name: 'fulibTools', version: '1.6.0'
 
 			\t// https://mvnrepository.com/artifact/org.fulib/fulibTables
 			\ttestImplementation group: 'org.fulib', name: 'fulibTables', version: '1.4.0'
@@ -147,7 +147,7 @@ public class ProjectZipControllerTest
 		assertThat(files, hasItems(EXPECTED_FILES));
 		for (final Map.Entry<String, String> entry : EXPECTED_CONTENT.entrySet())
 		{
-			assertEquals(entry.getKey(), contents.get(entry.getKey()), entry.getValue());
+			assertEquals(entry.getKey(), entry.getValue(), contents.get(entry.getKey()));
 		}
 	}
 }
