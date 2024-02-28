@@ -26,7 +26,7 @@ const removeOwnerResponse = 'Owner cannot remove themselves as member.';
 @ApiTags('Members')
 export class MemberController implements OnModuleInit {
   constructor(
-    @Optional() @Inject() private readonly logger = new Logger(MemberService.name),
+    @Optional() @Inject(Logger) private readonly logger = new Logger(MemberService.name),
     private readonly memberService: MemberService,
   ) {
   }
