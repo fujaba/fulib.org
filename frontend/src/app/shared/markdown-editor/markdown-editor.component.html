@@ -26,6 +26,7 @@
     [rows]="rows"
     [placeholder]="placeholder"
     [(ngModel)]="content"
+    (paste)="paste($event)"
     (ngModelChange)="contentChange.emit($event)"
     (change)="change.next(content)"
     (keyup.control.enter)="submit.next(content)"

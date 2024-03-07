@@ -1,4 +1,5 @@
 import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {MarkdownService} from "../../services/markdown.service";
 
 @Component({
   selector: 'app-markdown-editor',
@@ -20,6 +21,20 @@ export class MarkdownEditorComponent {
   @ViewChild('textarea', {static: false}) textarea?: ElementRef<HTMLTextAreaElement>;
 
   preview = false;
+
+  constructor(
+    private markdownService: MarkdownService,
+  ) {
+  }
+
+  paste(event: ClipboardEvent) {
+    const text = event.clipboardData?.getData('text/html');
+    if (text && event.isTrusted) {
+      event.preventDefault();
+      const md = this.markdownService.parseMarkdown(text);
+      document.execCommand('insertText', false, md);
+    }
+  }
 
   span(before: string, after: string) {
     if (!this.textarea) {
