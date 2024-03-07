@@ -32,6 +32,8 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
   launching = false;
   assignee?: UpdateAssigneeDto;
 
+  showNotes = false;
+
   constructor(
     private assignmentService: AssignmentService,
     private evaluationService: EvaluationService,
@@ -55,6 +57,7 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
     ).subscribe(assignee => {
       assignee.duration ||= 0;
       this.assignee = assignee;
+      this.showNotes = !!assignee.notes;
     });
 
     this.route.params.pipe(
@@ -118,6 +121,18 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
         this.toastService.error('Launch in Projects', 'Failed to launch in Projects', error)
         this.launching = false;
       },
+    });
+  }
+
+  saveNotes() {
+    if (!this.assignee) {
+      return;
+    }
+    this.assigneeService.update(this.assignment!._id, this.solution!._id!, {
+      notes: this.assignee.notes,
+    }).subscribe({
+      next: () => this.toastService.success('Update Notes', 'Successfully saved notes'),
+      error: error => this.toastService.error('Update Notes', 'Failed to save notes', error),
     });
   }
 

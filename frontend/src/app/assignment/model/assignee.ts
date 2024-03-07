@@ -86,6 +86,7 @@ export interface Assignee {
   assignee: string;
   duration?: number;
   feedback?: Feedback;
+  notes?: string;
 }
 
 export type UpdateAssigneeDto = Omit<Assignee, 'assignment' | 'solution'>;
