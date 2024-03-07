@@ -1,9 +1,15 @@
-<div class="btn-group d-flex" role="toolbar">
+<div class="d-flex align-items-center" role="toolbar">
+  <div class="btn-group me-2">
+    <button class="btn btn-outline-secondary btn-sm bi-type-bold" (click)="insertText('**', '**')"></button>
+    <button class="btn btn-outline-secondary btn-sm bi-type-italic" (click)="insertText('*', '*')"></button>
+    <button class="btn btn-outline-secondary btn-sm bi-type-strikethrough" (click)="insertText('~~', '~~')"></button>
+    <button class="btn btn-outline-secondary btn-sm bi-code" (click)="insertText('`', '`')"></button>
+  </div>
   <div class="form-check form-switch me-2">
     <input class="form-check-input" type="checkbox" id="switch-preview" [(ngModel)]="preview">
     <label class="form-check-label" for="switch-preview">Preview</label>
   </div>
-  <a class="me-2" href="https://commonmark.org/help/" target="_blank">Markdown Help</a>
+  <a class="bi-question-circle me-2" href="https://commonmark.org/help/" target="_blank" ngbTooltip="Markdown Syntax Help"></a>
 </div>
 @if (preview) {
   <div class="card">
@@ -13,6 +19,7 @@
   </div>
 } @else {
   <textarea
+    #textarea
     class="form-control"
     [id]="textareaId"
     [rows]="rows"
