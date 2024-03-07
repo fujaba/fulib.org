@@ -24,6 +24,7 @@ import {TabsComponent} from './tabs/tabs.component';
 import {TokenInputComponent} from './token-input/token-input.component';
 import {MaskedInputComponent} from './masked-input/masked-input.component';
 import {DisabledTooltipComponent} from './disabled-tooltip/disabled-tooltip.component';
+import { MarkdownEditorComponent } from './markdown-editor/markdown-editor.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import {DisabledTooltipComponent} from './disabled-tooltip/disabled-tooltip.comp
     TokenInputComponent,
     MaskedInputComponent,
     DisabledTooltipComponent,
+    MarkdownEditorComponent,
   ],
   imports: [
     FormsModule,
@@ -74,6 +76,7 @@ import {DisabledTooltipComponent} from './disabled-tooltip/disabled-tooltip.comp
     TokenInputComponent,
     MaskedInputComponent,
     DisabledTooltipComponent,
+    MarkdownEditorComponent,
   ],
   providers: [
     DurationPipe,

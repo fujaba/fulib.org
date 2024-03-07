@@ -58,15 +58,11 @@
     </div>
     <div class="mb-3">
       <label class="form-label" for="remarkInput">Remark</label>
-      <textarea
-        class="form-control" id="remarkInput"
-        ngbAutofocus
-        [(ngModel)]="dto.remark"
+      <app-markdown-editor
+        textareaId="remarkInput"
+        [(content)]="dto.remark"
         [rows]="remarkLines"
-      ></textarea>
-      <div class="form-text">
-        <a href="https://commonmark.org/help/" target="_blank">Markdown Syntax</a> is supported.
-      </div>
+      ></app-markdown-editor>
     </div>
     <div class="mb-3">
       <label class="form-label" for="nameInput">Name</label>

@@ -44,10 +44,11 @@
   </div>
   <div class="mb-3">
     <label class="form-label" for="descriptionInput">Description</label>
-    <textarea id="descriptionInput" class="form-control" rows="6" [(ngModel)]="assignment.description"
-              (change)="saveDraft()"></textarea>
-    <div class="form-text">
-      <a href="https://commonmark.org/help/" target="_blank">Markdown syntax</a> is supported.
-    </div>
+    <app-markdown-editor
+      textareaId="descriptionInput"
+      [(content)]="assignment.description"
+      [rows]="6"
+      (change)="saveDraft()"
+    ></app-markdown-editor>
   </div>
 </div>

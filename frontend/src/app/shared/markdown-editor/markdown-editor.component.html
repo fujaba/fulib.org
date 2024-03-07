@@ -1,0 +1,12 @@
+<textarea
+  class="form-control"
+  [id]="textareaId"
+  [rows]="rows"
+  [placeholder]="placeholder"
+  [(ngModel)]="content"
+  (ngModelChange)="contentChange.emit($event)"
+  (change)="change.next(content)"
+  (keyup.control.enter)="submit.next(content)"></textarea>
+<div class="form-text">
+  <a href="https://commonmark.org/help/" target="_blank">Markdown syntax</a> is supported.
+</div>
