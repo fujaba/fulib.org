@@ -16,4 +16,6 @@ export class MarkdownEditorComponent {
   @Output() change = new EventEmitter<string>();
   /** Ctrl-Enter */
   @Output() submit = new EventEmitter<string>();
+
+  preview = false;
 }
