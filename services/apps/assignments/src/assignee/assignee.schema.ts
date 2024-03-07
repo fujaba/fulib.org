@@ -46,6 +46,12 @@ export class Assignee {
   @Prop()
   @ApiPropertyOptional()
   @IsOptional()
+  @IsString()
+  notes?: string;
+
+  @Prop()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsPositive()
   duration?: number;
 
