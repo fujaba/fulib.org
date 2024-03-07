@@ -1,9 +1,10 @@
 <div class="d-flex align-items-center" role="toolbar">
   <div class="btn-group me-2">
-    <button class="btn btn-outline-secondary btn-sm bi-type-bold" (click)="insertText('**', '**')"></button>
-    <button class="btn btn-outline-secondary btn-sm bi-type-italic" (click)="insertText('*', '*')"></button>
-    <button class="btn btn-outline-secondary btn-sm bi-type-strikethrough" (click)="insertText('~~', '~~')"></button>
-    <button class="btn btn-outline-secondary btn-sm bi-code" (click)="insertText('`', '`')"></button>
+    <button class="btn btn-outline-secondary btn-sm bi-type-bold" (click)="span('**', '**')"></button>
+    <button class="btn btn-outline-secondary btn-sm bi-type-italic" (click)="span('*', '*')"></button>
+    <button class="btn btn-outline-secondary btn-sm bi-type-strikethrough" (click)="span('~~', '~~')"></button>
+    <button class="btn btn-outline-secondary btn-sm bi-link" (click)="span('[', '](https://)')"></button>
+    <button class="btn btn-outline-secondary btn-sm bi-image" (click)="span('![', '](https://)')"></button>
   </div>
   <div class="form-check form-switch me-2">
     <input class="form-check-input" type="checkbox" id="switch-preview" [(ngModel)]="preview">

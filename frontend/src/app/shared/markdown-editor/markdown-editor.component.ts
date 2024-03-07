@@ -21,7 +21,7 @@ export class MarkdownEditorComponent {
 
   preview = false;
 
-  insertText(before: string, after: string) {
+  span(before: string, after: string) {
     if (!this.textarea) {
       return;
     }
