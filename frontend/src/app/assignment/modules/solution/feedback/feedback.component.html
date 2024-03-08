@@ -1,13 +1,3 @@
-@if (saved && feedback.appropriate && feedback.helpful && feedback.understandable) {
-  <div class="alert alert-success">
-    Vielen Dank für dein Feedback!
-    Dir wurden Bonuspunkte gutgeschrieben.
-  </div>
-} @else {
-  <div class="alert alert-info">
-    Bitte fülle alle Felder aus und speichere das Formular, um Bonuspunkte zu erhalten.
-  </div>
-}
 <ngbx-validator-form [type]="Feedback" [model]="feedback"/>
 <button class="btn btn-primary" (click)="save()">
   Speichern
