@@ -7,12 +7,12 @@ export class Feedback {
   @Presentation({
     control: 'radio',
     rows: 1,
-    label: 'Wie motiviert bist du derzeit, weitere Lösungen zu überprüfen?',
+    label: 'How motivated are you to evaluate further solutions?',
     optionLabels: {
-      1: 'Gar nicht motiviert',
-      2: 'Eher nicht motiviert',
-      3: 'Eher motiviert',
-      4: 'Sehr motiviert',
+      1: 'Not motivated at all',
+      2: 'Not very motivated',
+      3: 'Rather motivated',
+      4: 'Very motivated',
     },
   })
   @IsOptional()
@@ -22,12 +22,12 @@ export class Feedback {
   @Presentation({
     control: 'radio',
     rows: 1,
-    label: 'Wie erschöpft fühlst du dich nach der Bewertung der letzten Lösung(en)?',
+    label: 'How exhausted do you feel after evaluating the previous solution(s)?',
     optionLabels: {
-      1: 'Gar nicht erschöpft',
-      2: 'Eher nicht erschöpft',
-      3: 'Eher erschöpft',
-      4: 'Sehr erschöpft',
+      1: 'Not exhausted at all',
+      2: 'Not very exhausted',
+      3: 'Rather exhausted',
+      4: 'Very exhausted',
     },
   })
   @IsOptional()
@@ -37,12 +37,12 @@ export class Feedback {
   @Presentation({
     control: 'radio',
     rows: 1,
-    label: 'Wie sehr hast du dich während der Bewertung der letzten Lösung unruhig oder gestresst gefühlt?',
+    label: 'How stressed did you feel while evaluating the previous solution?',
     optionLabels: {
-      1: 'Gar nicht gestresst',
-      2: 'Eher nicht gestresst',
-      3: 'Eher gestresst',
-      4: 'Sehr gestresst',
+      1: 'Not stressed at all',
+      2: 'Not very stressed',
+      3: 'Rather stressed',
+      4: 'Very stressed',
     },
   })
   @IsOptional()
@@ -52,12 +52,12 @@ export class Feedback {
   @Presentation({
     control: 'radio',
     rows: 1,
-    label: 'Wie aufmerksam bist du aktuell beim Überprüfen der Lösung?',
+    label: 'How attentive are you currently when reviewing the solution?',
     optionLabels: {
-      1: 'Gar nicht aufmerksam',
-      2: 'Eher nicht aufmerksam',
-      3: 'Eher aufmerksam',
-      4: 'Sehr aufmerksam',
+      1: 'Not attentive at all',
+      2: 'Not very attentive',
+      3: 'Rather attentive',
+      4: 'Very attentive',
     },
   })
   @IsOptional()
@@ -67,12 +67,12 @@ export class Feedback {
   @Presentation({
     control: 'radio',
     rows: 1,
-    label: 'Wie leicht fällt es dir aktuell, Ablenkungen zu ignorieren?',
+    label: 'How easy is it for you to ignore distractions currently?',
     optionLabels: {
-      1: 'Gar nicht leicht',
-      2: 'Eher nicht leicht',
-      3: 'Eher leicht',
-      4: 'Sehr leicht',
+      1: 'Not easy at all',
+      2: 'Not very easy',
+      3: 'Rather easy',
+      4: 'Very easy',
     },
   })
   @IsOptional()

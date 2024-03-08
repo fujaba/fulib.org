@@ -61,19 +61,9 @@ export class SubmitService {
     const {total, sum, tasks} = await this.renderTasks(assignment, solution);
     const footer = this.renderFooter(assignment, solution);
 
-    const feedbackInfo = sum === total ? `
-> [!NOTE]
-> Du hast die volle Punktzahl erreicht. Dafür bekommst du automatisch einen Bonuspunkt.
-` : `
-> [!IMPORTANT]
-> Bitte gib uns Feedback für diese Bewertung, indem du auf den Link klickst und die Fragen beantwortest.
-> Bei erfolgreicher Teilnahme bekommst du einen Bonuspunkt.
-> [Feedback erstellen](${location.origin}/assignments/${assignment._id}/solutions/${solution._id}/feedback?stok=${solution.token})
-`;
-
     return {
       title: `${assignment.title} (${sum}/${total}P)`,
-      body: `${tasks}\n${feedbackInfo}\n${footer}`,
+      body: `${tasks}\n${footer}`,
       _points: sum,
     };
   }
@@ -156,8 +146,9 @@ export class SubmitService {
   }
 
   private renderFooter(assignment: ReadAssignmentDto, solution: Solution) {
+    const origin = location.origin;
     const apiUrl = environment.assignmentsApiUrl;
-    const apiServer = new URL(apiUrl, location.origin).origin;
+    const apiServer = new URL(apiUrl, origin).origin;
     const timestamp = new Date();
     const settings = {
       'fulibFeedback.apiServer': apiServer,
@@ -168,6 +159,7 @@ export class SubmitService {
     const commitInfo = solution.commit ? ` for commit ${solution.commit}` : '';
     return `\
 ---
+<a href="${origin}/assignments/${assignment._id}/solutions/${solution._id}?stok=${solution.token}">View on fulib.org</a>
 <details>
 <summary>View Evaluations in VSCode</summary>
 
@@ -180,7 +172,7 @@ ${JSON.stringify(settings, null, 2)}
 
 </details>
 
-<sub>*This issue was created with [fulib.org](https://fulib.org/assignments) on ${timestamp.toLocaleDateString()} at ${timestamp.toLocaleTimeString()}${commitInfo}.*</sub>
+<sub>*This feedback was created with [fulib.org](${origin}/assignments) on ${timestamp.toLocaleDateString()} at ${timestamp.toLocaleTimeString()}${commitInfo}.*</sub>
 `;
   }
 }
