@@ -74,12 +74,12 @@ export class Feedback {
   @Presentation({
     control: 'radio',
     rows: 1,
-    label: 'Wie angemessen empfindest du die Bewertung?',
+    label: 'How appropriate was the evaluation?',
     optionLabels: {
-      1: 'Gar nicht angemessen',
-      2: 'Eher nicht angemessen',
-      3: 'Eher angemessen',
-      4: 'Sehr angemessen',
+      1: 'Not appropriate at all',
+      2: 'Not very appropriate',
+      3: 'Rather appropriate',
+      4: 'Very appropriate',
     },
   })
   @IsOptional()
@@ -89,12 +89,12 @@ export class Feedback {
   @Presentation({
     control: 'radio',
     rows: 1,
-    label: 'Hast Du die Erklärungen zur Bewertung als hilfreich empfunden?',
+    label: 'Did you find the explanations of your evaluation helpful?',
     optionLabels: {
-      1: 'Gar nicht hilfreich',
-      2: 'Eher nicht hilfreich',
-      3: 'Eher hilfreich',
-      4: 'Sehr hilfreich',
+      1: 'Not helpful at all',
+      2: 'Not very helpful',
+      3: 'Rather helpful',
+      4: 'Very helpful',
     },
   })
   @IsOptional()
@@ -104,12 +104,12 @@ export class Feedback {
   @Presentation({
     control: 'radio',
     rows: 1,
-    label: 'Wie sehr fördert das Feedback dein Verständnis, wie eine richtige Lösung aussehen könnte und wie du diese erreichen kannst?',
+    label: 'How much does the evaluation help you understand what a correct solution might look like and how to achieve it?',
     optionLabels: {
-      1: 'Gar nicht förderlich',
-      2: 'Eher nicht förderlich',
-      3: 'Eher förderlich',
-      4: 'Sehr förderlich',
+      1: 'Not understandable at all',
+      2: 'Not very understandable',
+      3: 'Rather understandable',
+      4: 'Very understandable',
     },
   })
   @IsOptional()
