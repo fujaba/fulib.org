@@ -17,13 +17,13 @@
       </div>
       <div class="mb-3">
         <label for="descriptionInput" class="form-label">Description</label>
-        <textarea id="descriptionInput" class="form-control" rows="6"
-                  placeholder="A short description for this course..."
-                  [(ngModel)]="course.description" (change)="saveDraft()">
-          </textarea>
-        <div class="form-text">
-          <a href="https://commonmark.org/help/" target="_blank">Markdown syntax</a> is supported.
-        </div>
+        <app-markdown-editor
+          textareaId="descriptionInput"
+          [rows]="6"
+          placeholder="A short description for this course..."
+          [(content)]="course.description"
+          (change)="saveDraft()"
+        ></app-markdown-editor>
       </div>
     </div>
   }
@@ -48,7 +48,7 @@
     </li>
     @for (assignment of assignments; track assignment; let i = $index) {
   <li
-     
+
       class="timeline-item"
       dndType="assignment"
       [dndDraggable]="assignment"

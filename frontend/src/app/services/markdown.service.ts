@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import MarkdownIt from 'markdown-it';
+import TurndownService from 'turndown';
 import {Observable} from 'rxjs';
 
 @Injectable({
@@ -11,6 +12,17 @@ export class MarkdownService {
     html: true,
     langPrefix: 'language-',
   });
+
+  private readonly turndownService = new TurndownService({
+    headingStyle: 'atx',
+    hr: '---',
+    bulletListMarker: '-',
+    codeBlockStyle: 'fenced',
+  });
+
+  parseMarkdown(html: string): string {
+    return this.turndownService.turndown(html);
+  }
 
   renderMarkdown(md: string, options: { imageBaseUrl?: string; linkBaseUrl?: string; } = {}): Observable<string> {
     return new Observable(subscriber => {

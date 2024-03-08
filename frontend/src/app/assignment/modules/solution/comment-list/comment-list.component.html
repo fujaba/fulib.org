@@ -55,15 +55,11 @@
           </div>
         </div>
         <div class="card-body">
-          <textarea
-            class="form-control"
-            aria-label="Comment Body"
-            [(ngModel)]="commentBody"
+          <app-markdown-editor
+            [(content)]="commentBody"
             (change)="saveCommentDraft()"
-            (keyup.control.enter)="submitComment()"></textarea>
-          <div class="form-text">
-            <a href="https://commonmark.org/help/" target="_blank">Markdown syntax</a> is supported.
-          </div>
+            (submit)="submitComment()"
+          ></app-markdown-editor>
         </div>
       </div>
     </div>

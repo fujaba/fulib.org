@@ -1,7 +1,7 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {NgbPopoverModule, NgbTooltipModule, NgbTypeaheadModule} from '@ng-bootstrap/ng-bootstrap';
+import {NgbCollapse, NgbPopoverModule, NgbTooltipModule, NgbTypeaheadModule} from '@ng-bootstrap/ng-bootstrap';
 import {FormsModule as NgbxFormsModule, ModalModule, RouteTabsModule} from '@mean-stream/ngbx';
 import {ClipboardModule} from 'ngx-clipboard';
 import {SharedModule} from '../../../shared/shared.module';
@@ -41,20 +41,21 @@ import { SnippetListComponent } from './snippet-list/snippet-list.component';
     AssigneeFeedbackComponent,
     SnippetListComponent,
   ],
-  imports: [
-    CommonModule,
-    SharedModule,
-    FormsModule,
-    NgbTooltipModule,
-    ClipboardModule,
-    SolutionRoutingModule,
-    AssignmentSharedModule,
-    NgbTypeaheadModule,
-    RouteTabsModule,
-    ModalModule,
-    NgbPopoverModule,
-    NgbxFormsModule,
-  ],
+    imports: [
+        CommonModule,
+        SharedModule,
+        FormsModule,
+        NgbTooltipModule,
+        ClipboardModule,
+        SolutionRoutingModule,
+        AssignmentSharedModule,
+        NgbTypeaheadModule,
+        RouteTabsModule,
+        ModalModule,
+        NgbPopoverModule,
+        NgbxFormsModule,
+        NgbCollapse,
+    ],
   providers: [
     CommentService,
   ],

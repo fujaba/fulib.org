@@ -9,7 +9,7 @@
           Launch in Projects
         </button>
         <app-timetracking #timer [(duration)]="assignee.duration!" class="me-2"></app-timetracking>
-        <a class="btn btn-danger bi-stop" (click)="timer.pause(); saveDuration(); evaluating = false" routerLink="feedback">
+        <a class="btn btn-danger bi-stop me-2" (click)="timer.pause(); saveDuration(); evaluating = false" routerLink="feedback">
           Stop
         </a>
       } @else {
@@ -20,21 +20,49 @@
           <span class="text-muted me-2">Duration: {{ assignee.duration | duration }}</span>
         }
         @if (assignee.feedback) {
-          <a routerLink="feedback">View Feedback</a>
+          <a routerLink="feedback me-2">View Feedback</a>
         }
       }
+      <div class="form-check form-switch ms-auto">
+        <input class="form-check-input" type="checkbox" role="switch" id="switch-show-notes" [(ngModel)]="showNotes">
+        <label class="form-check-label" for="switch-show-notes">Show Notes</label>
+      </div>
     </div>
   </div>
 }
-@if (assignment) {
-  <app-task-list
-    [allTasks]="assignment.tasks"
-    [tasks]="assignment.tasks"
-    [evaluations]="evaluations"
-    [editable]="evaluating"
-    [points]="points"
-  ></app-task-list>
-} @else {
-  Loading...
-}
+<div class="row">
+  <div class="col">
+    @if (assignment) {
+      <app-task-list
+        [allTasks]="assignment.tasks"
+        [tasks]="assignment.tasks"
+        [evaluations]="evaluations"
+        [editable]="evaluating"
+        [points]="points"
+      ></app-task-list>
+    } @else {
+      Loading...
+    }
+  </div>
+  @if (showNotes) {
+    <div class="col">
+      <div class="mb-3">
+        <label for="notes-textarea" class="form-label">
+          Notes
+          <i class="bi-question-circle" ngbTooltip="Notes are private and only visible to assignees."></i>
+        </label>
+        <app-markdown-editor
+          textareaId="notes-textarea"
+          placeholder="Add notes for this solution..."
+          [rows]="10"
+          [content]="assignee?.notes ?? ''"
+          (contentChange)="assignee && (assignee.notes = $event)"
+        ></app-markdown-editor>
+      </div>
+      <button class="btn btn-primary" (click)="saveNotes()">
+        Save
+      </button>
+    </div>
+  }
+</div>
 <router-outlet></router-outlet>
