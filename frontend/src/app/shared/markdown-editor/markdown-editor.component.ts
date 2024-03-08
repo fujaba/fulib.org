@@ -14,8 +14,10 @@ export class MarkdownEditorComponent {
 
   @Output() contentChange = new EventEmitter<string>();
   /** "onchange" */
+  // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change = new EventEmitter<string>();
   /** Ctrl-Enter */
+  // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() submit = new EventEmitter<string>();
 
   @ViewChild('textarea', {static: false}) textarea?: ElementRef<HTMLTextAreaElement>;
