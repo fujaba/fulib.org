@@ -1,3 +1,4 @@
-.list-unstyled {
-  list-style: none;
+.form-check-input:checked, .form-check-input:indeterminate {
+  background-color: currentColor;
+  border-color: currentColor;
 }
