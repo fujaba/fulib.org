@@ -6,6 +6,9 @@
     <ngbx-validator-form [model]="feedback" [type]="Feedback"></ngbx-validator-form>
   </ng-container>
   <ng-container modal-footer>
+    <button class="btn btn-secondary" (click)="modal.close()">
+      Cancel
+    </button>
     <button class="btn btn-primary" (click)="save(); modal.close()">
       Submit
     </button>
