@@ -9,9 +9,9 @@
           Launch in Projects
         </button>
         <app-timetracking #timer [(duration)]="assignee.duration!" class="me-2"></app-timetracking>
-        <a class="btn btn-danger bi-stop me-2" (click)="timer.pause(); saveDuration(); evaluating = false" routerLink="feedback">
+        <button class="btn btn-danger bi-stop me-2" (click)="timer.pause(); saveDuration(); evaluating = false">
           Stop
-        </a>
+        </button>
       } @else {
         <button (click)="evaluating = true" class="btn btn-primary bi-play me-2">
           Start
@@ -19,9 +19,14 @@
         @if (assignee.duration) {
           <span class="text-muted me-2">Duration: {{ assignee.duration | duration }}</span>
         }
-        @if (assignee.feedback) {
-          <a routerLink="feedback me-2">View Feedback</a>
-        }
+        <a routerLink="feedback">
+          @if (assignee.feedback) {
+            View Feedback
+          } @else {
+            Add Feedback
+            <i class="bi-question-circle" ngbTooltip="Help make fulib.org better by rating your experience while grading this solution."></i>
+          }
+        </a>
       }
       <div class="form-check form-switch ms-auto">
         <input class="form-check-input" type="checkbox" role="switch" id="switch-show-notes" [(ngModel)]="showNotes">
