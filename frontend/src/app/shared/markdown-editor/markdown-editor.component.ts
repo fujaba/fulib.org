@@ -38,6 +38,31 @@ export class MarkdownEditorComponent {
     }
   }
 
+  block(prefix: string) {
+    if (!this.textarea) {
+      return;
+    }
+    const textarea = this.textarea.nativeElement;
+    const start = textarea.value.lastIndexOf('\n', textarea.selectionStart) + 1;
+    const end = (textarea.value.indexOf('\n', textarea.selectionEnd) + 1) || textarea.value.length;
+    const selection = textarea.value.substring(start, end);
+    const lines = selection.split('\n');
+    let newText = '';
+    if (lines.every(line => line.startsWith(prefix))) {
+      newText = lines.map(line => line.substring(prefix.length)).join('\n');
+    } else {
+      newText = lines.map(line => prefix + line).join('\n');
+    }
+    this.setText(textarea, newText, start, end);
+  }
+
+  private setText(textarea: HTMLTextAreaElement, newText: string, start: number, end: number) {
+    textarea.setRangeText(newText, start, end, 'select');
+    this.content = textarea.value;
+    this.contentChange.emit(textarea.value);
+    textarea.focus();
+  }
+
   span(before: string, after: string) {
     if (!this.textarea) {
       return;
