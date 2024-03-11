@@ -43,14 +43,34 @@ export class MarkdownEditorComponent {
       return;
     }
     const textarea = this.textarea.nativeElement;
-    const start = textarea.value.lastIndexOf('\n', textarea.selectionStart) + 1;
-    const end = (textarea.value.indexOf('\n', textarea.selectionEnd) + 1) || textarea.value.length;
-    const selection = textarea.value.substring(start, end);
+    const {start, end, selection} = this.blockSelection(textarea);
     const lines = selection.split('\n');
     const newText = lines.every(line => line.startsWith(prefix))
       ? lines.map(line => line.substring(prefix.length)).join('\n')
       : lines.map(line => prefix + line).join('\n');
     this.setText(textarea, newText, start, end);
+  }
+
+  private blockSelection(textarea: HTMLTextAreaElement) {
+    const start = textarea.value.lastIndexOf('\n', textarea.selectionStart) + 1;
+    const end = (textarea.value.indexOf('\n', textarea.selectionEnd) + 1) || textarea.value.length;
+    const selection = textarea.value.substring(start, end);
+    return {start, end, selection};
+  }
+
+  fence(prefix: string, suffix: string) {
+    if (!this.textarea) {
+      return;
+    }
+    const textarea = this.textarea.nativeElement;
+    const {start, end, selection} = this.blockSelection(textarea);
+    if (selection.startsWith(prefix) && selection.endsWith(suffix)) {
+      // Remove the prefix and suffix from the selection
+      this.setText(textarea, selection.substring(prefix.length, selection.length - suffix.length), start, end);
+    } else {
+      // Insert the prefix and suffix around the selection
+      this.setText(textarea, prefix + selection + suffix, start, end);
+    }
   }
 
   private setText(textarea: HTMLTextAreaElement, newText: string, start: number, end: number) {
