@@ -1,4 +1,4 @@
-import * as CodeMirror from 'codemirror';
+import CodeMirror from 'codemirror';
 import {allKeywords} from './workflow-symbols';
 
 export function cmWorkflowsHint(cm) {
