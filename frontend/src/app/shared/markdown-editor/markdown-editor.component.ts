@@ -38,27 +38,62 @@ export class MarkdownEditorComponent {
     }
   }
 
+  block(prefix: string) {
+    if (!this.textarea) {
+      return;
+    }
+    const textarea = this.textarea.nativeElement;
+    const {start, end, selection} = this.blockSelection(textarea);
+    const lines = selection.split('\n');
+    const newText = lines.every(line => line.startsWith(prefix))
+      ? lines.map(line => line.substring(prefix.length)).join('\n')
+      : lines.map(line => prefix + line).join('\n');
+    this.setText(textarea, newText, start, end);
+  }
+
+  private blockSelection(textarea: HTMLTextAreaElement) {
+    const start = textarea.value.lastIndexOf('\n', textarea.selectionStart) + 1;
+    const end = (textarea.value.indexOf('\n', textarea.selectionEnd) + 1) || textarea.value.length;
+    const selection = textarea.value.substring(start, end);
+    return {start, end, selection};
+  }
+
+  fence(prefix: string, suffix: string) {
+    if (!this.textarea) {
+      return;
+    }
+    const textarea = this.textarea.nativeElement;
+    const {start, end, selection} = this.blockSelection(textarea);
+    if (selection.startsWith(prefix) && selection.endsWith(suffix)) {
+      // Remove the prefix and suffix from the selection
+      this.setText(textarea, selection.substring(prefix.length, selection.length - suffix.length), start, end);
+    } else {
+      // Insert the prefix and suffix around the selection
+      this.setText(textarea, prefix + selection + suffix, start, end);
+    }
+  }
+
+  private setText(textarea: HTMLTextAreaElement, newText: string, start: number, end: number) {
+    textarea.setRangeText(newText, start, end, 'select');
+    this.content = textarea.value;
+    this.contentChange.emit(textarea.value);
+    textarea.focus();
+  }
+
   span(before: string, after: string) {
     if (!this.textarea) {
       return;
     }
     const textarea = this.textarea.nativeElement;
-
-    const selection = textarea.value.substring(textarea.selectionStart, textarea.selectionEnd);
-    const extendedSelection = textarea.value.substring(textarea.selectionStart - before.length, textarea.selectionEnd + after.length);
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selection = textarea.value.substring(start, end);
     if (selection.startsWith(before) && selection.endsWith(after)) {
       // Remove the before and after text from the selection
-      textarea.setRangeText(selection.substring(before.length, selection.length - after.length), textarea.selectionStart, textarea.selectionEnd, 'select');
-    } else if (extendedSelection.startsWith(before) && extendedSelection.endsWith(after)) {
-      // Remove the before and after text from the extended selection
-      textarea.setRangeText(extendedSelection.substring(before.length, extendedSelection.length - after.length), textarea.selectionStart - before.length, textarea.selectionEnd + after.length, 'select');
+      this.setText(textarea, selection.substring(before.length, selection.length - after.length), start, end);
     } else {
       // Insert the before and after text around the selection
-      textarea.setRangeText(before + selection + after, textarea.selectionStart, textarea.selectionEnd, 'select');
+      this.setText(textarea, before + selection + after, start, end);
     }
-
-    this.content = textarea.value;
-    this.contentChange.emit(textarea.value);
-    textarea.focus();
   }
 }
