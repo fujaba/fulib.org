@@ -1,8 +1,8 @@
 // see https://github.com/twbs/bootstrap/issues/38525
 $body-bg-dark: #111315; // mix of $black and $gray-900
 $body-color-dark: #f8f9fa; // $gray-100
-@import "bootstrap/scss/bootstrap";
-@import "bootstrap-icons/font/bootstrap-icons";
+@import "bootstrap";
+@import "bootstrap-icons";
 
 @import "codemirror/lib/codemirror";
 @import "codemirror/theme/idea";

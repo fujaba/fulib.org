@@ -17,15 +17,15 @@
 // Adapt Darcula theme to match darkmode colors
 .cm-s-darcula {
   &.CodeMirror {
-    background: $gray-900;
+    background: var(--bs-gray-900);
   }
 
   .CodeMirror-activeline-background {
-    background: $gray-800;
+    background: var(--bs-gray-800);
   }
 
   .CodeMirror-gutters {
-    background: $gray-800;
-    border-right-color: $gray-800;
+    background: var(--bs-gray-800);
+    border-right-color: var(--bs-gray-800);
   }
 }
