@@ -1,7 +1,6 @@
 package org.fulib.webapp.tool;
 
 import org.fulib.StrUtil;
-import org.fulib.webapp.mongo.Mongo;
 import org.fulib.webapp.tool.model.Result;
 import org.hamcrest.CoreMatchers;
 import org.json.JSONObject;
@@ -26,8 +25,7 @@ public class RunCodeGenTest
 	@Test
 	public void handle() throws Exception
 	{
-		final Mongo db = mock(Mongo.class);
-		final RunCodeGen codeGen = new RunCodeGen(db);
+		final RunCodeGen codeGen = new RunCodeGen();
 
 		final Request request = mock(Request.class);
 		final String ip = "0.0.0.0";
@@ -46,7 +44,6 @@ public class RunCodeGenTest
 		final String responseBody = codeGen.handle(request, response);
 
 		verify(response).type("application/json");
-		verify(db).log(ip, userAgent, requestBody, responseBody);
 
 		final JSONObject responseObj = new JSONObject(responseBody);
 		assertThat(responseObj.getString("output"), equalTo(""));
