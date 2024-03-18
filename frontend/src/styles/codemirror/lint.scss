@@ -1,15 +1,19 @@
 @import "codemirror/addon/lint/lint";
 
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/variables";
+
 .CodeMirror-lint-tooltip {
   @extend .tooltip;
-  background-color: $tooltip-bg;
-  z-index: $zindex-tooltip;
+  background-color: var(--bs-tooltip-bg);
+  z-index: var(--bs-tooltip-zindex);
 }
 
 .CodeMirror-lint-message {
   @extend .tooltip-inner;
-  font-family: $font-family-base;
-  font-size: $font-size-sm;
+  font-family: var(--bs-body-font-family);
+  font-size: var(--bs-tooltip-font-size);
   text-align: left;
   padding-left: 20px;
   padding-right: 0;
