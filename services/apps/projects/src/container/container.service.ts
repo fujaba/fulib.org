@@ -14,7 +14,6 @@ import {setTimeout} from 'timers/promises';
 import {Extract} from 'unzipper';
 import {environment} from '../environment';
 import {Project} from '../project/project.schema';
-import {ProjectService} from '../project/project.service';
 import {allowedFilenameCharacters, ContainerDto, CreateContainerDto} from './container.dto';
 
 const projectStorageTypes = ['projects', 'config'] as const;
@@ -277,12 +276,12 @@ ${eofMarker}`]);
 
   async findOne(projectId: string, userId: string): Promise<ContainerDto | null> {
     const containers = await this.docker.listContainers({
-      all: 1,
+      all: true,
       limit: 1,
-      filters: {
+      filters: JSON.stringify({
         status: ['created', 'running'],
         label: [`org.fulib.project=${projectId}`, `org.fulib.user=${userId}`],
-      },
+      }),
     });
     if (containers.length === 0) {
       return null;
@@ -324,10 +323,10 @@ ${eofMarker}`]);
   @Cron(CronExpression.EVERY_MINUTE)
   async checkAllHeartbeats() {
     const containers = await this.docker.listContainers({
-      filters: {
+      filters: JSON.stringify({
         label: ['org.fulib.token'],
         status: ['created', 'running'],
-      },
+      }),
     });
 
     await Promise.all(containers.map(async info => {
