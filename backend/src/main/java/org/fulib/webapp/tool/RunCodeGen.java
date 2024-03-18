@@ -1,7 +1,6 @@
 package org.fulib.webapp.tool;
 
 import org.fulib.StrUtil;
-import org.fulib.webapp.mongo.Mongo;
 import org.fulib.webapp.tool.model.CodeGenData;
 import org.fulib.webapp.tool.model.Diagram;
 import org.fulib.webapp.tool.model.Method;
@@ -39,16 +38,14 @@ public class RunCodeGen
 
 	// =============== Fields ===============
 
-	private final Mongo db;
 	private final String tempDir = System.getProperty("java.io.tmpdir") + "/fulib.org/";
 	private final ScheduledExecutorService deleter = Executors.newScheduledThreadPool(1);
 
 	// =============== Constructors ===============
 
 	@Inject
-	public RunCodeGen(Mongo db)
+	public RunCodeGen()
 	{
-		this.db = db;
 	}
 
 	// =============== Methods ===============
@@ -71,13 +68,7 @@ public class RunCodeGen
 
 		res.type("application/json");
 
-		final String resultBody = resultObj.toString(3);
-
-		if (jsonObject.has("privacy") && "all".equals(jsonObject.get("privacy")))
-		{
-			this.db.log(req.ip(), req.userAgent(), body, resultBody);
-		}
-		return resultBody;
+		return resultObj.toString(3);
 	}
 
 	// =============== Static Methods ===============
