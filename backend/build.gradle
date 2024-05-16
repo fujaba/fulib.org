@@ -47,15 +47,15 @@ ext {
 	junitDependency = [ group: 'junit', name: 'junit', version: '4.13.2' ]
 
 	// https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
-	slf4jDependency = [ group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.9' ]
+	slf4jDependency = [ group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.13' ]
 }
 
 dependencies {
 	// --------------- Dagger (Dependency Injection) ---------------
 
 	// https://mvnrepository.com/artifact/com.google.dagger/dagger
-	implementation 'com.google.dagger:dagger:2.51'
-	annotationProcessor 'com.google.dagger:dagger-compiler:2.51'
+	implementation 'com.google.dagger:dagger:2.51.1'
+	annotationProcessor 'com.google.dagger:dagger-compiler:2.51.1'
 
 	// --------------- Fulib Libraries ---------------
 
@@ -72,7 +72,7 @@ dependencies {
 	implementation slf4jDependency
 
 	// https://mvnrepository.com/artifact/commons-io/commons-io
-	implementation group: 'commons-io', name: 'commons-io', version: '2.15.1'
+	implementation group: 'commons-io', name: 'commons-io', version: '2.16.1'
 
 	// https://mvnrepository.com/artifact/com.sparkjava/spark-core
 	implementation group: 'com.sparkjava', name: 'spark-core', version: '2.9.4'
@@ -89,7 +89,7 @@ dependencies {
 	testImplementation slf4jDependency
 
 	// https://mvnrepository.com/artifact/org.mockito/mockito-core
-	testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.11.0'
+	testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.12.0'
 }
 
 // --------------- Version Injection ---------------
