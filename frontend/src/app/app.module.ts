@@ -1,4 +1,4 @@
-import {HttpClientModule} from '@angular/common/http';
+import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {APP_INITIALIZER, ErrorHandler, NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
@@ -29,7 +29,7 @@ import {PrivacyComponent} from './components/privacy/privacy.component';
 import {PrivacyService} from './services/privacy.service';
 import {SharedModule} from './shared/shared.module';
 import {UserModule} from './user/user.module';
-import * as Sentry from "@sentry/angular-ivy";
+import * as Sentry from '@sentry/angular-ivy';
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () => environment.auth && keycloak.init({
@@ -65,7 +65,6 @@ function initializeKeycloak(keycloak: KeycloakService) {
   imports: [
     BrowserModule,
     FormsModule,
-    HttpClientModule,
     BrowserAnimationsModule,
     NgbModule,
     NgbxDarkmodeModule,
@@ -107,6 +106,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
       provide: ErrorHandler,
       useValue: Sentry.createErrorHandler(),
     },
+    provideHttpClient(withInterceptorsFromDi()),
   ],
   bootstrap: [AppComponent],
 })
