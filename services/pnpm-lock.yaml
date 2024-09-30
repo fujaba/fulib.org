@@ -7,6 +7,7 @@ settings:
 overrides:
   jsonwebtoken: ^9.0.0
   debug: ^4.3.4
+  ws@>=8.0.0 <8.17.1: '>=8.17.1'
 
 importers:
 
@@ -3769,18 +3770,6 @@ packages:
       utf-8-validate:
         optional: true
 
-  ws@8.14.2:
-    resolution: {integrity: sha512-wEBG1ftX4jcglPxgFCMJmZ2PLtSbJ2Peg6TmpJFTbe9GZYOQCDPdMYu/Tm0/bGZkw8paZnJY45J4K2PZrLYq8g==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: '>=5.0.2'
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
-
   ws@8.18.0:
     resolution: {integrity: sha512-8VbfWfHLbbwu3+N6OKsOMpBdT4kXPDDB9cJk2bJ6mh9ucxdlnNvH1e+roYkKmN9Nxw2yjz7VzeO9oOz2zJ04Pw==}
     engines: {node: '>=10.0.0'}
@@ -4503,7 +4492,7 @@ snapshots:
       subscriptions-transport-ws: 0.11.0(graphql@16.9.0)
       tslib: 2.6.2
       uuid: 9.0.1
-      ws: 8.14.2
+      ws: 8.18.0
     optionalDependencies:
       class-transformer: 0.5.1
       class-validator: 0.14.1
@@ -7884,9 +7873,6 @@ snapshots:
       signal-exit: 3.0.7
 
   ws@7.5.10:
-    optional: true
-
-  ws@8.14.2:
     optional: true
 
   ws@8.18.0: {}
