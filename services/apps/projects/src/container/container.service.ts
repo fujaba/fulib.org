@@ -2,7 +2,7 @@ import {UserToken} from '@app/keycloak-auth';
 import {HttpService} from '@nestjs/axios';
 import {Injectable} from '@nestjs/common';
 import {Cron, CronExpression} from '@nestjs/schedule';
-import * as chownr from 'chownr';
+import {chownr} from 'chownr';
 import {randomBytes} from 'crypto';
 import * as Dockerode from 'dockerode';
 import {ContainerCreateOptions} from 'dockerode';
