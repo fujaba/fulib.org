@@ -18,8 +18,7 @@ import {allowedFilenameCharacters, ContainerDto, CreateContainerDto} from './con
 
 const projectStorageTypes = ['projects', 'config'] as const;
 type ProjectStorageType = typeof projectStorageTypes[number];
-const userStorageTypes = ['users'] as const;
-type UserStorageType = typeof userStorageTypes[number];
+type UserStorageType = 'users';
 const bindPrefix = path.resolve(environment.docker.bindPrefix);
 
 @Injectable()
@@ -268,7 +267,7 @@ ${eofMarker}`]);
     try {
       const res = await firstValueFrom(this.httpService.get(containerURL));
       return res.status == 200;
-    } catch (e) {
+    } catch {
       // 502 Bad Gateway
       return false;
     }
@@ -351,7 +350,7 @@ ${eofMarker}`]);
       const msSinceLastHeartbeat = Date.now() - data.lastHeartbeat;
       const timeoutMs = (timeoutSeconds || environment.docker.heartbeatTimeout) * 1000;
       return msSinceLastHeartbeat > timeoutMs;
-    } catch (e) {
+    } catch {
       //container is in creating phase right now, /healthz endpoint isn't ready yet
       return false;
     }

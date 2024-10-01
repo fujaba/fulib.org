@@ -1,5 +1,5 @@
 import {CommonModule} from '@angular/common';
-import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 
@@ -18,20 +18,20 @@ import {OverviewComponent} from './pages/overview/overview.component';
 import {SettingsComponent} from './pages/settings/settings.component';
 import {TokenModalComponent} from './pages/token-modal/token-modal.component';
 import {ConfigService} from './services/config.service';
-import {TokenInterceptor} from "./services/token.interceptor";
-import {AssignmentService} from "./services/assignment.service";
-import {TokenService} from "./services/token.service";
-import {SolutionService} from "./services/solution.service";
-import {CourseService} from "./services/course.service";
-import {SelectionService} from "./services/selection.service";
-import {SolutionContainerService} from "./services/solution-container.service";
-import {TaskService} from "./services/task.service";
-import {SubmitService} from "./modules/assignment/submit.service";
-import {AssigneeService} from "./services/assignee.service";
-import {EvaluationService} from "./services/evaluation.service";
-import {EmbeddingService} from "./services/embedding.service";
-import {KeycloakBearerInterceptor} from "keycloak-angular";
-import {MemberService} from "./services/member.service";
+import {TokenInterceptor} from './services/token.interceptor';
+import {AssignmentService} from './services/assignment.service';
+import {TokenService} from './services/token.service';
+import {SolutionService} from './services/solution.service';
+import {CourseService} from './services/course.service';
+import {SelectionService} from './services/selection.service';
+import {SolutionContainerService} from './services/solution-container.service';
+import {TaskService} from './services/task.service';
+import {SubmitService} from './modules/assignment/submit.service';
+import {AssigneeService} from './services/assignee.service';
+import {EvaluationService} from './services/evaluation.service';
+import {EmbeddingService} from './services/embedding.service';
+import {KeycloakBearerInterceptor} from 'keycloak-angular';
+import {MemberService} from './services/member.service';
 
 @NgModule({
   declarations: [
@@ -46,7 +46,6 @@ import {MemberService} from "./services/member.service";
     CommonModule,
     SharedModule,
     FormsModule,
-    HttpClientModule,
     NgbModule,
     ClipboardModule,
     AssignmentSharedModule,
@@ -79,6 +78,7 @@ import {MemberService} from "./services/member.service";
     EvaluationService,
     EmbeddingService,
     MemberService,
+    provideHttpClient(withInterceptorsFromDi()),
   ],
 })
 export class AssignmentModule {
