@@ -18,9 +18,9 @@ import {
   ValidateNested,
 } from 'class-validator';
 import {Types} from 'mongoose';
-import {MOSS_LANGUAGES} from "../search/search.constants";
-import {Doc} from "@mean-stream/nestx";
-import {EmbeddingModel, EMBEDDING_MODELS} from "../embedding/openai.service";
+import {MOSS_LANGUAGES} from '../search/search.constants';
+import {Doc} from '@mean-stream/nestx';
+import {EMBEDDING_MODELS, EmbeddingModel} from '../embedding/openai.service';
 
 @Schema({id: false, _id: false})
 export class Task {
@@ -92,49 +92,56 @@ export class ClassroomInfo {
   @IsOptional()
   @IsBoolean()
   codeSearch?: boolean;
+}
 
+@Schema({id: false, _id: false})
+export class MossConfig {
   @Prop()
   @ApiPropertyOptional()
   @IsOptional()
   @IsInt()
-  mossId?: number;
+  userId?: number;
 
   @Prop({type: String})
   @ApiPropertyOptional({enum: Object.keys(MOSS_LANGUAGES)})
   @IsOptional()
   @IsIn(Object.keys(MOSS_LANGUAGES))
-  mossLanguage?: keyof typeof MOSS_LANGUAGES;
+  language?: keyof typeof MOSS_LANGUAGES;
 
   @Prop()
   @ApiPropertyOptional()
   @IsOptional()
   @IsUrl()
-  mossResult?: string;
+  result?: string;
+}
+
+@Schema({id: false, _id: false})
+export class OpenAIConfig {
 
   @Prop({transform: (v?: string) => v && '***'})
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   @Transform(({value}) => value === '***' ? undefined : value)
-  openaiApiKey?: string;
+  apiKey?: string;
 
   @Prop({type: String})
   @ApiPropertyOptional()
   @IsOptional()
   @IsIn(Object.keys(EMBEDDING_MODELS))
-  openaiModel?: EmbeddingModel;
+  model?: EmbeddingModel;
 
   @Prop()
   @ApiPropertyOptional()
   @IsOptional()
   @IsBoolean()
-  openaiConsent?: boolean;
+  consent?: boolean;
 
   @Prop()
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  openaiIgnore?: string;
+  ignore?: string;
 }
 
 @Schema()
@@ -198,6 +205,20 @@ export class Assignment {
   @ValidateNested()
   @Type(() => ClassroomInfo)
   classroom?: ClassroomInfo;
+
+  @Prop({type: MossConfig})
+  @ApiProperty({required: false})
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => MossConfig)
+  moss?: MossConfig;
+
+  @Prop({type: OpenAIConfig})
+  @ApiProperty({required: false})
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => OpenAIConfig)
+  openAI?: OpenAIConfig;
 
   @Prop()
   @ApiPropertyOptional()

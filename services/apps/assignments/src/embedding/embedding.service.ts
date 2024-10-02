@@ -68,11 +68,11 @@ export class EmbeddingService implements OnModuleInit {
   }
 
   async createEmbeddings(assignment: Assignment, estimate = false): Promise<EmbeddingEstimate> {
-    const apiKey = assignment.classroom?.openaiApiKey;
+    const apiKey = assignment.openAI?.apiKey;
     if (!apiKey) {
       throw new ForbiddenException('No OpenAI API key configured for this assignment.');
     }
-    const model = assignment.classroom?.openaiModel || DEFAULT_MODEL;
+    const model = assignment.openAI?.model || DEFAULT_MODEL;
 
     const {solutions, documents, ignoreFn, ignoredFiles} = await this.getDocuments(assignment);
     const ignoredFunctions = new Set<string>();
@@ -126,13 +126,13 @@ export class EmbeddingService implements OnModuleInit {
 
   private async getDocuments(assignment: Assignment) {
     const filter: FilterQuery<Solution> = {assignment: assignment._id};
-    if (assignment.classroom?.openaiConsent !== false) {
+    if (assignment.openAI?.consent !== false) {
       filter['consent.3P'] = true;
     }
     const solutionsWithConsent = await this.solutionService.findAll(filter, {projection: {_id: 1}});
     const allDocuments = await this.searchService.findAll(assignment._id.toString(), solutionsWithConsent.map(s => s.id));
 
-    const ignoreFn = assignment.classroom?.openaiIgnore ? ignore.compile(assignment.classroom.openaiIgnore) as (path: string) => boolean : undefined;
+    const ignoreFn = assignment.openAI?.ignore ? ignore.compile(assignment.openAI.ignore) as (path: string) => boolean : undefined;
     const ignoredFiles = new Set<string>();
     const documents = allDocuments.filter(d => {
       if (!this.openaiService.isSupportedExtension(d.file)) {

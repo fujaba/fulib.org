@@ -13,8 +13,8 @@ export class MossService {
 
   async moss(assignment: AssignmentDocument, files: File[]): Promise<string> {
     const moss = new MossApi();
-    moss.userid = assignment.classroom?.mossId || 0;
-    const lang = assignment.classroom?.mossLanguage || 'java';
+    moss.userid = assignment.moss?.userId || 0;
+    const lang = assignment.moss?.language || 'java';
     const exts = MOSS_LANGUAGES[lang];
     moss.language = lang;
     moss.files = files.filter(file => exts.some(ext => file.name.endsWith(ext)));
