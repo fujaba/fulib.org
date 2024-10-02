@@ -50,8 +50,7 @@ export class ClassroomService {
     })
     const solutions = await this.upsertSolutions(assignment, importSolutions);
 
-    const {codeSearch, mossId} = assignment.classroom || {};
-    if (codeSearch || mossId) {
+    if (assignment.classroom?.codeSearch || assignment.moss?.userId) {
       await Promise.all(files.map(async (file, index) => {
         const stream = createReadStream(file.path);
         const solution = solutions.upsertedIds[index];
@@ -120,7 +119,7 @@ export class ClassroomService {
       return [];
     }
 
-    const {org, prefix, token, codeSearch, mossId, openaiApiKey} = assignment.classroom;
+    const {org, prefix, token, codeSearch} = assignment.classroom;
     if (!org || !prefix) {
       return [];
     }
@@ -145,16 +144,18 @@ export class ClassroomService {
       }
     });
 
-    (codeSearch || mossId || openaiApiKey) && await Promise.all(repositories.map(async (repo, i) => {
-      const commit = commits[i];
-      const upsertedId = solutions.upsertedIds[i];
-      if (commit && upsertedId) {
-        const zip = await this.getRepoZip(assignment, this.getGithubName(repo, assignment), commit);
-        if (zip) {
-          await this.fileService.importZipEntries(zip, assignment.id, upsertedId.toString(), commit);
+    if (codeSearch || assignment.moss?.userId || assignment.openAI?.apiKey) {
+      await Promise.all(repositories.map(async (repo, i) => {
+        const commit = commits[i];
+        const upsertedId = solutions.upsertedIds[i];
+        if (commit && upsertedId) {
+          const zip = await this.getRepoZip(assignment, this.getGithubName(repo, assignment), commit);
+          if (zip) {
+            await this.fileService.importZipEntries(zip, assignment.id, upsertedId.toString(), commit);
+          }
         }
-      }
-    }));
+      }));
+    }
 
     if (reimport) {
       const otherSolutions = await this.solutionService.findAll({

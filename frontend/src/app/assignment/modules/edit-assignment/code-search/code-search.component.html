@@ -20,7 +20,7 @@
     <app-masked-input
       id="openaiApiKeyInput"
       type="password"
-      [(value)]="classroom.openaiApiKey"
+      [(value)]="openAI.apiKey"
       (change)="context.saveDraft()"
       placeholder="sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
     ></app-masked-input>
@@ -35,7 +35,7 @@
     </label>
     @for (model of embeddingModels; track model.id) {
       <div class="form-check">
-        <input class="form-check-input" type="radio" name="openaiModel" id="openaiModel-{{model.id}}" [value]="model.id" [ngModel]="classroom.openaiModel">
+        <input class="form-check-input" type="radio" name="openaiModel" id="openaiModel-{{model.id}}" [value]="model.id" [ngModel]="openAI.model">
         <label class="form-check-label" for="openaiModel-{{model.id}}">
           {{ model.id }}
           <span class="badge bg-{{ model.labelBg }}">
@@ -58,7 +58,7 @@
     </label>
     <div class="form-check">
       <input type="checkbox" class="form-check-input" id="openaiConsentCheck"
-             [(ngModel)]="classroom.openaiConsent" (change)="context.saveDraft()">
+             [(ngModel)]="openAI.consent" (change)="context.saveDraft()">
       <label class="form-check-label" for="openaiConsentCheck">Require Third-Party Consent</label>
     </div>
     <div class="form-text">
@@ -71,7 +71,7 @@
       OpenAI Ignore
     </label>
     <textarea class="form-control" id="openaiIgnore" rows="10"
-              [(ngModel)]="classroom.openaiIgnore" (change)="context.saveDraft()"></textarea>
+              [(ngModel)]="openAI.ignore" (change)="context.saveDraft()"></textarea>
     <div class="form-text">
       A gitignore-like list of directories, files and methods to ignore when indexing code.
       <details>

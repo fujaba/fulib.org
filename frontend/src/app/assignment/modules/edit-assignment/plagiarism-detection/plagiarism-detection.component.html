@@ -6,7 +6,7 @@
 <div class="mb-3">
   <label class="form-label" for="mossIdInput">Moss User ID</label>
   <input type="number" class="form-control" id="mossIdInput" placeholder="123456789"
-         [(ngModel)]="classroom.mossId" (change)="context.saveDraft()">
+         [(ngModel)]="moss.userId" (change)="context.saveDraft()">
   <div class="form-text">
     Your Moss User ID.
     See "Registering for Moss" in the Moss documentation to obtain it.
@@ -17,7 +17,7 @@
 </div>
 <div class="mb-3">
   <label class="form-label" for="mossLanguageInput">Moss Language</label>
-  <select class="form-control" id="mossLanguageInput" [(ngModel)]="classroom.mossLanguage" (change)="context.saveDraft()">
+  <select class="form-control" id="mossLanguageInput" [(ngModel)]="moss.language" (change)="context.saveDraft()">
     @for (lang of mossLanguages | keyvalue;track lang) {
       <option [value]="lang.key">{{ lang.value }}</option>
     }

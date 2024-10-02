@@ -15,7 +15,7 @@ export class EmbeddingHandler {
   @OnEvent('assignments.*.created')
   @OnEvent('assignments.*.updated')
   async onAssignment(assignment: AssignmentDocument) {
-    if (!assignment.classroom?.openaiApiKey) {
+    if (!assignment.openAI?.apiKey) {
       return;
     }
 
@@ -45,7 +45,7 @@ export class EmbeddingHandler {
       task: task._id,
       text: prefix + task.description,
       embedding: [],
-    }, assignment.classroom!.openaiApiKey!, assignment.classroom!.openaiModel ?? DEFAULT_MODEL);
+    }, assignment.openAI!.apiKey!, assignment.openAI!.model ?? DEFAULT_MODEL);
   }
 
   @OnEvent('assignments.*.solutions.*.deleted')
