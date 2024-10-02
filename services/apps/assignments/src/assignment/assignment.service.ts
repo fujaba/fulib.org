@@ -1,6 +1,6 @@
 import {EventRepository, EventService, MongooseRepository} from '@mean-stream/nestx';
 import {UserToken} from '@app/keycloak-auth';
-import {Injectable} from '@nestjs/common';
+import {Injectable, Logger, OnModuleInit} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {Model} from 'mongoose';
 import {ReadAssignmentDto, ReadTaskDto} from './assignment.dto';
@@ -9,13 +9,38 @@ import {MemberService} from '@app/member';
 
 @Injectable()
 @EventRepository()
-export class AssignmentService extends MongooseRepository<Assignment> {
+export class AssignmentService extends MongooseRepository<Assignment> implements OnModuleInit {
   constructor(
     @InjectModel(Assignment.name) model: Model<Assignment>,
     private eventService: EventService,
     private readonly memberService: MemberService,
   ) {
     super(model);
+  }
+
+  async onModuleInit() {
+    const result = await this.model.updateMany({
+      $or: [
+        {'classroom.mossId': {$exists: true}},
+        {'classroom.mossLanguage': {$exists: true}},
+        {'classroom.mossResult': {$exists: true}},
+        {'classroom.openaiApiKey': {$exists: true}},
+        {'classroom.openaiModel': {$exists: true}},
+        {'classroom.openaiConsent': {$exists: true}},
+        {'classroom.openaiIgnore': {$exists: true}},
+      ],
+    }, {
+      $rename: {
+        'classroom.mossId': 'moss.userId',
+        'classroom.mossLanguage': 'moss.language',
+        'classroom.mossResult': 'moss.result',
+        'classroom.openaiApiKey': 'openAI.apiKey',
+        'classroom.openaiModel': 'openAI.model',
+        'classroom.openaiConsent': 'openAI.consent',
+        'classroom.openaiIgnore': 'openAI.ignore',
+      },
+    });
+    result.modifiedCount && new Logger(AssignmentService.name).warn(`Migrated ${result.modifiedCount} assignments`);
   }
 
   findTask(tasks: Task[], id: string): Task | undefined {
