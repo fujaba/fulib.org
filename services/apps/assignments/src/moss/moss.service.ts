@@ -19,7 +19,7 @@ export class MossService {
     moss.language = lang;
     moss.files = files.filter(file => exts.some(ext => file.name.endsWith(ext)));
     const result = await moss.send();
-    await this.assignmentService.update(assignment._id, {'classroom.mossResult': result});
+    await this.assignmentService.update(assignment._id, {'moss.result': result});
     return result;
   }
 }
