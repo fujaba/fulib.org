@@ -6,13 +6,19 @@ export interface ClassroomInfo {
   token?: string;
   webhook?: string;
   codeSearch?: boolean;
-  mossId?: number;
-  mossLanguage?: string;
-  mossResult?: string;
-  openaiApiKey?: string;
-  openaiModel?: string;
-  openaiConsent?: boolean;
-  openaiIgnore?: string;
+}
+
+export interface MossConfig {
+  userId?: number;
+  language?: string;
+  result?: string;
+}
+
+export interface OpenAIConfig {
+  apiKey?: string;
+  model?: string;
+  consent?: boolean;
+  ignore?: string;
 }
 
 export default class Assignment {
@@ -29,6 +35,8 @@ export default class Assignment {
   deadline?: Date | string;
 
   classroom?: ClassroomInfo;
+  moss?: MossConfig;
+  openAI?: OpenAIConfig;
 
   passingPoints?: number;
   tasks: Task[];

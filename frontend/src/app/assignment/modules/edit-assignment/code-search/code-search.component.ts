@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
-import {AssignmentContext} from "../../../services/assignment.context";
-import {ClassroomInfo} from "../../../model/assignment";
+import {AssignmentContext} from '../../../services/assignment.context';
+import {ClassroomInfo, OpenAIConfig} from '../../../model/assignment';
 
 @Component({
   selector: 'app-code-search',
@@ -9,6 +9,7 @@ import {ClassroomInfo} from "../../../model/assignment";
 })
 export class CodeSearchComponent {
   classroom: ClassroomInfo;
+  openAI: OpenAIConfig;
 
   // TODO use a shared constant when frontend and backend are merged
   embeddingModels = [
@@ -21,7 +22,8 @@ export class CodeSearchComponent {
     readonly context: AssignmentContext,
   ) {
     this.classroom = this.context.assignment.classroom ||= {};
-    this.classroom.openaiConsent ??= true;
-    this.classroom.openaiModel ??= 'text-embedding-ada-002';
+    this.openAI = this.context.assignment.openAI ||= {};
+    this.openAI.consent ??= true;
+    this.openAI.model ??= 'text-embedding-ada-002';
   }
 }

@@ -12,9 +12,9 @@
     @if (assignment.deadline) {
       &mdash; Deadline: {{ assignment.deadline | date:'medium' }}
     }
-    @if (assignment.classroom && assignment.classroom.mossResult) {
+    @if (assignment.moss?.result; as mossResult) {
       &mdash;
-      <a class="bi-incognito" [href]="assignment.classroom.mossResult" target="_blank">
+      <a class="bi-incognito" [href]="mossResult" target="_blank">
         Moss Results
       </a>
     }

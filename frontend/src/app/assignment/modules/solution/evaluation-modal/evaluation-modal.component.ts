@@ -92,7 +92,7 @@ export class EvaluationModalComponent implements OnInit, OnDestroy {
       if (!assignment.classroom?.codeSearch) {
         this.dto.codeSearch = this.codeSearchEnabled = false;
       }
-      if (!assignment.classroom?.openaiApiKey) {
+      if (!assignment.openAI?.apiKey) {
         this.viewSimilar = this.similarSolutionsEnabled = false;
       }
     }));
