@@ -79,7 +79,17 @@ dependencies {
 	implementation group: 'commons-io', name: 'commons-io', version: '2.17.0'
 
 	// https://mvnrepository.com/artifact/com.sparkjava/spark-core
-	implementation group: 'com.sparkjava', name: 'spark-core', version: '2.9.4'
+	implementation group: 'com.sparkjava', name: 'spark-core', version: '2.9.4', {
+		// Older Jetty versions required by Spark are vulnerable
+		// See https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-server/9.4.48.v20220622
+		exclude group: 'org.eclipse.jetty', module: 'jetty-server'
+		exclude group: 'org.eclipse.jetty', module: 'jetty-webapp'
+	}
+
+	// https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-server
+	implementation group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.4.56.v20240826'
+	// https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-webapp
+	implementation group: 'org.eclipse.jetty', name: 'jetty-webapp', version: '9.4.56.v20240826'
 
 	// https://mvnrepository.com/artifact/org.json/json
 	implementation group: 'org.json', name: 'json', version: '20240303'
