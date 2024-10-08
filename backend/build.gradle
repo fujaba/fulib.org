@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+
 // --------------- Plugins ---------------
 
 plugins {
@@ -72,7 +74,7 @@ dependencies {
 	implementation slf4jDependency
 
 	// https://mvnrepository.com/artifact/commons-io/commons-io
-	implementation group: 'commons-io', name: 'commons-io', version: '2.16.1'
+	implementation group: 'commons-io', name: 'commons-io', version: '2.17.0'
 
 	// https://mvnrepository.com/artifact/com.sparkjava/spark-core
 	implementation group: 'com.sparkjava', name: 'spark-core', version: '2.9.4'
@@ -136,6 +138,12 @@ String getDependencyVersion(Configuration config, String group, String name) {
 	config.resolvedConfiguration.resolvedArtifacts.findResult {
 		def id = it.moduleVersion.id
 		id.group == group && id.name == name ? id.version : null
+	}
+}
+
+test {
+	testLogging {
+		exceptionFormat = TestExceptionFormat.FULL
 	}
 }
 
