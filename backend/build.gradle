@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+
 // --------------- Plugins ---------------
 
 plugins {
@@ -136,6 +138,12 @@ String getDependencyVersion(Configuration config, String group, String name) {
 	config.resolvedConfiguration.resolvedArtifacts.findResult {
 		def id = it.moduleVersion.id
 		id.group == group && id.name == name ? id.version : null
+	}
+}
+
+test {
+	testLogging {
+		exceptionFormat = TestExceptionFormat.FULL
 	}
 }
 

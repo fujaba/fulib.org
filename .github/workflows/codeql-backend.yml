@@ -37,7 +37,7 @@ jobs:
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2
       with:
-        arguments: test --stacktrace
+        arguments: test
         build-root-directory: backend/
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
