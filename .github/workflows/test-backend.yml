@@ -29,5 +29,5 @@ jobs:
       - name: Test Gradle
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: test
+          arguments: test --stacktrace
           build-root-directory: backend/
