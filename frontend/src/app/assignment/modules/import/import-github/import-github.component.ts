@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {ImportSolution} from "../../../model/solution";
 import {SolutionService} from "../../../services/solution.service";
 import {ActivatedRoute} from "@angular/router";
+import {ToastService} from '@mean-stream/ngbx';
 
 @Component({
   selector: 'app-import-github',
@@ -10,17 +11,24 @@ import {ActivatedRoute} from "@angular/router";
 })
 export class ImportGithubComponent {
   checkedUsernames: Partial<Record<string, boolean>> = {};
-  previewSolutions: ImportSolution[];
+  previewSolutions?: ImportSolution[];
   reimport = false;
 
   constructor(
     private solutionService: SolutionService,
     private route: ActivatedRoute,
+    private toastService: ToastService,
   ) {
   }
 
   previewGitHubImport() {
-    this.solutionService.previewImport(this.route.snapshot.params.aid).subscribe(solutions => this.previewSolutions = solutions);
+    this.solutionService.previewImport(this.route.snapshot.params.aid).subscribe({
+      next: solutions => this.previewSolutions = solutions,
+      error: error => {
+        this.toastService.error('Load Students', 'Failed to load Students from GitHub', error);
+        this.previewSolutions = [];
+      },
+    });
   }
 
   import() {
