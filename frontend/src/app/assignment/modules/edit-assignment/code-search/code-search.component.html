@@ -35,7 +35,7 @@
     </label>
     @for (model of embeddingModels; track model.id) {
       <div class="form-check">
-        <input class="form-check-input" type="radio" name="openaiModel" id="openaiModel-{{model.id}}" [value]="model.id" [ngModel]="openAI.model">
+        <input class="form-check-input" type="radio" name="openaiModel" id="openaiModel-{{model.id}}" [value]="model.id" [(ngModel)]="openAI.model">
         <label class="form-check-label" for="openaiModel-{{model.id}}">
           {{ model.id }}
           <span class="badge bg-{{ model.labelBg }}">
