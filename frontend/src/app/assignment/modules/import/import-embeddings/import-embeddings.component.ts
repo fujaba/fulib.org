@@ -1,15 +1,16 @@
 import {Component, OnInit} from '@angular/core';
 import {EstimatedCosts} from "../../../model/solution";
 import {ActivatedRoute} from "@angular/router";
-import {switchMap, tap} from "rxjs/operators";
+import {map, switchMap, tap} from 'rxjs/operators';
 import {EmbeddingService} from "../../../services/embedding.service";
+import {ImportTab} from '../import-tab.interface';
 
 @Component({
   selector: 'app-import-embeddings',
   templateUrl: './import-embeddings.component.html',
   styleUrls: ['./import-embeddings.component.scss']
 })
-export class ImportEmbeddingsComponent implements OnInit {
+export class ImportEmbeddingsComponent implements OnInit, ImportTab {
   costs?: EstimatedCosts;
   costsAreFinal = false;
 
@@ -36,6 +37,7 @@ export class ImportEmbeddingsComponent implements OnInit {
         this.costs = result;
         this.costsAreFinal = true;
       }),
+      map(result => `Successfully imported ${result.functions.length} function embeddings via OpenAI.`),
     );
   }
 }

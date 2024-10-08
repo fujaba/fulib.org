@@ -112,15 +112,19 @@ export class AssignmentController {
     @Param('id', ObjectIdPipe) id: Types.ObjectId,
     @Body() dto: UpdateAssignmentDto,
   ): Promise<Assignment | null> {
-    const {token, classroom, ...rest} = dto;
+    const {token, ...rest} = dto;
     const update: UpdateQuery<Assignment> = rest;
     if (token) {
       update.token = generateToken();
     }
-    if (classroom) {
-      // need to flatten the classroom object to prevent deleting the GitHub token all the time
-      for (const [key, value] of Object.entries(classroom)) {
-        update[`classroom.${key}`] = value;
+    for (const key of ['classroom', 'openAI', 'moss'] as const) {
+      const obj = rest[key];
+      if (obj) {
+        delete update[key];
+        // need to flatten these objects to prevent deleting the tokens all the time
+        for (const [subKey, value] of Object.entries(obj)) {
+          update[`${key}.${subKey}`] = value;
+        }
       }
     }
     return this.assignmentService.update(id, update);
