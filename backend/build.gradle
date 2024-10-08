@@ -30,6 +30,8 @@ repositories {
 }
 
 ext {
+	// IMPORTANT: When changing these versions, also update the constants in ProjectZipControllerTest.java
+
 	// https://mvnrepository.com/artifact/org.fulib/fulib
 	fulibDependency = [ group: 'org.fulib', name: 'fulib', version: '1.6.2' ]
 
@@ -49,15 +51,15 @@ ext {
 	junitDependency = [ group: 'junit', name: 'junit', version: '4.13.2' ]
 
 	// https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
-	slf4jDependency = [ group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.13' ]
+	slf4jDependency = [ group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.16' ]
 }
 
 dependencies {
 	// --------------- Dagger (Dependency Injection) ---------------
 
 	// https://mvnrepository.com/artifact/com.google.dagger/dagger
-	implementation 'com.google.dagger:dagger:2.51.1'
-	annotationProcessor 'com.google.dagger:dagger-compiler:2.51.1'
+	implementation 'com.google.dagger:dagger:2.52'
+	annotationProcessor 'com.google.dagger:dagger-compiler:2.52'
 
 	// --------------- Fulib Libraries ---------------
 
@@ -91,7 +93,7 @@ dependencies {
 	testImplementation slf4jDependency
 
 	// https://mvnrepository.com/artifact/org.mockito/mockito-core
-	testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.12.0'
+	testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.14.1'
 }
 
 // --------------- Version Injection ---------------
