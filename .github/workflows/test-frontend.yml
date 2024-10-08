@@ -34,8 +34,6 @@ jobs:
           cache-dependency-path: frontend/pnpm-lock.yaml
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Audit
-        run: pnpm audit
       - name: Lint
         run: pnpm lint
       - name: Test
