@@ -238,12 +238,10 @@ export class EmbeddingService implements OnModuleInit {
       index: 'embeddings',
       query: {
         bool: {
-          must: {
-            term: {
-              assignment,
-              type: 'task',
-            },
-          },
+          filter: [
+            {term: {assignment}},
+            {term: {type: 'task'}},
+          ],
           must_not: {
             terms: {
               task: tasks,
@@ -260,7 +258,7 @@ export class EmbeddingService implements OnModuleInit {
       index: 'embeddings',
       query: {
         bool: {
-          must: {
+          filter: {
             term: {
               assignment,
             },
@@ -276,12 +274,10 @@ export class EmbeddingService implements OnModuleInit {
       index: 'embeddings',
       query: {
         bool: {
-          must: {
-            term: {
-              assignment,
-              solution,
-            },
-          },
+          filter: [
+            {term: {assignment}},
+            {term: {solution}},
+          ],
         },
       },
     });
