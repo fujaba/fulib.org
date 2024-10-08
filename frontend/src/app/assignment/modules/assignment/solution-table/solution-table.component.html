@@ -1,4 +1,4 @@
-<div class="p-3 d-flex align-items-center sticky-top bg-body-secondary" style="top: 3.5rem">
+<div class="p-3 d-flex align-items-center sticky-top bg-body-secondary">
   <div class="position-relative me-sm-2 flex-grow-1">
     <input type="search" class="form-control" id="searchInput" [class.is-invalid]="searchError"
            placeholder="Search for Name, Student ID, E-Mail, GitHub Username, Assignee"
@@ -228,14 +228,12 @@
               ngbTooltip="View Solution"
             ></a>
             @if (assignment && assignment.classroom?.org && assignment.classroom?.prefix && solution.author.github) {
-              <div class="btn-group me-1">
-                <a
-                  class="btn btn-secondary bi-github"
-                  [href]="assignment|githubLink:solution:true"
-                  target="_blank"
-                  ngbTooltip="View {{solution.commit ? 'Commit' : 'Repository'}} on GitHub"
-                ></a>
-              </div>
+              <a
+                class="btn btn-secondary bi-github me-1"
+                [href]="assignment|githubLink:solution:true"
+                target="_blank"
+                ngbTooltip="View {{solution.commit ? 'Commit' : 'Repository'}} on GitHub"
+              ></a>
             }
             <a
               class="btn btn-primary me-1 bi-check-circle"

@@ -2,3 +2,8 @@
 .table-centered th {
   vertical-align: middle;
 }
+
+.sticky-top {
+  top: 3.5rem;
+  z-index: var(--bs-dropdown-zindex);
+}
