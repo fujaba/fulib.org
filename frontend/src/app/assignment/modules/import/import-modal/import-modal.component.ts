@@ -21,19 +21,13 @@ export class ImportModalComponent {
   import(component: any) {
     this.importing = true;
     component.import().subscribe({
-      next: results => {
+      next: message => {
         this.importing = false;
-        if (typeof results === 'string') {
-          this.toastService.success('Import', 'Successfully ran MOSS');
-        } else if (results && typeof results === 'object' && 'length' in results) {
-          this.toastService.success('Import', `Successfully imported ${results.length} solutions`);
-        } else {
-          this.toastService.success('Import', 'Successfully imported embeddings');
-        }
+        this.toastService.success('Import', message);
       },
       error: error => {
         this.importing = false;
-        this.toastService.error('Import', 'Failed to import solutions', error);
+        this.toastService.error('Import', `Failed to import: ${error.message}`, error);
       },
     });
   }

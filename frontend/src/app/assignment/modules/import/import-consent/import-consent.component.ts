@@ -10,13 +10,14 @@ import Solution, {
 import {map} from "rxjs/operators";
 import {SolutionService} from "../../../services/solution.service";
 import {ActivatedRoute} from "@angular/router";
+import {ImportTab} from '../import-tab.interface';
 
 @Component({
   selector: 'app-import-consent',
   templateUrl: './import-consent.component.html',
   styleUrls: ['./import-consent.component.scss']
 })
-export class ImportConsentComponent {
+export class ImportConsentComponent implements ImportTab {
   consentText = '';
 
   constructor(
@@ -25,7 +26,7 @@ export class ImportConsentComponent {
   ) {
   }
 
-  import(): Observable<ImportSolution[]> {
+  import() {
     const assignment = this.route.snapshot.params.aid;
     const lines = this.consentText.split('\n');
     const splitter = /[\t,;]/;
@@ -51,6 +52,9 @@ export class ImportConsentComponent {
         updates.push({author, consent});
       }
     }
-    return this.solutionService.updateMany(assignment, updates).pipe(map(results => results.filter(s => s)));
+    return this.solutionService.updateMany(assignment, updates).pipe(
+      map(results => results.filter(s => s)),
+      map(results => `Successfully updated ${results.length} solutions`),
+    );
   }
 }
