@@ -80,7 +80,9 @@
   },
   "resolutions": {
     "axios": "^1.6.0",
-    "webpack-dev-middleware": "^6.1.2"
+    "webpack-dev-middleware": "^6.1.2",
+    "cookie@<0.7.0": ">=0.7.0",
+    "@sentry/browser@<7.119.1": "^7.119.1"
   },
   "packageManager": "pnpm@9.11.0+sha512.0a203ffaed5a3f63242cd064c8fb5892366c103e328079318f78062f24ea8c9d50bc6a47aa3567cabefd824d170e78fa2745ed1f16b132e16436146b7688f19b"
 }
