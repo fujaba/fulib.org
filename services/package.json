@@ -98,8 +98,8 @@
     "webpack": "^5.95.0"
   },
   "resolutions": {
-    "jsonwebtoken": "^9.0.0",
-    "debug": "^4.3.4"
+    "ws@>=8.0.0 <8.17.1": ">=8.17.1",
+    "cookie@<0.7.0": ">=0.7.0"
   },
   "jest": {
     "moduleFileExtensions": [
@@ -126,11 +126,6 @@
       "^@app/event(|/.*)$": "<rootDir>/libs/event/src/$1",
       "^@app/moss(|/.*)$": "<rootDir>/libs/moss/src/$1",
       "^@app/member(|/.*)$": "<rootDir>/libs/member/src/$1"
-    }
-  },
-  "pnpm": {
-    "overrides": {
-      "ws@>=8.0.0 <8.17.1": ">=8.17.1"
     }
   },
   "packageManager": "pnpm@9.11.0+sha512.0a203ffaed5a3f63242cd064c8fb5892366c103e328079318f78062f24ea8c9d50bc6a47aa3567cabefd824d170e78fa2745ed1f16b132e16436146b7688f19b"
