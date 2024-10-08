@@ -57,7 +57,7 @@ public class ProjectZipControllerTest
 			\tfulibScenarios group: 'org.fulib', name: 'fulibScenarios', version: '1.7.1'
 
 			\t// https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
-			\tfulibScenarios group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.9'
+			\tfulibScenarios group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.13'
 
 			\t// https://mvnrepository.com/artifact/org.fulib/fulibTools
 			\ttestImplementation group: 'org.fulib', name: 'fulibTools', version: '1.6.0'
@@ -69,7 +69,7 @@ public class ProjectZipControllerTest
 			\ttestImplementation group: 'junit', name: 'junit', version: '4.13.2'
 
 			\t// https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
-			\ttestImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.9'
+			\ttestImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.13'
 			}
 
 			generateScenarioSource {
