@@ -20,6 +20,23 @@
     </div>
   </div>
   <div class="mb-3">
+    <label class="form-label" for="extraSearchQuery">Extra Search Options</label>
+    <div class="input-group">
+      <span class="input-group-text">org:{{classroom.org}} "{{classroom.prefix}}-" in:name</span>
+      <input type="text" class="form-control" id="extraSearchQuery" placeholder=""
+             [(ngModel)]="classroom.extraSearch" (change)="context.saveDraft()">
+      <button class="btn btn-outline-secondary bi-github" (click)="previewSearch()">
+        Preview
+      </button>
+    </div>
+    <div class="form-text">
+      Extra GitHub search options to filter the repositories.
+      See <a href="https://docs.github.com/en/search-github/github-code-search/understanding-github-code-search-syntax" target="_blank">
+        GitHub Search Syntax</a>.
+      Example: <code>fork:only archived:false</code>
+    </div>
+  </div>
+  <div class="mb-3">
     <label class="form-label" for="tokenInput">GitHub Token</label>
     <app-masked-input
       id="tokenInput"

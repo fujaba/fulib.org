@@ -73,6 +73,12 @@ export class ClassroomInfo {
   @IsString()
   prefix?: string;
 
+  @Prop()
+  @ApiProperty({required: false})
+  @IsOptional()
+  @IsString()
+  extraSearch?: string;
+
   @Prop({transform: (v?: string) => v && '***'})
   @ApiPropertyOptional()
   @IsOptional()
