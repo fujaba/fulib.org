@@ -3,6 +3,7 @@ import Task from './task';
 export interface ClassroomInfo {
   org?: string;
   prefix?: string;
+  extraSearch?: string;
   token?: string;
   webhook?: string;
   codeSearch?: boolean;
