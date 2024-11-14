@@ -19,9 +19,9 @@ export class ClassroomComponent {
   }
 
   previewSearch() {
-    let url = new URL(`https://github.com/search`);
+    const url = new URL(`https://github.com/search`);
     url.searchParams.set('type', 'repositories');
-    url.searchParams.set('q', `org:${this.classroom.org} "${this.classroom.prefix}-" in:name ${this.classroom.extraSearch || ''}`);
+    url.searchParams.set('q', `org:${this.classroom.org} "${this.classroom.prefix}-" in:name ${this.classroom.extraSearch ?? 'fork:true'}`);
     open(url);
   }
 }

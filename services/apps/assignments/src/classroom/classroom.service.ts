@@ -220,7 +220,7 @@ export class ClassroomService {
 
   private getQuery(assignment: AssignmentDocument): string {
     const {org, prefix, extraSearch} = assignment.classroom!;
-    return `org:${org} "${prefix}-" in:name ${extraSearch || ''}`;
+    return `org:${org} "${prefix}-" in:name ${extraSearch || 'fork:true'}`;
   }
 
   private async getRepoZip(assignment: AssignmentDocument, github: string, commit: string): Promise<Stream | undefined> {
