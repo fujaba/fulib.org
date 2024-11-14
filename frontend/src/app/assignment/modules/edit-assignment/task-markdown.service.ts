@@ -21,12 +21,12 @@ export class TaskMarkdownService {
         continue;
       }
 
-      const {prefix, description, points, _id, glob} = extractTaskItem(match);
+      // exclude __proto__ from rest to avoid prototype pollution
+      const {prefix, points, _id, __proto__, ...rest} = extractTaskItem(match);
       const task: Task = {
+        ...rest,
         _id: _id || this.taskService.generateID(),
         points: +points,
-        description,
-        glob,
         children: [],
         collapsed: true,
       };
