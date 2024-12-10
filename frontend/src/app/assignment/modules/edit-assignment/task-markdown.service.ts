@@ -28,7 +28,6 @@ export class TaskMarkdownService {
         _id: _id || this.taskService.generateID(),
         points: +points,
         children: [],
-        collapsed: true,
       };
       switch (prefix) {
         case '-':
