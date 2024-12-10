@@ -11,8 +11,8 @@ export class TaskMarkdownService {
   }
 
   parseTasks(markdown: string): Task[] {
-    // # Assignment 1 (xP/100P)
-    // ## Task 1 (xP/30P)
+    // # Assignment 1 (100P)
+    // ## Task 1 (30P)
     // - Something wrong (-1P)
     const taskStack: Task[][] = [[]];
     for (const line of markdown.split('\n')) {
@@ -28,7 +28,6 @@ export class TaskMarkdownService {
         _id: _id || this.taskService.generateID(),
         points: +points,
         children: [],
-        collapsed: true,
       };
       switch (prefix) {
         case '-':
@@ -47,20 +46,29 @@ export class TaskMarkdownService {
   }
 
   renderTasks(tasks: Task[], depth = 0) {
-    return tasks.map(t => this.renderTask(t, depth)).join('');
+    let result = '';
+    let lastTaskWasHeadline = false;
+    for (const task of tasks) {
+      const line = this.renderTask(task, depth, lastTaskWasHeadline);
+      result += line;
+      lastTaskWasHeadline = line.startsWith('#');
+    }
+    return result;
   }
 
-  private renderTask(task: Task, depth: number) {
+  private renderTask(task: Task, depth: number, asHeadline: boolean) {
     const {children, deleted, description, points, ...rest} = task;
     if (deleted) {
       return '';
     }
     const extra = JSON.stringify(rest);
-    if (points < 0 || !children || children.length === 0) {
+    // If the previous task had children, we need to write this as a new headline.
+    // Otherwise, it would end up as a subtask of the previous task without a way to distinguish it.
+    if (!asHeadline && (points < 0 || !children || children.length === 0)) {
       return `- ${description} (${points}P)<!--${extra}-->\n`;
     }
     const childrenMd = this.renderTasks(children, depth + 1);
     const headlinePrefix = '#'.repeat(depth + 2);
-    return `${headlinePrefix} ${description} (x/${points}P)<!--${extra}-->\n${childrenMd}`;
+    return `${headlinePrefix} ${description} (${points}P)<!--${extra}-->\n${childrenMd}`;
   }
 }
