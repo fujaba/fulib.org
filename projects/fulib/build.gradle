@@ -10,13 +10,13 @@ repositories {
 
 dependencies {
 	// https://mvnrepository.com/artifact/org.fulib/fulibScenarios
-	implementation group: 'org.fulib', name: 'fulibScenarios', version: '1.7.0'
+	implementation group: 'org.fulib', name: 'fulibScenarios', version: '1.7.1'
 
 	// https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
-	implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.32'
+	implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.36'
 
 	// https://mvnrepository.com/artifact/org.fulib/fulibTools
-	testImplementation group: 'org.fulib', name: 'fulibTools', version: '1.5.1'
+	testImplementation group: 'org.fulib', name: 'fulibTools', version: '1.6.0'
 
 	// https://mvnrepository.com/artifact/org.fulib/fulibTables
 	testImplementation group: 'org.fulib', name: 'fulibTables', version: '1.4.0'
