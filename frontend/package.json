@@ -10,6 +10,7 @@
     "lint": "ng lint"
   },
   "private": true,
+  "packageManager": "pnpm@9.15.4+sha512.b2dc20e2fc72b3e18848459b37359a32064663e5627a51e4c74b2c29dd8e8e0491483c3abb40789cfd578bf362fb6ba8261b05f0387d76792ed6e23ea3b1b6a0",
   "dependencies": {
     "@angular/animations": "^19.1.2",
     "@angular/cdk": "^19.1.0",
@@ -83,6 +84,5 @@
     "webpack-dev-middleware": "^6.1.2",
     "cookie@<0.7.0": ">=0.7.0",
     "@sentry/browser@<7.119.1": "^7.119.1"
-  },
-  "packageManager": "pnpm@9.11.0+sha512.0a203ffaed5a3f63242cd064c8fb5892366c103e328079318f78062f24ea8c9d50bc6a47aa3567cabefd824d170e78fa2745ed1f16b132e16436146b7688f19b"
+  }
 }
