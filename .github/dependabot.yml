@@ -1,0 +1,40 @@
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "npm"
+    directory: "frontend/"
+    schedule:
+      interval: "weekly"
+    ignore:
+      - dependency-name: "@angular/*"
+    groups:
+      production:
+        dependency-type: production
+      development:
+        dependency-type: development
+  - package-ecosystem: "npm"
+    directory: "services/"
+    schedule:
+      interval: "weekly"
+    groups:
+      production:
+        dependency-type: production
+      development:
+        dependency-type: development
+  - package-ecosystem: "npm"
+    directory: "tools/"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "gradle"
+    directory: "backend/"
+    schedule:
+      interval: "weekly"
+    groups:
+      fulib:
+        patterns:
+          - "org.fulib:*"
