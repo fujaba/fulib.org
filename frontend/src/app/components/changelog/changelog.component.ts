@@ -9,6 +9,7 @@ import {ChangelogService, Release, REPOS, Repository, Versions} from '../../serv
   selector: 'app-changelog',
   templateUrl: './changelog.component.html',
   styleUrls: ['./changelog.component.scss'],
+  standalone: false,
 })
 export class ChangelogComponent implements OnInit {
   readonly repos = REPOS;

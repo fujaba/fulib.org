@@ -7,7 +7,8 @@ import {map} from 'rxjs/operators';
 @Component({
   selector: 'app-import-files',
   templateUrl: './import-files.component.html',
-  styleUrls: ['./import-files.component.scss']
+  styleUrls: ['./import-files.component.scss'],
+  standalone: false,
 })
 export class ImportFilesComponent implements ImportTab {
   files: File[] = [];

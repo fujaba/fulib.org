@@ -10,6 +10,7 @@ import {ReadAssignmentDto} from "../../../model/assignment";
   selector: 'app-assignees',
   templateUrl: './assignees.component.html',
   styleUrls: ['./assignees.component.scss'],
+  standalone: false,
 })
 export class AssigneesComponent implements OnInit {
   course?: Course;

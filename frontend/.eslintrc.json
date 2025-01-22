@@ -21,6 +21,7 @@
         "plugin:@typescript-eslint/stylistic-type-checked"
       ],
       "rules": {
+        "@angular-eslint/prefer-standalone": "off",
         "@angular-eslint/component-selector": [
           "error",
           {

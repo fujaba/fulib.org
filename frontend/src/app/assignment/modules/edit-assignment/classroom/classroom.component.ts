@@ -6,6 +6,7 @@ import {AssignmentContext} from '../../../services/assignment.context';
   selector: 'app-edit-assignment-classroom',
   templateUrl: './classroom.component.html',
   styleUrls: ['./classroom.component.scss'],
+  standalone: false,
 })
 export class ClassroomComponent {
   classroom: ClassroomInfo;
@@ -15,7 +16,7 @@ export class ClassroomComponent {
   constructor(
     readonly context: AssignmentContext,
   ) {
-    this.classroom = context.assignment.classroom ||= {};
+    this.classroom = context.assignment.classroom ??= {};
   }
 
   previewSearch() {

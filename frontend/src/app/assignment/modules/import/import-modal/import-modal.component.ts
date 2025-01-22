@@ -7,6 +7,7 @@ import {importChildren} from "../import-routing.module";
   selector: 'app-import-modal',
   templateUrl: './import-modal.component.html',
   styleUrls: ['./import-modal.component.scss'],
+  standalone: false,
 })
 export class ImportModalComponent {
   importing = false;

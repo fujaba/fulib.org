@@ -8,6 +8,7 @@ import {TaskService} from '../../../services/task.service';
   selector: 'app-edit-task-list',
   templateUrl: './edit-task-list.component.html',
   styleUrls: ['./edit-task-list.component.scss'],
+  standalone: false,
 })
 export class EditTaskListComponent {
   @Input() parent?: string;

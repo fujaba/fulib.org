@@ -10,6 +10,7 @@ import {DocsService} from '../docs.service';
   selector: 'app-page',
   templateUrl: './page.component.html',
   styleUrls: ['./page.component.scss'],
+  standalone: false,
 })
 export class PageComponent implements OnInit {
   repo?: Repository;

@@ -19,6 +19,7 @@ import {UpdateAssigneeDto} from "../../../model/assignee";
   selector: 'app-solution-tasks',
   templateUrl: './tasks.component.html',
   styleUrls: ['./tasks.component.scss'],
+  standalone: false,
 })
 export class SolutionTasksComponent implements OnInit, OnDestroy {
   assignment?: ReadAssignmentDto;
@@ -55,7 +56,7 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
     this.route.params.pipe(
       switchMap(({aid, sid}) => this.assigneeService.findOne(aid, sid)),
     ).subscribe(assignee => {
-      assignee.duration ||= 0;
+      assignee.duration ??= 0;
       this.assignee = assignee;
       this.showNotes = !!assignee.notes;
     });

@@ -10,6 +10,7 @@ import {ProjectService} from '../../services/project.service';
   selector: 'app-delete-modal',
   templateUrl: './delete-modal.component.html',
   styleUrls: ['./delete-modal.component.scss'],
+  standalone: false,
 })
 export class DeleteModalComponent implements OnInit {
   project?: Project;

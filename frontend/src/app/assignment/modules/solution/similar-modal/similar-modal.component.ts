@@ -17,7 +17,8 @@ import {ReadAssignmentDto} from "../../../model/assignment";
 @Component({
   selector: 'app-similar-modal',
   templateUrl: './similar-modal.component.html',
-  styleUrls: ['./similar-modal.component.scss']
+  styleUrls: ['./similar-modal.component.scss'],
+  standalone: false,
 })
 export class SimilarModalComponent implements OnInit {
   assignment?: ReadAssignmentDto;
@@ -87,7 +88,7 @@ export class SimilarModalComponent implements OnInit {
         this.snippets = {};
         for (let snippetIndex = 0; snippetIndex < result.length; snippetIndex++) {
           for (const snippet of result[snippetIndex]) {
-            (this.snippets[snippet.solution] ||= [])[snippetIndex] ||= snippet;
+            (this.snippets[snippet.solution] ??= [])[snippetIndex] ??= snippet;
           }
         }
         return this.snippets;

@@ -13,6 +13,7 @@ import {ContainerService} from '../../services/container.service';
   selector: 'app-project-workspace',
   templateUrl: './project-workspace.component.html',
   styleUrls: ['./project-workspace.component.scss'],
+  standalone: false,
 })
 export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
   @ViewChild('loadingModal', {static: true}) loadingModal: TemplateRef<any>;

@@ -11,6 +11,7 @@ import {SolutionService} from '../../../services/solution.service';
   selector: 'app-create-course-solutions',
   templateUrl: './create-course-solutions.component.html',
   styleUrls: ['./create-course-solutions.component.scss'],
+  standalone: false,
 })
 export class CreateCourseSolutionsComponent implements OnInit {
   course?: Course;

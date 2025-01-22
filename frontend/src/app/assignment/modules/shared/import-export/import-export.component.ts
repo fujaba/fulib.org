@@ -4,6 +4,7 @@ import {Component, EventEmitter, Output} from '@angular/core';
   selector: 'app-import-export',
   templateUrl: './import-export.component.html',
   styleUrls: ['./import-export.component.scss'],
+  standalone: false,
 })
 export class ImportExportComponent {
 

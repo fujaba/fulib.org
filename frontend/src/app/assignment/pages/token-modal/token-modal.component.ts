@@ -7,6 +7,7 @@ import {SolutionService} from '../../services/solution.service';
   selector: 'app-token-modal',
   templateUrl: './token-modal.component.html',
   styleUrls: ['./token-modal.component.scss'],
+  standalone: false,
 })
 export class TokenModalComponent implements OnInit {
   assignment: string;

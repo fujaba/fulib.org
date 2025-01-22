@@ -15,6 +15,7 @@ import {TaskService} from "../../../services/task.service";
   selector: 'app-students',
   templateUrl: './students.component.html',
   styleUrls: ['./students.component.scss'],
+  standalone: false,
 })
 export class StudentsComponent implements OnInit {
   course?: Course;

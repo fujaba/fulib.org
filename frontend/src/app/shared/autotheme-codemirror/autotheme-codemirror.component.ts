@@ -10,6 +10,7 @@ import {Marker} from '../model/marker';
   selector: 'app-autotheme-codemirror',
   templateUrl: './autotheme-codemirror.component.html',
   styleUrls: ['./autotheme-codemirror.component.scss'],
+  standalone: false,
 })
 export class AutothemeCodemirrorComponent implements OnInit, OnDestroy {
   @Input() content: string;

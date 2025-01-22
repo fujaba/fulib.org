@@ -6,6 +6,7 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 @Component({
   templateUrl: './preview.component.html',
   styleUrls: ['./preview.component.scss'],
+  standalone: false,
 })
 export class PreviewComponent implements OnInit {
   url!: string;

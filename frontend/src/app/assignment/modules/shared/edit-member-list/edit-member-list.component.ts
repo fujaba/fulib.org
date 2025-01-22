@@ -9,7 +9,8 @@ import {UserService} from "../../../../user/user.service";
 @Component({
   selector: 'app-edit-member-list',
   templateUrl: './edit-member-list.component.html',
-  styleUrls: ['./edit-member-list.component.scss']
+  styleUrls: ['./edit-member-list.component.scss'],
+  standalone: false,
 })
 export class EditMemberListComponent implements OnInit {
   @Input({required: true}) namespace: Namespace;

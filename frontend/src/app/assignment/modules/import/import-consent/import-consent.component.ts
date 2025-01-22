@@ -15,7 +15,8 @@ import {ImportTab} from '../import-tab.interface';
 @Component({
   selector: 'app-import-consent',
   templateUrl: './import-consent.component.html',
-  styleUrls: ['./import-consent.component.scss']
+  styleUrls: ['./import-consent.component.scss'],
+  standalone: false,
 })
 export class ImportConsentComponent implements ImportTab {
   consentText = '';

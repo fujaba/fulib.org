@@ -11,6 +11,7 @@ import {ProjectService} from '../../services/project.service';
   selector: 'app-edit-modal',
   templateUrl: './edit-modal.component.html',
   styleUrls: ['./edit-modal.component.scss'],
+  standalone: false,
 })
 export class EditModalComponent implements OnInit {
 

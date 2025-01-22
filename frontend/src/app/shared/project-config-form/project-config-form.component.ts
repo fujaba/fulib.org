@@ -5,6 +5,7 @@ import {ProjectConfig} from '../model/project-config';
   selector: 'app-project-config-form',
   templateUrl: './project-config-form.component.html',
   styleUrls: ['./project-config-form.component.scss'],
+  standalone: false,
 })
 export class ProjectConfigFormComponent {
   @Input() config: ProjectConfig;

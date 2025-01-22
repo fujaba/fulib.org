@@ -19,6 +19,7 @@ import {ReadAssignmentDto} from "../../../model/assignment";
   selector: 'app-evaluation-modal',
   templateUrl: './evaluation-modal.component.html',
   styleUrls: ['./evaluation-modal.component.scss'],
+  standalone: false,
 })
 export class EvaluationModalComponent implements OnInit, OnDestroy {
   @ViewChild('modal', {static: true}) modal: ModalComponent;

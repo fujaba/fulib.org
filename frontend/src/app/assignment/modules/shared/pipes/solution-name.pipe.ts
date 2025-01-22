@@ -3,6 +3,7 @@ import Solution from '../../../model/solution';
 
 @Pipe({
   name: 'solutionName',
+  standalone: false,
 })
 export class SolutionNamePipe implements PipeTransform {
   transform(solution?: Solution): string {

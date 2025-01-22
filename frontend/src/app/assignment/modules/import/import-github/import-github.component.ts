@@ -9,7 +9,8 @@ import {map} from 'rxjs/operators';
 @Component({
   selector: 'app-import-github',
   templateUrl: './import-github.component.html',
-  styleUrls: ['./import-github.component.scss']
+  styleUrls: ['./import-github.component.scss'],
+  standalone: false,
 })
 export class ImportGithubComponent implements ImportTab {
   checkedUsernames: Partial<Record<string, boolean>> = {};

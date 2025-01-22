@@ -6,6 +6,7 @@ import {IDE} from "../../../model/config";
 
 @Pipe({
   name: 'fulibFeedbackLink',
+  standalone: false,
 })
 export class FulibFeedbackLinkPipe implements PipeTransform {
   transform(ide: IDE, assignment: string, solution: string | undefined, token: string): string {

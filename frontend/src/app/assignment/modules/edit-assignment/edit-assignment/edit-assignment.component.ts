@@ -15,6 +15,7 @@ import {editAssignmentChildRoutes} from '../edit-assignment-routing.module';
   templateUrl: './edit-assignment.component.html',
   styleUrls: ['./edit-assignment.component.scss'],
   providers: [AssignmentContext],
+  standalone: false,
 })
 export class EditAssignmentComponent implements OnInit {
   steps = editAssignmentChildRoutes;

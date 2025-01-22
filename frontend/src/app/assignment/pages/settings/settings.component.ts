@@ -7,6 +7,7 @@ import {ConfigService} from "../../services/config.service";
   selector: 'app-settings',
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
+  standalone: false,
 })
 export class SettingsComponent {
   config = this.configService.getAll();

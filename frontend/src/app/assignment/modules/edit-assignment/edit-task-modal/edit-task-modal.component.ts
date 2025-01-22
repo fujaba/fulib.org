@@ -9,6 +9,7 @@ import {TaskService} from '../../../services/task.service';
   selector: 'app-edit-task-modal',
   templateUrl: './edit-task-modal.component.html',
   styleUrls: ['./edit-task-modal.component.scss'],
+  standalone: false,
 })
 export class EditTaskModalComponent implements OnInit {
   parent?: string;

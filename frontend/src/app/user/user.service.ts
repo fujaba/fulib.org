@@ -65,7 +65,7 @@ export class UserService {
       responseType: 'text',
     }).pipe(
       catchError(() => ''),
-      map(data => data.split('&').filter(s => s.startsWith(paramName))[0]?.substring(paramName.length)),
+      map(data => data.split('&').find(s => s.startsWith(paramName))?.substring(paramName.length)),
     );
   }
 }

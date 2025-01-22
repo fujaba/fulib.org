@@ -10,6 +10,7 @@ import {assignmentChildRoutes} from '../assignment-routes';
   selector: 'app-assignment',
   templateUrl: './assignment.component.html',
   styleUrls: ['./assignment.component.scss'],
+  standalone: false,
 })
 export class AssignmentComponent implements OnInit {
   assignment?: ReadAssignmentDto;

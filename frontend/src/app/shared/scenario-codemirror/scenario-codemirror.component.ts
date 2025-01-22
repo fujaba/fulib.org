@@ -8,6 +8,7 @@ import {Marker} from '../model/marker';
   selector: 'app-scenario-codemirror',
   templateUrl: './scenario-codemirror.component.html',
   styleUrls: ['./scenario-codemirror.component.scss'],
+  standalone: false,
 })
 export class ScenarioCodemirrorComponent implements OnInit, OnDestroy {
   @ViewChild('scenarioInput', {static: true}) scenarioInput: AutothemeCodemirrorComponent;

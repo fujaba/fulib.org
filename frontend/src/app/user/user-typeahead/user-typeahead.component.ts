@@ -8,6 +8,7 @@ import {UserService} from '../user.service';
   selector: 'app-user-typeahead',
   templateUrl: './user-typeahead.component.html',
   styleUrls: ['./user-typeahead.component.scss'],
+  standalone: false,
 })
 export class UserTypeaheadComponent {
   @Input() label: string;

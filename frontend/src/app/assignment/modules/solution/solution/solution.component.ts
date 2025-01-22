@@ -13,6 +13,7 @@ import {solutionChildRoutes} from '../solution-routing.module';
   selector: 'app-solution',
   templateUrl: './solution.component.html',
   styleUrls: ['./solution.component.scss'],
+  standalone: false,
 })
 export class SolutionComponent implements OnInit {
   assignment?: Assignment | ReadAssignmentDto;

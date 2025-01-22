@@ -9,6 +9,7 @@ import Course from "../../../model/course";
   selector: 'app-assignment-share',
   templateUrl: './share.component.html',
   styleUrls: ['./share.component.scss'],
+  standalone: false,
 })
 export class ShareComponent implements OnInit {
   course?: Course;

@@ -8,6 +8,7 @@ import {AssignmentContext} from '../../../services/assignment.context';
   selector: 'app-edit-assignment-preview',
   templateUrl: './preview.component.html',
   styleUrls: ['./preview.component.scss'],
+  standalone: false,
 })
 export class PreviewComponent implements OnInit {
   assignment: CreateAssignmentDto;

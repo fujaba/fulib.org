@@ -5,6 +5,7 @@ import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
   selector: 'app-tabs',
   templateUrl: './tabs.component.html',
   styleUrls: ['./tabs.component.scss'],
+  standalone: false,
 })
 export class TabsComponent<E> {
   @Input() header: TemplateRef<any>;
@@ -28,7 +29,7 @@ export class TabsComponent<E> {
   }
 
   open(editor: E) {
-    if (this.tabs.indexOf(editor) < 0) {
+    if (!this.tabs.includes(editor)) {
       this.tabs.push(editor);
       this.emitChange();
     }

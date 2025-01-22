@@ -4,7 +4,8 @@ import {Member} from "../member";
 @Component({
   selector: 'app-member-list',
   templateUrl: './member-list.component.html',
-  styleUrls: ['./member-list.component.scss']
+  styleUrls: ['./member-list.component.scss'],
+  standalone: false,
 })
 export class MemberListComponent<M extends Member> {
   @Input() members: M[];

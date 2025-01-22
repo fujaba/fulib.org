@@ -7,6 +7,7 @@ import {MemberService} from '../../services/member.service';
   selector: 'app-edit-member',
   templateUrl: './edit-member.component.html',
   styleUrls: ['./edit-member.component.scss'],
+  standalone: false,
 })
 export class EditMemberComponent implements OnInit {
   back: string;

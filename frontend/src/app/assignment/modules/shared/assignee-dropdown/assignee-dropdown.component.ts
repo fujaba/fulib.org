@@ -5,7 +5,8 @@ import {ToastService} from "@mean-stream/ngbx";
 @Component({
   selector: 'app-assignee-dropdown',
   templateUrl: './assignee-dropdown.component.html',
-  styleUrls: ['./assignee-dropdown.component.scss']
+  styleUrls: ['./assignee-dropdown.component.scss'],
+  standalone: false,
 })
 export class AssigneeDropdownComponent {
   @Input({required: true}) assignment: string;

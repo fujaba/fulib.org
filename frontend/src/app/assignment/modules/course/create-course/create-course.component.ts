@@ -14,6 +14,7 @@ import {CourseService} from '../../../services/course.service';
   selector: 'app-create-course',
   templateUrl: './create-course.component.html',
   styleUrls: ['./create-course.component.scss'],
+  standalone: false,
 })
 export class CreateCourseComponent implements OnInit {
   course?: Course | CreateCourseDto;

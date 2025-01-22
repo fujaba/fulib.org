@@ -12,6 +12,7 @@ import {SolutionService} from '../../../services/solution.service';
   selector: 'app-solution-details',
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.scss'],
+  standalone: false,
 })
 export class SolutionDetailsComponent implements OnInit {
   assignment?: ReadAssignmentDto;
@@ -36,7 +37,7 @@ export class SolutionDetailsComponent implements OnInit {
     ).subscribe(([assignment, solution]) => {
       this.assignment = assignment;
       this.solution = solution;
-      solution.consent ||= {};
+      solution.consent ??= {};
     });
   }
 

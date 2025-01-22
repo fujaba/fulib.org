@@ -6,6 +6,7 @@ import {combineLatest, Subject, Subscription} from 'rxjs';
   selector: 'app-diagram-view',
   templateUrl: './diagram-view.component.html',
   styleUrls: ['./diagram-view.component.scss'],
+  standalone: false,
 })
 export class DiagramViewComponent implements OnInit, OnChanges, OnDestroy {
   @Input() url: string;

@@ -8,6 +8,7 @@ import {Config} from "../../model/config";
   selector: 'app-overview',
   templateUrl: './overview.component.html',
   styleUrls: ['./overview.component.scss'],
+  standalone: false,
 })
 export class OverviewComponent implements OnInit {
   @ViewChild('configModal', {static: true}) configModal: TemplateRef<any>;
