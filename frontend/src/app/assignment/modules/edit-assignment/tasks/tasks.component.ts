@@ -7,6 +7,7 @@ import {TaskService} from "../../../services/task.service";
   selector: 'app-edit-assignment-tasks',
   templateUrl: './tasks.component.html',
   styleUrls: ['./tasks.component.scss'],
+  standalone: false,
 })
 export class TasksComponent implements OnDestroy {
   markdown?: string;

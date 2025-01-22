@@ -4,7 +4,8 @@ import {MarkdownService} from "../../services/markdown.service";
 @Component({
   selector: 'app-markdown-editor',
   templateUrl: './markdown-editor.component.html',
-  styleUrl: './markdown-editor.component.scss'
+  styleUrl: './markdown-editor.component.scss',
+  standalone: false,
 })
 export class MarkdownEditorComponent {
   @Input({required: true}) content: string;

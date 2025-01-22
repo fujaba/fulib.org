@@ -5,6 +5,7 @@ import {NgbDropdown} from '@ng-bootstrap/ng-bootstrap';
   selector: 'app-tabs',
   templateUrl: './tabs.component.html',
   styleUrls: ['./tabs.component.scss'],
+  standalone: false,
 })
 export class TabsComponent<E> {
   @Input() header: TemplateRef<any>;

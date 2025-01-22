@@ -7,6 +7,7 @@ import {MarkdownService} from '../../services/markdown.service';
   selector: 'app-markdown',
   templateUrl: './markdown.component.html',
   styleUrls: ['./markdown.component.scss'],
+  standalone: false,
 })
 export class MarkdownComponent implements OnInit, OnChanges {
   @ViewChild('content') content: ElementRef<HTMLElement>;

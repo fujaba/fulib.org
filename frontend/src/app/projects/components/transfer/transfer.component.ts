@@ -8,6 +8,7 @@ import {ProjectService} from '../../services/project.service';
   selector: 'app-transfer',
   templateUrl: './transfer.component.html',
   styleUrls: ['./transfer.component.scss'],
+  standalone: false,
 })
 export class TransferComponent implements OnInit {
   projectId: string;

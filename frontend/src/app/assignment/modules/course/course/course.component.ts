@@ -9,6 +9,7 @@ import {courseChildren} from '../course-routing.module';
   selector: 'app-course',
   templateUrl: './course.component.html',
   styleUrls: ['./course.component.scss'],
+  standalone: false,
 })
 export class CourseComponent implements OnInit {
   course?: Course;

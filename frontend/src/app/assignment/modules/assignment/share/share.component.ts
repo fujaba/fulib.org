@@ -9,6 +9,7 @@ import Assignment, {ReadAssignmentDto} from "../../../model/assignment";
   selector: 'app-assignment-share',
   templateUrl: './share.component.html',
   styleUrls: ['./share.component.scss'],
+  standalone: false,
 })
 export class ShareComponent implements OnInit {
   assignment?: Assignment | ReadAssignmentDto;

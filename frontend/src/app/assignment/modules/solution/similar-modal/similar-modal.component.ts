@@ -17,7 +17,8 @@ import {ReadAssignmentDto} from "../../../model/assignment";
 @Component({
   selector: 'app-similar-modal',
   templateUrl: './similar-modal.component.html',
-  styleUrls: ['./similar-modal.component.scss']
+  styleUrls: ['./similar-modal.component.scss'],
+  standalone: false,
 })
 export class SimilarModalComponent implements OnInit {
   assignment?: ReadAssignmentDto;

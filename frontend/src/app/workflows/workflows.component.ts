@@ -17,7 +17,8 @@ interface Example {
 @Component({
   selector: 'app-workflows',
   templateUrl: './workflows.component.html',
-  styleUrls: ['./workflows.component.scss']
+  styleUrls: ['./workflows.component.scss'],
+  standalone: false,
 })
 export class WorkflowsComponent implements OnInit {
   content!: string;

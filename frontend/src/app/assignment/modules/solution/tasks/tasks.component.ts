@@ -19,6 +19,7 @@ import {UpdateAssigneeDto} from "../../../model/assignee";
   selector: 'app-solution-tasks',
   templateUrl: './tasks.component.html',
   styleUrls: ['./tasks.component.scss'],
+  standalone: false,
 })
 export class SolutionTasksComponent implements OnInit, OnDestroy {
   assignment?: ReadAssignmentDto;

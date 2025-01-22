@@ -5,6 +5,7 @@ import {animationFrameScheduler, interval, Subscription} from "rxjs";
   selector: 'app-timetracking',
   templateUrl: './timetracking.component.html',
   styleUrls: ['./timetracking.component.scss'],
+  standalone: false,
 })
 export class TimetrackingComponent implements OnInit, OnDestroy {
   @Input() pauseOnBlur = false;

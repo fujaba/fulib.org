@@ -5,6 +5,7 @@ import {EvaluationStatistics} from '../statistics.service';
   selector: 'app-statistics-block',
   templateUrl: './statistics-block.component.html',
   styleUrls: ['./statistics-block.component.scss'],
+  standalone: false,
 })
 export class StatisticsBlockComponent {
   @Input() label: string;

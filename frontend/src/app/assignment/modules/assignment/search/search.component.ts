@@ -14,6 +14,7 @@ import {SelectionService} from '../../../services/selection.service';
   selector: 'app-assignment-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
+  standalone: false,
 })
 export class SearchComponent implements OnInit, OnDestroy {
   search$ = new BehaviorSubject<string>(this.route.snapshot.queryParams.q);

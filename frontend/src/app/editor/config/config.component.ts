@@ -29,6 +29,7 @@ const formats = [
   selector: 'app-config',
   templateUrl: './config.component.html',
   styleUrls: ['./config.component.scss'],
+  standalone: false,
 })
 export class ConfigComponent implements OnInit {
   config: ProjectConfig;

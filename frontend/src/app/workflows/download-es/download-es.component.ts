@@ -8,6 +8,7 @@ import {WorkflowsService} from '../workflows.service';
   selector: 'app-download-es',
   templateUrl: './download-es.component.html',
   styleUrls: ['./download-es.component.scss'],
+  standalone: false,
 })
 export class DownloadESComponent implements OnInit {
   yamlContent?: string | null;

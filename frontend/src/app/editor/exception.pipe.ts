@@ -1,7 +1,10 @@
 import {Pipe, PipeTransform} from '@angular/core';
 import {Response} from './model/response';
 
-@Pipe({name: 'exception'})
+@Pipe({
+  name: 'exception',
+  standalone: false,
+})
 export class ExceptionPipe implements PipeTransform {
   transform(value: Response, scenarioText: string): string | undefined {
     const match = /((\w+\.)*\w+Exception)/.exec(value.output);

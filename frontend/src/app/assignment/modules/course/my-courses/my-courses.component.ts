@@ -6,6 +6,7 @@ import {CourseService} from '../../../services/course.service';
   selector: 'app-my-courses',
   templateUrl: './my-courses.component.html',
   styleUrls: ['./my-courses.component.scss'],
+  standalone: false,
 })
 export class MyCoursesComponent implements OnInit {
   courses?: Course[];

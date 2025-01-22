@@ -17,6 +17,7 @@ import {ProjectService} from '../../services/project.service';
   selector: 'app-project-setup',
   templateUrl: './setup.component.html',
   styleUrls: ['./setup.component.scss'],
+  standalone: false,
 })
 export class SetupComponent implements OnInit {
   config: ProjectConfig = {

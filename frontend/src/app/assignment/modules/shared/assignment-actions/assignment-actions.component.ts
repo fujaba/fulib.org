@@ -9,6 +9,7 @@ import {IDE} from "../../../model/config";
   selector: 'app-assignment-actions',
   templateUrl: './assignment-actions.component.html',
   styleUrls: ['./assignment-actions.component.scss'],
+  standalone: false,
 })
 export class AssignmentActionsComponent {
   @Input() assignment: ReadAssignmentDto;

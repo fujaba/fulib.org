@@ -10,6 +10,7 @@ import {IDE} from "../../../model/config";
   selector: 'app-snippet',
   templateUrl: './snippet.component.html',
   styleUrls: ['./snippet.component.scss'],
+  standalone: false,
 })
 export class SnippetComponent implements OnChanges {
   @ViewChild('code') code: ElementRef<HTMLElement>;

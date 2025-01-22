@@ -8,7 +8,8 @@ import {ImportTab} from '../import-tab.interface';
 @Component({
   selector: 'app-import-embeddings',
   templateUrl: './import-embeddings.component.html',
-  styleUrls: ['./import-embeddings.component.scss']
+  styleUrls: ['./import-embeddings.component.scss'],
+  standalone: false,
 })
 export class ImportEmbeddingsComponent implements OnInit, ImportTab {
   costs?: EstimatedCosts;

@@ -1,5 +1,5 @@
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
-import {APP_INITIALIZER, ErrorHandler, NgModule} from '@angular/core';
+import {ErrorHandler, NgModule, inject, provideAppInitializer} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -82,12 +82,10 @@ function initializeKeycloak(keycloak: KeycloakService) {
     ModalModule,
   ],
   providers: [
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initializeKeycloak,
-      multi: true,
-      deps: [KeycloakService],
-    },
+    provideAppInitializer(() => {
+      const initializerFn = (initializeKeycloak)(inject(KeycloakService));
+      return initializerFn();
+    }),
     {
       provide: THEME_LOADER,
       deps: [PrivacyService],

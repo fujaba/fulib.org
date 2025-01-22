@@ -3,7 +3,8 @@ import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 @Component({
   selector: 'app-disabled-tooltip',
   templateUrl: './disabled-tooltip.component.html',
-  styleUrls: ['./disabled-tooltip.component.scss']
+  styleUrls: ['./disabled-tooltip.component.scss'],
+  standalone: false,
 })
 export class DisabledTooltipComponent implements OnChanges {
   @Input() class?: string;

@@ -5,7 +5,8 @@ import {ClassroomInfo, OpenAIConfig} from '../../../model/assignment';
 @Component({
   selector: 'app-code-search',
   templateUrl: './code-search.component.html',
-  styleUrls: ['./code-search.component.scss']
+  styleUrls: ['./code-search.component.scss'],
+  standalone: false,
 })
 export class CodeSearchComponent {
   classroom: ClassroomInfo;

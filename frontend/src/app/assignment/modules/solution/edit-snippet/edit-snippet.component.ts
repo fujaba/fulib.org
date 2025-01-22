@@ -8,6 +8,7 @@ import {selectionComment} from '../snippet-list/snippet-list.component';
   selector: 'app-edit-snippet',
   templateUrl: './edit-snippet.component.html',
   styleUrls: ['./edit-snippet.component.scss'],
+  standalone: false,
 })
 export class EditSnippetComponent {
   readonly selectionComment = selectionComment;

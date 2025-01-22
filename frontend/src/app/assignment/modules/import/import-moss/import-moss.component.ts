@@ -7,7 +7,8 @@ import {ImportTab} from '../import-tab.interface';
 @Component({
   selector: 'app-import-moss',
   templateUrl: './import-moss.component.html',
-  styleUrls: ['./import-moss.component.scss']
+  styleUrls: ['./import-moss.component.scss'],
+  standalone: false,
 })
 export class ImportMossComponent implements ImportTab {
   mossResult?: string;

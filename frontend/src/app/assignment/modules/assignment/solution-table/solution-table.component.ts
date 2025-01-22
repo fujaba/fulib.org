@@ -28,6 +28,7 @@ const searchKeys: readonly SearchKey[] = [
   selector: 'app-solution-table',
   templateUrl: './solution-table.component.html',
   styleUrls: ['./solution-table.component.scss'],
+  standalone: false,
 })
 export class SolutionTableComponent implements OnInit {
   readonly searchableProperties = searchKeys;

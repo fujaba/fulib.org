@@ -3,6 +3,7 @@ import Task from '../../../model/task';
 
 @Pipe({
   name: 'taskColor',
+  standalone: false,
 })
 export class TaskColorPipe implements PipeTransform {
   transform(task: Task, points: number | null | undefined): string {

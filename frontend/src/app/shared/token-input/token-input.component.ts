@@ -4,6 +4,7 @@ import {Component, Input} from '@angular/core';
   selector: 'app-token-input',
   templateUrl: './token-input.component.html',
   styleUrls: ['./token-input.component.scss'],
+  standalone: false,
 })
 export class TokenInputComponent {
   @Input() value: string;

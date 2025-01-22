@@ -10,6 +10,7 @@ import {EvaluationService} from "../../../services/evaluation.service";
   selector: 'app-evaluation-form',
   templateUrl: './evaluation-form.component.html',
   styleUrls: ['./evaluation-form.component.scss'],
+  standalone: false,
 })
 export class EvaluationFormComponent implements OnInit, OnChanges {
   @Input() dto: CreateEvaluationDto;

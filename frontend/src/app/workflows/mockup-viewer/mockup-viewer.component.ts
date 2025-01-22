@@ -7,7 +7,8 @@ import {environment} from '../../../environments/environment';
 @Component({
   selector: 'app-mockup-viewer',
   templateUrl: './mockup-viewer.component.html',
-  styleUrls: ['./mockup-viewer.component.scss']
+  styleUrls: ['./mockup-viewer.component.scss'],
+  standalone: false,
 })
 export class MockupViewerComponent implements OnChanges {
   @Input() generateResult?: GenerateResult;

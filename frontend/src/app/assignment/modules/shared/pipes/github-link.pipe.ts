@@ -4,6 +4,7 @@ import Solution from '../../../model/solution';
 
 @Pipe({
   name: 'githubLink',
+  standalone: false,
 })
 export class GithubLinkPipe implements PipeTransform {
   transform(assignment: ReadAssignmentDto, solution: Solution, commit = false): string {

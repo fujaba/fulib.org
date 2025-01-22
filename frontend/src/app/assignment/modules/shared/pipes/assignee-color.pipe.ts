@@ -2,6 +2,7 @@ import {Pipe, PipeTransform} from '@angular/core';
 
 @Pipe({
   name: 'assigneeColor',
+  standalone: false,
 })
 export class AssigneeColorPipe implements PipeTransform {
 

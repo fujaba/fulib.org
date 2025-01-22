@@ -6,6 +6,7 @@ import {Privacy, PrivacyService} from '../../services/privacy.service';
   selector: 'app-privacy',
   templateUrl: './privacy.component.html',
   styleUrls: ['./privacy.component.scss'],
+  standalone: false,
 })
 export class PrivacyComponent implements OnInit {
   privacy: Privacy | null = null;

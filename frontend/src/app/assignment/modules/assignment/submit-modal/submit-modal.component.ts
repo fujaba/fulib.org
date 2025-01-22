@@ -14,6 +14,7 @@ import {IssueDto, SubmitService} from '../submit.service';
   selector: 'app-submit-modal',
   templateUrl: './submit-modal.component.html',
   styleUrls: ['./submit-modal.component.scss'],
+  standalone: false,
 })
 export class SubmitModalComponent implements OnInit {
   assignment?: ReadAssignmentDto;

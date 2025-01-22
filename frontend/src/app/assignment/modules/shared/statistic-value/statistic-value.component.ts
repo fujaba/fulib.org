@@ -4,6 +4,7 @@ import {Component, Input} from '@angular/core';
   selector: 'app-statistic-value',
   templateUrl: './statistic-value.component.html',
   styleUrls: ['./statistic-value.component.scss'],
+  standalone: false,
 })
 export class StatisticValueComponent {
   @Input() value?: unknown;

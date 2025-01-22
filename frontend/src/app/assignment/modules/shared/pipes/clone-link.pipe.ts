@@ -9,6 +9,7 @@ const cloneSuffix = {https: '', ssh: '.git'};
 
 @Pipe({
   name: 'cloneLink',
+  standalone: false,
 })
 export class CloneLinkPipe implements PipeTransform {
   transform(assignment: ReadAssignmentDto, solution: Solution, options: Config): string {

@@ -6,6 +6,7 @@ import {AssignmentContext} from '../../../services/assignment.context';
   selector: 'app-edit-assignment-info',
   templateUrl: './info.component.html',
   styleUrls: ['./info.component.scss'],
+  standalone: false,
 })
 export class InfoComponent implements OnInit {
   assignment: CreateAssignmentDto;

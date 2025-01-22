@@ -8,6 +8,7 @@ import {AssignmentService} from '../../../services/assignment.service';
   selector: 'app-assignment-tasks',
   templateUrl: './tasks.component.html',
   styleUrls: ['./tasks.component.scss'],
+  standalone: false,
 })
 export class AssignmentTasksComponent implements OnInit {
   assignment?: ReadAssignmentDto;

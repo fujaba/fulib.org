@@ -16,6 +16,7 @@ import {ProjectService} from '../../services/project.service';
   selector: 'app-project-list',
   templateUrl: './project-list.component.html',
   styleUrls: ['./project-list.component.scss'],
+  standalone: false,
 })
 export class ProjectListComponent implements OnInit, OnDestroy {
   @ViewChild('editModal', {static: true}) editModal: TemplateRef<any>;

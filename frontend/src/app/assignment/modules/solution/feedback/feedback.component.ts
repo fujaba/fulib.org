@@ -8,7 +8,8 @@ import {ToastService} from "@mean-stream/ngbx";
 @Component({
   selector: 'app-feedback',
   templateUrl: './feedback.component.html',
-  styleUrls: ['./feedback.component.scss']
+  styleUrls: ['./feedback.component.scss'],
+  standalone: false,
 })
 export class FeedbackComponent implements OnInit {
   protected readonly Feedback = Feedback;

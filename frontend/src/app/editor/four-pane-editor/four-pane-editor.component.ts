@@ -21,6 +21,7 @@ import {Response} from '../model/response';
   selector: 'app-four-pane-editor',
   templateUrl: './four-pane-editor.component.html',
   styleUrls: ['./four-pane-editor.component.scss'],
+  standalone: false,
 })
 export class FourPaneEditorComponent implements OnInit {
   panels: Record<string, Panel>;

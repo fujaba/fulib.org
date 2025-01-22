@@ -9,7 +9,8 @@ import {ToastService} from "@mean-stream/ngbx";
 @Component({
   selector: 'app-assignee-feedback',
   templateUrl: './assignee-feedback.component.html',
-  styleUrls: ['./assignee-feedback.component.scss']
+  styleUrls: ['./assignee-feedback.component.scss'],
+  standalone: false,
 })
 export class AssigneeFeedbackComponent implements OnInit {
   feedback = new Feedback();

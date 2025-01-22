@@ -6,7 +6,8 @@ import {ConfigService} from '../../../services/config.service';
 @Component({
   selector: 'app-plagiarism-detection',
   templateUrl: './plagiarism-detection.component.html',
-  styleUrls: ['./plagiarism-detection.component.scss']
+  styleUrls: ['./plagiarism-detection.component.scss'],
+  standalone: false,
 })
 export class PlagiarismDetectionComponent {
   moss: MossConfig;

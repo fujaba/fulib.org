@@ -7,6 +7,7 @@ import {SolutionService} from '../../services/solution.service';
   selector: 'app-my-solutions',
   templateUrl: './my-solutions.component.html',
   styleUrls: ['./my-solutions.component.scss'],
+  standalone: false,
 })
 export class MySolutionsComponent implements OnInit {
   author?: AuthorInfo;

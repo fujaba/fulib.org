@@ -10,6 +10,7 @@ import {ConfigService} from '../../../services/config.service';
   selector: 'app-solution-share',
   templateUrl: './share.component.html',
   styleUrls: ['./share.component.scss'],
+  standalone: false,
 })
 export class SolutionShareComponent implements OnInit {
   assignmentId: string;

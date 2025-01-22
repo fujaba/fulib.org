@@ -7,6 +7,7 @@ import {Snippet} from "../../../model/evaluation";
 
 @Pipe({
   name: 'navigateLink',
+  standalone: false,
 })
 export class NavigateLinkPipe implements PipeTransform {
   transform(ide: IDE, assignment: ReadAssignmentDto | undefined, solution: Solution | undefined, snippet: Snippet): string {

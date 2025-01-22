@@ -18,7 +18,8 @@ export const selectionComment = '(fulibFeedback Selection)';
 @Component({
   selector: 'app-snippet-list',
   templateUrl: './snippet-list.component.html',
-  styleUrls: ['./snippet-list.component.scss']
+  styleUrls: ['./snippet-list.component.scss'],
+  standalone: false,
 })
 export class SnippetListComponent implements OnInit, OnDestroy {
   @Input({required: true}) assignment?: ReadAssignmentDto;

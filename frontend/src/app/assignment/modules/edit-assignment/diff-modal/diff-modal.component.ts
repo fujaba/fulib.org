@@ -9,7 +9,8 @@ import {TaskMarkdownService} from "../task-markdown.service";
 @Component({
   selector: 'app-diff-modal',
   templateUrl: './diff-modal.component.html',
-  styleUrl: './diff-modal.component.scss'
+  styleUrl: './diff-modal.component.scss',
+  standalone: false,
 })
 export class DiffModalComponent implements OnInit {
   diffMetadata = '';
