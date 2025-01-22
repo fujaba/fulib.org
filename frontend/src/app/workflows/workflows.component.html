@@ -24,7 +24,7 @@
             direction="horizontal"
             (dragStart)="this.showIframeHider = true"
             (dragEnd)="this.showIframeHider = false"
-            (gutterClick)="split.notify('end', $event.gutterNum)">
+  >
     <as-split-area [size]="30">
       <app-autotheme-codemirror class="cm-h-100" [(content)]="content"
                                 [options]="codemirrorOptions"></app-autotheme-codemirror>
@@ -34,7 +34,7 @@
         direction="vertical"
         (dragStart)="this.showIframeHider = true"
         (dragEnd)="this.showIframeHider = false"
-        (gutterClick)="split.notify('end', $event.gutterNum)">
+      >
         <as-split-area [size]="35">
           @if (generateResult) {
             <a routerLink="preview"
