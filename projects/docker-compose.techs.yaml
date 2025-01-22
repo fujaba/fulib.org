@@ -16,20 +16,20 @@ services:
         BUILD_GRADLE: gradle/build.gradle
         APT_DEPENDENCIES: openjdk-17-jdk-headless
   node:
-    image: registry.uniks.de/fulib/code-server-node:18
+    image: registry.uniks.de/fulib/code-server-node:22
     build:
       context: .
       dockerfile: nodejs/Dockerfile
       args:
-        NODE_VERSION: '18'
+        NODE_VERSION: '22'
   latex:
-    image: registry.uniks.de/fulib/code-server-latex:2023
+    image: registry.uniks.de/fulib/code-server-latex:2024
     build:
       context: .
       dockerfile: latex/Dockerfile
       args:
         EXTENSION: James-Yu.latex-workshop
-        TEXLIVE_VERSION: '2023'
+        TEXLIVE_VERSION: '2024'
         SCHEME: small
         # see https://github.com/sekassel-research/thesis-template#installation
         TEXLIVE_PACKAGES: footmisc siunitx paralist wrapfig minted acronym xstring bigfoot csquotes din1505 multirow biber

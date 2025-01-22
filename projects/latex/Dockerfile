@@ -8,7 +8,7 @@ RUN sudo apt-get update -y \
     && sudo apt-get install -y wget gnupg ca-certificates lsb-release \
     && sudo apt-get clean
 
-# install latest texlive (2023)
+# install latest texlive
 ARG SCHEME
 RUN wget https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz \
     && tar -xzf install-tl-unx.tar.gz \

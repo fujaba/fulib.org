@@ -10,14 +10,14 @@
     "desc": "JDK 17 + Gradle"
   },
   {
-    "tag": "registry.uniks.de/fulib/code-server-node:18",
+    "tag": "registry.uniks.de/fulib/code-server-node:22",
     "name": "Node",
-    "desc": "Node.js 18"
+    "desc": "Node.js 22"
   },
   {
-    "tag": "registry.uniks.de/fulib/code-server-latex:2023",
+    "tag": "registry.uniks.de/fulib/code-server-latex:2024",
     "name": "LaTeX",
-    "desc": "LaTeX/TeXLive"
+    "desc": "LaTeX/TeXLive 2024"
   },
   {
     "tag": "registry.uniks.de/fulib/code-server-python",
