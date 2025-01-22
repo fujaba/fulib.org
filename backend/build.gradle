@@ -103,7 +103,7 @@ dependencies {
 	testImplementation slf4jDependency
 
 	// https://mvnrepository.com/artifact/org.mockito/mockito-core
-	testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.14.1'
+	testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.15.2'
 }
 
 // --------------- Version Injection ---------------
