@@ -38,3 +38,7 @@ updates:
       fulib:
         patterns:
           - "org.fulib:*"
+      jetty:
+        patterns:
+          - "org.eclipse.jetty:*"
+        update-types: [minor, patch]
