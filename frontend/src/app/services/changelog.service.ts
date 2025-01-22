@@ -1,7 +1,7 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
-import {map, mapTo, tap} from 'rxjs/operators';
+import {Observable, of} from 'rxjs';
+import {catchError, map, mapTo, tap} from 'rxjs/operators';
 import {environment} from '../../environments/environment';
 import {MarkdownService} from './markdown.service';
 
@@ -52,7 +52,21 @@ export class ChangelogService {
   }
 
   getCurrentVersions(): Observable<Versions> {
-    return this.http.get<Versions>(environment.apiURL + '/versions');
+    return this.http.get<Versions>(environment.apiURL + '/versions').pipe(
+      tap(versions => {
+        versions['fulib.org'] = environment.version;
+      }),
+      catchError(() => of<Versions>({
+        'fulib.org': environment.version,
+        fulib: 'unknown',
+        fulibGradle: 'unknown',
+        fulibScenarios: 'unknown',
+        fulibTables: 'unknown',
+        fulibTools: 'unknown',
+        fulibWorkflows: 'unknown',
+        fulibYaml: 'unknown',
+      })),
+    );
   }
 
   stripBuildSuffix(versions: Versions): Versions {

@@ -42,7 +42,7 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-frontend:${{ steps.deployment.outputs.tag }}
           build-args: |
-            VERSION=${{ steps.deployment.outputs.version }}
+            BUILD_VERSION=${{ steps.deployment.outputs.version }}
           cache-to: type=gha,mode=max
           cache-from: type=gha
       - name: Deploy to Rancher
