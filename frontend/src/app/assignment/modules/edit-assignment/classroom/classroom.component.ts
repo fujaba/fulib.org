@@ -16,7 +16,7 @@ export class ClassroomComponent {
   constructor(
     readonly context: AssignmentContext,
   ) {
-    this.classroom = context.assignment.classroom ||= {};
+    this.classroom = context.assignment.classroom ??= {};
   }
 
   previewSearch() {

@@ -53,7 +53,7 @@ export class DocsService {
 
   private parsePage(repo: string, url: string, source: string): ParsedPage {
     const children: Page[] = [];
-    const titleMatch = source.match(/^#\s*(.*?)(\s+\\\[WIP\\])?$/m);
+    const titleMatch = /^#\s*(.*?)(\s+\\\[WIP\\])?$/m.exec(source);
     const title = titleMatch?.[1] ?? '';
     const wip = !!titleMatch?.[2];
     const parentUrl = url.substring(0, url.lastIndexOf('/') + 1);

@@ -22,8 +22,8 @@ export class CodeSearchComponent {
   constructor(
     readonly context: AssignmentContext,
   ) {
-    this.classroom = this.context.assignment.classroom ||= {};
-    this.openAI = this.context.assignment.openAI ||= {};
+    this.classroom = this.context.assignment.classroom ??= {};
+    this.openAI = this.context.assignment.openAI ??= {};
     this.openAI.consent ??= true;
     this.openAI.model ??= 'text-embedding-ada-002';
   }

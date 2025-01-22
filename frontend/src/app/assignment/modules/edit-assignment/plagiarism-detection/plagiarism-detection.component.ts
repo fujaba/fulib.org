@@ -27,6 +27,6 @@ export class PlagiarismDetectionComponent {
     configService: ConfigService,
   ) {
     this.email = configService.get('email');
-    this.moss = context.assignment.moss ||= {};
+    this.moss = context.assignment.moss ??= {};
   }
 }

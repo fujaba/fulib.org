@@ -88,7 +88,7 @@ export class SimilarModalComponent implements OnInit {
         this.snippets = {};
         for (let snippetIndex = 0; snippetIndex < result.length; snippetIndex++) {
           for (const snippet of result[snippetIndex]) {
-            (this.snippets[snippet.solution] ||= [])[snippetIndex] ||= snippet;
+            (this.snippets[snippet.solution] ??= [])[snippetIndex] ??= snippet;
           }
         }
         return this.snippets;

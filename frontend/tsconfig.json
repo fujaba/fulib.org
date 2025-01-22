@@ -16,10 +16,10 @@
     "importHelpers": true,
     "useDefineForClassFields": false,
     "target": "ES2022",
-    "module": "es2020",
+    "module": "ES2022",
     "lib": [
-      "es2020",
-      "dom"
+      "ES2022",
+      "DOM"
     ]
   },
   "angularCompilerOptions": {

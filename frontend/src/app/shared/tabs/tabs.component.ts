@@ -29,7 +29,7 @@ export class TabsComponent<E> {
   }
 
   open(editor: E) {
-    if (this.tabs.indexOf(editor) < 0) {
+    if (!this.tabs.includes(editor)) {
       this.tabs.push(editor);
       this.emitChange();
     }

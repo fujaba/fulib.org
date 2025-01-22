@@ -37,7 +37,7 @@ export class SolutionDetailsComponent implements OnInit {
     ).subscribe(([assignment, solution]) => {
       this.assignment = assignment;
       this.solution = solution;
-      solution.consent ||= {};
+      solution.consent ??= {};
     });
   }
 

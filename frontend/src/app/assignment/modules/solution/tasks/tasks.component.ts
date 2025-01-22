@@ -56,7 +56,7 @@ export class SolutionTasksComponent implements OnInit, OnDestroy {
     this.route.params.pipe(
       switchMap(({aid, sid}) => this.assigneeService.findOne(aid, sid)),
     ).subscribe(assignee => {
-      assignee.duration ||= 0;
+      assignee.duration ??= 0;
       this.assignee = assignee;
       this.showNotes = !!assignee.notes;
     });
