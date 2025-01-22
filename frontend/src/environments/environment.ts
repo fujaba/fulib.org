@@ -1,5 +1,8 @@
+declare const BUILD_VERSION: string;
+
 export const environment = {
   production: false,
+  version: BUILD_VERSION,
   sentryDsn: '',
   environment: 'development',
   apiURL: 'http://localhost:4567/api',

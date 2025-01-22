@@ -6,9 +6,10 @@ on:
       - master
     tags:
       - v*
-    # TODO the backend needs to be deployed every time because it contains the version number
-    # paths:
-    #   - 'backend/**'
+    paths:
+      - 'backend/**'
+      - '.github/workflows/deploy.sh'
+      - '.github/workflows/deploy-backend.yml'
 
 concurrency:
   group: deploy-backend
