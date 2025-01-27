@@ -84,7 +84,7 @@ jobs:
     needs: [ projects-images, projects-proxy, projects-runtime ]
     steps:
       - name: Deploy the Projects Runtime to Rancher
-        uses: sekassel-research/actions-rancher-update@v3.0.0
+        uses: sekassel-research/actions-rancher-update@v3.3.0
         with:
           rancher_url: ${{ secrets.RANCHER_URL }}
           rancher_token: ${{ secrets.RANCHER_TOKEN }}
