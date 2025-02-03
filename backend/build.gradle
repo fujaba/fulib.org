@@ -95,7 +95,7 @@ dependencies {
 	implementation group: 'org.json', name: 'json', version: '20250107'
 
 	// https://mvnrepository.com/artifact/com.auth0/java-jwt
-	implementation group: 'com.auth0', name: 'java-jwt', version: '4.4.0'
+	implementation group: 'com.auth0', name: 'java-jwt', version: '4.5.0'
 
 	// compile instead of testCompile because the web service uses it
 	implementation junitDependency
