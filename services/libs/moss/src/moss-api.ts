@@ -108,6 +108,7 @@ language ${this.language}
 
   async read(): Promise<string> {
     return new Promise((resolve, reject) => {
+      this.socket.once('error', reject);
       this.socket.once('data', (data) => {
         const text = data.toString();
         if (MOSS_DEBUG) {
@@ -115,7 +116,6 @@ language ${this.language}
         }
         resolve(text);
       });
-      this.socket.once('error', reject);
     });
   }
 }
