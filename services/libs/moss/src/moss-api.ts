@@ -1,6 +1,5 @@
 import {Socket} from 'node:net';
 import {Stream} from 'node:stream';
-import { pipeline } from 'node:stream/promises';
 
 export interface File {
   name: string;
