@@ -7,6 +7,8 @@ export interface File {
   content: string | Uint8Array;
 }
 
+const MOSS_DEBUG = false;
+
 export class MossApi {
   server = 'moss.stanford.edu';
   port = 7690;
@@ -77,6 +79,16 @@ language ${this.language}
   }
 
   async write(data: string | Uint8Array | Stream): Promise<void> {
+    if (MOSS_DEBUG) {
+      if (typeof data === 'string') {
+        console.log('MOSS: >', data.length > 100 ? data.slice(0, 100) + '...' : data);
+      } else if (data instanceof Uint8Array) {
+        console.log('MOSS: > [length: ', data.length + ']');
+      } else {
+        console.log('MOSS: > [stream]');
+      }
+    }
+
     return new Promise((resolve, reject) => {
       if (data instanceof Stream) {
         data.pipe(this.socket);
@@ -97,7 +109,11 @@ language ${this.language}
   async read(): Promise<string> {
     return new Promise((resolve) => {
       this.socket.once('data', (data) => {
-        resolve(data.toString());
+        const text = data.toString();
+        if (MOSS_DEBUG) {
+          console.log('MOSS: <', text);
+        }
+        resolve(text);
       });
     });
   }
