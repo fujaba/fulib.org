@@ -1,5 +1,6 @@
 import {Socket} from 'node:net';
 import {Stream} from 'node:stream';
+import { pipeline } from 'node:stream/promises';
 
 export interface File {
   name: string;
@@ -91,9 +92,9 @@ language ${this.language}
 
     return new Promise((resolve, reject) => {
       if (data instanceof Stream) {
+        data.once('error', reject);
+        data.once('end', resolve);
         data.pipe(this.socket);
-        data.on('error', reject);
-        data.on('end', resolve);
         return;
       }
       this.socket.write(data, (err) => {
@@ -107,7 +108,7 @@ language ${this.language}
   }
 
   async read(): Promise<string> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       this.socket.once('data', (data) => {
         const text = data.toString();
         if (MOSS_DEBUG) {
@@ -115,6 +116,7 @@ language ${this.language}
         }
         resolve(text);
       });
+      this.socket.once('error', reject);
     });
   }
 }
