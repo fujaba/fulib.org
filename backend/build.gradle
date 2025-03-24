@@ -89,7 +89,7 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-server
 	implementation group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.4.57.v20241219'
 	// https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-webapp
-	implementation group: 'org.eclipse.jetty', name: 'jetty-webapp', version: '9.4.57.v20241219'
+	implementation group: 'org.eclipse.jetty', name: 'jetty-webapp', version: '11.0.25'
 
 	// https://mvnrepository.com/artifact/org.json/json
 	implementation group: 'org.json', name: 'json', version: '20250107'
