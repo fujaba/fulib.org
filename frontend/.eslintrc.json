@@ -21,6 +21,7 @@
         "plugin:@typescript-eslint/stylistic-type-checked"
       ],
       "rules": {
+        "@typescript-eslint/prefer-nullish-coalescing": "warn",
         "@angular-eslint/prefer-standalone": "off",
         "@angular-eslint/component-selector": [
           "error",
