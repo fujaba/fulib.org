@@ -5,6 +5,8 @@ import {DocumentBuilder, SwaggerModule} from '@nestjs/swagger';
 import {AssignmentsModule} from './assignments.module';
 import {environment} from './environment';
 
+import './instrument';
+
 async function bootstrap() {
   const app = await NestFactory.create(AssignmentsModule);
   const prefix = `/api/${environment.version}`;

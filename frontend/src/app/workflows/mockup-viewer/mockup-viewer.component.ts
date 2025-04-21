@@ -65,7 +65,7 @@ export class MockupViewerComponent implements OnChanges {
       return;
     }
 
-    this.index = index ? index : 0;
+    this.index = index || 0;
     this.currentTabs = this.getCurrentTabs();
   }
 
