@@ -36,7 +36,7 @@
     "@nestjs/schedule": "^6.0.0",
     "@nestjs/swagger": "^11.1.4",
     "@nestjs/websockets": "^11.0.20",
-    "@ntegral/nestjs-sentry": "^4.0.1",
+    "@sentry/nestjs": "^9.13.0",
     "@sentry/node": "^9.13.0",
     "@types/dockerode": "^3.3.38",
     "@types/passport-jwt": "^4.0.1",
