@@ -14,7 +14,6 @@ export const REPOS = [
   'fulibYaml',
   'fulibTables',
   'fulibGradle',
-  'fulibWorkflows'
 ] as const;
 
 export type Repository = (typeof REPOS)[number];
@@ -61,7 +60,6 @@ export class ChangelogService {
         fulibGradle: 'unknown',
         fulibTables: 'unknown',
         fulibTools: 'unknown',
-        fulibWorkflows: 'unknown',
         fulibYaml: 'unknown',
       })),
     );

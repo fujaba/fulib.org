@@ -9,7 +9,6 @@ import {PageNotFoundComponent} from './components/page-not-found/page-not-found.
 import {PrivacyComponent} from './components/privacy/privacy.component';
 
 const routes: Routes = [
-  {path: 'workflows', loadChildren: () => import('./workflows/workflows.module').then(m => m.WorkflowsModule)},
   {path: 'assignments', loadChildren: () => import('./assignment/assignment.module').then(m => m.AssignmentModule)},
   {path: 'docs', loadChildren: () => import('./docs/docs.module').then(m => m.DocsModule)},
   {path: 'projects', loadChildren: () => import('./projects/projects.module').then(m => m.ProjectsModule)},
