@@ -10,7 +10,6 @@ import {ClipboardModule} from 'ngx-clipboard';
 
 import {AutothemeCodemirrorComponent} from './autotheme-codemirror/autotheme-codemirror.component';
 import {CollapseButtonComponent} from './collapse-button/collapse-button.component';
-import {DiagramViewComponent} from './diagram-view/diagram-view.component';
 import {DisabledTooltipComponent} from './disabled-tooltip/disabled-tooltip.component';
 import {DurationPipe} from './duration.pipe';
 import {MarkdownEditorComponent} from './markdown-editor/markdown-editor.component';
@@ -19,10 +18,7 @@ import {MaskedInputComponent} from './masked-input/masked-input.component';
 import {SafeHtmlPipe} from './pipes/safe-html.pipe';
 import {SafeResourceUrlPipe} from './pipes/safe-resource-url.pipe';
 import {SafeUrlPipe} from './pipes/safe-url.pipe';
-import {PreviewComponent} from './preview/preview.component';
 import {ProTipComponent} from './pro-tip/pro-tip.component';
-import {ProjectConfigFormComponent} from './project-config-form/project-config-form.component';
-import {TabsComponent} from './tabs/tabs.component';
 import {TokenInputComponent} from './token-input/token-input.component';
 
 @NgModule({
@@ -32,14 +28,9 @@ import {TokenInputComponent} from './token-input/token-input.component';
     SafeResourceUrlPipe,
     AutothemeCodemirrorComponent,
     CollapseButtonComponent,
-    PreviewComponent,
     MarkdownComponent,
-    ProjectConfigFormComponent,
-    ProjectConfigFormComponent,
-    TabsComponent,
     ProTipComponent,
     DurationPipe,
-    DiagramViewComponent,
     TokenInputComponent,
     MaskedInputComponent,
     DisabledTooltipComponent,
@@ -62,14 +53,9 @@ import {TokenInputComponent} from './token-input/token-input.component';
     SafeResourceUrlPipe,
     AutothemeCodemirrorComponent,
     CollapseButtonComponent,
-    PreviewComponent,
     MarkdownComponent,
-    ProjectConfigFormComponent,
-    ProjectConfigFormComponent,
-    TabsComponent,
     ProTipComponent,
     DurationPipe,
-    DiagramViewComponent,
     TokenInputComponent,
     MaskedInputComponent,
     DisabledTooltipComponent,
