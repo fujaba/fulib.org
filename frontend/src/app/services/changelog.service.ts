@@ -13,7 +13,6 @@ export const REPOS = [
   'fulibTools',
   'fulibYaml',
   'fulibTables',
-  'fulibScenarios',
   'fulibGradle',
   'fulibWorkflows'
 ] as const;
@@ -60,7 +59,6 @@ export class ChangelogService {
         'fulib.org': environment.version,
         fulib: 'unknown',
         fulibGradle: 'unknown',
-        fulibScenarios: 'unknown',
         fulibTables: 'unknown',
         fulibTools: 'unknown',
         fulibWorkflows: 'unknown',
