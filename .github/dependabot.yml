@@ -30,15 +30,3 @@ updates:
     directory: "tools/"
     schedule:
       interval: "weekly"
-  - package-ecosystem: "gradle"
-    directory: "backend/"
-    schedule:
-      interval: "weekly"
-    groups:
-      fulib:
-        patterns:
-          - "org.fulib:*"
-      jetty:
-        patterns:
-          - "org.eclipse.jetty:*"
-        update-types: [minor, patch]
