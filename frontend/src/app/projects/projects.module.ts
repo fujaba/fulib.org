@@ -1,9 +1,9 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
+import {ModalModule} from '@mean-stream/ngbx';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {AngularSplitModule} from 'angular-split';
-import {ModalModule} from '@mean-stream/ngbx';
 import {DndModule} from 'ngx-drag-drop';
 
 import {SharedModule} from '../shared/shared.module';
@@ -15,7 +15,6 @@ import {ProjectFormComponent} from './components/project-form/project-form.compo
 import {ProjectListComponent} from './components/project-list/project-list.component';
 import {ProjectWorkspaceComponent} from './components/project-workspace/project-workspace.component';
 import {SettingsComponent} from './components/settings/settings.component';
-import {SetupComponent} from './components/setup/setup.component';
 import {TransferComponent} from './components/transfer/transfer.component';
 import {ProjectsRoutingModule} from './projects-routing.module';
 import {ContainerService} from './services/container.service';
@@ -31,7 +30,6 @@ import {ProjectService} from './services/project.service';
     ProjectListComponent,
     ProjectWorkspaceComponent,
     SettingsComponent,
-    SetupComponent,
     TransferComponent,
   ],
   imports: [

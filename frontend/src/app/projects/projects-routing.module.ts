@@ -6,7 +6,6 @@ import {EditModalComponent} from './components/edit-modal/edit-modal.component';
 import {ProjectListComponent} from './components/project-list/project-list.component';
 import {ProjectWorkspaceComponent} from './components/project-workspace/project-workspace.component';
 import {SettingsComponent} from './components/settings/settings.component';
-import {SetupComponent} from './components/setup/setup.component';
 import {TransferComponent} from './components/transfer/transfer.component';
 
 const routes: Routes = [
@@ -25,13 +24,6 @@ const routes: Routes = [
     path: ':id',
     component: ProjectWorkspaceComponent,
     data: {title: 'Project Workspace'},
-    children: [
-      {
-        path: 'setup',
-        data: {title: 'Setup Project'},
-        component: SetupComponent,
-      },
-    ],
   },
   {
     path: ':id/settings',
