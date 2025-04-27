@@ -1,11 +1,13 @@
 import {estypes} from '@elastic/elasticsearch';
+import {IndicesIndexSettingsAnalysis, MappingProperty, PropertyName} from '@elastic/elasticsearch/lib/api/types';
 import {BadRequestException, Injectable, Logger, OnModuleInit} from '@nestjs/common';
 import {ElasticsearchService} from '@nestjs/elasticsearch';
 import {randomUUID} from 'crypto';
 import {isDeepStrictEqual} from 'util';
+
 import {Location} from '../evaluation/evaluation.schema';
+import {TOKEN_PATTERN} from './search.constants';
 import {SearchParams, SearchResult, SearchSnippet, SearchSummary} from './search.dto';
-import {TOKEN_PATTERN} from "./search.constants";
 
 export interface FileDocument {
   assignment: string;
@@ -52,14 +54,15 @@ export class SearchService implements OnModuleInit {
       }, {
         analyzer: {
           code: {
+            type: 'custom',
             tokenizer: 'code',
-          } as any,
+          },
         },
         tokenizer: {
           code: {
             type: 'simple_pattern',
             pattern: TOKEN_PATTERN.source,
-          } as any,
+          },
         },
       });
     } catch (e) {
@@ -123,16 +126,14 @@ export class SearchService implements OnModuleInit {
     }
   }
 
-  private async createIndex(newName: string, properties: any, analysis: any) {
+  private async createIndex(newName: string, properties: Record<PropertyName, MappingProperty>, analysis: IndicesIndexSettingsAnalysis | undefined) {
     await this.elasticsearchService.indices.create({
       index: newName,
-      body: {
-        mappings: {
-          properties,
-        },
-        settings: {
-          analysis,
-        },
+      mappings: {
+        properties,
+      },
+      settings: {
+        analysis,
       },
     });
   }
@@ -195,28 +196,26 @@ export class SearchService implements OnModuleInit {
     const {tokens, highlighter, query} = this._createQuery(snippet, wildcard);
     const result = await this.elasticsearchService.search<FileDocument>({
       index: 'files',
-      body: {
-        size: 10000,
-        fields,
-        _source: !fields,
-        query: {
-          bool: {
-            must: query,
-            filter: [
-              {term: {assignment}},
-              ...(regex ? [{regexp: {'file.keyword': {value: regex, flags: '', case_insensitive: true}}}] : []),
-            ],
-          },
+      size: 10000,
+      fields,
+      _source: !fields,
+      query: {
+        bool: {
+          must: query,
+          filter: [
+            {term: {assignment}},
+            ...(regex ? [{regexp: {'file.keyword': {value: regex, flags: '', case_insensitive: true}}}] : []),
+          ],
         },
-        highlight: {
-          fields: {
-            content: {},
-          },
-          pre_tags: [`<${uniqueId}>`],
-          post_tags: [`</${uniqueId}>`],
-          type: highlighter,
-          number_of_fragments: 0,
+      },
+      highlight: {
+        fields: {
+          content: {},
         },
+        pre_tags: [`<${uniqueId}>`],
+        post_tags: [`</${uniqueId}>`],
+        type: highlighter,
+        number_of_fragments: 0,
       },
     });
     return {uniqueId, result, tokens};
@@ -244,14 +243,12 @@ export class SearchService implements OnModuleInit {
   async deleteAll(assignment: string, solution?: string): Promise<number> {
     const result = await this.elasticsearchService.deleteByQuery({
       index: 'files',
-      body: {
-        query: {
-          bool: {
-            filter: [
-              {term: {assignment}},
-              ...(solution ? [{term: {solution}}] : []),
-            ],
-          },
+      query: {
+        bool: {
+          filter: [
+            {term: {assignment}},
+            ...(solution ? [{term: {solution}}] : []),
+          ],
         },
       },
     });
