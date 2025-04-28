@@ -39,7 +39,7 @@
     "file-saver": "^2.0.5",
     "highlight.js": "^11.11.1",
     "keycloak-angular": "^19.0.2",
-    "keycloak-js": "21.1.2",
+    "keycloak-js": "25.0.6",
     "markdown-it": "^14.1.0",
     "ngx-clipboard": "^16.0.0",
     "ngx-drag-drop": "^19.0.0",
