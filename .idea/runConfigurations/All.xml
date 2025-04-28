@@ -1,6 +1,5 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="All" type="CompoundRunConfigurationType">
-    <toRun name="Backend" type="GradleRunConfiguration" />
     <toRun name="Assignments Service" type="js.build_tools.npm" />
     <toRun name="Frontend" type="js.build_tools.npm" />
     <toRun name="Projects Service" type="js.build_tools.npm" />

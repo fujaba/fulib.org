@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {KeycloakService} from 'keycloak-angular';
 import {ToastService} from '@mean-stream/ngbx';
+import {KeycloakService} from 'keycloak-angular';
 import {of} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import {CreateProjectDto, Project} from '../../model/project';
@@ -16,7 +16,6 @@ import {ProjectService} from '../../services/project.service';
 export class EditModalComponent implements OnInit {
 
   editing: Project | CreateProjectDto = this.createNew();
-  creatingFromEditor = false;
   loggedIn = false;
   saving = false;
 
@@ -41,10 +40,6 @@ export class EditModalComponent implements OnInit {
     ).subscribe(project => {
       this.editing = project;
     });
-
-    this.activatedRoute.queryParams.subscribe(({editor}) => {
-      this.creatingFromEditor = !!editor;
-    });
   }
 
   private createNew(): CreateProjectDto {
@@ -66,11 +61,7 @@ export class EditModalComponent implements OnInit {
     this.saving = true;
     ('id' in this.editing ? this.projectService.update(this.editing) : this.projectService.create(this.editing)).subscribe(created => {
       this.saving = false;
-      if (this.creatingFromEditor) {
-        this.router.navigate(['/projects', created.id, 'setup'], {queryParams: {editor: true}});
-      } else {
-        this.router.navigate(['/projects']);
-      }
+      this.router.navigate(['/projects']);
     }, error => {
       this.saving = false;
       this.toastService.error(`${'id' in this.editing ? 'Update' : 'Create'} Project`, `Failed to ${'id' in this.editing ? 'update' : 'create'} project`, error);

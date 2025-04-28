@@ -13,7 +13,6 @@
   "packageManager": "pnpm@9.15.4+sha512.b2dc20e2fc72b3e18848459b37359a32064663e5627a51e4c74b2c29dd8e8e0491483c3abb40789cfd578bf362fb6ba8261b05f0387d76792ed6e23ea3b1b6a0",
   "dependencies": {
     "@angular/animations": "^19.2.7",
-    "@angular/cdk": "^19.2.10",
     "@angular/common": "^19.2.7",
     "@angular/compiler": "^19.2.7",
     "@angular/core": "^19.2.7",
@@ -28,8 +27,6 @@
     "@ng-bootstrap/ng-bootstrap": "^18.0.0",
     "@popperjs/core": "^2.11.8",
     "@sentry/angular-ivy": "^7.120.3",
-    "angular-gridster2": "^19.0.0",
-    "angular-split": "^19.0.0",
     "bootstrap": "~5.3.5",
     "bootstrap-icons": "^1.11.3",
     "class-transformer": "^0.5.1",

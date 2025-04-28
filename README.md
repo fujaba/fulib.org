@@ -4,8 +4,8 @@
 [![Test](https://github.com/fujaba/fulib.org/actions/workflows/test.yml/badge.svg)](https://github.com/fujaba/fulib.org/actions)
 [![CodeQL](https://github.com/fujaba/fulib.org/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/fujaba/fulib.org/actions)
 
-A web app for [fulibScenarios](https://github.com/fujaba/fulibScenarios) and other [fulib](https://github.com/fujaba/) apps.
-Available at [fulib.org](https://fulib.org).
+A web app for grading programming assignments and an online IDE.
+Available at https://fulib.org.
 
 ## Running with Docker-Compose
 
@@ -41,22 +41,6 @@ Then, run the frontend using the launch configuration or `pnpm run start:dev`.
 > ⚠️ If the frontend errors along the lines of `XY is not an NgModule` or `Uncaught Error: Type XYModule does not have 'ɵmod' property.` similar, just restart the Angular dev server.
 
 The frontend will be available at http://localhost:11340.
-
-### Backend
-
-IntelliJ users can use the predefined run configurations with the above environment variables already set.
-
-<details>
-  <summary>🔬 Advanced</summary>
-
-Make sure you set the following environment variables before running:
-
-```properties
-FULIB_CORS=true
-FULIB_MONGO_URL=mongodb://localhost:27017/fulib-org
-```
-
-</details>
 
 ### Projects Backend
 

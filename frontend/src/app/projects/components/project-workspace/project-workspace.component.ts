@@ -57,9 +57,6 @@ export class ProjectWorkspaceComponent implements OnInit, OnDestroy {
           {name: 'Copy', run: () => this.clipboardService.copy(container.token)},
         ],
       });
-      if (container.isNew) {
-        this.router.navigate(['setup'], {relativeTo: this.route});
-      }
     });
   }
 
