@@ -3,7 +3,6 @@ import {NgModule} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {ModalModule} from '@mean-stream/ngbx';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {AngularSplitModule} from 'angular-split';
 import {DndModule} from 'ngx-drag-drop';
 
 import {SharedModule} from '../shared/shared.module';
@@ -39,7 +38,6 @@ import {ProjectService} from './services/project.service';
     // 3rd Party
     DndModule,
     NgbModule,
-    AngularSplitModule,
     // Shared
     SharedModule,
     // Routing
