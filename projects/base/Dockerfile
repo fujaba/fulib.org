@@ -8,13 +8,24 @@ ENV DEBCONF_NONINTERACTIVE_SEEN=true
 RUN apt-get update -y && \
     apt-get install -y gnupg apt-transport-https wget software-properties-common i3 novnc websockify libxv1 libglu1-mesa libegl1-mesa xauth x11-utils xorg tightvncserver && \
     apt-get clean -y
-ARG TARGETARCH
-RUN wget https://kumisystems.dl.sourceforge.net/project/virtualgl/3.1/virtualgl_3.1_$TARGETARCH.deb && \
-    dpkg -i virtualgl_*.deb && \
-    rm virtualgl_*.deb
-RUN wget https://kumisystems.dl.sourceforge.net/project/turbovnc/3.0.3/turbovnc_3.0.3_$TARGETARCH.deb && \
-    dpkg -i turbovnc_*.deb && \
-    rm turbovnc_*.deb
+
+# Install VirtualGL
+# https://virtualgl.org/Downloads/YUM
+RUN wget -q -O- https://packagecloud.io/dcommander/virtualgl/gpgkey | \
+    gpg --dearmor >/etc/apt/trusted.gpg.d/VirtualGL.gpg
+RUN wget https://raw.githubusercontent.com/VirtualGL/repo/main/VirtualGL.list -O /etc/apt/sources.list.d/VirtualGL.list
+RUN apt-get update -y && \
+	apt-get install -y virtualgl && \
+	apt-get clean -y
+
+# Install TurboVNC
+# https://turbovnc.org/Downloads/YUM
+RUN wget -q -O- https://packagecloud.io/dcommander/turbovnc/gpgkey | \
+  	gpg --dearmor >/etc/apt/trusted.gpg.d/TurboVNC.gpg
+RUN wget https://raw.githubusercontent.com/TurboVNC/repo/main/TurboVNC.list -O /etc/apt/sources.list.d/TurboVNC.list
+RUN apt-get update -y && \
+	apt-get install -y turbovnc && \
+	apt-get clean -y
 
 # i3 window manager configuration
 ARG CONF_I3=/root/.config/i3/config
