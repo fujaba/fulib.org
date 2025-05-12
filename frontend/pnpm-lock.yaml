@@ -49,7 +49,7 @@ importers:
         version: 7.0.0(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0))(@angular/forms@19.2.7(@angular/common@19.2.7(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.7(@angular/animations@19.2.7(@angular/common@19.2.7(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.7(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0)))(rxjs@7.8.2))(codemirror@5.65.19)
       '@mean-stream/ngbx':
         specifier: ^0.13.0
-        version: 0.13.0(pfwirq6nm35aeyaj7igp4lvszu)
+        version: 0.13.0(nvddupsfmdiy3pp3w3mk4aqxv4)
       '@ng-bootstrap/ng-bootstrap':
         specifier: ^18.0.0
         version: 18.0.0(@angular/common@19.2.7(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0))(@angular/forms@19.2.7(@angular/common@19.2.7(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.7(@angular/animations@19.2.7(@angular/common@19.2.7(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.7(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0)))(rxjs@7.8.2))(@angular/localize@19.2.7(@angular/compiler-cli@19.2.7(@angular/compiler@19.2.7)(typescript@5.7.3))(@angular/compiler@19.2.7))(@popperjs/core@2.11.8)(rxjs@7.8.2)
@@ -60,11 +60,11 @@ importers:
         specifier: ^7.120.3
         version: 7.120.3(@angular/common@19.2.7(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0))(@angular/router@19.2.7(@angular/common@19.2.7(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.7(@angular/animations@19.2.7(@angular/common@19.2.7(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.7(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0)))(rxjs@7.8.2))(rxjs@7.8.2)
       bootstrap:
-        specifier: ~5.3.5
-        version: 5.3.5(@popperjs/core@2.11.8)
+        specifier: ~5.3.6
+        version: 5.3.6(@popperjs/core@2.11.8)
       bootstrap-icons:
-        specifier: ^1.12.1
-        version: 1.12.1
+        specifier: ^1.13.1
+        version: 1.13.1
       class-transformer:
         specifier: ^0.5.1
         version: 0.5.1
@@ -75,8 +75,8 @@ importers:
         specifier: ^5.65.19
         version: 5.65.19
       diff:
-        specifier: ^7.0.0
-        version: 7.0.0
+        specifier: ^8.0.0
+        version: 8.0.0
       file-saver:
         specifier: ^2.0.5
         version: 2.0.5
@@ -2267,11 +2267,11 @@ packages:
   boolbase@1.0.0:
     resolution: {integrity: sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==}
 
-  bootstrap-icons@1.12.1:
-    resolution: {integrity: sha512-ekwupjsteHQmgGV+haQ0nNMoSyKCbJj5ou+06vFzb9uR2/bwN9isNEgXBaQzcT+fLzhKS3OaBNpwz8XdZlIgYQ==}
+  bootstrap-icons@1.13.1:
+    resolution: {integrity: sha512-ijombt4v6bv5CLeXvRWKy7CuM3TRTuPEuGaGKvTV5cz65rQSY8RQ2JcHt6b90cBBAC7s8fsf2EkQDldzCoXUjw==}
 
-  bootstrap@5.3.5:
-    resolution: {integrity: sha512-ct1CHKtiobRimyGzmsSldEtM03E8fcEX4Tb3dGXz1V8faRwM50+vfHwTzOxB3IlKO7m+9vTH3s/3C6T2EAPeTA==}
+  bootstrap@5.3.6:
+    resolution: {integrity: sha512-jX0GAcRzvdwISuvArXn3m7KZscWWFAf1MKBcnzaN02qWMb3jpMoUX4/qgeiGzqyIb4ojulRzs89UCUmGcFSzTA==}
     peerDependencies:
       '@popperjs/core': ^2.11.8
 
@@ -2599,8 +2599,8 @@ packages:
     resolution: {integrity: sha512-58lmxKSA4BNyLz+HHMUzlOEpg09FV+ev6ZMe3vJihgdxzgcwZ8VoEEPmALCZG9LmqfVoNMMKpttIYTVG6uDY7A==}
     engines: {node: '>=0.3.1'}
 
-  diff@7.0.0:
-    resolution: {integrity: sha512-PJWHUb1RFevKCwaFA9RlG5tCd+FO5iRh9A8HEtkmBH2Li03iJriB6m6JIN4rGz3K3JLawI7/veA1xzRKP6ISBw==}
+  diff@8.0.0:
+    resolution: {integrity: sha512-DJkPOAHudnz8swaqtm8cYmR9YfHLVDmoIH02+MqJiI/V9PxCf0WG+TBMduL7FZfnO53LhUXaPMo8Iw/uUJXLRA==}
     engines: {node: '>=0.3.1'}
 
   dns-packet@5.6.1:
@@ -6271,13 +6271,13 @@ snapshots:
   '@lmdb/lmdb-win32-x64@3.2.6':
     optional: true
 
-  '@mean-stream/ngbx@0.13.0(pfwirq6nm35aeyaj7igp4lvszu)':
+  '@mean-stream/ngbx@0.13.0(nvddupsfmdiy3pp3w3mk4aqxv4)':
     dependencies:
       '@angular/common': 19.2.7(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2)
       '@angular/core': 19.2.7(rxjs@7.8.2)(zone.js@0.15.0)
       '@angular/router': 19.2.7(@angular/common@19.2.7(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.7(@angular/animations@19.2.7(@angular/common@19.2.7(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.7(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0)))(rxjs@7.8.2)
       '@ng-bootstrap/ng-bootstrap': 18.0.0(@angular/common@19.2.7(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0))(@angular/forms@19.2.7(@angular/common@19.2.7(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.7(@angular/animations@19.2.7(@angular/common@19.2.7(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.7(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.7(rxjs@7.8.2)(zone.js@0.15.0)))(rxjs@7.8.2))(@angular/localize@19.2.7(@angular/compiler-cli@19.2.7(@angular/compiler@19.2.7)(typescript@5.7.3))(@angular/compiler@19.2.7))(@popperjs/core@2.11.8)(rxjs@7.8.2)
-      bootstrap: 5.3.5(@popperjs/core@2.11.8)
+      bootstrap: 5.3.6(@popperjs/core@2.11.8)
       tslib: 2.8.1
     optionalDependencies:
       class-validator: 0.14.2
@@ -7209,9 +7209,9 @@ snapshots:
 
   boolbase@1.0.0: {}
 
-  bootstrap-icons@1.12.1: {}
+  bootstrap-icons@1.13.1: {}
 
-  bootstrap@5.3.5(@popperjs/core@2.11.8):
+  bootstrap@5.3.6(@popperjs/core@2.11.8):
     dependencies:
       '@popperjs/core': 2.11.8
 
@@ -7528,7 +7528,7 @@ snapshots:
 
   diff@4.0.2: {}
 
-  diff@7.0.0: {}
+  diff@8.0.0: {}
 
   dns-packet@5.6.1:
     dependencies:
