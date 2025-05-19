@@ -75,8 +75,8 @@ importers:
         specifier: ^5.65.19
         version: 5.65.19
       diff:
-        specifier: ^8.0.0
-        version: 8.0.0
+        specifier: ^8.0.1
+        version: 8.0.1
       file-saver:
         specifier: ^2.0.5
         version: 2.0.5
@@ -2599,8 +2599,8 @@ packages:
     resolution: {integrity: sha512-58lmxKSA4BNyLz+HHMUzlOEpg09FV+ev6ZMe3vJihgdxzgcwZ8VoEEPmALCZG9LmqfVoNMMKpttIYTVG6uDY7A==}
     engines: {node: '>=0.3.1'}
 
-  diff@8.0.0:
-    resolution: {integrity: sha512-DJkPOAHudnz8swaqtm8cYmR9YfHLVDmoIH02+MqJiI/V9PxCf0WG+TBMduL7FZfnO53LhUXaPMo8Iw/uUJXLRA==}
+  diff@8.0.1:
+    resolution: {integrity: sha512-rEaM3KmVm78zE3dFZaop3aCQa2MTm+T4kcigUFLVU/KbOYdiY6JnL2g2puOYnct3QFw9pjZadaCbCZ1O8ArMlQ==}
     engines: {node: '>=0.3.1'}
 
   dns-packet@5.6.1:
@@ -7528,7 +7528,7 @@ snapshots:
 
   diff@4.0.2: {}
 
-  diff@8.0.0: {}
+  diff@8.0.1: {}
 
   dns-packet@5.6.1:
     dependencies:
