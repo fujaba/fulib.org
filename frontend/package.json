@@ -35,7 +35,7 @@
     "diff": "^8.0.2",
     "file-saver": "^2.0.5",
     "highlight.js": "^11.11.1",
-    "keycloak-angular": "^19.0.2",
+    "keycloak-angular": "^20.0.0",
     "keycloak-js": "21.1.2",
     "markdown-it": "^14.1.0",
     "ngx-clipboard": "^16.0.0",
