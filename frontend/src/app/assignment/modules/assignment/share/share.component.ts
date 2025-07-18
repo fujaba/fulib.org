@@ -1,9 +1,8 @@
-import {DOCUMENT} from '@angular/common';
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, DOCUMENT, Inject, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {switchMap} from 'rxjs/operators';
+import Assignment, {ReadAssignmentDto} from '../../../model/assignment';
 import {AssignmentService} from '../../../services/assignment.service';
-import Assignment, {ReadAssignmentDto} from "../../../model/assignment";
 
 @Component({
   selector: 'app-assignment-share',

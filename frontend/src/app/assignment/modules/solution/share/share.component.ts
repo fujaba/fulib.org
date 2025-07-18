@@ -1,5 +1,4 @@
-import {DOCUMENT} from '@angular/common';
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, DOCUMENT, Inject, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {of} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
