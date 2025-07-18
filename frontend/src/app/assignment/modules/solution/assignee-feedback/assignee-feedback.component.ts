@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {Feedback, UpdateAssigneeDto} from "../../../model/assignee";
-import {switchMap} from "rxjs/operators";
-import {ActivatedRoute} from "@angular/router";
-import {AssigneeService} from "../../../services/assignee.service";
-import {plainToClass} from "class-transformer";
-import {ToastService} from "@mean-stream/ngbx";
+import {ActivatedRoute} from '@angular/router';
+import {ToastService} from '@mean-stream/ngbx';
+import {plainToClass} from 'class-transformer';
+import {switchMap} from 'rxjs/operators';
+import {Feedback} from '../../../model/assignee';
+import {AssigneeService} from '../../../services/assignee.service';
 
 @Component({
   selector: 'app-assignee-feedback',

@@ -4,7 +4,6 @@ import {ToastService} from '@mean-stream/ngbx';
 import {of} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import Assignment, {CreateAssignmentDto} from '../../../model/assignment';
-import Task from '../../../model/task';
 import {AssignmentContext} from '../../../services/assignment.context';
 import {AssignmentService} from '../../../services/assignment.service';
 import {ConfigService} from '../../../services/config.service';

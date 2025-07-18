@@ -1,12 +1,11 @@
 import {Component, Input} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import { ToastService } from '@mean-stream/ngbx';
-import {switchMap} from 'rxjs/operators';
+import {ToastService} from '@mean-stream/ngbx';
 import {CreateEvaluationDto, Evaluation} from '../../../model/evaluation';
 import Task from '../../../model/task';
 import {ConfigService} from '../../../services/config.service';
-import {EvaluationService} from "../../../services/evaluation.service";
-import {TaskService} from "../../../services/task.service";
+import {EvaluationService} from '../../../services/evaluation.service';
+import {TaskService} from '../../../services/task.service';
 
 @Component({
   selector: 'app-task-list',

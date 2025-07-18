@@ -19,9 +19,10 @@ export class NavigateLinkPipe implements PipeTransform {
         return `${ide}://fulib.fulibfeedback/open?file=${path}&line=${snippet.from.line}&endline=${snippet.to.line}`;
       case 'idea':
       case 'pycharm':
-      case 'web-storm':
+      case 'web-storm': {
         const project = assignment?.classroom?.prefix + '-' + solution?.author?.github;
         return `jetbrains://${ide}/navigate/reference?project=${project}&path=${path}:${snippet.from.line}:${snippet.from.character}`;
+      }
     }
   }
 }

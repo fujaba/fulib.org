@@ -33,7 +33,7 @@ export class MySolutionsComponent implements OnInit {
         this.solutions.get(solution.assignment)!.push(solution);
       }
 
-      for (const [_, solutionList] of this.solutions) {
+      for (const [, solutionList] of this.solutions) {
         solutionList.sort((a, b) => new Date(a.timestamp ?? 0).getTime() - new Date(b.timestamp ?? 0).getTime());
       }
     });

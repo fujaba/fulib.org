@@ -52,7 +52,7 @@ export class SolutionDetailsComponent implements OnInit {
       this.saving = false;
       this.toastService.success('Solution', 'Successfully updated student details');
     }, error => {
-      this.toastService.error('Solution', 'Failed to update student details');
+      this.toastService.error('Solution', 'Failed to update student details', error);
       this.saving = false;
     });
   }

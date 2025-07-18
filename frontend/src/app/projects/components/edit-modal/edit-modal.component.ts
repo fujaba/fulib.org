@@ -59,7 +59,7 @@ export class EditModalComponent implements OnInit {
     }
 
     this.saving = true;
-    ('id' in this.editing ? this.projectService.update(this.editing) : this.projectService.create(this.editing)).subscribe(created => {
+    ('id' in this.editing ? this.projectService.update(this.editing) : this.projectService.create(this.editing)).subscribe(() => {
       this.saving = false;
       this.router.navigate(['/projects']);
     }, error => {
