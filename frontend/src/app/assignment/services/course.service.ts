@@ -56,7 +56,7 @@ export class CourseService {
   upload(file: File): Observable<Course> {
     return new Observable(subscriber => {
       const reader = new FileReader();
-      reader.onload = _ => {
+      reader.onload = () => {
         const text = reader.result as string;
         const course: Course = {...JSON.parse(text)};
         subscriber.next(course);

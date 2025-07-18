@@ -60,7 +60,7 @@ export class AssignmentService {
   upload(file: File): Observable<Assignment> {
     return new Observable(subscriber => {
       const reader = new FileReader();
-      reader.onload = _ => {
+      reader.onload = () => {
         const text = reader.result as string;
         const assignment = JSON.parse(text);
         subscriber.next(assignment);

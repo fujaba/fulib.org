@@ -23,6 +23,7 @@ export class AppComponent implements OnInit {
       map(() => {
         let route = this.route;
         let child: ActivatedRoute | undefined;
+        // eslint-disable-next-line no-cond-assign
         while (child = route.children.find(c => c.outlet === 'primary')) {
           route = child;
         }

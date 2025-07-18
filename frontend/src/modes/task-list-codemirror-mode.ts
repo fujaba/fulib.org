@@ -4,7 +4,7 @@ import type {} from 'codemirror/addon/mode/simple';
 
 export const TASK_ITEM_PATTERN = /(#{2,}|-)(\s+)(.*)(\s+\(.*?)(-?\d+(?:\.\d+)?)(P?\))(\s*<!--.*?-->)?/;
 
-export function extractTaskItem([_line, prefix, _1, description, _3, points, _4, extra]: string[]) {
+export function extractTaskItem([, prefix, , description, , points, , extra]: string[]) {
   const extraData = extra ? parseExtra(extra.trim().slice(4, -3)) : {};
   return {prefix, description, points, ...extraData};
 }

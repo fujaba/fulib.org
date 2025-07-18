@@ -1,15 +1,8 @@
 import {Component} from '@angular/core';
-import {Observable} from "rxjs";
-import Solution, {
-  AuthorInfo,
-  authorInfoProperties,
-  Consent,
-  consentKeys,
-  ImportSolution
-} from "../../../model/solution";
-import {map} from "rxjs/operators";
-import {SolutionService} from "../../../services/solution.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute} from '@angular/router';
+import {map} from 'rxjs/operators';
+import Solution, {AuthorInfo, authorInfoProperties, Consent, consentKeys} from '../../../model/solution';
+import {SolutionService} from '../../../services/solution.service';
 import {ImportTab} from '../import-tab.interface';
 
 @Component({

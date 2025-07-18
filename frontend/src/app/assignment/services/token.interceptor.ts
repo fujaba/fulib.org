@@ -11,7 +11,7 @@ export class TokenInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    const match = /\/assignments\/([^\/]+)(?:\/solutions\/([^\/]+))?/.exec(request.url);
+    const match = /\/assignments\/([^/]+)(?:\/solutions\/([^/]+))?/.exec(request.url);
     if (match) {
       const headers: Record<string, string> = {};
       const assignmentToken = this.tokenService.getAssignmentToken(match[1]);

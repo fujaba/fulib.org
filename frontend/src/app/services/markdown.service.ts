@@ -38,14 +38,16 @@ export class MarkdownService {
       if (token.type === 'inline') {
         for (const child of (token.children ?? [])) {
           switch (child.type) {
-            case 'link_open':
+            case 'link_open': {
               const href = child.attrGet('href');
               linkBaseUrl && href && child.attrSet('href', linkBaseUrl + href);
               break;
-            case 'image':
+            }
+            case 'image': {
               const src = child.attrGet('src');
               imageBaseUrl && src && child.attrSet('src', imageBaseUrl + src);
               break;
+            }
           }
         }
       } else if (token.type === 'table_open') {

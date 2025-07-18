@@ -39,7 +39,7 @@ export class DiffModalComponent implements OnInit {
 }
 
 function escapeHtml(text: string) {
-  return text.replace(/[&<>"'`=\/]/g, function (s) {
+  return text.replace(/[&<>"'`=/]/g, function (s) {
     return `&#${s.charCodeAt(0)};`;
   });
 }

@@ -14,7 +14,7 @@ export class DisabledTooltipComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.require) {
-      this.disabled = this.require.some(([condition, _]) => !condition);
+      this.disabled = this.require.some(([condition]) => !condition);
     }
   }
 }

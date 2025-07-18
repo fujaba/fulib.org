@@ -1,8 +1,7 @@
 import {Injectable} from '@angular/core';
+import {plainToClass} from 'class-transformer';
 import {PrivacyService} from '../../services/privacy.service';
-import {Config} from "../model/config";
-import {transformDecoratorResources} from "@angular/compiler-cli/src/ngtsc/annotations/component/src/resources";
-import {plainToClass} from "class-transformer";
+import {Config} from '../model/config';
 
 export type ConfigKey = keyof Config;
 
