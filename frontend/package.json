@@ -57,11 +57,11 @@
     "@types/jasmine": "~5.1.8",
     "@types/jasminewd2": "~2.0.13",
     "@types/markdown-it": "^14.1.2",
-    "@types/node": "^24.0.14",
+    "@types/node": "^24.0.15",
     "@types/turndown": "^5.0.5",
     "angular-eslint": "20.1.1",
     "eslint": "^9.29.0",
-    "jasmine-core": "~5.7.1",
+    "jasmine-core": "~5.9.0",
     "jasmine-spec-reporter": "~7.0.0",
     "karma": "~6.4.4",
     "karma-chrome-launcher": "~3.2.0",
@@ -70,7 +70,7 @@
     "karma-jasmine-html-reporter": "^2.1.0",
     "ts-node": "^10.9.2",
     "typescript": "~5.8.3",
-    "typescript-eslint": "8.34.1"
+    "typescript-eslint": "8.37.0"
   },
   "resolutions": {
     "axios": "^1.6.0",
