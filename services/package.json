@@ -78,7 +78,7 @@
     "@types/jest": "^30.0.0",
     "@types/jsdom": "^21.1.7",
     "@types/multer": "^2.0.0",
-    "@types/node": "^24.0.14",
+    "@types/node": "^24.0.15",
     "@types/supertest": "^6.0.3",
     "@types/unzipper": "^0.10.11",
     "@typescript-eslint/eslint-plugin": "^8.37.0",
