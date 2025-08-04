@@ -57,7 +57,7 @@
     "@types/jasmine": "~5.1.8",
     "@types/jasminewd2": "~2.0.13",
     "@types/markdown-it": "^14.1.2",
-    "@types/node": "^24.1.0",
+    "@types/node": "^24.2.0",
     "@types/turndown": "^5.0.5",
     "angular-eslint": "20.1.1",
     "eslint": "^9.32.0",
@@ -69,8 +69,8 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "^2.1.0",
     "ts-node": "^10.9.2",
-    "typescript": "~5.8.3",
-    "typescript-eslint": "8.38.0"
+    "typescript": "~5.9.2",
+    "typescript-eslint": "8.39.0"
   },
   "resolutions": {
     "axios": "^1.6.0",
