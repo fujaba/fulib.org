@@ -51,12 +51,12 @@ jobs:
           cache-to: type=gha,mode=max
           cache-from: type=gha
       - name: Deploy to Rancher
-        uses: sekassel-research/actions-rancher-update@v3.3.1
+        uses: sekassel-research/actions-rancher-update@v4.0.2
         with:
           rancher_url: ${{ secrets.RANCHER_URL }}
           rancher_token: ${{ secrets.RANCHER_TOKEN }}
           cluster_id: ${{ secrets.RANCHER_CLUSTER }}
           project_id: ${{ secrets.RANCHER_PROJECT }}
           namespace: ${{ secrets.NAMESPACE }}
-          deployment: fulib-${{ matrix.service }}-service
+          workloads: deployment/fulib-${{ matrix.service }}-service
           docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-${{ matrix.service }}-service:${{ steps.deployment.outputs.tag }}
