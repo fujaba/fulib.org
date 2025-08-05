@@ -91,5 +91,5 @@ jobs:
           cluster_id: ${{ secrets.RANCHER_CLUSTER }}
           project_id: ${{ secrets.RANCHER_PROJECT }}
           namespace: ${{ secrets.NAMESPACE }}
-          deployment: fulib-projects-runtime
+          workloads: deployment/fulib-projects-runtime
           docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-projects-runtime

@@ -58,5 +58,5 @@ jobs:
           cluster_id: ${{ secrets.RANCHER_CLUSTER }}
           project_id: ${{ secrets.RANCHER_PROJECT }}
           namespace: ${{ secrets.NAMESPACE }}
-          deployment: fulib-${{ matrix.service }}-service
+          workloads: deployment/fulib-${{ matrix.service }}-service
           docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-${{ matrix.service }}-service:${{ steps.deployment.outputs.tag }}
