@@ -31,7 +31,7 @@
     "bootstrap-icons": "^1.13.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
-    "codemirror": "^5.65.19",
+    "codemirror": "^5.65.20",
     "diff": "^8.0.2",
     "file-saver": "^2.0.5",
     "highlight.js": "^11.11.1",
