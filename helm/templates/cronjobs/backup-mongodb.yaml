@@ -1,0 +1,44 @@
+{{- if .Values.backup.mongodb.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup-mongodb
+spec:
+  schedule: {{ .Values.backup.mongodb.schedule }}
+  timeZone: {{ .Values.backup.timeZone }}
+  concurrencyPolicy: Replace
+  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      parallelism: 1
+      template:
+        spec:
+          containers:
+            - name: pg2minio
+              image: {{ .Values.backup.mongodb.image }}
+              imagePullPolicy: Always
+              env:
+                # https://github.com/nightguide/mongodump-minio?tab=readme-ov-file#configuration
+                - name: MONGODB_URI
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ default .Values.mongodb.secret.existingSecret "mongodb-secret" }}
+                      key: MONGO_URI
+                - name: S3_BUCKET
+                  # From the code it seems possible to concatenate bucket and path.
+                  # https://github.com/nightguide/mongodump-minio/blob/master/scripts/backup-mongodb.sh#L16
+                  value: {{ printf "%s/%s" .Values.backup.mongodb.bucket .Values.backup.mongodb.path | quote }}
+                - name: S3_URI
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.backup.mongodb.existingSecret }}
+                      key: minio-uri
+                - name: RETENTION_PERIOD
+                  value: {{ .Values.backup.mongodb.keep | quote }}
+          imagePullSecrets:
+            - name: registry-vs
+          restartPolicy: Never
+          hostAliases:
+{{ toYaml .Values.backup.hostAliases | indent 12 }}
+{{- end }}

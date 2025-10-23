@@ -1,0 +1,14 @@
+{{ range .Values.services.list }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $.Release.Name }}-{{ .name }}-service
+spec:
+  ports:
+    - name: http
+      port: 3000
+      targetPort: 3000
+  selector:
+    app: {{ .name }}-service
+{{- end }}
