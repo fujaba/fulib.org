@@ -5,7 +5,7 @@ COPY $BUILD_GRADLE build.gradle
 RUN gradle wrapper
 RUN ./gradlew build && ./gradlew --stop
 
-FROM registry.uniks.de/fulib/code-server-base
+FROM registry.uni-kassel.dev/fulib/code-server-base
 
 ARG APT_DEPENDENCIES
 RUN sudo apt-get update -y \

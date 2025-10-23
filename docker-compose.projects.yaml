@@ -19,7 +19,7 @@ services:
   #    volumes:
   #      - '/var/run/docker.sock:/var/run/docker.sock'
   projects-proxy:
-    image: fulib/fulib.org-projects-proxy
+    image: ${DOCKER_REGISTRY:-docker.io}/fulib/fulib.org-projects-proxy
     build:
       context: projects/
       dockerfile: proxy/Dockerfile
