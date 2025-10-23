@@ -68,15 +68,6 @@
               ],
               "outputHashing": "all"
             },
-            "standalone": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.standalone.ts"
-                }
-              ],
-              "outputHashing": "all"
-            },
             "development": {
               "optimization": false,
               "extractLicenses": false,
