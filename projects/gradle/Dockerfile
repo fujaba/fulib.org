@@ -1,4 +1,4 @@
-FROM gradle as preload
+FROM gradle AS preload
 WORKDIR /opt/preload
 ARG BUILD_GRADLE
 COPY $BUILD_GRADLE build.gradle

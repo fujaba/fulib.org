@@ -1,18 +1,16 @@
-FROM node:lts-slim as builder
-RUN npm install -g pnpm
+FROM node:lts-slim AS builder
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
-RUN pnpm install
+RUN corepack pnpm install
 COPY . .
 ARG SERVICE
-RUN pnpm build $SERVICE
+RUN corepack pnpm build $SERVICE
 
 FROM node:lts-slim
-RUN npm install -g pnpm
 WORKDIR /app
 ENV NODE_ENV=production
 COPY package.json pnpm-lock.yaml ./
-RUN pnpm install
+RUN corepack pnpm install
 COPY --from=builder /app/dist ./dist
 ENV PORT=3000
 EXPOSE 3000
