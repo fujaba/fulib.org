@@ -44,7 +44,7 @@ jobs:
         with:
           context: services/
           push: true
-          tags: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-${{ matrix.service }}-service:${{ steps.deployment.outputs.tag }}
+          tags: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org/${{ matrix.service }}-service:${{ steps.deployment.outputs.tag }}
           build-args: |
             VERSION=${{ steps.deployment.outputs.version }}
             SERVICE=${{ matrix.service }}
@@ -56,7 +56,6 @@ jobs:
           rancher_url: ${{ secrets.RANCHER_URL }}
           rancher_token: ${{ secrets.RANCHER_TOKEN }}
           cluster_id: ${{ secrets.RANCHER_CLUSTER }}
-          project_id: ${{ secrets.RANCHER_PROJECT }}
           namespace: ${{ secrets.NAMESPACE }}
-          workloads: deployment/fulib-${{ matrix.service }}-service
-          docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-${{ matrix.service }}-service:${{ steps.deployment.outputs.tag }}
+          workloads: deployment/${{ secrets.RELEASE }}-${{ matrix.service }}-service
+          docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org/${{ matrix.service }}-service:${{ steps.deployment.outputs.tag }}
