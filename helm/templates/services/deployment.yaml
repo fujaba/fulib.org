@@ -1,0 +1,34 @@
+{{ range .Values.services.list }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $.Release.Name }}-{{ .name }}-service
+spec:
+  replicas: {{ .replicas }}
+  selector:
+    matchLabels:
+      app: {{ .name }}-service
+  template:
+    metadata:
+      labels:
+        app: {{ .name }}-service
+    spec:
+      imagePullSecrets:
+{{ toYaml $.Values.imagePullSecrets | indent 8 }}
+      containers:
+        - name: {{ .name }}-service
+          image: {{ .image }}
+          imagePullPolicy: {{ .imagePullPolicy }}
+          envFrom:
+            - secretRef:
+                name: {{ default $.Values.services.secret.existingSecret "backend-secret" }}
+          env:
+            - name: NATS_SERVERS
+              value: nats://{{ $.Release.Name}}-nats:4222
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default $.Values.mongodb.secret.existingSecret "mongodb-secret" }}
+                  key: MONGO_URI
+{{- end }}

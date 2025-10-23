@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-keycloak
+spec:
+  replicas: {{ .Values.keycloak.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-keycloak
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-keycloak
+    spec:
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      containers:
+        - name: keycloak
+          image: {{ .Values.keycloak.image }}
+          imagePullPolicy: {{ .Values.keycloak.imagePullPolicy }}
+          args:
+            - start
+          envFrom:
+            - secretRef:
+                name: {{ default .Values.keycloak.secret.existingSecret "keycloak-secret" }}
+          env:
+            # --------------- Reverse Proxy ---------------
+            - name: KC_HTTP_ENABLED
+              value: "true"
+            - name: KC_HTTP_RELATIVE_PATH
+              value: /auth
+            - name: KC_HOSTNAME_STRICT
+              value: "false"
+            - name: KC_PROXY
+              value: edge
+            - name: KC_PROXY_HEADERS
+              value: xforwarded
+            - name: PROXY_ADDRESS_FORWARDING
+              value: "true"
+            # --------------- DB ---------------
+            - name: KC_DB
+              value: "postgres"
+            - name: KC_DB_URL_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default .Values.authDb.secret.existingSecret "auth-db-secret" }}
+                  key: POSTGRES_HOST
+            - name: KC_DB_URL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default .Values.authDb.secret.existingSecret "auth-db-secret" }}
+                  key: POSTGRES_DATABASE
+            - name: KC_DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default .Values.authDb.secret.existingSecret "auth-db-secret" }}
+                  key: POSTGRES_USER
+            - name: KC_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default .Values.authDb.secret.existingSecret "auth-db-secret" }}
+                  key: POSTGRES_PASSWORD
+            # --------------- Admin ---------------
+            - name: KC_BOOTSTRAP_ADMIN_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default .Values.keycloak.secret.existingSecret "keycloak-secret" }}
+                  key: ADMIN_USERNAME
+            - name: KC_BOOTSTRAP_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default .Values.keycloak.secret.existingSecret "keycloak-secret" }}
+                  key: ADMIN_PASSWORD
+

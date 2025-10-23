@@ -40,7 +40,7 @@ jobs:
         with:
           context: frontend/
           push: true
-          tags: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-frontend:${{ steps.deployment.outputs.tag }}
+          tags: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org/frontend:${{ steps.deployment.outputs.tag }}
           build-args: |
             BUILD_VERSION=${{ steps.deployment.outputs.version }}
           cache-to: type=gha,mode=max
@@ -51,7 +51,6 @@ jobs:
           rancher_url: ${{ secrets.RANCHER_URL }}
           rancher_token: ${{ secrets.RANCHER_TOKEN }}
           cluster_id: ${{ secrets.RANCHER_CLUSTER }}
-          project_id: ${{ secrets.RANCHER_PROJECT }}
           namespace: ${{ secrets.NAMESPACE }}
-          workloads: deployment/fulib-frontend
-          docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org-frontend:${{ steps.deployment.outputs.tag }}
+          workloads: deployment/${{ secrets.RELEASE }}-frontend
+          docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org/frontend:${{ steps.deployment.outputs.tag }}
