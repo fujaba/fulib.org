@@ -1,13 +1,16 @@
+include:
+  - docker-compose.yaml
+
 services:
-  # TODO
-  #  projects-service:
-  #    image: fulib/fulib.org-projects-service
-  #    depends_on:
-  #      - database
-  #    build:
-  #      context: services/
-  #      args:
-  #        SERVICE: projects
+  projects-service:
+    image: ${DOCKER_REGISTRY:-docker.io}/fulib/fulib.org/projects-service
+    depends_on:
+      - database
+    build:
+      context: services/
+      args:
+        SERVICE: projects
+  # TODO: projects-service is currently only for build and not properly set up for local dev
   #    environment:
   #      FULIB_PROJECTS_DATA_DIR: /projects/data
   #      FULIB_PROJECTS_PROXY_URL: http://localhost:45445
@@ -19,7 +22,7 @@ services:
   #    volumes:
   #      - '/var/run/docker.sock:/var/run/docker.sock'
   projects-proxy:
-    image: ${DOCKER_REGISTRY:-docker.io}/fulib/fulib.org-projects-proxy
+    image: ${DOCKER_REGISTRY:-docker.io}/fulib/fulib.org/projects-proxy
     build:
       context: projects/
       dockerfile: proxy/Dockerfile

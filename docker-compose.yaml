@@ -1,6 +1,6 @@
 services:
   frontend:
-    image: ${DOCKER_REGISTRY:-docker.io}/fulib/fulib.org-frontend
+    image: ${DOCKER_REGISTRY:-docker.io}/fulib/fulib.org/frontend
     build:
       context: frontend/
       args:
