@@ -10,6 +10,7 @@ services:
       - nats
     build:
       context: services/
+      platforms: [linux/amd64, linux/arm64]
       args:
         SERVICE: assignments
     environment:

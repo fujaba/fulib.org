@@ -8,6 +8,7 @@ services:
       - database
     build:
       context: services/
+      platforms: [linux/amd64, linux/arm64]
       args:
         SERVICE: projects
   # TODO: projects-service is currently only for build and not properly set up for local dev
