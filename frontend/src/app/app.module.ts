@@ -47,7 +47,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
       'https://api.github.com',
       'https://github.com',
     ],
-  }).then(() => {}, console.error);
+  }).catch(console.error);
 }
 
 @NgModule({
