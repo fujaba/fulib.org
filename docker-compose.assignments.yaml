@@ -3,13 +3,14 @@ include:
 
 services:
   assignments:
-    image: fulib/fulib.org-assignments-service
+    image: ${DOCKER_REGISTRY:-docker.io}/fulib/fulib.org/assignments-service
     depends_on:
       - database
       - elasticsearch
       - nats
     build:
       context: services/
+      platforms: [linux/amd64, linux/arm64]
       args:
         SERVICE: assignments
     environment:

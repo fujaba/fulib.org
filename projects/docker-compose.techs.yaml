@@ -1,6 +1,6 @@
 services:
   fulib:
-    image: registry.uniks.de/fulib/code-server-fulib:17
+    image: registry.uni-kassel.dev/fulib/code-server-fulib:17
     build:
       context: .
       dockerfile: gradle/Dockerfile
@@ -8,7 +8,7 @@ services:
         BUILD_GRADLE: fulib/build.gradle
         APT_DEPENDENCIES: openjdk-17-jdk
   java:
-    image: registry.uniks.de/fulib/code-server-java:17
+    image: registry.uni-kassel.dev/fulib/code-server-java:17
     build:
       context: .
       dockerfile: gradle/Dockerfile
@@ -16,14 +16,14 @@ services:
         BUILD_GRADLE: gradle/build.gradle
         APT_DEPENDENCIES: openjdk-17-jdk-headless
   node:
-    image: registry.uniks.de/fulib/code-server-node:22
+    image: registry.uni-kassel.dev/fulib/code-server-node:22
     build:
       context: .
       dockerfile: nodejs/Dockerfile
       args:
         NODE_VERSION: '22'
   latex:
-    image: registry.uniks.de/fulib/code-server-latex:2024
+    image: registry.uni-kassel.dev/fulib/code-server-latex:2024
     build:
       context: .
       dockerfile: latex/Dockerfile
@@ -34,7 +34,7 @@ services:
         # see https://github.com/sekassel-research/thesis-template#installation
         TEXLIVE_PACKAGES: footmisc siunitx paralist wrapfig minted acronym xstring bigfoot csquotes din1505 multirow biber
   python:
-    image: registry.uniks.de/fulib/code-server-python:3
+    image: registry.uni-kassel.dev/fulib/code-server-python:3
     build:
       context: .
       dockerfile: generic/Dockerfile

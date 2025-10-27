@@ -151,7 +151,7 @@ export class ContainerService {
 
   private async getGitHubToken(auth: string): Promise<string | undefined> {
     const paramName = 'access_token=';
-    return firstValueFrom(this.httpService.get<string>(`${environment.auth.url}/realms/${environment.auth.realm}/broker/github/token`, {
+    return firstValueFrom(this.httpService.get<string>(`${environment.auth.issuer}/broker/github/token`, {
       responseType: 'text',
       headers: {
         Authorization: auth,
