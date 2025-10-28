@@ -21,7 +21,6 @@
     "@angular/platform-browser": "^20.3.7",
     "@angular/platform-browser-dynamic": "^20.3.7",
     "@angular/router": "^20.3.7",
-    "@angular/service-worker": "^20.3.7",
     "@ctrl/ngx-codemirror": "^7.0.0",
     "@mean-stream/ngbx": "^0.14.0",
     "@ng-bootstrap/ng-bootstrap": "^19.0.1",

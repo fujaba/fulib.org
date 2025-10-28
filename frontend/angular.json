@@ -43,7 +43,6 @@
             "define": {
               "BUILD_VERSION": "\"0.0.0\""
             },
-            "serviceWorker": "ngsw-config.json",
             "scripts": []
           },
           "configurations": {
