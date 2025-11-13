@@ -1,3 +1,6 @@
+import {AuthOptions} from '@app/keycloak-auth';
+import {NatsOptions} from '@nestjs/microservices';
+
 export const environment = {
   version: 'v1',
   port: +(process.env.PORT || 6266),
@@ -29,6 +32,6 @@ export const environment = {
     issuer: process.env.AUTH_ISSUER || 'https://fulib.uni-kassel.dev/auth/realms/fulib.org',
   },
   nats: {
-    servers: process.env.NATS_URL || 'nats://localhost:4222',
-  },
+    servers: process.env.NATS_SERVERS?.split(',') || process.env.NATS_URL || 'nats://localhost:4222',
+  } satisfies NatsOptions['options'],
 };
