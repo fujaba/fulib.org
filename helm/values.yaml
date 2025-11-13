@@ -64,12 +64,12 @@ services:
       image: registry.uni-kassel.dev/fulib/fulib.org/assignments-service
       imagePullPolicy: Always
       replicas: 2
-      endpoints: ['/api/assignments']
+      endpoints: ['/api/v1/assignments']
     - name: projects
       image: registry.uni-kassel.dev/fulib/fulib.org/projects-service
       imagePullPolicy: Always
       replicas: 1
-      endpoints: ['/api/projects']
+      endpoints: ['/api/v1/projects']
 
 frontend:
   image: registry.uni-kassel.dev/fulib/fulib.org/frontend
