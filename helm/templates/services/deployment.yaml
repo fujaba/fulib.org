@@ -24,8 +24,22 @@ spec:
             - secretRef:
                 name: {{ default $.Values.services.secret.existingSecret "backend-secret" }}
           env:
+            - name: PORT
+              value: '3000'
             - name: NATS_SERVERS
-              value: nats://{{ $.Release.Name}}-nats:4222
+              value: nats://{{ $.Release.Name }}-nats:4222
+            - name: ELASTIC_NODES
+              value: http://{{ $.Values.elasticsearch.clusterName }}-{{ $.Values.elasticsearch.nodeGroup }}:9200
+            - name: ELASTIC_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Values.elasticsearch.clusterName }}-{{ $.Values.elasticsearch.nodeGroup }}-credentials
+                  key: username
+            - name: ELASTIC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Values.elasticsearch.clusterName }}-{{ $.Values.elasticsearch.nodeGroup }}-credentials
+                  key: password
             - name: MONGO_URI
               valueFrom:
                 secretKeyRef:
