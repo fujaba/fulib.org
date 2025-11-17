@@ -5,11 +5,11 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
   - package-ecosystem: "npm"
     directory: "frontend/"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     ignore:
       - dependency-name: "@angular/*"
     groups:
@@ -20,7 +20,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "services/"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     groups:
       production:
         dependency-type: production
@@ -29,4 +29,4 @@ updates:
   - package-ecosystem: "npm"
     directory: "tools/"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
