@@ -96,8 +96,12 @@ export class SolutionTableComponent implements OnInit {
       if (solution && points && status) {
         const solutionObject = this.solutions.find(s => s._id === solution);
         if (solutionObject) {
-          solutionObject.points = +points;
-          solutionObject.status = status;
+          if (!isNaN(+points)) {
+            solutionObject.points = +points;
+          }
+          if (Object.values(SolutionStatus).includes(status)) {
+            solutionObject.status = status;
+          }
         }
         this.router.navigate([], {
           relativeTo: this.activatedRoute,
@@ -237,6 +241,7 @@ export class SolutionTableComponent implements OnInit {
   deleteSelected() {
     const ids = Object.keys(this.selected);
     this.solutionService.deleteAll(this.assignment!._id!, ids).subscribe(() => {
+      this.confirmAssignmentTitle = '';
       this.toastService.success('Delete Solutions', `Successfully deleted ${ids.length} solutions`);
       this.selected = {};
       this.solutions = this.solutions.filter(s => !ids.includes(s._id!));

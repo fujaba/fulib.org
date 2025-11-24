@@ -15,7 +15,7 @@
 } @else {
   <input
     [type]="type"
-    autocomplete="new-password"
+    [attr.autocomplete]="type === 'password' ? 'new-password' : 'off'"
     class="form-control"
     [placeholder]="placeholder"
     [(ngModel)]="value"
