@@ -1,4 +1,3 @@
-import {AuthOptions} from '@app/keycloak-auth';
 import {NatsOptions} from '@nestjs/microservices';
 
 export const environment = {
