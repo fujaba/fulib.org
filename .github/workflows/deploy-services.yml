@@ -36,7 +36,7 @@ jobs:
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
-          registry: ${{ secrets.DOCKER_REGISTRY }}
+          registry: ${{ vars.DOCKER_REGISTRY }}
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Build and push
@@ -44,7 +44,7 @@ jobs:
         with:
           context: services/
           push: true
-          tags: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org/${{ matrix.service }}-service:${{ steps.deployment.outputs.tag }}
+          tags: ${{ vars.DOCKER_REGISTRY }}/fulib/fulib.org/${{ matrix.service }}-service:${{ steps.deployment.outputs.tag }}
           build-args: |
             VERSION=${{ steps.deployment.outputs.version }}
             SERVICE=${{ matrix.service }}
@@ -56,6 +56,6 @@ jobs:
           rancher_url: ${{ secrets.RANCHER_URL }}
           rancher_token: ${{ secrets.RANCHER_TOKEN }}
           cluster_id: ${{ secrets.RANCHER_CLUSTER }}
-          namespace: ${{ secrets.NAMESPACE }}
-          workloads: deployment/${{ secrets.RELEASE }}-${{ matrix.service }}-service
-          docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org/${{ matrix.service }}-service:${{ steps.deployment.outputs.tag }}
+          namespace: ${{ vars.NAMESPACE }}
+          workloads: deployment/${{ vars.RELEASE }}-${{ matrix.service }}-service
+          docker_image: ${{ vars.DOCKER_REGISTRY }}/fulib/fulib.org/${{ matrix.service }}-service:${{ steps.deployment.outputs.tag }}

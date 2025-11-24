@@ -25,7 +25,7 @@ jobs:
       - name: Log in to Docker
         uses: docker/login-action@v3
         with:
-          registry: ${{ secrets.DOCKER_REGISTRY }}
+          registry: ${{ vars.DOCKER_REGISTRY }}
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Build and push base
@@ -59,8 +59,8 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          registry: ${{ secrets.DOCKER_REGISTRY }}
-          image_name: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org/projects-proxy
+          registry: ${{ vars.DOCKER_REGISTRY }}
+          image_name: ${{ vars.DOCKER_REGISTRY }}/fulib/fulib.org/projects-proxy
           context: projects/
           dockerfile: proxy/Dockerfile
   projects-runtime:
@@ -74,8 +74,8 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          registry: ${{ secrets.DOCKER_REGISTRY }}
-          image_name: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org/projects-runtime
+          registry: ${{ vars.DOCKER_REGISTRY }}
+          image_name: ${{ vars.DOCKER_REGISTRY }}/fulib/fulib.org/projects-runtime
           context: projects/
           dockerfile: runtime/Dockerfile
   projects-deploy:
@@ -89,6 +89,6 @@ jobs:
           rancher_url: ${{ secrets.RANCHER_URL }}
           rancher_token: ${{ secrets.RANCHER_TOKEN }}
           cluster_id: ${{ secrets.RANCHER_CLUSTER }}
-          namespace: ${{ secrets.NAMESPACE }}
-          workloads: deployment/${{ secrets.RELEASE }}-projects-runtime
-          docker_image: ${{ secrets.DOCKER_REGISTRY }}/fulib/fulib.org/projects-runtime
+          namespace: ${{ vars.NAMESPACE }}
+          workloads: deployment/${{ vars.RELEASE }}-projects-runtime
+          docker_image: ${{ vars.DOCKER_REGISTRY }}/fulib/fulib.org/projects-runtime
