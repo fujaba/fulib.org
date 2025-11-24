@@ -16,18 +16,18 @@
     <button
       class="btn btn-primary"
       *ngxClipboardIfSupported ngxClipboard [cbContent]="issue ? issue.title + issue.body : undefined"
-      (click)="saveAndClose(modal)"
+      (click)="saveAndClose()"
     >
       Copy Markdown
     </button>
     <button
       class="btn btn-primary"
       *ngxClipboardIfSupported ngxClipboard [cbContent]="markdownCmp.html"
-      (click)="saveAndClose(modal)"
+      (click)="saveAndClose()"
     >
       Copy HTML
     </button>
-    <a class="btn btn-primary bi-envelope" [href]="mailLink" (click)="saveAndClose(modal)">
+    <a class="btn btn-primary bi-envelope" [href]="mailLink" (click)="saveAndClose()">
       Draft Mail
     </a>
     <app-disabled-tooltip [require]="[
@@ -35,8 +35,13 @@
       [!!assignment?.classroom?.prefix, 'Classroom Prefix is configured in Assignment'],
       [!!solution?.author?.github, 'GitHub Username is set in Solution'],
     ]" #draftIf>
-      <a class="btn btn-primary bi-github" [href]="draftLink" target="_blank" [class.disabled]="draftIf.disabled"
-         (click)="saveAndClose(modal)">
+      <a
+        class="btn btn-primary bi-github"
+        [href]="draftLink"
+        target="_blank"
+        [class.disabled]="draftIf.disabled"
+        (click)="saveAndClose()"
+      >
         Draft Issue
       </a>
     </app-disabled-tooltip>
@@ -47,8 +52,10 @@
       [!!githubToken, 'You are logged in'],
       [!!githubToken, 'Your Account is linked to GitHub'],
     ]" #submitIf>
-      <button class="btn btn-success" [disabled]="submitting || submitIf.disabled"
-              (click)="submitIssue(); saveAndClose(modal)"
+      <button
+        class="btn btn-success"
+        [disabled]="submitting || submitIf.disabled"
+        (click)="submitIssue(); saveAndClose()"
       >
         Submit Issue
       </button>

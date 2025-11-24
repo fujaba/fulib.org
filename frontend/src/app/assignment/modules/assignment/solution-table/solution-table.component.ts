@@ -92,6 +92,26 @@ export class SolutionTableComponent implements OnInit {
       }
     });
 
+    this.activatedRoute.queryParams.subscribe(({solution, points, status}) => {
+      if (solution && points && status) {
+        const solutionObject = this.solutions.find(s => s._id === solution);
+        if (solutionObject) {
+          solutionObject.points = +points;
+          solutionObject.status = status;
+        }
+        this.router.navigate([], {
+          relativeTo: this.activatedRoute,
+          queryParamsHandling: 'merge',
+          replaceUrl: true,
+          queryParams: {
+            solution: null,
+            points: null,
+            status: null,
+          },
+        });
+      }
+    });
+
     this.search$.pipe(
       debounceTime(200),
       distinctUntilChanged(),
