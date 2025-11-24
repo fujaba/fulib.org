@@ -93,9 +93,9 @@
             <p>Are you sure you want to delete {{ count }} solutions?</p>
             <div class="mb-3">
               <label for="deleteInput">Type <b>{{ assignment?.title }}</b> to confirm</label>
-              <input type="text" class="form-control" id="deleteInput" #deleteInput>
+              <input type="text" class="form-control" id="deleteInput" [(ngModel)]="confirmAssignmentTitle">
             </div>
-            <button class="btn btn-danger" [disabled]="deleteInput.value !== assignment?.title" (click)="deleteSelected()">
+            <button class="btn btn-danger" [disabled]="confirmAssignmentTitle !== assignment?.title" (click)="deleteSelected()">
               Delete
             </button>
           </div>

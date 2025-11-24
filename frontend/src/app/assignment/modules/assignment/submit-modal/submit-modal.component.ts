@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {ModalComponent, ToastService} from '@mean-stream/ngbx';
+import {ActivatedRoute, Router} from '@angular/router';
+import {ToastService} from '@mean-stream/ngbx';
 import {forkJoin} from 'rxjs';
 import {switchMap} from 'rxjs/operators';
 import {UserService} from '../../../../user/user.service';
 import {ReadAssignmentDto} from '../../../model/assignment';
-import Solution from '../../../model/solution';
+import Solution, {SolutionStatus} from '../../../model/solution';
 import {AssignmentService} from '../../../services/assignment.service';
 import {SolutionService} from '../../../services/solution.service';
 import {IssueDto, SubmitService} from '../submit.service';
@@ -29,6 +29,7 @@ export class SubmitModalComponent implements OnInit {
 
   constructor(
     public route: ActivatedRoute,
+    private router: Router,
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
     private submitService: SubmitService,
@@ -66,23 +67,36 @@ export class SubmitModalComponent implements OnInit {
     this.mailLink = `mailto:${email ?? ''}?subject=${encodedTitle}&body=${encodedBody}`;
   }
 
-  saveAndClose(modal: ModalComponent): void {
+  saveAndClose(): void {
     if (this.submitting) {
       return;
     }
 
     const {assignment, _id} = this.solution!;
+    const points = this.issue!._points;
 
     this.submitting = true;
     this.solutionService.update(assignment, _id!, {
-      points: this.issue!._points,
-    }).subscribe(() => {
-      this.submitting = false;
-      this.toastService.success('Submit', 'Successfully saved points');
-      modal.close();
-    }, error => {
-      this.submitting = false;
-      this.toastService.error('Submit', 'Failed to save points', error);
+      points,
+    }).subscribe({
+      next: () => {
+        this.submitting = false;
+        this.toastService.success('Submit', 'Successfully saved points');
+        this.router.navigate(['../..'], {
+          relativeTo: this.route,
+          queryParamsHandling: 'merge',
+          queryParams: {
+            // tell the table view to update the solution points
+            solution: _id!,
+            points,
+            status: SolutionStatus.graded,
+          },
+        });
+      },
+      error: error => {
+        this.submitting = false;
+        this.toastService.error('Submit', 'Failed to save points', error);
+      },
     });
   }
 

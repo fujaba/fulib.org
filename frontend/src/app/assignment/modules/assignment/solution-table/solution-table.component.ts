@@ -48,6 +48,8 @@ export class SolutionTableComponent implements OnInit {
 
   search$ = new BehaviorSubject<string>('');
 
+  confirmAssignmentTitle = '';
+
   constructor(
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
@@ -87,6 +89,30 @@ export class SolutionTableComponent implements OnInit {
         this.searchError = undefined;
       } else {
         this.searchError = solutionsOrError.error.message;
+      }
+    });
+
+    this.activatedRoute.queryParams.subscribe(({solution, points, status}) => {
+      if (solution && points && status) {
+        const solutionObject = this.solutions.find(s => s._id === solution);
+        if (solutionObject) {
+          if (!isNaN(+points)) {
+            solutionObject.points = +points;
+          }
+          if (Object.values(SolutionStatus).includes(status)) {
+            solutionObject.status = status;
+          }
+        }
+        this.router.navigate([], {
+          relativeTo: this.activatedRoute,
+          queryParamsHandling: 'merge',
+          replaceUrl: true,
+          queryParams: {
+            solution: null,
+            points: null,
+            status: null,
+          },
+        });
       }
     });
 
@@ -215,6 +241,7 @@ export class SolutionTableComponent implements OnInit {
   deleteSelected() {
     const ids = Object.keys(this.selected);
     this.solutionService.deleteAll(this.assignment!._id!, ids).subscribe(() => {
+      this.confirmAssignmentTitle = '';
       this.toastService.success('Delete Solutions', `Successfully deleted ${ids.length} solutions`);
       this.selected = {};
       this.solutions = this.solutions.filter(s => !ids.includes(s._id!));
