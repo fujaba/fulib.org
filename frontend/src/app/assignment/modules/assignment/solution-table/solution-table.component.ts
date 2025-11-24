@@ -48,6 +48,8 @@ export class SolutionTableComponent implements OnInit {
 
   search$ = new BehaviorSubject<string>('');
 
+  confirmAssignmentTitle = '';
+
   constructor(
     private assignmentService: AssignmentService,
     private solutionService: SolutionService,
