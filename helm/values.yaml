@@ -1,0 +1,128 @@
+imagePullSecrets:
+  - name: registry-vs
+
+mongodb:
+  secret:
+    existingSecret: 'mongodb-secret' # specify to use an existing secret
+    # Must contain the following keys:
+    # MONGO_URI: mongodb://fulib:<password>@<servers...>/fulib.org
+
+nats:
+  natsBox:
+    enabled: false
+
+  promExporter:
+    enabled: true
+
+  # https://github.com/nats-io/k8s/blob/main/helm/charts/nats
+  config:
+    monitor:
+      enabled: true
+    cluster:
+      enabled: true
+      replicas: 3
+#    jetstream:
+#      enabled: true
+#      fileStore:
+#        pvc:
+#          size: 64Gi
+
+  # https://github.com/nats-io/k8s/blob/main/helm/charts/nats/README.md#jetstream-cluster-on-3-separate-hosts
+  podTemplate:
+    topologySpreadConstraints:
+      kubernetes.io/hostname:
+        maxSkew: 1
+        whenUnsatisfiable: DoNotSchedule
+
+keycloak:
+  image: quay.io/keycloak/keycloak:26.4.2 # registry.uni-kassel.dev/fulib/fulib.org/keycloak
+  imagePullPolicy: Always
+  replicas: 1
+  secret:
+    existingSecret: 'keycloak-secret'
+    # Must contain the following keys:
+    # ADMIN_USERNAME: fulib
+    # ADMIN_PASSWORD: <pick-a-strong-password>
+
+authDb:
+  secret:
+    existingSecret: 'authdb-secret'
+    # Must contain the following keys:
+    # POSTGRES_DATABASE: fulib
+    # POSTGRES_USER: fulib
+    # POSTGRES_PASSWORD: <pick-a-strong-password>
+    # POSTGRES_HOST: <db-host>
+
+elasticsearch:
+  esConfig:
+    elasticsearch.yml: |
+      xpack.security.enabled: false
+      xpack.security.http.ssl.enabled: false
+      xpack.security.transport.ssl.enabled: false
+      xpack.security.enrollment.enabled: false
+
+services:
+  secret:
+    existingSecret: 'backend-secret' # specify to use an existing secret
+    # Must contain the following keys:
+    # AUTH_PUBLIC_KEY: # from keycloak
+    # CLIENT_SECRET: # from keycloak
+  list:
+    - name: assignments
+      image: registry.uni-kassel.dev/fulib/fulib.org/assignments-service
+      imagePullPolicy: Always
+      replicas: 2
+      endpoints: ['/api/v1/assignments']
+    - name: projects
+      image: registry.uni-kassel.dev/fulib/fulib.org/projects-service
+      imagePullPolicy: Always
+      replicas: 1
+      endpoints: ['/api/v1/projects']
+
+frontend:
+  image: registry.uni-kassel.dev/fulib/fulib.org/frontend
+  imagePullPolicy: Always
+  replicas: 2
+
+ingress:
+  enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  className: nginx
+  host: fulib.uni-kassel.dev
+  tls:
+    - secretName: fulib-cert
+      hosts:
+        - fulib.uni-kassel.dev
+
+backup:
+  timeZone: "Europe/Berlin"
+  authDb:
+    enabled: true
+    schedule: "0 2 * * *" # every day at 2 am
+    # https://github.com/anhnmt/backup-pg2minio
+    image: anhnmt/backup-pg2minio
+    # secret requires keys minio-endpoint (http(s)://hostname:port), minio-access-key and minio-secret-key
+    existingSecret: 'backup-minio-secret'
+    bucket: 'fulib-backups'
+    path: 'auth-db'
+    # see https://github.com/anhnmt/backup-pg2minio?tab=readme-ov-file#optional-environment-variables -> MINIO_CLEAN
+    # and https://min.io/docs/minio/linux/reference/minio-mc/mc-rm.html#mc.rm.-older-than
+    keep: 14d
+  mongodb:
+    enabled: true
+    # https://github.com/ds-ukassel/backup-mongodb-s3
+    image: registry.uni-kassel.dev/backup/mongodb-s3
+    schedule: "0 2 * * *" # every day at 2 am
+    # secret requires keys requires minio-uri (http(s)://accesskey:secretkey@hostname:port)
+    existingSecret: 'backup-minio-secret'
+    bucket: 'fulib-backups'
+    path: 'mongodb'
+    # see https://github.com/ds-ukassel/backup-mongodb-s3?tab=readme-ov-file#configuration -> RETENTION_PERIOD
+    # and https://min.io/docs/minio/linux/reference/minio-mc/mc-rm.html#mc.rm.-older-than
+    keep: 14d
+  hostAliases:
+    - ip: "192.168.200.220"
+      hostnames: [ s3.vs.local ]
+    - ip: "192.168.200.230"
+      hostnames: [ r2.vs.local ]

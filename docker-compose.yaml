@@ -1,10 +1,9 @@
 services:
   frontend:
-    image: fulib/fulib.org-frontend
+    image: ${DOCKER_REGISTRY:-docker.io}/fulib/fulib.org/frontend
     build:
       context: frontend/
-      args:
-        CONFIGURATION: standalone
+      platforms: [linux/amd64, linux/arm64]
     ports:
       - '11340:80'
   nats:

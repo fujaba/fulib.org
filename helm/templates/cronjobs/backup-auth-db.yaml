@@ -1,0 +1,69 @@
+{{- if .Values.backup.authDb.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup-auth-db
+spec:
+  schedule: {{ .Values.backup.authDb.schedule }}
+  timeZone: {{ .Values.backup.timeZone }}
+  concurrencyPolicy: Replace
+  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      parallelism: 1
+      template:
+        spec:
+          containers:
+            - name: pg2minio
+              image: {{ .Values.backup.authDb.image }}
+              imagePullPolicy: Always
+              env:
+                # https://github.com/anhnmt/backup-pg2minio?tab=readme-ov-file#required-environment-variables
+                - name: POSTGRES_HOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ default .Values.authDb.secret.existingSecret "auth-db-secret" }}
+                      key: POSTGRES_HOST
+                - name: POSTGRES_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ default .Values.authDb.secret.existingSecret "auth-db-secret" }}
+                      key: POSTGRES_USER
+                - name: POSTGRES_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ default .Values.authDb.secret.existingSecret "auth-db-secret" }}
+                      key: POSTGRES_PASSWORD
+                - name: POSTGRES_DATABASE
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ default .Values.authDb.secret.existingSecret "auth-db-secret" }}
+                      key: POSTGRES_DATABASE
+                - name: MINIO_SERVER
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.backup.authDb.existingSecret }}
+                      key: minio-endpoint
+                - name: MINIO_BUCKET
+                  value: {{ .Values.backup.authDb.bucket | quote }}
+                - name: MINIO_BACKUP_DIR
+                  value: {{ .Values.backup.authDb.path | quote }}
+                - name: MINIO_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.backup.authDb.existingSecret }}
+                      key: minio-access-key
+                - name: MINIO_SECRET_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.backup.authDb.existingSecret }}
+                      key: minio-secret-key
+                - name: MINIO_CLEAN
+                  value: {{ .Values.backup.authDb.keep | quote }}
+          imagePullSecrets:
+            - name: registry-vs
+          restartPolicy: Never
+          hostAliases:
+{{ toYaml .Values.backup.hostAliases | indent 12 }}
+{{- end }}

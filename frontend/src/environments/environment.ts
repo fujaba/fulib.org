@@ -10,7 +10,7 @@ export const environment = {
   projectsApiUrl: 'http://localhost:6266/api/v1',
   projectsProxyUrl: 'http://localhost:13147',
   auth: {
-    url: 'https://se.uniks.de/auth',
+    url: '/auth',
     realm: 'fulib.org',
     clientId: 'fulib.org',
   },

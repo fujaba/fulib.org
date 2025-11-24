@@ -20,7 +20,7 @@ export class SolutionContainerService {
     return this.userService.getCurrent().pipe(switchMap(user => {
       const repo = `${assignment.classroom?.prefix}-${solution.author.github}`;
       const dto: CreateContainerDto = {
-        dockerImage: 'registry.uniks.de/fulib/code-server-fulib:17',
+        dockerImage: 'registry.uni-kassel.dev/fulib/code-server-fulib:17',
         repository: `https://github.com/${assignment.classroom?.org}/${repo}.git#${solution.commit}`,
         idleTimeout: 60,
         folderName: repo,

@@ -1,4 +1,4 @@
-FROM registry.uniks.de/fulib/code-server-base
+FROM registry.uni-kassel.dev/fulib/code-server-base
 
 ARG EXTENSION
 RUN code-server --install-extension $EXTENSION

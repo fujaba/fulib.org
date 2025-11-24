@@ -1,0 +1,48 @@
+{{ range .Values.services.list }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $.Release.Name }}-{{ .name }}-service
+spec:
+  replicas: {{ .replicas }}
+  selector:
+    matchLabels:
+      app: {{ .name }}-service
+  template:
+    metadata:
+      labels:
+        app: {{ .name }}-service
+    spec:
+      imagePullSecrets:
+{{ toYaml $.Values.imagePullSecrets | indent 8 }}
+      containers:
+        - name: {{ .name }}-service
+          image: {{ .image }}
+          imagePullPolicy: {{ .imagePullPolicy }}
+          envFrom:
+            - secretRef:
+                name: {{ default $.Values.services.secret.existingSecret "backend-secret" }}
+          env:
+            - name: PORT
+              value: '3000'
+            - name: NATS_SERVERS
+              value: nats://{{ $.Release.Name }}-nats:4222
+            - name: ELASTIC_NODES
+              value: http://{{ $.Values.elasticsearch.clusterName }}-{{ $.Values.elasticsearch.nodeGroup }}:9200
+            - name: ELASTIC_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Values.elasticsearch.clusterName }}-{{ $.Values.elasticsearch.nodeGroup }}-credentials
+                  key: username
+            - name: ELASTIC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Values.elasticsearch.clusterName }}-{{ $.Values.elasticsearch.nodeGroup }}-credentials
+                  key: password
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default $.Values.mongodb.secret.existingSecret "mongodb-secret" }}
+                  key: MONGO_URI
+{{- end }}

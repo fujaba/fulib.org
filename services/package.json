@@ -20,8 +20,9 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./apps/services/test/jest-e2e.json"
   },
+  "packageManager": "pnpm@10.23.0+sha512.21c4e5698002ade97e4efe8b8b4a89a8de3c85a37919f957e7a0f30f38fbc5bbdd05980ffe29179b2fb6e6e691242e098d945d1601772cad0fef5fb6411e2a4b",
   "dependencies": {
-    "@elastic/elasticsearch": "^9.2.0",
+    "@elastic/elasticsearch": "^8.19.1",
     "@mean-stream/nestx": "^0.13.0",
     "@nestjs/axios": "^4.0.1",
     "@nestjs/common": "^11.1.9",
@@ -34,31 +35,31 @@
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.1.9",
     "@nestjs/schedule": "^6.0.1",
-    "@nestjs/swagger": "^11.2.2",
+    "@nestjs/swagger": "^11.2.3",
     "@nestjs/websockets": "^11.1.9",
-    "@sentry/nestjs": "^10.25.0",
-    "@sentry/node": "^10.25.0",
-    "@types/dockerode": "^3.3.46",
+    "@sentry/nestjs": "^10.26.0",
+    "@sentry/node": "^10.26.0",
+    "@types/dockerode": "^3.3.47",
     "@types/passport-jwt": "^4.0.1",
     "axios": "^1.13.2",
     "bson-objectid": "^2.0.4",
     "chownr": "^3.0.0",
     "class-transformer": "^0.5.1",
-    "class-validator": "^0.14.2",
+    "class-validator": "^0.14.3",
     "dockerode": "^4.0.9",
     "express": "^5.1.0",
     "glob-to-regexp": "^0.4.1",
     "ignore-file": "^1.1.3",
     "jsdom": "^27.2.0",
-    "mongoose": "^8.20.0",
+    "mongoose": "^8.20.1",
     "multer": "2.0.2",
     "nats": "^2.29.3",
-    "openai": "^6.9.0",
+    "openai": "^6.9.1",
     "openapi-merge": "^1.3.3",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.2.2",
-    "rimraf": "^6.1.0",
+    "rimraf": "^6.1.2",
     "rxjs": "^7.8.2",
     "swagger-ui-express": "^5.0.1",
     "textextensions": "^6.11.0",
@@ -69,7 +70,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.39.1",
-    "@nestjs/cli": "^11.0.10",
+    "@nestjs/cli": "^11.0.12",
     "@nestjs/schematics": "^11.0.9",
     "@nestjs/testing": "^11.1.9",
     "@types/chownr": "^1.0.3",
@@ -81,8 +82,8 @@
     "@types/node": "^24.10.1",
     "@types/supertest": "^6.0.3",
     "@types/unzipper": "^0.10.11",
-    "@typescript-eslint/eslint-plugin": "^8.46.4",
-    "@typescript-eslint/parser": "^8.46.4",
+    "@typescript-eslint/eslint-plugin": "^8.47.0",
+    "@typescript-eslint/parser": "^8.47.0",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
@@ -95,7 +96,7 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.3",
-    "webpack": "^5.102.1"
+    "webpack": "^5.103.0"
   },
   "resolutions": {
     "ws@>=8.0.0 <8.17.1": ">=8.17.1",
@@ -128,5 +129,9 @@
       "^@app/member(|/.*)$": "<rootDir>/libs/member/src/$1"
     }
   },
-  "packageManager": "pnpm@9.11.0+sha512.0a203ffaed5a3f63242cd064c8fb5892366c103e328079318f78062f24ea8c9d50bc6a47aa3567cabefd824d170e78fa2745ed1f16b132e16436146b7688f19b"
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@nestjs/core"
+    ]
+  }
 }

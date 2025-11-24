@@ -3,7 +3,6 @@ import {ErrorHandler, inject, NgModule, provideAppInitializer} from '@angular/co
 import {FormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {ServiceWorkerModule} from '@angular/service-worker';
 import {
   ModalModule,
   NgbxDarkmodeModule,
@@ -71,12 +70,6 @@ function initializeKeycloak(keycloak: KeycloakService) {
     AppRoutingModule,
     UserModule,
     ToastModule,
-    ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: environment.production,
-      // Register the ServiceWorker as soon as the app is stable
-      // or after 30 seconds (whichever comes first).
-      registrationStrategy: 'registerWhenStable:30000',
-    }),
     ModalModule,
   ],
   providers: [
