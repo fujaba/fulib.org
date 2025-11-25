@@ -114,7 +114,8 @@ backup:
     # https://github.com/ds-ukassel/backup-mongodb-s3
     image: registry.uni-kassel.dev/backup/mongodb-s3
     schedule: "0 2 * * *" # every day at 2 am
-    # secret requires keys requires minio-uri (http(s)://accesskey:secretkey@hostname:port)
+    # secret requires keys minio-endpoint (http(s)://hostname:port), minio-access-key and minio-secret-key
+    # optional: discord-webhook-url
     existingSecret: 'backup-minio-secret'
     bucket: 'fulib-backups'
     path: 'mongodb'
