@@ -23,18 +23,15 @@ import {TokenInputComponent} from './token-input/token-input.component';
 
 @NgModule({
   declarations: [
-    SafeHtmlPipe,
     SafeUrlPipe,
     SafeResourceUrlPipe,
     AutothemeCodemirrorComponent,
     CollapseButtonComponent,
-    MarkdownComponent,
     ProTipComponent,
     DurationPipe,
     TokenInputComponent,
     MaskedInputComponent,
     DisabledTooltipComponent,
-    MarkdownEditorComponent,
   ],
   imports: [
     FormsModule,
@@ -46,6 +43,9 @@ import {TokenInputComponent} from './token-input/token-input.component';
     RouterModule,
     ModalModule,
     ClipboardModule,
+    SafeHtmlPipe,
+    MarkdownComponent,
+    MarkdownEditorComponent,
   ],
   exports: [
     SafeHtmlPipe,
