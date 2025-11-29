@@ -2,12 +2,15 @@ import {Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChil
 import {Router} from '@angular/router';
 import hljs from 'highlight.js/lib/core';
 import {MarkdownService} from '../../services/markdown.service';
+import {SafeHtmlPipe} from '../pipes/safe-html.pipe';
 
 @Component({
   selector: 'app-markdown',
   templateUrl: './markdown.component.html',
   styleUrls: ['./markdown.component.scss'],
-  standalone: false,
+  imports: [
+    SafeHtmlPipe,
+  ],
 })
 export class MarkdownComponent implements OnInit, OnChanges {
   @ViewChild('content') content: ElementRef<HTMLElement>;
