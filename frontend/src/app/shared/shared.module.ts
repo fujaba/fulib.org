@@ -1,12 +1,4 @@
-import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {FormsModule} from '@angular/forms';
-import {RouterModule} from '@angular/router';
-
-import {CodemirrorModule} from '@ctrl/ngx-codemirror';
-import {ModalModule} from '@mean-stream/ngbx';
-import {NgbDropdownModule, NgbNavModule, NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
-import {ClipboardModule} from 'ngx-clipboard';
 
 import {AutothemeCodemirrorComponent} from './autotheme-codemirror/autotheme-codemirror.component';
 import {CollapseButtonComponent} from './collapse-button/collapse-button.component';
@@ -22,44 +14,33 @@ import {ProTipComponent} from './pro-tip/pro-tip.component';
 import {TokenInputComponent} from './token-input/token-input.component';
 
 @NgModule({
-  declarations: [
-    SafeHtmlPipe,
-    SafeUrlPipe,
-    SafeResourceUrlPipe,
+  imports: [
     AutothemeCodemirrorComponent,
     CollapseButtonComponent,
-    MarkdownComponent,
-    ProTipComponent,
-    DurationPipe,
-    TokenInputComponent,
-    MaskedInputComponent,
     DisabledTooltipComponent,
+    DurationPipe,
+    MarkdownComponent,
     MarkdownEditorComponent,
-  ],
-  imports: [
-    FormsModule,
-    CommonModule,
-    CodemirrorModule,
-    NgbTooltipModule,
-    NgbDropdownModule,
-    NgbNavModule,
-    RouterModule,
-    ModalModule,
-    ClipboardModule,
+    MaskedInputComponent,
+    ProTipComponent,
+    SafeHtmlPipe,
+    SafeResourceUrlPipe,
+    SafeUrlPipe,
+    TokenInputComponent,
   ],
   exports: [
-    SafeHtmlPipe,
-    SafeUrlPipe,
-    SafeResourceUrlPipe,
     AutothemeCodemirrorComponent,
     CollapseButtonComponent,
-    MarkdownComponent,
-    ProTipComponent,
-    DurationPipe,
-    TokenInputComponent,
-    MaskedInputComponent,
     DisabledTooltipComponent,
+    DurationPipe,
+    MarkdownComponent,
     MarkdownEditorComponent,
+    MaskedInputComponent,
+    ProTipComponent,
+    SafeHtmlPipe,
+    SafeResourceUrlPipe,
+    SafeUrlPipe,
+    TokenInputComponent,
   ],
   providers: [
     DurationPipe,

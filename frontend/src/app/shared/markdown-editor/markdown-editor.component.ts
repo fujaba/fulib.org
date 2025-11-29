@@ -1,11 +1,18 @@
 import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
-import {MarkdownService} from "../../services/markdown.service";
+import {FormsModule} from '@angular/forms';
+import {NgbTooltip} from '@ng-bootstrap/ng-bootstrap';
+import {MarkdownService} from '../../services/markdown.service';
+import {MarkdownComponent} from '../markdown/markdown.component';
 
 @Component({
   selector: 'app-markdown-editor',
   templateUrl: './markdown-editor.component.html',
   styleUrl: './markdown-editor.component.scss',
-  standalone: false,
+  imports: [
+    MarkdownComponent,
+    FormsModule,
+    NgbTooltip,
+  ],
 })
 export class MarkdownEditorComponent {
   @Input({required: true}) content: string;

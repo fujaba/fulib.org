@@ -1,0 +1,13 @@
+diff --git a/dist/index.d.ts b/dist/index.d.ts
+index 408aeca27d3c138de6f8f9495994be5740873a39..8b6a06c0bcda2e0b7480db843db13d603abba00f 100644
+--- a/dist/index.d.ts
++++ b/dist/index.d.ts
+@@ -155,7 +155,7 @@ type NormalizedProcedure<T extends Procedure | Constructable> = T extends Constr
+ type Methods<T> = keyof { [K in keyof T as T[K] extends Procedure ? K : never] : T[K] };
+ type Properties<T> = { [K in keyof T] : T[K] extends Procedure ? never : K }[keyof T] & (string | symbol);
+ type Classes<T> = { [K in keyof T] : T[K] extends new (...args: any[]) => any ? K : never }[keyof T] & (string | symbol);
+-interface MockInstance<T extends Procedure | Constructable = Procedure> extends Disposable {
++interface MockInstance<T extends Procedure | Constructable = Procedure> {
+ 	/**
+ 	* Use it to return the name assigned to the mock with the `.mockName(name)` method. By default, it will return `vi.fn()`.
+ 	* @see https://vitest.dev/api/mock#getmockname
