@@ -1,10 +1,11 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {NgbTooltip} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-collapse-button',
   templateUrl: './collapse-button.component.html',
   styleUrls: ['./collapse-button.component.scss'],
-  standalone: false,
+  imports: [NgbTooltip],
 })
 export class CollapseButtonComponent {
   @Input() collapsed = false;

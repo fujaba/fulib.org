@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
-import {CodemirrorComponent} from '@ctrl/ngx-codemirror';
+import {FormsModule} from '@angular/forms';
+import {CodemirrorComponent, CodemirrorModule} from '@ctrl/ngx-codemirror';
 import {ThemeService} from '@mean-stream/ngbx';
 import {Editor, EditorChange, EditorConfiguration, Position} from 'codemirror';
 import {interval, of, Subscription} from 'rxjs';
@@ -10,7 +11,7 @@ import {Marker} from '../model/marker';
   selector: 'app-autotheme-codemirror',
   templateUrl: './autotheme-codemirror.component.html',
   styleUrls: ['./autotheme-codemirror.component.scss'],
-  standalone: false,
+  imports: [CodemirrorModule, FormsModule],
 })
 export class AutothemeCodemirrorComponent implements OnInit, OnDestroy {
   @Input() content: string;
