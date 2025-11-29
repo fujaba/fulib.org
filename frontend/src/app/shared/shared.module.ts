@@ -1,12 +1,4 @@
-import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
-import {FormsModule} from '@angular/forms';
-import {RouterModule} from '@angular/router';
-
-import {CodemirrorModule} from '@ctrl/ngx-codemirror';
-import {ModalModule} from '@mean-stream/ngbx';
-import {NgbDropdownModule, NgbNavModule, NgbTooltipModule} from '@ng-bootstrap/ng-bootstrap';
-import {ClipboardModule} from 'ngx-clipboard';
 
 import {AutothemeCodemirrorComponent} from './autotheme-codemirror/autotheme-codemirror.component';
 import {CollapseButtonComponent} from './collapse-button/collapse-button.component';
@@ -24,22 +16,13 @@ import {TokenInputComponent} from './token-input/token-input.component';
 @NgModule({
   imports: [
     AutothemeCodemirrorComponent,
-    ClipboardModule,
-    CodemirrorModule,
     CollapseButtonComponent,
-    CommonModule,
     DisabledTooltipComponent,
     DurationPipe,
-    FormsModule,
     MarkdownComponent,
     MarkdownEditorComponent,
     MaskedInputComponent,
-    ModalModule,
-    NgbDropdownModule,
-    NgbNavModule,
-    NgbTooltipModule,
     ProTipComponent,
-    RouterModule,
     SafeHtmlPipe,
     SafeResourceUrlPipe,
     SafeUrlPipe,
