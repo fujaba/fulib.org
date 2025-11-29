@@ -69,5 +69,10 @@
     "webpack-dev-middleware": "^6.1.2",
     "cookie@<0.7.0": ">=0.7.0",
     "@sentry/browser@<7.119.1": "^7.119.1"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "@vitest/spy": "patches/@vitest__spy.patch"
+    }
   }
 }
