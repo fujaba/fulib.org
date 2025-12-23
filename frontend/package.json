@@ -23,7 +23,7 @@
     "@angular/router": "^21.0.6",
     "@ctrl/ngx-codemirror": "^7.0.0",
     "@mean-stream/ngbx": "^0.14.0",
-    "@ng-bootstrap/ng-bootstrap": "^19.0.1",
+    "@ng-bootstrap/ng-bootstrap": "^20.0.0",
     "@popperjs/core": "^2.11.8",
     "@sentry/angular-ivy": "^7.120.4",
     "bootstrap": "~5.3.8",
