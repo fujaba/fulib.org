@@ -14,12 +14,17 @@ spec:
       parallelism: 1
       template:
         spec:
+          restartPolicy: Never
+          imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 12 }}
+          hostAliases:
+{{ toYaml .Values.backup.hostAliases | indent 12 }}
           containers:
-            - name: pg2minio
+            - name: backup-postgres-s3
               image: {{ .Values.backup.authDb.image }}
               imagePullPolicy: Always
               env:
-                # https://github.com/anhnmt/backup-pg2minio?tab=readme-ov-file#required-environment-variables
+                # https://github.com/ds-ukassel/backup-postgres-s3?tab=readme-ov-file#configuration
                 - name: POSTGRES_HOST
                   valueFrom:
                     secretKeyRef:
@@ -40,30 +45,31 @@ spec:
                     secretKeyRef:
                       name: {{ default .Values.authDb.secret.existingSecret "auth-db-secret" }}
                       key: POSTGRES_DATABASE
-                - name: MINIO_SERVER
+                - name: MINIO_ENDPOINT
                   valueFrom:
                     secretKeyRef:
                       name: {{ .Values.backup.authDb.existingSecret }}
-                      key: minio-endpoint
-                - name: MINIO_BUCKET
-                  value: {{ .Values.backup.authDb.bucket | quote }}
-                - name: MINIO_BACKUP_DIR
-                  value: {{ .Values.backup.authDb.path | quote }}
+                      key: MINIO_ENDPOINT
                 - name: MINIO_ACCESS_KEY
                   valueFrom:
                     secretKeyRef:
                       name: {{ .Values.backup.authDb.existingSecret }}
-                      key: minio-access-key
+                      key: MINIO_ACCESS_KEY
                 - name: MINIO_SECRET_KEY
                   valueFrom:
                     secretKeyRef:
                       name: {{ .Values.backup.authDb.existingSecret }}
-                      key: minio-secret-key
-                - name: MINIO_CLEAN
+                      key: MINIO_SECRET_KEY
+                - name: MINIO_BUCKET
+                  value: {{ .Values.backup.authDb.bucket | quote }}
+                - name: MINIO_PATH
+                  value: {{ .Values.backup.authDb.path | quote }}
+                - name: DISCORD_WEBHOOK_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.backup.authDb.existingSecret }}
+                      key: DISCORD_WEBHOOK_URL
+                      optional: true
+                - name: RETENTION_PERIOD
                   value: {{ .Values.backup.authDb.keep | quote }}
-          imagePullSecrets:
-            - name: registry-vs
-          restartPolicy: Never
-          hostAliases:
-{{ toYaml .Values.backup.hostAliases | indent 12 }}
 {{- end }}

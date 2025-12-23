@@ -14,44 +14,45 @@ spec:
         spec:
           restartPolicy: Never
           imagePullSecrets:
-            - name: registry-vs
+{{ toYaml .Values.imagePullSecrets | indent 12 }}
+          hostAliases:
+{{ toYaml .Values.backup.hostAliases | indent 12 }}
           containers:
             - name: backup-mongodb-s3
               image: {{ .Values.backup.mongodb.image }}
               imagePullPolicy: Always
               env:
+                # https://github.com/ds-ukassel/backup-mongodb-s3?tab=readme-ov-file#configuration
                 - name: MONGODB_URI
                   valueFrom:
                     secretKeyRef:
                       name: {{ default .Values.mongodb.secret.existingSecret "mongodb-secret" }}
                       key: MONGO_URI
-                - name: MINIO_BUCKET
-                  value: {{ .Values.backup.mongodb.bucket }}
-                - name: MINIO_PATH
-                  value: {{ .Values.backup.mongodb.path }}
                 - name: MINIO_ENDPOINT
                   valueFrom:
                     secretKeyRef:
                       name: {{ .Values.backup.mongodb.existingSecret }}
-                      key: minio-endpoint
+                      key: MINIO_ENDPOINT
                 - name: MINIO_ACCESS_KEY
                   valueFrom:
                     secretKeyRef:
                       name: {{ .Values.backup.mongodb.existingSecret }}
-                      key: minio-access-key
+                      key: MINIO_ACCESS_KEY
                 - name: MINIO_SECRET_KEY
                   valueFrom:
                     secretKeyRef:
                       name: {{ .Values.backup.mongodb.existingSecret }}
-                      key: minio-secret-key
+                      key: MINIO_SECRET_KEY
+                - name: MINIO_BUCKET
+                  value: {{ .Values.backup.mongodb.bucket | quote }}
+                - name: MINIO_PATH
+                  value: {{ .Values.backup.mongodb.path | quote }}
                 - name: DISCORD_WEBHOOK_URL
                   valueFrom:
                     secretKeyRef:
                       name: {{ .Values.backup.mongodb.existingSecret }}
-                      key: discord-webhook-url
+                      key: DISCORD_WEBHOOK_URL
                       optional: true
                 - name: RETENTION_PERIOD
                   value: {{ .Values.backup.mongodb.keep | quote }}
-          hostAliases:
-{{ toYaml .Values.backup.hostAliases | indent 12 }}
 {{- end }}
