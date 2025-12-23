@@ -46,7 +46,7 @@ export class DocsService {
   private render(page: ParsedPage): Observable<RenderedPage> {
     const parent = page.url.substring(0, page.url.lastIndexOf('/') + 1);
     return this.markdownService.renderMarkdown(page.markdown, {
-      imageBaseUrl: `https://github.com/fujaba/${page.repo}/raw/master/docs/${parent}`,
+      imageBaseUrl: `https://github.com/fujaba/${page.repo}/raw/main/docs/${parent}`,
       linkBaseUrl: `/docs/${page.repo}/${parent}`,
     }).pipe(map(html => ({...page, html})));
   }

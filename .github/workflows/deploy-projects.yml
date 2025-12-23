@@ -3,7 +3,7 @@ name: Deploy Projects
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - 'projects/**'
       - '.github/workflows/deploy.sh'
