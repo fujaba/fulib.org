@@ -54,6 +54,8 @@ authDb:
     # POSTGRES_HOST: <db-host>
 
 elasticsearch:
+  protocol: http
+  createCert: false
   esConfig:
     elasticsearch.yml: |
       xpack.security.enabled: false
@@ -100,27 +102,26 @@ backup:
   authDb:
     enabled: true
     schedule: "0 2 * * *" # every day at 2 am
-    # https://github.com/anhnmt/backup-pg2minio
-    image: anhnmt/backup-pg2minio
-    # secret requires keys minio-endpoint (http(s)://hostname:port), minio-access-key and minio-secret-key
+    # https://github.com/ds-ukassel/backup-postgres-s3
+    image: registry.uni-kassel.dev/backup/postgres-s3
+    # secret requires keys MINIO_ENDPOINT (http(s)://hostname:port), MINIO_ACCESS_KEY and MINIO_SECRET_KEY
+    # optional: DISCORD_WEBHOOK_URL
     existingSecret: 'backup-minio-secret'
     bucket: 'fulib-backups'
     path: 'auth-db'
-    # see https://github.com/anhnmt/backup-pg2minio?tab=readme-ov-file#optional-environment-variables -> MINIO_CLEAN
-    # and https://min.io/docs/minio/linux/reference/minio-mc/mc-rm.html#mc.rm.-older-than
+    # see https://min.io/docs/minio/linux/reference/minio-mc/mc-rm.html#mc.rm.-older-than
     keep: 14d
   mongodb:
     enabled: true
     # https://github.com/ds-ukassel/backup-mongodb-s3
     image: registry.uni-kassel.dev/backup/mongodb-s3
     schedule: "0 2 * * *" # every day at 2 am
-    # secret requires keys minio-endpoint (http(s)://hostname:port), minio-access-key and minio-secret-key
-    # optional: discord-webhook-url
+    # secret requires keys MINIO_ENDPOINT (http(s)://hostname:port), MINIO_ACCESS_KEY and MINIO_SECRET_KEY
+    # optional: DISCORD_WEBHOOK_URL
     existingSecret: 'backup-minio-secret'
     bucket: 'fulib-backups'
     path: 'mongodb'
-    # see https://github.com/ds-ukassel/backup-mongodb-s3?tab=readme-ov-file#configuration -> RETENTION_PERIOD
-    # and https://min.io/docs/minio/linux/reference/minio-mc/mc-rm.html#mc.rm.-older-than
+    # see https://min.io/docs/minio/linux/reference/minio-mc/mc-rm.html#mc.rm.-older-than
     keep: 14d
   hostAliases:
     - ip: "192.168.200.220"
