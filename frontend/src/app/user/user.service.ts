@@ -57,6 +57,9 @@ export class UserService {
   }
 
   findByIds(ids: string[]): Observable<User[]> {
+    if (!ids.length) {
+      return of([]);
+    }
     // Supported by Keycloak 26.3+
     // See https://github.com/keycloak/keycloak/issues/12025
     // and https://github.com/fujaba/fulib.org/issues/540#issuecomment-3117526665
