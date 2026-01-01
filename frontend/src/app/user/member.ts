@@ -7,3 +7,12 @@ export interface Member {
 
   _user?: User;
 }
+
+export function setUsers(members: Member[], users: User[]) {
+  for (let user of users) {
+    const member = members.find(m => m.user === user.id);
+    if (member) {
+      member._user = user;
+    }
+  }
+}

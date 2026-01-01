@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ToastService} from '@mean-stream/ngbx';
-import {forkJoin} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
+
+import {Member, setUsers} from '../../../user/member';
 import {User} from '../../../user/user';
 import {UserService} from '../../../user/user.service';
-import {Member} from '../../../user/member';
 import {Project} from '../../model/project';
 import {MemberService} from '../../services/member.service';
 import {ProjectService} from '../../services/project.service';
@@ -46,9 +46,9 @@ export class SettingsComponent implements OnInit {
     id$.pipe(
       switchMap(id => this.memberService.findAll(id)),
       tap(members => this.members = members),
-      switchMap(members => forkJoin(members.map(member => this.userService.findOne(member.user).pipe(
-        tap(user => member._user = user),
-      )))),
+      switchMap(members => this.userService.findByIds(members.map(m => m.user)).pipe(
+        tap(users => setUsers(members, users)),
+      )),
     ).subscribe();
   }
 

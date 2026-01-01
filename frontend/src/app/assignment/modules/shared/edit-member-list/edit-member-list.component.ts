@@ -1,10 +1,10 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Member} from "../../../../user/member";
-import {User} from "../../../../user/user";
-import {switchMap, tap} from "rxjs/operators";
-import {forkJoin} from "rxjs";
-import {MemberService, Namespace} from "../../../services/member.service";
-import {UserService} from "../../../../user/user.service";
+import {switchMap, tap} from 'rxjs/operators';
+
+import {Member, setUsers} from '../../../../user/member';
+import {User} from '../../../../user/user';
+import {UserService} from '../../../../user/user.service';
+import {MemberService, Namespace} from '../../../services/member.service';
 
 @Component({
   selector: 'app-edit-member-list',
@@ -30,9 +30,9 @@ export class EditMemberListComponent implements OnInit {
   ngOnInit() {
     this.memberService.findAll(this.namespace, this.parent).pipe(
       tap(members => this.members = members),
-      switchMap(members => forkJoin(members.map(member => this.userService.findOne(member.user).pipe(
-        tap(user => member._user = user),
-      )))),
+      switchMap(members => this.userService.findByIds(members.map(m => m.user)).pipe(
+        tap(users => setUsers(members, users)),
+      )),
     ).subscribe();
   }
 
