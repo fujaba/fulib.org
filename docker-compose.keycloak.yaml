@@ -1,13 +1,21 @@
 services:
+
   keycloak:
-    image: jboss/keycloak:12.0.4
-    restart: on-failure
+    image: quay.io/keycloak/keycloak:26.4
+    command: [ 'start-dev', '--import-realm' ]
+    restart: unless-stopped
     environment:
-      KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: admin
+      KC_HOSTNAME: localhost
+      KC_HTTP_RELATIVE_PATH: /auth
+      KC_DB: dev-file # override postgres to use file-based H2
+      KC_DB_USERNAME: sa # https://github.com/keycloak/keycloak/issues/39046
+      KC_DB_PASSWORD: password # dito
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: root
     ports:
-      - "24785:8080"
+      - "8080:8080"
     volumes:
-      - 'keycloak-data:/opt/jboss/keycloak/standalone/data/'
+      - "keycloak-data:/opt/keycloak/data"
+
 volumes:
   keycloak-data:
