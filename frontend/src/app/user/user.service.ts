@@ -56,6 +56,16 @@ export class UserService {
     return environment.auth ? this.http.get<User>(`${environment.auth.url}/admin/realms/${environment.auth.realm}/users/${id}`) : throwError(() => new Error('No auth server configured'));
   }
 
+  findByIds(ids: string[]): Observable<User[]> {
+    if (!ids.length) {
+      return of([]);
+    }
+    // Supported by Keycloak 26.3+
+    // See https://github.com/keycloak/keycloak/issues/12025
+    // and https://github.com/fujaba/fulib.org/issues/540#issuecomment-3117526665
+    return this.findAll(`id:${ids.join(' ')}`);
+  }
+
   getGitHubToken(): Observable<string | undefined> {
     const paramName = 'access_token=';
     if (!environment.auth) {
