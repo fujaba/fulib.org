@@ -16,6 +16,7 @@ services:
       - "8080:8080"
     volumes:
       - "keycloak-data:/opt/keycloak/data"
+      - "./dev/keycloak:/opt/keycloak/data/import" # realm import
 
 volumes:
   keycloak-data:
