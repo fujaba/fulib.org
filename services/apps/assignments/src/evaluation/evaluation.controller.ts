@@ -2,7 +2,7 @@ import {AuthUser, UserToken} from '@app/keycloak-auth';
 import {NotFound, ObjectIdPipe} from '@mean-stream/nestx';
 import {Body, Controller, Delete, Get, Headers, MessageEvent, Param, Patch, Post, Query, Sse} from '@nestjs/common';
 import {ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags} from '@nestjs/swagger';
-import {FilterQuery, Types} from 'mongoose';
+import {QueryFilter, Types} from 'mongoose';
 import {Observable} from 'rxjs';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {SolutionAuth} from '../solution/solution-auth.decorator';
@@ -22,8 +22,8 @@ export class EvaluationController {
   ) {
   }
 
-  private toQuery(assignment: Types.ObjectId, solution?: Types.ObjectId, params: FilterEvaluationParams = {}): FilterQuery<Evaluation> {
-    const query: FilterQuery<Evaluation> = {assignment};
+  private toQuery(assignment: Types.ObjectId, solution?: Types.ObjectId, params: FilterEvaluationParams = {}): QueryFilter<Evaluation> {
+    const query: QueryFilter<Evaluation> = {assignment};
     solution && (query.solution = solution);
     params.file && (query['snippets.file'] = params.file);
     params.task && (query.task = params.task);

@@ -1,9 +1,9 @@
-import {Injectable} from "@nestjs/common";
-import {OnEvent} from "@nestjs/event-emitter";
-import {Assignment, AssignmentDocument, Task} from "../assignment/assignment.schema";
-import {EmbeddingService} from "./embedding.service";
-import {SolutionDocument} from "../solution/solution.schema";
-import {DEFAULT_MODEL} from "./openai.service";
+import {Injectable} from '@nestjs/common';
+import {OnEvent} from '@nestjs/event-emitter';
+import {Assignment, AssignmentDocument, Task} from '../assignment/assignment.schema';
+import {SolutionDocument} from '../solution/solution.schema';
+import {EmbeddingService} from './embedding.service';
+import {DEFAULT_MODEL} from './openai.service';
 
 @Injectable()
 export class EmbeddingHandler {
@@ -50,6 +50,6 @@ export class EmbeddingHandler {
 
   @OnEvent('assignments.*.solutions.*.deleted')
   async onSolutionDeleted(solution: SolutionDocument) {
-    await this.embeddingService.deleteBySolution(solution.assignment.toString(), solution.id);
+    await this.embeddingService.deleteBySolution(solution.assignment.toString(), solution._id.toString());
   }
 }

@@ -5,11 +5,11 @@ import {createReadStream} from 'fs';
 import {firstValueFrom} from 'rxjs';
 import {Stream} from 'stream';
 import {AssignmentDocument} from '../assignment/assignment.schema';
+import {FileService} from '../file/file.service';
 import {AuthorInfo} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {generateToken} from '../utils';
-import {ImportSolution} from "./classroom.dto";
-import {FileService} from "../file/file.service";
+import {ImportSolution} from './classroom.dto';
 
 interface RepositoryInfo {
   name: string;
@@ -38,7 +38,7 @@ export class ClassroomService {
     const importSolutions = files.map(file => {
       const [key, value] = this.parseAuthorInfo(assignment, file.originalname);
       return {
-        assignment: assignment.id,
+        assignment: assignment._id,
         author: {
           email: '',
           name: '',
@@ -54,7 +54,7 @@ export class ClassroomService {
       await Promise.all(files.map(async (file, index) => {
         const stream = createReadStream(file.path);
         const solution = solutions.upsertedIds[index];
-        return this.fileService.importZipEntries(stream, assignment.id, solution.toString());
+        return this.fileService.importZipEntries(stream, assignment._id.toString(), solution.toString());
       }));
     }
 
@@ -151,7 +151,7 @@ export class ClassroomService {
         if (commit && upsertedId) {
           const zip = await this.getRepoZip(assignment, this.getGithubName(repo, assignment), commit);
           if (zip) {
-            await this.fileService.importZipEntries(zip, assignment.id, upsertedId.toString(), commit);
+            await this.fileService.importZipEntries(zip, assignment._id.toString(), upsertedId.toString(), commit);
           }
         }
       }));
@@ -167,7 +167,7 @@ export class ClassroomService {
       await Promise.all(otherSolutions.map(async solution => {
         const zip = await this.getRepoZip(assignment, solution.author.github!, solution.commit!);
         if (zip) {
-          await this.fileService.importZipEntries(zip, assignment.id, solution.id, solution.commit!);
+          await this.fileService.importZipEntries(zip, assignment._id.toString(), solution._id.toString(), solution.commit!);
         }
       }));
       importSolutions.push(...otherSolutions);

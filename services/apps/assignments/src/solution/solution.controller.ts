@@ -13,19 +13,19 @@ import {
   Post,
   Query,
   UploadedFiles,
-  UseInterceptors
+  UseInterceptors,
 } from '@nestjs/common';
+import {FilesInterceptor} from '@nestjs/platform-express';
 import {ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiQuery, ApiTags} from '@nestjs/swagger';
 import {isMongoId} from 'class-validator';
-import {FilterQuery, Types} from 'mongoose';
+import {QueryFilter, Types} from 'mongoose';
 import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
+import {FileService} from '../file/file.service';
+import {generateToken} from '../utils';
 import {SolutionAuth} from './solution-auth.decorator';
 import {BatchUpdateSolutionDto, CreateSolutionDto, RichSolutionDto, UpdateSolutionDto} from './solution.dto';
 import {Solution, SOLUTION_COLLATION, SOLUTION_SORT} from './solution.schema';
 import {SolutionService} from './solution.service';
-import {FilesInterceptor} from "@nestjs/platform-express";
-import {FileService} from "../file/file.service";
-import {generateToken} from "../utils";
 
 const forbiddenResponse = 'Not owner of solution or assignment, or invalid Assignment-Token or Solution-Token.';
 const forbiddenAssignmentResponse = 'Not owner of assignment, or invalid Assignment-Token.';
@@ -57,7 +57,7 @@ export class SolutionController {
       timestamp: new Date(),
     });
     if (files && files.length) {
-      await this.fileService.importFiles(assignment.toString(), solution.id, files);
+      await this.fileService.importFiles(assignment.toString(), solution._id.toString(), files);
     }
     return solution;
   }
@@ -77,8 +77,8 @@ export class SolutionController {
     @Query('ids', new DefaultValuePipe([]), ParseArrayPipe, ObjectIdArrayPipe) ids: Types.ObjectId[],
     @Query('q') search?: string,
   ): Promise<RichSolutionDto[]> {
-    const preFilter: FilterQuery<Solution>[] = [];
-    const postFilter: FilterQuery<RichSolutionDto>[] = [];
+    const preFilter: QueryFilter<Solution>[] = [];
+    const postFilter: QueryFilter<RichSolutionDto>[] = [];
     preFilter.push({assignment});
     if (ids.length) {
       preFilter.push({_id: {$in: ids}});
@@ -99,7 +99,7 @@ export class SolutionController {
     return this.solutionService.findRich({$and: preFilter}, postFilter.length ? {$and: postFilter} : {});
   }
 
-  private toFilter(term: string, preAnd: FilterQuery<Solution>[], postAnd: FilterQuery<RichSolutionDto>[]) {
+  private toFilter(term: string, preAnd: QueryFilter<Solution>[], postAnd: QueryFilter<RichSolutionDto>[]) {
     term = term.replace(/\+/g, ' ');
 
     const colonIndex = term.indexOf(':');

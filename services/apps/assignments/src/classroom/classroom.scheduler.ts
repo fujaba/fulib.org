@@ -1,7 +1,7 @@
 import {HttpService} from '@nestjs/axios';
 import {Injectable} from '@nestjs/common';
 import {Cron, CronExpression} from '@nestjs/schedule';
-import {FilterQuery} from 'mongoose';
+import {QueryFilter} from 'mongoose';
 import {Assignment, AssignmentDocument} from '../assignment/assignment.schema';
 import {AssignmentService} from '../assignment/assignment.service';
 import {ClassroomService} from './classroom.service';
@@ -71,7 +71,7 @@ export class ClassroomScheduler {
     }));
   }
 
-  private async findAssignmentsBetween(startDate: Date, endDate: Date, filter: FilterQuery<Assignment> = {}) {
+  private async findAssignmentsBetween(startDate: Date, endDate: Date, filter: QueryFilter<Assignment> = {}) {
     return this.assignmentService.findAll({
       'classroom.org': {$exists: true},
       'classroom.prefix': {$exists: true},

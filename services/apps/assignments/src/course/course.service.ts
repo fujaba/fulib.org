@@ -1,13 +1,13 @@
+import {MemberService} from '@app/member';
 import {EventRepository, EventService, MongooseRepository} from '@mean-stream/nestx';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {Model, Types} from 'mongoose';
+import {AssigneeService} from '../assignee/assignee.service';
 import {AuthorInfo, Solution, SOLUTION_COLLATION, SOLUTION_SORT} from '../solution/solution.schema';
 import {SolutionService} from '../solution/solution.service';
 import {CourseAssignee, CourseStudent} from './course.dto';
 import {Course, CourseDocument} from './course.schema';
-import {MemberService} from "@app/member";
-import {AssigneeService} from "../assignee/assignee.service";
 
 @Injectable()
 @EventRepository()
@@ -165,6 +165,6 @@ export class CourseService extends MongooseRepository<Course> {
   }
 
   emit(event: string, course: CourseDocument) {
-    this.eventService.emit(`courses.${course.id}.${event}`, course);
+    this.eventService.emit(`courses.${course._id}.${event}`, course);
   }
 }
