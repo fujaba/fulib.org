@@ -1,14 +1,14 @@
+import {QueryDslQueryContainer} from '@elastic/elasticsearch/lib/api/types';
 import {ForbiddenException, Injectable, OnModuleInit} from '@nestjs/common';
-import {ElasticsearchService} from "@nestjs/elasticsearch";
-import {FileDocument, SearchService} from "../search/search.service";
-import {Embeddable, EmbeddableSearch, EmbeddingEstimate, SnippetEmbeddable} from "./embedding.dto";
-import {DEFAULT_MODEL, EmbeddingModel, OpenAIService} from "./openai.service";
-import {QueryDslQueryContainer} from "@elastic/elasticsearch/lib/api/types";
-import {SolutionService} from "../solution/solution.service";
-import {Assignment} from "../assignment/assignment.schema";
-import {FilterQuery} from "mongoose";
-import {Solution} from "../solution/solution.schema";
+import {ElasticsearchService} from '@nestjs/elasticsearch';
 import * as ignore from 'ignore-file';
+import {QueryFilter} from 'mongoose';
+import {Assignment} from '../assignment/assignment.schema';
+import {FileDocument, SearchService} from '../search/search.service';
+import {Solution} from '../solution/solution.schema';
+import {SolutionService} from '../solution/solution.service';
+import {Embeddable, EmbeddableSearch, EmbeddingEstimate, SnippetEmbeddable} from './embedding.dto';
+import {DEFAULT_MODEL, EmbeddingModel, OpenAIService} from './openai.service';
 
 type DeclarationSnippet = SnippetEmbeddable & { name: string };
 
@@ -125,12 +125,12 @@ export class EmbeddingService implements OnModuleInit {
   }
 
   private async getDocuments(assignment: Assignment) {
-    const filter: FilterQuery<Solution> = {assignment: assignment._id};
+    const filter: QueryFilter<Solution> = {assignment: assignment._id};
     if (assignment.openAI?.consent !== false) {
       filter['consent.3P'] = true;
     }
     const solutionsWithConsent = await this.solutionService.findAll(filter, {projection: {_id: 1}});
-    const allDocuments = await this.searchService.findAll(assignment._id.toString(), solutionsWithConsent.map(s => s.id));
+    const allDocuments = await this.searchService.findAll(assignment._id.toString(), solutionsWithConsent.map(s => s._id.toString()));
 
     const ignoreFn = assignment.openAI?.ignore ? ignore.compile(assignment.openAI.ignore) as (path: string) => boolean : undefined;
     const ignoredFiles = new Set<string>();

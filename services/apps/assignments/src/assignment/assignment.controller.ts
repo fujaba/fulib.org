@@ -1,8 +1,10 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
+import {MemberService} from '@app/member';
 import {NotFound, notFound, ObjectIdArrayPipe, ObjectIdPipe} from '@mean-stream/nestx';
 import {
   Body,
-  Controller, DefaultValuePipe,
+  Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   Headers,
@@ -14,13 +16,12 @@ import {
   Query,
 } from '@nestjs/common';
 import {ApiCreatedResponse, ApiHeader, ApiOkResponse, ApiTags, getSchemaPath} from '@nestjs/swagger';
-import {FilterQuery, Types, UpdateQuery} from 'mongoose';
+import {QueryFilter, Types, UpdateQuery} from 'mongoose';
+import {generateToken} from '../utils';
 import {AssignmentAuth} from './assignment-auth.decorator';
-import {CreateAssignmentDto, ReadAssignmentDto, UpdateAssignmentDto,} from './assignment.dto';
+import {CreateAssignmentDto, ReadAssignmentDto, UpdateAssignmentDto} from './assignment.dto';
 import {Assignment, ASSIGNMENT_COLLATION, ASSIGNMENT_SORT} from './assignment.schema';
 import {AssignmentService} from './assignment.service';
-import {MemberService} from "@app/member";
-import {generateToken} from "../utils";
 
 const forbiddenResponse = 'Not owner or invalid Assignment-Token.';
 
@@ -55,7 +56,7 @@ export class AssignmentController {
     @Query('createdBy') createdBy?: string,
     @Query('members', new ParseArrayPipe({optional: true})) memberIds?: string[],
   ) {
-    const filter: FilterQuery<Assignment> = {};
+    const filter: QueryFilter<Assignment> = {};
     if (archived !== undefined) {
       filter.archived = archived || {$ne: true};
     }

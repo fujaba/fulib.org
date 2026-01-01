@@ -1,15 +1,15 @@
+import {Doc, Ref} from '@mean-stream/nestx';
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {ApiProperty} from '@nestjs/swagger';
 import {IsBoolean, IsDateString, IsEmail, IsNotEmpty, IsString} from 'class-validator';
-import {Doc, Ref} from "@mean-stream/nestx";
-import {Types} from "mongoose";
+import {Types} from 'mongoose';
 
 @Schema()
 export class Comment {
   @Ref('Assignment')
   assignment: Types.ObjectId;
 
-  @Ref('Assignment')
+  @Ref('Solution')
   solution: Types.ObjectId;
 
   @Prop()

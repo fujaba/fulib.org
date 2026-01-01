@@ -1,7 +1,7 @@
 import {EventRepository, EventService, MongooseRepository} from '@mean-stream/nestx';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
-import {FilterQuery, Model, Types, UpdateQuery} from 'mongoose';
+import {Model, QueryFilter, Types, UpdateQuery} from 'mongoose';
 import {AssignmentService} from '../assignment/assignment.service';
 import {SearchService} from '../search/search.service';
 import {CreateEvaluationDto, RemarkDto, UpdateEvaluationDto} from './evaluation.dto';
@@ -20,7 +20,7 @@ export class EvaluationService extends MongooseRepository<Evaluation> {
   }
 
   private emit(event: string, evaluation: EvaluationDocument) {
-    this.eventService.emit(`assignments.${evaluation.assignment}.solutions.${evaluation.solution}.evaluations.${evaluation.id}.${event}`, evaluation);
+    this.eventService.emit(`assignments.${evaluation.assignment}.solutions.${evaluation.solution}.evaluations.${evaluation._id}.${event}`, evaluation);
   }
 
   subscribe(assignment: Types.ObjectId, solution: Types.ObjectId, evaluation: Types.ObjectId | '*', event: string, user?: string) {
@@ -46,11 +46,11 @@ export class EvaluationService extends MongooseRepository<Evaluation> {
     return evaluation;
   }
 
-  async findUnique(field: keyof Evaluation | string, where: FilterQuery<Evaluation> = {}): Promise<unknown[]> {
+  async findUnique(field: keyof Evaluation | string, where: QueryFilter<Evaluation> = {}): Promise<unknown[]> {
     return this.model.distinct(field, where).exec();
   }
 
-  async findRemarks(where: FilterQuery<Evaluation> = {}): Promise<RemarkDto[]> {
+  async findRemarks(where: QueryFilter<Evaluation> = {}): Promise<RemarkDto[]> {
     return this.model.aggregate([
       {$match: where},
       {
@@ -162,7 +162,7 @@ export class EvaluationService extends MongooseRepository<Evaluation> {
     let deleted = 0;
     let updated = 0;
     await Promise.all(solutions.map(async ([solution, snippets]) => {
-      const filter: FilterQuery<Evaluation> = {
+      const filter: QueryFilter<Evaluation> = {
         assignment,
         solution,
         task,

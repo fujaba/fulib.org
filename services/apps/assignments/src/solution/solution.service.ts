@@ -1,8 +1,8 @@
-import {EventRepository, EventService, MongooseRepository} from '@mean-stream/nestx';
 import {UserToken} from '@app/keycloak-auth';
+import {EventRepository, EventService, MongooseRepository} from '@mean-stream/nestx';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
-import {FilterQuery, Model, Types, UpdateQuery} from 'mongoose';
+import {Model, QueryFilter, Types, UpdateQuery} from 'mongoose';
 import {BatchUpdateSolutionDto, RichSolutionDto, SolutionStatus} from './solution.dto';
 import {Solution, SOLUTION_COLLATION, SOLUTION_SORT, SolutionDocument} from './solution.schema';
 
@@ -16,7 +16,7 @@ export class SolutionService extends MongooseRepository<Solution> {
     super(model);
   }
 
-  async findRich(preFilter: FilterQuery<Solution>, postFilter: FilterQuery<RichSolutionDto>): Promise<RichSolutionDto[]> {
+  async findRich(preFilter: QueryFilter<Solution>, postFilter: QueryFilter<RichSolutionDto>): Promise<RichSolutionDto[]> {
     return this.model.aggregate([
       {
         $match: preFilter,
@@ -151,6 +151,6 @@ export class SolutionService extends MongooseRepository<Solution> {
   }
 
   private emit(event: string, solution: SolutionDocument) {
-    this.eventService.emit(`assignments.${solution.assignment}.solutions.${solution.id}.${event}`, solution);
+    this.eventService.emit(`assignments.${solution.assignment}.solutions.${solution._id}.${event}`, solution);
   }
 }

@@ -1,13 +1,13 @@
 import {Auth, AuthUser, UserToken} from '@app/keycloak-auth';
+import {MemberService} from '@app/member';
 import {NotFound, ObjectIdPipe} from '@mean-stream/nestx';
 import {Body, Controller, Delete, Get, Param, ParseArrayPipe, Patch, Post, Query} from '@nestjs/common';
 import {ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiParam, ApiTags} from '@nestjs/swagger';
+import {QueryFilter, Types} from 'mongoose';
+import {CourseAuth} from '../course-member/course-auth.decorator';
 import {CourseAssignee, CourseStudent, CreateCourseDto, UpdateCourseDto} from './course.dto';
 import {Course} from './course.schema';
 import {CourseService} from './course.service';
-import {CourseAuth} from "../course-member/course-auth.decorator";
-import {FilterQuery, Types} from "mongoose";
-import {MemberService} from "@app/member";
 
 const forbiddenResponse = 'Not owner.';
 
@@ -36,7 +36,7 @@ export class CourseController {
     @Query('createdBy') createdBy?: string,
     @Query('members', new ParseArrayPipe({optional: true})) memberIds?: string[],
   ): Promise<Course[]> {
-    const filter: FilterQuery<Course> = {};
+    const filter: QueryFilter<Course> = {};
     if (createdBy) {
       (filter.$or ||= []).push({createdBy});
     }
