@@ -9,7 +9,7 @@ export interface Member {
 }
 
 export function setUsers(members: Member[], users: User[]) {
-  for (let user of users) {
+  for (const user of users) {
     const member = members.find(m => m.user === user.id);
     if (member) {
       member._user = user;
