@@ -36,10 +36,12 @@ export class MemberController implements OnModuleInit {
     const {modifiedCount} = await this.memberService.updateMany({
       projectId: {$exists: true},
       userId: {$exists: true},
-    }, [
-      {$set: {parent: '$projectId', user: '$userId'}},
-      {$unset: ['projectId', 'userId']},
-    ]);
+    }, {
+      $rename: {
+        projectId: 'parent',
+        userId: 'user',
+      },
+    });
     modifiedCount && this.logger.warn(`Migrated ${modifiedCount} members`);
   }
 
