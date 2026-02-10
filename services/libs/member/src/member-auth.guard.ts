@@ -15,7 +15,8 @@ export class MemberAuthGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     const req = context.switchToHttp().getRequest() as Request;
-    const id = objectId(req.params.project ?? req.params.id, error => new BadRequestException(error));
+    let param = req.params.project ?? req.params.id;
+    const id = objectId(typeof param === 'string' ? param : param[0], error => new BadRequestException(error));
     const user: UserToken = (req as any).user;
     return this.checkAuth(id, user.sub);
   }

@@ -23,7 +23,13 @@ export class SolutionAuthGuard implements CanActivate {
     const assignmentId = req.params.assignment;
     const solutionId = req.params.solution ?? req.params.id;
     const user = (req as any).user;
-    return this.checkAuth(assignmentId, solutionId, user, assignmentToken, solutionToken);
+    return this.checkAuth(
+      typeof assignmentId === 'string' ? assignmentId : assignmentId[0],
+      typeof solutionId === 'string' ? solutionId : solutionId[0],
+      user,
+      assignmentToken,
+      solutionToken,
+    );
   }
 
   async checkAuth(assignmentId: string, solutionId: string, user?: UserToken, assignmentToken?: string, solutionToken?: string): Promise<boolean> {

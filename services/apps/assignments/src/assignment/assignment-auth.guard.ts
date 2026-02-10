@@ -18,7 +18,7 @@ export class AssignmentAuthGuard implements CanActivate {
     const token = req.header('assignment-token') ?? req.query.token?.toString();
     const id = req.params.assignment ?? req.params.id;
     const user = (req as any).user;
-    return this.checkAuth(id, user, token);
+    return this.checkAuth(typeof id === 'string' ? id : id[0], user, token);
   }
 
   async checkAuth(id: string, user?: UserToken, token?: string): Promise<boolean> {

@@ -13,7 +13,8 @@ export class CommentAuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest() as Request;
-    const commentId = req.params.comment ?? req.params.id;
+    const param = req.params.comment ?? req.params.id;
+    const commentId = typeof param === 'string' ? param : param[0];
     const user = (req as any).user;
     const comment = await this.commentService.find(new Types.ObjectId(commentId)) ?? notFound(commentId);
     return this.commentService.isAuthorized(comment, user);

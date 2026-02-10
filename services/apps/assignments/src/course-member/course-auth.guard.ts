@@ -19,7 +19,7 @@ export class CourseAuthGuard implements CanActivate {
     const req = context.switchToHttp().getRequest() as Request;
     const id = req.params.course ?? req.params.id;
     const user = (req as any).user;
-    return user && this.checkAuth(id, user);
+    return user && this.checkAuth(typeof id === 'string' ? id : id[0], user);
   }
 
   async checkAuth(id: string, user: UserToken): Promise<boolean> {
