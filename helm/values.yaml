@@ -35,7 +35,8 @@ nats:
         whenUnsatisfiable: DoNotSchedule
 
 keycloak:
-  image: quay.io/keycloak/keycloak:26.4.2 # registry.uni-kassel.dev/fulib/fulib.org/keycloak
+  # https://github.com/keycloak/keycloak/releases
+  image: quay.io/keycloak/keycloak:26.5.3
   imagePullPolicy: Always
   replicas: 1
   secret:
