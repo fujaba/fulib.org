@@ -18,7 +18,7 @@ services:
     volumes:
       - database:/data/db
   keycloak:
-    image: quay.io/keycloak/keycloak:26.4
+    image: quay.io/keycloak/keycloak:26.5
     command: [ 'start-dev', '--import-realm' ]
     restart: unless-stopped
     environment:
