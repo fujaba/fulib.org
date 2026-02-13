@@ -36,7 +36,7 @@
     "highlight.js": "^11.11.1",
     "keycloak-angular": "^21.0.0",
     "keycloak-js": "26.2.3",
-    "markdown-it": "^14.1.0",
+    "markdown-it": "^14.1.1",
     "ngx-clipboard": "^16.0.0",
     "ngx-drag-drop": "^21.0.0",
     "rxjs": "~7.8.2",
