@@ -41,7 +41,7 @@
     "@sentry/node": "^10.46.0",
     "@types/dockerode": "^4.0.1",
     "@types/passport-jwt": "^4.0.1",
-    "axios": "^1.14.0",
+    "axios": "^1.15.0",
     "bson-objectid": "^2.0.4",
     "chownr": "^3.0.0",
     "class-transformer": "^0.5.1",
