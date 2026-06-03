@@ -45,7 +45,7 @@
     "zone.js": "^0.16.2"
   },
   "devDependencies": {
-    "@angular-eslint/builder": "21.3.1",
+    "@angular-eslint/builder": "21.4.0",
     "@angular/build": "^21.2.5",
     "@angular/cli": "^21.2.5",
     "@angular/compiler-cli": "^21.2.6",
@@ -54,15 +54,15 @@
     "@types/codemirror": "^5.60.17",
     "@types/file-saver": "^2.0.7",
     "@types/markdown-it": "^14.1.2",
-    "@types/node": "^25.5.0",
+    "@types/node": "^25.9.1",
     "@types/turndown": "^5.0.6",
-    "angular-eslint": "21.3.1",
-    "eslint": "^10.1.0",
-    "jsdom": "^29.0.1",
+    "angular-eslint": "21.4.0",
+    "eslint": "^10.4.1",
+    "jsdom": "^29.1.1",
     "ts-node": "^10.9.2",
-    "typescript": "~5.9.3",
-    "typescript-eslint": "8.57.2",
-    "vitest": "^4.1.2"
+    "typescript": "~6.0.3",
+    "typescript-eslint": "8.60.1",
+    "vitest": "^4.1.8"
   },
   "resolutions": {
     "axios": "^1.6.0",
