@@ -1,4 +1,5 @@
 allowBuilds:
+  '@parcel/watcher': set this to true or false
   '@scarf/scarf': false
   cpu-features: true
   protobufjs: true
