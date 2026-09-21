@@ -1,0 +1,15 @@
+allowBuilds:
+  '@parcel/watcher': true
+  esbuild: true
+  lmdb: true
+  msgpackr-extract: true
+overrides:
+  body-parser@<1.20.6: ^1.20.6
+  brace-expansion@^1: ^1.1.18
+  image-size@<=2.0.2: ^2.0.3
+  immutable@^5: ^5.1.8
+  qs@^6: ^6.16.0
+  socket.io-parser@^4: ^4.2.7
+  ws@^8: ^8.21.0
+patchedDependencies:
+  "@vitest/spy": "patches/@vitest__spy.patch"

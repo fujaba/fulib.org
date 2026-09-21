@@ -1,0 +1,12 @@
+allowBuilds:
+  '@parcel/watcher': true
+  '@scarf/scarf': false
+  cpu-features: true
+  protobufjs: true
+  ssh2: true
+  unrs-resolver: true
+overrides:
+  brace-expansion@^2: ^2.1.4
+  js-yaml@^3: ^3.15.2
+  multer@<2.3.0: ^2.3.0
+  ws@^8: ^8.21.0
