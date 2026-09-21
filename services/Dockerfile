@@ -1,7 +1,7 @@
 FROM node:lts-slim AS builder
 WORKDIR /app
 ENV COREPACK_DEFAULT_TO_LATEST=0
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
     corepack pnpm install --frozen-lockfile
 COPY . .
@@ -11,7 +11,7 @@ RUN corepack pnpm build $SERVICE
 FROM node:lts-slim
 WORKDIR /app
 ENV NODE_ENV=production
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
     corepack pnpm install --frozen-lockfile
 COPY --from=builder /app/dist ./dist
