@@ -10,7 +10,7 @@
     "lint": "ng lint"
   },
   "private": true,
-  "packageManager": "pnpm@10.33.0+sha512.10568bb4a6afb58c9eb3630da90cc9516417abebd3fabbe6739f0ae795728da1491e9db5a544c76ad8eb7570f5c4bb3d6c637b2cb41bfdcdb47fa823c8649319",
+  "packageManager": "pnpm@11.27.1+sha512.a81d4c21b9b09a4b0aebf90ef5e527d4262bdda322d26082978cb549023ac6d9cafc98b19fffaa5c71db438a65f70224edb78d7311187861ff96480d1cdca23c",
   "dependencies": {
     "@angular/animations": "^21.2.6",
     "@angular/common": "^21.2.6",
@@ -71,8 +71,6 @@
     "@sentry/browser@<7.119.1": "^7.119.1"
   },
   "pnpm": {
-    "patchedDependencies": {
-      "@vitest/spy": "patches/@vitest__spy.patch"
-    }
+
   }
 }
