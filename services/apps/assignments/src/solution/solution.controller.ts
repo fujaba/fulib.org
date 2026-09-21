@@ -23,7 +23,13 @@ import {AssignmentAuth} from '../assignment/assignment-auth.decorator';
 import {FileService} from '../file/file.service';
 import {generateToken} from '../utils';
 import {SolutionAuth} from './solution-auth.decorator';
-import {BatchUpdateSolutionDto, CreateSolutionDto, RichSolutionDto, UpdateSolutionDto} from './solution.dto';
+import {
+  BatchUpdateSolutionDto,
+  CreateSolutionDto,
+  RichSolutionDto,
+  SolutionStatus,
+  UpdateSolutionDto,
+} from './solution.dto';
 import {Solution, SOLUTION_COLLATION, SOLUTION_SORT} from './solution.schema';
 import {SolutionService} from './solution.service';
 
@@ -144,7 +150,8 @@ export class SolutionController {
           }
           break;
         case 'status':
-          postAnd.push({status: subTerm});
+          // Assume it is spelled correctly. Otherwise, there will be no results but also no error.
+          postAnd.push({status: subTerm as SolutionStatus});
           break;
         case 'name':
         case 'github':
