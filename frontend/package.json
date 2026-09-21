@@ -63,12 +63,5 @@
     "typescript": "~5.9.3",
     "typescript-eslint": "8.60.1",
     "vitest": "^4.1.11"
-  },
-  "resolutions": {
-    "axios": "^1.6.0",
-    "webpack-dev-middleware": "^6.1.2",
-    "cookie@<0.7.0": ">=0.7.0",
-    "@sentry/browser@<7.119.1": "^7.119.1"
-  },
-  "pnpm": {}
+  }
 }
