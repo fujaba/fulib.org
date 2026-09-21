@@ -98,11 +98,6 @@
     "typescript": "^5.9.3",
     "webpack": "^5.111.1"
   },
-  "resolutions": {
-    "ajv@^8": "^8.18.0",
-    "path-to-regexp@^8": "^8.4.0",
-    "picomatch@^4": "^4.0.4"
-  },
   "jest": {
     "moduleFileExtensions": [
       "js",
@@ -129,10 +124,5 @@
       "^@app/moss(|/.*)$": "<rootDir>/libs/moss/src/$1",
       "^@app/member(|/.*)$": "<rootDir>/libs/member/src/$1"
     }
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@nestjs/core"
-    ]
   }
 }
